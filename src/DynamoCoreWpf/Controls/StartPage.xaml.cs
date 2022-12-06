@@ -482,13 +482,6 @@ namespace Dynamo.UI.Controls
             listBox.SelectedIndex = -1;
         }
 
-        private void OnCloseStartPageClicked(object sender, MouseButtonEventArgs e)
-        {
-            this.dynamoViewModel.ShowStartPage = false;
-        }
-
-        #endregion
-
         private void OnSampleFileSelected(object sender, RoutedEventArgs e)
         {
             var dp = e.OriginalSource as DependencyObject;
@@ -546,6 +539,7 @@ namespace Dynamo.UI.Controls
 
             }
         }
+        #endregion
     }
 
     public class SampleFileEntry

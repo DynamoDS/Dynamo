@@ -1,0 +1,246 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "SerializeAsSAB",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Color": {
+        "Key": "DSCore.Color",
+        "Value": "DSCoreNodes.dll"
+      },
+      "Display": {
+        "Key": "Display.Display",
+        "Value": "Display.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid@double",
+      "Id": "9222260d07494abbb34a20af71030c41",
+      "Inputs": [
+        {
+          "Id": "16178e26e51744fdab5e0b7f0c3af430",
+          "Name": "curve",
+          "Description": "Autodesk.DesignScript.Geometry.Curve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3e7760a894e2466eae792da178f5603a",
+          "Name": "distance",
+          "Description": "Distance to extrude\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "bbd1c92d23984abeb5c82bf5d77ffb5c",
+          "Name": "Solid",
+          "Description": "The extruded Solid",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Extrudes a Curve in the Normal direction by the specified distance. Curve must be closed.\n\nCurve.ExtrudeAsSolid (distance: double = 1): Solid"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
+      "Id": "30a8c0ffc0304a5b91193a44ccc5f608",
+      "Inputs": [
+        {
+          "Id": "25cc3041086244ef9418344d26514331",
+          "Name": "centerPoint",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e29ca60895c443d8bc85305318a150c6",
+          "Name": "radius",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "52f6a737762d46898ef9a71fcd4bc89b",
+          "Name": "Circle",
+          "Description": "Circle",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Creates a Circle with input center Point and radius in the world XY plane, with world Z as normal.\n\nCircle.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Circle"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.SerializeAsSAB@Autodesk.DesignScript.Geometry.Geometry[]",
+      "Id": "1c8aa7366a3847edac7cd1805582c1a2",
+      "Inputs": [
+        {
+          "Id": "eef320c6c5894661a8cf1018a296436d",
+          "Name": "geometry",
+          "Description": "Geometry[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "03a1038355864c448d1c4deb554fa536",
+          "Name": "int[]",
+          "Description": "int[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Serializes the specified geometry into Standard ACIS Binary(SAB) format and returns serialized binary stream data\n\nGeometry.SerializeAsSAB (geometry: Geometry[]): int[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "0d7eacf6814d494398ab6534e2e2174c",
+      "Inputs": [
+        {
+          "Id": "a0cf5420236f4c028b7526c494414a25",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b914610c120147f4ae47db666bcdff88",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "bbd1c92d23984abeb5c82bf5d77ffb5c",
+      "End": "eef320c6c5894661a8cf1018a296436d",
+      "Id": "52beb659f6c5435483c99ac785e0741d"
+    },
+    {
+      "Start": "52f6a737762d46898ef9a71fcd4bc89b",
+      "End": "16178e26e51744fdab5e0b7f0c3af430",
+      "Id": "cc520e12b4f14f89a6506cf5fcaf0c9f"
+    },
+    {
+      "Start": "03a1038355864c448d1c4deb554fa536",
+      "End": "a0cf5420236f4c028b7526c494414a25",
+      "Id": "0b7422b62b1b41e3abcbb0dec00d033a"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -0.52827745676040649,
+      "EyeY": 3.0270106792449951,
+      "EyeZ": 3.8986048698425293,
+      "LookX": 3.3505916595458984,
+      "LookY": -4.38075065612793,
+      "LookZ": -7.4591059684753418,
+      "UpX": 0.11156784743070602,
+      "UpY": 0.96221798658370972,
+      "UpZ": -0.24837298691272736
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Curve.ExtrudeAsSolid",
+        "Id": "9222260d07494abbb34a20af71030c41",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -211.38446802603653,
+        "Y": 2817.235439445
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Circle.ByCenterPointRadius",
+        "Id": "30a8c0ffc0304a5b91193a44ccc5f608",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -534.38446802603653,
+        "Y": 2817.235439445
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Geometry.SerializeAsSAB",
+        "Id": "1c8aa7366a3847edac7cd1805582c1a2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 88.615531973963471,
+        "Y": 2817.235439445
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "0d7eacf6814d494398ab6534e2e2174c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 389.61553197396347,
+        "Y": 2817.235439445
+      }
+    ],
+    "Annotations": [],
+    "X": 749.326350559705,
+    "Y": -5329.90689548734,
+    "Zoom": 1.90479712435349
+  }
+}

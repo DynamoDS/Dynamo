@@ -1,0 +1,523 @@
+{
+  "Uuid": "93d7251f-6ed2-46b8-a188-00a0d7d9d6ae",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Tessellation.Voronoi.ByParametersOnSurface_img",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Math": {
+        "Key": "DSCore.Math",
+        "Value": "DSCoreNodes.dll"
+      },
+      "Color": {
+        "Key": "DSCore.Color",
+        "Value": "DSCoreNodes.dll"
+      },
+      "UV": {
+        "Key": "Autodesk.DesignScript.Geometry.UV",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Vector": {
+        "Key": "Autodesk.DesignScript.Geometry.Vector",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "50;",
+      "Id": "9156a287c35441b08210d1e3faeea150",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "efb3cc564aac4398bcb5c074dcb47283",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "10;",
+      "Id": "e2c6c60461d04c2895d08a9c08cbaa64",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "c498775280c54277aa00325c20495a7d",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Math.RandomList@int",
+      "Id": "e814b8f5aa484f92bd7e9e5e7bdd14b2",
+      "Inputs": [
+        {
+          "Id": "3a680711a4cc4f54a81baaf9cf1c978a",
+          "Name": "amount",
+          "Description": "Amount of random numbers the result list will contain.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "33e7b646fced460caadf1e18e74bb2ec",
+          "Name": "number",
+          "Description": "List of random numbers between 0 and 1.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Produces a list containing the given amount of random doubles in the range of [0, 1).\n\nMath.RandomList (amount: int): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Math.RandomList@int",
+      "Id": "0306344f05db4b8db8bce48fa5a3d5e6",
+      "Inputs": [
+        {
+          "Id": "d3b54109cd5a40d9873ae7b8c0145ced",
+          "Name": "amount",
+          "Description": "Amount of random numbers the result list will contain.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8a780224b45141bc9993e4f99e96c7d6",
+          "Name": "number",
+          "Description": "List of random numbers between 0 and 1.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Produces a list containing the given amount of random doubles in the range of [0, 1).\n\nMath.RandomList (amount: int): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength@double,double",
+      "Id": "cf682eb7029e419ba2c78e2f522d5eb3",
+      "Inputs": [
+        {
+          "Id": "a3f509a678764cd0b725e9171aad3612",
+          "Name": "width",
+          "Description": "Width of rectangle\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c93dec28d0904b268a2ef3a97d1003ba",
+          "Name": "length",
+          "Description": "Length of rectangle\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "55012b83205645fd9acd7f64eb74320a",
+          "Name": "Rectangle",
+          "Description": "Rectangle created by width and length",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a Rectangle centered at the WCS origin in the WCS XY Plane, with specified width (X Axis length), and length (Y Axis length).\n\nRectangle.ByWidthLength (width: double = 1, length: double = 1): Rectangle"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.UV.ByCoordinates@double,double",
+      "Id": "8b687910ae3b4cd38fbad3b99793f272",
+      "Inputs": [
+        {
+          "Id": "386de0c6c1c24daf8a36ef16525e8612",
+          "Name": "u",
+          "Description": "U value\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8f53bbcaf9f446869e1c2fa5cc7a0103",
+          "Name": "v",
+          "Description": "V value\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d2a3e447c88d4b2fad06b5a6d9ae8c40",
+          "Name": "UV",
+          "Description": "UV created by coordinates",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a UV from two doubles.\n\nUV.ByCoordinates (u: double = 0, v: double = 0): UV"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.ByPatch@Autodesk.DesignScript.Geometry.Curve",
+      "Id": "e852f00873e741ff92633379b4d5e882",
+      "Inputs": [
+        {
+          "Id": "9c63902143a34819be4938de053bbe32",
+          "Name": "closedCurve",
+          "Description": "Closed curve used as surface boundary\n\nCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c4fbc68578484f0eb46effff16799153",
+          "Name": "Surface",
+          "Description": "Surface created by patch",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a Surface by filling in the interior of a closed boundary defined by input Curves.\n\nSurface.ByPatch (closedCurve: Curve): Surface"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Tessellation.Voronoi.ByParametersOnSurface@Autodesk.DesignScript.Geometry.UV[],Autodesk.DesignScript.Geometry.Surface",
+      "Id": "bff7453f1d994e98b31900a4dee03758",
+      "Inputs": [
+        {
+          "Id": "81fa63452881497e827ba17448c7ea73",
+          "Name": "uvs",
+          "Description": "Set of UV parameters.\n\nUV[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b573c39a016a49c686dea9dc56daa793",
+          "Name": "face",
+          "Description": "Surface to tesselate.\n\nSurface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "39b7b0f8ac61417d8d021f4018e5b585",
+          "Name": "Curve[]",
+          "Description": "Curve[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Creates a Voronoi tessellation of a surface with a given set of UV parameters.\n\nVoronoi.ByParametersOnSurface (uvs: UV[], face: Surface): Curve[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.Intersect@Autodesk.DesignScript.Geometry.Geometry",
+      "Id": "19fd43dfaed24a5dab0037b745dc6dc4",
+      "Inputs": [
+        {
+          "Id": "e10a9a21ee07451b8d2fca1cc3cdde2f",
+          "Name": "geometry",
+          "Description": "Autodesk.DesignScript.Geometry.Geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "9f96f3234bcd44a7b3765bbfa8a94834",
+          "Name": "other",
+          "Description": "Geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f730eacae4114a548dfca754308e863e",
+          "Name": "Geometry[]",
+          "Description": "Geometry[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Get the intersection Geometry for this object and another\n\nGeometry.Intersect (other: Geometry): Geometry[]"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "efb3cc564aac4398bcb5c074dcb47283",
+      "End": "3a680711a4cc4f54a81baaf9cf1c978a",
+      "Id": "2830c69d7ab346a4913316a46845134f",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "efb3cc564aac4398bcb5c074dcb47283",
+      "End": "d3b54109cd5a40d9873ae7b8c0145ced",
+      "Id": "8b3d41b0ee1049e6900787597d6203f0",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "c498775280c54277aa00325c20495a7d",
+      "End": "a3f509a678764cd0b725e9171aad3612",
+      "Id": "f437fff3d9da415e99725a1b8988f24d",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "c498775280c54277aa00325c20495a7d",
+      "End": "c93dec28d0904b268a2ef3a97d1003ba",
+      "Id": "a64096fa164d4d32bfa08f08dbd92d62",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "33e7b646fced460caadf1e18e74bb2ec",
+      "End": "386de0c6c1c24daf8a36ef16525e8612",
+      "Id": "545f7aa9b96a44e1882c6477ea167fc4",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "8a780224b45141bc9993e4f99e96c7d6",
+      "End": "8f53bbcaf9f446869e1c2fa5cc7a0103",
+      "Id": "4f1f55218dbc493f80caa1fb340d6e59",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "55012b83205645fd9acd7f64eb74320a",
+      "End": "9c63902143a34819be4938de053bbe32",
+      "Id": "6c562b4d29f9469fabac1b82a6629e02",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "d2a3e447c88d4b2fad06b5a6d9ae8c40",
+      "End": "81fa63452881497e827ba17448c7ea73",
+      "Id": "7579f032dc344d638efac565fbd87b55",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "c4fbc68578484f0eb46effff16799153",
+      "End": "b573c39a016a49c686dea9dc56daa793",
+      "Id": "9f7d813a1e6646f98813a71a4b4a580c",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "c4fbc68578484f0eb46effff16799153",
+      "End": "9f96f3234bcd44a7b3765bbfa8a94834",
+      "Id": "6173a9912d2b4d8c8cdd417f35a97bba",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "39b7b0f8ac61417d8d021f4018e5b585",
+      "End": "e10a9a21ee07451b8d2fca1cc3cdde2f",
+      "Id": "68cc3cedfdd84e168a54ef93e20ef87b",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.17",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.17.0.3255",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -6.8346657752990723,
+      "EyeY": 7.3854565620422363,
+      "EyeZ": 13.631999969482422,
+      "LookX": 11.339741706848145,
+      "LookY": -12.65402889251709,
+      "LookZ": -22.362136840820313,
+      "UpX": 0.11247330158948898,
+      "UpY": 0.96858382225036621,
+      "UpZ": -0.2218000739812851
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "9156a287c35441b08210d1e3faeea150",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 5021.3543426763072,
+        "Y": 5006.9726739512307
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "e2c6c60461d04c2895d08a9c08cbaa64",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 5021.3543426763072,
+        "Y": 5244.9726739512307
+      },
+      {
+        "Name": "Math.RandomList",
+        "ShowGeometry": true,
+        "Id": "e814b8f5aa484f92bd7e9e5e7bdd14b2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 5275.7543426763068,
+        "Y": 4933.14517395123
+      },
+      {
+        "Name": "Math.RandomList",
+        "ShowGeometry": true,
+        "Id": "0306344f05db4b8db8bce48fa5a3d5e6",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 5275.7543426763068,
+        "Y": 5081.14517395123
+      },
+      {
+        "Name": "Rectangle.ByWidthLength",
+        "ShowGeometry": true,
+        "Id": "cf682eb7029e419ba2c78e2f522d5eb3",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 5275.7543426763068,
+        "Y": 5228.14517395123
+      },
+      {
+        "Name": "UV.ByCoordinates",
+        "ShowGeometry": true,
+        "Id": "8b687910ae3b4cd38fbad3b99793f272",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 5642.1543426763074,
+        "Y": 5010.14517395123
+      },
+      {
+        "Name": "Surface.ByPatch",
+        "ShowGeometry": false,
+        "Id": "e852f00873e741ff92633379b4d5e882",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 5642.1543426763074,
+        "Y": 5188.14517395123
+      },
+      {
+        "Name": "Voronoi.ByParametersOnSurface",
+        "ShowGeometry": false,
+        "Id": "bff7453f1d994e98b31900a4dee03758",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 5986.9543426763066,
+        "Y": 5082.14517395123
+      },
+      {
+        "Name": "Geometry.Intersect",
+        "ShowGeometry": true,
+        "Id": "19fd43dfaed24a5dab0037b745dc6dc4",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 6404.554342676307,
+        "Y": 5082.14517395123
+      }
+    ],
+    "Annotations": [],
+    "X": -5482.8584667806472,
+    "Y": -5398.3889908484689,
+    "Zoom": 1.1121731599763625
+  }
+}

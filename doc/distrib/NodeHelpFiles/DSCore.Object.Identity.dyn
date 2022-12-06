@@ -1,0 +1,253 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Identity",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Circle": {
+        "Key": "Autodesk.DesignScript.Geometry.Circle",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Geometry": {
+        "Key": "Autodesk.DesignScript.Geometry.Geometry",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Vector.ZAxis": {
+        "Key": "Autodesk.DesignScript.Geometry.Vector",
+        "Value": "ProtoGeometry.dll"
+      },
+      "NurbsSurface": {
+        "Key": "Autodesk.DesignScript.Geometry.NurbsSurface",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Sphere": {
+        "Key": "Autodesk.DesignScript.Geometry.Sphere",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Object.Identity@var",
+      "Id": "a92a46ebdd1849329b2cc72617290d3a",
+      "Inputs": [
+        {
+          "Id": "f3997149ff35469f84de912d7dd75930",
+          "Name": "obj",
+          "Description": "An object.\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9c4a53a5a265400ca5cb51f4bb25c521",
+          "Name": "var[]..[]",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns what is passed in, doing nothing.\n\nObject.Identity (obj: var): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Object.Identity@var",
+      "Id": "01aabf491e044345ba82f1b733687cc4",
+      "Inputs": [
+        {
+          "Id": "87e4ac71827545609d9287aec9abe42b",
+          "Name": "obj",
+          "Description": "An object.\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "69ea685af872492a948b842d69121af0",
+          "Name": "var[]..[]",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns what is passed in, doing nothing.\n\nObject.Identity (obj: var): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Object.Identity@var",
+      "Id": "a0d2ab24f7974c02b27e176e1306404c",
+      "Inputs": [
+        {
+          "Id": "b3c05362be43447491ec8d374038ba4c",
+          "Name": "obj",
+          "Description": "An object.\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "739d658e8ad04850ac0ab4a077368d4b",
+          "Name": "var[]..[]",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns what is passed in, doing nothing.\n\nObject.Identity (obj: var): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "pt=Point.ByCoordinates(4,0);\n\ncircle=Circle.ByCenterPointRadius(Point.ByCoordinates(-2,0));\n\nsphere=Sphere.ByCenterPointRadius(Point.ByCoordinates(1,0));",
+      "Id": "c2000a1e4e5746a18966c1ebe1290c77",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "2240d0c569a247beaeb0302a29b02d3c",
+          "Name": "",
+          "Description": "pt",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "012f3455e51d4b05ae156c8d0d131c88",
+          "Name": "",
+          "Description": "circle",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "49e6bb9815f94dbfb6d186fbb3ec76d1",
+          "Name": "",
+          "Description": "sphere",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "2240d0c569a247beaeb0302a29b02d3c",
+      "End": "f3997149ff35469f84de912d7dd75930",
+      "Id": "a5c928ba601e4351918d5f2664c052ac"
+    },
+    {
+      "Start": "012f3455e51d4b05ae156c8d0d131c88",
+      "End": "87e4ac71827545609d9287aec9abe42b",
+      "Id": "456951efe79e42bd89e4d11055625ac3"
+    },
+    {
+      "Start": "49e6bb9815f94dbfb6d186fbb3ec76d1",
+      "End": "b3c05362be43447491ec8d374038ba4c",
+      "Id": "152ddf1bb8814996a07c7b2b7647a582"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": 0.31794312596321106,
+      "EyeY": 6.2416291236877441,
+      "EyeZ": 2.9244544506073,
+      "LookX": 0.0073981820605695248,
+      "LookY": -7.2425212860107422,
+      "LookZ": -4.7430672645568848,
+      "UpX": 0.0010913257719948888,
+      "UpY": 0.71447271108627319,
+      "UpZ": -0.69966250658035278
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Object.Identity",
+        "Id": "a92a46ebdd1849329b2cc72617290d3a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 810.57401748339,
+        "Y": 1416.21529967652
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Object.Identity",
+        "Id": "01aabf491e044345ba82f1b733687cc4",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 810.57401748339,
+        "Y": 1511.89185032106
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Object.Identity",
+        "Id": "a0d2ab24f7974c02b27e176e1306404c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 810.57401748339,
+        "Y": 1607.5684009656
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Code Block",
+        "Id": "c2000a1e4e5746a18966c1ebe1290c77",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 215.501741353093,
+        "Y": 1481.22224016603
+      }
+    ],
+    "Annotations": [],
+    "X": -745.402869886197,
+    "Y": -1988.63766367635,
+    "Zoom": 1.4517389755498
+  }
+}

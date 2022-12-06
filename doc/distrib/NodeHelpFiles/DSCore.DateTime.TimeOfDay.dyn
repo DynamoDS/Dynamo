@@ -1,0 +1,164 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "TimeOfDay",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.DateTime.Now",
+      "Id": "f8849a7ba40d46a296f70c420fba5640",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "9d52bbc0bfc540269a10c715ec321da8",
+          "Name": "dateTime",
+          "Description": "DateTime",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "The current system date and time.\n\nDateTime.Now: var"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "24a8b5ecbae94670a6126866cf966c41",
+      "Inputs": [
+        {
+          "Id": "61f6dc7b47864e51af4603f881a39165",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "a70c8b78be1a4cd79d6bfdee9ff3e581",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.DateTime.TimeOfDay@var",
+      "Id": "87abc7fecf414807af406b7d94e6f9df",
+      "Inputs": [
+        {
+          "Id": "340b8b7527f14bcbb8eb10bdb158fd70",
+          "Name": "dateTime",
+          "Description": "A DateTime.\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "40597616e9f545e5b517347821ebfb74",
+          "Name": "var",
+          "Description": "var",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Yields a new TimeSpan representing the amount of time passed since midnight of the given DateTime.\n\nDateTime.TimeOfDay (dateTime: var): var"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "9d52bbc0bfc540269a10c715ec321da8",
+      "End": "340b8b7527f14bcbb8eb10bdb158fd70",
+      "Id": "aa1190152a2a4688a40a052d85937d5d"
+    },
+    {
+      "Start": "40597616e9f545e5b517347821ebfb74",
+      "End": "61f6dc7b47864e51af4603f881a39165",
+      "Id": "da3e8f2268bc4d499838e3499e1d5138"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -10.351632118225098,
+      "EyeY": 13.915582656860352,
+      "EyeZ": 16.000629425048828,
+      "LookX": 16.128910064697266,
+      "LookY": -8.1650753021240234,
+      "LookZ": -20.504016876220703,
+      "UpX": 0.053885128349065781,
+      "UpY": 0.99619466066360474,
+      "UpZ": -0.068501941859722137
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "DateTime.Now",
+        "Id": "f8849a7ba40d46a296f70c420fba5640",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -209.20693881979349,
+        "Y": 2730.62574389097
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "24a8b5ecbae94670a6126866cf966c41",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 294.79306118020651,
+        "Y": 2730.62574389097
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "DateTime.TimeOfDay",
+        "Id": "87abc7fecf414807af406b7d94e6f9df",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -0.20693881979349271,
+        "Y": 2729.9807957058383
+      }
+    ],
+    "Annotations": [],
+    "X": 632.028355379934,
+    "Y": -4080.57803406497,
+    "Zoom": 1.5505121543918
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "E",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "07b2c47e75cb4523b2fa8fc560738ce6",
+      "Inputs": [
+        {
+          "Id": "bb3034ea9f3144a3aa37dffab8f3ab5c",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5bb93ba4cda64d9b94d68a13c2c6dda1",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Math.E",
+      "Id": "49db1ec4040b4e669a0fc95a800a50f0",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "14763b4dfa3a4270ac76263659994f3b",
+          "Name": "e",
+          "Description": "double. The constant e.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "The mathematical constant e, 2.71828...\n\nMath.E: double"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "14763b4dfa3a4270ac76263659994f3b",
+      "End": "bb3034ea9f3144a3aa37dffab8f3ab5c",
+      "Id": "328c998f8d504438b59541fb8ea6156a"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "07b2c47e75cb4523b2fa8fc560738ce6",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 462.396304894227,
+        "Y": 139.736738659796
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Math.E",
+        "Id": "49db1ec4040b4e669a0fc95a800a50f0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 363.677385660359,
+        "Y": 140.35111616614762
+      }
+    ],
+    "Annotations": [],
+    "X": -189.881031947387,
+    "Y": -99.8399837707522,
+    "Zoom": 1.62766375666705
+  }
+}

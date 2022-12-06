@@ -4,17 +4,19 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
+using Dynamo.Logging;
+using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.Properties;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
+using Greg;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
@@ -30,15 +32,11 @@ namespace Dynamo.ViewModels
     {
         internal PortViewModel PortViewModel { get; set; }
         private List<NodeSearchElementViewModel> searchElementsCache;
-        private string lowConfidenceMessageAdditional;
-        private string noRecommendationsOrLowConfidenceMessage;
-        private string noRecommendationsOrLowConfidenceTitle;
-        private bool displayNoRecommendationsLowConfidence;
+        private string autocompleteMLMessage;
+        private string autocompleteMLTitle;
+        private bool displayAutocompleteMLStaticPage;
         private bool displayLowConfidence;
         private const string nodeAutocompleteMLEndpoint = "MLNodeAutocomplete";
-        private double confidenceThresholdPercentage = 10;
-        private int numberOfResults = 10;
-
 
         /// <summary>
         /// Cache of default node suggestions, use it in case where
@@ -61,52 +59,39 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// The No Recommendations or Low Confidence Title
         /// </summary>
-        public string NoRecommendationsOrLowConfidenceTitle
+        public string AutocompleteMLTitle
         {
-            get { return noRecommendationsOrLowConfidenceTitle; }
+            get { return autocompleteMLTitle; }
             set
             {
-                noRecommendationsOrLowConfidenceTitle = value;
-                RaisePropertyChanged(nameof(NoRecommendationsOrLowConfidenceTitle));
+                autocompleteMLTitle = value;
+                RaisePropertyChanged(nameof(AutocompleteMLTitle));
             }
         }
 
         /// <summary>
         /// The No Recommendations or Low Confidence message
         /// </summary>
-        public string NoRecommendationsOrLowConfidenceMessage
+        public string AutocompleteMLMessage
         {
-            get { return noRecommendationsOrLowConfidenceMessage; }
+            get { return autocompleteMLMessage; }
             set
             {
-                noRecommendationsOrLowConfidenceMessage = value;
-                RaisePropertyChanged(nameof(NoRecommendationsOrLowConfidenceMessage));
+                autocompleteMLMessage = value;
+                RaisePropertyChanged(nameof(AutocompleteMLMessage));
             }
         }
 
         /// <summary>
-        /// The Low Confidence additonal message
+        /// Indicates the No recommendations / Low confidence message should be displayed (image and texts)
         /// </summary>
-        public string LowConfidenceMessageAdditional
+        public bool DisplayAutocompleteMLStaticPage
         {
-            get { return lowConfidenceMessageAdditional; }
+            get { return displayAutocompleteMLStaticPage; }
             set
             {
-                lowConfidenceMessageAdditional = value;
-                RaisePropertyChanged(nameof(LowConfidenceMessageAdditional));
-            }
-        }
-
-        /// <summary>
-        /// Indicates if display the No recommendations / Low confidence message (image and texts)
-        /// </summary>
-        public bool DisplayNoRecommendationsLowConfidence
-        {
-            get { return displayNoRecommendationsLowConfidence; }
-            set
-            {
-                displayNoRecommendationsLowConfidence = value;
-                RaisePropertyChanged(nameof(DisplayNoRecommendationsLowConfidence));
+                displayAutocompleteMLStaticPage = value;
+                RaisePropertyChanged(nameof(DisplayAutocompleteMLStaticPage));
             }
         }
 
@@ -138,15 +123,13 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal void ResetAutoCompleteSearchViewState()
         {
-            if (!IsDisplayingMLRecommendation)
-            {
-                NoRecommendationsOrLowConfidenceMessage = string.Empty;
-                NoRecommendationsOrLowConfidenceTitle = string.Empty;
-                LowConfidenceMessageAdditional = string.Empty;
-                DisplayNoRecommendationsLowConfidence = false;
-                DisplayLowConfidence = false;
-            }
-            PopulateAutoCompleteCandidates();
+            DisplayAutocompleteMLStaticPage = false;
+            DisplayLowConfidence = false;
+            AutocompleteMLMessage = string.Empty;
+            AutocompleteMLTitle = string.Empty;
+            FilteredResults = new List<NodeSearchElementViewModel>();
+            FilteredHighConfidenceResults = new List<NodeSearchElementViewModel>();
+            FilteredLowConfidenceResults = new List<NodeSearchElementViewModel>();
         }
 
         private void InitializeDefaultAutoCompleteCandidates()
@@ -169,7 +152,7 @@ namespace Dynamo.ViewModels
         internal MLNodeAutoCompletionRequest GenerateRequestForMLAutocomplete()
         {
             // Intialize request for the the ML API
-            MLNodeAutoCompletionRequest request = new MLNodeAutoCompletionRequest(AssemblyHelper.GetDynamoVersion().ToString(), numberOfResults);
+            MLNodeAutoCompletionRequest request = new MLNodeAutoCompletionRequest(AssemblyHelper.GetDynamoVersion().ToString(), dynamoViewModel.PreferenceSettings.MLRecommendationNumberOfResults);
 
             var nodeInfo = PortViewModel.PortModel.Owner;
             var portInfo = PortViewModel.PortModel;
@@ -196,8 +179,13 @@ namespace Dynamo.ViewModels
             request.Port.ListAtLevel = portInfo.Level;
 
             // Set host info
-            request.Host.Name = string.IsNullOrEmpty(dynamoViewModel.Model.HostAnalyticsInfo.HostName) ? dynamoViewModel.Model.HostName : dynamoViewModel.Model.HostAnalyticsInfo.HostName;
-            request.Host.Version = dynamoViewModel.Model.HostVersion;
+            var hostName = string.IsNullOrEmpty(dynamoViewModel.Model.HostAnalyticsInfo.HostName) ? dynamoViewModel.Model.HostName : dynamoViewModel.Model.HostAnalyticsInfo.HostName;
+            var hostNameEnum = GetHostNameEnum(hostName);
+
+            if (hostNameEnum != HostNames.None)
+            {
+                request.Host = new HostRequest(hostNameEnum.ToString(), dynamoViewModel.Model.HostVersion);
+            }
 
             // Set packages info
             var packageManager = dynamoViewModel.Model.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
@@ -263,7 +251,6 @@ namespace Dynamo.ViewModels
         internal void DisplayMachineLearningResults()
         {
             MLNodeAutoCompletionResponse MLresults = null;
-            DisplayNoRecommendationsLowConfidence = false;
 
             var request = GenerateRequestForMLAutocomplete();
 
@@ -277,25 +264,24 @@ namespace Dynamo.ViewModels
             catch (Exception ex)
             {
                 dynamoViewModel.Model.Logger.Log("Unable to fetch ML Node autocomplete results: " + ex.Message);
-                DisplayNoRecommendationsLowConfidence = true;
-                DisplayLowConfidence = false;
-                NoRecommendationsOrLowConfidenceTitle = Resources.AutocompleteNoRecommendationsTitle;
-                NoRecommendationsOrLowConfidenceMessage = Resources.AutocompleteNoRecommendationsMessage;
+                DisplayAutocompleteMLStaticPage = true;
+                AutocompleteMLTitle = Resources.LoginNeededTitle;
+                AutocompleteMLMessage = Resources.LoginNeededMessage;
+                Analytics.TrackEvent(Actions.View, Categories.NodeAutoCompleteOperations, "UnabletoFetch");
                 return;
             }
 
             // no results
             if (MLresults == null || MLresults.Results.Count() == 0)
             {
-                DisplayNoRecommendationsLowConfidence = true;
-                DisplayLowConfidence = false;
-                NoRecommendationsOrLowConfidenceTitle = Resources.AutocompleteNoRecommendationsTitle;
-                NoRecommendationsOrLowConfidenceMessage = Resources.AutocompleteNoRecommendationsMessage;
+                DisplayAutocompleteMLStaticPage = true;
+                AutocompleteMLTitle = Resources.AutocompleteNoRecommendationsTitle;
+                AutocompleteMLMessage = Resources.AutocompleteNoRecommendationsMessage;
+                Analytics.TrackEvent(Actions.View, Categories.NodeAutoCompleteOperations, "NoRecommendation");
                 return;
             }
 
             var results = new List<NodeSearchElementViewModel>();
-            FilteredResults = new List<NodeSearchElementViewModel>();
 
             var zeroTouchSearchElements = Model.SearchEntries.OfType<ZeroTouchSearchElement>().Where(x => x.IsVisibleInSearch);
             var nodeModelSearchElements = Model.SearchEntries.OfType<NodeModelSearchElement>().Where(x => x.IsVisibleInSearch);
@@ -303,20 +289,24 @@ namespace Dynamo.ViewModels
             // ML Results are categorized based on the threshold confidence score before displaying. 
             if (MLresults.Results.Count() > 0)
             {
-                FilteredHighConfidenceResults = new List<NodeSearchElementViewModel>();
-                FilteredLowConfidenceResults = new List<NodeSearchElementViewModel>();
-
                 foreach (var result in MLresults.Results)
                 {
-                    var portName = result.Port.Name;
+                    var portName = result.Port != null ? result.Port.Name : string.Empty;
+                    var portIndex = result.Port != null ? result.Port.Index : 0;
 
                     // DS Function node
                     if (result.Node.Type.NodeType.Equals(Function.FunctionNode))
                     {
                         var element = zeroTouchSearchElements.FirstOrDefault(n => n.Descriptor.MangledName.Equals(result.Node.Type.Id));
 
+                        // Set PortToConnect for each element based on port-index and port-name
                         if (element != null)
                         {
+                            element.AutoCompletionNodeElementInfo = new AutoCompletionNodeElementInfo
+                            {
+                                PortToConnect = portIndex
+                            };
+
                             foreach (var inputParameter in element.Descriptor.Parameters.Select((value, index) => (value, index)))
                             {
                                 if (inputParameter.value.Name.Equals(portName))
@@ -335,8 +325,8 @@ namespace Dynamo.ViewModels
                             results.Add(viewModelElement);
                         }
                     }
-                    // NodeModel extension node
-                    else if (result.Node.Type.NodeType.Equals(NodeModel.ExtensionNode))
+                    // Matching known node types of node-model nodes.
+                    else if (Enum.IsDefined(typeof(NodeModelNodeTypes), result.Node.Type.NodeType))
                     {
                         // Retreive assembly name and full name from type id.
                         var typeInfo = GetInfoFromTypeId(result.Node.Type.Id);
@@ -345,6 +335,15 @@ namespace Dynamo.ViewModels
 
                         var nodesFromAssembly = nodeModelSearchElements.Where(n => Path.GetFileNameWithoutExtension(n.Assembly).Equals(assemblyName));
                         var element = nodesFromAssembly.FirstOrDefault(n => n.CreationName.Equals(fullName));
+
+                        if (element != null)
+                        {
+                            element.AutoCompletionNodeElementInfo = new AutoCompletionNodeElementInfo
+                            {
+                                PortToConnect = portIndex
+                            };
+                        }
+
                         var viewModelElement = GetViewModelForNodeSearchElement(element);
 
                         if (viewModelElement != null)
@@ -357,7 +356,7 @@ namespace Dynamo.ViewModels
 
                 foreach (var result in results)
                 {
-                    if (result.AutoCompletionNodeMachineLearningInfo.ConfidenceScore >= confidenceThresholdPercentage)
+                    if (result.AutoCompletionNodeMachineLearningInfo.ConfidenceScore >= dynamoViewModel.PreferenceSettings.MLRecommendationConfidenceLevel)
                     {
                         FilteredHighConfidenceResults = FilteredHighConfidenceResults.Append(result);
                     }
@@ -369,13 +368,11 @@ namespace Dynamo.ViewModels
                 // Show low confidence section if there are some results under threshold.
                 DisplayLowConfidence = FilteredLowConfidenceResults.Count() > 0;
 
-                // Show low confidence page when all results are under threshold. 
-                if (FilteredHighConfidenceResults.Count() <= 0)
+                if (FilteredHighConfidenceResults.Count() == 0)
                 {
-                    DisplayNoRecommendationsLowConfidence = true;
-                    NoRecommendationsOrLowConfidenceTitle = Resources.AutocompleteLowConfidenceTitle;
-                    NoRecommendationsOrLowConfidenceMessage = Resources.AutocompleteLowConfidenceMessage;
-                    LowConfidenceMessageAdditional = Resources.AutocompleteLowConfidenceMessageAditional;
+                    DisplayAutocompleteMLStaticPage = true;
+                    AutocompleteMLTitle = Resources.AutocompleteLowConfidenceTitle;
+                    AutocompleteMLMessage = Resources.AutocompleteLowConfidenceMessage;
                     return;
                 }
 
@@ -389,31 +386,35 @@ namespace Dynamo.ViewModels
             MLNodeAutoCompletionResponse results = null;
             var authProvider = dynamoViewModel.Model.AuthenticationManager.AuthProvider;
 
-            if (authProvider is IDSDKManager manager)
+            if (authProvider is IOAuth2AuthProvider oauth2AuthProvider)
             {
-                var uri = DynamoUtilities.PathHelper.getServiceBackendAddress(this, nodeAutocompleteMLEndpoint);
-                var client = new RestClient(uri);
-                var request = new RestRequest(Method.POST);
-
                 try
                 {
-                    manager.LoginRequest(ref request, client);
+                    // TODO: We need to implement something like GetToken() on the IOAuth2AuthProvider interface which will be used by all auth providers.
+                    // For now, we are mocking the RestSharpRequest object to set the IDSDK token and then update the header in actual RestRequest with that token.
+                    // LoginRequest() is also not available on RevitOAuth2Provider, so using the SignRequest() which will show the sign-in page when the user is logged out.
+                    RestRequest restSharpRequest = new RestRequest();
+                    RestClient restSharpClient = new RestClient();
+                    oauth2AuthProvider.SignRequest(ref restSharpRequest, restSharpClient);
+
+                    var uri = DynamoUtilities.PathHelper.getServiceBackendAddress(this, nodeAutocompleteMLEndpoint);
+                    var client = new RestClient(uri);
+                    var request = new RestRequest(Method.POST);
+
+                    request.AddHeader("Authorization", restSharpRequest.Parameters.FirstOrDefault(n => n.Name.Equals("Authorization")).Value.ToString());
                     request = request.AddJsonBody(requestJSON) as RestRequest;
                     request.RequestFormat = DataFormat.Json;
                     RestResponse response = client.Execute(request) as RestResponse;
                     results = JsonConvert.DeserializeObject<MLNodeAutoCompletionResponse>(response.Content);
                 }
-                catch (Exception ex) {
+                catch (Exception ex)
+                {
                     dynamoViewModel.Model.Logger.Log(ex.Message);
                     throw new Exception("Authentication failed.");
                 }
+            }
 
-                return results;
-            }
-            else
-            {
-                throw new Exception("Failed to access IDSDK manager.");
-            }
+            return results;
         }
 
         /// <summary>
@@ -422,7 +423,7 @@ namespace Dynamo.ViewModels
         internal void ShowLowConfidenceResults()
         {
             DisplayLowConfidence = false;
-            DisplayNoRecommendationsLowConfidence = false;
+            DisplayAutocompleteMLStaticPage = false;
             IEnumerable<NodeSearchElementViewModel> allResults = FilteredHighConfidenceResults.Concat(FilteredLowConfidenceResults);
             FilteredResults = allResults;
             // Save the filtered results for search.
@@ -449,20 +450,53 @@ namespace Dynamo.ViewModels
             return rgx.Replace(portName, string.Empty);
         }
 
+        // Get the host name from the enum list.
+        internal HostNames GetHostNameEnum(string HostName)
+        {
+            switch (HostName)
+            {
+                case string name when name.IndexOf("Revit", StringComparison.OrdinalIgnoreCase) >= 0:
+                    return HostNames.Revit;
+                case string name when name.IndexOf("Civil", StringComparison.OrdinalIgnoreCase) >= 0:
+                    return HostNames.Civil3d;
+                case string name when name.IndexOf("Alias", StringComparison.OrdinalIgnoreCase) >= 0:
+                    return HostNames.Alias;
+                case string name when name.IndexOf("FormIt", StringComparison.OrdinalIgnoreCase) >= 0:
+                    return HostNames.FormIt;
+                case string name when name.IndexOf("Steel", StringComparison.OrdinalIgnoreCase) >= 0:
+                    return HostNames.AdvanceSteel;
+                case string name when name.IndexOf("RSA", StringComparison.OrdinalIgnoreCase) >= 0:
+                    return HostNames.RSA;
+                default:
+                    return HostNames.None;
+            }
+        }
+
+        /// <summary>
+        /// Key function to populate node autocomplete results to display
+        /// </summary>
         internal void PopulateAutoCompleteCandidates()
         {
             if (PortViewModel == null) return;
 
-            FilteredResults = new List<NodeSearchElementViewModel>();
-            FilteredHighConfidenceResults = new List<NodeSearchElementViewModel>();
-            FilteredLowConfidenceResults = new List<NodeSearchElementViewModel>();
+            ResetAutoCompleteSearchViewState();
 
             if (IsDisplayingMLRecommendation)
             {
                 DisplayMachineLearningResults();
+                //Tracking Analytics when raising Node Autocomplete with the Recommended Nodes option selected (Machine Learning)
+                Analytics.TrackEvent(
+                    Actions.Show,
+                    Categories.NodeAutoCompleteOperations,
+                    nameof(NodeAutocompleteSuggestion.MLRecommendation));
             }
             else
             {
+                //Tracking Analytics when raising Node Autocomplete with the Object Types option selected.
+                Analytics.TrackEvent(
+                    Actions.Show,
+                    Categories.NodeAutoCompleteOperations,
+                    nameof(NodeAutocompleteSuggestion.ObjectType));
                 // Only call GetMatchingSearchElements() for object type match comparison
                 var objectTypeMatchingElements = GetMatchingSearchElements().ToList();
                 // If node match searchElements found, use default suggestions. 

@@ -3372,6 +3372,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hide nodes below a specified confidence level.
+        /// </summary>
+        public static string HideNodesBelowSpecificConfidenceLevel {
+            get {
+                return ResourceManager.GetString("HideNodesBelowSpecificConfidenceLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confidence level appears next to each recommended node and represents estimated probability that the node is a good choice. When toggled on, this setting hides recommended nodes that don’t meet the specified confidence level. You can click the Low Confidence header to show the nodes..
+        /// </summary>
+        public static string HideNodesBelowSpecificConfidenceLevelInfo {
+            get {
+                return ResourceManager.GetString("HideNodesBelowSpecificConfidenceLevelInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hide Wires.
         /// </summary>
         public static string HideWiresPopupMenuItem {
@@ -3390,7 +3408,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your custom settings can be imported here. Settings not exposed via Preferences panel will be applied once Dynamo and any host program restarts..
+        ///   Looks up a localized string similar to You can import custom settings here, which will overwrite your current settings. If you&apos;d like to preserve a copy of your current settings, export them before importing new settings. Settings not shown in the Preferences panel will be applied once Dynamo and any host program restarts..
         /// </summary>
         public static string ImportPreferencesInfo {
             get {
@@ -3881,15 +3899,6 @@ namespace Dynamo.Wpf.Properties {
         public static string LogoutMenuItemText {
             get {
                 return ResourceManager.GetString("LogoutMenuItemText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ML Recommendation.
-        /// </summary>
-        public static string MachineLearning {
-            get {
-                return ResourceManager.GetString("MachineLearning", resourceCulture);
             }
         }
         
@@ -4496,6 +4505,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Number of results.
+        /// </summary>
+        public static string MLRecommendationNumberOfResults {
+            get {
+                return ResourceManager.GetString("MLRecommendationNumberOfResults", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to More.
         /// </summary>
         public static string MoreButton {
@@ -4838,7 +4856,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Object type.
+        ///   Looks up a localized string similar to Node Type Match.
         /// </summary>
         public static string ObjectType {
             get {
@@ -6401,7 +6419,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Default method.
+        ///   Looks up a localized string similar to Default Ranking Method.
         /// </summary>
         public static string PreferencesNodeAutocompleteMethod {
             get {
@@ -6482,6 +6500,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Beta.
+        /// </summary>
+        public static string PreferencesViewBetaTag {
+            get {
+                return ResourceManager.GetString("PreferencesViewBetaTag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Default Python Engine.
         /// </summary>
         public static string PreferencesViewDefaultPythonEngine {
@@ -6531,7 +6558,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Node Autocomplete.
+        ///   Looks up a localized string similar to Enable Node Autocomplete.
         /// </summary>
         public static string PreferencesViewEnableNodeAutoComplete {
             get {
@@ -6626,6 +6653,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewMarkdownDirectoryTooltip {
             get {
                 return ResourceManager.GetString("PreferencesViewMarkdownDirectoryTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Node Autocomplete.
+        /// </summary>
+        public static string PreferencesViewNodeAutocomplete {
+            get {
+                return ResourceManager.GetString("PreferencesViewNodeAutocomplete", resourceCulture);
             }
         }
         
@@ -7570,6 +7606,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Recommended Nodes.
+        /// </summary>
+        public static string RecommendedNodes {
+            get {
+                return ResourceManager.GetString("RecommendedNodes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please check if you intended to render this amount of geometry, and consider turning off the preview of other nodes within your graph, lowering the amount of Geometry you wish to render, or turning down the render precision..
         /// </summary>
         public static string RenderingMemoryOutageDescription {
@@ -8020,15 +8065,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to Import Settings.
-        /// </summary>
-        public static string SplashScreenFailedImportSettings {
-            get {
-                return ResourceManager.GetString("SplashScreenFailedImportSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Import Settings.
         /// </summary>
         public static string SplashScreenImportSettings {
@@ -8074,16 +8110,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Settings imported.
-        /// </summary>
-        public static string SplashScreenSettingsImported {
-            get {
-                return ResourceManager.GetString("SplashScreenSettingsImported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Don’t show this screen again.
+        ///   Looks up a localized string similar to Don&apos;t show this again.
         /// </summary>
         public static string SplashScreenShowScreenAgainLabel {
             get {
@@ -8313,15 +8340,6 @@ namespace Dynamo.Wpf.Properties {
         public static string StartPageShowSamples {
             get {
                 return ResourceManager.GetString("StartPageShowSamples", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Start.
-        /// </summary>
-        public static string StartPageStart {
-            get {
-                return ResourceManager.GetString("StartPageStart", resourceCulture);
             }
         }
         
