@@ -29,7 +29,7 @@ namespace DynamoCoreWpfTests
         private const string excelDocsFileHtmlHeader = "<h2>Excel not installed </h2>";
         private const string fileMissingHtmlHeader = "<h3>Error 404</h3>";
         private const string nodeDocumentationInfoHeader = "<strong>Node Information</strong>";
-        private const string nodeDocumentationInfoOriginalNodeName = "<h2>Original Node Name</h2>";
+        private const string nodeDocumentationInfoOriginalNodeName = "<h2>Node Type</h2>";
         private const string nodeDocumentationInfoNodeDescription = "<h2>Description</h2>";
         private const string nodeDocumentationInfoNodeInputsAndOutputs = "<strong>Inputs and Outputs</strong>";
         private const string nodeDocumentationInfoNodeInputs = "<h2>Inputs</h2>";
