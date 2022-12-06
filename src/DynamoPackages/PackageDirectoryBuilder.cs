@@ -189,8 +189,9 @@ namespace Dynamo.PackageManager
 
                 fileSystem.CopyFile(file, destPath);
             }
-            // All files under Markdown directory does not apply to the rule above,
-            // because they may fall into extra folder, there is on obvious way to filter them properly.
+            // All files under Markdown directory do not apply to the rule above,
+            // because they may fall into extra folder instead of docs folder,
+            // currently there is on obvious way to filter them properly only based on path string.
             foreach (var file in markdownFiles.Where(x => x != null))
             {
                 var destPath = Path.Combine(docDirPath, Path.GetFileName(file));
