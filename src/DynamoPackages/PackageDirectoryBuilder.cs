@@ -10,7 +10,7 @@ namespace Dynamo.PackageManager
 {
     public interface IPackageDirectoryBuilder
     {
-        IDirectoryInfo BuildDirectory(Package packages, string packagesDirectory, IEnumerable<string> files);
+        IDirectoryInfo BuildDirectory(Package packages, string packagesDirectory, IEnumerable<string> files, IEnumerable<string> markdownfiles);
     }
 
     /// <summary>
@@ -47,18 +47,16 @@ namespace Dynamo.PackageManager
         /// <param name="packagesDirectory">The parent directory for the parent directory</param>
         /// <param name="files">The collection of files to be moved</param>
         /// <returns></returns>
-        public IDirectoryInfo BuildDirectory(Package package, string packagesDirectory, IEnumerable<string> files)
+        public IDirectoryInfo BuildDirectory(Package package, string packagesDirectory, IEnumerable<string> contentFiles, IEnumerable<string> markdownFiles)
         {
-            IDirectoryInfo rootDir, dyfDir, binDir, extraDir, docDir;
-
-            FormPackageDirectory(packagesDirectory, package.Name, out rootDir, out  dyfDir, out binDir, out extraDir, out docDir); // shouldn't do anything for pkg versions
+            FormPackageDirectory(packagesDirectory, package.Name, out IDirectoryInfo rootDir, out IDirectoryInfo dyfDir, out IDirectoryInfo binDir, out IDirectoryInfo extraDir, out IDirectoryInfo docDir); // shouldn't do anything for pkg versions
             package.RootDirectory = rootDir.FullName;
 
             WritePackageHeader(package, rootDir);
-            RemoveUnselectedFiles(files, rootDir);
-            CopyFilesIntoPackageDirectory(files, dyfDir, binDir, extraDir, docDir);
-            RemoveDyfFiles(files, dyfDir);
-            RemapCustomNodeFilePaths(files, dyfDir.FullName);
+            RemoveUnselectedFiles(contentFiles, rootDir);
+            CopyFilesIntoPackageDirectory(contentFiles, markdownFiles, dyfDir, binDir, extraDir, docDir);
+            RemoveDyfFiles(contentFiles, dyfDir);
+            RemapCustomNodeFilePaths(contentFiles, dyfDir.FullName);
 
             return rootDir;
         }
@@ -142,9 +140,9 @@ namespace Dynamo.PackageManager
         }
 
 
-        internal void CopyFilesIntoPackageDirectory(IEnumerable<string> files, IDirectoryInfo dyfDir,
-                                                          IDirectoryInfo binDir, IDirectoryInfo extraDir, 
-                                                          IDirectoryInfo docDir)
+        internal void CopyFilesIntoPackageDirectory(IEnumerable<string> files, IEnumerable<string> markdownFiles,
+                                                    IDirectoryInfo dyfDir, IDirectoryInfo binDir,
+                                                    IDirectoryInfo extraDir, IDirectoryInfo docDir)
         {
             // normalize the paths to ensure correct comparison
             var dyfDirPath = NormalizePath(dyfDir.FullName);
@@ -163,7 +161,7 @@ namespace Dynamo.PackageManager
                 // determine which folder to put the file in
                 string targetFolder = extraDirPath;
 
-                if (Path.GetDirectoryName(file).EndsWith(DocumentationDirectoryName) || file.EndsWith(".md"))
+                if (Path.GetDirectoryName(file).EndsWith(DocumentationDirectoryName))
                 {
                     targetFolder = docDirPath;
                 }
@@ -183,6 +181,19 @@ namespace Dynamo.PackageManager
                 }
 
                 var destPath = Path.Combine(targetFolder, Path.GetFileName(file));
+
+                if (fileSystem.FileExists(destPath))
+                {
+                    fileSystem.DeleteFile(destPath);
+                }
+
+                fileSystem.CopyFile(file, destPath);
+            }
+            // All files under Markdown directory does not apply to the rule above,
+            // because they may fall into extra folder, there is on obvious way to filter them properly.
+            foreach (var file in markdownFiles.Where(x => x != null))
+            {
+                var destPath = Path.Combine(docDirPath, Path.GetFileName(file));
 
                 if (fileSystem.FileExists(destPath))
                 {

@@ -1088,8 +1088,6 @@ namespace Dynamo.PackageManager
 
             // union with additional files
             files = files.Union(AdditionalFiles);
-            // union with optional markdown files from directory
-            files = files.Union(MarkdownFiles);
             files = files.Union(Assemblies.Select(x => x.Assembly.Location));
 
             return files;
@@ -1502,18 +1500,18 @@ namespace Dynamo.PackageManager
             {
                 return;
             }
-            var files = BuildPackage();
+            var contentFiles = BuildPackage();
             try
             {
                 //if buildPackage() returns no files then the package
                 //is empty so we should return
-                if (files == null || files.Count() < 1)
+                if (contentFiles == null || contentFiles.Count() < 1)
                 {
                     return;
                 }
                 // begin submission
                 var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
-                var handle = pmExtension.PackageManagerClient.PublishAsync(Package, files, IsNewVersion);
+                var handle = pmExtension.PackageManagerClient.PublishAsync(Package, contentFiles, MarkdownFiles, IsNewVersion);
 
                 // start upload
                 Uploading = true;
@@ -1600,7 +1598,7 @@ namespace Dynamo.PackageManager
                 var remapper = new CustomNodePathRemapper(DynamoViewModel.Model.CustomNodeManager,
                     DynamoModel.IsTestMode);
                 var builder = new PackageDirectoryBuilder(new MutatingFileSystem(), remapper);
-                builder.BuildDirectory(Package, publishPath, files);
+                builder.BuildDirectory(Package, publishPath, files, MarkdownFiles);
                 UploadState = PackageUploadHandle.State.Uploaded;
 
                 // Once upload is successful, a display message will appear to ask
