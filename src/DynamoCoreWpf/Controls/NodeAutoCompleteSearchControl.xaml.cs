@@ -98,7 +98,8 @@ namespace Dynamo.UI.Controls
                 {
                     searchElement.CreateAndConnectCommand.Execute(port.PortModel);
                     var searchElementInfo = ViewModel.IsDisplayingMLRecommendation ?
-                        searchElement.FullName + " " + port.PortModel.Index.ToString() + " " + port.PortName + " " + port.NodeViewModel.OriginalName + " " +  ViewModel.ServiceVersion
+                        searchElement.FullName + " " + port.PortModel.Index.ToString() + " " + port.PortName + " " +
+                        port.NodeViewModel.OriginalName + " " + searchElement.AutoCompletionNodeMachineLearningInfo.ConfidenceScore.ToString() + " "  +  ViewModel.ServiceVersion
                         : searchElement.FullName;
 
                     Analytics.TrackEvent(
