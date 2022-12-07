@@ -8128,6 +8128,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Signing In.
+        /// </summary>
+        public static string SplashScreenSigningIn {
+            get {
+                return ResourceManager.GetString("SplashScreenSigningIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sign Out.
         /// </summary>
         public static string SplashScreenSignOut {
