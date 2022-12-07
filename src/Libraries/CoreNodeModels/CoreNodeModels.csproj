@@ -10,6 +10,7 @@
     <AssemblyName>CoreNodeModels</AssemblyName>
     <OutputPath>$(OutputPath)\nodes\</OutputPath>
     <DocumentationFile>$(OutputPath)\CoreNodeModels.XML</DocumentationFile>
+    <UseWPF>true</UseWPF>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ReferenceCopyLocalPaths>
@@ -27,7 +28,13 @@
     <ExcludeAssets>runtime</ExcludeAssets>
   </PackageReference>
 	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+	<Reference Include="PresentationCore" />
+	<Reference Include="PresentationFramework" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Windows.Presentation" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="WindowsBase" />
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
