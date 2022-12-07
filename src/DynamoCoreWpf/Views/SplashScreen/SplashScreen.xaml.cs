@@ -347,8 +347,7 @@ namespace Dynamo.UI.Views
         {
             if (webView?.CoreWebView2 != null)
             {
-                await webView.CoreWebView2.ExecuteScriptAsync("window.setSignInStatus({" +
-                $"signInTitle: \"" + (status ? Wpf.Properties.Resources.SplashScreenSignOut : Wpf.Properties.Resources.SplashScreenSignIn).ToString() + "\"," +
+                await webView.CoreWebView2.ExecuteScriptAsync("window.setSignInStatus({" +               
                 $"signInStatus: \"" + status + "\"})");
             }
         }
@@ -365,6 +364,9 @@ namespace Dynamo.UI.Views
                    $"launchTitle: \"{Wpf.Properties.Resources.SplashScreenLaunchTitle}\"," +
                    $"importSettingsTitle: \"{Wpf.Properties.Resources.ImportSettingsDialogTitle}\"," +
                    $"showScreenAgainLabel: \"{Wpf.Properties.Resources.SplashScreenShowScreenAgainLabel}\"," +
+                   $"signInTitle: \"{Wpf.Properties.Resources.SplashScreenSignIn}\"," +
+                   $"signOutTitle: \"{Wpf.Properties.Resources.SplashScreenSignOut}\"," +
+                   $"signingInTitle: \"{Wpf.Properties.Resources.SplashScreenSigningIn}\"," +
                    $"importSettingsTooltipDescription: \"{Wpf.Properties.Resources.ImportPreferencesInfo}\"" + "})");
             }
         }

@@ -3466,4 +3466,7 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="PreferencesViewBetaTag" xml:space="preserve">
     <value>Beta</value>
   </data>
+  <data name="SplashScreenSigningIn" xml:space="preserve">
+    <value>Signing In</value>
+  </data>
 </root>

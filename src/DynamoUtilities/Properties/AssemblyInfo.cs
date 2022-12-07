@@ -23,3 +23,4 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("ProtoCore")]
 [assembly: InternalsVisibleTo("DynamoApplications")]
 [assembly: InternalsVisibleTo("DynamoCLI")]
+[assembly: InternalsVisibleTo("NodeDocumentationMarkdownGenerator")]
