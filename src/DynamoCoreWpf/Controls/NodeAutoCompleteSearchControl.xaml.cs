@@ -306,7 +306,8 @@ namespace Dynamo.UI.Controls
             Analytics.TrackEvent(
                     Actions.Expanded,
                     Categories.NodeAutoCompleteOperations,
-                    "LowConfidenceResults");
+                    "LowConfidenceResults",
+                    ViewModel.dynamoViewModel.Model.PreferenceSettings.MLRecommendationConfidenceLevel);
         }
 
         private void OnSuggestion_Click(object sender, RoutedEventArgs e)
@@ -315,12 +316,12 @@ namespace Dynamo.UI.Controls
             if (selectedSuggestion.Name.Contains(nameof(Models.NodeAutocompleteSuggestion.MLRecommendation)))
             {
                 ViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = Models.NodeAutocompleteSuggestion.MLRecommendation;
-                Analytics.TrackEvent(Actions.Select, Categories.Preferences, nameof(NodeAutocompleteSuggestion.MLRecommendation));
+                Analytics.TrackEvent(Actions.Switch, Categories.Preferences, nameof(NodeAutocompleteSuggestion.MLRecommendation));
             }
             else
             {
                 ViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = Models.NodeAutocompleteSuggestion.ObjectType;
-                Analytics.TrackEvent(Actions.Select, Categories.Preferences, nameof(NodeAutocompleteSuggestion.ObjectType));
+                Analytics.TrackEvent(Actions.Switch, Categories.Preferences, nameof(NodeAutocompleteSuggestion.ObjectType));
             }
             ViewModel.PopulateAutoCompleteCandidates();
         }
