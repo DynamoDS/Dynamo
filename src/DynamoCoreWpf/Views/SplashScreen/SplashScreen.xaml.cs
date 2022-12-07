@@ -202,7 +202,6 @@ namespace Dynamo.UI.Views
         {
             // Stop the timer in any case
             loadingTimer.Stop();
-            loadingTimer = null;
 
             //When a xml preferences settings file is located at C:\ProgramData\Dynamo will be read and deserialized so the settings can be set correctly.
             LoadPreferencesFileAtStartup();
@@ -443,6 +442,12 @@ namespace Dynamo.UI.Views
             {
                 Application.Current.Shutdown();
                 Analytics.TrackEvent(Actions.Close, Categories.SplashScreenOperations);
+            }
+            else if (this is SplashScreen)
+            {
+                this.Close();
+                viewModel.Model.ShutDown(false);
+                DynamoModel.RequestUpdateLoadBarStatus -= DynamoModel_RequestUpdateLoadBarStatus;
             }
         }
 
