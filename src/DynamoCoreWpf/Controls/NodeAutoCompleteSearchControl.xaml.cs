@@ -97,10 +97,14 @@ namespace Dynamo.UI.Controls
                 if (searchElement.CreateAndConnectCommand.CanExecute(port.PortModel))
                 {
                     searchElement.CreateAndConnectCommand.Execute(port.PortModel);
+                    var searchElementInfo = ViewModel.IsDisplayingMLRecommendation ?
+                        searchElement.FullName + " " + port.PortModel.Index.ToString() + " " + port.PortName + " " + port.NodeViewModel.OriginalName + " " +  ViewModel.ServiceVersion
+                        : searchElement.FullName;
+
                     Analytics.TrackEvent(
                     Dynamo.Logging.Actions.Select,
                     Dynamo.Logging.Categories.NodeAutoCompleteOperations,
-                    searchElement.FullName);
+                    searchElementInfo);
                 }
             }
         }

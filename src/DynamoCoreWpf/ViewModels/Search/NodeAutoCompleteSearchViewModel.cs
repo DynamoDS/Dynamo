@@ -39,6 +39,11 @@ namespace Dynamo.ViewModels
         private const string nodeAutocompleteMLEndpoint = "MLNodeAutocomplete";
 
         /// <summary>
+        /// The Node AutoComplete ML service version, this could be empty if user has not used ML way
+        /// </summary>
+        internal string ServiceVersion { get; set; }
+
+        /// <summary>
         /// Cache of default node suggestions, use it in case where
         /// a. our algorithm does not return sufficient results
         /// b. the results returned by our algorithm will not be useful for user
@@ -116,6 +121,7 @@ namespace Dynamo.ViewModels
         {
             // Off load some time consuming operation here
             InitializeDefaultAutoCompleteCandidates();
+            ServiceVersion = string.Empty;
         }
 
         /// <summary>
@@ -260,6 +266,7 @@ namespace Dynamo.ViewModels
             try
             {
                 MLresults = GetMLNodeAutocompleteResults(jsonRequest);
+                ServiceVersion = MLresults.Version;
             }
             catch (Exception ex)
             {
