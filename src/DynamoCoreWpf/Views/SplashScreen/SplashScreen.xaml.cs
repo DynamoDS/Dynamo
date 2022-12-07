@@ -443,6 +443,9 @@ namespace Dynamo.UI.Views
                 Application.Current.Shutdown();
                 Analytics.TrackEvent(Actions.Close, Categories.SplashScreenOperations);
             }
+            // If Dynamo is launched from an integrator host, user should be able to close the splash screen window.
+            // Additionally, we will have to shutdown the ViewModel which will close all the services and dispose the events.
+            // RequestUpdateLoadBarStatus event needs to be unsubscribed when the splash screen window is closed, to avoid populating the info on splash screen.
             else if (this is SplashScreen)
             {
                 this.Close();
