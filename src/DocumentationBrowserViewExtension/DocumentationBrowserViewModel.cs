@@ -86,6 +86,7 @@ namespace Dynamo.DocumentationBrowser
         private Uri link;
         private string graphPath;
         private string content;
+        private string name;
 
         private MarkdownHandler MarkdownHandlerInstance => markdownHandler ?? (markdownHandler = new MarkdownHandler());
         public bool HasContent => !string.IsNullOrWhiteSpace(this.content);
@@ -184,6 +185,7 @@ namespace Dynamo.DocumentationBrowser
             {
                 string targetContent;
                 string graph;
+                string graphName;
                 Uri link;
                 switch (e)
                 {
@@ -195,12 +197,14 @@ namespace Dynamo.DocumentationBrowser
                         link = string.IsNullOrEmpty(mdLink) ? new Uri(String.Empty, UriKind.Relative) : new Uri(mdLink);
                         graph = GetGraphLinkFromMDLocation(link);
                         targetContent = CreateNodeAnnotationContent(openNodeAnnotationEventArgs);
+                        graphName = openNodeAnnotationEventArgs.MinimumQualifiedName;
                         break;
 
                     case OpenDocumentationLinkEventArgs openDocumentationLink:
                         link = openDocumentationLink.Link;
                         graph = GetGraphLinkFromMDLocation(link);
                         targetContent = ResourceUtilities.LoadContentFromResources(openDocumentationLink.Link.ToString(), GetType().Assembly);
+                        graphName = null;
                         break;
 
                     default:
@@ -208,6 +212,7 @@ namespace Dynamo.DocumentationBrowser
                         targetContent = null;
                         graph = null;
                         link = null;
+                        graphName = null;
                         break;
                 }
 
@@ -220,6 +225,7 @@ namespace Dynamo.DocumentationBrowser
                     this.content = targetContent;
                     this.Link = link;
                     this.graphPath = graph;
+                    this.name = graphName;
                 }
             }
             catch (FileNotFoundException)
@@ -358,7 +364,8 @@ namespace Dynamo.DocumentationBrowser
             {
                 if (graphPath != null)
                 {
-                    raiseInsertGraph(this, new InsertDocumentationLinkEventArgs(graphPath, Path.GetFileNameWithoutExtension(graphPath)));
+                    var graphName = this.name ?? Path.GetFileNameWithoutExtension(graphPath);
+                    raiseInsertGraph(this, new InsertDocumentationLinkEventArgs(graphPath, graphName));
                 }
                 else
                 {
