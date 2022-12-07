@@ -63,6 +63,8 @@ namespace Dynamo.UI.Views
             {
                 dynamoView = value;
                 viewModel = value.DataContext as DynamoViewModel;
+                // When view model is closed, we need to close the splash screen if it is displayed.
+                viewModel.RequestClose += SplashScreenRequestClose;
                 authManager = viewModel.Model.AuthenticationManager;
             }
         }
@@ -141,6 +143,14 @@ namespace Dynamo.UI.Views
         }
 
         /// <summary>
+        /// Request to close SplashScreen.
+        /// </summary>
+        private void SplashScreenRequestClose(object sender, EventArgs e)
+        {
+            CloseWindow();
+        }
+
+        /// <summary>
         /// Import setting file from chosen path
         /// </summary>
         /// <param name="fileContent"></param>
@@ -188,7 +198,6 @@ namespace Dynamo.UI.Views
         private void LaunchDynamo(bool isCheckboxChecked)
         {
             viewModel.PreferenceSettings.EnableStaticSplashScreen = !isCheckboxChecked;
-            DynamoModel.RequestUpdateLoadBarStatus -= DynamoModel_RequestUpdateLoadBarStatus;
             StaticSplashScreenReady -= OnStaticScreenReady;
             Close();
             dynamoView.Show();
@@ -450,7 +459,6 @@ namespace Dynamo.UI.Views
             {
                 this.Close();
                 viewModel.Model.ShutDown(false);
-                DynamoModel.RequestUpdateLoadBarStatus -= DynamoModel_RequestUpdateLoadBarStatus;
             }
         }
 
@@ -458,6 +466,7 @@ namespace Dynamo.UI.Views
         {
             base.OnClosed(e);
 
+            DynamoModel.RequestUpdateLoadBarStatus -= DynamoModel_RequestUpdateLoadBarStatus;
             webView.Dispose();
             webView = null;
 

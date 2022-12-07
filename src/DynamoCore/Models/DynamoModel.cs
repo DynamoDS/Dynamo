@@ -703,8 +703,16 @@ namespace Dynamo.Models
             // or the feature flags client.
             if (!areAnalyticsDisabledFromConfig && !Dynamo.Logging.Analytics.DisableAnalytics)
             {
-                AnalyticsService.Start(this, IsHeadless, IsTestMode);
-
+                // Start the Analytics service only when a current session is not present.
+                // In an integrator host, as splash screen can be closed without shutting down the ViewModel, the analytics service is not stopped.
+                // So we don't want to start it when splash screen or dynamo window is launched again.
+                if (Analytics.client is DynamoAnalyticsClient dac)
+                {
+                    if (dac.Session == null)
+                    {
+                        AnalyticsService.Start(this, IsHeadless, IsTestMode);
+                    }
+                }
 
                 //run process startup/reading on another thread so we don't block dynamo startup.
                 //if we end up needing to control aspects of dynamo model or view startup that we can't make
