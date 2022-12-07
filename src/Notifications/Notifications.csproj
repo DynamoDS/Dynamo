@@ -32,11 +32,15 @@
         </PropertyGroup>
 
         <!--Extracts the file to /package-->
-        <Exec Command="tar -xzf $(Last)"></Exec>
+        <Exec Command="tar -xzf $(Last)"></Exec>        
+    </Target>
 
+    <Target Name="DeleteTGZFile" DependsOnTargets="ExtractTGZFile">        
         <!--Deletes the tgz file-->
         <Delete Files="$(Last)" />
     </Target>
+    
+    
 	<ItemGroup>
 		<None Remove="package\package.json" />
 		<None Remove="package\README.md" />
