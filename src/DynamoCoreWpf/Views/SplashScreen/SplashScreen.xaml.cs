@@ -148,6 +148,7 @@ namespace Dynamo.UI.Views
         private void SplashScreenRequestClose(object sender, EventArgs e)
         {
             CloseWindow();
+            viewModel.RequestClose -= SplashScreenRequestClose;
         }
 
         /// <summary>
