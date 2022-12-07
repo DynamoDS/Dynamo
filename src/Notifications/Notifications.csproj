@@ -32,12 +32,10 @@
         </PropertyGroup>
 
         <!--Extracts the file to /package-->
-        <Exec Command="tar -xzf $(Last)"></Exec>        
-    </Target>
+        <Exec Command="tar -xzf $(MSBuildProjectDirectory)\$(Last)"></Exec>
 
-    <Target Name="DeleteTGZFile" DependsOnTargets="ExtractTGZFile">        
         <!--Deletes the tgz file-->
-        <Delete Files="$(Last)" />
+        <Delete Files=" $(MSBuildProjectDirectory)\$(Last)" />
     </Target>
     
     
