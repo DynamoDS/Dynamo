@@ -7,6 +7,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
@@ -97,8 +98,8 @@ namespace Dynamo.UI.Controls
                 if (searchElement.CreateAndConnectCommand.CanExecute(port.PortModel))
                 {
                     searchElement.CreateAndConnectCommand.Execute(port.PortModel);
-                    var selectedNodeName = (searchElement.Model is Search.SearchElements.NodeModelSearchElement) ? string.Format("{0}, {1}", searchElement.FullName, searchElement.Assembly) : searchElement.Model.CreationName;
-                    var originalNodeName = port.NodeViewModel.NodeModel.CreationName;
+                    var selectedNodeName = (searchElement.Model is Search.SearchElements.ZeroTouchSearchElement) ? searchElement.Model.CreationName : string.Format("{0}, {1}", searchElement.FullName, searchElement.Assembly);
+                    var originalNodeName = (port.NodeViewModel.NodeModel is DSFunctionBase) ? port.NodeViewModel.NodeModel.CreationName : port.NodeViewModel.OriginalName;
                     var searchElementInfo = ViewModel.IsDisplayingMLRecommendation ?
                         selectedNodeName + " " + port.PortModel.Index.ToString() + " " + port.PortName + " " + originalNodeName + " " +
                         searchElement.Model.AutoCompletionNodeElementInfo.PortToConnect.ToString() + " " +
