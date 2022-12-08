@@ -98,8 +98,13 @@ namespace Dynamo.UI.Controls
                 if (searchElement.CreateAndConnectCommand.CanExecute(port.PortModel))
                 {
                     searchElement.CreateAndConnectCommand.Execute(port.PortModel);
-                    var selectedNodeName = (searchElement.Model is Search.SearchElements.ZeroTouchSearchElement) ? searchElement.Model.CreationName : string.Format("{0}, {1}", searchElement.FullName, searchElement.Assembly.Split('\\').Last());
-                    var originalNodeName = (port.NodeViewModel.NodeModel is DSFunctionBase) ? port.NodeViewModel.NodeModel.CreationName : string.Format("{0}, {1}", port.NodeViewModel.OriginalName, port.NodeViewModel.NodeModel.GetType().Assembly.GetName().Name) ;
+                    var selectedNodeName = (searchElement.Model is Search.SearchElements.ZeroTouchSearchElement) ?
+                                                searchElement.Model.CreationName :
+                                                // Same as NameTypeId.ToStrng() format
+                                                string.Format("{0}, {1}", searchElement.Model.CreationName, searchElement.Assembly.Split('\\').Last().Split('.').First());
+                    var originalNodeName = (port.NodeViewModel.NodeModel is DSFunctionBase) ?
+                                                port.NodeViewModel.NodeModel.CreationName :
+                                                string.Format("{0}, {1}", port.NodeViewModel.NodeModel.GetType().FullName, port.NodeViewModel.NodeModel.GetType().Assembly.GetName().Name) ;
                     var searchElementInfo = ViewModel.IsDisplayingMLRecommendation ?
                         selectedNodeName + " " + port.PortModel.Index.ToString() + " " + port.PortName + " " + originalNodeName + " " +
                         searchElement.Model.AutoCompletionNodeElementInfo.PortToConnect.ToString() + " " +
