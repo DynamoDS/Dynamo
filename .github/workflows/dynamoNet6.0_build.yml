@@ -17,7 +17,8 @@ jobs:
     - name: Build Dynamo with MSBuild for Windows
       run: |
         echo "***Continue with the build, Good luck developer!***"
-        MSBuild.exe $Env:GITHUB_WORKSPACE\Dynamo\src\DynamoCore.net6.sln --configuration=Release /p:Platform=NET60_Windows
+        cd "C:\Program Files (x86)\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\"
+           .\MSBuild.exe $Env:GITHUB_WORKSPACE\Dynamo\src\DynamoCore.net6.sln --configuration=Release /p:Platform=NET60_Windows
     # look for Dynamo
     - name: Navigate to Dynamo Windows Folder
       run: |
@@ -27,7 +28,8 @@ jobs:
     - name: Build Dynamo with MSBuild for Linux
       run: |
         echo "***Continue with the build, Good luck developer!***"
-        MSBuild.exe $Env:GITHUB_WORKSPACE\Dynamo\src\DynamoCore.net6.sln --configuration=Release /p:Platform=NET60_Linux
+        cd "C:\Program Files (x86)\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\"
+           .\MSBuild.exe $Env:GITHUB_WORKSPACE\Dynamo\src\DynamoCore.net6.sln --configuration=Release /p:Platform=NET60_Linux
     - name: Navigate to Dynamo Linux Folder
       run: |
         cd "$Env:GITHUB_WORKSPACE\Dynamo\bin\NET60_Linux\Release"
