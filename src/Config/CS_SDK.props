@@ -22,7 +22,6 @@
     <NoWarn>MSB3539</NoWarn><!--The value of the property "BaseIntermediateOutputPath" was modified after it was used by MSBuild-->
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
     <DebugSymbols>true</DebugSymbols>
-    <GenerateDependencyFile>false</GenerateDependencyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <DebugType>full</DebugType>
@@ -36,6 +35,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="$(Platform.Contains('NET60'))" >
     <TargetFramework>net6.0</TargetFramework>
+        <!--Needed to copy nuget package assemblies to output folder. Anet6 issue-->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <GenerateDependencyFile>false</GenerateDependencyFile>
   </PropertyGroup>
   <PropertyGroup Condition="$(Platform.Contains('Windows'))" >
     <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
@@ -46,10 +48,6 @@
   <PropertyGroup>
     <BaseIntermediateOutputPath>int\$(TargetFramework)\</BaseIntermediateOutputPath>
     <IntermediateOutputPath>obj\$(TargetFramework)\</IntermediateOutputPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="$(Platform.Contains('NET60'))" >
-    <!--Needed to copy nuget package assemblies to output folder. Anet6 issue-->
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="obj\**" />
