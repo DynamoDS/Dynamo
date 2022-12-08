@@ -35,7 +35,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="$(Platform.Contains('NET60'))" >
     <TargetFramework>net6.0</TargetFramework>
-        <!--Needed to copy nuget package assemblies to output folder. Anet6 issue-->
+    <!--Needed to copy nuget package assemblies to output folder. Anet6 issue-->
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <GenerateDependencyFile>false</GenerateDependencyFile>
   </PropertyGroup>
