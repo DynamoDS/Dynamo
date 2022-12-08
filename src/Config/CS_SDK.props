@@ -21,6 +21,7 @@
     <NoWarn>MSB3539</NoWarn><!--The value of the property "BaseIntermediateOutputPath" was modified after it was used by MSBuild-->
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
     <DebugSymbols>true</DebugSymbols>
+    <GenerateDependencyFile>false</GenerateDependencyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <DebugType>full</DebugType>
