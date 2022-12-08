@@ -97,12 +97,13 @@ namespace Dynamo.UI.Controls
                 if (searchElement.CreateAndConnectCommand.CanExecute(port.PortModel))
                 {
                     searchElement.CreateAndConnectCommand.Execute(port.PortModel);
-                    var nodeName = (searchElement.Model is Search.SearchElements.NodeModelSearchElement) ? string.Format("{0}, {1}", searchElement.FullName, searchElement.Assembly) : searchElement.Model.CreationName;
+                    var selectedNodeName = (searchElement.Model is Search.SearchElements.NodeModelSearchElement) ? string.Format("{0}, {1}", searchElement.FullName, searchElement.Assembly) : searchElement.Model.CreationName;
+                    var originalNodeName = port.NodeViewModel.NodeModel.CreationName;
                     var searchElementInfo = ViewModel.IsDisplayingMLRecommendation ?
-                        nodeName + " " + port.PortModel.Index.ToString() + " " + port.PortName + " " + port.NodeViewModel.OriginalName + " " +
+                        selectedNodeName + " " + port.PortModel.Index.ToString() + " " + port.PortName + " " + originalNodeName + " " +
                         searchElement.Model.AutoCompletionNodeElementInfo.PortToConnect.ToString() + " " +
                         searchElement.AutoCompletionNodeMachineLearningInfo.ConfidenceScore.ToString() + " "  +  ViewModel.ServiceVersion
-                        : nodeName;
+                        : selectedNodeName;
 
                     Analytics.TrackEvent(
                     Dynamo.Logging.Actions.Select,
