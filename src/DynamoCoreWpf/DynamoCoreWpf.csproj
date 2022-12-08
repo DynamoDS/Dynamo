@@ -70,7 +70,6 @@
   </ItemGroup>
   <ItemGroup>
   <PackageReference Include="AvalonEdit" Version="4.3.1.9430" CopyXML="true"/>
-  <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.16.0.3176" />
   <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.16.0.3357"/>
   <PackageReference Include="Greg" Version="2.3.0.2505" />
   <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" />
