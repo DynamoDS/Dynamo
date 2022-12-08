@@ -98,7 +98,7 @@ namespace Dynamo.UI.Controls
                 if (searchElement.CreateAndConnectCommand.CanExecute(port.PortModel))
                 {
                     searchElement.CreateAndConnectCommand.Execute(port.PortModel);
-                    var selectedNodeName = (searchElement.Model is Search.SearchElements.ZeroTouchSearchElement) ? searchElement.Model.CreationName : string.Format("{0}, {1}", searchElement.FullName, searchElement.Assembly);
+                    var selectedNodeName = (searchElement.Model is Search.SearchElements.ZeroTouchSearchElement) ? searchElement.Model.CreationName : string.Format("{0}, {1}", searchElement.FullName, searchElement.GetType().Assembly.GetName().Name);
                     var originalNodeName = (port.NodeViewModel.NodeModel is DSFunctionBase) ? port.NodeViewModel.NodeModel.CreationName : port.NodeViewModel.OriginalName;
                     var searchElementInfo = ViewModel.IsDisplayingMLRecommendation ?
                         selectedNodeName + " " + port.PortModel.Index.ToString() + " " + port.PortName + " " + originalNodeName + " " +
