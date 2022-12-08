@@ -1,0 +1,35 @@
+# Build Dynamo using latest VS and DotNET
+name: Dynamo-net6.0-Build
+on: [push,pull_request]
+jobs:
+ build:
+  runs-on: windows-latest
+  steps:
+    - name: Checkout Dynamo Repo
+      uses: actions/checkout@v2
+      with:
+        path: Dynamo
+        repository: DynamoDS/Dynamo
+    - name: Setup Nuget.exe to use on VM
+      uses: nuget/setup-nuget@v1
+    - name: Nuget Restore in Dynamo solution
+      run: nuget restore $Env:GITHUB_WORKSPACE\Dynamo\src\DynamoCore.net6.sln
+    - name: Build Dynamo with MSBuild for Windows
+      run: |
+        echo "***Continue with the build, Good luck developer!***"
+        MSBuild.exe $Env:GITHUB_WORKSPACE\Dynamo\src\DynamoCore.net6.sln --configuration=Release /p:Platform=NET60_Windows
+    # look for Dynamo
+    - name: Navigate to Dynamo Windows Folder
+      run: |
+        cd "$Env:GITHUB_WORKSPACE\Dynamo\bin\NET60_Windows\Release"
+        echo "***Locating DynamoCLI for Windows!***"
+        test ".\DynamoCLI.exe" && echo "DynamoCLI exists!"
+    - name: Build Dynamo with MSBuild for Linux
+      run: |
+        echo "***Continue with the build, Good luck developer!***"
+        MSBuild.exe $Env:GITHUB_WORKSPACE\Dynamo\src\DynamoCore.net6.sln --configuration=Release /p:Platform=NET60_Linux
+    - name: Navigate to Dynamo Linux Folder
+      run: |
+        cd "$Env:GITHUB_WORKSPACE\Dynamo\bin\NET60_Linux\Release"
+        echo "***Locating DynamoCLI for Linux!***"
+        test ".\DynamoCLI.exe" && echo "DynamoCLI exists!"
