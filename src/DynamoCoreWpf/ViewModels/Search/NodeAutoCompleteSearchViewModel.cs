@@ -266,7 +266,6 @@ namespace Dynamo.ViewModels
             try
             {
                 MLresults = GetMLNodeAutocompleteResults(jsonRequest);
-                ServiceVersion = MLresults.Version;
             }
             catch (Exception ex)
             {
@@ -287,7 +286,7 @@ namespace Dynamo.ViewModels
                 Analytics.TrackEvent(Actions.View, Categories.NodeAutoCompleteOperations, "NoRecommendation");
                 return;
             }
-
+            ServiceVersion = MLresults.Version;
             var results = new List<NodeSearchElementViewModel>();
 
             var zeroTouchSearchElements = Model.SearchEntries.OfType<ZeroTouchSearchElement>().Where(x => x.IsVisibleInSearch);
