@@ -288,7 +288,18 @@ namespace Dynamo.Wpf.ViewModels
         public override void Dispose()
         {
             base.Dispose();
-            this.workspaceViewModel = null;
+
+            if (Model != null)
+            {
+                Model.PropertyChanged -= Model_PropertyChanged;
+            }
+
+            if (workspaceViewModel != null && workspaceViewModel.Model != null)
+            {
+                workspaceViewModel.Model.PropertyChanged -= HomeWorkspaceModel_PropertyChanged;
+            }
+            
+            workspaceViewModel = null;
         }
 
         #endregion
@@ -300,8 +311,8 @@ namespace Dynamo.Wpf.ViewModels
         /// </summary>
         void NotifyOfGraphRunChanged()
         {
-            RaisePropertyChanged("RunButtonEnabled");
-            RaisePropertyChanged("RunButtonToolTip");
+            RaisePropertyChanged(nameof(RunButtonEnabled));
+            RaisePropertyChanged(nameof(RunButtonToolTip));
 
             if (Application.Current != null)
             {

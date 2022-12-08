@@ -56,7 +56,7 @@ namespace Dynamo.Graph.Workspaces
                 if (graphRunInProgress == value) return;
 
                 graphRunInProgress = value;
-                RaisePropertyChanged("GraphRunInProgress");
+                RaisePropertyChanged(nameof(GraphRunInProgress));
             }
         }
 
@@ -209,7 +209,7 @@ namespace Dynamo.Graph.Workspaces
 
             try
             {
-                // Do not allow graph runs to be trigered from the EvaluationStarted event.
+                // Do not allow graph runs to be triggered from the EvaluationStarted event.
                 // Use a simple internal flag like ForceBlockRun (RunEnabled would notify WPF of changes and that would incur peformance penalties without any benefit)
                 RunSettings.ForceBlockRun = true;
                 EvaluationStarted?.Invoke(this, e);
