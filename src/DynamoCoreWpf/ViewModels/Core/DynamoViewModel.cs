@@ -2963,6 +2963,11 @@ namespace Dynamo.ViewModels
                 return;
             }
 
+            if (parameter is bool)
+            {
+                CurrentSpaceViewModel.FitViewInternal((bool)parameter);
+                return;
+            }
             CurrentSpaceViewModel.FitViewInternal();
         }
 
