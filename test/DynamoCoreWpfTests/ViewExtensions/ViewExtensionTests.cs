@@ -366,7 +366,8 @@ namespace DynamoCoreWpfTests
 
             EngineController controller = null;
             int counter = 0;
-            viewExtension.OnOpenEvaluationStarted += (HomeWorkspaceModel hwm, EventArgs args) =>
+
+            void startedEvent(HomeWorkspaceModel hwm, EventArgs args)
             {
                 counter++;
                 Assert.IsTrue(hwm.GraphRunInProgress);
@@ -379,23 +380,32 @@ namespace DynamoCoreWpfTests
                 hwm.RequestRun();
             };
 
-            viewExtension.OnOpenEvaluationEnded += (HomeWorkspaceModel hwm, EventArgs args) => {
+            void finishedEvent(HomeWorkspaceModel hwm, EventArgs args)
+            {
                 counter++;
 
                 Assert.IsFalse(hwm.GraphRunInProgress);
                 Assert.AreEqual(controller, hwm.EngineController);
             };
 
+            viewExtension.OnOpenEvaluationStarted += startedEvent;
+            viewExtension.OnOpenEvaluationEnded += finishedEvent;
+
             // Open first file.
             Open(@"core\node2code\numberRange.dyn");
 
             Assert.AreEqual(2, counter);
+
+            viewExtension.OnOpenEvaluationStarted -= startedEvent;
+            viewExtension.OnOpenEvaluationEnded -= finishedEvent;
         }
     }
 
     public class DummyViewExtension : IViewExtension
     {
         public int Counter { get; private set; }
+        public HomeWorkspaceModel CurrentHWM;
+        public ViewLoadedParams Params;
         public bool SetOwner { get; set; } = true;
         public bool WindowClosed { get; private set; }
         public Window Content { get; private set; }
@@ -418,18 +428,30 @@ namespace DynamoCoreWpfTests
             // Do nothing for now
         }
 
-        public void Loaded(ViewLoadedParams p)
+        private void OnEvalStarted(object sender, EventArgs args)
         {
-            p.CurrentWorkspaceChanged += (ws) =>
+            OnOpenEvaluationStarted?.Invoke(Params.CurrentWorkspaceModel as HomeWorkspaceModel, args);
+        }
+
+        private void OnEvalEnded(object sender, EvaluationCompletedEventArgs args)
+        {
+            OnOpenEvaluationEnded?.Invoke(Params.CurrentWorkspaceModel as HomeWorkspaceModel, args);
+        }
+
+        private void workpaceChangedHandler(IWorkspaceModel ws) {
+            if (ws is HomeWorkspaceModel hwm)
             {
-                if (ws is HomeWorkspaceModel hwm)
-                {
-                    hwm.EvaluationStarted += (object sender, EventArgs args) => { OnOpenEvaluationStarted?.Invoke(hwm, args); };
-                    hwm.EvaluationCompleted += (object sender, EvaluationCompletedEventArgs args) => { OnOpenEvaluationEnded?.Invoke(hwm, args); };
-                }
-   
-                Counter++;
-            };
+                hwm.EvaluationStarted += OnEvalStarted;
+                hwm.EvaluationCompleted += OnEvalEnded;
+            }
+            
+            Counter++;
+        }
+
+        public void Loaded(ViewLoadedParams p)
+        { 
+            Params = p;
+            Params.CurrentWorkspaceChanged += workpaceChangedHandler;
 
             var window = new Window();
             window.Content = new TextBlock() { Text = "Dummy" };
@@ -453,7 +475,16 @@ namespace DynamoCoreWpfTests
 
         public void Dispose()
         {
+            if (Params != null)
+            {
+                if (Params.CurrentWorkspaceModel is HomeWorkspaceModel hwm)
+                {
+                    hwm.EvaluationStarted -= OnEvalStarted;
+                    hwm.EvaluationCompleted -= OnEvalEnded;
+                }
 
+                Params.CurrentWorkspaceChanged -= workpaceChangedHandler;
+            }
         }
     }
 
