@@ -110,7 +110,7 @@ namespace DSCore.IO
         {
             try
             {
-                if (Path.GetDirectoryName(destinationPath) != string.Empty && FileExtension(destinationPath) != string.Empty) 
+                if (Path.GetDirectoryName(destinationPath) != string.Empty) 
                 {
                     file.CopyTo(destinationPath, overwrite);
                 }
