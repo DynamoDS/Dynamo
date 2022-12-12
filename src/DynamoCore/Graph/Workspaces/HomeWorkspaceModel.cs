@@ -234,7 +234,6 @@ namespace Dynamo.Graph.Workspaces
         {
             this.HasRunWithoutCrash = e.EvaluationSucceeded;
             GraphRunInProgress = false;
-            EvaluationCount++;
 
             var handler = EvaluationCompleted;
             if (handler != null) handler(this, e);
@@ -795,6 +794,8 @@ namespace Dynamo.Graph.Workspaces
             EvaluationCompletedEventArgs e = task.Exception == null || IsTestMode
                 ? new EvaluationCompletedEventArgs(true,messages.Keys,null)
                 : new EvaluationCompletedEventArgs(true, messages.Keys, task.Exception);
+
+            EvaluationCount ++;
 
             OnEvaluationCompleted(e);
 
