@@ -32,7 +32,7 @@
         </PropertyGroup>        
 
         <!--Extracts the file to /package-->
-        <Exec Command="..\..\extern\tar\tar.exe -xzf $(MSBuildProjectDirectory)\$(Last).tgz"></Exec>
+        <Exec Command="..\..\extern\libarchive\bsdtar.exe -xzf $(MSBuildProjectDirectory)\$(Last).tgz"></Exec>
 
         <!--Deletes the tgz file-->
         <Delete Files=" $(MSBuildProjectDirectory)\$(Last).tgz" />
