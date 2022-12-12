@@ -14,31 +14,52 @@
   </PropertyGroup>
 
   <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
+      <Exec Command="echo Executing npm pack..."></Exec>
+
       <!--This command gets the latest build from the splash screen-->
       <Exec Command="npm pack @dynamods/splash-screen@latest" />
+
+      <Exec Command="echo Npm pack finished"></Exec>
+
   </Target>
 
     <Target Name="ExtractTGZFile" DependsOnTargets="NpmRunBuild" BeforeTargets="BeforeBuild">
+
+        <Exec Command="echo 'Checking if tar command exists...' "></Exec>
+        <Exec Command="tar --version "></Exec>
+        <Exec Command="echo 'Checking if phyton exists...' "></Exec>
+        <Exec Command="python --version "></Exec>
+        <Exec Command="echo 'Showing MSBuildProjectDirectory files' "></Exec>
+        <Exec Command="dir $(MSBuildProjectDirectory)"></Exec>
+        
+        <Exec Command="echo Extracting TGZ file..."></Exec>
+
         <!--Locates the .tgz files-->
         <ItemGroup>
             <TGZFiles Include="./dynamods-splash-screen-*.tgz" />
         </ItemGroup>
 
+        <Exec Command="echo 'files found: ' @(TGZFiles) "></Exec>
+
         <!--Reverse the order of the files to get the higher version-->
         <ItemGroup>
-            <Reversed Include="@(TGZFiles->Reverse())" />
+            <Reversed Include="@(TGZFiles-&gt;Reverse())" />
         </ItemGroup>
 
         <!--Gets the last one-->
         <PropertyGroup>
-            <Last>%(TGZFiles.Identity)</Last>
-        </PropertyGroup>
+            <Last>%(TGZFiles.Filename)</Last>
+        </PropertyGroup>        
+
+        <Exec Command="echo Executing the following command: "></Exec>        
+        <Exec Command="echo tar -xzf $(MSBuildProjectDirectory)\$(Last).tgz"></Exec>
 
         <!--Extracts the file to /package-->
-        <Exec Command="tar -xzf $(MSBuildProjectDirectory)\$(Last)"></Exec>
+        <Exec Command="tar -xzf $(MSBuildProjectDirectory)\$(Last).tgz"></Exec>
 
+        <Exec Command="echo Deleting tgz file..."></Exec>
         <!--Deletes the tgz file-->
-        <Delete Files=" $(MSBuildProjectDirectory)\$(Last)" />
+        <Delete Files=" $(MSBuildProjectDirectory)\$(Last).tgz" />
     </Target>
 
 
