@@ -61,6 +61,9 @@ namespace Dynamo.ViewModels
         private bool showStartPage = false;
         private PreferencesViewModel preferencesViewModel;
 
+        // Can the user run the graph
+        private bool CanRunGraph => HomeSpace.RunSettings.RunEnabled && !HomeSpace.GraphRunInProgress;
+
         private ObservableCollection<DefaultWatch3DViewModel> watch3DViewModels = new ObservableCollection<DefaultWatch3DViewModel>();
 
         /// <summary>
@@ -1869,10 +1872,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private bool CanShowOpenDialogAndOpenResultCommand(object parameter)
-        {
-            return HomeSpace.RunSettings.RunEnabled && !HomeSpace.GraphRunInProgress;
-        }
+        private bool CanShowOpenDialogAndOpenResultCommand(object parameter) => CanRunGraph;
 
 
         /// <summary>
@@ -1934,7 +1934,7 @@ namespace Dynamo.ViewModels
 
         private bool CanShowInsertDialogAndInsertResultCommand(object parameter)
         {
-            return (HomeSpace.RunSettings.RunEnabled && !HomeSpace.GraphRunInProgress) && !this.showStartPage;
+            return CanRunGraph && !this.showStartPage;
         }
 
         private void OpenRecent(object path)
@@ -1950,7 +1950,7 @@ namespace Dynamo.ViewModels
 
         private bool CanOpenRecent(object path)
         {
-            return HomeSpace.RunSettings.RunEnabled && !HomeSpace.GraphRunInProgress;
+            return CanRunGraph;
         }
 
         /// <summary>
@@ -2530,10 +2530,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        internal bool CanMakeNewHomeWorkspace(object parameter)
-        {
-            return HomeSpace.RunSettings.RunEnabled && !HomeSpace.GraphRunInProgress;
-        }
+        internal bool CanMakeNewHomeWorkspace(object parameter) => CanRunGraph;
 
         private void CloseHomeWorkspace(object parameter)
         {
@@ -2548,7 +2545,7 @@ namespace Dynamo.ViewModels
 
         private bool CanCloseHomeWorkspace(object parameter)
         {
-            return (HomeSpace.RunSettings.RunEnabled && !HomeSpace.GraphRunInProgress) || RunSettings.ForceBlockRun;
+            return CanRunGraph || RunSettings.ForceBlockRun;
         }
 
         /// <summary>
