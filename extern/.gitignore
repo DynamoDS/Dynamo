@@ -1,3 +1,4 @@
 # override specific package dlls#
 ###################
 !*.dll
+!tar/tar.exe

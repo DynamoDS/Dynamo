@@ -28,14 +28,14 @@
 
         <!--Gets the last one-->
         <PropertyGroup>
-            <Last>%(TGZFiles.Identity)</Last>
-        </PropertyGroup>
+            <Last>%(TGZFiles.Filename)</Last>
+        </PropertyGroup>        
 
         <!--Extracts the file to /package-->
-        <Exec Command="tar -xzf $(MSBuildProjectDirectory)\$(Last)"></Exec>
+        <Exec Command="..\..\extern\tar\tar.exe -xzf $(MSBuildProjectDirectory)\$(Last).tgz"></Exec>
 
         <!--Deletes the tgz file-->
-        <Delete Files=" $(MSBuildProjectDirectory)\$(Last)" />
+        <Delete Files=" $(MSBuildProjectDirectory)\$(Last).tgz" />
     </Target>
     
     
