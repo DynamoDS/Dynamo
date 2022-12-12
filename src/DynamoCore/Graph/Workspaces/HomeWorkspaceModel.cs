@@ -209,7 +209,7 @@ namespace Dynamo.Graph.Workspaces
 
             try
             {
-                // Do not allow graph runs to be triggered from the EvaluationStarted event.
+                // Do not allow graph runs to be triggered from the EvaluationStarted event. We want to avoid potential infinite loops.
                 // Use a simple internal flag like ForceBlockRun (RunEnabled would notify WPF of changes and that would incur peformance penalties without any benefit)
                 RunSettings.ForceBlockRun = true;
                 EvaluationStarted?.Invoke(this, e);
