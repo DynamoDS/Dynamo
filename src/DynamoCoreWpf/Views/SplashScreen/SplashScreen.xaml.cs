@@ -35,7 +35,7 @@ namespace Dynamo.UI.Views
         public long totalLoadingTime;
 
         /// <summary>
-        /// Action to indicate that Dynamo main window is launched.
+        /// Request to launch Dynamo main window.
         /// </summary>
         public Action<bool> RequestLaunchDynamo;
 
