@@ -29,13 +29,19 @@
         <!--Gets the last one-->
         <PropertyGroup>
             <Last>%(TGZFiles.Filename)</Last>
-        </PropertyGroup>        
+        </PropertyGroup>
 
         <!--Extracts the file to /package-->
-        <Exec Command="..\..\extern\libarchive\bsdtar.exe -xzf $(MSBuildProjectDirectory)\$(Last).tgz"></Exec>
+        <Exec Command="..\..\extern\7zip\7za.exe x $(MSBuildProjectDirectory)\$(Last).tgz -y"></Exec>
+
+        <!--Extracts the file to /package-->
+        <Exec Command="..\..\extern\7zip\7za.exe x $(MSBuildProjectDirectory)\$(Last).tar -y"></Exec>
 
         <!--Deletes the tgz file-->
         <Delete Files=" $(MSBuildProjectDirectory)\$(Last).tgz" />
+
+        <!--Deletes the tgz file-->
+        <Delete Files=" $(MSBuildProjectDirectory)\$(Last).tar" />
     </Target>
     
     
