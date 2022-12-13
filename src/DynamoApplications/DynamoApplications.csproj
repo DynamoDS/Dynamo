@@ -10,7 +10,7 @@
     <AssemblyName>DynamoApplications</AssemblyName>
   </PropertyGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
-    <PackageReference Include="NDesk.Options.Patched" Version="0.3.2" />
+    <PackageReference Include="CommandLineParser" Version="2.8.0" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
     <PackageReference Include="NDesk.Options" Version="0.2.1" />
