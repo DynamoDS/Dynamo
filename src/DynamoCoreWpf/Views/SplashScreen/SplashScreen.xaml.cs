@@ -40,7 +40,7 @@ namespace Dynamo.UI.Views
         public Action<bool> RequestLaunchDynamo;
 
         internal Action<string> RequestImportSettings;
-        internal Func<bool> RequestSignIn; 
+        internal Func<bool> RequestSignIn;
         internal Func<bool> RequestSignOut;
 
         /// <summary>
