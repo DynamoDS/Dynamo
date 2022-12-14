@@ -32,19 +32,17 @@
         <!--Gets the last one-->
         <PropertyGroup>
             <Last>%(TGZFiles.Filename)</Last>
-        </PropertyGroup>        
+        </PropertyGroup>
+
+        <Message Text="Project directory = $(MSBuildProjectDirectory)" />
+        <Message Text="TGZ files found = @(TGZFiles)" />
+        <Message Text="Last file = $(Last).tgz" />
 
         <!--Extracts the file to /package-->
-        <Exec Command="..\..\extern\7zip\7za.exe x $(MSBuildProjectDirectory)\$(Last).tgz -y"></Exec>
-
-        <!--Extracts the file to /package-->
-        <Exec Command="..\..\extern\7zip\7za.exe x $(MSBuildProjectDirectory)\$(Last).tar -y"></Exec>
+        <Exec Command="tar -xzf $(MSBuildProjectDirectory)\$(Last).tgz -v"></Exec>        
 
         <!--Deletes the tgz file-->
-        <Delete Files=" $(MSBuildProjectDirectory)\$(Last).tgz" />
-
-        <!--Deletes the tgz file-->
-        <Delete Files=" $(MSBuildProjectDirectory)\$(Last).tar" />
+        <Delete Files="$(MSBuildProjectDirectory)\$(Last).tgz" />
     </Target>
 
 
