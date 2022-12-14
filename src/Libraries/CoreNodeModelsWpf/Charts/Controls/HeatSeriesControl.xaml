@@ -5,13 +5,22 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:CoreNodeModels.Charts.Controls"
              xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+             xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="500" 
              Height="300" Width="300"
              d:DataContext="{d:DesignInstance local:HeatSeriesControl}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.LiveChartsDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
 
-        <lvc:CartesianChart Name="HeatSeriesUI" Grid.Row="1">
+        <lvc:CartesianChart Style="{StaticResource CartesianLiveChart}" Name="HeatSeriesUI" Grid.Row="1">
             <lvc:CartesianChart.AxisX >
                 <lvc:Axis Name="XAxis" LabelsRotation="-15">
                     <lvc:Axis.Separator>

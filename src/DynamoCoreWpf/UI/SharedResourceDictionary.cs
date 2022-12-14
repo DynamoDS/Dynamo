@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -134,6 +134,11 @@ namespace Dynamo.UI
         public static Uri SidebarGridDictionaryUri
         {
             get { return new Uri(Path.Combine(ThemesDirectory, "SidebarGridStyleDictionary.xaml")); }
+        }
+
+        public static Uri LiveChartsDictionaryUri
+        {
+            get { return new Uri(Path.Combine(ThemesDirectory, "LiveChartsStyle.xaml")); }
         }
 
         public static ResourceDictionary DynamoModernDictionary
