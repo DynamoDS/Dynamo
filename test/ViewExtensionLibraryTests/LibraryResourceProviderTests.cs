@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,6 +14,7 @@ using Dynamo.LibraryViewExtensionWebView2.Handlers;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Moq;
+using Newtonsoft.Json;
 using NUnit.Framework;
 
 namespace ViewExtensionLibraryTests
@@ -328,6 +329,52 @@ namespace ViewExtensionLibraryTests
 
         [Test]
         [Category("UnitTests")]
+        public void SearchNodeTest()
+        {
+            var nodeSearchModel = new NodeSearchModel();
+            var path = @"C:\temp\xyz.dyf";
+            var nodeName = "Code Block";
+            var expectedQualifiedName = $"dyf://123.456.somepackage.{nodeName}";
+
+            for (int i = 0; i < 100; i++)
+            {
+                nodeSearchModel.Add(
+                    new CustomNodeSearchElement(new Mock<ICustomNodeSource>().Object,
+                    new CustomNodeInfo(Guid.NewGuid(), $"Node-{i}", $"Node-{i}-Category{i}", $"Node-{i}-Description", path))
+                    );
+            }
+
+            nodeSearchModel.Add(
+                    new CustomNodeSearchElement(new Mock<ICustomNodeSource>().Object,
+                    new CustomNodeInfo(Guid.NewGuid(), nodeName, "123.456.somepackage", "Node-Description", path))
+                    );
+
+            var pathmanager = new Mock<IPathManager>();
+            var iconProvider = new IconResourceProvider(pathmanager.Object);
+
+            SearchResultDataProvider searchResultDataProvider = new SearchResultDataProvider(nodeSearchModel, iconProvider);
+
+            var extension = string.Empty;
+            var searchStream = searchResultDataProvider.GetResource("Code Block", out extension);
+
+            var data = GetLoadedTypesFromJson(searchStream);
+            List<LoadedTypeItem> types = data.loadedTypes;
+
+            Assert.AreEqual(types.Count, 1);
+            Assert.AreEqual(expectedQualifiedName, types[0].fullyQualifiedName);
+        }
+
+        private LoadedTypeData<LoadedTypeItem> GetLoadedTypesFromJson(Stream stream)
+        {
+            using (var sr = new StreamReader(stream))
+            {
+                var serializer = new JsonSerializer();
+                return (LoadedTypeData<LoadedTypeItem>)serializer.Deserialize(sr, typeof(LoadedTypeData<LoadedTypeItem>));
+            }
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void PackagedCustomNodeSearchElementLoadedType()
         {
             var category = "abc.xyz.somepackage";
@@ -347,6 +394,8 @@ namespace ViewExtensionLibraryTests
             var url = new IconUrl(name, path, true);
             Assert.AreEqual(url.Url, item.iconUrl);
         }
+
+
         /*
         [Test]
         [Category("UnitTests"), Category("Failure")]
