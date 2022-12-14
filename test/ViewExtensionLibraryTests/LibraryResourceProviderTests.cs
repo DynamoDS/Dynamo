@@ -355,13 +355,13 @@ namespace ViewExtensionLibraryTests
             SearchResultDataProvider searchResultDataProvider = new SearchResultDataProvider(nodeSearchModel, iconProvider);
 
             var extension = string.Empty;
-            var searchStream = searchResultDataProvider.GetResource("Code Block", out extension);
+            var searchResultStream = searchResultDataProvider.GetResource(nodeName, out extension);
 
-            var data = GetLoadedTypesFromJson(searchStream);
-            List<LoadedTypeItem> types = data.loadedTypes;
+            var searchResult = GetLoadedTypesFromJson(searchResultStream);
+            List<LoadedTypeItem> nodesResult = searchResult.loadedTypes;
 
-            Assert.AreEqual(types.Count, 1);
-            Assert.AreEqual(expectedQualifiedName, types[0].fullyQualifiedName);
+            Assert.AreEqual(nodesResult.Count, 1);
+            Assert.AreEqual(expectedQualifiedName, nodesResult[0].fullyQualifiedName);
         }
 
         private LoadedTypeData<LoadedTypeItem> GetLoadedTypesFromJson(Stream stream)
