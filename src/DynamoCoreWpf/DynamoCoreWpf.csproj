@@ -24,26 +24,38 @@
             <TGZFiles Include="./dynamods-splash-screen-*.tgz" />
         </ItemGroup>
 
+        <ItemGroup>
+            <SevenZip Include="$(NuGetPackageRoot)\7-zip.standaloneconsole.x64\*\tools\7za.exe" />
+        </ItemGroup>
+
         <!--Reverse the order of the files to get the higher version-->
         <ItemGroup>
             <Reversed Include="@(TGZFiles-&gt;Reverse())" />
         </ItemGroup>
-
-        <!--Gets the last one-->
+        
         <PropertyGroup>
             <Last>%(TGZFiles.Filename)</Last>
         </PropertyGroup>
 
-        <Message Text="Project directory = $(MSBuildProjectDirectory)" />
-        <Message Text="TGZ files found = @(TGZFiles)" />
-        <Message Text="Last file = $(Last).tgz" />
+        <Exec Command="echo NugetPackage = @(SevenZip)" />
 
         <!--Extracts the file to /package-->
-        <Exec Command="tar -xzf $(MSBuildProjectDirectory)\$(Last).tgz -v"></Exec>        
+        <Exec Command="@(SevenZip) x $(MSBuildProjectDirectory)\$(Last).tgz -y"></Exec>
+
+        <!--Extracts the file to /package-->
+        <Exec Command="@(SevenZip) x $(MSBuildProjectDirectory)\$(Last).tar -y"></Exec>
 
         <!--Deletes the tgz file-->
-        <Delete Files="$(MSBuildProjectDirectory)\$(Last).tgz" />
+        <Delete Files=" $(MSBuildProjectDirectory)\$(Last).tgz" />
+
+        <!--Deletes the tgz file-->
+        <Delete Files=" $(MSBuildProjectDirectory)\$(Last).tar" />
     </Target>
+
+
+    <ItemGroup>
+        <PackageReference Include="7-Zip.StandaloneConsole.x64" Version="22.1.0" />
+    </ItemGroup>
 
 
     <ItemGroup>
