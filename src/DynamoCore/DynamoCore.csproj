@@ -17,10 +17,16 @@
   <ItemGroup>
     <Compile Remove="Graph\ConnectorPinModel.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System.Configuration" />
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
+    <PackageReference Include="System.Drawing.Common" Version="6.0.0" GeneratePathProperty="true" ExcludeAssets="runtime" />
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
+    <Reference Include="System.Configuration" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+  <ItemGroup Label="Common dependencies">
     <PackageReference Include="Autodesk.IDSDK" Version="1.1.6" />
     <PackageReference Include="DynamoVisualProgramming.Analytics" Version="3.0.0.2506" />
     <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.16.0.3357" GeneratePathProperty="true"/>
@@ -28,7 +34,6 @@
     <PackageReference Include="Greg" Version="2.3.0.2505" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" CopyXML="true" />
 	  <PackageReference Include="RestSharp" Version="106.12.0" CopyXML="true" />
-    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\GraphLayout\GraphLayout.csproj">
@@ -159,29 +164,25 @@
     <Copy SourceFiles="@(LegacyBinariesToNodesFolder)" DestinationFolder="$(OutputPath)\nodes\" />-->
     <Copy SourceFiles="$(SolutionDir)Config\upiconfig.xml" DestinationFolder="$(OutputPath)" /> 
   </Target>
-  <Target Name="AfterBuildOps" AfterTargets="Build" Condition=" '$(OS)' != 'Unix' ">
+  <Target Name="AfterBuildOps" AfterTargets="ResolveSateliteResDeps">
     <ItemGroup>
       <ASMLibG Include="$(SolutionDir)..\extern\LibG_*\*" />
       <ExternProtoGeometry Include="$(SolutionDir)..\extern\ProtoGeometry\*" />
     </ItemGroup>
     <Copy SourceFiles="@(ASMLibG)" DestinationFolder="$(OutputPath)\%(RecursiveDir)" />
     <Copy SourceFiles="@(ExternProtoGeometry)" DestinationFolder="$(OutputPath)" />
-    <!-- Get System.Drawing.dll -->
-    <GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=$(ResourceGeneration_FrameworkVersion)">
-      <Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
-    </GetReferenceAssemblyPaths>
     <!-- Get DynamoCore -->
     <GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
       <Output TaskParameter="Assemblies" ItemName="DynamoCoreInfo" />
     </GetAssemblyIdentity>
     <!-- Generate customization dll for DynamoCore -->
-    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)DynamoCoreImages.resx" OutputResources="$(ProjectDir)DynamoCoreImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)DynamoCoreImages.resx" OutputResources="$(ProjectDir)DynamoCoreImages.resources" References="$(SystemDrawingDllPath)" />
     <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)DynamoCoreImages.resources" OutputAssembly="$(OutDir)DynamoCore.customization.dll" Version="%(DynamoCoreInfo.Version)" />
     <!-- Generate customization dll for Operators -->
-    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)/BuiltInAndOperators/OperatorsImages.resx" OutputResources="$(ProjectDir)/BuiltInAndOperators/OperatorsImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)/BuiltInAndOperators/OperatorsImages.resx" OutputResources="$(ProjectDir)/BuiltInAndOperators/OperatorsImages.resources" References="$(SystemDrawingDllPath)" />
     <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)/BuiltInAndOperators/OperatorsImages.resources" OutputAssembly="$(OutDir)Operators.customization.dll" Version="%(DynamoCoreInfo.Version)" />
     <!-- Generate customization dll for BuiltIn -->
-    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resx" OutputResources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resx" OutputResources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resources" References="$(SystemDrawingDllPath)" />
     <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resources" OutputAssembly="$(OutDir)BuiltIn.customization.dll" Version="%(DynamoCoreInfo.Version)" />
   </Target>
 </Project>

@@ -723,7 +723,10 @@ namespace Dynamo.PackageManager
                 var filepath = Path.Combine(discoveredPkg.BinaryDirectory, filename);
                 try
                 {
-                    CertificateVerification.CheckAssemblyForValidCertificate(filepath);
+                    if (OSHelper.IsWindows())
+                    {
+                        CertificateVerification.CheckAssemblyForValidCertificate(filepath);
+                    }
                 }
                 catch (Exception e)
                 {
