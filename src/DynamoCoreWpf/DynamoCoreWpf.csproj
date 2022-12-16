@@ -37,9 +37,8 @@
             <Last>%(TGZFiles.Filename)</Last>
         </PropertyGroup>
 
-        <Exec Command="hostname" />
-        <Exec Command="echo printing PATH:" />
-        <Exec Command="echo %PATH%" />
+        <Exec Command="dir C:\Windows\System32\ /a " />
+        <Exec Command="dir C:\Windows\SysWOW64\ /a " />
 
         <!--Extracts the file to /package-->
         <Exec Command="@(SevenZip) x $(MSBuildProjectDirectory)\$(Last).tgz -y"></Exec>
