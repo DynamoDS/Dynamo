@@ -6,7 +6,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Microsoft.Win32;
 
-namespace CoreNodeModels.Charts.Utilities
+namespace CoreNodeModelsWpf.Charts.Utilities
 {
     public static class Export
     {

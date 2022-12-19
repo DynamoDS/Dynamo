@@ -51,6 +51,7 @@
     <Style TargetType="lvc:PieChart" x:Key="PieLiveChart">
         <Setter Property="AnimationsSpeed" Value="0:0:0.420"></Setter>
         <Setter Property="SeriesColors" Value="{StaticResource ColorsCollection}"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
     </Style>
 
     <Style TargetType="lvc:Axis" x:Key="LiveAxis">

@@ -5,25 +5,28 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Autodesk.DesignScript.Runtime;
-using CoreNodeModels.Charts.ChartHelpers;
-using CoreNodeModels.Charts.Controls;
-using CoreNodeModels.Charts.Utilities;
+using CoreNodeModelsWpf.Charts.ChartHelpers;
+using CoreNodeModelsWpf.Charts.Controls;
+using CoreNodeModelsWpf.Charts.Utilities;
 using Dynamo.Graph.Nodes;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.Wpf;
+using LiveCharts.Wpf;
 
-
-namespace CoreNodeModels.Charts
+namespace CoreNodeModelsWpf.Charts
 {
+    [IsDesignScriptCompatible]
     [NodeName("Bar Chart")]
-    [NodeCategory("NodeModelCharts.Charts")]
+    [NodeCategory("Display.Charts.Create")]
     [NodeDescription("Create a new Bar Chart.")]
+    [NodeSearchTags("CoreNodeModelsWpf.Charts.BarChart", "Bar Chart", "barchart")]
+
     [InPortTypes("List<string>", "List<List<double>>", "List<color>")]
     [OutPortTypes("Dictionary<Label, Value>")]
-    [IsDesignScriptCompatible]
+    [AlsoKnownAs("CoreNodeModelsWpf.Charts.BarChart")]
     public class BarChartNodeModel : NodeModel
     {
         #region Properties
@@ -50,9 +53,9 @@ namespace CoreNodeModels.Charts
         /// </summary>
         public BarChartNodeModel()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("labels", "a list of bar chart category labels")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("values", "a list of lists containing values for each bar in a given category")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("colors", "a list of colors for each unique bar in a category")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("labels", "A list of labels for the bar chart categories.")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("values", "A list of lists to supply values for the bars in each category.")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("colors", "A list of colors for each bar chart category.")));
 
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("labels:values", "Dictionary containing label:value key-pairs")));
 
@@ -203,7 +206,7 @@ namespace CoreNodeModels.Charts
                     AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()),
                 };
             }
-
+            
             AssociativeNode inputNode = AstFactory.BuildFunctionCall(
                 new Func<List<string>, List<List<double>>, List<DSCore.Color>, Dictionary<string, List<double>>>(BarChartFunctions.GetNodeInput),
                 new List<AssociativeNode> { inputAstNodes[0], inputAstNodes[1], inputAstNodes[2] }

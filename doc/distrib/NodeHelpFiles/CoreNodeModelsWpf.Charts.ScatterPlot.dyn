@@ -1,0 +1,427 @@
+{
+  "Uuid": "8c2ba28b-a82f-4c59-9042-0eb03618a325",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Scatter Plot",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "[\"2019\",\"2020\",\"2021\"];\n[[70,20,10],[12,24,44],[35,5,16]];\n[[30,50,40],[60,40,-13],[62,-3,28]];",
+      "Id": "62218ca505be42e38947fc8f427a6d5d",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "57439ed06bd64504ae3669db9750b915",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4039de7e972949c1aa92f4d59228b14a",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "1c4b26309f5c41a08df19b223954869e",
+          "Name": "",
+          "Description": "Value of expression at line 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.ColorPalette, CoreNodeModels",
+      "InputValue": {
+        "R": 106,
+        "G": 192,
+        "B": 231,
+        "A": 255
+      },
+      "NodeType": "ColorInputNode",
+      "Id": "2c3e3705aa3748a0a0f20505ff3be117",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "aac47bb67a264898946360146dc6b9bb",
+          "Name": "Color",
+          "Description": "Selected Color.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select a Color from the palette"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.ColorPalette, CoreNodeModels",
+      "InputValue": {
+        "R": 235,
+        "G": 85,
+        "B": 85,
+        "A": 255
+      },
+      "NodeType": "ColorInputNode",
+      "Id": "b53b43633735435ab9fa51d36a19cf4d",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "aea68af2d9674ead8fdaa8f001a191c5",
+          "Name": "Color",
+          "Description": "Selected Color.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select a Color from the palette"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.ColorPalette, CoreNodeModels",
+      "InputValue": {
+        "R": 251,
+        "G": 181,
+        "B": 73,
+        "A": 255
+      },
+      "NodeType": "ColorInputNode",
+      "Id": "8f44b9ccbc6842a2a9d074fb896fd891",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "fe9737b86ad24357a4b23d4a16e76b75",
+          "Name": "Color",
+          "Description": "Selected Color.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select a Color from the palette"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
+      "VariableInputPorts": true,
+      "NodeType": "ExtensionNode",
+      "Id": "9e4b1a6ac0294f3092e4d38a0b1c7d0c",
+      "Inputs": [
+        {
+          "Id": "88a6122f398640349aa909ab9a1546ba",
+          "Name": "item0",
+          "Description": "Item Index #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "9b8863388e9549439f619e067cf0dc6d",
+          "Name": "item1",
+          "Description": "Item Index #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "1b97eefabc75492c9ecc9bd321a4a117",
+          "Name": "item2",
+          "Description": "Item Index #2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "cb045d04d9e54f38ad37668170bd90e4",
+          "Name": "list",
+          "Description": "A list (type: var[]..[])",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Makes a new list from the given inputs"
+    },
+    {
+      "ConcreteType": "CoreNodeModelsWpf.Charts.ScatterPlotNodeModel, CoreNodeModelsWpf",
+      "Labels": [
+        "2019",
+        "2020",
+        "2021"
+      ],
+      "XValues": [
+        [
+          70.0,
+          20.0,
+          10.0
+        ],
+        [
+          12.0,
+          24.0,
+          44.0
+        ],
+        [
+          35.0,
+          5.0,
+          16.0
+        ]
+      ],
+      "YValues": [
+        [
+          30.0,
+          50.0,
+          40.0
+        ],
+        [
+          60.0,
+          40.0,
+          -13.0
+        ],
+        [
+          62.0,
+          -3.0,
+          28.0
+        ]
+      ],
+      "Colors": [
+        "#FF6AC0E7",
+        "#FFEB5555",
+        "#FFFBB549"
+      ],
+      "NodeType": "ExtensionNode",
+      "Id": "9775797f769b41488861aba815fc8d1c",
+      "Inputs": [
+        {
+          "Id": "3b5ff599510b4e06a5814413cf504001",
+          "Name": "labels",
+          "Description": "A list of string labels for each group of points to be plotted",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "09269aaae6a443f5b78d9d3c65d19cfd",
+          "Name": "x-values",
+          "Description": "A list of lists each containing double values representing x-coordinates",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b8d8e5ec4e804fd989f3d18d2c747e3b",
+          "Name": "y-values",
+          "Description": "A list of lists each containing double values representing y-coordinates",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b8827e5071e7489f95acda65d5322d4b",
+          "Name": "colors",
+          "Description": "A list of color values for each group of points",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "585d85481f66415ea02bb45976fcd851",
+          "Name": "labels:values",
+          "Description": "Dictionary containing label:value key-pairs",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Create a new scatter plot."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "57439ed06bd64504ae3669db9750b915",
+      "End": "3b5ff599510b4e06a5814413cf504001",
+      "Id": "0b4a890c98e147c7bcd8e132544c490e",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "4039de7e972949c1aa92f4d59228b14a",
+      "End": "09269aaae6a443f5b78d9d3c65d19cfd",
+      "Id": "b58a28c414354c68912796ff146c78f4",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "1c4b26309f5c41a08df19b223954869e",
+      "End": "b8d8e5ec4e804fd989f3d18d2c747e3b",
+      "Id": "de7e6edfd8fb4d599d733a95187889cd",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "aac47bb67a264898946360146dc6b9bb",
+      "End": "88a6122f398640349aa909ab9a1546ba",
+      "Id": "55073ace889c4189802149b38dee1c11",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "aea68af2d9674ead8fdaa8f001a191c5",
+      "End": "9b8863388e9549439f619e067cf0dc6d",
+      "Id": "bc6a3066dd7d457688bf54fdac04e412",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "fe9737b86ad24357a4b23d4a16e76b75",
+      "End": "1b97eefabc75492c9ecc9bd321a4a117",
+      "Id": "e53d38cccb9e49be93592ad0fec85277",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "cb045d04d9e54f38ad37668170bd90e4",
+      "End": "b8827e5071e7489f95acda65d5322d4b",
+      "Id": "8779458c0bc14220bae08749e6dba27a",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.18",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.18.0.3514",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "62218ca505be42e38947fc8f427a6d5d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 205.299768889332,
+        "Y": 214.527867014246
+      },
+      {
+        "Name": "Color Palette",
+        "ShowGeometry": true,
+        "Id": "2c3e3705aa3748a0a0f20505ff3be117",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -63.700231110668483,
+        "Y": 257.8728670142458
+      },
+      {
+        "Name": "Color Palette",
+        "ShowGeometry": true,
+        "Id": "b53b43633735435ab9fa51d36a19cf4d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -63.700231110668483,
+        "Y": 405.87286701424568
+      },
+      {
+        "Name": "Color Palette",
+        "ShowGeometry": true,
+        "Id": "8f44b9ccbc6842a2a9d074fb896fd891",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -63.700231110668483,
+        "Y": 553.8728670142458
+      },
+      {
+        "Name": "List Create",
+        "ShowGeometry": true,
+        "Id": "9e4b1a6ac0294f3092e4d38a0b1c7d0c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 205.29976888933152,
+        "Y": 371.8728670142458
+      },
+      {
+        "Name": "Scatter Plot",
+        "ShowGeometry": true,
+        "Id": "9775797f769b41488861aba815fc8d1c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 704.57934433571427,
+        "Y": 206.9054069875815
+      }
+    ],
+    "Annotations": [],
+    "X": 22.524493987627807,
+    "Y": -45.16619563868619,
+    "Zoom": 1.0181140440913179
+  }
+}

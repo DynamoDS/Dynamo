@@ -8,22 +8,25 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Autodesk.DesignScript.Runtime;
-using CoreNodeModels.Charts.ChartHelpers;
-using CoreNodeModels.Charts.Utilities;
+using CoreNodeModelsWpf.Charts.ChartHelpers;
+using CoreNodeModelsWpf.Charts.Utilities;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Wpf;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 
-namespace CoreNodeModels.Charts.Controls
+namespace CoreNodeModelsWpf.Charts.Controls
 {
+    [IsDesignScriptCompatible]
     [NodeName("Index-Value Line Plot")]
-    [NodeCategory("NodeModelCharts.Charts")]
+    [NodeCategory("Display.Charts.Create")]
     [NodeDescription("Create a new Basic Line Chart.")]
+    [NodeSearchTags("CoreNodeModelsWpf.Charts.Index-ValueLinePlot", "Index-Value Line Plot", "indexvaluelineplot")]
+
     [InPortTypes("List<string>", "List<List<double>>", "List<color>")]
     [OutPortTypes("Dictionary<string, double>")]
-    [IsDesignScriptCompatible]
+    [AlsoKnownAs("CoreNodeModelsWpf.Charts.Index-ValueLinePlot")]
     public class BasicLineChartNodeModel : NodeModel
     {
         #region Properties
@@ -51,9 +54,9 @@ namespace CoreNodeModels.Charts.Controls
         /// </summary>
         public BasicLineChartNodeModel()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("labels", "A list of string labels for each line to be plotted")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("values", "List of lists each containing double values to be plotted against X-Axis values")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("colors", "basic line chart line color values")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("labels", "A list of string labels for each line to be plotted.")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("values", "List of lists each containing double values to be plotted against X-Axis values.")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("colors", "A list of colors for each line.")));
 
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("labels:values", "Dictionary containing label:value key-pairs")));
 

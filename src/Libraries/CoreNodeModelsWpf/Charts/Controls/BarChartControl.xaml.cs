@@ -1,11 +1,12 @@
 using LiveCharts;
 using LiveCharts.Wpf;
+using SharpDX.Direct2D1;
 using System;
 using System.ComponentModel;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 
-namespace CoreNodeModels.Charts.Controls
+namespace CoreNodeModelsWpf.Charts.Controls
 {
     /// <summary>
     /// Interaction logic for BarChartControl.xaml
@@ -15,6 +16,8 @@ namespace CoreNodeModels.Charts.Controls
         private Random rnd = new Random();
 
         public event PropertyChangedEventHandler PropertyChanged;
+        private static double PADDING = 4.0;
+        private static double MAX_COLUMN_WIDTH = 20.0;
 
         private void OnPropertyChanged(string propertyName)
         {
@@ -35,6 +38,7 @@ namespace CoreNodeModels.Charts.Controls
 
         private void BuildUI(BarChartNodeModel model)
         {
+
             if (!model.InPorts[0].IsConnected && !model.InPorts[1].IsConnected && !model.InPorts[2].IsConnected)
             {
                 BarChart.Series = new SeriesCollection
@@ -42,17 +46,23 @@ namespace CoreNodeModels.Charts.Controls
                     new ColumnSeries
                     {
                         Title = "2019",
-                        Values = new ChartValues<double> { 5, 6, 7, 8 }
+                        Values = new ChartValues<double> { 5, 6, 7, 8 },
+                        ColumnPadding = PADDING,
+                        MaxColumnWidth = MAX_COLUMN_WIDTH,
                     },
                     new ColumnSeries
                     {
                         Title = "2020",
-                        Values = new ChartValues<double> { 10, 12, 14, 16 }
+                        Values = new ChartValues<double> { 10, 12, 14, 16 },
+                        ColumnPadding = PADDING,
+                        MaxColumnWidth = MAX_COLUMN_WIDTH,
                     },
                     new ColumnSeries
                     {
                         Title = "2021",
-                        Values = new ChartValues<double> { 15, 18, 21, 24 }
+                        Values = new ChartValues<double> { 15, 18, 21, 24 },
+                        ColumnPadding = PADDING,
+                        MaxColumnWidth = MAX_COLUMN_WIDTH,
                     }
                 };
             }
@@ -68,7 +78,10 @@ namespace CoreNodeModels.Charts.Controls
                         {
                             Title = model.Labels[i],
                             Values = new ChartValues<double>(model.Values[i]),
-                            Fill = model.Colors[i]
+                            Fill = model.Colors[i],
+                            Stroke = model.Colors[i],
+                            ColumnPadding = PADDING,
+                            MaxColumnWidth = MAX_COLUMN_WIDTH,
                         };
                     }
 
@@ -94,7 +107,10 @@ namespace CoreNodeModels.Charts.Controls
                         {
                             Title = model.Labels[i],
                             Values = new ChartValues<double>(model.Values[i]),
-                            Fill = model.Colors[i]
+                            Fill = model.Colors[i],
+                            Stroke = model.Colors[i],
+                            ColumnPadding = PADDING,
+                            MaxColumnWidth = MAX_COLUMN_WIDTH,
                         };
                     }
 

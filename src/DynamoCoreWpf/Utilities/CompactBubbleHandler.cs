@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Web.ModelBinding;
 using Dynamo.Extensions;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
@@ -24,8 +25,11 @@ namespace Dynamo.Wpf.Utilities
         {
             items = 0;
             var viewModel = ProcessThing(value, true);
-            viewModel.SetObjectType(value.Data);
-            viewModel.NumberOfItems = items;
+            if(value != null)
+            {
+                viewModel.SetObjectType(value.Data);
+                viewModel.NumberOfItems = items;
+            }
             return viewModel;
         }
 

@@ -8,23 +8,26 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Autodesk.DesignScript.Runtime;
-using CoreNodeModels.Charts.ChartHelpers;
-using CoreNodeModels.Charts.Controls;
-using CoreNodeModels.Charts.Utilities;
+using CoreNodeModelsWpf.Charts.ChartHelpers;
+using CoreNodeModelsWpf.Charts.Controls;
+using CoreNodeModelsWpf.Charts.Utilities;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Wpf;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 
-namespace CoreNodeModels.Charts
+namespace CoreNodeModelsWpf.Charts
 {
-    [NodeName("Heat Series Plot")]
-    [NodeCategory("NodeModelCharts.Charts")]
-    [NodeDescription("Create a new heat series plot.")]
-    [InPortTypes("List<string>", "List<string>", "List<List<double>>", "List<List<double>>", "List<color>")]
-    [OutPortTypes("object[]")]
     [IsDesignScriptCompatible]
+    [NodeName("Heat Series Plot")]
+    [NodeCategory("Display.Charts.Create")]
+    [NodeDescription("Create a heat series plot.")]
+    [NodeSearchTags("CoreNodeModelsWpf.Charts.HeatSeriesPlot", "Heat Series Plot", "heatseriesplot")]
+
+    [InPortTypes("List<string>", "List<string>", "List<List<double>>", "List<color>")]
+    [OutPortTypes("object[]")]
+    [AlsoKnownAs("CoreNodeModelsWpf.Charts.HeatSeriesPlot")]
     public class HeatSeriesNodeModel : NodeModel
     {
         #region Properties
@@ -60,7 +63,7 @@ namespace CoreNodeModels.Charts
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("x-labels", "A list of string labels for the x-axis.")));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("y-labels", "A list of string labels for the y-axis.")));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("values", "A list of lists each containing double values representing items in a column.")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("colors", "A list of colors used to generate a color range")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("colors", "A list of colors used to generate a color range.")));
 
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("labels:values", "Dictionary containing label:value key-pairs")));
 

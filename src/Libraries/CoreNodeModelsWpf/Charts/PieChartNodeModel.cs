@@ -8,23 +8,26 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Autodesk.DesignScript.Runtime;
-using CoreNodeModels.Charts.ChartHelpers;
-using CoreNodeModels.Charts.Controls;
-using CoreNodeModels.Charts.Utilities;
+using CoreNodeModelsWpf.Charts.ChartHelpers;
+using CoreNodeModelsWpf.Charts.Controls;
+using CoreNodeModelsWpf.Charts.Utilities;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Wpf;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 
-namespace CoreNodeModels.Charts
+namespace CoreNodeModelsWpf.Charts
 {
+    [IsDesignScriptCompatible]
     [NodeName("Pie Chart")]
-    [NodeCategory("NodeModelCharts.Charts")]
+    [NodeCategory("Display.Charts.Create")]
     [NodeDescription("Create a new Pie Chart.")]
+    [NodeSearchTags("CoreNodeModelsWpf.Charts.PieChart", "Pie Chart", "piechart")]
+
     [InPortTypes("List<string>", "List<double>", "List<color>")]
     [OutPortTypes("Dictionary<Label, Value>")]
-    [IsDesignScriptCompatible]
+    [AlsoKnownAs("CoreNodeModelsWpf.Charts.PieChart")]
     public class PieChartNodeModel : NodeModel
     {
         #region Properties
@@ -51,9 +54,9 @@ namespace CoreNodeModels.Charts
         /// </summary>
         public PieChartNodeModel()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("labels", "pie chart category labels")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("values", "pie chart values to be compared")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("colors", "pie chart color values")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("labels", "A list of string labels for each segment in the pie chart.")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("values", "A list of double values to supply a value for each segment of the pie chart.")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("colors", "A list of colors for each segment of the pie chart.")));
 
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("labels:values", "Dictionary containing label:value key-pairs")));
 

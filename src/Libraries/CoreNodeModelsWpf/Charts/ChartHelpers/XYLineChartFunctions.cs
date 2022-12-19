@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Autodesk.DesignScript.Runtime;
 
-namespace CoreNodeModels.Charts.ChartHelpers
+namespace CoreNodeModelsWpf.Charts.ChartHelpers
 {
     public class XYLineChartFunctions
     {

@@ -6,7 +6,7 @@ using LiveCharts;
 using LiveCharts.Wpf;
 using System.ComponentModel;
 
-namespace CoreNodeModels.Charts.Controls
+namespace CoreNodeModelsWpf.Charts.Controls
 {
     /// <summary>
     /// Interaction logic for BasicLineChartControl.xaml

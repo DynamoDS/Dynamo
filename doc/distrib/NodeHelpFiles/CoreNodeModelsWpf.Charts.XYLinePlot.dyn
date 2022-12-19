@@ -1,0 +1,427 @@
+{
+  "Uuid": "8c2ba28b-a82f-4c59-9042-0eb03618a325",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "XY Line Plot",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "[\"2019\",\"2020\",\"2021\"];\n[[5,20,50], [12,24,44], [15,25,56]];\n[[30,50,140], [160,40,43], [54,25,54]];",
+      "Id": "62218ca505be42e38947fc8f427a6d5d",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "057d316d11614e249e1975e2715eb636",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "de14e850476d4447b86ea23f60b71d83",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "402268b65796439589ce33ec15e82149",
+          "Name": "",
+          "Description": "Value of expression at line 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.ColorPalette, CoreNodeModels",
+      "InputValue": {
+        "R": 106,
+        "G": 192,
+        "B": 231,
+        "A": 255
+      },
+      "NodeType": "ColorInputNode",
+      "Id": "2c3e3705aa3748a0a0f20505ff3be117",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "aac47bb67a264898946360146dc6b9bb",
+          "Name": "Color",
+          "Description": "Selected Color.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select a Color from the palette"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.ColorPalette, CoreNodeModels",
+      "InputValue": {
+        "R": 235,
+        "G": 85,
+        "B": 85,
+        "A": 255
+      },
+      "NodeType": "ColorInputNode",
+      "Id": "b53b43633735435ab9fa51d36a19cf4d",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "aea68af2d9674ead8fdaa8f001a191c5",
+          "Name": "Color",
+          "Description": "Selected Color.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select a Color from the palette"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.ColorPalette, CoreNodeModels",
+      "InputValue": {
+        "R": 251,
+        "G": 181,
+        "B": 73,
+        "A": 255
+      },
+      "NodeType": "ColorInputNode",
+      "Id": "8f44b9ccbc6842a2a9d074fb896fd891",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "fe9737b86ad24357a4b23d4a16e76b75",
+          "Name": "Color",
+          "Description": "Selected Color.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select a Color from the palette"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
+      "VariableInputPorts": true,
+      "NodeType": "ExtensionNode",
+      "Id": "9e4b1a6ac0294f3092e4d38a0b1c7d0c",
+      "Inputs": [
+        {
+          "Id": "88a6122f398640349aa909ab9a1546ba",
+          "Name": "item0",
+          "Description": "Item Index #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "9b8863388e9549439f619e067cf0dc6d",
+          "Name": "item1",
+          "Description": "Item Index #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "1b97eefabc75492c9ecc9bd321a4a117",
+          "Name": "item2",
+          "Description": "Item Index #2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "cb045d04d9e54f38ad37668170bd90e4",
+          "Name": "list",
+          "Description": "A list (type: var[]..[])",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Makes a new list from the given inputs"
+    },
+    {
+      "ConcreteType": "CoreNodeModelsWpf.Charts.XYLineChartNodeModel, CoreNodeModelsWpf",
+      "Labels": [
+        "2019",
+        "2020",
+        "2021"
+      ],
+      "XValues": [
+        [
+          5.0,
+          20.0,
+          50.0
+        ],
+        [
+          12.0,
+          24.0,
+          44.0
+        ],
+        [
+          15.0,
+          25.0,
+          56.0
+        ]
+      ],
+      "YValues": [
+        [
+          30.0,
+          50.0,
+          140.0
+        ],
+        [
+          160.0,
+          40.0,
+          43.0
+        ],
+        [
+          54.0,
+          25.0,
+          54.0
+        ]
+      ],
+      "Colors": [
+        "#FF6AC0E7",
+        "#FFEB5555",
+        "#FFFBB549"
+      ],
+      "NodeType": "ExtensionNode",
+      "Id": "aed4cbdc78c446949d2fb9cfc0795984",
+      "Inputs": [
+        {
+          "Id": "d59d477f60844da1b28f66f14c76d9a2",
+          "Name": "labels",
+          "Description": "A list of string labels for each line to be plotted",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2a7263e37af548aab307a4f7086f7f00",
+          "Name": "x-values",
+          "Description": "List of lists each containing double values representing x-coordinates",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "939b812ad93f497dafff6a642732bd29",
+          "Name": "y-values",
+          "Description": "List of lists each containing double values representing y-coordinates",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "9e4aa2a59c274533b4a740369bd3f483",
+          "Name": "colors",
+          "Description": "XY line chart line color values",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "16f89c4e22144d57b020b03e6bee5979",
+          "Name": "labels:values",
+          "Description": "Dictionary containing label:value key-pairs",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Create a new XY line plot."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "057d316d11614e249e1975e2715eb636",
+      "End": "d59d477f60844da1b28f66f14c76d9a2",
+      "Id": "e25dcf30193c46b488f3a04887d95965",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "de14e850476d4447b86ea23f60b71d83",
+      "End": "2a7263e37af548aab307a4f7086f7f00",
+      "Id": "5166ed853b2049a384acb4a15eb22c76",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "402268b65796439589ce33ec15e82149",
+      "End": "939b812ad93f497dafff6a642732bd29",
+      "Id": "65ac9ff652a847ef9ceb0427814dfc47",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "aac47bb67a264898946360146dc6b9bb",
+      "End": "88a6122f398640349aa909ab9a1546ba",
+      "Id": "55073ace889c4189802149b38dee1c11",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "aea68af2d9674ead8fdaa8f001a191c5",
+      "End": "9b8863388e9549439f619e067cf0dc6d",
+      "Id": "bc6a3066dd7d457688bf54fdac04e412",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "fe9737b86ad24357a4b23d4a16e76b75",
+      "End": "1b97eefabc75492c9ecc9bd321a4a117",
+      "Id": "e53d38cccb9e49be93592ad0fec85277",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "cb045d04d9e54f38ad37668170bd90e4",
+      "End": "9e4aa2a59c274533b4a740369bd3f483",
+      "Id": "e5d2e1948a6f42c69874782c43b74500",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.18",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.18.0.3514",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "62218ca505be42e38947fc8f427a6d5d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 205.299768889332,
+        "Y": 214.527867014246
+      },
+      {
+        "Name": "Color Palette",
+        "ShowGeometry": true,
+        "Id": "2c3e3705aa3748a0a0f20505ff3be117",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -63.700231110668483,
+        "Y": 257.8728670142458
+      },
+      {
+        "Name": "Color Palette",
+        "ShowGeometry": true,
+        "Id": "b53b43633735435ab9fa51d36a19cf4d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -63.700231110668483,
+        "Y": 405.87286701424568
+      },
+      {
+        "Name": "Color Palette",
+        "ShowGeometry": true,
+        "Id": "8f44b9ccbc6842a2a9d074fb896fd891",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -63.700231110668483,
+        "Y": 553.8728670142458
+      },
+      {
+        "Name": "List Create",
+        "ShowGeometry": true,
+        "Id": "9e4b1a6ac0294f3092e4d38a0b1c7d0c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 205.29976888933152,
+        "Y": 371.8728670142458
+      },
+      {
+        "Name": "XY Line Plot",
+        "ShowGeometry": true,
+        "Id": "aed4cbdc78c446949d2fb9cfc0795984",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 696.31772244035483,
+        "Y": 287.18085851099727
+      }
+    ],
+    "Annotations": [],
+    "X": 90.249278229572724,
+    "Y": -33.212611758221783,
+    "Zoom": 0.93743229668600114
+  }
+}
