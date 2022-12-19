@@ -144,7 +144,11 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Background="{StaticResource ExtensionBackgroundColor}">
-        <ScrollViewer Name="MainScrollViewer" DataContextChanged="FrameworkElement_OnDataContextChanged" Margin="17px" VerticalScrollBarVisibility="Visible">
+        <ScrollViewer Name="MainScrollViewer"
+                      DataContextChanged="FrameworkElement_OnDataContextChanged"
+                      Margin="17px"
+                      HorizontalScrollBarVisibility="Visible"
+                      VerticalScrollBarVisibility="Visible">
 
             <!--  Contains Everything  -->
             <StackPanel Name="MainStackPanel">
