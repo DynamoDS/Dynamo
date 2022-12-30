@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -393,6 +393,10 @@ namespace DSOffice
                     }
 
                     return cell.InnerText;
+                }
+                else if (cell.DataType.Value == CellValues.String)
+                {
+                    return cell.CellValue.Text;
                 }
                 else
                 {
