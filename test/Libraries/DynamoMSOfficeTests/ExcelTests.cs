@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -1432,6 +1432,15 @@ namespace Dynamo.Tests
 
             //Confirm it's correct
             Assert.AreEqual(data, Data.ImportCSV(fn));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void OpemXML_ImportExcel()
+        {
+            string filePath = Path.Combine(TestDirectory, @"core\importExport\OpenXML-ImportExcel.xlsx");
+            var data = Data.OpenXMLImportExcel(filePath, "worksheet1", 0, 0, false);
+            Assert.AreEqual(data[0][2], "0111111_0000");
         }
     }
 }
