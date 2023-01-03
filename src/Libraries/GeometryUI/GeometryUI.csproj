@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -69,17 +69,13 @@
       <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <Target Name="GegenerateFiles" AfterTargets="Build" Condition=" '$(OS)' != 'Unix' ">
-    <!-- Get System.Drawing.dll -->
-    <GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=$(ResourceGeneration_FrameworkVersion)">
-      <Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
-    </GetReferenceAssemblyPaths>
+  <Target Name="GegenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" '$(OS)' != 'Unix' ">
     <!-- Get assembly -->
     <GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
       <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
     </GetAssemblyIdentity>
     <!-- Generate customization dll -->
-    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)GeometryUIImages.resx" OutputResources="$(ProjectDir)GeometryUIImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)GeometryUIImages.resx" OutputResources="$(ProjectDir)GeometryUIImages.resources" References="$(SystemDrawingDllPath)" />
     <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)GeometryUIImages.resources" OutputAssembly="$(OutDir)GeometryUI.customization.dll" Version="%(AssemblyInfo.Version)" />
   </Target>
 </Project>
