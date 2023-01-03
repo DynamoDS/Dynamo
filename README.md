@@ -33,6 +33,8 @@ You will need the following to build the latest Dynamo on Windows:
 - [Microsoft Visual Studio 2019](https://visualstudio.microsoft.com/downloads/) (any edition)
 - Microsoft .NET Framework 4.8 (included with Visual Studio 2019)
 - Node.js v16 and npm v8
+- - [Download](https://nodejs.org/en/download/) and install the latest LTS version of Node.js
+- - Open up your Command Prompt and check you have successfully installed Node by inputting `node -v`. If you have Node installed, it will tell you the version.
 - [GitHub for Windows](https://windows.github.com/)
 - For runnning Dynamo tests within Visual Studio -[NUnit Test Adapter 2](https://marketplace.visualstudio.com/items?itemName=NUnitDevelopers.NUnitTestAdapter)
 

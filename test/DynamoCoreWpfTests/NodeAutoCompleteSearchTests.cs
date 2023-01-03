@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
+using Dynamo.Properties;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -111,6 +112,9 @@ namespace DynamoCoreWpfTests
             var searchViewModel = ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel;
             searchViewModel.PortViewModel = inPorts[1];
 
+            // Set the suggestion to ObjectType
+            searchViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
+
             // The initial list will fill the FilteredResults with a few options - all basic input types
             searchViewModel.PopulateAutoCompleteCandidates();
             Assert.AreEqual(8, searchViewModel.FilteredResults.Count());
@@ -133,6 +137,9 @@ namespace DynamoCoreWpfTests
 
             var searchViewModel = ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel;
             searchViewModel.PortViewModel = outPorts[1];
+
+            // Set the suggestion to ObjectType
+            searchViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
 
             // The initial list will fill the FilteredResults with a few options - all basic input types
             searchViewModel.PopulateAutoCompleteCandidates();
@@ -414,6 +421,9 @@ namespace DynamoCoreWpfTests
             var suggestions = searchViewModel.GetMatchingSearchElements();
             Assert.AreEqual(0, suggestions.Count());
 
+            // Set the suggestion to ObjectType
+            searchViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
+
             // The initial list will fill the FilteredResults with a few options - all basic input types
             searchViewModel.PopulateAutoCompleteCandidates();
             Assert.AreEqual(5, searchViewModel.FilteredResults.Count());
@@ -436,6 +446,7 @@ namespace DynamoCoreWpfTests
 
             var searchViewModel = (ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel);
             searchViewModel.PortViewModel = inPorts[0];
+            searchViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
 
             // Get the matching node elements for the specific node port.
             searchViewModel.PopulateAutoCompleteCandidates();
@@ -466,10 +477,38 @@ namespace DynamoCoreWpfTests
             var suggestions = searchViewModel.GetMatchingSearchElements();
             Assert.AreEqual(0, suggestions.Count());
 
+            // Set the suggestion to ObjectType
+            searchViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
+
             // The initial list will fill the FilteredResults with a list of default options
             searchViewModel.PopulateAutoCompleteCandidates();
             Assert.AreEqual(2, searchViewModel.FilteredResults.Count());
             Assert.AreEqual("Number Slider", searchViewModel.FilteredResults.FirstOrDefault().Name);
+        }
+
+        [Test]
+        public void NoMLAutocompleteRecommendations()
+        {
+            Open(@"UI\builtin_inputport_suggestion.dyn");
+
+            // Get the node view for a CoreNodeModels.Sequence node
+            NodeView nodeView = NodeViewWithGuid(Guid.Parse("17b1efe0cdea4ce48cafc2da689f79a4").ToString());
+
+            var outPorts = nodeView.ViewModel.OutPorts;
+            Assert.AreEqual(1, outPorts.Count());
+
+            var searchViewModel = ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel;
+            searchViewModel.PortViewModel = outPorts[0];
+
+            // Set the suggestion to ML
+            searchViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
+
+            // As there is no authentication in test fixture, no results are shown.
+            searchViewModel.PopulateAutoCompleteCandidates();
+            searchViewModel.DisplayAutocompleteMLStaticPage = true;
+            searchViewModel.DisplayLowConfidence = false;
+            searchViewModel.AutocompleteMLTitle = Resources.AutocompleteNoRecommendationsTitle;
+            searchViewModel.AutocompleteMLMessage = Resources.AutocompleteNoRecommendationsMessage;
         }
     }
 }

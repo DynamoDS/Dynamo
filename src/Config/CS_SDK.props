@@ -1,14 +1,15 @@
 <Project>
   <PropertyGroup>
+    <Platforms>AnyCPU;x64;NET60_Windows;NET60_Linux;</Platforms>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <PlatformTarget >x64</PlatformTarget>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">16.0</VisualStudioVersion>
     <TargetFramework>net48</TargetFramework>
     <FileAlignment>512</FileAlignment>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath> 
-    <OutputPath Condition=" '$(OutputPath)' == '' ">$(SolutionDir)..\bin\AnyCPU\$(Configuration)</OutputPath>
-    <BaseIntermediateOutputPath>int\</BaseIntermediateOutputPath>
+    <OutputPath Condition=" '$(OutputPath)' == '' ">$(SolutionDir)..\bin\$(Platform)\$(Configuration)</OutputPath>
     <NunitPath Condition=" '$(NunitPath)' == '' ">$(SolutionDir)..\extern\NUnit</NunitPath>
     <SharpDXDirectXVersion>DirectX11</SharpDXDirectXVersion>
     <ErrorReport>prompt</ErrorReport>
@@ -19,8 +20,6 @@
     <TestProjectDefaults Condition="$(MSBuildProjectDirectory.Contains('test'))">true</TestProjectDefaults>
     <TestProjectDefaults Condition=" '$(TestProjectDefaults)' == '' ">false</TestProjectDefaults>
     <NoWarn>MSB3539</NoWarn><!--The value of the property "BaseIntermediateOutputPath" was modified after it was used by MSBuild-->
-     <!--This is used to set the framework version for icon resource dll generation (lookup of system.drawing.dll)-->
-    <ResourceGeneration_FrameworkVersion>v4.8</ResourceGeneration_FrameworkVersion>
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
@@ -34,18 +33,37 @@
     <Optimize>true</Optimize>
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
+  <PropertyGroup Condition="$(Platform.Contains('NET60'))" >
+    <TargetFramework>net6.0</TargetFramework>
+    <!--Needed to copy nuget package assemblies to output folder. Anet6 issue-->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <GenerateDependencyFile>false</GenerateDependencyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(Platform.Contains('Windows'))" >
+    <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(Platform.Contains('Linux'))" >
+    <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+  </PropertyGroup>
+  <PropertyGroup>
+    <BaseIntermediateOutputPath>int\$(TargetFramework)\</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>obj\$(TargetFramework)\</IntermediateOutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Remove="obj\**" />
     <EmbeddedResource Remove="obj\**" />
     <None Remove="obj\**" />
     <None Remove="*.resources" />
+    <Compile Remove="int\**" />
+    <EmbeddedResource Remove="int\**" />
+    <None Remove="int\**" />
   </ItemGroup>
   <ItemGroup>
     <Compile Condition="'$(ProjectName)'!='AssemblyInfoGenerator'" Include="$(SolutionDir)AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
   </ItemGroup>
-  <ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition=" '$(TargetFramework)' == 'net48' ">
     <ProjectReference>
       <Private>false</Private>
     </ProjectReference>
@@ -90,5 +108,20 @@
     <Copy SourceFiles="@(XMLContent)" DestinationFolder="$(OutDir)$(PackagesOutputSubdirectory)" Condition="Exists('%(FullPath)')" />
     <Copy SourceFiles="@(PDBContent)" DestinationFolder="$(OutDir)$(PackagesOutputSubdirectory)" Condition="Exists('%(FullPath)')" />
     <Copy SourceFiles="@(DLLContent)" DestinationFolder="$(OutDir)$(PackagesOutputSubdirectory)$(Local_CopyToSubdirectory)" Condition="Exists('%(FullPath)')" />
+  </Target>
+  <Target Name="ResolveSateliteResDeps" AfterTargets="Build" Condition=" '$(OS)' != 'Unix' ">
+    <!-- Get System.Drawing.dll -->
+    <PropertyGroup Condition=" '$(TargetFramework)' == 'net48' ">
+      <!--This is used to set the framework version for icon resource dll generation (lookup of system.drawing.dll)-->
+      <ResourceGeneration_FrameworkVersion>v4.8</ResourceGeneration_FrameworkVersion>
+    </PropertyGroup>
+    <GetReferenceAssemblyPaths Condition=" '$(TargetFramework)' == 'net48' " TargetFrameworkMoniker=".NETFramework, Version=$(ResourceGeneration_FrameworkVersion)">
+      <Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
+    </GetReferenceAssemblyPaths>
+    <PropertyGroup>
+      <SystemDrawingDllPath Condition=" '$(TargetFramework)' == 'net48' ">$(FrameworkAssembliesPath)System.Drawing.dll</SystemDrawingDllPath>
+      <!--Requires a reference to "System.Drawing.Common" Version="7.0.0" -->
+      <SystemDrawingDllPath Condition=" '$(TargetFramework)' == 'net60' ">$(PkgSystem_Drawing_Common)\lib\net6.0\System.Drawing.Common.dll</SystemDrawingDllPath>
+    </PropertyGroup>
   </Target>
 </Project>

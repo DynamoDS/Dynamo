@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Windows.Threading;
+using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -190,6 +191,22 @@ namespace Dynamo.Tests
                 Assert.IsTrue(File.Exists(dumpLocation));
                 File.Delete(dumpLocation);//cleanup
             }
+        }
+        [Test]
+        public void TestAppNameSentToCER()
+        {
+            CurrentDynamoModel.HostName = null;
+            var name = CrashReportTool.GetHostAppName(CurrentDynamoModel);
+            //if both hostname and hostinfo.hostname are null, then use proc name.
+            Assert.True(name.Contains("testhost") ||  name.Contains("nunit-agent"));
+            CurrentDynamoModel.HostName = "dynamotestmock";
+            name = CrashReportTool.GetHostAppName(CurrentDynamoModel);
+            //use hostname over proc name
+            Assert.AreEqual(CurrentDynamoModel.HostName, name);
+            CurrentDynamoModel.HostAnalyticsInfo = new  HostAnalyticsInfo(){HostName = "123"};
+            name = CrashReportTool.GetHostAppName(CurrentDynamoModel);
+            //prefer hostinfo.hostname over others.
+            Assert.AreEqual(CurrentDynamoModel.HostAnalyticsInfo.HostName, name);
         }
     }
 }

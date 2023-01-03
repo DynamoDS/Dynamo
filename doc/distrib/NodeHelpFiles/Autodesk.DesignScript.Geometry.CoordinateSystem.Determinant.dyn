@@ -1,0 +1,352 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Determinant",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "63e940674d314d17abe7fb85559c3171",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Value": "2.6",
+      "MaximumValue": 5.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "Id": "cf20433c71fa4e97bf9d3846c0059442",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Value": "17.6",
+      "MaximumValue": 100.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "Id": "64fa2bac1546477aa33e3c7a05777631",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Value": "1.1",
+      "MaximumValue": 4.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 5.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 2.6,
+      "Id": "63e940674d314d17abe7fb85559c3171",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "f661c82d6d554a44b9641a690998a88e",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 100.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 17.6,
+      "Id": "cf20433c71fa4e97bf9d3846c0059442",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "227f4056329f4ed0a973ba97925035a7",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 4.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 1.1,
+      "Id": "64fa2bac1546477aa33e3c7a05777631",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "90dd64d0db7747b48e5b56d3fb76575c",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.CoordinateSystem.Determinant",
+      "Id": "5ac7d62c292247ac8eab2bdb3c763ffa",
+      "Inputs": [
+        {
+          "Id": "ef32ab02a4924371a3425bd6f460c762",
+          "Name": "coordinateSystem",
+          "Description": "Autodesk.DesignScript.Geometry.CoordinateSystem",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0661737be7bd4887b6e23d63001a1cc4",
+          "Name": "double",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Obtain the Determinant of this CoordinateSystem\n\nCoordinateSystem.Determinant: double"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "bf1c6dabf5244be795d7331e575f8042",
+      "Inputs": [
+        {
+          "Id": "09b8491fab394ecd953adc1d2086c05e",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1b48325f114d4ca993a1bc0d98e7f025",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.CoordinateSystem.ByCylindricalCoordinates@Autodesk.DesignScript.Geometry.CoordinateSystem,double,double,double",
+      "Id": "e99aa12b12fa4d479331c87c7b5a3bd0",
+      "Inputs": [
+        {
+          "Id": "2f5bc47620d74af58779891a1f57fe7c",
+          "Name": "cs",
+          "Description": "CoordinateSystem\nDefault value : Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "992679257fed49d5bd6fec4fac763ff3",
+          "Name": "radius",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4ac4c998eaad4969aa869c77fa618532",
+          "Name": "theta",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c5a0eab6c6ba4ecaa336d9adc0b24d93",
+          "Name": "height",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "fdd7980bdeb44894bf39466c5a57e057",
+          "Name": "CoordinateSystem",
+          "Description": "CoordinateSystem",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Creates a CoordinateSystem at the specified cylindrical coordinate parameters with respect to the specified coordinate system\n\nCoordinateSystem.ByCylindricalCoordinates (cs: CoordinateSystem = Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin(0, 0, 0), radius: double = 0, theta: double = 0, height: double = 0): CoordinateSystem"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "f661c82d6d554a44b9641a690998a88e",
+      "End": "992679257fed49d5bd6fec4fac763ff3",
+      "Id": "d29abc1ae9304217a9945cfae863dadd"
+    },
+    {
+      "Start": "227f4056329f4ed0a973ba97925035a7",
+      "End": "4ac4c998eaad4969aa869c77fa618532",
+      "Id": "6cd749ea0f4c4ee3b80c91769aba5038"
+    },
+    {
+      "Start": "90dd64d0db7747b48e5b56d3fb76575c",
+      "End": "c5a0eab6c6ba4ecaa336d9adc0b24d93",
+      "Id": "84daf322aadc46d1995c4bc9923b9ed9"
+    },
+    {
+      "Start": "0661737be7bd4887b6e23d63001a1cc4",
+      "End": "09b8491fab394ecd953adc1d2086c05e",
+      "Id": "552190878f1f4cdb94f0d541eaf0ab25"
+    },
+    {
+      "Start": "fdd7980bdeb44894bf39466c5a57e057",
+      "End": "ef32ab02a4924371a3425bd6f460c762",
+      "Id": "4bd8ac279cc84884b248284aecc01ea1"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": 7.58525276184082,
+      "EyeY": 3.8096342086791992,
+      "EyeZ": -0.8631860613822937,
+      "LookX": -4.6113300323486328,
+      "LookY": -2.287745475769043,
+      "LookZ": -2.27799654006958,
+      "UpX": -0.18028013408184052,
+      "UpY": 0.97957515716552734,
+      "UpZ": -0.089058391749858856
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "63e940674d314d17abe7fb85559c3171",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -164.240579949574,
+        "Y": 1050.71721535665
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "cf20433c71fa4e97bf9d3846c0059442",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -164.240579949574,
+        "Y": 1130.5469845754
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "64fa2bac1546477aa33e3c7a05777631",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -164.240579949574,
+        "Y": 1210.37675379415
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "CoordinateSystem.Determinant",
+        "Id": "5ac7d62c292247ac8eab2bdb3c763ffa",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 512.60850418794234,
+        "Y": 1072.89478905304
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "bf1c6dabf5244be795d7331e575f8042",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 794.057838844597,
+        "Y": 1072.89478905304
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "CoordinateSystem.ByCylindricalCoordinates",
+        "Id": "e99aa12b12fa4d479331c87c7b5a3bd0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 208.921184031842,
+        "Y": 1072.89478905304
+      }
+    ],
+    "Annotations": [],
+    "X": 322.381317056798,
+    "Y": -946.63874638424,
+    "Zoom": 1.19288373794214
+  }
+}

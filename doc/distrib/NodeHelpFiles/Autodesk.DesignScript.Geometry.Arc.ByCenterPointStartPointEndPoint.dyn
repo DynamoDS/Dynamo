@@ -1,0 +1,612 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "ByCenterPointStartPointEndPoint",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Math.RandomList@int",
+      "Id": "8278aaa74d514467976ba896c68f1b71",
+      "Inputs": [
+        {
+          "Id": "6ab0a0cf58424547be20575974a67d51",
+          "Name": "amount",
+          "Description": "Amount of random numbers the result list will contain.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "bc33159094a84c97bf4e075ec85087ea",
+          "Name": "number",
+          "Description": "List of random numbers between 0 and 1.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Produces a list containing the given amount of random doubles in the range of [0, 1).\n\nMath.RandomList (amount: int): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "3;",
+      "Id": "e3f640b8122a4a90bed58980bf6620d0",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "7655f9ddf53c44b4805d9ebb8b1d48c9",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "x*8;",
+      "Id": "d1ba6f8d714542bc9a8095b6a7f42bf5",
+      "Inputs": [
+        {
+          "Id": "435e32b10ee845f8b7d6d585f5f38f3f",
+          "Name": "x",
+          "Description": "x",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d2ddfc5815d242979aa80b2aedc2f3ec",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double",
+      "Id": "dea326c8be9644dda11e560970907536",
+      "Inputs": [
+        {
+          "Id": "b056a5143c114b23a8c6d53e8daa5682",
+          "Name": "x",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "38c30623a39d481caf127d3f27272f21",
+          "Name": "y",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7dce4fdbbd0e4c2698bead7026ea9139",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Form a Point in the XY plane given two 2 cartesian coordinates. The Z component is 0.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "x*8;",
+      "Id": "f251770812e14451b6bb0a2c71328f3f",
+      "Inputs": [
+        {
+          "Id": "e1d75dbe6076400c9ebcb42e846e2ca4",
+          "Name": "x",
+          "Description": "x",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "2b7ac9d84f484cafa71604ffffd6716a",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Math.RandomList@int",
+      "Id": "701d17db13934e419babd055da25f177",
+      "Inputs": [
+        {
+          "Id": "5e02fb5919fa4523a1d5b0198c6e947d",
+          "Name": "amount",
+          "Description": "Amount of random numbers the result list will contain.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "48d04fe46a0344e59e76c02baf6f8fda",
+          "Name": "number",
+          "Description": "List of random numbers between 0 and 1.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Produces a list containing the given amount of random doubles in the range of [0, 1).\n\nMath.RandomList (amount: int): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
+      "Id": "f18359e277494dfebb4ab47dc6ca5622",
+      "Inputs": [
+        {
+          "Id": "2fd65bec6dc54cdab5ac077e8f28c5b8",
+          "Name": "list",
+          "Description": "List to fetch an item from.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c5e3b52c5f3f49eb926139a15c6b283a",
+          "Name": "index",
+          "Description": "Index of the item to be fetched.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "db00456051cf4a058b601d9f2ef0d755",
+          "Name": "item",
+          "Description": "Item in the list at the given index.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns an item from the given list that's located at the specified index.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
+      "Id": "4cb7034ca08c451e922ed52034cf0b2c",
+      "Inputs": [
+        {
+          "Id": "fae0ea54ac7d49ee8ec7e14cb14be0ce",
+          "Name": "list",
+          "Description": "List to fetch an item from.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f073c74ecdfe467caf1c03e560b006e8",
+          "Name": "index",
+          "Description": "Index of the item to be fetched.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5ffafc03420a4159b320e44f323dfe37",
+          "Name": "item",
+          "Description": "Item in the list at the given index.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns an item from the given list that's located at the specified index.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
+      "Id": "f2eade3bef584720a7774d9330b4c4e8",
+      "Inputs": [
+        {
+          "Id": "5a719ccfd3994cb7850b99eb3cac4584",
+          "Name": "list",
+          "Description": "List to fetch an item from.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d30d2eb0511747868a7dbc23c1a22594",
+          "Name": "index",
+          "Description": "Index of the item to be fetched.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e9cb92621c35434b9ddbd785ded51d54",
+          "Name": "item",
+          "Description": "Item in the list at the given index.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns an item from the given list that's located at the specified index.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "0;\n1;\n2;",
+      "Id": "28014b2a91524acc888dc363baeea29d",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "d971e2cf7fbe4673aeb67099cbc89aac",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "dd8a426f70b5468aaf7beff7cbd1d9bc",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "503d15209bbe4e74a00e0e656ca303b3",
+          "Name": "",
+          "Description": "Value of expression at line 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Arc.ByCenterPointStartPointEndPoint@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
+      "Id": "2d9a94778b4a4f159f90fbb5eef81eb8",
+      "Inputs": [
+        {
+          "Id": "f003443c39d14ce19c9726372dd40043",
+          "Name": "centerPoint",
+          "Description": "The center of the arc\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0) (disabled)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "be45907d6f8b4a25a76cc43da1a680c8",
+          "Name": "startPoint",
+          "Description": "The start point on the arc\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(1, 0, 0) (disabled)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4223d9ea448f4db88a602adb79fa8745",
+          "Name": "endPoint",
+          "Description": "The end point of the arc\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 1, 0) (disabled)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5719bd8de0f84436b01145dcb8a5af9d",
+          "Name": "Arc",
+          "Description": "An Arc",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create an arc by providing it's center point, start point, and end point\n\nArc.ByCenterPointStartPointEndPoint (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), startPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(1, 0, 0), endPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 1, 0)): Arc"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "bc33159094a84c97bf4e075ec85087ea",
+      "End": "435e32b10ee845f8b7d6d585f5f38f3f",
+      "Id": "619c8ce315854515b169b6454b2d287d"
+    },
+    {
+      "Start": "7655f9ddf53c44b4805d9ebb8b1d48c9",
+      "End": "6ab0a0cf58424547be20575974a67d51",
+      "Id": "62bde28f150747bbba8a66bbfb92e91b"
+    },
+    {
+      "Start": "7655f9ddf53c44b4805d9ebb8b1d48c9",
+      "End": "5e02fb5919fa4523a1d5b0198c6e947d",
+      "Id": "de7f660c601a4b17a574e5d8d4a413e6"
+    },
+    {
+      "Start": "d2ddfc5815d242979aa80b2aedc2f3ec",
+      "End": "b056a5143c114b23a8c6d53e8daa5682",
+      "Id": "8e759a002cb4490282b7d2320b4e6eaa"
+    },
+    {
+      "Start": "7dce4fdbbd0e4c2698bead7026ea9139",
+      "End": "2fd65bec6dc54cdab5ac077e8f28c5b8",
+      "Id": "22c9e5390c7547de8caf753c0b0c1764"
+    },
+    {
+      "Start": "7dce4fdbbd0e4c2698bead7026ea9139",
+      "End": "fae0ea54ac7d49ee8ec7e14cb14be0ce",
+      "Id": "6fb521ca12de4bbabfa65752f5d9fcc7"
+    },
+    {
+      "Start": "7dce4fdbbd0e4c2698bead7026ea9139",
+      "End": "5a719ccfd3994cb7850b99eb3cac4584",
+      "Id": "32b42bd6c0ac4d0c8e95dc76a6ea449c"
+    },
+    {
+      "Start": "2b7ac9d84f484cafa71604ffffd6716a",
+      "End": "38c30623a39d481caf127d3f27272f21",
+      "Id": "0ed6d2d58461416e89b4b19a08d2a08f"
+    },
+    {
+      "Start": "48d04fe46a0344e59e76c02baf6f8fda",
+      "End": "e1d75dbe6076400c9ebcb42e846e2ca4",
+      "Id": "3abb2b9c2f094604b7f5a2479cd1eb6c"
+    },
+    {
+      "Start": "db00456051cf4a058b601d9f2ef0d755",
+      "End": "f003443c39d14ce19c9726372dd40043",
+      "Id": "3cac16ec240b4c94bd897d93ea205ad9"
+    },
+    {
+      "Start": "5ffafc03420a4159b320e44f323dfe37",
+      "End": "be45907d6f8b4a25a76cc43da1a680c8",
+      "Id": "57a622281dae45dc9cde20a2f4d97f26"
+    },
+    {
+      "Start": "e9cb92621c35434b9ddbd785ded51d54",
+      "End": "4223d9ea448f4db88a602adb79fa8745",
+      "Id": "87123310cfcd43b0907a0f5a100a9e35"
+    },
+    {
+      "Start": "d971e2cf7fbe4673aeb67099cbc89aac",
+      "End": "c5e3b52c5f3f49eb926139a15c6b283a",
+      "Id": "45176c36e92b4b2081319e000c24e2d6"
+    },
+    {
+      "Start": "dd8a426f70b5468aaf7beff7cbd1d9bc",
+      "End": "f073c74ecdfe467caf1c03e560b006e8",
+      "Id": "f4ce6aa32c74468dbaa0e06f3fc7c23d"
+    },
+    {
+      "Start": "503d15209bbe4e74a00e0e656ca303b3",
+      "End": "d30d2eb0511747868a7dbc23c1a22594",
+      "Id": "fc37ba14f98d4dfea120d42e9a568c99"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -4.3833103179931641,
+      "EyeY": 14.845757484436035,
+      "EyeZ": 15.813332557678223,
+      "LookX": 5.4182944297790527,
+      "LookY": -11.20405387878418,
+      "LookZ": -21.429609298706055,
+      "UpX": 0.061375025659799576,
+      "UpY": 0.9681476354598999,
+      "UpZ": -0.24274112284183502
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Math.RandomList",
+        "Id": "8278aaa74d514467976ba896c68f1b71",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 507.0,
+        "Y": 357.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "e3f640b8122a4a90bed58980bf6620d0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 377.3658919718,
+        "Y": 360.92682160564
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "d1ba6f8d714542bc9a8095b6a7f42bf5",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 711.15333745339,
+        "Y": 361.124998715151
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Point.ByCoordinates",
+        "Id": "dea326c8be9644dda11e560970907536",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 842.543555661083,
+        "Y": 360.160382813677
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "f251770812e14451b6bb0a2c71328f3f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 713.941368296313,
+        "Y": 462.488300966825
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Math.RandomList",
+        "Id": "701d17db13934e419babd055da25f177",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 505.964352450026,
+        "Y": 457.598566573095
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "List.GetItemAtIndex",
+        "Id": "f18359e277494dfebb4ab47dc6ca5622",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1085.40299941928,
+        "Y": 357.350438941595
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "List.GetItemAtIndex",
+        "Id": "4cb7034ca08c451e922ed52034cf0b2c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1085.40299941928,
+        "Y": 475.741456771957
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "List.GetItemAtIndex",
+        "Id": "f2eade3bef584720a7774d9330b4c4e8",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1085.40299941928,
+        "Y": 595.54704744744
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "28014b2a91524acc888dc363baeea29d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 893.0976759154,
+        "Y": 474.658291380479
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Arc.ByCenterPointStartPointEndPoint",
+        "Id": "2d9a94778b4a4f159f90fbb5eef81eb8",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1299.33233437501,
+        "Y": 353.057725364155
+      }
+    ],
+    "Annotations": [],
+    "X": -5.02765752787707,
+    "Y": 291.953187977977,
+    "Zoom": 0.418421182113101
+  }
+}

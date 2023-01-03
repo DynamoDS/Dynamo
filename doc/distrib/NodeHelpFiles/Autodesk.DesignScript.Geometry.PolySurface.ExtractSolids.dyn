@@ -1,0 +1,460 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "ExtractSolids",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.Origin",
+      "Id": "275e748723164fe89477a5a3bfc7e42e",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "7a1432a2d2014fa5891cc666a889cb0e",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Get the Origin point (0,0,0)\n\nPoint.Origin ( ): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Id": "0141937b23494c7387c90d494878ad11",
+      "Inputs": [
+        {
+          "Id": "1e87ee3724704261aa0a7653d8a74741",
+          "Name": "x",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5a1e4efa6cc64ebd860f7d6d59d2787b",
+          "Name": "y",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b2f4ee5e276545d198f868d941a1ab5c",
+          "Name": "z",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6670708b3a1b4cac825881bc6bdb7868",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "5;",
+      "Id": "e39d14e054914dbabeb09e14823b3749",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "0d46d7c957ef4d4f903f04192888a7ca",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
+      "Id": "29165a47bb4f4cbf9948280360be6965",
+      "Inputs": [
+        {
+          "Id": "f02656bebda5495aafc56df19f728e5c",
+          "Name": "centerPoint",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "141c5d55c50c48adb30d35839a8f23e5",
+          "Name": "radius",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9bdb88d09c5e448881310f97bce26f84",
+          "Name": "Circle",
+          "Description": "Circle",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Creates a Circle with input center Point and radius in the world XY plane, with world Z as normal.\n\nCircle.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Circle"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
+      "Id": "cd8318669dd441c6a08785688c48cf76",
+      "Inputs": [
+        {
+          "Id": "53d79aef0b4842a094217a59bbf0a285",
+          "Name": "centerPoint",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "eaa68893e9f34f4c8a7fa2dad83244a9",
+          "Name": "radius",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8ea5aa68318c442784d7a18ad0106ec4",
+          "Name": "Circle",
+          "Description": "Circle",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Creates a Circle with input center Point and radius in the world XY plane, with world Z as normal.\n\nCircle.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Circle"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
+      "VariableInputPorts": true,
+      "NodeType": "ExtensionNode",
+      "Id": "4e7f87035ede409da3f89680f5bbd20f",
+      "Inputs": [
+        {
+          "Id": "0bb892acbb0646de8f4e44f025960bc0",
+          "Name": "item0",
+          "Description": "Item Index #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "738bf2450bdc47fbbf7db7b79877eb08",
+          "Name": "item1",
+          "Description": "Item Index #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f44d1b5a73ea45e2909cea1e160766a3",
+          "Name": "list",
+          "Description": "A list",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Makes a new list out of the given inputs"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.PolySurface.ByLoft@Autodesk.DesignScript.Geometry.Curve[]",
+      "Id": "f7a50a5dad794884aae859bd7df100d1",
+      "Inputs": [
+        {
+          "Id": "f3ce025855704f3ebeb5f5c216b5f1a6",
+          "Name": "crossSections",
+          "Description": "Curves to loft through.\n\nCurve[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5b85cfceff6349138f09db515b9056e7",
+          "Name": "PolySurface",
+          "Description": "PolySurface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Makes PolySurface by Loft through Curves.\n\nPolySurface.ByLoft (crossSections: Curve[]): PolySurface"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "2;",
+      "Id": "34b062aa2bb842c38614137a5b052bb6",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "300407c15ffa4213998e4310878302e2",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.PolySurface.ExtractSolids",
+      "Id": "6a4831f022d24ff28f847cc71403fc44",
+      "Inputs": [
+        {
+          "Id": "5e9d9ea8344243b7a80cea5911be7f58",
+          "Name": "polySurface",
+          "Description": "Autodesk.DesignScript.Geometry.PolySurface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "25b1c57b50f24a138dcea6c9ac76e6e4",
+          "Name": "Solid[]",
+          "Description": "Solid[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Extract Solids from Polysurface defined by subset of surfaces\n\nPolySurface.ExtractSolids ( ): Solid[]"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "7a1432a2d2014fa5891cc666a889cb0e",
+      "End": "f02656bebda5495aafc56df19f728e5c",
+      "Id": "6201100e66384fb494bada904ea622b3"
+    },
+    {
+      "Start": "6670708b3a1b4cac825881bc6bdb7868",
+      "End": "53d79aef0b4842a094217a59bbf0a285",
+      "Id": "b8bc1135bdb6494183a5bbfe37f634f9"
+    },
+    {
+      "Start": "0d46d7c957ef4d4f903f04192888a7ca",
+      "End": "b2f4ee5e276545d198f868d941a1ab5c",
+      "Id": "d7eb5cfb19bc477eb5cc974990a48d71"
+    },
+    {
+      "Start": "9bdb88d09c5e448881310f97bce26f84",
+      "End": "0bb892acbb0646de8f4e44f025960bc0",
+      "Id": "8e7e6cd85f3045a3adc5ce5211232d3c"
+    },
+    {
+      "Start": "8ea5aa68318c442784d7a18ad0106ec4",
+      "End": "738bf2450bdc47fbbf7db7b79877eb08",
+      "Id": "daf684503bd946fcb8b5a67c0b5a5c4b"
+    },
+    {
+      "Start": "f44d1b5a73ea45e2909cea1e160766a3",
+      "End": "f3ce025855704f3ebeb5f5c216b5f1a6",
+      "Id": "df3cea4e3b5b408ebdade37b02669e33"
+    },
+    {
+      "Start": "5b85cfceff6349138f09db515b9056e7",
+      "End": "5e9d9ea8344243b7a80cea5911be7f58",
+      "Id": "cd8d4701032641b48a650831fd623ac3"
+    },
+    {
+      "Start": "300407c15ffa4213998e4310878302e2",
+      "End": "eaa68893e9f34f4c8a7fa2dad83244a9",
+      "Id": "391625c6eb2545258b83840da56a15e0"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -5.0699801445007324,
+      "EyeY": 6.435481071472168,
+      "EyeZ": 4.9163346290588379,
+      "LookX": 7.6766085624694824,
+      "LookY": -7.1614885330200195,
+      "LookZ": -12.532305717468262,
+      "UpX": 0.12282421439886093,
+      "UpY": 0.97196096181869507,
+      "UpZ": -0.20051439106464386
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Point.Origin",
+        "Id": "275e748723164fe89477a5a3bfc7e42e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -146.21830891796498,
+        "Y": 94.860672857373288
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Point.ByCoordinates",
+        "Id": "0141937b23494c7387c90d494878ad11",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -146.21830891796498,
+        "Y": 202.86067285737329
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "e39d14e054914dbabeb09e14823b3749",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -325.218308917965,
+        "Y": 259.07400619070665
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Circle.ByCenterPointRadius",
+        "Id": "29165a47bb4f4cbf9948280360be6965",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 111.78169108203502,
+        "Y": 120.86067285737329
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Circle.ByCenterPointRadius",
+        "Id": "cd8318669dd441c6a08785688c48cf76",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 111.78169108203502,
+        "Y": 254.86067285737334
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "List.Create",
+        "Id": "4e7f87035ede409da3f89680f5bbd20f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 434.781691082035,
+        "Y": 174.86067285737329
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "PolySurface.ByLoft",
+        "Id": "f7a50a5dad794884aae859bd7df100d1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 654.781691082035,
+        "Y": 174.86067285737329
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "34b062aa2bb842c38614137a5b052bb6",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -146.21830891796498,
+        "Y": 363.07400619070665
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "PolySurface.ExtractSolids",
+        "Id": "6a4831f022d24ff28f847cc71403fc44",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 966.82350194235426,
+        "Y": 175.56841124736587
+      }
+    ],
+    "Annotations": [],
+    "X": -297.879759591364,
+    "Y": -101.52909431191689,
+    "Zoom": 1.2276074766562
+  }
+}

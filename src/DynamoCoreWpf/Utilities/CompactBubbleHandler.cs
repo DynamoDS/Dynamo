@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using Dynamo.Extensions;
 using Dynamo.ViewModels;
@@ -24,6 +24,7 @@ namespace Dynamo.Wpf.Utilities
         {
             items = 0;
             var viewModel = ProcessThing(value, true);
+            viewModel.SetObjectType(value.Data);
             viewModel.NumberOfItems = items;
             return viewModel;
         }

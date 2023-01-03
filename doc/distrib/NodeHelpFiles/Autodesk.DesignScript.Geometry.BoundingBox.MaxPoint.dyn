@@ -1,0 +1,450 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "MaxPoint",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "40cc063fb11b4aef802ae77b7bda24ea",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Value": "10.1",
+      "MaximumValue": 100.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 100.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 10.1,
+      "Id": "40cc063fb11b4aef802ae77b7bda24ea",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "15b766dc54e14b7aa7e16cf018c36fdc",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.Origin",
+      "Id": "86dfd2b188c143f596abf1e677f1fa6d",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "f702b58ec72b46628a15e27b36d4cf1b",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Get the Origin point (0,0,0)\n\nPoint.Origin ( ): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.BoundingBox.ByGeometry@Autodesk.DesignScript.Geometry.Geometry[]",
+      "Id": "c013bf8bed734dd8b7063547e18180b3",
+      "Inputs": [
+        {
+          "Id": "f3a2e1227d594f6ca7e35c3846b2a6ec",
+          "Name": "geom",
+          "Description": "Geometry[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4adb033072284bcdb9b2a66fc714bf36",
+          "Name": "BoundingBox",
+          "Description": "BoundingBox",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create an axis-aligned BoundingBox around input Geometry.\n\nBoundingBox.ByGeometry (geom: Geometry[]): BoundingBox"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Topology.Edges",
+      "Id": "77d7e0d804d34cfa9d95b3c5d1b411d2",
+      "Inputs": [
+        {
+          "Id": "c4d6983c703d43f9a82cc4598f7710ac",
+          "Name": "topology",
+          "Description": "Autodesk.DesignScript.Geometry.Topology",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "2a2883b14a5e4aba972e3cd0e4512a73",
+          "Name": "Edge[]",
+          "Description": "Edge[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "The Edges of the Topology\n\nTopology.Edges: Edge[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Edge.CurveGeometry",
+      "Id": "ee2f4d2b772740f79a5be30c9170434e",
+      "Inputs": [
+        {
+          "Id": "93603c1854c44cdc9d09a907c8adb278",
+          "Name": "edge",
+          "Description": "Autodesk.DesignScript.Geometry.Edge",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "70a50a03c79b412da5babd13bb4ee5ac",
+          "Name": "Curve",
+          "Description": "Curve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "The underlying Curve making up the Edge\n\nEdge.CurveGeometry: Curve"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.BoundingBox.ToCuboid",
+      "Id": "a331bf0ee2c64654aff5668e46c23b7e",
+      "Inputs": [
+        {
+          "Id": "1ce6dc2f6f1343ab9773019fb30e2432",
+          "Name": "boundingBox",
+          "Description": "Autodesk.DesignScript.Geometry.BoundingBox",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7b0cb31958824ef7982ffd58e3c84281",
+          "Name": "Cuboid",
+          "Description": "A Cuboid representation of the BoundingBox",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Get the BoundingBox as a Solid Cuboid\n\nBoundingBox.ToCuboid ( ): Cuboid"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Sphere.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
+      "Id": "51e3ddab2ccb4f3a82f03caa06014a8c",
+      "Inputs": [
+        {
+          "Id": "928bbb64dac04735876f1f809137de40",
+          "Name": "centerPoint",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "fc05cd5f00294b9a93b70a2b72d0bf6b",
+          "Name": "radius",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ce8f1ece4fde45599c76e3cff4bc9bf9",
+          "Name": "Sphere",
+          "Description": "Sphere",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a Solid Sphere cetered at the input Point, with given radius.\n\nSphere.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Sphere"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.BoundingBox.MinPoint",
+      "Id": "dc725c3d983041f291018e3d205ca256",
+      "Inputs": [
+        {
+          "Id": "adf649a84c99491ca9d974707963bfe5",
+          "Name": "boundingBox",
+          "Description": "Autodesk.DesignScript.Geometry.BoundingBox",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b27ff3b4244744d3979757ae39ac4993",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "The minimum point\n\nBoundingBox.MinPoint: Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.BoundingBox.MaxPoint",
+      "Id": "a8bf3508f70f44eaa900624805a18eff",
+      "Inputs": [
+        {
+          "Id": "bd92524d214c49fcaf3b4e25802a1dc5",
+          "Name": "boundingBox",
+          "Description": "Autodesk.DesignScript.Geometry.BoundingBox",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ea3deda7e37e4d279fd46da74c557524",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "The maximum point\n\nBoundingBox.MaxPoint: Point"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "15b766dc54e14b7aa7e16cf018c36fdc",
+      "End": "fc05cd5f00294b9a93b70a2b72d0bf6b",
+      "Id": "fac371b4e86d42419473fefaaa86297c"
+    },
+    {
+      "Start": "f702b58ec72b46628a15e27b36d4cf1b",
+      "End": "928bbb64dac04735876f1f809137de40",
+      "Id": "e6c07b66cf974cbd8e864384130983c6"
+    },
+    {
+      "Start": "4adb033072284bcdb9b2a66fc714bf36",
+      "End": "1ce6dc2f6f1343ab9773019fb30e2432",
+      "Id": "d77a6be2382248468e8c9c784cecc3a9"
+    },
+    {
+      "Start": "4adb033072284bcdb9b2a66fc714bf36",
+      "End": "adf649a84c99491ca9d974707963bfe5",
+      "Id": "5ce2704e47ad43e8b9ff960ea8a51e32"
+    },
+    {
+      "Start": "4adb033072284bcdb9b2a66fc714bf36",
+      "End": "bd92524d214c49fcaf3b4e25802a1dc5",
+      "Id": "d106328128314488b8cc394f39c0a98c"
+    },
+    {
+      "Start": "2a2883b14a5e4aba972e3cd0e4512a73",
+      "End": "93603c1854c44cdc9d09a907c8adb278",
+      "Id": "d68c14155b7243a2bcdda44f44a35e22"
+    },
+    {
+      "Start": "7b0cb31958824ef7982ffd58e3c84281",
+      "End": "c4d6983c703d43f9a82cc4598f7710ac",
+      "Id": "e608efcef34544d98ac2702698ec9685"
+    },
+    {
+      "Start": "ce8f1ece4fde45599c76e3cff4bc9bf9",
+      "End": "f3a2e1227d594f6ca7e35c3846b2a6ec",
+      "Id": "4d355c1797aa40c4871ff243d6f5879f"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -35.321975708007813,
+      "EyeY": 17.168863296508789,
+      "EyeZ": 32.751644134521484,
+      "LookX": 36.517715454101563,
+      "LookY": -14.75108528137207,
+      "LookZ": -34.425350189208984,
+      "UpX": 0.050757989287376404,
+      "UpY": 0.99756401777267456,
+      "UpZ": -0.047849692404270172
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": false,
+        "Name": "Number Slider",
+        "Id": "40cc063fb11b4aef802ae77b7bda24ea",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 444.05687996354266,
+        "Y": 627.175607751742
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Point.Origin",
+        "Id": "86dfd2b188c143f596abf1e677f1fa6d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 444.90016788549269,
+        "Y": 538.514240087986
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "BoundingBox.ByGeometry",
+        "Id": "c013bf8bed734dd8b7063547e18180b3",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1070.89191734539,
+        "Y": 538.514240087986
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Topology.Edges",
+        "Id": "77d7e0d804d34cfa9d95b3c5d1b411d2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1659.8393965758607,
+        "Y": 430.46157641807065
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Edge.CurveGeometry",
+        "Id": "ee2f4d2b772740f79a5be30c9170434e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1915.1320417658658,
+        "Y": 430.46157641807065
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "BoundingBox.ToCuboid",
+        "Id": "a331bf0ee2c64654aff5668e46c23b7e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1386.7408195650744,
+        "Y": 430.46157641807065
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Sphere.ByCenterPointRadius",
+        "Id": "51e3ddab2ccb4f3a82f03caa06014a8c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 784.95535704403164,
+        "Y": 538.514240087986
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "BoundingBox.MinPoint",
+        "Id": "dc725c3d983041f291018e3d205ca256",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1386.7408195650744,
+        "Y": 538.514240087986
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "BoundingBox.MaxPoint",
+        "Id": "a8bf3508f70f44eaa900624805a18eff",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1386.5308872217879,
+        "Y": 664.63965289153259
+      }
+    ],
+    "Annotations": [],
+    "X": -349.32710843761947,
+    "Y": -59.088226300346321,
+    "Zoom": 0.843287710799118
+  }
+}

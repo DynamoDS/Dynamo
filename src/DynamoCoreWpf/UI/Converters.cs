@@ -1272,7 +1272,32 @@ namespace Dynamo.Controls
                 return 350;
             }
 
-            return 250;
+            return 280;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class NodeAutocompleteImageConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            if (string.IsNullOrEmpty(value as string))
+            {
+                return string.Empty;
+            }
+
+            if (value is string && value.ToString().Equals(Properties.Resources.LoginNeededTitle))
+            {
+                return "/DynamoCoreWpf;component/UI/Images/not-authenticated.png";
+            }
+
+            return "/DynamoCoreWpf;component/UI/Images/no-recommendations.png";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,
@@ -1403,10 +1428,10 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (!(value is string)) return Visibility.Collapsed;
+            if (!(value is PackageManagerSearchElement packageManagerSearchElement)) return Visibility.Collapsed;
+            if (packageManagerSearchElement.IsDeprecated) return Visibility.Visible;
 
-            DateTime.TryParse(value.ToString(), out DateTime dateTime);
-
+            DateTime.TryParse(packageManagerSearchElement.LatestVersionCreated, out DateTime dateTime);
             TimeSpan difference = DateTime.Now - dateTime;
 
             if (difference.TotalDays >= 30) return Visibility.Collapsed;
@@ -1430,6 +1455,7 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (!(value is PackageManagerSearchElement packageManagerSearchElement)) return Visibility.Collapsed;
+            if (packageManagerSearchElement.IsDeprecated) return Resources.PackageManagerPackageDeprecated;
 
             DateTime.TryParse(packageManagerSearchElement.LatestVersionCreated, out DateTime dateLastUpdated);
             TimeSpan difference = DateTime.Now - dateLastUpdated;
@@ -1437,9 +1463,9 @@ namespace Dynamo.Controls
 
             if (numberVersions > 1)
             {
-                return difference.TotalDays >= 30 ? "" : Wpf.Properties.Resources.PackageManagerPackageUpdated;
+                return difference.TotalDays >= 30 ? "" : Resources.PackageManagerPackageUpdated;
             }
-            return Wpf.Properties.Resources.PackageManagerPackageNew;
+            return Resources.PackageManagerPackageNew;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -1455,6 +1481,21 @@ namespace Dynamo.Controls
             if ((bool)value)
                 return Visibility.Hidden;
             return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    public class InverseBoolToEnablingConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if ((bool)value)
+                return false;
+            return true;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -3311,16 +3352,18 @@ namespace Dynamo.Controls
             {
                 switch (values[0])
                 {
-                    case WatchViewModel.objectType:
+                    case nameof(TypeCode.Object):
                         return resourceDictionary["objectLabelBackground"] as SolidColorBrush;
-                    case WatchViewModel.doubleType:
+                    case nameof(TypeCode.Double):
                         return resourceDictionary["numberLabelBackground"] as SolidColorBrush;
-                    case WatchViewModel.intType:
+                    case nameof(TypeCode.Int32):
                         return resourceDictionary["numberLabelBackground"] as SolidColorBrush;
-                    case WatchViewModel.stringType:
+                    case nameof(TypeCode.Int64):
+                        return resourceDictionary["numberLabelBackground"] as SolidColorBrush;
+                    case nameof(TypeCode.String):
                         return resourceDictionary["stringLabelBackground"] as SolidColorBrush;
-                    case WatchViewModel.boolType:
-                        return resourceDictionary["boolLabelBackground"] as SolidColorBrush;                                                
+                    case nameof(TypeCode.Boolean):
+                        return resourceDictionary["boolLabelBackground"] as SolidColorBrush;                                        
                     default:
                         if (values[1].ToString() == "List")
                         {

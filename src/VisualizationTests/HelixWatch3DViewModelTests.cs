@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -9,11 +9,13 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Media3D;
 using System.Xml;
+using CoreNodeModels;
 using CoreNodeModels.Input;
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Scheduler;
@@ -22,6 +24,8 @@ using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Views;
+using Dynamo.Visualization;
+using Dynamo.Wpf.Rendering;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoCoreWpfTests.Utility;
 using DynamoShapeManager;
@@ -40,7 +44,7 @@ namespace WpfVisualizationTests
     /// <summary>
     /// The standard SystemTestBase uses a DefaultWatch3DViewModel.
     /// In order to test visualizations, the VisualizationTest class,
-    /// uses a HelixWatch3DViewModel supplied as part of the 
+    /// uses a HelixWatch3DViewModel supplied as part of the
     /// DynamoViewModel's start configuration.
     /// </summary>
     public class VisualizationTest : SystemTestBase
@@ -208,6 +212,32 @@ namespace WpfVisualizationTests
         }
 
         [Test]
+        public void Node_PropertiesDeserialization()
+        {
+            OpenVisualizationTest("HelixWatch3dNodeViewModel_PropertiesDeserialization.dyn");
+            Watch3DView view = FindFirstWatch3DNodeView();
+            Assert.NotNull(view);
+            Assert.AreEqual(300.0, view.Width);
+            HelixWatch3DNodeViewModel helixNodeViewModel = view.ViewModel as HelixWatch3DNodeViewModel;
+            Assert.NotNull(helixNodeViewModel);
+            Assert.AreEqual(48.66565, helixNodeViewModel.Camera.Position.X, 0.01);
+        }
+
+        /// <summary>
+        /// This test uses a Dynamo graph that has a sphere creation node (with Preview disabled) connected to a Watch3D node.
+        /// It ensures that the Watch3D still renders the sphere.
+        /// </summary>
+        [Test]
+        public void Node_IgnoreIsVisible()
+        {
+            OpenVisualizationTest("HelixWatch3dNodeViewModel_IgnoreIsVisible.dyn");
+            Watch3DView view = FindFirstWatch3DNodeView();
+            HelixWatch3DNodeViewModel helixNodeViewModel = view.ViewModel as HelixWatch3DNodeViewModel;
+            Assert.AreEqual(1, helixNodeViewModel.SceneItems.TotalMeshes());
+            Assert.AreEqual(0, BackgroundPreviewGeometry.TotalMeshes());
+        }
+
+        [Test]
         public void Node_PreviewToggled_RenderingUpToDate()
         {
             var model = ViewModel.Model;
@@ -223,7 +253,7 @@ namespace WpfVisualizationTests
             var view = FindFirstWatch3DNodeView();
             var vm = view.ViewModel as HelixWatch3DNodeViewModel;
             Assert.NotNull(vm);
-   
+
             Assert.True(vm.SceneItems.HasNumberOfPointsCurvesAndMeshes(0,6,0));
         }
 
@@ -471,9 +501,9 @@ namespace WpfVisualizationTests
 
             // 5 planes, each with two triangles:
             // 30 mesh vertices
-            //ensure that the number of visualizations matches the 
+            //ensure that the number of visualizations matches the
             //number of pieces of geometry in the collection
-            Assert.AreEqual(numberOfPlanes * numberOfVertsPerTri * numberOfTrisPerPlane, 
+            Assert.AreEqual(numberOfPlanes * numberOfVertsPerTri * numberOfTrisPerPlane,
                 BackgroundPreviewGeometry.TotalMeshVerticesToRender());
 
             var testColor = new Color4(0, 0, 0, 10.0f / 255.0f);
@@ -482,7 +512,7 @@ namespace WpfVisualizationTests
             // Increase the number of planes
             numberOfPlanes = numberOfPlanes + 5;
             numberOfPlanesNode.Value = numberOfPlanes.ToString();
-            Assert.AreEqual(numberOfPlanes * numberOfVertsPerTri * numberOfTrisPerPlane, 
+            Assert.AreEqual(numberOfPlanes * numberOfVertsPerTri * numberOfTrisPerPlane,
                 BackgroundPreviewGeometry.TotalMeshVerticesToRender());
         }
 
@@ -721,6 +751,25 @@ namespace WpfVisualizationTests
             Assert.AreEqual(Visibility.Visible, currentWorkspace.statusBarPanel.Visibility, "Navigation buttons did not appear");
         }
 
+
+        [Test]
+        public void HelixWatch3DViewModel_HasRenderedGeometryTest()
+        {
+            var bPreviewVm = ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel;
+
+            RunCurrentModel();
+            DispatcherUtil.DoEvents();
+
+            Assert.IsNotNull(bPreviewVm, "HelixWatch3D has not been loaded");
+            Assert.False(bPreviewVm.HasRenderedGeometry);
+
+            OpenVisualizationTest("ASM_points.dyn");
+
+            RunCurrentModel();
+            DispatcherUtil.DoEvents();
+
+            Assert.True(bPreviewVm.HasRenderedGeometry);
+        }
         #endregion
 
         #region dynamo view tests
@@ -788,23 +837,23 @@ namespace WpfVisualizationTests
             var numberOfColors = dynGeometry.Geometry.Colors.Count;
             Assert.AreEqual(36, numberOfColors);
 
-            // Expecting they are all the same solid color assigning as a result 
+            // Expecting they are all the same solid color assigning as a result
             //  of DesignScript "Color.ByARGB(255,255,0,255);"
             Assert.AreEqual(true, dynGeometry.Geometry.Colors.All(color => color.Alpha == 1));
             Assert.AreEqual(true, dynGeometry.Geometry.Colors.All(color => color.Red == 1));
             Assert.AreEqual(true, dynGeometry.Geometry.Colors.All(color => color.Green == 0));
             Assert.AreEqual(true, dynGeometry.Geometry.Colors.All(color => color.Blue == 1));
         }
-       
+
         [Test]
         public void Display_Geometry_Labels()
         {
             OpenVisualizationTest("Labels.dyn");
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
-            
+
             RunCurrentModel();
 
-            // This is the node, for which we would display the Labels in the preview geometry. 
+            // This is the node, for which we would display the Labels in the preview geometry.
             var codeBlockGUID = "fdec3b9b-56ae-4d01-85c2-47b8425e3130";
             NodeModel codeBlockNodeModel = ws.Nodes.Where(node => node.GUID.ToString() == codeBlockGUID).FirstOrDefault();
 
@@ -813,21 +862,21 @@ namespace WpfVisualizationTests
 
             var helix = ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel;
 
-            // By default the DisplayLabels for the code block node is set to false, 
-            // so the Model3DDictionary wouldn't have the geometry object corresponding to the Labels. 
-            var geometryHasLabels = helix.Element3DDictionary.ContainsKey(labelKey); 
+            // By default the DisplayLabels for the code block node is set to false,
+            // so the Model3DDictionary wouldn't have the geometry object corresponding to the Labels.
+            var geometryHasLabels = helix.Element3DDictionary.ContainsKey(labelKey);
             Assert.IsFalse(geometryHasLabels);
 
             // We set the DisplayLabels to true to view the Labels in the preview geometry.
             codeBlockNodeModel.DisplayLabels = true;
 
-            // Now the Labels are shown in the preview geometry. 
-            // The code block node has 64 points, so there should be 64 labels. 
+            // Now the Labels are shown in the preview geometry.
+            // The code block node has 64 points, so there should be 64 labels.
             var geometryWithLabels = (helix.Element3DDictionary[labelKey] as GeometryModel3D).Geometry as BillboardText3D;
             Assert.AreEqual(64, geometryWithLabels.TextInfo.Count);
 
             // Clicking on a single value from the output of the watch node
-            // should show only one label corresponding to that value.  
+            // should show only one label corresponding to that value.
             var nodeView = View.ChildrenOfType<NodeView>().First(nv => nv.ViewModel.Name == "Watch");
             var treeViewItem = nodeView.ChildOfType<TreeViewItem>();
 
@@ -847,7 +896,7 @@ namespace WpfVisualizationTests
 
             DispatcherUtil.DoEvents();
 
-            // The value selected is x:0, y:0 and z:1, 
+            // The value selected is x:0, y:0 and z:1,
             // so the label that is shown should be [0,0,1].
             var geometry = (helix.Element3DDictionary[labelKey] as GeometryModel3D).Geometry as BillboardText3D;
             Assert.AreEqual(1, geometry.TextInfo.Count);
@@ -855,10 +904,10 @@ namespace WpfVisualizationTests
         }
 
         [Test]
-        // This test will select a sphere object 30 times from a list of sphere's, to display 
+        // This test will select a sphere object 30 times from a list of sphere's, to display
         // the corresponding label for that sphere object. After the Helix update, this workflow was causing
         // delays and would cause dynamo to hang. The fix was added in this PR: https://github.com/DynamoDS/Dynamo/pull/10399
-        // Before the fix, this test would take around 5 mins to finish but now this test finishes in just 20 secs. 
+        // Before the fix, this test would take around 5 mins to finish but now this test finishes in just 20 secs.
         public void PerformanceTestOnLabelsAfterHelixUpgrade()
         {
             System.DateTime startTime = System.DateTime.Now;
@@ -876,11 +925,11 @@ namespace WpfVisualizationTests
             var helix = ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel;
 
             // Clicking on a single value from the output of the watch node
-            // should show only one label corresponding to that value.  
+            // should show only one label corresponding to that value.
             var nodeView = View.ChildrenOfType<NodeView>().First(nv => nv.ViewModel.Name == "Watch");
             var parentTreeViewItem = nodeView.ChildOfType<TreeViewItem>();
 
-            // Selcting a sphere object 70 different times to render new labels again. 
+            // Selcting a sphere object 70 different times to render new labels again.
             for (int i = 0; i < 30; i++)
             {
 
@@ -905,7 +954,7 @@ namespace WpfVisualizationTests
             var totalExecutionTime = (endTime - startTime).TotalSeconds;
             Assert.LessOrEqual(totalExecutionTime, 20);
         }
-       
+
         [Test]
         public void Display_BySurfaceColors_HasColoredMesh()
         {
@@ -956,7 +1005,7 @@ namespace WpfVisualizationTests
 
             //Mesh 3 is has no texture map
             var mesh3 = meshes[2];
-            
+
             Assert.IsTrue(((PhongMaterial)mesh3.Material).DiffuseMap == null);
         }
 
@@ -971,7 +1020,7 @@ namespace WpfVisualizationTests
             Assert.AreEqual(1, BackgroundPreviewGeometry.NumberOfVisibleMeshes());
 
             Assert.AreEqual(1, BackgroundPreviewGeometry.NumberOfVisibleCurves());
-            
+
             Assert.AreEqual(1, BackgroundPreviewGeometry.NumberOfVisiblePoints());
         }
 
@@ -1137,7 +1186,7 @@ namespace WpfVisualizationTests
         [Category("RegressionTests")]
         public void CanTagGeometryWhenClickingSingleItemInPreviewBubble()
         {
-            tagGeometryWhenClickingItem(new[] {0, 0}, 1, "Point.ByCoordinates", 
+            tagGeometryWhenClickingItem(new[] {0, 0}, 1, "Point.ByCoordinates",
                 n => n.ViewModel.NodeModel, true);
         }
 
@@ -1161,11 +1210,41 @@ namespace WpfVisualizationTests
         [Category("RegressionTests")]
         public void CanTagGeometryWhenClickingArrayItemInWatchNode()
         {
-            tagGeometryWhenClickingItem(new[] { 0 }, 11, "Watch", 
+            tagGeometryWhenClickingItem(new[] { 0 }, 11, "Watch",
                 n => n.ViewModel.NodeModel.InPorts[0].Connectors[0].Start.Owner);
         }
-        
-        private async void tagGeometryWhenClickingItem(int[] indexes, int expectedNumberOfLabels, 
+
+        [Test]
+        [Category("RegressionTests")]
+        public void AggregateRenderPackagesDoesntMutateRenderPackage()
+        {
+            // Regression test for DYN-5329:
+            // HelixWatch3DViewModel.AggregateRenderPackages event handler shouldn't mutate render packages.
+
+            OpenVisualizationTest("MultipleTextureMaps.dyn");
+
+            var output = ViewModel.CurrentSpace.NodeFromWorkspace<CreateList>(Guid.Parse("04fcc9b7f80b43c99923b0dac8930e77"));
+
+            output.RenderPackagesUpdated += TestRenderPackageUpdate;
+
+            output.RequestVisualUpdateAsync(ViewModel.Model.Scheduler, ViewModel.Model.EngineController, new HelixRenderPackageFactory(), true);
+        }
+
+        private void TestRenderPackageUpdate(NodeModel nodeModel, RenderPackageCache renderPackages) {
+            nodeModel.RenderPackagesUpdated -= TestRenderPackageUpdate;
+
+            if (renderPackages.Packages.FirstOrDefault() is HelixRenderPackage package)
+            {
+                // The graph output contains 168 mesh vertices.
+                // Before DYN-5329 we removed the parts of the mesh containing multiple texture maps after adding them to the scene.
+                Assert.AreEqual(168, package.Mesh.Positions.Count);
+            } else
+            {
+                throw new Exception("Could not find HelixRenderPackage?");
+            }
+        }
+
+        private async void tagGeometryWhenClickingItem(int[] indexes, int expectedNumberOfLabels,
             string nodeName, Func<NodeView,NodeModel> getGeometryOwnerNode, bool expandPreviewBubble = false)
         {
             OpenVisualizationTest("MAGN_3815.dyn");
@@ -1289,10 +1368,10 @@ namespace WpfVisualizationTests
             Assert.AreEqual(0, BackgroundPreviewGeometry.NumberOfVisibleCurves());
             ViewModel.RenderPackageFactoryViewModel.ShowEdges = true;
             //this graph displays a grid, cones, cone edges, cube instances, cube edge instances.
-            Assert.AreEqual(3, BackgroundPreviewGeometry.NumberOfVisibleCurves());
+            Assert.AreEqual(2, BackgroundPreviewGeometry.NumberOfVisibleCurves());
             //cone and mesh
             Assert.AreEqual(2, BackgroundPreviewGeometry.NumberOfVisibleMeshes());
-            
+
            // cube instance edges
             Assert.AreEqual(5 * 5 * 5, BackgroundPreviewGeometry.TotalLineInstancesToRender());
             // cube instance meshes
@@ -1309,7 +1388,7 @@ namespace WpfVisualizationTests
             //assert cube is created not at origin.
             var result = GetPreviewValue("2264fad6b59640d0b753ba81c1f53f43").ToString();
             Assert.AreEqual("Point(X = 2.000, Y = 2.000, Z = 2.000)",result);
-           
+
             ViewModel.RenderPackageFactoryViewModel.ShowEdges = true;
 
             // assert that the cube edges have been tessellated back at origin.
@@ -1345,7 +1424,6 @@ X: 0.5 Y: -0.5 Z: -0.5".Replace(" ",string.Empty),
         }
 
 
-
     }
 
     internal static class GeometryDictionaryExtensions
@@ -1369,7 +1447,7 @@ X: 0.5 Y: -0.5 Z: -0.5".Replace(" ",string.Empty),
 
         /// <summary>
         /// Returns the total number of DynamoGeometryModel3D objects.
-        /// 
+        ///
         /// Each DynamoGeometryModel3D object may contain more than one mesh.
         /// </summary>
         /// <param name="dictionary"></param>
@@ -1461,7 +1539,7 @@ X: 0.5 Y: -0.5 Z: -0.5".Replace(" ",string.Empty),
             return geoms.Sum(g => g.Geometry.Colors.Count(c => c == color));
         }
 
-        public static bool HasNumberOfPointsCurvesAndMeshes(this IEnumerable<Element3D> dictionary, int numberOfPoints, 
+        public static bool HasNumberOfPointsCurvesAndMeshes(this IEnumerable<Element3D> dictionary, int numberOfPoints,
             int numberOfCurves, int numberOfMeshes)
         {
             return dictionary.TotalPoints() == numberOfPoints &&

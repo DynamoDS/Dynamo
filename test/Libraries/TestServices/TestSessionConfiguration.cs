@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
@@ -18,6 +18,7 @@ namespace TestServices
         private const string CONFIG_FILE_NAME = "TestServices.dll.config";
         private  List<Version> supportedLibGVersions = new List<Version>
                 {
+                    new Version(229,0,0),
                     new Version(228,6,0),
                 };
 
