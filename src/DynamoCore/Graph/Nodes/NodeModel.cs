@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -106,7 +107,6 @@ namespace Dynamo.Graph.Nodes
         #endregion
 
         internal const double HeaderHeight = 46;
-        internal static string ExtensionNode = "ExtensionNode";
 
         #region public members
 
@@ -137,7 +137,7 @@ namespace Dynamo.Graph.Nodes
         {
             get
             {
-                return ExtensionNode;
+                return "ExtensionNode";
             }
         }
 
@@ -2715,25 +2715,6 @@ namespace Dynamo.Graph.Nodes
         public virtual bool RequestVisualUpdateAsync(IScheduler scheduler,
             EngineController engine, IRenderPackageFactory factory, bool forceUpdate = false)
         {
-            return RequestVisualUpdateAsync(scheduler, engine, factory, forceUpdate, false);
-        }
-
-        /// <summary>
-        /// Call this method to asynchronously regenerate render package for
-        /// this node. This method accesses core properties of a NodeModel and
-        /// therefore is typically called on the main/UI thread.
-        /// </summary>
-        /// <param name="scheduler">An IScheduler on which the task will be scheduled.</param>
-        /// <param name="engine">The EngineController which will be used to get MirrorData for the node.</param>
-        /// <param name="factory">An IRenderPackageFactory which will be used to generate IRenderPackage objects.</param>
-        /// <param name="forceUpdate">Normally, render packages are only generated when the node's IsUpdated parameter is true.
-        /// By setting forceUpdate to true, the render packages will be updated.</param>
-        /// <param name="ignoreIsVisible">Normally, render packages are only generated when the node's IsVisible parameter is true.
-        /// By setting ignore to true, the render package will be updated.</param>
-        /// <returns>Flag which indicates if geometry update has been scheduled</returns>
-        public virtual bool RequestVisualUpdateAsync(IScheduler scheduler,
-            EngineController engine, IRenderPackageFactory factory, bool forceUpdate, bool ignoreIsVisible = false)
-        {
             var initParams = new UpdateRenderPackageParams()
             {
                 Node = this,
@@ -2741,8 +2722,7 @@ namespace Dynamo.Graph.Nodes
                 EngineController = engine,
                 DrawableIdMap = GetDrawableIdMap(),
                 PreviewIdentifierName = AstIdentifierForPreview.Name,
-                ForceUpdate = forceUpdate,
-                IgnoreIsVisible = ignoreIsVisible
+                ForceUpdate = forceUpdate
             };
 
             var task = new UpdateRenderPackageAsyncTask(scheduler);

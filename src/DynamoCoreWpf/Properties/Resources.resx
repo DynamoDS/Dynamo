@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -673,11 +673,11 @@
     <comment>View menu | Pan up</comment>
   </data>
   <data name="DynamoViewViewMenuPreviewNavigate" xml:space="preserve">
-    <value>_Navigate Background 3D Preview</value>
+    <value>Navigate Background 3D Preview</value>
     <comment>View menu | Navigate background 3D preview</comment>
   </data>
   <data name="DynamoViewViewMenuShowGrid" xml:space="preserve">
-    <value>_Show Grid</value>
+    <value>Show Grid</value>
     <comment>View menu | Show Grid</comment>
   </data>
   <data name="DynamoViewViewMenuShowBackground3DPreview" xml:space="preserve">
@@ -719,10 +719,6 @@
   <data name="ContextMenu" xml:space="preserve">
     <value>Node Options</value>
     <comment>Node context menu</comment>
-  </data>
-  <data name="NodeAutocomplete" xml:space="preserve">
-    <value>Sort results by</value>
-    <comment>Node context tooltip</comment>
   </data>
   <data name="ContextMenuLacing" xml:space="preserve">
     <value>Lacing</value>
@@ -835,6 +831,9 @@
   </data>
   <data name="StartPageShowSamples" xml:space="preserve">
     <value>Show Samples In Folder</value>
+  </data>
+  <data name="StartPageStart" xml:space="preserve">
+    <value>Start</value>
   </data>
   <data name="StartPageVideoTutorials" xml:space="preserve">
     <value>Video Tutorials</value>
@@ -1048,8 +1047,8 @@ To avoid unintended behavior, uninstall the conflicting loaded package(s), resta
     <value>Package Warning</value>
     <comment>Message box title</comment>
   </data>
-  <data name="UnsavedChangesMessageBoxTitle" xml:space="preserve">
-    <value>Unsaved changes</value>
+  <data name="SaveConfirmationMessageBoxTitle" xml:space="preserve">
+    <value>Confirmation</value>
   </data>
   <data name="SaveModelToSTLDialogTitle" xml:space="preserve">
     <value>Save your model to STL.</value>
@@ -1383,8 +1382,8 @@ If the toggle is off custom packages that are not already loaded will load once 
     <value>Most Recent Update</value>
     <comment>Sort package by the most recent update</comment>
   </data>
-  <data name="PackageManagerPackageDeprecated" xml:space="preserve">
-    <value>Deprecated</value>
+  <data name="PackageSearchViewDeprecated" xml:space="preserve">
+    <value>DEPRECATED</value>
     <comment>Indicate package has been deprecated</comment>
   </data>
   <data name="PackageSearchViewDeprecatedTooltip" xml:space="preserve">
@@ -1587,7 +1586,7 @@ If the toggle is off custom packages that are not already loaded will load once 
     <value>Publish a {0} Package</value>
   </data>
   <data name="PublishPackageViewMarkdownFilesDirectory" xml:space="preserve">
-    <value>Markdown Files Path (optional)</value>
+    <value>Markdown Files Directory (optional)</value>
   </data>
   <data name="PublishPackageViewMarkdownFilesDirectoryToolTip" xml:space="preserve">
     <value>An optional location for documenting your package in the markdown format.</value>
@@ -1805,16 +1804,16 @@ Do you want to install the latest Dynamo update?</value>
     <value>Run is not available when running Automatically or Periodically.</value>
   </data>
   <data name="RunTypeToolTipAutomatically" xml:space="preserve">
-    <value>Graph changes are executed in real time. Best suited for smaller graphs, known graphs, and Dynamo Sandbox.</value>
+    <value>Run whenever there is a change to the graph.</value>
   </data>
   <data name="RunTypeToolTipManually" xml:space="preserve">
-    <value>Graph changes are executed when you click Run. Use this mode when working in large graphs, unfamiliar graphs, or host applications.</value>
+    <value>Run whenever you press the Run button.</value>
   </data>
   <data name="RunTypeToolTipPeriodicallyDisabled" xml:space="preserve">
     <value>Periodic running is disabled when there are no nodes in your graph that support it.</value>
   </data>
   <data name="RunTypeToolTipPeriodicallyEnabled" xml:space="preserve">
-    <value>Graph changes are executed at a specified interval. Only available when the graph contains specific nodes, such as DateTime.Now or WebRequest.</value>
+    <value>Run at the specified interval.</value>
   </data>
   <data name="RunCompletedMessage" xml:space="preserve">
     <value>Run completed.</value>
@@ -1908,11 +1907,14 @@ Do you want to install the latest Dynamo update?</value>
   <data name="TermsOfUseViewTitle" xml:space="preserve">
     <value>Package Manager Terms of Use</value>
   </data>
+  <data name="GalleryDynamoVersion" xml:space="preserve">
+    <value>Version {0}.{1}.{2}</value>
+  </data>
   <data name="LearnMore" xml:space="preserve">
     <value>Learn more</value>
   </data>
-  <data name="SignInButtonContentToolTip" xml:space="preserve">
-    <value>Sign in to access online services that integrate with your desktop software.</value>
+  <data name="Autodesk360SignInButtonContentToolTip" xml:space="preserve">
+    <value>Sign in to Autodesk A360 to access online services that integrate with your desktop software.</value>
   </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
@@ -2122,7 +2124,7 @@ Do you want to install the latest Dynamo update?</value>
     <value>Is Output</value>
   </data>
   <data name="DynamoViewViewMenuAvailablePreviews" xml:space="preserve">
-    <value>_Available Previews</value>
+    <value>Available Previews</value>
   </data>
   <data name="PresetWarningMessage" xml:space="preserve">
     <value>No input nodes selected. Select at least one input node to create a preset.</value>
@@ -2146,7 +2148,7 @@ Do you want to install the latest Dynamo update?</value>
     <value>Publish Locally</value>
   </data>
   <data name="BackgroundPreviewName" xml:space="preserve">
-    <value>_Background Preview</value>
+    <value>Background Preview</value>
     <comment>The name of the 3D background preview.</comment>
   </data>
   <data name="CameraDataLoadError" xml:space="preserve">
@@ -2479,7 +2481,7 @@ Uninstall the following packages: {0}?</value>
     <comment>Preferences | Features | Python | Default Python Engine</comment>
   </data>
   <data name="PreferencesViewEnableNodeAutoComplete" xml:space="preserve">
-    <value>Enable Node Autocomplete</value>
+    <value>Node Autocomplete</value>
     <comment>Preferences | Features | Experimental | Enable Node Auto Complete</comment>
   </data>
   <data name="ErrorLoadingIcon" xml:space="preserve">
@@ -2532,18 +2534,6 @@ Uninstall the following packages: {0}?</value>
   <data name="PreferencesViewRunSettingsLabel" xml:space="preserve">
     <value>Default Run Settings</value>
     <comment>Label used in the general tab</comment>
-  </data>
-  <data name="PreferencesNodeAutocompleteMethod" xml:space="preserve">
-    <value>Default Ranking Method</value>
-    <comment>Label used in the features tab</comment>
-  </data>
-  <data name="ObjectType" xml:space="preserve">
-    <value>Node Type Match</value>
-    <comment>Label used in the features tab</comment>
-  </data>
-  <data name="RecommendedNodes" xml:space="preserve">
-    <value>Recommended Nodes</value>
-    <comment>Label used in the features tab</comment>
   </data>
   <data name="DynamoViewExtensionsMenu" xml:space="preserve">
     <value>E_xtensions</value>
@@ -3000,6 +2990,9 @@ To install the latest version of a package, click Install. \n
   <data name="PackagesGuideUsePackageTitle" xml:space="preserve">
     <value>Use package nodes</value>
   </data>
+  <data name="GettingStartedMenuItem" xml:space="preserve">
+    <value>_Getting Started</value>
+  </data>
   <data name="PackagesGuideInstallAPackageText" xml:space="preserve">
     <value>Package installations are typically quick, depending on their size and other factors. \n\n**Click Install** to install the latest version of the sample Autodesk package and proceed with this guide.</value>
   </data>
@@ -3258,12 +3251,6 @@ You can manage this in Preferences -&gt; Security.</value>
   <data name="ContextMenuConnectionsShowAll" xml:space="preserve">
     <value>Show All Wires</value>
   </data>
-  <data name="ConnectorContextMenuHeaderStartNode" xml:space="preserve">
-    <value>Navigate Upstream</value>
-  </data>
-  <data name="ConnectorContextMenuHeaderEndNode" xml:space="preserve">
-    <value>Navigate Downstream</value>
-  </data>
   <data name="ContextMenuNodeConnections" xml:space="preserve">
     <value>Node Connections</value>
   </data>
@@ -3297,176 +3284,30 @@ You can manage this in Preferences -&gt; Security.</value>
     <value>Package Upload Scan</value>
   </data>
   <data name="ImportPreferencesInfo" xml:space="preserve">
-    <value>You can import custom settings here, which will overwrite your current settings. If you'd like to preserve a copy of your current settings, export them before importing new settings. Settings not shown in the Preferences panel will be applied once Dynamo and any host program restarts.</value>
-    <comment>Import Preferences Info.</comment>
-  </data>
-  <data name="PreferencesViewNodeAutocomplete" xml:space="preserve">
-    <value>Node Autocomplete</value>
-    <comment>Preferences | Features | Node Autocomplete</comment>
-  </data>
-  <data name="HideNodesBelowSpecificConfidenceLevel" xml:space="preserve">
-    <value>Hide nodes below a specified confidence level</value>
-  </data>
-  <data name="HideNodesBelowSpecificConfidenceLevelInfo" xml:space="preserve">
-    <value>Confidence level appears next to each recommended node and represents estimated probability that the node is a good choice. When toggled on, this setting hides recommended nodes that don’t meet the specified confidence level. You can click the Low Confidence header to show the nodes.</value>
-  </data>
-  <data name="MLRecommendationNumberOfResults" xml:space="preserve">
-    <value>Number of results</value>
+   <value>Your custom settings can be imported here. It will be applied once Dynamo and any host program restarts</value>
+   <comment>Import Preferences Info.</comment>
   </data>
   <data name="ImportPreferencesText" xml:space="preserve">
-    <value>Import</value>
-    <comment>Import Preferences Text.</comment>
+   <value>Import</value>
+   <comment>Import Preferences Text.</comment>
   </data>
   <data name="ExportPreferencesText" xml:space="preserve">
-    <value>Export</value>
-    <comment>Export Preferences Text.</comment>
+   <value>Export</value>
+   <comment>Export Preferences Text.</comment>
   </data>
   <data name="ExportSettingsDialogTitle" xml:space="preserve">
-    <value>Select Folder to Export</value>
+   <value>Select Folder to Export</value>
   </data>
   <data name="FileDialogImportSettingsFiles" xml:space="preserve">
-    <value>Settings Files ({0})|{0}</value>
+   <value>Settings Files ({0})|{0}</value>
   </data>
   <data name="ImportSettingsDialogTitle" xml:space="preserve">
-    <value>Import Settings</value>
+   <value>Import Settings</value>
   </data>
   <data name="ImportSettingsSuccessMessage" xml:space="preserve">
-    <value>Import Success</value>
+   <value>Import Success</value>
   </data>
   <data name="ImportSettingsFailedMessage" xml:space="preserve">
-    <value>Import Failed</value>
-  </data>
-  <data name="PreferencesSettingHardwareAcceleration" xml:space="preserve">
-    <value>Use Hardware Acceleration</value>
-  </data>
-  <data name="PreferencesSettingCustomPythomTemplate" xml:space="preserve">
-    <value>Custom Python Template File Path</value>
-    <comment>Preferences | Features | Python | Python Template File</comment>
-  </data>
-  <data name="PreferencesSettingBackupInterval" xml:space="preserve">
-    <value>Auto-Backup Interval</value>
-    <comment>Setting menu | Auto-Backup Interval</comment>
-  </data>
-  <data name="PreferencesSettingMaxRecentFiles" xml:space="preserve">
-    <value>Maximum Number of Recent Files</value>
-    <comment>Setting menu | Maximum Number of Recent Files</comment>
-  </data>
-  <data name="BackupInternalUnit" xml:space="preserve">
-    <value>Minute(s) between backups</value>
-  </data>
-  <data name="PythonTemplateAddPathTooltip" xml:space="preserve">
-    <value>Add a file path for Python Node Template</value>
-  </data>
-  <data name="AddFilePathButtonName" xml:space="preserve">
-    <value>Add File Path</value>
-  </data>
-  <data name="PackageDeprecatedTooltip" xml:space="preserve">
-    <value>This package is outdated and cannot be installed.</value>
-  </data>
-  <data name="SplashScreenViewExtensions" xml:space="preserve">
-    <value>Loading View Extensions...</value>
-  </data>
-  <data name="DynamoViewSettingShowStaticSplashScreen" xml:space="preserve">
-    <value>Pause Splash Screen</value>
-  </data>
-  <data name="PreferencesViewShowStaticSplashScreenTooltip" xml:space="preserve">
-    <value>Pauses the splash screen when loading is complete, enabling you to launch Dynamo manually, sign in to your Autodesk account, or import settings.</value>
-  </data>
-  <data name="LogoutMenuItemText" xml:space="preserve">
-    <value>Sign Out</value>
-  </data>
-  <data name="SignInButtonText" xml:space="preserve">
-    <value>Sign In</value>
-  </data>
-  <data name="SigningInButtonText" xml:space="preserve">
-    <value>Signing In</value>
-  </data>
-  <data name="RecentFileNumberInfo" xml:space="preserve">
-    <value>Reducing this number will discard all recent files beyond your chosen number.</value>
-  </data>
-  <data name="WebView2RequiredMessage" xml:space="preserve">
-    <value>Dynamo requires WebView2 Evergreen Runtime, which is not installed on your computer. Please use the link below to download the Evergreen Standalone Installer and install the program. Then relaunch Dynamo. \n\n#WebView2 Runtime Installer=https://developer.microsoft.com/en-us/microsoft-edge/webview2/#download-sectionedge/webview2/#download-section</value>
-  </data>
-  <data name="WebView2RequiredTitle" xml:space="preserve">
-    <value>WebView2 Required</value>
-  </data>
-  <data name="DynamoViewFileMenuInsert" xml:space="preserve">
-    <value>Insert...</value>
-  </data>
-  <data name="DynamoViewRunTypesAutomaticToolTip" xml:space="preserve">
-    <value>Graph changes are executed in real time. Best suited for smaller graphs, known graphs, and Dynamo Sandbox.</value>
-  </data>
-  <data name="DynamoViewRunTypesComboBoxToolTipEnabled" xml:space="preserve">
-    <value>Run mode\n\nControls when graph changes are executed.</value>
-  </data>
-  <data name="DynamoViewRunTypesManualToolTip" xml:space="preserve">
-    <value>Graph changes are executed when you click Run. Use this mode when working in large graphs, unfamiliar graphs, or host applications.</value>
-  </data>
-  <data name="DynamoViewRunTypesPeriodicToolTip" xml:space="preserve">
-    <value>Graph changes are executed at a specified interval. Only available when the graph contains specific nodes, such as DateTime.Now or WebRequest.</value>
-  </data>
-  <data name="PreferencesViewDefaultRunSettingsInfoTooltip" xml:space="preserve">
-    <value>Set the default run mode for your graphs. In Manual mode,  graph changes are executed when you click Run. Use this mode when working in large graphs, unfamiliar graphs, or host programs.
-
-In Automatic mode, graph changes are executed in real time. This mode provides immediate feedback. 
-
-In certain complex graphs or host program scenarios, Automatic mode may cause instability issues or other problems. If this happens, try switching to Manual mode.</value>
-  </data>
-  <data name="GroupStyleFontSizeToolTip" xml:space="preserve">
-    <value>Font size</value>
-  </data>
-  <data name="SplashScreenImportSettings" xml:space="preserve">
-    <value>Import Settings</value>
-  </data>
-  <data name="SplashScreenImportSettingsFailDescription" xml:space="preserve">
-    <value>Something went wrong when importing your custom setting file. Please try again or proceed with default settings.</value>
-  </data>
-  <data name="SplashScreenLaunchingDynamo" xml:space="preserve">
-    <value>Launching Dynamo View...</value>
-  </data>
-  <data name="SplashScreenLaunchTitle" xml:space="preserve">
-    <value>Launch Dynamo</value>
-  </data>
-  <data name="SplashScreenLoadingTimeLabel" xml:space="preserve">
-    <value>Loading time</value>
-  </data>
-  <data name="SplashScreenShowScreenAgainLabel" xml:space="preserve">
-    <value>Don't show this again</value>
-  </data>
-  <data name="SplashScreenSignIn" xml:space="preserve">
-    <value>Sign In</value>
-  </data>
-  <data name="SplashScreenSignOut" xml:space="preserve">
-    <value>Sign Out</value>
-  </data>
-  <data name="SplashScreenWelcomeToDynamo" xml:space="preserve">
-    <value>Welcome to Dynamo!</value>
-  </data>
-  <data name="SplashScreenTotalLoadingTimeLabel" xml:space="preserve">
-    <value>Total loading time:</value>
-  </data>
-  <data name="ExportSettingsFailedMessage" xml:space="preserve">
-    <value>Export Failed</value>
-  </data>
-  <data name="PreferencesWindowHardwareAccelerationTooltip" xml:space="preserve">
-    <value>When toggled on, Dynamo benefits from hardware acceleration to improve smoothness of graphics and overall performance, as work is offloaded from central processing units (CPUs) to graphics processing units (GPUs).</value>
-  </data>
-  <data name="PreferencesWindowIsolateSelectedGeoTooltip" xml:space="preserve">
-    <value>When toggled on, selecting a geometry node will highlight the geometry it produces in the background 3D preview.</value>
-  </data>
-  <data name="PreferencesWindowShowCodeBlockNodeLineNumberTooltip" xml:space="preserve">
-    <value>When toggled on, line numbers will be displayed in the Code Block node editor.</value>
-  </data>
-  <data name="PreferencesWindowShowEdgesTooltip" xml:space="preserve">
-    <value>When toggled on, more detailed edges will be displayed for geometry from topology subtypes.</value>
-  </data>
-  <data name="PreferencesWindowShowPreviewBubblesTooltip" xml:space="preserve">
-    <value>When toggled on, a preview of the node’s output will be displayed when hovering over the bottom of a node.</value>
-  </data>
-  <data name="PreferencesViewBetaTag" xml:space="preserve">
-    <value>Beta</value>
-  </data>
-  <data name="SplashScreenSigningIn" xml:space="preserve">
-    <value>Signing In</value>
+   <value>Import Failed</value>
   </data>
 </root>

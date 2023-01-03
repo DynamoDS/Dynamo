@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -76,7 +76,6 @@ namespace Dynamo.Logging
         private WarningLevel _warningLevel;
         private bool _isDisposed;
         private readonly bool testMode;
-        private readonly bool cliMode;
 
         private TextWriter FileWriter { get; set; }
         private StringBuilder ConsoleWriter { get; set; }
@@ -196,24 +195,6 @@ namespace Dynamo.Logging
         }
 
         /// <summary>
-        /// Initializes a new instance of <see cref="DynamoLogger"/> class
-        /// with specified debug settings and directory where to write logs
-        /// </summary>
-        /// <param name="debugSettings">Debug settings</param>
-        /// <param name="logDirectory">Directory path where log file will be written</param>
-        /// <param name="isTestMode">Test mode is true or false.</param>
-        /// <param name="isCLIMode">We want to allow logging when CLI mode is true even if we are in test mode.</param>
-        public DynamoLogger(DebugSettings debugSettings, string logDirectory, Boolean isTestMode, Boolean isCLIMode)
-            :this(debugSettings, logDirectory, isTestMode)
-        {
-            cliMode = isCLIMode;
-            if (cliMode)
-            {
-                StartLoggingToConsoleAndFile(logDirectory);
-            }
-        }
-
-        /// <summary>
         /// Logs the specified message.
         /// </summary>
         /// <param name="message">The message.</param>
@@ -238,7 +219,7 @@ namespace Dynamo.Logging
                     Analytics.LogPiiInfo("LogMessage-" + level.ToString(), message);
 
                 // In test mode, write the logs only to std out. 
-                if (testMode && !cliMode)
+                if (testMode)
                 {
                     Console.WriteLine(string.Format("{0} : {1}", DateTime.UtcNow.ToString("u"), message));
                     return;
@@ -444,11 +425,6 @@ namespace Dynamo.Logging
         {
             lock (this.guardMutex)
             {
-                if (FileWriter != null && ConsoleWriter != null)
-                {
-                    return;
-                }
-
                 // We use a guid to uniquely identify the log name. This disambiguates log files
                 // so that parallel testing which needs to access the log files can be done, and
                 // so that services like Cloud Watch can match the dynamoLog_* pattern.

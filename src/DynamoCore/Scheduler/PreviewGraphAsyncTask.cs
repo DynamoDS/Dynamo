@@ -16,7 +16,7 @@ namespace Dynamo.Scheduler
         private IEnumerable<NodeModel> modifiedNodes;
         private bool verboseLogging;
         public List<Guid> previewGraphData;
-
+        
         public override TaskPriority Priority
         {
             get { return TaskPriority.Normal; }
@@ -55,13 +55,13 @@ namespace Dynamo.Scheduler
             try
             {
                 engineController = controller;
-                TargetedWorkspace = workspace;
-                modifiedNodes = ComputeModifiedNodes(workspace);
-                previewGraphData = engineController.PreviewGraphSyncData(modifiedNodes, verboseLogging);
+                TargetedWorkspace = workspace;                
+                modifiedNodes = ComputeModifiedNodes(workspace);                
+                previewGraphData = engineController.PreviewGraphSyncData(modifiedNodes,verboseLogging);
                 return previewGraphData;
             }
-            catch (Exception)
-            {
+            catch (Exception e)
+            {             
                 return null;
             }
         }
@@ -72,31 +72,25 @@ namespace Dynamo.Scheduler
 
         protected override void HandleTaskExecutionCore()
         {
-
+            
         }
 
         protected override void HandleTaskCompletionCore()
         {
-
+           
         }
 
         #endregion
 
         #region Public Class Properties
-        internal WorkspaceModel TargetedWorkspace { get; private set; }
+        internal WorkspaceModel TargetedWorkspace { get; private set; }       
         #endregion
 
         #region Private Class Helper Methods
 
         private static IEnumerable<NodeModel> ComputeModifiedNodes(WorkspaceModel workspace)
         {
-            // Try to calculate dirty nodes on UI side.
-            // This is only for UI feature. If this list inaccurate, it will not affect how VM works.
-            return (workspace.Nodes as List<NodeModel>).FindAll(
-                delegate (NodeModel node)
-                {
-                    return node.IsModified;
-                });
+            return workspace.Nodes; // TODO(Ben): Implement dirty node subsetting.
         }
 
         #endregion

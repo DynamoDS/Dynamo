@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Dynamo.LibraryViewExtensionWebView2;
+using Dynamo.LibraryViewExtensionMSWebBrowser;
 using Dynamo.Wpf.Interfaces;
 using Moq;
 using NUnit.Framework;

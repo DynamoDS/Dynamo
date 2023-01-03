@@ -14,7 +14,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
     public class MarkdownGeneratorCommandTests
     {
         private const string CORENODEMODELS_DLL_NAME = "CoreNodeModels.dll";
-        private const string LibraryViewExtension_DLL_NAME = "LibraryViewExtensionWebView2.dll";
+        private const string LibraryViewExtension_DLL_NAME = "LibraryViewExtensionMSWebBrowser.dll";
         private static readonly string DynamoCoreDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
         private static readonly string DynamoCoreNodesDir = Path.Combine(DynamoCoreDir, "Nodes");
         private static string DynamoRepoRoot = new DirectoryInfo(DynamoCoreDir).Parent.Parent.Parent.FullName;
@@ -483,75 +483,6 @@ namespace NodeDocumentationMarkdownGeneratorTests
             Assert.IsTrue(Program.ReferenceAssemblyPaths.Select(x => new FileInfo(x).Name).Contains("SampleLibraryUI.dll"));
         }
 
-        [Test]
-        public void CanRenameFile()
-        {
-            // Arrange
-            var originalOutDirName = "fallback_docs";
-            var originalOutDir = new DirectoryInfo(Path.Combine(toolsTestFilesDirectory, originalOutDirName));
-
-            var targetMdFile = "CoreNodeModels.HigherOrder.Map.md";
-            var renamedTargetMdFile = "SVLKFMPW6YIPCHS5TA2H3KJQQTSPUZOGUBWJG3VEPVFVB7DMGFDQ.md";
-
-            tempDirectory = CreateTempOutputDirectory();
-            Assert.That(tempDirectory.Exists);
-
-            CopyFilesRecursively(originalOutDir, tempDirectory);
-            var mdFile = Path.Combine(tempDirectory.FullName, targetMdFile);
-            var renamedMdFile = Path.Combine(tempDirectory.FullName, renamedTargetMdFile);
-
-            // Act
-            var opts = new RenameOptions
-            {
-                InputMdFile = mdFile
-            };
-
-            RenameCommand.HandleRename(opts);
-
-            // Assert
-            var mdFiles = tempDirectory.GetFiles("*.md", SearchOption.TopDirectoryOnly)
-                .Select(x => x.Name);
-
-            var content = File.ReadAllText(renamedMdFile);
-
-            Assert.IsTrue(mdFiles.Contains(renamedTargetMdFile));
-            Assert.IsTrue(content.Contains("CoreNodeModels.HigherOrder.Map"));
-        }
-
-        [Test]
-        public void CanRenameFilesInADirectory()
-        {
-            // Arrange
-            var originalOutDirName = "fallback_docs";
-            var originalOutDir = new DirectoryInfo(Path.Combine(toolsTestFilesDirectory, originalOutDirName));
-
-            var expectedFileNames = new List<string>
-            {
-                "FGRJU5ZIMM4EKNHFEXZGHJTKI73262KTH4CSUBI2IEXVH46TACRA.md",
-                "HEG35EENB6LZZUAB4OKNCYCDHDTBEF7IR2YWCH7I4EOIQPFOJGFQ.md",
-                "SVLKFMPW6YIPCHS5TA2H3KJQQTSPUZOGUBWJG3VEPVFVB7DMGFDQ.md",
-                "list.rank.md",
-                "loopwhile.md"
-            };
-
-            tempDirectory = CreateTempOutputDirectory();
-            Assert.That(tempDirectory.Exists);
-
-            CopyFilesRecursively(originalOutDir, tempDirectory);
-
-            // Act
-            var opts = new RenameOptions
-            {
-                InputMdDirectory = tempDirectory.FullName,
-                MaxLength = 15
-            };
-
-            RenameCommand.HandleRename(opts);
-
-            // Assert
-            CollectionAssert.AreEquivalent(expectedFileNames, tempDirectory.GetFiles().Select(x => x.Name));
-        }
-
         #region Helpers
         internal void AssertMdFileInfos(List<MdFileInfo> mdFileInfos, FileInfo[] coreNodeModelMdFiles)
         {
@@ -581,7 +512,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
 
         protected static void SaveCoreLayoutSpecToPath(Assembly assembly, string savePath)
         {
-            var resource = "Dynamo.LibraryViewExtensionWebView2.web.library.layoutSpecs.json";
+            var resource = "Dynamo.LibraryViewExtensionMSWebBrowser.web.library.layoutSpecs.json";
             assembly = assembly == null ? Assembly.GetExecutingAssembly() : assembly;
             var stream = assembly.GetManifestResourceStream(resource);
             var fs = File.Create(savePath);

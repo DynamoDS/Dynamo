@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
@@ -146,8 +146,6 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
             writer.WriteValue(anno.Height);
             writer.WritePropertyName("FontSize");
             writer.WriteValue(anno.FontSize);
-            writer.WritePropertyName("GroupStyleId");
-            writer.WriteValue(anno.GroupStyleId);
             writer.WritePropertyName("InitialTop");
             writer.WriteValue(anno.InitialTop);
             writer.WritePropertyName("InitialHeight");

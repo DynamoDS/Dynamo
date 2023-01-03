@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Text;
 using Dynamo.Logging;
 using NodeDocumentationMarkdownGenerator.Commands;
@@ -27,20 +27,6 @@ namespace NodeDocumentationMarkdownGenerator
             try
             {
                 FromDirectoryCommand.HandleDocumentationFromDirectory(opts);
-            }
-            catch (Exception e)
-            {
-                LogExceptionToConsole(e);
-            }
-
-            return "";
-        }
-
-        internal static string HandleRename(RenameOptions opts)
-        {
-            try
-            {
-                RenameCommand.HandleRename(opts);
             }
             catch (Exception e)
             {

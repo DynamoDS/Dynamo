@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using AngleSharp.Css.Dom;
 using Ganss.XSS;
 
@@ -41,12 +41,6 @@ namespace Md2Html
             AllowedCssProperties.Add(@"transition-timing-function");
             AllowedCssProperties.Add(@"transition-delay");
             AllowedCssProperties.Add(@"box-shadow");
-            AllowedCssProperties.Add(@"position");
-            AllowedCssProperties.Add(@"justify-content");
-            AllowedCssProperties.Add(@"table-layout");
-            AllowedCssProperties.Add(@"align-items");
-            AllowedCssProperties.Add(@"background-position");
-            AllowedCssProperties.Add(@"background-size");
 
             AllowedSchemes.Add(@"file");
             AllowedSchemes.Add(@"data");

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -46,12 +46,7 @@ namespace Dynamo.ViewModels
             if (SearchTextChanged != null)
                 SearchTextChanged(this, e);
 
-            // If this is trigged from NodeAutoCompleteSearchViewModel, we don't want to execute this SearchCommand on all nodes.
-            // The Search will later be triggered on a subset of filtered results.
-            if (this is NodeAutoCompleteSearchViewModel is false)
-            {
-                SearchCommand?.Execute(null);
-            }
+            SearchCommand?.Execute(null);
         }
 
         #endregion
@@ -190,41 +185,6 @@ namespace Dynamo.ViewModels
             {
                 filteredResults = ToggleSelect(value);
                 RaisePropertyChanged(nameof(FilteredResults));
-            }
-        }
-
-        private IEnumerable<NodeSearchElementViewModel> filteredHighConfidenceResults;
-        /// <summary>
-        /// Filtered high confidence search results.
-        /// </summary>
-        internal IEnumerable<NodeSearchElementViewModel> FilteredHighConfidenceResults
-        {
-            get
-            {
-                return filteredHighConfidenceResults;
-            }
-            set
-            {
-                filteredHighConfidenceResults = ToggleSelect(value);
-                RaisePropertyChanged(nameof(FilteredHighConfidenceResults));
-            }
-        }
-
-
-        private IEnumerable<NodeSearchElementViewModel> filteredLowConfidenceResults;
-        /// <summary>
-        /// Filtered low confidence search results.
-        /// </summary>
-        internal IEnumerable<NodeSearchElementViewModel> FilteredLowConfidenceResults
-        {
-            get
-            {
-                return filteredLowConfidenceResults;
-            }
-            set
-            {
-                filteredLowConfidenceResults = ToggleSelect(value);
-                RaisePropertyChanged(nameof(FilteredLowConfidenceResults));
             }
         }
 
@@ -874,7 +834,6 @@ namespace Dynamo.ViewModels
             searchResults = new List<NodeSearchElementViewModel>(foundNodes);
 
             FilteredResults = searchResults;
-
             UpdateSearchCategories();
 
             RaisePropertyChanged("FilteredResults");

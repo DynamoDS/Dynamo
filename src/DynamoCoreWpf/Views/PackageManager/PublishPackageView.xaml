@@ -10,7 +10,7 @@
         xmlns:packagemanager="clr-namespace:Dynamo.PackageManager"
         d:DataContext="{d:DesignInstance Type=packagemanager:PublishPackageViewModel}"
         Name="PublishInfoControl"
-        Width="940"
+        Width="900"
         Height="710"
         MinWidth="630"
         MinHeight="500"

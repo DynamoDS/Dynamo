@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -43,8 +43,8 @@ namespace Dynamo.Notifications
         private readonly DynamoViewModel dynamoViewModel;
         private readonly Button notificationsButton;
 
-        private static readonly int notificationPopupHorizontalOffset = -288;
-        private static readonly int notificationPopupVerticalOffset = 5;
+        private static readonly int notificationPopupHorizontalOffset = -295;
+        private static readonly int notificationPopupVerticalOffset = 10;
         private static readonly int limitOfMonthsFilterNotifications = 6;
 
         private static readonly string htmlEmbeddedFile = "Dynamo.Notifications.node_modules._dynamods.notifications_center.build.index.html";
@@ -131,12 +131,6 @@ namespace Dynamo.Notifications
         private void WebView_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
         {
             AddNotifications(notificationsModel.Notifications);
-
-            string setTitle = String.Format("window.setTitle('{0}');", Properties.Resources.NotificationsCenterTitle);
-            InvokeJS(setTitle);
-
-            string setBottomButtonText = String.Format("window.setBottomButtonText('{0}');", Properties.Resources.NotificationsCenterBottomButtonText);
-            InvokeJS(setBottomButtonText);
         }
 
         private void AddNotifications(List<NotificationItemModel> notifications)
@@ -230,18 +224,13 @@ namespace Dynamo.Notifications
                 // Hosts an object that will expose the properties and methods to be called from the javascript side
                 notificationUIPopup.webView.CoreWebView2.AddHostObjectToScript("scriptObject", 
                     new ScriptObject(OnMarkAllAsRead));
-
-                notificationUIPopup.webView.CoreWebView2.Settings.IsZoomControlEnabled = false;
             }
         }
 
         private void DynamoView_LocationChanged(object sender, EventArgs e)
         {
-            if (notificationUIPopup != null)
-            {
-                notificationUIPopup.Placement = PlacementMode.Bottom;
-                notificationUIPopup.UpdatePopupLocation();
-            }
+            notificationUIPopup.Placement = PlacementMode.Bottom;
+            notificationUIPopup.UpdatePopupLocation();
         }
 
         private void DynamoView_SizeChanged(object sender, SizeChangedEventArgs e)

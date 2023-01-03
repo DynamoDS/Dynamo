@@ -1,4 +1,4 @@
-using Dynamo.Models;
+﻿using Dynamo.Models;
 using Dynamo.PackageManager;
 
 namespace Dynamo.ViewModels
@@ -10,6 +10,8 @@ namespace Dynamo.ViewModels
     public delegate void RequestPackagePublishDialogHandler(PublishPackageViewModel publishViewModel);
 
     public delegate void RequestAboutWindowHandler(DynamoViewModel aboutViewModel);
+
+    public delegate void RequestShowHideGalleryHandler(bool showGallery);
 
     internal delegate void RequestViewOperationHandler(ViewOperationEventArgs e);
 

@@ -23,16 +23,6 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
-        /// <summary>
-        /// Provide the upstream nodes that are imediately connected.
-        /// </summary>
-        /// <param name="node"></param>
-        /// <returns></returns>
-        internal static HashSet<NodeModel> ImediateUpstreamNodes(this NodeModel node)
-        {
-            return node.InPorts.SelectMany(p => p.Connectors.Select(c => c.Start.Owner)).ToHashSet();
-        }
-
         internal static IEnumerable<NodeModel> UpstreamNodesMatchingPredicate(this NodeModel node, List<NodeModel> gathered, Predicate<NodeModel> match)
         {
             var upstream = node.InPorts.SelectMany(p => p.Connectors.Select(c => c.Start.Owner)).

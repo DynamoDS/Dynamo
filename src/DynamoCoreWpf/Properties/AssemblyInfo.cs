@@ -48,7 +48,6 @@ using System.Windows;
 [assembly: InternalsVisibleTo("Notifications")]
 [assembly: InternalsVisibleTo("IronPythonTests")]
 [assembly: InternalsVisibleTo("DynamoPackagesWPF")]
-[assembly: InternalsVisibleTo("DynamoPlayerExtension")]
 
 
 [assembly: TypeForwardedTo(typeof(Dynamo.Wpf.Interfaces.LayoutSpecification))]

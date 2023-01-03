@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -343,6 +343,9 @@ namespace Dynamo.Core
             // Migrate only if both packages and definitions directories are empty
             if (isPackagesDirectoryEmpty && isDefinitionsDirectoryEmpty)
             {
+                DynamoModel.OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
+                    SettingsMigrationEventArgs.EventStatusType.Begin));
+
                 return targetMigrator.MigrateFrom(sourceMigrator);
             }
             return null;

@@ -1,6 +1,5 @@
-using System;
+﻿using System;
 using System.Reflection;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -21,7 +20,6 @@ namespace Dynamo.Wpf.Views.GuidedTour
         private PopupWindowViewModel popupViewModel;
         private HostControlInfo hostControlInfo;
         private bool isClosingTour;
-        private bool canMoveStep = true;
 
         private const string packagesTourName = "packages";
         //Field that indicates wheter popups are left-aligned or right-aligned
@@ -157,25 +155,16 @@ namespace Dynamo.Wpf.Views.GuidedTour
             GuideFlowEvents.OnGuidedTourPrev();
         }
 
-        private async void Popup_KeyDown(object sender, KeyEventArgs e)
+        private void Popup_KeyDown(object sender, KeyEventArgs e)
         {
-            if (canMoveStep)
+            switch (e.Key)
             {
-                canMoveStep = false;
-
-                switch (e.Key)
-                {
-                    case Key.Left:
-                        GuideFlowEvents.OnGuidedTourPrev();
-                        break;
-                    case Key.Right:
-                        GuideFlowEvents.OnGuidedTourNext();
-                        break;
-                }
-                //Adds a delay of 500ms to avoid Dynamo crash with a quick switch with the keys
-                await Task.Delay(500);
-
-                canMoveStep = true;
+                case Key.Left:
+                    GuideFlowEvents.OnGuidedTourPrev();
+                    break;
+                case Key.Right:
+                    GuideFlowEvents.OnGuidedTourNext();
+                    break;
             }
         }
     }

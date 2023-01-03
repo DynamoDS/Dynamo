@@ -1,4 +1,0 @@
-﻿<ViewExtensionDefinition>
-  <AssemblyPath>..\LibraryViewExtensionWebView2.dll</AssemblyPath>
-  <TypeName>Dynamo.LibraryViewExtensionWebView2.LibraryViewExtensionWebView2</TypeName>
-</ViewExtensionDefinition>

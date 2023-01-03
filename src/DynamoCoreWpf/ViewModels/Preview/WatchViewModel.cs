@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -17,6 +17,12 @@ namespace Dynamo.ViewModels
         // Formats double value into string. E.g. 1054.32179 => "1054.32179"
         // For more info: https://msdn.microsoft.com/en-us/library/kfsatb94(v=vs.110).aspx
         private const string numberFormat = "g";
+
+        internal const string doubleType = "double";
+        internal const string boolType = "bool";
+        internal const string intType = "int";
+        internal const string objectType = "object";
+        internal const string stringType = "string";
 
         #region Events
 
@@ -284,17 +290,17 @@ namespace Dynamo.ViewModels
             switch (typeCode)
             {
                 case TypeCode.Boolean:
-                    return nameof(TypeCode.Boolean);
+                    return boolType;
                 case TypeCode.Double:
-                    return nameof(TypeCode.Double);
+                    return doubleType;
                 case TypeCode.Int64:
-                    return nameof(TypeCode.Int64);
+                    return intType;
                 case TypeCode.Int32:
-                    return nameof(TypeCode.Int32);
+                    return intType;
                 case TypeCode.Object:
-                    return nameof(TypeCode.Object);
+                    return objectType;
                 case TypeCode.String:
-                    return nameof(TypeCode.String);
+                    return stringType;
                 case TypeCode.Empty:
                     return String.Empty;
                 default:

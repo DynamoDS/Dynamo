@@ -1,5 +1,5 @@
-using System;
-using System.Globalization;
+﻿using System;
+
 using CoreNodeModels.Input;
 
 using Dynamo.Core;
@@ -63,16 +63,7 @@ namespace CoreNodeModelsWpf
                 if (value.CompareTo(model.Min) == -1)
                     model.Min = value;
 
-                if(value is IFormattable formattableval)
-                {
-                    var invariantString  = formattableval.ToString(null,CultureInfo.InvariantCulture);
-                    model.UpdateValue(new Dynamo.Graph.UpdateValueParams(nameof(Value), invariantString));
-                }
-                else
-                {
-                    model.UpdateValue(new Dynamo.Graph.UpdateValueParams(nameof(Value), value.ToString()));
-                }
-
+                model.UpdateValue(new Dynamo.Graph.UpdateValueParams(nameof(Value), value.ToString()));
             }
         }
 

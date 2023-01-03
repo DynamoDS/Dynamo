@@ -1,8 +1,6 @@
-using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using System.Windows.Controls;
 using CoreNodeModels;
 using CoreNodeModels.Input;
@@ -133,45 +131,6 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(WatchNode);
             Assert.AreEqual("-200", minTextBox.Text);
             Assert.AreEqual("200", maxTextBox.Text);
-        }
-
-        /// <summary>
-        /// This test will validate that setting the string in a , dec seperator culture does not
-        /// modify the value.
-        /// </summary>
-        [Test]
-        public void SliderViewModel_ValueTest_Localized()
-        {
-            //change current thread culture to German.
-            var deCulture = CultureInfo.CreateSpecificCulture("de-DE");
-
-            var currentCulture = Thread.CurrentThread.CurrentCulture;
-            var currentUICulture = Thread.CurrentThread.CurrentUICulture;
-
-            Thread.CurrentThread.CurrentCulture = deCulture;
-            Thread.CurrentThread.CurrentUICulture = deCulture;
-
-            //create a slider
-            var slider = new CoreNodeModels.Input.DoubleSlider();
-            Model.CurrentWorkspace.AddAndRegisterNode(slider);
-
-            DispatcherUtil.DoEvents();
-
-            //get viewmodel.
-            var nodeViews = View.NodeViewsInFirstWorkspace();
-            var nodeView = nodeViews.OfNodeModelType<CoreNodeModels.Input.DoubleSlider>().FirstOrDefault();
-            var dynamoSliderControl = nodeView.grid.ChildrenOfType<DynamoSlider>().FirstOrDefault();
-            //Setting the Value property from the SliderViewModel
-            var sliderViewModel = dynamoSliderControl.DataContext as SliderViewModel<double>;
-            sliderViewModel.Value = 10.7;
-
-            DispatcherUtil.DoEvents();
-
-            Assert.AreEqual(10.7,slider.Value);
-            //reset culture
-            Thread.CurrentThread.CurrentCulture = currentCulture;
-            Thread.CurrentThread.CurrentUICulture = currentUICulture;
-
         }
     }
 }

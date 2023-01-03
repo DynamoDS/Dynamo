@@ -1,9 +1,4 @@
-using System;
-using System.Globalization;
-using Dynamo.Configuration;
-using Dynamo.Wpf.Properties;
-
-namespace Dynamo.ViewModels
+﻿namespace Dynamo.ViewModels
 {
     /// <summary>
     /// Class containing data to display in compact preview bubble
@@ -11,9 +6,8 @@ namespace Dynamo.ViewModels
     public class CompactBubbleViewModel : ViewModelBase
     {
         #region Properties
-        private string nodeLabel;
-        private string valueType;
 
+        private string nodeLabel;
         /// <summary>
         /// Represents type of node output
         /// </summary>
@@ -25,12 +19,6 @@ namespace Dynamo.ViewModels
                 nodeLabel = value;
                 RaisePropertyChanged("NodeLabel");
             }
-        }
-
-        public string ValueType
-        {
-            get { return valueType; }
-            set { valueType = value; RaisePropertyChanged(nameof(ValueType)); }
         }
 
         private int numberOfItems;
@@ -84,38 +72,6 @@ namespace Dynamo.ViewModels
             NumberOfItems = items;
         }
 
-        public void SetObjectType(object obj)
-        {
-            if (obj != null)
-            {
-                ValueType = GetDisplayType(obj);
-            }
-        }
-
-        private string GetDisplayType(object obj)
-        {
-            TypeCode typeCode = Type.GetTypeCode(obj.GetType());
-
-            switch (typeCode)
-            {
-                case TypeCode.Boolean:
-                    return nameof(TypeCode.Boolean);
-                case TypeCode.Double:
-                    return nameof(TypeCode.Double);
-                case TypeCode.Int64:
-                    return nameof(TypeCode.Int64);
-                case TypeCode.Int32:
-                    return nameof(TypeCode.Int32);
-                case TypeCode.Object:
-                    return nameof(TypeCode.Object);
-                case TypeCode.String:
-                    return nameof(TypeCode.String);
-                case TypeCode.Empty:
-                    return string.Empty;
-                default:
-                    return string.Empty;
-            }
-        }
         #endregion
     }
 }

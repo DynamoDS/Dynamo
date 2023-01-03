@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
@@ -57,13 +57,6 @@ namespace Dynamo.Models
             string fileContents = command.FileContents;
             bool forceManualMode = command.ForceManualExecutionMode;
             OpenFileFromJson(fileContents, forceManualMode);
-        }
-
-        protected virtual void InsertFileImpl(InsertFileCommand command)
-        {
-            string filePath = command.FilePath;
-            bool forceManualMode = command.ForceManualExecutionMode;
-            InsertFileFromPath(filePath, forceManualMode);
         }
 
         private void RunCancelImpl(RunCancelCommand command)

@@ -1,0 +1,4 @@
+<ViewExtensionDefinition>
+  <AssemblyPath>..\LibraryViewExtension.dll</AssemblyPath>
+  <TypeName>Dynamo.LibraryUI.ViewExtension</TypeName>
+</ViewExtensionDefinition>

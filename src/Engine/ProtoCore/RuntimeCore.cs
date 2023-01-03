@@ -8,6 +8,7 @@ using ProtoCore.AssociativeGraph;
 using ProtoCore.DSASM;
 using ProtoCore.Lang;
 using ProtoCore.Lang.Replication;
+using ProtoCore.Mirror;
 using ProtoCore.Runtime;
 using ProtoCore.Utils;
 using ProtoFFI;
@@ -273,6 +274,7 @@ namespace ProtoCore
         {
             OnDispose();
             CLRModuleType.ClearTypes();
+            GraphicDataProvider.ClearMarshaller();
         }
 
         public void NotifyExecutionEvent(ExecutionStateEventArgs.State state)

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -32,7 +32,8 @@ namespace CoreNodeModels
 
         public int CompareTo(object obj)
         {
-            if (!(obj is DynamoDropDownItem a))
+            var a = obj as DynamoDropDownItem;
+            if (a == null)
                 return 1;
 
             return Name.CompareTo(a);
@@ -55,7 +56,7 @@ namespace CoreNodeModels
         [JsonIgnore]
         public ObservableCollection<DynamoDropDownItem> Items
         {
-            get => items;
+            get { return items; }
             set
             {
                 items = value;
@@ -90,7 +91,7 @@ namespace CoreNodeModels
         /// </summary>
         public int SelectedIndex
         {
-            get => selectedIndex;
+            get { return selectedIndex; }
             set
             {
                 //do not allow selected index to
@@ -98,20 +99,18 @@ namespace CoreNodeModels
                 if (value > Items.Count - 1 || value < 0)
                 {
                     selectedIndex = -1;
-                    selectedString = string.Empty;
+                    selectedString = String.Empty;
                 }
                 else
                 {
                     selectedIndex = value;
                     selectedString = GetSelectedStringFromItem(Items.ElementAt(value));
                 }
-
                 RaisePropertyChanged("SelectedIndex");
-                RaisePropertyChanged("SelectedString");
             }
         }
 
-        private string selectedString = string.Empty;
+        private string selectedString = String.Empty;
 
         /// <summary>
         /// String form of current selected item, so derived class
@@ -119,25 +118,18 @@ namespace CoreNodeModels
         /// </summary>
         public string SelectedString
         {
-            get => selectedString;
+            get { return selectedString; }
             set
             {
-                if (value == selectedString)
-                {
-                    return;
-                }
-
-                if (!string.IsNullOrEmpty(value))
+                if (!string.IsNullOrEmpty(value) && value != selectedString)
                 {
                     var item = Items.FirstOrDefault(i => GetSelectedStringFromItem(i).Equals(value));
                     // In the case that SelectedString deserialize after SelectedIndex
                     // With a valid item from search, get the index of item and replace the current one. 
                     // If no exact match found, fall back to use the default selectedIndex from deserialization.
-                    if (item != null)
-                    {
-                        selectedIndex = Items.IndexOf(item);
-                        RaisePropertyChanged("SelectedIndex");
-                    }
+                    selectedIndex = item != null ?
+                        Items.IndexOf(item) :
+                        selectedIndex;
                 }
 
                 selectedString = value;
@@ -181,28 +173,32 @@ namespace CoreNodeModels
             if (selectedIndex < 0)
             {
                 Warning(Dynamo.Properties.Resources.NothingIsSelectedWarning);
-                selectedString = string.Empty;
+                selectedString = String.Empty;
             }
             else
             {
-                selectedString = selectedIndex > Items.Count - 1 ? string.Empty : GetSelectedStringFromItem(Items.ElementAt(selectedIndex));
+                selectedString = selectedIndex > Items.Count - 1 ? String.Empty : GetSelectedStringFromItem(Items.ElementAt(selectedIndex));
             }
         }
 
         protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
         {
+            string name = updateValueParams.PropertyName;
             string value = updateValueParams.PropertyValue;
 
-            if (updateValueParams.PropertyName == "Value" && value != null)
+            if (name == "Value" && value != null)
             {
-                SelectedIndex = ParseSelectedIndex(value, Items);
-
-                if (SelectedIndex < 0)
+                selectedIndex = ParseSelectedIndex(value, Items);
+                if (selectedIndex < 0)
                 {
                     Warning(Dynamo.Properties.Resources.NothingIsSelectedWarning);
+                    selectedString = String.Empty;
                 }
-
-                return true;
+                else
+                {
+                    selectedString = selectedIndex > Items.Count - 1 ? String.Empty : GetSelectedStringFromItem(Items.ElementAt(selectedIndex));
+                }
+                return true; // UpdateValueCore handled.
             }
 
             return base.UpdateValueCore(updateValueParams);
@@ -299,7 +295,7 @@ namespace CoreNodeModels
             var selectionState = PopulateItemsCore(currentSelection);
 
             // Restore the selection when selectedIndex is valid
-            if (selectionState == SelectionState.Restore && !string.IsNullOrEmpty(currentSelection))
+            if (selectionState == SelectionState.Restore && !String.IsNullOrEmpty(currentSelection))
             {
                 SelectedIndex = -1;
                 for (int i = 0; i < items.Count; i++)

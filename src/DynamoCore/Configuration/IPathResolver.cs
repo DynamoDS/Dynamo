@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Dynamo.Interfaces
 {
@@ -164,9 +164,9 @@ namespace Dynamo.Interfaces
         string PythonTemplateFilePath { get; }
 
         /// <summary>
-        /// Full path to the legacy GalleryContent xml file.
+        /// Full path to the GalleryContent xml file. The file is located in
+        /// the AppData/Dynamo/[version]/gallery/
         /// </summary>
-        [System.Obsolete("This property will be removed in Dynamo 3.0")]
         string GalleryFilePath { get; }
 
         /// <summary>

@@ -1,4 +1,4 @@
-DYNAMO v.2.18.0 © 2022 Autodesk, Inc.  All rights reserved.
+DYNAMO v.2.15.0 © 2022 Autodesk, Inc.  All rights reserved.
 Dynamo License
 
 Those portions created by Ian are provided with the following copyright:
@@ -21,7 +21,7 @@ All other brand names, product names or trademarks belong to their respective ho
 Autodesk Cloud and Desktop Components
 This Product or Service may incorporate or use background Autodesk online and desktop technology components.  For information about these components, see Autodesk Cloud Platform Components and Autodesk Desktop Platform Components.
 
-LIBG, ProtoGeometry v.2.7.0, Analytics.NET, ADP, GRegRevitAuth, AGET, IDSDK, and IDSDK Wrapper are closed source files licensed by Autodesk under the license that can be found here https://github.com/DynamoDS/Dynamo/tree/master/doc/distrib/Autodesk.rtf
+LIBG, ProtoGeometry v.2.7.0, Analytics.NET, ADP, GRegRevitAuth, AGET are closed source files licensed by Autodesk under the license that can be found here https://github.com/DynamoDS/Dynamo/tree/master/doc/distrib/Autodesk.rtf
 
 
 Third-Party Trademarks, Software Credits and Attributions
@@ -45,7 +45,7 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-Newtonsoft.Json v.13.0.1:
+Newtonsoft.Json v.8.0.3:
 https://github.com/JamesNK/Newtonsoft.Json
 https://github.com/JamesNK/Newtonsoft.Json/blob/master/LICENSE.md
 The MIT License (MIT)

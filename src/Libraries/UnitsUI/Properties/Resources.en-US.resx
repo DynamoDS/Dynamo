@@ -129,7 +129,7 @@
     <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="ConvertUnitsDescription" xml:space="preserve">
-    <value>Converts a value between selected unit systems</value>
+    <value>Convert a value between selected Unit systems.</value>
   </data>
   <data name="ConvertUnitsSearchTags" xml:space="preserve">
     <value />
@@ -158,7 +158,7 @@
     <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="ParseUnitInputDescription" xml:space="preserve">
-    <value>Converts an input string with unit values into the equivalent value of the expression</value>
+    <value>Converts input string with unit values into the equivalent value of the expression.</value>
   </data>
   <data name="ParseUnitInputSearchTags" xml:space="preserve">
     <value />

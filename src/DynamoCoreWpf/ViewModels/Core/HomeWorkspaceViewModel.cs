@@ -216,7 +216,7 @@ namespace Dynamo.Wpf.ViewModels.Core
                 }
             }
 
-            //if the graph is executed then set the node preview to false, provided
+            //if the graph is executed then set the node preview to false , provided
             // there is no error on that node.
             if (nodeGuids.Count == 0 && graphExecuted)
             {

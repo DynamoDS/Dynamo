@@ -25,7 +25,7 @@
 	  <PackageReference Include="HelixToolkit" Version="2.17.0" />
 	  <PackageReference Include="HelixToolkit.Wpf" Version="2.17.0" />
 	  <PackageReference Include="HelixToolkit.Wpf.SharpDX" Version="2.17.0" />
-	  <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+	  <PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
 	  <PackageReference Include="NUnit" Version="2.6.3" />
 	  <PackageReference Include="RestSharp" Version="106.12.0" />
 	  <PackageReference Include="SharpDX" Version="4.2.0" />

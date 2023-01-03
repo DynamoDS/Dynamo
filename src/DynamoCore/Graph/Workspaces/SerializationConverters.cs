@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -604,11 +604,6 @@ namespace Dynamo.Graph.Workspaces
             if (obj[NodeLibraryDependenciesPropString] != null)
             {
                 workspaceReferences = obj[NodeLibraryDependenciesPropString].ToObject<IEnumerable<INodeLibraryDependencyInfo>>(serializer);
-                //if deserialization failed, reset to empty.
-                if (workspaceReferences == null)
-                {
-                    workspaceReferences = new List<INodeLibraryDependencyInfo>();
-                }
             }
             else
             {

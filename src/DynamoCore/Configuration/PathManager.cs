@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -59,12 +59,10 @@ namespace Dynamo.Core
         public const string ViewExtensionsDirectoryName = "viewExtensions";
         public const string DefinitionsDirectoryName = "definitions";
         public const string SamplesDirectoryName = "samples";
-        [Obsolete("This property will be removed in Dynamo 3.0")]
         public const string GalleryDirectoryName = "gallery";
         public const string BackupDirectoryName = "backup";
         public const string PreferenceSettingsFileName = "DynamoSettings.xml";
         public const string PythonTemplateFileName = "PythonTemplate.py";
-        [Obsolete("This property will be removed in Dynamo 3.0")]
         public const string GalleryContentsFileName = "GalleryContents.xml";
 
         private readonly int majorFileVersion;
@@ -80,6 +78,7 @@ namespace Dynamo.Core
         private readonly string samplesDirectory;
         private readonly string backupDirectory;
         private readonly string preferenceFilePath;
+        private readonly string galleryFilePath;
         private string pythonTemplateFilePath;
 
         private readonly List<string> rootDirectories;
@@ -242,10 +241,9 @@ namespace Dynamo.Core
             get { return pythonTemplateFilePath; }
         }
 
-        [Obsolete("This property will be removed in Dynamo 3.0")]
         public string GalleryFilePath
         {
-            get;
+            get { return galleryFilePath; }
         }
 
         public IEnumerable<string> NodeDirectories
@@ -412,6 +410,8 @@ namespace Dynamo.Core
             commonDefinitions = Path.Combine(commonDataDir, DefinitionsDirectoryName);
             commonPackages = Path.Combine(commonDataDir, PackagesDirectoryName);
             samplesDirectory = GetSamplesFolder(commonDataDir);
+            var galleryDirectory = GetGalleryDirectory(commonDataDir);
+            galleryFilePath = Path.Combine(galleryDirectory, GalleryContentsFileName);
 
             rootDirectories = new List<string> { userDataDir };
 
@@ -628,7 +628,45 @@ namespace Dynamo.Core
 
             return sampleDirectory;
         }
-        
+
+        private static string GetGalleryDirectory(string commonDataDir)
+        {
+            var versionedDirectory = commonDataDir;
+            if (!Directory.Exists(versionedDirectory))
+            {
+                // Try to see if folder "%ProgramData%\{...}\{major}.{minor}" exists, if it
+                // does not, then root directory would be "%ProgramData%\{...}".
+                //
+                commonDataDir = Directory.GetParent(versionedDirectory).FullName;
+            }
+            else if (!Directory.Exists(Path.Combine(versionedDirectory, GalleryDirectoryName)))
+            {
+                // If the folder "%ProgramData%\{...}\{major}.{minor}" exists, then try to see
+                // if the folder "%ProgramData%\{...}\{major}.{minor}\gallery" exists. If it
+                // doesn't exist, then root directory would be "%ProgramData%\{...}".
+                //
+                commonDataDir = Directory.GetParent(versionedDirectory).FullName;
+            }
+
+            var uiCulture = CultureInfo.CurrentUICulture.Name;
+            var galleryDirectory = Path.Combine(commonDataDir, GalleryDirectoryName, uiCulture);
+
+            // If the localized gallery directory does not exist then fall back 
+            // to using the en-US gallery folder. Do an additional check to see 
+            // if the localized folder is available but is empty.
+            // 
+            var di = new DirectoryInfo(galleryDirectory);
+            if (!Directory.Exists(galleryDirectory) ||
+                !di.GetFiles("*.xml",SearchOption.TopDirectoryOnly).Any())
+            {
+                var neutralCommonGallery = Path.Combine(commonDataDir, GalleryDirectoryName, "en-US");
+                if (Directory.Exists(neutralCommonGallery))
+                    galleryDirectory = neutralCommonGallery;
+            }
+
+            return galleryDirectory;
+        }
+
         private IEnumerable<string> LibrarySearchPaths(string library)
         {
             // Strip out possible directory from library path.

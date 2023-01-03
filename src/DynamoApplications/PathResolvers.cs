@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using Dynamo.Interfaces;
 
@@ -73,7 +73,7 @@ namespace Dynamo.Applications
         private readonly List<string> additionalNodeDirectories;
         private readonly List<string> preloadedLibraryPaths;
 
-        public CLIPathResolver(string preloaderLocation, string userDataFolder, string commonDataFolder)
+        public CLIPathResolver(string preloaderLocation)
         {
             // If a suitable preloader cannot be found on the system, then do 
             // not add invalid path into additional resolution. The default 
@@ -103,8 +103,6 @@ namespace Dynamo.Applications
                 "GeometryColor.dll"
             };
 
-            UserDataRootFolder = userDataFolder;
-            CommonDataRootFolder = commonDataFolder;
         }
 
         public IEnumerable<string> AdditionalResolutionPaths
@@ -122,8 +120,14 @@ namespace Dynamo.Applications
             get { return preloadedLibraryPaths; }
         }
 
-        public string UserDataRootFolder { get; private set; }
+        public string UserDataRootFolder
+        {
+            get { return string.Empty; }
+        }
 
-        public string CommonDataRootFolder { get; private set; }
+        public string CommonDataRootFolder
+        {
+            get { return string.Empty; }
+        }
     }
 }

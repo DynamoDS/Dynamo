@@ -1,4 +1,4 @@
-using Dynamo.Graph.Nodes;
+﻿using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
@@ -90,7 +90,6 @@ namespace Dynamo.Tests.Loggings
         {
             var versions = new List<Version>(){
 
-                    new Version(229, 0,0),
                     new Version(228, 6, 0)
             };
 

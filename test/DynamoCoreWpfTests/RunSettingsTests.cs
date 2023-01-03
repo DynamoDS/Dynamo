@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -144,20 +144,6 @@ namespace DynamoCoreWpfTests
             homeSpace = GetHomeSpace();
             Assert.AreEqual(homeSpace.RunSettings.RunType, RunType.Periodic);
             Assert.AreEqual(homeSpace.RunSettings.RunPeriod, 10);
-        }
-
-        [Test]
-        public void RunSettingsOnFileInsert()
-        {
-            var homeSpace = GetHomeSpace();
-            var currentRunSettings = homeSpace.RunSettings.RunType;
-            Assert.AreEqual(RunType.Automatic, currentRunSettings);
-
-            string wspath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\callsite\RebindingSingleDimension.dyn");
-            Model.InsertFileFromPath(wspath);
-
-            currentRunSettings = homeSpace.RunSettings.RunType;
-            Assert.AreEqual(RunType.Automatic, currentRunSettings);
         }
 
         private RoutedEventArgs GetKeyboardEnterEventArgs(Visual visual)

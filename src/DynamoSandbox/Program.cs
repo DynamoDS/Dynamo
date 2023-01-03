@@ -1,4 +1,4 @@
-using Dynamo.Wpf.Utilities;
+﻿using Dynamo.Wpf.Utilities;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -39,11 +39,12 @@ namespace DynamoSandbox
         /// <returns></returns>
         public static Assembly ResolveAssembly(object sender, ResolveEventArgs args)
         {
+            var assemblyPath = string.Empty;
             var assemblyName = new AssemblyName(args.Name).Name + ".dll";
 
             try
             {
-                string assemblyPath = Path.Combine(DynamoCorePath, assemblyName);
+                assemblyPath = Path.Combine(DynamoCorePath, assemblyName);
                 if (File.Exists(assemblyPath))
                     return Assembly.LoadFrom(assemblyPath);
 

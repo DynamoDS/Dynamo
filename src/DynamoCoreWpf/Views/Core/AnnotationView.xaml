@@ -1,4 +1,4 @@
-<UserControl Name="Group"
+﻿<UserControl Name="Group"
              x:Class="Dynamo.Nodes.AnnotationView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -138,46 +138,20 @@
                 </Grid>
             </Border>
             <ControlTemplate.Triggers>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="False"/>
-                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}" Value="False"/>
-                    </MultiDataTrigger.Conditions>
-
-                    <Setter Property="Source"
-                            TargetName="sign"
-                            Value="/DynamoCoreWpf;component/UI/Images/caret_down_grey_48px.png" />
-                </MultiDataTrigger>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True"/>
-                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}" Value="False"/>
-                    </MultiDataTrigger.Conditions>
-
-                    <Setter Property="Source"
-                            TargetName="sign"
-                            Value="/DynamoCoreWpf;component/UI/Images/caret_down_hover_48px.png" />
-                </MultiDataTrigger>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="False"/>
-                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}" Value="True"/>
-                    </MultiDataTrigger.Conditions>
-
+                <!--Change the icon when toggled-->
+                <Trigger Property="IsChecked"
+                         Value="True">
                     <Setter Property="Source"
                             TargetName="sign"
                             Value="/DynamoCoreWpf;component/UI/Images/caret_up_grey_48px.png" />
-                </MultiDataTrigger>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True"/>
-                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}" Value="True"/>
-                    </MultiDataTrigger.Conditions>
+                </Trigger>
 
-                    <Setter Property="Source"
-                            TargetName="sign"
-                            Value="/DynamoCoreWpf;component/UI/Images/caret_up_hover_48px.png" />
-                </MultiDataTrigger>
+                <!--MouseOver, Pressed behaviors-->
+                <Trigger Property="IsMouseOver"
+                         Value="True">
+                    <Setter Property="Cursor"
+                            Value="Hand" />
+                </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
 
@@ -267,38 +241,8 @@
                                             VerticalAlignment="Bottom"
                                             Click="contextMenu_Click">
                                         <Button.Content>
-                                            <Image>
-                                                <Image.Style>
-                                                    <Style TargetType="{x:Type Image}">
-                                                        <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/menu_grey_48px.png"/>
-                                                        <Style.Triggers>
-                                                            <Trigger Property="IsMouseOver" Value="True">
-                                                                <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/menu_hover_48px.png"/>
-                                                            </Trigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </Image.Style>
-                                            </Image>
+                                            <Image  Source="/DynamoCoreWpf;component/UI/Images/menu_grey_48px.png" />
                                         </Button.Content>
-                                        <Button.Style>
-                                            <Style TargetType="{x:Type Button}">
-                                                <Setter Property="OverridesDefaultStyle" Value="True"/>
-                                                <Setter Property="Template">
-                                                    <Setter.Value>
-                                                        <ControlTemplate TargetType="Button">
-                                                            <Border Name="border" BorderThickness="0" Background="{TemplateBinding Background}">
-                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                                            </Border>
-                                                            <ControlTemplate.Triggers>
-                                                                <Trigger Property="IsMouseOver" Value="True">
-                                                                    <Setter Property="Background" Value="{StaticResource HighlightedBrush}"/>
-                                                                </Trigger>
-                                                            </ControlTemplate.Triggers>
-                                                        </ControlTemplate>
-                                                    </Setter.Value>
-                                                </Setter>
-                                            </Style>
-                                        </Button.Style>
                                     </Button>
                                 </Grid>
                             </Border>

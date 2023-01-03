@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -39,26 +39,10 @@ namespace Dynamo.Graph.Workspaces
         // Event to handle closing of the workspace references extension when the workspace is closed. 
         internal static event Action WorkspaceClosed;
 
+        // To check whether task is completed or not. 
+        private bool executingTask;
+
         private IEnumerable<KeyValuePair<Guid, List<CallSite.RawTraceData>>> historicalTraceData;
-
-        private bool graphRunInProgress;
-
-        /// <summary>
-        /// A flag which indicates whether Dynamo is currently running a graph.
-        /// This flag is set to true when execution starts and is set to false
-        /// when execution is completed.
-        /// </summary>
-        internal bool GraphRunInProgress
-        {
-            get { return graphRunInProgress; }
-            set
-            {
-                if (graphRunInProgress == value) return;
-
-                graphRunInProgress = value;
-                RaisePropertyChanged(nameof(GraphRunInProgress));
-            }
-        }
 
         /// <summary>
         ///     Returns <see cref="EngineController"/> object assosiated with thisPreloadedTraceData home workspace
@@ -192,9 +176,6 @@ namespace Dynamo.Graph.Workspaces
 
         /// <summary>
         /// Notifies listeners that graph evaluation is started.
-        /// At this stage, the graph has not been analyzed yet
-        /// so Dynamo could find that the Graph does not need to be executed at all,
-        /// or only part of it could be executed (delta compute)
         /// </summary>
         public event EventHandler<EventArgs> EvaluationStarted;
 
@@ -205,19 +186,9 @@ namespace Dynamo.Graph.Workspaces
         public virtual void OnEvaluationStarted(EventArgs e)
         {
             this.HasRunWithoutCrash = false;
-            GraphRunInProgress = true;
 
-            try
-            {
-                // Do not allow graph runs to be triggered from the EvaluationStarted event. We want to avoid potential infinite loops.
-                // Use a simple internal flag like ForceBlockRun (RunEnabled would notify WPF of changes and that would incur peformance penalties without any benefit)
-                RunSettings.ForceBlockRun = true;
-                EvaluationStarted?.Invoke(this, e);
-            }
-            finally
-            {
-                RunSettings.ForceBlockRun = false;
-            }
+            var handler = EvaluationStarted;
+            if (handler != null) handler(this, e);
         }
 
         /// <summary>
@@ -233,8 +204,7 @@ namespace Dynamo.Graph.Workspaces
         public virtual void OnEvaluationCompleted(EvaluationCompletedEventArgs e)
         {
             this.HasRunWithoutCrash = e.EvaluationSucceeded;
-            GraphRunInProgress = false;
-
+            
             var handler = EvaluationCompleted;
             if (handler != null) handler(this, e);
 
@@ -520,7 +490,11 @@ namespace Dynamo.Graph.Workspaces
 
             if (RunSettings.RunType != RunType.Manual)
             {
-                if (!DelayGraphExecution)
+                // TODO for Dynamo 3.0: The boolean "executingTask" that is used here is a make-do fix.
+                // We will be needing a separate variable(boolean flag) to check whether run can be enabled from external applications
+                // and not confuse it with the internal flag RunEnabled which is associated with the Run button in Dynamo. 
+                // Make this RunSettings.RunEnabled private, introduce the new flag and remove the "executingTask" variable. 
+                if ((RunSettings.RunEnabled || executingTask) && !DelayGraphExecution)
                 {
                     Run();
                 }
@@ -699,7 +673,7 @@ namespace Dynamo.Graph.Workspaces
                 MarkNodesAsModifiedAndRequestRun(Nodes);
             }
 
-            if (RunSettings.RunType == RunType.Automatic)
+            if (RunSettings.RunEnabled && RunSettings.RunType == RunType.Automatic)
                 Run();
         }
 
@@ -782,7 +756,11 @@ namespace Dynamo.Graph.Workspaces
                 }
             }
 
+            // Notify listeners (optional) of completion.
+            RunSettings.RunEnabled = true; // Re-enable 'Run' button.
             RunSettings.RunTypesEnabled = true; //Re-enable Run Type ComboBox
+
+            executingTask = false; // setting back to false
 
             //set the node execution preview to false;
             OnSetNodeDeltaState(new DeltaComputeStateEventArgs(new List<Guid>(), graphExecuted));
@@ -826,9 +804,6 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         public void Run()
         {
-            if (!RunSettings.RunEnabled) return;
-
-            // ForceBlockRun (an internal flag) has higher priority than RunEnabled. Mostly used by the FileTrust feature.
             if (RunSettings.ForceBlockRun) return;
 
             graphExecuted = true;
@@ -856,15 +831,10 @@ namespace Dynamo.Graph.Workspaces
             EngineController.ProcessPendingCustomNodeSyncData(scheduler);
             
             var task = new UpdateGraphAsyncTask(scheduler, verboseLogging);
-
-            // Start of graph evaluation (includes task.Initialize)
-            // Set these flags to false so that we do not get into infinite loop scenarios
-            // if listeners of EvaluationStarted decide to call RequestRun
-            OnEvaluationStarted(EventArgs.Empty);
-
             if (task.Initialize(EngineController, this))
             {
                 task.Completed += OnUpdateGraphCompleted;
+                RunSettings.RunEnabled = false; // Disable 'Run' button.
 
                 // Reset node states
                 foreach (var node in Nodes)
@@ -872,11 +842,15 @@ namespace Dynamo.Graph.Workspaces
                     node.WasInvolvedInExecution = false;
                 }
 
-                // After the first update graph task has been scheduled (i.e the workspace has been built for the first time),
-                // we can set the silenceNodeModifications flag back to false.
+                // The workspace has been built for the first time
                 silenceNodeModifications = false;
 
+                OnEvaluationStarted(EventArgs.Empty);
                 scheduler.ScheduleForExecution(task);
+
+                // Setting this to true as the task is scheduled now and will be 
+                // set back to false once the OnUpdateGraphCompleted event is executed. 
+                executingTask = true;
             }
             else
             {
@@ -905,7 +879,7 @@ namespace Dynamo.Graph.Workspaces
                     scheduler.ScheduleForExecution(task);
                 }
             }
-            //Show node execution is checked but the graph has not RUN
+            //Show node exection is checked but the graph has not RUN
             else
             {
                 var deltaComputeStateArgs = new DeltaComputeStateEventArgs(new List<Guid>(), graphExecuted);
@@ -915,12 +889,13 @@ namespace Dynamo.Graph.Workspaces
 
         private void OnPreviewGraphCompleted(AsyncTask asyncTask)
         {
-            if (asyncTask is PreviewGraphAsyncTask updateTask)
+            var updateTask = asyncTask as PreviewGraphAsyncTask;
+            if (updateTask != null)
             {
                 var nodeGuids = updateTask.previewGraphData;
-                var deltaComputeStateArgs = new DeltaComputeStateEventArgs(nodeGuids, graphExecuted);
-                OnSetNodeDeltaState(deltaComputeStateArgs);
-            }
+                var deltaComputeStateArgs = new DeltaComputeStateEventArgs(nodeGuids,graphExecuted);
+                OnSetNodeDeltaState(deltaComputeStateArgs);               
+            }            
         }
 
 

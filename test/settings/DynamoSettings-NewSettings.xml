@@ -62,11 +62,7 @@
   <IsIronPythonDialogDisabled>true</IsIronPythonDialogDisabled>
   <ShowTabsAndSpacesInScriptEditor>true</ShowTabsAndSpacesInScriptEditor>
   <EnableNodeAutoComplete>false</EnableNodeAutoComplete>
-  <HideNodesBelowSpecificConfidenceLevel>true</HideNodesBelowSpecificConfidenceLevel>
-  <MLRecommendationConfidenceLevel>99</MLRecommendationConfidenceLevel>
-  <MLRecommendationNumberOfResults>5</MLRecommendationNumberOfResults>
   <EnableNotificationCenter>false</EnableNotificationCenter>
-  <EnableStaticSplashScreen>false</EnableStaticSplashScreen>
   <DefaultPythonEngine/>
   <SelectedPackagePathForInstall>C:\Users\jesus.alvino\AppData\Roaming\Dynamo\Dynamo Core\2.16</SelectedPackagePathForInstall>
   <NamespacesToExcludeFromLibrary>
@@ -87,38 +83,27 @@
   <DisableBuiltinPackages>true</DisableBuiltinPackages>
   <DisableCustomPackageLocations>true</DisableCustomPackageLocations>
   <DefaultRunType>Manual</DefaultRunType>
-  <DefaultNodeAutocompleteSuggestion>ObjectType</DefaultNodeAutocompleteSuggestion>
   <ShowRunPreview>true</ShowRunPreview>
   <GroupStyleItemsList>
     <GroupStyleItem>
       <Name>Actions</Name>
       <HexColorString>B9F9E1</HexColorString>
       <IsDefault>true</IsDefault>
-	  <FontSize>36</FontSize>
     </GroupStyleItem>
     <GroupStyleItem>
       <Name>Inputs</Name>
       <HexColorString>FFB8D8</HexColorString>
       <IsDefault>true</IsDefault>
-	  <FontSize>36</FontSize>
     </GroupStyleItem>
     <GroupStyleItem>
       <Name>Outputs</Name>
       <HexColorString>FFC999</HexColorString>
       <IsDefault>true</IsDefault>
-	  <FontSize>36</FontSize>
     </GroupStyleItem>
     <GroupStyleItem>
       <Name>Review</Name>
       <HexColorString>A4E1FF</HexColorString>
       <IsDefault>true</IsDefault>
-	  <FontSize>36</FontSize>
-    </GroupStyleItem>
-	<GroupStyleItem>
-      <Name>Style 5</Name>
-      <HexColorString>B9F9E1</HexColorString>
-      <IsDefault>false</IsDefault>
-	  <FontSize>14</FontSize>
     </GroupStyleItem>
   </GroupStyleItemsList>
   <NodeSearchTagSizeLimit>500</NodeSearchTagSizeLimit>
@@ -126,7 +111,4 @@
   <ReadNotificationIds>
     <string>1</string>
   </ReadNotificationIds>
-  <DynamoPlayerFolderGroups>
-   <DynamoPlayerFolderGroup/>
-  </DynamoPlayerFolderGroups>
 </PreferenceSettings>

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -656,11 +656,6 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// Optional Markdown files list
-        /// </summary>
-        internal IEnumerable<string> MarkdownFiles;
-
-        /// <summary>
         /// Dependencies property </summary>
         /// <value>
         /// Computed and manually added package dependencies</value>
@@ -753,7 +748,6 @@ namespace Dynamo.PackageManager
             ToggleMoreCommand = new DelegateCommand(() => MoreExpanded = !MoreExpanded, () => true);
             Dependencies.CollectionChanged += DependenciesOnCollectionChanged;
             Assemblies = new List<PackageAssembly>();
-            MarkdownFiles = new List<string>();
             PropertyChanged += ThisPropertyChanged;
             RefreshPackageContents();
             RefreshDependencyNames();
@@ -835,7 +829,6 @@ namespace Dynamo.PackageManager
             this.IsNewVersion = false;
             this.MoreExpanded = false;
             this.ClearPackageContents();
-            this.ClearMarkdownDirectory();
             this.UploadState = PackageUploadHandle.State.Ready;
             this.AdditionalFiles = new ObservableCollection<string>();
             this.Dependencies = new ObservableCollection<PackageDependency>();
@@ -1329,15 +1322,6 @@ namespace Dynamo.PackageManager
                 return;
             }
             MarkdownFilesDirectory = directoryPath;
-
-            // Store all files paths from the markdown directory to list without affecting the package content UI
-            MarkdownFiles = Directory
-                .GetFiles
-                (
-                    directoryPath,
-                    "*",
-                    SearchOption.AllDirectories
-                ).ToList();
         }
 
         /// <summary>
@@ -1500,18 +1484,18 @@ namespace Dynamo.PackageManager
             {
                 return;
             }
-            var contentFiles = BuildPackage();
+            var files = BuildPackage();
             try
             {
                 //if buildPackage() returns no files then the package
                 //is empty so we should return
-                if (contentFiles == null || contentFiles.Count() < 1)
+                if (files == null || files.Count() < 1)
                 {
                     return;
                 }
                 // begin submission
                 var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
-                var handle = pmExtension.PackageManagerClient.PublishAsync(Package, contentFiles, MarkdownFiles, IsNewVersion);
+                var handle = pmExtension.PackageManagerClient.PublishAsync(Package, files, IsNewVersion);
 
                 // start upload
                 Uploading = true;
@@ -1598,7 +1582,7 @@ namespace Dynamo.PackageManager
                 var remapper = new CustomNodePathRemapper(DynamoViewModel.Model.CustomNodeManager,
                     DynamoModel.IsTestMode);
                 var builder = new PackageDirectoryBuilder(new MutatingFileSystem(), remapper);
-                builder.BuildDirectory(Package, publishPath, files, MarkdownFiles);
+                builder.BuildDirectory(Package, publishPath, files);
                 UploadState = PackageUploadHandle.State.Uploaded;
 
                 // Once upload is successful, a display message will appear to ask

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -118,37 +118,6 @@ namespace Dynamo.UI.Prompts
                 MessageBoxImage = icon
             };
 
-            dynamoMessageBox.ConfigureButtons(button);
-            dynamoMessageBox.ShowDialog();
-            return dynamoMessageBox.CustomDialogResult;
-        }
-
-
-        /// <summary>
-        /// Displays a dialog to the user and returns their choice as a MessageBoxResult.
-        /// </summary>
-        /// <param name="messageBoxText">Content of the message</param>
-        /// <param name="caption">MessageBox title</param>
-        /// <param name="showRichTextBox">True if we will be using the RichTextBox instead of the usual one</param>
-        /// <param name="button">OK button shown in the MessageBox</param>
-        /// <param name="icon">Type of message: Warning, Error</param>
-        /// <returns></returns>
-        public static MessageBoxResult Show(string messageBoxText, string caption, bool showRichTextBox, MessageBoxButton button,
-           MessageBoxImage icon)
-        {
-            var dynamoMessageBox = new DynamoMessageBox
-            {
-                BodyText = messageBoxText,
-                TitleText = caption,
-                MessageBoxButton = button,
-                MessageBoxImage = icon
-            };
-            
-            if (showRichTextBox)
-            {
-                dynamoMessageBox.BodyTextBlock.Visibility = Visibility.Collapsed;
-                dynamoMessageBox.ContentRichTextBox.Visibility = Visibility.Visible;
-            }             
             dynamoMessageBox.ConfigureButtons(button);
             dynamoMessageBox.ShowDialog();
             return dynamoMessageBox.CustomDialogResult;

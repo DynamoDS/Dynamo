@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -11,22 +11,9 @@
     <RootNamespace>DynamoUtilities</RootNamespace>
     <AssemblyName>DynamoUtilities</AssemblyName>
   </PropertyGroup>
-  <ItemGroup Label="Common Dependencies">
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-  </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
-	  <PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-    <PackageReference Include="System.IO.FileSystem.AccessControl" Version="5.0.0" />
-  </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-    <PackageReference Include="System.Collections.Immutable" Version="5.0.0">
-      <GeneratePathProperty>true</GeneratePathProperty>
-      <IncludeAssets>none</IncludeAssets>
-    </PackageReference>
-    <Reference Include="System.Collections.Immutable">
-      <HintPath>$(PkgSystem_Collections_Immutable)\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
-    </Reference>
+  <ItemGroup>
+	<PackageReference Include="AvalonEdit" Version="4.3.1.9430" CopyXML="true" />
+	<PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
     <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>

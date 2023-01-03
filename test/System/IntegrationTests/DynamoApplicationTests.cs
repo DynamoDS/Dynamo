@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -13,7 +13,7 @@ namespace IntegrationTests
         public void DynamoSandboxLoadsASMFromValidPath()
         {
             var versions = new List<Version>(){
-                    new Version(229,0,0),
+
                     new Version(228, 6, 0)
             };
 
@@ -42,12 +42,8 @@ namespace IntegrationTests
                             break;
                         }
                     }
-                    // TODO: This test need to be updated somehow to bypass splash screen
-                    if (!string.IsNullOrEmpty(firstASMmodulePath))
-                    {
-                        //assert that ASM is really loaded from exactly where we specified.
-                        Assert.AreEqual(Path.GetDirectoryName(firstASMmodulePath), locatedPath);
-                    }
+                    //assert that ASM is really loaded from exactly where we specified.
+                    Assert.AreEqual(Path.GetDirectoryName(firstASMmodulePath), locatedPath);
                 });
             }
             finally

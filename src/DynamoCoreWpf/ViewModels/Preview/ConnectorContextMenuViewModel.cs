@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Windows;
 using Dynamo.Logging;
 using Dynamo.UI.Commands;
@@ -96,14 +96,6 @@ namespace Dynamo.ViewModels
         /// Alerts ConnectorViewModel to pin the connector
         /// </summary>
         public DelegateCommand PinConnectedSurrogateCommand { get; set; }
-        /// <summary>
-        /// Alerts ConnectorViewModel to focus the view on start node
-        /// </summary>
-        public DelegateCommand GoToStartNodeCommand { get; set; }
-        /// <summary>
-        /// Alerts ConnectorViewModel to focus the view on end node
-        /// </summary>
-        public DelegateCommand GoToEndNodeCommand { get; set; }
 
         private void InitCommands()
         {
@@ -111,8 +103,6 @@ namespace Dynamo.ViewModels
             SelectConnectedSurrogateCommand = new DelegateCommand(SelectConnectedSurrogateCommandExecute, x => true);
             BreakConnectionsSurrogateCommand = new DelegateCommand(BreakConnectionsSurrogateCommandExecute, x => true);
             PinConnectedSurrogateCommand = new DelegateCommand(PinConnectedSurrogateCommandExecute, x => true);
-            GoToStartNodeCommand = new DelegateCommand(GoToStartNodeCommandExecute, x => true);
-            GoToEndNodeCommand = new DelegateCommand(GoToEndNodeCommandExecute, x => true);
         }
 
         /// <summary>
@@ -164,24 +154,6 @@ namespace Dynamo.ViewModels
             ViewModel.PinConnectorCommand.Execute(null);
             // Track pin connected nodes event
             Analytics.TrackEvent(Actions.Pin, Categories.ConnectorOperations, "PinWire");
-        }
-
-        /// <summary>
-        /// Executes the start node command on connector view model
-        /// </summary>
-        /// <param name="obj"></param>
-        private void GoToStartNodeCommandExecute(object obj)
-        {
-            ViewModel.GoToStartNodeCommand.Execute(null);
-        }
-
-        /// <summary>
-        /// Executes the end node command on connector view model
-        /// </summary>
-        /// <param name="obj"></param>
-        private void GoToEndNodeCommandExecute(object obj)
-        {
-            ViewModel.GoToEndNodeCommand.Execute(null);
         }
 
         #endregion

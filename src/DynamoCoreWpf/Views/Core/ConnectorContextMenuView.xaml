@@ -1,4 +1,4 @@
-<UserControl x:Class="Dynamo.Controls.ConnectorContextMenuView"
+﻿<UserControl x:Class="Dynamo.Controls.ConnectorContextMenuView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -23,8 +23,7 @@
             <ContextMenu Name="MainContextMenu"
                          Style="{StaticResource ContextMenuStyle}"
                          Background="#666666"
-                         MinWidth="110"
-                         Width="Auto"
+                         Width="170"
                          MouseLeave="OnMouseLeaveContextMenu"
                          ContextMenuClosing="OnContextMenuClosing">
                     <MenuItem x:Name="BreakItem" Header="{x:Static props:Resources.ConnectorContextMenuHeaderBreakConnection}" 
@@ -48,10 +47,6 @@
                             </Style>
                         </MenuItem.Style>
                     </MenuItem>
-                    <MenuItem x:Name="StartNode" Header="{x:Static props:Resources.ConnectorContextMenuHeaderStartNode}" 
-                              Command="{Binding GoToStartNodeCommand}"/>
-                    <MenuItem x:Name="EndNode" Header="{x:Static props:Resources.ConnectorContextMenuHeaderEndNode}" 
-                              Command="{Binding GoToEndNodeCommand}"/>
                 </ContextMenu>
         </Button.ContextMenu>
         </Button>

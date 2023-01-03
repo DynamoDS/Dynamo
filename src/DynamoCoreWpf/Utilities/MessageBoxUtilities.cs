@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Windows;
 using Dynamo.UI.Prompts;
 
@@ -10,7 +10,6 @@ namespace Dynamo.Wpf.Utilities
         internal interface IMessageBox
         {
             MessageBoxResult Show(string msg, string title, MessageBoxButton button, MessageBoxImage img);
-            MessageBoxResult Show(string msg, string title, bool showRichTextBox, MessageBoxButton button, MessageBoxImage img);
             MessageBoxResult Show(Window owner,string msg, string title, MessageBoxButton button, MessageBoxImage img);
             MessageBoxResult Show(string msg, string title, MessageBoxButton button, IEnumerable<string> buttonNames, MessageBoxImage img);
         }
@@ -22,11 +21,6 @@ namespace Dynamo.Wpf.Utilities
             MessageBoxResult IMessageBox.Show(string msg, string title, MessageBoxButton button, MessageBoxImage img)
             {
                 return DynamoMessageBox.Show(msg, title, button, img);
-            }
-
-            MessageBoxResult IMessageBox.Show(string msg, string title, bool showRichTextBox, MessageBoxButton button, MessageBoxImage img)
-            {
-                return DynamoMessageBox.Show(msg, title, showRichTextBox, button, img);
             }
 
             public MessageBoxResult Show(Window owner, string msg, string title, MessageBoxButton button, MessageBoxImage img)
@@ -48,10 +42,6 @@ namespace Dynamo.Wpf.Utilities
         public static MessageBoxResult Show(string msg, string title, MessageBoxButton button, MessageBoxImage img)
         {
             return (msg_box ?? (msg_box = new DefaultMessageBox())).Show(msg, title, button, img);
-        }
-        public static MessageBoxResult Show(string msg, string title, bool showRichTextBox, MessageBoxButton button, MessageBoxImage img)
-        {
-            return (msg_box ?? (msg_box = new DefaultMessageBox())).Show(msg, title, showRichTextBox, button, img);
         }
         public static MessageBoxResult Show(Window owner,string msg, string title, MessageBoxButton button, MessageBoxImage img)
         {
