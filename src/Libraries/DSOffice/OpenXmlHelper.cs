@@ -228,7 +228,7 @@ namespace DSOffice
                             currentColumnIndex++;
                             continue;
                         }
-
+                  
                         SetCellValue(data[i][j], cell, sharedStringTable, stylesheet, writeAsString);
                         currentColumnIndex++;
                     }
@@ -394,14 +394,17 @@ namespace DSOffice
 
                     return cell.InnerText;
                 }
-                else if (cell.DataType.Value == CellValues.String)
-                {
-                    return cell.CellValue.Text;
-                }
                 else
                 {
-                    // Default to raw string value for inline strings and unknown types.
-                    return cell.InnerText;
+                    if (cell.CellFormula == null)
+                    {
+                        // Default to raw string value for inline strings and unknown types.
+                        return cell.InnerText;
+                    }
+                    else
+                    {
+                        return cell.CellValue.Text;
+                    }
                 }
             }
 

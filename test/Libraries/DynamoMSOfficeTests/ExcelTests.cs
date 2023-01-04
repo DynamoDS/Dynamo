@@ -1436,11 +1436,13 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public static void OpemXML_ImportExcel()
+        public static void OpemXML_ImportExcelTest()
         {
             string filePath = Path.Combine(TestDirectory, @"core\importExport\OpenXML-ImportExcel.xlsx");
             var data = Data.OpenXMLImportExcel(filePath, "worksheet1", 0, 0, false);
-            Assert.AreEqual(data[0][2], "0111111_0000");
+            string cellValueWithFormula = data[0][2].ToString();
+            string cellValueWithoutFormula = data[1][2].ToString();
+            Assert.AreEqual(cellValueWithFormula, cellValueWithoutFormula);
         }
     }
 }
