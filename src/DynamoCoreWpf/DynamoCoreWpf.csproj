@@ -37,8 +37,10 @@
             <Last>%(TGZFiles.Filename)</Last>
         </PropertyGroup>
 
-        <Exec Command="dir C:\Windows\System32\ /a " />
-        <Exec Command="dir C:\Windows\SysWOW64\ /a " />
+        <Exec Command="dir C:\Windows /a " />
+        <Exec Command="dir C:\Windows\Sysnative\ /a " />
+        <Exec Command="C:\Windows\Sysnative\tar.exe --version" />
+
 
         <!--Extracts the file to /package-->
         <Exec Command="@(SevenZip) x $(MSBuildProjectDirectory)\$(Last).tgz -y"></Exec>
