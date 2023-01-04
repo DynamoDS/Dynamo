@@ -16,7 +16,7 @@ using Dynamo.Wpf;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 
-namespace CoreNodeModelsWpf.Charts.Controls
+namespace CoreNodeModelsWpf.Charts
 {
     [IsDesignScriptCompatible]
     [NodeName("Index-Value Line Plot")]
