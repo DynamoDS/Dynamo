@@ -42,6 +42,7 @@ using Dynamo.Wpf.ViewModels.Core.Converters;
 using Dynamo.Wpf.ViewModels.FileTrust;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoUtilities;
+using ViewModels.Core;
 using ISelectable = Dynamo.Selection.ISelectable;
 using WpfResources = Dynamo.Wpf.Properties.Resources;
 
@@ -60,6 +61,7 @@ namespace Dynamo.ViewModels
         private Point transformOrigin;
         private bool showStartPage = false;
         private PreferencesViewModel preferencesViewModel;
+        private GeometryScalingViewModel geoScalingViewModel;
 
         // Can the user run the graph
         private bool CanRunGraph => HomeSpace.RunSettings.RunEnabled && !HomeSpace.GraphRunInProgress;
@@ -95,6 +97,14 @@ namespace Dynamo.ViewModels
             get
             {
                 return preferencesViewModel;
+            }
+        }
+
+        internal GeometryScalingViewModel GeoScalingViewModel
+        {
+            get
+            {
+                return geoScalingViewModel;
             }
         }
 
@@ -742,6 +752,8 @@ namespace Dynamo.ViewModels
             model.RequestNotification += model_RequestNotification;
 
             preferencesViewModel = new PreferencesViewModel(this);
+
+            geoScalingViewModel = new GeometryScalingViewModel(this);
 
             if (!DynamoModel.IsTestMode && !DynamoModel.IsHeadless)
             {

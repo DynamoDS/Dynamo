@@ -18,6 +18,7 @@ using Dynamo.Utilities;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels.Core.Converters;
 using DynamoUtilities;
+using ViewModels.Core;
 using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.ViewModels
@@ -68,7 +69,6 @@ namespace Dynamo.ViewModels
         private bool isVisibleAddStyleBorder;
         private bool isEnabledAddStyleButton;
         private GeometryScalingOptions optionsGeometryScale = null;
-
         #endregion Private Properties
 
         public GeometryScaleSize ScaleSize { get; set; }
@@ -1291,6 +1291,8 @@ namespace Dynamo.ViewModels
         private void UpdateGeoScaleRadioButtonSelected(int scaleFactor)
         {
             ScaleSize = (GeometryScaleSize)GeometryScalingOptions.ConvertScaleFactorToUI(scaleFactor);
+            if (dynamoViewModel.GeoScalingViewModel != null)
+                dynamoViewModel.GeoScalingViewModel.ScaleSize = ScaleSize;
         }
 
         /// <summary>

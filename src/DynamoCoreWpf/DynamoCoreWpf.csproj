@@ -19,6 +19,8 @@
   <ItemGroup>
     <None Remove="node_modules\%40dynamods\splash-screen\build\index.bundle.js" />
     <None Remove="node_modules\%40dynamods\splash-screen\build\index.html" />
+    <None Remove="UI\Images\Canvas\canvas-button-geometry-scaling.png" />
+    <None Remove="Views\Core\GeometryScalingPopup.xaml" />
     <None Remove="Views\SplashScreen\WebApp\splashScreenBackground.png" />
   </ItemGroup>
   <ItemGroup>
@@ -69,8 +71,8 @@
     <None Remove="Views\GuidedTour\HtmlPages\Resources\ConnectTheNode.gif" />
   </ItemGroup>
   <ItemGroup>
-  <PackageReference Include="AvalonEdit" Version="4.3.1.9430" CopyXML="true"/>
-  <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.16.0.3357"/>
+  <PackageReference Include="AvalonEdit" Version="4.3.1.9430" CopyXML="true" />
+  <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.16.0.3357" />
   <PackageReference Include="Greg" Version="2.3.0.2505" />
   <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" />
 	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
@@ -307,6 +309,7 @@
     <Compile Include="ViewModels\Core\Converters\DynamoPythonScriptEditorTextOptions.cs" />
     <Compile Include="ViewModels\Core\Converters\SerializationConverters.cs" />
     <Compile Include="ViewModels\Core\DynamoViewModelBranding.cs" />
+    <Compile Include="ViewModels\Core\GeometryScalingViewModel.cs" />
     <Compile Include="ViewModels\Core\HomeWorkspaceViewModel.cs" />
     <Compile Include="ViewModels\Core\InPortViewModel.cs" />
     <Compile Include="ViewModels\Core\OutPortViewModel.cs" />
@@ -356,6 +359,9 @@
     <Compile Include="Views\Core\DynamoOpenFileDialog.cs" />
     <Compile Include="Views\Core\ConnectorPinView.xaml.cs">
       <DependentUpon>ConnectorPinView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Core\GeometryScalingPopup.xaml.cs">
+      <DependentUpon>GeometryScalingPopup.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Debug\DebugModesWindow.xaml.cs">
       <DependentUpon>DebugModesWindow.xaml</DependentUpon>
@@ -516,6 +522,9 @@
     </Page>
     <Page Include="Controls\InPortContextMenu.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Core\GeometryScalingPopup.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\FileTrust\FileTrustWarning.xaml">
@@ -683,6 +692,7 @@
     <Resource Include="UI\Images\Alignment\align_x_distribute.png" />
     <Resource Include="UI\Images\Alignment\align_y_average.png" />
     <Resource Include="UI\Images\Alignment\align_y_distribute.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-geometry-scaling.png" />
     <Resource Include="UI\Images\caret_up.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\ArtifaktElement-Regular.woff" />
     <Resource Include="UI\Images\cursors.psd" />

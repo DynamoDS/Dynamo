@@ -3482,4 +3482,7 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="SplashScreenSigningIn" xml:space="preserve">
     <value>Signing In</value>
   </data>
+  <data name="InCanvasGeometryScalingToolTip" xml:space="preserve">
+    <value>Geometry Scaling</value>
+  </data>
 </root>
