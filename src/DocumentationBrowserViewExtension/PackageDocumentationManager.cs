@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
+using Dynamo.Utilities;
 
 namespace Dynamo.DocumentationBrowser
 {
@@ -95,10 +96,13 @@ namespace Dynamo.DocumentationBrowser
                 return output;
             }
 
+            var shortName = Hash.GetHashFilenameFromString(nodeNamespace);
+
             FileInfo matchingDoc = null;
             if (hostDynamoFallbackDocPath != null)
             {
-                matchingDoc = hostDynamoFallbackDocPath.GetFiles($"{nodeNamespace}.md").FirstOrDefault();
+                matchingDoc = hostDynamoFallbackDocPath.GetFiles($"{shortName}.md").FirstOrDefault() ??
+                              hostDynamoFallbackDocPath.GetFiles($"{nodeNamespace}.md").FirstOrDefault();
                 if (matchingDoc != null)
                 {
                     return matchingDoc.FullName;
@@ -107,7 +111,8 @@ namespace Dynamo.DocumentationBrowser
 
             if (dynamoCoreFallbackDocPath != null)
             {
-                matchingDoc = dynamoCoreFallbackDocPath.GetFiles($"{nodeNamespace}.md").FirstOrDefault();
+                matchingDoc = dynamoCoreFallbackDocPath.GetFiles($"{shortName}.md").FirstOrDefault() ??
+                              dynamoCoreFallbackDocPath.GetFiles($"{nodeNamespace}.md").FirstOrDefault();
             }
 
             return matchingDoc is null ? string.Empty : matchingDoc.FullName;

@@ -159,7 +159,8 @@ namespace Dynamo.Services
         {
             resourceProvider = resource;
             // First run of Dynamo
-            if (dynamoViewModel.Model.PreferenceSettings.IsFirstRun
+            if (dynamoViewModel != null
+                && dynamoViewModel.Model.PreferenceSettings.IsFirstRun
                 && !dynamoViewModel.HideReportOptions
                 && !Analytics.DisableAnalytics
                 && !DynamoModel.IsTestMode)

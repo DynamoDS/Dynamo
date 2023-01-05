@@ -860,13 +860,11 @@ namespace Dynamo.ViewModels
                 {
                     preferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
                     nodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
-                    Analytics.TrackEvent(Actions.Select,Categories.Preferences,nameof(NodeAutocompleteSuggestion.MLRecommendation));
                 }
                 else
                 {
                     preferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
                     nodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
-                    Analytics.TrackEvent(Actions.Select, Categories.Preferences, nameof(NodeAutocompleteSuggestion.ObjectType));
                 }
 
                 dynamoViewModel.HomeSpaceViewModel.NodeAutoCompleteSearchViewModel.ResetAutoCompleteSearchViewState();
@@ -1462,6 +1460,18 @@ namespace Dynamo.ViewModels
                     goto default;
                 case nameof(DisableTrustWarnings):
                     description = Resources.ResourceManager.GetString(nameof(Res.PreferencesViewTrustWarningHeader), System.Globalization.CultureInfo.InvariantCulture);
+                    goto default;
+                // We track these this in two places, one in preference panel,
+                // one where user make such switch in Node AutoComplete UI
+                case nameof(nodeAutocompleteSuggestion):
+                    if (nodeAutocompleteSuggestion == NodeAutocompleteSuggestion.MLRecommendation)
+                        description = nameof(NodeAutocompleteSuggestion.MLRecommendation);
+                    else
+                        description = nameof(NodeAutocompleteSuggestion.ObjectType);
+                    goto default;
+                case nameof(MLRecommendationConfidenceLevel):
+                    // Internal use only, no need to localize for now
+                    description = "Confidence Level";
                     goto default;
                 default:
                     if (!string.IsNullOrEmpty(description))

@@ -191,6 +191,11 @@ namespace Dynamo.ViewModels
         public string PackageName { get; private set; }
 
         /// <summary>
+        /// The original name of the Node
+        /// </summary>
+        public string OriginalName { get; set; }
+
+        /// <summary>
         /// Collection of the nodes input names.
         /// </summary>
         public IEnumerable<string> InputNames { get; private set; }
@@ -224,13 +229,13 @@ namespace Dynamo.ViewModels
             var packageInfo = dynamoViewModel.Model.CurrentWorkspace.GetNodePackage(model);
             PackageName = packageInfo?.Name ?? string.Empty;
             MinimumQualifiedName = GetMinimumQualifiedName(model, dynamoViewModel);
+            OriginalName = model.GetOriginalName();
             Type = model.Name;
             Description = model.Description;
             Category = model.Category;
             NodeInfos = model.NodeInfos;
             SetInputs(model);
             SetOutputs(model);
-
         }
 
         private void SetOutputs(NodeModel nodeModel)

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -50,11 +50,12 @@ namespace NodeDocumentationMarkdownGenerator
 
             ShowWelcomeMessages();
 
-            var result = Parser.Default.ParseArguments<FromDirectoryOptions, FromPackageOptions>(args);
+            var result = Parser.Default.ParseArguments<FromDirectoryOptions, FromPackageOptions, RenameOptions>(args);
             var text = result
                 .MapResult(
                     (FromDirectoryOptions opts) => CommandHandler.HandleFromDirectory(opts),
                     (FromPackageOptions opts) => CommandHandler.HandleFromPackage(opts),
+                    (RenameOptions opts) => CommandHandler.HandleRename(opts),
                     err => "1");
             Console.WriteLine($"docs generation tool {sw.Elapsed.TotalSeconds}");
 # if DEBUG

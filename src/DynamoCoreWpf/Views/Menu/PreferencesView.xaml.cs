@@ -477,6 +477,11 @@ namespace Dynamo.Wpf.Views
             }            
         }
 
+        private void OnMoreInfoClicked(object sender, MouseButtonEventArgs e)
+        {
+            dynViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Dynamo.Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString, UriKind.Relative)));
+        }
+
         private void exportTextBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var dialog = new DynamoFolderBrowserDialog
@@ -576,11 +581,6 @@ namespace Dynamo.Wpf.Views
         private void sliderConfidenceLevel_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             displayConfidenceLevel();
-            //Tracking Analytics when changing the ML Confidence Level in the Preferences panel
-            Analytics.TrackEvent(
-                    Actions.Set,
-                    Categories.Preferences,
-                    "ConfidendeLevel");
         }
 
         private void displayConfidenceLevel()
