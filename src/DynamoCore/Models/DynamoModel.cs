@@ -637,15 +637,20 @@ namespace Dynamo.Models
             pathManager.EnsureDirectoryExistence(exceptions);
 
             Context = config.Context;
+            // This condition is TBD
+            var isServiceMode = config.Context.Equals("Service");
             IsTestMode = config.StartInTestMode;
             IsHeadless = config.IsHeadless;
 
             DebugSettings = new DebugSettings();
             Logger = new DynamoLogger(DebugSettings, pathManager.LogDirectory, IsTestMode, CLIMode);
 
-            foreach (var exception in exceptions)
+            if (!isServiceMode)
             {
-                Logger.Log(exception); // Log all exceptions.
+                foreach (var exception in exceptions)
+                {
+                    Logger.Log(exception); // Log all exceptions.
+                }
             }
 
             MigrationManager = new MigrationManager(DisplayFutureFileMessage, DisplayObsoleteFileMessage);
@@ -699,83 +704,88 @@ namespace Dynamo.Models
                 // Do nothing for now
             }
 
-            // If user skipped analytics from assembly config, do not try to launch the analytics client
-            // or the feature flags client.
-            if (!areAnalyticsDisabledFromConfig && !Dynamo.Logging.Analytics.DisableAnalytics)
+            // Bypass analytics initialization in service mode
+            if (!isServiceMode)
             {
-                // Start the Analytics service only when a session is not present.
-                // In an integrator host, as splash screen can be closed without shutting down the ViewModel, the analytics service is not stopped.
-                // So we don't want to start it when splash screen or dynamo window is launched again.
-                if (Analytics.client == null)
+                // If user skipped analytics from assembly config, do not try to launch the analytics client
+                // or the feature flags client.
+                if (!areAnalyticsDisabledFromConfig && !Dynamo.Logging.Analytics.DisableAnalytics)
                 {
-                    AnalyticsService.Start(this, IsHeadless, IsTestMode);
-                }
-                else if (Analytics.client is DynamoAnalyticsClient dac)
-                {
-                    if (dac.Session == null)
+                    // Start the Analytics service only when a session is not present.
+                    // In an integrator host, as splash screen can be closed without shutting down the ViewModel, the analytics service is not stopped.
+                    // So we don't want to start it when splash screen or dynamo window is launched again.
+                    if (Analytics.client == null)
                     {
                         AnalyticsService.Start(this, IsHeadless, IsTestMode);
                     }
-                }
-
-                //run process startup/reading on another thread so we don't block dynamo startup.
-                //if we end up needing to control aspects of dynamo model or view startup that we can't make
-                //event based/async then just run this on main thread - ie get rid of the Task.Run()
-                var mainThreadSyncContext = new SynchronizationContext();
-                Task.Run(() =>
-                {
-                    try
+                    else if (Analytics.client is DynamoAnalyticsClient dac)
                     {
-                        //this will kill the CLI process after cacheing the flags in Dynamo process.
-                        using (FeatureFlags =
-                                new DynamoUtilities.DynamoFeatureFlagsManager(
-                                AnalyticsService.GetUserIDForSession(),
-                                mainThreadSyncContext,
-                                IsTestMode))
+                        if (dac.Session == null)
                         {
-                            FeatureFlags.MessageLogged += LogMessageWrapper;
-                            //this will block task thread as it waits for data from feature flags process.
-                            FeatureFlags.CacheAllFlags();
+                            AnalyticsService.Start(this, IsHeadless, IsTestMode);
                         }
                     }
-                    catch (Exception e) { Logger.LogError($"could not start feature flags manager {e}"); };
-                });
 
-                //TODO just a test of feature flag event, safe to remove at any time.
-                DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved += CheckFeatureFlagTest;
+                    //run process startup/reading on another thread so we don't block dynamo startup.
+                    //if we end up needing to control aspects of dynamo model or view startup that we can't make
+                    //event based/async then just run this on main thread - ie get rid of the Task.Run()
+                    var mainThreadSyncContext = new SynchronizationContext();
+                    Task.Run(() =>
+                    {
+                        try
+                        {
+                            //this will kill the CLI process after cacheing the flags in Dynamo process.
+                            using (FeatureFlags =
+                                    new DynamoUtilities.DynamoFeatureFlagsManager(
+                                    AnalyticsService.GetUserIDForSession(),
+                                    mainThreadSyncContext,
+                                    IsTestMode))
+                            {
+                                FeatureFlags.MessageLogged += LogMessageWrapper;
+                                //this will block task thread as it waits for data from feature flags process.
+                                FeatureFlags.CacheAllFlags();
+                            }
+                        }
+                        catch (Exception e) { Logger.LogError($"could not start feature flags manager {e}"); };
+                    });
 
-            }
+                    //TODO just a test of feature flag event, safe to remove at any time.
+                    DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved += CheckFeatureFlagTest;
 
-            if (!IsTestMode && PreferenceSettings.IsFirstRun)
-            {
-                DynamoMigratorBase migrator = null;
-
-                try
-                {
-                    var dynamoLookup = config.UpdateManager != null && config.UpdateManager.Configuration != null
-                        ? config.UpdateManager.Configuration.DynamoLookUp : null;
-
-                    migrator = DynamoMigratorBase.MigrateBetweenDynamoVersions(pathManager, dynamoLookup);
                 }
-                catch (Exception e)
+
+                // TBD: Do we need setting migrator for service mode? If we config the docker correctly, this can be skipped I guess
+                if (!IsTestMode && PreferenceSettings.IsFirstRun)
                 {
-                    Logger.Log(e.Message);
+                    DynamoMigratorBase migrator = null;
+
+                    try
+                    {
+                        var dynamoLookup = config.UpdateManager != null && config.UpdateManager.Configuration != null
+                            ? config.UpdateManager.Configuration.DynamoLookUp : null;
+
+                        migrator = DynamoMigratorBase.MigrateBetweenDynamoVersions(pathManager, dynamoLookup);
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Log(e.Message);
+                    }
+
+                    if (migrator != null)
+                    {
+                        var isFirstRun = PreferenceSettings.IsFirstRun;
+                        PreferenceSettings = migrator.PreferenceSettings;
+
+                        // Preserve the preference settings for IsFirstRun as this needs to be set
+                        // only by UsageReportingManager
+                        PreferenceSettings.IsFirstRun = isFirstRun;
+                    }
                 }
 
-                if (migrator != null)
+                if (PreferenceSettings.IsFirstRun && !IsTestMode)
                 {
-                    var isFirstRun = PreferenceSettings.IsFirstRun;
-                    PreferenceSettings = migrator.PreferenceSettings;
-
-                    // Preserve the preference settings for IsFirstRun as this needs to be set
-                    // only by UsageReportingManager
-                    PreferenceSettings.IsFirstRun = isFirstRun;
+                    PreferenceSettings.AddDefaultTrustedLocations();
                 }
-            }
-
-            if (PreferenceSettings.IsFirstRun && !IsTestMode)
-            {
-                PreferenceSettings.AddDefaultTrustedLocations();
             }
 
             InitializePreferences(PreferenceSettings);
