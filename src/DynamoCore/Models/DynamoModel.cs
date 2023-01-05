@@ -704,88 +704,85 @@ namespace Dynamo.Models
                 // Do nothing for now
             }
 
-            // Bypass analytics initialization in service mode
-            if (!isServiceMode)
+
+            // If user skipped analytics from assembly config, do not try to launch the analytics client
+            // or the feature flags client.
+            if (!areAnalyticsDisabledFromConfig && !Dynamo.Logging.Analytics.DisableAnalytics && !isServiceMode)
             {
-                // If user skipped analytics from assembly config, do not try to launch the analytics client
-                // or the feature flags client.
-                if (!areAnalyticsDisabledFromConfig && !Dynamo.Logging.Analytics.DisableAnalytics)
+                // Start the Analytics service only when a session is not present.
+                // In an integrator host, as splash screen can be closed without shutting down the ViewModel, the analytics service is not stopped.
+                // So we don't want to start it when splash screen or dynamo window is launched again.
+                if (Analytics.client == null)
                 {
-                    // Start the Analytics service only when a session is not present.
-                    // In an integrator host, as splash screen can be closed without shutting down the ViewModel, the analytics service is not stopped.
-                    // So we don't want to start it when splash screen or dynamo window is launched again.
-                    if (Analytics.client == null)
+                    AnalyticsService.Start(this, IsHeadless, IsTestMode);
+                }
+                else if (Analytics.client is DynamoAnalyticsClient dac)
+                {
+                    if (dac.Session == null)
                     {
                         AnalyticsService.Start(this, IsHeadless, IsTestMode);
                     }
-                    else if (Analytics.client is DynamoAnalyticsClient dac)
-                    {
-                        if (dac.Session == null)
-                        {
-                            AnalyticsService.Start(this, IsHeadless, IsTestMode);
-                        }
-                    }
-
-                    //run process startup/reading on another thread so we don't block dynamo startup.
-                    //if we end up needing to control aspects of dynamo model or view startup that we can't make
-                    //event based/async then just run this on main thread - ie get rid of the Task.Run()
-                    var mainThreadSyncContext = new SynchronizationContext();
-                    Task.Run(() =>
-                    {
-                        try
-                        {
-                            //this will kill the CLI process after cacheing the flags in Dynamo process.
-                            using (FeatureFlags =
-                                    new DynamoUtilities.DynamoFeatureFlagsManager(
-                                    AnalyticsService.GetUserIDForSession(),
-                                    mainThreadSyncContext,
-                                    IsTestMode))
-                            {
-                                FeatureFlags.MessageLogged += LogMessageWrapper;
-                                //this will block task thread as it waits for data from feature flags process.
-                                FeatureFlags.CacheAllFlags();
-                            }
-                        }
-                        catch (Exception e) { Logger.LogError($"could not start feature flags manager {e}"); };
-                    });
-
-                    //TODO just a test of feature flag event, safe to remove at any time.
-                    DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved += CheckFeatureFlagTest;
-
                 }
 
-                // TBD: Do we need setting migrator for service mode? If we config the docker correctly, this can be skipped I guess
-                if (!IsTestMode && PreferenceSettings.IsFirstRun)
+                //run process startup/reading on another thread so we don't block dynamo startup.
+                //if we end up needing to control aspects of dynamo model or view startup that we can't make
+                //event based/async then just run this on main thread - ie get rid of the Task.Run()
+                var mainThreadSyncContext = new SynchronizationContext();
+                Task.Run(() =>
                 {
-                    DynamoMigratorBase migrator = null;
-
                     try
                     {
-                        var dynamoLookup = config.UpdateManager != null && config.UpdateManager.Configuration != null
-                            ? config.UpdateManager.Configuration.DynamoLookUp : null;
-
-                        migrator = DynamoMigratorBase.MigrateBetweenDynamoVersions(pathManager, dynamoLookup);
+                        //this will kill the CLI process after cacheing the flags in Dynamo process.
+                        using (FeatureFlags =
+                                new DynamoUtilities.DynamoFeatureFlagsManager(
+                                AnalyticsService.GetUserIDForSession(),
+                                mainThreadSyncContext,
+                                IsTestMode))
+                        {
+                            FeatureFlags.MessageLogged += LogMessageWrapper;
+                            //this will block task thread as it waits for data from feature flags process.
+                            FeatureFlags.CacheAllFlags();
+                        }
                     }
-                    catch (Exception e)
-                    {
-                        Logger.Log(e.Message);
-                    }
+                    catch (Exception e) { Logger.LogError($"could not start feature flags manager {e}"); };
+                });
 
-                    if (migrator != null)
-                    {
-                        var isFirstRun = PreferenceSettings.IsFirstRun;
-                        PreferenceSettings = migrator.PreferenceSettings;
+                //TODO just a test of feature flag event, safe to remove at any time.
+                DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved += CheckFeatureFlagTest;
 
-                        // Preserve the preference settings for IsFirstRun as this needs to be set
-                        // only by UsageReportingManager
-                        PreferenceSettings.IsFirstRun = isFirstRun;
-                    }
-                }
+            }
 
-                if (PreferenceSettings.IsFirstRun && !IsTestMode)
+            // TBD: Do we need setting migrator for service mode? If we config the docker correctly, this can be skipped I guess
+            if (!IsTestMode && PreferenceSettings.IsFirstRun && !isServiceMode)
+            {
+                DynamoMigratorBase migrator = null;
+
+                try
                 {
-                    PreferenceSettings.AddDefaultTrustedLocations();
+                    var dynamoLookup = config.UpdateManager != null && config.UpdateManager.Configuration != null
+                        ? config.UpdateManager.Configuration.DynamoLookUp : null;
+
+                    migrator = DynamoMigratorBase.MigrateBetweenDynamoVersions(pathManager, dynamoLookup);
                 }
+                catch (Exception e)
+                {
+                    Logger.Log(e.Message);
+                }
+
+                if (migrator != null)
+                {
+                    var isFirstRun = PreferenceSettings.IsFirstRun;
+                    PreferenceSettings = migrator.PreferenceSettings;
+
+                    // Preserve the preference settings for IsFirstRun as this needs to be set
+                    // only by UsageReportingManager
+                    PreferenceSettings.IsFirstRun = isFirstRun;
+                }
+            }
+
+            if (PreferenceSettings.IsFirstRun && !IsTestMode && !isServiceMode)
+            {
+                PreferenceSettings.AddDefaultTrustedLocations();
             }
 
             InitializePreferences(PreferenceSettings);

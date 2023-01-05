@@ -222,7 +222,7 @@ namespace Dynamo.Applications
                 .Add("pi=|PI=|parentId", "Identify Dynamo host analytics parent id", pi => parentId = pi)
                 .Add("da|DA|disableAnalytics", "Disables analytics in Dynamo for the process liftime", da => disableAnalytics = da != null)
                 .Add("cr=|CR=|cerLocation", "Specify the crash error report tool location on disk ", cr => cerLocation = cr)
-                .Add("s|S|service mode", "Service mode, by pass certain Dynamo launch steps for maximum startup performance", s => serviceMode = s != null);
+                .Add("s|S|service mode", "Service mode, bypass certain Dynamo launch steps for maximum startup performance", s => serviceMode = s != null);
 
                 optionsSet.Parse(args);
 
