@@ -624,7 +624,7 @@ namespace DynamoShapeManager
         /// <returns></returns>
         public static Version GetVersionFromPath(string asmPath, string searchPattern = "*ASMAHL*.*")
         {
-            var ASMFilePath = Directory.GetFiles(asmPath, searchPattern, SearchOption.TopDirectoryOnly).FirstOrDefault();
+            var ASMFilePath = Directory.GetFiles(asmPath, searchPattern, new EnumerationOptions { MatchCasing = MatchCasing.CaseInsensitive, RecurseSubdirectories = false}).FirstOrDefault();
             if (ASMFilePath != null && File.Exists(ASMFilePath))
             {
 #if NET6_0_OR_GREATER

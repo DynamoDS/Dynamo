@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -17,7 +17,6 @@
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
     <Reference Include="Microsoft.CSharp" />
-    <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.16.0.3357"/>
     <PackageReference Include="ncalc" Version="1.3.8">
       <!--Exclude copying the runtime dlls because we need to keep binary compatibility with Revit for now -->
       <ExcludeAssets>runtime</ExcludeAssets>
