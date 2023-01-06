@@ -15,6 +15,9 @@
     <PackageReference Include="MIConvexHull" version="1.1.17.0411" CopyPDB="true" />
 	<PackageReference Include="StarMath" version="2.0.14.1114" CopyPDB="true" />
   </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+    <PackageReference Include="System.Resources.Extensions" Version="5.0.0" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="MIConvexHull.xml" />
     <Content Include="StarMath.XML" />
