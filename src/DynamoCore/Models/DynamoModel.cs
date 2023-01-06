@@ -752,7 +752,7 @@ namespace Dynamo.Models
 
             }
 
-            // TBD: Do we need setting migrator for service mode? If we config the docker correctly, this can be skipped I guess
+            // TBD: Do we need settings migrator for service mode? If we config the docker correctly, this could be skipped I think
             if (!IsTestMode && PreferenceSettings.IsFirstRun && !isServiceMode)
             {
                 DynamoMigratorBase migrator = null;
@@ -815,7 +815,7 @@ namespace Dynamo.Models
             // 4) Set from OOTB hard-coded default template
 
             // If a custom python template path doesn't already exists in the DynamoSettings.xml
-            if (string.IsNullOrEmpty(PreferenceSettings.PythonTemplateFilePath) || !File.Exists(PreferenceSettings.PythonTemplateFilePath))
+            if (string.IsNullOrEmpty(PreferenceSettings.PythonTemplateFilePath) || !File.Exists(PreferenceSettings.PythonTemplateFilePath) && !isServiceMode)
             {
                 // To supply a custom python template host integrators should supply a 'DefaultStartConfiguration' config file
                 // or create a new struct that inherits from 'DefaultStartConfiguration' making sure to set the 'PythonTemplatePath'
@@ -855,9 +855,12 @@ namespace Dynamo.Models
             pathManager.Preferences = PreferenceSettings;
             PreferenceSettings.RequestUserDataFolder += pathManager.GetUserDataFolder;
 
-            SearchModel = new NodeSearchModel(Logger);
-            SearchModel.ItemProduced +=
-                node => ExecuteCommand(new CreateNodeCommand(node, 0, 0, true, true));
+            //if (!isServiceMode)
+            {
+                SearchModel = new NodeSearchModel(Logger);
+                SearchModel.ItemProduced +=
+                    node => ExecuteCommand(new CreateNodeCommand(node, 0, 0, true, true));
+            }
 
             NodeFactory = new NodeFactory();
             NodeFactory.MessageLogged += LogMessage;
@@ -1444,7 +1447,7 @@ namespace Dynamo.Models
             NodeFactory.AddTypeFactoryAndLoader(outputData.Type);
             NodeFactory.AddAlsoKnownAs(outputData.Type, outputData.AlsoKnownAs);
 
-            SearchModel.Add(new CodeBlockNodeSearchElement(cbnData, LibraryServices));
+            SearchModel?.Add(new CodeBlockNodeSearchElement(cbnData, LibraryServices));
 
             var symbolSearchElement = new NodeModelSearchElement(symbolData)
             {
@@ -1462,8 +1465,8 @@ namespace Dynamo.Models
                 outputSearchElement.IsVisibleInSearch = isVisible;
             };
 
-            SearchModel.Add(symbolSearchElement);
-            SearchModel.Add(outputSearchElement);
+            SearchModel?.Add(symbolSearchElement);
+            SearchModel?.Add(outputSearchElement);
         }
 
         internal static bool IsDisabledPath(string packagesDirectory, IPreferences preferences)
@@ -3115,7 +3118,7 @@ namespace Dynamo.Models
                 return;
             }
 
-            SearchModel.Add(new NodeModelSearchElement(typeLoadData));
+            SearchModel?.Add(new NodeModelSearchElement(typeLoadData));
         }
 
         /// <summary>
@@ -3162,7 +3165,7 @@ namespace Dynamo.Models
         {
             if (functionDescriptor.IsVisibleInLibrary)
             {
-                SearchModel.Add(new ZeroTouchSearchElement(functionDescriptor));
+                SearchModel?.Add(new ZeroTouchSearchElement(functionDescriptor));
             }
         }
 
