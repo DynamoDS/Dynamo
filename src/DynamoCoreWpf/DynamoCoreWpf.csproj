@@ -11,6 +11,7 @@
     <DocumentationFile>$(OutputPath)\DynamoCoreWpf.XML</DocumentationFile>
     <EnableDefaultCompileItems>False</EnableDefaultCompileItems>
     <EnableDefaultEmbeddedResourceItems>False</EnableDefaultEmbeddedResourceItems>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
   </PropertyGroup>
 
   <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
@@ -37,22 +38,13 @@
             <Last>%(TGZFiles.Filename)</Last>
         </PropertyGroup>
 
-        <Exec Command="dir C:\Windows /a " />
-        <Exec Command="dir C:\Windows\Sysnative\ /a " />
-        <Exec Command="C:\Windows\Sysnative\tar.exe --version" />
-
+        <Exec Command="tar --version" />
 
         <!--Extracts the file to /package-->
-        <Exec Command="@(SevenZip) x $(MSBuildProjectDirectory)\$(Last).tgz -y"></Exec>
-
-        <!--Extracts the file to /package-->
-        <Exec Command="@(SevenZip) x $(MSBuildProjectDirectory)\$(Last).tar -y"></Exec>
+        <Exec Command="tar -xzf $(MSBuildProjectDirectory)\$(Last).tgz"></Exec>
 
         <!--Deletes the tgz file-->
-        <Delete Files=" $(MSBuildProjectDirectory)\$(Last).tgz" />
-
-        <!--Deletes the tgz file-->
-        <Delete Files=" $(MSBuildProjectDirectory)\$(Last).tar" />
+        <Delete Files="$(MSBuildProjectDirectory)\$(Last).tgz" />
     </Target>
 
 
