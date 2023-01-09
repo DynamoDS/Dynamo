@@ -620,11 +620,11 @@ namespace DynamoShapeManager
         /// </summary>
         /// <param name="asmPath">path to directory containing asm dlls</param>
         /// <returns></returns>
-        /// <param name="searchPattern">optional - to be used for testing - default is the ASM search pattern</param>
+        /// <param name="searchPattern">optional - to be used for testing - default is the ASM search pattern. Windows is case insensitive, linux is case sensitive.</param>
         /// <returns></returns>
-        public static Version GetVersionFromPath(string asmPath, string searchPattern = "*ASMAHL*.*")
+        public static Version GetVersionFromPath(string asmPath, string searchPattern = "*ASMahl*.*")
         {
-            var ASMFilePath = Directory.GetFiles(asmPath, searchPattern, new EnumerationOptions { MatchCasing = MatchCasing.CaseInsensitive, RecurseSubdirectories = false}).FirstOrDefault();
+            var ASMFilePath = Directory.GetFiles(asmPath, searchPattern, SearchOption.TopDirectoryOnly).FirstOrDefault();
             if (ASMFilePath != null && File.Exists(ASMFilePath))
             {
 #if NET6_0_OR_GREATER
