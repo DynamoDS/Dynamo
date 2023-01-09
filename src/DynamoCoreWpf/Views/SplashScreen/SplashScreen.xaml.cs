@@ -34,9 +34,13 @@ namespace Dynamo.UI.Views
         /// </summary>
         public long totalLoadingTime;
 
-        internal Action<bool> RequestLaunchDynamo;
+        /// <summary>
+        /// Request to launch Dynamo main window.
+        /// </summary>
+        public Action<bool> RequestLaunchDynamo;
+
         internal Action<string> RequestImportSettings;
-        internal Func<bool> RequestSignIn; 
+        internal Func<bool> RequestSignIn;
         internal Func<bool> RequestSignOut;
 
         /// <summary>
@@ -63,6 +67,8 @@ namespace Dynamo.UI.Views
             {
                 dynamoView = value;
                 viewModel = value.DataContext as DynamoViewModel;
+                // When view model is closed, we need to close the splash screen if it is displayed.
+                viewModel.RequestClose += SplashScreenRequestClose;
                 authManager = viewModel.Model.AuthenticationManager;
             }
         }
@@ -141,6 +147,15 @@ namespace Dynamo.UI.Views
         }
 
         /// <summary>
+        /// Request to close SplashScreen.
+        /// </summary>
+        private void SplashScreenRequestClose(object sender, EventArgs e)
+        {
+            CloseWindow();
+            viewModel.RequestClose -= SplashScreenRequestClose;
+        }
+
+        /// <summary>
         /// Import setting file from chosen path
         /// </summary>
         /// <param name="fileContent"></param>
@@ -155,7 +170,7 @@ namespace Dynamo.UI.Views
             {
                 SetImportStatus(ImportStatus.error);
             }
-            Analytics.TrackEvent(Actions.ImportSettings, Categories.SplashScreenOperations, isImported.ToString());
+            Analytics.TrackEvent(Actions.Import, Categories.SplashScreenOperations, isImported.ToString());
         }
 
         /// <summary>
@@ -188,7 +203,6 @@ namespace Dynamo.UI.Views
         private void LaunchDynamo(bool isCheckboxChecked)
         {
             viewModel.PreferenceSettings.EnableStaticSplashScreen = !isCheckboxChecked;
-            DynamoModel.RequestUpdateLoadBarStatus -= DynamoModel_RequestUpdateLoadBarStatus;
             StaticSplashScreenReady -= OnStaticScreenReady;
             Close();
             dynamoView.Show();
@@ -202,7 +216,6 @@ namespace Dynamo.UI.Views
         {
             // Stop the timer in any case
             loadingTimer.Stop();
-            loadingTimer = null;
 
             //When a xml preferences settings file is located at C:\ProgramData\Dynamo will be read and deserialized so the settings can be set correctly.
             LoadPreferencesFileAtStartup();
@@ -293,18 +306,18 @@ namespace Dynamo.UI.Views
             var elapsedTime = loadingTimer.ElapsedMilliseconds;
             totalLoadingTime += elapsedTime;
             loadingTimer = Stopwatch.StartNew();
-            if (webView.CoreWebView2 != null)
+            if (webView?.CoreWebView2 != null)
             {
-                await webView.CoreWebView2.ExecuteScriptAsync($"window.setBarProperties('{version}','{loadingDescription}', '{barSize}%', '{Wpf.Properties.Resources.SplashScreenLoadingTimeLabel}: {elapsedTime}ms')");
+                await webView.CoreWebView2.ExecuteScriptAsync($"window.setBarProperties(\"{version}\",\"{loadingDescription}\", \"{barSize}%\", \"{Wpf.Properties.Resources.SplashScreenLoadingTimeLabel}: {elapsedTime}ms\")");
             }
         }
 
         internal async void SetLoadingDone()
         {
-            if (webView.CoreWebView2 != null)
+            if (webView?.CoreWebView2 != null)
             {
                 await webView.CoreWebView2.ExecuteScriptAsync($"window.setLoadingDone()");
-                await webView.CoreWebView2.ExecuteScriptAsync($"window.setTotalLoadingTime('{Wpf.Properties.Resources.SplashScreenTotalLoadingTimeLabel} {totalLoadingTime}ms')");
+                await webView.CoreWebView2.ExecuteScriptAsync($"window.setTotalLoadingTime(\"{Wpf.Properties.Resources.SplashScreenTotalLoadingTimeLabel} {totalLoadingTime}ms\")");
             }
         }
 
@@ -314,25 +327,29 @@ namespace Dynamo.UI.Views
         /// <param name="importStatus"></param>
         internal async void SetImportStatus(ImportStatus importStatus)
         {
-            string importSettingsTitle;
-            string errorDescription;
-            if (importStatus == ImportStatus.success)
+            string importSettingsTitle = Dynamo.Wpf.Properties.Resources.SplashScreenImportSettings;
+            string errorDescription = string.Empty;
+
+            switch (importStatus)
             {
-                importSettingsTitle = Wpf.Properties.Resources.SplashScreenSettingsImported;
-                errorDescription = string.Empty;
+                case ImportStatus.none:
+                    errorDescription = Dynamo.Wpf.Properties.Resources.ImportPreferencesInfo;
+                    break;
+                case ImportStatus.error:
+                    errorDescription = Dynamo.Wpf.Properties.Resources.SplashScreenImportSettingsFailDescription;
+                    break;
+                default:
+                    errorDescription = Dynamo.Wpf.Properties.Resources.ImportPreferencesInfo;
+                    break;
             }
-            else
-            {
-                importSettingsTitle = Dynamo.Wpf.Properties.Resources.SplashScreenFailedImportSettings;
-                errorDescription = Dynamo.Wpf.Properties.Resources.SplashScreenImportSettingsFailDescription;
-            }
+
             // Update UI
             if (webView.CoreWebView2 != null)
             {
                 await webView.CoreWebView2.ExecuteScriptAsync("window.setImportStatus({" +
                 $"status: {(int)importStatus}," +
-                $"importSettingsTitle: '{importSettingsTitle}'," +
-                $"errorDescription: '{errorDescription}'" + "})");
+                $"importSettingsTitle: \"{importSettingsTitle}\"," +
+                $"errorDescription: \"{errorDescription}\"" + "})");
             }
         }
 
@@ -341,11 +358,10 @@ namespace Dynamo.UI.Views
         /// </summary>
         internal async void SetSignInStatus(bool status)
         {
-            if (webView.CoreWebView2 != null)
+            if (webView?.CoreWebView2 != null)
             {
-                await webView.CoreWebView2.ExecuteScriptAsync("window.setSignInStatus({" +
-                $"signInTitle: '" + (status ? Wpf.Properties.Resources.SplashScreenSignOut : Wpf.Properties.Resources.SplashScreenSignIn).ToString() + "'," +
-                $"signInStatus: '" + status + "'})");
+                await webView.CoreWebView2.ExecuteScriptAsync("window.setSignInStatus({" +               
+                $"signInStatus: \"" + status + "\"})");
             }
         }
 
@@ -357,11 +373,14 @@ namespace Dynamo.UI.Views
             if (webView.CoreWebView2 != null)
             {
                 await webView.CoreWebView2.ExecuteScriptAsync("window.setLabels({" +
-                   $"welcomeToDynamoTitle: '{Wpf.Properties.Resources.SplashScreenWelcomeToDynamo}'," +
-                   $"launchTitle: '{Wpf.Properties.Resources.SplashScreenLaunchTitle}'," +
-                   $"importSettingsTitle: '{Wpf.Properties.Resources.SplashScreenImportSettings}'," +
-                   $"showScreenAgainLabel: '{Wpf.Properties.Resources.SplashScreenShowScreenAgainLabel}'," +
-                   $"importSettingsTooltipDescription: '{Wpf.Properties.Resources.ImportPreferencesInfo}'" + "})");
+                   $"welcomeToDynamoTitle: \"{Wpf.Properties.Resources.SplashScreenWelcomeToDynamo}\"," +
+                   $"launchTitle: \"{Wpf.Properties.Resources.SplashScreenLaunchTitle}\"," +
+                   $"importSettingsTitle: \"{Wpf.Properties.Resources.ImportSettingsDialogTitle}\"," +
+                   $"showScreenAgainLabel: \"{Wpf.Properties.Resources.SplashScreenShowScreenAgainLabel}\"," +
+                   $"signInTitle: \"{Wpf.Properties.Resources.SplashScreenSignIn}\"," +
+                   $"signOutTitle: \"{Wpf.Properties.Resources.SplashScreenSignOut}\"," +
+                   $"signingInTitle: \"{Wpf.Properties.Resources.SplashScreenSigningIn}\"," +
+                   $"importSettingsTooltipDescription: \"{Wpf.Properties.Resources.ImportPreferencesInfo}\"" + "})");
             }
         }
 
@@ -438,12 +457,21 @@ namespace Dynamo.UI.Views
                 Application.Current.Shutdown();
                 Analytics.TrackEvent(Actions.Close, Categories.SplashScreenOperations);
             }
+            // If Dynamo is launched from an integrator host, user should be able to close the splash screen window.
+            // Additionally, we will have to shutdown the ViewModel which will close all the services and dispose the events.
+            // RequestUpdateLoadBarStatus event needs to be unsubscribed when the splash screen window is closed, to avoid populating the info on splash screen.
+            else if (this is SplashScreen)
+            {
+                this.Close();
+                viewModel.Model.ShutDown(false);
+            }
         }
 
         protected override void OnClosed(EventArgs e)
         {
             base.OnClosed(e);
 
+            DynamoModel.RequestUpdateLoadBarStatus -= DynamoModel_RequestUpdateLoadBarStatus;
             webView.Dispose();
             webView = null;
 

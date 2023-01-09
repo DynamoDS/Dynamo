@@ -4,17 +4,19 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
+using Dynamo.Logging;
+using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.Properties;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
+using Greg;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
@@ -35,6 +37,11 @@ namespace Dynamo.ViewModels
         private bool displayAutocompleteMLStaticPage;
         private bool displayLowConfidence;
         private const string nodeAutocompleteMLEndpoint = "MLNodeAutocomplete";
+
+        /// <summary>
+        /// The Node AutoComplete ML service version, this could be empty if user has not used ML way
+        /// </summary>
+        internal string ServiceVersion { get; set; }
 
         /// <summary>
         /// Cache of default node suggestions, use it in case where
@@ -114,6 +121,7 @@ namespace Dynamo.ViewModels
         {
             // Off load some time consuming operation here
             InitializeDefaultAutoCompleteCandidates();
+            ServiceVersion = string.Empty;
         }
 
         /// <summary>
@@ -265,6 +273,7 @@ namespace Dynamo.ViewModels
                 DisplayAutocompleteMLStaticPage = true;
                 AutocompleteMLTitle = Resources.LoginNeededTitle;
                 AutocompleteMLMessage = Resources.LoginNeededMessage;
+                Analytics.TrackEvent(Actions.View, Categories.NodeAutoCompleteOperations, "UnabletoFetch");
                 return;
             }
 
@@ -274,9 +283,10 @@ namespace Dynamo.ViewModels
                 DisplayAutocompleteMLStaticPage = true;
                 AutocompleteMLTitle = Resources.AutocompleteNoRecommendationsTitle;
                 AutocompleteMLMessage = Resources.AutocompleteNoRecommendationsMessage;
+                Analytics.TrackEvent(Actions.View, Categories.NodeAutoCompleteOperations, "NoRecommendation");
                 return;
             }
-
+            ServiceVersion = MLresults.Version;
             var results = new List<NodeSearchElementViewModel>();
 
             var zeroTouchSearchElements = Model.SearchEntries.OfType<ZeroTouchSearchElement>().Where(x => x.IsVisibleInSearch);
@@ -382,31 +392,35 @@ namespace Dynamo.ViewModels
             MLNodeAutoCompletionResponse results = null;
             var authProvider = dynamoViewModel.Model.AuthenticationManager.AuthProvider;
 
-            if (authProvider is IDSDKManager manager)
+            if (authProvider is IOAuth2AuthProvider oauth2AuthProvider)
             {
-                var uri = DynamoUtilities.PathHelper.getServiceBackendAddress(this, nodeAutocompleteMLEndpoint);
-                var client = new RestClient(uri);
-                var request = new RestRequest(Method.POST);
-
                 try
                 {
-                    manager.LoginRequest(ref request, client);
+                    // TODO: We need to implement something like GetToken() on the IOAuth2AuthProvider interface which will be used by all auth providers.
+                    // For now, we are mocking the RestSharpRequest object to set the IDSDK token and then update the header in actual RestRequest with that token.
+                    // LoginRequest() is also not available on RevitOAuth2Provider, so using the SignRequest() which will show the sign-in page when the user is logged out.
+                    RestRequest restSharpRequest = new RestRequest();
+                    RestClient restSharpClient = new RestClient();
+                    oauth2AuthProvider.SignRequest(ref restSharpRequest, restSharpClient);
+
+                    var uri = DynamoUtilities.PathHelper.getServiceBackendAddress(this, nodeAutocompleteMLEndpoint);
+                    var client = new RestClient(uri);
+                    var request = new RestRequest(Method.POST);
+
+                    request.AddHeader("Authorization", restSharpRequest.Parameters.FirstOrDefault(n => n.Name.Equals("Authorization")).Value.ToString());
                     request = request.AddJsonBody(requestJSON) as RestRequest;
                     request.RequestFormat = DataFormat.Json;
                     RestResponse response = client.Execute(request) as RestResponse;
                     results = JsonConvert.DeserializeObject<MLNodeAutoCompletionResponse>(response.Content);
                 }
-                catch (Exception ex) {
+                catch (Exception ex)
+                {
                     dynamoViewModel.Model.Logger.Log(ex.Message);
                     throw new Exception("Authentication failed.");
                 }
+            }
 
-                return results;
-            }
-            else
-            {
-                throw new Exception("Failed to access IDSDK manager.");
-            }
+            return results;
         }
 
         /// <summary>
@@ -464,6 +478,9 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Key function to populate node autocomplete results to display
+        /// </summary>
         internal void PopulateAutoCompleteCandidates()
         {
             if (PortViewModel == null) return;
@@ -473,9 +490,19 @@ namespace Dynamo.ViewModels
             if (IsDisplayingMLRecommendation)
             {
                 DisplayMachineLearningResults();
+                //Tracking Analytics when raising Node Autocomplete with the Recommended Nodes option selected (Machine Learning)
+                Analytics.TrackEvent(
+                    Actions.Show,
+                    Categories.NodeAutoCompleteOperations,
+                    nameof(NodeAutocompleteSuggestion.MLRecommendation));
             }
             else
             {
+                //Tracking Analytics when raising Node Autocomplete with the Object Types option selected.
+                Analytics.TrackEvent(
+                    Actions.Show,
+                    Categories.NodeAutoCompleteOperations,
+                    nameof(NodeAutocompleteSuggestion.ObjectType));
                 // Only call GetMatchingSearchElements() for object type match comparison
                 var objectTypeMatchingElements = GetMatchingSearchElements().ToList();
                 // If node match searchElements found, use default suggestions. 

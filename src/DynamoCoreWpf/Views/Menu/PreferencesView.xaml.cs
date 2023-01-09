@@ -467,7 +467,7 @@ namespace Dynamo.Wpf.Views
                         Wpf.Utilities.MessageBoxService.Show(
                             this, Res.ImportSettingsFailedMessage, Res.ImportSettingsDialogTitle, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     }
-                    Analytics.TrackEvent(Actions.ImportSettings, Categories.Preferences, isImported.ToString());
+                    Analytics.TrackEvent(Actions.Import, Categories.Preferences, isImported.ToString());
                 }
                 catch (Exception ex)
                 {
@@ -475,6 +475,11 @@ namespace Dynamo.Wpf.Views
                         this, ex.Message, Res.ImportSettingsFailedMessage, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 }
             }            
+        }
+
+        private void OnMoreInfoClicked(object sender, MouseButtonEventArgs e)
+        {
+            dynViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Dynamo.Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString, UriKind.Relative)));
         }
 
         private void exportTextBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -504,7 +509,7 @@ namespace Dynamo.Wpf.Views
                     File.Copy(dynViewModel.Model.PathManager.PreferenceFilePath, selectedPathFile);
                     string argument = "/select, \"" + selectedPathFile + "\"";
                     System.Diagnostics.Process.Start("explorer.exe", argument);
-                    Analytics.TrackEvent(Actions.ExportSettings, Categories.Preferences);
+                    Analytics.TrackEvent(Actions.Export, Categories.Preferences);
                 }
                 catch (Exception ex)
                 {

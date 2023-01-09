@@ -891,7 +891,7 @@ namespace Dynamo.Graph.Workspaces
             // If an execution is in progress we'll have to wait for it to be done before we can gather the
             // external file references as this implementation relies on the output values of each node.
             //instead just bail to avoid blocking the UI.
-            if (this is HomeWorkspaceModel homeWorkspaceModel && homeWorkspaceModel.RunSettings.RunEnabled)
+            if (this is HomeWorkspaceModel homeWorkspaceModel && homeWorkspaceModel.RunSettings.RunEnabled && !RunSettings.ForceBlockRun)
             {
                 foreach (var node in nodes)
                 {

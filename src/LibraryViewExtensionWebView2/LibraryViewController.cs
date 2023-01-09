@@ -49,6 +49,12 @@ namespace Dynamo.LibraryViewExtensionWebView2
         private LibraryViewCustomization customization;
         internal string WebBrowserUserDataFolder { get; set; }
 
+        //Assuming that the fon size is 14px and the screen height is 1080 initially
+        private const int standardFontSize = 14;
+        private const int standardScreenHeight = 1080;
+        private double libraryFontSize;
+
+
         /// <summary>
         /// Creates a LibraryViewController.
         /// </summary>
@@ -313,6 +319,8 @@ namespace Dynamo.LibraryViewExtensionWebView2
             {
                 string msg = ex.Message;
             }
+
+            SetLibraryFontSize();
         }
 
         private void Browser_Loaded(object sender, RoutedEventArgs e)
@@ -328,6 +336,25 @@ namespace Dynamo.LibraryViewExtensionWebView2
             {
                 browser.InvalidateVisual();
                 UpdatePopupLocation();
+                SetLibraryFontSize();
+            }
+        }
+
+        //Changes the size of the font's library depending of the screen height
+        private async void SetLibraryFontSize()
+        {
+            //Gets the height of the primary monitor
+            var height = SystemParameters.PrimaryScreenHeight;
+
+            //Calculates the proportion of the font size depending on the screen height
+            //Changing the scale also changes the screen height (F.E: height of 1080px with 150% will be actually 720px)
+            var fontSize = (standardFontSize * height) / standardScreenHeight;
+
+            if(fontSize != libraryFontSize)
+            {
+                var result = await ExecuteScriptFunctionAsync(browser, "setLibraryFontSize", fontSize);
+                if(result != null)
+                    libraryFontSize = fontSize;
             }
         }
 
@@ -553,6 +580,9 @@ namespace Dynamo.LibraryViewExtensionWebView2
 
         public static async Task<string> ExecuteScriptFunctionAsync(WebView2 webView2, string functionName, params object[] parameters)
         {
+            if (webView2.CoreWebView2 == null)
+                return null;
+
             string script = functionName + "(";
             for (int i = 0; i < parameters.Length; i++)
             {

@@ -1,0 +1,390 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "ByOriginNormalXAxis",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "5;\n1;\n-3;",
+      "Id": "18c8e8a5711a4e80b88f8e6c02e95b4a",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "e231645ae26246df81e8d3f64020ed8c",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "76602e988344471d853a7a57777a34b4",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3149a5d8cc444750a16d3569ac8ceb5b",
+          "Name": "",
+          "Description": "Value of expression at line 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Id": "1dfa0f01a0ff4e7c9bf2683b3d460649",
+      "Inputs": [
+        {
+          "Id": "d72f3a2d69c940769a1600a81402f916",
+          "Name": "x",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5ea4a87ea59d41809acb95a8cf9f41b8",
+          "Name": "y",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d887a78b113548f6869d8d8c958dd9ac",
+          "Name": "z",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "882964b9d0cc41548e51e9fcf68c840c",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Vector.YAxis",
+      "Id": "2acfc8fcc6d64b6f887ded308fcc1d2b",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "80801d56a1644f6288e4df01e80129ea",
+          "Name": "Vector",
+          "Description": "Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Get the canonical Y axis Vector (0,1,0)\n\nVector.YAxis ( ): Vector"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Plane.ByOriginNormalXAxis@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector",
+      "Id": "8f85d4cb5a164b84b01532ca9d97a4ac",
+      "Inputs": [
+        {
+          "Id": "2fc3c23b8baa490d9c64ff7464a5a0a7",
+          "Name": "origin",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "360f41a9c8364480bd828e69b6c726a5",
+          "Name": "normal",
+          "Description": "Vector\nDefault value : Autodesk.DesignScript.Geometry.Vector.ByCoordinates(0, 0, 1)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "ce865b690c3b43ffb523fb7eb58094ce",
+          "Name": "xAxis",
+          "Description": "Vector\nDefault value : Autodesk.DesignScript.Geometry.Vector.ByCoordinates(1, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "74d03d4d16424a3e8d104af0bd7dd4ce",
+          "Name": "Plane",
+          "Description": "Plane",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create an \"oriented\" Plane, positioned at Point origin with Vector normal, but with a specific X axis orientation. This has no impact to splitting, intersect, project, etc oporations, it only specifies the orientation of the input CoordinateSystem.\n\nPlane.ByOriginNormalXAxis (origin: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), normal: Vector = Autodesk.DesignScript.Geometry.Vector.ByCoordinates(0, 0, 1), xAxis: Vector = Autodesk.DesignScript.Geometry.Vector.ByCoordinates(1, 0, 0)): Plane"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Vector.ByCoordinates@double,double,double",
+      "Id": "7c1f7e2723414a90be952ed92b4adb30",
+      "Inputs": [
+        {
+          "Id": "ccd327752af84aab852de34d4946fe27",
+          "Name": "x",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0b91ff592ce94fe59dd30a9dc4f428be",
+          "Name": "y",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "ad1162f03aa1447f8d6f5bf4e556d91c",
+          "Name": "z",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "630e5517e3a14a95961c92a43063f7e7",
+          "Name": "Vector",
+          "Description": "Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Form a Vector by 3 Euclidean coordinates\n\nVector.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Vector"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "1;\n-3;\n2;",
+      "Id": "7b941f93a3934d919e0519ae7f1333fc",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "1a813ebacbe14f198acde78f807aa58e",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7caf0431af924d0896d8386b5be3e3c9",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6bbb8d9904ec486995790a51f2d41edc",
+          "Name": "",
+          "Description": "Value of expression at line 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "e231645ae26246df81e8d3f64020ed8c",
+      "End": "d72f3a2d69c940769a1600a81402f916",
+      "Id": "ef79185c2b6c4e8fb8a1aff595adea58"
+    },
+    {
+      "Start": "76602e988344471d853a7a57777a34b4",
+      "End": "5ea4a87ea59d41809acb95a8cf9f41b8",
+      "Id": "9caf944295b44d34b57be40f7dd8c29e"
+    },
+    {
+      "Start": "3149a5d8cc444750a16d3569ac8ceb5b",
+      "End": "d887a78b113548f6869d8d8c958dd9ac",
+      "Id": "71e4c2f63b124908ad706ee999241014"
+    },
+    {
+      "Start": "882964b9d0cc41548e51e9fcf68c840c",
+      "End": "2fc3c23b8baa490d9c64ff7464a5a0a7",
+      "Id": "fb1e8d73f608438db3525d8eb13fbe51"
+    },
+    {
+      "Start": "80801d56a1644f6288e4df01e80129ea",
+      "End": "360f41a9c8364480bd828e69b6c726a5",
+      "Id": "4a9e4fd628294f7d87157ed3ffe68fd9"
+    },
+    {
+      "Start": "630e5517e3a14a95961c92a43063f7e7",
+      "End": "ce865b690c3b43ffb523fb7eb58094ce",
+      "Id": "62488e1ea66b45b086cc1b2b749f31a6"
+    },
+    {
+      "Start": "1a813ebacbe14f198acde78f807aa58e",
+      "End": "ccd327752af84aab852de34d4946fe27",
+      "Id": "2d53fb374d17415b942009be0aaee48d"
+    },
+    {
+      "Start": "7caf0431af924d0896d8386b5be3e3c9",
+      "End": "0b91ff592ce94fe59dd30a9dc4f428be",
+      "Id": "39ac907353ac499d9a643b5883813e12"
+    },
+    {
+      "Start": "6bbb8d9904ec486995790a51f2d41edc",
+      "End": "ad1162f03aa1447f8d6f5bf4e556d91c",
+      "Id": "9c115f99b289428e8429c562be6be954"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -16.278566360473633,
+      "EyeY": 8.8992633819580078,
+      "EyeZ": 15.316742897033691,
+      "LookX": 23.252426147460937,
+      "LookY": -1.2338912487030029,
+      "LookZ": -16.470115661621094,
+      "UpX": -0.14029937982559204,
+      "UpY": 0.98510932922363281,
+      "UpZ": 0.099376566708087921
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "18c8e8a5711a4e80b88f8e6c02e95b4a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -682.556669987375,
+        "Y": 350.83330062054
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Point.ByCoordinates",
+        "Id": "1dfa0f01a0ff4e7c9bf2683b3d460649",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -587.929061855738,
+        "Y": 338.391504424072
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Vector.YAxis",
+        "Id": "2acfc8fcc6d64b6f887ded308fcc1d2b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -547.129061855738,
+        "Y": 473.353156312315
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Plane.ByOriginNormalXAxis",
+        "Id": "8f85d4cb5a164b84b01532ca9d97a4ac",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -351.198940637163,
+        "Y": 338.391504424072
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Vector.ByCoordinates",
+        "Id": "7c1f7e2723414a90be952ed92b4adb30",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -591.366492196884,
+        "Y": 555.82972135513
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "7b941f93a3934d919e0519ae7f1333fc",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -682.556669987375,
+        "Y": 563.781317624602
+      }
+    ],
+    "Annotations": [],
+    "X": 1185.1701584481712,
+    "Y": -60.253498940698023,
+    "Zoom": 1.06696975018683
+  }
+}

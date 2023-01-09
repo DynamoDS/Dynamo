@@ -1,0 +1,420 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Direction",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "5503d6ddeb4f4cf7b528fc0866f6b441",
+      "Name": "Integer Slider",
+      "Type": "number",
+      "Value": "13",
+      "MaximumValue": 20.0,
+      "MinimumValue": 3.0,
+      "StepValue": 1.0,
+      "NumberType": "Integer",
+      "Description": "A slider that produces integer values."
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Math.RandomList@int",
+      "Id": "b97038dcc6e648699426890a677dc986",
+      "Inputs": [
+        {
+          "Id": "336967fee255428b9407a6871c5e149d",
+          "Name": "amount",
+          "Description": "Amount of random numbers the result list will contain.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d233dced7256475084ea9cca8785d1c4",
+          "Name": "number",
+          "Description": "List of random numbers between 0 and 1.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Produces a list containing the given amount of random doubles in the range of [0, 1).\n\nMath.RandomList (amount: int): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "x*2;",
+      "Id": "890f1715bf794d6eb325b9398c301f04",
+      "Inputs": [
+        {
+          "Id": "3e0268f35b6d48079c150dc31405cda6",
+          "Name": "x",
+          "Description": "x",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6feec1637b224138bdd7df71bd9b92e9",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double",
+      "Id": "aad54dc0e35747c5b6eed09837bbbcab",
+      "Inputs": [
+        {
+          "Id": "59a446fea7984a3198fcc2d38f46f9ce",
+          "Name": "x",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "fb2370be124b4fcfabe83002d28b1e61",
+          "Name": "y",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "a3fb247c554941fc8919f5450a35c70c",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Form a Point in the XY plane given two 2 cartesian coordinates. The Z component is 0.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Line.ByBestFitThroughPoints@Autodesk.DesignScript.Geometry.Point[]",
+      "Id": "1f1a1d73aac8401aa638e7b5271b49b6",
+      "Inputs": [
+        {
+          "Id": "1f090a283f31489ab3824cf186de4085",
+          "Name": "bestFitPoints",
+          "Description": "Point[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1e2bc889c62447648f6216b71e742909",
+          "Name": "Line",
+          "Description": "Line",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Creates a Line best approximating a scatter plot of Points.\n\nLine.ByBestFitThroughPoints (bestFitPoints: Point[]): Line"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.IntegerSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Integer",
+      "InputValue": 13,
+      "MaximumValue": 20,
+      "MinimumValue": 3,
+      "StepValue": 1,
+      "Id": "5503d6ddeb4f4cf7b528fc0866f6b441",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "8f2da42668d64abfa676387d4fd0d724",
+          "Name": "",
+          "Description": "Int32",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces integer values."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Math.RandomList@int",
+      "Id": "aa88286ba278462b9723893d6f270c1a",
+      "Inputs": [
+        {
+          "Id": "1c569c6a0f09462da8afb75b77d12413",
+          "Name": "amount",
+          "Description": "Amount of random numbers the result list will contain.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "223ed7211e7042a1b6ba3a54d3f632fe",
+          "Name": "number",
+          "Description": "List of random numbers between 0 and 1.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Produces a list containing the given amount of random doubles in the range of [0, 1).\n\nMath.RandomList (amount: int): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "y*3;",
+      "Id": "8dcfdc666c254ff892cdbbee63f104bf",
+      "Inputs": [
+        {
+          "Id": "dc05c1d789734b37bd485f6a154cf58e",
+          "Name": "y",
+          "Description": "y",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f41d79d3915a407f9f6bbedf27cfa006",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Line.Direction",
+      "Id": "7bc61ace39724b978ecd6bac3802bb60",
+      "Inputs": [
+        {
+          "Id": "3c244705f0fd4080b634cca0feb5fca8",
+          "Name": "line",
+          "Description": "Autodesk.DesignScript.Geometry.Line",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8936edf5e7654b129d289459d207c35c",
+          "Name": "Vector",
+          "Description": "Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "The direction of the Curve\n\nLine.Direction: Vector"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "d233dced7256475084ea9cca8785d1c4",
+      "End": "3e0268f35b6d48079c150dc31405cda6",
+      "Id": "bfed7f75e78745e29dd9b0e12fc3e613"
+    },
+    {
+      "Start": "6feec1637b224138bdd7df71bd9b92e9",
+      "End": "59a446fea7984a3198fcc2d38f46f9ce",
+      "Id": "ee6fd9700d1a41edae1780b92957a535"
+    },
+    {
+      "Start": "a3fb247c554941fc8919f5450a35c70c",
+      "End": "1f090a283f31489ab3824cf186de4085",
+      "Id": "c5b78957a51347ff9943274f383578b7"
+    },
+    {
+      "Start": "1e2bc889c62447648f6216b71e742909",
+      "End": "3c244705f0fd4080b634cca0feb5fca8",
+      "Id": "a0652fe301a44f4cb025fcc91aa75d40"
+    },
+    {
+      "Start": "8f2da42668d64abfa676387d4fd0d724",
+      "End": "336967fee255428b9407a6871c5e149d",
+      "Id": "7d2f3920cd7244d49ceb6f969a080def"
+    },
+    {
+      "Start": "8f2da42668d64abfa676387d4fd0d724",
+      "End": "1c569c6a0f09462da8afb75b77d12413",
+      "Id": "4c54996114a344e9bff523637bfffbf3"
+    },
+    {
+      "Start": "223ed7211e7042a1b6ba3a54d3f632fe",
+      "End": "dc05c1d789734b37bd485f6a154cf58e",
+      "Id": "83f025a91f7d4d59bdb718803fdbd59a"
+    },
+    {
+      "Start": "f41d79d3915a407f9f6bbedf27cfa006",
+      "End": "fb2370be124b4fcfabe83002d28b1e61",
+      "Id": "584b6d4caa014502898c444e3f057236"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": 0.13949887769481506,
+      "EyeY": 6.60683480075793,
+      "EyeZ": 7.3787528593600875,
+      "LookX": -2.8544525319947969,
+      "LookY": -12.806779990608794,
+      "LookZ": -9.4480662987857,
+      "UpX": -0.18590023428463642,
+      "UpY": 0.76604441305911541,
+      "UpZ": -0.615318601663317
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Math.RandomList",
+        "Id": "b97038dcc6e648699426890a677dc986",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 107.76654238937954,
+        "Y": -35.074735760561566
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "890f1715bf794d6eb325b9398c301f04",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 423.76654238937954,
+        "Y": -30.861402427228235
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Point.ByCoordinates",
+        "Id": "aad54dc0e35747c5b6eed09837bbbcab",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 605.76654238937954,
+        "Y": 5.9252642394384338
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Line.ByBestFitThroughPoints",
+        "Id": "1f1a1d73aac8401aa638e7b5271b49b6",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 863.76654238937954,
+        "Y": 5.9252642394384338
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Integer Slider",
+        "Id": "5503d6ddeb4f4cf7b528fc0866f6b441",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -291.23345761062046,
+        "Y": 18.925264239438434
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Math.RandomList",
+        "Id": "aa88286ba278462b9723893d6f270c1a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 107.76654238937954,
+        "Y": 72.925264239438434
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "8dcfdc666c254ff892cdbbee63f104bf",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 423.76654238937954,
+        "Y": 77.138597572771772
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Line.Direction",
+        "Id": "7bc61ace39724b978ecd6bac3802bb60",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1185.7665423893795,
+        "Y": 5.9252642394384338
+      }
+    ],
+    "Annotations": [],
+    "X": 291.173702852672,
+    "Y": 83.6580573566929,
+    "Zoom": 1.05429821501133
+  }
+}

@@ -1,0 +1,334 @@
+{
+  "Uuid": "93d7251f-6ed2-46b8-a188-00a0d7d9d6ae",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "DSCore.IO.FileSystem.CombinePath_img",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Math": {
+        "Key": "DSCore.Math",
+        "Value": "DSCoreNodes.dll"
+      },
+      "Color": {
+        "Key": "DSCore.Color",
+        "Value": "DSCoreNodes.dll"
+      },
+      "UV": {
+        "Key": "Autodesk.DesignScript.Geometry.UV",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "C:\\Temp\\sample.sat",
+      "InputValue": "..\\..\\..\\..\\..\\..\\..\\..\\..\\..\\Temp\\sample.sat",
+      "NodeType": "ExtensionNode",
+      "Id": "cac819b397984ed5a333535b8c1227d1",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "5042529b5ea942068a95a69c7f18875e",
+          "Name": "",
+          "Description": "File Path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system and returns its file path"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.IO.FileSystem.FileName@string,bool",
+      "Id": "3f43f7a489be42b0ba9d25b5087cfaed",
+      "Inputs": [
+        {
+          "Id": "977b54bdb1424df898f388c832bd72fc",
+          "Name": "path",
+          "Description": "Path to get the file name of\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "fc4e08972bce4ca1863e64663fd3ba6c",
+          "Name": "withExtension",
+          "Description": "Toggle to include extension in result\n\nbool\nDefault value : true",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "30c9c04c6a924f4182ea76aa2111707e",
+          "Name": "string",
+          "Description": "File name from file path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns the file name of a file path.\n\nFileSystem.FileName (path: string, withExtension: bool = true): string"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Directory, CoreNodeModels",
+      "HintPath": "",
+      "InputValue": "C:\\Users\\dneno\\OneDrive\\Desktop\\Export",
+      "NodeType": "ExtensionNode",
+      "Id": "06e639ec600040f9be5d7d35eae0eddb",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "f339a4552e7b4b5f984821396d526e4d",
+          "Name": "",
+          "Description": "Directory path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a directory on the system and returns its path"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction, DynamoCore",
+      "FunctionSignature": "DSCore.IO.FileSystem.CombinePath@string[]",
+      "FunctionType": "VariableArgument",
+      "NodeType": "FunctionNode",
+      "Id": "00109db2ef374826ab65bbc0545994c8",
+      "Inputs": [
+        {
+          "Id": "e03e770e90a349739088fc124cd75f6f",
+          "Name": "string0",
+          "Description": "Strings to combine into a path\n\nstring[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4420dd30aa5b4344bf5aae9522fdabf9",
+          "Name": "string1",
+          "Description": "string[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "92f9e66cb53a456e8dbf09f93531fa38",
+          "Name": "string",
+          "Description": "Combined file path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Combines multiple strings into a single file path.\n\nFileSystem.CombinePath (strings: string[]): string"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.IO.FileSystem.MoveFile@string,string,bool",
+      "Id": "0e0d2950824f4b3493a3733f42ce5876",
+      "Inputs": [
+        {
+          "Id": "a98f43b8271a404584f6ebcb268d054b",
+          "Name": "path",
+          "Description": "String representation of existing path\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "90029a3013014dc48a5998b153df3375",
+          "Name": "newPath",
+          "Description": "String representation of new path\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f31b10ec9b8b4d97b2b02a5f335522dc",
+          "Name": "overwrite",
+          "Description": "Toggle to overwrite existing files\n\nbool\nDefault value : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "2b2791d5aff941889e75a7d5413ff83e",
+          "Name": "void",
+          "Description": "Node performs a task, doesn’t produce an output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Moves a specified file to a new location\n\nFileSystem.MoveFile (path: string, newPath: string, overwrite: bool = false): void"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "5042529b5ea942068a95a69c7f18875e",
+      "End": "977b54bdb1424df898f388c832bd72fc",
+      "Id": "b319087a4bc5434da88b3189130422d1",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "5042529b5ea942068a95a69c7f18875e",
+      "End": "a98f43b8271a404584f6ebcb268d054b",
+      "Id": "cc46ee5cc5144a5b84ad9d88e9ba231c",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "30c9c04c6a924f4182ea76aa2111707e",
+      "End": "4420dd30aa5b4344bf5aae9522fdabf9",
+      "Id": "d91ede4ad8a6494db2b0c7fe3ebddf6f",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "f339a4552e7b4b5f984821396d526e4d",
+      "End": "e03e770e90a349739088fc124cd75f6f",
+      "Id": "b0839e02bbed427dbd2ca8c2fcf4bb11",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "92f9e66cb53a456e8dbf09f93531fa38",
+      "End": "90029a3013014dc48a5998b153df3375",
+      "Id": "c6ddbed1683440e09dd70fa976feece0",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "Sample.txt",
+      "ReferenceType": "External",
+      "Nodes": [
+        "cac819b397984ed5a333535b8c1227d1"
+      ]
+    }
+  ],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.17",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.17.0.3255",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -5.22369384765625,
+      "EyeY": 13.961121559143066,
+      "EyeZ": 14.827668190002441,
+      "LookX": 12.657733917236328,
+      "LookY": -14.124775886535645,
+      "LookZ": -24.96122932434082,
+      "UpX": 0.11247330158948898,
+      "UpY": 0.96858382225036621,
+      "UpZ": -0.2218000739812851
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "File Path",
+        "ShowGeometry": true,
+        "Id": "cac819b397984ed5a333535b8c1227d1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2641.20909311968,
+        "Y": 2887.5696650504756
+      },
+      {
+        "Name": "FileSystem.FileName",
+        "ShowGeometry": true,
+        "Id": "3f43f7a489be42b0ba9d25b5087cfaed",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2943.1574600090075,
+        "Y": 3150.4520810820518
+      },
+      {
+        "Name": "Directory Path",
+        "ShowGeometry": true,
+        "Id": "06e639ec600040f9be5d7d35eae0eddb",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2943.1574600090075,
+        "Y": 2992.4520810820518
+      },
+      {
+        "Name": "FileSystem.CombinePath",
+        "ShowGeometry": true,
+        "Id": "00109db2ef374826ab65bbc0545994c8",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3320.7574600090079,
+        "Y": 3054.4520810820518
+      },
+      {
+        "Name": "FileSystem.MoveFile",
+        "ShowGeometry": true,
+        "Id": "0e0d2950824f4b3493a3733f42ce5876",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3685.2283772323258,
+        "Y": 2876.1628193923607
+      }
+    ],
+    "Annotations": [],
+    "X": -1453.4240478031638,
+    "Y": -1042.2860544031182,
+    "Zoom": 0.58216390475855728
+  }
+}

@@ -876,6 +876,17 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Controls if the the Node autocomplete Machine Learning option is beta from feature flag
+        /// </summary>
+        public bool NodeAutocompleteMachineLearningIsBeta
+        {
+            get
+            {
+                return DynamoModel.FeatureFlags.CheckFeatureFlag("NodeAutocompleteMachineLearningIsBeta", false);
+            }
+        }
+
+        /// <summary>
         /// Contains the numbers of result of the ML recommendation
         /// </summary>
         public int MLRecommendationNumberOfResults
@@ -1449,6 +1460,18 @@ namespace Dynamo.ViewModels
                     goto default;
                 case nameof(DisableTrustWarnings):
                     description = Resources.ResourceManager.GetString(nameof(Res.PreferencesViewTrustWarningHeader), System.Globalization.CultureInfo.InvariantCulture);
+                    goto default;
+                // We track these this in two places, one in preference panel,
+                // one where user make such switch in Node AutoComplete UI
+                case nameof(nodeAutocompleteSuggestion):
+                    if (nodeAutocompleteSuggestion == NodeAutocompleteSuggestion.MLRecommendation)
+                        description = nameof(NodeAutocompleteSuggestion.MLRecommendation);
+                    else
+                        description = nameof(NodeAutocompleteSuggestion.ObjectType);
+                    goto default;
+                case nameof(MLRecommendationConfidenceLevel):
+                    // Internal use only, no need to localize for now
+                    description = "Confidence Level";
                     goto default;
                 default:
                     if (!string.IsNullOrEmpty(description))

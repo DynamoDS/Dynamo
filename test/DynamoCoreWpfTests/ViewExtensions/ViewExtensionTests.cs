@@ -1,8 +1,15 @@
-﻿using System.IO;
+using System;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using Dynamo.Engine;
+using Dynamo.Graph.Workspaces;
+using Dynamo.GraphNodeManager;
+using Dynamo.Models;
 using Dynamo.Wpf.Extensions;
+using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 
 namespace DynamoCoreWpfTests
@@ -346,14 +353,65 @@ namespace DynamoCoreWpfTests
 
             eventMethod.Invoke(element, new object[] { args });
         }
+
+        /// <summary>
+        /// Test if the number of nodes displayed in the extension is equal to current number of nodes
+        /// </summary>
+        [Test]
+        public void TestGraphEvaluationEvents()
+        {
+            RaiseLoadedEvent(this.View);
+            var extensionManager = View.viewExtensionManager;
+            extensionManager.Add(viewExtension);
+
+            EngineController controller = null;
+            int counter = 0;
+
+            void startedEvent(HomeWorkspaceModel hwm, EventArgs args)
+            {
+                counter++;
+                Assert.IsTrue(hwm.GraphRunInProgress);
+
+                Assert.IsNotNull(hwm.EngineController);
+                Assert.IsFalse(hwm.EngineController.IsDisposed);
+
+                controller = hwm.EngineController;
+                // Test that we do not get into an infinite loop
+                hwm.RequestRun();
+            };
+
+            void finishedEvent(HomeWorkspaceModel hwm, EventArgs args)
+            {
+                counter++;
+
+                Assert.IsFalse(hwm.GraphRunInProgress);
+                Assert.AreEqual(controller, hwm.EngineController);
+            };
+
+            viewExtension.OnOpenEvaluationStarted += startedEvent;
+            viewExtension.OnOpenEvaluationEnded += finishedEvent;
+
+            // Open first file.
+            Open(@"core\node2code\numberRange.dyn");
+
+            Assert.AreEqual(2, counter);
+
+            viewExtension.OnOpenEvaluationStarted -= startedEvent;
+            viewExtension.OnOpenEvaluationEnded -= finishedEvent;
+        }
     }
 
     public class DummyViewExtension : IViewExtension
     {
         public int Counter { get; private set; }
+        public HomeWorkspaceModel CurrentHWM;
+        public ViewLoadedParams Params;
         public bool SetOwner { get; set; } = true;
         public bool WindowClosed { get; private set; }
         public Window Content { get; private set; }
+
+        public event Action<HomeWorkspaceModel, EventArgs> OnOpenEvaluationStarted;
+        public event Action<HomeWorkspaceModel, EventArgs> OnOpenEvaluationEnded;
 
         public string UniqueId
         {
@@ -370,12 +428,30 @@ namespace DynamoCoreWpfTests
             // Do nothing for now
         }
 
-        public void Loaded(ViewLoadedParams p)
+        private void OnEvalStarted(object sender, EventArgs args)
         {
-            p.CurrentWorkspaceChanged += (ws) =>
+            OnOpenEvaluationStarted?.Invoke(Params.CurrentWorkspaceModel as HomeWorkspaceModel, args);
+        }
+
+        private void OnEvalEnded(object sender, EvaluationCompletedEventArgs args)
+        {
+            OnOpenEvaluationEnded?.Invoke(Params.CurrentWorkspaceModel as HomeWorkspaceModel, args);
+        }
+
+        private void workpaceChangedHandler(IWorkspaceModel ws) {
+            if (ws is HomeWorkspaceModel hwm)
             {
-                Counter++;
-            };
+                hwm.EvaluationStarted += OnEvalStarted;
+                hwm.EvaluationCompleted += OnEvalEnded;
+            }
+            
+            Counter++;
+        }
+
+        public void Loaded(ViewLoadedParams p)
+        { 
+            Params = p;
+            Params.CurrentWorkspaceChanged += workpaceChangedHandler;
 
             var window = new Window();
             window.Content = new TextBlock() { Text = "Dummy" };
@@ -399,7 +475,16 @@ namespace DynamoCoreWpfTests
 
         public void Dispose()
         {
+            if (Params != null)
+            {
+                if (Params.CurrentWorkspaceModel is HomeWorkspaceModel hwm)
+                {
+                    hwm.EvaluationStarted -= OnEvalStarted;
+                    hwm.EvaluationCompleted -= OnEvalEnded;
+                }
 
+                Params.CurrentWorkspaceChanged -= workpaceChangedHandler;
+            }
         }
     }
 

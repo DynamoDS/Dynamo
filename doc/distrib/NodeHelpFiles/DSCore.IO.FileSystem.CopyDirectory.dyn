@@ -1,0 +1,254 @@
+{
+  "Uuid": "93d7251f-6ed2-46b8-a188-00a0d7d9d6ae",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "DSCore.IO.FileSystem.CopyDirectory_img",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Math": {
+        "Key": "DSCore.Math",
+        "Value": "DSCoreNodes.dll"
+      },
+      "Color": {
+        "Key": "DSCore.Color",
+        "Value": "DSCoreNodes.dll"
+      },
+      "UV": {
+        "Key": "Autodesk.DesignScript.Geometry.UV",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.Directory, CoreNodeModels",
+      "HintPath": "",
+      "InputValue": "C:\\Temp\\NewFolder",
+      "NodeType": "ExtensionNode",
+      "Id": "06e639ec600040f9be5d7d35eae0eddb",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "f339a4552e7b4b5f984821396d526e4d",
+          "Name": "",
+          "Description": "Directory path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a directory on the system and returns its path"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Directory, CoreNodeModels",
+      "HintPath": "",
+      "InputValue": "C:\\Temp\\NewFolder2",
+      "NodeType": "ExtensionNode",
+      "Id": "33fafeb32cbe4add9f556a3b956d4f16",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "e026c075307149db84d89668c7f5a2fd",
+          "Name": "",
+          "Description": "Directory path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a directory on the system and returns its path"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DirectoryObject, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "7705f53f76f64ff8ad34e7be3e074957",
+      "Inputs": [
+        {
+          "Id": "819dd8f2975d49658f09f88926fd78bc",
+          "Name": "path",
+          "Description": "Path to the directory (type: string)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8a8c51f33d564f378258a4fec739c9ad",
+          "Name": "directory",
+          "Description": "Directory object.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a directory object from the given path"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.IO.FileSystem.CopyDirectory@var,string,bool",
+      "Id": "7e51cfd7cd0b4fcf8cae8f92cf6a9e25",
+      "Inputs": [
+        {
+          "Id": "ee67736fa02b436ea584bf88b53c3d0d",
+          "Name": "directory",
+          "Description": "Directory to copy\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f993376e8479471597244c2e3c638565",
+          "Name": "destinationPath",
+          "Description": "Destination of the copy operation on disk\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c51c7f8ba92c4d64b9a614fd5b25b145",
+          "Name": "overwriteFiles",
+          "Description": "Toggle to overwrite existing directory\n\nbool\nDefault value : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1e15de8367b34acbbfb841291433e4ac",
+          "Name": "void",
+          "Description": "Node performs a task, doesn’t produce an output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Copies a directory to a destination location.\n\nFileSystem.CopyDirectory (directory: var, destinationPath: string, overwriteFiles: bool = false): void"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "f339a4552e7b4b5f984821396d526e4d",
+      "End": "819dd8f2975d49658f09f88926fd78bc",
+      "Id": "71982e118008479bb5c13ac36ed792c8",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "e026c075307149db84d89668c7f5a2fd",
+      "End": "f993376e8479471597244c2e3c638565",
+      "Id": "74fa325c0e9345d9a86ce60cbbe09d08",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "8a8c51f33d564f378258a4fec739c9ad",
+      "End": "ee67736fa02b436ea584bf88b53c3d0d",
+      "Id": "3ce329b933014ecbac7b66a52367167c",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.17",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.17.0.3255",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -5.22369384765625,
+      "EyeY": 13.961121559143066,
+      "EyeZ": 14.827668190002441,
+      "LookX": 12.657733917236328,
+      "LookY": -14.124775886535645,
+      "LookZ": -24.96122932434082,
+      "UpX": 0.11247330158948898,
+      "UpY": 0.96858382225036621,
+      "UpZ": -0.2218000739812851
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Directory Path",
+        "ShowGeometry": true,
+        "Id": "06e639ec600040f9be5d7d35eae0eddb",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2906.5965736420289,
+        "Y": 2837.9559077951608
+      },
+      {
+        "Name": "Directory Path",
+        "ShowGeometry": true,
+        "Id": "33fafeb32cbe4add9f556a3b956d4f16",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3199.3965736420291,
+        "Y": 2985.9559077951608
+      },
+      {
+        "Name": "Directory From Path",
+        "ShowGeometry": true,
+        "Id": "7705f53f76f64ff8ad34e7be3e074957",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3199.3965736420291,
+        "Y": 2837.9559077951608
+      },
+      {
+        "Name": "FileSystem.CopyDirectory",
+        "ShowGeometry": true,
+        "Id": "7e51cfd7cd0b4fcf8cae8f92cf6a9e25",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3521.7965736420292,
+        "Y": 2894.9559077951608
+      }
+    ],
+    "Annotations": [],
+    "X": -2757.2463573187429,
+    "Y": -2162.7465969587029,
+    "Zoom": 0.96421855318101279
+  }
+}

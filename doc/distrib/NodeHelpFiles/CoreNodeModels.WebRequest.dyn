@@ -1,0 +1,189 @@
+{
+  "Uuid": "93d7251f-6ed2-46b8-a188-00a0d7d9d6ae",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "CoreNodeModels.WebRequest_img",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Math": {
+        "Key": "DSCore.Math",
+        "Value": "DSCoreNodes.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"http://www.google.com\";",
+      "Id": "a8b6f59ff4124038852d822c87356190",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "45b414d9f4cc4fe0aa450d9004cacfe4",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.WebRequest, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "3d9dc4fa1eb04fd981b567a218040778",
+      "Inputs": [
+        {
+          "Id": "e81fe70cdca34ae09fdbb33441733f48",
+          "Name": "url",
+          "Description": "The url for the web request as a string.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d532ead2c63f472db3a475733724426b",
+          "Name": "string",
+          "Description": "Content of a web request as a string.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Returns the contents of a webpage from the given URL as a string"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "18fc0684dadf453c88ba9e8f2d35f22f",
+      "Inputs": [
+        {
+          "Id": "bd19bd93535e46d297a845ecc195c006",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e82f1c9fc0af42f585f355cc580c0f25",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "45b414d9f4cc4fe0aa450d9004cacfe4",
+      "End": "e81fe70cdca34ae09fdbb33441733f48",
+      "Id": "58e667e8808944b09bd0e9f216eeac1f",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "d532ead2c63f472db3a475733724426b",
+      "End": "bd19bd93535e46d297a845ecc195c006",
+      "Id": "81384223651749a5b892ca4df88ca44a",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.17",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.17.0.3255",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": 32.008350372314453,
+      "EyeY": 20.381649017333984,
+      "EyeZ": 3.3499875068664551,
+      "LookX": -22.038976669311523,
+      "LookY": -19.291835784912109,
+      "LookZ": -11.175867080688477,
+      "UpX": -0.38536801934242249,
+      "UpY": 0.90183335542678833,
+      "UpZ": -0.19541782140731812
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "a8b6f59ff4124038852d822c87356190",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1427.1250286469581,
+        "Y": 2389.8028418126819
+      },
+      {
+        "Name": "Web Request",
+        "ShowGeometry": true,
+        "Id": "3d9dc4fa1eb04fd981b567a218040778",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1799.1250286469581,
+        "Y": 2389.975341812682
+      },
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "18fc0684dadf453c88ba9e8f2d35f22f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2069.5250286469582,
+        "Y": 2389.975341812682
+      }
+    ],
+    "Annotations": [],
+    "X": -702.04636288234678,
+    "Y": -798.6691544326759,
+    "Zoom": 0.61559818273599176
+  }
+}

@@ -4505,7 +4505,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Numbers of results.
+        ///   Looks up a localized string similar to Number of results.
         /// </summary>
         public static string MLRecommendationNumberOfResults {
             get {
@@ -6500,6 +6500,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Beta.
+        /// </summary>
+        public static string PreferencesViewBetaTag {
+            get {
+                return ResourceManager.GetString("PreferencesViewBetaTag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Default Python Engine.
         /// </summary>
         public static string PreferencesViewDefaultPythonEngine {
@@ -8056,15 +8065,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to Import Settings.
-        /// </summary>
-        public static string SplashScreenFailedImportSettings {
-            get {
-                return ResourceManager.GetString("SplashScreenFailedImportSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Import Settings.
         /// </summary>
         public static string SplashScreenImportSettings {
@@ -8110,16 +8110,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Settings imported.
-        /// </summary>
-        public static string SplashScreenSettingsImported {
-            get {
-                return ResourceManager.GetString("SplashScreenSettingsImported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Don’t show this screen again.
+        ///   Looks up a localized string similar to Don&apos;t show this again.
         /// </summary>
         public static string SplashScreenShowScreenAgainLabel {
             get {
@@ -8133,6 +8124,15 @@ namespace Dynamo.Wpf.Properties {
         public static string SplashScreenSignIn {
             get {
                 return ResourceManager.GetString("SplashScreenSignIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Signing In.
+        /// </summary>
+        public static string SplashScreenSigningIn {
+            get {
+                return ResourceManager.GetString("SplashScreenSigningIn", resourceCulture);
             }
         }
         
@@ -8349,15 +8349,6 @@ namespace Dynamo.Wpf.Properties {
         public static string StartPageShowSamples {
             get {
                 return ResourceManager.GetString("StartPageShowSamples", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Start.
-        /// </summary>
-        public static string StartPageStart {
-            get {
-                return ResourceManager.GetString("StartPageStart", resourceCulture);
             }
         }
         

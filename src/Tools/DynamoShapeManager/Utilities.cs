@@ -174,6 +174,9 @@ namespace DynamoShapeManager
         /// or None otherwise.</returns>
         /// 
         [Obsolete("Please use version of this method which accepts precise collection of version objects.")]
+#if NET6_0_OR_GREATER
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#endif
         public static LibraryVersion GetInstalledAsmVersion(List<LibraryVersion> versions, ref string location, string rootFolder)
         {
             if (string.IsNullOrEmpty(rootFolder))
@@ -248,7 +251,9 @@ namespace DynamoShapeManager
         /// of Tuples - these represent versions of ASM which are located on the user's machine.</param>
         /// <returns>Returns System.Version of ASM if any installed ASM is found, 
         /// or null otherwise.</returns>
-        /// 
+#if NET6_0_OR_GREATER
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#endif
         public static Version GetInstalledAsmVersion2(IEnumerable<Version> versions, ref string location, string rootFolder, Func<string, IEnumerable> getASMInstallsFunc = null)
         {
             if (string.IsNullOrEmpty(rootFolder))
@@ -553,6 +558,9 @@ namespace DynamoShapeManager
         }
 
 
+#if NET6_0_OR_GREATER
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#endif
         private static IEnumerable GetAsmInstallations(string rootFolder)
         {
             var assemblyPath = Path.Combine(Path.Combine(rootFolder, "DynamoInstallDetective.dll"));
@@ -588,6 +596,9 @@ namespace DynamoShapeManager
         /// <param name="filePaths">Files found on an ASM installation location.</param>
         /// <param name="majorVersion">Major version of ASM found in the specified location.</param>
         /// <returns>Whether the files represent a complete ASM installation or not.</returns>
+#if NET6_0_OR_GREATER
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#endif
         internal static bool IsASMInstallationComplete(IEnumerable<string> filePaths, int majorVersion)
         {
             var fileNames = filePaths.Select(path => Path.GetFileName(path).ToUpper());
@@ -611,11 +622,28 @@ namespace DynamoShapeManager
         /// <returns></returns>
         /// <param name="searchPattern">optional - to be used for testing - default is the ASM search pattern</param>
         /// <returns></returns>
-        public static Version GetVersionFromPath(string asmPath, string searchPattern = "ASMAHL*.dll")
+        public static Version GetVersionFromPath(string asmPath, string searchPattern = "*ASMAHL*.*")
         {
             var ASMFilePath = Directory.GetFiles(asmPath, searchPattern, SearchOption.TopDirectoryOnly).FirstOrDefault();
             if (ASMFilePath != null && File.Exists(ASMFilePath))
             {
+#if NET6_0_OR_GREATER
+                if (!OperatingSystem.IsWindows())
+                {
+                    string fileName = Path.GetFileNameWithoutExtension(ASMFilePath);
+   
+                    var version = new string(fileName
+                        .SkipWhile(c => !char.IsDigit(c))
+                        .TakeWhile(c => char.IsDigit(c))
+                        .Take(3).ToArray());
+
+                    if (string.IsNullOrEmpty(version))
+                    {
+                        throw new Exception($"Cannot extract ASM version. Bad version format found for file {fileName}");
+                    }
+                    return new Version($"{version}.0.0");
+                }
+#endif
                 var asmVersion = FileVersionInfo.GetVersionInfo(ASMFilePath);
                 var libGversion = new Version(asmVersion.FileMajorPart, asmVersion.FileMinorPart, asmVersion.FileBuildPart);
                 return libGversion;

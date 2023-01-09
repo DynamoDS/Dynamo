@@ -1,15 +1,19 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Versioning;
 using Microsoft.Win32;
 
 namespace DynamoInstallDetective
 {
     // Utility class for interacting with the windows registry.
+#if NET6_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+#endif
     internal static class RegUtils
     {
         // Utility class to enable/disable registry caching within a scope.
@@ -228,6 +232,9 @@ namespace DynamoInstallDetective
     /// <summary>
     /// Implements basic look up algorithm to get product installations using registry keys
     /// </summary>
+#if NET6_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+#endif
     public class InstalledProductLookUp : IProductLookUp
     {
         /// <summary>
@@ -341,6 +348,9 @@ namespace DynamoInstallDetective
         }
     }
 
+#if NET6_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+#endif
     class InstalledProduct : IInstalledProduct
     {
         public string ProductName { get; set; }
@@ -386,6 +396,9 @@ namespace DynamoInstallDetective
         }
     }
 
+#if NET6_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+#endif
     public class InstalledProducts : IProductCollection
     {
         public IEnumerable<IInstalledProduct> Products { get; protected set; }
@@ -416,7 +429,9 @@ namespace DynamoInstallDetective
         }
     }
 
-
+#if NET6_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+#endif
     public class DynamoProducts : InstalledProducts
     {
         const string PRODUCT_ID07_X = @"{6B5FA6CA-9D69-46CF-B517-1F90C64F7C0B}";

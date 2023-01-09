@@ -1,9 +1,8 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Xml;
@@ -11,6 +10,21 @@ using Newtonsoft.Json;
 
 namespace DynamoUtilities
 {
+    internal static class OSHelper
+    {
+#if NET6_0_OR_GREATER
+        [SupportedOSPlatformGuard("windows")]
+#endif
+        public static bool IsWindows()
+        {
+#if NET6_0_OR_GREATER
+            return OperatingSystem.IsWindows();
+#else
+            return true;// net48, assuming we will no deliver net48 on anything else but windows (also no more mono builds)
+#endif
+
+        }
+    }
     public class PathHelper
     {
         private static readonly string sizeUnits = " KB";
@@ -61,7 +75,10 @@ namespace DynamoUtilities
                 // We mark the path read only when
                 // 1. file read-only
                 // 2. user does not have write access to the folder
-                return Finfo.IsReadOnly || !HasWritePermissionOnDir(Finfo.Directory.ToString());
+
+                // We have no cross platform Directory access writes APIs.
+                bool hasWritePermissionOnDir = OSHelper.IsWindows() ? HasWritePermissionOnDir(Finfo.Directory.ToString()) : true;
+                return Finfo.IsReadOnly || !hasWritePermissionOnDir;
             }
             else
                 return false;
@@ -72,13 +89,19 @@ namespace DynamoUtilities
         /// </summary>
         /// <param name="folderPath">Folder path</param>
         /// <returns></returns>
+#if NET6_0_OR_GREATER
+        [SupportedOSPlatform("windows")]
+#endif
         public static bool HasWritePermissionOnDir(string folderPath)
         {
             try
             {
                 var writeAllow = false;
                 var writeDeny = false;
-                var accessControlList = Directory.GetAccessControl(folderPath);
+                DirectoryInfo dInfo = new DirectoryInfo(folderPath);
+                if (dInfo == null)
+                    return false;
+                var accessControlList = dInfo.GetAccessControl();
                 if (accessControlList == null)
                     return false;
                 var accessRules = accessControlList.GetAccessRules(true, true,
@@ -100,7 +123,7 @@ namespace DynamoUtilities
 
                 return writeAllow && !writeDeny;
             }
-            catch(Exception)
+            catch (Exception)
             {
                 return false;
             }
@@ -111,13 +134,20 @@ namespace DynamoUtilities
         /// </summary>
         /// <param name="folderPath">Folder path</param>
         /// <returns></returns>
+#if NET6_0_OR_GREATER
+        [SupportedOSPlatform("windows")]
+#endif
         internal static bool HasReadPermissionOnDir(string folderPath)
         {
             try
             {
                 var readAllow = false;
                 var readDeny = false;
-                var accessControlList = Directory.GetAccessControl(folderPath);
+
+                DirectoryInfo dInfo = new DirectoryInfo(folderPath);
+                if (dInfo == null)
+                    return false;
+                var accessControlList = dInfo.GetAccessControl();
                 if (accessControlList == null)
                     return false;
 
@@ -136,7 +166,7 @@ namespace DynamoUtilities
                     if (!curentUser.User.Equals(rule.IdentityReference) &&
                         !curentUser.Groups.Contains(rule.IdentityReference))
                         continue;
-                    
+
                     if (rule.AccessControlType == AccessControlType.Allow)
                         readAllow = true;
                     else if (rule.AccessControlType == AccessControlType.Deny)
@@ -168,7 +198,7 @@ namespace DynamoUtilities
                 ex = null;
                 return true;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 xmlDoc = null;
                 ex = e;
@@ -189,7 +219,7 @@ namespace DynamoUtilities
                 ex = new JsonReaderException();
                 return false;
             }
-            
+
             try
             {
                 fileContents = fileContents.Trim();
@@ -199,16 +229,16 @@ namespace DynamoUtilities
                     var obj = Newtonsoft.Json.Linq.JToken.Parse(fileContents);
                     return true;
                 }
-                else 
+                else
                 {
                     ex = new JsonReaderException();
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 ex = e;
             }
-            
+
             return false;
         }
 
@@ -339,14 +369,18 @@ namespace DynamoUtilities
                 throw new DirectoryNotFoundException($"The input path: {directoryPath} does not exist or is not a folder");
             }
 
-            if (read && !PathHelper.HasReadPermissionOnDir(directoryPath))
+            // TODO: figure out read/write permissions for Linux
+            if (OSHelper.IsWindows())
             {
-                throw new System.Security.SecurityException($"Dynamo does not have the required permissions for the path: {directoryPath}");
-            }
+                if (read && !PathHelper.HasReadPermissionOnDir(directoryPath))
+                {
+                    throw new System.Security.SecurityException($"Dynamo does not have the required permissions for the path: {directoryPath}");
+                }
 
-            if (write && !PathHelper.HasWritePermissionOnDir(directoryPath))
-            {
-                throw new System.Security.SecurityException($"Dynamo does not have the required permissions for the path: {directoryPath}");
+                if (write && !PathHelper.HasWritePermissionOnDir(directoryPath))
+                {
+                    throw new System.Security.SecurityException($"Dynamo does not have the required permissions for the path: {directoryPath}");
+                }
             }
 
             return directoryPath;
@@ -388,7 +422,7 @@ namespace DynamoUtilities
         {
             string subdirPath = FormatDirectoryPath(subdirectory);
             string directoryPath = FormatDirectoryPath(directory);
-            
+
             return subdirPath.StartsWith(directoryPath, StringComparison.OrdinalIgnoreCase);
         }
 
