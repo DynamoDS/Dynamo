@@ -489,21 +489,23 @@ namespace Dynamo.ViewModels
 
             // InCanvasSearchViewModel needs to happen before the nodes are created
             // as we rely upon it to retrieve node icon images
-            InCanvasSearchViewModel = new SearchViewModel(DynamoViewModel)
+            if (!dynamoViewModel.Model.IsServiceMode)
             {
-                Visible = true
-            };
+                InCanvasSearchViewModel = new SearchViewModel(DynamoViewModel)
+                {
+                    Visible = true
+                };
+                NodeAutoCompleteSearchViewModel = new NodeAutoCompleteSearchViewModel(DynamoViewModel)
+                {
+                    Visible = true
+                };
+            }
 
             // sync collections
             foreach (NodeModel node in Model.Nodes) Model_NodeAdded(node);
             foreach (NoteModel note in Model.Notes) Model_NoteAdded(note);
             foreach (AnnotationModel annotation in Model.Annotations) Model_AnnotationAdded(annotation);
             foreach (ConnectorModel connector in Model.Connectors) Connectors_ConnectorAdded(connector);
-            
-            NodeAutoCompleteSearchViewModel = new NodeAutoCompleteSearchViewModel(DynamoViewModel)
-            {
-                Visible = true
-            };
         }
         /// <summary>
         /// This event is triggered from Workspace Model. Used in instrumentation
@@ -552,8 +554,8 @@ namespace Dynamo.ViewModels
             Connectors.Clear();
             Errors.Clear();
             Annotations.Clear();
-            InCanvasSearchViewModel.Dispose();
-            NodeAutoCompleteSearchViewModel.Dispose();
+            InCanvasSearchViewModel?.Dispose();
+            NodeAutoCompleteSearchViewModel?.Dispose();
         }
 
         internal void ZoomInInternal()

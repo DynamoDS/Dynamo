@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -60,7 +60,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
         {
             extension = "json";
             //pass false to keep original icon urls
-            return GetNodeItemDataStream(model.SearchEntries, false);
+            return GetNodeItemDataStream(model?.SearchEntries, false);
         }
 
         /// <summary>

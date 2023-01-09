@@ -155,20 +155,22 @@ namespace Dynamo.LibraryViewExtensionWebView2
         {
             string layoutSpecsjson = String.Empty;
             string loadedTypesjson = String.Empty;
-
-            dynamoWindow.Dispatcher.BeginInvoke(
-            new Action(() =>
+            if (!dynamoViewModel.Model.IsServiceMode)
             {
-                var ext1 = string.Empty;
-                var ext2 = string.Empty;
-                var reader = new StreamReader(nodeProvider.GetResource(null, out ext1));
-                var loadedTypes = reader.ReadToEnd();
+                dynamoWindow.Dispatcher.BeginInvoke(
+                new Action(() =>
+                {
+                    var ext1 = string.Empty;
+                    var ext2 = string.Empty;
+                    var reader = new StreamReader(nodeProvider.GetResource(null, out ext1));
+                    var loadedTypes = reader.ReadToEnd();
 
-                var reader2 = new StreamReader(layoutProvider.GetResource(null, out ext2));
-                var layoutSpec = reader2.ReadToEnd();
+                    var reader2 = new StreamReader(layoutProvider.GetResource(null, out ext2));
+                    var layoutSpec = reader2.ReadToEnd();
 
-                ExecuteScriptFunctionAsync(browser, "refreshLibViewFromData", loadedTypes, layoutSpec);
-            }));
+                    ExecuteScriptFunctionAsync(browser, "refreshLibViewFromData", loadedTypes, layoutSpec);
+                }));
+            }
         }
 
         #endregion
@@ -461,18 +463,21 @@ namespace Dynamo.LibraryViewExtensionWebView2
             };
             Action<NodeSearchElement> onRemove = e => handler(null);
 
-            //Set up the event callback
-            model.EntryAdded += handler;
-            model.EntryRemoved += onRemove;
-            model.EntryUpdated += handler;
-
-            //Set up the dispose event handler
-            observer.Disposed += () =>
+            if (model != null)
             {
-                model.EntryAdded -= handler;
-                model.EntryRemoved -= onRemove;
-                model.EntryUpdated -= handler;
-            };
+                //Set up the event callback
+                model.EntryAdded += handler;
+                model.EntryRemoved += onRemove;
+                model.EntryUpdated += handler;
+
+                //Set up the dispose event handler
+                observer.Disposed += () =>
+                {
+                    model.EntryAdded -= handler;
+                    model.EntryRemoved -= onRemove;
+                    model.EntryUpdated -= handler;
+                };
+            }
 
             return observer;
         }
