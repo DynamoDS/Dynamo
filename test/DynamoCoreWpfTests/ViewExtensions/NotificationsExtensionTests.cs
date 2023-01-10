@@ -36,7 +36,7 @@ namespace DynamoCoreWpfTests.ViewExtensions
         public void ValidateNotificationsUIEmbededFiles()
         {
             var assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x=>x.ManifestModule.Name.Contains("Notifications.dll"));
-            var htmlFile = "Dynamo.Notifications.node_modules._dynamods.notifications_center.build.index.html";
+            var htmlFile = "Dynamo.Notifications.package.build.index.html";
 
             var mainJstag = "mainJs";     
 
