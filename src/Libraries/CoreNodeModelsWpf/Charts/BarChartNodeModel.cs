@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Autodesk.DesignScript.Runtime;
-using CoreNodeModelsWpf.Charts.ChartHelpers;
+using CoreNodeModels.ChartHelpers;
 using CoreNodeModelsWpf.Charts.Controls;
 using CoreNodeModelsWpf.Charts.Utilities;
 using Dynamo.Graph.Nodes;
@@ -15,6 +15,7 @@ using Dynamo.Controls;
 using Dynamo.Nodes;
 using Dynamo.Wpf;
 using LiveCharts.Wpf;
+using Dynamo.UI;
 
 namespace CoreNodeModelsWpf.Charts
 {
@@ -122,7 +123,7 @@ namespace CoreNodeModelsWpf.Charts
             var colors = inputs[2] as ArrayList;
 
             // Only continue if key/values match in length
-            if (labels.Count != values.Count || labels.Count < 1)
+            if (labels.Count != values.Count && labels.Count != (values[0] as ArrayList).Count)
             {
                 throw new Exception("Label and Values do not properly align in length.");
             }
@@ -132,7 +133,8 @@ namespace CoreNodeModelsWpf.Charts
             Values = new List<List<double>>();
             Colors = new List<SolidColorBrush>();
 
-            if (colors.Count != labels.Count)
+            // If the bar chart contains nested lists
+            if (values[0] as ArrayList != null)
             {
                 for (var i = 0; i < labels.Count; i++)
                 {
@@ -147,8 +149,19 @@ namespace CoreNodeModelsWpf.Charts
                     }
 
                     Values.Add(labelValues);
-                    Color randomColor = Color.FromArgb(255, (byte)rnd.Next(256), (byte)rnd.Next(256), (byte)rnd.Next(256));
-                    SolidColorBrush brush = new SolidColorBrush(randomColor);
+
+                    Color color;
+                    if (colors == null || colors.Count == 0 || colors.Count != labels.Count)
+                    {
+                        color = Utilities.Colors.GetColor();
+                    }
+                    else
+                    {
+                        var dynColor = (DSCore.Color)colors[i];
+                        color = Color.FromArgb(dynColor.Alpha, dynColor.Red, dynColor.Green, dynColor.Blue);
+                    }
+
+                    SolidColorBrush brush = new SolidColorBrush(color);
                     brush.Freeze();
                     Colors.Add(brush);
                 }
@@ -158,20 +171,23 @@ namespace CoreNodeModelsWpf.Charts
                 for (var i = 0; i < labels.Count; i++)
                 {
                     Labels.Add((string)labels[i]);
-
-                    var unpackedValues = values[i] as ArrayList;
+                    
                     var labelValues = new List<double>();
+                    
+                    Values.Add(new List<double>{Convert.ToDouble(values[i])} );
 
-                    for (var j = 0; j < unpackedValues.Count; j++)
+                    Color color;
+                    if (colors == null || colors.Count == 0 || colors.Count != labels.Count)
                     {
-                        labelValues.Add(Convert.ToDouble(unpackedValues[j]));
+                        color = Utilities.Colors.GetColor();
+                    }
+                    else
+                    {
+                        var dynColor = (DSCore.Color)colors[i];
+                        color = Color.FromArgb(dynColor.Alpha, dynColor.Red, dynColor.Green, dynColor.Blue);
                     }
 
-                    Values.Add(labelValues);
-
-                    var dynColor = (DSCore.Color)colors[i];
-                    var convertedColor = Color.FromArgb(dynColor.Alpha, dynColor.Red, dynColor.Green, dynColor.Blue);
-                    SolidColorBrush brush = new SolidColorBrush(convertedColor);
+                    SolidColorBrush brush = new SolidColorBrush(color);
                     brush.Freeze();
                     Colors.Add(brush);
                 }
@@ -193,20 +209,21 @@ namespace CoreNodeModelsWpf.Charts
         [IsVisibleInDynamoLibrary(false)]
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
+
             // WARNING!!!
             // Do not throw an exception during AST creation.
 
             // If inputs are not connected return null
             if (!InPorts[0].IsConnected ||
-                !InPorts[1].IsConnected ||
-                !InPorts[2].IsConnected)
+                !InPorts[1].IsConnected)
             {
                 return new[]
                 {
                     AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()),
                 };
             }
-            
+
+
             AssociativeNode inputNode = AstFactory.BuildFunctionCall(
                 new Func<List<string>, List<List<double>>, List<DSCore.Color>, Dictionary<string, List<double>>>(BarChartFunctions.GetNodeInput),
                 new List<AssociativeNode> { inputAstNodes[0], inputAstNodes[1], inputAstNodes[2] }
