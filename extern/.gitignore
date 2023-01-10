@@ -1,4 +1,3 @@
 # override specific package dlls#
 ###################
 !*.dll
-!7zip/*
