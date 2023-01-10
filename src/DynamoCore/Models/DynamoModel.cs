@@ -709,7 +709,6 @@ namespace Dynamo.Models
                 // Do nothing for now
             }
 
-
             // If user skipped analytics from assembly config, do not try to launch the analytics client
             // or the feature flags client.
             if (!areAnalyticsDisabledFromConfig && !Dynamo.Logging.Analytics.DisableAnalytics && !IsServiceMode)
