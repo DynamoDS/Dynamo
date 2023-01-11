@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Autodesk.DesignScript.Runtime;
-using CoreNodeModels.ChartHelpers;
+using CoreNodes.ChartHelpers;
 using CoreNodeModelsWpf.Charts.Controls;
 using CoreNodeModelsWpf.Charts.Utilities;
 using Dynamo.Graph.Nodes;
@@ -25,13 +25,15 @@ namespace CoreNodeModelsWpf.Charts
     [NodeDescription("Create a new Bar Chart.")]
     [NodeSearchTags("CoreNodeModelsWpf.Charts.BarChart", "Bar Chart", "barchart")]
 
-    [InPortTypes("List<string>", "List<List<double>>", "List<color>")]
+    [InPortTypes("List<string>", "List<var>", "List<color>")]
     [OutPortTypes("Dictionary<Label, Value>")]
     [AlsoKnownAs("CoreNodeModelsWpf.Charts.BarChart")]
     public class BarChartNodeModel : NodeModel
     {
         #region Properties
         private Random rnd = new Random();
+        private bool isNestedList;
+
         /// <summary>
         /// Bar chart labels.
         /// </summary>
@@ -55,7 +57,7 @@ namespace CoreNodeModelsWpf.Charts
         public BarChartNodeModel()
         {
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("labels", "A list of labels for the bar chart categories.")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("values", "A list of lists to supply values for the bars in each category.")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("values", "A list (of lists) to supply values for the bars in each category.")));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("colors", "A list of colors for each bar chart category.")));
 
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("labels:values", "Dictionary containing label:value key-pairs")));
@@ -134,8 +136,10 @@ namespace CoreNodeModelsWpf.Charts
             Colors = new List<SolidColorBrush>();
 
             // If the bar chart contains nested lists
-            if (values[0] as ArrayList != null)
+            if (values[0] is ArrayList)
             {
+                isNestedList = true;
+
                 for (var i = 0; i < labels.Count; i++)
                 {
                     Labels.Add((string)labels[i]);
@@ -168,6 +172,8 @@ namespace CoreNodeModelsWpf.Charts
             }
             else
             {
+                isNestedList = false;
+
                 for (var i = 0; i < labels.Count; i++)
                 {
                     Labels.Add((string)labels[i]);
@@ -223,11 +229,21 @@ namespace CoreNodeModelsWpf.Charts
                 };
             }
 
-
-            AssociativeNode inputNode = AstFactory.BuildFunctionCall(
-                new Func<List<string>, List<List<double>>, List<DSCore.Color>, Dictionary<string, List<double>>>(BarChartFunctions.GetNodeInput),
-                new List<AssociativeNode> { inputAstNodes[0], inputAstNodes[1], inputAstNodes[2] }
-            );
+            AssociativeNode inputNode;
+            if (isNestedList)
+            {
+                inputNode = AstFactory.BuildFunctionCall(
+                    new Func<List<string>, List<List<double>>, List<DSCore.Color>, Dictionary<string, List<double>>>(BarChartFunctions.GetNodeInput),
+                    new List<AssociativeNode> { inputAstNodes[0], inputAstNodes[1], inputAstNodes[2] }
+                );
+            }
+            else
+            {
+                inputNode = AstFactory.BuildFunctionCall(
+                    new Func<List<string>, List<double>, List<DSCore.Color>, Dictionary<string, double>>(BarChartFunctions.GetNodeInput),
+                    new List<AssociativeNode> { inputAstNodes[0], inputAstNodes[1], inputAstNodes[2] }
+                );
+            }
 
             return new[]
             {

@@ -5,11 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Autodesk.DesignScript.Runtime;
 
-namespace CoreNodeModels.ChartHelpers
+namespace CoreNodes.ChartHelpers
 {
-    public class XYLineChartFunctions
+    public class ScatterPlotFunctions
     {
-        private XYLineChartFunctions() { }
+        private ScatterPlotFunctions() { }
 
         [IsVisibleInDynamoLibrary(false)]
         public static Dictionary<string, Dictionary<string, List<double>>> GetNodeInput(List<string> titles, List<List<double>> xValues, List<List<double>> yValues, List<DSCore.Color> colors)

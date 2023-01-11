@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Autodesk.DesignScript.Runtime;
 
-namespace CoreNodeModels.ChartHelpers
+namespace CoreNodes.ChartHelpers
 {
     public class HeatSeriesFunctions
     {
