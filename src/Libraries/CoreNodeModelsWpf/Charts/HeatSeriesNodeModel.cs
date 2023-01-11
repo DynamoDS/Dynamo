@@ -8,7 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Autodesk.DesignScript.Runtime;
-using CoreNodeModelsWpf.Charts.ChartHelpers;
+using CoreNodes.ChartHelpers;
 using CoreNodeModelsWpf.Charts.Controls;
 using CoreNodeModelsWpf.Charts.Utilities;
 using Dynamo.Controls;
@@ -170,11 +170,14 @@ namespace CoreNodeModelsWpf.Charts
             }
 
             // If colors is empty add 1 random color
-            if (colors == null || colors.Count == 0)
+            if (colors == null || colors.Count == 0) 
             {
-                Color randomColor = Color.FromArgb(255, (byte)rnd.Next(256), (byte)rnd.Next(256), (byte)rnd.Next(256));
-                Colors.Add(randomColor);
+                Color color = Utilities.Colors.GetColor();
+                Colors.Add(color);
+
+                Utilities.Colors.ResetColors();
             }
+
 
             // If provided with 1 color blend white to color
             // Else create color range from provided color
@@ -211,8 +214,7 @@ namespace CoreNodeModelsWpf.Charts
             // If inputs are not connected return null
             if (!InPorts[0].IsConnected ||
                 !InPorts[1].IsConnected ||
-                !InPorts[2].IsConnected ||
-                !InPorts[3].IsConnected)
+                !InPorts[2].IsConnected)
             {
                 return new[]
                 {

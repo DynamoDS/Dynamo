@@ -30,5 +30,12 @@ namespace CoreNodeModelsWpf.Charts.Utilities
             return _colors[index];
         }
 
+        /// <summary>
+        /// Resets the color sequence for consistency
+        /// </summary>
+        public static void ResetColors()
+        {
+            current = 0;
+        }
     }
 }

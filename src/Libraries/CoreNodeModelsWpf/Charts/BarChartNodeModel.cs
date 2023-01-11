@@ -199,6 +199,8 @@ namespace CoreNodeModelsWpf.Charts
                 }
             }
 
+            Utilities.Colors.ResetColors();
+
             // Notify UI the data has been modified
             RaisePropertyChanged("DataUpdated");
         }

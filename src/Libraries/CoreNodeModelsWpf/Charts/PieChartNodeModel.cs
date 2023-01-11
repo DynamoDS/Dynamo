@@ -8,7 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Autodesk.DesignScript.Runtime;
-using CoreNodeModelsWpf.Charts.ChartHelpers;
+using CoreNodes.ChartHelpers;
 using CoreNodeModelsWpf.Charts.Controls;
 using CoreNodeModelsWpf.Charts.Utilities;
 using Dynamo.Controls;
@@ -133,17 +133,19 @@ namespace CoreNodeModelsWpf.Charts
             Values = new List<double>();
             Colors = new List<SolidColorBrush>();
 
-            if (colors.Count != keys.Count)
+            if (colors == null || colors.Count == 0 || colors.Count != keys.Count)
             {
                 for (var i = 0; i < keys.Count; i++)
                 {
                     Labels.Add((string)keys[i]);
                     Values.Add(System.Convert.ToDouble(values[i]));
-                    Color randomColor = Color.FromArgb(255, (byte)rnd.Next(256), (byte)rnd.Next(256), (byte)rnd.Next(256));
-                    SolidColorBrush brush = new SolidColorBrush(randomColor);
+                    Color color = Utilities.Colors.GetColor();
+                    SolidColorBrush brush = new SolidColorBrush(color);
                     brush.Freeze();
                     Colors.Add(brush);
                 }
+
+                Utilities.Colors.ResetColors();
             }
             else
             {
@@ -180,8 +182,7 @@ namespace CoreNodeModelsWpf.Charts
 
             // If inputs are not connected return null
             if (!InPorts[0].IsConnected ||
-                !InPorts[1].IsConnected ||
-                !InPorts[2].IsConnected)
+                !InPorts[1].IsConnected)
             {
                 return new[]
                 {
