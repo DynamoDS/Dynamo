@@ -67,21 +67,7 @@ namespace Dynamo.DocumentationBrowser
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"<h1>{e.Type}</h1>");
             sb.AppendLine($"<p><i>{e.MinimumQualifiedName}</i></p>");
-            if (!string.IsNullOrEmpty(breadCrumbs))
-            {
-                sb.AppendLine("<p>");
-                var breadCrumbsStringArray = breadCrumbs.Replace(" ", string.Empty).Split('/');
-                for (var i = 0; i < breadCrumbsStringArray.Length; i++)
-                {
-                    sb.AppendLine($"<a class=\"breadcrumb\">{breadCrumbsStringArray[i]}</a>");
-                    if (i == breadCrumbsStringArray.Length - 1)
-                    {
-                        break;
-                    }
-                    sb.AppendLine(" / ");
-                }
-                sb.AppendLine("</p>");
-            }
+            if(!string.IsNullOrEmpty(breadCrumbs)) sb.AppendLine($"<p>{breadCrumbs}</p>");
 
             return sb.ToString();
         }
@@ -135,11 +121,11 @@ namespace Dynamo.DocumentationBrowser
             sb.AppendLine(imageRow);
             sb.AppendLine("<div class=\"btn--container\">");
             sb.AppendLine(
-                $"<button type=\"button\" id=\"zoomfit\" class=\"button fitIcon\"  title=\"{Resources.ImageFitToolTip}\" ></button>");
-            sb.AppendLine(
                 $"<button type=\"button\" id=\"zoomin\" class=\"button plusIcon\" title=\"{Resources.ImageZoomInToolTip}\" ></button>\r\n");
             sb.AppendLine(
                 $"<button type=\"button\" id=\"zoomout\" class=\"button minusIcon\" title=\"{Resources.ImageZoomOutToolTip}\" ></button>\r\n");
+            sb.AppendLine(
+                $"<button type=\"button\" id=\"zoomfit\" class=\"button fitIcon\"  title=\"{Resources.ImageFitToolTip}\" ></button>");
             sb.AppendLine(@"</div>");
             sb.AppendLine("<div class=\"btn--insert--container\">");
 
@@ -217,11 +203,9 @@ namespace Dynamo.DocumentationBrowser
         private static string CreateNodeInfo(OpenNodeAnnotationEventArgs e)
         {
             StringBuilder sb = new StringBuilder();
-            if (!e.Type.Equals(e.OriginalName))
-            {
-                sb.AppendLine($"<h2>{Resources.NodeDocumentationOriginalNodeName}</h2>");
-                sb.AppendLine($"<p>{e.OriginalName}</p>");
-            }
+            
+            sb.AppendLine($"<h2>{Resources.NodeDocumentationNodeType}</h2>");
+            sb.AppendLine($"<p>{e.Type}</p>");
             sb.AppendLine($"<h2>{Resources.NodeDocumentationDescription}</h2>");
             sb.AppendLine($"<p>{Regex.Replace(e.Description, @"\r\n?|\n", "<br>")}</p>");
             

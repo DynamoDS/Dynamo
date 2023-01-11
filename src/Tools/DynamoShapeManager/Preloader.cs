@@ -52,9 +52,7 @@ namespace DynamoShapeManager
         /// typical setup this would be the same directory that contains Dynamo 
         /// core modules. This must represent a valid directory.
         /// </param>
-#if NET6_0_OR_GREATER
-        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
-#endif
+        /// 
         public Preloader(string rootFolder)
             : this(rootFolder, new[]
             {
@@ -101,9 +99,7 @@ namespace DynamoShapeManager
         /// </param>
         /// <param name="versions">A list of version numbers to check for in order 
         /// of preference. This argument cannot be null or empty.</param>
-#if NET6_0_OR_GREATER
-        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
-#endif
+        /// 
         [Obsolete("please use constructor Preloader constructor with signature Preloader(string,IEnumerable<Version>)")]
         public Preloader(string rootFolder, IEnumerable<LibraryVersion> versions) :
             this(rootFolder, versions.Select(libVersion => MapLibGVersionEnumToFullVersion(libVersion)))
@@ -122,9 +118,7 @@ namespace DynamoShapeManager
         /// </param>
         /// <param name="versions">A list of version numbers to check for in order 
         /// of preference. This argument cannot be null or empty.</param>
-#if NET6_0_OR_GREATER
-        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
-#endif
+        /// 
         public Preloader(string rootFolder, IEnumerable<Version> versions)
         {
             if (string.IsNullOrEmpty(rootFolder))
@@ -193,9 +187,6 @@ namespace DynamoShapeManager
         /// <param name="version">The version of shape manager.</param>
         /// <returns></returns>
         [Obsolete("please use constructor Preloader constructor with signature Preloader(string,IEnumerable<Version>)")]
-#if NET6_0_OR_GREATER
-        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
-#endif
         public Preloader(string rootFolder, LibraryVersion version)
             : this(rootFolder, new[] { version }) { }
 

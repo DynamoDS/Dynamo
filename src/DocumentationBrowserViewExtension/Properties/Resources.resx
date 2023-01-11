@@ -148,7 +148,7 @@
     <value>Node Information</value>
     <comment>Header in Node Info table</comment>
   </data>
-  <data name="NodeDocumentationOriginalNodeName" xml:space="preserve">
+  <data name="NodeDocumentationNodeType" xml:space="preserve">
     <value>Node Type</value>
     <comment>Header in Node Info table</comment>
   </data>
@@ -209,11 +209,5 @@
   </data>
   <data name="NodeDocumentationInputsAndOutputs" xml:space="preserve">
     <value>Inputs and Outputs</value>
-  </data>
-  <data name="FileNotFoundFailureMessage" xml:space="preserve">
-    <value>File not found</value>
-  </data>
-  <data name="ToastFileNotFoundLocationNotificationText" xml:space="preserve">
-    <value>Example file from {0} could not be found</value>
   </data>
 </root>

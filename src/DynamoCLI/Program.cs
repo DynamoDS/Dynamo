@@ -1,7 +1,5 @@
 using System;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using Dynamo.Applications;
 using Dynamo.Models;
@@ -32,6 +30,7 @@ namespace DynamoCLI
                     var thread = new Thread(() => RunKeepAlive(cmdLineArgs));
 
                     thread.Name = "DynamoModelKeepAlive";
+                    thread.SetApartmentState(ApartmentState.STA);
                     thread.Start();
 
                     if (!useConsole)
@@ -86,6 +85,8 @@ namespace DynamoCLI
                     Console.WriteLine("DynamoCLI is running in keepalive mode");
                     Console.WriteLine("Press Enter to shutdown...");
                 }
+
+                System.Windows.Threading.Dispatcher.Run();
             }
             catch
             {

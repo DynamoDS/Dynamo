@@ -61,9 +61,6 @@ namespace Dynamo.ViewModels
         private bool showStartPage = false;
         private PreferencesViewModel preferencesViewModel;
 
-        // Can the user run the graph
-        private bool CanRunGraph => HomeSpace.RunSettings.RunEnabled && !HomeSpace.GraphRunInProgress;
-
         private ObservableCollection<DefaultWatch3DViewModel> watch3DViewModels = new ObservableCollection<DefaultWatch3DViewModel>();
 
         /// <summary>
@@ -1872,7 +1869,10 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private bool CanShowOpenDialogAndOpenResultCommand(object parameter) => CanRunGraph;
+        private bool CanShowOpenDialogAndOpenResultCommand(object parameter)
+        {
+            return HomeSpace.RunSettings.RunEnabled;
+        }
 
 
         /// <summary>
@@ -1934,7 +1934,7 @@ namespace Dynamo.ViewModels
 
         private bool CanShowInsertDialogAndInsertResultCommand(object parameter)
         {
-            return CanRunGraph && !this.showStartPage;
+            return HomeSpace.RunSettings.RunEnabled && !this.showStartPage;
         }
 
         private void OpenRecent(object path)
@@ -1950,7 +1950,7 @@ namespace Dynamo.ViewModels
 
         private bool CanOpenRecent(object path)
         {
-            return CanRunGraph;
+            return HomeSpace.RunSettings.RunEnabled;
         }
 
         /// <summary>
@@ -2522,7 +2522,10 @@ namespace Dynamo.ViewModels
             }
         }
 
-        internal bool CanMakeNewHomeWorkspace(object parameter) => CanRunGraph;
+        internal bool CanMakeNewHomeWorkspace(object parameter)
+        {
+            return HomeSpace.RunSettings.RunEnabled;
+        }
 
         private void CloseHomeWorkspace(object parameter)
         {
@@ -2537,7 +2540,7 @@ namespace Dynamo.ViewModels
 
         private bool CanCloseHomeWorkspace(object parameter)
         {
-            return CanRunGraph || RunSettings.ForceBlockRun;
+            return HomeSpace.RunSettings.RunEnabled || RunSettings.ForceBlockRun;
         }
 
         /// <summary>
@@ -2960,11 +2963,6 @@ namespace Dynamo.ViewModels
                 return;
             }
 
-            if (parameter is bool)
-            {
-                CurrentSpaceViewModel.FitViewInternal((bool)parameter);
-                return;
-            }
             CurrentSpaceViewModel.FitViewInternal();
         }
 

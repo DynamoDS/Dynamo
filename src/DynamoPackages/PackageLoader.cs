@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -692,14 +692,15 @@ namespace Dynamo.PackageManager
         /// </summary>
         /// <param name="packageDirectoryPath">path to package location</param>
         /// <param name="discoveredPkg">package object to check</param>
-        private void CheckPackageNodeLibraryCertificates(string packageDirectoryPath, Package discoveredPkg)
+        private static void CheckPackageNodeLibraryCertificates(string packageDirectoryPath, Package discoveredPkg)
         {
             var dllfiles = new System.IO.DirectoryInfo(discoveredPkg.BinaryDirectory).EnumerateFiles("*.dll");
             if (discoveredPkg.Header.node_libraries.Count() == 0 && dllfiles.Count() != 0)
             {
-                Log(String.Format(
-                    String.Format(Resources.InvalidPackageNoNodeLibrariesDefinedInPackageJson,
-                    discoveredPkg.Name, discoveredPkg.RootDirectory)));
+                throw new LibraryLoadFailedException(packageDirectoryPath,
+                    String.Format(
+                        Resources.InvalidPackageNoNodeLibrariesDefinedInPackageJson,
+                        discoveredPkg.Name, discoveredPkg.RootDirectory));
             }
 
             foreach (var nodeLibraryAssembly in discoveredPkg.Header.node_libraries)
@@ -723,10 +724,7 @@ namespace Dynamo.PackageManager
                 var filepath = Path.Combine(discoveredPkg.BinaryDirectory, filename);
                 try
                 {
-                    if (OSHelper.IsWindows())
-                    {
-                        CertificateVerification.CheckAssemblyForValidCertificate(filepath);
-                    }
+                    CertificateVerification.CheckAssemblyForValidCertificate(filepath);
                 }
                 catch (Exception e)
                 {

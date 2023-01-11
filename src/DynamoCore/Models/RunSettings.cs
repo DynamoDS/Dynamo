@@ -68,10 +68,9 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// A flag which indicates whether running a graph is possible. If set to true,
-        /// Dynamo will allow graphs to be run (except if the corresponding dyn file is not trusted)
-        /// If set to false, Dynamo will not allow graphs to be run.
-        /// The Dynamo UI will reflect the RunEnabled values by enabling/disabling certain UI features (ex. if RunEnabled is false, the Run button will be disabled).
+        /// A flag which indicates whether running is possible. This 
+        /// flag is set to false during execution and is set to true
+        /// when execution is completed.
         /// </summary>
         public bool RunEnabled
         {

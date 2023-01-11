@@ -1364,15 +1364,7 @@ namespace Dynamo.ViewModels
 
         private bool _fitViewActualZoomToggle = false;
 
-        /// <summary>
-        ///     Zoom around current selection
-        ///     _fitViewActualZoomToggle is used internally to toggle
-        /// between the default 1.0 zoom level and the intended zoom around selection
-        ///     The optional toggle boolean is introduced to avoid this behavior and only zoom around the selection
-        /// no matter how many times the operation is performed
-        /// </summary>
-        /// <param name="toggle"></param>
-        internal void FitViewInternal(bool toggle = true)
+        internal void FitViewInternal()
         {
             // Get the offset and focus width & height (zoom if 100%)
             double minX, maxX, minY, maxY;
@@ -1417,19 +1409,10 @@ namespace Dynamo.ViewModels
             double focusWidth = maxX - minX;
             double focusHeight = maxY - minY;
 
-            ZoomEventArgs zoomArgs;
-
-            if (toggle)
-            {
-                _fitViewActualZoomToggle = !_fitViewActualZoomToggle;
-                zoomArgs = _fitViewActualZoomToggle && toggle
-                    ? new ZoomEventArgs(offset, focusWidth, focusHeight)
-                    : new ZoomEventArgs(offset, focusWidth, focusHeight, 1.0);
-            }
-            else
-            {
-                zoomArgs = new ZoomEventArgs(offset, focusWidth, focusHeight);
-            }
+            _fitViewActualZoomToggle = !_fitViewActualZoomToggle;
+            ZoomEventArgs zoomArgs = _fitViewActualZoomToggle
+                ? new ZoomEventArgs(offset, focusWidth, focusHeight)
+                : new ZoomEventArgs(offset, focusWidth, focusHeight, 1.0);
 
             OnRequestZoomToFitView(this, zoomArgs);
         }

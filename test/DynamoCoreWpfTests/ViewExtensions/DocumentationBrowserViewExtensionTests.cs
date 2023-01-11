@@ -29,7 +29,7 @@ namespace DynamoCoreWpfTests
         private const string excelDocsFileHtmlHeader = "<h2>Excel not installed </h2>";
         private const string fileMissingHtmlHeader = "<h3>Error 404</h3>";
         private const string nodeDocumentationInfoHeader = "<strong>Node Information</strong>";
-        private const string nodeDocumentationInfoOriginalNodeName = "<h2>Node Type</h2>";
+        private const string nodeDocumentationInfoNodeType = "<h2>Node Type</h2>";
         private const string nodeDocumentationInfoNodeDescription = "<h2>Description</h2>";
         private const string nodeDocumentationInfoNodeInputsAndOutputs = "<strong>Inputs and Outputs</strong>";
         private const string nodeDocumentationInfoNodeInputs = "<h2>Inputs</h2>";
@@ -459,8 +459,7 @@ namespace DynamoCoreWpfTests
             RaiseLoadedEvent(this.View);
             var docBrowserviewExtension = this.View.viewExtensionManager.ViewExtensions.OfType<DocumentationBrowserViewExtension>().FirstOrDefault();
             var nodeName = "+";
-            var nodeRename = "New node name";
-            var expectedNodeDocumentationTitle = $"<h1>{nodeRename}</h1>";
+            var expectedNodeDocumentationTitle = $"<h1>{nodeName}</h1>";
             var expectedNodeDocumentationNamespace = $"<p><i>{nodeName}</i></p>";
        
             // Act
@@ -470,7 +469,6 @@ namespace DynamoCoreWpfTests
                 );
 
             var node = this.ViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault();
-            node.Name = nodeRename; // Forces original name header to appear 
             var nodeAnnotationEventArgs = new OpenNodeAnnotationEventArgs(node, this.ViewModel);
 
             var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
@@ -485,7 +483,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(htmlContent.Contains(expectedNodeDocumentationNamespace));
             Assert.IsTrue(htmlContent.Contains(nodeDocumentationInfoHeader));
             Assert.IsTrue(htmlContent.Contains(nodeDocumentationInfoNodeDescription));
-            Assert.IsTrue(htmlContent.Contains(nodeDocumentationInfoOriginalNodeName));
+            Assert.IsTrue(htmlContent.Contains(nodeDocumentationInfoNodeType));
             Assert.IsTrue(htmlContent.Contains(nodeDocumentationInfoNodeInputsAndOutputs));
             Assert.IsTrue(htmlContent.Contains(nodeDocumentationInfoNodeInputs));
             Assert.IsTrue(htmlContent.Contains(nodeDocumentationInfoNodeOutputs));
@@ -502,8 +500,7 @@ namespace DynamoCoreWpfTests
 
             var docBrowserviewExtension = this.View.viewExtensionManager.ViewExtensions.OfType<DocumentationBrowserViewExtension>().FirstOrDefault();
             var nodeName = "Package.Hello";
-            var nodeRename = "New node name";
-            var expectedNodeDocumentationTitle = $"<h1>{nodeRename}</h1>";
+            var expectedNodeDocumentationTitle = $"<h1>{nodeName}</h1>";
             var expectedNodeDocumentationNamespace = $"<p><i>Package.{nodeName}</i></p>";
             var expectedAddtionalNodeDocumentationHeader = @"<h1 id=""hello-dynamo"">Hello Dynamo!</h1>";
             var expectedAddtionalNodeDocumentationImage = String.Format(@"<img id='drag--img' class='resizable--img'  src=""http://appassets/{0}"" alt=""Dynamo Icon image"" />", Path.GetFileName(localImagePath));
@@ -517,7 +514,6 @@ namespace DynamoCoreWpfTests
                  );
 
             var node = this.ViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault();
-            node.Name = nodeRename; // Forces original name header to appear 
             var nodeAnnotationEventArgs = new OpenNodeAnnotationEventArgs(node, this.ViewModel);
 
             var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
@@ -533,7 +529,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(htmlContent.Contains(expectedNodeDocumentationNamespace));
             Assert.IsTrue(htmlContent.Contains(nodeDocumentationInfoHeader));
             Assert.IsTrue(htmlContent.Contains(nodeDocumentationInfoNodeDescription));
-            Assert.IsTrue(htmlContent.Contains(nodeDocumentationInfoOriginalNodeName));
+            Assert.IsTrue(htmlContent.Contains(nodeDocumentationInfoNodeType));
             Assert.IsTrue(htmlContent.Contains(nodeDocumentationInfoNodeInputs));
             Assert.IsTrue(htmlContent.Contains(nodeDocumentationInfoNodeOutputs));
             Assert.IsTrue(htmlContent.Contains(expectedAddtionalNodeDocumentationHeader));

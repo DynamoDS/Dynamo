@@ -34,13 +34,9 @@ namespace Dynamo.UI.Views
         /// </summary>
         public long totalLoadingTime;
 
-        /// <summary>
-        /// Request to launch Dynamo main window.
-        /// </summary>
-        public Action<bool> RequestLaunchDynamo;
-
+        internal Action<bool> RequestLaunchDynamo;
         internal Action<string> RequestImportSettings;
-        internal Func<bool> RequestSignIn;
+        internal Func<bool> RequestSignIn; 
         internal Func<bool> RequestSignOut;
 
         /// <summary>

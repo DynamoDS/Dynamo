@@ -74,6 +74,15 @@ namespace Dynamo.Tests
             Assert.True(loginCalled);
         }
 
+        [Test]
+        public void CanToggleLoginState()
+        {
+            var authProviderMock = new Mock<IAuthProvider>();
+            var authManager = new AuthenticationManager(authProviderMock.Object);
+
+            Assert.IsTrue(authManager.CanToggleLoginState());
+        }
+
         #endregion
 
         #region Properties
