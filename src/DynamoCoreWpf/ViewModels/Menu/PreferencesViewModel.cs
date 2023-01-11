@@ -1098,8 +1098,11 @@ namespace Dynamo.ViewModels
             this.preferenceSettings = dynamoViewModel.PreferenceSettings;
             this.pythonScriptEditorTextOptions = dynamoViewModel.PythonScriptEditorTextOptions;
             this.dynamoViewModel = dynamoViewModel;
-            this.installedPackagesViewModel = new InstalledPackagesViewModel(dynamoViewModel, 
-                dynamoViewModel.PackageManagerClientViewModel.PackageManagerExtension.PackageLoader);
+
+            if (dynamoViewModel.PackageManagerClientViewModel != null)
+            {
+                installedPackagesViewModel = new InstalledPackagesViewModel(dynamoViewModel, dynamoViewModel.PackageManagerClientViewModel.PackageManagerExtension.PackageLoader);
+            }
 
             // Scan for engines
             AddPythonEnginesOptions();

@@ -687,7 +687,12 @@ namespace Dynamo.ViewModels
             UsageReportingManager.Instance.InitializeCore(this);
             this.WatchHandler = startConfiguration.WatchHandler;
             var pmExtension = model.GetPackageManagerExtension();
-            this.PackageManagerClientViewModel = new PackageManagerClientViewModel(this, pmExtension.PackageManagerClient);
+
+            if (pmExtension != null)
+            {
+                this.PackageManagerClientViewModel = new PackageManagerClientViewModel(this, pmExtension.PackageManagerClient);
+            }
+
             this.SearchViewModel = null;
 
             // Start page should not show up during test mode.
@@ -2129,7 +2134,7 @@ namespace Dynamo.ViewModels
 
         internal bool CanShowPackageManagerSearch(object parameters)
         {
-            return true;
+            return !model.IsServiceMode;
         }
 
         /// <summary>
