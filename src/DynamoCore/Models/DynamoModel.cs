@@ -209,6 +209,11 @@ namespace Dynamo.Models
         public HostAnalyticsInfo HostAnalyticsInfo { get; set; }
 
         /// <summary>
+        /// Boolean indicating if Dynamo is running in service model, mostly leveraged by CLI or WPF CLI
+        /// </summary>
+        public bool IsServiceMode { get; set; }
+
+        /// <summary>
         /// UpdateManager to handle automatic upgrade to higher version.
         /// </summary>
         public IUpdateManager UpdateManager { get; private set; }
@@ -638,14 +643,14 @@ namespace Dynamo.Models
 
             Context = config.Context;
             // This condition is TBD
-            var isServiceMode = config.Context.Equals("Service");
+            IsServiceMode = config.Context.Equals("Service");
             IsTestMode = config.StartInTestMode;
             IsHeadless = config.IsHeadless;
 
             DebugSettings = new DebugSettings();
             Logger = new DynamoLogger(DebugSettings, pathManager.LogDirectory, IsTestMode, CLIMode);
 
-            if (!isServiceMode)
+            if (!IsServiceMode)
             {
                 foreach (var exception in exceptions)
                 {
@@ -704,10 +709,9 @@ namespace Dynamo.Models
                 // Do nothing for now
             }
 
-
             // If user skipped analytics from assembly config, do not try to launch the analytics client
             // or the feature flags client.
-            if (!areAnalyticsDisabledFromConfig && !Dynamo.Logging.Analytics.DisableAnalytics && !isServiceMode)
+            if (!areAnalyticsDisabledFromConfig && !Dynamo.Logging.Analytics.DisableAnalytics && !IsServiceMode)
             {
                 // Start the Analytics service only when a session is not present.
                 // In an integrator host, as splash screen can be closed without shutting down the ViewModel, the analytics service is not stopped.
@@ -753,7 +757,7 @@ namespace Dynamo.Models
             }
 
             // TBD: Do we need settings migrator for service mode? If we config the docker correctly, this could be skipped I think
-            if (!IsTestMode && PreferenceSettings.IsFirstRun && !isServiceMode)
+            if (!IsTestMode && PreferenceSettings.IsFirstRun && !IsServiceMode)
             {
                 DynamoMigratorBase migrator = null;
 
@@ -780,7 +784,7 @@ namespace Dynamo.Models
                 }
             }
 
-            if (PreferenceSettings.IsFirstRun && !IsTestMode && !isServiceMode)
+            if (PreferenceSettings.IsFirstRun && !IsTestMode && !IsServiceMode)
             {
                 PreferenceSettings.AddDefaultTrustedLocations();
             }
@@ -815,7 +819,7 @@ namespace Dynamo.Models
             // 4) Set from OOTB hard-coded default template
 
             // If a custom python template path doesn't already exists in the DynamoSettings.xml
-            if (string.IsNullOrEmpty(PreferenceSettings.PythonTemplateFilePath) || !File.Exists(PreferenceSettings.PythonTemplateFilePath) && !isServiceMode)
+            if (string.IsNullOrEmpty(PreferenceSettings.PythonTemplateFilePath) || !File.Exists(PreferenceSettings.PythonTemplateFilePath) && !IsServiceMode)
             {
                 // To supply a custom python template host integrators should supply a 'DefaultStartConfiguration' config file
                 // or create a new struct that inherits from 'DefaultStartConfiguration' making sure to set the 'PythonTemplatePath'
@@ -855,7 +859,7 @@ namespace Dynamo.Models
             pathManager.Preferences = PreferenceSettings;
             PreferenceSettings.RequestUserDataFolder += pathManager.GetUserDataFolder;
 
-            //if (!isServiceMode)
+            if (!IsServiceMode)
             {
                 SearchModel = new NodeSearchModel(Logger);
                 SearchModel.ItemProduced +=

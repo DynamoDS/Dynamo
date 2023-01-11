@@ -27,7 +27,10 @@ namespace DynamoWPFCLI
                 {
                     Dynamo.Logging.Analytics.DisableAnalytics = true;
                 }
-
+                if(cmdLineArgs.ServiceMode)
+                {
+                    Console.WriteLine("Starting DynamoWPFCLI in service mode");
+                }
                 if (cmdLineArgs.KeepAlive)
                 {
                     var thread = new Thread(() => RunKeepAlive(cmdLineArgs))

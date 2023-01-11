@@ -851,7 +851,7 @@ namespace Dynamo.ViewModels
             ZIndex = ++StaticZIndex;
             ++NoteViewModel.StaticZIndex;
 
-            if (workspaceViewModel.InCanvasSearchViewModel.TryGetNodeIcon(this, out ImageSource imgSource))
+            if (workspaceViewModel.InCanvasSearchViewModel != null && workspaceViewModel.InCanvasSearchViewModel.TryGetNodeIcon(this, out ImageSource imgSource))
             {
                 ImageSource = imgSource;
             }
