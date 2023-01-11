@@ -60,7 +60,8 @@ namespace CoreNodeModelsWpf.Charts
                             Title = model.Labels[i],
                             Values = new ChartValues<double>(model.Values[i]),
                             Stroke = model.Colors[i],
-                            Fill = Brushes.Transparent
+                            StrokeThickness = 2.0,
+                            //Fill = Brushes.Transparent
                         };
                     }
 
@@ -87,7 +88,8 @@ namespace CoreNodeModelsWpf.Charts
                             Title = model.Labels[i],
                             Values = new ChartValues<double>(model.Values[i]),
                             Stroke = model.Colors[i],
-                            Fill = Brushes.Transparent,
+                            StrokeThickness = 2.0,
+                            //Fill = Brushes.Transparent,
                             //PointGeometrySize = 0
                         };
                     }

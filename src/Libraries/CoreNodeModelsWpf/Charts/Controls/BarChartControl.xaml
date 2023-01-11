@@ -37,7 +37,7 @@
         </lvc:CartesianChart>
         <Thumb Name ="resizeThumb"
                Grid.Row="1"
-               Width="10" Height="10" 
+               Style="{StaticResource ChartsThumb}"
                HorizontalAlignment="Right" 
                VerticalAlignment="Bottom" 
                DragDelta="ThumbResizeThumbOnDragDeltaHandler"/>

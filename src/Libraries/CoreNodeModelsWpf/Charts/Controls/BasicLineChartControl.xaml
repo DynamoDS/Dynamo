@@ -22,15 +22,23 @@
 
         <lvc:CartesianChart Style="{StaticResource CartesianLiveChart}" x:Name="BasicLineChart" LegendLocation="Bottom" >
             <lvc:CartesianChart.AxisY>
-                <lvc:Axis Title="Values" ></lvc:Axis>
+                <lvc:Axis Style="{StaticResource LiveAxis}" Title="Values">
+                    <lvc:Axis.Separator >
+                        <lvc:Separator Style="{StaticResource LiveSeparator}"></lvc:Separator>
+                    </lvc:Axis.Separator>
+                </lvc:Axis>
             </lvc:CartesianChart.AxisY>
             <lvc:CartesianChart.AxisX>
-                <lvc:Axis Title="Index" ></lvc:Axis>
+                <lvc:Axis Style="{StaticResource LiveAxis}" Title="Index" >
+                    <lvc:Axis.Separator >
+                        <lvc:Separator Style="{StaticResource LiveSeparator}" IsEnabled="True" Step="3"></lvc:Separator>
+                    </lvc:Axis.Separator>
+                </lvc:Axis>
             </lvc:CartesianChart.AxisX>
         </lvc:CartesianChart>
 
-        <Thumb Name ="resizeThumb" 
-               Width="10" Height="10" 
+        <Thumb Name ="resizeThumb"
+               Style="{StaticResource ChartsThumb}"
                HorizontalAlignment="Right" 
                VerticalAlignment="Bottom" 
                DragDelta="ThumbResizeThumbOnDragDeltaHandler"

@@ -78,7 +78,6 @@ namespace CoreNodeModelsWpf.Charts.Controls
                 {
                     Values = chartValues,
                     DrawsHeatRange = false,
-                    DataLabels = true
                 });
             }
             // Else load input data
@@ -106,7 +105,7 @@ namespace CoreNodeModelsWpf.Charts.Controls
                         Values = chartValues,
                         DrawsHeatRange = false,
                         GradientStopCollection = colors,
-                        Fill = hoverIconColor,
+                        //Fill = hoverIconColor,
                         PointGeometry = DefaultGeometries.Square
                         //DataLabels = true
                     });
@@ -144,7 +143,7 @@ namespace CoreNodeModelsWpf.Charts.Controls
                         Values = chartValues,
                         DrawsHeatRange = false,
                         GradientStopCollection = colors,
-                        Fill = hoverIconColor,
+                        //Fill = hoverIconColor,
                         PointGeometry = DefaultGeometries.Square
                         //DataLabels = true
                     });

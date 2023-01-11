@@ -87,7 +87,7 @@
     </Style>
 
     <Style TargetType="lvc:DefaultLegend">
-        <Setter Property="Foreground" Value="{StaticResource LightGreyBrush}"/>
+        <Setter Property="Foreground" Value="#DCDCDC"/>
     </Style>
 
     <Style TargetType="lvc:Series" x:Key="SeriesStyle">
@@ -132,5 +132,11 @@
                           BasedOn="{StaticResource SeriesStyle}"/>
     <Style TargetType="lvc:VerticalStackedAreaSeries" 
                           BasedOn="{StaticResource SeriesStyle}"/>
+
+    <Style TargetType="Thumb" x:Key="ChartsThumb">
+        <Setter Property="Width" Value="10"/>
+        <Setter Property="Height" Value="10"/>
+        <Setter Property="Margin" Value="0,0,-84,-21"/>
+    </Style>
 
 </ResourceDictionary>

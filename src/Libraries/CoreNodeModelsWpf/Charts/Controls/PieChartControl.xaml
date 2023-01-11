@@ -20,8 +20,8 @@
     </UserControl.Resources>
     <Grid>
         <lvc:PieChart Style="{StaticResource PieLiveChart}"  x:Name="PieChart" LegendLocation="Bottom"/>
-        <Thumb Name ="resizeThumb" 
-               Width="10" Height="10" 
+        <Thumb Name ="resizeThumb"
+               Style="{StaticResource ChartsThumb}"
                HorizontalAlignment="Right" 
                VerticalAlignment="Bottom" 
                DragDelta="ThumbResizeThumbOnDragDeltaHandler"/>

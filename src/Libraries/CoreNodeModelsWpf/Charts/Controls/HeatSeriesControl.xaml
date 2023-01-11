@@ -24,7 +24,7 @@
             <lvc:CartesianChart.AxisX >
                 <lvc:Axis Name="XAxis" LabelsRotation="-15">
                     <lvc:Axis.Separator>
-                        <lvc:Separator Step="1"></lvc:Separator>
+                        <lvc:Separator Step="1" IsEnabled="False"></lvc:Separator>
                     </lvc:Axis.Separator>
                 </lvc:Axis>
             </lvc:CartesianChart.AxisX>
@@ -33,8 +33,8 @@
             </lvc:CartesianChart.AxisY>
         </lvc:CartesianChart>
 
-        <Thumb Name ="resizeThumb" 
-               Width="10" Height="10" 
+        <Thumb Name ="resizeThumb"
+               Style="{StaticResource ChartsThumb}"
                HorizontalAlignment="Right" 
                VerticalAlignment="Bottom" 
                DragDelta="ThumbResizeThumbOnDragDeltaHandler"

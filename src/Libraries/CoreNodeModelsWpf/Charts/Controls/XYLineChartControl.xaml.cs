@@ -102,7 +102,8 @@ namespace CoreNodeModelsWpf.Charts.Controls
                             Title = model.Labels[i],
                             Values = points,
                             Stroke = model.Colors[i],
-                            Fill = Brushes.Transparent
+                            StrokeThickness = 2.0,
+                            Fill = Brushes.Transparent,
                         };
                     }
 
@@ -140,6 +141,7 @@ namespace CoreNodeModelsWpf.Charts.Controls
                             Title = model.Labels[i],
                             Values = points,
                             Stroke = model.Colors[i],
+                            StrokeThickness = 2.0,
                             Fill = Brushes.Transparent
                             //PointGeometrySize = 0
                         };
