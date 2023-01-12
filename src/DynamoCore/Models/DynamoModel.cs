@@ -932,7 +932,7 @@ namespace Dynamo.Models
             DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenLoadNodeLibrary, 50));
             InitializeNodeLibrary();
 
-            if (extensions.Any())
+            if (!IsServiceMode && extensions.Any())
             {
                 var startupParams = new StartupParams(this);
 
