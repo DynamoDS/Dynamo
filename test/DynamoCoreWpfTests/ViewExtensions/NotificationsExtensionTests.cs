@@ -1,4 +1,4 @@
-﻿using Dynamo.Utilities;
+using Dynamo.Utilities;
 using Dynamo.Notifications.View;
 using NUnit.Framework;
 using System;
@@ -36,7 +36,7 @@ namespace DynamoCoreWpfTests.ViewExtensions
         public void ValidateNotificationsUIEmbededFiles()
         {
             var assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x=>x.ManifestModule.Name.Contains("Notifications.dll"));
-            var htmlFile = "Dynamo.Notifications.package.build.index.html";
+            var htmlFile = "Dynamo.Notifications.Packages.NotificationCenter.build.index.html";
 
             var mainJstag = "mainJs";     
 
