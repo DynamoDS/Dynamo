@@ -47,8 +47,8 @@ namespace Dynamo.Notifications
         private static readonly int notificationPopupVerticalOffset = 5;
         private static readonly int limitOfMonthsFilterNotifications = 6;
 
-        private static readonly string htmlEmbeddedFile = "Dynamo.Notifications.package.build.index.html";
-        private static readonly string jsEmbeddedFile = "Dynamo.Notifications.package.build.index.bundle.js";
+        private static readonly string htmlEmbeddedFile = "Dynamo.Notifications.Packages.NotificationCenter.build.index.html";
+        private static readonly string jsEmbeddedFile = "Dynamo.Notifications.Packages.NotificationCenter.build.index.bundle.js";
         private static readonly string NotificationCenterButtonName = "notificationsButton";
         internal DirectoryInfo webBrowserUserDataFolder;
 

@@ -31,8 +31,11 @@
             <Last>%(TGZFiles.Filename)</Last>
         </PropertyGroup>
 
+        <!--Creates the folder for the package-->
+        <MakeDir Directories="Packages/NotificationCenter" />
+
         <!--Extracts the file to /package-->
-        <Exec Command="tar -xzf $(MSBuildProjectDirectory)\$(Last).tgz"></Exec>
+        <Exec Command="tar -xzf $(MSBuildProjectDirectory)\$(Last).tgz --strip-components=1 --directory=Packages/NotificationCenter"></Exec>
 
         <!--Deletes the tgz file-->
         <Delete Files=" $(MSBuildProjectDirectory)\$(Last).tgz" />
@@ -45,8 +48,8 @@
 		<None Remove="View\NotificationUI.xaml" />
 	</ItemGroup>
 	<ItemGroup>
-		<EmbeddedResource Include="package\build\index.bundle.js" />
-		<EmbeddedResource Include="package\build\index.html" />
+		<EmbeddedResource Include="Packages\NotificationCenter\build\index.bundle.js" />
+		<EmbeddedResource Include="Packages\NotificationCenter\build\index.html" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />

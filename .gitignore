@@ -104,7 +104,7 @@ test/core/customast/test.txt
 test/core/files/test.png
 test/core/migration/writetext.txt
 logo.png
-/src/DynamoCoreWpf/package
+/src/DynamoCoreWpf/Packages
 dynamods-splash-screen-*.tgz
-/src/Notifications/package
+/src/Notifications/Packages
 /src/Notifications/dynamods-notifications-center-*.tgz

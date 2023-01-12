@@ -21,8 +21,8 @@ namespace Dynamo.UI.Views
     public partial class SplashScreen : Window
     {
         // These are hardcoded string and should only change when npm package structure changed or image path changed
-        private static readonly string htmlEmbeddedFile = "Dynamo.Wpf.package.build.index.html";
-        private static readonly string jsEmbeddedFile = "Dynamo.Wpf.package.build.index.bundle.js";
+        private static readonly string htmlEmbeddedFile = "Dynamo.Wpf.Packages.SplashScreen.build.index.html";
+        private static readonly string jsEmbeddedFile = "Dynamo.Wpf.Packages.SplashScreen.build.index.bundle.js";
         private static readonly string backgroundImage = "Dynamo.Wpf.Views.SplashScreen.WebApp.splashScreenBackground.png";
         private static readonly string imageFileExtension = "png";
 

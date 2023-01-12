@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -34,27 +34,24 @@
             <Last>%(TGZFiles.Filename)</Last>
         </PropertyGroup>
 
+        <!--Creates the folder for the package-->
+        <MakeDir Directories="Packages/SplashScreen" />
+
         <!--Extracts the file to /package-->
-        <Exec Command="tar -xzf $(MSBuildProjectDirectory)\$(Last).tgz"></Exec>
+        <Exec Command="tar -xzf $(MSBuildProjectDirectory)\$(Last).tgz --strip-components=1 --directory=Packages/SplashScreen"></Exec>
 
         <!--Deletes the tgz file-->
         <Delete Files="$(MSBuildProjectDirectory)\$(Last).tgz" />
     </Target>
 
-
     <ItemGroup>
-        <PackageReference Include="7-Zip.StandaloneConsole.x64" Version="22.1.0" />
-    </ItemGroup>
-
-
-    <ItemGroup>
-    <None Remove="package\build\index.bundle.js" />
-    <None Remove="package\build\index.html" />
+    <None Remove="Packages\SplashScreen\build\index.bundle.js" />
+    <None Remove="Packages\SplashScreen\build\index.html" />
     <None Remove="Views\SplashScreen\WebApp\splashScreenBackground.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="package\build\index.bundle.js" />
-    <EmbeddedResource Include="package\build\index.html" />
+    <EmbeddedResource Include="Packages\SplashScreen\build\index.bundle.js" />
+    <EmbeddedResource Include="Packages\SplashScreen\build\index.html" />
     <EmbeddedResource Include="Views\SplashScreen\WebApp\splashScreenBackground.png" />
   </ItemGroup>
 
