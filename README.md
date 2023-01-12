@@ -1,7 +1,7 @@
 # Dynamo
 
 ![mono_build](https://github.com/DynamoDS/Dynamo/workflows/mono_build/badge.svg)
-![Dynamo-VS2019Build](https://github.com/DynamoDS/Dynamo/workflows/Dynamo-VS2019Build/badge.svg)
+![Dynamo-VS2022Build](https://github.com/DynamoDS/Dynamo/workflows/Dynamo-VS2022Build/badge.svg)
 
 [![Nuget](https://img.shields.io/nuget/v/DynamoVisualProgramming.Core?logo=nuget)](https://www.nuget.org/packages/DynamoVisualProgramming.Core)
 [![DynamoVisualProgramming.Core on fuget.org](https://www.fuget.org/packages/DynamoVisualProgramming.Core/badge.svg)](https://www.fuget.org/packages/DynamoVisualProgramming.Core)
@@ -30,8 +30,8 @@ You can learn more about developing libraries for Dynamo on the [Dynamo wiki](ht
 
 You will need the following to build the latest Dynamo on Windows:
 
-- [Microsoft Visual Studio 2019](https://visualstudio.microsoft.com/downloads/) (any edition)
-- Microsoft .NET Framework 4.8 (included with Visual Studio 2019)
+- [Microsoft Visual Studio 2022](https://visualstudio.microsoft.com/downloads/) (any edition)
+- Microsoft .NET Framework 4.8 (included with Visual Studio 2022)
 - Node.js v16 and npm v8
 - - [Download](https://nodejs.org/en/download/) and install the latest LTS version of Node.js
 - - Open up your Command Prompt and check you have successfully installed Node by inputting `node -v`. If you have Node installed, it will tell you the version.
