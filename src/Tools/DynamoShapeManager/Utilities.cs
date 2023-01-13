@@ -614,13 +614,15 @@ namespace DynamoShapeManager
             }
         }
 
+        // Windows files are case insensitive, while linux files are case sensitive.
+        // https://learn.microsoft.com/en-us/windows/wsl/case-sensitivity
         /// <summary>
         /// Extracts version of ASM dlls from a path by scanning for ASM dlls in the path.
         /// Throws if ASM binaries cannot be found in the path.
         /// </summary>
         /// <param name="asmPath">path to directory containing asm dlls</param>
         /// <returns></returns>
-        /// <param name="searchPattern">optional - to be used for testing - default is the ASM search pattern. Windows is case insensitive, linux is case sensitive.</param>
+        /// <param name="searchPattern">optional - to be used for testing - default is the ASM search pattern.</param>
         /// <returns></returns>
         public static Version GetVersionFromPath(string asmPath, string searchPattern = "*ASMahl*.*")
         {
