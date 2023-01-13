@@ -693,25 +693,28 @@ namespace Dynamo.Models
             }
 
             bool areAnalyticsDisabledFromConfig = false;
-            try
-            {
-                // Dynamo, behind a proxy server, has been known to have issues loading the Analytics binaries.
-                // Using the "DisableAnalytics" configuration setting, a user can skip loading analytics binaries altogether.
-                var assemblyConfig = ConfigurationManager.OpenExeConfiguration(GetType().Assembly.Location);
-                if (assemblyConfig != null)
+            if (!IsServiceMode)
+            {   // Skip getting the value for areAnalyticsDisabledFromConfig because analytics is disabled for searvice mode anyway
+                try
                 {
-                    var disableAnalyticsValue = assemblyConfig.AppSettings.Settings["DisableAnalytics"];
-                    if (disableAnalyticsValue != null)
-                        bool.TryParse(disableAnalyticsValue.Value, out areAnalyticsDisabledFromConfig);
+                    // Dynamo, behind a proxy server, has been known to have issues loading the Analytics binaries.
+                    // Using the "DisableAnalytics" configuration setting, a user can skip loading analytics binaries altogether.
+                    var assemblyConfig = ConfigurationManager.OpenExeConfiguration(GetType().Assembly.Location);
+                    if (assemblyConfig != null)
+                    {
+                        var disableAnalyticsValue = assemblyConfig.AppSettings.Settings["DisableAnalytics"];
+                        if (disableAnalyticsValue != null)
+                            bool.TryParse(disableAnalyticsValue.Value, out areAnalyticsDisabledFromConfig);
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                // Do nothing for now
+                catch (Exception)
+                {
+                    // Do nothing for now
+                }
             }
 
             // If user skipped analytics from assembly config, do not try to launch the analytics client
-            // or the feature flags client.
+            // or the feature flags client for web traffic reason.
             if (!areAnalyticsDisabledFromConfig && !Dynamo.Logging.Analytics.DisableAnalytics && !IsServiceMode)
             {
                 // Start the Analytics service only when a session is not present.
@@ -875,7 +878,10 @@ namespace Dynamo.Models
             extensionManager.MessageLogged += LogMessage;
             var extensions = config.Extensions ?? LoadExtensions();
 
-            LinterManager = new LinterManager(this.ExtensionManager);
+            if (!IsServiceMode)
+            {
+                LinterManager = new LinterManager(this.ExtensionManager);
+            }
 
             // when dynamo is ready, alert the loaded extensions
             DynamoReady += (readyParams) =>
@@ -919,10 +925,13 @@ namespace Dynamo.Models
 
             AddHomeWorkspace();
 
-            AuthenticationManager = new AuthenticationManager(config.AuthProvider);
+            if (!IsServiceMode)
+            {
+                AuthenticationManager = new AuthenticationManager(config.AuthProvider);
+            }
 
             UpdateManager.Log += UpdateManager_Log;
-            if (!IsTestMode && !IsHeadless)
+            if (!IsTestMode && !IsHeadless && !IsServiceMode)
             {
                 DefaultUpdateManager.CheckForProductUpdate(UpdateManager);
             }
