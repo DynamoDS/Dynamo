@@ -911,18 +911,15 @@ namespace Dynamo.Controls
 
         private void DynamoLoadedViewExtensionHandler(ViewLoadedParams loadedParams, IEnumerable<IViewExtension> extensions)
         {
-            if (!dynamoViewModel.Model.IsServiceMode)
+            foreach (var ext in extensions)
             {
-                foreach (var ext in extensions)
+                try
                 {
-                    try
-                    {
-                        ext.Loaded(loadedParams);
-                    }
-                    catch (Exception exc)
-                    {
-                        Log(ext.Name + ": " + exc.Message);
-                    }
+                    ext.Loaded(loadedParams);
+                }
+                catch (Exception exc)
+                {
+                    Log(ext.Name + ": " + exc.Message);
                 }
             }
         }
