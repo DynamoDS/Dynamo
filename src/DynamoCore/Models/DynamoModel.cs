@@ -942,14 +942,13 @@ namespace Dynamo.Models
             DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenLoadNodeLibrary, 50));
             InitializeNodeLibrary();
 
-            if (!IsServiceMode && extensions.Any())
+            if (extensions.Any())
             {
                 var startupParams = new StartupParams(this);
 
                 foreach (var ext in extensions)
                 {
-                    var logSource = ext as ILogSource;
-                    if (logSource != null)
+                    if (ext is ILogSource logSource)
                         logSource.MessageLogged += LogMessage;
 
                     try
