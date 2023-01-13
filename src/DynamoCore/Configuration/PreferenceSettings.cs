@@ -55,6 +55,8 @@ namespace Dynamo.Configuration
         private bool isNotificationCenterEnabled;
         private bool isStaticSplashScreenEnabled;
         private bool isCreatedFromValidFile = true;
+        private bool isADPChecked = false;
+        private bool isADPOptedIn = false;
 
         #region Constants
         /// <summary>
@@ -115,7 +117,16 @@ namespace Dynamo.Configuration
         [Obsolete("Setter is obsolete - ADP consent should not be set directly, it should be set using the consent dialog.")]
         public bool IsADPAnalyticsReportingApproved
         {
-            get { return Logging.AnalyticsService.IsADPOptedIn; }
+            get
+            {
+                if (!isADPChecked)
+                {
+                    isADPChecked = true;
+                    isADPOptedIn = AnalyticsService.IsADPOptedIn;
+                }
+
+                return isADPOptedIn;
+            }
             set { throw new Exception("do not use"); }
         }
         #endregion
