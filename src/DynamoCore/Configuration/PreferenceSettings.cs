@@ -112,6 +112,8 @@ namespace Dynamo.Configuration
 
         /// <summary>
         /// Indicates whether ADP analytics reporting is approved or not.
+        /// Note that this property is called often and the inner call to IsADPOptinIn can be slow sometimes
+        /// especially when there is an error involved. And therefore we will only check this once per instance.
         /// </summary>
         [XmlIgnore]
         [Obsolete("Setter is obsolete - ADP consent should not be set directly, it should be set using the consent dialog.")]
