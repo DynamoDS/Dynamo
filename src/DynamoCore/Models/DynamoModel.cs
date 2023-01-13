@@ -209,7 +209,7 @@ namespace Dynamo.Models
         public HostAnalyticsInfo HostAnalyticsInfo { get; set; }
 
         /// <summary>
-        /// Boolean indicating if Dynamo is running in service model, mostly leveraged by CLI or WPF CLI
+        /// Boolean indication of launching Dynamo in service mode, this mode it optimized for minimal launch time, mostly leveraged by CLI or WPF CLI.
         /// </summary>
         public bool IsServiceMode { get; set; }
 
@@ -642,7 +642,7 @@ namespace Dynamo.Models
             pathManager.EnsureDirectoryExistence(exceptions);
 
             Context = config.Context;
-            // This condition is TBD
+            // This condition could be updated later depending on if we reuse the legacy Context property
             IsServiceMode = config.Context.Equals("Service");
             IsTestMode = config.StartInTestMode;
             IsHeadless = config.IsHeadless;
@@ -652,9 +652,10 @@ namespace Dynamo.Models
 
             if (!IsServiceMode)
             {
+                // Log all exceptions as part of directories check.
                 foreach (var exception in exceptions)
                 {
-                    Logger.Log(exception); // Log all exceptions.
+                    Logger.Log(exception); 
                 }
             }
 

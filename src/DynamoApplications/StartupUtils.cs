@@ -283,6 +283,10 @@ namespace Dynamo.Applications
             public bool DisableAnalytics { get; set; }
             public HostAnalyticsInfo AnalyticsInfo { get; set; }
             public string CERLocation { get; set; }
+
+            /// <summary>
+            /// Boolean indication of launching Dynamo in service mode, this mode it optimized for minimal launch time
+            /// </summary>
             public bool ServiceMode { get; set; }
         }
 
@@ -332,7 +336,8 @@ namespace Dynamo.Applications
         /// </summary>
         /// <param name="asmPath">Path to directory containing geometry library binaries</param>
         /// <param name="userDataFolder">Path to be used by PathResolver for UserDataFolder</param>
-        /// <param name="commonDataFolder">Path to be used by PathResolver for CommonDataFolder</param>        
+        /// <param name="commonDataFolder">Path to be used by PathResolver for CommonDataFolder</param>
+        /// <param name="info">Host analytics info specifying Dynamo launching host related information.</param>
         /// <returns></returns>
         public static DynamoModel MakeCLIModel(string asmPath, string userDataFolder, string commonDataFolder, HostAnalyticsInfo info = new HostAnalyticsInfo())
         {
@@ -349,7 +354,9 @@ namespace Dynamo.Applications
         /// </summary>
         /// <param name="asmPath">Path to directory containing geometry library binaries</param>
         /// <param name="userDataFolder">Path to be used by PathResolver for UserDataFolder</param>
-        /// <param name="commonDataFolder">Path to be used by PathResolver for CommonDataFolder</param>        
+        /// <param name="commonDataFolder">Path to be used by PathResolver for CommonDataFolder</param>
+        /// <param name="info">Host analytics info specifying Dynamo launching host related information.</param>
+        /// <param name="isServiceMode">Boolean indication of launching Dynamo in service mode, this mode it optimized for minimal launch time.</param>
         /// <returns></returns>
         public static DynamoModel MakeCLIModel(string asmPath, string userDataFolder, string commonDataFolder, HostAnalyticsInfo info = new HostAnalyticsInfo(), bool isServiceMode = false)
         {
@@ -381,7 +388,7 @@ namespace Dynamo.Applications
         /// </summary>
         /// <param name="CLImode">CLI mode starts the model in test mode and uses a separate path resolver.</param>
         /// <param name="asmPath">Path to directory containing geometry library binaries</param>
-        /// <param name="info">Host analytics info</param>
+        /// <param name="info">Host analytics info specifying Dynamo launching host related information.</param>
         /// <returns></returns>
         public static DynamoModel MakeModel(bool CLImode, string asmPath = "", HostAnalyticsInfo info = new HostAnalyticsInfo())
         {
@@ -490,9 +497,9 @@ namespace Dynamo.Applications
                 UpdateManager = CLImode ? null : OSHelper.IsWindows() ? InitializeUpdateManager() : null,
                 StartInTestMode = CLImode,
                 PathResolver = CLImode ? new CLIPathResolver(preloaderLocation, userDataFolder, commonDataFolder) as IPathResolver : new SandboxPathResolver(preloaderLocation) as IPathResolver,
-                // Update Default start config to include IsServiceMode so DynamoModel can initialize with that flag. If set later, it might be too late.
-                // TBD, do we want to reuse the old Context property?
-                Context = "Service"
+                // TODO: Dynamo 3.0
+                // Update Default start config to include IsServiceMode so DynamoModel can be initialize with that flag. For now, reuse the legacy Context property
+                Context = isServiceMode ? "Service": string.Empty
             };
 
             var model = DynamoModel.Start(config);
