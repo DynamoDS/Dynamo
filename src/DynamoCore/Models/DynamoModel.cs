@@ -556,6 +556,7 @@ namespace Dynamo.Models
             public IEnumerable<IExtension> Extensions { get; set; }
             public TaskProcessMode ProcessMode { get; set; }
             public bool IsHeadless { get; set; }
+            public bool IsServiceMode { get; set; }
             public string PythonTemplatePath { get; set; }
             /// <summary>
             /// Default Python script engine
@@ -621,6 +622,7 @@ namespace Dynamo.Models
                 // TODO: This fact should probably be revisited in 3.0.
                 DefaultPythonEngine = defaultStartConfig.DefaultPythonEngine;
                 CLIMode = defaultStartConfig.CLIMode;
+                IsServiceMode = defaultStartConfig.IsServiceMode;
             }
 
             if (config is IStartConfigCrashReporter cerConfig)
@@ -642,8 +644,6 @@ namespace Dynamo.Models
             pathManager.EnsureDirectoryExistence(exceptions);
 
             Context = config.Context;
-            // This condition could be updated later depending on if we reuse the legacy Context property
-            IsServiceMode = config.Context.Equals("Service");
             IsTestMode = config.StartInTestMode;
             IsHeadless = config.IsHeadless;
 

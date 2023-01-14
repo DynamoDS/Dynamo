@@ -497,9 +497,7 @@ namespace Dynamo.Applications
                 UpdateManager = CLImode ? null : OSHelper.IsWindows() ? InitializeUpdateManager() : null,
                 StartInTestMode = CLImode,
                 PathResolver = CLImode ? new CLIPathResolver(preloaderLocation, userDataFolder, commonDataFolder) as IPathResolver : new SandboxPathResolver(preloaderLocation) as IPathResolver,
-                // TODO: Dynamo 3.0
-                // Update Default start config to include IsServiceMode so DynamoModel can be initialize with that flag. For now, reuse the legacy Context property
-                Context = isServiceMode ? "Service": string.Empty
+                IsServiceMode = isServiceMode
             };
 
             var model = DynamoModel.Start(config);
