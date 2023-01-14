@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:CoreNodeModelsWpf.Charts.Controls"
              xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+             xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="500" 
              Height="300" Width="300"
@@ -35,9 +36,10 @@
 
         <Thumb Name ="resizeThumb"
                Style="{StaticResource ChartsThumb}"
-               HorizontalAlignment="Right" 
-               VerticalAlignment="Bottom" 
-               DragDelta="ThumbResizeThumbOnDragDeltaHandler"
-        />
+               DragDelta="ThumbResizeThumbOnDragDeltaHandler">
+            <Thumb.ToolTip>
+                <ToolTip Content="{x:Static p:CoreNodeModelWpfResources.ResizeThumbToolTip}" Style="{StaticResource GenericToolTipLight}"/>
+            </Thumb.ToolTip>
+        </Thumb>
     </Grid>
 </UserControl>

@@ -122,5 +122,14 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("LblValue", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drag to modify the size of the chart.
+        /// </summary>
+        public static string ResizeThumbToolTip {
+            get {
+                return ResourceManager.GetString("ResizeThumbToolTip", resourceCulture);
+            }
+        }
     }
 }

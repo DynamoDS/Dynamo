@@ -152,10 +152,66 @@
     <Style TargetType="lvc:VerticalStackedAreaSeries" 
                           BasedOn="{StaticResource SeriesStyle}"/>
 
-    <Style TargetType="Thumb" x:Key="ChartsThumb">
-        <Setter Property="Width" Value="10"/>
-        <Setter Property="Height" Value="10"/>
-        <Setter Property="Margin" Value="0,0,-84,-21"/>
-    </Style>
 
+    <DrawingBrush x:Key="DefaultBrush" Viewport="0 0 8 8" ViewportUnits="Absolute" TileMode="Tile">
+        <DrawingBrush.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#999999">
+                    <GeometryDrawing.Geometry>
+                        <GeometryGroup>
+                            <RectangleGeometry Rect="0,0,50,50" />
+                            <RectangleGeometry Rect="50,50,50,50" />
+                        </GeometryGroup>
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingBrush.Drawing>
+    </DrawingBrush>
+    
+    <DrawingBrush x:Key="MouseOverBrush" Viewport="0 0 8 8" ViewportUnits="Absolute" TileMode="Tile">
+        <DrawingBrush.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#DCDCDC">
+                    <GeometryDrawing.Geometry>
+                        <GeometryGroup>
+                            <RectangleGeometry Rect="0,0,50,50" />
+                            <RectangleGeometry Rect="50,50,50,50" />
+                        </GeometryGroup>
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingBrush.Drawing>
+    </DrawingBrush>
+    
+    <Style x:Key="ChartsThumb" TargetType="{x:Type Thumb}">
+        <Setter Property="Width" Value="12"/>
+        <Setter Property="Height" Value="12"/>
+        <Setter Property="Margin" Value="0 0 -80 -21" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Thumb}">
+                    <Border BorderThickness="2">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="BorderBrush" Value="{StaticResource DefaultBrush}"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="BorderBrush" Value="{StaticResource MouseOverBrush}"/>
+                                    </Trigger>
+                                    <DataTrigger Binding="{Binding IsDragging, RelativeSource={RelativeSource AncestorType={x:Type Thumb}}}" Value="True">
+                                        <Setter Property="BorderBrush" Value="{StaticResource MouseOverBrush}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <Border.Background>Transparent</Border.Background>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
 </ResourceDictionary>
