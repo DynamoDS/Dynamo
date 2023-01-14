@@ -876,7 +876,7 @@ namespace Dynamo.Models
             //Initialize the ExtensionManager with the CommonDataDirectory so that extensions found here are checked first for dll's with signed certificates
             extensionManager = new ExtensionManager(new[] { PathManager.CommonDataDirectory });
             extensionManager.MessageLogged += LogMessage;
-            var extensions = config.Extensions;
+            var extensions = config.Extensions ?? new List<IExtension>();
             if (extensions == null && !IsServiceMode)
             {
                 LoadExtensions();
