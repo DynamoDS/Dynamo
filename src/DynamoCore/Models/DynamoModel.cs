@@ -209,9 +209,9 @@ namespace Dynamo.Models
         public HostAnalyticsInfo HostAnalyticsInfo { get; set; }
 
         /// <summary>
-        /// Boolean indication of launching Dynamo in service mode, this mode it optimized for minimal launch time, mostly leveraged by CLI or WPF CLI.
+        /// Boolean indication of launching Dynamo in service mode, this mode is optimized for minimal launch time, mostly leveraged by CLI or WPF CLI.
         /// </summary>
-        public bool IsServiceMode { get; set; }
+        internal bool IsServiceMode { get; set; }
 
         /// <summary>
         /// UpdateManager to handle automatic upgrade to higher version.

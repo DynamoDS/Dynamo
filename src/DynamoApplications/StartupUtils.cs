@@ -222,7 +222,7 @@ namespace Dynamo.Applications
                 .Add("pi=|PI=|parentId", "Identify Dynamo host analytics parent id", pi => parentId = pi)
                 .Add("da|DA|disableAnalytics", "Disables analytics in Dynamo for the process liftime", da => disableAnalytics = da != null)
                 .Add("cr=|CR=|cerLocation", "Specify the crash error report tool location on disk ", cr => cerLocation = cr)
-                .Add("s|S|service mode", "Service mode, bypass certain Dynamo launch steps for maximum startup performance", s => serviceMode = s != null);
+                .Add("s|S|service mode", "Service mode, bypasses certain Dynamo launch steps for maximum startup performance", s => serviceMode = s != null);
 
                 optionsSet.Parse(args);
 
@@ -285,7 +285,7 @@ namespace Dynamo.Applications
             public string CERLocation { get; set; }
 
             /// <summary>
-            /// Boolean indication of launching Dynamo in service mode, this mode it optimized for minimal launch time
+            /// Boolean indication of launching Dynamo in service mode, this mode is optimized for minimal launch time
             /// </summary>
             public bool ServiceMode { get; set; }
         }
@@ -356,7 +356,7 @@ namespace Dynamo.Applications
         /// <param name="userDataFolder">Path to be used by PathResolver for UserDataFolder</param>
         /// <param name="commonDataFolder">Path to be used by PathResolver for CommonDataFolder</param>
         /// <param name="info">Host analytics info specifying Dynamo launching host related information.</param>
-        /// <param name="isServiceMode">Boolean indication of launching Dynamo in service mode, this mode it optimized for minimal launch time.</param>
+        /// <param name="isServiceMode">Boolean indication of launching Dynamo in service mode, this mode is optimized for minimal launch time.</param>
         /// <returns></returns>
         public static DynamoModel MakeCLIModel(string asmPath, string userDataFolder, string commonDataFolder, HostAnalyticsInfo info = new HostAnalyticsInfo(), bool isServiceMode = false)
         {
