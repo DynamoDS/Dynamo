@@ -1375,7 +1375,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal void InitPackageListFilters()
         {
-            installedPackagesViewModel.PopulateFilters();
+            installedPackagesViewModel?.PopulateFilters();
         }
 
         /// <summary>

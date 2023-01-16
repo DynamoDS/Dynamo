@@ -877,7 +877,7 @@ namespace Dynamo.Models
             extensionManager = new ExtensionManager(new[] { PathManager.CommonDataDirectory });
             extensionManager.MessageLogged += LogMessage;
             var extensions = config.Extensions ?? new List<IExtension>();
-            if (extensions == null && !IsServiceMode)
+            if (!extensions.Any() && !IsServiceMode)
             {
                 LoadExtensions();
             }
