@@ -6,6 +6,7 @@ using System.Linq;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
+using ProtoCore.AST.AssociativeAST;
 
 namespace DSOffice
 {
@@ -345,7 +346,7 @@ namespace DSOffice
                     else
                     {
                         // This is a number
-                        if (cell.CellValue.TryGetDouble(out var value))
+                        if (double.TryParse(cell.InnerText, NumberStyles.Any, NumberFormatInfo.InvariantInfo, out var value))
                         {
                             if (readAsString)
                             {
