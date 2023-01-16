@@ -1058,7 +1058,6 @@ namespace Dynamo.Views
 
             GeoScalingPopup.Placement = PlacementMode.Bottom;
             GeoScalingPopup.PlacementTarget = geometryScalingButton;
-            GeoScalingPopup.StaysOpen = false;
             GeoScalingPopup.IsOpen = true;
         }
     }

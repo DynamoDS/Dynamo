@@ -51,6 +51,7 @@ namespace Dynamo.Configuration
         private string lastUpdateDownloadPath;
         private int maxNumRecentFiles;
         private bool isBackgroundGridVisible;
+        private double defaultScaleFactor;
         private bool disableTrustWarnings = false;
         private bool isNotificationCenterEnabled;
         private bool isStaticSplashScreenEnabled;
@@ -214,6 +215,24 @@ namespace Dynamo.Configuration
                 isBackgroundGridVisible = value;
 
                 RaisePropertyChanged(nameof(IsBackgroundGridVisible));
+            }
+        }
+
+        /// <summary>
+        /// Indicates the default factor read from DynamoSettings.xml and can be updated using the Preferences panel
+        /// </summary>
+        public double DefaultScaleFactor
+        {
+            get
+            {
+                return defaultScaleFactor;
+            }
+            set
+            {
+                if (value == defaultScaleFactor) return;
+                defaultScaleFactor = value;
+
+                RaisePropertyChanged(nameof(DefaultScaleFactor));
             }
         }
 

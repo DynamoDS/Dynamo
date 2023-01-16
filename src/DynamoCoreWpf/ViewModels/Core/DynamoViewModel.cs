@@ -754,6 +754,8 @@ namespace Dynamo.ViewModels
             preferencesViewModel = new PreferencesViewModel(this);
 
             geoScalingViewModel = new GeometryScalingViewModel(this);
+            geoScalingViewModel.ScaleValue = ScaleFactorLog;
+
 
             if (!DynamoModel.IsTestMode && !DynamoModel.IsHeadless)
             {
@@ -2527,6 +2529,9 @@ namespace Dynamo.ViewModels
         {
             if (ClearHomeWorkspaceInternal())
             {
+                geoScalingViewModel.ScaleValue = PreferenceSettings.DefaultScaleFactor;
+                geoScalingViewModel.UpdateGeometryScale(PreferenceSettings.DefaultScaleFactor);
+
                 var t = new DelegateBasedAsyncTask(model.Scheduler, () => model.ResetEngine());
                 model.Scheduler.ScheduleForExecution(t);
 
@@ -2574,6 +2579,10 @@ namespace Dynamo.ViewModels
                 Model.CurrentWorkspace = HomeSpace;
 
                 model.ClearCurrentWorkspace();
+
+                //Every time that a new workspace is created we have to assign the Defautl Geometry Scaling value defined in Preferences (comming from DynamoSettings.xml)
+                if (GeoScalingViewModel != null && preferencesViewModel != null)
+                    GeoScalingViewModel.ScaleSize = preferencesViewModel.DefaultGeometryScaling;
 
                 return true;
             }

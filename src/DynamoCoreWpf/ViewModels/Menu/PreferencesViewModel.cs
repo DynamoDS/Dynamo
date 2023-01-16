@@ -69,15 +69,41 @@ namespace Dynamo.ViewModels
         private bool isVisibleAddStyleBorder;
         private bool isEnabledAddStyleButton;
         private GeometryScalingOptions optionsGeometryScale = null;
+        private GeometryScaleSize defaultGeometryScaling = GeometryScaleSize.Medium;
+        private GeometryScaleSize currentGeometryScaling;
         #endregion Private Properties
 
-        public GeometryScaleSize ScaleSize { get; set; }
+        public GeometryScaleSize CurrentGeometryScaling
+        {
+            get
+            {
+                return currentGeometryScaling;
+            }
+            set
+            {
+                currentGeometryScaling = value;
+                RaisePropertyChanged(nameof(CurrentGeometryScaling));
+            }
+        }
+
+        public GeometryScaleSize DefaultGeometryScaling
+        {
+            get
+            {
+                return defaultGeometryScaling;
+            }
+            set
+            {
+                defaultGeometryScaling = value;
+                RaisePropertyChanged(nameof(DefaultGeometryScaling));
+            }
+        }
 
         public Tuple<string, string, string> ScaleRange
         {
             get
             {
-                return scaleRanges[ScaleSize];
+                return scaleRanges[CurrentGeometryScaling];
             }
         }
 
@@ -196,6 +222,19 @@ namespace Dynamo.ViewModels
                 selectedNumberFormat = value;
                 preferenceSettings.NumberFormat = value;
                 RaisePropertyChanged(nameof(SelectedNumberFormat));
+            }
+        }
+
+        public double SelectedDefaultScaleFactor
+        {
+            get
+            {
+                return preferenceSettings.DefaultScaleFactor;
+            }
+            set
+            {
+                preferenceSettings.DefaultScaleFactor = value;
+                RaisePropertyChanged(nameof(SelectedDefaultScaleFactor));
             }
         }
 
@@ -1088,7 +1127,17 @@ namespace Dynamo.ViewModels
             preferenceSettings.SanitizeValues();
             RaisePropertyChanged(string.Empty);
             return true;
-        }        
+        }
+
+        internal void InitializeGeometryScaling()
+        {
+            int UIScaleFactor = GeometryScalingOptions.ConvertScaleFactorToUI((int)SelectedDefaultScaleFactor);
+
+            if (Enum.IsDefined(typeof(GeometryScaleSize), UIScaleFactor))
+            {
+                DefaultGeometryScaling = (GeometryScaleSize)UIScaleFactor;
+            }
+        }
 
         /// <summary>
         /// The PreferencesViewModel constructor basically initialize all the ItemsSource for the corresponding ComboBox in the View (PreferencesView.xaml)
@@ -1290,9 +1339,7 @@ namespace Dynamo.ViewModels
         /// <param name="scaleFactor"></param>
         private void UpdateGeoScaleRadioButtonSelected(int scaleFactor)
         {
-            ScaleSize = (GeometryScaleSize)GeometryScalingOptions.ConvertScaleFactorToUI(scaleFactor);
-            if (dynamoViewModel.GeoScalingViewModel != null)
-                dynamoViewModel.GeoScalingViewModel.ScaleSize = ScaleSize;
+            CurrentGeometryScaling = (GeometryScaleSize)GeometryScalingOptions.ConvertScaleFactorToUI(scaleFactor);
         }
 
         /// <summary>
