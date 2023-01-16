@@ -2,7 +2,7 @@
   "Uuid": "6974982b-2c04-4a26-935c-74c961706301",
   "IsCustomNode": false,
   "Description": "",
-  "Name": "DYN-5446-2",
+  "Name": "serializationNodeViewModel",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -10,10 +10,9 @@
   "Outputs": [],
   "Nodes": [
     {
+      "Id": "62536c5a788843c285bd2ffdce10290f",
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
       "NodeType": "CodeBlockNode",
-      "Code": "1+1;",
-      "Id": "62536c5a788843c285bd2ffdce10290f",
       "Inputs": [],
       "Outputs": [
         {
@@ -26,6 +25,17 @@
           "KeepListStructure": false
         }
       ],
+      "Code": "1+1;",
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "Id": "993ed0e4eeb3492f8e301c3a9edf64f9",
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [],
+      "Code": "",
       "Replication": "Disabled",
       "Description": "Allows for DesignScript code to be authored directly"
     }
@@ -56,7 +66,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.18.0.3695",
+      "Version": "2.18.0.2986",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
@@ -83,6 +93,16 @@
         "ShowGeometry": true,
         "X": 671.5,
         "Y": 358.0
+      },
+      {
+        "Id": "993ed0e4eeb3492f8e301c3a9edf64f9",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 980.0,
+        "Y": 485.0
       }
     ],
     "Annotations": [],

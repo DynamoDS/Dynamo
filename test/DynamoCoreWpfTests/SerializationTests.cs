@@ -458,6 +458,32 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(explicitOrder, "The order of the properties is not the expected");
         }
 
+        [Test]
+        public void NodeModelSerializationPropertiesTest()
+        {
+            var openPath = Path.Combine(TestDirectory, @"core\serialization\serializationNodeModel.dyn");
+
+            var jsonText1 = File.ReadAllText(openPath);
+            var jobject1 = JObject.Parse(jsonText1);
+           
+            JObject firstNodeModelObject = JObject.Parse(jobject1["Nodes"][0].ToString());
+
+            bool hasTheSameOrderProperties = true;
+            List<string> propertiesSerializationOrder = NodeModel.PropertiesSerializationOrder();
+            for (int i = 0; i < propertiesSerializationOrder.Count(); i++)
+            {
+                string serializedProperty = firstNodeModelObject.Properties().ElementAt(i).Name;
+                string orderedProperty = propertiesSerializationOrder[i];
+                if (serializedProperty != orderedProperty)
+                {
+                    hasTheSameOrderProperties = false;
+                    break;
+                }
+            }
+
+            Assert.IsTrue(hasTheSameOrderProperties, "The first serialized Node doesn't have the expected order");
+        }
+
         public string GetJsonPropertyFieldName(string propertyName)
         {
             System.Reflection.PropertyInfo t = typeof(NodeViewModel).GetProperty(propertyName);

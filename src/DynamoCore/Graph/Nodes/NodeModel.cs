@@ -2265,6 +2265,11 @@ namespace Dynamo.Graph.Nodes
             return s;
         }
 
+        public static List<string> PropertiesSerializationOrder()
+        {
+            return new List<string>() { "Id", "ConcreteType", "NodeType", "Inputs", "Outputs" };
+        }
+
         #endregion
 
         #region ISelectable Interface
