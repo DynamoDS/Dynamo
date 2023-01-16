@@ -79,7 +79,10 @@ namespace Dynamo.PackageManager.UI
 
         public void Dispose()
         {
-            packageManager.PackageLoader.PackgeLoaded -= packageLoadedHandler;
+            if (packageManager != null)
+            {
+                packageManager.PackageLoader.PackgeLoaded -= packageLoadedHandler;
+            }
         }
 
         public void Loaded(ViewLoadedParams viewLoadedParams)
