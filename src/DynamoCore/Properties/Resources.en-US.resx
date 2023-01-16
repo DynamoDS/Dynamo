@@ -863,4 +863,34 @@ This package likely contains an assembly that is blocked. You will need to load 
   <data name="ToolTipInputData" xml:space="preserve">
     <value>Input Data</value>
   </data>
+  <data name="SplashScreenInitPreferencesSettings" xml:space="preserve">
+    <value>Initializing preferences...</value>
+  </data>
+  <data name="SplashScreenLoadNodeLibrary" xml:space="preserve">
+    <value>Loading Node Library...</value>
+  </data>
+  <data name="AutocompleteNoRecommendationsTitle" xml:space="preserve">
+    <value>No recommendations</value>
+  </data>
+  <data name="AutocompleteLowConfidenceTitle" xml:space="preserve">
+    <value>Low confidence</value>
+  </data>
+  <data name="AutocompleteNoRecommendationsMessage" xml:space="preserve">
+    <value>There are no recommendations yet. You can try switching to node type match autocomplete.</value>
+  </data>
+  <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
+    <value>All recommendations are below the specified confidence level. You can try them or adjust the confidence settings in Preferences.</value>
+  </data>
+  <data name="AutocompleteLowConfidenceTooltip" xml:space="preserve">
+    <value>Show Recommendations that are below the confidence level.</value>
+  </data>
+  <data name="LoginNeededTitle" xml:space="preserve">
+    <value>Not authenticated</value>
+  </data>
+  <data name="LoginNeededMessage" xml:space="preserve">
+    <value>You need to login to your account to get recommendations. Please log in or switch to node type match autocomplete.</value>
+  </data>
+  <data name="FailedInsertFileNodeExistNotification" xml:space="preserve">
+    <value>Failed to insert the file as some of the nodes already exist in the current worspace.</value>
+  </data>
 </root>

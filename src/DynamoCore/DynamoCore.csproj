@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -23,6 +23,8 @@
   <ItemGroup>
     <PackageReference Include="DynamoVisualProgramming.Analytics" Version="3.0.0.2506" />
     <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.16.0.2365" GeneratePathProperty="true" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.16.0.3736" GeneratePathProperty="true"/>
+    <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.16.0.3727" GeneratePathProperty="true"/>
     <PackageReference Include="Greg" Version="2.3.0.2505" />
 	  <PackageReference Include="Newtonsoft.Json" Version="8.0.3" CopyXML="true" />
 	  <PackageReference Include="RestSharp" Version="106.12.0" CopyXML="true" />

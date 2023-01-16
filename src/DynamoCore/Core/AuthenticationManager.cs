@@ -82,14 +82,6 @@ namespace Dynamo.Core
             }
         }
 
-        /// <summary>
-        /// Check if able to toggle login state
-        /// </summary>
-        internal bool CanToggleLoginState(object o)
-        {
-            return this.LoginState == LoginState.LoggedOut || this.LoginState == LoginState.LoggedIn;
-        }
-
         internal void Login()
         {
             if (!HasAuthProvider) return;

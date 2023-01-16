@@ -136,14 +136,17 @@
                 <Setter Property="GridLinesVisibility" Value="All" />
                 <Setter Property="HorizontalGridLinesBrush" Value="#CCCCCC" />
                 <Setter Property="VerticalGridLinesBrush" Value="#CCCCCC" />
-                <Setter Property="HorizontalScrollBarVisibility" Value="Hidden" />
+                <Setter Property="HorizontalScrollBarVisibility" Value="Auto" />
                 <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
                 <Setter Property="VirtualizingStackPanel.VirtualizationMode" Value="Standard" />
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Background="{StaticResource ExtensionBackgroundColor}">
-        <ScrollViewer Name="MainScrollViewer" DataContextChanged="FrameworkElement_OnDataContextChanged" Margin="17px" VerticalScrollBarVisibility="Visible">
+        <ScrollViewer Name="MainScrollViewer"
+                      DataContextChanged="FrameworkElement_OnDataContextChanged"
+                      Margin="17px"
+                      VerticalScrollBarVisibility="Visible">
 
             <!--  Contains Everything  -->
             <StackPanel Name="MainStackPanel">
