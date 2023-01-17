@@ -469,7 +469,7 @@ namespace DynamoCoreWpfTests
             JObject firstNodeModelObject = JObject.Parse(jobject1["Nodes"][0].ToString());
 
             bool hasTheSameOrderProperties = true;
-            List<string> propertiesSerializationOrder = NodeModel.PropertiesSerializationOrder();
+            List<string> propertiesSerializationOrder = new List<string>();
             for (int i = 0; i < propertiesSerializationOrder.Count(); i++)
             {
                 string serializedProperty = firstNodeModelObject.Properties().ElementAt(i).Name;

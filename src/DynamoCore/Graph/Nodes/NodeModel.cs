@@ -133,6 +133,7 @@ namespace Dynamo.Graph.Nodes
         /// server type for the node. This property should only be
         /// used for serialization.
         /// </summary>
+        [JsonProperty(Order = 2)]
         public virtual string NodeType
         {
             get
@@ -229,7 +230,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Id for this node, must be unique within the graph.
         /// </summary>
-        [JsonProperty("Id")]
+        [JsonProperty("Id",Order = 1)]
         [JsonConverter(typeof(IdToGuidConverter))]
         public override Guid GUID
         {
@@ -472,7 +473,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Collection of PortModels representing all Input ports.
         /// </summary>
-        [JsonProperty("Inputs")]
+        [JsonProperty("Inputs", Order = 3)]
         public ObservableCollection<PortModel> InPorts
         {
             get { return inPorts; }
@@ -487,7 +488,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Collection of PortModels representing all Output ports.
         /// </summary>
-        [JsonProperty("Outputs")]
+        [JsonProperty("Outputs", Order = 4)]
         public ObservableCollection<PortModel> OutPorts
         {
             get { return outPorts; }
@@ -514,7 +515,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Control how arguments lists of various sizes are laced.
         /// </summary>
-        [JsonProperty("Replication"), JsonConverter(typeof(StringEnumConverter))]
+        [JsonProperty("Replication", Order = 6), JsonConverter(typeof(StringEnumConverter))]
         public LacingStrategy ArgumentLacing
         {
             get
@@ -802,6 +803,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Description of this Node.
         /// </summary>
+        [JsonProperty(Order = 7)]
         public string Description
         {
             get
@@ -2263,11 +2265,6 @@ namespace Dynamo.Graph.Nodes
             }
 
             return s;
-        }
-
-        public static List<string> PropertiesSerializationOrder()
-        {
-            return new List<string>() { "Id", "ConcreteType", "NodeType", "Inputs", "Outputs" };
         }
 
         #endregion
