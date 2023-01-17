@@ -117,107 +117,122 @@ namespace ProtoCore.DSASM
     public struct CLRStackValue
     {
         // TODO_MSIL: Figure out if we need to use an AddressType, like StackValue
-        internal bool IsEnumerable => Type != typeof(string) && ArrayUtils.IsEnumerable(Type);
+        internal bool IsEnumerable;
 
-        internal bool IsDouble => Value is double;
+        internal bool IsDouble;
 
         // TODO_MSIL: Figure out how to set/use this flag;
-        internal bool IsDefaultArgument => false;
+        internal bool IsDefaultArgument;
 
         // TODO_MSIL: Figure out if we need to use an AddressType, like StackValue
-        internal bool IsPointer => Type != null && Type != typeof(string) && !ArrayUtils.IsEnumerable(Type) && !Type.IsValueType && Type.IsClass;
+        internal bool IsPointer;
 
         // TODO_MSIL: Figure out how to set/use this flag;
-        internal bool IsExplicitCall => false;
+        internal bool IsExplicitCall;
 
-        internal bool IsNull => Value == null;
+        internal bool IsNull;
 
         // Equivalent to StackValue.metaData.type
-        internal int TypeUID { get; set; }
+        internal int TypeUID;
 
-        internal System.Type Type => Value?.GetType();
+        internal object Value;
 
-        internal object Value { get; set; }
+        internal System.Type Type;
 
         //TODO can we move this higher up and outside of this type?
         //TODO better name.
         /// <summary>
         /// The underlying type of object this wrapper wraps. Usually inferred from the FEP.ReturnType that created this wrapper.
         /// </summary>
-        public System.Type CLRFEPReturnType { get; internal set; }
+        public System.Type CLRFEPReturnType;
+    }
 
-        internal CLRStackValue(object value, int protoType, System.Type FEPReturnType = null)
+    internal class CLRStackValueHelper
+    {
+        internal static CLRStackValue Make(object value, int protoType, System.Type FEPReturnType = null)
         {
-            this.Value = value;
-            this.TypeUID = protoType;
-            this.CLRFEPReturnType = FEPReturnType;
+            System.Type type = value?.GetType();
+            return new CLRStackValue
+            {
+                Value = value,
+                TypeUID = protoType,
+                CLRFEPReturnType = FEPReturnType,
+                IsDouble = value is double,
+                Type = type,
+                IsEnumerable = type != typeof(string) && ArrayUtils.IsEnumerable(type),
+                IsPointer = type != null && type != typeof(string) &&
+                    !ArrayUtils.IsEnumerable(type) && !type.IsValueType && type.IsClass,
+                IsDefaultArgument = false,
+                IsExplicitCall = false,
+                IsNull = value == null
+        };
         }
 
-        internal static CLRStackValue Null => new CLRStackValue(null, (int)PrimitiveType.Null);
+        internal static CLRStackValue Null => Make(null, (int)PrimitiveType.Null);
 
         #region Converters
-        internal CLRStackValue ToBoolean()
+        internal static CLRStackValue ToBoolean(in CLRStackValue clrVal)
         {
-            switch (TypeUID)
+            switch (clrVal.TypeUID)
             {
                 case (int)PrimitiveType.Bool:
-                    return this;
+                    return clrVal;
 
                 case (int)PrimitiveType.Integer:
-                    return new CLRStackValue(Value != null && (int)Value != 0, (int)PrimitiveType.Bool);
+                    return Make(clrVal.Value != null && (int)clrVal.Value != 0, (int)PrimitiveType.Bool);
 
                 case (int)PrimitiveType.InvalidType:
-                    return new CLRStackValue(false, (int)PrimitiveType.Bool);
+                    return Make(false, (int)PrimitiveType.Bool);
 
                 case (int)PrimitiveType.Double:
-                    double val = (double)Value;
+                    double val = (double)clrVal.Value;
                     bool b = !Double.IsNaN(val) && !val.Equals(0.0);
-                    return new CLRStackValue(b, (int)PrimitiveType.Bool);
+                    return Make(b, (int)PrimitiveType.Bool);
 
                 case (int)PrimitiveType.Pointer:
-                    return new CLRStackValue(true, (int)PrimitiveType.Bool);
+                    return Make(true, (int)PrimitiveType.Bool);
 
                 case (int)PrimitiveType.String:
-                    string str = Value as string;
-                    return new CLRStackValue(!string.IsNullOrEmpty(str), (int)PrimitiveType.Bool);
+                    string str = clrVal.Value as string;
+                    return Make(!string.IsNullOrEmpty(str), (int)PrimitiveType.Bool);
 
                 case (int)PrimitiveType.Char:
-                    char c = Convert.ToChar(Value);
-                    return new CLRStackValue(c != 0, (int)PrimitiveType.Bool);
+                    char c = Convert.ToChar(clrVal.Value);
+                    return Make(c != 0, (int)PrimitiveType.Bool);
 
                 default:
-                    return CLRStackValue.Null;
+                    return Null;
             }
         }
 
-        internal CLRStackValue ToDouble()
+        internal static CLRStackValue ToDouble(in CLRStackValue clrVal)
         {
-            switch (TypeUID)
+            switch (clrVal.TypeUID)
             {
                 case (int)PrimitiveType.Integer:
-                    return new CLRStackValue(Convert.ToDouble((long)Value), (int)PrimitiveType.Double);
+                    return Make(Convert.ToDouble((long)clrVal.Value), (int)PrimitiveType.Double);
 
                 case (int)PrimitiveType.Double:
-                    return this;
+                    return clrVal;
 
                 default:
-                    return CLRStackValue.Null;
+                    return Null;
             }
         }
 
-        internal CLRStackValue ToInteger()
+        internal static CLRStackValue ToInteger(in CLRStackValue clrVal)
         {
-            switch (TypeUID)
+            switch (clrVal.TypeUID)
             {
                 case (int)PrimitiveType.Integer:
-                    return this;
+                    return clrVal;
 
                 case (int)PrimitiveType.Double:
-                    double value = (double)Value;
-                    return new CLRStackValue((Int64)Math.Round(value, 0, MidpointRounding.AwayFromZero), (int)PrimitiveType.Integer);
+                    double value = (double)clrVal.Value;
+                    return Make((Int64)Math.Round(value, 0, MidpointRounding.AwayFromZero), (int)PrimitiveType.Integer);
 
                 default:
-                    return CLRStackValue.Null;
+                    return Null;
             }
         }
         #endregion

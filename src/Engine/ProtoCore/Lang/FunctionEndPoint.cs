@@ -30,7 +30,7 @@ namespace ProtoCore
 
         internal ProcedureNode procedureNode;
 
-        private FFIMemberInfo method;
+        internal FFIMemberInfo method;
 
         internal ProtoCore.Type ProtoCoreReturnType => procedureNode.ReturnType;
 
@@ -84,10 +84,10 @@ namespace ProtoCore
             return result;
         }
 
-        internal List<CLRStackValue> CoerceParameters(List<CLRStackValue> formalParameters, MSILRuntimeCore runtimeCore)
+        internal List<CLRStackValue> CoerceParameters(CLRStackValue[] formalParameters, MSILRuntimeCore runtimeCore)
         {
             List<CLRStackValue> fixedUpVersions = new List<CLRStackValue>();
-            for (int i = 0; i < formalParameters.Count; i++)
+            for (int i = 0; i < formalParameters.Length; i++)
             {
                 CLRStackValue formalParam = formalParameters[i];
                 CLRFunctionEndPoint.ParamInfo targetParam = FormalParams[i];
@@ -99,7 +99,7 @@ namespace ProtoCore
             return fixedUpVersions;
         }
 
-        internal int GetConversionDistance(List<CLRStackValue> reducedParamSVs, MSILRuntimeCore runtimeCore, bool allowArrayPromotion)
+        internal int GetConversionDistance(CLRStackValue[] reducedParamSVs, MSILRuntimeCore runtimeCore, bool allowArrayPromotion)
         {
             // If the replication strategy allows array promotion, first check for the case
             // where it could be disabled using the [AllowArrayPromotion(false)] attribute
@@ -119,23 +119,23 @@ namespace ProtoCore
             return (int)ProcedureDistance.InvalidDistance;
         }
 
-        internal int ComputeCastDistance(List<CLRStackValue> args)
+        internal int ComputeCastDistance(CLRStackValue[] args)
         {
             //Compute the cost to migrate a class calls argument types to the coresponding base types
             //This cannot be used to determine whether a function can be called as it will ignore anything that doesn't
             //it should only be used to determine which class is closer
-            if (args.Count != FormalParams.Count)
+            if (args.Length != FormalParams.Count)
             {
                 return int.MaxValue;
             }
 
-            if (0 == args.Count)
+            if (0 == args.Length)
             {
                 return 0;
             }
 
             int distance = 0;
-            for (int i = 0; i < args.Count; ++i)
+            for (int i = 0; i < args.Length; ++i)
             {
                 int rcvdTypeId = args[i].TypeUID;
                 System.Type rcvdType = args[i].Type;
@@ -172,14 +172,14 @@ namespace ProtoCore
             return distance;
         }
 
-        internal int ComputeTypeDistance(List<CLRStackValue> args, MSILRuntimeCore runtimeCore, bool allowArrayPromotion = false)
+        internal int ComputeTypeDistance(CLRStackValue[] args, MSILRuntimeCore runtimeCore, bool allowArrayPromotion = false)
         {
-            if (args.Count == 0 && FormalParams.Count == 0)
+            if (args.Length == 0 && FormalParams.Count == 0)
             {
                 return (int)ProcedureDistance.ExactMatchDistance;
             }
 
-            if (args.Count != FormalParams.Count)
+            if (args.Length != FormalParams.Count)
             {
                 return (int)ProcedureDistance.MaxDistance;
             }
@@ -187,7 +187,7 @@ namespace ProtoCore
             int distance = (int)ProcedureDistance.MaxDistance;
             // Jun Comment:
             // Default args not provided by the caller would have been pushed by the call instruction as optype = DefaultArs
-            for (int i = 0; i < args.Count; ++i)
+            for (int i = 0; i < args.Length; ++i)
             {
                 System.Type rcvdType = args[i].Type;
                 int rcvdTypeId = args[i].TypeUID;
@@ -262,9 +262,9 @@ namespace ProtoCore
             return distance;
         }
 
-        public bool DoesTypeDeepMatch(List<CLRStackValue> formalParameters, MSILRuntimeCore runtimeCore)
+        public bool DoesTypeDeepMatch(CLRStackValue[] formalParameters, MSILRuntimeCore runtimeCore)
         {
-            if (formalParameters.Count != FormalParams.Count)
+            if (formalParameters.Length != FormalParams.Count)
                 return false;
 
             for (int i = 0; i < FormalParams.Count; i++)

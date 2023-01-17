@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ProtoCore.DSASM;
@@ -273,17 +273,18 @@ namespace ProtoCore.Lang.Replication
             return reducedParams;
         }
 
-        internal static List<List<CLRStackValue>> ComputeAllReducedParams(
-            List<CLRStackValue> formalParams,
+        internal static List<CLRStackValue[]> ComputeAllReducedParams(
+            CLRStackValue[] formalParams,
             List<ReplicationInstruction> replicationInstructions,
             MSILRuntimeCore runtimeCore,
             bool performArraySampling = true)
         {
             //Copy the types so unaffected ones get copied back directly
-            var basicList = new List<CLRStackValue>(formalParams);
+            CLRStackValue[] basicList = new CLRStackValue[formalParams.Length];
+            Array.Copy(formalParams, basicList, formalParams.Length);
 
             //Compute the reduced Type args
-            var reducedParams = new List<List<CLRStackValue>>();
+            var reducedParams = new List<CLRStackValue[]>();
             reducedParams.Add(basicList);
 
             foreach (var ri in replicationInstructions)
@@ -325,14 +326,16 @@ namespace ProtoCore.Lang.Replication
                         arrayStats.UnionWith(temp);
                     }
 
-                    var clonedList = new List<List<CLRStackValue>>(reducedParams);
+                    var clonedList = new List<CLRStackValue[]>(reducedParams);
                     reducedParams.Clear();
 
                     foreach (var sv in arrayStats)
                     {
                         foreach (var lst in clonedList)
                         {
-                            var newArgs = new List<CLRStackValue>(lst);
+                            var newArgs = new CLRStackValue[lst.Length];
+                            lst.CopyTo(newArgs, 0);
+                            
                             newArgs[index] = sv;
                             reducedParams.Add(newArgs);
                         }
@@ -416,10 +419,12 @@ namespace ProtoCore.Lang.Replication
         /// <param name="formalParams"></param>
         /// <param name="replicationInstructions"></param>
         /// <returns></returns>
-        internal static List<CLRStackValue> EstimateReducedParams(List<CLRStackValue> formalParams, List<ReplicationInstruction> replicationInstructions)
+        internal static CLRStackValue[] EstimateReducedParams(CLRStackValue[] formalParams, List<ReplicationInstruction> replicationInstructions)
         {
             //Compute the reduced Type args
-            List<CLRStackValue> reducedParamTypes = new List<CLRStackValue>(formalParams);
+            var reducedParamTypes = new CLRStackValue[formalParams.Length];
+            formalParams.CopyTo(reducedParamTypes, 0);
+
             foreach (ReplicationInstruction ri in replicationInstructions)
             {
                 var indices = ri.Zipped ? ri.ZipIndecies : new List<int> { ri.CartesianIndex };
@@ -435,7 +440,7 @@ namespace ProtoCore.Lang.Replication
                         //It is a collection, so cast it to an array and pull the type of the first element
                         //The elements of the array are still type structures
                         if (array.Count == 0)
-                            reducedSV = CLRStackValue.Null;
+                            reducedSV = CLRStackValueHelper.Null;
                         else
                             reducedSV = array[0];
                     }
@@ -589,7 +594,7 @@ namespace ProtoCore.Lang.Replication
         /// <param name="formalParams"></param>
         /// <param name="runtimeCore"></param>
         /// <returns></returns>
-        internal static List<List<ReplicationInstruction>> BuildReplicationCombinations(List<ReplicationInstruction> providedControl, List<CLRStackValue> formalParams)
+        internal static List<List<ReplicationInstruction>> BuildReplicationCombinations(List<ReplicationInstruction> providedControl, CLRStackValue[] formalParams)
         {
             List<int> maxReductionDepths = formalParams.Select(p => ArrayUtils.GetMaxRankForArray(p)).ToList();
 

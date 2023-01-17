@@ -104,7 +104,7 @@ namespace ProtoCore
         }
 
         internal static bool CanGetExactMatchStatics(
-            List<List<CLRStackValue>> reducedFormalParams,
+            List<CLRStackValue[]> reducedFormalParams,
             List<CLRFunctionEndPoint> funcGroup,
             MSILRuntimeCore runtimeCore,
             out HashSet<CLRFunctionEndPoint> lookup)
@@ -114,7 +114,7 @@ namespace ProtoCore
             if (reducedFormalParams.Count == 0)
                 return false;
 
-            foreach (List<CLRStackValue> formalParamSet in reducedFormalParams)
+            foreach (var formalParamSet in reducedFormalParams)
             {
                 List<CLRFunctionEndPoint> feps = GetExactTypeMatches(formalParamSet, funcGroup, new List<ReplicationInstruction>(), runtimeCore);
                 if (feps.Count == 0)
@@ -177,13 +177,13 @@ namespace ProtoCore
         }
 
         internal static List<CLRFunctionEndPoint> GetExactTypeMatches(
-            List<CLRStackValue> formalParams,
+            CLRStackValue[] formalParams,
             List<CLRFunctionEndPoint> feps,
             List<ReplicationInstruction> replicationInstructions, 
             MSILRuntimeCore runtimeCore)
         {
             List<CLRFunctionEndPoint> ret = new List<CLRFunctionEndPoint>();
-            List<List<CLRStackValue>> allReducedParamSVs = Replicator.ComputeAllReducedParams(formalParams, replicationInstructions, runtimeCore);
+            List<CLRStackValue[]> allReducedParamSVs = Replicator.ComputeAllReducedParams(formalParams, replicationInstructions, runtimeCore);
 
             //@TODO(Luke): Need to add type statistics checks to the below if it is an array to stop int[] matching char[]
 
@@ -254,7 +254,7 @@ namespace ProtoCore
 
         internal static Dictionary<CLRFunctionEndPoint, int> GetLooseConversionDistances(
             List<CLRFunctionEndPoint> functionEndPoints,
-            List<CLRStackValue> formalParams,
+            CLRStackValue[] formalParams,
             List<ReplicationInstruction> replicationInstructions,
             MSILRuntimeCore runtimeCore)
         {
@@ -278,13 +278,13 @@ namespace ProtoCore
         }
 
         internal static Dictionary<CLRFunctionEndPoint, int> GetConversionDistances(List<CLRFunctionEndPoint> functionEndPoints,
-            List<CLRStackValue> formalParams, List<ReplicationInstruction> replicationInstructions,
+            CLRStackValue[] formalParams, List<ReplicationInstruction> replicationInstructions,
             MSILRuntimeCore runtimeCore, bool allowArrayPromotion = false)
         {
             Dictionary<CLRFunctionEndPoint, int> ret = new Dictionary<CLRFunctionEndPoint, int>();
 
             //@PERF: Consider parallelising this
-            List<CLRStackValue> reducedParamSVs = Replicator.EstimateReducedParams(formalParams, replicationInstructions);
+            CLRStackValue[] reducedParamSVs = Replicator.EstimateReducedParams(formalParams, replicationInstructions);
 
             foreach (var fep in functionEndPoints)
             {
@@ -333,11 +333,11 @@ namespace ProtoCore
             return ret;
         }
 
-        internal static bool CheckInvalidArrayCoercion(CLRFunctionEndPoint fep, List<CLRStackValue> reducedSVs, MSILRuntimeCore runtimeCore, bool allowArrayPromotion)
+        internal static bool CheckInvalidArrayCoercion(CLRFunctionEndPoint fep, CLRStackValue[] reducedSVs, MSILRuntimeCore runtimeCore, bool allowArrayPromotion)
         {
             ClassTable classTable = runtimeCore.ClassTable;
 
-            for (int i = 0; i < reducedSVs.Count; i++)
+            for (int i = 0; i < reducedSVs.Length; i++)
             {
                 Type typ = fep.FormalParams[i].ProtoInfo;
                 if (typ.UID == (int)ProtoCore.PrimitiveType.InvalidType)
@@ -506,12 +506,12 @@ namespace ProtoCore
             return ret;
         }
 
-        internal static Dictionary<CLRFunctionEndPoint, int> GetCastDistances(List<CLRFunctionEndPoint> funcGroup, List<CLRStackValue> formalParams, List<ReplicationInstruction> replicationInstructions)
+        internal static Dictionary<CLRFunctionEndPoint, int> GetCastDistances(List<CLRFunctionEndPoint> funcGroup, CLRStackValue[] formalParams, List<ReplicationInstruction> replicationInstructions)
         {
             Dictionary<CLRFunctionEndPoint, int> ret = new Dictionary<CLRFunctionEndPoint, int>();
 
             //@PERF: Consider parallelising this
-            List<CLRStackValue> reducedParamSVs = Replicator.EstimateReducedParams(formalParams, replicationInstructions);
+            var reducedParamSVs = Replicator.EstimateReducedParams(formalParams, replicationInstructions);
             foreach (CLRFunctionEndPoint fep in funcGroup)
             {
                 int dist = fep.ComputeCastDistance(reducedParamSVs);

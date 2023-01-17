@@ -10,18 +10,21 @@ using ProtoCore.DSASM;
 using ProtoCore.Utils;
 using ProtoCore.Runtime;
 using System.Text;
+using ProtoFFI;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace EmitMSIL
 {
     [Obsolete("This is an internal class, do not use it.")]
     public class Replication
     {
-        internal static List<CLRStackValue> MarshalFunctionArguments(IList args, MSILRuntimeCore runtimeCore)
+        internal static CLRStackValue[] MarshalFunctionArguments(IList args, CLRObjectMarshaler marshaller, MSILRuntimeCore runtimeCore)
         {
-            var marshaller = ProtoFFI.CLRDLLModule.GetMarshaler(runtimeCore);
-            List<CLRStackValue> stackValues = new List<CLRStackValue>();
-            foreach (var arg in args)
+            CLRStackValue[] stackValues = new CLRStackValue[args.Count];
+            for (int ii=0; ii<args.Count; ii++)
             {
+                var arg = args[ii];
                 CLRStackValue dsObj;
                 if (arg != null)
                 {
@@ -38,23 +41,29 @@ namespace EmitMSIL
                 }
                 else
                 {
-                    dsObj = CLRStackValue.Null;
+                    dsObj = CLRStackValueHelper.Null;
                 }
 
-                stackValues.Add(dsObj);
+                stackValues[ii] = dsObj;
             }
             return stackValues;
         }
 
         public static IList<object> UnMarshalFunctionArguments2(IEnumerable<CLRFunctionEndPoint> feps, IEnumerable args, MSILRuntimeCore runtimeCore)
         {
+            var marshaller = ProtoFFI.CLRDLLModule.GetMarshaler(runtimeCore);
+
             //TODO_MSIL figure out how to handle multiple feps here.
-            return UnmarshalFunctionArguments(feps.FirstOrDefault().FormalParams, (IList)args, runtimeCore).ToArray();
+            return UnmarshalFunctionArguments(feps.FirstOrDefault().FormalParams, (IList)args, marshaller, runtimeCore).ToArray();
         }
 
-        internal static List<object> UnmarshalFunctionArguments(List<CLRFunctionEndPoint.ParamInfo> formalParams, IList args, MSILRuntimeCore runtimeCore)
+        internal static List<object> UnmarshalFunctionArguments(
+            List<CLRFunctionEndPoint.ParamInfo> formalParams,
+            IList args,
+            FFIObjectMarshaler marshaller,
+            MSILRuntimeCore runtimeCore,
+            HashSet<int> cachedMarshallers = null)
         {
-            var marshaller = ProtoFFI.CLRDLLModule.GetMarshaler(runtimeCore);
             List<object> values = new List<object>();
 
             Validity.Assert(formalParams.Count == args.Count);
@@ -76,7 +85,19 @@ namespace EmitMSIL
                             param = System.Type.Missing;
                         else
                         {
-                            param = marshaller.UnMarshal(arg, paramType, runtimeCore);
+                            if (cachedMarshallers != null &&
+                                cachedMarshallers.Contains(arg.TypeUID))
+                            {
+                                param = arg.Value;
+                            }
+                            else
+                            {
+                                param = marshaller.UnMarshal(arg, paramType, runtimeCore);
+                                if (cachedMarshallers != null)
+                                {
+                                    cachedMarshallers.Add(arg.TypeUID);
+                                }
+                            }
                         }
 
                         /*TODO_MSIL: Figure out how to set/use these flags
@@ -96,7 +117,6 @@ namespace EmitMSIL
 
                             return null;
                             //throw new System.InvalidCastException(string.Format("Null value cannot be cast to {0}", paraminfos[i].ParameterType.Name));
-
                         }
 
                         values.Add(param);
@@ -112,9 +132,7 @@ namespace EmitMSIL
                         runtimeCore.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, message);
                         return null;
                     }
-
                 }
-
             }
             return values;
         }
@@ -129,7 +147,7 @@ namespace EmitMSIL
         /// <returns></returns>
         private static CLRFunctionEndPoint SelectFinalFep(
             List<CLRFunctionEndPoint> functionEndPoints,
-            List<CLRStackValue> formalParameters,
+            CLRStackValue[] formalParameters,
             MSILRuntimeCore runtimeCore)
         {
             //Filter for exact matches
@@ -208,42 +226,111 @@ namespace EmitMSIL
         [Obsolete("This is an internal function, do not use it.")]
         public static CLRStackValue ReplicationLogic(List<CLRFunctionEndPoint> feps, IList args, string[][] replicationAttrs, MSILRuntimeCore runtimeCore)
         {
-            // TODO_MSIL: Emit these CLRStackValue's from the CodeGen stage.
-            var stackValues = MarshalFunctionArguments(args, runtimeCore);
+            var st = Stopwatch.StartNew();
+            st.Start();
 
-            // Construct replicationGuides from replicationAttrs
-            var replicationGuides = ConstructRepGuides(replicationAttrs);
-
-            var partialReplicationGuides = PerformRepGuideDemotion(stackValues, replicationGuides);
-
-            //Replication Control is an ordered list of the elements that we have to replicate over
-            //Ordering implies containment, so element 0 is the outer most forloop, element 1 is nested within it etc.
-            //Take the explicit replication guides and build the replication structure
-            //Turn the replication guides into a guide -> List args data structure
-            var partialInstructions = Replicator.BuildPartialReplicationInstructions(partialReplicationGuides);
-
-            List<CLRFunctionEndPoint> resolvedFeps;
-            List<ReplicationInstruction> replicationInstructions;
-            ComputeFeps(stackValues, feps, partialInstructions, runtimeCore, out resolvedFeps, out replicationInstructions);
-            Validity.Assert(resolvedFeps.Count > 0, "Expected to resolve at least a function endpoint");
-
-            var finalFep = SelectFinalFep(resolvedFeps, stackValues, runtimeCore);
-            Validity.Assert(finalFep != null, "Expected to find a function endpoint");
-
-            CLRStackValue result;
-            if (replicationInstructions.Count == 0)
+            using (Dynamo.Scheduler.Disposable.Create(() =>
             {
-                // TODO: Ideally, we should not reach here as no-replication cases should ideally be all handled
-                // at compile-time. Uncomment the following Validity.Assert to debug these remaining cases.
-                //Validity.Assert(replicationInstructions.Count != 0,
-                //    "No-replication case, not expected to be handled inside ReplicationLogic function.");
-                result = ExecWithZeroRI(finalFep, stackValues, runtimeCore);
-            }
-            else //replicated call
+                st.Stop();
+                Debug.WriteLine($"Replication finished in {st.ElapsedMilliseconds} milliseconds");
+                System.Console.WriteLine($"Replication finished in {st.ElapsedMilliseconds} milliseconds");
+            }))
             {
-                result = ExecWithRISlowPath(finalFep, stackValues, replicationInstructions, runtimeCore);
+                var marshaller = CLRDLLModule.GetMarshaler(runtimeCore);
+
+                // TODO_MSIL: Emit these CLRStackValue's from the CodeGen stage.
+                var stackValues = MarshalFunctionArguments(args, marshaller, runtimeCore);
+
+                // Construct replicationGuides from replicationAttrs
+                var replicationGuides = ConstructRepGuides(replicationAttrs);
+
+                var partialReplicationGuides = PerformRepGuideDemotion(stackValues, replicationGuides);
+
+                //Replication Control is an ordered list of the elements that we have to replicate over
+                //Ordering implies containment, so element 0 is the outer most forloop, element 1 is nested within it etc.
+                //Take the explicit replication guides and build the replication structure
+                //Turn the replication guides into a guide -> List args data structure
+                var partialInstructions = Replicator.BuildPartialReplicationInstructions(partialReplicationGuides);
+
+                List<CLRFunctionEndPoint> resolvedFeps;
+                List<ReplicationInstruction> replicationInstructions;
+                ComputeFeps(stackValues, feps, partialInstructions, runtimeCore, out resolvedFeps, out replicationInstructions);
+                Validity.Assert(resolvedFeps.Count > 0, "Expected to resolve at least a function endpoint");
+
+                var finalFep = SelectFinalFep(resolvedFeps, stackValues, runtimeCore);
+                Validity.Assert(finalFep != null, "Expected to find a function endpoint");
+
+                object result;
+                if (replicationInstructions.Count == 0)
+                {
+                    // TODO: Ideally, we should not reach here as no-replication cases should ideally be all handled
+                    // at compile-time. Uncomment the following Validity.Assert to debug these remaining cases.
+                    //Validity.Assert(replicationInstructions.Count != 0,
+                    //    "No-replication case, not expected to be handled inside ReplicationLogic function.");
+                    result = ExecWithZeroRI(finalFep, stackValues, marshaller, runtimeCore);
+
+                    CLRStackValue dsRetValue = marshaller.Marshal(result, finalFep.ProtoCoreReturnType, runtimeCore);
+
+                    //TODO_MSIL this is always false, and the comment below does not make sense.
+                    // An explicit call requires return coercion at the return instruction
+                    if (!dsRetValue.IsExplicitCall)
+                    {
+                        dsRetValue = CallSite.PerformReturnTypeCoerce(finalFep.ProtoCoreReturnType, dsRetValue, runtimeCore);
+                    }
+
+                    dsRetValue.CLRFEPReturnType = finalFep.CLRReturnType;
+                    return dsRetValue;
+                }
+                else //replicated call
+                {
+                    HashSet<int> cachedMarshallers = new HashSet<int>();
+                    var results = ExecWithRISlowPath(finalFep, stackValues, replicationInstructions, marshaller, runtimeCore, cachedMarshallers) as Object[];
+
+                    var stackVals = new CLRStackValue[results.Length];
+                    if (finalFep.CLRReturnType.IsValueType)// Check if array is hommogenous
+                    {
+                        CLRStackValue dsRetValue = marshaller.Marshal(results.GetValue(0), finalFep.ProtoCoreReturnType, runtimeCore);
+
+                        //TODO_MSIL this is always false, and the comment below does not make sense.
+                        // An explicit call requires return coercion at the return instruction
+                        if (!dsRetValue.IsExplicitCall)
+                        {
+                            dsRetValue = CallSite.PerformReturnTypeCoerce(finalFep.ProtoCoreReturnType, dsRetValue, runtimeCore);
+                        }
+
+                        for (int ii = 0; ii < results.Length; ii++)
+                        {
+                            stackVals[ii] = CLRStackValueHelper.Make(results.GetValue(ii), dsRetValue.TypeUID, dsRetValue.CLRFEPReturnType);
+                        }
+                    }
+                    else
+                    {
+                        var cache = new Dictionary<System.Type, int>();
+                        for (int ii = 0; ii < results.Length; ii++)
+                        {
+                            var val = results.GetValue(ii);
+                            if (cache.TryGetValue(val.GetType(), out int vl))
+                            {
+                                stackVals[ii] = CLRStackValueHelper.Make(val, vl, finalFep.CLRReturnType);
+                                continue;
+                            }
+                            CLRStackValue dsRetValue = marshaller.Marshal(val, finalFep.ProtoCoreReturnType, runtimeCore);
+
+                            //TODO_MSIL this is always false, and the comment below does not make sense.
+                            // An explicit call requires return coercion at the return instruction
+                            if (!dsRetValue.IsExplicitCall)
+                            {
+                                dsRetValue = CallSite.PerformReturnTypeCoerce(finalFep.ProtoCoreReturnType, dsRetValue, runtimeCore);
+                            }
+
+                            dsRetValue.CLRFEPReturnType = finalFep.CLRReturnType;
+                            cache.Add(dsRetValue.Type, dsRetValue.TypeUID);
+                            stackVals[ii] = dsRetValue;
+                        }
+                    }
+                    return CLRStackValueHelper.Make(stackVals, (int)ProtoCore.PrimitiveType.Array, finalFep.CLRReturnType.MakeArrayType());
+                }
             }
-            return result;
         }
 
         private static List<List<ReplicationGuide>> ConstructRepGuides(string[][] replicationAttrs)
@@ -280,14 +367,14 @@ namespace EmitMSIL
         /// <param name="arguments"></param>
         /// <param name="partialReplicationGuides"></param>
         /// <returns></returns>
-        private static List<List<ReplicationGuide>> PerformRepGuideDemotion(List<CLRStackValue> arguments,
+        private static List<List<ReplicationGuide>> PerformRepGuideDemotion(CLRStackValue[] arguments,
             List<List<ReplicationGuide>> providedReplicationGuides)
         {
             if (providedReplicationGuides.Count == 0)
                 return providedReplicationGuides;
 
             //Check if rep guide demotion needed (each time there is a rep guide, the value is a single)
-            for (int i = 0; i < arguments.Count; i++)
+            for (int i = 0; i < arguments.Length; i++)
             {
                 if (providedReplicationGuides[i].Count == 0)
                 {
@@ -346,7 +433,7 @@ namespace EmitMSIL
         /// <param name="allowArrayPromotion"></param>
         /// <returns></returns>
         private static CLRFunctionEndPoint GetCompliantFEP(
-            List<CLRStackValue> arguments,
+            CLRStackValue[] arguments,
             List<CLRFunctionEndPoint> funcGroup,
             List<ReplicationInstruction> replicationInstructions,
             MSILRuntimeCore runtimeCore,
@@ -392,7 +479,7 @@ namespace EmitMSIL
         private static CLRFunctionEndPoint SelectFEPFromMultiple(
             MSILRuntimeCore runtimeCore,
             List<CLRFunctionEndPoint> feps,
-            List<CLRStackValue> argumentsList)
+            CLRStackValue[] argumentsList)
         {
             /*TODO_MSIL: figure out the this ptr context
             Validity.Assert(thisPtr.IsNull || thisPtr.IsPointer,
@@ -451,7 +538,7 @@ namespace EmitMSIL
             {
                 int numArbitraryRanks = 0;
 
-                for (int i = 0; i < argumentsList.Count; i++)
+                for (int i = 0; i < argumentsList.Length; i++)
                 {
                     if (fep.FormalParams[i].Rank == Constants.kArbitraryRank)
                         numArbitraryRanks++;
@@ -507,7 +594,7 @@ namespace EmitMSIL
         /// <param name="runtimeCore"></param>
         /// <returns></returns>
         private static CLRFunctionEndPoint GetCompleteMatchFunctionEndPoint(
-            List<CLRStackValue> arguments,
+            CLRStackValue[] arguments,
             List<CLRFunctionEndPoint> funcGroup,
             List<ReplicationInstruction> replicationInstructions,
             MSILRuntimeCore runtimeCore)
@@ -547,7 +634,7 @@ namespace EmitMSIL
         /// <param name="candidatesWithDistances"></param>
         /// <returns></returns>
         private static CLRFunctionEndPoint GetCompliantTarget(
-            List<CLRStackValue> formalParams,
+            CLRStackValue[] formalParams,
             MSILRuntimeCore runtimeCore,
             Dictionary<CLRFunctionEndPoint, int> candidatesWithCastDistances,
             List<CLRFunctionEndPoint> candidateFunctions,
@@ -615,7 +702,7 @@ namespace EmitMSIL
         /// <param name="runtimeCore"></param>
         /// <returns></returns>
         private static CLRFunctionEndPoint GetLooseCompliantFEP(
-           List<CLRStackValue> arguments,
+           CLRStackValue[] arguments,
            List<CLRFunctionEndPoint> funcGroup,
            List<ReplicationInstruction> replicationInstructions,
            MSILRuntimeCore runtimeCore)
@@ -657,7 +744,7 @@ namespace EmitMSIL
         /// <param name="resolvedFeps">A list of resolved function endpoints</param>
         /// <param name="replicationInstructions">A list of resolved replication instructions</param>
         private static void ComputeFeps(
-            List<CLRStackValue> arguments,
+            CLRStackValue[] arguments,
             List<CLRFunctionEndPoint> funcGroup,
             List<ReplicationInstruction> instructions,
             MSILRuntimeCore runtimeCore,
@@ -687,7 +774,7 @@ namespace EmitMSIL
                 //Build the possible ways in which we might replicate
                 foreach (List<ReplicationInstruction> replicationOption in replicationTrials)
                 {
-                    List<List<CLRStackValue>> reducedParams = Replicator.ComputeAllReducedParams(arguments, replicationOption, runtimeCore);
+                    List<CLRStackValue[]> reducedParams = Replicator.ComputeAllReducedParams(arguments, replicationOption, runtimeCore);
                     HashSet<CLRFunctionEndPoint> lookups;
                     if (FunctionGroup.CanGetExactMatchStatics(reducedParams, funcGroup, runtimeCore, out lookups))
                     {
@@ -791,39 +878,29 @@ namespace EmitMSIL
         /// <param name="formalParameters"></param>
         /// <param name="runtimeCore"></param>
         /// <returns></returns>
-        private static CLRStackValue ExecWithZeroRI(CLRFunctionEndPoint finalFep, List<CLRStackValue> formalParameters, MSILRuntimeCore runtimeCore)
+        private static object ExecWithZeroRI(CLRFunctionEndPoint finalFep, CLRStackValue[] formalParameters,
+            FFIObjectMarshaler marshaller, MSILRuntimeCore runtimeCore, HashSet<int> cachedMarshallers = null)
         {
             List<CLRStackValue> coercedParameters = finalFep.CoerceParameters(formalParameters, runtimeCore);
 
-            List<object> args = UnmarshalFunctionArguments(finalFep.FormalParams, coercedParameters, runtimeCore);
+            List<object> args = UnmarshalFunctionArguments(finalFep.FormalParams, coercedParameters, marshaller, runtimeCore, cachedMarshallers);
 
             // Testing invoking method without replication
             object result = finalFep.Invoke(args);
-            
-            var marshaller = ProtoFFI.CLRDLLModule.GetMarshaler(runtimeCore);
-            CLRStackValue dsRetValue = marshaller.Marshal(result, finalFep.ProtoCoreReturnType, runtimeCore);
 
-            //TODO_MSIL this is always false, and the comment below does not make sense.
-            // An explicit call requires return coercion at the return instruction
-            if (!dsRetValue.IsExplicitCall)
-            {
-                dsRetValue = CallSite.PerformReturnTypeCoerce(finalFep.ProtoCoreReturnType, dsRetValue, runtimeCore);
-            }
-
-            dsRetValue.CLRFEPReturnType = finalFep.CLRReturnType;
-            return dsRetValue;
+            return result;
         }
 
-        private static IList<CLRStackValue> getSubParameters(CLRStackValue o)
+        private static CLRStackValue[] getSubParameters(CLRStackValue o)
         {
 
             if (o.IsEnumerable)
             {
-                return o.Value as IList<CLRStackValue>;
+                return o.Value as CLRStackValue[];
             }
             else
             {
-                return new List<CLRStackValue>() { o };
+                return new CLRStackValue[] { o };
             }
         }
 
@@ -836,13 +913,17 @@ namespace EmitMSIL
         /// <param name="runtimeCore"></param>
         /// <returns></returns>
         /// <exception cref="ReplicationCaseNotCurrentlySupported"></exception>
-        private static CLRStackValue ExecWithRISlowPath(CLRFunctionEndPoint finalFep, List<CLRStackValue> formalParameters,
-            List<ReplicationInstruction> replicationInstructions, MSILRuntimeCore runtimeCore)
+        private static object ExecWithRISlowPath(CLRFunctionEndPoint finalFep,
+            CLRStackValue[] formalParameters,
+            List<ReplicationInstruction> replicationInstructions,
+            FFIObjectMarshaler marshaller,
+            MSILRuntimeCore runtimeCore,
+            HashSet<int> cachedMarshallers)
         {
             //Recursion base case
             if (replicationInstructions.Count == 0)
             {
-                return ExecWithZeroRI(finalFep, formalParameters, runtimeCore);
+                return ExecWithZeroRI(finalFep, formalParameters, marshaller, runtimeCore, cachedMarshallers);
             }
 
             //Get the replication instruction that this call will deal with
@@ -878,7 +959,7 @@ namespace EmitMSIL
                 foreach (int repIndex in repIndecies)
                 {
                     // TODO: Investigate convertToArray performance
-                    var subParameters = getSubParameters(formalParameters[repIndex]).ToArray();
+                    var subParameters = getSubParameters(formalParameters[repIndex]);
                     parameters.Add(subParameters);
 
                     if (subParameters.Length == 0)
@@ -893,7 +974,6 @@ namespace EmitMSIL
                             retSize = Math.Max(retSize, subParameters.Length); //We need the longest array
                             break;
                     }
-
                 }
 
                 // If we're being asked to replicate across an empty list
@@ -902,11 +982,12 @@ namespace EmitMSIL
                 if (hasEmptyArg)
                     retSize = 0;
 
-                var retSVs = new CLRStackValue[retSize];
+                var retSVs = new object[retSize];
                 for (int i = 0; i < retSize; i++)
                 {
                     //Build the call
-                    List<CLRStackValue> newFormalParams = formalParameters.ToList();
+                    var newFormalParams = new CLRStackValue[formalParameters.Length];
+                    formalParameters.CopyTo(newFormalParams, 0);
                     for (int repIi = 0; repIi < repIndecies.Count; repIi++)
                     {
                         switch (algorithm)
@@ -932,13 +1013,10 @@ namespace EmitMSIL
                     }
 
                     List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count - 1);
-                    retSVs[i] = ExecWithRISlowPath(finalFep, newFormalParams, newRIs, runtimeCore);
+                    retSVs[i] = ExecWithRISlowPath(finalFep, newFormalParams, newRIs, marshaller, runtimeCore, cachedMarshallers);
                 }
 
-                //TODO will this always be array?
-                //TODO can we avoid calling toList() - would be nice to avoid iterating and copying..
-                //span?
-                return new CLRStackValue(retSVs.ToList(), (int)ProtoCore.PrimitiveType.Array, retSVs[0].CLRFEPReturnType.MakeArrayType());
+                return retSVs;
             }
             else
             {
@@ -964,16 +1042,17 @@ namespace EmitMSIL
                     suppressArray = true;
                 }
 
-                CLRStackValue[] retSVs = new CLRStackValue[retSize];
+                var retSVs = new object[retSize];
 
                 //Build the call
-                List<CLRStackValue> newFormalParams = formalParameters.ToList();
                 if (suppressArray)
                 {
                     List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count - 1);
-                    return ExecWithRISlowPath(finalFep, newFormalParams, newRIs, runtimeCore);
+                    return ExecWithRISlowPath(finalFep, formalParameters, newRIs, marshaller, runtimeCore, cachedMarshallers);
                 }
 
+                var newFormalParams = new CLRStackValue[formalParameters.Length];
+                formalParameters.CopyTo(newFormalParams, 0);
                 //Now iterate over each of these options
                 for (int i = 0; i < retSize; i++)
                 {
@@ -981,13 +1060,10 @@ namespace EmitMSIL
                     newFormalParams[cartIndex] = array[i];
 
                     List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count - 1);
-                    retSVs[i] = ExecWithRISlowPath(finalFep, newFormalParams, newRIs, runtimeCore);
+                    retSVs[i] = ExecWithRISlowPath(finalFep, newFormalParams, newRIs, marshaller, runtimeCore, cachedMarshallers);
                 }
 
-                //TODO will this always be array?
-                //TODO can we avoid calling toList() - would be nice to avoid iterating and copying..
-                //span?
-                return new CLRStackValue(retSVs.ToList(), (int)ProtoCore.PrimitiveType.Array, retSVs[0].CLRFEPReturnType.MakeArrayType());
+                return retSVs;
             }
         }
     }

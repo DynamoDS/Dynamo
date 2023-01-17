@@ -136,7 +136,7 @@ namespace ProtoFFI
         internal override CLRStackValue Marshal(object obj, ProtoCore.Type type, ProtoCore.MSILRuntimeCore runtime)
         {
             object value = obj.GetType() == typeof(long) ? obj : Convert.ToInt64(obj);
-            return new CLRStackValue(value, (int)ProtoCore.PrimitiveType.Integer);
+            return CLRStackValueHelper.Make(value, (int)ProtoCore.PrimitiveType.Integer);
         }
 
         internal override object UnMarshal(CLRStackValue dsObject, System.Type type, ProtoCore.MSILRuntimeCore runtimeCore)
@@ -189,7 +189,7 @@ namespace ProtoFFI
         internal override CLRStackValue Marshal(object obj, ProtoCore.Type type, ProtoCore.MSILRuntimeCore runtime)
         {
             object value = obj.GetType() == typeof(double) ? obj : Convert.ToDouble(obj);
-            return new CLRStackValue(value, (int)ProtoCore.PrimitiveType.Double);
+            return CLRStackValueHelper.Make(value, (int)ProtoCore.PrimitiveType.Double);
         }
 
         internal override object UnMarshal(CLRStackValue dsObject, System.Type type, ProtoCore.MSILRuntimeCore runtimeCore)
@@ -225,7 +225,7 @@ namespace ProtoFFI
 
         internal override CLRStackValue Marshal(object obj, ProtoCore.Type type, ProtoCore.MSILRuntimeCore runtime)
         {
-            return new CLRStackValue(obj, (int)ProtoCore.PrimitiveType.Bool);
+            return CLRStackValueHelper.Make(obj, (int)ProtoCore.PrimitiveType.Bool);
         }
 
         internal override object UnMarshal(CLRStackValue dsObject, System.Type type, ProtoCore.MSILRuntimeCore runtimeCore)
@@ -254,7 +254,7 @@ namespace ProtoFFI
 
         internal override CLRStackValue Marshal(object obj, ProtoCore.Type type, ProtoCore.MSILRuntimeCore runtime)
         {
-            return new CLRStackValue(obj, (int)ProtoCore.PrimitiveType.Char);
+            return CLRStackValueHelper.Make(obj, (int)ProtoCore.PrimitiveType.Char);
         }
 
         internal override object UnMarshal(CLRStackValue dsObject, System.Type type, ProtoCore.MSILRuntimeCore runtimeCore)
@@ -566,23 +566,35 @@ namespace ProtoFFI
 
         internal override CLRStackValue Marshal(object obj, ProtoCore.Type type, ProtoCore.MSILRuntimeCore runtimeCore)
         {
-            var collection = obj as IEnumerable;
+            var collection = obj as Array;
             Validity.Assert(null != collection, "Expected IEnumerable object for marshaling as collection");
             if (null == collection)
-                return CLRStackValue.Null;
+                return CLRStackValueHelper.Null;
 
-            List<CLRStackValue> svs = new List<CLRStackValue>();
-            foreach (var item in collection)
+            var svs = new CLRStackValue[collection.Length];
+            if (collection.Length > 0)
             {
-                if (item is CLRStackValue oldSv)
+                var first = collection.GetValue(0);
+                if (first is CLRStackValue)
                 {
-                    svs.Add(oldSv);
-                    continue;
+                    collection.CopyTo(svs, 0);
                 }
-                var newSv = primitiveMarshaler.Marshal(item, GetApproxDSType(item), runtimeCore);
-                svs.Add(newSv);
+                else
+                {
+                    // We need to verify if the collection is an array of a single type (not object - which can box any type)
+                    // should we unbox here and verify if hommogenous ?
+                    // or should we expect that output values are unboxed and if hommogenous then already as array of type ?
+                    var newSv = primitiveMarshaler.Marshal(first, GetApproxDSType(first), runtimeCore);
+                    svs[0] = newSv;
+
+                    for (int ii = 1; ii < collection.Length; ii++)
+                    {
+                        var item = collection.GetValue(ii);
+                        svs[ii] = CLRStackValueHelper.Make(item, newSv.TypeUID, newSv.CLRFEPReturnType);
+                    }
+                }
             }
-            return new CLRStackValue(svs, (int)ProtoCore.PrimitiveType.Array);
+            return CLRStackValueHelper.Make(svs, (int)ProtoCore.PrimitiveType.Array);
         }
 
         internal override object UnMarshal(CLRStackValue dsObject, Type expectedCLRType, ProtoCore.MSILRuntimeCore runtimeCore)
@@ -928,7 +940,7 @@ namespace ProtoFFI
 
         internal override CLRStackValue Marshal(object obj, ProtoCore.Type type, ProtoCore.MSILRuntimeCore runtime)
         {
-            return new CLRStackValue(obj, (int)ProtoCore.PrimitiveType.String);
+            return CLRStackValueHelper.Make(obj, (int)ProtoCore.PrimitiveType.String);
         }
 
         internal override object UnMarshal(CLRStackValue dsObject, System.Type type, ProtoCore.MSILRuntimeCore runtimeCore)
@@ -1075,7 +1087,7 @@ namespace ProtoFFI
         {
             //1. Null object is marshaled as null
             if (obj == null)
-                return CLRStackValue.Null;
+                return CLRStackValueHelper.Null;
 
             //2. Get appropriate marshaler for the expectedDSType and objType
             var marshaler = GetMarshalerForDsType(expectedDSType, obj.GetType());
@@ -1221,7 +1233,7 @@ namespace ProtoFFI
             return marshaler;
         }
 
-        private FFIObjectMarshaler GetMarshalerForCLRType(Type clrType, CLRStackValue value)
+        internal FFIObjectMarshaler GetMarshalerForCLRType(Type clrType, CLRStackValue value)
         {
             FFIObjectMarshaler marshaler = null;
             //Expected CLR type is object, get marshaled clrType from dsType
@@ -1635,7 +1647,7 @@ namespace ProtoFFI
                 }
             }
 
-            CLRStackValue retval = new CLRStackValue(obj, mCachedType);
+            CLRStackValue retval = CLRStackValueHelper.Make(obj, mCachedType);
             BindObjects(obj, retval);
 
             return retval;

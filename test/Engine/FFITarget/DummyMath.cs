@@ -1,9 +1,17 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 
 namespace FFITarget
 {
+    public class BaseDummyArg {
+        public int Value;
+    }
+
+    public class DummyArg : BaseDummyArg {
+    }
+
+
     public class DummyMath
     {
         public static double Sum(IEnumerable<double> values)
@@ -65,6 +73,45 @@ namespace FFITarget
         public void Dispose()
         {
             //Don't do anything
+        }
+
+        public double DoStuff(int a, DummyArg x, double d, int c, int b = 0)
+        {
+            return a * x.Value + d - c + b;
+        }
+
+        public double DoStuff(double a, DummyArg x, double d, int c, int b = 0)
+        {
+            return a * x.Value + d - c + b;
+        }
+
+        public double DoStuff(int a, DummyArg x, int d, int c, int b = 0)
+        {
+            return a * x.Value + d - c + b;
+        }
+        public double DoStuff(int a, DummyArg x, double d, int c)
+        {
+            return a * x.Value + d - c;
+        }
+        public double DoStuff(int a, DummyArg x, int c, int b = 0)
+        {
+            return a * x.Value - c + b;
+        }
+        public double DoStuff(int a, DummyBase x, double d, int c, int b = 0)
+        {
+            return a * x.Value + d - c + b;
+        }
+        public double DoStuff(double a, DummyBase x, double d, int c, int b = 0)
+        {
+            return a * x.Value + d - c + b;
+        }
+        public double DoStuff(int a, DummyBase x, double d, int c, double b = 0)
+        {
+            return a * x.Value + d - c + b;
+        }
+        public double DoStuff(int a, DummyArg x, double d, int c, double b = 0)
+        {
+            return a * x.Value + d - c + b;
         }
     }
 }

@@ -12,53 +12,14 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
       "NodeType": "CodeBlockNode",
-      "Code": "0..10;",
+      "Code": "0..1000000;",
       "Id": "3c00790c0f664e679b8efa9691d13f03",
       "Inputs": [],
       "Outputs": [
         {
-          "Id": "3b30baf42eca43788a1368fa65e58a0c",
+          "Id": "99d8605020824d2587792e13d78f2298",
           "Name": "",
           "Description": "Value of expression at line 1",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly"
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "NodeType": "CodeBlockNode",
-      "Code": "a[3];\na[1];",
-      "Id": "7fdc309a4be64b60bb18f6e044119bab",
-      "Inputs": [
-        {
-          "Id": "69dd20570048401584df168f85cbdfea",
-          "Name": "a",
-          "Description": "a",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "9c5e3b7088694c27a9e155efbe17baa9",
-          "Name": "",
-          "Description": "Value of expression at line 1",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "37420a31aa2348da8a8c759bd2b84932",
-          "Name": "",
-          "Description": "Value of expression at line 2",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -106,25 +67,70 @@
       ],
       "Replication": "Auto",
       "Description": "Returns addition of x and y\n\n+ (x: var[]..[], y: var[]..[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "+@var[]..[],var[]..[]",
+      "Id": "ec105f50521747a1b849a91fd6de4d81",
+      "Inputs": [
+        {
+          "Id": "ae4e14f9e4924eefbb779405e6ff15dc",
+          "Name": "x",
+          "Description": "Integer value, double value or string\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "826375c86d0645fdad6f044b15172981",
+          "Name": "y",
+          "Description": "Integer value, double value or string\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "179a34a084e64345bdcc5f08ba91e380",
+          "Name": "var",
+          "Description": "The sum of two input numbers, or the concatenation of two strings",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns addition of x and y\n\n+ (x: var[]..[], y: var[]..[]): var[]..[]"
     }
   ],
   "Connectors": [
     {
-      "Start": "3b30baf42eca43788a1368fa65e58a0c",
-      "End": "69dd20570048401584df168f85cbdfea",
-      "Id": "979e86478fea4aabaa02f4b4228f020d",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "9c5e3b7088694c27a9e155efbe17baa9",
+      "Start": "99d8605020824d2587792e13d78f2298",
       "End": "b61ab7ebb5cf4ae4ad8eae83604adf29",
-      "Id": "6639e230082745279bde58498ad9b179",
+      "Id": "8ae5edbe410241b197d76611452f7988",
       "IsHidden": "False"
     },
     {
-      "Start": "37420a31aa2348da8a8c759bd2b84932",
+      "Start": "99d8605020824d2587792e13d78f2298",
       "End": "9c720b5608f0492fbdcb6f4d6e381173",
-      "Id": "8aecd5f161274654b95ec35acd080bb7",
+      "Id": "d0123e25574f4fefacca7506ce65df08",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "8b5028efe12c447d8c820c50fd2d3352",
+      "End": "ae4e14f9e4924eefbb779405e6ff15dc",
+      "Id": "dd31105d33094affb9826257f78f3a9b",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "8b5028efe12c447d8c820c50fd2d3352",
+      "End": "826375c86d0645fdad6f044b15172981",
+      "Id": "4508d677c07e4c4b902584c344caa9b6",
       "IsHidden": "False"
     }
   ],
@@ -153,8 +159,8 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.16.0.2167",
-      "RunType": "Manual",
+      "Version": "2.17.0.3755",
+      "RunType": "Automatic",
       "RunPeriod": "1000"
     },
     "Camera": {
@@ -182,29 +188,29 @@
         "Y": 331.0
       },
       {
-        "Name": "Code Block",
-        "ShowGeometry": true,
-        "Id": "7fdc309a4be64b60bb18f6e044119bab",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 153.0,
-        "Y": 462.0
-      },
-      {
         "Name": "+",
         "ShowGeometry": true,
         "Id": "058db72d6dec4c50ba37facbbb2e0d84",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 504.0,
-        "Y": 409.0
+        "X": 343.19999999999993,
+        "Y": 337.80000000000007
+      },
+      {
+        "Name": "+",
+        "ShowGeometry": true,
+        "Id": "ec105f50521747a1b849a91fd6de4d81",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 551.19999999999993,
+        "Y": 285.80000000000007
       }
     ],
     "Annotations": [],
-    "X": 0.0,
-    "Y": 0.0,
+    "X": 80.800000000000182,
+    "Y": -221.60000000000002,
     "Zoom": 1.0
   }
 }

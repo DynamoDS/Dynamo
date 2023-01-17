@@ -2086,7 +2086,7 @@ namespace ProtoCore
             {
                 //@TODO(Luke): log no-type coercion possible warning
                 System.Console.WriteLine($"{WarningID.ConversionNotPossible}{Resources.kConvertNonConvertibleTypes}");
-                return CLRStackValue.Null;
+                return CLRStackValueHelper.Null;
             }
         }
 

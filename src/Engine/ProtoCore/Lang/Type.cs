@@ -371,7 +371,7 @@ namespace ProtoCore
             //@TODO: Add proper coersion testing here.
 
             if (targetType.UID == (int)PrimitiveType.Bool)
-                return new CLRStackValue(true, (int)PrimitiveType.Bool);
+                return CLRStackValueHelper.Make(true, (int)PrimitiveType.Bool);
 
             return sv;
         }
@@ -603,7 +603,7 @@ namespace ProtoCore
                   sv.IsEnumerable))
             {
                 System.Console.WriteLine($"{Runtime.WarningID.ConversionNotPossible}{Resources.kConvertNonConvertibleTypes}");
-                return CLRStackValue.Null;
+                return CLRStackValueHelper.Null;
             }
 
             //if it's an array
@@ -613,7 +613,7 @@ namespace ProtoCore
                 //this may only be performed in recursion and is illegal here
                 string errorMessage = String.Format(Resources.kConvertArrayToNonArray, targetType.ToString());
                 System.Console.WriteLine($"{Runtime.WarningID.ConversionNotPossible}{errorMessage}");
-                return CLRStackValue.Null;
+                return CLRStackValueHelper.Null;
             }
 
             if (sv.IsEnumerable &&
@@ -651,7 +651,7 @@ namespace ProtoCore
                     coercedValues.Add(coercedValue);
                 }
 
-                return new CLRStackValue(coercedValues, (int)PrimitiveType.Array);
+                return CLRStackValueHelper.Make(coercedValues, (int)PrimitiveType.Array);
             }
 
             // Null can be converted to Boolean so we will allow it in the case of indexable types
@@ -696,30 +696,30 @@ namespace ProtoCore
             {
                 case (int)PrimitiveType.InvalidType:
                     System.Console.WriteLine($"{Runtime.WarningID.InvalidType}{Resources.kInvalidType}");
-                    return CLRStackValue.Null;
+                    return CLRStackValueHelper.Null;
 
                 case (int)PrimitiveType.Bool:
-                    return sv.ToBoolean();
+                    return CLRStackValueHelper.ToBoolean(sv);
 
                 case (int)PrimitiveType.Char:
                     {
-                        return new CLRStackValue(Convert.ToChar(sv.Value), (int)PrimitiveType.Char);
+                        return CLRStackValueHelper.Make(Convert.ToChar(sv.Value), (int)PrimitiveType.Char);
                     }
 
                 case (int)PrimitiveType.Double:
-                    return sv.ToDouble();
+                    return CLRStackValueHelper.ToDouble(sv);
 
                 case (int)PrimitiveType.FunctionPointer:
                     if (sv.TypeUID != (int)PrimitiveType.FunctionPointer)
                     {
                         //runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.TypeMismatch, Resources.kFailToConverToFunction);
-                        return CLRStackValue.Null;
+                        return CLRStackValueHelper.Null;
                     }
                     return sv;
 
                 case (int)PrimitiveType.Integer:
                     {
-                        return sv.ToInteger();
+                        return CLRStackValueHelper.ToInteger(sv);
                     }
 
                 case (int)PrimitiveType.Null:
@@ -727,7 +727,7 @@ namespace ProtoCore
                         if (sv.TypeUID != (int)PrimitiveType.Null)
                         {
                             //runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.TypeMismatch, Resources.kFailToConverToNull);
-                            return CLRStackValue.Null;
+                            return CLRStackValueHelper.Null;
                         }
                         return sv;
                     }
@@ -737,14 +737,14 @@ namespace ProtoCore
                         if (sv.TypeUID != (int)PrimitiveType.Null)
                         {
                             //runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.TypeMismatch, Resources.kFailToConverToPointer);
-                            return CLRStackValue.Null;
+                            return CLRStackValueHelper.Null;
                         }
                         return sv;
                     }
 
                 case (int)PrimitiveType.String:
                     {
-                        return new CLRStackValue(Convert.ToString(sv.Value), (int)PrimitiveType.String);
+                        return CLRStackValueHelper.Make(Convert.ToString(sv.Value), (int)PrimitiveType.String);
                     }
 
                 case (int)PrimitiveType.Var:
@@ -761,12 +761,12 @@ namespace ProtoCore
                             coercedValues.Add(coercedValue);
                         }
 
-                        return new CLRStackValue(coercedValues, (int)PrimitiveType.Array);
+                        return CLRStackValueHelper.Make(coercedValues, (int)PrimitiveType.Array);
                     }
 
                 default:
                     if (sv.IsNull)
-                        return CLRStackValue.Null;
+                        return CLRStackValueHelper.Null;
                     else
                         throw new NotImplementedException("Requested coercion not implemented");
             }

@@ -1774,8 +1774,11 @@ namespace ProtoScript.Runners
                 // Get AST list that need to be executed
                 var finalDeltaAstList = changeSetComputer.GetDeltaASTList(syncData);
 
-                if (!DSExecutionEngine)
+                
+
+                if (!DSExecutionEngine || true)
                 {
+                    System.Console.WriteLine($"Replication called");
                     CompileAndExecuteMSIL(finalDeltaAstList);
                     return;
                 }

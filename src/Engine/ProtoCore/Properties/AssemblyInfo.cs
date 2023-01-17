@@ -21,5 +21,6 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("ProtoAssociative")]
 [assembly: InternalsVisibleTo("DSCoreNodes")]
 [assembly: InternalsVisibleTo("EmitMSIL")]
+[assembly: InternalsVisibleTo("DynamoCLI")]
 
 [assembly:TypeForwardedTo(typeof(ProtoCore.DSASM.RangeStepOperator))]
