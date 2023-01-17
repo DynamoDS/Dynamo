@@ -3471,7 +3471,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Geometry Scaling.
+        ///   Looks up a localized string similar to Workspace Geometry Scaling.
         /// </summary>
         public static string InCanvasGeometryScalingToolTip {
             get {
@@ -6837,7 +6837,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Geometry Scaling.
+        ///   Looks up a localized string similar to Default Geometry Scaling.
         /// </summary>
         public static string PreferencesViewVisualSettingsGeoScaling {
             get {
