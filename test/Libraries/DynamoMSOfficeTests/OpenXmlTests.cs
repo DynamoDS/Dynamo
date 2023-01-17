@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -237,6 +237,21 @@ namespace DynamoMSOfficeTests
 
             Assert.IsTrue(node.CachedValue.IsCollection);
             var data2 = new object[] { new object[] { 1 }, new object[] { 2 }, new object[] { 3 }, new object[] { null }, new object[] { 6 } };
+            AssertPreviewValue(node.GUID.ToString(), data2);
+        }
+
+        [Test]
+        public void TestScientificNotationAsADoubleValue()
+        {
+            string testDir = TestDirectory;
+            string openPath = Path.Combine(testDir, @"core\excel\scientificNotation_OpenXml.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.OpenXMLImportExcel");
+            ViewModel.HomeSpace.Run();
+
+            Assert.IsTrue(node.CachedValue.IsCollection);
+            var data2 = new object[] { new object[] { 1, 0.5d }, new object[] { 2, 0.00000000005d }, new object[] { 3, 0.0005 }, new object[] { 4, 0.05d }, new object[] { 5, 0.00000003 }, new object[] { 6, 0.0000000000000000002 } };
             AssertPreviewValue(node.GUID.ToString(), data2);
         }
 
