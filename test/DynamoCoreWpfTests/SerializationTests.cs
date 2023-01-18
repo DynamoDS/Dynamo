@@ -446,14 +446,14 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(8, nodeViewModelJobject.Properties().Count(), "The number of Serialized properties is not the expected");
 
             bool explicitOrder =
-                nodeViewModelJobject.Properties().ElementAt(0).Name == GetJsonPropertyFieldName(nameof(NodeViewModel.Id)) &&
-                nodeViewModelJobject.Properties().ElementAt(1).Name == GetJsonPropertyFieldName(nameof(NodeViewModel.Name)) &&
-                nodeViewModelJobject.Properties().ElementAt(2).Name == GetJsonPropertyFieldName(nameof(NodeViewModel.IsSetAsInput)) &&
-                nodeViewModelJobject.Properties().ElementAt(3).Name == GetJsonPropertyFieldName(nameof(NodeViewModel.IsSetAsOutput)) &&
-                nodeViewModelJobject.Properties().ElementAt(4).Name == GetJsonPropertyFieldName(nameof(NodeViewModel.IsFrozenExplicitly)) &&
-                nodeViewModelJobject.Properties().ElementAt(5).Name == GetJsonPropertyFieldName(nameof(NodeViewModel.IsVisible)) &&
-                nodeViewModelJobject.Properties().ElementAt(6).Name == GetJsonPropertyFieldName(nameof(NodeViewModel.X)) &&
-                nodeViewModelJobject.Properties().ElementAt(7).Name == GetJsonPropertyFieldName(nameof(NodeViewModel.Y));
+                nodeViewModelJobject.Properties().ElementAt(0).Name == GetJsonPropertydName<NodeViewModel>(nameof(NodeViewModel.Id)) &&
+                nodeViewModelJobject.Properties().ElementAt(1).Name == GetJsonPropertydName<NodeViewModel>(nameof(NodeViewModel.Name)) &&
+                nodeViewModelJobject.Properties().ElementAt(2).Name == GetJsonPropertydName<NodeViewModel>(nameof(NodeViewModel.IsSetAsInput)) &&
+                nodeViewModelJobject.Properties().ElementAt(3).Name == GetJsonPropertydName<NodeViewModel>(nameof(NodeViewModel.IsSetAsOutput)) &&
+                nodeViewModelJobject.Properties().ElementAt(4).Name == GetJsonPropertydName<NodeViewModel>(nameof(NodeViewModel.IsFrozenExplicitly)) &&
+                nodeViewModelJobject.Properties().ElementAt(5).Name == GetJsonPropertydName<NodeViewModel>(nameof(NodeViewModel.IsVisible)) &&
+                nodeViewModelJobject.Properties().ElementAt(6).Name == GetJsonPropertydName<NodeViewModel>(nameof(NodeViewModel.X)) &&
+                nodeViewModelJobject.Properties().ElementAt(7).Name == GetJsonPropertydName<NodeViewModel>(nameof(NodeViewModel.Y));
 
             Assert.IsTrue(explicitOrder, "The order of the properties is not the expected");
         }
@@ -468,25 +468,38 @@ namespace DynamoCoreWpfTests
            
             JObject firstNodeModelObject = JObject.Parse(jobject1["Nodes"][0].ToString());
 
-            bool hasTheSameOrderProperties = true;
-            List<string> propertiesSerializationOrder = new List<string>();
-            for (int i = 0; i < propertiesSerializationOrder.Count(); i++)
-            {
-                string serializedProperty = firstNodeModelObject.Properties().ElementAt(i).Name;
-                string orderedProperty = propertiesSerializationOrder[i];
-                if (serializedProperty != orderedProperty)
-                {
-                    hasTheSameOrderProperties = false;
-                    break;
-                }
-            }
+            bool firstNodeExplicitOrder =
+                firstNodeModelObject.Properties().ElementAt(0).Name == "ConcreteType" &&
+                firstNodeModelObject.Properties().ElementAt(1).Name == GetJsonPropertydName<NodeModel>(nameof(NodeModel.GUID)) &&
+                firstNodeModelObject.Properties().ElementAt(2).Name == GetJsonPropertydName<NodeModel>(nameof(NodeModel.NodeType)) &&
+                firstNodeModelObject.Properties().ElementAt(3).Name == GetJsonPropertydName<NodeModel>(nameof(NodeModel.InPorts)) &&
+                firstNodeModelObject.Properties().ElementAt(4).Name == GetJsonPropertydName<NodeModel>(nameof(NodeModel.OutPorts)) &&                
+                firstNodeModelObject.Properties().ElementAt(5).Name == GetJsonPropertydName<NodeModel>(nameof(NodeModel.ArgumentLacing)) &&
+                firstNodeModelObject.Properties().ElementAt(6).Name == GetJsonPropertydName<NodeModel>(nameof(NodeModel.Description)) &&
+                firstNodeModelObject.Properties().ElementAt(7).Name == GetJsonPropertydName<CodeBlockNodeModel>(nameof(CodeBlockNodeModel.Code));
 
-            Assert.IsTrue(hasTheSameOrderProperties, "The first serialized Node doesn't have the expected order");
+            Assert.IsTrue(firstNodeExplicitOrder, "The first serialized Node doesn't have the expected order");
+
+            JObject secondNodeModelObject = JObject.Parse(jobject1["Nodes"][1].ToString());
+
+            bool secondNodeExplicitOrder =
+                secondNodeModelObject.Properties().ElementAt(0).Name == "ConcreteType" &&
+                secondNodeModelObject.Properties().ElementAt(1).Name == GetJsonPropertydName<NodeModel>(nameof(NodeModel.GUID)) &&
+                secondNodeModelObject.Properties().ElementAt(2).Name == GetJsonPropertydName<NodeModel>(nameof(NodeModel.NodeType)) &&
+                secondNodeModelObject.Properties().ElementAt(3).Name == GetJsonPropertydName<NodeModel>(nameof(NodeModel.InPorts)) &&
+                secondNodeModelObject.Properties().ElementAt(4).Name == GetJsonPropertydName<NodeModel>(nameof(NodeModel.OutPorts)) &&
+                secondNodeModelObject.Properties().ElementAt(5).Name == GetJsonPropertydName<NodeModel>(nameof(NodeModel.ArgumentLacing)) &&
+                secondNodeModelObject.Properties().ElementAt(6).Name == GetJsonPropertydName<NodeModel>(nameof(NodeModel.Description)) &&
+                secondNodeModelObject.Properties().ElementAt(7).Name == GetJsonPropertydName<FileSystemBrowser>(nameof(FileSystemBrowser.HintPath)) &&
+                secondNodeModelObject.Properties().ElementAt(8).Name == GetJsonPropertydName<BasicInteractive<object>>(nameof(BasicInteractive<object>.Value));
+            
+
+            Assert.IsTrue(secondNodeExplicitOrder, "The first serialized Node doesn't have the expected order");
         }
 
-        public string GetJsonPropertyFieldName(string propertyName)
+        public string GetJsonPropertydName<T>(string propertyName)
         {
-            System.Reflection.PropertyInfo t = typeof(NodeViewModel).GetProperty(propertyName);
+            System.Reflection.PropertyInfo t = typeof(T).GetProperty(propertyName);
             var attr = t.GetCustomAttributes(typeof(Newtonsoft.Json.JsonPropertyAttribute), true).FirstOrDefault() as Newtonsoft.Json.JsonPropertyAttribute;
 
             return attr.PropertyName ?? propertyName;
