@@ -463,8 +463,8 @@ namespace DynamoCoreWpfTests
         {
             var openPath = Path.Combine(TestDirectory, @"core\serialization\serializationNodeModel.dyn");
 
-            var jsonText1 = File.ReadAllText(openPath);
-            var jobject1 = JObject.Parse(jsonText1);
+            var jsonText = File.ReadAllText(openPath);
+            var jobject1 = JObject.Parse(jsonText);
            
             JObject firstNodeModelObject = JObject.Parse(jobject1["Nodes"][0].ToString());
 
@@ -494,7 +494,7 @@ namespace DynamoCoreWpfTests
                 secondNodeModelObject.Properties().ElementAt(8).Name == GetJsonPropertydName<BasicInteractive<object>>(nameof(BasicInteractive<object>.Value));
             
 
-            Assert.IsTrue(secondNodeExplicitOrder, "The first serialized Node doesn't have the expected order");
+            Assert.IsTrue(secondNodeExplicitOrder, "The second serialized Node doesn't have the expected order");
         }
 
         public string GetJsonPropertydName<T>(string propertyName)
