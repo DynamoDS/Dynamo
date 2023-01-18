@@ -69,6 +69,7 @@ namespace Dynamo.ViewModels
         /// Returns NodeModel ID
         /// </summary>
         [JsonConverter(typeof(IdToGuidConverter))]
+        [JsonProperty(Order = 1)]
         public Guid Id
         {
             get { return NodeModel.GUID; }
@@ -164,6 +165,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonProperty(Order = 3)]
         public bool IsSetAsInput
         {
             get
@@ -192,6 +194,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonProperty(Order = 4)]
         public bool IsSetAsOutput
         {
             get
@@ -211,11 +214,12 @@ namespace Dynamo.ViewModels
             }
         }
 
-        
+
         /// <summary>
         /// The Name of the nodemodel this view points to
         /// this is the name of the node as it is displayed in the UI.
         /// </summary>
+        [JsonProperty(Order = 2)]
         public string Name
         {
             get
@@ -347,7 +351,7 @@ namespace Dynamo.ViewModels
             get { return true; }
         }
 
-        [JsonProperty("ShowGeometry")]
+        [JsonProperty("ShowGeometry",Order = 6)]
         public bool IsVisible
         {
             get
@@ -594,7 +598,7 @@ namespace Dynamo.ViewModels
         /// <value>
         ///  Returns true if the node has been frozen explicitly by the user, otherwise false.
         /// </value>  
-        [JsonProperty("Excluded")]
+        [JsonProperty("Excluded", Order = 5)]
         public bool IsFrozenExplicitly
         {
             get
@@ -629,6 +633,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         ///     Returns or set the X position of the Node.
         /// </summary>
+        [JsonProperty(Order = 7)]
         public double X
         {
             get { return NodeModel.X; }
@@ -641,6 +646,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         ///     Returns or set the Y position of the Node.
         /// </summary>
+        [JsonProperty(Order = 8)]
         public double Y
         {
             get { return NodeModel.Y; }

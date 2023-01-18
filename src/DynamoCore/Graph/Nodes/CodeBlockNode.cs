@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -234,6 +234,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Returns string content of CodeBlock node.
         /// </summary>
+        [JsonProperty(Order = 10)]
         public string Code
         {
             get { return code; }

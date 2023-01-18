@@ -345,7 +345,7 @@ namespace DSOffice
                     else
                     {
                         // This is a number
-                        if (cell.CellValue.TryGetDouble(out var value))
+                        if (double.TryParse(cell.CellValue.InnerText, NumberStyles.Any, NumberFormatInfo.InvariantInfo, out var value))
                         {
                             if (readAsString)
                             {
