@@ -63,8 +63,6 @@ namespace Dynamo.UI.Views
             {
                 dynamoView = value;
                 viewModel = value.DataContext as DynamoViewModel;
-                // When view model is closed, we need to close the splash screen if it is displayed.
-                viewModel.RequestClose += SplashScreenRequestClose;
                 authManager = viewModel.Model.AuthenticationManager;
             }
         }
@@ -143,15 +141,6 @@ namespace Dynamo.UI.Views
         }
 
         /// <summary>
-        /// Request to close SplashScreen.
-        /// </summary>
-        private void SplashScreenRequestClose(object sender, EventArgs e)
-        {
-            CloseWindow();
-            viewModel.RequestClose -= SplashScreenRequestClose;
-        }
-
-        /// <summary>
         /// Import setting file from chosen path
         /// </summary>
         /// <param name="fileContent"></param>
@@ -199,6 +188,7 @@ namespace Dynamo.UI.Views
         private void LaunchDynamo(bool isCheckboxChecked)
         {
             viewModel.PreferenceSettings.EnableStaticSplashScreen = !isCheckboxChecked;
+            DynamoModel.RequestUpdateLoadBarStatus -= DynamoModel_RequestUpdateLoadBarStatus;
             StaticSplashScreenReady -= OnStaticScreenReady;
             Close();
             dynamoView.Show();
@@ -212,6 +202,7 @@ namespace Dynamo.UI.Views
         {
             // Stop the timer in any case
             loadingTimer.Stop();
+            loadingTimer = null;
 
             //When a xml preferences settings file is located at C:\ProgramData\Dynamo will be read and deserialized so the settings can be set correctly.
             LoadPreferencesFileAtStartup();
@@ -453,21 +444,12 @@ namespace Dynamo.UI.Views
                 Application.Current.Shutdown();
                 Analytics.TrackEvent(Actions.Close, Categories.SplashScreenOperations);
             }
-            // If Dynamo is launched from an integrator host, user should be able to close the splash screen window.
-            // Additionally, we will have to shutdown the ViewModel which will close all the services and dispose the events.
-            // RequestUpdateLoadBarStatus event needs to be unsubscribed when the splash screen window is closed, to avoid populating the info on splash screen.
-            else if (this is SplashScreen)
-            {
-                this.Close();
-                viewModel.Model.ShutDown(false);
-            }
         }
 
         protected override void OnClosed(EventArgs e)
         {
             base.OnClosed(e);
 
-            DynamoModel.RequestUpdateLoadBarStatus -= DynamoModel_RequestUpdateLoadBarStatus;
             webView.Dispose();
             webView = null;
 

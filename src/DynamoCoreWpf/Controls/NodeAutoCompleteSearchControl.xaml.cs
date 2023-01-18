@@ -7,7 +7,6 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
-using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
@@ -98,23 +97,10 @@ namespace Dynamo.UI.Controls
                 if (searchElement.CreateAndConnectCommand.CanExecute(port.PortModel))
                 {
                     searchElement.CreateAndConnectCommand.Execute(port.PortModel);
-                    var selectedNodeName = (searchElement.Model is Search.SearchElements.ZeroTouchSearchElement) ?
-                                                searchElement.Model.CreationName :
-                                                // Same as NameTypeId.ToStrng() format
-                                                string.Format("{0}, {1}", searchElement.Model.CreationName, searchElement.Assembly.Split('\\').Last().Split('.').First());
-                    var originalNodeName = (port.NodeViewModel.NodeModel is DSFunctionBase) ?
-                                                port.NodeViewModel.NodeModel.CreationName :
-                                                string.Format("{0}, {1}", port.NodeViewModel.NodeModel.GetType().FullName, port.NodeViewModel.NodeModel.GetType().Assembly.GetName().Name) ;
-                    var searchElementInfo = ViewModel.IsDisplayingMLRecommendation ?
-                        selectedNodeName + " " + port.PortModel.Index.ToString() + " " + port.PortName + " " + originalNodeName + " " +
-                        searchElement.Model.AutoCompletionNodeElementInfo.PortToConnect.ToString() + " " +
-                        searchElement.AutoCompletionNodeMachineLearningInfo.ConfidenceScore.ToString() + " "  +  ViewModel.ServiceVersion
-                        : selectedNodeName;
-
                     Analytics.TrackEvent(
                     Dynamo.Logging.Actions.Select,
                     Dynamo.Logging.Categories.NodeAutoCompleteOperations,
-                    searchElementInfo);
+                    searchElement.FullName);
                 }
             }
         }
@@ -320,8 +306,7 @@ namespace Dynamo.UI.Controls
             Analytics.TrackEvent(
                     Actions.Expanded,
                     Categories.NodeAutoCompleteOperations,
-                    "LowConfidenceResults",
-                    ViewModel.dynamoViewModel.Model.PreferenceSettings.MLRecommendationConfidenceLevel);
+                    "LowConfidenceResults");
         }
 
         private void OnSuggestion_Click(object sender, RoutedEventArgs e)
@@ -330,12 +315,12 @@ namespace Dynamo.UI.Controls
             if (selectedSuggestion.Name.Contains(nameof(Models.NodeAutocompleteSuggestion.MLRecommendation)))
             {
                 ViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = Models.NodeAutocompleteSuggestion.MLRecommendation;
-                Analytics.TrackEvent(Actions.Switch, Categories.Preferences, nameof(NodeAutocompleteSuggestion.MLRecommendation));
+                Analytics.TrackEvent(Actions.Select, Categories.Preferences, nameof(NodeAutocompleteSuggestion.MLRecommendation));
             }
             else
             {
                 ViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = Models.NodeAutocompleteSuggestion.ObjectType;
-                Analytics.TrackEvent(Actions.Switch, Categories.Preferences, nameof(NodeAutocompleteSuggestion.ObjectType));
+                Analytics.TrackEvent(Actions.Select, Categories.Preferences, nameof(NodeAutocompleteSuggestion.ObjectType));
             }
             ViewModel.PopulateAutoCompleteCandidates();
         }

@@ -1,4 +1,4 @@
-<UserControl x:Class="Dynamo.Controls.WatchTree"
+﻿<UserControl x:Class="Dynamo.Controls.WatchTree"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:Dynamo.Controls"
@@ -163,13 +163,12 @@
                                     <!--  Vertical line  -->
 
                                     <Rectangle x:Name="VerLn"
-                                               Grid.RowSpan="1"
+                                               Grid.RowSpan="2"
                                                Width="1"
-                                               Margin="9,0,0,3"
+                                               Margin="9,0,0,0"
                                                HorizontalAlignment="Center"
                                                Fill="Black"
-                                               SnapsToDevicePixels="True"
-                                               UseLayoutRounding="True"
+                                               SnapsToDevicePixels="true"
                                                Stroke="#959595" />
 
                                     <!--  Draw Ellipse at the bottom of each vertical line  -->
@@ -177,12 +176,11 @@
                                     <Ellipse x:Name="LnEnd"
                                              Width="5"
                                              Height="5"
-                                             Margin="9,0,0,0"
+                                             Margin="8,0,0,0"
                                              HorizontalAlignment="Center"
                                              VerticalAlignment="Bottom"
                                              Fill="#959595"
                                              SnapsToDevicePixels="True"
-                                             UseLayoutRounding="True"
                                              Stroke="#959595" />
 
                                 </Grid>
