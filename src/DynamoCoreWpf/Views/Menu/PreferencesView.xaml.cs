@@ -581,11 +581,6 @@ namespace Dynamo.Wpf.Views
         private void sliderConfidenceLevel_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             displayConfidenceLevel();
-            //Tracking Analytics when changing the ML Confidence Level in the Preferences panel
-            Analytics.TrackEvent(
-                    Actions.Set,
-                    Categories.Preferences,
-                    "ConfidendeLevel");
         }
 
         private void displayConfidenceLevel()
