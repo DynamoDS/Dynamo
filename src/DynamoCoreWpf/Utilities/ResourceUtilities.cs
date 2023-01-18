@@ -89,9 +89,12 @@ namespace Dynamo.Utilities
                 offset.x = offset.y = 0;
             }
 
-            function insert(){
+            function insert(ev){
+                ev.preventDefault();
+                document.getElementById('insert').removeEventListener('click', insert);
                 let message = 'insert';
                 window.chrome.webview.postMessage(message);
+                document.getElementById('insert')?.addEventListener('click', insert);
             }
 
             function zoom(zoomtype)
@@ -151,6 +154,11 @@ namespace Dynamo.Utilities
                 return { delta_x: x, delta_y: y};
             }
 
+            function expand_collapse(ev){
+                let message = 'expandcollapse-' + this.innerHTML;
+                window.chrome.webview.postMessage(message);
+            }
+
             const pannable = (el) => {
                 const img_canvas = el.firstElementChild; // the image
 
@@ -196,21 +204,24 @@ namespace Dynamo.Utilities
                 document.addEventListener('mouseup', pan_end);
             }
 
-            document.getElementById('zoomout').addEventListener('click', function() {
+            document.getElementById('zoomout')?.addEventListener('click', function() {
                 zoom('out');
             });
-            document.getElementById('zoomin').addEventListener('click', function() {
+            document.getElementById('zoomin')?.addEventListener('click', function() {
                 zoom('in');
             });
-            document.getElementById('zoomfit').addEventListener('click', function() {
+            document.getElementById('zoomfit')?.addEventListener('click', function() {
               fit();
             });
-           document.getElementById('insert').addEventListener('click', function () {
-              insert();
-           });
-
-            document.getElementById('img--container').addEventListener('wheel', scroll);
+            document.getElementById('insert')?.addEventListener('click', insert);
+            document.getElementById('img--container')?.addEventListener('wheel', scroll);
             document.querySelectorAll('.container').forEach(pannable);
+
+            const crumbs = document.querySelectorAll('.breadcrumb');
+
+            for (let i = 0; i < crumbs.length; i++) {
+                crumbs[i].addEventListener('click', expand_collapse);
+            }
         </script>
         ";
 
@@ -488,6 +499,59 @@ namespace Dynamo.Utilities
             {
                 Type type = child.GetType();
                 if (type.Name.Equals(popupInfo.WindowName))
+                {
+                    var libraryView = child as UserControl;
+                    //get the WebBrowser instance inside the LibraryView
+                    var browser = libraryView.ChildOfType<WebView2>();
+                    if (browser == null) return null;
+                    Type typeBrowser = browser.GetType();
+                    MethodInfo methodInvokeScriptInfo = typeBrowser.GetMethods().Single(m => m.Name == invokeScriptFunction && m.GetParameters().Length == 1);
+                    //Due that WebView2.ExecuteScriptAsync() method is async we need to wait until we get a response
+                    resutlJS = (Task<string>)methodInvokeScriptInfo.Invoke(browser, new object[] { functionName + "(" + parametersExecuteScriptString + ")" });
+                    await resutlJS;
+                    var resultProperty = resutlJS.GetType().GetProperty("Result");
+                    resultJSHTML = resultProperty.GetValue(resutlJS);
+                    if (resultJSHTML.ToString().Equals("null"))
+                        resultJSHTML = null;
+                    break;
+                }
+            }
+            return resultJSHTML;
+        }
+
+        internal static async Task<object> ExecuteJSFunction(UIElement MainWindow, object[] parametersInvokeScript)
+        {
+            const string invokeScriptFunction = "ExecuteScriptAsync";
+            object resultJSHTML = null;
+            Task<string> resutlJS = null;
+
+            //Try to find the grid that contains the LibraryView
+            var sidebarGrid = (MainWindow as Window).FindName("sidebarGrid") as Grid;
+            if (sidebarGrid == null) return null;
+
+            var functionName = parametersInvokeScript[0] as string;
+            object[] functionParameters = parametersInvokeScript[1] as object[];
+            List<string> functionParametersList = new List<string>();
+            foreach (var parameter in functionParameters)
+            {
+                string strParameter = string.Empty;
+                //If we try to use boolVariable.ToString() returns "True" or "False" but the expected parameter in the js function is "true" or "false"
+                if (parameter is bool)
+                    strParameter = parameter.ToString().Equals("True") ? "true" : "false";
+                //The parameter expected in the js method is a string so we need to add the quotes at the beginning and at the end
+                else
+                    strParameter = "\"" + parameter + "\"";
+
+                functionParametersList.Add(strParameter);
+            }
+            //Due that the method WebView2.ExecuteScriptAsync() is expecting just one string parameter, we will need to contatecate the function name and the parameters in parentesis
+            var parametersExecuteScriptString = string.Join(",", functionParametersList);
+
+            //We need to iterate every child in the grid due that we need to apply reflection to get the Type and find the LibraryView (a reference to LibraryViewExtensionMSWebBrowser cannot be added).
+            foreach (var child in sidebarGrid.Children)
+            {
+                Type type = child.GetType();
+                if (type.Name.Equals("LibraryView"))
                 {
                     var libraryView = child as UserControl;
                     //get the WebBrowser instance inside the LibraryView
