@@ -715,7 +715,7 @@ namespace Dynamo.Models
 
             // If user skipped analytics from assembly config, do not try to launch the analytics client
             // or the feature flags client for web traffic reason.
-            if (!areAnalyticsDisabledFromConfig && !Dynamo.Logging.Analytics.DisableAnalytics && !IsServiceMode)
+            if (!IsServiceMode && !areAnalyticsDisabledFromConfig && !Dynamo.Logging.Analytics.DisableAnalytics)
             {
                 // Start the Analytics service only when a session is not present.
                 // In an integrator host, as splash screen can be closed without shutting down the ViewModel, the analytics service is not stopped.
@@ -761,7 +761,7 @@ namespace Dynamo.Models
             }
 
             // TBD: Do we need settings migrator for service mode? If we config the docker correctly, this could be skipped I think
-            if (!IsTestMode && PreferenceSettings.IsFirstRun && !IsServiceMode)
+            if (!IsServiceMode && !IsTestMode && PreferenceSettings.IsFirstRun)
             {
                 DynamoMigratorBase migrator = null;
 
@@ -788,7 +788,7 @@ namespace Dynamo.Models
                 }
             }
 
-            if (PreferenceSettings.IsFirstRun && !IsTestMode && !IsServiceMode)
+            if (!IsServiceMode && PreferenceSettings.IsFirstRun && !IsTestMode)
             {
                 PreferenceSettings.AddDefaultTrustedLocations();
             }
@@ -879,9 +879,8 @@ namespace Dynamo.Models
             var extensions = config.Extensions ?? new List<IExtension>();
             if (!extensions.Any() && !IsServiceMode)
             {
-                LoadExtensions();
+                extensions = LoadExtensions();
             }
-
             if (!IsServiceMode)
             {
                 LinterManager = new LinterManager(this.ExtensionManager);
