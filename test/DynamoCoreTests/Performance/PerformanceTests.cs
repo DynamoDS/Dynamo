@@ -6,6 +6,7 @@ using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
+using JetBrains.dotMemoryUnit;
 using NUnit.Framework;
 using Color = DSCore.Color;
 using Point = Autodesk.DesignScript.Geometry.Point;
@@ -13,11 +14,18 @@ using TimeSpan = System.TimeSpan;
 
 namespace Dynamo.Tests
 {
+    [DotMemoryUnit(CollectAllocations = true, FailIfRunWithoutSupport = false)]
+
     [TestFixture, Category("Performance")]
     public class PerformanceTests : DynamoModelTestBase
     {
         private List<(string graph, TimeSpan oldEngineCompileTime, TimeSpan oldEngineExecutionTime, TimeSpan newEngineCompileTime, TimeSpan newEngineExecutionTime, TimeSpan hardcodedExecutionTime)> executionData;
+        private List<(string graph, (MemoryInfo allocated, MemoryInfo collected) oldEngine, (MemoryInfo allocated, MemoryInfo collected) newEngine, (MemoryInfo allocated, MemoryInfo collected) hardCoded)> memoryData;
+        private (MemoryInfo allocated, MemoryInfo collected) oldEngineMemoryData;
+        private (MemoryInfo allocated, MemoryInfo collected) newEngineMemoryData;
+        private (MemoryInfo allocated, MemoryInfo collected) hardcodedMemoryData;
         private bool warmupDone;
+
 
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
@@ -46,35 +54,62 @@ namespace Dynamo.Tests
         public void SetupPerformanceTests()
         {
             executionData = new List<(string, TimeSpan, TimeSpan, TimeSpan, TimeSpan, TimeSpan)>();
+            memoryData =
+                new List<(string, (MemoryInfo, MemoryInfo), (MemoryInfo, MemoryInfo), (MemoryInfo, MemoryInfo))>();
 
         }
 
         [TestFixtureTearDown]
         public void TeardownPerformanceTests()
         {
-            Console.WriteLine("{0,50}{1,9}{2,9}{3,11}{4,9}{5,9}{6,11}{7,9}", "Graph", "Old C", "Old E", "Old C+E", "New C", "New E", "New C+E", "HC");
-            executionData.ForEach(item =>
+            if (memoryData.Any())
             {
-                var (graph, oldEngineCompileTime, oldEngineExecutionTime, newEngineCompileTime, newEngineExecutionTime, hardcodedExecutionTime) = item;
-                if (hardcodedExecutionTime == TimeSpan.Zero)
+                Console.WriteLine("{0,50}{1,9}{2,9}{3,9}{4,9}{5,9}{6,9}{7,9}{8,9}{9,9}{10,9}{11,9}{12,9}", "Graph",
+                    "Old AM", "Old CM", "Old AC", "Old CC",
+                    "New AM", "New CM", "New AC", "New CC",
+                    "HC AM", "HC CM", "HC AC", "HC CC");
+
+                memoryData.ForEach(item =>
                 {
-                    Console.WriteLine("{0,50}{1,9:0.0}{2,9:0.0}{3,11:0.0}{4,9:0.0}{5,9:0.0}{6,11:0.0}", graph,
-                        oldEngineCompileTime.TotalMilliseconds, oldEngineExecutionTime.TotalMilliseconds,
-                        oldEngineCompileTime.TotalMilliseconds + oldEngineExecutionTime.TotalMilliseconds,
-                        newEngineCompileTime.TotalMilliseconds, newEngineExecutionTime.TotalMilliseconds,
-                        newEngineCompileTime.TotalMilliseconds + newEngineExecutionTime.TotalMilliseconds);
-                }
-                else
+                    var (graph, oldEngine, newEngine, hardCoded) = item;
+
+                    Console.WriteLine("{0,50}{1,9}{2,9}{3,9}{4,9}{5,9}{6,9}{7,9}{8,9}{9,9}{10,9}{11,9}{12,9}", graph,
+                        FormatValue(oldEngine.allocated.SizeInBytes), FormatValue(oldEngine.collected.SizeInBytes),
+                        FormatValue(oldEngine.allocated.ObjectsCount), FormatValue(oldEngine.collected.ObjectsCount),
+                        FormatValue(newEngine.allocated.SizeInBytes), FormatValue(newEngine.collected.SizeInBytes),
+                        FormatValue(newEngine.allocated.ObjectsCount), FormatValue(newEngine.collected.ObjectsCount),
+                        FormatValue(hardCoded.allocated.SizeInBytes), FormatValue(hardCoded.collected.SizeInBytes),
+                        FormatValue(hardCoded.allocated.ObjectsCount), FormatValue(hardCoded.collected.ObjectsCount));
+                });
+            }
+            else
+            {
+                Console.WriteLine("{0,50}{1,9}{2,9}{3,11}{4,9}{5,9}{6,11}{7,9}", "Graph", "Old C", "Old E", "Old C+E", "New C", "New E", "New C+E", "HC");
+                executionData.ForEach(item =>
                 {
-                    Console.WriteLine("{0,50}{1,9:0.0}{2,9:0.0}{3,11:0.0}{4,9:0.0}{5,9:0.0}{6,11:0.0}{7,9:0.0}", graph,
-                        oldEngineCompileTime.TotalMilliseconds, oldEngineExecutionTime.TotalMilliseconds,
-                        oldEngineCompileTime.TotalMilliseconds + oldEngineExecutionTime.TotalMilliseconds,
-                        newEngineCompileTime.TotalMilliseconds, newEngineExecutionTime.TotalMilliseconds,
-                        newEngineCompileTime.TotalMilliseconds + newEngineExecutionTime.TotalMilliseconds,
-                        hardcodedExecutionTime.TotalMilliseconds);
-                }
-            });
+                    var (graph, oldEngineCompileTime, oldEngineExecutionTime, newEngineCompileTime, newEngineExecutionTime, hardcodedExecutionTime) = item;
+                    if (hardcodedExecutionTime == TimeSpan.Zero)
+                    {
+                        Console.WriteLine("{0,50}{1,9:0.0}{2,9:0.0}{3,11:0.0}{4,9:0.0}{5,9:0.0}{6,11:0.0}", graph,
+                            oldEngineCompileTime.TotalMilliseconds, oldEngineExecutionTime.TotalMilliseconds,
+                            oldEngineCompileTime.TotalMilliseconds + oldEngineExecutionTime.TotalMilliseconds,
+                            newEngineCompileTime.TotalMilliseconds, newEngineExecutionTime.TotalMilliseconds,
+                            newEngineCompileTime.TotalMilliseconds + newEngineExecutionTime.TotalMilliseconds);
+                    }
+                    else
+                    {
+                        Console.WriteLine("{0,50}{1,9:0.0}{2,9:0.0}{3,11:0.0}{4,9:0.0}{5,9:0.0}{6,11:0.0}{7,9:0.0}", graph,
+                            oldEngineCompileTime.TotalMilliseconds, oldEngineExecutionTime.TotalMilliseconds,
+                            oldEngineCompileTime.TotalMilliseconds + oldEngineExecutionTime.TotalMilliseconds,
+                            newEngineCompileTime.TotalMilliseconds, newEngineExecutionTime.TotalMilliseconds,
+                            newEngineCompileTime.TotalMilliseconds + newEngineExecutionTime.TotalMilliseconds,
+                            hardcodedExecutionTime.TotalMilliseconds);
+                    }
+                });
+            }
+
             executionData.Clear();
+            memoryData.Clear();
 
             warmupDone = false;
         }
@@ -91,6 +126,8 @@ namespace Dynamo.Tests
             WarmUp();
 
             var hardCodedExecutionTime = RunHardcodedTest(filePath);
+
+            var checkPoint = StartCollectingMemory();
 
             OpenModel(filePath);
 
@@ -114,6 +151,8 @@ namespace Dynamo.Tests
                 RunCurrentModel();
             }
 
+            oldEngineMemoryData = StopCollectingMemory(checkPoint);
+
             var wcd1 = new serializationTestUtils.WorkspaceComparisonData(ws1, CurrentDynamoModel.EngineController);
 
             var oldEngineCompileAndExecutionTime = model.EngineController.CompileAndExecutionTime;
@@ -122,6 +161,8 @@ namespace Dynamo.Tests
             Cleanup();
 
             Setup();
+
+            checkPoint = StartCollectingMemory();
 
             OpenModel(filePath, dsExecution: false);
             model = CurrentDynamoModel;
@@ -136,6 +177,8 @@ namespace Dynamo.Tests
             Assert.NotNull(ws2);
 
             CheckForDummyNodes(ws2);
+
+            newEngineMemoryData = StopCollectingMemory(checkPoint);
 
             var wcd2 = new serializationTestUtils.WorkspaceComparisonData(ws2, CurrentDynamoModel.EngineController, dsExecution: false);
 
@@ -152,6 +195,17 @@ namespace Dynamo.Tests
                 newEngineCompileAndExecutionTime.compileTime, newEngineCompileAndExecutionTime.executionTime,
                 hardCodedExecutionTime);
             executionData.Add(execution);
+
+            CollectMemoryData(Path.GetFileName(filePath));
+        }
+
+        private void CollectMemoryData(string graph)
+        {
+            if (oldEngineMemoryData.collected.SizeInBytes != -1)
+            {
+                var memoryInfo = (graph, oldEngine: oldEngineMemoryData, newEngine: newEngineMemoryData, hardcoded: hardcodedMemoryData);
+                memoryData.Add(memoryInfo);
+            }
         }
 
         private void WarmUp()
@@ -175,21 +229,42 @@ namespace Dynamo.Tests
             }
         }
 
+        private MemoryCheckPoint StartCollectingMemory()
+        {
+            return dotMemory.Check();
+        }
+
+        private (MemoryInfo, MemoryInfo) StopCollectingMemory(MemoryCheckPoint checkPoint)
+        {
+            var retVal = (new MemoryInfo(-1, -1), new MemoryInfo(-1, -1));
+
+            dotMemory.Check(memory =>
+            {
+                var traffic = memory.GetTrafficFrom(checkPoint);
+                retVal = (traffic.AllocatedMemory, traffic.CollectedMemory);
+            });
+
+            return retVal;
+        }
+
         private TimeSpan RunHardcodedTest(string fileName)
         {
             TimeSpan hardCodedExecutionTime = TimeSpan.Zero;
+            hardcodedMemoryData = (new MemoryInfo(), new MemoryInfo());
             var basename = Path.GetFileNameWithoutExtension(fileName);
             var cleanUp = false;
 
             if (string.Compare(basename, "lotsofcoloredstuff-simplified", StringComparison.InvariantCultureIgnoreCase) == 0)
             {
                 var timer = new Stopwatch();
+                var checkPoint = StartCollectingMemory();
                 timer.Start();
 
                 LotsOfColoredStuffSimplified();
 
                 timer.Stop();
                 hardCodedExecutionTime = timer.Elapsed;
+                hardcodedMemoryData = StopCollectingMemory(checkPoint);
 
                 cleanUp = true;
             }
@@ -197,12 +272,14 @@ namespace Dynamo.Tests
             if (string.Compare(basename, "cross_product_lacing_arrays", StringComparison.InvariantCultureIgnoreCase) == 0)
             {
                 var timer = new Stopwatch();
+                var checkPoint = StartCollectingMemory();
                 timer.Start();
 
                 CrossProductLacingArrays();
 
                 timer.Stop();
                 hardCodedExecutionTime = timer.Elapsed;
+                hardcodedMemoryData = StopCollectingMemory(checkPoint);
 
                 cleanUp = true;
             }
@@ -223,6 +300,20 @@ namespace Dynamo.Tests
             {
                 Assert.Inconclusive("The Workspace contains dummy nodes for: " + string.Join(",", dummyNodes.Select(n => n.Name).ToArray()));
             }
+        }
+
+        private string FormatValue(long value)
+        {
+            if (value > 1000000)
+            {
+                return string.Format("{0:0.00}M", value / 1000000);
+            }
+            if (value > 1000)
+            {
+                return string.Format("{0:0.00}k", value / 1000);
+            }
+
+            return string.Format("{0:0.00}", value);
         }
 
         private void LotsOfColoredStuffSimplified()

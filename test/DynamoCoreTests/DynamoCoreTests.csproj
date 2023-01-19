@@ -24,6 +24,9 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="JetBrains.dotMemoryUnit" Version="3.2.20220510">
+      <ExcludeAssets>none</ExcludeAssets>
+    </PackageReference>
 	  <PackageReference Include="Moq" Version="4.2.1507.0118" ExcludeAssets="none" CopyXML="true" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NUnit" Version="2.6.3" ExcludeAssets="none" CopyXML="true" />
