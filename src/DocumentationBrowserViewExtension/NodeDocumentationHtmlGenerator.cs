@@ -9,6 +9,7 @@ using Dynamo.DocumentationBrowser.Properties;
 using Dynamo.Logging;
 using Dynamo.ViewModels;
 using SharpDX.DXGI;
+using Dynamo.Utilities;
 
 namespace Dynamo.DocumentationBrowser
 {
@@ -119,8 +120,10 @@ namespace Dynamo.DocumentationBrowser
 
             StringBuilder sb = new StringBuilder();
 
-            var mkArray = mkDown.Split(new string[] {"\r\n", "\r", "\n"}, StringSplitOptions.None).Where(s => !string.IsNullOrEmpty(s)).ToArray();
-            var imageRow = mkArray.Last();
+            var mkArray = mkDown.Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.None).Where(s => !string.IsNullOrEmpty(s)).ToArray();
+            var imageRow = mkArray.First(x => x.Contains("img"));
+            var index = mkArray.IndexOf(imageRow);
+
             if (!imageRow.Contains("img"))
             {
                 sb.AppendLine(mkArray.First());
@@ -130,16 +133,19 @@ namespace Dynamo.DocumentationBrowser
             imageRow = imageRow.Replace("<p>", "").Replace("</p>", "");
             imageRow = imageRow.Insert(4, @" id='drag--img' class='resizable--img' ");
 
-            sb.AppendLine(string.Join(Environment.NewLine, mkArray.Take(mkArray.Count() - 1).ToArray()));
+            var rowsBeforeImage = string.Join(Environment.NewLine, mkArray.Take(index).ToArray());
+            var rowsAfterImage = string.Join(Environment.NewLine, mkArray.Skip(index + 1).ToArray());
+
+            sb.AppendLine(rowsBeforeImage);
             sb.AppendLine("<div class=\"container\" id=\"img--container\">");
             sb.AppendLine(imageRow);
             sb.AppendLine("<div class=\"btn--container\">");
             sb.AppendLine(
-                $"<button type=\"button\" id=\"zoomfit\" class=\"button fitIcon\"  title=\"{Resources.ImageFitToolTip}\" ></button>");
-            sb.AppendLine(
                 $"<button type=\"button\" id=\"zoomin\" class=\"button plusIcon\" title=\"{Resources.ImageZoomInToolTip}\" ></button>\r\n");
             sb.AppendLine(
                 $"<button type=\"button\" id=\"zoomout\" class=\"button minusIcon\" title=\"{Resources.ImageZoomOutToolTip}\" ></button>\r\n");
+            sb.AppendLine(
+                $"<button type=\"button\" id=\"zoomfit\" class=\"button fitIcon\"  title=\"{Resources.ImageFitToolTip}\" ></button>");
             sb.AppendLine(@"</div>");
             sb.AppendLine("<div class=\"btn--insert--container\">");
 
@@ -148,6 +154,7 @@ namespace Dynamo.DocumentationBrowser
                 $"<button type=\"button\" id=\"insert\" class=\"button insertIcon\" title=\"{tooltip}\" ></button>\r\n");
             sb.AppendLine(@"</div>");
             sb.AppendLine(@"</div>");
+            sb.AppendLine(rowsAfterImage);
 
             return sb.ToString();
         }
