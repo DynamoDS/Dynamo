@@ -130,6 +130,7 @@ namespace Dynamo.DocumentationBrowser
 
         async void InitializeAsync()
         {
+            string virtualFolder = string.Empty;
             // Only initialize once 
             if (!hasBeenInitialized)
             {
@@ -141,12 +142,10 @@ namespace Dynamo.DocumentationBrowser
                         UserDataFolder = WebBrowserUserDataFolder
                     };
                 }
-
                 //Initialize the CoreWebView2 component otherwise we can't navigate to a web page
                 await documentationBrowser.EnsureCoreWebView2Async();
 
-                //Due that the Web Browser(WebView2 - Chromium) security CORS is blocking the load of resources like images then we need to create a virtual folder in which the image are located.
-                this.documentationBrowser.CoreWebView2.SetVirtualHostNameToFolderMapping(VIRTUAL_FOLDER_MAPPING, FallbackDirectoryName, CoreWebView2HostResourceAccessKind.DenyCors);
+              
                 this.documentationBrowser.CoreWebView2.WebMessageReceived += CoreWebView2OnWebMessageReceived;
                 comScriptingObject = new ScriptingObject(this.viewModel);
                 //register the interop object into the browser.
@@ -157,6 +156,16 @@ namespace Dynamo.DocumentationBrowser
 
                 hasBeenInitialized = true;
             }
+
+            if (viewModel.CurrentNodeInfo != null && !string.IsNullOrEmpty(viewModel.CurrentNodeInfo.PackageName))
+            {
+                virtualFolder = viewModel.CurrentNodeInfo.MDFilePath.Replace(viewModel.CurrentNodeInfo.MinimumQualifiedName + ".md", "");
+            }
+            else
+                virtualFolder = FallbackDirectoryName;
+
+            //Due that the Web Browser(WebView2 - Chromium) security CORS is blocking the load of resources like images then we need to create a virtual folder in which the image are located.
+            this.documentationBrowser.CoreWebView2.SetVirtualHostNameToFolderMapping(VIRTUAL_FOLDER_MAPPING, virtualFolder, CoreWebView2HostResourceAccessKind.DenyCors);
 
             string htmlContent = this.viewModel.GetContent();
 

@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Markup;
 using Dynamo.Core;
 using Dynamo.DocumentationBrowser.Properties;
 using Dynamo.Logging;
@@ -32,7 +33,14 @@ namespace Dynamo.DocumentationBrowser
         {
             get { return name; }
         }
-    } 
+    }
+
+    internal class NodeInfo
+    {
+        internal string PackageName { get; set; }
+        internal string MinimumQualifiedName { get; set; }
+        internal string MDFilePath { get; set; }
+    }
 
     public class DocumentationBrowserViewModel : NotificationObject, IDisposable
     {
@@ -132,6 +140,8 @@ namespace Dynamo.DocumentationBrowser
 
         internal UIElement DynamoView { get; set; }
 
+        internal NodeInfo CurrentNodeInfo { get; set; }
+
         #endregion
 
         #region Constructor & Dispose
@@ -196,6 +206,11 @@ namespace Dynamo.DocumentationBrowser
                         var mdLink = packageManagerDoc.GetAnnotationDoc(
                             openNodeAnnotationEventArgs.MinimumQualifiedName, 
                             openNodeAnnotationEventArgs.PackageName);
+
+                        CurrentNodeInfo = new NodeInfo();
+                        CurrentNodeInfo.PackageName = openNodeAnnotationEventArgs.PackageName;
+                        CurrentNodeInfo.MinimumQualifiedName = openNodeAnnotationEventArgs.MinimumQualifiedName;
+                        CurrentNodeInfo.MDFilePath = mdLink;
 
                         link = string.IsNullOrEmpty(mdLink) ? new Uri(String.Empty, UriKind.Relative) : new Uri(mdLink);
                         graph = GetGraphLinkFromMDLocation(link);
