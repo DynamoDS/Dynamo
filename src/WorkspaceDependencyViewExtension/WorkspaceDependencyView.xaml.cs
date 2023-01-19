@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -187,9 +187,16 @@ namespace Dynamo.WorkspaceDependency
                 foreach (var package in dependencyViewExtension.pmExtension.PackageLoader.LocalPackages.Where(x => 
                 x.LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForDeletion || x.LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForUnload))
                 {
-                    (packageDependencies.FirstOrDefault(x => x.Name == package.Name) as PackageDependencyInfo).State =
+                    try
+                    {
+                        (packageDependencies.FirstOrDefault(x => x.Name == package.Name) as PackageDependencyInfo).State =
                         PackageDependencyState.RequiresRestart;
-                    hasPackageMarkedForUninstall = true;
+                        hasPackageMarkedForUninstall = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        dependencyViewExtension.OnMessageLogged(LogMessage.Info(string.Format(Properties.Resources.DependencyViewExtensionErrorTemplate, ex.ToString())));
+                    }                    
                 }
 
                 RestartBanner.Visibility = hasPackageMarkedForUninstall ? Visibility.Visible: Visibility.Hidden;
@@ -200,10 +207,17 @@ namespace Dynamo.WorkspaceDependency
             {
                 foreach (PackageDependencyInfo packageDependencyInfo in packageDependencies)
                 {
-                    var targetInfo = pmExtension.PackageLoader.LocalPackages.Where(x => x.Name == packageDependencyInfo.Name).FirstOrDefault();
-                    if (targetInfo != null)
+                    try
                     {
-                        packageDependencyInfo.Path = targetInfo.RootDirectory;
+                        var targetInfo = pmExtension.PackageLoader.LocalPackages.Where(x => x.Name == packageDependencyInfo.Name).FirstOrDefault();
+                        if (targetInfo != null)
+                        {
+                            packageDependencyInfo.Path = targetInfo.RootDirectory;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        dependencyViewExtension.OnMessageLogged(LogMessage.Info(string.Format(Properties.Resources.DependencyViewExtensionErrorTemplate, ex.ToString())));
                     }
                 }
             }
