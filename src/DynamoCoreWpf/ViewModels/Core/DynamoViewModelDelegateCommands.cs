@@ -68,7 +68,7 @@ namespace Dynamo.ViewModels
             ShowInstalledPackagesCommand = new DelegateCommand(o => { }, o => true);
             ManagePackagePathsCommand = new DelegateCommand(o => { }, o => true);
 
-            if (PackageManagerClientViewModel != null)
+            if (PackageManagerClientViewModel != null && !Model.IsServiceMode)
             {
                 PublishNewPackageCommand = new DelegateCommand(PackageManagerClientViewModel.PublishNewPackage, PackageManagerClientViewModel.CanPublishNewPackage);
                 PublishCurrentWorkspaceCommand = new DelegateCommand(PackageManagerClientViewModel.PublishCurrentWorkspace, PackageManagerClientViewModel.CanPublishCurrentWorkspace);
