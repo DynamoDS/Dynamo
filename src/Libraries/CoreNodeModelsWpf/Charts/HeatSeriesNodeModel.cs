@@ -16,6 +16,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Wpf;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
+using DynamoServices;
 
 namespace CoreNodeModelsWpf.Charts
 {
@@ -170,8 +171,11 @@ namespace CoreNodeModelsWpf.Charts
             }
 
             // If colors is empty add 1 random color
-            if (colors == null || colors.Count == 0) 
+            if (colors == null || colors.Count == 0)
             {
+                // In case colors are not provided, we supply some from the default library of colors
+                Info(Dynamo.Wpf.Properties.CoreNodeModelWpfResources.ProvideDefaultColorsWarningMessage);
+
                 Color color = Utilities.Colors.GetColor();
                 Colors.Add(color);
 

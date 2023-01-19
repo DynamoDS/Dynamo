@@ -124,6 +124,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The number of colors provided does not match, or no colors are provided. Default colors will be used..
+        /// </summary>
+        public static string ProvideDefaultColorsWarningMessage {
+            get {
+                return ResourceManager.GetString("ProvideDefaultColorsWarningMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Drag to modify the size of the chart.
         /// </summary>
         public static string ResizeThumbToolTip {

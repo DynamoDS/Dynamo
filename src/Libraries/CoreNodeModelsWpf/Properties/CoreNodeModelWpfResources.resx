@@ -138,6 +138,9 @@
   <data name="LblValue" xml:space="preserve">
     <value>Value</value>
   </data>
+  <data name="ProvideDefaultColorsWarningMessage" xml:space="preserve">
+    <value>The number of colors provided does not match, or no colors are provided. Default colors will be used.</value>
+  </data>
   <data name="ResizeThumbToolTip" xml:space="preserve">
     <value>Drag to modify the size of the chart</value>
   </data>

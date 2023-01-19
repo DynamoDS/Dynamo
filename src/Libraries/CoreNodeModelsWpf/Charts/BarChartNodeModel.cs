@@ -16,6 +16,7 @@ using Dynamo.Nodes;
 using Dynamo.Wpf;
 using LiveCharts.Wpf;
 using Dynamo.UI;
+using DynamoServices;
 
 namespace CoreNodeModelsWpf.Charts
 {
@@ -157,10 +158,14 @@ namespace CoreNodeModelsWpf.Charts
                     Color color;
                     if (colors == null || colors.Count == 0 || colors.Count != labels.Count)
                     {
+                        // In case colors are not provided, we supply some from the default library of colors
+                        Info(Dynamo.Wpf.Properties.CoreNodeModelWpfResources.ProvideDefaultColorsWarningMessage);
+
                         color = Utilities.Colors.GetColor();
                     }
                     else
                     {
+
                         var dynColor = (DSCore.Color)colors[i];
                         color = Color.FromArgb(dynColor.Alpha, dynColor.Red, dynColor.Green, dynColor.Blue);
                     }

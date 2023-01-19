@@ -16,6 +16,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Wpf;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
+using DynamoServices;
 
 namespace CoreNodeModelsWpf.Charts
 {
@@ -135,6 +136,9 @@ namespace CoreNodeModelsWpf.Charts
 
             if (colors == null || colors.Count == 0 || colors.Count != keys.Count)
             {
+                // In case colors are not provided, we supply some from the default library of colors
+                Info(Dynamo.Wpf.Properties.CoreNodeModelWpfResources.ProvideDefaultColorsWarningMessage);
+
                 for (var i = 0; i < keys.Count; i++)
                 {
                     Labels.Add((string)keys[i]);
