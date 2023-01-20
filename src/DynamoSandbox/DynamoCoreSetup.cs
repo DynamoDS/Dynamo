@@ -66,7 +66,6 @@ namespace DynamoSandbox
                 if (!WebView2Utilities.ValidateWebView2RuntimeInstalled())
                     return;
                 StartupUtils.ASMPreloadFailure += ASMPreloadFailureHandler;
-                model.DSExecutionEngine = dsExecutionEngine;
 
                 splashScreen = new Dynamo.UI.Views.SplashScreen();
                 splashScreen.DynamicSplashScreenReady += LoadDynamoView;
@@ -139,6 +138,7 @@ namespace DynamoSandbox
             DynamoModel model;
             model = StartupUtils.MakeModel(false, ASMPath ?? string.Empty, analyticsInfo);
             model.CERLocation = CERLocation;
+            model.DSExecutionEngine = dsExecutionEngine;
 
             viewModel = DynamoViewModel.Start(
                    new DynamoViewModel.StartConfiguration()
