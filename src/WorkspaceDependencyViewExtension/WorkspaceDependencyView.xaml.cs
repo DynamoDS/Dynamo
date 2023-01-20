@@ -137,9 +137,9 @@ namespace Dynamo.WorkspaceDependency
             RestartBanner.Visibility = Visibility.Hidden;
             ws.ForceComputeWorkspaceReferences = forceCompute;
 
-            var packageDependencies = ws.NodeLibraryDependencies.Where(d => d is PackageDependencyInfo).ToList();
-            var localDefinitions = ws.NodeLocalDefinitions.Where(d => d is DependencyInfo).ToList();
-            var externalFiles = ws.ExternalFiles.Where(d => d is DependencyInfo).ToList();
+            var packageDependencies = ws.NodeLibraryDependencies?.Where(d => d is PackageDependencyInfo).ToList();
+            var localDefinitions = ws.NodeLocalDefinitions?.Where(d => d is DependencyInfo).ToList();
+            var externalFiles = ws.ExternalFiles?.Where(d => d is DependencyInfo).ToList();
 
             foreach (DependencyInfo info in localDefinitions)
             {
@@ -195,8 +195,8 @@ namespace Dynamo.WorkspaceDependency
                     }
                     catch (Exception ex)
                     {
-                        dependencyViewExtension.OnMessageLogged(LogMessage.Info(string.Format(Properties.Resources.DependencyViewExtensionErrorTemplate, ex.ToString())));
-                    }                    
+                        dependencyViewExtension.OnMessageLogged(LogMessage.Info(string.Format(Properties.Resources.DependencyViewExtensionErrorTemplate, $"failure to set package uninstall state |{ ex.ToString()}")));
+                    }
                 }
 
                 RestartBanner.Visibility = hasPackageMarkedForUninstall ? Visibility.Visible: Visibility.Hidden;
