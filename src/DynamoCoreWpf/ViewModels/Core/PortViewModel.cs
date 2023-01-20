@@ -350,11 +350,9 @@ namespace Dynamo.ViewModels
             // The actual zoom here is confusing
             // What matters is the zoom factor measured from the scaled : unscaled node size
             var zoom = node.WorkspaceViewModel.Zoom;
-            var zoomFactor = targetSize.Height / node.ActualHeight;
 
             double x;
             var scaledWidth = autocompletePopupSpacing * targetSize.Width / node.ActualWidth;
-            var scaledHeight = targetSize.Height / node.ActualHeight;
 
             if (PortModel.PortType == PortType.Input)
             {
