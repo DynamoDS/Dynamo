@@ -121,7 +121,9 @@ namespace Dynamo.DocumentationBrowser
             StringBuilder sb = new StringBuilder();
 
             var mkArray = mkDown.Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.None).Where(s => !string.IsNullOrEmpty(s)).ToArray();
-            var imageRow = mkArray.First(x => x.Contains("img"));
+            var imageRow = mkArray.FirstOrDefault(x => x.Contains("img"));
+            if(imageRow == null) return mkDown;
+
             var index = mkArray.IndexOf(imageRow);
 
             if (!imageRow.Contains("img"))
