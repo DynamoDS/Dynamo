@@ -10,7 +10,6 @@
     <AssemblyName>CoreNodeModels</AssemblyName>
     <OutputPath>$(OutputPath)\nodes\</OutputPath>
     <DocumentationFile>$(OutputPath)\CoreNodeModels.XML</DocumentationFile>
-    <UseWPF>true</UseWPF>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ReferenceCopyLocalPaths>
