@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
@@ -593,7 +593,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// This method will calculate the Popup location based in a item from the Library
         /// </summary>
-        internal static void CalculateLibraryItemLocation(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
+        internal static async void CalculateLibraryItemLocation(Step stepInfo, StepUIAutomation uiAutomationData, bool enableFunction, GuideFlow currentFlow)
         {
             CurrentExecutingStep = stepInfo;
             if (uiAutomationData == null) return;
@@ -602,10 +602,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
             //Create the array for the paramateres that will be sent to the WebBrowser.InvokeScript Method
             object[] parametersInvokeScript = new object[] { jsFunctionName, jsParameters };
             //Execute the JS function with the provided parameters
-            var returnedObject = ResourceUtilities.ExecuteJSFunction(CurrentExecutingStep.MainWindow, CurrentExecutingStep.HostPopupInfo, parametersInvokeScript);
+            var returnedObject = await ResourceUtilities.ExecuteJSFunction(CurrentExecutingStep.MainWindow, CurrentExecutingStep.HostPopupInfo, parametersInvokeScript);
             if (returnedObject == null) return;
             //Due that the returned object is a json then we get the values from the json
-            JObject json = JObject.Parse(returnedObject.ToString());
+            string jsonString = returnedObject.ToString().Replace("\\\"", "'").Replace("\"", "");
+            JObject json = JObject.Parse(jsonString);
             double top = Convert.ToDouble(json["client"]["top"].ToString());
             double bottom = Convert.ToDouble(json["client"]["bottom"].ToString());
             //We calculate the Vertical location taking the average position "(top + bottom) / 2" and the height of the popup

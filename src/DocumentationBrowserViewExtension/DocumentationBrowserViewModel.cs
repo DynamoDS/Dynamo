@@ -1,16 +1,39 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Windows;
 using Dynamo.Core;
 using Dynamo.DocumentationBrowser.Properties;
 using Dynamo.Logging;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Extensions;
 
 namespace Dynamo.DocumentationBrowser
 {
+    public class InsertDocumentationLinkEventArgs : EventArgs
+    {
+        private string data;
+        private string name;
+        public InsertDocumentationLinkEventArgs(string _Data, string _Name)
+        {
+            data = _Data;
+            name = _Name;
+        } 
+
+        public string Data
+        {
+            get { return data; }
+        }
+        public string Name
+        {
+            get { return name; }
+        }
+    } 
+
     public class DocumentationBrowserViewModel : NotificationObject, IDisposable
     {
         #region Constants
@@ -29,6 +52,13 @@ namespace Dynamo.DocumentationBrowser
         private readonly PackageDocumentationManager packageManagerDoc;
         private MarkdownHandler markdownHandler;
         private FileSystemWatcher markdownFileWatcher;
+
+        /// <summary>
+        /// Contains the resolvable node to library location breadcrumbs information
+        /// Key: Node Name
+        /// Value: Breadcrumbs " / " concatenated information
+        /// </summary>
+        internal Dictionary<string, string> BreadCrumbsDictionary { get; set; }
 
         /// <summary>
         /// The link to the documentation website or file to display.
@@ -55,8 +85,9 @@ namespace Dynamo.DocumentationBrowser
         }
 
         private Uri link;
-
+        private string graphPath;
         private string content;
+        private string name;
 
         private MarkdownHandler MarkdownHandlerInstance => markdownHandler ?? (markdownHandler = new MarkdownHandler());
         public bool HasContent => !string.IsNullOrWhiteSpace(this.content);
@@ -95,9 +126,11 @@ namespace Dynamo.DocumentationBrowser
                 }
             }
         }
-
+        
         internal Action<ILogMessage> MessageLogged;
         private OpenDocumentationLinkEventArgs openDocumentationLinkEventArgs;
+
+        internal UIElement DynamoView { get; set; }
 
         #endregion
 
@@ -154,6 +187,8 @@ namespace Dynamo.DocumentationBrowser
             try
             {
                 string targetContent;
+                string graph;
+                string graphName;
                 Uri link;
                 switch (e)
                 {
@@ -163,18 +198,24 @@ namespace Dynamo.DocumentationBrowser
                             openNodeAnnotationEventArgs.PackageName);
 
                         link = string.IsNullOrEmpty(mdLink) ? new Uri(String.Empty, UriKind.Relative) : new Uri(mdLink);
+                        graph = GetGraphLinkFromMDLocation(link);
                         targetContent = CreateNodeAnnotationContent(openNodeAnnotationEventArgs);
+                        graphName = openNodeAnnotationEventArgs.MinimumQualifiedName;
                         break;
 
                     case OpenDocumentationLinkEventArgs openDocumentationLink:
                         link = openDocumentationLink.Link;
+                        graph = GetGraphLinkFromMDLocation(link);
                         targetContent = ResourceUtilities.LoadContentFromResources(openDocumentationLink.Link.ToString(), GetType().Assembly);
+                        graphName = null;
                         break;
 
                     default:
                         // Navigate to unsupported 
                         targetContent = null;
+                        graph = null;
                         link = null;
+                        graphName = null;
                         break;
                 }
 
@@ -186,6 +227,8 @@ namespace Dynamo.DocumentationBrowser
                 {
                     this.content = targetContent;
                     this.Link = link;
+                    this.graphPath = graph;
+                    this.name = graphName;
                 }
             }
             catch (FileNotFoundException)
@@ -204,6 +247,20 @@ namespace Dynamo.DocumentationBrowser
                 return;
             }
             this.shouldLoadDefaultContent = false;
+        }
+
+        private string GetGraphLinkFromMDLocation(Uri link)
+        {
+            if (link == null || link.Equals(new Uri(String.Empty, UriKind.Relative))) return string.Empty;
+            try
+            {
+                string graphPath = DynamoGraphFromMDFilePath(link.AbsolutePath);
+                return File.Exists(graphPath) ? graphPath : null;
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
         }
 
         private void WatchMdFile(string mdLink)
@@ -243,6 +300,7 @@ namespace Dynamo.DocumentationBrowser
             var nodeAnnotationArgs = openDocumentationLinkEventArgs as OpenNodeAnnotationEventArgs;
             this.content = CreateNodeAnnotationContent(nodeAnnotationArgs);
             this.Link = new Uri(e.FullPath);
+            this.graphPath = GetGraphLinkFromMDLocation(this.Link);
         }
 
         private string CreateNodeAnnotationContent(OpenNodeAnnotationEventArgs e)
@@ -252,12 +310,15 @@ namespace Dynamo.DocumentationBrowser
             {
                 writer.WriteLine(DocumentationBrowserUtils.GetContentFromEmbeddedResource(STYLE_RESOURCE));
 
-                // Get the Node info section
-                var nodeDocumentation = NodeDocumentationHtmlGenerator.FromAnnotationEventArgs(e);
-                writer.WriteLine(nodeDocumentation);
-
                 // Convert the markdown file to html
-                MarkdownHandlerInstance.ParseToHtml(ref writer, e.MinimumQualifiedName, e.PackageName);
+                var mkDown = MarkdownHandlerInstance.ParseToHtml(e.MinimumQualifiedName, e.PackageName);
+                BreadCrumbs = GetBreadCrumbsValue(e);
+
+                writer.WriteLine(NodeDocumentationHtmlGenerator.OpenDocument());
+                // Get the Node info section
+                var nodeDocumentation = NodeDocumentationHtmlGenerator.FromAnnotationEventArgs(e, BreadCrumbs, mkDown);
+                writer.WriteLine(nodeDocumentation);
+                writer.WriteLine(NodeDocumentationHtmlGenerator.CloseDocument());
 
                 writer.Flush();
                 var output = writer.ToString();
@@ -267,8 +328,9 @@ namespace Dynamo.DocumentationBrowser
                 {
                     LogWarning(Resources.ScriptTagsRemovalWarning, WarningLevel.Mild);
                 }
-
+                
                 // inject the syntax highlighting script at the bottom at the document.
+                output += DocumentationBrowserUtils.GetImageNavigationScript();
                 output += DocumentationBrowserUtils.GetDPIScript();
                 output += DocumentationBrowserUtils.GetSyntaxHighlighting();
 
@@ -279,6 +341,124 @@ namespace Dynamo.DocumentationBrowser
                 writer?.Dispose();
             }
         }
+
+        public string BreadCrumbs { get; set; }
+
+        private const string GEOMETRY_NAMESPACE = "Autodesk.DesignScript.Geometry";
+        private const string GEOMETRY_TESSELLATION_NAMESPACE = "Geometry.Tessellation";
+
+        private string GetBreadCrumbsValue(OpenNodeAnnotationEventArgs e)
+        {
+            string breadCrumbs = null;
+
+            if (BreadCrumbsDictionary == null) return String.Empty;
+            if (e.MinimumQualifiedName.Contains(GEOMETRY_NAMESPACE))
+            {
+                var category = e.Category.Split('.');
+                if (category.Length < 3) return null;
+
+                var cat = category[0];
+                var group = category[1];
+                var type = category[2];
+
+                var lookupName = cat + "." + group;
+
+                // For some reason, Geometry / Modifiers / Geometry already contains the correct amount of information, so we can skip it
+                if (BreadCrumbsDictionary.TryGetValue(lookupName, out breadCrumbs) && !breadCrumbs.Contains("Modifiers"))
+                {
+                    breadCrumbs += " / " + group;
+                }
+
+                return breadCrumbs;
+            }
+            else if (e.Category.Contains(GEOMETRY_TESSELLATION_NAMESPACE))
+            {
+                var category = e.Category.Split('.');
+                if (category.Length < 4) return null;
+
+                var cat = category[0];
+                var group = category[1];
+                var none = category[2];
+                var type = category[3];
+
+                breadCrumbs = cat + " / " + group + " / " + none;
+                return breadCrumbs;
+            }
+            else
+            {
+                if (!BreadCrumbsDictionary.TryGetValue(e.OriginalName, out breadCrumbs))
+                {
+                    foreach (var pair in BreadCrumbsDictionary)
+                    {
+                        if (pair.Key.Contains(e.OriginalName))
+                        {
+                            breadCrumbs = pair.Value;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return breadCrumbs;
+        }
+
+        /// <summary>
+        /// Load the help graph associated with the node inside the current Dynamo workspace 
+        /// </summary>
+        /// <exception cref="NotImplementedException"></exception>
+        internal void InsertGraph()
+        {
+            var raiseInsertGraph = HandleInsertFile;
+
+            if (raiseInsertGraph != null)
+            {
+                if (graphPath != null)
+                {
+                    var graphName = this.name ?? Path.GetFileNameWithoutExtension(graphPath);
+                    raiseInsertGraph(this, new InsertDocumentationLinkEventArgs(graphPath, graphName));
+                }
+                else
+                {
+                    raiseInsertGraph(this, new InsertDocumentationLinkEventArgs(Resources.FileNotFoundFailureMessage, DynamoGraphFromMDFilePath(this.Link.AbsolutePath)));
+                    return;
+                }
+            }
+        }
+
+        internal delegate void InsertDocumentationLinkEventHandler(object sender, InsertDocumentationLinkEventArgs e);
+        internal event InsertDocumentationLinkEventHandler HandleInsertFile;
+
+        private string DynamoGraphFromMDFilePath(string path)
+        {
+            var dynPath = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path).Replace("%20", " ")) + ".dyn";
+            return dynPath;
+            return path.Replace("%20", " ").Replace(".md", ".dyn");
+        }
+
+
+        internal void CollapseExpandPackage(string section)
+        {
+            string sectionType;
+            var breadBrumbsArray = BreadCrumbs.Replace(" / ", "/").Split('/');
+
+            // We need to expand sequentially all root levels before reaching the desired section
+            for (var i = 0; i < breadBrumbsArray.Length; i++)
+            {
+                sectionType = i == 0 ? "LibraryItemText" : "LibraryItemGroupText";
+
+                object[] jsParameters = new object[] { breadBrumbsArray[i], sectionType, "true" };
+                //Create the array for the paramateres that will be sent to the WebBrowser.InvokeScript Method
+                object[] parametersInvokeScript = new object[] { "collapseExpandPackage", jsParameters };
+
+                ResourceUtilities.ExecuteJSFunction(DynamoView, parametersInvokeScript);
+                
+                // After we have reached the desired section, we can exit the method
+                // Also check if we have more than one occurrence, i.e Geometry / Modifiers / Geometry 
+                if (section.Equals(breadBrumbsArray[i]) && breadBrumbsArray.Count(x => x.Equals(section)) == 1)
+                    return;
+            }
+        }
+
 
         #endregion
 
@@ -347,5 +527,6 @@ namespace Dynamo.DocumentationBrowser
         }
 
         #endregion
+
     }
 }

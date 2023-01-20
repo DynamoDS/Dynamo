@@ -12,12 +12,13 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="ControlColorsAndBrushes.xaml"/>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
-            <local:BooleanToBorderColorConverter x:Key="BooleanToBorderColorConverter" ToggleBrush="{StaticResource BlueBrush}"/>
+            <local:BooleanToBorderColorConverter x:Key="BooleanToBorderColorConverter" ToggleBrush="{StaticResource Blue400Brush}"/>
             <local:BooleanToColorConverter x:Key="BooleanToColorConverter" 
                                            DefaultBrush="{StaticResource DarkGreyBrush}" 
                                            HoverBrush="{StaticResource DarkMidGreyBrush}" 
-                                           PressedBrush="{StaticResource LightGrayBrush}" 
+                                           PressedBrush="{StaticResource DarkMidGreyBrush}" 
                                            ToggleDefaultBrush="{StaticResource MidBlueBrush}" 
                                            ToggleHoverBrush="{StaticResource MidDarkBlueBrush}" 
                                            TogglePressedBrush="{StaticResource MidLightBlueBrush}" />
@@ -36,7 +37,16 @@
                                              Converter={StaticResource BooleanToColorConverter},
                                              ConverterParameter=Default,
                                              UpdateSourceTrigger=PropertyChanged}">
-                    <ContentPresenter />
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{Binding FilterImage}" 
+                               Width="10" 
+                               Height="10" 
+                               SnapsToDevicePixels="True"
+                               UseLayoutRounding="True"
+                               VerticalAlignment="Stretch"
+                               Margin="2 0 0 0"/>
+                        <ContentPresenter />
+                    </StackPanel>
                 </Border>
 
                 <ControlTemplate.Triggers>
@@ -68,7 +78,7 @@
                        TextAlignment="Center"
                        FontSize="10"
                        FontWeight="Medium"
-                       Foreground="{StaticResource TextColorBrush}"
+                       Foreground="{StaticResource DarkThemeBodyMediumBrush}"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center">
             </TextBlock>

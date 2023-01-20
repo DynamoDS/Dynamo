@@ -7,11 +7,11 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Grid>
-                        <Image Name="closeIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/close_grey.png"/>
+                        <Image Name="closeIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/close-darktheme-default-16px.png"/>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="closeIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/close_blue.png" />
+                            <Setter TargetName="closeIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/close-darktheme-hover-16px.png" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -25,11 +25,11 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Grid>
-                        <Image Name="maximizeIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/max-default.png"/>
+                        <Image Name="maximizeIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/max-darktheme-default-16px.png"/>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="maximizeIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/maximize-hover.png" />
+                            <Setter TargetName="maximizeIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/max-darktheme-hover-16px.png" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -43,11 +43,11 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Grid>
-                        <Image Name="restoreIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/minimize-default-16px.png"/>
+                        <Image Name="restoreIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/restore-darktheme-default-16px.png"/>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="restoreIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/minimize-hover-16px.png" />
+                            <Setter TargetName="restoreIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/restore-darktheme-hover-16px.png" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -61,11 +61,11 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Grid>
-                        <Image Name="minimizeIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/min-default.png"/>
+                        <Image Name="minimizeIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/min-darktheme-hover-16px.png"/>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="minimizeIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/minimize-hover.png" />
+                            <Setter TargetName="minimizeIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/min-darktheme-hover-16px.png" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

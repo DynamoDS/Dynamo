@@ -20,7 +20,6 @@ using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Selection;
-using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
@@ -611,6 +610,12 @@ namespace Dynamo.ViewModels
                     Model.FileName = filePath;
                     Model.OnSaved();
                 }
+
+                // If a new CustomNodeWorkspaceModel is created, store that info in CustomNodeManager without creating an instance of the custom node.
+                if (this.Model is CustomNodeWorkspaceModel customNodeWorkspaceModel)
+                {
+                    customNodeWorkspaceModel.SetInfo(Path.GetFileNameWithoutExtension(filePath));
+                }
             }
             catch (Exception ex)
             {
@@ -1007,7 +1012,7 @@ namespace Dynamo.ViewModels
 
         public double GetSelectionAverageX()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where((x) => !(x is AnnotationModel) && x is ILocatable)
                            .Cast<ILocatable>()
                            .Select((x) => x.CenterX)
                            .Average();
@@ -1015,7 +1020,7 @@ namespace Dynamo.ViewModels
 
         public double GetSelectionAverageY()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where((x) => !(x is AnnotationModel) && x is ILocatable)
                            .Cast<ILocatable>()
                            .Select((x) => x.CenterY)
                            .Average();
@@ -1023,7 +1028,7 @@ namespace Dynamo.ViewModels
 
         public double GetSelectionMinX()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where((x) => !(x is AnnotationModel) && x is ILocatable)
                            .Cast<ILocatable>()
                            .Select((x) => x.X)
                            .Min();
@@ -1031,7 +1036,7 @@ namespace Dynamo.ViewModels
 
         public double GetSelectionMinY()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where((x) => !(x is AnnotationModel) && x is ILocatable)
                            .Cast<ILocatable>()
                            .Select((x) => x.Y)
                            .Min();
@@ -1039,7 +1044,7 @@ namespace Dynamo.ViewModels
 
         public double GetSelectionMaxX()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where((x) => !(x is AnnotationModel) && x is ILocatable)
                            .Cast<ILocatable>()
                            .Select((x) => x.X + x.Width)
                            .Max();
@@ -1047,7 +1052,7 @@ namespace Dynamo.ViewModels
 
         public double GetSelectionMaxLeftX()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where((x) => !(x is AnnotationModel) && x is ILocatable)
                            .Cast<ILocatable>()
                            .Select((x) => x.X)
                            .Max();
@@ -1055,7 +1060,7 @@ namespace Dynamo.ViewModels
 
         public double GetSelectionMaxY()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where((x) => !(x is AnnotationModel) && x is ILocatable)
                            .Cast<ILocatable>()
                            .Select((x) => x.Y + x.Height)
                            .Max();
@@ -1063,7 +1068,7 @@ namespace Dynamo.ViewModels
 
         public double GetSelectionMaxTopY()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where((x) => !(x is AnnotationModel) && x is ILocatable)
                            .Cast<ILocatable>()
                            .Select((x) => x.Y)
                            .Max();
@@ -1081,7 +1086,7 @@ namespace Dynamo.ViewModels
             IEnumerable<ModelBase> models = selection.OfType<ModelBase>();
             WorkspaceModel.RecordModelsForModification(models.ToList(), Model.UndoRecorder);
 
-            var toAlign = DynamoSelection.Instance.Selection.OfType<ILocatable>().ToList();
+            var toAlign = DynamoSelection.Instance.Selection.OfType<ILocatable>().Where(node => !(node is AnnotationModel)).ToList();
 
             switch (alignType)
             {
@@ -1163,7 +1168,8 @@ namespace Dynamo.ViewModels
                     break;
                 case "VerticalDistribute":
                 {
-                    if (DynamoSelection.Instance.Selection.Count <= 2) return;
+                    var nodesSelected = DynamoSelection.Instance.Selection.Where(node => !(node is AnnotationModel) && node is ILocatable);
+                    if (nodesSelected.Count() <= 2) return;
 
                     var yMin = GetSelectionMinY();
                     var yMax = GetSelectionMaxY();
@@ -1172,14 +1178,14 @@ namespace Dynamo.ViewModels
                     var span = yMax - yMin;
 
                     var nodeHeightSum =
-                        DynamoSelection.Instance.Selection.Where(y => y is ILocatable)
+                        nodesSelected.Where(y => y is ILocatable)
                             .Cast<ILocatable>()
                             .Sum((y) => y.Height);
 
                     if (span > nodeHeightSum)
                     {
                         spacing = (span - nodeHeightSum)
-                            /(DynamoSelection.Instance.Selection.Count - 1);
+                            /(nodesSelected.Count() - 1);
                     }
 
                     var cursor = yMin;
@@ -1192,7 +1198,8 @@ namespace Dynamo.ViewModels
                     break;
                 case "HorizontalDistribute":
                 {
-                    if (DynamoSelection.Instance.Selection.Count <= 2) return;
+                    var nodesSelected = DynamoSelection.Instance.Selection.Where(node => !(node is AnnotationModel) && node is ILocatable);
+                    if (nodesSelected.Count() <= 2) return;
 
                     var xMin = GetSelectionMinX();
                     var xMax = GetSelectionMaxX();
@@ -1200,7 +1207,7 @@ namespace Dynamo.ViewModels
                     var spacing = 0.0;
                     var span = xMax - xMin;
                     var nodeWidthSum =
-                        DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
+                        nodesSelected.Where((x) => x is ILocatable)
                             .Cast<ILocatable>()
                             .Sum((x) => x.Width);
 
@@ -1211,7 +1218,7 @@ namespace Dynamo.ViewModels
                     if (span > nodeWidthSum)
                     {
                         spacing = (span - nodeWidthSum)
-                            /(DynamoSelection.Instance.Selection.Count - 1);
+                            /(nodesSelected.Count() - 1);
                     }
 
                     var cursor = xMin;
@@ -1310,7 +1317,7 @@ namespace Dynamo.ViewModels
 
             //set the current offset without triggering
             //any property change notices.
-            if (Model.X != p.X && Model.Y != p.Y)
+            if (Model.X != p.X || Model.Y != p.Y)
             {
                 Model.X = p.X;
                 Model.Y = p.Y;
@@ -1357,7 +1364,15 @@ namespace Dynamo.ViewModels
 
         private bool _fitViewActualZoomToggle = false;
 
-        internal void FitViewInternal()
+        /// <summary>
+        ///     Zoom around current selection
+        ///     _fitViewActualZoomToggle is used internally to toggle
+        /// between the default 1.0 zoom level and the intended zoom around selection
+        ///     The optional toggle boolean is introduced to avoid this behavior and only zoom around the selection
+        /// no matter how many times the operation is performed
+        /// </summary>
+        /// <param name="toggle"></param>
+        internal void FitViewInternal(bool toggle = true)
         {
             // Get the offset and focus width & height (zoom if 100%)
             double minX, maxX, minY, maxY;
@@ -1402,10 +1417,19 @@ namespace Dynamo.ViewModels
             double focusWidth = maxX - minX;
             double focusHeight = maxY - minY;
 
-            _fitViewActualZoomToggle = !_fitViewActualZoomToggle;
-            ZoomEventArgs zoomArgs = _fitViewActualZoomToggle
-                ? new ZoomEventArgs(offset, focusWidth, focusHeight)
-                : new ZoomEventArgs(offset, focusWidth, focusHeight, 1.0);
+            ZoomEventArgs zoomArgs;
+
+            if (toggle)
+            {
+                _fitViewActualZoomToggle = !_fitViewActualZoomToggle;
+                zoomArgs = _fitViewActualZoomToggle && toggle
+                    ? new ZoomEventArgs(offset, focusWidth, focusHeight)
+                    : new ZoomEventArgs(offset, focusWidth, focusHeight, 1.0);
+            }
+            else
+            {
+                zoomArgs = new ZoomEventArgs(offset, focusWidth, focusHeight);
+            }
 
             OnRequestZoomToFitView(this, zoomArgs);
         }

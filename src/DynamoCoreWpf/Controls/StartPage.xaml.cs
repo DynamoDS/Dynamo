@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -166,12 +166,6 @@ namespace Dynamo.UI.Controls
             #endregion
 
             #region Reference List
-
-            references.Add(new StartPageListItem(Resources.StartPageWhatsNew, "icon-whats-new.png")
-            {
-                ContextData = ButtonNames.ShowGallery,
-                ClickAction = StartPageListItem.Action.RegularCommand
-            });
 
             references.Add(new StartPageListItem(Resources.StartPageDynamoPrimer, "icon-reference.png")
             {
@@ -408,10 +402,6 @@ namespace Dynamo.UI.Controls
                     dvm.ShowNewFunctionDialogCommand.Execute(null);
                     break;
 
-                case ButtonNames.ShowGallery:
-                    dvm.ShowGalleryCommand.Execute(null);
-                    break;
-
                 default:
                     throw new ArgumentException(
                         string.Format("Invalid command: {0}", item.ContextData));
@@ -438,7 +428,6 @@ namespace Dynamo.UI.Controls
         public const string NewWorkspace = "NewWorkspace";
         public const string NewCustomNodeWorkspace = "NewCustomNodeWorkspace";
         public const string OpenWorkspace = "OpenWorkspace";
-        public const string ShowGallery = "ShowGallery";
     }
 
     public partial class StartPageView : UserControl
@@ -476,12 +465,6 @@ namespace Dynamo.UI.Controls
 
             var id = Wpf.Interfaces.ResourceNames.StartPage.Image;
             StartPageLogo.Source = dynamoViewModel.BrandingResourceProvider.GetImageSource(id);
-
-            if (startPageViewModel.IsFirstRun)
-            {
-                dynamoViewModel.ShowGalleryCommand.Execute(null);
-            }
-
         }
 
         private void OnItemSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -498,13 +481,6 @@ namespace Dynamo.UI.Controls
             var listBox = sender as ListBox;
             listBox.SelectedIndex = -1;
         }
-
-        private void OnCloseStartPageClicked(object sender, MouseButtonEventArgs e)
-        {
-            this.dynamoViewModel.ShowStartPage = false;
-        }
-
-        #endregion
 
         private void OnSampleFileSelected(object sender, RoutedEventArgs e)
         {
@@ -563,6 +539,7 @@ namespace Dynamo.UI.Controls
 
             }
         }
+        #endregion
     }
 
     public class SampleFileEntry

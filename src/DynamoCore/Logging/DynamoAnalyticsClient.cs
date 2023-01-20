@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using System.Diagnostics;
-using Analytics.NET.Google;
-using Analytics.NET.ADP;
+using Autodesk.Analytics.ADP;
 using Autodesk.Analytics.Core;
 using Autodesk.Analytics.Events;
 using Dynamo.Interfaces;
@@ -179,15 +178,18 @@ namespace Dynamo.Logging
             product = new ProductInfo() { Id = "DYN", Name = hostName, VersionString = appversion, AppVersion = appversion, BuildId = buildId, ReleaseId = releaseId };
         }
 
+        // TODO: Google analytics can be made available on dotnet6-windows (windows only)
         private void RegisterGATracker(Service service)
         {
+#if NET48
             //Some clients such as Revit may allow start/close Dynamo multiple times
             //in the same session so register only if the factory is not registered.
-            if (service.GetTrackerFactory(GATrackerFactory.Name) == null)
+            if (service.GetTrackerFactory(Autodesk.Analytics.Google.GATrackerFactory.Name) == null)
             {
-                service.Register(new GATrackerFactory(ANALYTICS_PROPERTY));
-                service.AddTrackerFactoryFilter(GATrackerFactory.Name, () => ReportingGoogleAnalytics);
+                service.Register(new Autodesk.Analytics.Google.GATrackerFactory(ANALYTICS_PROPERTY));
+                service.AddTrackerFactoryFilter(Autodesk.Analytics.Google.GATrackerFactory.Name, () => ReportingGoogleAnalytics);
             }
+#endif
         }
 
         private void RegisterADPTracker(Service service)

@@ -130,13 +130,12 @@ namespace Dynamo.Models
         private Timer backupFilesTimer;
         private Dictionary<Guid, string> backupFilesDict = new Dictionary<Guid, string>();
         internal readonly Stopwatch stopwatch = Stopwatch.StartNew();
-
         /// <summary>
         /// Indicating if ASM is loaded correctly, defaulting to true because integrators most likely have code for ASM preloading
         /// During sandbox initializing, Dynamo checks specifically if ASM loading was correct
         /// </summary>
         internal bool IsASMLoaded = true;
-    
+
         #endregion
 
         #region static properties
@@ -390,6 +389,12 @@ namespace Dynamo.Models
 
         #endregion
 
+        #region constants
+
+        private const int INSERT_VERTICAL_OFFSET_VALUE = 750;
+
+        #endregion
+
         #region initialization and disposal
 
         /// <summary>
@@ -454,6 +459,11 @@ namespace Dynamo.Models
         /// </summary>
         public bool CLIMode { get; internal set; }
 
+        /// <summary>
+        /// The Autodesk CrashReport tool location on disk (directory that contains the "senddmp.exe")
+        /// </summary>
+        public string CERLocation { get; internal set; }
+
         protected virtual void PreShutdownCore(bool shutdownHost)
         {
         }
@@ -479,6 +489,7 @@ namespace Dynamo.Models
         {
         }
 
+        // TODO_Dynamo3.0: Replace the IStartConfiguration with a class or struct instance in order to avoid future breaking changes for every new option added.
         public interface IStartConfiguration
         {
             string Context { get; set; }
@@ -499,6 +510,29 @@ namespace Dynamo.Models
             /// No update checks or analytics collection should be done.
             /// </summary>
             bool IsHeadless { get; set; }
+        }
+
+        /// <summary>
+        /// Options used to customize the CER (crash error reporting) experience.
+        /// </summary>
+        public struct CrashReporterStartupOptions
+        {
+            /// <summary>
+            /// The Autodesk CrashReport tool location on disk (directory that contains the "senddmp.exe")
+            /// </summary>
+            public string CERLocation { get; set; }
+        }
+
+        // Remove this interface in Dynamo3.0 and merge it back into IStartConfiguration.
+        /// <summary>
+        /// Use this interface to set the CER (crash error reporting) tool path. 
+        /// </summary>
+        public interface IStartConfigCrashReporter
+        {
+            /// <summary>
+            /// CERLocation
+            /// </summary>
+            CrashReporterStartupOptions CRStartConfig { get; set; }
         }
 
         /// <summary>
@@ -586,6 +620,11 @@ namespace Dynamo.Models
                 CLIMode = defaultStartConfig.CLIMode;
             }
 
+            if (config is IStartConfigCrashReporter cerConfig)
+            {
+                CERLocation = cerConfig.CRStartConfig.CERLocation;
+            }
+
             ClipBoard = new ObservableCollection<ModelBase>();
 
             pathManager = new PathManager(new PathManagerParams
@@ -604,7 +643,7 @@ namespace Dynamo.Models
             IsHeadless = config.IsHeadless;
 
             DebugSettings = new DebugSettings();
-            Logger = new DynamoLogger(DebugSettings, pathManager.LogDirectory, IsTestMode);
+            Logger = new DynamoLogger(DebugSettings, pathManager.LogDirectory, IsTestMode, CLIMode);
 
             foreach (var exception in exceptions)
             {
@@ -621,6 +660,7 @@ namespace Dynamo.Models
 
             geometryFactoryPath = config.GeometryFactoryPath;
 
+            DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenInitPreferencesSettings, 30));
             IPreferences preferences = CreateOrLoadPreferences(config.Preferences);
             if (preferences is PreferenceSettings settings)
             {
@@ -665,8 +705,20 @@ namespace Dynamo.Models
             // or the feature flags client.
             if (!areAnalyticsDisabledFromConfig && !Dynamo.Logging.Analytics.DisableAnalytics)
             {
-                AnalyticsService.Start(this, IsHeadless, IsTestMode);
-
+                // Start the Analytics service only when a session is not present.
+                // In an integrator host, as splash screen can be closed without shutting down the ViewModel, the analytics service is not stopped.
+                // So we don't want to start it when splash screen or dynamo window is launched again.
+                if (Analytics.client == null)
+                {
+                    AnalyticsService.Start(this, IsHeadless, IsTestMode);
+                }
+                else if (Analytics.client is DynamoAnalyticsClient dac)
+                {
+                    if (dac.Session == null)
+                    {
+                        AnalyticsService.Start(this, IsHeadless, IsTestMode);
+                    }
+                }
 
                 //run process startup/reading on another thread so we don't block dynamo startup.
                 //if we end up needing to control aspects of dynamo model or view startup that we can't make
@@ -865,13 +917,12 @@ namespace Dynamo.Models
             Logger.Log(string.Format("Dynamo -- Build {0}",
                                         Assembly.GetExecutingAssembly().GetName().Version));
 
+            DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenLoadNodeLibrary, 50));
             InitializeNodeLibrary();
 
             if (extensions.Any())
             {
-                var startupParams = new StartupParams(config.AuthProvider,
-                    pathManager, new ExtensionLibraryLoader(this), CustomNodeManager,
-                    GetType().Assembly.GetName().Version, PreferenceSettings, LinterManager);
+                var startupParams = new StartupParams(this);
 
                 foreach (var ext in extensions)
                 {
@@ -915,6 +966,10 @@ namespace Dynamo.Models
                 }
             }
 
+#if DEBUG
+            CurrentWorkspace.NodeAdded += CrashOnDemand.CurrentWorkspace_NodeAdded;
+#endif
+
             LogWarningMessageEvents.LogWarningMessage += LogWarningMessage;
 
             StartBackupFilesTimer();
@@ -928,23 +983,26 @@ namespace Dynamo.Models
 
         private void CheckFeatureFlagTest()
         {
-            if (DynamoModel.FeatureFlags.CheckFeatureFlag<bool>("EasterEggIcon1", false))
+            if (!DynamoModel.IsTestMode)
             {
-                this.Logger.Log("EasterEggIcon1 is true FROM MODEL");
+                if (DynamoModel.FeatureFlags.CheckFeatureFlag<bool>("EasterEggIcon1", false))
+                {
+                    this.Logger.Log("EasterEggIcon1 is true FROM MODEL");
 
-            }
-            else
-            {
-                this.Logger.Log("EasterEggIcon1 is false FROM MODEL");
-            }
+                }
+                else
+                {
+                    this.Logger.Log("EasterEggIcon1 is false FROM MODEL");
+                }
 
-            if (DynamoModel.FeatureFlags.CheckFeatureFlag<string>("EasterEggMessage1", "NA") is var s && s != "NA")
-            {
-                this.Logger.Log("EasterEggMessage1 is enabled FROM MODEL");
-            }
-            else
-            {
-                this.Logger.Log("EasterEggMessage1 is disabled FROM MODEL");
+                if (DynamoModel.FeatureFlags.CheckFeatureFlag<string>("EasterEggMessage1", "NA") is var s && s != "NA")
+                {
+                    this.Logger.Log("EasterEggMessage1 is enabled FROM MODEL");
+                }
+                else
+                {
+                    this.Logger.Log("EasterEggMessage1 is disabled FROM MODEL");
+                }
             }
         }
 
@@ -1265,6 +1323,10 @@ namespace Dynamo.Models
                 PreferenceSettings.RequestUserDataFolder -= pathManager.GetUserDataFolder;
                 PreferenceSettings.MessageLogged -= LogMessage;
             }
+
+#if DEBUG
+            CurrentWorkspace.NodeAdded -= CrashOnDemand.CurrentWorkspace_NodeAdded;
+#endif
 
             LogWarningMessageEvents.LogWarningMessage -= LogWarningMessage;
             foreach (var ws in _workspaces)
@@ -1794,6 +1856,49 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        /// Inserts a Dynamo graph or Custom Node inside the current workspace from a file path
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="forceManualExecutionMode"></param>
+        public void InsertFileFromPath(string filePath, bool forceManualExecutionMode = false)
+        {
+            XmlDocument xmlDoc;
+            Exception ex;
+            if (DynamoUtilities.PathHelper.isValidXML(filePath, out xmlDoc, out ex))
+            {
+                InsertXmlFileFromPath(xmlDoc, filePath, forceManualExecutionMode);
+                return;
+            }
+            else
+            {
+                // These kind of exceptions indicate that file is not accessible 
+                if (ex is IOException || ex is UnauthorizedAccessException)
+                {
+                    throw ex;
+                }
+                if (ex is System.Xml.XmlException)
+                {
+                    // XML opening failure can indicate that this file is corrupted XML or Json
+                    string fileContents;
+
+                    if (DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents, out ex))
+                    {
+                        InsertJsonFileFromPath(fileContents, filePath, forceManualExecutionMode);
+                        return;
+                    }
+                    else
+                    {
+                        // When Json opening also failed, either this file is corrupted or there
+                        // are other kind of failures related to Json de-serialization
+                        throw ex;
+                    }
+                }
+
+            }
+        }
+
+
         static private DynamoPreferencesData DynamoPreferencesDataFromJson(string json)
         {
             JsonReader reader = new JsonTextReader(new StringReader(json));
@@ -1858,6 +1963,33 @@ namespace Dynamo.Models
             }
         }
 
+        private bool InsertJsonFileFromPath(string fileContents, string filePath, bool forceManualExecutionMode)
+        {
+            try
+            {
+                DynamoPreferencesData dynamoPreferences = DynamoPreferencesDataFromJson(fileContents);
+                if (dynamoPreferences != null)
+                {
+                    if (true) //MigrationManager.ProcessWorkspace(dynamoPreferences.Version, xmlDoc, IsTestMode, NodeFactory))
+                    {
+                        WorkspaceModel ws;
+                        if (OpenJsonFile(filePath, fileContents, dynamoPreferences, forceManualExecutionMode, out ws))
+                        {
+                            ExtraWorkspaceViewInfo viewInfo = ExtraWorkspaceViewInfoFromJson(fileContents);
+
+                            InsertWorkspace(ws, viewInfo);
+                        }
+                    }
+                }
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw e;
+            }
+        }
+
         /// <summary>
         /// Opens a Dynamo workspace from a path to an Xml file on disk.
         /// </summary>
@@ -1903,6 +2035,40 @@ namespace Dynamo.Models
             }
         }
 
+        private bool InsertXmlFileFromPath(XmlDocument xmlDoc, string filePath, bool forceManualExecutionMode)
+        {
+            try
+            {
+                //save the file before it is migrated to JSON.
+                //if in test mode, don't save the file in backup
+                if (!IsTestMode)
+                {
+                    if (!pathManager.BackupXMLFile(xmlDoc, filePath))
+                    {
+                        Logger.Log("File is not saved in the backup folder {0}: ", pathManager.BackupDirectory);
+                    }
+                }
+
+                WorkspaceInfo workspaceInfo;
+                if (WorkspaceInfo.FromXmlDocument(xmlDoc, filePath, IsTestMode, forceManualExecutionMode, Logger, out workspaceInfo))
+                {
+                    if (MigrationManager.ProcessWorkspace(workspaceInfo, xmlDoc, IsTestMode, NodeFactory))
+                    {
+                        WorkspaceModel ws;
+                        if (OpenXmlFile(workspaceInfo, xmlDoc, out ws))
+                        {
+                            InsertWorkspace(ws);
+                        }
+                    }
+                }
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
         private void OpenWorkspace(WorkspaceModel ws)
         {
             // TODO: #4258
@@ -1928,7 +2094,47 @@ namespace Dynamo.Models
             OnWorkspaceOpened(ws);
         }
 
+        private void InsertWorkspace(WorkspaceModel ws, ExtraWorkspaceViewInfo viewInfo = null)
+        {
+            var nodes = ws.Nodes;
+            var connectors = ws.Connectors;
+            var notes = viewInfo?.Annotations;
 
+            DynamoSelection.Instance.ClearSelection();
+
+            if ((nodes == null && notes == null) || (!nodes.Any() && !notes.Any()) || (NodesAlreadyLoaded(nodes) || NotesAlreadyLoaded(notes)))
+            {
+                OnRequestNotification(Resources.FailedInsertFileNodeExistNotification);
+
+                return;
+            }
+
+            double offsetX = 0.0;
+            double offsetY = 0.0;
+            double nodeX = 0.0;
+            double nodeY = 0.0;
+
+            if (viewInfo != null)
+            {
+                // Get the offsets before we insert the nodes
+                GetInsertNodesOffset(currentWorkspace.Nodes, viewInfo.NodeViews, out offsetX, out offsetY, out nodeX, out nodeY);
+            }
+
+            InsertNodes(nodes, nodeX, nodeY);
+            InsertConnectors(connectors);
+
+            CurrentWorkspace.UpdateWithExtraWorkspaceViewInfo(viewInfo, offsetX, offsetY);
+
+            InsertAnnotations(viewInfo.Annotations, offsetX, offsetY);
+
+            List<NoteModel> insertedNotes = GetInsertedNotes(viewInfo.Annotations);
+
+            DynamoSelection.Instance.Selection.AddRange(nodes);
+            DynamoSelection.Instance.Selection.AddRange(insertedNotes);
+            
+            currentWorkspace.HasUnsavedChanges = true;
+        }
+        
         private void SetPeriodicEvaluation(WorkspaceModel ws)
         {
             // TODO: #4258
@@ -2016,6 +2222,34 @@ namespace Dynamo.Models
                 customNodeWorkspace.IsVisibleInDynamoLibrary = dynamoPreferences.IsVisibleInDynamoLibrary;
 
             return true;
+        }
+
+        /// <summary>
+        /// Load the extra view information required to fully construct a WorkspaceModel object 
+        /// </summary>
+        /// <param name="json"></param>
+        static private ExtraWorkspaceViewInfo ExtraWorkspaceViewInfoFromJson(string json)
+        {
+            JsonReader reader = new JsonTextReader(new StringReader(json));
+            var obj = JObject.Load(reader);
+            var viewBlock = obj["View"];
+            if (viewBlock == null)
+                return null;
+
+            var settings = new JsonSerializerSettings
+            {
+                Error = (sender, args) =>
+                {
+                    args.ErrorContext.Handled = true;
+                    Console.WriteLine(args.ErrorContext.Error);
+                },
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                TypeNameHandling = TypeNameHandling.Auto,
+                Formatting = Newtonsoft.Json.Formatting.Indented,
+                Culture = CultureInfo.InvariantCulture
+            };
+
+            return JsonConvert.DeserializeObject<ExtraWorkspaceViewInfo>(viewBlock.ToString(), settings);
         }
 
         // Attempts to reload all the dummy nodes in the current workspace and replaces them with resolved version. 
@@ -2789,6 +3023,7 @@ namespace Dynamo.Models
                 WidthAdjustment = model.WidthAdjustment,
                 Background = model.Background,
                 FontSize = model.FontSize,
+                GroupStyleId = model.GroupStyleId,
             };
 
             modelLookup.Add(model.GUID, annotationModel);
@@ -3122,6 +3357,186 @@ namespace Dynamo.Models
             if (args.PropertyName == "EnablePresetOptions")
                 OnPropertyChanged("EnablePresetOptions");
         }
+
+        #region insert private methods
+        private void InsertAnnotations(IEnumerable<ExtraAnnotationViewInfo> viewInfoAnnotations, double offsetX, double offsetY)
+        {
+            List<ConnectorModel> newConnectors = new List<ConnectorModel>();
+
+            foreach (var annotation in viewInfoAnnotations)
+            {
+                if (annotation.Nodes.Any() || annotation.PinnedNode != null) continue;
+
+                var guidValue = WorkspaceModel.IdToGuidConverter(annotation.Id);
+                var matchingNote = CurrentWorkspace.Notes.FirstOrDefault(x => x.GUID == guidValue);
+            }
+        }
+
+        private void InsertNodes(IEnumerable<NodeModel> nodes, double offsetX, double offsetY)
+        {
+            foreach (var node in nodes)
+            {
+                if (currentWorkspace.Nodes.Any(n => n.GUID == node.GUID))
+                {
+                    continue;  // prevent loading the same node twice
+                }
+                
+                currentWorkspace.AddAndRegisterNode(node, false);
+            }
+            RecordUndoModels(currentWorkspace, nodes.Cast<ModelBase>().ToList());
+        }
+
+        
+        private void InsertConnectors(IEnumerable<ConnectorModel> connectors)
+        {
+            List<ConnectorModel> newConnectors = new List<ConnectorModel>();
+
+            foreach (var connectorModel in connectors)
+            {
+                var startNode = connectorModel.Start.Owner;
+                var endNode = connectorModel.End.Owner;
+
+                var usedConnectors = currentWorkspace.Connectors.Where(n => n.GUID == connectorModel.GUID);
+
+                foreach (var connector in usedConnectors)
+                {
+                    connector.Delete();
+                }
+
+                var newConnector = ConnectorModel.Make(startNode, endNode, connectorModel.Start.Index, connectorModel.End.Index, connectorModel.GUID);
+                newConnectors.Add(newConnector);
+            }
+
+            RecordUndoModels(currentWorkspace, newConnectors.Cast<ModelBase>().ToList());
+        }
+
+        private List<NoteModel> GetInsertedNotes(IEnumerable<ExtraAnnotationViewInfo> viewInfoAnnotations)
+        {
+            List<NoteModel> result = new List<NoteModel>();
+
+            foreach (var annotation in viewInfoAnnotations)
+            {
+                if (annotation.Nodes.Any()) continue;
+
+                var guidValue = WorkspaceModel.IdToGuidConverter(annotation.Id);
+                var matchingNote = CurrentWorkspace.Notes.FirstOrDefault(x => x.GUID == guidValue);
+
+                if (matchingNote != null)
+                {
+                    result.Add(matchingNote);
+                }
+            }
+            RecordUndoModels(currentWorkspace, result.Cast<ModelBase>().ToList());
+
+            return result;
+        }
+
+        private void RecordUndoModels(WorkspaceModel workspace, List<ModelBase> undoItems)
+        {
+            var userActionDictionary = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();
+            //Add models that were newly created
+            foreach (var undoItem in undoItems)
+            {
+                userActionDictionary.Add(undoItem, UndoRedoRecorder.UserAction.Creation);
+            }
+
+            WorkspaceModel.RecordModelsForUndo(userActionDictionary, workspace.UndoRecorder);
+        }
+
+        private void GetInsertNodesOffset(IEnumerable<NodeModel> currentWorkspaceNodes
+            , IEnumerable<ExtraNodeViewInfo> insertedNodes
+            , out double offsetX
+            , out double offsetY
+            , out double nodeOffsetX
+            , out double nodeOffsetY)
+        {
+            if (!currentWorkspaceNodes.Any())
+            {
+                offsetX = offsetY = nodeOffsetX = nodeOffsetY = 0;
+                return;
+            }
+
+            double currentX, currentY, nodeX, nodeY;
+            GetRelativeInsertPoints(currentWorkspaceNodes, out currentX, out currentY);
+            GetRelativeInsertPoints(insertedNodes, out nodeX, out nodeY);
+            nodeOffsetX = currentX;
+            nodeOffsetY = currentY + INSERT_VERTICAL_OFFSET_VALUE;
+
+            offsetX = currentX - nodeX;
+            offsetY = currentY - nodeY + INSERT_VERTICAL_OFFSET_VALUE;
+        }
+
+        private void GetRelativeInsertPoints(IEnumerable<NodeModel> nodes, out double x, out double y)
+        {
+            NodeModel nodeX = null;
+            foreach (var n in nodes)
+            {
+                if (nodeX == null)
+                {
+                    nodeX = n;
+                    continue;
+                }
+                if (n.CenterX < nodeX.CenterX)
+                {
+                    nodeX = n;
+                }
+            }
+
+            var minX = nodeX.CenterX;
+            var minXWidth = nodeX.Width;
+            x = minX - minXWidth * 0.5;
+            y = nodes.Max(n => n.CenterY);
+        }
+
+        private void GetRelativeInsertPoints(IEnumerable<ExtraNodeViewInfo> nodes, out double x, out double y)
+        {
+            ExtraNodeViewInfo nodeX = null;
+            foreach (var n in nodes)
+            {
+                if (nodeX == null)
+                {
+                    nodeX = n;
+                    continue;
+                }
+                if (n.X < nodeX.X)
+                {
+                    nodeX = n;
+                }
+            }
+
+            x = nodeX.X;
+            y = nodes.Min(n => n.Y);
+        }
+
+        private bool NodesAlreadyLoaded(IEnumerable<NodeModel> nodes)
+        {
+            foreach (var node in nodes)
+            {
+                if (currentWorkspace.Nodes.Any(n => n.GUID == node.GUID))
+                {
+                    // if at least one node is inside the workspace, return true
+                    return true;
+                }
+            }
+            // If no nodes exist with the same GUID, then we are good to go
+            return false;
+        }
+
+        private bool NotesAlreadyLoaded(IEnumerable<ExtraAnnotationViewInfo> notes)
+        {
+            foreach (var note in notes)
+            {
+                if (currentWorkspace.Notes.Any(n => n.GUID.ToString() == note.Id))
+                {
+                    // if at least one node is inside the workspace, return true
+                    return true;
+                }
+            }
+            // If no nodes exist with the same GUID, then we are good to go
+            return false;
+        }
+        #endregion
+
         #endregion
     }
 }

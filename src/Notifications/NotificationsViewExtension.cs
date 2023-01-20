@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -67,7 +66,6 @@ namespace Dynamo.Notifications
                 BindingOperations.ClearAllBindings(notificationsMenuItem.CountLabel);
                 notificationsMenuItem = null;
                 disposed = true;
-                notificationCenterController.Dispose();
             }
         }
 
@@ -108,7 +106,7 @@ namespace Dynamo.Notifications
         private void LoadNotificationCenter()
         {
             var dynamoView = viewLoadedParams.DynamoWindow as DynamoView;
-            var notificationCenterController = new NotificationCenterController(dynamoView);
+            notificationCenterController = new NotificationCenterController(dynamoView, logger);
         }
 
         internal void AddNotifications()

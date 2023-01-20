@@ -1,0 +1,214 @@
+{
+  "Uuid": "93d7251f-6ed2-46b8-a188-00a0d7d9d6ae",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "CoreNodeModels.Input.DateTime_img",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "3257175717b949209973a3e17bb4fd26",
+      "Inputs": [
+        {
+          "Id": "d9f91f2658904c538417c3d77885ac6c",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "df6c40330df24cc994d7d82df867ad6e",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DateTime, CoreNodeModels",
+      "NodeType": "DateTimeInputNode",
+      "InputValue": "2022-11-23T20:41:51.7150446Z",
+      "Id": "10de44c9770443dba9099772344224d2",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "74355d40909d4816a92763a1854b2365",
+          "Name": "",
+          "Description": "DateTime",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a dateTime object from a formatted date and time string. Date and time must be in the default DateTime format \"MMMM dd, yyyy h:mm tt\", e.g. \"April 02, 1977 12:00 PM\""
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DateTime, CoreNodeModels",
+      "NodeType": "DateTimeInputNode",
+      "InputValue": "1955-11-05T00:00:00",
+      "Id": "0d7885da8a3042e0a8835fc16d987f09",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "1cb78d9ab6a84b86a9e40cc1328166b8",
+          "Name": "",
+          "Description": "DateTime",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a dateTime object from a formatted date and time string. Date and time must be in the default DateTime format \"MMMM dd, yyyy h:mm tt\", e.g. \"April 02, 1977 12:00 PM\""
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "d1b00922041c482989ad74263a2eef0d",
+      "Inputs": [
+        {
+          "Id": "3ff7d0be5e3846e2a788a3ab74ea90cf",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "2c37ad70c99345f588f95b80775f225c",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "74355d40909d4816a92763a1854b2365",
+      "End": "3ff7d0be5e3846e2a788a3ab74ea90cf",
+      "Id": "a327170aae9b4a708345490639ee28a9",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "1cb78d9ab6a84b86a9e40cc1328166b8",
+      "End": "d9f91f2658904c538417c3d77885ac6c",
+      "Id": "6e9a888f76f6466f9413c85d034e45c1",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.17",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.17.0.3255",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -11.702650547027588,
+      "EyeY": 20.44056510925293,
+      "EyeZ": -24.494302749633789,
+      "LookX": 12.377099990844727,
+      "LookY": -14.715733528137207,
+      "LookZ": 6.1681365966796875,
+      "UpX": 0.50565505027771,
+      "UpY": 0.82511365413665771,
+      "UpZ": 0.25199323892593384
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "3257175717b949209973a3e17bb4fd26",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1085.453036845488,
+        "Y": 1503.347416395862
+      },
+      {
+        "Name": "Date Time",
+        "ShowGeometry": true,
+        "Id": "10de44c9770443dba9099772344224d2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 703.93929787739444,
+        "Y": 1317.2325385671729
+      },
+      {
+        "Name": "Date Time",
+        "ShowGeometry": true,
+        "Id": "0d7885da8a3042e0a8835fc16d987f09",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 705.453036845488,
+        "Y": 1503.347416395862
+      },
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "d1b00922041c482989ad74263a2eef0d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1093.9836229077978,
+        "Y": 1318.2441730924302
+      }
+    ],
+    "Annotations": [],
+    "X": -481.57355697119573,
+    "Y": -502.61166017684116,
+    "Zoom": 0.79079942412653
+  }
+}

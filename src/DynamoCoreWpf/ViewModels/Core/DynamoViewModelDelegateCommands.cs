@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Wpf.ViewModels;
 using Microsoft.Practices.Prism.Commands;
@@ -18,9 +18,11 @@ namespace Dynamo.ViewModels
             SaveCommand = new DelegateCommand(Save, CanSave);
             SaveAsCommand = new DelegateCommand(SaveAs, CanSaveAs);
             ShowOpenDialogAndOpenResultCommand = new DelegateCommand(ShowOpenDialogAndOpenResult, CanShowOpenDialogAndOpenResultCommand);
+            ShowInsertDialogAndInsertResultCommand = new DelegateCommand(ShowInsertDialogAndInsertResult, CanShowInsertDialogAndInsertResultCommand);
             ShowSaveDialogAndSaveResultCommand = new DelegateCommand(ShowSaveDialogAndSaveResult, CanShowSaveDialogAndSaveResult);
             ShowSaveDialogIfNeededAndSaveResultCommand = new DelegateCommand(ShowSaveDialogIfNeededAndSaveResult, CanShowSaveDialogIfNeededAndSaveResultCommand);
             SaveImageCommand = new DelegateCommand(SaveImage, CanSaveImage);
+            Save3DImageCommand = new DelegateCommand(Save3DImage, CanSaveImage);
             ShowSaveImageDialogAndSaveResultCommand = new DelegateCommand(ShowSaveImageDialogAndSaveResult, CanShowSaveImageDialogAndSaveResult);
             WriteToLogCmd = new DelegateCommand(o => model.Logger.Log(o.ToString()), CanWriteToLog);
             PostUiActivationCommand = new DelegateCommand(model.PostUIActivation);
@@ -81,8 +83,6 @@ namespace Dynamo.ViewModels
             ShowAboutWindowCommand = new DelegateCommand(ShowAboutWindow, CanShowAboutWindow);
             SetNumberFormatCommand = new DelegateCommand(SetNumberFormat, CanSetNumberFormat);
             DumpLibraryToXmlCommand = new DelegateCommand(model.DumpLibraryToXml, model.CanDumpLibraryToXml);
-            ShowGalleryCommand = new DelegateCommand(p => OnRequestShowHideGallery(true), o => true);
-            CloseGalleryCommand = new DelegateCommand(p => OnRequestShowHideGallery(false), o => true);
             ShowNewPresetsDialogCommand = new DelegateCommand(ShowNewPresetStateDialogAndMakePreset, CanShowNewPresetStateDialog);
             NodeFromSelectionCommand = new DelegateCommand(CreateNodeFromSelection, CanCreateNodeFromSelection);
             OpenDocumentationLinkCommand = new DelegateCommand(OpenDocumentationLink);
@@ -93,6 +93,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand OpenIfSavedCommand { get; set; }
         public DelegateCommand OpenCommand { get; set; }
         public DelegateCommand ShowOpenDialogAndOpenResultCommand { get; set; }
+        public DelegateCommand ShowInsertDialogAndInsertResultCommand { get; set; }
         public DelegateCommand WriteToLogCmd { get; set; }
         public DelegateCommand PostUiActivationCommand { get; set; }
         public DelegateCommand AddNoteCommand { get; set; }
@@ -132,6 +133,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand ToggleBackgroundGridVisibilityCommand { get; set; }
         public DelegateCommand SelectAllCommand { get; set; }
         public DelegateCommand SaveImageCommand { get; set; }
+        public DelegateCommand Save3DImageCommand { get; set; }
         public DelegateCommand ShowSaveImageDialogAndSaveResultCommand { get; set; }
         public DelegateCommand ToggleConsoleShowingCommand { get; set; }
         public DelegateCommand ShowPackageManagerCommand { get; set; }
@@ -165,8 +167,6 @@ namespace Dynamo.ViewModels
         public DelegateCommand OpenRecentCommand { get; set; }
         public DelegateCommand CheckForLatestRenderCommand { get; set; }
         public DelegateCommand DumpLibraryToXmlCommand { get; set; }
-        public DelegateCommand ShowGalleryCommand { get; set; }
-        public DelegateCommand CloseGalleryCommand { get; set; }
         public DelegateCommand ShowNewPresetsDialogCommand { get; set; }
         public DelegateCommand NodeFromSelectionCommand { get; set; }
         public DelegateCommand OpenDocumentationLinkCommand { get; set; }

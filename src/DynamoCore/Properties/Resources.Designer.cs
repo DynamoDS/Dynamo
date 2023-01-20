@@ -19,7 +19,7 @@ namespace Dynamo.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -85,6 +85,51 @@ namespace Dynamo.Properties {
         public static string Autocomplete {
             get {
                 return ResourceManager.GetString("Autocomplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All recommendations are below the specified confidence level. You can try them or adjust the confidence settings in Preferences..
+        /// </summary>
+        public static string AutocompleteLowConfidenceMessage {
+            get {
+                return ResourceManager.GetString("AutocompleteLowConfidenceMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Low confidence.
+        /// </summary>
+        public static string AutocompleteLowConfidenceTitle {
+            get {
+                return ResourceManager.GetString("AutocompleteLowConfidenceTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Recommendations that are below the confidence level..
+        /// </summary>
+        public static string AutocompleteLowConfidenceTooltip {
+            get {
+                return ResourceManager.GetString("AutocompleteLowConfidenceTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are no recommendations yet. You can try switching to node type match autocomplete..
+        /// </summary>
+        public static string AutocompleteNoRecommendationsMessage {
+            get {
+                return ResourceManager.GetString("AutocompleteNoRecommendationsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No recommendations.
+        /// </summary>
+        public static string AutocompleteNoRecommendationsTitle {
+            get {
+                return ResourceManager.GetString("AutocompleteNoRecommendationsTitle", resourceCulture);
             }
         }
         
@@ -557,6 +602,15 @@ namespace Dynamo.Properties {
         public static string ExceptionEncountered {
             get {
                 return ResourceManager.GetString("ExceptionEncountered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to insert the file as some of the nodes already exist in the current worspace..
+        /// </summary>
+        public static string FailedInsertFileNodeExistNotification {
+            get {
+                return ResourceManager.GetString("FailedInsertFileNodeExistNotification", resourceCulture);
             }
         }
         
@@ -1089,6 +1143,24 @@ namespace Dynamo.Properties {
         public static string LocateInDisk {
             get {
                 return ResourceManager.GetString("LocateInDisk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You need to login to your account to get recommendations. Please log in or switch to node type match autocomplete..
+        /// </summary>
+        public static string LoginNeededMessage {
+            get {
+                return ResourceManager.GetString("LoginNeededMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not authenticated.
+        /// </summary>
+        public static string LoginNeededTitle {
+            get {
+                return ResourceManager.GetString("LoginNeededTitle", resourceCulture);
             }
         }
         
@@ -1804,6 +1876,24 @@ namespace Dynamo.Properties {
         public static string SearchTextBlockText {
             get {
                 return ResourceManager.GetString("SearchTextBlockText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Initializing preferences....
+        /// </summary>
+        public static string SplashScreenInitPreferencesSettings {
+            get {
+                return ResourceManager.GetString("SplashScreenInitPreferencesSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading Node Library....
+        /// </summary>
+        public static string SplashScreenLoadNodeLibrary {
+            get {
+                return ResourceManager.GetString("SplashScreenLoadNodeLibrary", resourceCulture);
             }
         }
         

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -8,7 +8,6 @@ using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
-using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
@@ -27,6 +26,11 @@ namespace Dynamo.Wpf.ViewModels
         private IDisposable undoRecorderGroup;
         private int spacingBetweenNodes = 50;
         private int spacingforHigherWidthNodes = 450;
+
+        /// <summary>
+        /// Machine Learning related info
+        /// </summary>
+        public AutoCompletionNodeMachineLearningInfo AutoCompletionNodeMachineLearningInfo { get; set; } = new AutoCompletionNodeMachineLearningInfo();
 
         public event RequestBitmapSourceHandler RequestBitmapSource;
         public void OnRequestBitmapSource(IconRequestEventArgs e)

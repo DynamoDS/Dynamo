@@ -1,11 +1,14 @@
-﻿using System;
-using System.IO;
+using System;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using Dynamo.Utilities;
 using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.ViewModels.GuidedTour;
+using Microsoft.Web.WebView2.Wpf;
 
 namespace Dynamo.Wpf.Views.GuidedTour
 {
@@ -18,12 +21,22 @@ namespace Dynamo.Wpf.Views.GuidedTour
         private PopupWindowViewModel popupViewModel;
         private HostControlInfo hostControlInfo;
         private bool isClosingTour;
+        private bool canMoveStep = true;
 
         private const string packagesTourName = "packages";
         //Field that indicates wheter popups are left-aligned or right-aligned
         private const string menuDropAligment = "_menuDropAlignment";
 
-        internal WebBrowserWindow webBrowserWindow;
+        internal WebView2 webBrowserComponent;
+        //Assembly path to the Font file
+        private const string mainFontStylePath = "Dynamo.Wpf.Views.GuidedTour.HtmlPages.Resources.ArtifaktElement-Regular.woff";
+        //Assembly path to the Resources folder
+        private const string resourcesPath = "Dynamo.Wpf.Views.GuidedTour.HtmlPages.Resources";
+
+        /// <summary>
+        /// This property will be hold the path of the WebView2 cache folder, the value will change based in if DynamoSandbox is executed or Dynamo is executed from a different host (like Revit, FormIt, Civil, etc).
+        /// </summary>
+        internal string WebBrowserUserDataFolder { get; set; }
 
         public PopupWindow(PopupWindowViewModel viewModel, HostControlInfo hInfo)
         {
@@ -75,10 +88,13 @@ namespace Dynamo.Wpf.Views.GuidedTour
 
         private void PopupWindow_Closed(object sender, EventArgs e)
         {
-            if (webBrowserWindow != null)
-                webBrowserWindow.IsOpen = false;
+            if (webBrowserComponent != null)
+            {
+                webBrowserComponent.Visibility = Visibility.Collapsed;
+            }
 
-            if(isClosingTour)
+
+            if (isClosingTour)
             {
                 Opened -= PopupWindow_Opened;
                 Closed -= PopupWindow_Closed;
@@ -89,12 +105,28 @@ namespace Dynamo.Wpf.Views.GuidedTour
         {
             if (hostControlInfo.HtmlPage != null && !string.IsNullOrEmpty(hostControlInfo.HtmlPage.FileName))
             {
-                ContentRichTextBox.Visibility = Visibility.Hidden;
-
-                webBrowserWindow = new WebBrowserWindow(popupViewModel, hostControlInfo);
-                webBrowserWindow.IsOpen = true;
+                ContentRichTextBox.Visibility = Visibility.Hidden;            
+                InitWebView2Component();
             }
         }
+
+        private async void InitWebView2Component()
+        {
+            webBrowserComponent = new WebView2();
+            webBrowserComponent.Margin = new System.Windows.Thickness(popupBordersOffSet, 0, 0, 0);
+            webBrowserComponent.Width = popupViewModel.Width;
+            //The height is subtracted by a const that sums the height of the header and footer of the popup
+            var heightBottom = bottomGrid.ActualHeight;
+            var heightTitle = titleGrid.ActualHeight;
+            //popupBordersOffSet * 2 because is one offset at the top and the other one at the bottom of the Popup
+            webBrowserComponent.Height = popupViewModel.Height - (heightBottom + heightTitle + popupBordersOffSet * 2);
+            contentGrid.Children.Add(webBrowserComponent);
+            Grid.SetRow(webBrowserComponent, 1);
+
+            ResourceUtilities.LoadWebBrowser(hostControlInfo.HtmlPage, webBrowserComponent, resourcesPath, mainFontStylePath, GetType().Assembly, WebBrowserUserDataFolder);
+        }
+
+       
 
         private void StartTourButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
@@ -125,16 +157,25 @@ namespace Dynamo.Wpf.Views.GuidedTour
             GuideFlowEvents.OnGuidedTourPrev();
         }
 
-        private void Popup_KeyDown(object sender, KeyEventArgs e)
+        private async void Popup_KeyDown(object sender, KeyEventArgs e)
         {
-            switch (e.Key)
+            if (canMoveStep)
             {
-                case Key.Left:
-                    GuideFlowEvents.OnGuidedTourPrev();
-                    break;
-                case Key.Right:
-                    GuideFlowEvents.OnGuidedTourNext();
-                    break;
+                canMoveStep = false;
+
+                switch (e.Key)
+                {
+                    case Key.Left:
+                        GuideFlowEvents.OnGuidedTourPrev();
+                        break;
+                    case Key.Right:
+                        GuideFlowEvents.OnGuidedTourNext();
+                        break;
+                }
+                //Adds a delay of 500ms to avoid Dynamo crash with a quick switch with the keys
+                await Task.Delay(500);
+
+                canMoveStep = true;
             }
         }
     }

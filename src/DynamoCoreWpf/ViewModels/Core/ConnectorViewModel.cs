@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -17,6 +17,7 @@ using System.Windows.Shapes;
 using System.Windows.Media;
 using Dynamo.Graph;
 using DynCmd = Dynamo.Models.DynamoModel;
+using Dynamo.Models;
 
 namespace Dynamo.ViewModels
 {
@@ -504,7 +505,7 @@ namespace Dynamo.ViewModels
                     return PreviewState.None;
                 }
 
-                if (Nodevm.ShowExecutionPreview)
+                if (Nodevm.ShowExecutionPreview || NodeEnd.ShowExecutionPreview)
                 {
                     return PreviewState.ExecutionPreview;
                 }
@@ -666,6 +667,14 @@ namespace Dynamo.ViewModels
         /// Delegate command to trigger a construction of a ContextMenu.
         /// </summary>
         public DelegateCommand InstantiateContextMenuCommand { get; set; }
+        /// <summary>
+        /// Delegate command to focus the view on the start node
+        /// </summary>
+        public DelegateCommand GoToStartNodeCommand { get; set; }
+        /// <summary>
+        /// Delegate command to focus the view on the end node
+        /// </summary>
+        public DelegateCommand GoToEndNodeCommand { get; set; }
 
         /// <summary>
         /// When mouse hovers over connector, if the data coming through the connector is collection of 5 or more,
@@ -867,6 +876,30 @@ namespace Dynamo.ViewModels
             CreateContextMenu();
         }
 
+        private void GoToStartNodeCommandExecute(object parameters)
+        {
+            var startNodeID = ConnectorModel.Start.Owner.GUID;
+
+            //Select
+            var command = new DynCmd.SelectModelCommand(startNodeID, ModifierKeys.None);
+            workspaceViewModel.DynamoViewModel.ExecuteCommand(command);
+
+            //Focus the node
+            workspaceViewModel.DynamoViewModel.CurrentSpaceViewModel.FocusNodeCommand.Execute(startNodeID.ToString());
+        }
+
+        private void GoToEndNodeCommandExecute(object parameters)
+        {
+            var endNodeID = ConnectorModel.End.Owner.GUID;
+
+            //Select
+            var command = new DynCmd.SelectModelCommand(endNodeID, ModifierKeys.None);
+            workspaceViewModel.DynamoViewModel.ExecuteCommand(command);
+
+            //Focus the node
+            workspaceViewModel.DynamoViewModel.CurrentSpaceViewModel.FocusNodeCommand.Execute(endNodeID.ToString());
+        }
+
         /// <summary>
         /// Helper function ssed for placing (re-placing) connector
         /// pins when a WatchNode is placed in the center of a connector.
@@ -909,6 +942,8 @@ namespace Dynamo.ViewModels
             MouseUnhoverCommand = new DelegateCommand(MouseUnhoverCommandExecute, CanRunMouseUnhover);
             PinConnectorCommand = new DelegateCommand(PinConnectorCommandExecute, x => true);
             InstantiateContextMenuCommand = new DelegateCommand(InstantiateContextMenuCommandExecute, CanInstantiateContextMenu);
+            GoToStartNodeCommand = new DelegateCommand(GoToStartNodeCommandExecute, x => true);
+            GoToEndNodeCommand = new DelegateCommand(GoToEndNodeCommandExecute, x => true);
         }
 
         #endregion

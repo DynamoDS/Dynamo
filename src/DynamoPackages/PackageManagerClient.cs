@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dynamo.Graph.Workspaces;
@@ -126,6 +126,22 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
+        /// Gets last published version of all the packages published by the current user.
+        /// </summary>
+        /// <returns></returns>
+        internal UserPackages GetUsersLatestPackages()
+        {
+            var packages = FailFunc.TryExecute(() =>
+            {
+                var nv = new GetMyPackages();
+                var pkgResponse = this.client.ExecuteAndDeserializeWithContent<UserPackages>(nv);
+                return pkgResponse.content;
+            }, null);
+
+            return packages;
+        }
+
+        /// <summary>
         /// Gets the metadata for a specific version of a package.
         /// </summary>
         /// <param name="packageInfo">Name and version of a package</param>
@@ -191,33 +207,33 @@ namespace Dynamo.PackageManager
             }, false);
         }
 
-        internal PackageUploadHandle PublishAsync(Package package, IEnumerable<string> files, bool isNewVersion)
+        internal PackageUploadHandle PublishAsync(Package package, IEnumerable<string> files, IEnumerable<string> markdownFiles, bool isNewVersion)
         {
             var packageUploadHandle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(package));
 
             Task.Factory.StartNew(() =>
             {
-                Publish(package, files, isNewVersion, packageUploadHandle);
+                Publish(package, files, markdownFiles, isNewVersion, packageUploadHandle);
             });
 
             return packageUploadHandle;
         }
 
-        internal void Publish(Package package, IEnumerable<string> files, bool isNewVersion, PackageUploadHandle packageUploadHandle)
+        internal void Publish(Package package, IEnumerable<string> files, IEnumerable<string> markdownFiles, bool isNewVersion, PackageUploadHandle packageUploadHandle)
         {
             try
             {
                 ResponseBody ret = null;
                 if (isNewVersion)
                 {
-                    var pkg = uploadBuilder.NewPackageVersionUpload(package, packageUploadDirectory, files,
+                    var pkg = uploadBuilder.NewPackageVersionUpload(package, packageUploadDirectory, files, markdownFiles,
                         packageUploadHandle);
                     packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
                     ret = this.client.ExecuteAndDeserialize(pkg);
                 }
                 else
                 {
-                    var pkg = uploadBuilder.NewPackageUpload(package, packageUploadDirectory, files,
+                    var pkg = uploadBuilder.NewPackageUpload(package, packageUploadDirectory, files, markdownFiles,
                         packageUploadHandle);
                     packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
                     ret = this.client.ExecuteAndDeserialize(pkg);

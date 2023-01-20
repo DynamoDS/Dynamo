@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -200,6 +200,7 @@ namespace Dynamo.ViewModels
 
         #region Properties/Fields
 
+        private readonly string QUARANTINED = "quarantined";
         public PackageManagerSearchView Owner { get; set; }
 
         ObservableCollection<PackageUploadHandle> _uploads = new ObservableCollection<PackageUploadHandle>();
@@ -224,6 +225,7 @@ namespace Dynamo.ViewModels
         }
 
         public List<PackageManagerSearchElement> CachedPackageList { get; private set; }
+        public List<PackageManagerSearchElement> InfectedPackageList { get; private set; }
 
         public readonly DynamoViewModel DynamoViewModel;
         public AuthenticationManager AuthenticationManager { get; set; }
@@ -314,9 +316,11 @@ namespace Dynamo.ViewModels
                 }
             }
             
-            MessageBoxService.Show(Resources.MessageSelectSymbolNotFound, 
-                    Resources.SelectionErrorMessageBoxTitle,
-                    MessageBoxButton.OK, MessageBoxImage.Question);
+            MessageBoxService.Show(
+                Owner,
+                Resources.MessageSelectSymbolNotFound,
+                Resources.SelectionErrorMessageBoxTitle,
+                MessageBoxButton.OK, MessageBoxImage.Question);
         }
 
         public bool CanPublishCurrentWorkspace(object m)
@@ -379,9 +383,12 @@ namespace Dynamo.ViewModels
 
             if (!nodeList.Any())
             {
-                MessageBoxService.Show(Resources.MessageSelectAtLeastOneNode,
-                   Resources.SelectionErrorMessageBoxTitle,
-                   MessageBoxButton.OK, MessageBoxImage.Question);
+                MessageBoxService.Show(
+                    Owner,
+                    Resources.MessageSelectAtLeastOneNode,
+                    Resources.SelectionErrorMessageBoxTitle,
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Question);
                 return;
             }
 
@@ -400,7 +407,9 @@ namespace Dynamo.ViewModels
                         continue;
                     }
                 }
-                MessageBoxService.Show(Resources.MessageGettingNodeError, 
+                MessageBoxService.Show(
+                    Owner,
+                    Resources.MessageGettingNodeError, 
                     Resources.SelectionErrorMessageBoxTitle, 
                     MessageBoxButton.OK, MessageBoxImage.Question);
             }
@@ -472,6 +481,28 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Returns a dictionary of infected package(s) with name and version, if the last published version of package uploaded by the current user was flagged as infected.
+        /// </summary>
+        /// <returns></returns>
+        public List<PackageManagerSearchElement> GetInfectedPackages()
+        {
+            InfectedPackageList = new List<PackageManagerSearchElement>();
+            var latestPkgs = Model.GetUsersLatestPackages();
+            if (latestPkgs != null && latestPkgs.maintains.Count > 0)
+            {
+                foreach (var infectedVer in latestPkgs.maintains)
+                {
+                    if (infectedVer.scan_status == QUARANTINED)
+                    {
+                        var ele = new PackageManagerSearchElement(infectedVer);
+                        InfectedPackageList.Add(ele);
+                    }
+                }
+            }
+            return InfectedPackageList;
+        }
+
+        /// <summary>
         /// Download and install a specific package from the package manager
         /// </summary>
         /// <param name="packageInfo"></param>
@@ -500,6 +531,7 @@ namespace Dynamo.ViewModels
             catch
             {
                 MessageBoxService.Show(
+                    Owner,
                     string.Format(Resources.MessagePackageVersionNotFound, packageInfo.Version.ToString(), packageInfo.Name),
                     Resources.PackageDownloadErrorMessageBoxTitle,
                     MessageBoxButton.OK,
@@ -565,7 +597,8 @@ namespace Dynamo.ViewModels
 
                     if (duplicatePackage.InUse(DynamoViewModel.Model))
                     {// Loaded assemblies or package in use in workspace
-                        dialogResult = MessageBoxService.Show(string.Format(Resources.MessageSamePackageDiffVersInLocalPackages, packageToDownload, dupPkg, DynamoViewModel.BrandingResourceProvider.ProductName),
+                        dialogResult = MessageBoxService.Show(
+                            string.Format(Resources.MessageSamePackageDiffVersInLocalPackages, packageToDownload, dupPkg, DynamoViewModel.BrandingResourceProvider.ProductName),
                             Resources.LoadedPackagesConflictMessageBoxTitle,
                             MessageBoxButton.OKCancel, new string[] { Resources.UninstallLoadedPackage, Resources.GenericTaskDialogOptionCancel }, MessageBoxImage.Exclamation);
 
@@ -578,7 +611,8 @@ namespace Dynamo.ViewModels
                     }
                     else
                     {
-                        dialogResult = MessageBoxService.Show(String.Format(Resources.MessageAlreadyInstallDynamo,
+                        dialogResult = MessageBoxService.Show(
+                            String.Format(Resources.MessageAlreadyInstallDynamo,
                             DynamoViewModel.BrandingResourceProvider.ProductName, dupPkg, packageToDownload), 
                             Resources.PackagesInUseConflictMessageBoxTitle,
                             MessageBoxButton.OKCancel, new string[] { Resources.UninstallLoadedPackage, Resources.GenericTaskDialogOptionCancel }, 
@@ -955,7 +989,9 @@ namespace Dynamo.ViewModels
                         }
                         catch
                         {
-                            MessageBoxService.Show(String.Format(Resources.MessageFailToUninstallPackage,
+                            MessageBoxService.Show(
+                                Owner,
+                                String.Format(Resources.MessageFailToUninstallPackage,
                                 DynamoViewModel.BrandingResourceProvider.ProductName,
                                 packageDownloadHandle.Name),
                                 Resources.DeleteFailureMessageBoxTitle,

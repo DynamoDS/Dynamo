@@ -1,0 +1,274 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "CountOccurrences",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "8f335c73856340f8ab161a8c0eda22f1",
+      "Name": "String",
+      "Type": "string",
+      "Value": "Hello World",
+      "Description": "Creates a string."
+    },
+    {
+      "Id": "76b24f0487ce4d7893211ecce93be062",
+      "Name": "String",
+      "Type": "string",
+      "Value": "L",
+      "Description": "Creates a string."
+    },
+    {
+      "Id": "8e1f5a53820842dd92293d423e4f0f60",
+      "Name": "Boolean",
+      "Type": "boolean",
+      "Value": "true",
+      "Description": "Selection between a true and false."
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "Hello World",
+      "Id": "8f335c73856340f8ab161a8c0eda22f1",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "36b45b551091488598e6f2c1590be48e",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "1f79f9e394fc4650ad0f49067625f89a",
+      "Inputs": [
+        {
+          "Id": "83467f754f364b47b91f6a1cd1556f94",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "eeb6fab9555647f5b852d51b3aae5f26",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "L",
+      "Id": "76b24f0487ce4d7893211ecce93be062",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "04c47b0d43d0458fade3363afed0d403",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "NodeType": "BooleanInputNode",
+      "InputValue": true,
+      "Id": "8e1f5a53820842dd92293d423e4f0f60",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "23b6d13c8ffe426883d73e8f5b1a7d45",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Selection between a true and false."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.String.CountOccurrences@string,string,bool",
+      "Id": "e31bd9d5f5e74a8fb7b753b95bd04823",
+      "Inputs": [
+        {
+          "Id": "a7ca7a4fafac47109d853bd65e0ba3f6",
+          "Name": "str",
+          "Description": "String to search in.\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "9af9ead617aa4ee1913f09ff258880f6",
+          "Name": "searchFor",
+          "Description": "Substring to search for.\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5b79b25a2c7e4bafa6f8408e3c156cd8",
+          "Name": "ignoreCase",
+          "Description": "Whether or not comparison takes case into account.\n\nbool\nDefault value : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9d168882b5ce468fa8f5e65b47b1377c",
+          "Name": "count",
+          "Description": "Number of non-overlapping occurrences of the substring in the string.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Counts the number of non-overlapping occurrences of a substring inside a given string.\n\nString.CountOccurrences (str: string, searchFor: string, ignoreCase: bool = false): int"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "36b45b551091488598e6f2c1590be48e",
+      "End": "a7ca7a4fafac47109d853bd65e0ba3f6",
+      "Id": "95d03dd5484c401b8dc38b107463a05c"
+    },
+    {
+      "Start": "04c47b0d43d0458fade3363afed0d403",
+      "End": "9af9ead617aa4ee1913f09ff258880f6",
+      "Id": "9e2d86b972974a87a5e4e1b40fd59a01"
+    },
+    {
+      "Start": "23b6d13c8ffe426883d73e8f5b1a7d45",
+      "End": "5b79b25a2c7e4bafa6f8408e3c156cd8",
+      "Id": "645f10135c8147d8b5dc43b33e734fa9"
+    },
+    {
+      "Start": "9d168882b5ce468fa8f5e65b47b1377c",
+      "End": "83467f754f364b47b91f6a1cd1556f94",
+      "Id": "1c7beb2b47e94962bcbdddd647b08e1e"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "String",
+        "Id": "8f335c73856340f8ab161a8c0eda22f1",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 214.497240390363,
+        "Y": 200.75276678235548
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "1f79f9e394fc4650ad0f49067625f89a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 771.497240390363,
+        "Y": 257.75276678235548
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "String",
+        "Id": "76b24f0487ce4d7893211ecce93be062",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 214.497240390363,
+        "Y": 283.75276678235548
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Boolean",
+        "Id": "8e1f5a53820842dd92293d423e4f0f60",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 214.497240390363,
+        "Y": 366.75276678235548
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "String.CountOccurrences",
+        "Id": "e31bd9d5f5e74a8fb7b753b95bd04823",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 449.497240390363,
+        "Y": 258.51750246093491
+      }
+    ],
+    "Annotations": [],
+    "X": -146.730057853078,
+    "Y": -171.137886737402,
+    "Zoom": 1.30764135636719
+  }
+}

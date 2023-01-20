@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -205,12 +205,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="CurrentStepSequence">This parameter will contain the "sequence" of the current Step so we can get the next Step from the list</param>
         internal void NextStep(int CurrentStepSequence)
         {
-            HideCurrentStep(CurrentStepSequence, GuideFlow.FORWARD);
             if (CurrentStepSequence < TotalSteps)
             {
+                HideCurrentStep(CurrentStepSequence, GuideFlow.FORWARD);
+
                 CalculateStep(GuideFlow.FORWARD, CurrentStepSequence);
                 CurrentStep.Show(GuideFlow.FORWARD);
-                Logging.Analytics.TrackEvent(Logging.Actions.Next, Logging.Categories.GuidedTourOperations, Resources.ResourceManager.GetString(GuideNameResource).Replace("_", ""), CurrentStep.Sequence);
+                Logging.Analytics.TrackEvent(Logging.Actions.Next, Logging.Categories.GuidedTourOperations, Resources.ResourceManager.GetString(GuideNameResource, System.Globalization.CultureInfo.InvariantCulture).Replace("_", ""), CurrentStep.Sequence);
             }
         }
 
@@ -220,12 +221,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="CurrentStepSequence">This parameter is the "sequence" of the current Step so we can get the previous Step from the list</param>
         internal void PreviousStep(int CurrentStepSequence)
         {
-            HideCurrentStep(CurrentStepSequence, GuideFlow.BACKWARD);
             if (CurrentStepSequence > 0)
             {
+                HideCurrentStep(CurrentStepSequence, GuideFlow.BACKWARD);
+
                 CalculateStep(GuideFlow.BACKWARD, CurrentStepSequence);
                 CurrentStep.Show(GuideFlow.BACKWARD);
-                Logging.Analytics.TrackEvent(Logging.Actions.Previous, Logging.Categories.GuidedTourOperations, Resources.ResourceManager.GetString(GuideNameResource).Replace("_", ""), CurrentStep.Sequence);
+                Logging.Analytics.TrackEvent(Logging.Actions.Previous, Logging.Categories.GuidedTourOperations, Resources.ResourceManager.GetString(GuideNameResource, System.Globalization.CultureInfo.InvariantCulture).Replace("_", ""), CurrentStep.Sequence);
             }     
         }
 

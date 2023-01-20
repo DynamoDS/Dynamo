@@ -19,7 +19,7 @@ namespace Dynamo.DynamoSandbox.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -61,7 +61,7 @@ namespace Dynamo.DynamoSandbox.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Goto the Dynamo builds wiki site({0}) for more information..
+        ///   Looks up a localized string similar to Go to the Dynamo builds wiki site({0}) for more information..
         /// </summary>
         internal static string SandboxBuildsPageDialogMessage {
             get {
@@ -70,29 +70,11 @@ namespace Dynamo.DynamoSandbox.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not start DynamoSandbox, unhandled exception..
+        ///   Looks up a localized string similar to Could not start Dynamo Sandbox, unhandled exception..
         /// </summary>
         internal static string SandboxCrashMessage {
             get {
                 return ResourceManager.GetString("SandboxCrashMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Migrating Settings ....
-        /// </summary>
-        internal static string SettingsMigrationDialogMessage {
-            get {
-                return ResourceManager.GetString("SettingsMigrationDialogMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to First Use Setup.
-        /// </summary>
-        internal static string SettingsMigrationDialogTitle {
-            get {
-                return ResourceManager.GetString("SettingsMigrationDialogTitle", resourceCulture);
             }
         }
     }

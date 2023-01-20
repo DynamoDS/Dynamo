@@ -1,9 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
+using Dynamo.Utilities;
 
 namespace Dynamo.DocumentationBrowser
 {
@@ -59,13 +61,21 @@ namespace Dynamo.DocumentationBrowser
 
             if (!string.IsNullOrEmpty(pathManager.DynamoCoreDirectory))
             {
-                var coreDir = new DirectoryInfo(Path.Combine(pathManager.DynamoCoreDirectory, FALLBACK_DOC_DIRECTORY_NAME));
+                var coreDir = new DirectoryInfo(Path.Combine(pathManager.DynamoCoreDirectory, Thread.CurrentThread.CurrentCulture.ToString(), FALLBACK_DOC_DIRECTORY_NAME));
+                if (!coreDir.Exists)
+                {
+                    coreDir = new DirectoryInfo(Path.Combine(pathManager.DynamoCoreDirectory, "en-US", FALLBACK_DOC_DIRECTORY_NAME));
+                }
                 dynamoCoreFallbackDocPath = coreDir.Exists ? coreDir : null;
             }
 
             if (!string.IsNullOrEmpty(pathManager.HostApplicationDirectory))
             {
-                var hostDir = new DirectoryInfo(Path.Combine(pathManager.HostApplicationDirectory, FALLBACK_DOC_DIRECTORY_NAME));
+                var hostDir = new DirectoryInfo(Path.Combine(pathManager.HostApplicationDirectory, Thread.CurrentThread.CurrentCulture.ToString(), FALLBACK_DOC_DIRECTORY_NAME));
+                if (!hostDir.Exists)
+                {
+                    hostDir = new DirectoryInfo(Path.Combine(pathManager.HostApplicationDirectory, "en-US", FALLBACK_DOC_DIRECTORY_NAME));
+                }
                 hostDynamoFallbackDocPath = hostDir.Exists ? hostDir : null;
             }   
         }
@@ -86,10 +96,13 @@ namespace Dynamo.DocumentationBrowser
                 return output;
             }
 
+            var shortName = Hash.GetHashFilenameFromString(nodeNamespace);
+
             FileInfo matchingDoc = null;
             if (hostDynamoFallbackDocPath != null)
             {
-                matchingDoc = hostDynamoFallbackDocPath.GetFiles($"{nodeNamespace}.md").FirstOrDefault();
+                matchingDoc = hostDynamoFallbackDocPath.GetFiles($"{shortName}.md").FirstOrDefault() ??
+                              hostDynamoFallbackDocPath.GetFiles($"{nodeNamespace}.md").FirstOrDefault();
                 if (matchingDoc != null)
                 {
                     return matchingDoc.FullName;
@@ -98,7 +111,8 @@ namespace Dynamo.DocumentationBrowser
 
             if (dynamoCoreFallbackDocPath != null)
             {
-                matchingDoc = dynamoCoreFallbackDocPath.GetFiles($"{nodeNamespace}.md").FirstOrDefault();
+                matchingDoc = dynamoCoreFallbackDocPath.GetFiles($"{shortName}.md").FirstOrDefault() ??
+                              dynamoCoreFallbackDocPath.GetFiles($"{nodeNamespace}.md").FirstOrDefault();
             }
 
             return matchingDoc is null ? string.Empty : matchingDoc.FullName;

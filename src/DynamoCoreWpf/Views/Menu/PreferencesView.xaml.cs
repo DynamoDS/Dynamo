@@ -1,5 +1,8 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -8,7 +11,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Dynamo.Configuration;
 using Dynamo.Controls;
+using Dynamo.Core;
+using Dynamo.Exceptions;
 using Dynamo.Logging;
+using Dynamo.UI;
 using Dynamo.ViewModels;
 using Res = Dynamo.Wpf.Properties.Resources;
 
@@ -22,6 +28,7 @@ namespace Dynamo.Wpf.Views
         private readonly PreferencesViewModel viewModel;
         private readonly DynamoViewModel dynViewModel;
         private int scaleValue = 0;
+        private List<GroupStyleItem> originalCustomGroupStyles { get; set; }
 
         // Used for tracking the manage package command event
         // This is not a command any more but we keep it
@@ -29,13 +36,27 @@ namespace Dynamo.Wpf.Views
         private IDisposable managePackageCommandEvent;
 
         /// <summary>
+        /// Storing the original custom styles before the user could update them
+        /// </summary>
+        private void StoreOriginalCustomGroupStyles()
+        {
+            originalCustomGroupStyles = new List<GroupStyleItem>();
+            foreach (var groupStyle in dynViewModel.PreferenceSettings.GroupStyleItemsList)
+            {
+                if (!groupStyle.IsDefault)
+                {
+                    originalCustomGroupStyles.Add(new GroupStyleItem() { GroupStyleId = groupStyle.GroupStyleId, HexColorString = groupStyle.HexColorString, FontSize = groupStyle.FontSize });
+                }                
+            }
+        }
+
+        /// <summary>
         /// Constructor of Preferences View
         /// </summary>
         /// <param name="dynamoViewModel"> Dynamo ViewModel</param>
         public PreferencesView(DynamoView dynamoView)
-        {
-            dynViewModel = dynamoView.DataContext as DynamoViewModel;
-            
+        {            
+            dynViewModel = dynamoView.DataContext as DynamoViewModel;            
             SetupPreferencesViewModel(dynViewModel);
 
             DataContext = dynViewModel.PreferencesViewModel;
@@ -57,6 +78,10 @@ namespace Dynamo.Wpf.Views
             //We need to store the ScaleFactor value in a temporary variable always when the Preferences dialog is created.
             scaleValue = dynViewModel.ScaleFactorLog;
             ResetGroupStyleForm();
+            StoreOriginalCustomGroupStyles();
+            displayConfidenceLevel();
+
+            viewModel.RequestShowFileDialog += OnRequestShowFileDialog;
         }
 
         /// <summary>
@@ -76,6 +101,23 @@ namespace Dynamo.Wpf.Views
 
             // Init all package filters 
             dynamoViewModel.PreferencesViewModel.InitPackageListFilters();
+
+            dynamoViewModel.PreferencesViewModel.TrustedPathsViewModel.PropertyChanged += TrustedPathsViewModel_PropertyChanged;
+        }
+
+        /// <summary>
+        /// Evaluates if the user interacts over the Trusted Locations
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TrustedPathsViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            List<string> actions = typeof(TrustedPathViewModel.Action).GetFields().Select(a => a.Name).ToList();
+
+            if (actions.Contains(e.PropertyName))
+            {
+                dynViewModel.CheckCurrentFileInTrustedLocation();
+            }
         }
 
         /// <summary>
@@ -109,8 +151,12 @@ namespace Dynamo.Wpf.Views
             viewModel.CommitPackagePathsForInstall();
             PackagePathView.Dispose();
             TrustedPathView.Dispose();
+            Dispose();
 
             RunGraphWhenScaleFactorUpdated();
+
+            dynViewModel.PreferencesViewModel.TrustedPathsViewModel.PropertyChanged -= TrustedPathsViewModel_PropertyChanged;
+            dynViewModel.CheckCustomGroupStylesChanges(originalCustomGroupStyles);
 
             Close();
         }
@@ -185,10 +231,11 @@ namespace Dynamo.Wpf.Views
             var grid = (saveChangesButton.Parent as Grid).Parent as Grid;
 
             var groupNameLabel = grid.FindName("groupNameBox") as TextBox;
-
             var colorHexString = grid.FindName("colorHexVal") as Label;
+            var groupStyleFontSize = grid.FindName("groupStyleFontSize") as ComboBox;
+            var groupStyleId = Guid.NewGuid();
 
-            var newItem = new StyleItem() { Name = groupNameLabel.Text, HexColorString = colorHexString.Content.ToString() };
+            var newItem = new StyleItem() { Name = groupNameLabel.Text, HexColorString = colorHexString.Content.ToString(), FontSize = Convert.ToInt32(groupStyleFontSize.SelectedValue), GroupStyleId = groupStyleId };
 
             if (string.IsNullOrEmpty(newItem.Name))
                 newItem.Name = "Input";
@@ -226,10 +273,10 @@ namespace Dynamo.Wpf.Views
            var grid = (removeButton.Parent as Grid).Parent as Grid;
 
             //Find inside the Grid the label that contains the GroupName (unique id)
-           var groupNameLabel = grid.FindName("groupNameLabel") as Label;
+           var groupNameLabel = grid.FindName("groupNameLabel") as TextBlock;
 
             //Remove the selected style from the list
-            viewModel.RemoveStyleEntry(groupNameLabel.Content.ToString());
+            viewModel.RemoveStyleEntry(groupNameLabel.Text.ToString());
             Logging.Analytics.TrackEvent(Actions.Delete, Categories.GroupStyleOperations, nameof(GroupStyleItem));
         }
 
@@ -242,6 +289,22 @@ namespace Dynamo.Wpf.Views
                 Button colorButton = sender as Button;
                 if (colorButton != null)
                     colorButton.Background = new SolidColorBrush(Color.FromRgb(colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B));
+            }
+        }
+
+        private void onChangedGroupStyleColor_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Forms.ColorDialog colorDialog = new System.Windows.Forms.ColorDialog();
+
+            if (colorDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                Button colorButton = sender as Button;
+                
+                if (colorButton != null)
+                {
+                    GroupStyleItem selectedGroupStyle = (GroupStyleItem)colorButton.DataContext;
+                    selectedGroupStyle.HexColorString = colorDialog.Color.R.ToString("X2") + colorDialog.Color.G.ToString("X2") + colorDialog.Color.B.ToString("X2");
+                }                
             }
         }
 
@@ -285,9 +348,25 @@ namespace Dynamo.Wpf.Views
             Log(LogMessage.Info(message));
         }
 
+        /// <summary>
+        /// Unified handler for more info request from mouse left button click
+        /// </summary>
+        /// <param name="sender">sender control</param>
+        /// <param name="e"></param>
         private void OnMoreInfoClicked(object sender, RoutedEventArgs e)
         {
-            dynViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString, UriKind.Relative)));
+            if (sender is Label lable)
+            {
+                if (lable.Name == "Titleinfo")
+                {
+                    dynViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString, UriKind.Relative)));
+                }
+                else if (lable.Name == "TrustWarningInfoLabel")
+                {
+                    dynViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Wpf.Properties.Resources.FileTrustWarningDocumentationUriString, UriKind.Relative)));
+
+                }
+            }
         }
 
         private void ReloadCPython_Click(object sender, RoutedEventArgs e)
@@ -318,12 +397,20 @@ namespace Dynamo.Wpf.Views
             if (string.IsNullOrEmpty(groupNameBox.Text))
             {
                 viewModel.IsSaveButtonEnabled = false;
+                if (e.Key == Key.Return)
+                {
+                    viewModel.EnableGroupStyleWarningState(Res.PreferencesViewAlreadyExistingStyleWarning);
+                }
             }
             else
             {
                 viewModel.IsSaveButtonEnabled = true;
                 viewModel.CurrentWarningMessage = string.Empty;
                 viewModel.IsWarningEnabled = false;
+                if (e.Key == Key.Return)
+                {
+                    AddStyle_SaveButton_Click(AddStyle_SaveButton, new RoutedEventArgs());
+                }
             }
         }
 
@@ -352,6 +439,159 @@ namespace Dynamo.Wpf.Views
                 scrollviewer.LineDown();
             }
             e.Handled = true;
+        }
+
+        private void importTextBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            string fileExtension = "*" + Path.GetExtension(PathManager.PreferenceSettingsFileName);
+            string[] fileFilter = { string.Format(Res.FileDialogImportSettingsFiles, fileExtension) };
+            System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            openFileDialog.Filter = String.Join("|", fileFilter);
+            openFileDialog.Title = Res.ImportSettingsDialogTitle;
+            openFileDialog.Multiselect = false;
+            openFileDialog.RestoreDirectory = true;
+
+            var result = openFileDialog.ShowDialog();
+            if (result == System.Windows.Forms.DialogResult.OK)
+            {
+                try
+                {
+                    bool isImported = viewModel.importSettings(openFileDialog.FileName);
+                    if (isImported)
+                    {
+                        Wpf.Utilities.MessageBoxService.Show(
+                            this, Res.ImportSettingsSuccessMessage, Res.ImportSettingsDialogTitle, MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        Wpf.Utilities.MessageBoxService.Show(
+                            this, Res.ImportSettingsFailedMessage, Res.ImportSettingsDialogTitle, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    }
+                    Analytics.TrackEvent(Actions.Import, Categories.Preferences, isImported.ToString());
+                }
+                catch (Exception ex)
+                {
+                    Wpf.Utilities.MessageBoxService.Show(
+                        this, ex.Message, Res.ImportSettingsFailedMessage, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+            }            
+        }
+
+        private void OnMoreInfoClicked(object sender, MouseButtonEventArgs e)
+        {
+            dynViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Dynamo.Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString, UriKind.Relative)));
+        }
+
+        private void exportTextBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var dialog = new DynamoFolderBrowserDialog
+            {
+                Title = Res.ExportSettingsDialogTitle,
+                Owner = this
+            };
+
+            //Saves the current settings before exporting the xml file
+            dynViewModel.PreferenceSettings.SaveInternal(dynViewModel.Model.PathManager.PreferenceFilePath);
+
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string selectedPathFile = Path.Combine(dialog.SelectedPath, PathManager.PreferenceSettingsFileName);
+                try
+                {
+                    if (File.Exists(selectedPathFile))
+                    {
+                        string uniqueId = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds().ToString();
+                        string suffixPlusDot = $"_{ uniqueId}.";
+                        string uniqueFileName = PathManager.PreferenceSettingsFileName.Replace(".", suffixPlusDot);
+                        selectedPathFile = Path.Combine(dialog.SelectedPath, uniqueFileName);
+                    }
+
+                    File.Copy(dynViewModel.Model.PathManager.PreferenceFilePath, selectedPathFile);
+                    string argument = "/select, \"" + selectedPathFile + "\"";
+                    System.Diagnostics.Process.Start("explorer.exe", argument);
+                    Analytics.TrackEvent(Actions.Export, Categories.Preferences);
+                }
+                catch (Exception ex)
+                {
+                    Wpf.Utilities.MessageBoxService.Show(
+                        this,
+                        ex.Message,
+                        Res.ExportSettingsFailedMessage,
+                        MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+            }
+        }
+
+        // Show File path dialog
+        private void OnRequestShowFileDialog(object sender, EventArgs e)
+        {
+            var args = e as PythonTemplatePathEventArgs;
+            args.Cancel = true;
+
+            var dialog = new System.Windows.Forms.OpenFileDialog
+            {
+                // Navigate to initial folder.
+                FileName = args.Path
+            };
+
+            //Filter python files.
+            dialog.Filter = "Python File|*.py";
+
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                args.Cancel = false;
+                args.Path = dialog.FileName;
+            }
+        }
+
+        // Number input textbox validation
+        private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex("[^0-9]+");
+            e.Handled = regex.IsMatch(e.Text);
+        }
+
+        internal void Dispose()
+        {
+            viewModel.RequestShowFileDialog -= OnRequestShowFileDialog;
+        }
+
+        int getExtraLeftSpace(int confidenceLevel)
+        {
+            int value = 16;
+
+            for (int i = 1; i <= 9; i++)
+            {
+                if (confidenceLevel <= 9)
+                {
+                    break;
+                }               
+                else
+                {
+                    value--;
+                    if ((confidenceLevel == 10) || confidenceLevel >= (i * 10) + 1 && confidenceLevel <= (i + 1) * 10)
+                    {                        
+                        break;
+                    }
+                }
+            }
+            return value;
+        }       
+
+        private void sliderConfidenceLevel_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            displayConfidenceLevel();
+        }
+
+        private void displayConfidenceLevel()
+        {
+            if (this.lblConfidenceLevel != null && this.lblConfidenceLevelLabelStart != null)
+            {
+                int confidenceLevel = (int)lblConfidenceLevel.Content;
+
+                int left = ((int)lblConfidenceLevel.Content * 3) + getExtraLeftSpace(confidenceLevel);
+                this.lblConfidenceLevel.Margin = new Thickness(left, -15, 0, 0);
+            }
         }
     }
 }

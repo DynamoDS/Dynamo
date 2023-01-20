@@ -60,6 +60,7 @@ namespace Dynamo.ViewModels
         private bool canToggleFrozen = true;
         private bool isRenamed = false;
         private bool isNodeInCollapsedGroup = false;
+        private const string WatchNodeName = "Watch";
         #endregion
 
         #region public members
@@ -68,6 +69,7 @@ namespace Dynamo.ViewModels
         /// Returns NodeModel ID
         /// </summary>
         [JsonConverter(typeof(IdToGuidConverter))]
+        [JsonProperty(Order = 1)]
         public Guid Id
         {
             get { return NodeModel.GUID; }
@@ -163,6 +165,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonProperty(Order = 3)]
         public bool IsSetAsInput
         {
             get
@@ -191,6 +194,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonProperty(Order = 4)]
         public bool IsSetAsOutput
         {
             get
@@ -210,11 +214,12 @@ namespace Dynamo.ViewModels
             }
         }
 
-        
+
         /// <summary>
         /// The Name of the nodemodel this view points to
         /// this is the name of the node as it is displayed in the UI.
         /// </summary>
+        [JsonProperty(Order = 2)]
         public string Name
         {
             get
@@ -346,7 +351,7 @@ namespace Dynamo.ViewModels
             get { return true; }
         }
 
-        [JsonProperty("ShowGeometry")]
+        [JsonProperty("ShowGeometry",Order = 6)]
         public bool IsVisible
         {
             get
@@ -593,7 +598,7 @@ namespace Dynamo.ViewModels
         /// <value>
         ///  Returns true if the node has been frozen explicitly by the user, otherwise false.
         /// </value>  
-        [JsonProperty("Excluded")]
+        [JsonProperty("Excluded", Order = 5)]
         public bool IsFrozenExplicitly
         {
             get
@@ -628,6 +633,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         ///     Returns or set the X position of the Node.
         /// </summary>
+        [JsonProperty(Order = 7)]
         public double X
         {
             get { return NodeModel.X; }
@@ -640,6 +646,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         ///     Returns or set the Y position of the Node.
         /// </summary>
+        [JsonProperty(Order = 8)]
         public double Y
         {
             get { return NodeModel.Y; }
@@ -736,8 +743,13 @@ namespace Dynamo.ViewModels
         /// A collection of error/warning/info messages, dismissed via a sub-menu in the node Context Menu.
         /// </summary>
         [JsonIgnore]
-        public ObservableCollection<string> DismissedAlerts => nodeLogic.DismissedAlerts;       
+        public ObservableCollection<string> DismissedAlerts => nodeLogic.DismissedAlerts;
 
+
+        internal bool IsWatchNode
+        {
+            get => OriginalName.Contains(WatchNodeName);
+        }
         #endregion
 
         #region events
@@ -944,8 +956,21 @@ namespace Dynamo.ViewModels
             
             RaisePropertyChanged(nameof(DismissedAlerts));
             RaisePropertyChanged(nameof(NumberOfDismissedAlerts));
+
+            UpdateModelDismissedAlertsCount();
         }
-        
+
+        /// <summary>
+        /// Calls an update for the DismissedAlertCount inside the NodeModel to push PropertyChanged fire
+        /// </summary>
+        private void UpdateModelDismissedAlertsCount()
+        {
+            if (DismissedAlerts != null)
+            {
+                nodeLogic.DismissedAlertsCount = DismissedAlerts.Count;
+            }
+        }
+
         /// <summary>
         /// Dispose function
         /// </summary>
@@ -1480,9 +1505,6 @@ namespace Dynamo.ViewModels
 
         private void ShowHelp(object parameter)
         {
-            //var helpDialog = new NodeHelpPrompt(this.NodeModel);
-            //helpDialog.Show();
-
             OnRequestShowNodeHelp(this, new NodeDialogEventArgs(NodeModel));
             Analytics.TrackEvent(Actions.ViewDocumentation, Categories.NodeContextMenuOperations, NodeModel.Name);
         }

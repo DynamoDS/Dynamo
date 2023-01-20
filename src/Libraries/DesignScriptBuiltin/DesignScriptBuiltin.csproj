@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -10,7 +10,7 @@
     <AssemblyName>DesignScriptBuiltin</AssemblyName>
     <DocumentationFile>$(OutputPath)\$(UICulture)\DesignScriptBuiltin.xml</DocumentationFile>
   </PropertyGroup>
-  <ItemGroup Label="System.Collections.Immutable@portable-net45+win8+wp8+wpa81">
+  <ItemGroup Label="System.Collections.Immutable@portable-net45+win8+wp8+wpa81" Condition=" '$(TargetFramework)' == 'net48' ">
     <PackageReference Include="System.Collections.Immutable" Version="5.0.0">
       <GeneratePathProperty>true</GeneratePathProperty>
       <IncludeAssets>none</IncludeAssets>
@@ -18,6 +18,10 @@
     <Reference Include="System.Collections.Immutable">
       <HintPath>$(PkgSystem_Collections_Immutable)\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+    <PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
+    <PackageReference Include="System.Resources.Extensions" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\NodeServices\DynamoServices.csproj">
@@ -47,17 +51,13 @@
       <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <Target Name="GenerateFiles" AfterTargets="AfterBuild" Condition=" '$(OS)' != 'Unix' ">
-    <!-- Get System.Drawing.dll -->
-    <GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=$(ResourceGeneration_FrameworkVersion)">
-      <Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
-    </GetReferenceAssemblyPaths>
+  <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" '$(OS)' != 'Unix' ">
     <!-- Get assembly -->
     <GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
       <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
     </GetAssemblyIdentity>
     <!-- Generate customization dll -->
-    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)DesignScriptBuiltinImages.resx" OutputResources="$(ProjectDir)DesignScriptBuiltinImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)DesignScriptBuiltinImages.resx" OutputResources="$(ProjectDir)DesignScriptBuiltinImages.resources" References="$(SystemDrawingDllPath)" />
     <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)DesignScriptBuiltinImages.resources" OutputAssembly="$(OutDir)DesignScriptBuiltin.customization.dll" Version="%(AssemblyInfo.Version)" />
   </Target>
 </Project>

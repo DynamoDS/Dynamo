@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -172,6 +172,22 @@ namespace Dynamo.ViewModels
             set
             {
                 annotationModel.FontSize = value;
+            }
+        }
+
+        /// <summary>
+        /// Id of the applied GroupStyle
+        /// </summary>
+        [JsonIgnore]
+        public Guid GroupStyleId
+        {
+            get
+            {
+                return annotationModel.GroupStyleId;
+            }
+            set
+            {
+                annotationModel.GroupStyleId = value;
             }
         }
 
@@ -437,6 +453,25 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private DelegateCommand dissolveNestedGroup;
+        /// <summary>
+        /// Command to dissolve hosted groups inside the host group
+        /// belongs to.
+        /// </summary>
+        [JsonIgnore]
+        public DelegateCommand DissolveNestedGroupsCommand
+        {
+            get
+            {
+                if (dissolveNestedGroup == null)
+                    dissolveNestedGroup =
+                        new DelegateCommand(DissolveNestedGroups, CanUngroupGroup);
+
+                return dissolveNestedGroup;
+            }
+        }
+
+
         private bool CanAddToGroup(object obj)
         {
             return
@@ -531,6 +566,43 @@ namespace Dynamo.ViewModels
             WorkspaceViewModel.DynamoViewModel.UngroupModelCommand.Execute(null);
             RaisePropertyChanged(nameof(ZIndex));
             Analytics.TrackEvent(Actions.RemovedFrom, Categories.GroupOperations, "Group");
+        }
+
+        private void DissolveNestedGroups(object parameters)
+        {
+            // For this command to work, this needs to be a host group
+            if (!this.AnnotationModel.HasNestedGroups) return;
+
+            var hostedAnnotations = this.Nodes.OfType<AnnotationModel>();
+            var nodes = GetAllHostedNodes(hostedAnnotations);
+            DynamoSelection.Instance.ClearSelection();
+
+            foreach (var annotation in hostedAnnotations){
+                var annotationGuid = annotation.GUID;
+                this.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+                    new DynamoModel.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
+                WorkspaceViewModel.DynamoViewModel.UngroupAnnotationCommand.Execute(null);
+            }
+
+            foreach (var node in nodes)
+            {
+                this.AnnotationModel.AddToTargetAnnotationModel(node);
+            }
+
+            RaisePropertyChanged(nameof(ZIndex));
+            Analytics.TrackEvent(Actions.RemovedFrom, Categories.GroupOperations, "Group");
+        }
+
+        private List<ModelBase> GetAllHostedNodes(IEnumerable<AnnotationModel> hostedAnnotations)
+        {
+            List<ModelBase> result = new List<ModelBase>();
+
+            foreach (var annotation in hostedAnnotations)
+            {
+                result.AddRange(annotation.Nodes);
+            }
+
+            return result;
         }
 
         private bool CanUngroupGroup(object parameters)
@@ -1007,6 +1079,8 @@ namespace Dynamo.ViewModels
             if (itemEntryParameter == null) return;
 
             Background = (Color)ColorConverter.ConvertFromString("#" + itemEntryParameter.HexColorString);
+            FontSize = (double)itemEntryParameter.FontSize;
+            GroupStyleId = itemEntryParameter.GroupStyleId;
 
             WorkspaceViewModel.HasUnsavedChanges = true;
         }

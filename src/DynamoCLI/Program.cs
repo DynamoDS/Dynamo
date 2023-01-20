@@ -1,5 +1,7 @@
-﻿using System;
+using System;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using Dynamo.Applications;
 using Dynamo.Models;
@@ -8,12 +10,17 @@ namespace DynamoCLI
 {
     internal class Program
     {
+        private static EventWaitHandle suspendEvent = new AutoResetEvent(false);
+
         [STAThread]
         static internal void Main(string[] args)
         {
+            bool useConsole = true;
+            
             try
             {
                 var cmdLineArgs = StartupUtils.CommandLineArguments.Parse(args);
+                useConsole = !cmdLineArgs.NoConsole;
                 var locale = StartupUtils.SetLocale(cmdLineArgs);
                 if (cmdLineArgs.DisableAnalytics)
                 {
@@ -25,11 +32,17 @@ namespace DynamoCLI
                     var thread = new Thread(() => RunKeepAlive(cmdLineArgs));
 
                     thread.Name = "DynamoModelKeepAlive";
-                    thread.SetApartmentState(ApartmentState.STA);
                     thread.Start();
 
-                    Console.WriteLine("Starting DynamoCLI in keepalive mode");
-                    Console.ReadLine();
+                    if (!useConsole)
+                    {
+                        suspendEvent.WaitOne();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Starting DynamoCLI in keepalive mode");
+                        Console.ReadLine();
+                    }
 
                     ShutDown();
                 }
@@ -52,8 +65,12 @@ namespace DynamoCLI
                 {
                 }
 
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.StackTrace);
+                if (useConsole)
+                {
+                    Console.WriteLine(e.Message);
+                    Console.WriteLine(e.StackTrace);
+                }
+
             }
         }
 
@@ -63,11 +80,12 @@ namespace DynamoCLI
             {
                 StartupDynamo(cmdLineArgs);
 
-                Console.WriteLine("-----------------------------------------");
-                Console.WriteLine("DynamoCLI is running in keepalive mode");
-                Console.WriteLine("Press Enter to shutdown...");
-
-                System.Windows.Threading.Dispatcher.Run();
+                if (!cmdLineArgs.NoConsole)
+                {
+                    Console.WriteLine("-----------------------------------------");
+                    Console.WriteLine("DynamoCLI is running in keepalive mode");
+                    Console.WriteLine("Press Enter to shutdown...");
+                }
             }
             catch
             {
@@ -83,13 +101,14 @@ namespace DynamoCLI
         private static DynamoModel StartupDynamo(StartupUtils.CommandLineArguments cmdLineArgs)
         {
             DynamoModel model;
-            if (!String.IsNullOrEmpty(cmdLineArgs.ASMPath))
+            model = Dynamo.Applications.StartupUtils.MakeCLIModel(String.IsNullOrEmpty(cmdLineArgs.ASMPath) ? string.Empty : cmdLineArgs.ASMPath,
+                cmdLineArgs.UserDataFolder,
+                cmdLineArgs.CommonDataFolder,
+                cmdLineArgs.AnalyticsInfo);
+
+            if (!string.IsNullOrEmpty(cmdLineArgs.CERLocation))
             {
-                model = Dynamo.Applications.StartupUtils.MakeModel(true, cmdLineArgs.ASMPath, cmdLineArgs.AnalyticsInfo);
-            }
-            else
-            {
-                model = Dynamo.Applications.StartupUtils.MakeModel(true, string.Empty, cmdLineArgs.AnalyticsInfo);
+                model.CERLocation = cmdLineArgs.CERLocation;
             }
 
             model.ShutdownCompleted += (m) => { ShutDown(); };

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -7,8 +7,10 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
+using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels;
@@ -26,41 +28,39 @@ namespace Dynamo.UI.Controls
 
         internal event Action<ShowHideFlags> RequestShowNodeAutoCompleteSearch;
 
-        public NodeAutoCompleteSearchViewModel ViewModel
-        {
-            get { return DataContext as NodeAutoCompleteSearchViewModel; }
-        }
+        /// <summary>
+        /// Node AutoComplete Search ViewModel DataContext
+        /// </summary>
+        public NodeAutoCompleteSearchViewModel ViewModel => DataContext as NodeAutoCompleteSearchViewModel;
 
         public NodeAutoCompleteSearchControl()
         {
             InitializeComponent();
             if (Application.Current != null)
             {
-                Application.Current.Deactivated += currentApplicationDeactivated;
+                Application.Current.Deactivated += CurrentApplicationDeactivated;
+                Application.Current.MainWindow.Closing += NodeAutoCompleteSearchControl_Unloaded;
             }
-            Unloaded += NodeAutoCompleteSearchControl_Unloaded;
             HomeWorkspaceModel.WorkspaceClosed += this.CloseAutoCompletion;
         }
 
-        private void NodeAutoCompleteSearchControl_Unloaded(object sender, RoutedEventArgs e)
+        private void NodeAutoCompleteSearchControl_Unloaded(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (Application.Current != null)
             {
-                Application.Current.Deactivated -= currentApplicationDeactivated;
+                Application.Current.Deactivated -= CurrentApplicationDeactivated;
+                Application.Current.MainWindow.Closing -= NodeAutoCompleteSearchControl_Unloaded;
             }
         }
 
-        private void currentApplicationDeactivated(object sender, EventArgs e)
+        private void CurrentApplicationDeactivated(object sender, EventArgs e)
         {
             OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
         }
 
         private void OnRequestShowNodeAutoCompleteSearch(ShowHideFlags flags)
         {
-            if (RequestShowNodeAutoCompleteSearch != null)
-            {
-                RequestShowNodeAutoCompleteSearch(flags);
-            }
+            RequestShowNodeAutoCompleteSearch?.Invoke(flags);
         }
 
         private void OnSearchTextBoxTextChanged(object sender, TextChangedEventArgs e)
@@ -81,8 +81,7 @@ namespace Dynamo.UI.Controls
 
         private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            var listBoxItem = sender as ListBoxItem;
-            if (listBoxItem == null || e.OriginalSource is Thumb) return;
+            if (!(sender is ListBoxItem listBoxItem) || e.OriginalSource is Thumb) return;
 
             ExecuteSearchElement(listBoxItem);
             OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
@@ -99,25 +98,41 @@ namespace Dynamo.UI.Controls
                 if (searchElement.CreateAndConnectCommand.CanExecute(port.PortModel))
                 {
                     searchElement.CreateAndConnectCommand.Execute(port.PortModel);
+                    var selectedNodeName = (searchElement.Model is Search.SearchElements.ZeroTouchSearchElement) ?
+                                                searchElement.Model.CreationName :
+                                                // Same as NameTypeId.ToStrng() format
+                                                string.Format("{0}, {1}", searchElement.Model.CreationName, searchElement.Assembly.Split('\\').Last().Split('.').First());
+                    var originalNodeName = (port.NodeViewModel.NodeModel is DSFunctionBase) ?
+                                                port.NodeViewModel.NodeModel.CreationName :
+                                                string.Format("{0}, {1}", port.NodeViewModel.NodeModel.GetType().FullName, port.NodeViewModel.NodeModel.GetType().Assembly.GetName().Name) ;
+                    var searchElementInfo = ViewModel.IsDisplayingMLRecommendation ?
+                        selectedNodeName + " " + port.PortModel.Index.ToString() + " " + port.PortName + " " + originalNodeName + " " +
+                        searchElement.Model.AutoCompletionNodeElementInfo.PortToConnect.ToString() + " " +
+                        searchElement.AutoCompletionNodeMachineLearningInfo.ConfidenceScore.ToString() + " "  +  ViewModel.ServiceVersion
+                        : selectedNodeName;
+
                     Analytics.TrackEvent(
                     Dynamo.Logging.Actions.Select,
                     Dynamo.Logging.Categories.NodeAutoCompleteOperations,
-                    searchElement.FullName);
+                    searchElementInfo);
                 }
             }
         }
 
         private void OnMouseEnter(object sender, MouseEventArgs e)
         {
-            FrameworkElement fromSender = sender as FrameworkElement;
-            if (fromSender == null) return;
+            if (!(sender is FrameworkElement fromSender)) return;
 
+            HighlightedItem.IsSelected = false;
             toolTipPopup.DataContext = fromSender.DataContext;
             toolTipPopup.IsOpen = true;
         }
 
         private void OnMouseLeave(object sender, MouseEventArgs e)
         {
+            if (!(sender is FrameworkElement)) return;
+
+            HighlightedItem.IsSelected = true;
             toolTipPopup.DataContext = null;
             toolTipPopup.IsOpen = false;
         }
@@ -286,6 +301,43 @@ namespace Dynamo.UI.Controls
         internal void CloseAutoCompletion()
         {
             OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
+        }
+
+        /// <summary>
+        /// A common method to handle the suggestions Button being clicked
+        /// </summary>
+        private void DisplaySuggestions(object sender, RoutedEventArgs e)
+        {
+            var cm = this.SuggestionsContextMenu;
+            cm.PlacementTarget = sender as Button;
+            cm.IsOpen = true;
+        }
+
+        private void ShowLowConfidenceResults(object sender, RoutedEventArgs e)
+        {
+            ViewModel.ShowLowConfidenceResults();
+            //Tracking Analytics when the Low Confidence combobox (located in the Autocomplete popup)  is clicked
+            Analytics.TrackEvent(
+                    Actions.Expanded,
+                    Categories.NodeAutoCompleteOperations,
+                    "LowConfidenceResults",
+                    ViewModel.dynamoViewModel.Model.PreferenceSettings.MLRecommendationConfidenceLevel);
+        }
+
+        private void OnSuggestion_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem selectedSuggestion = sender as MenuItem;
+            if (selectedSuggestion.Name.Contains(nameof(Models.NodeAutocompleteSuggestion.MLRecommendation)))
+            {
+                ViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = Models.NodeAutocompleteSuggestion.MLRecommendation;
+                Analytics.TrackEvent(Actions.Switch, Categories.Preferences, nameof(NodeAutocompleteSuggestion.MLRecommendation));
+            }
+            else
+            {
+                ViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = Models.NodeAutocompleteSuggestion.ObjectType;
+                Analytics.TrackEvent(Actions.Switch, Categories.Preferences, nameof(NodeAutocompleteSuggestion.ObjectType));
+            }
+            ViewModel.PopulateAutoCompleteCandidates();
         }
     }
 }

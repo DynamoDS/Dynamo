@@ -1,4 +1,4 @@
-﻿using Dynamo.Utilities;
+using Dynamo.Utilities;
 using Dynamo.Logging;
 using System;
 using System.Collections.Generic;
@@ -305,11 +305,11 @@ namespace Dynamo.Search
             foreach (var searchElement in searchDict)
             {
                 var currentElement = (searchElement.Key as SearchElements.NodeSearchElement);
-                var currentElementName = currentElement.FullName;
+                var currentElementName = currentElement.CreationName;
                 foreach (var ele in subset)
                 {
                     //if any element in tagDictionary matches to any element in subset, return true
-                    if (currentElementName.IndexOf(ele.FullName, StringComparison.OrdinalIgnoreCase) != -1)
+                    if (currentElementName.Equals(ele.CreationName, StringComparison.OrdinalIgnoreCase))
                     {
                         filteredDict.Add(searchElement.Key, searchElement.Value);
                         break;
@@ -346,8 +346,8 @@ namespace Dynamo.Search
                             tagAndWeight =>
                                 new
                                 {
-                                    Tag = tagAndWeight.Key.Substring(0, tagAndWeight.Key.Length > PreferenceSettings.NodeSearchTagSizeLimitValue ? 
-                                    PreferenceSettings.NodeSearchTagSizeLimitValue : tagAndWeight.Key.Length),
+                                    Tag = tagAndWeight.Key.Substring(0, tagAndWeight.Key.Length > PreferenceSettings.nodeSearchTagSizeLimit ? 
+                                    PreferenceSettings.nodeSearchTagSizeLimit : tagAndWeight.Key.Length),
                                     Weight = tagAndWeight.Value,
                                     Entry = entryAndTags.Key
                                 }))

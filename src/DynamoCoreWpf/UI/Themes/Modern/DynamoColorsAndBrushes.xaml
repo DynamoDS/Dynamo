@@ -24,6 +24,7 @@
     <Color x:Key="Red500">#EB5555</Color>
     <Color x:Key="Blue200">#9BD5EF</Color>
     <Color x:Key="Blue300">#6AC0E7</Color>
+    <Color x:Key="Blue350">#6DD2FF</Color>
     <Color x:Key="Blue400">#38ABDF</Color>
     <Color x:Key="DarkBlue200">#BCD3EE</Color>
     <Color x:Key="DefaultFontColor">#DCDCDC</Color>
@@ -89,6 +90,8 @@
     <SolidColorBrush x:Key="NodeContextMenuBackgroundHighlight" Color="#808080" />
     <SolidColorBrush x:Key="NodeContextMenuSeparatorColor" Color="#AFAFAF" />
 
+    <SolidColorBrush x:Key="NodeSelectionTextColor" Color="#6ac0e7"/>
+
     <!--  Node colors in selected state  -->
     <SolidColorBrush x:Key="outerBorderSelection" Color="#4192d9" />
 
@@ -100,6 +103,8 @@
     <SolidColorBrush x:Key="objectLabelBackground"
                      Color="#EEEEEE" />
     <SolidColorBrush x:Key="boolLabelBackground"
+                     Color="#F9F9A5" />
+    <SolidColorBrush x:Key="nullLabelBackground"
                      Color="#F9F9A5" />
 
     <!-- Node Autocomplete -->
@@ -178,5 +183,9 @@
     <!--  Connector  -->
     <SolidColorBrush x:Key="ConnectorHoverStateColor" Color="#808080" />
 
-    <!-- Modal Pattern --> 
+    <!-- Modal Pattern -->
+
+    <!--  TextBlock Link  -->
+    <SolidColorBrush x:Key="TextBlockLinkForegroundColor" Color="{StaticResource Blue350}" />
+    
 </ResourceDictionary>

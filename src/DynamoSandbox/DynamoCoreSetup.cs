@@ -1,36 +1,40 @@
-﻿using System;
+using System;
 using System.Diagnostics;
-using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
 using Dynamo.Applications;
 using Dynamo.Controls;
 using Dynamo.Core;
-using Dynamo.DynamoSandbox;
+using Dynamo.DynamoSandbox.Properties;
 using Dynamo.Logging;
 using Dynamo.Models;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using Dynamo.Wpf.ViewModels.Watch3D;
-using System.Linq;
-using Dynamo.DynamoSandbox.Properties;
 using Dynamo.Wpf.Utilities;
+using Dynamo.Wpf.ViewModels.Watch3D;
 
 namespace DynamoSandbox
 {
     class DynamoCoreSetup
     {
-        private SettingsMigrationWindow migrationWindow;
-        private DynamoViewModel viewModel = null;
+        private Dynamo.UI.Views.SplashScreen splashScreen;
+
         private readonly string commandFilePath;
-        private readonly Stopwatch startupTimer = Stopwatch.StartNew();
+        private readonly string CERLocation;
         private readonly string ASMPath;
         private readonly HostAnalyticsInfo analyticsInfo;
         private const string sandboxWikiPage = @"https://github.com/DynamoDS/Dynamo/wiki/How-to-Utilize-Dynamo-Builds";
+        private DynamoViewModel viewModel = null;
         private bool dsExecutionEngine = true;
 
         [DllImport("msvcrt.dll")]
         public static extern int _putenv(string env);
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="args"></param>
         public DynamoCoreSetup(string[] args)
         {
             var cmdLineArgs = StartupUtils.CommandLineArguments.Parse(args);
@@ -40,6 +44,11 @@ namespace DynamoSandbox
             if (cmdLineArgs.DisableAnalytics)
             {
                 Analytics.DisableAnalytics = true;
+            }
+
+            if (!string.IsNullOrEmpty(cmdLineArgs.CERLocation))
+            {
+                CERLocation = cmdLineArgs.CERLocation;
             }
 
             commandFilePath = cmdLineArgs.CommandFilePath;
@@ -52,38 +61,24 @@ namespace DynamoSandbox
         {
             try
             {
-                DynamoModel.RequestMigrationStatusDialog += MigrationStatusDialogRequested;
-                DynamoModel model;
-                Dynamo.Applications.StartupUtils.ASMPreloadFailure += ASMPreloadFailureHandler;
-                model = Dynamo.Applications.StartupUtils.MakeModel(false, ASMPath ?? string.Empty, analyticsInfo);
+                // This line validates if the WebView2 Runtime is installed in the computer before launching DynamoSandbox,
+                // if is not we return and then exit Dynamo Sandbox
+                if (!WebView2Utilities.ValidateWebView2RuntimeInstalled())
+                    return;
+                StartupUtils.ASMPreloadFailure += ASMPreloadFailureHandler;
                 model.DSExecutionEngine = dsExecutionEngine;
 
-                viewModel = DynamoViewModel.Start(
-                    new DynamoViewModel.StartConfiguration()
-                    {
-                        CommandFilePath = commandFilePath,
-                        DynamoModel = model,
-                        Watch3DViewModel =
-                            HelixWatch3DViewModel.TryCreateHelixWatch3DViewModel(
-                                null,
-                                new Watch3DViewModelStartupParams(model),
-                                model.Logger),
-                        ShowLogin = true
-                    });
+                splashScreen = new Dynamo.UI.Views.SplashScreen();
+                splashScreen.DynamicSplashScreenReady += LoadDynamoView;
+                splashScreen.Show();
+                app.Run();
 
-                var view = new DynamoView(viewModel);
-                view.Loaded += OnDynamoViewLoaded;
-
-                app.Run(view);
-
-                DynamoModel.RequestMigrationStatusDialog -= MigrationStatusDialogRequested;
-                Dynamo.Applications.StartupUtils.ASMPreloadFailure -= ASMPreloadFailureHandler;
-
+                StartupUtils.ASMPreloadFailure -= ASMPreloadFailureHandler;
             }
-            catch(DynamoServices.AssemblyBlockedException e)
+            catch (DynamoServices.AssemblyBlockedException e)
             {
                 var failureMessage = string.Format(Dynamo.Properties.Resources.CoreLibraryLoadFailureForBlockedAssembly, e.Message);
-                Dynamo.Wpf.Utilities.MessageBoxService.Show(
+                MessageBoxService.Show(
                     failureMessage, Dynamo.Properties.Resources.CoreLibraryLoadFailureMessageBoxTitle, MessageBoxButton.OK, MessageBoxImage.Error);
 
                 Debug.WriteLine(e.Message);
@@ -105,19 +100,9 @@ namespace DynamoSandbox
 
                     if (viewModel != null)
                     {
-
-
-                        if (CrashReportTool.IsCEREnabled())
-                        {
-                            CrashReportTool.OnCrashReportWindow(new CrashReportArgs(viewModel));
-                        }
-                        else
-                        {
-                            // Show the unhandled exception dialog so user can copy the 
-                            // crash details and report the crash if she chooses to.
-                            viewModel.Model.OnRequestsCrashPrompt(null,
-                                new CrashPromptArgs(e));
-                        }
+                        // Show the unhandled exception dialog so user can copy the 
+                        // crash details and report the crash if she chooses to.
+                        viewModel.Model.OnRequestsCrashPrompt(new CrashErrorReportArgs(e));
 
                         // Give user a chance to save (but does not allow cancellation)
                         viewModel.Exit(allowCancel: false);
@@ -128,7 +113,7 @@ namespace DynamoSandbox
                         //can effectively report the issue.
                         var shortStackTrace = String.Join(Environment.NewLine, e.StackTrace.Split(Environment.NewLine.ToCharArray()).Take(10));
 
-                        var result = Dynamo.Wpf.Utilities.MessageBoxService.Show(e.Message +
+                        var result = MessageBoxService.Show(e.Message +
                             $"  {Environment.NewLine} {e.InnerException?.Message} {Environment.NewLine} {shortStackTrace} {Environment.NewLine} " +
                              Environment.NewLine + string.Format(Resources.SandboxBuildsPageDialogMessage, sandboxWikiPage),
                              Resources.SandboxCrashMessage, MessageBoxButton.YesNo, MessageBoxImage.Error);
@@ -149,38 +134,36 @@ namespace DynamoSandbox
             }
         }
 
+        private void LoadDynamoView()
+        {
+            DynamoModel model;
+            model = StartupUtils.MakeModel(false, ASMPath ?? string.Empty, analyticsInfo);
+            model.CERLocation = CERLocation;
+
+            viewModel = DynamoViewModel.Start(
+                   new DynamoViewModel.StartConfiguration()
+                   {
+                       CommandFilePath = commandFilePath,
+                       DynamoModel = model,
+                       Watch3DViewModel =
+                           HelixWatch3DViewModel.TryCreateHelixWatch3DViewModel(
+                               null,
+                               new Watch3DViewModelStartupParams(model),
+                               model.Logger),
+                       ShowLogin = true
+                   });
+
+            DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Dynamo.Wpf.Properties.Resources.SplashScreenLaunchingDynamo, 70));
+            splashScreen.DynamoView = new DynamoView(viewModel);
+            splashScreen.OnRequestStaticSplashScreen();
+
+            splashScreen.DynamicSplashScreenReady -= LoadDynamoView;
+            Analytics.TrackStartupTime("DynamoSandbox", TimeSpan.FromMilliseconds(splashScreen.totalLoadingTime));
+        }
+
         private void ASMPreloadFailureHandler(string failureMessage)
         {
             MessageBoxService.Show(failureMessage, "DynamoSandbox", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
-
-        void OnDynamoViewLoaded(object sender, RoutedEventArgs e)
-        {
-            CloseMigrationWindow();
-            Analytics.TrackStartupTime("DynamoSandbox", startupTimer.Elapsed);
-        }
-
-        private void CloseMigrationWindow()
-        {
-            if (migrationWindow == null)
-                return;
-
-            migrationWindow.Close();
-            migrationWindow = null;
-        }
-
-        private void MigrationStatusDialogRequested(SettingsMigrationEventArgs args)
-        {
-            if (args.EventStatus == SettingsMigrationEventArgs.EventStatusType.Begin)
-            {
-                migrationWindow = new SettingsMigrationWindow();
-                migrationWindow.Show();
-            }
-            else if (args.EventStatus == SettingsMigrationEventArgs.EventStatusType.End)
-            {
-                CloseMigrationWindow();
-            }
-        }
-
     }
 }

@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Dynamo.Controls.WatchTree"
+<UserControl x:Class="Dynamo.Controls.WatchTree"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:Dynamo.Controls"
@@ -163,12 +163,13 @@
                                     <!--  Vertical line  -->
 
                                     <Rectangle x:Name="VerLn"
-                                               Grid.RowSpan="2"
+                                               Grid.RowSpan="1"
                                                Width="1"
-                                               Margin="9,0,0,0"
+                                               Margin="9,0,0,3"
                                                HorizontalAlignment="Center"
                                                Fill="Black"
-                                               SnapsToDevicePixels="true"
+                                               SnapsToDevicePixels="True"
+                                               UseLayoutRounding="True"
                                                Stroke="#959595" />
 
                                     <!--  Draw Ellipse at the bottom of each vertical line  -->
@@ -176,11 +177,12 @@
                                     <Ellipse x:Name="LnEnd"
                                              Width="5"
                                              Height="5"
-                                             Margin="8,0,0,0"
+                                             Margin="9,0,0,0"
                                              HorizontalAlignment="Center"
                                              VerticalAlignment="Bottom"
                                              Fill="#959595"
                                              SnapsToDevicePixels="True"
+                                             UseLayoutRounding="True"
                                              Stroke="#959595" />
 
                                 </Grid>
@@ -329,7 +331,7 @@
                         <TextBlock x:Name="listIndex"
                                    Width="Auto"
                                    Margin="{Binding Path=IsCollection, Converter={StaticResource ListIndexMarginConverter}}"
-                                   Padding="0,0,0,-1"
+                                   Padding="0,0,0,-1"                                   
                                    VerticalAlignment="Center"
                                    Background="{Binding Path=IsCollection, Converter={StaticResource ListIndexBackgroundConverter}}"
                                    FontFamily="{StaticResource SourceCodePro}"
@@ -352,11 +354,17 @@
 
                         <TextBlock Width="Auto"
                                    Margin="{Binding Path=IsTopLevel, Converter={StaticResource TopLevelLabelMarginConverter}}"
-                                   VerticalAlignment="Center"
-                                   Foreground="{Binding Path=ValueType, Converter={StaticResource ObjectTypeConverter}}"
+                                   VerticalAlignment="Center"                                                                      
                                    FontFamily="{StaticResource SourceCodePro}"
                                    Text="{Binding Path=NodeLabel}"
-                                   Visibility="{Binding Path=NodeLabel, Converter={StaticResource EmptyStringToCollapsedConverter}}" />
+                                   Visibility="{Binding Path=NodeLabel, Converter={StaticResource EmptyStringToCollapsedConverter}}" >
+                            <TextBlock.Foreground>
+                                <MultiBinding Converter="{StaticResource ObjectTypeConverter}">
+                                    <Binding Path="ValueType" />
+                                    <Binding Path="NodeLabel" />
+                                    </MultiBinding>
+                            </TextBlock.Foreground>
+                            </TextBlock>
 
                         <Button Margin="10,2,2,2"
                                 Padding="4,0,4,0"

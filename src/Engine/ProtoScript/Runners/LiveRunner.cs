@@ -263,8 +263,8 @@ namespace ProtoScript.Runners
             if (changeSet.ForceExecuteASTList.Count > 0)
             {
                 // Mark all graphnodes dirty which are associated with the force exec ASTs
-                ProtoCore.AssociativeGraph.GraphNode firstDirtyNode = ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirtyAtGlobalScope
-(runtimeCore, changeSet.ForceExecuteASTList);
+                var firstDirtyNode = ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirtyAtGlobalScope(
+                    runtimeCore, changeSet.ForceExecuteASTList);
                 Validity.Assert(firstDirtyNode != null);
 
                 // If the only ASTs to execute are force exec, then set the entrypoint here.
@@ -480,17 +480,20 @@ namespace ProtoScript.Runners
             {
                 comp.currentSubTreeList.Add(subTreePairs.Key, subTreePairs.Value); 
             }
-
-            comp.csData = new ChangeSetData();
-            comp.csData.ContainsDeltaAST = csData.ContainsDeltaAST;
-            comp.csData.DeletedBinaryExprASTNodes = new List<AssociativeNode>(csData.DeletedBinaryExprASTNodes);
-            comp.csData.DeletedFunctionDefASTNodes = new List<AssociativeNode>(csData.DeletedFunctionDefASTNodes);
-            comp.csData.RemovedBinaryNodesFromModification = new List<AssociativeNode>(csData.RemovedBinaryNodesFromModification);
-            comp.csData.ModifiedNodesForRuntimeSetValue = new List<AssociativeNode>(csData.ModifiedNodesForRuntimeSetValue);
-            comp.csData.RemovedFunctionDefNodesFromModification = new List<AssociativeNode>(csData.RemovedFunctionDefNodesFromModification);
-            comp.csData.ForceExecuteASTList = new List<AssociativeNode>(csData.ForceExecuteASTList);
-            comp.csData.ModifiedFunctions = new List<AssociativeNode>(csData.ModifiedFunctions);
-            comp.csData.ModifiedNestedLangBlock = new List<AssociativeNode>(csData.ModifiedNestedLangBlock);
+            
+            if (csData != null)
+            {
+                comp.csData = new ChangeSetData();
+                comp.csData.ContainsDeltaAST = csData.ContainsDeltaAST;
+                comp.csData.DeletedBinaryExprASTNodes = new List<AssociativeNode>(csData.DeletedBinaryExprASTNodes);
+                comp.csData.DeletedFunctionDefASTNodes = new List<AssociativeNode>(csData.DeletedFunctionDefASTNodes);
+                comp.csData.RemovedBinaryNodesFromModification = new List<AssociativeNode>(csData.RemovedBinaryNodesFromModification);
+                comp.csData.ModifiedNodesForRuntimeSetValue = new List<AssociativeNode>(csData.ModifiedNodesForRuntimeSetValue);
+                comp.csData.RemovedFunctionDefNodesFromModification = new List<AssociativeNode>(csData.RemovedFunctionDefNodesFromModification);
+                comp.csData.ForceExecuteASTList = new List<AssociativeNode>(csData.ForceExecuteASTList);
+                comp.csData.ModifiedFunctions = new List<AssociativeNode>(csData.ModifiedFunctions);
+                comp.csData.ModifiedNestedLangBlock = new List<AssociativeNode>(csData.ModifiedNestedLangBlock);
+            }
             return comp;
         }
 
@@ -603,7 +606,7 @@ namespace ProtoScript.Runners
             return deltaAstList;
         }
 
-        private IEnumerable<AssociativeNode> GetDeltaAstListAdded(IEnumerable<Subtree> addedSubTrees)
+        internal IEnumerable<AssociativeNode> GetDeltaAstListAdded(IEnumerable<Subtree> addedSubTrees)
         {
             var deltaAstList = new List<AssociativeNode>();            
             if (addedSubTrees != null)
@@ -757,18 +760,19 @@ namespace ProtoScript.Runners
                 }
                 else
                 {
+                    var unmodifiedASTs = GetUnmodifiedASTList(oldSubTree.AstNodes, st.AstNodes);
                     if (st.ForceExecution)
                     {
                         // Get the cached AST and append it to the changeSet
-                        csData.ForceExecuteASTList.AddRange(GetUnmodifiedASTList(oldSubTree.AstNodes, st.AstNodes));
+                        csData.ForceExecuteASTList.AddRange(unmodifiedASTs);
                     }
 
                     // Update the cached AST to reflect the change
 
                     List<AssociativeNode> newCachedASTList = new List<AssociativeNode>();
 
-                    // Get all the unomodified ASTs and append them to the cached ast list 
-                    newCachedASTList.AddRange(GetUnmodifiedASTList(oldSubTree.AstNodes, st.AstNodes));
+                    // Get all the unmodified ASTs and append them to the cached ast list 
+                    newCachedASTList.AddRange(unmodifiedASTs);
 
                     // Append all the modified ASTs to the cached ast list 
                     newCachedASTList.AddRange(modifiedASTList);
@@ -787,7 +791,6 @@ namespace ProtoScript.Runners
                 }
             }
         }
-
 
         private IEnumerable<AssociativeNode> GetDeltaAstListModified(List<Subtree> modifiedSubTrees)
         {
@@ -811,6 +814,7 @@ namespace ProtoScript.Runners
                 if (!modifiedSubTree.IsInput)
                 {
                     redefinitionAllowed = false;
+                    break;
                 }
             }
 
@@ -1008,8 +1012,26 @@ namespace ProtoScript.Runners
                     // It can then be handled normally regardless of its ForceExecution state
                     subtree.ForceExecution = false;
 
-                    //Check if the subtree (ie a node in graph) is an input and has primitive Right hand Node type
-                    if (redefinitionAllowed && st.IsInput && node is BinaryExpressionNode bne  && CoreUtils.IsPrimitiveASTNode(bne.RightNode))
+                    //search the cached subtree(node's asts) for a binary expression containing a matching LHS identifer node.
+                    //we can currently only apply input optimizations if the previous assignment was also from a primitive.
+                    BinaryExpressionNode prevBNE = null;
+                    var bne = node as BinaryExpressionNode;
+                    if (bne != null){
+                        foreach (var prevNode in st.AstNodes)
+                        {
+                            if(prevNode is BinaryExpressionNode PrevNodeBNE && PrevNodeBNE.LeftNode is IdentifierNode prevId &&
+                                bne.LeftNode is IdentifierNode curId && prevId.Value == curId.Value)
+                            {
+                                prevBNE = PrevNodeBNE;
+                                break;
+                            }
+                        }
+                    }
+
+                    //Check if the subtree (ie a node in graph) is an input and has primitive Right hand Node type, also
+                    //ensure that the previous RHS of this assignment was a primitive value, or we'll have generated incorrect instructions.
+                    if (redefinitionAllowed && st.IsInput && bne != null && CoreUtils.IsPrimitiveASTNode(bne.RightNode)
+                        && (prevBNE == null || CoreUtils.IsPrimitiveASTNode(prevBNE.RightNode)))
                     {
                         // An input node is not re-compiled and executed
                         // It is handled by the ChangeSetApply by re-executing the modified node with the updated changes
@@ -1686,11 +1708,30 @@ namespace ProtoScript.Runners
         private List<Guid> PreviewInternal(GraphSyncData syncData)
         {
             var previewChangeSetComputer = changeSetComputer.Clone();
+
             // Get the list of ASTs that will be affected by syncData
             var previewAstList = previewChangeSetComputer.GetDeltaASTList(syncData);
 
             // Get the list of guid's affected by the astlist
             List<Guid> cbnGuidList = previewChangeSetComputer.EstimateNodesAffectedByASTList(previewAstList);
+
+            var finalDeltaAstList = new List<AssociativeNode>();
+
+            // Newly added nodes will not be in the VM yet.
+            // So we need to add them to the preview list.
+            var addCSComputer = changeSetComputer.Clone();
+
+            var addedDeltaAsts = addCSComputer.GetDeltaAstListAdded(syncData.AddedSubtrees);
+            foreach (AssociativeNode ast in addedDeltaAsts)
+            {
+                if (ast is BinaryExpressionNode bnode)
+                {
+                    if (!cbnGuidList.Contains(bnode.guid))
+                    {
+                        cbnGuidList.Add(bnode.guid);
+                    }
+                }
+            }
             return cbnGuidList;
         }
 

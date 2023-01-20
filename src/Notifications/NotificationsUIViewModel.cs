@@ -30,18 +30,18 @@ namespace Dynamo.Notifications
 
         public NotificationsUIViewModel()
         {
-            var PointerVerticalOffset = PopupRectangleHeight / 8;
+            var pointerOffSet = 10;
 
             //First X,Y coordinate
-            double pointX1 = PopupRectangleWidth - PointerWidth;
+            double pointX1 = PopupRectangleWidth - PointerWidth + pointerOffSet;
             double pointY1 = PopupBordersOffSet;
 
             ////Second X,Y coordinate
-            double pointX2 = PopupRectangleWidth;
+            double pointX2 = PopupRectangleWidth + pointerOffSet;
             double pointY2 = PopupBordersOffSet;
 
             ////Third X,Y coordinate
-            double pointX3 = PopupRectangleWidth - PointerWidth / 2;
+            double pointX3 = PopupRectangleWidth - PointerWidth / 2 + pointerOffSet;
             double pointY3 = 0;
 
             //Creating the pointer pointing to the Run section of Dynamo

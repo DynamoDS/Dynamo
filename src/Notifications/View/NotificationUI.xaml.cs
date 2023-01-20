@@ -1,18 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Dynamo.Notifications.View
 {
@@ -30,6 +18,15 @@ namespace Dynamo.Notifications.View
             if (notificationsUIViewModel == null)
             {
                 notificationsUIViewModel = new NotificationsUIViewModel();
+            }
+
+            //When if the Windows Handedness parameter is set to Right-handed (True) then we need to set the _menuDropAlignment field to false otherwise the Notifications popup will be shown in a wrong Position
+            var ifLeft = SystemParameters.MenuDropAlignment;
+            if (ifLeft) //If MenuDropAlignment = Right-handed(True)
+            {
+                var t = typeof(SystemParameters);
+                var field = t.GetField("_menuDropAlignment", BindingFlags.NonPublic | BindingFlags.Static);
+                field.SetValue(null, false); //Set the field to Left-handed(false)
             }
 
             DataContext = notificationsUIViewModel;

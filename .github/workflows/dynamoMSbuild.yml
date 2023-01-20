@@ -1,9 +1,9 @@
 # Build Dynamo using latest VS and DotNET
-name: Dynamo-VS2019Build
+name: Dynamo-VS2022Build
 on: [push,pull_request]
 jobs:
  build:
-  runs-on: windows-2019
+  runs-on: windows-2022
   steps:
     - name: Checkout Dynamo Repo
       uses: actions/checkout@v2
@@ -17,7 +17,7 @@ jobs:
     - name: Build Dynamo with MSBuild
       run: |
         echo "***Continue with the build, Good luck developer!***"
-        cd "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\"
+        cd "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\amd64"
            .\MSBuild.exe $Env:GITHUB_WORKSPACE\Dynamo\src\Dynamo.All.sln
     # look for Dynamo
     - name: Navigate to Dynamo Folder
