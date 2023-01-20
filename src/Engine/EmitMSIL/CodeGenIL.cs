@@ -6,6 +6,7 @@ using ProtoCore.Properties;
 using ProtoCore.Utils;
 using ProtoFFI;
 using System;
+using System.CodeDom;
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration.Assemblies;
@@ -159,7 +160,8 @@ namespace EmitMSIL
         {
             EmitOpCode(OpCodes.Ldc_I4_0);
             EmitOpCode(OpCodes.Ldc_I4_1);
-            var roundMethod = typeof(Math).GetMethod(nameof(Math.Round), new[] { typeof(double), typeof(int), typeof(MidpointRounding) });
+            var roundMethod = typeof(Math).GetMethod(nameof(Math.Round),
+                new[] { typeof(double), typeof(int), typeof(MidpointRounding) });
             EmitOpCode(OpCodes.Call, roundMethod);
         }
 
@@ -203,54 +205,54 @@ namespace EmitMSIL
                 return typeof(double);
             }
 
-            if (argType == typeof(double[]) && typeof(IEnumerable<int>).IsAssignableFrom(param))
-            {
-                return EmitArrayCoercion<double, int>(arg, param);
-            }
-            if (argType == typeof(int[]) && typeof(IEnumerable<double>).IsAssignableFrom(param))
-            {
-                return EmitArrayCoercion<int, double>(arg, param);
-            }
-            if (argType == typeof(double[]) && typeof(IEnumerable<long>).IsAssignableFrom(param))
-            {
-                return EmitArrayCoercion<double, long>(arg, param);
-            }
-            if (argType == typeof(long[]) && typeof(IEnumerable<double>).IsAssignableFrom(param))
-            {
-                return EmitArrayCoercion<long, double>(arg, param);
-            }
-            if (argType == typeof(long[]) && typeof(IEnumerable<int>).IsAssignableFrom(param))
-            {
-                return EmitArrayCoercion<long, int>(arg, param);
-            }
-            if (argType == typeof(int[]) && typeof(IEnumerable<long>).IsAssignableFrom(param))
-            {
-                return EmitArrayCoercion<int, long>(arg, param);
-            }
+            //if (argType == typeof(double[]) && typeof(IEnumerable<int>).IsAssignableFrom(param))
+            //{
+            //    return EmitArrayCoercion<double, int>(arg, param);
+            //}
+            //if (argType == typeof(int[]) && typeof(IEnumerable<double>).IsAssignableFrom(param))
+            //{
+            //    return EmitArrayCoercion<int, double>(arg, param);
+            //}
+            //if (argType == typeof(double[]) && typeof(IEnumerable<long>).IsAssignableFrom(param))
+            //{
+            //    return EmitArrayCoercion<double, long>(arg, param);
+            //}
+            //if (argType == typeof(long[]) && typeof(IEnumerable<double>).IsAssignableFrom(param))
+            //{
+            //    return EmitArrayCoercion<long, double>(arg, param);
+            //}
+            //if (argType == typeof(long[]) && typeof(IEnumerable<int>).IsAssignableFrom(param))
+            //{
+            //    return EmitArrayCoercion<long, int>(arg, param);
+            //}
+            //if (argType == typeof(int[]) && typeof(IEnumerable<long>).IsAssignableFrom(param))
+            //{
+            //    return EmitArrayCoercion<int, long>(arg, param);
+            //}
 
             if (typeof(IEnumerable<int>).IsAssignableFrom(argType) && typeof(IEnumerable<double>).IsAssignableFrom(param))
             {
-                return EmitIEnumerableCoercion<int, double>(arg);
+                return EmitCollectionCoercion<int, double>(arg, param);
             }
             if (typeof(IEnumerable<int>).IsAssignableFrom(argType) && typeof(IEnumerable<long>).IsAssignableFrom(param))
             {
-                return EmitIEnumerableCoercion<int, long>(arg);
+                return EmitCollectionCoercion<int, long>(arg, param);
             }
             if (typeof(IEnumerable<long>).IsAssignableFrom(argType) && typeof(IEnumerable<double>).IsAssignableFrom(param))
             {
-                return EmitIEnumerableCoercion<long, double>(arg);
+                return EmitCollectionCoercion<long, double>(arg, param);
             }
             if (typeof(IEnumerable<long>).IsAssignableFrom(argType) && typeof(IEnumerable<int>).IsAssignableFrom(param))
             {
-                return EmitIEnumerableCoercion<long, int>(arg);
+                return EmitCollectionCoercion<long, int>(arg, param);
             }
             if (typeof(IEnumerable<double>).IsAssignableFrom(argType) && typeof(IEnumerable<int>).IsAssignableFrom(param))
             {
-                return EmitIEnumerableCoercion<double, int>(arg);
+                return EmitCollectionCoercion<double, int>(arg, param);
             }
             if (typeof(IEnumerable<double>).IsAssignableFrom(argType) && typeof(IEnumerable<long>).IsAssignableFrom(param))
             {
-                return EmitIEnumerableCoercion<double, long>(arg);
+                return EmitCollectionCoercion<double, long>(arg, param);
             }
             // TODO: Add more coercion cases here.
 
@@ -338,8 +340,9 @@ namespace EmitMSIL
             MarkLabel(loopBodyLabel.Value, "label:body");
             EmitOpCode(OpCodes.Ldloc, enumeratorIndex);
 
-            var prop = typeof(IEnumerator<Source>).GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(
-                                    p => p.Name == nameof(IEnumerator<Source>.Current)).FirstOrDefault();
+            var prop = typeof(IEnumerator<Source>).GetProperties(
+                BindingFlags.Public | BindingFlags.Instance).FirstOrDefault(
+                p => p.Name == nameof(IEnumerator<Source>.Current));
             mInfo = prop.GetAccessors().FirstOrDefault();
             EmitOpCode(OpCodes.Callvirt, mInfo);
 
@@ -424,7 +427,7 @@ namespace EmitMSIL
                 EmitOpCode(OpCodes.Stloc, currentVarIndex);
                 EmitOpCode(OpCodes.Ldloc, currentVarIndex);
             }
-            // Find length for array to be coerced (already on top of eval stack), len
+            // Find length of array to be coerced (already on top of eval stack), len
             EmitOpCode(OpCodes.Ldlen);
             EmitOpCode(OpCodes.Conv_I4);
 
@@ -527,6 +530,88 @@ namespace EmitMSIL
 
                 EmitOpCode(OpCodes.Call, mInfo);
                 t = typeof(List<Target>);
+            }
+            return t;
+        }
+
+        private Type EmitCollectionCoercion<Source, Target>(AssociativeNode arg, Type ienumerableParamType)
+        {
+            EmitILComment("collection coercion");
+            if (compilePass == CompilePass.GatherTypeInfo)
+            {
+                var returnType = typeof(Target[]);
+                if (typeof(List<Target>).IsAssignableFrom(ienumerableParamType))
+                {
+                    returnType = typeof(List<Target>);
+                }
+                return returnType;
+            }
+
+            // Load array to be coerced.
+            int currentVarIndex = -1;
+            if (arg is IdentifierNode ident)
+            {
+                currentVarIndex = variables[ident.Value].Item1;
+            }
+            else
+            {
+                var localBuilder = DeclareLocal(typeof(IEnumerable<Source>), "collection to coerce");
+                currentVarIndex = localBuilder.LocalIndex;
+
+                EmitOpCode(OpCodes.Stloc, currentVarIndex);
+                EmitOpCode(OpCodes.Ldloc, currentVarIndex);
+            }
+
+            var t = typeof(IEnumerable<Target>);
+            EmitOpCode(OpCodes.Ldnull);
+            MethodInfo mInfo = null;
+            if (typeof(Target) == typeof(int))
+            {
+                mInfo = typeof(Convert).GetMethod(nameof(Convert.ToInt32), new[] { typeof(Source) });
+            }
+            else if(typeof(Target) == typeof(double))
+            {
+                mInfo = typeof(Convert).GetMethod(nameof(Convert.ToDouble), new[] { typeof(Source) });
+            }
+            else if (typeof(Target) == typeof(long))
+            {
+                mInfo = typeof(Convert).GetMethod(nameof(Convert.ToInt64), new[] { typeof(Source) });
+            }
+            else if (typeof(Target) == typeof(bool))
+            {
+                mInfo = typeof(Convert).GetMethod(nameof(Convert.ToBoolean), new[] { typeof(Source) });
+            }
+            EmitOpCode(OpCodes.Ldftn, mInfo);
+
+            var cInfo = System.Linq.Expressions.Expression.GetDelegateType(typeof(Source), typeof(Target))
+                .GetConstructors()[0];
+            EmitOpCode(OpCodes.Newobj, cInfo);
+
+            //mInfo = typeof(Enumerable).GetMethod(nameof(Enumerable.Select),
+            //    new[] { typeof(IEnumerable<Source>), typeof(Func<Source, Target>) });
+            mInfo = typeof(Enumerable).GetMember(nameof(Enumerable.Select)).OfType<MethodInfo>().First();
+
+            var gmInfo = mInfo.MakeGenericMethod(typeof(Source), typeof(Target));
+            EmitOpCode(OpCodes.Call, gmInfo);
+            
+            if (typeof(IList).IsAssignableFrom(ienumerableParamType) ||
+                typeof(IList<Target>).IsAssignableFrom(ienumerableParamType))
+            {
+                var requiredType = typeof(Target);
+                var toListMethod = typeof(Enumerable).GetMethod(nameof(Enumerable.ToList));
+                mInfo = toListMethod.MakeGenericMethod(requiredType);
+
+                EmitOpCode(OpCodes.Call, mInfo);
+                return typeof(List<Target>);
+            }
+            if (typeof(Array).IsAssignableFrom(ienumerableParamType))
+            {
+                var requiredType = typeof(Target);
+                var toArrayMethod = typeof(Enumerable).GetMethod(nameof(Enumerable.ToArray));
+                mInfo = toArrayMethod.MakeGenericMethod(requiredType);
+
+                EmitOpCode(OpCodes.Call, mInfo);
+                return typeof(Target[]);
             }
             return t;
         }
@@ -1428,6 +1513,7 @@ namespace EmitMSIL
                         EmitOpCode(OpCodes.Box, t);
                     }
                 });
+
                 EmitILComment("emit guides array start");
                 // Emit guides
                 EmitArray(typeof(string[]), args, (AssociativeNode n, int idx) =>
@@ -1443,8 +1529,8 @@ namespace EmitMSIL
                     }
                     else
                     {
-                    // Emit an empty string array.
-                    EmitArray<string>(arrType: typeof(string), items: null, itemEmitter: null);
+                        // Emit an empty string array.
+                        EmitArray<string>(arrType: typeof(string), items: null, itemEmitter: null);
                     }
                 });
 
@@ -1452,7 +1538,8 @@ namespace EmitMSIL
                 EmitOpCode(OpCodes.Ldarg_3);
 
                 // Emit call to ReplicationLogic
-                var repLogic = typeof(Replication).GetMethod(nameof(Replication.ReplicationLogic), BindingFlags.Public | BindingFlags.Static);
+                var repLogic = typeof(Replication).GetMethod(nameof(Replication.ReplicationLogic),
+                    BindingFlags.Public | BindingFlags.Static);
                 EmitOpCode(OpCodes.Call, repLogic);
 
                 return typeof(DSASM.CLRStackValue);
