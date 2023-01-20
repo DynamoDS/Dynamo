@@ -22,7 +22,6 @@ namespace ViewModels.Core
             set
             {
                 scaleValue = value;
-                dynViewModel.ScaleFactorLog = (int)scaleValue;
                 UpdateGeometryScale(scaleValue);
             }
         }
