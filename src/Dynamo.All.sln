@@ -244,6 +244,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmitMSIL", "Engine\EmitMSIL\EmitMSIL.csproj", "{2E7BE1FB-7038-4277-9DAE-FD0FAABF5768}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeGenILTests", "..\test\CodeGenILTests\CodeGenILTests.csproj", "{4BFE4854-CA46-45F1-80E2-B90425B2853E}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryViewExtensionWebView2", "LibraryViewExtensionWebView2\LibraryViewExtensionWebView2.csproj", "{43A01382-85CC-41E5-A414-F27D51EE9D24}"
 EndProject
 Global
