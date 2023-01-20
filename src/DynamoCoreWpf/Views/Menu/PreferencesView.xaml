@@ -485,7 +485,6 @@
                                                 MinWidth="80"
                                                 Margin="3,10,0,0"
                                                 IsChecked="{Binding DefaultGeometryScaling, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.Small}}"
-                                                Checked="RadioGeometryScaling_Checked"
                                                 Style="{StaticResource GeometryScaleRadioButtons}"
                                                 Content="{x:Static p:Resources.ScalingSmallButton}"/>
                                             <TextBlock x:Name="RadioSmallDesc"
@@ -497,7 +496,6 @@
                                                  Margin="3,10,0,0"
                                                  MinWidth="80"
                                                  IsChecked="{Binding DefaultGeometryScaling, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.Medium}}"
-                                                 Checked="RadioGeometryScaling_Checked"
                                                  Style="{StaticResource GeometryScaleRadioButtons}"
                                                  Content="{x:Static p:Resources.ScalingMediumButton}"/>
                                             <TextBlock  x:Name="RadioMediumDesc"
@@ -509,7 +507,6 @@
                                                  MinWidth="80"
                                                  Margin="3,10,0,0"
                                                  IsChecked="{Binding DefaultGeometryScaling, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.Large}}"
-                                                 Checked="RadioGeometryScaling_Checked"
                                                  Style="{StaticResource GeometryScaleRadioButtons}"
                                                  Content="{x:Static p:Resources.ScalingLargeButton}"/>
                                             <TextBlock  x:Name="RadioLargeDesc"
@@ -521,7 +518,6 @@
                                                  MinWidth="80"
                                                  Margin="3,10,0,0"
                                                  IsChecked="{Binding DefaultGeometryScaling, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.ExtraLarge}}"
-                                                 Checked="RadioGeometryScaling_Checked"
                                                  Style="{StaticResource GeometryScaleRadioButtons}"
                                                  Content="{x:Static p:Resources.ScalingExtraLargeButton}"/>
                                             <TextBlock  x:Name="RadioExtraLargeDesc"

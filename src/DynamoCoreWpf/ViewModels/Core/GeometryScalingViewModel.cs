@@ -1,14 +1,17 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Dynamo.Core;
 using Dynamo.ViewModels;
 
 namespace ViewModels.Core
 {
+    /// <summary>
+    /// This class will be contain information about the current Geometry Scale selected in the Dynamo Workspace
+    /// </summary>
     public class GeometryScalingViewModel : NotificationObject
     {
         private DynamoViewModel dynViewModel;
+        private GeometryScaleSize scaleSize;
         private double scaleValue = 0;
         internal double ScaleValue
         {
@@ -29,7 +32,7 @@ namespace ViewModels.Core
             this.dynViewModel = dynViewModel;
         }
 
-        public Tuple<string, string, string> ScaleRange
+        internal Tuple<string, string, string> ScaleRange
         {
             get
             {
@@ -38,7 +41,7 @@ namespace ViewModels.Core
         }
 
 
-        private Dictionary<GeometryScaleSize, Tuple<string, string, string>> scaleRanges = new Dictionary<GeometryScaleSize, Tuple<string, string, string>>
+        internal static Dictionary<GeometryScaleSize, Tuple<string, string, string>> scaleRanges = new Dictionary<GeometryScaleSize, Tuple<string, string, string>>
         {
             {GeometryScaleSize.Medium, new Tuple<string, string, string>("medium", "0.0001", "10,000")},
             {GeometryScaleSize.Small, new Tuple<string, string, string>("small", "0.000,001", "100")},
@@ -46,16 +49,22 @@ namespace ViewModels.Core
             {GeometryScaleSize.ExtraLarge, new Tuple<string, string, string>("extra large", "1", "100,000,000")}
         };
 
+        /// <summary>
+        /// Current Geometry Scale selected in dynamo workspace.
+        /// </summary>
         public GeometryScaleSize ScaleSize
         {
             get
             {
-                return dynViewModel.PreferencesViewModel.CurrentGeometryScaling;
+                return scaleSize;
             }
             set
             {
-                dynViewModel.PreferencesViewModel.CurrentGeometryScaling = value;
-                RaisePropertyChanged(nameof(ScaleSize));
+                if(scaleSize != value)
+                {
+                    scaleSize = value;
+                    RaisePropertyChanged(nameof(ScaleSize));
+                }               
             }
         }
 

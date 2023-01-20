@@ -61,7 +61,6 @@ namespace Dynamo.ViewModels
         private Point transformOrigin;
         private bool showStartPage = false;
         private PreferencesViewModel preferencesViewModel;
-        private GeometryScalingViewModel geoScalingViewModel;
 
         // Can the user run the graph
         private bool CanRunGraph => HomeSpace.RunSettings.RunEnabled && !HomeSpace.GraphRunInProgress;
@@ -100,13 +99,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        internal GeometryScalingViewModel GeoScalingViewModel
-        {
-            get
-            {
-                return geoScalingViewModel;
-            }
-        }
+       
 
         /// <summary>
         /// Guided Tour Manager
@@ -752,9 +745,6 @@ namespace Dynamo.ViewModels
             model.RequestNotification += model_RequestNotification;
 
             preferencesViewModel = new PreferencesViewModel(this);
-
-            geoScalingViewModel = new GeometryScalingViewModel(this);
-            geoScalingViewModel.ScaleValue = ScaleFactorLog;
 
 
             if (!DynamoModel.IsTestMode && !DynamoModel.IsHeadless)
@@ -2528,14 +2518,19 @@ namespace Dynamo.ViewModels
         public void MakeNewHomeWorkspace(object parameter)
         {
             if (ClearHomeWorkspaceInternal())
-            {
-                geoScalingViewModel.ScaleValue = PreferenceSettings.DefaultScaleFactor;
-                geoScalingViewModel.UpdateGeometryScale(PreferenceSettings.DefaultScaleFactor);
-
+            {   
                 var t = new DelegateBasedAsyncTask(model.Scheduler, () => model.ResetEngine());
                 model.Scheduler.ScheduleForExecution(t);
 
                 ShowStartPage = false; // Hide start page if there's one.
+
+                var defaultWorkspace = Workspaces.FirstOrDefault();
+
+                if (defaultWorkspace != null)
+                {
+                    defaultWorkspace.GeoScalingViewModel.ScaleValue = PreferenceSettings.DefaultScaleFactor;
+                    defaultWorkspace.GeoScalingViewModel.UpdateGeometryScale(PreferenceSettings.DefaultScaleFactor);
+                }
             }
         }
 
@@ -2580,9 +2575,10 @@ namespace Dynamo.ViewModels
 
                 model.ClearCurrentWorkspace();
 
+                var defaultWorkspace = Workspaces.FirstOrDefault();
                 //Every time that a new workspace is created we have to assign the Defautl Geometry Scaling value defined in Preferences (comming from DynamoSettings.xml)
-                if (GeoScalingViewModel != null && preferencesViewModel != null)
-                    GeoScalingViewModel.ScaleSize = preferencesViewModel.DefaultGeometryScaling;
+                if (defaultWorkspace !=null && defaultWorkspace.GeoScalingViewModel != null && preferencesViewModel != null)
+                    defaultWorkspace.GeoScalingViewModel.ScaleSize = preferencesViewModel.DefaultGeometryScaling;
 
                 return true;
             }

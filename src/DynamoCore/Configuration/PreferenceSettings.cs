@@ -232,7 +232,7 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
-        /// Indicates the default factor read from DynamoSettings.xml and can be updated using the Preferences panel
+        /// Default geometry scale factor for a new workspace
         /// </summary>
         public double DefaultScaleFactor
         {

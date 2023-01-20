@@ -19,8 +19,10 @@ namespace Dynamo.Views
         {
             InitializeComponent();
 
-            if (viewModel == null && dynViewModel.GeoScalingViewModel != null)
-                viewModel = dynViewModel.GeoScalingViewModel;
+            var defaultWorkspace = dynViewModel.Workspaces.FirstOrDefault();
+
+            if (defaultWorkspace != null && viewModel == null && defaultWorkspace.GeoScalingViewModel != null)
+                viewModel = defaultWorkspace.GeoScalingViewModel;
             DataContext = viewModel;
             dynamoViewModel = dynViewModel;
         }
@@ -54,7 +56,7 @@ namespace Dynamo.Views
                     break;
                 }
                 index++;
-            }          
+            }
             RunGraphWhenScaleFactorUpdated();
             this.IsOpen = false;
         }
@@ -70,7 +72,7 @@ namespace Dynamo.Views
                 dynamoViewModel.ScaleFactorLog = (int)viewModel.ScaleValue;
                 dynamoViewModel.CurrentSpace.HasUnsavedChanges = true;
 
-                //Due that binding are done before the contructor of this class we need to execute the Log only if the viewModel was assigned previously
+                //Due that binding are done before the constructor of this class we need to execute the Log only if the viewModel was assigned previously
                 if (viewModel != null)
                 {
                     Log(String.Format("Geometry working range changed to {0} ({1}, {2})",

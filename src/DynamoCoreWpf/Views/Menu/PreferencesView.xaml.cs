@@ -308,37 +308,6 @@ namespace Dynamo.Wpf.Views
             dynViewModel.Model.OnRequestPythonReset(PythonServices.PythonEngineManager.CPython3EngineName);
         }
 
-        /// <summary>
-        /// This event is generated every time the user clicks a Radio Button in the Geometry Scaling section
-        /// The method just get the Radio Button clicked and saves the ScaleValue selected
-        /// This are the values used for the scales:
-        /// - 2 - Small
-        ///   0 - Medium (Default)
-        ///   2 - Large
-        ///   4 - Extra Large
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void RadioGeometryScaling_Checked(object sender, RoutedEventArgs e)
-        {         
-            RadioButton selectedScaling = sender as RadioButton;
-            var radioButtons = GeometryScalingRadiosPanel.Children.OfType<RadioButton>();
-
-            int index = 0;
-
-            //We need to loop all the radiobuttons in the GeometryScaling section in order to find the index of the selected one
-            foreach (var radio in radioButtons)
-            {
-                if (radio == selectedScaling)
-                {
-                    if (viewModel != null)
-                        viewModel.SelectedDefaultScaleFactor = GeometryScalingOptions.ConvertUIToScaleFactor(index);
-                    break;
-                }
-                index++;
-            }
-        }
-
         private void InstalledPackagesExpander_OnExpanded(object sender, RoutedEventArgs e)
         {
             if (e.OriginalSource == e.Source)

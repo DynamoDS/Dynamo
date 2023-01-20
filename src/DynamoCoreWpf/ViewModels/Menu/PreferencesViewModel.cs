@@ -70,21 +70,7 @@ namespace Dynamo.ViewModels
         private bool isEnabledAddStyleButton;
         private GeometryScalingOptions optionsGeometryScale = null;
         private GeometryScaleSize defaultGeometryScaling = GeometryScaleSize.Medium;
-        private GeometryScaleSize currentGeometryScaling;
         #endregion Private Properties
-
-        public GeometryScaleSize CurrentGeometryScaling
-        {
-            get
-            {
-                return currentGeometryScaling;
-            }
-            set
-            {
-                currentGeometryScaling = value;
-                RaisePropertyChanged(nameof(CurrentGeometryScaling));
-            }
-        }
 
         public GeometryScaleSize DefaultGeometryScaling
         {
@@ -94,26 +80,14 @@ namespace Dynamo.ViewModels
             }
             set
             {
-                defaultGeometryScaling = value;
-                RaisePropertyChanged(nameof(DefaultGeometryScaling));
+                if(defaultGeometryScaling != value)
+                {
+                    defaultGeometryScaling = value;
+                    SelectedDefaultScaleFactor = GeometryScalingOptions.ConvertUIToScaleFactor((int)defaultGeometryScaling);
+                    RaisePropertyChanged(nameof(DefaultGeometryScaling));
+                }              
             }
         }
-
-        public Tuple<string, string, string> ScaleRange
-        {
-            get
-            {
-                return scaleRanges[CurrentGeometryScaling];
-            }
-        }
-
-        private Dictionary<GeometryScaleSize, Tuple<string, string, string>> scaleRanges = new Dictionary<GeometryScaleSize, Tuple<string, string, string>>
-        {
-            {GeometryScaleSize.Medium, new Tuple<string, string, string>("medium", "0.0001", "10,000")},
-            {GeometryScaleSize.Small, new Tuple<string, string, string>("small", "0.000,001", "100")},
-            {GeometryScaleSize.Large, new Tuple<string, string, string>("large", "0.01", "1,000,000")},
-            {GeometryScaleSize.ExtraLarge, new Tuple<string, string, string>("extra large", "1", "100,000,000")}
-        };
 
         /// <summary>
         /// This property will be used by the Preferences screen to store and retrieve all the settings from the expanders
@@ -1204,14 +1178,14 @@ namespace Dynamo.ViewModels
             UpdateGeoScaleRadioButtonSelected(dynamoViewModel.ScaleFactorLog);
 
             optionsGeometryScale.DescriptionScaleRange = new ObservableCollection<string>();
-            optionsGeometryScale.DescriptionScaleRange.Add(string.Format(Res.ChangeScaleFactorPromptDescriptionContent, scaleRanges[GeometryScaleSize.Small].Item2,
-                                                                                              scaleRanges[GeometryScaleSize.Small].Item3));
-            optionsGeometryScale.DescriptionScaleRange.Add(string.Format(Res.ChangeScaleFactorPromptDescriptionContent, scaleRanges[GeometryScaleSize.Medium].Item2,
-                                                                                              scaleRanges[GeometryScaleSize.Medium].Item3));
-            optionsGeometryScale.DescriptionScaleRange.Add(string.Format(Res.ChangeScaleFactorPromptDescriptionContent, scaleRanges[GeometryScaleSize.Large].Item2,
-                                                                                              scaleRanges[GeometryScaleSize.Large].Item3));
-            optionsGeometryScale.DescriptionScaleRange.Add(string.Format(Res.ChangeScaleFactorPromptDescriptionContent, scaleRanges[GeometryScaleSize.ExtraLarge].Item2,
-                                                                                              scaleRanges[GeometryScaleSize.ExtraLarge].Item3));
+            optionsGeometryScale.DescriptionScaleRange.Add(string.Format(Res.ChangeScaleFactorPromptDescriptionContent, GeometryScalingViewModel.scaleRanges[GeometryScaleSize.Small].Item2,
+                                                                                              GeometryScalingViewModel.scaleRanges[GeometryScaleSize.Small].Item3));
+            optionsGeometryScale.DescriptionScaleRange.Add(string.Format(Res.ChangeScaleFactorPromptDescriptionContent, GeometryScalingViewModel.scaleRanges[GeometryScaleSize.Medium].Item2,
+                                                                                              GeometryScalingViewModel.scaleRanges[GeometryScaleSize.Medium].Item3));
+            optionsGeometryScale.DescriptionScaleRange.Add(string.Format(Res.ChangeScaleFactorPromptDescriptionContent, GeometryScalingViewModel.scaleRanges[GeometryScaleSize.Large].Item2,
+                                                                                              GeometryScalingViewModel.scaleRanges[GeometryScaleSize.Large].Item3));
+            optionsGeometryScale.DescriptionScaleRange.Add(string.Format(Res.ChangeScaleFactorPromptDescriptionContent, GeometryScalingViewModel.scaleRanges[GeometryScaleSize.ExtraLarge].Item2,
+                                                                                              GeometryScalingViewModel.scaleRanges[GeometryScaleSize.ExtraLarge].Item3));
 
             SavedChangesLabel = string.Empty;
             SavedChangesTooltip = string.Empty;
@@ -1334,12 +1308,12 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// This method will update the currently selected Radio Button in the Geometry Scaling section.
+        /// This method will update the currently selected Radio Button in the Default Geometry Scaling section.
         /// </summary>
         /// <param name="scaleFactor"></param>
         private void UpdateGeoScaleRadioButtonSelected(int scaleFactor)
         {
-            CurrentGeometryScaling = (GeometryScaleSize)GeometryScalingOptions.ConvertScaleFactorToUI(scaleFactor);
+            DefaultGeometryScaling = (GeometryScaleSize)GeometryScalingOptions.ConvertScaleFactorToUI(scaleFactor);
         }
 
         /// <summary>
