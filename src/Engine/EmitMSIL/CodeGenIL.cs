@@ -305,18 +305,6 @@ namespace EmitMSIL
             var genericToList = toListMethod.MakeGenericMethod(typeof(Target));
             EmitOpCode(OpCodes.Call, genericToList);
             return typeof(List<Target>);
-
-            //if (typeof(IList).IsAssignableFrom(ienumerableParamType) ||
-            //    typeof(IList<Target>).IsAssignableFrom(ienumerableParamType))
-            //{
-            //    var requiredType = typeof(Target);
-            //    var toListMethod = typeof(Enumerable).GetMethod(nameof(Enumerable.ToList));
-            //    mInfo = toListMethod.MakeGenericMethod(requiredType);
-
-            //    EmitOpCode(OpCodes.Call, mInfo);
-            //    return typeof(List<Target>);
-            //}
-
         }
 
         private IEnumerable<ProtoCore.CLRFunctionEndPoint> FunctionLookup(IList args)
