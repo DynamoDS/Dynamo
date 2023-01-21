@@ -22,6 +22,7 @@ namespace CodeGenILTests
         {
             libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
+            libraries.Add("FFITarget.dll");
         }
 
         [SetUp]
@@ -237,6 +238,49 @@ y = DSCore.Math.Sum([1,2,3]);";
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
             Assert.AreEqual(6, output["y"]);
+        }
+
+        [Test]
+        public void SumList_TypeCoercion_Works()
+        {
+            var code = @"
+import(""DesignScriptBuiltin.dll"");
+import(""FFITarget.dll"");
+y = FFITarget.AtLevelTestClass.Sum([1,2,3]);";
+
+            var ast = ParserUtils.Parse(code).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            Assert.AreEqual(6, output["y"]);
+        }
+
+        [Test]
+        public void SumArray_TypeCoercion_Works()
+        {
+            var code = @"
+import(""DesignScriptBuiltin.dll"");
+import(""FFITarget.dll"");
+y = FFITarget.DummyCollection.MakeArray([1.0,2.3,3.1]);";
+
+            var ast = ParserUtils.Parse(code).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            Assert.AreEqual(new[] { 1, 2, 3 }, output["y"]);
+        }
+
+        [Test]
+        public void SumVarArray_TypeCoercion_Works()
+        {
+            var code = @"
+import(""DesignScriptBuiltin.dll"");
+import(""FFITarget.dll"");
+x = [1.0,2.3,3.1];
+y = FFITarget.DummyCollection.MakeArray(x);";
+
+            var ast = ParserUtils.Parse(code).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            Assert.AreEqual(new[] { 1, 2, 3 }, output["y"]);
         }
 
         [Test]
