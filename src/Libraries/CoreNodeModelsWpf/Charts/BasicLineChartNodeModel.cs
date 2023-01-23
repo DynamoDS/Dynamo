@@ -16,14 +16,15 @@ using Dynamo.Wpf;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 using DynamoServices;
+using Dynamo.Wpf.Properties;
 
 namespace CoreNodeModelsWpf.Charts
 {
     [IsDesignScriptCompatible]
     [NodeName("Index-Value Line Plot")]
-    [NodeCategory("Display.Charts.Create")]
-    [NodeDescription("Create a new Basic Line Chart.")]
-    [NodeSearchTags("CoreNodeModelsWpf.Charts.Index-ValueLinePlot", "Index-Value Line Plot", "indexvaluelineplot")]
+    [NodeCategory("Display.Charts.Create")]    
+    [NodeDescription("ChartsBasicLineChartDescription", typeof(CoreNodeModelWpfResources))]
+    [NodeSearchTags("ChartsBasicLineChartSearchTags", typeof(CoreNodeModelWpfResources))]
 
     [InPortTypes("List<string>", "List<List<double>>", "List<color>")]
     [OutPortTypes("Dictionary<string, double>")]

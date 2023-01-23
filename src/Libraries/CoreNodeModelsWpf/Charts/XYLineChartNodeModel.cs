@@ -17,14 +17,15 @@ using Dynamo.Wpf;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 using DynamoServices;
+using Dynamo.Wpf.Properties;
 
 namespace CoreNodeModelsWpf.Charts
 {
     [IsDesignScriptCompatible]
     [NodeName("XY Line Plot")]
-    [NodeCategory("Display.Charts.Create")]
-    [NodeDescription("Create a new XY line plot.")]
-    [NodeSearchTags("CoreNodeModelsWpf.Charts.XYLinePlot", "XY Line Plot", "xylineplot")]
+    [NodeCategory("Display.Charts.Create")]        
+    [NodeDescription("ChartsXYLineChartDescription", typeof(CoreNodeModelWpfResources))]
+    [NodeSearchTags("ChartsXYLineChartSearchTags", typeof(CoreNodeModelWpfResources))]
 
     [InPortTypes("List<string>", "List<List<double>>", "List<List<double>>", "List<color>")]
     [OutPortTypes("Dictionary<string, double>")]

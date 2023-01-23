@@ -17,15 +17,17 @@ using Dynamo.Wpf;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 using DynamoServices;
+using Dynamo.Wpf.Properties;
+using Xceed.Wpf.Toolkit;
 
 namespace CoreNodeModelsWpf.Charts
 {
     [IsDesignScriptCompatible]
     [NodeName("Pie Chart")]
     [NodeCategory("Display.Charts.Create")]
-    [NodeDescription("Create a new Pie Chart.")]
-    [NodeSearchTags("CoreNodeModelsWpf.Charts.PieChart", "Pie Chart", "piechart")]
-
+    [NodeDescription("ChartsPieChartDescription", typeof(CoreNodeModelWpfResources))]
+    [NodeSearchTags("ChartsPieChartSearchTags", typeof(CoreNodeModelWpfResources))]
+    
     [InPortTypes("List<string>", "List<double>", "List<color>")]
     [OutPortTypes("Dictionary<Label, Value>")]
     [AlsoKnownAs("CoreNodeModelsWpf.Charts.PieChart")]

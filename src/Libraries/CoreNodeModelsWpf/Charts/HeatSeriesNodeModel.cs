@@ -17,14 +17,15 @@ using Dynamo.Wpf;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 using DynamoServices;
+using Dynamo.Wpf.Properties;
 
 namespace CoreNodeModelsWpf.Charts
 {
     [IsDesignScriptCompatible]
     [NodeName("Heat Series Plot")]
-    [NodeCategory("Display.Charts.Create")]
-    [NodeDescription("Create a heat series plot.")]
-    [NodeSearchTags("CoreNodeModelsWpf.Charts.HeatSeriesPlot", "Heat Series Plot", "heatseriesplot")]
+    [NodeCategory("Display.Charts.Create")]    
+    [NodeDescription("ChartsHeatSeriesDescription", typeof(CoreNodeModelWpfResources))]
+    [NodeSearchTags("ChartsHeatSeriesSearchTags", typeof(CoreNodeModelWpfResources))]
 
     [InPortTypes("List<string>", "List<string>", "List<List<double>>", "List<color>")]
     [OutPortTypes("object[]")]

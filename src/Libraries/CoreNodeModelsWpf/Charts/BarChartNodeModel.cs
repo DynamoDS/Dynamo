@@ -17,14 +17,15 @@ using Dynamo.Wpf;
 using LiveCharts.Wpf;
 using Dynamo.UI;
 using DynamoServices;
+using Dynamo.Wpf.Properties;
 
 namespace CoreNodeModelsWpf.Charts
 {
     [IsDesignScriptCompatible]
     [NodeName("Bar Chart")]
     [NodeCategory("Display.Charts.Create")]
-    [NodeDescription("Create a new Bar Chart.")]
-    [NodeSearchTags("CoreNodeModelsWpf.Charts.BarChart", "Bar Chart", "barchart")]
+    [NodeDescription("ChartsBarChartDescription", typeof(CoreNodeModelWpfResources))]
+    [NodeSearchTags("ChartsBarChartSearchTags", typeof(CoreNodeModelWpfResources))]
 
     [InPortTypes("List<string>", "List<var>", "List<color>")]
     [OutPortTypes("Dictionary<Label, Value>")]

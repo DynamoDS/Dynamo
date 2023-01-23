@@ -17,14 +17,16 @@ using Dynamo.Wpf;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 using DynamoServices;
+using Dynamo.Wpf.Properties;
+using ProtoCore.DesignScriptParser;
 
 namespace CoreNodeModelsWpf.Charts
 {
     [IsDesignScriptCompatible]
     [NodeName("Scatter Plot")]
-    [NodeCategory("Display.Charts.Create")]
-    [NodeDescription("Create a scatter plot.")]
-    [NodeSearchTags("CoreNodeModelsWpf.Charts.ScatterPlot", "Scatter Plot", "scatterplot")]
+    [NodeCategory("Display.Charts.Create")]    
+    [NodeDescription("ChartsScatterPlotDescription", typeof(CoreNodeModelWpfResources))]
+    [NodeSearchTags("ChartsScatterPlotSearchTags", typeof(CoreNodeModelWpfResources))]
 
     [InPortTypes("List<string>", "List<List<double>>", "List<List<double>>", "List<color>")]
     [OutPortTypes("Dictionary<string, double>")]
