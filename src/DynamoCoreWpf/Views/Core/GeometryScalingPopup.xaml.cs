@@ -42,7 +42,6 @@ namespace Dynamo.Views
         {
             var selectedButton = sender as Button;
             if (selectedButton == null) return;
-            //var buttons = BaseGrid.Children.OfType<Button>();
             var buttons = GeometryScalingRadiosPanel.Children.OfType<Button>();
 
             int index = 0;

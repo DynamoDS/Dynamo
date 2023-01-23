@@ -2211,6 +2211,8 @@ namespace Dynamo.ViewModels
                 this.ExecuteCommand(new DynamoModel.CreateCustomNodeCommand(Guid.NewGuid(),
                     args.Name, args.Category, args.Description, true));
                 this.ShowStartPage = false;
+
+                SetDefaultScaleFactor();
             }
         }
 
@@ -2524,13 +2526,7 @@ namespace Dynamo.ViewModels
 
                 ShowStartPage = false; // Hide start page if there's one.
 
-                var defaultWorkspace = Workspaces.FirstOrDefault();
-
-                if (defaultWorkspace != null)
-                {
-                    defaultWorkspace.GeoScalingViewModel.ScaleValue = PreferenceSettings.DefaultScaleFactor;
-                    defaultWorkspace.GeoScalingViewModel.UpdateGeometryScale(PreferenceSettings.DefaultScaleFactor);
-                }
+                SetDefaultScaleFactor();
             }
         }
 
@@ -2576,7 +2572,7 @@ namespace Dynamo.ViewModels
                 model.ClearCurrentWorkspace();
 
                 var defaultWorkspace = Workspaces.FirstOrDefault();
-                //Every time that a new workspace is created we have to assign the Defautl Geometry Scaling value defined in Preferences (comming from DynamoSettings.xml)
+                //Every time that a new workspace is created we have to assign the Default Geometry Scaling value defined in Preferences
                 if (defaultWorkspace !=null && defaultWorkspace.GeoScalingViewModel != null && preferencesViewModel != null)
                     defaultWorkspace.GeoScalingViewModel.ScaleSize = preferencesViewModel.DefaultGeometryScaling;
 
@@ -3178,6 +3174,17 @@ namespace Dynamo.ViewModels
         private bool CanSetNumberFormat(object parameter)
         {
             return true;
+        }
+
+        private void SetDefaultScaleFactor()
+        {
+            var defaultWorkspace = Workspaces.FirstOrDefault();
+
+            if (defaultWorkspace != null)
+            {
+                defaultWorkspace.GeoScalingViewModel.ScaleValue = PreferenceSettings.DefaultScaleFactor;
+                defaultWorkspace.GeoScalingViewModel.UpdateGeometryScale(PreferenceSettings.DefaultScaleFactor);
+            }
         }
 
         #region Shutdown related methods

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Windows;
@@ -7,6 +7,8 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Wpf.Views;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
+using Dynamo.Configuration;
+using Dynamo.ViewModels;
 
 namespace DynamoCoreWpfTests
 {
@@ -90,5 +92,28 @@ namespace DynamoCoreWpfTests
             //When RunType = Manual and the MarkNodesAsModifiedAndRequestRun() method is called, the graph won't be executed and the node state will remain in Active
             Assert.AreEqual(nodeView.ViewModel.State, ElementState.Active);
         }
+
+        [Test]
+        public void PreferencesGeoScaling_Serializing()
+        {
+            int scaleFactor;
+            double defaultScaleFactor;
+
+            var settings = new PreferenceSettings();
+
+            var settingFilePath = Path.Combine(TempFolder, "DynamoSettings.xml");
+
+            var settingsLoadedFromFile = PreferenceSettings.Load(settingFilePath);
+
+            //The GeometryScalingCodeBlock.dyn contains a CodeBlock with a large number that needs ScaleFactor > Medium
+            Open(@"core\GeometryScalingCodeBlock.dyn");
+
+            var dynViewModel = View.DataContext as DynamoViewModel;
+            scaleFactor = dynViewModel.ScaleFactorLog;
+            defaultScaleFactor = dynViewModel.PreferenceSettings.DefaultScaleFactor;
+          
+        }
+
+        
     }
 }

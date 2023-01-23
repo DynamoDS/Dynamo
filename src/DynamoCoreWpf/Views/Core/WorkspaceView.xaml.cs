@@ -1054,10 +1054,11 @@ namespace Dynamo.Views
         private void OnGeometryScaling_Click(object sender, RoutedEventArgs e)
         {
             if (GeoScalingPopup == null)
+            {
                 GeoScalingPopup = new GeometryScalingPopup(ViewModel.DynamoViewModel);
-
-            GeoScalingPopup.Placement = PlacementMode.Bottom;
-            GeoScalingPopup.PlacementTarget = geometryScalingButton;
+                GeoScalingPopup.Placement = PlacementMode.Bottom;
+                GeoScalingPopup.PlacementTarget = geometryScalingButton;
+            }
             GeoScalingPopup.IsOpen = true;
         }
     }
