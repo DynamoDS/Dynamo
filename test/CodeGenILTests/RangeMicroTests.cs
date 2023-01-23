@@ -197,6 +197,21 @@ y = DSCore.Math.Sum([1,2,3]);";
         }
 
         [Test]
+        //'Object of type 'System.int64[]' can be converted to type 'System.Collections.Generic.IEnumerable`1[System.Double]'.'
+        public void SumArray_TypeCoerNeeded()
+        {
+            var dscode = @"
+import(""DesignScriptBuiltin.dll"");
+import(""DSCoreNodes.dll"");
+y = DSCore.Math.Sum(1..100000000);";
+
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            //Assert.AreEqual(6, output["y"]);
+        }
+
+        [Test]
         public void SumList_TypeCoercion_Works()
         {
             var code = @"

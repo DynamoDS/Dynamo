@@ -6,10 +6,8 @@ using ProtoCore.Properties;
 using ProtoCore.Utils;
 using ProtoFFI;
 using System;
-using System.CodeDom;
 using System.Collections;
 using System.Collections.Generic;
-using System.Configuration.Assemblies;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -145,13 +143,11 @@ namespace EmitMSIL
                     DfsTraverse(ast);
                 }
                 EmitOpCode(OpCodes.Ret);
+
                 return (asm, type);
 #if DEBUG
             }
 #endif
-            EmitOpCode(OpCodes.Ret);
-
-            return (asm, type);
         }
 
         // Given a double value on the stack, emit call to Math.Round(arg, 0, MidpointRounding.AwayFromZero);
