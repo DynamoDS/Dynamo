@@ -11,7 +11,8 @@ namespace Dynamo.Tests
     [TestFixture, Category("Performance")]
     public class PerformanceTests : DynamoModelTestBase
     {
-        private List<(string graph, TimeSpan oldEngineCompileTime, TimeSpan oldEngineExecutionTime, TimeSpan newEngineCompileTime, TimeSpan newEngineExecutionTime)> executionData;
+        private List<(string graph, TimeSpan oldEngineCompileTime, TimeSpan oldEngineExecutionTime,
+            TimeSpan newEngineCompileTime, TimeSpan newEngineExecutionTime)> executionData;
 
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
