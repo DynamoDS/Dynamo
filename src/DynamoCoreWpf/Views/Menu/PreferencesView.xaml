@@ -734,7 +734,7 @@
                                                Height="14"
                                                HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
-                                               Style="{StaticResource QuestionIconClickabe}"
+                                               Style="{StaticResource QuestionIconClickable}"
                                                MouseDown="OnMoreInfoClicked"
                                                ToolTipService.ShowDuration="30000">
                                             <Image.ToolTip>

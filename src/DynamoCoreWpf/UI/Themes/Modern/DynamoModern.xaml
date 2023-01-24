@@ -5476,7 +5476,7 @@
     </Style>
 
     <!-- Common Question Clickable Icon -->
-    <Style x:Key="QuestionIconClickabe" TargetType="{x:Type Image}">
+    <Style x:Key="QuestionIconClickable" TargetType="{x:Type Image}">
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="False">
                 <Setter Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/question-default-16px.png" />
