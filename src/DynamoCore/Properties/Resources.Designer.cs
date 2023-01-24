@@ -984,6 +984,24 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Insert Dynamo Definition....
+        /// </summary>
+        public static string InsertDialogBoxText {
+            get {
+                return ResourceManager.GetString("InsertDialogBoxText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Example file added to workspace. Run mode changed to Manual..
+        /// </summary>
+        public static string InsertGraphRunModeNotificationText {
+            get {
+                return ResourceManager.GetString("InsertGraphRunModeNotificationText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The folder &apos;{0}&apos; does not exist.
         /// </summary>
         public static string InvalidCustomNodeFolderWarning {

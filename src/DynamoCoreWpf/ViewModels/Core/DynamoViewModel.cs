@@ -1815,7 +1815,7 @@ namespace Dynamo.ViewModels
         /// <param name="notification"></param>
         private void model_RequestNotification(string notification)
         {
-            this.MainGuideManager.CreateRealTimeInfoWindow(notification, true);
+            this.MainGuideManager.CreateRealTimeInfoWindow(notification);
         }
 
         /// <summary>
@@ -1889,7 +1889,7 @@ namespace Dynamo.ViewModels
                 Filter = string.Format(Resources.FileDialogDynamoDefinitions,
                          BrandingResourceProvider.ProductName, fileExtensions) + "|" +
                          string.Format(Resources.FileDialogAllFiles, "*.*"),
-                Title = string.Format("Insert Title (Replace)", BrandingResourceProvider.ProductName)
+                Title = string.Format(Properties.Resources.InsertDialogBoxText, BrandingResourceProvider.ProductName)
             };
 
             // if you've got the current space path, use it as the inital dir
@@ -1917,17 +1917,17 @@ namespace Dynamo.ViewModels
                     _fileDialog.InitialDirectory = path;
             }
 
-            if (HomeSpace.RunSettings.RunType != RunType.Manual)
-            {
-                MainGuideManager.CreateRealTimeInfoWindow("Example file added to workspace. Run mode changed to Manual.", true);
-                HomeSpace.RunSettings.RunType = RunType.Manual;
-            }
-
             if (_fileDialog.ShowDialog() == DialogResult.OK)
             {
                 if (CanOpen(_fileDialog.FileName))
                 {
                     Insert(new Tuple<string, bool>(_fileDialog.FileName, _fileDialog.RunManualMode));
+
+                    if (HomeSpace.RunSettings.RunType != RunType.Manual)
+                    {
+                        MainGuideManager.CreateRealTimeInfoWindow(Properties.Resources.InsertGraphRunModeNotificationText);
+                        HomeSpace.RunSettings.RunType = RunType.Manual;
+                    }
                 }
             }
         }
