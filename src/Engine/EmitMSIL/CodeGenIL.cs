@@ -70,12 +70,20 @@ namespace EmitMSIL
 
         internal IDictionary<string, object> Emit(List<AssociativeNode> astList)
         {
+#if NET6_0_OR_GREATER
+            var compileResult = CompileAstToDynamicType(astList, AssemblyBuilderAccess.Run);
+#else
             var compileResult = CompileAstToDynamicType(astList, AssemblyBuilderAccess.RunAndSave);
+#endif
             // Invoke emitted method (ExecuteIL.Execute)
             var t = compileResult.tbuilder.CreateType();
             var mi = t.GetMethod("Execute", BindingFlags.NonPublic | BindingFlags.Static);
             var output = new BuiltIn.MSILOutputMap<string, object>(runtimeCore);
+
+#if NET6_0_OR_GREATER
+#else
             compileResult.asmbuilder.Save("DynamicAssembly.dll");
+#endif
 
             // null can be replaced by an 'input' dictionary if available.
             var obj = mi.Invoke(null, new object[] { null, methodCache, output, runtimeCore });

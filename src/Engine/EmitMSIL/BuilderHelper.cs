@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,7 +31,7 @@ namespace EmitMSIL
 
             string assemblyPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
 
-#if DOTNET_CORE
+#if NET6_0_OR_GREATER
             AssemblyBuilder builder = AssemblyBuilder.DefineDynamicAssembly(aname, AssemblyBuilderAccess.RunAndCollect);
 #else
             //AssemblyBuilder builder = currentDomain.DefineDynamicAssembly(aname, bDebug ? 
@@ -51,7 +51,7 @@ namespace EmitMSIL
         public static ModuleBuilder CreateEXEModuleBuilder(AssemblyBuilder asmBuilder, String moduleName)
         {
 
-#if DOTNET_CORE
+#if NET6_0_OR_GREATER
             ModuleBuilder builder = asmBuilder.DefineDynamicModule(moduleName);
 #else
             ModuleBuilder builder = asmBuilder.DefineDynamicModule(moduleName, moduleName + ".exe", true); // CPHCORE
@@ -62,7 +62,7 @@ namespace EmitMSIL
 
         public static ModuleBuilder CreateDLLModuleBuilder(AssemblyBuilder asmBuilder, String moduleName)
         {
-#if DOTNET_CORE
+#if NET6_0_OR_GREATER
             ModuleBuilder builder = asmBuilder.DefineDynamicModule(moduleName);
 #else
             ModuleBuilder builder = asmBuilder.DefineDynamicModule(moduleName, moduleName + ".dll", true); 
@@ -157,7 +157,7 @@ namespace EmitMSIL
             //    }
             //}
 
-#if DOTNET_CORE
+#if NET6_0_OR_GREATER
 #else
             if (methodName.ToLower() == "main") // CPHCORE - and this is crap anyway
                 (builder.DeclaringType.Assembly as AssemblyBuilder).SetEntryPoint(builder);
