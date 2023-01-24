@@ -157,12 +157,19 @@ namespace Dynamo.DocumentationBrowser
                 hasBeenInitialized = true;
             }
 
-            if (viewModel.Link != null && !string.IsNullOrEmpty(viewModel.Name))
+            try
             {
-                virtualFolder = HttpUtility.UrlDecode(viewModel.Link.AbsolutePath).Replace(viewModel.Name + ".md", "");
+                if (viewModel.Link != null && !string.IsNullOrEmpty(viewModel.Name))
+                {
+                    virtualFolder = HttpUtility.UrlDecode(viewModel.Link.AbsolutePath).Replace(viewModel.Name + ".md", "");
+                }
+                else
+                    virtualFolder = FallbackDirectoryName;
             }
-            else
-                virtualFolder = FallbackDirectoryName;
+            catch (Exception ex)
+            {
+                virtualFolder = string.Empty;
+            }       
 
             if(Directory.Exists(virtualFolder))
                 //Due that the Web Browser(WebView2 - Chromium) security CORS is blocking the load of resources like images then we need to create a virtual folder in which the image are located.
