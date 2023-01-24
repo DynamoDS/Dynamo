@@ -35,13 +35,6 @@ namespace Dynamo.DocumentationBrowser
         }
     }
 
-    internal class NodeInfo
-    {
-        internal string PackageName { get; set; }
-        internal string MinimumQualifiedName { get; set; }
-        internal string MDFilePath { get; set; }
-    }
-
     public class DocumentationBrowserViewModel : NotificationObject, IDisposable
     {
         #region Constants
@@ -97,6 +90,22 @@ namespace Dynamo.DocumentationBrowser
         private string content;
         private string name;
 
+
+        /// <summary>
+        /// Package Name
+        /// </summary>
+        internal string Name
+        {
+            get
+            {
+                return name;
+            }
+            set
+            {
+                name = value;
+            }
+        }
+
         private MarkdownHandler MarkdownHandlerInstance => markdownHandler ?? (markdownHandler = new MarkdownHandler());
         public bool HasContent => !string.IsNullOrWhiteSpace(this.content);
 
@@ -139,8 +148,6 @@ namespace Dynamo.DocumentationBrowser
         private OpenDocumentationLinkEventArgs openDocumentationLinkEventArgs;
 
         internal UIElement DynamoView { get; set; }
-
-        internal NodeInfo CurrentNodeInfo { get; set; }
 
         #endregion
 
@@ -207,11 +214,6 @@ namespace Dynamo.DocumentationBrowser
                             openNodeAnnotationEventArgs.MinimumQualifiedName, 
                             openNodeAnnotationEventArgs.PackageName);
 
-                        CurrentNodeInfo = new NodeInfo();
-                        CurrentNodeInfo.PackageName = openNodeAnnotationEventArgs.PackageName;
-                        CurrentNodeInfo.MinimumQualifiedName = openNodeAnnotationEventArgs.MinimumQualifiedName;
-                        CurrentNodeInfo.MDFilePath = mdLink;
-
                         link = string.IsNullOrEmpty(mdLink) ? new Uri(String.Empty, UriKind.Relative) : new Uri(mdLink);
                         graph = GetGraphLinkFromMDLocation(link);
                         targetContent = CreateNodeAnnotationContent(openNodeAnnotationEventArgs);
@@ -241,9 +243,9 @@ namespace Dynamo.DocumentationBrowser
                 else
                 {
                     this.content = targetContent;
-                    this.Link = link;
                     this.graphPath = graph;
                     this.name = graphName;
+                    this.Link = link;                   
                 }
             }
             catch (FileNotFoundException)

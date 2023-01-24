@@ -157,15 +157,16 @@ namespace Dynamo.DocumentationBrowser
                 hasBeenInitialized = true;
             }
 
-            if (viewModel.CurrentNodeInfo != null && !string.IsNullOrEmpty(viewModel.CurrentNodeInfo.PackageName))
+            if (viewModel.Link != null && !string.IsNullOrEmpty(viewModel.Name))
             {
-                virtualFolder = viewModel.CurrentNodeInfo.MDFilePath.Replace(viewModel.CurrentNodeInfo.MinimumQualifiedName + ".md", "");
+                virtualFolder = HttpUtility.UrlDecode(viewModel.Link.AbsolutePath).Replace(viewModel.Name + ".md", "");
             }
             else
                 virtualFolder = FallbackDirectoryName;
 
-            //Due that the Web Browser(WebView2 - Chromium) security CORS is blocking the load of resources like images then we need to create a virtual folder in which the image are located.
-            this.documentationBrowser.CoreWebView2.SetVirtualHostNameToFolderMapping(VIRTUAL_FOLDER_MAPPING, virtualFolder, CoreWebView2HostResourceAccessKind.DenyCors);
+            if(Directory.Exists(virtualFolder))
+                //Due that the Web Browser(WebView2 - Chromium) security CORS is blocking the load of resources like images then we need to create a virtual folder in which the image are located.
+                this.documentationBrowser.CoreWebView2.SetVirtualHostNameToFolderMapping(VIRTUAL_FOLDER_MAPPING, virtualFolder, CoreWebView2HostResourceAccessKind.DenyCors);
 
             string htmlContent = this.viewModel.GetContent();
 
