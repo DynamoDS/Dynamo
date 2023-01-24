@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -1019,7 +1019,7 @@ namespace Dynamo.PackageManager
                     results.Sort((e1, e2) => e1.Model.Downloads.CompareTo(e2.Model.Downloads));
                     break;
                 case PackageSortingKey.LastUpdate:
-                    results.Sort((e1, e2) => e1.Versions.FirstOrDefault().Item1.created.CompareTo(e2.Versions.FirstOrDefault().Item1.created));
+                    results.Sort((e1, e2) => e1.Versions.Last().Item1.created.CompareTo(e2.Versions.Last().Item1.created));
                     break;
                 case PackageSortingKey.Votes:
                     results.Sort((e1, e2) => e1.Model.Votes.CompareTo(e2.Model.Votes));
