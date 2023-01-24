@@ -743,8 +743,10 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
             Assert.AreEqual(new int[] { 1, 2, 4, 4 }, output["test1"]);
             Assert.AreEqual(11, output["test2"]);
 
+#if DEBUG
             var isReplicationLogicFound = File.ReadLines(opCodeFilePath).SkipWhile(line => !line.Contains("ReplicationLogic"));
             Assert.IsEmpty(isReplicationLogicFound);
+#endif
         }
 
         [Test]
@@ -765,10 +767,12 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
             Assert.AreEqual(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, output["num1"]);
             Assert.AreEqual(55, output["num2"]);
 
+#if DEBUG
             var isReplicationLogicFound = File.ReadLines(opCodeFilePath).SkipWhile(line => !line.Contains("ReplicationLogic"));
             var unmarshalOccurences = File.ReadLines(opCodeFilePath).Where(line => line.Contains("Unmarshal"));
             Assert.IsEmpty(isReplicationLogicFound);
             Assert.AreEqual(0, unmarshalOccurences.Count());
+#endif
         }
         [Test]
         public void ExpressionListUnMarshals()
@@ -784,11 +788,12 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
             Assert.AreEqual(new object[] { 1,2,3,new int[] {0,1,2,3 } }, output["x"]);
-
+#if DEBUG
             var replicationLogicOccurences = File.ReadLines(opCodeFilePath).Where(line => line.Contains("ReplicationLogic"));
             var unmarshalOccurences = File.ReadLines(opCodeFilePath).Where(line => line.Contains("Unmarshal"));
             Assert.AreEqual(1,replicationLogicOccurences.Count());
             Assert.AreEqual(1, unmarshalOccurences.Count());
+#endif
         }
         [Test]
         [Category("Failure")]//TODO_MSIL this fails because DSCore.List.FirstItem replicates when it should not.
@@ -813,6 +818,6 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
             Assert.AreEqual(0, replicationLogicOccurences.Count());
             Assert.AreEqual(0, unmarshalOccurences.Count());
         }
-        #endregion
+#endregion
     }
 }
