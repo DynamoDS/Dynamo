@@ -1653,7 +1653,7 @@ namespace EmitMSIL
         }
 
         /// <summary>
-        /// Check that a paramter's rank and type is compatibile with the given argument.
+        /// Check that a parameter's rank and type are compatible with the given argument.
         /// This function besides checking rank directly, also does checks using the FEP attributes.
         /// </summary>
         /// <param name="fep">the function end point wrapper</param>
@@ -1691,10 +1691,13 @@ namespace EmitMSIL
 
         private static int GetRank(ProtoCore.CLRFunctionEndPoint fep,Type type,int paramIndex)
         {
-            if(type == typeof(IList)){
+            //IEnumerable is imported as arbitrary rank.
+            if (typeof(IEnumerable).IsAssignableFrom(type))
+            {
                 return -1;
             }
-            if(type == typeof(object) && fep.ParamAttributes[paramIndex].Any(attr => attr is ArbitraryDimensionArrayImportAttribute))
+            //params marked with arbitrary rank are imported as arbitrary rank.
+            if (fep.ParamAttributes[paramIndex].Any(attr => attr is ArbitraryDimensionArrayImportAttribute))
             {
                 return -1;
             }

@@ -816,6 +816,55 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
             Assert.AreEqual(0, replicationLogicOccurences.Count());
             Assert.AreEqual(0, unmarshalOccurences.Count());
         }
+
+        [Test]
+        [Category("Failure")] // We should be able to convert this to a direct function call, by promoting the single item to a collection at compile time.
+        //instead we fallback to replication.
+        public void FunctionParam_IListArbitraryDimensionArrayImport_WorksSingleItem()
+        {
+            string dscode = @"
+import(""DesignScriptBuiltin.dll"");
+import(""DSCoreNodes.dll"");
+item = DSCore.List.FirstItem(20);
+";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+
+            Assert.IsTrue(output.ContainsKey("item"));
+
+            var expectedResult = 20;
+
+            var result = output["item"];
+            Assert.AreEqual(expectedResult, result);
+            var replicationLogicOccurences = File.ReadLines(opCodeFilePath).Where(line => line.Contains("ReplicationLogic"));
+            Assert.AreEqual(0, replicationLogicOccurences.Count());
+        }
+        [Test]
+        [Category("Failure")] // We should be able to convert this to a direct function call, by promoting the single item to a collection at compile time.
+        //instead we fallback to replication.
+        public void FunctionParam_IEnum_ArbitraryDimensionArrayImport_WorksSingleItem()
+        {
+            string dscode = @"
+import(""DesignScriptBuiltin.dll"");
+import(""DSCoreNodes.dll"");
+import(""FFITarget.dll"");
+item = FFITarget.DummyMath.Sum(20); //Sum(IEnumerable<double>)
+";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+
+            Assert.IsTrue(output.ContainsKey("item"));
+
+            var expectedResult = 20;
+
+            var result = output["item"];
+            Assert.AreEqual(expectedResult, result);
+            var replicationLogicOccurences = File.ReadLines(opCodeFilePath).Where(line => line.Contains("ReplicationLogic"));
+            Assert.AreEqual(0, replicationLogicOccurences.Count());
+        }
+
         #endregion
     }
 }
