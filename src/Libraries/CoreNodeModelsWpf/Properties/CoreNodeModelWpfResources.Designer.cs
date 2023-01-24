@@ -232,7 +232,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The number of colors provided does not match, or no colors are provided. Default colors will be used..
+        ///   Looks up a localized string similar to Default colors are used. To define custom colors, provide an equal number of colors and labels inputs..
         /// </summary>
         public static string ProvideDefaultColorsWarningMessage {
             get {
