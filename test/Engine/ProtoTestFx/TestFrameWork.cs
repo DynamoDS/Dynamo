@@ -41,7 +41,7 @@ namespace ProtoTestFx.TD
         //hold results from using MSIL compiler / execution.
         private IDictionary<string, object> MSILMirror;
         //control which engine to use for tests run with this test framework.
-        private bool testMSILExecution = false;
+        private bool testMSILExecution = true;
 
         public TestFrameWork()
         {
