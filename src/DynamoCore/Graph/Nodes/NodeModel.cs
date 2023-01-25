@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -1412,6 +1413,11 @@ namespace Dynamo.Graph.Nodes
         public MirrorData GetValue(int outPortIndex, EngineController engine)
         {
             return engine.GetMirror(GetAstIdentifierForOutputIndex(outPortIndex).Value)?.GetData();
+        }
+
+        internal object GetCLRValue(int outPortIndex, EngineController engine)
+        {
+            return engine.GetValue(GetAstIdentifierForOutputIndex(outPortIndex).Value);
         }
 
         /// <summary>

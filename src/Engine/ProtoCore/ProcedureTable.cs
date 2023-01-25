@@ -78,7 +78,8 @@ namespace ProtoCore.DSASM
         /// </summary>
         public List<Type> ArgumentTypes
         {
-            get; set;
+            get;
+            set;
         }
 
         /// <summary>

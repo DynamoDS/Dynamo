@@ -15,6 +15,7 @@ using ProtoCore.Lang.Replication;
 using ProtoCore.Properties;
 using ProtoCore.Runtime;
 using ProtoCore.Utils;
+using ProtoFFI;
 using StackFrame = ProtoCore.DSASM.StackFrame;
 using Validity = ProtoCore.Utils.Validity;
 using WarningID = ProtoCore.Runtime.WarningID;
@@ -825,7 +826,7 @@ namespace ProtoCore
         /// </summary>
         /// <returns>Returns true or false based on the condition described above. 
         /// </returns>
-        private static bool IsSimilarOptionButOfHigherRank(List<ReplicationInstruction> oldOption, List<ReplicationInstruction> newOption)
+        internal static bool IsSimilarOptionButOfHigherRank(List<ReplicationInstruction> oldOption, List<ReplicationInstruction> newOption)
         {
             if (oldOption.Count > 0 && newOption.Count > 0 && oldOption.Count < newOption.Count)
             {
@@ -1026,7 +1027,7 @@ namespace ProtoCore
         }
 
 
-        private bool Inherits(ReadOnlyCollection<ClassNode> classNodes, int parentIndex, int childIndex)
+        private static bool Inherits(ReadOnlyCollection<ClassNode> classNodes, int parentIndex, int childIndex)
         {
             if (parentIndex < 0 || parentIndex >= classNodes.Count || childIndex < 0 || childIndex >= classNodes.Count)
             {
@@ -1036,7 +1037,7 @@ namespace ProtoCore
             return Inherits(classNodes, classNodes[parentIndex], classNodes[childIndex]);
         }
 
-        private bool Inherits(ReadOnlyCollection<ClassNode> classNodes, ClassNode parent, ClassNode child)
+        private static bool Inherits(ReadOnlyCollection<ClassNode> classNodes, ClassNode parent, ClassNode child)
         {
             if (child == parent)
             {
@@ -1069,6 +1070,7 @@ namespace ProtoCore
         /// </summary>
         private FunctionGroup GetFuncGroup(RuntimeCore runtimeCore, List<StackValue> arguments)
         {
+            var classTable = runtimeCore.DSExecutable.classTable;
             // try to use dynamic classScope
             if (arguments.Count > 0)
             {
@@ -1082,9 +1084,9 @@ namespace ProtoCore
 
                 if (firstArg.IsPointer && firstArg.metaData.type != classScope)
                 {
-                    if (Inherits(runtimeCore.DSExecutable.classTable.ClassNodes, classScope, firstArg.metaData.type))
+                    if (Inherits(classTable.ClassNodes, classScope, firstArg.metaData.type))
                     {
-                        var fg = FirstFunctionGroupInInheritanceChain(runtimeCore, firstArg.metaData.type);
+                        var fg = FirstFunctionGroupInInheritanceChain(methodName, firstArg.metaData.type, classTable, globalFunctionTable);
                         if (fg != null)
                         {
                             return fg;
@@ -1094,14 +1096,14 @@ namespace ProtoCore
             }
 
             // use static classScope
-            return FirstFunctionGroupInInheritanceChain(runtimeCore, classScope);
+            return FirstFunctionGroupInInheritanceChain(methodName, classScope, classTable, globalFunctionTable);
         }
 
-        private FunctionGroup FirstFunctionGroupInInheritanceChain(RuntimeCore runtimeCore, int cidx)
+        internal static FunctionGroup FirstFunctionGroupInInheritanceChain(string methodName, int cidx, ClassTable classTable, FunctionTable globalFnTable)
         {
             FunctionGroup funcGroup = null;
-            var classNodes = runtimeCore.DSExecutable.classTable.ClassNodes;
-            var globalFuncTable = globalFunctionTable.GlobalFuncTable;
+            var classNodes = classTable.ClassNodes;
+            var globalFuncTable = globalFnTable.GlobalFuncTable;
 
             do
             {
@@ -1284,15 +1286,19 @@ namespace ProtoCore
         private List<FunctionEndPoint> GetCandidateFunctions(StackFrame stackFrame,
                                                              Dictionary<FunctionEndPoint, int> candidatesWithDistances)
         {
-            List<FunctionEndPoint> candidateFunctions = new List<FunctionEndPoint>();
+            bool isGlobalFuncScope = stackFrame.ThisPtr.IsPointer &&
+                stackFrame.ThisPtr.Pointer == Constants.kInvalidIndex;
 
+            var candidateFunctions = new List<FunctionEndPoint>();
             foreach (FunctionEndPoint fep in candidatesWithDistances.Keys)
             {
-                if ((stackFrame.ThisPtr.IsPointer &&
-                     stackFrame.ThisPtr.Pointer == Constants.kInvalidIndex && fep.procedureNode != null
-                     && !fep.procedureNode.IsConstructor) && !fep.procedureNode.IsStatic
-                    && (fep.procedureNode.ClassID != -1))
+                bool isInstanceMethod = fep.procedureNode != null &&
+                    fep.procedureNode.ClassID != Constants.kGlobalScope  &&//valid class
+                    !fep.procedureNode.IsConstructor && !fep.procedureNode.IsStatic;//not static and not constructor  
+
+                if (isGlobalFuncScope && isInstanceMethod)
                 {
+                    // Filter out class instance methods when dealing with global function scope
                     continue;
                 }
 
@@ -1489,7 +1495,7 @@ namespace ProtoCore
 
             #endregion
 
-            partialReplicationGuides = PerformRepGuideDemotion(arguments, partialReplicationGuides, runtimeCore);
+            partialReplicationGuides = PerformRepGuideDemotion(arguments, partialReplicationGuides);
 
             //Replication Control is an ordered list of the elements that we have to replicate over
             //Ordering implies containment, so element 0 is the outer most forloop, element 1 is nested within it etc.
@@ -1538,7 +1544,7 @@ namespace ProtoCore
             //Cache finalFep for CallSite.  Note there is always only one dispose endpoint returned.
             if (finalFep == null)
             {
-                var funcGroup = FirstFunctionGroupInInheritanceChain(runtimeCore, classScope);
+                var funcGroup = FirstFunctionGroupInInheritanceChain(methodName, classScope, runtimeCore.DSExecutable.classTable, globalFunctionTable);
                 finalFep = funcGroup.FunctionEndPoints[0];
             }
             
@@ -1948,7 +1954,8 @@ namespace ProtoCore
         /// <param name="partialReplicationGuides"></param>
         /// <param name="core"></param>
         /// <returns></returns>
-        private static List<List<ReplicationGuide>> PerformRepGuideDemotion(List<StackValue> arguments, List<List<ReplicationGuide>> providedReplicationGuides, RuntimeCore runtimeCore)
+        private static List<List<ReplicationGuide>> PerformRepGuideDemotion(List<StackValue> arguments, 
+            List<List<ReplicationGuide>> providedReplicationGuides)
         {
             if (providedReplicationGuides.Count == 0)
                 return providedReplicationGuides;
@@ -2028,6 +2035,58 @@ namespace ProtoCore
                 runtimeCore.RuntimeStatus.LogWarning(WarningID.ConversionNotPossible,
                                               Resources.kConvertNonConvertibleTypes);
                 return StackValue.Null;
+            }
+        }
+
+        internal static CLRStackValue PerformReturnTypeCoerce(Type retType, CLRStackValue ret, MSILRuntimeCore runtimeCore)
+        {
+            if (retType.UID == (int)PrimitiveType.Var)
+            {
+                if (retType.rank < 0)
+                {
+                    return ret;
+                }
+                else
+                {
+                    CLRStackValue coercedRet = TypeSystem.Coerce(ret, retType, runtimeCore);
+                    return coercedRet;
+                }
+            }
+
+            if (ret.IsNull)
+            {
+                return ret;
+            }
+
+            if (ret.TypeUID == retType.UID)
+            {
+                if (!ret.IsEnumerable && retType.IsIndexable)
+                {
+                    CLRStackValue coercedRet = TypeSystem.Coerce(ret, retType, runtimeCore);
+                    return coercedRet;
+                }
+                else
+                {
+                    return ret;
+                }
+            }
+
+            if (ret.IsEnumerable && retType.IsIndexable)
+            {
+                CLRStackValue coercedRet = TypeSystem.Coerce(ret, retType, runtimeCore);
+                return coercedRet;
+            }
+
+            if (runtimeCore.ConvertibleTo(ret, retType))
+            {
+                CLRStackValue coercedRet = TypeSystem.Coerce(ret, retType, runtimeCore);
+                return coercedRet;
+            }
+            else
+            {
+                //@TODO(Luke): log no-type coercion possible warning
+                System.Console.WriteLine($"{WarningID.ConversionNotPossible}{Resources.kConvertNonConvertibleTypes}");
+                return CLRStackValue.Null;
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -42,6 +43,9 @@ namespace Dynamo.Engine
         /// The event notifies client that the VMLibraries have been reset and the VM is now ready to run the new code. 
         /// </summary>
         internal static event Action VMLibrariesReset;
+
+        internal bool DSExecutionEngine { get; set; }
+        internal (TimeSpan compileTime, TimeSpan executionTime) CompileAndExecutionTime => liveRunnerServices.CompileAndExecutionTime;
 
         /// <summary>
         /// This event is fired when <see cref="UpdateGraphAsyncTask"/> is completed.
@@ -236,6 +240,11 @@ namespace Dynamo.Engine
 
                 return mirror;
             }
+        }
+
+        internal object GetValue(string variableName)
+        {
+            return liveRunnerServices.GetValue(variableName);
         }
 
         #endregion
@@ -487,7 +496,7 @@ namespace Dynamo.Engine
             // within the execution. Such exception, if any, will be caught by
             // DynamoScheduler.ProcessTaskInternal.
 
-            liveRunnerServices.UpdateGraph(graphSyncData, VerboseLogging);
+            liveRunnerServices.UpdateGraph(graphSyncData, VerboseLogging, DSExecutionEngine);
         }
 
         internal IDictionary<Guid, List<BuildWarning>> GetBuildWarnings()

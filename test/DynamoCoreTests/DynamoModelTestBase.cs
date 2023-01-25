@@ -142,9 +142,11 @@ namespace Dynamo
             }
         }
 
-        protected void OpenModel(string relativeFilePath)
+        protected void OpenModel(string relativeFilePath, bool dsExecution = true)
         {
             string openPath = Path.Combine(TestDirectory, relativeFilePath);
+
+            CurrentDynamoModel.DSExecutionEngine = dsExecution;
             CurrentDynamoModel.ExecuteCommand(new DynamoModel.OpenFileCommand(openPath));
         }
 

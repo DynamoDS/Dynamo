@@ -26,6 +26,7 @@ namespace DynamoSandbox
         private readonly HostAnalyticsInfo analyticsInfo;
         private const string sandboxWikiPage = @"https://github.com/DynamoDS/Dynamo/wiki/How-to-Utilize-Dynamo-Builds";
         private DynamoViewModel viewModel = null;
+        private bool dsExecutionEngine = true;
 
         [DllImport("msvcrt.dll")]
         public static extern int _putenv(string env);
@@ -53,6 +54,7 @@ namespace DynamoSandbox
             commandFilePath = cmdLineArgs.CommandFilePath;
             ASMPath = cmdLineArgs.ASMPath;
             analyticsInfo = cmdLineArgs.AnalyticsInfo;
+            dsExecutionEngine = cmdLineArgs.DSExecutionEngine;
         }
 
         public void RunApplication(Application app)
@@ -136,6 +138,7 @@ namespace DynamoSandbox
             DynamoModel model;
             model = StartupUtils.MakeModel(false, ASMPath ?? string.Empty, analyticsInfo);
             model.CERLocation = CERLocation;
+            model.DSExecutionEngine = dsExecutionEngine;
 
             viewModel = DynamoViewModel.Start(
                    new DynamoViewModel.StartConfiguration()

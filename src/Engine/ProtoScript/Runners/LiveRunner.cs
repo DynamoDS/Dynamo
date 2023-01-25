@@ -12,6 +12,8 @@ using ProtoCore.Utils;
 using ProtoFFI;
 using Dynamo.Utilities;
 using System.IO;
+using System.Collections;
+using System.Diagnostics;
 
 namespace ProtoScript.Runners
 {
@@ -1214,6 +1216,11 @@ namespace ProtoScript.Runners
 
     public partial class LiveRunner : ILiveRunner, IDisposable
     {
+        private IDictionary<string, object> graphOutput;
+        internal bool IsTestMode = false;
+        internal bool DSExecutionEngine = true;
+        internal (TimeSpan compileTime, TimeSpan executionTime) CompileAndExecutionTime;
+
         internal class DebugByteCodeMode : IDisposable
         {
             private TextWriter oldAsmOutput;
@@ -1258,6 +1265,34 @@ namespace ProtoScript.Runners
                     core.Options.DumpByteCode = oldDumpByteCode;
                 }
             }
+        }
+
+        internal void CompileAndExecuteMSIL(List<AssociativeNode> finalDeltaAstList)
+        {
+            Dictionary<string, IList> input = new Dictionary<string, IList>();
+
+            var assemblyPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            //TODO_MSIL: remove the dependency on the old VM by implementing
+            //necesary Emit functions(ex mitFunctionDefinition and EmitImportStatements and all the preloading logic)
+            codeGenIL = codeGenIL ?? new EmitMSIL.CodeGenIL(input, Path.Combine(assemblyPath, "opCodes.txt"), new MSILRuntimeCore(runtimeCore));
+            if (IsTestMode)
+            {
+                graphOutput = codeGenIL.EmitAndExecute(finalDeltaAstList);
+            }
+            else
+            {
+                graphOutput = codeGenIL.Emit(finalDeltaAstList);
+            }
+            CompileAndExecutionTime = codeGenIL.CompileAndExecutionTime;
+        }
+
+        internal object GetNodeValue(string variableName)
+        {
+            if (!graphOutput.TryGetValue(variableName, out object output))
+            {
+                return null;
+            }
+            return output;
         }
 
         /// <summary>
@@ -1317,6 +1352,8 @@ namespace ProtoScript.Runners
                 return runnerCore;
             }
         }
+
+        private EmitMSIL.CodeGenIL codeGenIL = null;
 
         private ProtoCore.RuntimeCore runtimeCore = null;
         public ProtoCore.RuntimeCore RuntimeCore
@@ -1526,12 +1563,16 @@ namespace ProtoScript.Runners
 
         private bool Compile(List<AssociativeNode> astList, Core targetCore)
         {
-            bool succeeded = runner.CompileAndGenerateExe(astList, targetCore, new ProtoCore.CompileTime.Context());
-            if (succeeded)
+            bool succeeded = false;
+            if (astList.Any())
             {
-                // Update the symbol tables
-                // TODO Jun: Expand to accomoadate the list of symbols
-                staticContext.symbolTable = targetCore.DSExecutable.runtimeSymbols[0];
+                succeeded = runner.CompileAndGenerateExe(astList, targetCore, new ProtoCore.CompileTime.Context());
+                if (succeeded)
+                {
+                    // Update the symbol tables
+                    // TODO Jun: Expand to accomoadate the list of symbols
+                    staticContext.symbolTable = targetCore.DSExecutable.runtimeSymbols[0];
+                }
             }
             return succeeded;
         }
@@ -1570,11 +1611,7 @@ namespace ProtoScript.Runners
 
         private bool CompileAndExecute(List<AssociativeNode> astList)
         {
-            bool succeeded = false;
-            if (astList.Any())
-            {
-                succeeded = Compile(astList, runnerCore);
-            }
+            var succeeded = Compile(astList, runnerCore);
 
             if (succeeded)
             {
@@ -1657,6 +1694,9 @@ namespace ProtoScript.Runners
 
         private void CompileAndExecuteForDeltaExecution(List<AssociativeNode> astList)
         {
+            var timer = new Stopwatch();
+            timer.Start();
+
             // Make a copy of the ASTs to be executed
             // We dont want the compiler to modify the ASTs cached in the liverunner
             List<AssociativeNode> dispatchASTList = new List<AssociativeNode>();
@@ -1673,8 +1713,20 @@ namespace ProtoScript.Runners
             }
 
             ResetForDeltaExecution();
-            CompileAndExecute(dispatchASTList);
+            var success = Compile(astList, runnerCore);
+
+            timer.Stop();
+            CompileAndExecutionTime.compileTime = timer.Elapsed;
+            timer.Restart();
+
+            if (success)
+            {
+                Execute(astList.Any());
+            }
             PostExecution();
+
+            timer.Stop();
+            CompileAndExecutionTime.executionTime = timer.Elapsed;
         }
 
         private List<Guid> PreviewInternal(GraphSyncData syncData)
@@ -1721,6 +1773,12 @@ namespace ProtoScript.Runners
             {
                 // Get AST list that need to be executed
                 var finalDeltaAstList = changeSetComputer.GetDeltaASTList(syncData);
+
+                if (!DSExecutionEngine)
+                {
+                    CompileAndExecuteMSIL(finalDeltaAstList);
+                    return;
+                }
 
                 // Prior to execution, apply state modifications to the VM given the delta AST's
                 bool anyForcedExecutedNodes = changeSetComputer.csData.ForceExecuteASTList.Any();

@@ -23,6 +23,10 @@
       <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
       <Name>DynamoUtilities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\EmitMSIL\EmitMSIL.csproj">
+      <Project>{2e7be1fb-7038-4277-9dae-fd0faabf5768}</Project>
+      <Name>EmitMSIL</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ProtoCore\ProtoCore.csproj">
       <Project>{7A9E0314-966F-4584-BAA3-7339CBB849D1}</Project>
       <Name>ProtoCore</Name>

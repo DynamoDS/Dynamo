@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 
 // General Information about an assembly is controlled through the following 
@@ -10,6 +10,7 @@ using System.Runtime.CompilerServices;
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 // [assembly: AssemblyKeyFile("ProtoCore.snk")]
 [assembly: InternalsVisibleTo("ProtoTest")]
+[assembly: InternalsVisibleTo("CodeGenILTests")]
 [assembly: InternalsVisibleTo("ProtoTestFx")]
 [assembly:InternalsVisibleTo("DynamoCore")]
 [assembly: InternalsVisibleTo("DynamoCoreTests")]
@@ -18,4 +19,7 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("ProtoScript")]
 [assembly: InternalsVisibleTo("NodeDocumentationMarkdownGenerator")]
 [assembly: InternalsVisibleTo("ProtoAssociative")]
+[assembly: InternalsVisibleTo("DSCoreNodes")]
+[assembly: InternalsVisibleTo("EmitMSIL")]
 
+[assembly:TypeForwardedTo(typeof(ProtoCore.DSASM.RangeStepOperator))]

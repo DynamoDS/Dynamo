@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using Dynamo.Logging;
 using ProtoCore.Mirror;
@@ -64,7 +65,7 @@ namespace Dynamo.Engine
                 return liveRunner.RuntimeCore;
             }
         }
-
+        internal (TimeSpan compileTime, TimeSpan executionTime) CompileAndExecutionTime => (liveRunner as LiveRunner).CompileAndExecutionTime;
 
         /// <summary>
         /// TPDP
@@ -84,16 +85,24 @@ namespace Dynamo.Engine
 
         }
 
+        internal object GetValue(string variableName)
+        {
+            return (liveRunner as LiveRunner).GetNodeValue(variableName);
+        }
+
         /// <summary>
         /// Update graph with graph sync data.
         /// </summary>
         /// <param name="graphData"></param>
         /// <param name="verboseLogging"></param>
-        internal void UpdateGraph(GraphSyncData graphData, bool verboseLogging)
+        /// <param name="dsExecution"></param>
+        internal void UpdateGraph(GraphSyncData graphData, bool verboseLogging, bool dsExecution)
         {
             if (verboseLogging)
                 Log("LRS.UpdateGraph: " + graphData);
 
+            (liveRunner as LiveRunner).DSExecutionEngine = dsExecution;
+            (liveRunner as LiveRunner).IsTestMode = Models.DynamoModel.IsTestMode;
             liveRunner.UpdateGraph(graphData);
         }
 

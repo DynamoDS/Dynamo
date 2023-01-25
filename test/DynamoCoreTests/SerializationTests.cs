@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -144,7 +145,7 @@ namespace Dynamo.Tests
             public Dictionary<Guid, NodeOutputData> OutputsMap { get; set; }
             public string DesignScript { get; set; }
 
-            public WorkspaceComparisonData(WorkspaceModel workspace, EngineController controller)
+            private void Init(WorkspaceModel workspace, EngineController controller, bool dsExecution = true)
             {
                 Guid = workspace.Guid;
                 Description = workspace.Description;
@@ -177,8 +178,28 @@ namespace Dynamo.Tests
                     var portvalues = new List<object>();
                     if (!n.IsFrozen)
                     {
-                        portvalues = n.OutPorts.Select(p =>
-                            ProtoCore.Utils.CoreUtils.GetDataOfValue(n.GetValue(p.Index, controller))).ToList();
+                        if (dsExecution)
+                        {
+                            portvalues = n.OutPorts.Select(p =>
+                                ProtoCore.Utils.CoreUtils.GetDataOfValue(n.GetValue(p.Index, controller))).ToList();
+                        }
+                        else
+                        {
+                            portvalues.AddRange(n.OutPorts.Select<PortModel, object>(p =>
+                            {
+                                var obj = n.GetCLRValue(p.Index, controller);
+                                if (typeof(IEnumerable).IsAssignableFrom(obj?.GetType()))
+                                {
+                                    var values = new List<object>();
+                                    foreach(var val in obj as IEnumerable)
+                                    {
+                                        values.Add(ProtoCore.Utils.CoreUtils.GetDataOfCLRValue(val));
+                                    }
+                                    return values;
+                                }
+                                return ProtoCore.Utils.CoreUtils.GetDataOfCLRValue(obj);
+                            }));
+                        }
                     }
 
                     n.InPorts.ToList().ForEach(p =>
@@ -210,14 +231,20 @@ namespace Dynamo.Tests
                     OutportCountMap.Add(n.GUID, n.OutPorts.Count);
                 }
             }
+
+            public WorkspaceComparisonData(WorkspaceModel workspace, EngineController controller, bool dsExecution)
+            {
+                Init(workspace, controller, dsExecution);
+            }
+
+            public WorkspaceComparisonData(WorkspaceModel workspace, EngineController controller)
+            {
+                Init(workspace, controller);
+            }
         }
-        
-        /// <summary>
-        /// compare two workspace comparison objects that represent workspace models
-        /// </summary>
-        /// <param name="a"> first workspace data to compare</param>
-        /// <param name="b">second workspace data to compare</param>
-        public static void CompareWorkspaceModels(serializationTestUtils.WorkspaceComparisonData a, serializationTestUtils.WorkspaceComparisonData b, Dictionary<Guid, string> c = null)
+
+        private static void CompareWorkspaceModelsInternal(WorkspaceComparisonData a, WorkspaceComparisonData b, Dictionary<Guid, string> c = null,
+            bool dsExecution = true)
         {
             var nodeDiff = a.NodeTypeMap.Except(b.NodeTypeMap);
 
@@ -252,7 +279,7 @@ namespace Dynamo.Tests
 
                 var aData = a.PortDataMap[portkvp.Key];
                 var bData = b.PortDataMap[portkvp.Key];
-                
+
                 // With the change to JSON based IntegerSlider nodes returning 64 bit integers,
                 // the description between the old XML and the new JSON based workspaces will be
                 // "Int32" and "Int64" respectively.
@@ -294,11 +321,12 @@ namespace Dynamo.Tests
                     // of the string representation for forming this message
                     // fails.
                     Assert.AreEqual(valueA, valueB,
-                    string.Format("Node Type:{0} value, {1} is not equal to {2}",
-                    a.NodeTypeMap[kvp.Key], valueA, valueB));
+                    $"Node {kvp.Key} Type:{a.NodeTypeMap[kvp.Key]} value, {valueA} is not equal to {valueB}");
                 }
                 catch
                 {
+                    if (!dsExecution) throw;
+
                     continue;
                 }
             }
@@ -309,6 +337,20 @@ namespace Dynamo.Tests
                 var valb = b.InputsMap[kvp.Key];
                 Assert.AreEqual(vala, valb, "input datas are not the same.");
             }
+        }
+
+        internal static void CompareWorkspaceModelsMSIL(WorkspaceComparisonData a, WorkspaceComparisonData b, Dictionary<Guid, string> c = null)
+        {
+            CompareWorkspaceModelsInternal(a, b, c, dsExecution: false);
+        }
+        /// <summary>
+        /// compare two workspace comparison objects that represent workspace models
+        /// </summary>
+        /// <param name="a"> first workspace data to compare</param>
+        /// <param name="b">second workspace data to compare</param>
+        public static void CompareWorkspaceModels(WorkspaceComparisonData a, WorkspaceComparisonData b, Dictionary<Guid, string> c = null)
+        {
+            CompareWorkspaceModelsInternal(a, b, c);
         }
 
         public static void CompareWorkspacesDifferentGuids(serializationTestUtils.WorkspaceComparisonData a,
