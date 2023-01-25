@@ -1374,6 +1374,8 @@ namespace Dynamo.ViewModels
             WorkspaceViewModel.DynamoViewModel.Model.ExecuteCommand(command);
             WorkspaceViewModel.DynamoViewModel.RaiseCanExecuteUndoRedo();
             WorkspaceViewModel.HasUnsavedChanges = true;
+
+            Analytics.TrackEvent(Actions.Preview, Categories.GroupOperations, this.AnnotationModel.IsVisible.ToString());
         }
 
         internal bool CanToggleIsVisibleGroup(object parameters)
