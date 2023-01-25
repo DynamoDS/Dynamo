@@ -1270,13 +1270,11 @@ namespace ProtoScript.Runners
         internal void CompileAndExecuteMSIL(List<AssociativeNode> finalDeltaAstList)
         {
             Dictionary<string, IList> input = new Dictionary<string, IList>();
-            var assemblyPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
 
+            var assemblyPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
             //TODO_MSIL: remove the dependency on the old VM by implementing
             //necesary Emit functions(ex mitFunctionDefinition and EmitImportStatements and all the preloading logic)
-            msilRuntimeCore = msilRuntimeCore ?? new MSILRuntimeCore(runtimeCore);
-            var codeGenIL = new EmitMSIL.CodeGenIL(input, Path.Combine(assemblyPath, "opCodes.txt"), msilRuntimeCore);
-
+            codeGenIL = codeGenIL ?? new EmitMSIL.CodeGenIL(input, Path.Combine(assemblyPath, "opCodes.txt"), new MSILRuntimeCore(runtimeCore));
             if (IsTestMode)
             {
                 graphOutput = codeGenIL.EmitAndExecute(finalDeltaAstList);
@@ -1355,7 +1353,7 @@ namespace ProtoScript.Runners
             }
         }
 
-        private ProtoCore.MSILRuntimeCore msilRuntimeCore = null;
+        private EmitMSIL.CodeGenIL codeGenIL = null;
 
         private ProtoCore.RuntimeCore runtimeCore = null;
         public ProtoCore.RuntimeCore RuntimeCore

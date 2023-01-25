@@ -9,49 +9,6 @@ using System;
 
 namespace CodeGenILTests
 {
-    public class MicroTests
-    {
-        private ProtoScript.Runners.LiveRunner liveRunner = null;
-        private ProtoCore.MSILRuntimeCore runtimeCore = null;
-
-        protected EmitMSIL.CodeGenIL codeGen;
-        protected Dictionary<string, IList> inputs = new Dictionary<string, IList>();
-        protected string opCodeFilePath;
-
-        protected virtual void GetLibrariesToPreload(ref List<string> libraries)
-        {
-            libraries.Add("DesignScriptBuiltin.dll");
-            libraries.Add("DSCoreNodes.dll");
-        }
-
-        [SetUp]
-        public void Setup()
-        {
-            //TODO_MSIL: remove the dependency on the old VM by implementing
-            //necesary Emit functions(ex mitFunctionDefinition and EmitImportStatements and all the preloading logic)
-            liveRunner = new ProtoScript.Runners.LiveRunner();
-
-            List<string> libraries = new List<string>();
-            GetLibrariesToPreload(ref libraries);
-
-            liveRunner.ResetVMAndResyncGraph(libraries);
-            runtimeCore = new ProtoCore.MSILRuntimeCore(liveRunner.RuntimeCore);
-
-            var assemblyPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-            var outputpath = Path.Combine(assemblyPath, "MSILTestOutput");
-            System.IO.Directory.CreateDirectory(outputpath);
-            opCodeFilePath = Path.Combine(outputpath, $"OpCodesTEST{NUnit.Framework.TestContext.CurrentContext.Test.Name}.txt");
-            codeGen = new EmitMSIL.CodeGenIL(inputs, opCodeFilePath, runtimeCore);
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            liveRunner.Dispose();
-            codeGen.Dispose();
-        }
-    }
-
     [TestFixture]
     public class RangeMicroTests : MicroTests
     {
@@ -237,6 +194,64 @@ y = DSCore.Math.Sum([1,2,3]);";
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
             Assert.AreEqual(6, output["y"]);
+        }
+
+        [Test]
+        //'Object of type 'System.int64[]' can be converted to type 'System.Collections.Generic.IEnumerable`1[System.Double]'.'
+        public void SumArray_TypeCoerNeeded()
+        {
+            var dscode = @"
+import(""DesignScriptBuiltin.dll"");
+import(""DSCoreNodes.dll"");
+y = DSCore.Math.Sum(1..100000000);";
+
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            //Assert.AreEqual(6, output["y"]);
+        }
+
+        [Test]
+        public void SumList_TypeCoercion_Works()
+        {
+            var code = @"
+import(""DesignScriptBuiltin.dll"");
+import(""FFITarget.dll"");
+y = FFITarget.AtLevelTestClass.Sum([1,2,3]);";
+
+            var ast = ParserUtils.Parse(code).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            Assert.AreEqual(6, output["y"]);
+        }
+
+        [Test]
+        public void SumArray_TypeCoercion_Works()
+        {
+            var code = @"
+import(""DesignScriptBuiltin.dll"");
+import(""FFITarget.dll"");
+y = FFITarget.DummyCollection.MakeArray([1.0,2.3,3.1]);";
+
+            var ast = ParserUtils.Parse(code).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            Assert.AreEqual(new[] { 1, 2, 3 }, output["y"]);
+        }
+
+        [Test]
+        public void SumVarArray_TypeCoercion_Works()
+        {
+            var code = @"
+import(""DesignScriptBuiltin.dll"");
+import(""FFITarget.dll"");
+x = [1.0,2.3,3.1];
+y = FFITarget.DummyCollection.MakeArray(x);";
+
+            var ast = ParserUtils.Parse(code).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            Assert.AreEqual(new[] { 1, 2, 3 }, output["y"]);
         }
 
         [Test]

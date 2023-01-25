@@ -5,9 +5,74 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace CodeGenILTests
 {
+    static class TestHelpers
+    {
+        internal static void AssertEmittedCodeHasNoReplication(string opCodeFilePath,int count = 0)
+        {
+            var replicationLogicOccurences =
+                File.ReadLines(opCodeFilePath).Where(line => line.Contains("ReplicationLogic"));
+            Assert.AreEqual(count, replicationLogicOccurences.Count());
+        }
+        internal static void AssertEmittedCodeHasUnMarhsallCalls(string opCodeFilePath, int count = 0)
+        {
+            var unmarshalOccurences = File.ReadLines(opCodeFilePath).Where(line => line.Contains("Unmarshal"));
+            Assert.AreEqual(count, unmarshalOccurences.Count());
+        }
+        internal static bool AreEqual(object a, object b)
+        {
+            if (a == null && b == null) return true;
+
+            if (a == null || b == null) return false;
+
+            if (a.GetType() == typeof(int) && b.GetType() == typeof(int))
+            {
+                return (int)a == (int)b;
+            }
+
+            bool isAList = a is IList;
+            bool isBList = b is IList;
+            if (isAList && isBList)
+            {
+                var aIEnum = a as IList;
+                var bIEnum = b as IList;
+
+                if (aIEnum.Count != bIEnum.Count)
+                {
+                    return false;
+                }
+
+                for (int ii = 0; ii < aIEnum.Count; ii++)
+                {
+                    if (!AreEqual(aIEnum[ii], bIEnum[ii]))
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+            else if (isAList || isBList)
+            {
+                return false;
+            }
+
+            var aR = a as FFITarget.ReplicationTestA;
+            var bR = b as FFITarget.ReplicationTestA;
+            if (aR != null && bR != null)
+            {
+                return aR.X == bR.X &&
+                       aR.Y == bR.Y &&
+                       aR.Z == bR.Z;
+            }
+            return false;
+        }
+
+    }
+
     class ReplicationTests : MicroTests
     {
         protected override void GetLibrariesToPreload(ref List<string> libraries)
@@ -572,56 +637,6 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
             Assert.AreEqual(output["test5"], new Object[] { new Object[] { new Object[] { 0, 1 }, new Object[] { 0, 1 } }, new Object[] { new Object[] { 2, 3 }, new Object[] { 2, 3 } } });
         }
 
-
-        private bool AreEqual(object a, object b)
-        {
-            if (a == null && b == null) return true;
-
-            if (a == null || b == null) return false;
-
-            if (a.GetType() == typeof(int) && b.GetType() == typeof(int))
-            {
-                return (int)a == (int)b;
-            }
-
-            bool isAList = a is IList;
-            bool isBList = b is IList;
-            if (isAList && isBList)
-            {
-                var aIEnum = a as IList;
-                var bIEnum = b as IList;
-
-                if (aIEnum.Count != bIEnum.Count) 
-                { 
-                    return false; 
-                }
-
-                for (int ii=0; ii < aIEnum.Count; ii++)
-                {
-                    if (!AreEqual(aIEnum[ii], bIEnum[ii]))
-                    {
-                        return false;
-                    }
-                }
-
-                return true;
-            }
-            else if (isAList || isBList)
-            {
-                return false;
-            }
-
-            var aR = a as FFITarget.ReplicationTestA;
-            var bR = b as FFITarget.ReplicationTestA;
-            if (aR != null && bR != null)
-            {
-                return aR.X == bR.X &&
-                       aR.Y == bR.Y &&
-                       aR.Z == bR.Z;
-            }
-            return false;
-        }
-
         [Test]
         public void MSIL_FuncCall_Double_SomeGuides()
         {
@@ -642,17 +657,17 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
 
-            Assert.IsTrue(AreEqual(
+            Assert.IsTrue(TestHelpers.AreEqual(
                 new Object[] {
                     new FFITarget.ReplicationTestA() { X = 0, Y = 2, Z = 4 },
                     new FFITarget.ReplicationTestA() { X = 1, Y = 3, Z = 5 }
                 },
                 output["test1"]));
 
-            Assert.IsTrue(AreEqual(new FFITarget.ReplicationTestA() { X = 0, Y = 0, Z = 0 },
+            Assert.IsTrue(TestHelpers.AreEqual(new FFITarget.ReplicationTestA() { X = 0, Y = 0, Z = 0 },
                 output["test2"]));
 
-            Assert.IsTrue(AreEqual(
+            Assert.IsTrue(TestHelpers.AreEqual(
                 new Object[] {
                     new Object[] {
                         new Object[] {
@@ -677,7 +692,7 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
                 },
                 output["test3"]));
 
-            Assert.IsTrue(AreEqual(
+            Assert.IsTrue(TestHelpers.AreEqual(
                 new Object[] {
                     new Object[] { 6, 8 },
                     new Object[] { 7, 9 }
@@ -743,8 +758,7 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
             Assert.AreEqual(new int[] { 1, 2, 4, 4 }, output["test1"]);
             Assert.AreEqual(11, output["test2"]);
 
-            var isReplicationLogicFound = File.ReadLines(opCodeFilePath).SkipWhile(line => !line.Contains("ReplicationLogic"));
-            Assert.IsEmpty(isReplicationLogicFound);
+            TestHelpers.AssertEmittedCodeHasNoReplication(opCodeFilePath);
         }
 
         [Test]
@@ -765,10 +779,8 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
             Assert.AreEqual(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, output["num1"]);
             Assert.AreEqual(55, output["num2"]);
 
-            var isReplicationLogicFound = File.ReadLines(opCodeFilePath).SkipWhile(line => !line.Contains("ReplicationLogic"));
-            var unmarshalOccurences = File.ReadLines(opCodeFilePath).Where(line => line.Contains("Unmarshal"));
-            Assert.IsEmpty(isReplicationLogicFound);
-            Assert.AreEqual(0, unmarshalOccurences.Count());
+            TestHelpers.AssertEmittedCodeHasNoReplication(opCodeFilePath);
+            TestHelpers.AssertEmittedCodeHasUnMarhsallCalls(opCodeFilePath);
         }
         [Test]
         public void ExpressionListUnMarshals()
@@ -785,13 +797,14 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
             Assert.IsNotEmpty(output);
             Assert.AreEqual(new object[] { 1,2,3,new int[] {0,1,2,3 } }, output["x"]);
 
-            var replicationLogicOccurences = File.ReadLines(opCodeFilePath).Where(line => line.Contains("ReplicationLogic"));
-            var unmarshalOccurences = File.ReadLines(opCodeFilePath).Where(line => line.Contains("Unmarshal"));
-            Assert.AreEqual(1,replicationLogicOccurences.Count());
-            Assert.AreEqual(1, unmarshalOccurences.Count());
+            TestHelpers.AssertEmittedCodeHasNoReplication(opCodeFilePath,1);
+            TestHelpers.AssertEmittedCodeHasUnMarhsallCalls(opCodeFilePath,1);
         }
         [Test]
         [Category("Failure")]//TODO_MSIL this fails because DSCore.List.FirstItem replicates when it should not.
+        //unfortunately we cannot know for sure that the second invocation will be safe.// but according to the
+        //type parameters it should be...ie in the DS runtime an object return type is var[]..[] and so is an IList[] param...
+        //TODO_MSIL - this test fails when enabling direct function call validation in ReplicationLogic
         public void DirectFunctionCallsOnly_NoUnMarshaling()
         {
             string code =
@@ -808,11 +821,57 @@ list = DSCore.List.Reverse([ 1, 2, 3 ]);
             Assert.IsNotEmpty(output);
             Assert.AreEqual(2, output["i2"]);
 
-            var replicationLogicOccurences = File.ReadLines(opCodeFilePath).Where(line => line.Contains("ReplicationLogic"));
-            var unmarshalOccurences = File.ReadLines(opCodeFilePath).Where(line => line.Contains("Unmarshal"));
-            Assert.AreEqual(0, replicationLogicOccurences.Count());
-            Assert.AreEqual(0, unmarshalOccurences.Count());
+            TestHelpers.AssertEmittedCodeHasNoReplication(opCodeFilePath);
+            TestHelpers.AssertEmittedCodeHasUnMarhsallCalls(opCodeFilePath);
         }
+
+        [Test]
+        [Category("Failure")] // We should be able to convert this to a direct function call, by promoting the single item to a collection at compile time.
+        //instead we fallback to replication.
+        public void FunctionParam_IListArbitraryDimensionArrayImport_WorksSingleItem()
+        {
+            string dscode = @"
+import(""DesignScriptBuiltin.dll"");
+import(""DSCoreNodes.dll"");
+item = DSCore.List.FirstItem(20);
+";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+
+            Assert.IsTrue(output.ContainsKey("item"));
+
+            var expectedResult = 20;
+
+            var result = output["item"];
+            Assert.AreEqual(expectedResult, result);
+            TestHelpers.AssertEmittedCodeHasNoReplication(opCodeFilePath);
+        }
+
+        [Test]
+        [Category("Failure")] // We should be able to convert this to a direct function call, by promoting the single item to a collection at compile time.
+        //instead we fallback to replication.
+        public void FunctionParam_IEnum_ArbitraryDimensionArrayImport_WorksSingleItem()
+        {
+            string dscode = @"
+import(""DesignScriptBuiltin.dll"");
+import(""DSCoreNodes.dll"");
+import(""FFITarget.dll"");
+item = FFITarget.DummyMath.Sum(20); //Sum(IEnumerable<double>)
+";
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+
+            Assert.IsTrue(output.ContainsKey("item"));
+
+            var expectedResult = 20;
+
+            var result = output["item"];
+            Assert.AreEqual(expectedResult, result);
+            TestHelpers.AssertEmittedCodeHasNoReplication(opCodeFilePath);
+        }
+
         #endregion
     }
 }

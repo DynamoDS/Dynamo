@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -85,7 +85,7 @@ namespace DynamoPerformanceTests
             /// <summary>
             /// Maximum count of warmup iterations that should be performed
             /// </summary>
-            protected int DynamoMaxWarmuoCount = 9;
+            protected int DynamoMaxWarmupCount = 9;
 
             /// <summary>
             /// Benchmark process will be launched only once
@@ -136,7 +136,7 @@ namespace DynamoPerformanceTests
             {
                 Add(Job.Default
                     .WithMinWarmupCount(DynamoMinWarmupCount)
-                    .WithMaxWarmupCount(DynamoMaxWarmuoCount)
+                    .WithMaxWarmupCount(DynamoMaxWarmupCount)
                     .WithLaunchCount(DynamoLaunchCount)
                     .WithMinIterationCount(DynamoMinIterationCount)
                     .WithMaxIterationCount(DynamoMaxIterationCount)

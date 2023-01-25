@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -64,14 +64,6 @@ namespace DynamoPerformanceTests
 
         #region Iteration setup and cleanup methods for Benchmarks
 
-        /// <summary>
-        /// Setup method to be called before each OpenModel benchmark.
-        /// </summary>
-        [IterationSetup(Target = nameof(Open))]
-        public void IterationSetupOpenModel()
-        {
-            Setup();
-        }
 
         /// <summary>
         /// Setup method to be called before each RunModel benchmark.
@@ -83,6 +75,15 @@ namespace DynamoPerformanceTests
 
             //open the dyn file
             OpenModel(DynamoFilePath);
+        }
+
+        [IterationSetup(Target = nameof(RunMSIL))]
+        public void IterationSetupRunMSIL()
+        {
+            Setup();
+
+            // open the dyn file to run with MSIL engine.
+            OpenModel(DynamoFilePath, dsExecution: false);
         }
 
         /// <summary>
@@ -98,15 +99,15 @@ namespace DynamoPerformanceTests
 
         #region Benchmark methods
 
-        [Benchmark]
-        public void Open()
-        {
-            //open the dyn file
-            OpenModel(DynamoFilePath);
-        }
 
         [Benchmark]
         public void Run()
+        {
+            BeginRun();
+        }
+
+        [Benchmark]
+        public void RunMSIL()
         {
             BeginRun();
         }
