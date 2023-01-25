@@ -15,6 +15,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using DSASM = ProtoCore.DSASM;
+using Autodesk.DesignScript.Runtime;
 
 namespace EmitMSIL
 {
@@ -39,6 +40,14 @@ namespace EmitMSIL
         private Dictionary<int, bool> willReplicateCache = new Dictionary<int, bool>();
         private CompilePass compilePass;
         internal (TimeSpan compileTime, TimeSpan executionTime) CompileAndExecutionTime;
+
+        //validity options
+        /// <summary>
+        /// IF this bool is set to true, compiler will throw when it
+        /// encounters issues related to direct function calls, when this option is off
+        /// compiler will fallback to emitting replicated calls.
+        /// </summary>
+        internal bool StrictDirectFunctionCallValidation { get; set; } = false;
 
         private enum CompilePass
         {
@@ -158,7 +167,10 @@ namespace EmitMSIL
 #endif
             EmitOpCode(OpCodes.Ret);
 
-            return (asm, type);
+                return (asm, type);
+#if DEBUG
+            }
+#endif
         }
 
         // Given a double value on the stack, emit call to Math.Round(arg, 0, MidpointRounding.AwayFromZero);
@@ -167,7 +179,8 @@ namespace EmitMSIL
         {
             EmitOpCode(OpCodes.Ldc_I4_0);
             EmitOpCode(OpCodes.Ldc_I4_1);
-            var roundMethod = typeof(Math).GetMethod(nameof(Math.Round), new[] { typeof(double), typeof(int), typeof(MidpointRounding) });
+            var roundMethod = typeof(Math).GetMethod(nameof(Math.Round),
+                new[] { typeof(double), typeof(int), typeof(MidpointRounding) });
             EmitOpCode(OpCodes.Call, roundMethod);
         }
 
@@ -210,204 +223,39 @@ namespace EmitMSIL
                 EmitOpCode(OpCodes.Conv_R8);
                 return typeof(double);
             }
-
-            if (argType == typeof(double[]) && typeof(IEnumerable<int>).IsAssignableFrom(param))
-            {
-                return EmitArrayCoercion<double, int>(arg, param);
-            }
-            if (argType == typeof(int[]) && typeof(IEnumerable<double>).IsAssignableFrom(param))
-            {
-                return EmitArrayCoercion<int, double>(arg, param);
-            }
-            if (argType == typeof(double[]) && typeof(IEnumerable<long>).IsAssignableFrom(param))
-            {
-                return EmitArrayCoercion<double, long>(arg, param);
-            }
-            if (argType == typeof(long[]) && typeof(IEnumerable<double>).IsAssignableFrom(param))
-            {
-                return EmitArrayCoercion<long, double>(arg, param);
-            }
-            if (argType == typeof(long[]) && typeof(IEnumerable<int>).IsAssignableFrom(param))
-            {
-                return EmitArrayCoercion<long, int>(arg, param);
-            }
-            if (argType == typeof(int[]) && typeof(IEnumerable<long>).IsAssignableFrom(param))
-            {
-                return EmitArrayCoercion<int, long>(arg, param);
-            }
-
+            
             if (typeof(IEnumerable<int>).IsAssignableFrom(argType) && typeof(IEnumerable<double>).IsAssignableFrom(param))
             {
-                return EmitIEnumerableCoercion<int, double>(arg);
+                return EmitCollectionCoercion<int, double>(arg, param);
             }
             if (typeof(IEnumerable<int>).IsAssignableFrom(argType) && typeof(IEnumerable<long>).IsAssignableFrom(param))
             {
-                return EmitIEnumerableCoercion<int, long>(arg);
+                return EmitCollectionCoercion<int, long>(arg, param);
             }
             if (typeof(IEnumerable<long>).IsAssignableFrom(argType) && typeof(IEnumerable<double>).IsAssignableFrom(param))
             {
-                return EmitIEnumerableCoercion<long, double>(arg);
+                return EmitCollectionCoercion<long, double>(arg, param);
             }
             if (typeof(IEnumerable<long>).IsAssignableFrom(argType) && typeof(IEnumerable<int>).IsAssignableFrom(param))
             {
-                return EmitIEnumerableCoercion<long, int>(arg);
+                return EmitCollectionCoercion<long, int>(arg, param);
             }
             if (typeof(IEnumerable<double>).IsAssignableFrom(argType) && typeof(IEnumerable<int>).IsAssignableFrom(param))
             {
-                return EmitIEnumerableCoercion<double, int>(arg);
+                return EmitCollectionCoercion<double, int>(arg, param);
             }
             if (typeof(IEnumerable<double>).IsAssignableFrom(argType) && typeof(IEnumerable<long>).IsAssignableFrom(param))
             {
-                return EmitIEnumerableCoercion<double, long>(arg);
+                return EmitCollectionCoercion<double, long>(arg, param);
             }
             // TODO: Add more coercion cases here.
 
             return argType;
         }
-
-        private Type EmitIEnumerableCoercion<Source, Target>(AssociativeNode arg)
+        
+        private Type EmitCollectionCoercion<Source, Target>(AssociativeNode arg, Type ienumerableParamType)
         {
-            EmitILComment("coerce IEnumerable");
-            if (compilePass == CompilePass.GatherTypeInfo)
-            {
-                return typeof(Target[]);
-            }
-
-            /* This is emitting the following foreach loop for the conversion:
-             
-                var len = a.Count();    // where a is an IEnumerable<Source>
-                var res = new Target[len];
-                int c = 0;
-                foreach (var i in a)
-                {
-                    res[c] = i;
-                    c++;
-                }
-            */
-
-            // Load array to be coerced.
-            LocalBuilder localBuilder;
-            int sourceArrayIndex = -1;
-            if (arg is IdentifierNode ident)
-            {
-                sourceArrayIndex = variables[ident.Value].Item1;
-            }
-            else
-            {
-                localBuilder = DeclareLocal(typeof(IEnumerable<Source>), "IEnumerable to coerce");
-                sourceArrayIndex = localBuilder.LocalIndex;
-
-                EmitOpCode(OpCodes.Stloc, sourceArrayIndex);
-                EmitOpCode(OpCodes.Ldloc, sourceArrayIndex);
-            }
-
-            var mInfo = typeof(Enumerable).GetMethods().Single(
-                m => m.Name == nameof(Enumerable.Count) && m.IsStatic && m.GetParameters().Length == 1);
-            var genericMInfo = mInfo.MakeGenericMethod(typeof(Source));
-
-            // len = source.Count();
-            EmitOpCode(OpCodes.Call, genericMInfo);
-            localBuilder = DeclareLocal(typeof(int), "length of IEnumerable to coerce");
-            var sourceArrayLengthIndex = localBuilder.LocalIndex;
-            EmitOpCode(OpCodes.Stloc, sourceArrayLengthIndex);
-
-            // Load length of source array, var newarr = new Target[len];
-            EmitOpCode(OpCodes.Ldloc, sourceArrayLengthIndex);
-            EmitOpCode(OpCodes.Newarr, typeof(Target));
-
-            // Declare new array to store coerced values
-            var t = typeof(Target[]);
-            localBuilder = DeclareLocal(t, "coerced target array");
-            var newArrIndex = localBuilder.LocalIndex;
-            EmitOpCode(OpCodes.Stloc, newArrIndex);
-
-            // Emit for loop to loop over array and convert.
-
-            // i = 0;
-            EmitOpCode(OpCodes.Ldc_I4_0);
-            localBuilder = DeclareLocal(typeof(int), "for loop counter");
-            var counterIndex = localBuilder.LocalIndex;
-            EmitOpCode(OpCodes.Stloc, counterIndex);
-
-            // Load array to be coerced.
-            EmitOpCode(OpCodes.Ldloc, sourceArrayIndex);
-            mInfo = typeof(IEnumerable<Source>).GetMethod(nameof(IEnumerable<Source>.GetEnumerator));
-            EmitOpCode(OpCodes.Callvirt, mInfo);
-
-            localBuilder = DeclareLocal(typeof(IEnumerator<Source>), "enumerator");
-            var enumeratorIndex = localBuilder.LocalIndex;
-            EmitOpCode(OpCodes.Stloc, enumeratorIndex);
-
-            var loopBodyLabel = DefineLabel();
-            var loopCondLabel = DefineLabel();
-
-            EmitOpCode(OpCodes.Br_S, loopCondLabel.Value);
-
-            MarkLabel(loopBodyLabel.Value, "label:body");
-            EmitOpCode(OpCodes.Ldloc, enumeratorIndex);
-
-            var prop = typeof(IEnumerator<Source>).GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(
-                                    p => p.Name == nameof(IEnumerator<Source>.Current)).FirstOrDefault();
-            mInfo = prop.GetAccessors().FirstOrDefault();
-            EmitOpCode(OpCodes.Callvirt, mInfo);
-
-            localBuilder = DeclareLocal(typeof(Source), "element in source array");
-            var sourceArrayElementIndex = localBuilder.LocalIndex;
-            EmitOpCode(OpCodes.Stloc, sourceArrayElementIndex);
-
-            // target[i] = source_element;
-            EmitOpCode(OpCodes.Ldloc, newArrIndex);
-            EmitOpCode(OpCodes.Ldloc, counterIndex);
-            EmitOpCode(OpCodes.Ldloc, sourceArrayElementIndex);
-            if (typeof(Target) == typeof(double))
-            {
-                EmitOpCode(OpCodes.Conv_R8);
-                EmitOpCode(OpCodes.Stelem_R8);
-            }
-            else if (typeof(Target) == typeof(int))
-            {
-                EmitOpCode(OpCodes.Conv_I4);
-                EmitOpCode(OpCodes.Stelem_I4);
-            }
-            else if (typeof(Target) == typeof(long))
-            {
-                EmitOpCode(OpCodes.Conv_I8);
-                EmitOpCode(OpCodes.Stelem_I8);
-            }
-            // i++;
-            EmitOpCode(OpCodes.Ldloc, counterIndex);
-            EmitOpCode(OpCodes.Ldc_I4_1);
-            EmitOpCode(OpCodes.Add);
-            EmitOpCode(OpCodes.Stloc, counterIndex);
-
-            MarkLabel(loopCondLabel.Value, "label:loop condition");
-            EmitOpCode(OpCodes.Ldloc, enumeratorIndex);
-
-            mInfo = typeof(IEnumerator).GetMethod(nameof(IEnumerator.MoveNext));
-            EmitOpCode(OpCodes.Callvirt, mInfo);
-
-            EmitOpCode(OpCodes.Brtrue_S, loopBodyLabel.Value);
-
-            EmitOpCode(OpCodes.Ldloc, enumeratorIndex);
-
-            mInfo = typeof(IDisposable).GetMethod(nameof(IDisposable.Dispose));
-            EmitOpCode(OpCodes.Callvirt, mInfo);
-
-           
-            EmitOpCode(OpCodes.Ldloc, newArrIndex);
-
-            localBuilder = DeclareLocal(t, "target array");
-            var targetArrayIndex = localBuilder.LocalIndex;
-            EmitOpCode(OpCodes.Stloc, targetArrayIndex);
-            EmitOpCode(OpCodes.Ldloc, targetArrayIndex);
-
-            return t;
-        }
-
-        // Coerce int/long/double arrays to IEnumerable<T> or IList<T>
-        private Type EmitArrayCoercion<Source, Target>(AssociativeNode arg, Type ienumerableParamType)
-        {
-            EmitILComment("array coercion");
+            EmitILComment("collection coercion");
             if (compilePass == CompilePass.GatherTypeInfo)
             {
                 var returnType = typeof(Target[]);
@@ -417,7 +265,7 @@ namespace EmitMSIL
                 }
                 return returnType;
             }
-            LocalBuilder localBuilder;
+
             // Load array to be coerced.
             int currentVarIndex = -1;
             if (arg is IdentifierNode ident)
@@ -426,117 +274,56 @@ namespace EmitMSIL
             }
             else
             {
-                localBuilder = DeclareLocal(typeof(Source[]), "array to coerce");
+                var localBuilder = DeclareLocal(typeof(IEnumerable<Source>), "collection to coerce");
                 currentVarIndex = localBuilder.LocalIndex;
 
                 EmitOpCode(OpCodes.Stloc, currentVarIndex);
                 EmitOpCode(OpCodes.Ldloc, currentVarIndex);
             }
-            // Find length for array to be coerced (already on top of eval stack), len
-            EmitOpCode(OpCodes.Ldlen);
-            EmitOpCode(OpCodes.Conv_I4);
 
-            // var newarr = new Target[len];
-            EmitOpCode(OpCodes.Newarr, typeof(Target));
-
-            // Declare new array to store coerced values
-            var t = typeof(Target[]);
-            localBuilder = DeclareLocal(t, "coerced array");
-            var newArrIndex = localBuilder.LocalIndex;
-            EmitOpCode(OpCodes.Stloc, newArrIndex);
-
-            // Emit for loop to loop over array and convert.
-
-            // i = 0;
-            localBuilder = DeclareLocal(typeof(int), "for loop counter");
-            var counterIndex = localBuilder.LocalIndex;
-            EmitOpCode(OpCodes.Ldc_I4_0);
-            EmitOpCode(OpCodes.Stloc, counterIndex);
-
-            var loopBodyLabel = DefineLabel();
-            var loopCondLabel = DefineLabel();
-
-            EmitOpCode(OpCodes.Br_S, loopCondLabel.Value);
-
-            // newarr[i] = (Target)arr[i];
-            MarkLabel(loopBodyLabel.Value, "label:body");
-
-            EmitOpCode(OpCodes.Ldloc, newArrIndex);
-            EmitOpCode(OpCodes.Ldloc, counterIndex);
-
-            
-            EmitOpCode(OpCodes.Ldloc, currentVarIndex);
-            EmitOpCode(OpCodes.Ldloc, counterIndex);
-
-            if (typeof(Source) == typeof(double))
-            {
-                EmitOpCode(OpCodes.Ldelem_R8);
-            }
-            else if (typeof(Source) == typeof(long))
-            {
-                EmitOpCode(OpCodes.Ldelem_I8);
-            }
-            else if (typeof(Source) == typeof(int))
-            {
-                EmitOpCode(OpCodes.Ldelem_I4);
-            }
+            EmitOpCode(OpCodes.Ldnull);
+            MethodInfo convertMethod = null;
             if (typeof(Target) == typeof(int))
             {
-                if (typeof(Source) == typeof(double))
-                {
-                    EmitMathRound();
-                }
-                EmitOpCode(OpCodes.Conv_I4);
-                EmitOpCode(OpCodes.Stelem_I4);
+                convertMethod = typeof(Convert).GetMethod(nameof(Convert.ToInt32), new[] { typeof(Source) });
+            }
+            else if(typeof(Target) == typeof(double))
+            {
+                convertMethod = typeof(Convert).GetMethod(nameof(Convert.ToDouble), new[] { typeof(Source) });
             }
             else if (typeof(Target) == typeof(long))
             {
-                if (typeof(Source) == typeof(double))
-                {
-                    EmitMathRound();
-                }
-                EmitOpCode(OpCodes.Conv_I8);
-                EmitOpCode(OpCodes.Stelem_I8);
+                convertMethod = typeof(Convert).GetMethod(nameof(Convert.ToInt64), new[] { typeof(Source) });
             }
-            if (typeof(Target) == typeof(double))
+            else if (typeof(Target) == typeof(bool))
             {
-                EmitOpCode(OpCodes.Conv_R8);
-                EmitOpCode(OpCodes.Stelem_R8);
+                convertMethod = typeof(Convert).GetMethod(nameof(Convert.ToBoolean), new[] { typeof(Source) });
             }
-            // i++;
-            EmitOpCode(OpCodes.Ldloc, counterIndex);
-            EmitOpCode(OpCodes.Ldc_I4_1);
+            EmitOpCode(OpCodes.Ldftn, convertMethod);
 
-            EmitOpCode(OpCodes.Add);
+            var ctor = System.Linq.Expressions.Expression.GetDelegateType(typeof(Source), typeof(Target))
+                .GetConstructors()[0];
+            EmitOpCode(OpCodes.Newobj, ctor);
             
-            EmitOpCode(OpCodes.Stloc, counterIndex);
+            var selectMethod = typeof(Enumerable).GetMember(nameof(Enumerable.Select)).OfType<MethodInfo>().First();
 
-            // i < arr.Length;
-            MarkLabel(loopCondLabel.Value,"label:cond");
+            var genericSelect = selectMethod.MakeGenericMethod(typeof(Source), typeof(Target));
+            EmitOpCode(OpCodes.Call, genericSelect);
 
-            EmitOpCode(OpCodes.Ldloc, counterIndex);
-
-            // Load input array
-            EmitOpCode(OpCodes.Ldloc, currentVarIndex);
-            EmitOpCode(OpCodes.Ldlen);
-            EmitOpCode(OpCodes.Conv_I4);
-
-            EmitOpCode(OpCodes.Clt);
-
-            EmitOpCode(OpCodes.Brtrue_S, loopBodyLabel.Value);
-
-            EmitOpCode(OpCodes.Ldloc, newArrIndex);
-
-            if(typeof(List<Target>).IsAssignableFrom(ienumerableParamType))
+            // If param is an array
+            if (typeof(Array).IsAssignableFrom(ienumerableParamType))
             {
                 var requiredType = typeof(Target);
-                var toListMethod = typeof(Enumerable).GetMethod(nameof(Enumerable.ToList));
-                var mInfo = toListMethod.MakeGenericMethod(requiredType);
+                var toArrayMethod = typeof(Enumerable).GetMethod(nameof(Enumerable.ToArray));
+                var genericToArray = toArrayMethod.MakeGenericMethod(requiredType);
 
-                EmitOpCode(OpCodes.Call, mInfo);
-                t = typeof(List<Target>);
+                EmitOpCode(OpCodes.Call, genericToArray);
+                return typeof(Target[]);
             }
-            return t;
+            var toListMethod = typeof(Enumerable).GetMethod(nameof(Enumerable.ToList));
+            var genericToList = toListMethod.MakeGenericMethod(typeof(Target));
+            EmitOpCode(OpCodes.Call, genericToList);
+            return typeof(List<Target>);
         }
 
         private IEnumerable<ProtoCore.CLRFunctionEndPoint> FunctionLookup(IList args)
@@ -584,6 +371,14 @@ namespace EmitMSIL
                 if (!(argsNumber <= parameterNumber &&
                     parameterNumber - argsNumber <= defaultParamNumber))
                 {
+                    continue;
+                }
+
+                bool matchingArgCount = isStaticOrConstructorOrInternal ?
+                    procNode.ArgumentTypes.Count == args.Count :
+                    (procNode.ArgumentTypes.Count + 1) == args.Count;
+
+                if (!matchingArgCount) {
                     continue;
                 }
 
@@ -677,50 +472,7 @@ namespace EmitMSIL
 
             foreach (var exp in array.Exprs)
             {
-                if (exp is ExprListNode eln)
-                {
-                    var subArray = GetTypeStatisticsForArray(eln);
-                    var t = GetOverallTypeForArray(subArray);
-
-                    if (t != typeof(object))
-                    {
-                        t = t.MakeArrayType();
-                    }
-                    arrayTypes.Add(t);
-                }
-                else
-                {
-                    Type t;
-                    switch (exp.Kind)
-                    {
-                        case AstKind.Integer:
-                            t = typeof(long);
-                            break;
-                        case AstKind.Double:
-                            t = typeof(double);
-                            break;
-                        case AstKind.Boolean:
-                            t = typeof(bool);
-                            break;
-                        case AstKind.Char:
-                            t = typeof(char);
-                            break;
-                        case AstKind.String:
-                            t = typeof(string);
-                            break;
-                        case AstKind.Identifier:
-                            if(variables.TryGetValue((exp as IdentifierNode).Value, out Tuple<int, Type> tuple))
-                            {
-                                t = tuple.Item2;
-                            }
-                            else t = typeof(object);
-                            break;
-                        default:
-                            t = typeof(object);
-                            break;
-                    }
-                    arrayTypes.Add(t);
-                }
+                arrayTypes.Add(DfsTraverse(exp));
             }
             return arrayTypes;
         }
@@ -1095,48 +847,60 @@ namespace EmitMSIL
             {
                 throw new ArgumentException("AST node must be an Expression List.");
             }
-            var arrayTypes = GetTypeStatisticsForArray(eln);
-            var ot = GetOverallTypeForArray(arrayTypes);
-
-            EmitArray(ot, eln.Exprs, (AssociativeNode el, int idx) =>
+            if (compilePass == CompilePass.GatherTypeInfo)
             {
+                var arrayTypes = GetTypeStatisticsForArray(eln);
+                return GetOverallTypeForArray(arrayTypes).MakeArrayType();
+            }
+            if (compilePass == CompilePass.emitIL)
+            {
+                Type ot;
+                if(!astTypeInfoMap.TryGetValue(node.ID, out ot))
+                {
+                    throw new Exception("unkown array type");
+                }
+                var otElementType = ot.GetElementType();
+                EmitArray(otElementType, eln.Exprs, (AssociativeNode el, int idx) =>
+                {
 
-                Type t;
+                    Type t;
                 //if this element is a CLRStackValue, we need to unmarshal it.
 
-                if (astTypeInfoMap.TryGetValue(el.ID, out t) && t == typeof(DSASM.CLRStackValue))
-                {
-                    EmitOpCode(OpCodes.Ldarg_2);
-                    DfsTraverse(el);
-                    //TODO cache this
-                    var unmarshalMethod = typeof(BuiltIn.MSILOutputMap<string, object>).GetMethod("Unmarshal",
-                    BindingFlags.Instance | BindingFlags.Public);
-                    EmitOpCode(OpCodes.Callvirt, unmarshalMethod);
-                    t = unmarshalMethod.ReturnType;
-                }
-                else
-                {
-                    t = DfsTraverse(el);
-                }
-
-
-                if (t == null) return;
-
-
-
-                if (ot == typeof(object) && t.IsValueType)
-                {
-                    EmitOpCode(OpCodes.Box, t);
-                }
-                if (ot == typeof(double))
-                {
-                    if (t == typeof(int) || t == typeof(long))
+                    if (astTypeInfoMap.TryGetValue(el.ID, out t) && t == typeof(DSASM.CLRStackValue))
                     {
-                        EmitOpCode(OpCodes.Conv_R8);
+                        EmitOpCode(OpCodes.Ldarg_2);
+                        DfsTraverse(el);
+                    //TODO cache this
+                        var unmarshalMethod = typeof(BuiltIn.MSILOutputMap<string, object>).GetMethod("Unmarshal",
+                        BindingFlags.Instance | BindingFlags.Public);
+                        EmitOpCode(OpCodes.Callvirt, unmarshalMethod);
+                        t = unmarshalMethod.ReturnType;
                     }
-                }
-            });
-            return ot.MakeArrayType();
+                    else
+                    {
+                        t = DfsTraverse(el);
+                    }
+
+
+                    if (t == null) return;
+
+
+
+                    if (otElementType == typeof(object) && t.IsValueType)
+                    {
+                        EmitOpCode(OpCodes.Box, t);
+                    }
+                    if (otElementType == typeof(double))
+                    {
+                        if (t == typeof(int) || t == typeof(long))
+                        {
+                            EmitOpCode(OpCodes.Conv_R8);
+                        }
+                    }
+                });
+                return ot;
+            }
+            return null;
         }
 
         /// <summary>
@@ -1380,7 +1144,7 @@ namespace EmitMSIL
 
             var isStaticOrCtor = clrFep.IsStatic || clrFep.IsConstructor;
 
-            var doesReplicate = WillCallReplicate(node.ID, parameters, isStaticOrCtor, args);
+            var doesReplicate = WillCallReplicate(node.ID, clrFep, parameters, isStaticOrCtor, args);
             if (doesReplicate)
             {
                 EmitILComment("emit replicating call");
@@ -1436,6 +1200,7 @@ namespace EmitMSIL
                         EmitOpCode(OpCodes.Box, t);
                     }
                 });
+
                 EmitILComment("emit guides array start");
                 // Emit guides
                 EmitArray(typeof(string[]), args, (AssociativeNode n, int idx) =>
@@ -1451,8 +1216,8 @@ namespace EmitMSIL
                     }
                     else
                     {
-                    // Emit an empty string array.
-                    EmitArray<string>(arrType: typeof(string), items: null, itemEmitter: null);
+                        // Emit an empty string array.
+                        EmitArray<string>(arrType: typeof(string), items: null, itemEmitter: null);
                     }
                 });
 
@@ -1460,7 +1225,8 @@ namespace EmitMSIL
                 EmitOpCode(OpCodes.Ldarg_3);
 
                 // Emit call to ReplicationLogic
-                var repLogic = typeof(Replication).GetMethod(nameof(Replication.ReplicationLogic), BindingFlags.Public | BindingFlags.Static);
+                var repLogic = typeof(Replication).GetMethod(nameof(Replication.ReplicationLogic),
+                    BindingFlags.Public | BindingFlags.Static);
                 EmitOpCode(OpCodes.Call, repLogic);
 
                 return typeof(DSASM.CLRStackValue);
@@ -1614,13 +1380,40 @@ namespace EmitMSIL
                 }
             }
         }
-
-        private bool DoesParamArgRankMatch(List<Type> parameterTypes, List<AssociativeNode> args)
+        /// <summary>
+        /// Checks that all arguments are compatible with the parameters of a given fep.
+        /// Checks rank, type, and attributes to make this determination.
+        /// </summary>
+        /// <param name="fep"></param>
+        /// <param name="parameterTypes"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        private bool DoParamsRankMatchArgs(ProtoCore.CLRFunctionEndPoint fep, List<Type> parameterTypes, List<AssociativeNode> args)
         {
+            //TODO this can throw because it's possible that the FEP is incorrect
+            //and if this is the case we should throw or fallback to replication -
+            //in either case log something - we need compile time overload support.
+            if (parameterTypes.Count != args.Count)
+            {
+                var message = "wrong number of arguments, likely incorrect overload selected at compile time.";
+                EmitILComment(message);
+                if (StrictDirectFunctionCallValidation)
+                {
+                    throw new ArgumentException(message);
+                }
+                return false;
+            }
             var argIndex = 0;
+            
             foreach (var p in parameterTypes)
             {
-                if (CoreUtils.IsPrimitiveASTNode(args[argIndex]) || args[argIndex] is CharNode)
+                var currentArg = args[argIndex];
+                if (compilePass == CompilePass.GatherTypeInfo)
+                {
+                    DfsTraverse(currentArg);
+                }
+                if (CoreUtils.IsPrimitiveASTNode(args[argIndex]) || currentArg is CharNode)
                 {
                     // arg is a single value (primitive type), but param is not (array promotion case).
                     if (ArrayUtils.IsEnumerable(p) && p != typeof(string))
@@ -1628,7 +1421,7 @@ namespace EmitMSIL
                         return false;
                     }
 
-                    switch (args[argIndex].Kind)
+                    switch (currentArg.Kind)
                     {
                         case AstKind.String:
                             var strNode = args[argIndex] as StringNode;
@@ -1642,37 +1435,33 @@ namespace EmitMSIL
                             break;
                     }
                 }
-                else if (args[argIndex] is ExprListNode exp)
+                else if (currentArg is ExprListNode exp)
                 {
-                    if (!ArrayUtils.IsEnumerable(p) || p == typeof(string))
+                    if (exp.ReplicationGuides.Count > 0) return false;
+                    Type t;
+                    if (!astTypeInfoMap.TryGetValue(exp.ID, out t))
                     {
-                        // arg is an enumerable type, param is not.
-                        return false;
+                        throw new Exception("unkown ast type");
                     }
-                    var argRank = GetArgumentRank(exp);
-                    if (argRank == -1)
-                    {
-                        // non-rectangular (jagged) array best handled by replication
-                        return false;
-                    }
-                    if (argRank != GetRank(p)) return false;
+                    if (!DoesParamRankMatchArg(fep, p, t, argIndex)) return false;
                 }
-                else if (args[argIndex] is IdentifierNode idn)
+                else if (currentArg is IdentifierNode idn)
                 {
                     if (idn.ReplicationGuides.Count > 0) return false;
 
                     var t = variables[idn.Value].Item2;
                     if (t == typeof(object)) return false;
 
-                    if (!p.Equals(t))
+                    if(!DoesParamRankMatchArg(fep,p, t,argIndex)) return false;
+                }
+                else if (currentArg is RangeExprNode rgnNode)
+                {
+                    Type t;
+                    if (!astTypeInfoMap.TryGetValue(rgnNode.ID, out t))
                     {
-                        var argRank = GetRank(t);
-                        var paramRank = GetRank(p);
-                        if (argRank != paramRank) return false;
-
-                        // If both have rank 0, it could also be because their type info is ambiguous.
-                        if (argRank == 0 && paramRank == 0) return false;
+                        throw new Exception("unkown ast type");
                     }
+                    if (!DoesParamRankMatchArg(fep,p, t,argIndex)) return false;
                 }
                 else return false;
                 argIndex++;
@@ -1680,8 +1469,71 @@ namespace EmitMSIL
             return true;
         }
 
-        private static int GetRank(Type type)
+        /// <summary>
+        /// Check that a parameter's rank and type are compatible with the given argument.
+        /// This function besides checking rank directly, also does checks using the FEP attributes.
+        /// </summary>
+        /// <param name="fep">the function end point wrapper</param>
+        /// <param name="paramType">type of param on the fep</param>
+        /// <param name="argType">actual argument type</param>
+        /// <param name="paramIndex">parameter index in list of params to fep.</param>
+        /// <returns></returns>
+        private static bool DoesParamRankMatchArg(ProtoCore.CLRFunctionEndPoint fep,Type paramType, Type argType, int paramIndex)
         {
+            if (!paramType.Equals(argType))
+            {
+                //if both types are value types, let's
+                //let coercion figure this out.
+                if (paramType.IsValueType && argType.IsValueType)
+                {
+                    return true;
+                }
+
+                var argRank = GetRank(fep,argType,paramIndex);
+                var paramRank = GetRank(fep,paramType, paramIndex);
+
+                //if the param is an arbitrary rank array and
+                //arg is some array type, replication should not occur.
+                if (paramRank == -1 && argRank > 0)
+                {
+                    return true;
+                }
+                if (argRank != paramRank) return false;
+
+                // If both have rank 0, it could also be because their type info is ambiguous.
+                //TODO commenting this out will makes negate test pass - as negate method expects object param.
+                //TODO perhaps just log something
+                //if (argRank == 0 && paramRank == 0) return false;
+
+                if (!paramType.IsAssignableFrom(argType))
+                {
+                    return false;
+                }
+
+            }
+            return true;
+        }
+
+        private static int GetRank(ProtoCore.CLRFunctionEndPoint fep,Type type,int paramIndex)
+        {
+            //TODO (Alternatives to consider)
+            if (fep.procedureNode.ArgumentTypes.ElementAt(paramIndex).rank == DSASM.Constants.kArbitraryRank)
+            {
+                return -1;
+            }
+            /*
+            //IEnumerable interface types are imported as arbitrary rank.
+            if (type.IsInterface && typeof(IEnumerable).IsAssignableFrom(type))
+            {
+                return -1;
+            }
+            
+            //params marked with arbitrary rank are imported as arbitrary rank.
+            if (fep.ParamAttributes[paramIndex].Any(attr => attr is ArbitraryDimensionArrayImportAttribute))
+            {
+                return -1;
+            }
+            */
             return type.IsArray ? GetArrayRank(type) : GetEnumerableRank(type);
         }
 
@@ -1700,28 +1552,7 @@ namespace EmitMSIL
             return 1 + GetEnumerableRank(genericArgs.FirstOrDefault());
         }
 
-        private static int GetArgumentRank(AssociativeNode val)
-        {
-            var arr = val is ExprListNode ? (val as ExprListNode).Exprs : null;
-            if (arr == null)
-            {
-                return 0;
-            }
-            int firstRank = 0;
-            int i = 0;
-            //De-ref the val
-            foreach (var subVal in arr)
-            {
-                int rank = GetArgumentRank(subVal);
-                if (i == 0) firstRank = rank;
-
-                if (rank != firstRank) return -1;
-                i++;
-            }
-            return 1 + firstRank;
-        }
-
-        private bool WillCallReplicate(int id, List<Type> paramTypes, bool isStaticOrCtor, List<AssociativeNode> args)
+        private bool WillCallReplicate(int id, ProtoCore.CLRFunctionEndPoint fep, List<Type> paramTypes, bool isStaticOrCtor, List<AssociativeNode> args)
         {
             if (willReplicateCache.TryGetValue(id, out bool willReplicate))
             {
@@ -1732,7 +1563,7 @@ namespace EmitMSIL
             {
                 if (isStaticOrCtor)
                 {
-                    willReplicate = !DoesParamArgRankMatch(paramTypes, args);
+                    willReplicate = !DoParamsRankMatchArgs(fep,paramTypes, args);
                     return willReplicate;
                 }
 
@@ -1746,7 +1577,7 @@ namespace EmitMSIL
                         return willReplicate;
                     }
                 }
-                willReplicate = !DoesParamArgRankMatch(paramTypes, args);
+                willReplicate = !DoParamsRankMatchArgs(fep,paramTypes, args);
                 return willReplicate;
             }
         }

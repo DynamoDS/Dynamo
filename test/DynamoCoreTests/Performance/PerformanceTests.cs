@@ -11,7 +11,8 @@ namespace Dynamo.Tests
     [TestFixture, Category("Performance")]
     public class PerformanceTests : DynamoModelTestBase
     {
-        private List<(string graph, TimeSpan oldEngineCompileTime, TimeSpan oldEngineExecutionTime, TimeSpan newEngineCompileTime, TimeSpan newEngineExecutionTime)> executionData;
+        private List<(string graph, TimeSpan oldEngineCompileTime, TimeSpan oldEngineExecutionTime,
+            TimeSpan newEngineCompileTime, TimeSpan newEngineExecutionTime)> executionData;
 
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
@@ -59,6 +60,7 @@ namespace Dynamo.Tests
         }
 
         [Test, TestCaseSource("FindWorkspaces"), Category("Performance")]
+        ////TODO_MSIL - many of these tests fails when enabling direct function call validation in ReplicationLogic
         public void PerformanceTest(string filePath)
         {
             DoWorkspaceOpenAndCompare(filePath);
