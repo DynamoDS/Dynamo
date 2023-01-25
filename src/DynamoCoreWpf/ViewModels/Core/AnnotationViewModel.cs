@@ -16,7 +16,6 @@ using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 using DynamoUtilities;
 using Newtonsoft.Json;
-using static Dynamo.ViewModels.SearchViewModel;
 using Color = System.Windows.Media.Color;
 
 namespace Dynamo.ViewModels
