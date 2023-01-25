@@ -15,6 +15,7 @@ namespace CoreNodeModelsWpf.Charts.Controls
     public partial class XYLineChartControl : UserControl, INotifyPropertyChanged
     {
         private Random rnd = new Random();
+        private readonly XYLineChartNodeModel model;
 
         private void OnPropertyChanged(string propertyName)
         {
@@ -27,7 +28,8 @@ namespace CoreNodeModelsWpf.Charts.Controls
         {
             InitializeComponent();
 
-            model.PropertyChanged += NodeModel_PropertyChanged;
+            this.model = model;
+            this.model.PropertyChanged += NodeModel_PropertyChanged;
 
             BuildUI(model);
 
@@ -172,6 +174,14 @@ namespace CoreNodeModelsWpf.Charts.Controls
                     Height = yAdjust;
                 }
             }
+        }
+
+        /// <summary>
+        /// Unsubscribes from ViewModel events
+        /// </summary>
+        public void Dispose()
+        {
+            this.model.PropertyChanged -= NodeModel_PropertyChanged;
         }
     }
 }

@@ -14,6 +14,7 @@ namespace CoreNodeModelsWpf.Charts.Controls
     public partial class BarChartControl : UserControl, INotifyPropertyChanged
     {
         private Random rnd = new Random();
+        private readonly BarChartNodeModel model;
 
         public event PropertyChangedEventHandler PropertyChanged;
         private static double PADDING = 4.0;
@@ -29,7 +30,8 @@ namespace CoreNodeModelsWpf.Charts.Controls
 
             InitializeComponent();
 
-            model.PropertyChanged += NodeModel_PropertyChanged;
+            this.model = model;
+            this.model.PropertyChanged += NodeModel_PropertyChanged;
 
             BuildUI(model);
 
@@ -139,6 +141,14 @@ namespace CoreNodeModelsWpf.Charts.Controls
                     Height = yAdjust;
                 }
             }
+        }
+
+        /// <summary>
+        /// Unsubscribes from ViewModel events
+        /// </summary>
+        public void Dispose()
+        {
+            this.model.PropertyChanged -= NodeModel_PropertyChanged;
         }
     }
 }

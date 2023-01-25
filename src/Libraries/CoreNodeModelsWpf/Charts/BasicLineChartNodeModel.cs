@@ -228,6 +228,19 @@ namespace CoreNodeModelsWpf.Charts
             };
         }
         #endregion
+
+        #region Dispose
+
+        /// <summary>
+        /// Finalize the usage of this Node
+        /// </summary>
+        public override void Dispose()
+        {
+            PortDisconnected -= BasicLineChartNodeModel_PortDisconnected;
+            VMDataBridge.DataBridge.Instance.UnregisterCallback(GUID.ToString());
+        }
+
+        #endregion
     }
 
     /// <summary>

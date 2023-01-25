@@ -14,6 +14,7 @@ namespace CoreNodeModelsWpf.Charts
     public partial class BasicLineChartControl : UserControl, INotifyPropertyChanged
     {
         private Random rnd = new Random();
+        private readonly BasicLineChartNodeModel model;
 
         private void OnPropertyChanged(string propertyName)
         {
@@ -26,7 +27,8 @@ namespace CoreNodeModelsWpf.Charts
         {
             InitializeComponent();
 
-            model.PropertyChanged += NodeModel_PropertyChanged;
+            this.model = model;
+            this.model.PropertyChanged += NodeModel_PropertyChanged;
 
             BuildUI(model);
 
@@ -119,6 +121,14 @@ namespace CoreNodeModelsWpf.Charts
                     Height = yAdjust;
                 }
             }
+        }
+        
+        /// <summary>
+        /// Unsubscribes from ViewModel events
+        /// </summary>
+        public void Dispose()
+        {
+            this.model.PropertyChanged -= NodeModel_PropertyChanged;
         }
     }
 }

@@ -25,11 +25,9 @@ namespace Dynamo.Wpf.Utilities
         {
             items = 0;
             var viewModel = ProcessThing(value, true);
-            if(value != null)
-            {
-                viewModel.SetObjectType(value.Data);
-                viewModel.NumberOfItems = items;
-            }
+            viewModel.SetObjectType(value.Data);
+            viewModel.NumberOfItems = items;
+            
             return viewModel;
         }
 

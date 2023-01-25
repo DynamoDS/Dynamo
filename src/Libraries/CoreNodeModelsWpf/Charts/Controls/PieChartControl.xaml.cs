@@ -14,6 +14,7 @@ namespace CoreNodeModelsWpf.Charts.Controls
     {
         //private Func<ChartPoint, string> PointLabel { get; set; }
         private Random rnd = new Random();
+        private readonly PieChartNodeModel model;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -26,9 +27,8 @@ namespace CoreNodeModelsWpf.Charts.Controls
         {
             InitializeComponent();
 
-            model.PropertyChanged += NodeModel_PropertyChanged;
-
-            //PointLabel = chartPoint => string.Format("{0} ({1:P})", chartPoint.Y, chartPoint.Participation);
+            this.model = model;
+            this.model.PropertyChanged += NodeModel_PropertyChanged;
 
             BuildUI(model);
 
@@ -102,21 +102,6 @@ namespace CoreNodeModelsWpf.Charts.Controls
             }
         }
 
-        /*
-        private void Chart_OnDataClick(object sender, ChartPoint chartpoint)
-        {
-            var chart = (PieChart)chartpoint.ChartView;
-
-            // Clear selected slice
-            foreach (PieSeries series in chart.Series)
-            {
-                series.PushOut = 0;
-            }
-
-            var selectedSeries = (PieSeries)chartpoint.SeriesView;
-            selectedSeries.PushOut = 8;
-        }
-        */
 
         private void ThumbResizeThumbOnDragDeltaHandler(object sender, DragDeltaEventArgs e)
         {
@@ -139,6 +124,14 @@ namespace CoreNodeModelsWpf.Charts.Controls
                     Height = yAdjust;
                 }
             }
+        }
+
+        /// <summary>
+        /// Unsubscribes from ViewModel events
+        /// </summary>
+        public void Dispose()
+        {
+            this.model.PropertyChanged -= NodeModel_PropertyChanged;
         }
     }
 }

@@ -66,7 +66,7 @@ namespace CoreNodeModelsWpf.Charts
 
             RegisterAllPorts();
 
-            PortDisconnected += PieChartNodeModel_PortDisconnected;
+            PortDisconnected += BarChartNodeModel_PortDisconnected;
 
             ArgumentLacing = LacingStrategy.Disabled;
         }
@@ -77,12 +77,12 @@ namespace CoreNodeModelsWpf.Charts
         /// </summary>
         public BarChartNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
-            PortDisconnected += PieChartNodeModel_PortDisconnected;
+            PortDisconnected += BarChartNodeModel_PortDisconnected;
         }
         #endregion
 
         #region Events
-        private void PieChartNodeModel_PortDisconnected(PortModel port)
+        private void BarChartNodeModel_PortDisconnected(PortModel port)
         {
             // Clear UI when a input port is disconnected
             if (port.PortType == PortType.Input && this.State == ElementState.Active)
@@ -109,7 +109,7 @@ namespace CoreNodeModelsWpf.Charts
         }
 
         /// <summary>
-        /// Callback method for DataBridge mechanism.
+        /// Callback method for DataBridge mechanism.PortDisconnected 
         /// This callback only gets called when 
         ///     - The AST is executed
         ///     - After the BuildOutputAST function is executed 
@@ -263,6 +263,19 @@ namespace CoreNodeModelsWpf.Charts
                 ),
             };
         }
+        #endregion
+
+        #region Dispose
+
+        /// <summary>
+        /// Finalize the usage of this Node
+        /// </summary>
+        public override void Dispose()
+        {
+            PortDisconnected -= BarChartNodeModel_PortDisconnected;
+            VMDataBridge.DataBridge.Instance.UnregisterCallback(GUID.ToString());
+        }
+
         #endregion
     }
 
