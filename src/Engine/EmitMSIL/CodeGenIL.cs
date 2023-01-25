@@ -1591,6 +1591,9 @@ namespace EmitMSIL
           
             foreach (var p in parameterTypes)
             {
+                //TODO this can throw because it's possible that the FEP is incorrect
+                //and if this is the case we should throw or fallback to replication -
+                //in either case log something - we need compile time overload support.
                 var currentArg = args[argIndex];
                 if (compilePass == CompilePass.GatherTypeInfo)
                 {
@@ -1684,23 +1687,33 @@ namespace EmitMSIL
                 if (argRank != paramRank) return false;
 
                 // If both have rank 0, it could also be because their type info is ambiguous.
-                if (argRank == 0 && paramRank == 0) return false;
+                //TODO commenting this out will makes negate test pass - as negate method expects object param.
+                //TODO perhaps just log something
+                //if (argRank == 0 && paramRank == 0) return false;
             }
             return true;
         }
 
         private static int GetRank(ProtoCore.CLRFunctionEndPoint fep,Type type,int paramIndex)
         {
-            //IEnumerable is imported as arbitrary rank.
-            if (typeof(IEnumerable).IsAssignableFrom(type))
+            //TODO (Alternatives to consider)
+            if (fep.procedureNode.ArgumentTypes.ElementAt(paramIndex).rank == DSASM.Constants.kArbitraryRank)
             {
                 return -1;
             }
+            /*
+            //IEnumerable interface types are imported as arbitrary rank.
+            if (type.IsInterface && typeof(IEnumerable).IsAssignableFrom(type))
+            {
+                return -1;
+            }
+            
             //params marked with arbitrary rank are imported as arbitrary rank.
             if (fep.ParamAttributes[paramIndex].Any(attr => attr is ArbitraryDimensionArrayImportAttribute))
             {
                 return -1;
             }
+            */
             return type.IsArray ? GetArrayRank(type) : GetEnumerableRank(type);
         }
 
