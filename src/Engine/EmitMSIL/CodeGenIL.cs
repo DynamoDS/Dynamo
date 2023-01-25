@@ -41,6 +41,14 @@ namespace EmitMSIL
         private CompilePass compilePass;
         internal (TimeSpan compileTime, TimeSpan executionTime) CompileAndExecutionTime;
 
+        //validity options
+        /// <summary>
+        /// IF this bool is set to true, compiler will throw when it
+        /// encounters issues related to direct function calls, when this option is off
+        /// compiler will fallback to emitting replicated calls.
+        /// </summary>
+        internal bool StrictDirectFunctionCallValidation { get; set; } = false;
+
         private enum CompilePass
         {
             // Compile pass to perform method lookup and populate method cache only
@@ -1587,13 +1595,23 @@ namespace EmitMSIL
         /// <exception cref="Exception"></exception>
         private bool DoParamsRankMatchArgs(ProtoCore.CLRFunctionEndPoint fep, List<Type> parameterTypes, List<AssociativeNode> args)
         {
+            //TODO this can throw because it's possible that the FEP is incorrect
+            //and if this is the case we should throw or fallback to replication -
+            //in either case log something - we need compile time overload support.
+            if (parameterTypes.Count != args.Count)
+            {
+                var message = "wrong number of arguments, likely incorrect overload selected at compile time.";
+                EmitILComment(message);
+                if (StrictDirectFunctionCallValidation)
+                {
+                    throw new ArgumentException(message);
+                }
+                return false;
+            }
             var argIndex = 0;
-          
+            
             foreach (var p in parameterTypes)
             {
-                //TODO this can throw because it's possible that the FEP is incorrect
-                //and if this is the case we should throw or fallback to replication -
-                //in either case log something - we need compile time overload support.
                 var currentArg = args[argIndex];
                 if (compilePass == CompilePass.GatherTypeInfo)
                 {
@@ -1690,6 +1708,12 @@ namespace EmitMSIL
                 //TODO commenting this out will makes negate test pass - as negate method expects object param.
                 //TODO perhaps just log something
                 //if (argRank == 0 && paramRank == 0) return false;
+
+                if (!paramType.IsAssignableFrom(argType))
+                {
+                    return false;
+                }
+
             }
             return true;
         }

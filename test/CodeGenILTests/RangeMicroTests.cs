@@ -28,7 +28,7 @@ namespace CodeGenILTests
         public void Setup()
         {
             //TODO_MSIL: remove the dependency on the old VM by implementing
-            //necesary Emit functions(ex mitFunctionDefinition and EmitImportStatements and all the preloading logic)
+            //necessary Emit functions(ex mitFunctionDefinition and EmitImportStatements and all the preloading logic)
             liveRunner = new ProtoScript.Runners.LiveRunner();
 
             List<string> libraries = new List<string>();
