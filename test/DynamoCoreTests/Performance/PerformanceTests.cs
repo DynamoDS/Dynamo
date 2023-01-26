@@ -73,13 +73,31 @@ namespace Dynamo.Tests
                 {
                     var (graph, oldEngine, newEngine, hardCoded) = item;
 
-                    Console.WriteLine("{0,50}{1,9}{2,9}{3,9}{4,9}{5,9}{6,9}{7,9}{8,9}{9,9}{10,9}{11,9}{12,9}", graph,
-                        FormatValue(oldEngine.allocated.SizeInBytes), FormatValue(oldEngine.collected.SizeInBytes),
-                        FormatValue(oldEngine.allocated.ObjectsCount), FormatValue(oldEngine.collected.ObjectsCount),
-                        FormatValue(newEngine.allocated.SizeInBytes), FormatValue(newEngine.collected.SizeInBytes),
-                        FormatValue(newEngine.allocated.ObjectsCount), FormatValue(newEngine.collected.ObjectsCount),
-                        FormatValue(hardCoded.allocated.SizeInBytes), FormatValue(hardCoded.collected.SizeInBytes),
-                        FormatValue(hardCoded.allocated.ObjectsCount), FormatValue(hardCoded.collected.ObjectsCount));
+                    if (hardCoded.collected.ObjectsCount == 0)
+                    {
+                        Console.WriteLine("{0,50}{1,9}{2,9}{3,9}{4,9}{5,9}{6,9}{7,9}{8,9}",
+                            graph,
+                            FormatValue(oldEngine.allocated.SizeInBytes), FormatValue(oldEngine.collected.SizeInBytes),
+                            FormatValue(oldEngine.allocated.ObjectsCount),
+                            FormatValue(oldEngine.collected.ObjectsCount),
+                            FormatValue(newEngine.allocated.SizeInBytes), FormatValue(newEngine.collected.SizeInBytes),
+                            FormatValue(newEngine.allocated.ObjectsCount),
+                            FormatValue(newEngine.collected.ObjectsCount));
+                    }
+                    else
+                    {
+                        Console.WriteLine("{0,50}{1,9}{2,9}{3,9}{4,9}{5,9}{6,9}{7,9}{8,9}{9,9}{10,9}{11,9}{12,9}",
+                            graph,
+                            FormatValue(oldEngine.allocated.SizeInBytes), FormatValue(oldEngine.collected.SizeInBytes),
+                            FormatValue(oldEngine.allocated.ObjectsCount),
+                            FormatValue(oldEngine.collected.ObjectsCount),
+                            FormatValue(newEngine.allocated.SizeInBytes), FormatValue(newEngine.collected.SizeInBytes),
+                            FormatValue(newEngine.allocated.ObjectsCount),
+                            FormatValue(newEngine.collected.ObjectsCount),
+                            FormatValue(hardCoded.allocated.SizeInBytes), FormatValue(hardCoded.collected.SizeInBytes),
+                            FormatValue(hardCoded.allocated.ObjectsCount),
+                            FormatValue(hardCoded.collected.ObjectsCount));
+                    }
                 });
             }
             else
@@ -306,11 +324,11 @@ namespace Dynamo.Tests
         {
             if (value > 1000000)
             {
-                return string.Format("{0:0.00}M", value / 1000000);
+                return string.Format("{0:0.00}M", value / 1000000.0);
             }
             if (value > 1000)
             {
-                return string.Format("{0:0.00}k", value / 1000);
+                return string.Format("{0:0.00}k", value / 1000.0);
             }
 
             return string.Format("{0:0.00}", value);
