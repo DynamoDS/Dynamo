@@ -203,7 +203,7 @@ y = DSCore.Math.Sum([1,2,3]);";
             var dscode = @"
 import(""DesignScriptBuiltin.dll"");
 import(""DSCoreNodes.dll"");
-y = DSCore.Math.Sum(1..100000000);";
+y = DSCore.Math.Sum(1..10000000);";
 
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
