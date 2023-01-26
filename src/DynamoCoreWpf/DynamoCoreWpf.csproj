@@ -21,6 +21,7 @@
     <None Remove="node_modules\%40dynamods\splash-screen\build\index.html" />
     <None Remove="UI\Images\Canvas\canvas-button-geometry-scaling.png" />
     <None Remove="Views\Core\GeometryScalingPopup.xaml" />
+    <None Remove="UI\Images\question-hover-blue-16px.png" />
     <None Remove="Views\SplashScreen\WebApp\splashScreenBackground.png" />
   </ItemGroup>
   <ItemGroup>
@@ -71,8 +72,8 @@
     <None Remove="Views\GuidedTour\HtmlPages\Resources\ConnectTheNode.gif" />
   </ItemGroup>
   <ItemGroup>
-  <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.16.0.3736"/>
-  <PackageReference Include="AvalonEdit" Version="4.3.1.9430" CopyXML="true"/>
+  <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.16.0.3736" />
+  <PackageReference Include="AvalonEdit" Version="4.3.1.9430" CopyXML="true" />
   <PackageReference Include="Greg" Version="2.3.0.2505" />
   <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" />
 	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
@@ -835,6 +836,7 @@
     <Resource Include="UI\Images\NodeStates\frozen-64px.png" />
     <Resource Include="UI\Images\NodeStates\hidden-64px.png" />
     <Resource Include="UI\Images\NodeStates\info-64px.png" />
+    <Resource Include="UI\Images\question-hover-blue-16px.png" />
     <Resource Include="UI\Images\TitleBarButtons\close-darktheme-default-16px.png" />
     <Resource Include="UI\Images\TitleBarButtons\close-lighttheme-default-16px.png" />
     <Resource Include="UI\Images\TitleBarButtons\close-lighttheme-hover-16px.png" />

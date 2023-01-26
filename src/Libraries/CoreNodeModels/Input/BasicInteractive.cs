@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
@@ -12,7 +12,7 @@ namespace CoreNodeModels.Input
     {
         private T value;
 
-        [JsonProperty("InputValue")]
+        [JsonProperty("InputValue", Order = 9)]
         public virtual T Value
         {
             get

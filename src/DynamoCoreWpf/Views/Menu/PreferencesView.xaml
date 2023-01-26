@@ -257,17 +257,18 @@
                                                    Height="26" 
                                                    Width="53"
                                                    Margin="0 3 0 0">
-                                            <Label.ToolTip>
-                                                <ToolTip Content="{x:Static p:Resources.PreferencesViewDefaultRunSettingsInfoTooltip}" Style="{StaticResource GenericToolTipLight}"/>
-                                            </Label.ToolTip>
-                                            <Label.Content>
-                                                <fa:ImageAwesome Width="15" 
-                                                                Height="15" 
-                                                                VerticalAlignment="Bottom" 
-                                                                HorizontalAlignment="Left" 
-                                                                Icon="QuestionCircleOutline" 
-                                                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                            </Label.Content>
+                                            <Image
+                                               Margin="5,3,0,0"
+                                               Width="14"
+                                               Height="14"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Style="{StaticResource QuestionIcon}"
+                                               ToolTipService.ShowDuration="30000">
+                                                <Image.ToolTip>
+                                                    <ToolTip Content="{x:Static p:Resources.PreferencesViewDefaultRunSettingsInfoTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                                </Image.ToolTip>
+                                            </Image>                                            
                                         </Label>
                                     </WrapPanel>
                                     <Grid Grid.Row="1">
@@ -460,7 +461,7 @@
                                                Margin="30,0,0,0"
                                                HorizontalAlignment="Left"
                                                VerticalAlignment="Center"
-                                               Style="{StaticResource ToggleInfoStyle}">
+                                               Style="{StaticResource QuestionIcon}">
                                             <Image.ToolTip>
                                                 <ToolTip Content="{x:Static p:Resources.RecentFileNumberInfo}" Style="{StaticResource GenericToolTipLight}"/>
                                             </Image.ToolTip>
@@ -729,7 +730,7 @@
                                                Height="14"
                                                HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
-                                               Style="{StaticResource QuestionIcon}"
+                                               Style="{StaticResource QuestionIconClickable}"
                                                MouseDown="OnMoreInfoClicked"
                                                ToolTipService.ShowDuration="30000">
                                             <Image.ToolTip>
@@ -1105,17 +1106,18 @@
                                                    Height="26" 
                                                    Width="53"
                                                    Margin="0 3 0 0">
-                                            <Label.ToolTip>
-                                                <ToolTip Content="{x:Static p:Resources.PreferencesWindowHardwareAccelerationTooltip}" Style="{StaticResource GenericToolTipLight}"/>
-                                            </Label.ToolTip>
-                                            <Label.Content>
-                                                <fa:ImageAwesome Width="15" 
-                                                                Height="15" 
-                                                                VerticalAlignment="Bottom" 
-                                                                HorizontalAlignment="Left" 
-                                                                Icon="QuestionCircleOutline" 
-                                                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                            </Label.Content>
+                                            <Image
+                                               Margin="5,3,0,0"
+                                               Width="14"
+                                               Height="14"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Style="{StaticResource QuestionIcon}"
+                                               ToolTipService.ShowDuration="30000">
+                                                <Image.ToolTip>
+                                                    <ToolTip Content="{x:Static p:Resources.PreferencesWindowHardwareAccelerationTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                                </Image.ToolTip>
+                                            </Image>
                                         </Label>
                                     </StackPanel>
                                     
@@ -1138,17 +1140,18 @@
                                                    Height="26" 
                                                    Width="53"
                                                    Margin="0 3 0 0">
-                                            <Label.ToolTip>
-                                                <ToolTip Content="{x:Static p:Resources.PreferencesWindowIsolateSelectedGeoTooltip}" Style="{StaticResource GenericToolTipLight}"/>
-                                            </Label.ToolTip>
-                                            <Label.Content>
-                                                <fa:ImageAwesome Width="15" 
-                                                                Height="15" 
-                                                                VerticalAlignment="Bottom" 
-                                                                HorizontalAlignment="Left" 
-                                                                Icon="QuestionCircleOutline" 
-                                                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                            </Label.Content>
+                                            <Image 
+                                               Margin="5,3,0,0"
+                                               Width="14"
+                                               Height="14"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Style="{StaticResource QuestionIcon}"
+                                               ToolTipService.ShowDuration="30000">
+                                                <Image.ToolTip>
+                                                    <ToolTip Content="{x:Static p:Resources.PreferencesWindowIsolateSelectedGeoTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                                </Image.ToolTip>
+                                            </Image>
                                         </Label>
                                     </StackPanel>
 
@@ -1171,17 +1174,18 @@
                                                    Height="26" 
                                                    Width="53"
                                                    Margin="0 3 0 0">
-                                            <Label.ToolTip>
-                                                <ToolTip Content="{x:Static p:Resources.PreferencesWindowShowEdgesTooltip}" Style="{StaticResource GenericToolTipLight}"/>
-                                            </Label.ToolTip>
-                                            <Label.Content>
-                                                <fa:ImageAwesome Width="15" 
-                                                                Height="15" 
-                                                                VerticalAlignment="Bottom" 
-                                                                HorizontalAlignment="Left" 
-                                                                Icon="QuestionCircleOutline" 
-                                                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                            </Label.Content>
+                                            <Image
+                                               Margin="5,3,0,0"
+                                               Width="14"
+                                               Height="14"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Style="{StaticResource QuestionIcon}"
+                                               ToolTipService.ShowDuration="30000">
+                                                <Image.ToolTip>
+                                                    <ToolTip Content="{x:Static p:Resources.PreferencesWindowShowEdgesTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                                </Image.ToolTip>
+                                            </Image>
                                         </Label>
                                     </StackPanel>
                                     
@@ -1204,17 +1208,18 @@
                                                    Height="26" 
                                                    Width="53"
                                                    Margin="0 3 0 0">
-                                            <Label.ToolTip>
-                                                <ToolTip Content="{x:Static p:Resources.PreferencesWindowShowCodeBlockNodeLineNumberTooltip}" Style="{StaticResource GenericToolTipLight}"/>
-                                            </Label.ToolTip>
-                                            <Label.Content>
-                                                <fa:ImageAwesome Width="15" 
-                                                                Height="15" 
-                                                                VerticalAlignment="Bottom" 
-                                                                HorizontalAlignment="Left" 
-                                                                Icon="QuestionCircleOutline" 
-                                                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                            </Label.Content>
+                                            <Image
+                                               Margin="5,3,0,0"
+                                               Width="14"
+                                               Height="14"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Style="{StaticResource QuestionIcon}"
+                                               ToolTipService.ShowDuration="30000">
+                                                <Image.ToolTip>
+                                                    <ToolTip Content="{x:Static p:Resources.PreferencesWindowShowCodeBlockNodeLineNumberTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                                </Image.ToolTip>
+                                            </Image>
                                         </Label>
                                     </StackPanel>
 
@@ -1237,17 +1242,18 @@
                                                    Height="26" 
                                                    Width="53"
                                                    Margin="0 3 0 0">
-                                            <Label.ToolTip>
-                                                <ToolTip Content="{x:Static p:Resources.PreferencesWindowShowPreviewBubblesTooltip}" Style="{StaticResource GenericToolTipLight}"/>
-                                            </Label.ToolTip>
-                                            <Label.Content>
-                                                <fa:ImageAwesome Width="15" 
-                                                                Height="15" 
-                                                                VerticalAlignment="Bottom" 
-                                                                HorizontalAlignment="Left" 
-                                                                Icon="QuestionCircleOutline" 
-                                                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                            </Label.Content>
+                                            <Image
+                                               Margin="5,3,0,0"
+                                               Width="14"
+                                               Height="14"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Style="{StaticResource QuestionIcon}"
+                                               ToolTipService.ShowDuration="30000">
+                                                <Image.ToolTip>
+                                                    <ToolTip Content="{x:Static p:Resources.PreferencesWindowShowPreviewBubblesTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                                </Image.ToolTip>
+                                            </Image>
                                         </Label>
                                     </StackPanel>
                                 </Grid>
@@ -1322,7 +1328,7 @@
                                                Height="16"
                                                HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
-                                               Style="{StaticResource ToggleInfoStyle}">
+                                               Style="{StaticResource QuestionIcon}">
                                             <Image.ToolTip>
                                                 <ToolTip Content="{x:Static p:Resources.DisableBuiltInPackageToggleInfo}" Style="{StaticResource GenericToolTipLight}"/>
                                             </Image.ToolTip>
@@ -1347,7 +1353,7 @@
                                                Height="16"
                                                HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
-                                               Style="{StaticResource ToggleInfoStyle}">
+                                               Style="{StaticResource QuestionIcon}">
                                             <Image.ToolTip>
                                                 <ToolTip Content="{x:Static p:Resources.DisableCustomPackageToggleInfo}" Style="{StaticResource GenericToolTipLight}"/>
                                             </Image.ToolTip>
@@ -1419,17 +1425,18 @@
                                                    Width="53"
                                                    Margin="0 3 0 0"
                                                    MouseLeftButtonDown="OnMoreInfoClicked">
-                                                <Label.ToolTip>
-                                                    <ToolTip Content="{x:Static p:Resources.PreferencesViewTrustWarningTooltipText}" Style="{StaticResource GenericToolTipLight}"/>
-                                                </Label.ToolTip>
-                                                <Label.Content>
-                                                    <fa:ImageAwesome Width="15" 
-                                                                     Height="15" 
-                                                                     VerticalAlignment="Bottom" 
-                                                                     HorizontalAlignment="Left" 
-                                                                     Icon="QuestionCircleOutline" 
-                                                                     Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                                </Label.Content>
+                                                <Image
+                                                   Margin="5,3,0,0"
+                                                   Width="14"
+                                                   Height="14"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   Style="{StaticResource QuestionIcon}"
+                                                   ToolTipService.ShowDuration="30000">
+                                                        <Image.ToolTip>
+                                                            <ToolTip Content="{x:Static p:Resources.PreferencesViewTrustWarningTooltipText}" Style="{StaticResource GenericToolTipLight}"/>
+                                                        </Image.ToolTip>
+                                                    </Image>
                                             </Label>
                                         </StackPanel>
                                     </Grid>
