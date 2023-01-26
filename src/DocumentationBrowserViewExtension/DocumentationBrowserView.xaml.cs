@@ -29,6 +29,9 @@ namespace Dynamo.DocumentationBrowser
         internal string WebBrowserUserDataFolder { get; set; }
         internal string FallbackDirectoryName { get; set; }
 
+        //Path in which the virtual folder for loading images will be created
+        internal string VirtualFolderPath { get; set; }
+
         /// <summary>
         /// Construct a new DocumentationBrowserView given an appropriate viewmodel.
         /// </summary>
@@ -130,7 +133,21 @@ namespace Dynamo.DocumentationBrowser
 
         async void InitializeAsync()
         {
-            string virtualFolder = string.Empty;
+            VirtualFolderPath = string.Empty;
+            try
+            {
+                if (viewModel.Link != null && !string.IsNullOrEmpty(viewModel.PackageName))
+                {
+                    VirtualFolderPath = HttpUtility.UrlDecode(viewModel.Link.AbsolutePath).Replace(viewModel.PackageName + ".md", "");
+                }
+                else
+                    VirtualFolderPath = FallbackDirectoryName;
+            }
+            catch (Exception ex)
+            {
+                VirtualFolderPath = string.Empty;
+            }
+
             // Only initialize once 
             if (!hasBeenInitialized)
             {
@@ -144,8 +161,8 @@ namespace Dynamo.DocumentationBrowser
                 }
                 //Initialize the CoreWebView2 component otherwise we can't navigate to a web page
                 await documentationBrowser.EnsureCoreWebView2Async();
-
-              
+                
+           
                 this.documentationBrowser.CoreWebView2.WebMessageReceived += CoreWebView2OnWebMessageReceived;
                 comScriptingObject = new ScriptingObject(this.viewModel);
                 //register the interop object into the browser.
@@ -157,23 +174,9 @@ namespace Dynamo.DocumentationBrowser
                 hasBeenInitialized = true;
             }
 
-            try
-            {
-                if (viewModel.Link != null && !string.IsNullOrEmpty(viewModel.Name))
-                {
-                    virtualFolder = HttpUtility.UrlDecode(viewModel.Link.AbsolutePath).Replace(viewModel.Name + ".md", "");
-                }
-                else
-                    virtualFolder = FallbackDirectoryName;
-            }
-            catch (Exception ex)
-            {
-                virtualFolder = string.Empty;
-            }       
-
-            if(Directory.Exists(virtualFolder))
+            if(Directory.Exists(VirtualFolderPath))
                 //Due that the Web Browser(WebView2 - Chromium) security CORS is blocking the load of resources like images then we need to create a virtual folder in which the image are located.
-                this.documentationBrowser.CoreWebView2.SetVirtualHostNameToFolderMapping(VIRTUAL_FOLDER_MAPPING, virtualFolder, CoreWebView2HostResourceAccessKind.DenyCors);
+                this.documentationBrowser.CoreWebView2.SetVirtualHostNameToFolderMapping(VIRTUAL_FOLDER_MAPPING, VirtualFolderPath, CoreWebView2HostResourceAccessKind.DenyCors);
 
             string htmlContent = this.viewModel.GetContent();
 

@@ -88,21 +88,21 @@ namespace Dynamo.DocumentationBrowser
         private Uri link;
         private string graphPath;
         private string content;
-        private string name;
+        private string packageName;
 
 
         /// <summary>
         /// Package Name
         /// </summary>
-        internal string Name
+        internal string PackageName
         {
             get
             {
-                return name;
+                return packageName;
             }
             set
             {
-                name = value;
+                packageName = value;
             }
         }
 
@@ -244,7 +244,7 @@ namespace Dynamo.DocumentationBrowser
                 {
                     this.content = targetContent;
                     this.graphPath = graph;
-                    this.name = graphName;
+                    this.packageName = graphName;
                     this.Link = link;                   
                 }
             }
@@ -431,7 +431,7 @@ namespace Dynamo.DocumentationBrowser
             {
                 if (graphPath != null)
                 {
-                    var graphName = this.name ?? Path.GetFileNameWithoutExtension(graphPath);
+                    var graphName = this.packageName ?? Path.GetFileNameWithoutExtension(graphPath);
                     raiseInsertGraph(this, new InsertDocumentationLinkEventArgs(graphPath, graphName));
                 }
                 else
