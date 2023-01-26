@@ -28,6 +28,7 @@
     <UserControl.Resources>
         <utilities:GroupStyleItemSelector x:Key="GroupStyleItemSelector"/>
         <controls:StringToBrushColorConverter x:Key="StringToBrushColorConverter"/>
+        <controls:TextForegroundSaturationColorConverter x:Key="TextForegroundSaturationColorConverter"/>
         <CornerRadius x:Key="ExpanderCornerRadius"
                       TopLeft="10"
                       TopRight="10" />
@@ -582,6 +583,7 @@
                         <Grid Margin="0,0,20,0">
                             <TextBlock x:Name="GroupTextBlock"
                                        Text="{Binding AnnotationText, Converter={StaticResource AnnotationTextConverter}, ConverterParameter='TextBlock'}"
+                                       Foreground="{Binding Background, Converter={StaticResource TextForegroundSaturationColorConverter}}"
                                        FontFamily="Trebuchet"
                                        FontSize="{Binding FontSize}"
                                        LineStackingStrategy="BlockLineHeight"
@@ -613,6 +615,7 @@
                         <Grid>
                             <TextBlock x:Name="GroupDescriptionTextBlock"
                                        Text="{Binding AnnotationDescriptionText, Converter={StaticResource AnnotationTextConverter}}"
+                                       Foreground="{Binding Background, Converter={StaticResource TextForegroundSaturationColorConverter}}"
                                        FontFamily="Trebuchet"
                                        FontSize="12"
                                        LineStackingStrategy="BlockLineHeight"

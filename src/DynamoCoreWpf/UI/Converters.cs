@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
@@ -3565,5 +3566,59 @@ namespace Dynamo.Controls
         }
 
         #endregion
+    }
+
+    /// <summary>
+    /// Returns a dark or light color depending on the contrast ration of the color with the background color
+    /// Contrast ration should be larger than 4.5:1
+    /// Contrast calculation algorithm from https://stackoverflow.com/questions/70187918/adapt-given-color-pairs-to-adhere-to-w3c-accessibility-standard-for-epubs/70192373#70192373
+    /// </summary>
+    public class TextForegroundSaturationColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var lightColor = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["WhiteColor"];
+            var darkColor = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["DarkerGrey"];
+
+            var backgroundColor = (System.Windows.Media.Color)value;
+
+            var contrastRatio = GetContrastRatio(darkColor, backgroundColor);
+
+            return contrastRatio < 4.5 ? new SolidColorBrush(lightColor) : new SolidColorBrush(darkColor);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            return null;
+        }
+
+        private double GetContrastRatio(System.Windows.Media.Color foreground, System.Windows.Media.Color background)
+        {
+            double L1 = GetRelativeLuminance(foreground);
+            double L2 = GetRelativeLuminance(background);
+
+            var result = L1 > L2 ? (L1 + 0.05) / (L2 + 0.05) : (L2 + 0.05) / (L1 + 0.05);
+
+            return result;
+        }
+
+        private double GetRelativeLuminance(System.Windows.Media.Color color)
+        {
+            var R = color.R / 255.0;
+            var G = color.G / 255.0;
+            var B = color.B / 255.0;
+
+            if (R < 0.03928) R = R / 12.92;
+            else R = Math.Pow((R + 0.055) / 1.055, 2.4);
+
+            if (G < 0.03928) G = G / 12.92;
+            else G = Math.Pow((G + 0.055) / 1.055, 2.4);
+
+            if (B < 0.03928) B = B / 12.92;
+            else B = Math.Pow((B + 0.055) / 1.055, 2.4);
+
+            return 0.2126 * R + 0.7152 * G + 0.0722 * B;
+        }
     }
 }

@@ -95,7 +95,7 @@ namespace Dynamo.DocumentationBrowser
 
             if (string.IsNullOrWhiteSpace(mdFilePath) ||
                 !File.Exists(mdFilePath))
-                mdString = DocumentationBrowserUtils.GetContentFromEmbeddedResource(NODE_ANNOTATION_NOT_FOUND);
+                mdString = ResourceUtilities.LoadContentFromResources(NODE_ANNOTATION_NOT_FOUND, GetType().Assembly);
 
             else
             {

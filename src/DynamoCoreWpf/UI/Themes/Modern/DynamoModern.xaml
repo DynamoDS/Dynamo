@@ -4380,6 +4380,8 @@
                      Color="#38ABDF" />
     <SolidColorBrush x:Key="Button.Outline.Default.Border"
                      Color="Transparent" />
+    <SolidColorBrush x:Key="Button.Outline.Inverted.Border"
+                     Color="#ECECEC" />
     <!--  This Style will be used for the Buttons that have a border and transparent background like Save and Cancel in the Preferences->Visual Settings tab  -->
     <Style x:Key="OutlinedButtonStyle" TargetType="Button">
         <Setter Property="Foreground" Value="{StaticResource PreferencesWindowFontColor}" />
@@ -4457,11 +4459,11 @@
                     <!--  According to the Hig Autodesk standards for Outlined buttons some colors/properties will be changed according to the event generated  -->
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="{StaticResource Button.Outline.MouseOver.Border}" />
+                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="{StaticResource Button.Outline.Inverted.Border}" />
                             <Setter TargetName="ButtonBorder" Property="BorderThickness" Value="2" />
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="{StaticResource Button.Outline.Pressed.Border}" />
+                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="{StaticResource Button.Outline.Inverted.Border}" />
                             <Setter TargetName="ButtonBorder" Property="BorderThickness" Value="2" />
                         </Trigger>
                     </ControlTemplate.Triggers>

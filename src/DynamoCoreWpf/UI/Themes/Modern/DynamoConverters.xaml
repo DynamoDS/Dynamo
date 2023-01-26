@@ -186,4 +186,5 @@
     <controls:CollectionHasMoreThanNItemsToBoolConverter x:Key="CollectionHasMoreThanNItemsToBoolConverter" />
     <controls:ListHasMoreThanNItemsToVisibilityConverter x:Key="ListHasMoreThanNItemsToVisibilityConverter" />
     <controls:ObjectTypeConverter x:Key="ObjectTypeConverter" />
+    <controls:TextForegroundSaturationColorConverter x:Key="TextForegroundSaturationColorConverter" />
 </ResourceDictionary>
