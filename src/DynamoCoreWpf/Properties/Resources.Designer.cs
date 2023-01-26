@@ -3300,7 +3300,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Preview.
+        ///   Looks up a localized string similar to Preview Geometry.
         /// </summary>
         public static string GroupContextMenuPreview {
             get {
@@ -4613,7 +4613,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Preview.
+        ///   Looks up a localized string similar to Preview Geometry.
         /// </summary>
         public static string NodeContextMenuPreview {
             get {
