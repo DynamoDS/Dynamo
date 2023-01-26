@@ -740,11 +740,6 @@
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <Grid Name="loginGrid" 
-                  Grid.Row="0" 
-                  Grid.Column="1">
-            </Grid>
-
             <Border Name="shortcutBarBorder"
                     BorderThickness="0"
                     HorizontalAlignment="Stretch"
