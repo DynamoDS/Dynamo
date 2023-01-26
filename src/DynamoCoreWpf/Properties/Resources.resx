@@ -745,7 +745,7 @@
     <comment>Lacing strategy: use the shortest list</comment>
   </data>
   <data name="NodeContextMenuPreview" xml:space="preserve">
-    <value>Preview</value>
+    <value>Preview Geometry</value>
     <comment>Context menu item - preview geometry</comment>
   </data>
   <data name="NodeContextMenuRenameNode" xml:space="preserve">
@@ -3468,5 +3468,8 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   </data>
   <data name="SplashScreenSigningIn" xml:space="preserve">
     <value>Signing In</value>
+  </data>
+  <data name="GroupContextMenuPreview" xml:space="preserve">
+    <value>Preview Geometry</value>
   </data>
 </root>

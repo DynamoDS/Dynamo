@@ -340,6 +340,11 @@
                 <MenuItem Name="UngroupAnnotation"
                           Click="OnUngroupAnnotation"
                           Header="{x:Static p:Resources.GroupContextMenuUngroup}" />
+                <MenuItem Name="PreviewAnnotation"
+                          Command="{Binding Path=ToggleIsVisibleGroupCommand}"
+                          Header="{x:Static p:Resources.GroupContextMenuPreview}"
+                          IsCheckable="true"
+                          IsChecked="{Binding Path=AnnotationModel.IsVisible, Mode=OneWay}"/>
                 <MenuItem Name="unGroup_cm"
                           Command="{Binding Path=RemoveGroupFromGroupCommand}"
                           Header="{x:Static p:Resources.ContextUnGroupFromSelection}" />
