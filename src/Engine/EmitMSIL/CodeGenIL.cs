@@ -252,12 +252,8 @@ namespace EmitMSIL
             }
 
             // Load array to be coerced.
-            int currentVarIndex = -1;
-            if (arg is IdentifierNode ident)
-            {
-                currentVarIndex = variables[ident.Value].Item1;
-            }
-            else
+            int currentVarIndex;
+            if (!(arg is IdentifierNode))
             {
                 var localBuilder = DeclareLocal(typeof(IEnumerable<Source>), "collection to coerce");
                 currentVarIndex = localBuilder.LocalIndex;
