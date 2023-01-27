@@ -1458,7 +1458,7 @@ namespace EmitMSIL
         /// <param name="argType">actual argument type</param>
         /// <param name="paramIndex">parameter index in list of params to fep.</param>
         /// <returns></returns>
-        private static bool DoesParamRankMatchArg(ProtoCore.CLRFunctionEndPoint fep,Type paramType, Type argType, int paramIndex)
+        private bool DoesParamRankMatchArg(ProtoCore.CLRFunctionEndPoint fep,Type paramType, Type argType, int paramIndex)
         {
             if (!paramType.Equals(argType))
             {
@@ -1469,21 +1469,24 @@ namespace EmitMSIL
                     return true;
                 }
 
-                var argRank = GetRank(fep,argType,paramIndex);
-                var paramRank = GetRank(fep,paramType, paramIndex);
+                var argRank = GetRank(argType);
+                var paramRank = GetParamRank(fep,paramType, paramIndex);
 
-                //if the param is an arbitrary rank array and
-                //arg is some array type, replication should not occur.
-                if (paramRank == DSASM.Constants.kArbitraryRank && argRank > 0)
+                //if the paramRank is an arbitrary rank array
+                //replication should not occur for this parameter
+                //(except in case of rep guides, but that has been ruled out previously).
+                if (paramRank == DSASM.Constants.kArbitraryRank)
                 {
                     return true;
                 }
                 if (argRank != paramRank) return false;
 
                 // If both have rank 0, it could also be because their type info is ambiguous.
-                //TODO commenting this out will makes negate test pass - as negate method expects object param.
-                //TODO perhaps just log something
-                //if (argRank == 0 && paramRank == 0) return false;
+                // or it could be fine!
+                if (argRank == 0 && paramRank == 0)
+                {
+                    EmitILComment("param and arg are both rank 0, type info may be ambiguous");
+                }
 
                 if (!paramType.IsAssignableFrom(argType))
                 {
@@ -1494,26 +1497,18 @@ namespace EmitMSIL
             return true;
         }
 
-        private static int GetRank(ProtoCore.CLRFunctionEndPoint fep,Type type,int paramIndex)
+        private static int GetParamRank(ProtoCore.CLRFunctionEndPoint fep, Type type, int paramIndex)
         {
-            //TODO (Alternatives to consider)
             if (fep.procedureNode.ArgumentTypes.ElementAt(paramIndex).rank == DSASM.Constants.kArbitraryRank)
             {
                 return -1;
             }
-            /*
-            //IEnumerable interface types are imported as arbitrary rank.
-            if (type.IsInterface && typeof(IEnumerable).IsAssignableFrom(type))
-            {
-                return -1;
-            }
-            
-            //params marked with arbitrary rank are imported as arbitrary rank.
-            if (fep.ParamAttributes[paramIndex].Any(attr => attr is ArbitraryDimensionArrayImportAttribute))
-            {
-                return -1;
-            }
-            */
+
+            return GetRank(type);
+        }
+
+        private static int GetRank(Type type)
+        {
             return type.IsArray ? GetArrayRank(type) : GetEnumerableRank(type);
         }
 

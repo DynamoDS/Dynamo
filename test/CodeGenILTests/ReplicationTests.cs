@@ -16,7 +16,7 @@ namespace CodeGenILTests
         {
             var replicationLogicOccurences =
                 File.ReadLines(opCodeFilePath).Where(line => line.Contains("ReplicationLogic"));
-            Assert.AreEqual(count, replicationLogicOccurrences.Count());
+            Assert.AreEqual(count, replicationLogicOccurences.Count());
         }
         internal static void AssertEmittedCodeHasUnMarhsallCalls(string opCodeFilePath, int count = 0)
         {
@@ -871,6 +871,34 @@ item = FFITarget.DummyMath.Sum(20); //Sum(IEnumerable<double>)
             var result = output["item"];
             Assert.AreEqual(expectedResult, result);
             TestHelpers.AssertEmittedCodeHasNoReplication(opCodeFilePath);
+        }
+
+        [Test]
+        public void FunctionParams_MixedRank_Replicates()
+        {
+            string dscode = @"
+import(""DesignScriptBuiltin.dll"");
+import(""DSCoreNodes.dll"");
+import(""FFITarget.dll"");
+item = FFITarget.TestData.OneParamArbitraryRank([20],[2,3]);
+";
+            var ast = ParserUtils.Parse(dscode).Body;
+            codeGen.StrictDirectFunctionCallValidation = true;
+            codeGen.runtimeCore.StrictDirectFunctionCallValidation = true;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+
+            Assert.IsTrue(output.ContainsKey("item"));
+
+            var expectedResult = new double[] {3,4};
+
+            var result = output["item"];
+            Assert.AreEqual(expectedResult, result);
+
+            codeGen.StrictDirectFunctionCallValidation = false;
+            codeGen.runtimeCore.StrictDirectFunctionCallValidation = false;
+
+
         }
 
         #endregion
