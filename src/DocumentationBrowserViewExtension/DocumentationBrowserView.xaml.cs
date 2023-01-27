@@ -138,7 +138,7 @@ namespace Dynamo.DocumentationBrowser
             {
                 if (viewModel.Link != null && !string.IsNullOrEmpty(viewModel.PackageName))
                 {
-                    VirtualFolderPath = HttpUtility.UrlDecode(viewModel.Link.AbsolutePath).Replace(viewModel.PackageName + ".md", "");
+                    VirtualFolderPath = Path.GetDirectoryName(HttpUtility.UrlDecode(viewModel.Link.AbsolutePath));
                 }
                 else
                     VirtualFolderPath = FallbackDirectoryName;
