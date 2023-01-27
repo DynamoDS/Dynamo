@@ -3480,6 +3480,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Workspace Geometry Scaling.
+        /// </summary>
+        public static string InCanvasGeometryScalingToolTip {
+            get {
+                return ResourceManager.GetString("InCanvasGeometryScalingToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enable graph view navigation (Ctrl + B).
         /// </summary>
         public static string InCanvasNodeButtonToolTip {
@@ -6837,7 +6846,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Geometry Scaling.
+        ///   Looks up a localized string similar to Default Geometry Scaling.
         /// </summary>
         public static string PreferencesViewVisualSettingsGeoScaling {
             get {

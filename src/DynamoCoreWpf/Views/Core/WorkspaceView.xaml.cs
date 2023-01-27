@@ -79,6 +79,8 @@ namespace Dynamo.Views
             }
         }
 
+        internal GeometryScalingPopup GeoScalingPopup { get; set; }
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -1047,6 +1049,17 @@ namespace Dynamo.Views
                 InCanvasSearchBar.IsOpen = false;
             }
             ViewModel.InCanvasSearchViewModel.SearchText = string.Empty;
+        }
+
+        private void OnGeometryScaling_Click(object sender, RoutedEventArgs e)
+        {
+            if (GeoScalingPopup == null)
+            {
+                GeoScalingPopup = new GeometryScalingPopup(ViewModel.DynamoViewModel);
+                GeoScalingPopup.Placement = PlacementMode.Bottom;
+                GeoScalingPopup.PlacementTarget = geometryScalingButton;
+            }
+            GeoScalingPopup.IsOpen = true;
         }
     }
 }

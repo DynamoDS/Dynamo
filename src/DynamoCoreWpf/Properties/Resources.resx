@@ -2591,7 +2591,7 @@ You can try disabling loading packages from built-in package paths, or unload th
 Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try downloading {0} again.</value>
   </data>
   <data name="PreferencesViewVisualSettingsGeoScaling" xml:space="preserve">
-    <value>Geometry Scaling</value>
+    <value>Default Geometry Scaling</value>
     <comment>Expander Header Name</comment>
   </data>
   <data name="PreferencesViewVisualSettingsGroupStyles" xml:space="preserve">
@@ -3468,6 +3468,9 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   </data>
   <data name="SplashScreenSigningIn" xml:space="preserve">
     <value>Signing In</value>
+  </data>
+  <data name="InCanvasGeometryScalingToolTip" xml:space="preserve">
+    <value>Workspace Geometry Scaling</value>
   </data>
   <data name="GroupContextMenuPreview" xml:space="preserve">
     <value>Preview Geometry</value>
