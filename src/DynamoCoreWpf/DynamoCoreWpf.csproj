@@ -19,6 +19,8 @@
   <ItemGroup>
     <None Remove="node_modules\%40dynamods\splash-screen\build\index.bundle.js" />
     <None Remove="node_modules\%40dynamods\splash-screen\build\index.html" />
+    <None Remove="UI\Images\Canvas\canvas-button-geometry-scaling.png" />
+    <None Remove="Views\Core\GeometryScalingPopup.xaml" />
     <None Remove="UI\Images\question-hover-blue-16px.png" />
     <None Remove="Views\SplashScreen\WebApp\splashScreenBackground.png" />
   </ItemGroup>
@@ -308,6 +310,7 @@
     <Compile Include="ViewModels\Core\Converters\DynamoPythonScriptEditorTextOptions.cs" />
     <Compile Include="ViewModels\Core\Converters\SerializationConverters.cs" />
     <Compile Include="ViewModels\Core\DynamoViewModelBranding.cs" />
+    <Compile Include="ViewModels\Core\GeometryScalingViewModel.cs" />
     <Compile Include="ViewModels\Core\HomeWorkspaceViewModel.cs" />
     <Compile Include="ViewModels\Core\InPortViewModel.cs" />
     <Compile Include="ViewModels\Core\OutPortViewModel.cs" />
@@ -357,6 +360,9 @@
     <Compile Include="Views\Core\DynamoOpenFileDialog.cs" />
     <Compile Include="Views\Core\ConnectorPinView.xaml.cs">
       <DependentUpon>ConnectorPinView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Core\GeometryScalingPopup.xaml.cs">
+      <DependentUpon>GeometryScalingPopup.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Debug\DebugModesWindow.xaml.cs">
       <DependentUpon>DebugModesWindow.xaml</DependentUpon>
@@ -517,6 +523,9 @@
     </Page>
     <Page Include="Controls\InPortContextMenu.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Core\GeometryScalingPopup.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\FileTrust\FileTrustWarning.xaml">
@@ -684,6 +693,7 @@
     <Resource Include="UI\Images\Alignment\align_x_distribute.png" />
     <Resource Include="UI\Images\Alignment\align_y_average.png" />
     <Resource Include="UI\Images\Alignment\align_y_distribute.png" />
+    <Resource Include="UI\Images\Canvas\canvas-button-geometry-scaling.png" />
     <Resource Include="UI\Images\caret_up.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\ArtifaktElement-Regular.woff" />
     <Resource Include="UI\Images\cursors.psd" />
