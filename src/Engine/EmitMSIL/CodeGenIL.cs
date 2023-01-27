@@ -1393,7 +1393,7 @@ namespace EmitMSIL
                 {
                     DfsTraverse(currentArg);
                 }
-                if (CoreUtils.IsPrimitiveASTNode(args[argIndex]) || currentArg is CharNode)
+                if (CoreUtils.IsPrimitiveASTNode(currentArg) || currentArg is CharNode)
                 {
                     // arg is a single value (primitive type), but param is not (array promotion case).
                     if (ArrayUtils.IsEnumerable(p) && p != typeof(string))
@@ -1474,7 +1474,7 @@ namespace EmitMSIL
 
                 //if the param is an arbitrary rank array and
                 //arg is some array type, replication should not occur.
-                if (paramRank == -1 && argRank > 0)
+                if (paramRank == DSASM.Constants.kArbitraryRank && argRank > 0)
                 {
                     return true;
                 }

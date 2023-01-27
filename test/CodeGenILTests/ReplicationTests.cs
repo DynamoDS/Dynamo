@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Lifetime;
 using System.Threading;
 
 namespace CodeGenILTests
@@ -15,7 +16,7 @@ namespace CodeGenILTests
         {
             var replicationLogicOccurences =
                 File.ReadLines(opCodeFilePath).Where(line => line.Contains("ReplicationLogic"));
-            Assert.AreEqual(count, replicationLogicOccurences.Count());
+            Assert.AreEqual(count, replicationLogicOccurrences.Count());
         }
         internal static void AssertEmittedCodeHasUnMarhsallCalls(string opCodeFilePath, int count = 0)
         {
