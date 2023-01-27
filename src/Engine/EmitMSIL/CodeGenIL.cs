@@ -14,7 +14,6 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using DSASM = ProtoCore.DSASM;
-using Autodesk.DesignScript.Runtime;
 
 namespace EmitMSIL
 {
@@ -32,9 +31,7 @@ namespace EmitMSIL
         /// AST node to type info map, filled in the GatherTypeInfo compiler phase.
         /// </summary>
         private Dictionary<int, Type> astTypeInfoMap = new Dictionary<int, Type>();
-#if DEBUG
         private StreamWriter writer;
-#endif
         private Dictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>> methodCache = new Dictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>();
         private Dictionary<int, bool> willReplicateCache = new Dictionary<int, bool>();
         private CompilePass compilePass;
@@ -47,6 +44,11 @@ namespace EmitMSIL
         /// compiler will fallback to emitting replicated calls.
         /// </summary>
         internal bool StrictDirectFunctionCallValidation { get; set; } = false;
+
+        /// <summary>
+        /// Will log to output file path if enabled.
+        /// </summary>
+        internal bool LoggingEnabled { get; set; }
 
         private enum CompilePass
         {
@@ -124,10 +126,8 @@ namespace EmitMSIL
         {
             AssemblyBuilder asm;
             TypeBuilder type;
-#if DEBUG
             using (writer = new StreamWriter(logPath))
             {
-#endif
                 compilePass = CompilePass.MethodLookup;
                 // 0. Gather all loaded function endpoints and cache them.
                 foreach (var ast in astList)
@@ -161,9 +161,7 @@ namespace EmitMSIL
                 }
                 EmitOpCode(OpCodes.Ret);
                 return (asm, type);
-#if DEBUG
             }
-#endif
         }
 
         // Given a double value on the stack, emit call to Math.Round(arg, 0, MidpointRounding.AwayFromZero);
@@ -599,9 +597,11 @@ namespace EmitMSIL
         private LocalBuilder DeclareLocal(Type t, string identifier)
         {         
             if (compilePass == CompilePass.GatherTypeInfo) return null;
-#if DEBUG
-            writer.WriteLine($"{nameof(ilGen.DeclareLocal)} {t} {identifier}");
-#endif
+            if (LoggingEnabled)
+            {
+                writer.WriteLine($"{nameof(ilGen.DeclareLocal)} {t} {identifier}");
+            }
+
             return ilGen.DeclareLocal(t);
         }
 
@@ -609,54 +609,60 @@ namespace EmitMSIL
         {
             if (compilePass == CompilePass.GatherTypeInfo) return;
             ilGen.Emit(opCode, label);
-#if DEBUG
-            writer.WriteLine($"{opCode} {label}");
-#endif
+            if (LoggingEnabled)
+            {
+                writer.WriteLine($"{opCode} {label}");
+            }
         }
 
         private void EmitOpCode(OpCode opCode, LocalBuilder local)
         {
             if (compilePass == CompilePass.GatherTypeInfo) return;
             ilGen.Emit(opCode, local);
-#if DEBUG
-            writer.WriteLine($"{opCode} {local}");
-#endif
+            if (LoggingEnabled)
+            {
+                writer.WriteLine($"{opCode} {local}");
+            }
         }
 
         private void EmitOpCode(OpCode opCode)
         {
             if (compilePass == CompilePass.GatherTypeInfo) return;
             ilGen.Emit(opCode);
-#if DEBUG
-            writer.WriteLine(opCode);
-#endif
+            if (LoggingEnabled)
+            {
+                writer.WriteLine(opCode);
+            }
         }
 
         private void EmitOpCode(OpCode opCode, Type t)
         {
             if (compilePass == CompilePass.GatherTypeInfo) return;
             ilGen.Emit(opCode, t);
-#if DEBUG
-            writer.WriteLine($"{opCode} {t}");
-#endif
+            if (LoggingEnabled)
+            {
+                writer.WriteLine($"{opCode} {t}");
+            }
         }
 
         private void EmitOpCode(OpCode opCode, int index)
         {
             if (compilePass == CompilePass.GatherTypeInfo) return;
             ilGen.Emit(opCode, index);
-#if DEBUG
-            writer.WriteLine($"{opCode} {index}");
-#endif
+            if (LoggingEnabled)
+            {
+                writer.WriteLine($"{opCode} {index}");
+            }
         }
 
         private void EmitOpCode(OpCode opCode, string str)
         {
             if (compilePass == CompilePass.GatherTypeInfo) return;
             ilGen.Emit(opCode, str);
-#if DEBUG
-            writer.WriteLine($"{opCode} {str}");
-#endif
+            if (LoggingEnabled)
+            {
+                writer.WriteLine($"{opCode} {str}");
+            }
         }
 
         private void EmitOpCode(OpCode opCode, MethodBase mBase)
@@ -671,35 +677,40 @@ namespace EmitMSIL
             {
                 ilGen.Emit(opCode, mBase as ConstructorInfo);
             }
-#if DEBUG
-            writer.WriteLine($"{opCode} {mBase}");
-#endif
+
+            if (LoggingEnabled)
+            {
+                writer.WriteLine($"{opCode} {mBase}");
+            }
         }
 
         private void EmitOpCode(OpCode opCode, double val)
         {
             if (compilePass == CompilePass.GatherTypeInfo) return;
             ilGen.Emit(opCode, val);
-#if DEBUG
-            writer.WriteLine($"{opCode} {val}");
-#endif
+            if (LoggingEnabled)
+            {
+                writer.WriteLine($"{opCode} {val}");
+            }
         }
 
         private void EmitOpCode(OpCode opCode, long val)
         {
             if (compilePass == CompilePass.GatherTypeInfo) return;
             ilGen.Emit(opCode, val);
-#if DEBUG
-            writer.WriteLine($"{opCode} {val}");
-#endif
+            if (LoggingEnabled)
+            {
+                writer.WriteLine($"{opCode} {val}");
+            }
         }
 
         private void EmitILComment(string comment)
         {
             if (compilePass == CompilePass.GatherTypeInfo) return;
-#if DEBUG
-            writer.WriteLine($"//{comment}");
-#endif
+            if (LoggingEnabled)
+            {
+                writer.WriteLine($"//{comment}");
+            }
         }
 
         private Label? DefineLabel()
@@ -711,9 +722,11 @@ namespace EmitMSIL
         private void MarkLabel(Label label,string labelcomment = "")
         {
             if (compilePass == CompilePass.GatherTypeInfo) return;
-#if DEBUG
-            writer.WriteLine($"//{labelcomment}");
-#endif
+            if (LoggingEnabled)
+            {
+                writer.WriteLine($"//{labelcomment}");
+            }
+
             ilGen.MarkLabel(label);
         }
 
