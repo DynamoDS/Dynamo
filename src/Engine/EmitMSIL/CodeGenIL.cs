@@ -1485,14 +1485,13 @@ namespace EmitMSIL
                 // or it could be fine!
                 if (argRank == 0 && paramRank == 0)
                 {
-                    EmitILComment("param and arg are both rank 0, type info may be ambiguous");
+                    EmitILComment("param and arg are both rank 0, type info may be ambiguous.");
+                    if (argType == typeof(DSASM.CLRStackValue))
+                    {
+                        EmitILComment("argument is from a replicate call, and param is rank 0, fallback to replication.");
+                        return false;
+                    }
                 }
-
-                if (!paramType.IsAssignableFrom(argType))
-                {
-                    return false;
-                }
-
             }
             return true;
         }

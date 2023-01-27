@@ -225,6 +225,8 @@ c=a[b];";
         [Test]
         public void IndexIntoReplicatedFunctionCall_IntegerArray1()
         {
+            //codeGen.StrictDirectFunctionCallValidation = true;
+            //codeGen.runtimeCore.StrictDirectFunctionCallValidation = true;
             var dscode = @"
 import(""DesignScriptBuiltin.dll"");
 a=[-1,-2,-3];
@@ -240,6 +242,8 @@ c = b[0];";
         [Test]
         public void IndexIntoReplicatedFunctionCall_IntegerArray2()
         {
+            //codeGen.StrictDirectFunctionCallValidation = true;
+            //codeGen.runtimeCore.StrictDirectFunctionCallValidation = true;
             var dscode = @"
 import(""DesignScriptBuiltin.dll"");
 a=[-1,-2,-3];
@@ -254,6 +258,8 @@ b = DSCore.Math.Abs(a)[0];";
         [Test]
         public void IndexIntoReplicatedFunctionCall_IntegerArray3()
         {
+            //codeGen.StrictDirectFunctionCallValidation = true;
+            //codeGen.runtimeCore.StrictDirectFunctionCallValidation = true;
             var dscode = @"
 import(""DesignScriptBuiltin.dll"");
 a = DSCore.Math.Abs([-1,-2,-3])[0];";
