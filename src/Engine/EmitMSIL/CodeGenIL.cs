@@ -8,7 +8,6 @@ using ProtoFFI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Configuration.Assemblies;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -165,12 +164,6 @@ namespace EmitMSIL
 #if DEBUG
             }
 #endif
-            EmitOpCode(OpCodes.Ret);
-
-                return (asm, type);
-#if DEBUG
-            }
-#endif
         }
 
         // Given a double value on the stack, emit call to Math.Round(arg, 0, MidpointRounding.AwayFromZero);
@@ -267,12 +260,8 @@ namespace EmitMSIL
             }
 
             // Load array to be coerced.
-            int currentVarIndex = -1;
-            if (arg is IdentifierNode ident)
-            {
-                currentVarIndex = variables[ident.Value].Item1;
-            }
-            else
+            int currentVarIndex;
+            if (!(arg is IdentifierNode))
             {
                 var localBuilder = DeclareLocal(typeof(IEnumerable<Source>), "collection to coerce");
                 currentVarIndex = localBuilder.LocalIndex;

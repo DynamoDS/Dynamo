@@ -203,12 +203,28 @@ y = DSCore.Math.Sum([1,2,3]);";
             var dscode = @"
 import(""DesignScriptBuiltin.dll"");
 import(""DSCoreNodes.dll"");
-y = DSCore.Math.Sum(1..100000000);";
+y = DSCore.Math.Sum(1..10000000);";
 
             var ast = ParserUtils.Parse(dscode).Body;
             var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
-            //Assert.AreEqual(6, output["y"]);
+            Assert.AreEqual(50000005000000, output["y"]);
+        }
+
+        [Test]
+        //'Object of type 'System.int64[]' can be converted to type 'System.Collections.Generic.IEnumerable`1[System.Double]'.'
+        public void SumVarArray_TypeCoerNeeded()
+        {
+            var dscode = @"
+import(""DesignScriptBuiltin.dll"");
+import(""DSCoreNodes.dll"");
+arr = 1..100;
+y = DSCore.Math.Sum(arr);";
+
+            var ast = ParserUtils.Parse(dscode).Body;
+            var output = codeGen.EmitAndExecute(ast);
+            Assert.IsNotEmpty(output);
+            Assert.AreEqual(5050, output["y"]);
         }
 
         [Test]
