@@ -1255,14 +1255,7 @@ namespace EmitMSIL
                     foreach (var arg in args)
                     {
                         Type t = DfsTraverse(arg);
-                        if (isStaticOrCtor)
-                        {
-                            t = EmitCoercionCode(arg, t, parameters[index]);
-                        }
-                        else if (index > 0)
-                        {
-                            t = EmitCoercionCode(arg, t, parameters[index - 1]);
-                        }
+                        t = EmitCoercionCode(arg, t, parameters[index]);
                         index++;
                     }
                 }
