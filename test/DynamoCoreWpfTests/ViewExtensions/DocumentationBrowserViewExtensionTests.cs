@@ -141,7 +141,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(!string.IsNullOrEmpty(browserView.VirtualFolderPath));
             Assert.IsTrue(Directory.Exists(browserView.VirtualFolderPath));
             //Check that the virtual folder will be created in the Package/doc folder so images will be loaded correctly
-            Assert.IsTrue(browserView.VirtualFolderPath.Contains(packageDocPath.Replace("\\", "/")));
+            Assert.IsTrue(browserView.VirtualFolderPath.Replace("\\", "/").Contains(packageDocPath.Replace("\\", "/")));
             Assert.IsTrue(htmlContent.Contains(expectedImageContent));
         }
 

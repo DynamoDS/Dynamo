@@ -2120,9 +2120,9 @@ namespace Dynamo.Graph.Workspaces
         {
             AssemblyName assemblyName = null;
             // Get zerotouch assembly
-            if (node is DSFunction)
+            if (node is DSFunction || node is DSVarArgFunction)
             {
-                var descriptor = (node as DSFunction).Controller.Definition;
+                var descriptor = node is DSFunction function ? function.Controller.Definition :  (node as DSVarArgFunction).Controller.Definition;
                 if (descriptor.IsPackageMember)
                 {
                     assemblyName = AssemblyName.GetAssemblyName(descriptor.Assembly);
