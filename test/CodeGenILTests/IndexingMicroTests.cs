@@ -186,7 +186,7 @@ a = 0..100..10; //a is an ILIST because of replication?
 b = 5;
 c=a[b];";
             var ast = ParserUtils.Parse(dscode).Body;
-            var output = codeGen.Emit(ast);
+            var output = codeGen.EmitAndExecute(ast);
             Assert.IsNotEmpty(output);
             Assert.AreEqual(50, output["c"]);
         }
@@ -221,9 +221,12 @@ c=a[b];";
         #endregion
 
         #region replicated_function_call
+        //TODO_MSIL - this test fails when enabling direct function call validation in ReplicationLogic - wrong ValueAtIndex overload is checked for replication
         [Test]
         public void IndexIntoReplicatedFunctionCall_IntegerArray1()
         {
+            //codeGen.StrictDirectFunctionCallValidation = true;
+            //codeGen.runtimeCore.StrictDirectFunctionCallValidation = true;
             var dscode = @"
 import(""DesignScriptBuiltin.dll"");
 a=[-1,-2,-3];
@@ -235,9 +238,12 @@ c = b[0];";
             Assert.AreEqual(1, output["c"]);
         }
 
+        //TODO_MSIL - this test fails when enabling direct function call validation in ReplicationLogic - wrong ValueAtIndex overload is checked for replication
         [Test]
         public void IndexIntoReplicatedFunctionCall_IntegerArray2()
         {
+            //codeGen.StrictDirectFunctionCallValidation = true;
+            //codeGen.runtimeCore.StrictDirectFunctionCallValidation = true;
             var dscode = @"
 import(""DesignScriptBuiltin.dll"");
 a=[-1,-2,-3];
@@ -247,9 +253,13 @@ b = DSCore.Math.Abs(a)[0];";
             Assert.IsNotEmpty(output);
             Assert.AreEqual(1, output["b"]);
         }
+
+        //TODO_MSIL - this test fails when enabling direct function call validation in ReplicationLogic - wrong ValueAtIndex overload is checked for replication
         [Test]
         public void IndexIntoReplicatedFunctionCall_IntegerArray3()
         {
+            //codeGen.StrictDirectFunctionCallValidation = true;
+            //codeGen.runtimeCore.StrictDirectFunctionCallValidation = true;
             var dscode = @"
 import(""DesignScriptBuiltin.dll"");
 a = DSCore.Math.Abs([-1,-2,-3])[0];";
