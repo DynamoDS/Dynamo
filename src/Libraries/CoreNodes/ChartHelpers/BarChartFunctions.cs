@@ -14,7 +14,6 @@ namespace CoreNodes.ChartHelpers
         [IsVisibleInDynamoLibrary(false)]
         public static Dictionary<string, List<double>> GetNodeInput(List<string> labels, List<List<double>> values, List<DSCore.Color> colors)
         {
-            // TODO - just pass input data unmodified instead?
             var output = new Dictionary<string, List<double>>();
 
             if (labels.Count != values.Count)
@@ -33,7 +32,6 @@ namespace CoreNodes.ChartHelpers
         [IsVisibleInDynamoLibrary(false)]
         public static Dictionary<string, double> GetNodeInput(List<string> labels, List<double> values, List<DSCore.Color> colors)
         {
-            // TODO - just pass input data unmodified instead?
             var output = new Dictionary<string, double>();
 
             if (labels.Count != values.Count)

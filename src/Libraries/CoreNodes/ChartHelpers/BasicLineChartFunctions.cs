@@ -14,7 +14,6 @@ namespace CoreNodes.ChartHelpers
         [IsVisibleInDynamoLibrary(false)]
         public static Dictionary<string, List<double>> GetNodeInput(List<string> titles, List<List<double>> values, List<DSCore.Color> colors)
         {
-            // TODO - just pass input data unmodified instead?
             var output = new Dictionary<string, List<double>>();
 
             if (titles.Count != values.Count)

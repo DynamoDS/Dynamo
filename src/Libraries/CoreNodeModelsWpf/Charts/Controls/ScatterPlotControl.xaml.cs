@@ -7,6 +7,7 @@ using LiveCharts;
 using LiveCharts.Defaults;
 using LiveCharts.Wpf;
 using System.ComponentModel;
+using System.Windows;
 
 namespace CoreNodeModelsWpf.Charts.Controls
 {
@@ -31,6 +32,7 @@ namespace CoreNodeModelsWpf.Charts.Controls
 
             this.model = model;
             this.model.PropertyChanged += NodeModel_PropertyChanged;
+            this.Unloaded += Unload;
 
             BuildUI(model);
 
@@ -163,9 +165,10 @@ namespace CoreNodeModelsWpf.Charts.Controls
         /// <summary>
         /// Unsubscribes from ViewModel events
         /// </summary>
-        public void Dispose()
+        private void Unload(object sender, RoutedEventArgs e)
         {
             this.model.PropertyChanged -= NodeModel_PropertyChanged;
+            Unloaded -= Unload;
         }
     }
 }

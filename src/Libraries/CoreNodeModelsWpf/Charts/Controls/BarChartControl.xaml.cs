@@ -3,6 +3,7 @@ using LiveCharts.Wpf;
 using SharpDX.Direct2D1;
 using System;
 using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 
@@ -27,11 +28,11 @@ namespace CoreNodeModelsWpf.Charts.Controls
 
         public BarChartControl(BarChartNodeModel model)
         {
-
             InitializeComponent();
 
             this.model = model;
             this.model.PropertyChanged += NodeModel_PropertyChanged;
+            this.Unloaded += Unload;
 
             BuildUI(model);
 
@@ -146,9 +147,11 @@ namespace CoreNodeModelsWpf.Charts.Controls
         /// <summary>
         /// Unsubscribes from ViewModel events
         /// </summary>
-        public void Dispose()
+        /// 
+        private void Unload(object sender, RoutedEventArgs e)
         {
             this.model.PropertyChanged -= NodeModel_PropertyChanged;
+            Unloaded -= Unload;
         }
     }
 }
