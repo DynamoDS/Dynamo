@@ -712,6 +712,8 @@ namespace Dynamo.Views
         {
             ContextMenuPopup.IsOpen = false;
             InCanvasSearchBar.IsOpen = false;
+            if (GeoScalingPopup != null)
+                GeoScalingPopup.IsOpen = false;
             
             if(PortContextMenu.IsOpen) DestroyPortContextMenu();
         }
@@ -734,6 +736,8 @@ namespace Dynamo.Views
 
             ViewModel.HandleMouseRelease(workBench, e);
             ContextMenuPopup.IsOpen = false;
+            if (GeoScalingPopup != null)
+                GeoScalingPopup.IsOpen = false;
             if (returnToSearch)
             {
                 ViewModel.DynamoViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.OnRequestFocusSearch();
