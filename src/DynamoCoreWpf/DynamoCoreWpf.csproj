@@ -1258,6 +1258,13 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+    <ItemGroup>
+        <None Include="UI\Themes\Modern\LiveChartsStyle.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
   <ItemGroup>
     <None Include="UI\Themes\Modern\DynamoText.xaml">
       <Generator>MSBuild:Compile</Generator>
