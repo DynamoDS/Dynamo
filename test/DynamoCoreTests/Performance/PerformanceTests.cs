@@ -64,6 +64,20 @@ namespace Dynamo.Tests
         {
             if (memoryData.Any())
             {
+                // Graph  - Graph name
+                // Old AM - Old Engine : Allocated Memory
+                // Old CM - Old Engine : Collected Memory
+                // Old AC - Old Engine : Allocated Count
+                // Old CC - Old Engine : Collected Count
+                // New AM - New Engine : Allocated Memory
+                // New CM - New Engine : Collected Memory
+                // New AC - New Engine : Allocated Count
+                // New CC - New Engine : Collected Count
+                // HC AM  - Hard Coded : Allocated Memory
+                // HC CM  - Hard Coded : Collected Memory
+                // HC AC  - Hard Coded : Allocated Count
+                // HC CC  - Hard Coded : Collected Count
+
                 Console.WriteLine("{0,50}{1,9}{2,9}{3,9}{4,9}{5,9}{6,9}{7,9}{8,9}{9,9}{10,9}{11,9}{12,9}", "Graph",
                     "Old AM", "Old CM", "Old AC", "Old CC",
                     "New AM", "New CM", "New AC", "New CC",
@@ -102,6 +116,16 @@ namespace Dynamo.Tests
             }
             else
             {
+                // Graph   - Graph Name
+                // Old C   - Old Compile Time (ms)
+                // Old E   - Old Execution Time (ms)
+                // Old C+E - Old Compile + Execution Time (ms)
+                // Graph   - Graph Name
+                // New C   - New Compile Time (ms)
+                // New E   - New Execution Time (ms)
+                // New C+E - New Compile + Execution Time (ms)
+                // HC      - Hard coded Time (ms)
+
                 Console.WriteLine("{0,50}{1,9}{2,9}{3,11}{4,9}{5,9}{6,11}{7,9}", "Graph", "Old C", "Old E", "Old C+E", "New C", "New E", "New C+E", "HC");
                 executionData.ForEach(item =>
                 {
@@ -143,6 +167,9 @@ namespace Dynamo.Tests
 
             WarmUp();
 
+
+            // Run the hardcoded version of this graph if it exists.
+            // Returns TimeSpan.Zero if a hard coded version does not exist
             var hardCodedExecutionTime = RunHardcodedTest(filePath);
 
             var checkPoint = StartCollectingMemory();
@@ -226,6 +253,11 @@ namespace Dynamo.Tests
             }
         }
 
+
+        //
+        // Execute a small graph in both engines once before starting to
+        // measure anything seems to even out the numbers between runs
+        // Note that ASM i preloaded when the text fixture is setup (in the base class)
         private void WarmUp()
         {
             if (!warmupDone)
@@ -265,6 +297,8 @@ namespace Dynamo.Tests
             return retVal;
         }
 
+        // Run the hardcoded version of filename if it exists.
+        // Returns TimeSpan.Zero if a hard coded version does not exist
         private TimeSpan RunHardcodedTest(string fileName)
         {
             TimeSpan hardCodedExecutionTime = TimeSpan.Zero;
