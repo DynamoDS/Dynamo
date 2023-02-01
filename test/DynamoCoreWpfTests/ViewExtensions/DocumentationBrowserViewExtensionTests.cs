@@ -135,6 +135,7 @@ namespace DynamoCoreWpfTests
 
             docBrowserviewExtension.HandleRequestOpenDocumentationLink(nodeAnnotationEventArgs);
             var htmlContent = GetSidebarDocsBrowserContents();
+            //There are times in which the URL contain characters like backslash (%5C) then they need to be replaced by the normal slash "/"
             htmlContent = htmlContent.Replace(@"%5C", "/");
 
             // Assert
