@@ -272,7 +272,7 @@ namespace Dynamo.Views
             // First make sure workspace level popups are hidden
             if (InCanvasSearchBar.IsOpen || ContextMenuPopup.IsOpen)
             {
-                ShowHideContextMenu(ShowHideFlags.Hide);               
+                ShowHideContextMenu(ShowHideFlags.Hide);
                 ShowHideInCanvasControl(ShowHideFlags.Hide);
             }
 
