@@ -40,6 +40,7 @@ namespace CodeGenILTests
             System.IO.Directory.CreateDirectory(outputpath);
             opCodeFilePath = Path.Combine(outputpath, $"OpCodesTEST{NUnit.Framework.TestContext.CurrentContext.Test.Name}.txt");
             codeGen = new EmitMSIL.CodeGenIL(inputs, opCodeFilePath, runtimeCore);
+            codeGen.LoggingEnabled = true;
         }
 
         [TearDown]
