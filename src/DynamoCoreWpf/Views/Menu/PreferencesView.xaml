@@ -919,6 +919,7 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <!--Group Styles Expander-->
                             <Expander x:Name="Styles"
@@ -1255,6 +1256,64 @@
                                                 </Image.ToolTip>
                                             </Image>
                                         </Label>
+                                    </StackPanel>
+                                </Grid>
+                            </Expander>
+
+                            <!--Render Zoom Scaling Expander-->
+                            <Expander x:Name="ZoomScaling"
+                                      Grid.Row="3"
+                                      Style="{StaticResource MenuExpanderStyle}" 
+                                      IsExpanded="{Binding PreferencesTabs[VisualSettings].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=ZoomScaling}"
+                                      Header="Zoom Scaling">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <StackPanel Margin="0,10,0,5" Grid.Row="0" Orientation="Horizontal">
+                                        <TextBlock  FontSize="12" Text="Library"></TextBlock>
+                                        <Label HorizontalAlignment="Left"
+                                                   Name="LibraryZoomScaleInfoLabel"
+                                                   VerticalAlignment="Center" 
+                                                   Height="26" 
+                                                   Width="53">
+                                            <Image
+                                               Width="14"
+                                               Height="14"
+                                               Margin="0,0,0,5"
+                                               Grid.Column="1"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Style="{StaticResource QuestionIcon}"
+                                               ToolTipService.ShowDuration="30000">
+                                                <Image.ToolTip>
+                                                    <ToolTip Content="{x:Static p:Resources.PreferencesWindowHardwareAccelerationTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                                </Image.ToolTip>
+                                            </Image>
+                                        </Label>
+                                    </StackPanel>
+                                   
+                                    <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0,0,0,3">
+                                        
+                                        <Slider Width="450"
+                                            Minimum="10"
+                                            Maximum="300"
+                                            Value="100">
+                                        </Slider>
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="2" Width="550">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                <ColumnDefinition Width="2*"></ColumnDefinition>
+                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="10%" Grid.Column="0"></TextBlock>
+                                            <TextBlock Text="100%" Grid.Column="1"></TextBlock>
+                                            <TextBlock Text="300%" Grid.Column="2"></TextBlock>
+                                        </Grid>
                                     </StackPanel>
                                 </Grid>
                             </Expander>
