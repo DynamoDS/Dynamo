@@ -61,6 +61,114 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create a new Bar Chart..
+        /// </summary>
+        public static string ChartsBarChartDescription {
+            get {
+                return ResourceManager.GetString("ChartsBarChartDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CoreNodeModelsWpf.Charts.BarChart;Bar Chart;barchart.
+        /// </summary>
+        public static string ChartsBarChartSearchTags {
+            get {
+                return ResourceManager.GetString("ChartsBarChartSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create a new Basic Line Chart..
+        /// </summary>
+        public static string ChartsBasicLineChartDescription {
+            get {
+                return ResourceManager.GetString("ChartsBasicLineChartDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CoreNodeModelsWpf.Charts.Index-ValueLinePlot;Index-Value Line Plot;indexvaluelineplot.
+        /// </summary>
+        public static string ChartsBasicLineChartSearchTags {
+            get {
+                return ResourceManager.GetString("ChartsBasicLineChartSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create a heat series plot..
+        /// </summary>
+        public static string ChartsHeatSeriesDescription {
+            get {
+                return ResourceManager.GetString("ChartsHeatSeriesDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CoreNodeModelsWpf.Charts.HeatSeriesPlot;Heat Series Plot;heatseriesplot.
+        /// </summary>
+        public static string ChartsHeatSeriesSearchTags {
+            get {
+                return ResourceManager.GetString("ChartsHeatSeriesSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create a new Pie Chart..
+        /// </summary>
+        public static string ChartsPieChartDescription {
+            get {
+                return ResourceManager.GetString("ChartsPieChartDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CoreNodeModelsWpf.Charts.PieChart;Pie Chart; piechart.
+        /// </summary>
+        public static string ChartsPieChartSearchTags {
+            get {
+                return ResourceManager.GetString("ChartsPieChartSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create a scatter plot..
+        /// </summary>
+        public static string ChartsScatterPlotDescription {
+            get {
+                return ResourceManager.GetString("ChartsScatterPlotDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CoreNodeModelsWpf.Charts.ScatterPlot;Scatter Plot;scatterplot.
+        /// </summary>
+        public static string ChartsScatterPlotSearchTags {
+            get {
+                return ResourceManager.GetString("ChartsScatterPlotSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create a new XY line plot..
+        /// </summary>
+        public static string ChartsXYLineChartDescription {
+            get {
+                return ResourceManager.GetString("ChartsXYLineChartDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CoreNodeModelsWpf.Charts.XYLinePlot;XY Line Plot;xylineplot.
+        /// </summary>
+        public static string ChartsXYLineChartSearchTags {
+            get {
+                return ResourceManager.GetString("ChartsXYLineChartSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Advanced.
         /// </summary>
         public static string ColorPaletteUIAdvancedButtonHeader {
@@ -120,6 +228,24 @@ namespace Dynamo.Wpf.Properties {
         public static string LblValue {
             get {
                 return ResourceManager.GetString("LblValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default colors are used. To define custom colors, provide an equal number of colors and labels inputs..
+        /// </summary>
+        public static string ProvideDefaultColorsWarningMessage {
+            get {
+                return ResourceManager.GetString("ProvideDefaultColorsWarningMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drag to modify the size of the chart.
+        /// </summary>
+        public static string ResizeThumbToolTip {
+            get {
+                return ResourceManager.GetString("ResizeThumbToolTip", resourceCulture);
             }
         }
     }

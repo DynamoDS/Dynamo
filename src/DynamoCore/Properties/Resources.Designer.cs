@@ -116,7 +116,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There are no recommendations yet. You can try switching to object type autocomplete..
+        ///   Looks up a localized string similar to There are no recommendations yet. You can try switching to node type match autocomplete..
         /// </summary>
         public static string AutocompleteNoRecommendationsMessage {
             get {
@@ -984,6 +984,24 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Insert Dynamo Definition....
+        /// </summary>
+        public static string InsertDialogBoxText {
+            get {
+                return ResourceManager.GetString("InsertDialogBoxText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Example file added to workspace. Run mode changed to Manual..
+        /// </summary>
+        public static string InsertGraphRunModeNotificationText {
+            get {
+                return ResourceManager.GetString("InsertGraphRunModeNotificationText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The folder &apos;{0}&apos; does not exist.
         /// </summary>
         public static string InvalidCustomNodeFolderWarning {
@@ -1147,7 +1165,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You need to login to your account to get recommendations. Please log in or switch to object type autocomplete..
+        ///   Looks up a localized string similar to You need to login to your account to get recommendations. Please log in or switch to node type match autocomplete..
         /// </summary>
         public static string LoginNeededMessage {
             get {

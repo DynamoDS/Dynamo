@@ -1,0 +1,403 @@
+{
+  "Uuid": "8c2ba28b-a82f-4c59-9042-0eb03618a325",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Heat Series Plot",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "[\"Item 1\",\"Item 2\",\"Item 3\",\"Item 4\",\"Item 5\",\"Item 6\"];\n[\"January\",\"February\",\"March\",\"April\",\"May\",\"June\"];\n[[1,2,3,4,2,1],[-12,12,4,-61,45,88],[4,4,5,5,16,-6],[-74,37,83,-262,54,44],[232,133,444,323,414,231],[332,122,98,89,89,78]];",
+      "Id": "62218ca505be42e38947fc8f427a6d5d",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "08edba968ff14aedbe43df81eacbc469",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6d31b40a3d234b45b9879bac6bcd6e52",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4744d7d46fbf48d69fe8de0886ad684f",
+          "Name": "",
+          "Description": "Value of expression at line 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.ColorPalette, CoreNodeModels",
+      "InputValue": {
+        "R": 106,
+        "G": 192,
+        "B": 231,
+        "A": 255
+      },
+      "NodeType": "ColorInputNode",
+      "Id": "2c3e3705aa3748a0a0f20505ff3be117",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "aac47bb67a264898946360146dc6b9bb",
+          "Name": "Color",
+          "Description": "Selected Color.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select a Color from the palette"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.ColorPalette, CoreNodeModels",
+      "InputValue": {
+        "R": 235,
+        "G": 85,
+        "B": 85,
+        "A": 255
+      },
+      "NodeType": "ColorInputNode",
+      "Id": "b53b43633735435ab9fa51d36a19cf4d",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "aea68af2d9674ead8fdaa8f001a191c5",
+          "Name": "Color",
+          "Description": "Selected Color.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select a Color from the palette"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
+      "VariableInputPorts": true,
+      "NodeType": "ExtensionNode",
+      "Id": "9e4b1a6ac0294f3092e4d38a0b1c7d0c",
+      "Inputs": [
+        {
+          "Id": "88a6122f398640349aa909ab9a1546ba",
+          "Name": "item0",
+          "Description": "Item Index #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "9b8863388e9549439f619e067cf0dc6d",
+          "Name": "item1",
+          "Description": "Item Index #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "cb045d04d9e54f38ad37668170bd90e4",
+          "Name": "list",
+          "Description": "A list (type: var[]..[])",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Makes a new list from the given inputs"
+    },
+    {
+      "ConcreteType": "CoreNodeModelsWpf.Charts.HeatSeriesNodeModel, CoreNodeModelsWpf",
+      "XLabels": [
+        "Item 1",
+        "Item 2",
+        "Item 3",
+        "Item 4",
+        "Item 5",
+        "Item 6"
+      ],
+      "YLabels": [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June"
+      ],
+      "Values": [
+        [
+          1.0,
+          2.0,
+          3.0,
+          4.0,
+          2.0,
+          1.0
+        ],
+        [
+          -12.0,
+          12.0,
+          4.0,
+          -61.0,
+          45.0,
+          88.0
+        ],
+        [
+          4.0,
+          4.0,
+          5.0,
+          5.0,
+          16.0,
+          -6.0
+        ],
+        [
+          -74.0,
+          37.0,
+          83.0,
+          -262.0,
+          54.0,
+          44.0
+        ],
+        [
+          232.0,
+          133.0,
+          444.0,
+          323.0,
+          414.0,
+          231.0
+        ],
+        [
+          332.0,
+          122.0,
+          98.0,
+          89.0,
+          89.0,
+          78.0
+        ]
+      ],
+      "Colors": [
+        "#FF6AC0E7",
+        "#FFEB5555"
+      ],
+      "NodeType": "ExtensionNode",
+      "Id": "8d9950cf7df344ed9799c89d3c524413",
+      "Inputs": [
+        {
+          "Id": "51443b25c12e403790610104225aefe9",
+          "Name": "x-labels",
+          "Description": "A list of string labels for the x-axis.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e927e9faba03424db907ea5b7f1bee0c",
+          "Name": "y-labels",
+          "Description": "A list of string labels for the y-axis.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "bf23f2786656438eaab147603f787ffb",
+          "Name": "values",
+          "Description": "A list of lists each containing double values representing items in a column.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5cca7b7b7eb643c3815ec089237b0e1e",
+          "Name": "colors",
+          "Description": "A list of colors used to generate a color range",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "38f55c1021af4d0287516a6aab3b4eba",
+          "Name": "labels:values",
+          "Description": "Dictionary containing label:value key-pairs",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Create a new heat series plot."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "08edba968ff14aedbe43df81eacbc469",
+      "End": "51443b25c12e403790610104225aefe9",
+      "Id": "1d5a74f5c7264c3c879d10638f07cedc",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "6d31b40a3d234b45b9879bac6bcd6e52",
+      "End": "e927e9faba03424db907ea5b7f1bee0c",
+      "Id": "cc766a33e1654716a3488c17b54e4b37",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "4744d7d46fbf48d69fe8de0886ad684f",
+      "End": "bf23f2786656438eaab147603f787ffb",
+      "Id": "9ff3d46203334d119ccf4994e9ebb314",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "aac47bb67a264898946360146dc6b9bb",
+      "End": "88a6122f398640349aa909ab9a1546ba",
+      "Id": "55073ace889c4189802149b38dee1c11",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "aea68af2d9674ead8fdaa8f001a191c5",
+      "End": "9b8863388e9549439f619e067cf0dc6d",
+      "Id": "bc6a3066dd7d457688bf54fdac04e412",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "cb045d04d9e54f38ad37668170bd90e4",
+      "End": "5cca7b7b7eb643c3815ec089237b0e1e",
+      "Id": "b53f6cf633464804a3cfb95b0d1f1b86",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.18",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.18.0.3514",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "62218ca505be42e38947fc8f427a6d5d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 338.69039399351686,
+        "Y": 286.70745982366219
+      },
+      {
+        "Name": "Color Palette",
+        "ShowGeometry": true,
+        "Id": "2c3e3705aa3748a0a0f20505ff3be117",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 69.690393993516864,
+        "Y": 420.22495982366223
+      },
+      {
+        "Name": "Color Palette",
+        "ShowGeometry": true,
+        "Id": "b53b43633735435ab9fa51d36a19cf4d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 69.690393993516864,
+        "Y": 568.22495982366218
+      },
+      {
+        "Name": "List Create",
+        "ShowGeometry": true,
+        "Id": "9e4b1a6ac0294f3092e4d38a0b1c7d0c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 338.69039399351686,
+        "Y": 477.22495982366223
+      },
+      {
+        "Name": "Heat Series Plot",
+        "ShowGeometry": true,
+        "Id": "8d9950cf7df344ed9799c89d3c524413",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1176.6903939935169,
+        "Y": 322.22495982366223
+      }
+    ],
+    "Annotations": [],
+    "X": -51.353818569287512,
+    "Y": -74.854029211972659,
+    "Zoom": 0.76655075795131533
+  }
+}

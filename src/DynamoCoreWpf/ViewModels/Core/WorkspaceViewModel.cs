@@ -27,6 +27,7 @@ using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoUtilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using ViewModels.Core;
 using Function = Dynamo.Graph.Nodes.CustomNodes.Function;
 
 namespace Dynamo.ViewModels
@@ -431,7 +432,15 @@ namespace Dynamo.ViewModels
         [JsonIgnore]
         public RunSettingsViewModel RunSettingsViewModel { get; protected set; }
 
-        
+
+        private GeometryScalingViewModel geoScalingViewModel;
+        internal GeometryScalingViewModel GeoScalingViewModel
+        {
+            get
+            {
+                return geoScalingViewModel;
+            }
+        }
 
         #endregion
 
@@ -504,6 +513,9 @@ namespace Dynamo.ViewModels
             {
                 Visible = true
             };
+
+            geoScalingViewModel = new GeometryScalingViewModel(this.DynamoViewModel);
+            geoScalingViewModel.ScaleValue = this.DynamoViewModel.ScaleFactorLog;
         }
         /// <summary>
         /// This event is triggered from Workspace Model. Used in instrumentation
@@ -1364,7 +1376,15 @@ namespace Dynamo.ViewModels
 
         private bool _fitViewActualZoomToggle = false;
 
-        internal void FitViewInternal()
+        /// <summary>
+        ///     Zoom around current selection
+        ///     _fitViewActualZoomToggle is used internally to toggle
+        /// between the default 1.0 zoom level and the intended zoom around selection
+        ///     The optional toggle boolean is introduced to avoid this behavior and only zoom around the selection
+        /// no matter how many times the operation is performed
+        /// </summary>
+        /// <param name="toggle"></param>
+        internal void FitViewInternal(bool toggle = true)
         {
             // Get the offset and focus width & height (zoom if 100%)
             double minX, maxX, minY, maxY;
@@ -1409,10 +1429,19 @@ namespace Dynamo.ViewModels
             double focusWidth = maxX - minX;
             double focusHeight = maxY - minY;
 
-            _fitViewActualZoomToggle = !_fitViewActualZoomToggle;
-            ZoomEventArgs zoomArgs = _fitViewActualZoomToggle
-                ? new ZoomEventArgs(offset, focusWidth, focusHeight)
-                : new ZoomEventArgs(offset, focusWidth, focusHeight, 1.0);
+            ZoomEventArgs zoomArgs;
+
+            if (toggle)
+            {
+                _fitViewActualZoomToggle = !_fitViewActualZoomToggle;
+                zoomArgs = _fitViewActualZoomToggle && toggle
+                    ? new ZoomEventArgs(offset, focusWidth, focusHeight)
+                    : new ZoomEventArgs(offset, focusWidth, focusHeight, 1.0);
+            }
+            else
+            {
+                zoomArgs = new ZoomEventArgs(offset, focusWidth, focusHeight);
+            }
 
             OnRequestZoomToFitView(this, zoomArgs);
         }
