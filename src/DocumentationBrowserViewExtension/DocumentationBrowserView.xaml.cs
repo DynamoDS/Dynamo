@@ -146,6 +146,7 @@ namespace Dynamo.DocumentationBrowser
             catch (Exception ex)
             {
                 VirtualFolderPath = string.Empty;
+                Log(ex.Message);
             }
 
             // Only initialize once 
@@ -200,5 +201,12 @@ namespace Dynamo.DocumentationBrowser
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
+        #region ILogSource Implementation
+        private void Log(string message)
+        {
+            viewModel.MessageLogged?.Invoke(LogMessage.Info(message));
+        }
+        #endregion
     }
 }
