@@ -1297,7 +1297,9 @@
                                    
                                     <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0,0,0,3">
                                         
-                                        <Slider Width="450"
+                                        <Slider
+                                            Style="{StaticResource Horizontal_Slider}"
+                                            Width="450"
                                             Minimum="10"
                                             Maximum="300"
                                             Value="100">
@@ -1319,7 +1321,7 @@
                             </Expander>
                         </Grid>
                     </TabItem>
-
+                    
                     <!--Package Manager Settings Tab-->
                     <TabItem Header="{x:Static p:Resources.PreferencesPackageManagerSettingsTab}"
                              Style="{StaticResource LeftTab}">
