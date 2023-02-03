@@ -537,6 +537,9 @@ https://github.com/DynamoDS/Dynamo/tree/master/tools/install/Extra/DirectX/Licen
 ImageMagick
 https://imagemagick.org/script/license.php
 
+LiveCharts
+https://github.com/Live-Charts/Live-Charts/blob/master/LICENSE.TXT
+
 Magick.NET.Core
 https://github.com/dlemstra/Magick.NET/blob/main/License.txt
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,6 +20,8 @@ namespace CoreNodeModels.Input
     public abstract class FileSystemBrowser : String
     {
         private static readonly string HintPathString = "HintPath";
+
+        [JsonProperty(Order = 8)]
         public string HintPath { get; set; }
 
         protected FileSystemBrowser(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)

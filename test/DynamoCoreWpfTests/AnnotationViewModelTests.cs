@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -154,13 +154,13 @@ namespace DynamoCoreWpfTests
             var secondNode = new DSFunction(ViewModel.Model.LibraryServices.GetFunctionDescriptor("+"));
             ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(secondNode, false);
 
-            //verify the node was created
+            //verify if the second node was created
             Assert.AreEqual(2, ViewModel.Model.CurrentWorkspace.Nodes.Count());
 
             //Select the node 
             DynamoSelection.Instance.Selection.Add(addNode);
           
-            //Check whether group can be created
+            //Check whether group can be ungrouped
             Assert.AreEqual(true, ViewModel.CanUngroupModel(null));
         }
 
@@ -1375,6 +1375,47 @@ namespace DynamoCoreWpfTests
 
             Assert.IsTrue(groupViewModel.ViewModelBases.OfType<AnnotationViewModel>().FirstOrDefault().IsCollapsed);
             Assert.IsTrue(connectorViewModel.IsCollapsed);
+        }
+
+        [Test]
+        public void CanToggleVisibilityOfAllNodesInAGroup()
+        {
+            // Arrange
+            var parentGroupName = "GroupWithGroupedGroup";
+            var nestedGroupName = "GroupInsideOtherGroup";
+
+            OpenModel(@"core\annotationViewModelTests\groupsTestFile.dyn");
+
+            var parentGroupNameViewModel = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x => x.AnnotationText == parentGroupName);
+            var nestedGroupNameViewModel = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x => x.AnnotationText == nestedGroupName);
+
+            //No. of nodes in parent group with preview enabled before the toggle.
+            var parentGroupContentBefore = parentGroupNameViewModel.Nodes.OfType<NodeModel>().Where(x => x.IsVisible == true).ToList();
+            var nestedGroupContentBefore = nestedGroupNameViewModel.Nodes.OfType<NodeModel>().Where(x => x.IsVisible == true).ToList();
+
+            Assert.AreEqual(2, parentGroupContentBefore.Count);
+            Assert.AreEqual(2, nestedGroupContentBefore.Count);
+
+            //Assert HasUnsavedChanges is false
+            Assert.AreEqual(false, ViewModel.CurrentSpaceViewModel.HasUnsavedChanges);
+
+            // Act
+            parentGroupNameViewModel.ToggleIsVisibleGroupCommand.Execute(null);
+
+            // Assert
+            // Only the nodes in parent group are affected
+            var parentGroupContentAfter = parentGroupNameViewModel.Nodes.OfType<NodeModel>().Where(x => x.IsVisible == true).ToList();
+            var nestedGroupContentAfter = nestedGroupNameViewModel.Nodes.OfType<NodeModel>().Where(x => x.IsVisible == true).ToList();
+            Assert.AreEqual(0, parentGroupContentAfter.Count);
+            Assert.AreEqual(2, nestedGroupContentAfter.Count);
+
+            // Now both the groups are affected
+            nestedGroupNameViewModel.ToggleIsVisibleGroupCommand.Execute(null);
+            nestedGroupContentAfter = nestedGroupNameViewModel.Nodes.OfType<NodeModel>().Where(x => x.IsVisible == true).ToList();
+            Assert.AreEqual(0, nestedGroupContentAfter.Count);
+
+            //Assert HasUnsavedChanges is false
+            Assert.AreEqual(true, ViewModel.CurrentSpaceViewModel.HasUnsavedChanges);
         }
 
         #endregion

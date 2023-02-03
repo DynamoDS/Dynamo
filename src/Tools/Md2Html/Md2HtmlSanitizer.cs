@@ -54,6 +54,7 @@ namespace Md2Html
             AllowedAtRules.Add(CssRuleType.Media);
             AllowedAtRules.Add(CssRuleType.Keyframe);
             AllowedAtRules.Add(CssRuleType.Keyframes);
+            AllowedAtRules.Add(CssRuleType.FontFace);
 
             RemovingAtRule += ChangedEvent;
             RemovingAttribute += ChangedEvent;
