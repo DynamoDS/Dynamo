@@ -15,7 +15,7 @@ jobs:
       with:
         dotnet-version: '6.0.x'
     - name: Install dependencies for windows runtime
-      run: dotnet restore $Env:GITHUB_WORKSPACE\Dynamo\src\DynamoCore.net6.sln --runtime=win10-x64
+      run: dotnet restore $Env:GITHUB_WORKSPACE\Dynamo\src\DynamoCore.net6.sln -p:Platform=NET60_Windows --runtime=win10-x64
     - name: Build Dynamo with MSBuild for Windows
       run: |
         echo "***Continue with the build, Good luck developer!***"
@@ -28,7 +28,7 @@ jobs:
         echo "***Locating DynamoCLI for Windows!***"
         test ".\DynamoCLI.exe" && echo "DynamoCLI exists!"
     - name: Install dependencies for linux runtime
-      run: dotnet restore $Env:GITHUB_WORKSPACE\Dynamo\src\DynamoCore.net6.sln --runtime=linux-x64
+      run: dotnet restore $Env:GITHUB_WORKSPACE\Dynamo\src\DynamoCore.net6.sln -p:Platform=NET60_Linux --runtime=linux-x64
     - name: Build Dynamo with MSBuild for Linux
       run: |
         echo "***Continue with the build, Good luck developer!***"

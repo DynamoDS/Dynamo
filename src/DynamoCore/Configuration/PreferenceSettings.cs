@@ -51,6 +51,7 @@ namespace Dynamo.Configuration
         private string lastUpdateDownloadPath;
         private int maxNumRecentFiles;
         private bool isBackgroundGridVisible;
+        private double defaultScaleFactor;
         private bool disableTrustWarnings = false;
         private bool isNotificationCenterEnabled;
         private bool isStaticSplashScreenEnabled;
@@ -227,6 +228,24 @@ namespace Dynamo.Configuration
                 isBackgroundGridVisible = value;
 
                 RaisePropertyChanged(nameof(IsBackgroundGridVisible));
+            }
+        }
+
+        /// <summary>
+        /// Default geometry scale factor for a new workspace
+        /// </summary>
+        public double DefaultScaleFactor
+        {
+            get
+            {
+                return defaultScaleFactor;
+            }
+            set
+            {
+                if (value == defaultScaleFactor) return;
+                defaultScaleFactor = value;
+
+                RaisePropertyChanged(nameof(DefaultScaleFactor));
             }
         }
 

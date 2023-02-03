@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -66,6 +66,8 @@ namespace Dynamo.UI
         private static ResourceDictionary _sidebarGridDictionary;
         private static ResourceDictionary outPortsDictionary;
         private static ResourceDictionary inPortsDictionary;
+        private static ResourceDictionary _liveChartDictionary;
+        
 
         public static string ThemesDirectory 
         {
@@ -134,6 +136,20 @@ namespace Dynamo.UI
         public static Uri SidebarGridDictionaryUri
         {
             get { return new Uri(Path.Combine(ThemesDirectory, "SidebarGridStyleDictionary.xaml")); }
+        }
+
+        public static Uri LiveChartsDictionaryUri
+        {
+            get { return new Uri(Path.Combine(ThemesDirectory, "LiveChartsStyle.xaml")); }
+        }
+
+        public static ResourceDictionary LiveChartDictionary
+        {
+            get
+            {
+                return _liveChartDictionary ??
+                       (_liveChartDictionary = new ResourceDictionary() { Source = LiveChartsDictionaryUri });
+            }
         }
 
         public static ResourceDictionary DynamoModernDictionary

@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -36,4 +36,5 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("PackageDetailsViewExtension")]
 [assembly: InternalsVisibleTo("DynamoCoreWpfTests")]
 [assembly: InternalsVisibleTo("DSCoreNodes")]
-[assembly: InternalsVisibleTo("FFITarget")] 
+[assembly: InternalsVisibleTo("FFITarget")]
+[assembly: InternalsVisibleTo("DynamoPlayerExtension")]

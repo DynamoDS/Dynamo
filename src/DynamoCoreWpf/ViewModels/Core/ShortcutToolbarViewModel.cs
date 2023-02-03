@@ -1,8 +1,6 @@
 using Dynamo.Core;
 using Dynamo.UI.Commands;
-using Dynamo.UI.Controls;
 using Dynamo.ViewModels;
-using System.Windows;
 
 namespace Dynamo.Wpf.ViewModels.Core
 {
