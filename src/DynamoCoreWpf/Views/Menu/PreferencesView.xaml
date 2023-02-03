@@ -1298,8 +1298,9 @@
                                     <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0,0,0,3">
                                         
                                         <Slider
-                                            Style="{StaticResource Horizontal_Slider}"
-                                            Width="450"
+                                            x:Name="LibraryZoomScalingSlider"
+                                            Style="{StaticResource SliderStyle}"
+                                            Width="440"
                                             Minimum="10"
                                             Maximum="300"
                                             Value="100">
@@ -1308,8 +1309,8 @@
                                     <StackPanel Grid.Row="2" Width="550">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                                <ColumnDefinition Width="2*"></ColumnDefinition>
+                                                <ColumnDefinition Width="125"></ColumnDefinition>
+                                                <ColumnDefinition Width="300"></ColumnDefinition>
                                                 <ColumnDefinition Width="*"></ColumnDefinition>
                                             </Grid.ColumnDefinitions>
                                             <TextBlock Text="10%" Grid.Column="0"></TextBlock>

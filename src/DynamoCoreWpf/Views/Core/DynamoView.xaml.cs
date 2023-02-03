@@ -75,6 +75,7 @@ namespace Dynamo.Controls
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
         private readonly LoginService loginService;
         private ShortcutToolbar shortcutBar;
+        private PreferencesView preferencesWindow;
         private bool loaded = false;
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
         // called on the view model and the process is not cancelled
@@ -97,6 +98,8 @@ namespace Dynamo.Controls
         private FileTrustWarning fileTrustWarningPopup = null;
 
         internal ShortcutToolbar ShortcutBar { get { return shortcutBar; } }
+
+        internal PreferencesView PreferencesWindow { get { return preferencesWindow; } }
 
         /// <summary>
         /// Constructor
@@ -962,6 +965,9 @@ namespace Dynamo.Controls
                                                                      _timer.Elapsed, dynamoViewModel.BrandingResourceProvider.ProductName));
             InitializeShortcutBar();
             InitializeStartPage(isFirstRun);
+
+            preferencesWindow = new PreferencesView(this);
+            preferencesWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
 #if !__NO_SAMPLES_MENU
             LoadSamplesMenu();
@@ -1866,8 +1872,6 @@ namespace Dynamo.Controls
 
         private void OnPreferencesWindowClick(object sender, RoutedEventArgs e)
         {
-            var preferencesWindow = new PreferencesView(this);
-            preferencesWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             preferencesWindow.ShowDialog();
         }
 

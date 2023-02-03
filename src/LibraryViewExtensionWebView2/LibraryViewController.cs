@@ -8,6 +8,7 @@ using System.Security.Permissions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using Dynamo.Controls;
 using Dynamo.Extensions;
 using Dynamo.LibraryViewExtensionWebView2.Handlers;
 using Dynamo.LibraryViewExtensionWebView2.ViewModels;
@@ -71,6 +72,9 @@ namespace Dynamo.LibraryViewExtensionWebView2
             InitializeResourceProviders(dynamoViewModel.Model, customization);
             dynamoWindow.StateChanged += DynamoWindowStateChanged;
             dynamoWindow.SizeChanged += DynamoWindow_SizeChanged;
+
+            var dynamoViewWindow = dynamoView as DynamoView;
+            dynamoViewWindow.PreferencesWindow.LibraryZoomScalingSlider.ValueChanged += DynamoSliderValueChanged;
 
             DirectoryInfo webBrowserUserDataFolder;
             var userDataDir = new DirectoryInfo(dynamoViewModel.Model.PathManager.UserDataDirectory);
@@ -528,6 +532,12 @@ namespace Dynamo.LibraryViewExtensionWebView2
             layoutProvider = new LayoutSpecProvider(customization, iconProvider, "Dynamo.LibraryViewExtensionWebView2.web.library.layoutSpecs.json");
         }
 
+        private void DynamoSliderValueChanged(object sender, EventArgs e)
+        {
+            Slider slider = (Slider)sender;
+            browser.ZoomFactor = slider.Value / 100;
+        }
+
         /// <summary>
         /// This method will execute the action of moving the Guide to the next Step (it is triggered when a specific html div that contains the package is clicked).
         /// </summary>
@@ -567,6 +577,10 @@ namespace Dynamo.LibraryViewExtensionWebView2
             {
                 dynamoWindow.StateChanged -= DynamoWindowStateChanged;
                 dynamoWindow.SizeChanged -= DynamoWindow_SizeChanged;
+
+                var dynamoViewWindow = dynamoWindow as DynamoView;
+                dynamoViewWindow.PreferencesWindow.LibraryZoomScalingSlider.ValueChanged += DynamoSliderValueChanged;
+
                 dynamoWindow = null;
             }
             if (this.browser != null)

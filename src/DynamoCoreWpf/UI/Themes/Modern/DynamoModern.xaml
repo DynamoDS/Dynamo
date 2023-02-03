@@ -5487,6 +5487,7 @@
         </Style.Triggers>
     </Style>
 
+    <!-- Custom Slider -->
     <Style x:Key="SliderRepeatButton" TargetType="RepeatButton">
         <Setter Property="SnapsToDevicePixels" Value="true" />
         <Setter Property="OverridesDefaultStyle" Value="true" />
@@ -5546,7 +5547,7 @@
         </Grid>
     </ControlTemplate>
 
-    <Style x:Key="Horizontal_Slider" TargetType="Slider">
+    <Style x:Key="SliderStyle" TargetType="Slider">
         <Setter Property="Focusable" Value="False"/>
         <Setter Property="SnapsToDevicePixels" Value="true" />
         <Setter Property="OverridesDefaultStyle" Value="true" />
