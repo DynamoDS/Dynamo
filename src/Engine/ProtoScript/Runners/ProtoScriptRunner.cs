@@ -345,7 +345,7 @@ namespace ProtoScript.Runners
             return succeeded;
         }
 
-        public IDictionary<string, object> CompileAndGenerateMSIL(string source, EmitMSIL.CodeGenIL codegen)
+        public static IDictionary<string, object> CompileAndGenerateMSIL(string source, EmitMSIL.CodeGenIL codegen)
         {
             var ast = ParserUtils.Parse(source).Body;
             return codegen.EmitAndExecute(ast);

@@ -169,20 +169,20 @@ namespace EmitMSIL
             EmitOpCode(OpCodes.Call, roundMethod);
         }
 
-        private Type EmitCoercionCode(AssociativeNode arg, Type argType, Type param)
+        private Type EmitCoercionCode(AssociativeNode arg, Type argType, Type paramType)
         {
             EmitILComment("coerce impl");
             if (argType == null) return argType;
 
-            if(param == typeof(object) && argType.IsValueType)
+            if(paramType == typeof(object) && argType.IsValueType)
             {
                 EmitOpCode(OpCodes.Box, argType);
                 return typeof(object);
             }
 
-            if (param.IsAssignableFrom(argType)) return argType;
+            if (paramType.IsAssignableFrom(argType)) return argType;
 
-            if(argType == typeof(double) && param == typeof(long))
+            if(argType == typeof(double) && paramType == typeof(long))
             {
                 // Call Math.Round(arg, 0, MidpointRounding.AwayFromZero);
                 EmitMathRound();
@@ -190,7 +190,7 @@ namespace EmitMSIL
                 EmitOpCode(OpCodes.Conv_I8);
                 return typeof(long);
             }
-            if (argType == typeof(double) && param == typeof(int))
+            if (argType == typeof(double) && paramType == typeof(int))
             {
                 // Call Math.Round(arg, 0, MidpointRounding.AwayFromZero);
                 EmitMathRound();
@@ -198,40 +198,40 @@ namespace EmitMSIL
                 EmitOpCode(OpCodes.Conv_I4);
                 return typeof(int);
             }
-            if (argType == typeof(long) && param == typeof(int))
+            if (argType == typeof(long) && paramType == typeof(int))
             {
                 EmitOpCode(OpCodes.Conv_I4);
                 return typeof(int);
             }
-            if (argType == typeof(long) && param == typeof(double))
+            if (argType == typeof(long) && paramType == typeof(double))
             {
                 EmitOpCode(OpCodes.Conv_R8);
                 return typeof(double);
             }
             
-            if (typeof(IEnumerable<int>).IsAssignableFrom(argType) && typeof(IEnumerable<double>).IsAssignableFrom(param))
+            if (typeof(IEnumerable<int>).IsAssignableFrom(argType) && typeof(IEnumerable<double>).IsAssignableFrom(paramType))
             {
-                return EmitCollectionCoercion<int, double>(arg, param);
+                return EmitCollectionCoercion<int, double>(arg, paramType);
             }
-            if (typeof(IEnumerable<int>).IsAssignableFrom(argType) && typeof(IEnumerable<long>).IsAssignableFrom(param))
+            if (typeof(IEnumerable<int>).IsAssignableFrom(argType) && typeof(IEnumerable<long>).IsAssignableFrom(paramType))
             {
-                return EmitCollectionCoercion<int, long>(arg, param);
+                return EmitCollectionCoercion<int, long>(arg, paramType);
             }
-            if (typeof(IEnumerable<long>).IsAssignableFrom(argType) && typeof(IEnumerable<double>).IsAssignableFrom(param))
+            if (typeof(IEnumerable<long>).IsAssignableFrom(argType) && typeof(IEnumerable<double>).IsAssignableFrom(paramType))
             {
-                return EmitCollectionCoercion<long, double>(arg, param);
+                return EmitCollectionCoercion<long, double>(arg, paramType);
             }
-            if (typeof(IEnumerable<long>).IsAssignableFrom(argType) && typeof(IEnumerable<int>).IsAssignableFrom(param))
+            if (typeof(IEnumerable<long>).IsAssignableFrom(argType) && typeof(IEnumerable<int>).IsAssignableFrom(paramType))
             {
-                return EmitCollectionCoercion<long, int>(arg, param);
+                return EmitCollectionCoercion<long, int>(arg, paramType);
             }
-            if (typeof(IEnumerable<double>).IsAssignableFrom(argType) && typeof(IEnumerable<int>).IsAssignableFrom(param))
+            if (typeof(IEnumerable<double>).IsAssignableFrom(argType) && typeof(IEnumerable<int>).IsAssignableFrom(paramType))
             {
-                return EmitCollectionCoercion<double, int>(arg, param);
+                return EmitCollectionCoercion<double, int>(arg, paramType);
             }
-            if (typeof(IEnumerable<double>).IsAssignableFrom(argType) && typeof(IEnumerable<long>).IsAssignableFrom(param))
+            if (typeof(IEnumerable<double>).IsAssignableFrom(argType) && typeof(IEnumerable<long>).IsAssignableFrom(paramType))
             {
-                return EmitCollectionCoercion<double, long>(arg, param);
+                return EmitCollectionCoercion<double, long>(arg, paramType);
             }
             // TODO: Add more coercion cases here.
 

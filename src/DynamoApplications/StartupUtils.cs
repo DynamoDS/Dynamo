@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
+using Dynamo.Graph.Nodes;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Scheduler;
@@ -474,7 +475,8 @@ namespace Dynamo.Applications
             config.AuthProvider = CLImode ? null : new Core.IDSDKManager();
             config.UpdateManager = CLImode ? null : OSHelper.IsWindows() ? InitializeUpdateManager() : null;
             config.StartInTestMode = CLImode;
-            config.PathResolver = CLImode ? new CLIPathResolver(preloaderLocation, userDataFolder, commonDataFolder) as IPathResolver : new SandboxPathResolver(preloaderLocation) as IPathResolver;
+            config.PathResolver = CLImode ? new CLIPathResolver(preloaderLocation, userDataFolder, commonDataFolder)
+                : new SandboxPathResolver(preloaderLocation) as IPathResolver;
 
             var model = DynamoModel.Start(config);
             return model;

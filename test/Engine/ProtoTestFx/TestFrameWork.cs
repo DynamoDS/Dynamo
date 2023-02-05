@@ -420,7 +420,7 @@ namespace ProtoTestFx.TD
                     var inputs = new Dictionary<string, IList>();
                     using (var codeGen = new EmitMSIL.CodeGenIL(inputs, Path.Combine(outputpath, $"OpCodesTEST{NUnit.Framework.TestContext.CurrentContext.Test.Name}.txt"), runtimeCore))
                     {
-                        MSILMirror = runner.CompileAndGenerateMSIL(sourceCode, codeGen);
+                        MSILMirror = ProtoScriptRunner.CompileAndGenerateMSIL(sourceCode, codeGen);
 
                     }
                 }

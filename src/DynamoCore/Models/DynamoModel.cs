@@ -1491,10 +1491,13 @@ namespace Dynamo.Models
             foreach (var type in migrationTypes)
                 MigrationManager.AddMigrationType(type);
 
-            // Import Zero Touch libs
-            var functionGroups = LibraryServices.GetAllFunctionGroups();
             if (!IsTestMode)
+            {
+                // Import Zero Touch libs
+                var functionGroups = LibraryServices.GetAllFunctionGroups();
+
                 AddZeroTouchNodesToSearch(functionGroups);
+            }
 #if DEBUG_LIBRARY
             DumpLibrarySnapshot(functionGroups);
 #endif

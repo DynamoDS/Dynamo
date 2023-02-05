@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -13,3 +13,4 @@ using System.Runtime.InteropServices;
 
 [assembly:InternalsVisibleTo("IntegrationTests")]
 [assembly: InternalsVisibleTo("DynamoSandbox")]
+[assembly: InternalsVisibleTo("DynamoCLI")]
