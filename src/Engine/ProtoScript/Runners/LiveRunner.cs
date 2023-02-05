@@ -1274,7 +1274,13 @@ namespace ProtoScript.Runners
             var assemblyPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
             //TODO_MSIL: remove the dependency on the old VM by implementing
             //necesary Emit functions(ex mitFunctionDefinition and EmitImportStatements and all the preloading logic)
-            codeGenIL = codeGenIL ?? new EmitMSIL.CodeGenIL(input, Path.Combine(assemblyPath, "opCodes.txt"), new MSILRuntimeCore(runtimeCore));
+            codeGenIL = codeGenIL ?? new EmitMSIL.CodeGenIL(input, Path.Combine(assemblyPath, "opCodes.txt"),
+                        new MSILRuntimeCore(runtimeCore))
+#if DEBUG
+            
+            { LoggingEnabled = true }
+#endif
+                ;
             if (IsTestMode)
             {
                 graphOutput = codeGenIL.EmitAndExecute(finalDeltaAstList);

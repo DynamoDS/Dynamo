@@ -587,6 +587,11 @@ namespace FFITarget
         {
             return x * 3;
         }
+
+        public static double OneParamArbitraryRank(IList arbrank, double notarbrank)
+        {
+            return arbrank.Count+notarbrank;
+        }
     }
 
     internal class InternalClass

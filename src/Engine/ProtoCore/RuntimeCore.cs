@@ -392,6 +392,15 @@ namespace ProtoCore
         private static MSILRuntimeCore instance;
         internal static MSILRuntimeCore Instance;
 
+        //validity options
+        /// <summary>
+        /// IF this bool is set to true, runtime will throw when it
+        /// encounters issues related to direct function calls, when this option is off
+        /// runtime will make replicated call.
+        /// </summary>
+        internal bool StrictDirectFunctionCallValidation { get; set; } = false;
+
+
         public MSILRuntimeCore(RuntimeCore oldVmRuntimeCore)
         {
             ClassTable = oldVmRuntimeCore.DSExecutable.classTable;
