@@ -627,10 +627,9 @@ namespace Dynamo.ViewModels
             get
             {
                 if (toggleIsVisibleGroupCommand == null)
-                    toggleIsVisibleGroupCommand =
-                        new DelegateCommand(ToggleIsVisibleGroup, CanToggleIsVisibleGroup);
-                new DelegateCommand(RemoveGroupFromGroup, CanUngroupGroup);
-
+                {
+                    toggleIsVisibleGroupCommand = new DelegateCommand(ToggleIsVisibleGroup, CanToggleIsVisibleGroup);
+                }
                 return toggleIsVisibleGroupCommand;
             }
         }
@@ -1367,7 +1366,7 @@ namespace Dynamo.ViewModels
             var nodesInGroup = this.AnnotationModel.Nodes.Select(n => n.GUID).ToList();
 
             var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
-            nodesInGroup, "IsVisible", (!this.AnnotationModel.IsVisible).ToString());
+            nodesInGroup, nameof(this.AnnotationModel.IsVisible), (!this.AnnotationModel.IsVisible).ToString());
 
             this.AnnotationModel.IsVisible = !this.AnnotationModel.IsVisible;
             WorkspaceViewModel.DynamoViewModel.Model.ExecuteCommand(command);
