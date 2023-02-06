@@ -18,10 +18,11 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\extern\Python\Python.Runtime.dll</HintPath>
     </Reference>
-      <Reference Include="Python.Module.IfcOpenShell, Version=2.5.2.7185, Culture=neutral, processorArchitecture=MSIL">
-          <SpecificVersion>False</SpecificVersion>
-          <HintPath>..\..\..\extern\Python\Python.Module.IfcOpenShell.dll</HintPath>
-      </Reference>
+    <Reference Include="Python.Module.IfcOpenShell, Version=2.5.2.7185, Culture=neutral, processorArchitecture=MSIL">
+        <SpecificVersion>False</SpecificVersion>
+        <HintPath>..\..\..\extern\Python\Python.Module.IfcOpenShell.dll</HintPath>
+    </Reference>
+  </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
     <Reference Include="Python.Included, Version=2.5.2.6664, Culture=neutral, processorArchitecture=MSIL">
         <SpecificVersion>False</SpecificVersion>
