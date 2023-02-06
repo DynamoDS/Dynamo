@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -741,7 +741,7 @@ namespace Dynamo.PackageManager
         internal void RefreshInfectedPackages()
         {
             //do not call a protected route, if user is not logged in already.
-            if (string.IsNullOrEmpty(PackageManagerClientViewModel.Username)) return;
+            if (PackageManagerClientViewModel.LoginState !=  Greg.AuthProviders.LoginState.LoggedIn) return;
 
             var infectedPkgs = PackageManagerClientViewModel.GetInfectedPackages();
             infectedPkgs.Sort((e1, e2) => e1.InfectedPackageCreationDate.CompareTo(e2.InfectedPackageCreationDate));
