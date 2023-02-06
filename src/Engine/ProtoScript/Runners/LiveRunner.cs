@@ -14,6 +14,7 @@ using Dynamo.Utilities;
 using System.IO;
 using System.Collections;
 using System.Diagnostics;
+using EmitMSIL;
 
 namespace ProtoScript.Runners
 {
@@ -1218,7 +1219,14 @@ namespace ProtoScript.Runners
     {
         private IDictionary<string, object> graphOutput;
         internal bool IsTestMode = false;
+
+        /// <summary>
+        /// Set to false for new MSIL based execution engine.
+        /// </summary>
         internal bool DSExecutionEngine = true;
+
+        internal CodeGenIL.RunMode RunMode = 0;
+        
         internal (TimeSpan compileTime, TimeSpan executionTime) CompileAndExecutionTime;
 
         internal class DebugByteCodeMode : IDisposable
@@ -1269,26 +1277,20 @@ namespace ProtoScript.Runners
 
         internal void CompileAndExecuteMSIL(List<AssociativeNode> finalDeltaAstList)
         {
-            Dictionary<string, IList> input = new Dictionary<string, IList>();
+            var input = new Dictionary<string, IList>();
 
             var assemblyPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
             //TODO_MSIL: remove the dependency on the old VM by implementing
-            //necesary Emit functions(ex mitFunctionDefinition and EmitImportStatements and all the preloading logic)
-            codeGenIL = codeGenIL ?? new EmitMSIL.CodeGenIL(input, Path.Combine(assemblyPath, "opCodes.txt"),
-                        new MSILRuntimeCore(runtimeCore))
+            //necessary Emit functions(ex EmitFunctionDefinition and EmitImportStatements and all the preloading logic)
+            codeGenIL = codeGenIL ?? new CodeGenIL(input, Path.Combine(assemblyPath, "opCodes.txt"),
+                new MSILRuntimeCore(runtimeCore), RunMode);
 #if DEBUG
             
-            { LoggingEnabled = true }
+            codeGenIL.LoggingEnabled = true;
 #endif
-                ;
-            if (IsTestMode)
-            {
-                graphOutput = codeGenIL.EmitAndExecute(finalDeltaAstList);
-            }
-            else
-            {
-                graphOutput = codeGenIL.Emit(finalDeltaAstList);
-            }
+            graphOutput = IsTestMode ? codeGenIL.EmitAndExecute(finalDeltaAstList) : RunMode == CodeGenIL.RunMode.ExecuteOnly ? 
+                codeGenIL.Execute() : codeGenIL.Emit(finalDeltaAstList);
+
             CompileAndExecutionTime = codeGenIL.CompileAndExecutionTime;
         }
 

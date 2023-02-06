@@ -19,6 +19,29 @@ namespace EmitMSIL
 {
     public class CodeGenIL : IDisposable
     {
+        /// <summary>
+        /// Run modes. 
+        /// </summary>
+        public enum RunMode
+        {
+            /// <summary>
+            /// Compile graph and execute compiled assembly in memory.
+            /// </summary>
+            CompileAndExecute,
+
+            /// <summary>
+            /// Graph is compiled and saved as an assembly only.
+            /// </summary>
+            CompileOnly,
+
+            /// <summary>
+            /// Execute pre-compiled graph assembly.
+            /// </summary>
+            ExecuteOnly
+        }
+
+        private static readonly string Class = "ExecuteIL";
+        private static readonly string Method = "Execute";
         private ILGenerator ilGen;
         internal string className;
         internal string methodName;
@@ -35,6 +58,11 @@ namespace EmitMSIL
         private Dictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>> methodCache = new Dictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>();
         private Dictionary<int, bool> willReplicateCache = new Dictionary<int, bool>();
         private CompilePass compilePass;
+        /// <summary>
+        /// If compileOnly is true, compilation only takes place and the assembly is saved
+        /// for future execution.
+        /// </summary>
+        private RunMode mode;
         internal (TimeSpan compileTime, TimeSpan executionTime) CompileAndExecutionTime;
 
         //validity options
@@ -71,11 +99,13 @@ namespace EmitMSIL
             }
         }
 
-        internal CodeGenIL(IDictionary<string, IList> input, string filePath, ProtoCore.MSILRuntimeCore runtimeCore)
+        internal CodeGenIL(IDictionary<string, IList> input, string filePath, ProtoCore.MSILRuntimeCore runtimeCore,
+            RunMode mode = RunMode.CompileAndExecute)
         {
             this.logPath = filePath;
             this.input = input;
             this.runtimeCore = runtimeCore;
+            this.mode = mode;
         }
 
         internal IDictionary<string, object> Emit(List<AssociativeNode> astList)
@@ -85,20 +115,38 @@ namespace EmitMSIL
 #else
             var compileResult = CompileAstToDynamicType(astList, AssemblyBuilderAccess.RunAndSave);
 #endif
-            // Invoke emitted method (ExecuteIL.Execute)
-            var t = compileResult.tbuilder.CreateType();
-            var mi = t.GetMethod("Execute", BindingFlags.NonPublic | BindingFlags.Static);
-            var output = new BuiltIn.MSILOutputMap<string, object>(runtimeCore);
 
 #if NET6_0_OR_GREATER
 #else
             compileResult.asmbuilder.Save("DynamicAssembly.dll");
 #endif
+            if (mode == RunMode.CompileOnly) return null;
 
+            // Invoke emitted method (ExecuteIL.Execute)
+            var t = compileResult.tbuilder.CreateType();
+            var mi = t.GetMethod(Method, BindingFlags.NonPublic | BindingFlags.Static);
+            var output = new BuiltIn.MSILOutputMap<string, object>(runtimeCore);
+            
             // null can be replaced by an 'input' dictionary if available.
             var obj = mi.Invoke(null, new object[] { null, methodCache, output, runtimeCore });
 
 
+            return output;
+        }
+
+        internal IDictionary<string, object> Execute()
+        {
+            // Invoke emitted method (ExecuteIL.Execute)
+            var asm = Assembly.LoadFrom("DynamicAssembly.dll");
+
+            var mi = asm.GetTypes()[0].GetMethod(Method,
+                BindingFlags.NonPublic | BindingFlags.Static);
+
+            var output = new BuiltIn.MSILOutputMap<string, object>(runtimeCore);
+
+            // null can be replaced by an 'input' dictionary if available.
+            var obj = mi.Invoke(null, new object[] { null, methodCache, output, runtimeCore });
+            
             return output;
         }
 
@@ -113,7 +161,7 @@ namespace EmitMSIL
             // Invoke emitted method (ExecuteIL.Execute)
             timer.Restart();
             var t = compileResult.tbuilder.CreateType();
-            var mi = t.GetMethod("Execute", BindingFlags.NonPublic | BindingFlags.Static);
+            var mi = t.GetMethod(Method, BindingFlags.NonPublic | BindingFlags.Static);
             var output = new BuiltIn.MSILOutputMap<string, object>(runtimeCore);
             mi.Invoke(null, new object[] { null, methodCache, output, runtimeCore });
             timer.Stop();
@@ -124,8 +172,6 @@ namespace EmitMSIL
 
         private (AssemblyBuilder asmbuilder, TypeBuilder tbuilder) CompileAstToDynamicType(List<AssociativeNode> astList, AssemblyBuilderAccess access)
         {
-            AssemblyBuilder asm;
-            TypeBuilder type;
             using (writer = new StreamWriter(logPath))
             {
                 compilePass = CompilePass.MethodLookup;
@@ -135,13 +181,13 @@ namespace EmitMSIL
                     DfsTraverse(ast);
                 }
                 // 1. Create assembly builder (dynamic assembly)
-                asm = BuilderHelper.CreateAssemblyBuilder("DynamicAssembly", false, access);
+                var asm = BuilderHelper.CreateAssemblyBuilder("DynamicAssembly", false, access);
                 // 2. Create module builder
                 var mod = BuilderHelper.CreateDLLModuleBuilder(asm, "DynamicAssembly");
                 // 3. Create type builder (name it "ExecuteIL")
-                type = BuilderHelper.CreateType(mod, "ExecuteIL");
+                var type = BuilderHelper.CreateType(mod, Class);
                 // 4. Create method ("Execute"), get ILGenerator 
-                var execMethod = BuilderHelper.CreateMethod(type, "Execute",
+                var execMethod = BuilderHelper.CreateMethod(type, Method,
                     System.Reflection.MethodAttributes.Static | System.Reflection.MethodAttributes.Private, typeof(void), new[] { typeof(IDictionary<string, IList>),
                 typeof(IDictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>), typeof(IDictionary<string, object>), typeof(ProtoCore.MSILRuntimeCore)});
                 ilGen = execMethod.GetILGenerator();

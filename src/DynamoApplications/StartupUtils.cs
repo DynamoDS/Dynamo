@@ -202,6 +202,7 @@ namespace Dynamo.Applications
                 var sessionId = string.Empty;
 
                 var dsExecutionEngine = true;
+                DynamoModel.RunMode runMode = DynamoModel.RunMode.CompileAndExecute;
 
                 var optionsSet = new OptionSet().Add("o=|O=", "OpenFilePath, Instruct Dynamo to open headless and run a dyn file at this path", o => openfilepath = o)
                 .Add("c=|C=", "CommandFilePath, Instruct Dynamo to open a commandfile and run the commands it contains at this path," +
@@ -225,8 +226,8 @@ namespace Dynamo.Applications
                 .Add("pi=|PI=|parentId", "Identify Dynamo host analytics parent id", pi => parentId = pi)
                 .Add("da|DA|disableAnalytics", "Disables analytics in Dynamo for the process liftime", da => disableAnalytics = da != null)
                 .Add("cr=|CR=|cerLocation", "Specify the crash error report tool location on disk ", cr => cerLocation = cr)
-                .Add("eng=|ENG=|Eng=|engine=", "true if using the old DesignScript engine, false if using .NET execution of graphs", eng => dsExecutionEngine = !(eng != null && eng.ToLower() == "false"))
-                ;
+                .Add("eng=|ENG=|Eng=|engine=", "True if using the old DesignScript engine, false if using .NET execution of graphs", eng => dsExecutionEngine = !(eng != null && eng.ToLower() == "false"))
+                .Add("rm=|RM=|runMode=", "0 for Compile and Execute mode, 1 for compile-only mode, 2 for execution-only mode for running new engine", rm => runMode = int.Parse(rm) == 0 ? DynamoModel.RunMode.CompileAndExecute : int.Parse(rm) == 1 ? DynamoModel.RunMode.CompileOnly : DynamoModel.RunMode.ExecuteOnly);
                 optionsSet.Parse(args);
 
                 if (showHelp)
@@ -256,7 +257,8 @@ namespace Dynamo.Applications
                     DisableAnalytics = disableAnalytics,
                     AnalyticsInfo = new HostAnalyticsInfo() { HostName = hostname, ParentId = parentId, SessionId = sessionId },
                     CERLocation = cerLocation,
-                    DSExecutionEngine = dsExecutionEngine
+                    DSExecutionEngine = dsExecutionEngine,
+                    Mode = runMode
                 };
 #endif
             }
@@ -287,6 +289,7 @@ namespace Dynamo.Applications
             public HostAnalyticsInfo AnalyticsInfo { get; set; }
             public string CERLocation { get; set; }
             internal bool DSExecutionEngine { get; set; }
+            internal DynamoModel.RunMode Mode { get; set; }
         }
 
         /// <summary>

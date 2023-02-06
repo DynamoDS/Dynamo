@@ -170,6 +170,27 @@ namespace Dynamo.Models
         #region public properties
 
         /// <summary>
+        /// Run modes for new MSIL based engine. 
+        /// </summary>
+        public enum RunMode
+        {
+            /// <summary>
+            /// Compile graph and execute compiled assembly in memory.
+            /// </summary>
+            CompileAndExecute,
+
+            /// <summary>
+            /// Graph is compiled and saved as an assembly only.
+            /// </summary>
+            CompileOnly,
+
+            /// <summary>
+            /// Execute pre-compiled graph assembly.
+            /// </summary>
+            ExecuteOnly
+        }
+
+        /// <summary>
         ///     DesignScript VM EngineController, used for this instance of Dynamo.
         /// </summary>
         public EngineController EngineController { get; set; }
@@ -276,6 +297,8 @@ namespace Dynamo.Models
         }
 
         internal bool DSExecutionEngine = true;
+
+        internal RunMode Mode = RunMode.CompileAndExecute;
 
         /// <summary>
         ///     Debugging settings for this instance of Dynamo.
@@ -1769,7 +1792,8 @@ namespace Dynamo.Models
                 geometryFactoryPath,
                 DebugSettings.VerboseLogging)
             {
-                DSExecutionEngine = DSExecutionEngine
+                DSExecutionEngine = DSExecutionEngine,
+                Mode = Mode
             };
 
             EngineController.MessageLogged += LogMessage;

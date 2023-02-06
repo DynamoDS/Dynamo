@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +10,7 @@ using Dynamo.Engine.Profiling;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
+using Dynamo.Models;
 using Dynamo.Scheduler;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM.Mirror;
@@ -45,6 +46,12 @@ namespace Dynamo.Engine
         internal static event Action VMLibrariesReset;
 
         internal bool DSExecutionEngine { get; set; }
+
+        /// <summary>
+        /// Run modes for new MSIL based engine.
+        /// </summary>
+        internal DynamoModel.RunMode Mode { get; set; }
+
         internal (TimeSpan compileTime, TimeSpan executionTime) CompileAndExecutionTime => liveRunnerServices.CompileAndExecutionTime;
 
         /// <summary>
@@ -496,7 +503,7 @@ namespace Dynamo.Engine
             // within the execution. Such exception, if any, will be caught by
             // DynamoScheduler.ProcessTaskInternal.
 
-            liveRunnerServices.UpdateGraph(graphSyncData, VerboseLogging, DSExecutionEngine);
+            liveRunnerServices.UpdateGraph(graphSyncData, VerboseLogging, DSExecutionEngine, Mode);
         }
 
         internal IDictionary<Guid, List<BuildWarning>> GetBuildWarnings()

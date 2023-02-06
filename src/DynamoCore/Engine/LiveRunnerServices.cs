@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Dynamo.Logging;
+using Dynamo.Models;
+using EmitMSIL;
 using ProtoCore.Mirror;
 using ProtoScript.Runners;
 
@@ -96,12 +98,15 @@ namespace Dynamo.Engine
         /// <param name="graphData"></param>
         /// <param name="verboseLogging"></param>
         /// <param name="dsExecution"></param>
-        internal void UpdateGraph(GraphSyncData graphData, bool verboseLogging, bool dsExecution)
+        /// <param name="mode"></param>
+        internal void UpdateGraph(GraphSyncData graphData, bool verboseLogging, bool dsExecution, DynamoModel.RunMode mode)
         {
             if (verboseLogging)
                 Log("LRS.UpdateGraph: " + graphData);
 
             (liveRunner as LiveRunner).DSExecutionEngine = dsExecution;
+            (liveRunner as LiveRunner).RunMode = mode == DynamoModel.RunMode.CompileAndExecute ? CodeGenIL.RunMode.CompileAndExecute :
+                mode == DynamoModel.RunMode.CompileOnly ? CodeGenIL.RunMode.CompileOnly : CodeGenIL.RunMode.ExecuteOnly;
             (liveRunner as LiveRunner).IsTestMode = Models.DynamoModel.IsTestMode;
             liveRunner.UpdateGraph(graphData);
         }
