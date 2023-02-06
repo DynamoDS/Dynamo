@@ -3424,24 +3424,6 @@ namespace Dynamo.Controls
     }
 
     /// <summary>
-    /// Receive a GeometryScaleSize value and if it matches the parameter passed will return a brush with a specific color
-    /// </summary>
-    public class ScaleSizeBackgroundConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value.Equals(parameter))
-                return new SolidColorBrush(Color.FromRgb(217, 217, 217));
-            return new SolidColorBrush(Color.FromRgb(71, 71, 71));
-            
-        }
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return value.Equals(true) ? parameter : Binding.DoNothing;
-        }
-    }
-
-    /// <summary>
     /// This converter was designed for Expanders, so it will store/fetch the current Expander state
     /// </summary>
     public class ExpandersBindingConverter : IValueConverter

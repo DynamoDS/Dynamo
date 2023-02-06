@@ -27,6 +27,7 @@ namespace Dynamo.Wpf.Views
     {
         private readonly PreferencesViewModel viewModel;
         private readonly DynamoViewModel dynViewModel;
+        private int scaleValue = 0;
         private List<GroupStyleItem> originalCustomGroupStyles { get; set; }
 
         // Used for tracking the manage package command event
@@ -74,11 +75,11 @@ namespace Dynamo.Wpf.Views
 
             InitRadioButtonsDescription();
 
+            //We need to store the ScaleFactor value in a temporary variable always when the Preferences dialog is created.
+            scaleValue = dynViewModel.ScaleFactorLog;
             ResetGroupStyleForm();
             StoreOriginalCustomGroupStyles();
             displayConfidenceLevel();
-
-            viewModel.InitializeGeometryScaling();
 
             viewModel.RequestShowFileDialog += OnRequestShowFileDialog;
         }
@@ -152,10 +153,40 @@ namespace Dynamo.Wpf.Views
             TrustedPathView.Dispose();
             Dispose();
 
+            RunGraphWhenScaleFactorUpdated();
+
             dynViewModel.PreferencesViewModel.TrustedPathsViewModel.PropertyChanged -= TrustedPathsViewModel_PropertyChanged;
             dynViewModel.CheckCustomGroupStylesChanges(originalCustomGroupStyles);
 
             Close();
+        }
+
+        /// <summary>
+        /// This method will run the graph only if the Geometry Scaling was updated otherwise will not be executed
+        /// </summary>
+        private void RunGraphWhenScaleFactorUpdated()
+        {
+            //If the new radio button selected (ScaleValue) is different than the current one in Dynamo, we update the current one
+            if (dynViewModel.ScaleFactorLog != scaleValue)
+            {
+                dynViewModel.ScaleFactorLog = scaleValue;
+                dynViewModel.CurrentSpace.HasUnsavedChanges = true;
+
+                //Due that binding are done before the contructor of this class we need to execute the Log only if the viewModel was assigned previously
+                if (viewModel != null)
+                {
+                    Log(String.Format("Geometry working range changed to {0} ({1}, {2})",
+                    viewModel.ScaleRange.Item1, viewModel.ScaleRange.Item2, viewModel.ScaleRange.Item3));
+                    viewModel.UpdateSavedChangesLabel();
+                    Dynamo.Logging.Analytics.TrackEvent(
+                        Actions.Switch,
+                        Categories.Preferences,
+                        Res.PreferencesViewVisualSettingsGeoScaling);
+                }
+
+                var allNodes = dynViewModel.HomeSpace.Nodes;
+                dynViewModel.HomeSpace.MarkNodesAsModifiedAndRequestRun(allNodes, forceExecute: true);
+            }
         }
 
         /// <summary>
@@ -277,9 +308,44 @@ namespace Dynamo.Wpf.Views
             }
         }
 
+        /// <summary>
+        /// This event is generated every time the user clicks a Radio Button in the Geometry Scaling section
+        /// The method just get the Radio Button clicked and saves the ScaleValue selected
+        /// This are the values used for the scales:
+        /// - 2 - Small
+        ///   0 - Medium (Default)
+        ///   2 - Large
+        ///   4 - Extra Large
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Geometry_Scaling_Checked(object sender, RoutedEventArgs e)
+        {
+            RadioButton selectedScaling = sender as RadioButton;
+            var radioButtons = GeometryScalingRadiosPanel.Children.OfType<RadioButton>();
+
+            int index = 0;      
+
+            //We need to loop all the radiobuttons in the GeometryScaling section in order to find the index of the selected one
+            foreach (var radio in radioButtons)
+            {
+                if(radio == selectedScaling)
+                {
+                    scaleValue = GeometryScalingOptions.ConvertUIToScaleFactor(index);
+                    break;
+                }
+                index++;
+            }
+        }
+
         private void Log(ILogMessage obj)
         {
             dynViewModel.Model.Logger.Log(obj);
+        }
+
+        private void Log(string message)
+        {
+            Log(LogMessage.Info(message));
         }
 
         /// <summary>

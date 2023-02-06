@@ -766,8 +766,6 @@ namespace Dynamo.Controls
             {
                 fileTrustWarningPopup.UpdatePopupLocation();
             }
-
-            UpdateGeometryScalingPopupLocation();
         }
 
         private void DynamoView_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -785,15 +783,6 @@ namespace Dynamo.Controls
             {
                 fileTrustWarningPopup.UpdatePopupLocation();
             }
-
-            UpdateGeometryScalingPopupLocation();
-        }
-
-        private void UpdateGeometryScalingPopupLocation()
-        {
-            var workspaceView = this.ChildOfType<WorkspaceView>();
-            if (workspaceView != null && workspaceView.GeoScalingPopup != null)
-                workspaceView.GeoScalingPopup.UpdatePopupLocation();
         }
 
         private void InitializeShortcutBar()

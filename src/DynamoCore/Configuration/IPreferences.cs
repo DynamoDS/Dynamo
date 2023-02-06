@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Dynamo.Graph.Connectors;
 
@@ -39,11 +39,6 @@ namespace Dynamo.Interfaces
         /// Indicates whether background grid is visible or not.
         /// </summary>
         bool IsBackgroundGridVisible { get; set; }
-
-        /// <summary>
-        /// Indicates the Default Geometry Scaling value from the Preferences panel
-        /// </summary>
-        double DefaultScaleFactor { get; set; }
 
         /// <summary>
         /// Indicates whether background preview is active or not.

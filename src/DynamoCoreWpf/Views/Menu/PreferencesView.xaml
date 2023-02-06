@@ -485,7 +485,8 @@
                                                 GroupName="GeometryScaling"
                                                 MinWidth="80"
                                                 Margin="3,10,0,0"
-                                                IsChecked="{Binding DefaultGeometryScaling, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.Small}}"
+                                                Checked="Geometry_Scaling_Checked"
+                                                IsChecked="{Binding ScaleSize, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.Small}}"
                                                 Style="{StaticResource GeometryScaleRadioButtons}"
                                                 Content="{x:Static p:Resources.ScalingSmallButton}"/>
                                             <TextBlock x:Name="RadioSmallDesc"
@@ -496,7 +497,8 @@
                                                  GroupName="GeometryScaling"
                                                  Margin="3,10,0,0"
                                                  MinWidth="80"
-                                                 IsChecked="{Binding DefaultGeometryScaling, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.Medium}}"
+                                                 IsChecked="{Binding ScaleSize, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.Medium}}"
+                                                 Checked="Geometry_Scaling_Checked"
                                                  Style="{StaticResource GeometryScaleRadioButtons}"
                                                  Content="{x:Static p:Resources.ScalingMediumButton}"/>
                                             <TextBlock  x:Name="RadioMediumDesc"
@@ -507,7 +509,8 @@
                                                  GroupName="GeometryScaling"
                                                  MinWidth="80"
                                                  Margin="3,10,0,0"
-                                                 IsChecked="{Binding DefaultGeometryScaling, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.Large}}"
+                                                 Checked="Geometry_Scaling_Checked"
+                                                 IsChecked="{Binding ScaleSize, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.Large}}"
                                                  Style="{StaticResource GeometryScaleRadioButtons}"
                                                  Content="{x:Static p:Resources.ScalingLargeButton}"/>
                                             <TextBlock  x:Name="RadioLargeDesc"
@@ -518,7 +521,8 @@
                                                  GroupName="GeometryScaling"
                                                  MinWidth="80"
                                                  Margin="3,10,0,0"
-                                                 IsChecked="{Binding DefaultGeometryScaling, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.ExtraLarge}}"
+                                                 Checked="Geometry_Scaling_Checked"
+                                                 IsChecked="{Binding ScaleSize, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.ExtraLarge}}"
                                                  Style="{StaticResource GeometryScaleRadioButtons}"
                                                  Content="{x:Static p:Resources.ScalingExtraLargeButton}"/>
                                             <TextBlock  x:Name="RadioExtraLargeDesc"

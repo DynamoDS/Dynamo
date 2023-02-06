@@ -42,7 +42,6 @@ using Dynamo.Wpf.ViewModels.Core.Converters;
 using Dynamo.Wpf.ViewModels.FileTrust;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoUtilities;
-using ViewModels.Core;
 using ISelectable = Dynamo.Selection.ISelectable;
 using WpfResources = Dynamo.Wpf.Properties.Resources;
 
@@ -95,8 +94,6 @@ namespace Dynamo.ViewModels
                 return preferencesViewModel;
             }
         }
-
-       
 
         /// <summary>
         /// Guided Tour Manager
@@ -742,7 +739,6 @@ namespace Dynamo.ViewModels
             model.RequestNotification += model_RequestNotification;
 
             preferencesViewModel = new PreferencesViewModel(this);
-
 
             if (!DynamoModel.IsTestMode && !DynamoModel.IsHeadless)
             {
@@ -2211,8 +2207,6 @@ namespace Dynamo.ViewModels
                 this.ExecuteCommand(new DynamoModel.CreateCustomNodeCommand(Guid.NewGuid(),
                     args.Name, args.Category, args.Description, true));
                 this.ShowStartPage = false;
-
-                SetDefaultScaleFactor();
             }
         }
 
@@ -2520,13 +2514,11 @@ namespace Dynamo.ViewModels
         public void MakeNewHomeWorkspace(object parameter)
         {
             if (ClearHomeWorkspaceInternal())
-            {   
+            {
                 var t = new DelegateBasedAsyncTask(model.Scheduler, () => model.ResetEngine());
                 model.Scheduler.ScheduleForExecution(t);
 
                 ShowStartPage = false; // Hide start page if there's one.
-
-                SetDefaultScaleFactor();
             }
         }
 
@@ -2573,11 +2565,6 @@ namespace Dynamo.ViewModels
                 Model.CurrentWorkspace = HomeSpace;
 
                 model.ClearCurrentWorkspace();
-
-                var defaultWorkspace = Workspaces.FirstOrDefault();
-                //Every time that a new workspace is created we have to assign the Default Geometry Scaling value defined in Preferences
-                if (defaultWorkspace !=null && defaultWorkspace.GeoScalingViewModel != null && preferencesViewModel != null)
-                    defaultWorkspace.GeoScalingViewModel.ScaleSize = preferencesViewModel.DefaultGeometryScaling;
 
                 return true;
             }
@@ -3172,17 +3159,6 @@ namespace Dynamo.ViewModels
         private bool CanSetNumberFormat(object parameter)
         {
             return true;
-        }
-
-        private void SetDefaultScaleFactor()
-        {
-            var defaultWorkspace = Workspaces.FirstOrDefault();
-
-            if (defaultWorkspace != null)
-            {
-                defaultWorkspace.GeoScalingViewModel.ScaleValue = PreferenceSettings.DefaultScaleFactor;
-                defaultWorkspace.GeoScalingViewModel.UpdateGeometryScale(PreferenceSettings.DefaultScaleFactor);
-            }
         }
 
         #region Shutdown related methods
