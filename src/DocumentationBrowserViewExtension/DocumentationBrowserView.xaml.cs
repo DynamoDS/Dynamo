@@ -1,10 +1,14 @@
 using Dynamo.Logging;
 using Dynamo.Utilities;
+using Dynamo.Wpf.UI.GuidedTour;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
+using SharpDX.Direct3D9;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Web;
@@ -25,6 +29,7 @@ namespace Dynamo.DocumentationBrowser
         static readonly string HTML_IMAGE_PATH_PREFIX = @"http://";
         private bool hasBeenInitialized;
         private ScriptingObject comScriptingObject;
+        private string fontStylePath = "Dynamo.Wpf.Views.GuidedTour.HtmlPages.Resources.ArtifaktElement-Regular.woff";
 
         internal string WebBrowserUserDataFolder { get; set; }
         internal string FallbackDirectoryName { get; set; }
@@ -158,7 +163,10 @@ namespace Dynamo.DocumentationBrowser
                 hasBeenInitialized = true;
             }
 
+
             string htmlContent = this.viewModel.GetContent();
+
+            htmlContent = ResourceUtilities.LoadResourceAndReplaceByKey(htmlContent, "#fontStyle", fontStylePath);
 
             Dispatcher.BeginInvoke(new Action(() =>
             {
