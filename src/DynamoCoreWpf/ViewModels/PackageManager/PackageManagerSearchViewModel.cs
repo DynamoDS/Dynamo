@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -43,7 +43,8 @@ namespace Dynamo.PackageManager
             Downloads,
             Votes,
             Maintainers,
-            LastUpdate
+            LastUpdate,
+            Search
         };
 
         /// <summary>
@@ -363,9 +364,14 @@ namespace Dynamo.PackageManager
         public DelegateCommand ClearCompletedCommand { get; set; }
 
         /// <summary>
-        ///     Sort the search results
+        ///     Sort the default results
         /// </summary>
         public DelegateCommand SortCommand { get; set; }
+
+        /// <summary>
+        ///     Sort the search results
+        /// </summary>
+        public DelegateCommand<object> SearchSortCommand { get; set; }
 
         /// <summary>
         ///     Set the sorting key for search results and resort
@@ -418,6 +424,7 @@ namespace Dynamo.PackageManager
             SearchDictionary = new SearchDictionary<PackageManagerSearchElement>();
             ClearCompletedCommand = new DelegateCommand(ClearCompleted, CanClearCompleted);
             SortCommand = new DelegateCommand(Sort, CanSort);
+            SearchSortCommand = new DelegateCommand<object>(Sort, CanSort);
             SetSortingKeyCommand = new DelegateCommand<object>(SetSortingKey, CanSetSortingKey);
             SetSortingDirectionCommand = new DelegateCommand<object>(SetSortingDirection, CanSetSortingDirection);
             ViewPackageDetailsCommand = new DelegateCommand<object>(ViewPackageDetails);
@@ -440,7 +447,7 @@ namespace Dynamo.PackageManager
         }
         
         /// <summary>
-        /// Sort the search results in the view based on the sorting key and sorting direction.
+        /// Sort the default package results in the view based on the sorting key and sorting direction.
         /// </summary>
         public void Sort()
         {
@@ -451,8 +458,6 @@ namespace Dynamo.PackageManager
             {
                 list.Reverse();
             }
-
-            Analytics.TrackEvent(Actions.Sort, Categories.PackageManagerOperations, $"{SortingDirection}");
 
             // temporarily hide binding
             var temp = this.SearchResults;
@@ -466,6 +471,35 @@ namespace Dynamo.PackageManager
             }
 
             this.SearchResults = temp;
+        }
+
+        /// <summary>
+        /// Sort the package search results in the view based on the closest hit to the search key.
+        /// </summary>
+        private void Sort(object searchQuery = null)
+        {
+            if (searchQuery == null)
+            {
+                this.Sort();
+            }
+            else
+            {
+                var list = this.SearchResults.AsEnumerable().ToList();
+                Sort(list, PackageSortingKey.Search, searchQuery.ToString());
+
+                // temporarily hide binding
+                var temp = this.SearchResults;
+                this.SearchResults = null;
+
+                temp.Clear();
+
+                foreach (var ele in list)
+                {
+                    temp.Add(ele);
+                }
+
+                this.SearchResults = temp;
+            }
         }
 
         /// <summary>
@@ -484,10 +518,19 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// Can search be performed.  Used by the associated command
+        /// Can search be performed.  Used by the associated command : SortCommand
         /// </summary>
         /// <returns></returns>
         public bool CanSort()
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Can search be performed.  Used by the associated command : SearchSortCommand
+        /// </summary>
+        /// <returns></returns>
+        private bool CanSort(object s)
         {
             return true;
         }
@@ -619,6 +662,8 @@ namespace Dynamo.PackageManager
                 this.SortingKey = (PackageSortingKey)sortingKey;
             }
 
+            Analytics.TrackEvent(Actions.Sort, Categories.PackageManagerOperations, $"{sortingKey}");
+
             this.Sort();
         }
 
@@ -695,6 +740,9 @@ namespace Dynamo.PackageManager
 
         internal void RefreshInfectedPackages()
         {
+            //do not call a protected route, if user is not logged in already.
+            if (PackageManagerClientViewModel.LoginState !=  Greg.AuthProviders.LoginState.LoggedIn) return;
+
             var infectedPkgs = PackageManagerClientViewModel.GetInfectedPackages();
             infectedPkgs.Sort((e1, e2) => e1.InfectedPackageCreationDate.CompareTo(e2.InfectedPackageCreationDate));
 
@@ -842,7 +890,7 @@ namespace Dynamo.PackageManager
                 this.AddToSearchResults(result);
             }
 
-            this.Sort();
+            this.Sort(query);
 
             SearchState = HasNoResults ? PackageSearchState.NoResults : PackageSearchState.Results;
         }
@@ -961,7 +1009,9 @@ namespace Dynamo.PackageManager
         /// Sort a list of search results by the given key
         /// </summary>
         /// <param name="results"></param>
-        private static void Sort(List<PackageManagerSearchElementViewModel> results, PackageSortingKey key)
+        /// <param name="key"></param>
+        /// <param name="query"></param>
+        private static void Sort(List<PackageManagerSearchElementViewModel> results, PackageSortingKey key, string query = null)
         {
             switch (key)
             {
@@ -972,13 +1022,25 @@ namespace Dynamo.PackageManager
                     results.Sort((e1, e2) => e1.Model.Downloads.CompareTo(e2.Model.Downloads));
                     break;
                 case PackageSortingKey.LastUpdate:
-                    results.Sort((e1, e2) => e1.Versions.Last().Item1.created.CompareTo(e2.Versions.Last().Item1.created));
+                    results.Sort((e1, e2) => e1.Versions.FirstOrDefault().Item1.created.CompareTo(e2.Versions.FirstOrDefault().Item1.created));
                     break;
                 case PackageSortingKey.Votes:
                     results.Sort((e1, e2) => e1.Model.Votes.CompareTo(e2.Model.Votes));
                     break;
                 case PackageSortingKey.Maintainers:
                     results.Sort((e1, e2) => e1.Model.Maintainers.ToLower().CompareTo(e2.Model.Maintainers.ToLower()));
+                    break;
+                //This sorting key is applied to search results when user submits a search query on package manager search window,
+                //it sorts in the following order: Not Deprecated Packages > search query in Name > Recently Updated
+                case PackageSortingKey.Search:
+                    results.Sort((e1, e2) => {
+                        int ret = e1.Model.IsDeprecated.CompareTo(e2.Model.IsDeprecated);
+                        int i1 = e1.Model.Name.ToLower().IndexOf(query.ToLower(), StringComparison.InvariantCultureIgnoreCase);
+                        int i2 = e2.Model.Name.ToLower().IndexOf(query.ToLower(), StringComparison.InvariantCultureIgnoreCase);
+                        ret = ret != 0 ? ret : ((i1 == -1) ? int.MaxValue : i1).CompareTo((i2 == -1) ? int.MaxValue : i2);
+                        ret = ret != 0 ? ret : -e1.Versions.FirstOrDefault().Item1.created.CompareTo(e2.Versions.FirstOrDefault().Item1.created);
+                        return ret;
+                    });
                     break;
             }
         }

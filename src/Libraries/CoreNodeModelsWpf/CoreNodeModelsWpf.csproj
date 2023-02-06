@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -40,6 +40,8 @@
     <!--Exclude copying the dll because we will handle it in the BinaryCompatibilityOps target -->
     <ExcludeAssets>runtime</ExcludeAssets>
 	</PackageReference>
+	<PackageReference Include="LiveCharts" Version="0.9.7" />
+	<PackageReference Include="LiveCharts.Wpf" Version="0.9.7" />
 	<Reference Include="Xceed.Wpf.Toolkit, Version=3.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
 		<HintPath>$(PkgExtended_Wpf_Toolkit)\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
 		<Private>True</Private>
@@ -92,6 +94,14 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Charts\Controls\BarChartControl.xaml" />
+    <None Remove="Charts\Controls\BasicLineChartControl.xaml" />
+    <None Remove="Charts\Controls\HeatSeriesControl.xaml" />
+    <None Remove="Charts\Controls\PieChartControl.xaml" />
+    <None Remove="Charts\Controls\ScatterPlotControl.xaml" />
+    <None Remove="Charts\Controls\XYLineChartControl.xaml" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Update="Properties\CoreNodeModelWpfResources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -119,7 +129,36 @@
       <LastGenOutput>CoreNodeModelWpfResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <Page Update="Charts\Controls\BarChartControl.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Charts\Controls\BasicLineChartControl.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Charts\Controls\HeatSeriesControl.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Charts\Controls\PieChartControl.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Charts\Controls\ScatterPlotControl.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Charts\Controls\XYLineChartControl.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+  </ItemGroup>
   <Target Name="BinaryCompatibilityOps" BeforeTargets="Build">
     <Copy SourceFiles="$(PkgExtended_Wpf_Toolkit)\lib\net40\Xceed.Wpf.Toolkit.dll" DestinationFolder="$(OutputPath)" />
   </Target>
+    <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" '$(OS)' != 'Unix' ">
+        <!-- Get assembly -->
+        <GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
+            <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
+        </GetAssemblyIdentity>
+        <!-- Generate customization dll -->
+        <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)CoreNodeModelsWpfImages.resx" OutputResources="$(ProjectDir)CoreNodeModelsWpfImages.resources" References="$(SystemDrawingDllPath)" />
+        <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)CoreNodeModelsWpfImages.resources" OutputAssembly="$(OutDir)CoreNodeModelsWpf.customization.dll" Version="%(AssemblyInfo.Version)" />
+    </Target>
 </Project>

@@ -27,6 +27,7 @@ using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoUtilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using ViewModels.Core;
 using Function = Dynamo.Graph.Nodes.CustomNodes.Function;
 
 namespace Dynamo.ViewModels
@@ -431,7 +432,15 @@ namespace Dynamo.ViewModels
         [JsonIgnore]
         public RunSettingsViewModel RunSettingsViewModel { get; protected set; }
 
-        
+
+        private GeometryScalingViewModel geoScalingViewModel;
+        internal GeometryScalingViewModel GeoScalingViewModel
+        {
+            get
+            {
+                return geoScalingViewModel;
+            }
+        }
 
         #endregion
 
@@ -504,6 +513,9 @@ namespace Dynamo.ViewModels
             {
                 Visible = true
             };
+
+            geoScalingViewModel = new GeometryScalingViewModel(this.DynamoViewModel);
+            geoScalingViewModel.ScaleValue = this.DynamoViewModel.ScaleFactorLog;
         }
         /// <summary>
         /// This event is triggered from Workspace Model. Used in instrumentation
