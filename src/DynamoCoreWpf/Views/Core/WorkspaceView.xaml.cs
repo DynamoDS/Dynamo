@@ -20,6 +20,7 @@ using Dynamo.Models;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.UI;
+using Dynamo.UI.Controls;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.UI;
@@ -78,6 +79,8 @@ namespace Dynamo.Views
                 return snappedPort != null;
             }
         }
+
+        internal GeometryScalingPopup GeoScalingPopup { get; set; }
 
         /// <summary>
         /// Constructor
@@ -194,6 +197,12 @@ namespace Dynamo.Views
             ShowHidePopup(flag, ContextMenuPopup);
         }
 
+        private void ShowHideGeoScalingPopup(ShowHideFlags flag)
+        {
+            if (GeoScalingPopup != null)
+                ShowHidePopup(flag, GeoScalingPopup);
+        }
+
         private void ShowHidePopup(ShowHideFlags flag, Popup popup)
         {
             // Reset popup display state
@@ -265,6 +274,13 @@ namespace Dynamo.Views
             {
                 ShowHideContextMenu(ShowHideFlags.Hide);
                 ShowHideInCanvasControl(ShowHideFlags.Hide);
+            }
+
+            var imageButtonGeoScalingPopup = Mouse.DirectlyOver as ImageRepeatButton;
+            //When imageButtonGeoScalingPopup is null means that the user is clicking the Geometry Scaling button so we should not close the Popup
+            if (imageButtonGeoScalingPopup == null && GeoScalingPopup != null && GeoScalingPopup.IsOpen)
+            {
+                ShowHideGeoScalingPopup(ShowHideFlags.Hide);
             }
             // If triggered on node level, make sure node popups are also hidden
             if(sender is NodeView && (PortContextMenu.IsOpen || NodeAutoCompleteSearchBar.IsOpen) )
@@ -710,6 +726,8 @@ namespace Dynamo.Views
         {
             ContextMenuPopup.IsOpen = false;
             InCanvasSearchBar.IsOpen = false;
+            if (GeoScalingPopup != null)
+                GeoScalingPopup.IsOpen = false;
             
             if(PortContextMenu.IsOpen) DestroyPortContextMenu();
         }
@@ -732,6 +750,8 @@ namespace Dynamo.Views
 
             ViewModel.HandleMouseRelease(workBench, e);
             ContextMenuPopup.IsOpen = false;
+            if (GeoScalingPopup != null)
+                GeoScalingPopup.IsOpen = false;
             if (returnToSearch)
             {
                 ViewModel.DynamoViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.OnRequestFocusSearch();
@@ -1047,6 +1067,17 @@ namespace Dynamo.Views
                 InCanvasSearchBar.IsOpen = false;
             }
             ViewModel.InCanvasSearchViewModel.SearchText = string.Empty;
+        }
+
+        private void OnGeometryScaling_Click(object sender, RoutedEventArgs e)
+        {
+            if (GeoScalingPopup == null)
+            {
+                GeoScalingPopup = new GeometryScalingPopup(ViewModel.DynamoViewModel);
+                GeoScalingPopup.Placement = PlacementMode.Bottom;
+                GeoScalingPopup.PlacementTarget = geometryScalingButton;
+            }
+            GeoScalingPopup.IsOpen = true;
         }
     }
 }

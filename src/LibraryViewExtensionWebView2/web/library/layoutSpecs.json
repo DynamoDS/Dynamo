@@ -920,89 +920,115 @@
               "path": "Analysis.Analysis.Label"
             }
           ],
-          "childElements": [
-            {
-              "text": "Color",
-              "iconUrl": "",
-              "elementType": "group",
-              "include": [
+            "childElements": [
                 {
-                  "path": "DSCoreNodes.DSCore.Color.Red"
+                    "text": "Color",
+                    "iconUrl": "",
+                    "elementType": "group",
+                    "include": [
+                        {
+                            "path": "DSCoreNodes.DSCore.Color.Red"
+                        },
+                        {
+                            "path": "DSCoreNodes.DSCore.Color.Green"
+                        },
+                        {
+                            "path": "DSCoreNodes.DSCore.Color.Blue"
+                        },
+                        {
+                            "path": "DSCoreNodes.DSCore.Color.Alpha"
+                        },
+                        {
+                            "path": "DSCoreNodes.DSCore.Color.ByARGB"
+                        },
+                        {
+                            "path": "DSCoreNodes.DSCore.Color.Brightness"
+                        },
+                        {
+                            "path": "DSCoreNodes.DSCore.Color.Saturation"
+                        },
+                        {
+                            "path": "DSCoreNodes.DSCore.Color.Hue"
+                        },
+                        {
+                            "path": "DSCoreNodes.DSCore.Color.Components"
+                        },
+                        {
+                            "path": "DSCoreNodes.DSCore.Color.Add"
+                        },
+                        {
+                            "path": "DSCoreNodes.DSCore.Color.Multiply"
+                        },
+                        {
+                            "path": "DSCoreNodes.DSCore.Color.Divide"
+                        },
+                        {
+                            "path": "Core.Color.Color Palette"
+                        }
+                    ],
+                    "childElements": []
                 },
                 {
-                  "path": "DSCoreNodes.DSCore.Color.Green"
+                    "text": "Color Range",
+                    "iconUrl": "",
+                    "elementType": "group",
+                    "include": [
+                        {
+                            "path": "Core.Color.Color Range"
+                        },
+                        {
+                            "path": "DSCoreNodes.DSCore.ColorRange.ByColorsAndParameters"
+                        },
+                        {
+                            "path": "DSCoreNodes.DSCore.ColorRange.GetColorAtParameter"
+                        }
+                    ],
+                    "childElements": []
                 },
                 {
-                  "path": "DSCoreNodes.DSCore.Color.Blue"
+                    "text": "Charts",
+                    "iconUrl": "",
+                    "elementType": "group",
+                    "include": [
+                        {
+                            "path": "Display.Charts.XY Line Plot"
+                        },
+                        {
+                            "path": "Display.Charts.Scatter Plot"
+                        },
+                        {
+                            "path": "Display.Charts.Pie Chart"
+                        },
+                        {
+                            "path": "Display.Charts.Heat Series Plot"
+                        },
+                        {
+                            "path": "Display.Charts.Index-Value Line Plot"
+                        },
+                        {
+                            "path": "Display.Charts.Bar Chart"
+                        }
+                    ],
+                    "childElements": []
                 },
                 {
-                  "path": "DSCoreNodes.DSCore.Color.Alpha"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.Color.ByARGB"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.Color.Brightness"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.Color.Saturation"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.Color.Hue"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.Color.Components"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.Color.Add"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.Color.Multiply"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.Color.Divide"
-                },
-                {
-                  "path": "Core.Color.Color Palette"
+                    "text": "Watch",
+                    "iconUrl": "",
+                    "elementType": "group",
+                    "include": [
+                        {
+                            "path": "Core.View.Watch"
+                        },
+                        {
+                            "path": "Core.View.Watch Image"
+                        },
+                        {
+                            "path": "Core.View.Watch 3D"
+                        }
+                    ],
+                    "childElements": []
                 }
-              ],
-              "childElements": []
-            },
-            {
-              "text": "Color Range",
-              "iconUrl": "",
-              "elementType": "group",
-              "include": [
-                {
-                  "path": "Core.Color.Color Range"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.ColorRange.ByColorsAndParameters"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.ColorRange.GetColorAtParameter"
-                }
-              ],
-              "childElements": []
-            },
-            {
-              "text": "Watch",
-              "iconUrl": "",
-              "elementType": "group",
-              "include": [
-                {
-                  "path": "Core.View.Watch"
-                },
-                {
-                  "path": "Core.View.Watch Image"
-                },
-                {
-                  "path": "Core.View.Watch 3D"
-                }
-              ],
-              "childElements": []
-            }
-          ]
+            ]
         },
         {
           "text": "ImportExport",

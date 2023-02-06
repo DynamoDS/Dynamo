@@ -104,11 +104,7 @@ test/core/customast/test.txt
 test/core/files/test.png
 test/core/migration/writetext.txt
 logo.png
-/src/Notifications/node_modules
-/src/Notifications/package.json
-/src/Notifications/package-lock.json
-/src/Notifications/.npm-cache
-/src/DynamoCoreWpf/node_modules
-/src/DynamoCoreWpf/package-lock.json
-/src/DynamoCoreWpf/package.json
-/src/DynamoCoreWpf/.npm-cache
+/src/DynamoCoreWpf/Packages
+dynamods-splash-screen-*.tgz
+/src/Notifications/Packages
+/src/Notifications/dynamods-notifications-center-*.tgz

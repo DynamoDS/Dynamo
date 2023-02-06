@@ -31,7 +31,7 @@
         </Grid.RowDefinitions>
 
         <!-- Begin top part (i.e. the "Start" tab) -->
-        <Border HorizontalAlignment="Stretch" Background="#3C3C3C" Margin="220,-40,0,49"></Border>
+        <Border HorizontalAlignment="Stretch" Background="#3C3C3C" Margin="220,-40,0,50"></Border>
   
         <!-- Begin Dynamo logo -->
         <Image Name="StartPageLogo"
