@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@dynamods/notifications-center": "^0.0.21"
+  }
+}

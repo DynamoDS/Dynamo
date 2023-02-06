@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@dynamods/splash-screen": "^1.0.6"
+  }
+}
