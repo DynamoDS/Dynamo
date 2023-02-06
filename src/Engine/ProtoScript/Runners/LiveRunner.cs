@@ -1225,7 +1225,13 @@ namespace ProtoScript.Runners
         /// </summary>
         internal bool DSExecutionEngine = true;
 
-        internal CodeGenIL.RunMode RunMode = 0;
+        /// <summary>
+        /// Run mode for new MSIL engine.
+        /// 0: compile and execute,
+        /// 1: compile only,
+        /// 2: execution only mode.
+        /// </summary>
+        internal CodeGenIL.RunMode MSILRunMode;
         
         internal (TimeSpan compileTime, TimeSpan executionTime) CompileAndExecutionTime;
 
@@ -1283,12 +1289,12 @@ namespace ProtoScript.Runners
             //TODO_MSIL: remove the dependency on the old VM by implementing
             //necessary Emit functions(ex EmitFunctionDefinition and EmitImportStatements and all the preloading logic)
             codeGenIL = codeGenIL ?? new CodeGenIL(input, Path.Combine(assemblyPath, "opCodes.txt"),
-                new MSILRuntimeCore(runtimeCore), RunMode);
+                new MSILRuntimeCore(runtimeCore), MSILRunMode);
 #if DEBUG
             
             codeGenIL.LoggingEnabled = true;
 #endif
-            graphOutput = IsTestMode ? codeGenIL.EmitAndExecute(finalDeltaAstList) : RunMode == CodeGenIL.RunMode.ExecuteOnly ? 
+            graphOutput = IsTestMode ? codeGenIL.EmitAndExecute(finalDeltaAstList) : MSILRunMode == CodeGenIL.RunMode.ExecuteOnly ? 
                 codeGenIL.Execute() : codeGenIL.Emit(finalDeltaAstList);
 
             CompileAndExecutionTime = codeGenIL.CompileAndExecutionTime;

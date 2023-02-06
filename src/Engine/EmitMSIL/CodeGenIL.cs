@@ -58,10 +58,6 @@ namespace EmitMSIL
         private Dictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>> methodCache = new Dictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>();
         private Dictionary<int, bool> willReplicateCache = new Dictionary<int, bool>();
         private CompilePass compilePass;
-        /// <summary>
-        /// If compileOnly is true, compilation only takes place and the assembly is saved
-        /// for future execution.
-        /// </summary>
         private RunMode mode;
         internal (TimeSpan compileTime, TimeSpan executionTime) CompileAndExecutionTime;
 

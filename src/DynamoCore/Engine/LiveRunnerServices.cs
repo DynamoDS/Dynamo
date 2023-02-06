@@ -105,7 +105,7 @@ namespace Dynamo.Engine
                 Log("LRS.UpdateGraph: " + graphData);
 
             (liveRunner as LiveRunner).DSExecutionEngine = dsExecution;
-            (liveRunner as LiveRunner).RunMode = mode == DynamoModel.RunMode.CompileAndExecute ? CodeGenIL.RunMode.CompileAndExecute :
+            (liveRunner as LiveRunner).MSILRunMode = mode == DynamoModel.RunMode.CompileAndExecute ? CodeGenIL.RunMode.CompileAndExecute :
                 mode == DynamoModel.RunMode.CompileOnly ? CodeGenIL.RunMode.CompileOnly : CodeGenIL.RunMode.ExecuteOnly;
             (liveRunner as LiveRunner).IsTestMode = Models.DynamoModel.IsTestMode;
             liveRunner.UpdateGraph(graphData);

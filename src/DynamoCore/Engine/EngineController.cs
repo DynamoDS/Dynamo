@@ -49,8 +49,11 @@ namespace Dynamo.Engine
 
         /// <summary>
         /// Run modes for new MSIL based engine.
+        /// 0: compile and execute,
+        /// 1: compile only,
+        /// 2: execution only mode.
         /// </summary>
-        internal DynamoModel.RunMode Mode { get; set; }
+        internal DynamoModel.RunMode MSILRunMode { get; set; }
 
         internal (TimeSpan compileTime, TimeSpan executionTime) CompileAndExecutionTime => liveRunnerServices.CompileAndExecutionTime;
 
@@ -503,7 +506,7 @@ namespace Dynamo.Engine
             // within the execution. Such exception, if any, will be caught by
             // DynamoScheduler.ProcessTaskInternal.
 
-            liveRunnerServices.UpdateGraph(graphSyncData, VerboseLogging, DSExecutionEngine, Mode);
+            liveRunnerServices.UpdateGraph(graphSyncData, VerboseLogging, DSExecutionEngine, MSILRunMode);
         }
 
         internal IDictionary<Guid, List<BuildWarning>> GetBuildWarnings()

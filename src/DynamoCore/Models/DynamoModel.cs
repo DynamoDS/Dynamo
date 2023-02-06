@@ -298,7 +298,7 @@ namespace Dynamo.Models
 
         internal bool DSExecutionEngine = true;
 
-        internal RunMode Mode = RunMode.CompileAndExecute;
+        internal RunMode MSILRunMode = RunMode.CompileAndExecute;
 
         /// <summary>
         ///     Debugging settings for this instance of Dynamo.
@@ -1793,7 +1793,7 @@ namespace Dynamo.Models
                 DebugSettings.VerboseLogging)
             {
                 DSExecutionEngine = DSExecutionEngine,
-                Mode = Mode
+                MSILRunMode = MSILRunMode
             };
 
             EngineController.MessageLogged += LogMessage;
