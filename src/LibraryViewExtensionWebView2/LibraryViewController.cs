@@ -599,7 +599,6 @@ namespace Dynamo.LibraryViewExtensionWebView2
                 this.dynamoView.OnPreferencesWindowChanged -= PreferencesWindowChanged;
 
                 var dynamoViewWindow = dynamoWindow as DynamoView;
-                dynamoViewWindow.PreferencesWindow.LibraryZoomScalingSlider.ValueChanged += DynamoSliderValueChanged;
 
                 dynamoWindow = null;
             }
