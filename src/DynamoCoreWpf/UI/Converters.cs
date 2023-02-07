@@ -3432,7 +3432,9 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value.Equals(parameter))
+            {
                 return new SolidColorBrush(Color.FromRgb(217, 217, 217));
+            }          
             return new SolidColorBrush(Color.FromRgb(71, 71, 71));
             
         }

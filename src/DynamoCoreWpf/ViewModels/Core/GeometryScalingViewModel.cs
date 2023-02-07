@@ -8,7 +8,7 @@ namespace ViewModels.Core
     /// <summary>
     /// This class will be contain information about the current Geometry Scale selected in the Dynamo Workspace
     /// </summary>
-    public class GeometryScalingViewModel : NotificationObject
+    internal class GeometryScalingViewModel : NotificationObject
     {
         private DynamoViewModel dynViewModel;
         private GeometryScaleSize scaleSize;
@@ -31,7 +31,7 @@ namespace ViewModels.Core
             this.dynViewModel = dynViewModel;
         }
 
-        internal Tuple<string, string, string> ScaleRange
+        internal (string scaleName, string minValue, string maxValue) ScaleRange
         {
             get
             {
@@ -40,12 +40,12 @@ namespace ViewModels.Core
         }
 
 
-        internal static Dictionary<GeometryScaleSize, Tuple<string, string, string>> scaleRanges = new Dictionary<GeometryScaleSize, Tuple<string, string, string>>
+        internal static Dictionary<GeometryScaleSize, (string scaleName, string minValue, string maxValue)> scaleRanges = new Dictionary<GeometryScaleSize, (string, string, string)>
         {
-            {GeometryScaleSize.Medium, new Tuple<string, string, string>("medium", "0.0001", "10,000")},
-            {GeometryScaleSize.Small, new Tuple<string, string, string>("small", "0.000,001", "100")},
-            {GeometryScaleSize.Large, new Tuple<string, string, string>("large", "0.01", "1,000,000")},
-            {GeometryScaleSize.ExtraLarge, new Tuple<string, string, string>("extra large", "1", "100,000,000")}
+            {GeometryScaleSize.Medium, ("medium", "0.0001", "10,000")},
+            {GeometryScaleSize.Small, ("small", "0.000,001", "100")},
+            {GeometryScaleSize.Large, ("large", "0.01", "1,000,000")},
+            {GeometryScaleSize.ExtraLarge, ("extra large", "1", "100,000,000")}
         };
 
         /// <summary>
