@@ -99,7 +99,11 @@ namespace Dynamo.Controls
 
         internal ShortcutToolbar ShortcutBar { get { return shortcutBar; } }
 
-        internal PreferencesView PreferencesWindow { get { return preferencesWindow; } }
+        internal PreferencesView PreferencesWindow {
+            get { return preferencesWindow; }
+        }
+
+        internal event Action OnPreferencesWindowChanged;
 
         /// <summary>
         /// Constructor
@@ -1872,7 +1876,10 @@ namespace Dynamo.Controls
 
         private void OnPreferencesWindowClick(object sender, RoutedEventArgs e)
         {
-            preferencesWindow.ShowDialog();
+            preferencesWindow = new PreferencesView(this);
+            OnPreferencesWindowChanged();
+            preferencesWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            preferencesWindow.ShowDialog();            
         }
 
         /// <summary>

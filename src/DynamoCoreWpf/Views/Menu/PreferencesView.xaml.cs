@@ -84,6 +84,8 @@ namespace Dynamo.Wpf.Views
             viewModel.InitializeGeometryScaling();
 
             viewModel.RequestShowFileDialog += OnRequestShowFileDialog;
+
+            LibraryZoomScalingSlider.Value = dynViewModel.Model.PreferenceSettings.LibraryZoomScale;
         }
 
         /// <summary>

@@ -3903,6 +3903,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Drag to adjust Library zoom scale between 10% and 300%. You can also adjust this in Library by pressing “Shift” and scrolling the mouse wheel..
+        /// </summary>
+        public static string LibraryZoomScaleTooltipText {
+            get {
+                return ResourceManager.GetString("LibraryZoomScaleTooltipText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Package has conflicts with one or more loaded packages..
         /// </summary>
         public static string LoadedPackagesConflictMessageBoxTitle {

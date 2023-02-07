@@ -1289,7 +1289,7 @@
                                                Style="{StaticResource QuestionIcon}"
                                                ToolTipService.ShowDuration="30000">
                                                 <Image.ToolTip>
-                                                    <ToolTip Content="{x:Static p:Resources.PreferencesWindowHardwareAccelerationTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                                    <ToolTip Content="{x:Static p:Resources.LibraryZoomScaleTooltipText}" Style="{StaticResource GenericToolTipLight}"/>
                                                 </Image.ToolTip>
                                             </Image>
                                         </Label>
@@ -1301,9 +1301,9 @@
                                             x:Name="LibraryZoomScalingSlider"
                                             Style="{StaticResource SliderStyle}"
                                             Width="440"
-                                            Minimum="10"
-                                            Maximum="300"
-                                            Value="100">
+                                            Minimum="0.1"
+                                            Maximum="3"
+                                            Value="1">
                                         </Slider>
                                     </StackPanel>
                                     <StackPanel Grid.Row="2" Width="550">

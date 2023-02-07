@@ -3488,4 +3488,7 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="GroupContextMenuPreview" xml:space="preserve">
     <value>Preview Geometry</value>
   </data>
+  <data name="LibraryZoomScaleTooltipText" xml:space="preserve">
+    <value>Drag to adjust Library zoom scale between 10% and 300%. You can also adjust this in Library by pressing “Shift” and scrolling the mouse wheel.</value>
+  </data>
 </root>

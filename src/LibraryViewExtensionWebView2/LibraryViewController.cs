@@ -32,6 +32,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
     public class LibraryViewController : IDisposable
     {
         private Window dynamoWindow;
+        private DynamoView dynamoView;
         private ICommandExecutive commandExecutive;
         private DynamoViewModel dynamoViewModel;
         private FloatingLibraryTooltipPopup libraryViewTooltip;
@@ -42,6 +43,8 @@ namespace Dynamo.LibraryViewExtensionWebView2
         private const string CreateNodeInstrumentationString = "Search-NodeAdded";
         // TODO remove this when we can control the library state from Dynamo more precisely.
         private bool disableObserver = false;
+
+        private static readonly string LibrarSlider = "notificationsButton";
 
         private LayoutSpecProvider layoutProvider;
         private NodeItemDataProvider nodeProvider;
@@ -73,8 +76,8 @@ namespace Dynamo.LibraryViewExtensionWebView2
             dynamoWindow.StateChanged += DynamoWindowStateChanged;
             dynamoWindow.SizeChanged += DynamoWindow_SizeChanged;
 
-            var dynamoViewWindow = dynamoView as DynamoView;
-            dynamoViewWindow.PreferencesWindow.LibraryZoomScalingSlider.ValueChanged += DynamoSliderValueChanged;
+            this.dynamoView = dynamoView as DynamoView;
+            this.dynamoView.OnPreferencesWindowChanged += PreferencesWindowChanged;
 
             DirectoryInfo webBrowserUserDataFolder;
             var userDataDir = new DirectoryInfo(dynamoViewModel.Model.PathManager.UserDataDirectory);
@@ -83,6 +86,16 @@ namespace Dynamo.LibraryViewExtensionWebView2
             {
                 WebBrowserUserDataFolder = webBrowserUserDataFolder.FullName;
             }
+        }
+
+        private void Browser_ZoomFactorChanged(object sender, EventArgs e)
+        {
+            dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale = browser.ZoomFactor;
+        }
+
+        void PreferencesWindowChanged()
+        {
+            this.dynamoView.PreferencesWindow.LibraryZoomScalingSlider.ValueChanged += DynamoSliderValueChanged;
         }
 
         //if the window is resized toggle visibility of browser to force redraw
@@ -325,6 +338,9 @@ namespace Dynamo.LibraryViewExtensionWebView2
             }
 
             SetLibraryFontSize();
+            
+            browser.ZoomFactor = dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale;
+            browser.ZoomFactorChanged += Browser_ZoomFactorChanged;
         }
 
         private void Browser_Loaded(object sender, RoutedEventArgs e)
@@ -535,7 +551,8 @@ namespace Dynamo.LibraryViewExtensionWebView2
         private void DynamoSliderValueChanged(object sender, EventArgs e)
         {
             Slider slider = (Slider)sender;
-            browser.ZoomFactor = slider.Value / 100;
+            browser.ZoomFactor = slider.Value;
+            dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale = slider.Value;
         }
 
         /// <summary>
@@ -577,6 +594,9 @@ namespace Dynamo.LibraryViewExtensionWebView2
             {
                 dynamoWindow.StateChanged -= DynamoWindowStateChanged;
                 dynamoWindow.SizeChanged -= DynamoWindow_SizeChanged;
+                browser.ZoomFactorChanged -= Browser_ZoomFactorChanged;
+                this.dynamoView.PreferencesWindow.LibraryZoomScalingSlider.ValueChanged -= DynamoSliderValueChanged;
+                this.dynamoView.OnPreferencesWindowChanged -= PreferencesWindowChanged;
 
                 var dynamoViewWindow = dynamoWindow as DynamoView;
                 dynamoViewWindow.PreferencesWindow.LibraryZoomScalingSlider.ValueChanged += DynamoSliderValueChanged;
