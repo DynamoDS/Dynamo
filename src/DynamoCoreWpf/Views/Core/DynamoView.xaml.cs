@@ -970,9 +970,6 @@ namespace Dynamo.Controls
             InitializeShortcutBar();
             InitializeStartPage(isFirstRun);
 
-            preferencesWindow = new PreferencesView(this);
-            preferencesWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-
 #if !__NO_SAMPLES_MENU
             LoadSamplesMenu();
 #endif
