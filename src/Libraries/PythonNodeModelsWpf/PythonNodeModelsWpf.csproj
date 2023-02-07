@@ -24,6 +24,7 @@
     <None Remove="Resources\redo.png" />
     <None Remove="Resources\redo_hover.png" />
     <None Remove="Resources\reset.png" />
+    <None Remove="Resources\reset_hover.png" />
     <None Remove="Resources\save.png" />
     <None Remove="Resources\save_hover.png" />
     <None Remove="Resources\undo.png" />
@@ -87,6 +88,7 @@
     <Resource Include="Resources\redo.png" />
     <Resource Include="Resources\redo_hover.png" />
     <Resource Include="Resources\reset.png" />
+    <Resource Include="Resources\reset_hover.png" />
     <Resource Include="Resources\save.png" />
     <Resource Include="Resources\save_hover.png" />
     <Resource Include="Resources\undo.png" />

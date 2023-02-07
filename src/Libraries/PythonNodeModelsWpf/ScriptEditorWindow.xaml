@@ -223,7 +223,7 @@
                             <Image x:Key="Shape"
                                    Source="/PythonNodeModelsWpf;component/Resources/reset.png" />
                             <Image x:Key="HighlightShape"
-                                   Source="/PythonNodeModelsWpf;component/Resources/reset.png" />
+                                   Source="/PythonNodeModelsWpf;component/Resources/reset_hover.png" />
                         </Button.Resources>
                     </Button>
                     <ComboBox ItemsSource="{Binding AvailableEngines, RelativeSource={RelativeSource AncestorType=dww:ModelessChildWindow}}"
