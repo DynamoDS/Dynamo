@@ -50,6 +50,7 @@ namespace EmitMSIL
         internal ProtoCore.MSILRuntimeCore runtimeCore;
         private Dictionary<string, Tuple<int, Type>> variables = new Dictionary<string, Tuple<int, Type>>();
         private string logPath;
+
         /// <summary>
         /// AST node to type info map, filled in the GatherTypeInfo compiler phase.
         /// </summary>
@@ -184,8 +185,13 @@ namespace EmitMSIL
                 var type = BuilderHelper.CreateType(mod, Class);
                 // 4. Create method ("Execute"), get ILGenerator 
                 var execMethod = BuilderHelper.CreateMethod(type, Method,
-                    System.Reflection.MethodAttributes.Static | System.Reflection.MethodAttributes.Private, typeof(void), new[] { typeof(IDictionary<string, IList>),
-                typeof(IDictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>), typeof(IDictionary<string, object>), typeof(ProtoCore.MSILRuntimeCore)});
+                    System.Reflection.MethodAttributes.Static | System.Reflection.MethodAttributes.Private,
+                    typeof(void), new[]
+                    {
+                        typeof(IDictionary<string, IList>),
+                        typeof(IDictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>),
+                        typeof(IDictionary<string, object>), typeof(ProtoCore.MSILRuntimeCore)
+                    });
                 ilGen = execMethod.GetILGenerator();
 
                 compilePass = CompilePass.GatherTypeInfo;
@@ -357,7 +363,6 @@ namespace EmitMSIL
 
         private IEnumerable<ProtoCore.CLRFunctionEndPoint> FunctionLookup(IList args)
         {
-            var mbs = new List<ProtoCore.CLRFunctionEndPoint>();
             var key = KeyGen(className, methodName, args.Count);
             if (methodCache.TryGetValue(key, out IEnumerable<ProtoCore.CLRFunctionEndPoint> mBase))
             {
@@ -370,7 +375,7 @@ namespace EmitMSIL
                 Validity.Assert(cid != DSASM.Constants.kInvalidIndex);
             }
 
-            // TODO_MSIL: Figure out polymorfism when calling functions
+            // TODO_MSIL: Figure out polymorphism when calling functions
             // That should be done at runtime (when we know the exact runtime type of the caller type)
             var fg = runtimeCore.GetFuncGroup(methodName, className);
 
@@ -385,6 +390,8 @@ namespace EmitMSIL
             }
 
             Validity.Assert(fg != null, "Did not find a function group");
+
+            var mbs = new List<ProtoCore.CLRFunctionEndPoint>();
 
             foreach (var funcEnd in fg.FunctionEndPoints)
             {
@@ -469,7 +476,7 @@ namespace EmitMSIL
                     i++;
                 }
 
-                ProtoCore.CLRFunctionEndPoint fep = new ProtoCore.CLRFunctionEndPoint(fFIMemberInfo, fepParams, procNode);
+                var fep = new ProtoCore.CLRFunctionEndPoint(fFIMemberInfo, fepParams, procNode);
                 mbs.Add(fep);
             }
 

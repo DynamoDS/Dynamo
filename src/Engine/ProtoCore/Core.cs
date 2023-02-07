@@ -770,7 +770,11 @@ namespace ProtoCore
                 BfsBuildInstructionStreams(CodeBlockList[n], DSExecutable.instrStreamList);
             }
 
-            GenerateExprExe();
+            if (Options.RunMode == InterpreterMode.Expression)
+            {
+                GenerateExprExe();
+            }
+
             DSExecutable.FunctionTable = FunctionTable;
             DSExecutable.DynamicVarTable = DynamicVariableTable;
             DSExecutable.DynamicFuncTable = DynamicFunctionTable;

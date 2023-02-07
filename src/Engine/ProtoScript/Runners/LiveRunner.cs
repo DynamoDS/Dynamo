@@ -1870,16 +1870,9 @@ namespace ProtoScript.Runners
                     return;
                 }
 
-                // generate import node for each library in input list
-                List<AssociativeNode> importNodes = new List<AssociativeNode>();
-                foreach (string lib in libraries)
-                {
-                    ProtoCore.AST.AssociativeAST.ImportNode importNode = new ProtoCore.AST.AssociativeAST.ImportNode();
-                    importNode.ModuleName = lib;
-
-                    importNodes.Add(importNode);
-                }
-                ProtoCore.CodeGenDS codeGen = new ProtoCore.CodeGenDS(importNodes);
+                // generate import AST node for each library in input list
+                var importNodes = libraries.Select(lib => new ImportNode { ModuleName = lib });
+                CodeGenDS codeGen = new CodeGenDS(importNodes);
                 string code = codeGen.GenerateCode();
 
                 SynchronizeInternal(code);
