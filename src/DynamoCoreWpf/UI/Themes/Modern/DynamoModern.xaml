@@ -1381,37 +1381,36 @@
     </Style>
 
     <Style x:Key="SButtonWithShapeIcon" TargetType="{x:Type Button}">
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="UseLayoutRounding" Value="True"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
                     <Border x:Name="container"
                             Background="Transparent"
-                            BorderBrush="#3c3c3c"
-                            BorderThickness="1">
-                        <Grid x:Name="inner" Background="#373737">
+                            BorderBrush="Transparent"
                             BorderThickness="0">
                         <Grid x:Name="inner" Background="Transparent">
-                            <StackPanel Orientation="Horizontal">
-                                <ContentControl Content="{DynamicResource ResourceKey=Shape}" />
-                            </StackPanel>
+                            <ContentControl Name="shapeIcon"
+                                            Content="{DynamicResource ResourceKey=Shape}" 
+                                            Width="24" Height="24"
+                                            SnapsToDevicePixels="True"
+                                            UseLayoutRounding="True"/>
                         </Grid>
                     </Border>
 
                     <ControlTemplate.Triggers>
 
                         <Trigger Property="Button.IsMouseOver" Value="true">
-                            <Setter TargetName="container" Property="BorderBrush" Value="#656565" />
-                            <Setter TargetName="inner" Property="Background" Value="#373737" />
+                            <Setter TargetName="shapeIcon" Property="Content" Value="{DynamicResource ResourceKey=HighlightShape}" />
                         </Trigger>
 
                         <Trigger Property="Button.IsPressed" Value="true">
-                            <Setter TargetName="container" Property="BorderBrush" Value="#656565" />
-                            <Setter TargetName="inner" Property="Background" Value="#272727" />
+                            <Setter TargetName="shapeIcon" Property="Opacity" Value="0.2" />
                         </Trigger>
 
                         <Trigger Property="IsEnabled" Value="false">
-                            <Setter TargetName="container" Property="BorderBrush" Value="Transparent" />
-                            <Setter TargetName="inner" Property="Background" Value="#373737" />
+                            <Setter TargetName="shapeIcon" Property="Opacity" Value="0.5" />
                         </Trigger>
 
                     </ControlTemplate.Triggers>
@@ -2982,6 +2981,7 @@
     <Style x:Key="BaseButtonStyle" TargetType="Button">
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="UseLayoutRounding" Value="True"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
