@@ -615,25 +615,11 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        private DelegateCommand toggleIsVisibleGroupCommand;
-
         /// <summary>
         /// Command to toggle this group's node preview visibility.
-        /// belongs to.
         /// </summary>
         [JsonIgnore]
-        public DelegateCommand ToggleIsVisibleGroupCommand
-        {
-            get
-            {
-                if (toggleIsVisibleGroupCommand == null)
-                    toggleIsVisibleGroupCommand =
-                        new DelegateCommand(ToggleIsVisibleGroup, CanToggleIsVisibleGroup);
-                new DelegateCommand(RemoveGroupFromGroup, CanUngroupGroup);
-
-                return toggleIsVisibleGroupCommand;
-            }
-        }
+        public DelegateCommand ToggleIsVisibleGroupCommand { get; private set; }
         #endregion
 
         public AnnotationViewModel(WorkspaceViewModel workspaceViewModel, AnnotationModel model)
@@ -645,6 +631,7 @@ namespace Dynamo.ViewModels
             model.PropertyChanged += model_PropertyChanged;
             model.RemovedFromGroup += OnModelRemovedFromGroup;
             model.AddedToGroup += OnModelAddedToGroup;
+            ToggleIsVisibleGroupCommand = new DelegateCommand(ToggleIsVisibleGroup, CanToggleIsVisibleGroup);
 
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
 
@@ -684,7 +671,7 @@ namespace Dynamo.ViewModels
             groupStyleList = new ObservableCollection<Configuration.StyleItem>();
             //This will add the GroupStyles created in Preferences panel to the Group Style Context menu.
             LoadGroupStylesFromPreferences(preferenceSettings.GroupStyleItemsList);
-        }
+}
 
 
         /// <summary>
@@ -1367,7 +1354,7 @@ namespace Dynamo.ViewModels
             var nodesInGroup = this.AnnotationModel.Nodes.Select(n => n.GUID).ToList();
 
             var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
-            nodesInGroup, "IsVisible", (!this.AnnotationModel.IsVisible).ToString());
+            nodesInGroup, nameof(this.AnnotationModel.IsVisible), (!this.AnnotationModel.IsVisible).ToString());
 
             this.AnnotationModel.IsVisible = !this.AnnotationModel.IsVisible;
             WorkspaceViewModel.DynamoViewModel.Model.ExecuteCommand(command);

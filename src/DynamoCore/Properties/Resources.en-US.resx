@@ -893,4 +893,10 @@ This package likely contains an assembly that is blocked. You will need to load 
   <data name="FailedInsertFileNodeExistNotification" xml:space="preserve">
     <value>Failed to insert the file as some of the nodes already exist in the current worspace.</value>
   </data>
+  <data name="InsertDialogBoxText" xml:space="preserve">
+    <value>Insert Dynamo Definition...</value>
+  </data>
+  <data name="InsertGraphRunModeNotificationText" xml:space="preserve">
+    <value>Example file added to workspace. Run mode changed to Manual.</value>
+  </data>
 </root>
