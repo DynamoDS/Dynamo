@@ -614,6 +614,12 @@ namespace Dynamo.ViewModels
         {
             return true;
         }
+
+        /// <summary>
+        /// Command to toggle this group's node preview visibility.
+        /// </summary>
+        [JsonIgnore]
+        public DelegateCommand ToggleIsVisibleGroupCommand { get; private set; }
         #endregion
 
         public AnnotationViewModel(WorkspaceViewModel workspaceViewModel, AnnotationModel model)
@@ -625,6 +631,7 @@ namespace Dynamo.ViewModels
             model.PropertyChanged += model_PropertyChanged;
             model.RemovedFromGroup += OnModelRemovedFromGroup;
             model.AddedToGroup += OnModelAddedToGroup;
+            ToggleIsVisibleGroupCommand = new DelegateCommand(ToggleIsVisibleGroup, CanToggleIsVisibleGroup);
 
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
 
@@ -664,7 +671,7 @@ namespace Dynamo.ViewModels
             groupStyleList = new ObservableCollection<Configuration.StyleItem>();
             //This will add the GroupStyles created in Preferences panel to the Group Style Context menu.
             LoadGroupStylesFromPreferences(preferenceSettings.GroupStyleItemsList);
-        }
+}
 
 
         /// <summary>
@@ -793,13 +800,6 @@ namespace Dynamo.ViewModels
                     .Where(p => !p.IsConnected ||
                                 !p.Connectors.All(c => Nodes.Contains(c.End.Owner)))
                 );
-        }
-
-        private double GetPortVerticalOffset(PortModel portModel, int proxyPortIndex)
-        {
-            // calculate the vertical offset based on the port index.
-            double portHeight = portModel.Height;
-            return verticalOffset + (proxyPortIndex * portHeight) + portVerticalMidPoint;
         }
 
         private Point2D CalculatePortPosition(PortModel portModel, double verticalPosition)
@@ -1346,6 +1346,27 @@ namespace Dynamo.ViewModels
         private bool BelongsToGroup()
         {
             return WorkspaceViewModel.Model.Annotations.ContainsModel(this.annotationModel);
+        }
+
+        internal void ToggleIsVisibleGroup(object parameters)
+        {
+            DynamoSelection.Instance.ClearSelection();
+            var nodesInGroup = this.AnnotationModel.Nodes.Select(n => n.GUID).ToList();
+
+            var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
+            nodesInGroup, nameof(this.AnnotationModel.IsVisible), (!this.AnnotationModel.IsVisible).ToString());
+
+            this.AnnotationModel.IsVisible = !this.AnnotationModel.IsVisible;
+            WorkspaceViewModel.DynamoViewModel.Model.ExecuteCommand(command);
+            WorkspaceViewModel.DynamoViewModel.RaiseCanExecuteUndoRedo();
+            WorkspaceViewModel.HasUnsavedChanges = true;
+
+            Analytics.TrackEvent(Actions.Preview, Categories.GroupOperations, this.AnnotationModel.IsVisible.ToString());
+        }
+
+        internal bool CanToggleIsVisibleGroup(object parameters)
+        {
+            return true;
         }
 
         public override void Dispose()
