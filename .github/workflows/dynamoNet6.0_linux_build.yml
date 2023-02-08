@@ -1,5 +1,5 @@
 # Build Dynamo using latest VS and DotNET
-name: Dynamo-net6.0-Build
+name: Dynamo-net6.0-linux-Build
 on: [push,pull_request]
 jobs:
  build:
