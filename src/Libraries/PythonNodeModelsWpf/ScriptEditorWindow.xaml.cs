@@ -15,6 +15,7 @@ using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using PythonNodeModels;
 using System.Linq;
+using System.Windows.Media;
 using Dynamo.PythonServices;
 
 namespace PythonNodeModelsWpf
@@ -80,6 +81,9 @@ namespace PythonNodeModelsWpf
             // Register auto-completion callbacks
             editText.TextArea.TextEntering += OnTextAreaTextEntering;
             editText.TextArea.TextEntered += OnTextAreaTextEntered;
+
+            // Hyperlink color
+            editText.TextArea.TextView.LinkTextForegroundBrush = new SolidColorBrush(Color.FromArgb(255, 106, 192, 231));
 
             // Initialize editor with global settings for show/hide tabs and spaces
             editText.Options = dynamoViewModel.PythonScriptEditorTextOptions.GetTextOptions();
