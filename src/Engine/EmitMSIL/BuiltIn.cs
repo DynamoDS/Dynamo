@@ -87,9 +87,12 @@ namespace EmitMSIL
 
             public bool IsReadOnly => (backingDict as ICollection<KeyValuePair<K, V>>).IsReadOnly;
 
-            public void Add(K key, V value)
+            public void AddOrUpdate(K key, V value)
             {
-                backingDict.Add(key, value);
+                if (backingDict.ContainsKey(key))
+                    backingDict[key] = value;
+                else
+                    backingDict.Add(key, value);
             }
 
             public void Add(KeyValuePair<K, V> item)
@@ -132,6 +135,16 @@ namespace EmitMSIL
                 return (backingDict as ICollection<KeyValuePair<K, V>>).Remove(item);
             }
 
+            public V GetValue(K key)
+            {
+                if (backingDict.TryGetValue(key, out V value))
+                {
+                    return value;
+                }
+
+                throw new Exception($"Value at key {key} does not exist");
+            }
+
             public bool TryGetValue(K key, out V value)
             {
                 if (backingDict.TryGetValue(key, out _))
@@ -148,6 +161,11 @@ namespace EmitMSIL
             IEnumerator IEnumerable.GetEnumerator()
             {
                 return backingDict.GetEnumerator();
+            }
+
+            public void Add(K key, V value)
+            {
+                throw new NotImplementedException();
             }
         }
         private static object ToBoolean(object a)

@@ -31,9 +31,11 @@ namespace EmitMSIL
         /// AST node to type info map, filled in the GatherTypeInfo compiler phase.
         /// </summary>
         private Dictionary<int, Type> astTypeInfoMap = new Dictionary<int, Type>();
+        private Dictionary<int, string> nodeIDToVarID = new Dictionary<int, string>();
         private StreamWriter writer;
         private Dictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>> methodCache = new Dictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>();
         private Dictionary<int, bool> willReplicateCache = new Dictionary<int, bool>();
+        private BuiltIn.MSILOutputMap<string, object> outputCache = null;
         private CompilePass compilePass;
         internal (TimeSpan compileTime, TimeSpan executionTime) CompileAndExecutionTime;
 
@@ -54,6 +56,7 @@ namespace EmitMSIL
         {
             // Compile pass to perform method lookup and populate method cache only
             MethodLookup,
+            CleanupOutputCache,
             // Compile pass that performs the actual MSIL opCode emission
             emitIL,
             GatherTypeInfo,
@@ -76,6 +79,7 @@ namespace EmitMSIL
             this.logPath = filePath;
             this.input = input;
             this.runtimeCore = runtimeCore;
+            this.outputCache = new BuiltIn.MSILOutputMap<string, object>(runtimeCore);
         }
 
         internal IDictionary<string, object> Emit(List<AssociativeNode> astList)
@@ -83,23 +87,22 @@ namespace EmitMSIL
 #if NET6_0_OR_GREATER
             var compileResult = CompileAstToDynamicType(astList, AssemblyBuilderAccess.Run);
 #else
+            var timer = new Stopwatch();
+            timer.Start();
             var compileResult = CompileAstToDynamicType(astList, AssemblyBuilderAccess.RunAndSave);
+            timer.Stop();
+            CompileAndExecutionTime.compileTime = timer.Elapsed;
 #endif
             // Invoke emitted method (ExecuteIL.Execute)
             var t = compileResult.tbuilder.CreateType();
             var mi = t.GetMethod("Execute", BindingFlags.NonPublic | BindingFlags.Static);
-            var output = new BuiltIn.MSILOutputMap<string, object>(runtimeCore);
-
 #if NET6_0_OR_GREATER
 #else
             compileResult.asmbuilder.Save("DynamicAssembly.dll");
 #endif
-
             // null can be replaced by an 'input' dictionary if available.
-            var obj = mi.Invoke(null, new object[] { null, methodCache, output, runtimeCore });
-
-
-            return output;
+            var obj = mi.Invoke(null, new object[] { null, methodCache, outputCache, runtimeCore });
+            return outputCache;
         }
 
         internal IDictionary<string, object> EmitAndExecute(List<AssociativeNode> astList)
@@ -114,12 +117,11 @@ namespace EmitMSIL
             timer.Restart();
             var t = compileResult.tbuilder.CreateType();
             var mi = t.GetMethod("Execute", BindingFlags.NonPublic | BindingFlags.Static);
-            var output = new BuiltIn.MSILOutputMap<string, object>(runtimeCore);
-            mi.Invoke(null, new object[] { null, methodCache, output, runtimeCore });
+            mi.Invoke(null, new object[] { null, methodCache, outputCache, runtimeCore });
             timer.Stop();
             CompileAndExecutionTime.executionTime = timer.Elapsed;
 
-            return output;
+            return outputCache;
         }
 
         private (AssemblyBuilder asmbuilder, TypeBuilder tbuilder) CompileAstToDynamicType(List<AssociativeNode> astList, AssemblyBuilderAccess access)
@@ -153,6 +155,12 @@ namespace EmitMSIL
                     DfsTraverse(ast);
                 }
 
+                compilePass = CompilePass.CleanupOutputCache;
+                // Cleanup output cache
+                foreach (var ast in astList)
+                {
+                    DfsTraverse(ast);
+                }
                 compilePass = CompilePass.emitIL;
                 // 6. Traverse AST and use ILGen to emit code for Execute method
                 foreach (var ast in astList)
@@ -774,6 +782,7 @@ namespace EmitMSIL
                 var t = DfsTraverse(bNode.RightNode);
 
                 if (compilePass == CompilePass.MethodLookup) return null;
+                if (compilePass == CompilePass.CleanupOutputCache) return null;
 
                 var lNode = bNode.LeftNode as IdentifierNode;
                 if (lNode == null)
@@ -784,10 +793,13 @@ namespace EmitMSIL
                 {
                     if (variables.ContainsKey(lNode.Value))
                     {
-                        // variable being assigned already exists in dictionary.
-                        throw new Exception("Variable redefinition is not allowed.");
+                        variables[lNode.Value] = new Tuple<int, Type>(-1, t);
                     }
-                    variables.Add(lNode.Value, new Tuple<int, Type>(-1, t));
+                    else
+                    {
+                        variables.Add(lNode.Value, new Tuple<int, Type>(-1, t));
+                    }
+                    nodeIDToVarID[bNode.RightNode.ID] = lNode.Value;
                 }
                 var localBuilder = DeclareLocal(t, lNode.Value);
                 int currentLocalVarIndex = -1;
@@ -806,7 +818,7 @@ namespace EmitMSIL
                 {
                     EmitOpCode(OpCodes.Box, t);
                 }
-                var mInfo = typeof(IDictionary<string, object>).GetMethod(nameof(IDictionary<string, object>.Add));
+                var mInfo = typeof(BuiltIn.MSILOutputMap<string, object>).GetMethod(nameof(BuiltIn.MSILOutputMap<string, object>.AddOrUpdate));
                 EmitOpCode(OpCodes.Callvirt, mInfo);
                 return t;
             }
@@ -835,6 +847,7 @@ namespace EmitMSIL
         private Type EmitExprListNode(AssociativeNode node)
         {
             if (compilePass == CompilePass.MethodLookup) return null;
+            if (compilePass == CompilePass.CleanupOutputCache) return null;
 
             if (!(node is ExprListNode eln))
             {
@@ -1084,6 +1097,8 @@ namespace EmitMSIL
             var fcn = node as FunctionCallNode;
             if (fcn == null) throw new ArgumentException("AST node must be a Function Call Node.");
 
+            if (compilePass == CompilePass.CleanupOutputCache) return null;
+
             methodName = fcn.Function.Name;
             var args = fcn.FormalArguments;
             var numArgs = args.Count;
@@ -1129,6 +1144,7 @@ namespace EmitMSIL
                 FunctionLookup(args);
                 return null;
             }
+
             // Retrieve previously cached functions
             // TODO: Decide whether to process overloaded methods at compile time or leave it for runtime.
             // For now, we assume no overloads.
@@ -1622,6 +1638,8 @@ namespace EmitMSIL
             {
                 return null;
             }
+            if (compilePass == CompilePass.CleanupOutputCache) return null;
+
             const string unselectedToken = "UNSELECTEDTOKEN";
             const string intRangeMethodName = nameof(Builtin.RangeHelpers.GenerateRangeILInt);
             const string doubleRangeMethodName = nameof(Builtin.RangeHelpers.GenerateRangeILDouble);
@@ -1753,6 +1771,8 @@ namespace EmitMSIL
         private Type EmitNullNode(AssociativeNode node)
         {
             if (compilePass == CompilePass.MethodLookup) return null;
+            if (compilePass == CompilePass.CleanupOutputCache) return null;
+
             if (node is NullNode)
             {
                 EmitOpCode(OpCodes.Ldnull);
@@ -1769,6 +1789,7 @@ namespace EmitMSIL
         private Type EmitStringNode(AssociativeNode node)
         {
             if (compilePass == CompilePass.MethodLookup) return null;
+            if (compilePass == CompilePass.CleanupOutputCache) return null;
 
             if (node is StringNode strNode)
             {
@@ -1781,6 +1802,7 @@ namespace EmitMSIL
         private Type EmitCharNode(AssociativeNode node)
         {
             if (compilePass == CompilePass.MethodLookup) return null;
+            if (compilePass == CompilePass.CleanupOutputCache) return null;
 
             if (node is CharNode charNode)
             {
@@ -1793,6 +1815,7 @@ namespace EmitMSIL
         private Type EmitBooleanNode(AssociativeNode node)
         {
             if (compilePass == CompilePass.MethodLookup) return null;
+            if (compilePass == CompilePass.CleanupOutputCache) return null;
 
             if (node is BooleanNode boolNode)
             {
@@ -1808,6 +1831,7 @@ namespace EmitMSIL
         private Type EmitDoubleNode(AssociativeNode node)
         {
             if (compilePass == CompilePass.MethodLookup) return null;
+            if (compilePass == CompilePass.CleanupOutputCache) return null;
 
             if (node is DoubleNode dblNode)
             {
@@ -1820,6 +1844,7 @@ namespace EmitMSIL
         private Type EmitIntNode(AssociativeNode node)
         {
             if (compilePass == CompilePass.MethodLookup) return null;
+            if (compilePass == CompilePass.CleanupOutputCache) return null;
 
             if (node is IntNode intNode)
             {
@@ -1841,6 +1866,27 @@ namespace EmitMSIL
                 {
                     throw new Exception($"Variable {idNode.Value} is undefined!");
                 }
+
+                if (compilePass == CompilePass.CleanupOutputCache)
+                {
+                    if (outputCache.ContainsKey(idNode.Value))
+                    {
+                        outputCache.Remove(idNode.Value);
+                    }
+                    return null;
+                }
+                if (compilePass == CompilePass.emitIL &&
+                    outputCache.TryGetValue(idNode.Value, out object val))
+                {
+                    // Emit className for input to call to CodeGenIL.KeyGen
+                    EmitOpCode(OpCodes.Ldarg_2);
+                    EmitOpCode(OpCodes.Ldstr, idNode.Value);
+
+                    var keygen = typeof(BuiltIn.MSILOutputMap<string, object>).GetMethod(nameof(BuiltIn.MSILOutputMap<string, object>.GetValue));
+                    EmitOpCode(OpCodes.Call, keygen);
+                    return tup.Item2;
+                }
+
                 EmitOpCode(OpCodes.Ldloc, tup.Item1);
                 return tup.Item2;
             }

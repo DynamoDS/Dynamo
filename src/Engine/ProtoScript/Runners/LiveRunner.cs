@@ -642,7 +642,7 @@ namespace ProtoScript.Runners
         /// </summary>
         /// <param name="guid"></param>
         /// <param name="astList"></param>
-        private void SetNestedLanguageBlockASTGuids(Guid guid, List<ProtoCore.AST.Node> astList)
+        internal void SetNestedLanguageBlockASTGuids(Guid guid, List<ProtoCore.AST.Node> astList)
         {
             foreach (ProtoCore.AST.Node node in astList)
             {
@@ -1782,7 +1782,35 @@ namespace ProtoScript.Runners
 
                 if (!DSExecutionEngine)
                 {
-                    CompileAndExecuteMSIL(finalDeltaAstList);
+                    var deltaAstList = new List<AssociativeNode>();
+                    List<Subtree> lst = syncData.ModifiedSubtrees.Concat(syncData.AddedSubtrees).ToList();
+                    if (lst != null)
+                    {
+                        Dictionary<System.Guid, Subtree> currentSubTreeList = new Dictionary<Guid, Subtree>();
+                        foreach (var st in lst)
+                        {
+                            currentSubTreeList.Add(st.GUID, st);
+
+                            if (st.AstNodes != null)
+                            {
+                                deltaAstList.AddRange(st.AstNodes);
+
+                                foreach (AssociativeNode node in st.AstNodes)
+                                {
+                                    var bnode = node as BinaryExpressionNode;
+                                    if (bnode != null)
+                                    {
+                                        bnode.guid = st.GUID;
+                                        bnode.IsInputExpression = st.IsInput;
+                                    }
+
+                                    changeSetComputer.SetNestedLanguageBlockASTGuids(st.GUID, new List<ProtoCore.AST.Node>() { bnode });
+                                }
+                            }
+                        }
+                    }
+
+                    CompileAndExecuteMSIL(deltaAstList);
                     return;
                 }
 

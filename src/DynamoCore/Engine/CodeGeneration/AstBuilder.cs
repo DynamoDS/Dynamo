@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Graph.Nodes;
@@ -333,10 +333,10 @@ namespace Dynamo.Engine.CodeGeneration
             else
                 sortedNodes = TopologicalSort(topScopedNodes);
 
-            if (context == CompilationContext.DeltaExecution)
+/*            if (context == CompilationContext.DeltaExecution)
             {
                 sortedNodes = sortedNodes.Where(n => n.IsModified);
-            }
+            }*/
 
             var result = new List<List<AssociativeNode>>();
 
