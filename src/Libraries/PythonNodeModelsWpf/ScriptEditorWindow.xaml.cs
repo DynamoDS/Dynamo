@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Windows;
@@ -15,7 +16,12 @@ using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using PythonNodeModels;
 using System.Linq;
+using System.Text;
 using Dynamo.PythonServices;
+using ICSharpCode.AvalonEdit;
+using ICSharpCode.AvalonEdit.Document;
+using ICSharpCode.AvalonEdit.Folding;
+using ICSharpCode.AvalonEdit.Indentation;
 
 namespace PythonNodeModelsWpf
 {
@@ -33,6 +39,8 @@ namespace PythonNodeModelsWpf
         public PythonNode nodeModel { get; set; }
         private bool nodeWasModified = false;
         private string originalScript;
+        private FoldingManager foldingManager;
+        private TabFoldingStrategy foldingStrategy;
 
         // Reasonable max and min font size values for zooming limits
         private const double FONT_MAX_SIZE = 60d;
@@ -43,23 +51,21 @@ namespace PythonNodeModelsWpf
         /// <summary>
         /// Available Python engines.
         /// </summary>
-        public ObservableCollection<string> AvailableEngines
-        {
-            get; private set;
-        }
+        public ObservableCollection<string> AvailableEngines { get; private set; }
 
         public ScriptEditorWindow(
             DynamoViewModel dynamoViewModel,
             PythonNode nodeModel,
             NodeView nodeView,
             ref ModelessChildWindow.WindowRect windowRect
-            ) : base(nodeView, ref windowRect)
+        ) : base(nodeView, ref windowRect)
         {
             this.Closed += OnScriptEditorWindowClosed;
             this.dynamoViewModel = dynamoViewModel;
             this.nodeModel = nodeModel;
 
-            completionProvider = new SharedCompletionProvider(nodeModel.EngineName, dynamoViewModel.Model.PathManager.DynamoCoreDirectory);
+            completionProvider = new SharedCompletionProvider(nodeModel.EngineName,
+                dynamoViewModel.Model.PathManager.DynamoCoreDirectory);
             completionProvider.MessageLogged += dynamoViewModel.Model.Logger.Log;
             nodeModel.CodeMigrated += OnNodeModelCodeMigrated;
 
@@ -90,12 +96,13 @@ namespace PythonNodeModelsWpf
 
             const string highlighting = "ICSharpCode.PythonBinding.Resources.Python.xshd";
             var elem = GetType().Assembly.GetManifestResourceStream(
-                        "PythonNodeModelsWpf.Resources." + highlighting);
+                "PythonNodeModelsWpf.Resources." + highlighting);
 
             editText.SyntaxHighlighting = HighlightingLoader.Load(
                 new XmlTextReader(elem), HighlightingManager.Instance);
 
-            AvailableEngines = new ObservableCollection<string>(PythonEngineManager.Instance.AvailableEngines.Select(x => x.Name));
+            AvailableEngines =
+                new ObservableCollection<string>(PythonEngineManager.Instance.AvailableEngines.Select(x => x.Name));
             // Add the serialized Python Engine even if it is missing (so that the user does not see an empty slot)
             if (!AvailableEngines.Contains(nodeModel.EngineName))
             {
@@ -108,9 +115,31 @@ namespace PythonNodeModelsWpf
             originalScript = propValue;
             CachedEngine = nodeModel.EngineName;
             EngineSelectorComboBox.SelectedItem = CachedEngine;
+
+            InstallFoldingManager();
+        }
+
+        private void InstallFoldingManager()
+        {
+            editText.TextArea.IndentationStrategy = new DefaultIndentationStrategy();
+
+            foldingManager = FoldingManager.Install(editText.TextArea);
+            foldingStrategy = new TabFoldingStrategy();
+            foldingStrategy.UpdateFoldings(foldingManager, editText.Document);
+
+            editText.TextChanged += EditTextOnTextChanged;
+        }
+
+        private void EditTextOnTextChanged(object sender, EventArgs e)
+        {
+            if (foldingManager == null)
+                throw new ArgumentNullException("foldingManager");
+
+            foldingStrategy.UpdateFoldings(foldingManager, editText.Document);
         }
 
         #region Text Zoom in Python Editor
+
         /// <summary>
         /// PreviewMouseWheel event handler to zoom in and out
         /// Additional check to make sure reacting to ctrl + mouse wheel
@@ -152,6 +181,7 @@ namespace PythonNodeModelsWpf
                 }
             }
         }
+
         #endregion
 
         #region Autocomplete Event Handlers
@@ -162,9 +192,9 @@ namespace PythonNodeModelsWpf
             {
                 foreach (var item in e.NewItems)
                 {
-                    if (!AvailableEngines.Contains((string)item))
+                    if (!AvailableEngines.Contains((string) item))
                     {
-                        AvailableEngines.Add((string)item);
+                        AvailableEngines.Add((string) item);
                     }
                 }
             }
@@ -209,10 +239,7 @@ namespace PythonNodeModelsWpf
                         data.Add(completion);
 
                     completionWindow.Show();
-                    completionWindow.Closed += delegate
-                    {
-                        completionWindow = null;
-                    };
+                    completionWindow.Closed += delegate { completionWindow = null; };
                 }
             }
             catch (Exception ex)
@@ -277,6 +304,7 @@ namespace PythonNodeModelsWpf
             {
                 dynamoViewModel.HomeSpace.Run();
             }
+
             Analytics.TrackEvent(
                 Dynamo.Logging.Actions.Run,
                 Dynamo.Logging.Categories.PythonOperations);
@@ -296,7 +324,8 @@ namespace PythonNodeModelsWpf
 
         private void OnMoreInfoClicked(object sender, RoutedEventArgs e)
         {
-            dynamoViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(PythonNodeModels.Properties.Resources.PythonMigrationWarningUriString, UriKind.Relative)));
+            dynamoViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(
+                new Uri(PythonNodeModels.Properties.Resources.PythonMigrationWarningUriString, UriKind.Relative)));
         }
 
         private void OnEngineChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -310,6 +339,7 @@ namespace PythonNodeModelsWpf
                     Categories.PythonOperations,
                     CachedEngine);
             }
+
             editText.Options.ConvertTabsToSpaces = CachedEngine != PythonEngineManager.IronPython2EngineName;
         }
 
@@ -323,6 +353,11 @@ namespace PythonNodeModelsWpf
             Analytics.TrackEvent(
                 Dynamo.Logging.Actions.Close,
                 Dynamo.Logging.Categories.PythonOperations);
+
+
+            editText.TextChanged -= EditTextOnTextChanged;
+            FoldingManager.Uninstall(foldingManager);
+            foldingManager = null;
         }
 
         #endregion
@@ -390,5 +425,7 @@ namespace PythonNodeModelsWpf
         }
 
         #endregion
+
     }
+
 }
