@@ -63,6 +63,8 @@ namespace Dynamo.Applications
         public string SessionId { get; set; } = String.Empty;
         [Option("CERLocation", Required = false, HelpText = "Specify the crash error report tool location on disk.")]
         public string CERLocation { get; set; } = String.Empty;
+        [Option("ServiceMode", Required = false, HelpText = "Specify the service mode startup.")]
+        public bool ServiceMode { get; set; }
     }
 #endif
 
@@ -144,7 +146,8 @@ namespace Dynamo.Applications
                         CommonDataFolder = cmdArgs.CommonDataFolder,
                         DisableAnalytics = cmdArgs.DisableAnalytics,
                         AnalyticsInfo = new HostAnalyticsInfo() { HostName = cmdArgs.HostName, ParentId = cmdArgs.ParentId, SessionId = cmdArgs.SessionId },
-                        CERLocation = cmdArgs.CERLocation
+                        CERLocation = cmdArgs.CERLocation,
+                        ServiceMode = cmdArgs.ServiceMode
                     };
                 }, errs => new CommandLineArguments());
 #else
