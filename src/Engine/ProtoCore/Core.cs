@@ -770,7 +770,7 @@ namespace ProtoCore
                 BfsBuildInstructionStreams(CodeBlockList[n], DSExecutable.instrStreamList);
             }
 
-            if (Options.RunMode == InterpreterMode.Expression)
+            if (Options.RunMode == InterpreterMode.Expression || Options.IDEDebugMode)
             {
                 GenerateExprExe();
             }
