@@ -45,7 +45,7 @@ namespace Dynamo.Engine
         /// </summary>
         internal static event Action VMLibrariesReset;
 
-        internal bool DSExecutionEngine { get; set; }
+        internal bool UseLegacyEngine { get; set; }
 
         /// <summary>
         /// Run modes for new MSIL based engine.
@@ -506,7 +506,7 @@ namespace Dynamo.Engine
             // within the execution. Such exception, if any, will be caught by
             // DynamoScheduler.ProcessTaskInternal.
 
-            liveRunnerServices.UpdateGraph(graphSyncData, VerboseLogging, DSExecutionEngine, MSILRunMode);
+            liveRunnerServices.UpdateGraph(graphSyncData, VerboseLogging, UseLegacyEngine, MSILRunMode);
         }
 
         internal IDictionary<Guid, List<BuildWarning>> GetBuildWarnings()

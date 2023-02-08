@@ -296,7 +296,7 @@ namespace Dynamo.Models
             }
         }
 
-        internal bool DSExecutionEngine = true;
+        internal bool UseLegacyEngine = true;
 
         internal RunMode MSILRunMode = RunMode.CompileAndExecute;
 
@@ -1792,7 +1792,7 @@ namespace Dynamo.Models
                 geometryFactoryPath,
                 DebugSettings.VerboseLogging)
             {
-                DSExecutionEngine = DSExecutionEngine,
+                UseLegacyEngine = UseLegacyEngine,
                 MSILRunMode = MSILRunMode
             };
 

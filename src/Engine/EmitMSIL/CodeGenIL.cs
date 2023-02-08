@@ -122,11 +122,13 @@ namespace EmitMSIL
             // Invoke emitted method (ExecuteIL.Execute)
             var t = compileResult.tbuilder.CreateType();
             var mi = t.GetMethod(Method, BindingFlags.NonPublic | BindingFlags.Static);
+
+            // TODO_MSIL: runtimeCore and methodCache will need to be deserialized from a saved state, then passed as input
+            // to the compiled ExecuteIL.Execute method
             var output = new BuiltIn.MSILOutputMap<string, object>(runtimeCore);
             
             // null can be replaced by an 'input' dictionary if available.
             var obj = mi.Invoke(null, new object[] { null, methodCache, output, runtimeCore });
-
 
             return output;
         }
@@ -1383,7 +1385,7 @@ namespace EmitMSIL
             // Emit call to load the runtimeCore argument
             EmitOpCode(OpCodes.Ldarg_3);
             //TODO_MSIL cache this and other method lookups at start to speedup compile.
-            //now call unmarshall to convert any clrstackvalues to plain c# objs. 
+            //now call unmarshal to convert any clrstackvalues to plain c# objs. 
             var marshalMethod = typeof(Replication).GetMethod(nameof(Replication.UnMarshalFunctionArguments2),
                 BindingFlags.Static | BindingFlags.Public);
             EmitOpCode(OpCodes.Call, marshalMethod);

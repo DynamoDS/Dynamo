@@ -104,7 +104,7 @@ namespace DynamoCLI
                 cmdLineArgs.UserDataFolder,
                 cmdLineArgs.CommonDataFolder,
                 cmdLineArgs.AnalyticsInfo);
-            model.DSExecutionEngine = cmdLineArgs.DSExecutionEngine;
+            model.UseLegacyEngine = cmdLineArgs.UseLegacyEngine;
             model.MSILRunMode = cmdLineArgs.MSILRunMode;
 
             if (!string.IsNullOrEmpty(cmdLineArgs.CERLocation))

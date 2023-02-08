@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -142,11 +142,11 @@ namespace Dynamo
             }
         }
 
-        protected void OpenModel(string relativeFilePath, bool dsExecution = true)
+        protected void OpenModel(string relativeFilePath, bool useLegacyEngine = true)
         {
             string openPath = Path.Combine(TestDirectory, relativeFilePath);
 
-            CurrentDynamoModel.DSExecutionEngine = dsExecution;
+            CurrentDynamoModel.UseLegacyEngine = useLegacyEngine;
             CurrentDynamoModel.ExecuteCommand(new DynamoModel.OpenFileCommand(openPath));
         }
 

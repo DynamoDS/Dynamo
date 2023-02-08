@@ -210,7 +210,7 @@ namespace Dynamo.Tests
 
             checkPoint = StartCollectingMemory();
 
-            OpenModel(filePath, dsExecution: false);
+            OpenModel(filePath, useLegacyEngine: false);
             model = CurrentDynamoModel;
             var ws2 = model.CurrentWorkspace;
             ws2.Description = "TestDescription";
@@ -270,7 +270,7 @@ namespace Dynamo.Tests
 
                 Setup();
 
-                OpenModel(warmupFile, dsExecution: false);
+                OpenModel(warmupFile, useLegacyEngine: false);
 
                 Cleanup();
 
