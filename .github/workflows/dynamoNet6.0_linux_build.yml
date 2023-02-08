@@ -16,21 +16,20 @@ jobs:
         dotnet-version: '6.0.x'
    
     - name: Install dependencies for linux runtime
-      run: dotnet restore ${{ github.workspace }} \Dynamo\src\DynamoCore.net6.sln -p:Platform=NET60_Linux --runtime=linux-x64
+      run: dotnet restore ${{ github.workspace }}/Dynamo/src/DynamoCore.net6.sln -p:Platform=NET60_Linux --runtime=linux-x64
     - name: Build Dynamo with MSBuild for Linux
       run: |
         echo "***Continue with the build, Good luck developer!***"
-        cd "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\"
-           .\MSBuild.exe ${{ github.workspace }} \Dynamo\src\DynamoCore.net6.sln /p:Configuration=Release /p:Platform=NET60_Linux
+        dotnet build ${{ github.workspace }}/Dynamo/src/DynamoCore.net6.sln -c Release /p:Platform=NET60_Linux
     - name: Navigate to Dynamo Linux Folder
       run: |
-        cd "${{ github.workspace }} \Dynamo\bin\NET60_Linux\Release"
+        cd "${{ github.workspace }}\Dynamo\bin\NET60_Linux\Release"
         echo "***Locating DynamoCLI for Linux!***"
         test ".\DynamoCLI.exe" && echo "DynamoCLI exists!"
     - name: Run smoke tests
       run: |
-        cd "${{ github.workspace }} \Dynamo\bin\NET60_Linux\Release"
+        cd "${{ github.workspace }}\Dynamo\bin\NET60_Linux\Release"
         echo "***Running Smoke tests on linux***"
-        dotnet test --no-build bin\AnyCPU\Release\DynamoCoreTests.dll --test-adapter-path  ~\.nuget\packages\nunittestadapter\2.3.0\build\ --filter TestCategory=SmokeTest
+        dotnet test --no-build \DynamoCoreTests.dll --test-adapter-path  ~\.nuget\packages\nunittestadapter\2.3.0\build\ --filter TestCategory=SmokeTest
 
        
