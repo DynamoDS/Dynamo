@@ -559,8 +559,6 @@ https://docs.python.org/2.7/library/
 https://docs.python.org/2.7/license.html
 
 Python Modules
-https://pypi.org/project/pywin32/ License: Python Software Foundation License (PSF)
-https://pypi.org/project/comtypes/ License: MIT License (MIT License)
 https://numpy.org/ License: Distributed under a liberal BSD license
 https://pandas.pydata.org/ License: BSD 3-Clause "New" or "Revised" License
 https://scipy.org/ License: Distributed under a liberal BSD license
