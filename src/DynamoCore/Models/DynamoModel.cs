@@ -1641,6 +1641,10 @@ namespace Dynamo.Models
             if (preferences != null) // If there is preference settings provided...
                 return preferences;
 
+            //Skip file handling in service mode.
+            if (IsServiceMode)
+                return new PreferenceSettings();
+
             // Is order for test cases not to interfere with the regular preference
             // settings xml file, a test case usually specify a temporary xml file
             // path from where preference settings are to be loaded. If that value
