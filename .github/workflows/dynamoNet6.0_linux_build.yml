@@ -31,6 +31,6 @@ jobs:
       run: |
         cd "${{ github.workspace }}/Dynamo/bin/NET60_Linux/Release"
         echo "***Running Smoke tests on linux***"
-        dotnet test --no-build /DynamoCoreTests.dll --test-adapter-path  ~/.nuget/packages/nunittestadapter/2.3.0/build/ --filter TestCategory=SmokeTest
+        dotnet test DynamoCoreTests.dll --test-adapter-path  ~/.nuget/packages/nunittestadapter/2.3.0/build/ --filter TestCategory=SmokeTest
 
        
