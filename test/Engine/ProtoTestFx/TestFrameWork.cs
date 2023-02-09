@@ -406,7 +406,7 @@ namespace ProtoTestFx.TD
             {
                 Console.WriteLine($"!!!!test {NUnit.Framework.TestContext.CurrentContext.Test.Name} being run with MSIL compiler!!!!");
                 //TODO_MSIL: remove the dependency on the old VM by implementing
-                //necesary Emit functions(ex mitFunctionDefinition and EmitImportStatements and all the preloading logic)
+                //necessary Emit functions(ex EmitFunctionDefinition and EmitImportStatements and all the preloading logic)
                 //MSIL_TODO add list of libraries to load here for tests.
                 //It seems we have to load SOME library successfully or DSExecutable is null.
                 using (var liveRunner = new ProtoScript.Runners.LiveRunner())
@@ -420,7 +420,7 @@ namespace ProtoTestFx.TD
                     var inputs = new Dictionary<string, IList>();
                     using (var codeGen = new EmitMSIL.CodeGenIL(inputs, Path.Combine(outputpath, $"OpCodesTEST{NUnit.Framework.TestContext.CurrentContext.Test.Name}.txt"), runtimeCore))
                     {
-                        MSILMirror = runner.CompileAndGenerateMSIL(sourceCode, codeGen);
+                        MSILMirror = ProtoScriptRunner.CompileAndGenerateMSIL(sourceCode, codeGen);
 
                     }
                 }

@@ -100,11 +100,12 @@ namespace DynamoCLI
         /// <returns></returns>
         private static DynamoModel StartupDynamo(StartupUtils.CommandLineArguments cmdLineArgs)
         {
-            DynamoModel model;
-            model = Dynamo.Applications.StartupUtils.MakeCLIModel(String.IsNullOrEmpty(cmdLineArgs.ASMPath) ? string.Empty : cmdLineArgs.ASMPath,
+            DynamoModel model = StartupUtils.MakeCLIModel(String.IsNullOrEmpty(cmdLineArgs.ASMPath) ? string.Empty : cmdLineArgs.ASMPath,
                 cmdLineArgs.UserDataFolder,
                 cmdLineArgs.CommonDataFolder,
                 cmdLineArgs.AnalyticsInfo);
+            model.UseLegacyEngine = cmdLineArgs.UseLegacyEngine;
+            model.MSILRunMode = cmdLineArgs.MSILRunMode;
 
             if (!string.IsNullOrEmpty(cmdLineArgs.CERLocation))
             {

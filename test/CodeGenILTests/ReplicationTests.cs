@@ -76,11 +76,6 @@ namespace CodeGenILTests
 
     class ReplicationTests : MicroTests
     {
-        protected override void GetLibrariesToPreload(ref List<string> libraries)
-        {
-            base.GetLibrariesToPreload(ref libraries);
-            libraries.Add("FFITarget.dll");
-        }
 
         [Test]
         public void MSIL_Arithmetic_List_And_List_Same_Length()

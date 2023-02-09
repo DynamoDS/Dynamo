@@ -19,6 +19,29 @@ namespace EmitMSIL
 {
     public class CodeGenIL : IDisposable
     {
+        /// <summary>
+        /// Run modes. 
+        /// </summary>
+        public enum RunMode
+        {
+            /// <summary>
+            /// Compile graph and execute compiled assembly in memory.
+            /// </summary>
+            CompileAndExecute,
+
+            /// <summary>
+            /// Graph is compiled and saved as an assembly only.
+            /// </summary>
+            CompileOnly,
+
+            /// <summary>
+            /// Execute pre-compiled graph assembly.
+            /// </summary>
+            ExecuteOnly
+        }
+
+        private static readonly string Class = "ExecuteIL";
+        private static readonly string Method = "Execute";
         private ILGenerator ilGen;
         internal string className;
         internal string methodName;
@@ -27,6 +50,7 @@ namespace EmitMSIL
         internal ProtoCore.MSILRuntimeCore runtimeCore;
         private Dictionary<string, Tuple<int, Type>> variables = new Dictionary<string, Tuple<int, Type>>();
         private string logPath;
+
         /// <summary>
         /// AST node to type info map, filled in the GatherTypeInfo compiler phase.
         /// </summary>
@@ -35,6 +59,7 @@ namespace EmitMSIL
         private Dictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>> methodCache = new Dictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>();
         private Dictionary<int, bool> willReplicateCache = new Dictionary<int, bool>();
         private CompilePass compilePass;
+        private RunMode mode;
         internal (TimeSpan compileTime, TimeSpan executionTime) CompileAndExecutionTime;
 
         //validity options
@@ -71,11 +96,13 @@ namespace EmitMSIL
             }
         }
 
-        internal CodeGenIL(IDictionary<string, IList> input, string filePath, ProtoCore.MSILRuntimeCore runtimeCore)
+        internal CodeGenIL(IDictionary<string, IList> input, string filePath, ProtoCore.MSILRuntimeCore runtimeCore,
+            RunMode mode = RunMode.CompileAndExecute)
         {
             this.logPath = filePath;
             this.input = input;
             this.runtimeCore = runtimeCore;
+            this.mode = mode;
         }
 
         internal IDictionary<string, object> Emit(List<AssociativeNode> astList)
@@ -85,20 +112,40 @@ namespace EmitMSIL
 #else
             var compileResult = CompileAstToDynamicType(astList, AssemblyBuilderAccess.RunAndSave);
 #endif
-            // Invoke emitted method (ExecuteIL.Execute)
-            var t = compileResult.tbuilder.CreateType();
-            var mi = t.GetMethod("Execute", BindingFlags.NonPublic | BindingFlags.Static);
-            var output = new BuiltIn.MSILOutputMap<string, object>(runtimeCore);
 
 #if NET6_0_OR_GREATER
 #else
             compileResult.asmbuilder.Save("DynamicAssembly.dll");
 #endif
+            if (mode == RunMode.CompileOnly) return null;
 
+            // Invoke emitted method (ExecuteIL.Execute)
+            var t = compileResult.tbuilder.CreateType();
+            var mi = t.GetMethod(Method, BindingFlags.NonPublic | BindingFlags.Static);
+
+            // TODO_MSIL: runtimeCore and methodCache will need to be deserialized from a saved state, then passed as input
+            // to the compiled ExecuteIL.Execute method
+            var output = new BuiltIn.MSILOutputMap<string, object>(runtimeCore);
+            
             // null can be replaced by an 'input' dictionary if available.
             var obj = mi.Invoke(null, new object[] { null, methodCache, output, runtimeCore });
 
+            return output;
+        }
 
+        internal IDictionary<string, object> Execute()
+        {
+            // Invoke emitted method (ExecuteIL.Execute)
+            var asm = Assembly.LoadFrom("DynamicAssembly.dll");
+
+            var mi = asm.GetTypes()[0].GetMethod(Method,
+                BindingFlags.NonPublic | BindingFlags.Static);
+
+            var output = new BuiltIn.MSILOutputMap<string, object>(runtimeCore);
+
+            // null can be replaced by an 'input' dictionary if available.
+            var obj = mi.Invoke(null, new object[] { null, methodCache, output, runtimeCore });
+            
             return output;
         }
 
@@ -113,7 +160,7 @@ namespace EmitMSIL
             // Invoke emitted method (ExecuteIL.Execute)
             timer.Restart();
             var t = compileResult.tbuilder.CreateType();
-            var mi = t.GetMethod("Execute", BindingFlags.NonPublic | BindingFlags.Static);
+            var mi = t.GetMethod(Method, BindingFlags.NonPublic | BindingFlags.Static);
             var output = new BuiltIn.MSILOutputMap<string, object>(runtimeCore);
             mi.Invoke(null, new object[] { null, methodCache, output, runtimeCore });
             timer.Stop();
@@ -124,8 +171,6 @@ namespace EmitMSIL
 
         private (AssemblyBuilder asmbuilder, TypeBuilder tbuilder) CompileAstToDynamicType(List<AssociativeNode> astList, AssemblyBuilderAccess access)
         {
-            AssemblyBuilder asm;
-            TypeBuilder type;
             using (writer = new StreamWriter(logPath))
             {
                 compilePass = CompilePass.MethodLookup;
@@ -135,15 +180,20 @@ namespace EmitMSIL
                     DfsTraverse(ast);
                 }
                 // 1. Create assembly builder (dynamic assembly)
-                asm = BuilderHelper.CreateAssemblyBuilder("DynamicAssembly", false, access);
+                var asm = BuilderHelper.CreateAssemblyBuilder("DynamicAssembly", false, access);
                 // 2. Create module builder
                 var mod = BuilderHelper.CreateDLLModuleBuilder(asm, "DynamicAssembly");
                 // 3. Create type builder (name it "ExecuteIL")
-                type = BuilderHelper.CreateType(mod, "ExecuteIL");
+                var type = BuilderHelper.CreateType(mod, Class);
                 // 4. Create method ("Execute"), get ILGenerator 
-                var execMethod = BuilderHelper.CreateMethod(type, "Execute",
-                    System.Reflection.MethodAttributes.Static | System.Reflection.MethodAttributes.Private, typeof(void), new[] { typeof(IDictionary<string, IList>),
-                typeof(IDictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>), typeof(IDictionary<string, object>), typeof(ProtoCore.MSILRuntimeCore)});
+                var execMethod = BuilderHelper.CreateMethod(type, Method,
+                    System.Reflection.MethodAttributes.Static | System.Reflection.MethodAttributes.Private,
+                    typeof(void), new[]
+                    {
+                        typeof(IDictionary<string, IList>),
+                        typeof(IDictionary<int, IEnumerable<ProtoCore.CLRFunctionEndPoint>>),
+                        typeof(IDictionary<string, object>), typeof(ProtoCore.MSILRuntimeCore)
+                    });
                 ilGen = execMethod.GetILGenerator();
 
                 compilePass = CompilePass.GatherTypeInfo;
@@ -175,20 +225,20 @@ namespace EmitMSIL
             EmitOpCode(OpCodes.Call, roundMethod);
         }
 
-        private Type EmitCoercionCode(AssociativeNode arg, Type argType, Type param)
+        private Type EmitCoercionCode(AssociativeNode arg, Type argType, Type paramType)
         {
             EmitILComment("coerce impl");
             if (argType == null) return argType;
 
-            if(param == typeof(object) && argType.IsValueType)
+            if(paramType == typeof(object) && argType.IsValueType)
             {
                 EmitOpCode(OpCodes.Box, argType);
                 return typeof(object);
             }
 
-            if (param.IsAssignableFrom(argType)) return argType;
+            if (paramType.IsAssignableFrom(argType)) return argType;
 
-            if(argType == typeof(double) && param == typeof(long))
+            if(argType == typeof(double) && paramType == typeof(long))
             {
                 // Call Math.Round(arg, 0, MidpointRounding.AwayFromZero);
                 EmitMathRound();
@@ -196,7 +246,7 @@ namespace EmitMSIL
                 EmitOpCode(OpCodes.Conv_I8);
                 return typeof(long);
             }
-            if (argType == typeof(double) && param == typeof(int))
+            if (argType == typeof(double) && paramType == typeof(int))
             {
                 // Call Math.Round(arg, 0, MidpointRounding.AwayFromZero);
                 EmitMathRound();
@@ -204,40 +254,40 @@ namespace EmitMSIL
                 EmitOpCode(OpCodes.Conv_I4);
                 return typeof(int);
             }
-            if (argType == typeof(long) && param == typeof(int))
+            if (argType == typeof(long) && paramType == typeof(int))
             {
                 EmitOpCode(OpCodes.Conv_I4);
                 return typeof(int);
             }
-            if (argType == typeof(long) && param == typeof(double))
+            if (argType == typeof(long) && paramType == typeof(double))
             {
                 EmitOpCode(OpCodes.Conv_R8);
                 return typeof(double);
             }
             
-            if (typeof(IEnumerable<int>).IsAssignableFrom(argType) && typeof(IEnumerable<double>).IsAssignableFrom(param))
+            if (typeof(IEnumerable<int>).IsAssignableFrom(argType) && typeof(IEnumerable<double>).IsAssignableFrom(paramType))
             {
-                return EmitCollectionCoercion<int, double>(arg, param);
+                return EmitCollectionCoercion<int, double>(arg, paramType);
             }
-            if (typeof(IEnumerable<int>).IsAssignableFrom(argType) && typeof(IEnumerable<long>).IsAssignableFrom(param))
+            if (typeof(IEnumerable<int>).IsAssignableFrom(argType) && typeof(IEnumerable<long>).IsAssignableFrom(paramType))
             {
-                return EmitCollectionCoercion<int, long>(arg, param);
+                return EmitCollectionCoercion<int, long>(arg, paramType);
             }
-            if (typeof(IEnumerable<long>).IsAssignableFrom(argType) && typeof(IEnumerable<double>).IsAssignableFrom(param))
+            if (typeof(IEnumerable<long>).IsAssignableFrom(argType) && typeof(IEnumerable<double>).IsAssignableFrom(paramType))
             {
-                return EmitCollectionCoercion<long, double>(arg, param);
+                return EmitCollectionCoercion<long, double>(arg, paramType);
             }
-            if (typeof(IEnumerable<long>).IsAssignableFrom(argType) && typeof(IEnumerable<int>).IsAssignableFrom(param))
+            if (typeof(IEnumerable<long>).IsAssignableFrom(argType) && typeof(IEnumerable<int>).IsAssignableFrom(paramType))
             {
-                return EmitCollectionCoercion<long, int>(arg, param);
+                return EmitCollectionCoercion<long, int>(arg, paramType);
             }
-            if (typeof(IEnumerable<double>).IsAssignableFrom(argType) && typeof(IEnumerable<int>).IsAssignableFrom(param))
+            if (typeof(IEnumerable<double>).IsAssignableFrom(argType) && typeof(IEnumerable<int>).IsAssignableFrom(paramType))
             {
-                return EmitCollectionCoercion<double, int>(arg, param);
+                return EmitCollectionCoercion<double, int>(arg, paramType);
             }
-            if (typeof(IEnumerable<double>).IsAssignableFrom(argType) && typeof(IEnumerable<long>).IsAssignableFrom(param))
+            if (typeof(IEnumerable<double>).IsAssignableFrom(argType) && typeof(IEnumerable<long>).IsAssignableFrom(paramType))
             {
-                return EmitCollectionCoercion<double, long>(arg, param);
+                return EmitCollectionCoercion<double, long>(arg, paramType);
             }
             // TODO: Add more coercion cases here.
 
@@ -315,7 +365,6 @@ namespace EmitMSIL
 
         private IEnumerable<ProtoCore.CLRFunctionEndPoint> FunctionLookup(IList args)
         {
-            var mbs = new List<ProtoCore.CLRFunctionEndPoint>();
             var key = KeyGen(className, methodName, args.Count);
             if (methodCache.TryGetValue(key, out IEnumerable<ProtoCore.CLRFunctionEndPoint> mBase))
             {
@@ -328,7 +377,7 @@ namespace EmitMSIL
                 Validity.Assert(cid != DSASM.Constants.kInvalidIndex);
             }
 
-            // TODO_MSIL: Figure out polymorfism when calling functions
+            // TODO_MSIL: Figure out polymorphism when calling functions
             // That should be done at runtime (when we know the exact runtime type of the caller type)
             var fg = runtimeCore.GetFuncGroup(methodName, className);
 
@@ -343,6 +392,8 @@ namespace EmitMSIL
             }
 
             Validity.Assert(fg != null, "Did not find a function group");
+
+            var mbs = new List<ProtoCore.CLRFunctionEndPoint>();
 
             foreach (var funcEnd in fg.FunctionEndPoints)
             {
@@ -427,7 +478,7 @@ namespace EmitMSIL
                     i++;
                 }
 
-                ProtoCore.CLRFunctionEndPoint fep = new ProtoCore.CLRFunctionEndPoint(fFIMemberInfo, fepParams, procNode);
+                var fep = new ProtoCore.CLRFunctionEndPoint(fFIMemberInfo, fepParams, procNode);
                 mbs.Add(fep);
             }
 
@@ -1334,7 +1385,7 @@ namespace EmitMSIL
             // Emit call to load the runtimeCore argument
             EmitOpCode(OpCodes.Ldarg_3);
             //TODO_MSIL cache this and other method lookups at start to speedup compile.
-            //now call unmarshall to convert any clrstackvalues to plain c# objs. 
+            //now call unmarshal to convert any clrstackvalues to plain c# objs. 
             var marshalMethod = typeof(Replication).GetMethod(nameof(Replication.UnMarshalFunctionArguments2),
                 BindingFlags.Static | BindingFlags.Public);
             EmitOpCode(OpCodes.Call, marshalMethod);

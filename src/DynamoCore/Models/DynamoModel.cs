@@ -170,6 +170,27 @@ namespace Dynamo.Models
         #region public properties
 
         /// <summary>
+        /// Run modes for new MSIL based engine. 
+        /// </summary>
+        public enum RunMode
+        {
+            /// <summary>
+            /// Compile graph and execute compiled assembly in memory.
+            /// </summary>
+            CompileAndExecute,
+
+            /// <summary>
+            /// Graph is compiled and saved as an assembly only.
+            /// </summary>
+            CompileOnly,
+
+            /// <summary>
+            /// Execute pre-compiled graph assembly.
+            /// </summary>
+            ExecuteOnly
+        }
+
+        /// <summary>
         ///     DesignScript VM EngineController, used for this instance of Dynamo.
         /// </summary>
         public EngineController EngineController { get; set; }
@@ -275,7 +296,9 @@ namespace Dynamo.Models
             }
         }
 
-        internal bool DSExecutionEngine = true;
+        internal bool UseLegacyEngine = true;
+
+        internal RunMode MSILRunMode = RunMode.CompileAndExecute;
 
         /// <summary>
         ///     Debugging settings for this instance of Dynamo.
@@ -1491,10 +1514,13 @@ namespace Dynamo.Models
             foreach (var type in migrationTypes)
                 MigrationManager.AddMigrationType(type);
 
-            // Import Zero Touch libs
-            var functionGroups = LibraryServices.GetAllFunctionGroups();
             if (!IsTestMode)
+            {
+                // Import Zero Touch libs
+                var functionGroups = LibraryServices.GetAllFunctionGroups();
+
                 AddZeroTouchNodesToSearch(functionGroups);
+            }
 #if DEBUG_LIBRARY
             DumpLibrarySnapshot(functionGroups);
 #endif
@@ -1766,7 +1792,8 @@ namespace Dynamo.Models
                 geometryFactoryPath,
                 DebugSettings.VerboseLogging)
             {
-                DSExecutionEngine = DSExecutionEngine
+                UseLegacyEngine = UseLegacyEngine,
+                MSILRunMode = MSILRunMode
             };
 
             EngineController.MessageLogged += LogMessage;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -241,6 +241,23 @@ namespace ProtoCore.Utils
                     return literString.Substring(1, literString.Length - 2);
                 }
             }
+        }
+
+        internal static bool TryLoadAssembliesIntoCore(Core core, string importStatements)
+        {
+            bool parsingPreloadFlag = core.IsParsingPreloadedAssembly;
+            bool parsingCbnFlag = core.IsParsingCodeBlockNode;
+            core.IsParsingPreloadedAssembly = true;
+            core.IsParsingCodeBlockNode = false;
+
+            int blockId;
+            core.ResetForPrecompilation();
+            var status = PreCompile(importStatements, core, null, out blockId);
+
+            core.IsParsingPreloadedAssembly = parsingPreloadFlag;
+            core.IsParsingCodeBlockNode = parsingCbnFlag;
+
+            return status.ErrorCount == 0;
         }
 
         public static bool TryLoadAssemblyIntoCore(Core core, string assemblyPath)

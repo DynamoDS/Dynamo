@@ -14,6 +14,7 @@ using Dynamo.Utilities;
 using System.IO;
 using System.Collections;
 using System.Diagnostics;
+using EmitMSIL;
 
 namespace ProtoScript.Runners
 {
@@ -1218,7 +1219,20 @@ namespace ProtoScript.Runners
     {
         private IDictionary<string, object> graphOutput;
         internal bool IsTestMode = false;
+
+        /// <summary>
+        /// Set to false for new MSIL based execution engine.
+        /// </summary>
         internal bool DSExecutionEngine = true;
+
+        /// <summary>
+        /// Run mode for new MSIL engine.
+        /// 0: compile and execute,
+        /// 1: compile only,
+        /// 2: execution only mode.
+        /// </summary>
+        internal CodeGenIL.RunMode MSILRunMode;
+        
         internal (TimeSpan compileTime, TimeSpan executionTime) CompileAndExecutionTime;
 
         internal class DebugByteCodeMode : IDisposable
@@ -1269,26 +1283,20 @@ namespace ProtoScript.Runners
 
         internal void CompileAndExecuteMSIL(List<AssociativeNode> finalDeltaAstList)
         {
-            Dictionary<string, IList> input = new Dictionary<string, IList>();
+            var input = new Dictionary<string, IList>();
 
             var assemblyPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
             //TODO_MSIL: remove the dependency on the old VM by implementing
-            //necesary Emit functions(ex mitFunctionDefinition and EmitImportStatements and all the preloading logic)
-            codeGenIL = codeGenIL ?? new EmitMSIL.CodeGenIL(input, Path.Combine(assemblyPath, "opCodes.txt"),
-                        new MSILRuntimeCore(runtimeCore))
+            //necessary Emit functions(ex EmitFunctionDefinition and EmitImportStatements and all the preloading logic)
+            codeGenIL = codeGenIL ?? new CodeGenIL(input, Path.Combine(assemblyPath, "opCodes.txt"),
+                new MSILRuntimeCore(runtimeCore), MSILRunMode);
 #if DEBUG
             
-            { LoggingEnabled = true }
+            codeGenIL.LoggingEnabled = true;
 #endif
-                ;
-            if (IsTestMode)
-            {
-                graphOutput = codeGenIL.EmitAndExecute(finalDeltaAstList);
-            }
-            else
-            {
-                graphOutput = codeGenIL.Emit(finalDeltaAstList);
-            }
+            graphOutput = IsTestMode ? codeGenIL.EmitAndExecute(finalDeltaAstList) : MSILRunMode == CodeGenIL.RunMode.ExecuteOnly ? 
+                codeGenIL.Execute() : codeGenIL.Emit(finalDeltaAstList);
+
             CompileAndExecutionTime = codeGenIL.CompileAndExecutionTime;
         }
 
@@ -1862,16 +1870,9 @@ namespace ProtoScript.Runners
                     return;
                 }
 
-                // generate import node for each library in input list
-                List<AssociativeNode> importNodes = new List<AssociativeNode>();
-                foreach (string lib in libraries)
-                {
-                    ProtoCore.AST.AssociativeAST.ImportNode importNode = new ProtoCore.AST.AssociativeAST.ImportNode();
-                    importNode.ModuleName = lib;
-
-                    importNodes.Add(importNode);
-                }
-                ProtoCore.CodeGenDS codeGen = new ProtoCore.CodeGenDS(importNodes);
+                // generate import AST node for each library in input list
+                var importNodes = libraries.Select(lib => new ImportNode { ModuleName = lib });
+                CodeGenDS codeGen = new CodeGenDS(importNodes);
                 string code = codeGen.GenerateCode();
 
                 SynchronizeInternal(code);

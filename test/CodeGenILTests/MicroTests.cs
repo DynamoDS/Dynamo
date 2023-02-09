@@ -6,6 +6,12 @@ using System.Reflection;
 
 namespace CodeGenILTests
 {
+    /// <summary>
+    /// NOTE: All subclasses of MicroTests do not need need to contain import statements
+    /// in the DesignScript code that each micro test is executing. The libraries are imported
+    /// in the Setup method. Any subclass that needs its own unique library needs to override
+    /// GetLibrariesToPreload().
+    /// </summary>
     public class MicroTests
     {
         private ProtoScript.Runners.LiveRunner liveRunner = null;

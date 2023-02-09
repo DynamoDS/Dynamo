@@ -193,8 +193,11 @@ namespace Dynamo.Engine
         {
             importedLibraries.AddRange(preloadLibraries);
 
-            foreach (var library in importedLibraries)
-                CompilerUtils.TryLoadAssemblyIntoCore(LibraryManagementCore, library);
+            var importNodes = preloadLibraries.Select(lib => new ImportNode { ModuleName = lib });
+            var codeGen = new CodeGenDS(importNodes);
+            string code = codeGen.GenerateCode();
+
+            CompilerUtils.TryLoadAssembliesIntoCore(LibraryManagementCore, code);
         }
 
         internal bool FunctionSignatureNeedsAdditionalAttributes(string functionSignature)

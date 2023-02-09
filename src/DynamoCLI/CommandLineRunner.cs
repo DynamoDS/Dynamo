@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -27,7 +27,7 @@ namespace DynamoCLI
             this.model = model;
         }
 
-        private static XmlDocument RunCommandLineArgs(DynamoModel model, StartupUtils.CommandLineArguments cmdLineArgs)
+        private XmlDocument RunCommandLineArgs(StartupUtils.CommandLineArguments cmdLineArgs)
         {
             var evalComplete = false;
 
@@ -57,33 +57,22 @@ namespace DynamoCLI
             Console.WriteLine("loaded file");
             model.EvaluationCompleted += (o, args) => { evalComplete = true; };
 
-            // Build a list of states, by default there is only a single state `default`
-            // If the desire is to have additional states you can add logic here to build
-            // up a list and iterate through each state in the list using the loop below.
-            // This must be done after potentially loading states from an external file.
-            var stateNames = new List<String>();
-            stateNames.Add("default");
-
             XmlDocument doc = null;
-            foreach (var stateName in stateNames)
+            // Graph execution
+            model.ExecuteCommand(new DynamoModel.RunCancelCommand(false, false));
+
+            while (evalComplete == false)
             {
-                // Graph execution
-                model.ExecuteCommand(new DynamoModel.RunCancelCommand(false, false));
-
-                while (evalComplete == false)
-                {
-                    Thread.Sleep(250);
-                }
-
-                //if verbose was true, then print all nodes to the console
-                if (!String.IsNullOrEmpty(cmdLineArgs.Verbose))
-                {
-                    doc = CreateXMLDoc(model);
-                }
-
-                evalComplete = false;
-
+                Thread.Sleep(250);
             }
+
+            //if verbose was true, then print all nodes to the console
+            if (!string.IsNullOrEmpty(cmdLineArgs.Verbose))
+            {
+                doc = CreateXMLDoc(model);
+            }
+
+            evalComplete = false;
 
             return doc;
         }
@@ -97,7 +86,7 @@ namespace DynamoCLI
         {
             try
             {
-                var filePath = new System.IO.FileInfo(path);
+                var filePath = new FileInfo(path);
                 if (!filePath.Exists)
                 {
                     Console.WriteLine($"could not find requested import library at path{path}");
@@ -243,7 +232,7 @@ namespace DynamoCLI
                 return;
             }
 
-            var doc = RunCommandLineArgs(this.model, args);
+            var doc = RunCommandLineArgs(args);
             if (doc != null && Directory.Exists(new FileInfo(args.Verbose).Directory.FullName))
             {
                 //if it exists and the path is valid, save the output file

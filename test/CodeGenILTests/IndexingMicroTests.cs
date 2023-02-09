@@ -11,12 +11,6 @@ namespace CodeGenILTests
     [TestFixture]
     public class IndexingMicroTests : MicroTests
     {
-        protected override void GetLibrariesToPreload(ref List<string> libraries)
-        {
-            base.GetLibrariesToPreload(ref libraries);
-            libraries.Add("FFITarget.dll");
-        }
-
         #region array indexing
         [Test]
         public void IndexArrayAllConstants()
