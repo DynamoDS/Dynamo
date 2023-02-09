@@ -24,13 +24,13 @@ jobs:
         dotnet build ${{ github.workspace }}/Dynamo/src/DynamoCore.net6.sln -c Release /p:Platform=NET60_Linux
     - name: Navigate to Dynamo Linux Folder
       run: |
-        cd "${{ github.workspace }}\Dynamo\bin\NET60_Linux\Release"
+        cd "${{ github.workspace }}/Dynamo/bin/NET60_Linux/Release"
         echo "***Locating DynamoCLI for Linux!***"
-        test ".\DynamoCLI.exe" && echo "DynamoCLI exists!"
+        test "./DynamoCLI.exe" && echo "DynamoCLI exists!"
     - name: Run smoke tests
       run: |
-        cd "${{ github.workspace }}\Dynamo\bin\NET60_Linux\Release"
+        cd "${{ github.workspace }}/Dynamo/bin/NET60_Linux/Release"
         echo "***Running Smoke tests on linux***"
-        dotnet test --no-build \DynamoCoreTests.dll --test-adapter-path  ~\.nuget\packages\nunittestadapter\2.3.0\build\ --filter TestCategory=SmokeTest
+        dotnet test --no-build /DynamoCoreTests.dll --test-adapter-path  ~/.nuget/packages/nunittestadapter/2.3.0/build/ --filter TestCategory=SmokeTest
 
        
