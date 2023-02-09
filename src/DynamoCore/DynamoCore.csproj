@@ -22,7 +22,7 @@
     <PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" GeneratePathProperty="true" ExcludeAssets="runtime" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">         
     <Reference Include="System.Configuration" />
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
@@ -91,14 +91,14 @@
   <ItemGroup>
     <Resource Include="BuiltInAndOperators\BuiltIn.Migrations.xml" />
   </ItemGroup>
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
+    <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
   </ItemGroup>
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
+    <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
