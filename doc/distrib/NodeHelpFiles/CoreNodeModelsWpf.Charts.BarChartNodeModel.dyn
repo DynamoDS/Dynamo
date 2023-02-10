@@ -1,0 +1,386 @@
+{
+  "Uuid": "8c2ba28b-a82f-4c59-9042-0eb03618a325",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "CoreNodeModelsWpf.Charts.BarChart",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "[\"January\", \"February\", \"March\"];\n[[4, 12, 34],[14, 22, 14],[15, 3, 6]];",
+      "Id": "4f90db449387447f8b2d3856f7615cc2",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "a11430fd97ca44a2a70990454e90369a",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "046741d0cd6f4ce0ba9280c25f87e78e",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.ColorPalette, CoreNodeModels",
+      "InputValue": {
+        "R": 255,
+        "G": 20,
+        "B": 147,
+        "A": 255
+      },
+      "NodeType": "ColorInputNode",
+      "Id": "edab865157544f59a8d4dc50c4be099b",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "7e7de9f62d784e34a4366d1e8c8b19fc",
+          "Name": "Color",
+          "Description": "Selected Color.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select a Color from the palette"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.ColorPalette, CoreNodeModels",
+      "InputValue": {
+        "R": 186,
+        "G": 85,
+        "B": 211,
+        "A": 255
+      },
+      "NodeType": "ColorInputNode",
+      "Id": "97d3335123a54e1a83292b75ec76953e",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "e89fb0a571c34e038a9c8d32270108e4",
+          "Name": "Color",
+          "Description": "Selected Color.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select a Color from the palette"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.ColorPalette, CoreNodeModels",
+      "InputValue": {
+        "R": 135,
+        "G": 206,
+        "B": 250,
+        "A": 255
+      },
+      "NodeType": "ColorInputNode",
+      "Id": "4c33689587a542dfa9424dff49806307",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "b74ea336f6444433a0d6d004be0e5b0c",
+          "Name": "Color",
+          "Description": "Selected Color.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select a Color from the palette"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
+      "VariableInputPorts": true,
+      "NodeType": "ExtensionNode",
+      "Id": "0c939cd31bb04052b772b0634809c87d",
+      "Inputs": [
+        {
+          "Id": "dcec969d2fcc450683b3c09900697e7c",
+          "Name": "item0",
+          "Description": "Item Index #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "30eef537505a45608dec89622682e69b",
+          "Name": "item1",
+          "Description": "Item Index #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f30b08bd7b034da380985f70199dd067",
+          "Name": "item2",
+          "Description": "Item Index #2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "99395561deda47398066cd8c6072895a",
+          "Name": "list",
+          "Description": "A list (type: var[]..[])",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Makes a new list from the given inputs"
+    },
+    {
+      "ConcreteType": "CoreNodeModelsWpf.Charts.BarChartNodeModel, CoreNodeModelsWpf",
+      "Labels": [
+        "January",
+        "February",
+        "March"
+      ],
+      "Values": [
+        [
+          4.0,
+          12.0,
+          34.0
+        ],
+        [
+          14.0,
+          22.0,
+          14.0
+        ],
+        [
+          15.0,
+          3.0,
+          6.0
+        ]
+      ],
+      "Colors": [
+        "#FFFF1493",
+        "#FFBA55D3",
+        "#FF87CEFA"
+      ],
+      "NodeType": "ExtensionNode",
+      "Id": "c1d721e2c7694638a260fdfe3f40874a",
+      "Inputs": [
+        {
+          "Id": "63ec628e52024be5a0c0e5275f73a8e1",
+          "Name": "labels",
+          "Description": "A list of labels for the bar chart categories.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "1acd961443ba47f6b4e89dcf3354f610",
+          "Name": "values",
+          "Description": "A list of lists to supply values for the bars in each category.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b51e61c82c1748538a888f8f2c499af5",
+          "Name": "colors",
+          "Description": "A list of colors for each bar chart category.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "315acdd6032441fb9f3401889b5ac3c8",
+          "Name": "labels:values",
+          "Description": "Dictionary containing label:value key-pairs",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Create a new Bar Chart."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "a11430fd97ca44a2a70990454e90369a",
+      "End": "63ec628e52024be5a0c0e5275f73a8e1",
+      "Id": "17188db6da43454196cabad9307ce126",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "046741d0cd6f4ce0ba9280c25f87e78e",
+      "End": "1acd961443ba47f6b4e89dcf3354f610",
+      "Id": "7affa895be9146948d51f87efc5c7b4a",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "7e7de9f62d784e34a4366d1e8c8b19fc",
+      "End": "dcec969d2fcc450683b3c09900697e7c",
+      "Id": "45e2bf7df1054bc1bc18197758129601",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "e89fb0a571c34e038a9c8d32270108e4",
+      "End": "30eef537505a45608dec89622682e69b",
+      "Id": "7a3c167b593149d5b9acd7a0a73a29c9",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "b74ea336f6444433a0d6d004be0e5b0c",
+      "End": "f30b08bd7b034da380985f70199dd067",
+      "Id": "2d3b3114833e43c5a07342072b76fa8e",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "99395561deda47398066cd8c6072895a",
+      "End": "b51e61c82c1748538a888f8f2c499af5",
+      "Id": "5bd4772bc9e840e6ad0528e553b50bc2",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.18",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.18.0.3514",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "4f90db449387447f8b2d3856f7615cc2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 161.25068076975765,
+        "Y": 828.70884236179791
+      },
+      {
+        "Name": "Color Palette",
+        "ShowGeometry": true,
+        "Id": "edab865157544f59a8d4dc50c4be099b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -107.74931923024235,
+        "Y": 873.05384236179782
+      },
+      {
+        "Name": "Color Palette",
+        "ShowGeometry": true,
+        "Id": "97d3335123a54e1a83292b75ec76953e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -107.74931923024235,
+        "Y": 1020.0538423617977
+      },
+      {
+        "Name": "Color Palette",
+        "ShowGeometry": true,
+        "Id": "4c33689587a542dfa9424dff49806307",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -107.74931923024235,
+        "Y": 1167.0538423617977
+      },
+      {
+        "Name": "List Create",
+        "ShowGeometry": true,
+        "Id": "0c939cd31bb04052b772b0634809c87d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 161.25068076975765,
+        "Y": 986.05384236179771
+      },
+      {
+        "Name": "Bar Chart",
+        "ShowGeometry": true,
+        "Id": "c1d721e2c7694638a260fdfe3f40874a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 642.25068076975765,
+        "Y": 869.05384236179793
+      }
+    ],
+    "Annotations": [],
+    "X": 167.85602648766519,
+    "Y": -641.73828640433828,
+    "Zoom": 0.93960835564510869
+  }
+}

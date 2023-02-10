@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using Autodesk.IDSDK;
 using Greg;
 using Greg.AuthProviders;
@@ -207,17 +208,31 @@ namespace Dynamo.Core
 
         private bool Initialize()
         {
+            if (Client.IsInitialized()) return true;
             idsdk_status_code bRet = Client.Init();
 
             if (Client.IsSuccess(bRet))
             {
                 if (Client.IsInitialized())
                 {
-                    bool ret = GetClientIDAndServer(out idsdk_server server, out string client_id);
-                    if (ret)
+                    try
                     {
-                        ret = SetProductConfigs("Dynamo", server, client_id);
-                        return ret;
+                        IntPtr hWnd = Process.GetCurrentProcess().MainWindowHandle;
+                        if (hWnd != null)
+                        {
+                            Client.SetHost(hWnd);
+                        }
+
+                        bool ret = GetClientIDAndServer(out idsdk_server server, out string client_id);
+                        if (ret) 
+                        {
+                            ret = SetProductConfigs("Dynamo", server, client_id);
+                            return ret;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        return false;
                     }
                 }
             }

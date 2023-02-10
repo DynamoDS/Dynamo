@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Markup;
 using Dynamo.Core;
 using Dynamo.DocumentationBrowser.Properties;
 using Dynamo.Logging;
@@ -32,7 +33,7 @@ namespace Dynamo.DocumentationBrowser
         {
             get { return name; }
         }
-    } 
+    }
 
     public class DocumentationBrowserViewModel : NotificationObject, IDisposable
     {
@@ -87,7 +88,23 @@ namespace Dynamo.DocumentationBrowser
         private Uri link;
         private string graphPath;
         private string content;
-        private string name;
+        private string currentPackageName;
+
+
+        /// <summary>
+        /// Package Name
+        /// </summary>
+        internal string CurrentPackageName
+        {
+            get
+            {
+                return currentPackageName;
+            }
+            set
+            {
+                currentPackageName = value;
+            }
+        }
 
         private MarkdownHandler MarkdownHandlerInstance => markdownHandler ?? (markdownHandler = new MarkdownHandler());
         public bool HasContent => !string.IsNullOrWhiteSpace(this.content);
@@ -226,9 +243,9 @@ namespace Dynamo.DocumentationBrowser
                 else
                 {
                     this.content = targetContent;
-                    this.Link = link;
                     this.graphPath = graph;
-                    this.name = graphName;
+                    this.currentPackageName = graphName;
+                    this.Link = link;                   
                 }
             }
             catch (FileNotFoundException)
@@ -414,7 +431,7 @@ namespace Dynamo.DocumentationBrowser
             {
                 if (graphPath != null)
                 {
-                    var graphName = this.name ?? Path.GetFileNameWithoutExtension(graphPath);
+                    var graphName = this.currentPackageName ?? Path.GetFileNameWithoutExtension(graphPath);
                     raiseInsertGraph(this, new InsertDocumentationLinkEventArgs(graphPath, graphName));
                 }
                 else
