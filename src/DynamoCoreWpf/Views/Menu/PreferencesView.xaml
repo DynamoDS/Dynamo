@@ -1324,7 +1324,7 @@
                             </Expander>
                         </Grid>
                     </TabItem>
-                    
+
                     <!--Package Manager Settings Tab-->
                     <TabItem Header="{x:Static p:Resources.PreferencesPackageManagerSettingsTab}"
                              Style="{StaticResource LeftTab}">

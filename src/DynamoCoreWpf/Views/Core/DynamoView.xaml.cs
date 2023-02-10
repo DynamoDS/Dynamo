@@ -1876,7 +1876,7 @@ namespace Dynamo.Controls
             preferencesWindow = new PreferencesView(this);
             OnPreferencesWindowChanged();
             preferencesWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            preferencesWindow.ShowDialog();            
+            preferencesWindow.ShowDialog();
         }
 
         /// <summary>
