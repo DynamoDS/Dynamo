@@ -1309,13 +1309,15 @@
                                     <StackPanel Grid.Row="2" Width="550">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="125"></ColumnDefinition>
-                                                <ColumnDefinition Width="300"></ColumnDefinition>
+                                                <ColumnDefinition Width="137"></ColumnDefinition>
+                                                <ColumnDefinition Width="137"></ColumnDefinition>
+                                                <ColumnDefinition Width="137"></ColumnDefinition>
                                                 <ColumnDefinition Width="*"></ColumnDefinition>
                                             </Grid.ColumnDefinitions>
                                             <TextBlock Text="10%" Grid.Column="0"></TextBlock>
                                             <TextBlock Text="100%" Grid.Column="1"></TextBlock>
-                                            <TextBlock Text="300%" Grid.Column="2"></TextBlock>
+                                            <TextBlock Text="200%" Grid.Column="2"></TextBlock>
+                                            <TextBlock Text="300%" Grid.Column="3"></TextBlock>
                                         </Grid>
                                     </StackPanel>
                                 </Grid>
