@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -329,6 +329,7 @@ namespace Dynamo.UI.Controls
                 {
                     var mirrorData = nodeViewModel.NodeModel.CachedValue;
                     newContent = CompactBubbleHandler.Process(mirrorData);
+                    newContent.NodeLabel = checkNumberFormat(newContent.NodeLabel);
                 },
                 (m) =>
                 {
@@ -384,7 +385,7 @@ namespace Dynamo.UI.Controls
                     newViewModel = nodeViewModel.DynamoViewModel.WatchHandler.GenerateWatchViewModelForData(
                         nodeViewModel.NodeModel.CachedValue, preferredDictionaryOrdering,
                         null, nodeViewModel.NodeModel.AstIdentifierForPreview.Name, false);
-
+                    newViewModel.NodeLabel = checkNumberFormat(newViewModel.NodeLabel);
                 },
                 (m) =>
                 {
@@ -433,6 +434,28 @@ namespace Dynamo.UI.Controls
                     }
                 }
             );
+        }
+
+        string checkNumberFormat(string numberValue)
+        {
+            if (IsDoubleRealNumber(numberValue))
+            {
+                return Convert.ToDouble(numberValue).ToString(nodeViewModel.DynamoViewModel.PreferenceSettings.NumberFormat);
+            }
+            else
+            {
+                return numberValue;
+            }
+        }
+
+        public static bool IsDoubleRealNumber(string valueToTest)
+        {
+            if (double.TryParse(valueToTest, out double d) && !Double.IsNaN(d) && !Double.IsInfinity(d))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
