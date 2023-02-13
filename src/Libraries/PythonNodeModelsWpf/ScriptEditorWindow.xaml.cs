@@ -17,9 +17,11 @@ using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using PythonNodeModels;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using Dynamo.PythonServices;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Document;
+using ICSharpCode.AvalonEdit.Editing;
 using ICSharpCode.AvalonEdit.Folding;
 using ICSharpCode.AvalonEdit.Indentation;
 
@@ -117,11 +119,13 @@ namespace PythonNodeModelsWpf
             EngineSelectorComboBox.SelectedItem = CachedEngine;
 
             InstallFoldingManager();
+
         }
+
 
         private void InstallFoldingManager()
         {
-            editText.TextArea.IndentationStrategy = new DefaultIndentationStrategy();
+            editText.TextArea.IndentationStrategy = new PythonIndentationStrategy(editText);
 
             foldingManager = FoldingManager.Install(editText.TextArea);
             foldingStrategy = new TabFoldingStrategy();
@@ -353,8 +357,7 @@ namespace PythonNodeModelsWpf
             Analytics.TrackEvent(
                 Dynamo.Logging.Actions.Close,
                 Dynamo.Logging.Categories.PythonOperations);
-
-
+            
             editText.TextChanged -= EditTextOnTextChanged;
             FoldingManager.Uninstall(foldingManager);
             foldingManager = null;
@@ -425,7 +428,7 @@ namespace PythonNodeModelsWpf
         }
 
         #endregion
-
+        
     }
 
 }
