@@ -1153,7 +1153,7 @@ namespace DynamoCoreWpfTests
             DispatcherUtil.DoEvents();
 
             //Wait 3 seconds until the Click Right context menu is opened
-            Task.WaitAll(new Task[] { Task.Delay(3000) });
+            Task.WaitAll(new Task[] { Task.Delay(2000) });
         }
 
 
