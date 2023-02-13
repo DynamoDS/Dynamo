@@ -199,6 +199,9 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// This property holds the Geometry Scale factor selected in the Preferences panel (when a new workspace is created this will be the Geometry Scale used)
+        /// </summary>
         public double SelectedDefaultScaleFactor
         {
             get

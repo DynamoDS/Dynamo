@@ -41,11 +41,6 @@ namespace Dynamo.Interfaces
         bool IsBackgroundGridVisible { get; set; }
 
         /// <summary>
-        /// Indicates the Default Geometry Scaling value from the Preferences panel
-        /// </summary>
-        double DefaultScaleFactor { get; set; }
-
-        /// <summary>
         /// Indicates whether background preview is active or not.
         /// </summary>
         [Obsolete("Property will be deprecated in Dynamo 3.0, please use BackgroundPreviews")]
