@@ -448,7 +448,7 @@ namespace Dynamo.UI.Controls
             }
         }
 
-        public static bool IsDoubleRealNumber(string valueToTest)
+        private bool IsDoubleRealNumber(string valueToTest)
         {
             if (double.TryParse(valueToTest, out double d) && !Double.IsNaN(d) && !Double.IsInfinity(d))
             {
