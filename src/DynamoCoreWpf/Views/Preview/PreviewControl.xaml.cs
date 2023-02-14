@@ -436,9 +436,9 @@ namespace Dynamo.UI.Controls
             );
         }
 
-        string checkNumberFormat(string numberValue)
+        private string checkNumberFormat(string numberValue)
         {
-            if (IsDoubleRealNumber(numberValue))
+            if (PreferencesPanelUtilities.IsValidDoubleNumber(numberValue))
             {
                 return Convert.ToDouble(numberValue).ToString(nodeViewModel.DynamoViewModel.PreferenceSettings.NumberFormat);
             }
@@ -446,17 +446,7 @@ namespace Dynamo.UI.Controls
             {
                 return numberValue;
             }
-        }
-
-        private bool IsDoubleRealNumber(string valueToTest)
-        {
-            if (double.TryParse(valueToTest, out double d) && !Double.IsNaN(d) && !Double.IsInfinity(d))
-            {
-                return true;
-            }
-
-            return false;
-        }
+        }        
 
         /// <summary>
         /// It's used to apply Collapsed and Expanded events for TreeViewItems.
