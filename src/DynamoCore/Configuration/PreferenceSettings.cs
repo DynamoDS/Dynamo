@@ -169,7 +169,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Indicates the zoom scale of the library
         /// </summary>
-        public double LibraryZoomScale { get; set; }
+        public float LibraryZoomScale { get; set; }
 
         /// <summary>
         /// The types of connector: Bezier or Polyline.

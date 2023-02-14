@@ -44,8 +44,6 @@ namespace Dynamo.LibraryViewExtensionWebView2
         // TODO remove this when we can control the library state from Dynamo more precisely.
         private bool disableObserver = false;
 
-        private static readonly string LibrarSlider = "notificationsButton";
-
         private LayoutSpecProvider layoutProvider;
         private NodeItemDataProvider nodeProvider;
         internal SearchResultDataProvider searchResultDataProvider;
@@ -90,7 +88,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
 
         private void Browser_ZoomFactorChanged(object sender, EventArgs e)
         {
-            dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale = browser.ZoomFactor;
+            dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale = ((float)browser.ZoomFactor);
         }
 
         void PreferencesWindowChanged()
@@ -552,7 +550,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
         {
             Slider slider = (Slider)sender;
             browser.ZoomFactor = slider.Value;
-            dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale = slider.Value;
+            dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale = ((float)slider.Value);
         }
 
         /// <summary>
@@ -597,8 +595,6 @@ namespace Dynamo.LibraryViewExtensionWebView2
                 browser.ZoomFactorChanged -= Browser_ZoomFactorChanged;
                 this.dynamoView.PreferencesWindow.LibraryZoomScalingSlider.ValueChanged -= DynamoSliderValueChanged;
                 this.dynamoView.OnPreferencesWindowChanged -= PreferencesWindowChanged;
-
-                var dynamoViewWindow = dynamoWindow as DynamoView;
 
                 dynamoWindow = null;
             }
