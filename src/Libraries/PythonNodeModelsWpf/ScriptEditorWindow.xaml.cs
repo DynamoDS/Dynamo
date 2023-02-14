@@ -18,6 +18,7 @@ using PythonNodeModels;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Windows.Media;
 using Dynamo.PythonServices;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Document;
@@ -43,6 +44,7 @@ namespace PythonNodeModelsWpf
         private string originalScript;
         private FoldingManager foldingManager;
         private TabFoldingStrategy foldingStrategy;
+        private bool IsSaved { get; set; }
 
         // Reasonable max and min font size values for zooming limits
         private const double FONT_MAX_SIZE = 60d;
@@ -122,7 +124,6 @@ namespace PythonNodeModelsWpf
 
         }
 
-
         private void InstallFoldingManager()
         {
             editText.TextArea.IndentationStrategy = new PythonIndentationStrategy(editText);
@@ -132,15 +133,60 @@ namespace PythonNodeModelsWpf
             foldingStrategy.UpdateFoldings(foldingManager, editText.Document);
 
             editText.TextChanged += EditTextOnTextChanged;
+
+            UpdateFoldings();
+        }
+
+        private void UpdateFoldings()
+        {
+            // Mark the script for saving
+            if (IsSaved) IsSaved = false;
+            //if (!ShouldUpdate()) return;
+
+            if (foldingManager == null)
+                throw new ArgumentNullException("foldingManager");
+
+            var margins = editText.TextArea.LeftMargins.OfType<FoldingMargin>();
+            foreach (var margin in margins)
+            {
+                var test = margin;
+                test.FoldingMarkerBrush = new SolidColorBrush(Color.FromArgb(255, 120, 0, 200));
+                test.FoldingMarkerBackgroundBrush = new SolidColorBrush(Color.FromArgb(255, 255, 255, 0));
+                test.SelectedFoldingMarkerBackgroundBrush = new SolidColorBrush(Color.FromArgb(255, 0, 255, 255));
+                test.SelectedFoldingMarkerBrush = new SolidColorBrush(Color.FromArgb(255, 0, 125, 255));
+            }
+
+            foldingStrategy.UpdateFoldings(foldingManager, editText.Document);
+
+            if (foldingManager.AllFoldings.Any())
+            {
+                foreach (var section in foldingManager.AllFoldings)
+                {
+                    // only set the title of the section once
+                    if (section.Title != null) continue;
+
+                    var title = section.TextContent.Split(new[] { '\r', '\n' }).FirstOrDefault() + "...";
+                    section.Title = title;
+                }
+            }
         }
 
         private void EditTextOnTextChanged(object sender, EventArgs e)
         {
-            if (foldingManager == null)
-                throw new ArgumentNullException("foldingManager");
-
-            foldingStrategy.UpdateFoldings(foldingManager, editText.Document);
+            UpdateFoldings();
         }
+
+        // Keeps track of Enter key use
+        private bool IsEnterHit { get; set; }
+        private bool ShouldUpdate()
+        {
+            if (!IsEnterHit) return false;
+            var offset = editText.CaretOffset;
+            var line = editText.Document.GetLineByNumber(editText.Document.GetLineByOffset(offset).LineNumber - 1);
+            var text = editText.Document.GetText(line.Offset, line.Length);
+            return text.EndsWith(":");
+        }
+
 
         #region Text Zoom in Python Editor
 
@@ -271,12 +317,18 @@ namespace PythonNodeModelsWpf
 
         private void OnSaveClicked(object sender, RoutedEventArgs e)
         {
+            SaveScript();
+        }
+
+        private void SaveScript()
+        {
             originalScript = editText.Text;
             nodeModel.EngineName = CachedEngine;
             UpdateScript(editText.Text);
             Analytics.TrackEvent(
                 Dynamo.Logging.Actions.Save,
                 Dynamo.Logging.Categories.PythonOperations);
+            IsSaved = true;
         }
 
         private void OnRevertClicked(object sender, RoutedEventArgs e)
@@ -424,11 +476,25 @@ namespace PythonNodeModelsWpf
         // ESC Button pressed triggers Window close        
         private void OnCloseExecuted(object sender, ExecutedRoutedEventArgs e)
         {
+            if (!IsSaved) SaveScript();
             this.Close();
         }
 
+        // Updates the IsEnterHit value
+        private void EditText_OnPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                IsEnterHit = true;
+            }
+            else
+            {
+                IsEnterHit = false;
+            }
+        }
+
         #endregion
-        
+
     }
 
 }

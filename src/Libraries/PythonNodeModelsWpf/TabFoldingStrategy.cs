@@ -3,6 +3,7 @@ using ICSharpCode.AvalonEdit.Folding;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows.Media.Animation;
 
 namespace PythonNodeModelsWpf
 {
@@ -51,12 +52,18 @@ namespace PythonNodeModelsWpf
 
             StringBuilder lineBuffer = new StringBuilder();
 
+            bool skip = false;
+
             foreach (DocumentLine line in (document as TextDocument).Lines)
             {
                 if (offsetTracker >= document.TextLength)
                 {
                     break;
                 }
+
+                // discard comment lines
+                var lineText = document.GetText(line.Offset, line.Length).TrimStart();
+                if (lineText.StartsWith("#")) skip = true;
 
                 lineBuffer.Clear();
 
@@ -89,7 +96,8 @@ namespace PythonNodeModelsWpf
 
                             break;
                         case ':': // Tabs count as N
-                            foundColon = true;
+                            if(!skip)
+                                foundColon = true;
                             break;
                         default
                             : // anything else means we encountered not spaces or tabs, so keep making the line but stop counting
@@ -109,7 +117,7 @@ namespace PythonNodeModelsWpf
                     continue;
                 }
 
-                // Now we need to figure out if this line is a new folding by checking its tabing
+                // Now we need to figure out if this line is a new folding by checking its tabbing
                 // relative to the current stack count. Convert into virtual tabs and compare to stack level
                 int numTabs = spaceCounter / SpacesInTab; // we know this will be an int because of the above check
                 if (numTabs >= startOffsets.Count && foundText && foundColon)
@@ -135,6 +143,7 @@ namespace PythonNodeModelsWpf
 
                 // Increment tracker. Much faster than getting it from the line
                 offsetTracker += line.TotalLength;
+                skip = false;
             }
 
             // Complete last foldings

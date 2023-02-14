@@ -281,7 +281,8 @@
                                            Foreground="#f5f5f5"
                                            Padding="5"
                                            HorizontalScrollBarVisibility="Disabled"
-                                           PreviewMouseWheel="EditorBox_PreviewMouseWheel"/>
+                                           PreviewMouseWheel="EditorBox_PreviewMouseWheel"
+                                           PreviewKeyDown="EditText_OnPreviewKeyDown"/>
                 </Border>
  
                 <!-- Run and Close Button -->
