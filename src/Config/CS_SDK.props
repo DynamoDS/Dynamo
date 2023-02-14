@@ -34,11 +34,16 @@
         <DefineConstants>DEBUG;TRACE</DefineConstants>
     </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <DebugType>pdbonly</DebugType>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' AND $(Platform.Contains('NET60')) ">
+    <DebugType>portable</DebugType>
     <Optimize>true</Optimize>
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' AND !$(Platform.Contains('NET60')) ">
+        <DebugType>full</DebugType>
+        <Optimize>true</Optimize>
+        <DefineConstants>TRACE</DefineConstants>
+    </PropertyGroup>
   <PropertyGroup Condition="$(Platform.Contains('NET60'))" >
     <TargetFramework>net6.0</TargetFramework>
     <!--Needed to copy nuget package assemblies to output folder. Anet6 issue-->

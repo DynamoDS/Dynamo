@@ -11,8 +11,12 @@
         <description>Assemblies required to start a DynamoModel and execute DesignScript code bundled along with their dependencies.
             Built targeting linux. </description>
         <copyright>Copyright Autodesk 2023</copyright>
+ <dependencies>
+            <group targetFramework="net6.0">
+            </group>
+        </dependencies>
     </metadata>
     <files>
-        <file src="**" target="lib\net60" />
+        <file src="**" target="lib\net6.0" />
     </files>
 </package>
