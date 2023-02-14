@@ -11,22 +11,50 @@
     <DocumentationFile>$(OutputPath)\DynamoCoreWpf.XML</DocumentationFile>
     <EnableDefaultCompileItems>False</EnableDefaultCompileItems>
     <EnableDefaultEmbeddedResourceItems>False</EnableDefaultEmbeddedResourceItems>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
   </PropertyGroup>
 
   <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
-      <Exec Command="npm install --prefix ./ @dynamods/splash-screen@latest" />
+      <!--This command gets the latest build from the splash screen-->
+      <Exec Command="npm pack @dynamods/splash-screen@latest" />
   </Target>
+
+    <Target Name="ExtractTGZFile" DependsOnTargets="NpmRunBuild" BeforeTargets="BeforeBuild">        
+        <!--Locates the .tgz files-->
+        <ItemGroup>
+            <TGZFiles Include="./dynamods-splash-screen-*.tgz" />
+        </ItemGroup>
+
+        <!--Reverse the order of the files to get the higher version-->
+        <ItemGroup>
+            <Reversed Include="@(TGZFiles-&gt;Reverse())" />
+        </ItemGroup>
+        
+        <PropertyGroup>
+            <Last>%(TGZFiles.Filename)</Last>
+        </PropertyGroup>
+
+        <!--Creates the folder for the package-->
+        <MakeDir Directories="Packages/SplashScreen" />
+
+        <!--Extracts the file to /package-->
+        <Exec Command="tar -xzf $(MSBuildProjectDirectory)\$(Last).tgz --strip-components=1 --directory=Packages/SplashScreen"></Exec>
+
+        <!--Deletes the tgz file-->
+        <Delete Files="$(MSBuildProjectDirectory)\$(Last).tgz" />
+    </Target>    
+   
   <ItemGroup>
-    <None Remove="node_modules\%40dynamods\splash-screen\build\index.bundle.js" />
-    <None Remove="node_modules\%40dynamods\splash-screen\build\index.html" />
+    <None Remove="Packages\SplashScreen\build\index.bundle.js" />
+    <None Remove="Packages\SplashScreen\build\index.html" />
     <None Remove="UI\Images\Canvas\canvas-button-geometry-scaling.png" />
     <None Remove="Views\Core\GeometryScalingPopup.xaml" />
     <None Remove="UI\Images\question-hover-blue-16px.png" />
     <None Remove="Views\SplashScreen\WebApp\splashScreenBackground.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="node_modules\@dynamods\splash-screen\build\index.bundle.js" />
-    <EmbeddedResource Include="node_modules\@dynamods\splash-screen\build\index.html" />
+    <EmbeddedResource Include="Packages\SplashScreen\build\index.bundle.js" />
+    <EmbeddedResource Include="Packages\SplashScreen\build\index.html" />
     <EmbeddedResource Include="Views\SplashScreen\WebApp\splashScreenBackground.png" />
   </ItemGroup>
 
@@ -72,7 +100,7 @@
     <None Remove="Views\GuidedTour\HtmlPages\Resources\ConnectTheNode.gif" />
   </ItemGroup>
   <ItemGroup>
-  <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.16.0.3736" />
+  <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.17.1.3967" />
   <PackageReference Include="AvalonEdit" Version="4.3.1.9430" CopyXML="true" />
   <PackageReference Include="Greg" Version="2.3.0.2505" />
   <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" />

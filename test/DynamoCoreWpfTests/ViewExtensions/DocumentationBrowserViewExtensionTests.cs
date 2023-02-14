@@ -103,6 +103,49 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(Visibility.Hidden, visibilityAfterShowStartPageEvent);
         }
 
+        /// <summary>
+        /// This test validates that the Virtual Directory that will be created with WebView2 exists so the images will be loaded for a package node documentation
+        /// </summary>
+        [Test]
+        public void CanCreatePackageNodeDocumentationAndLoadImages()
+        {
+            // Arrange
+            RaiseLoadedEvent(this.View);
+
+            var testDirectory = GetTestDirectory(this.ExecutingDirectory);
+            var localImagePath = Path.Combine(testDirectory, @"core\docbrowser\pkgs\PackageWithNodeDocumentation\doc\icon.png");
+            var packageDocPath = Path.GetDirectoryName(localImagePath);
+
+            var docBrowserviewExtension = this.View.viewExtensionManager.ViewExtensions.OfType<DocumentationBrowserViewExtension>().FirstOrDefault();
+            var browserView = docBrowserviewExtension.BrowserView;
+
+            var nodeName = "Package.Hello";
+            var nodeRename = "New node name";
+            var expectedImageContent = String.Format(@"<img id='drag--img' class='resizable--img'  src=""http://appassets/{0}"" alt=""Dynamo Icon image"" />", Path.GetFileName(localImagePath));
+
+            // Act
+            this.ViewModel.ExecuteCommand(
+                 new DynamoModel.CreateNodeCommand(
+                     Guid.NewGuid().ToString(), nodeName, 0, 0, false, false)
+                 );
+
+            var node = this.ViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault();
+            node.Name = nodeRename; // Forces original name header to appear 
+            var nodeAnnotationEventArgs = new OpenNodeAnnotationEventArgs(node, this.ViewModel);
+
+            docBrowserviewExtension.HandleRequestOpenDocumentationLink(nodeAnnotationEventArgs);
+            var htmlContent = GetSidebarDocsBrowserContents();
+            //There are times in which the URL contain characters like backslash (%5C) then they need to be replaced by the normal slash "/"
+            htmlContent = htmlContent.Replace(@"%5C", "/");
+
+            // Assert
+            Assert.IsTrue(!string.IsNullOrEmpty(browserView.VirtualFolderPath));
+            Assert.IsTrue(Directory.Exists(browserView.VirtualFolderPath));
+            //Check that the virtual folder will be created in the Package/doc folder so images will be loaded correctly
+            Assert.IsTrue(browserView.VirtualFolderPath.Replace("\\", "/").Contains(packageDocPath.Replace("\\", "/")));
+            Assert.IsTrue(htmlContent.Contains(expectedImageContent));
+        }
+
         [Test]
         public void ViewExtensionIgnoresExternalEvents()
         {

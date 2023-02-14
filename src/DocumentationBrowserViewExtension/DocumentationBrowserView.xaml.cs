@@ -1,10 +1,14 @@
 using Dynamo.Logging;
 using Dynamo.Utilities;
+using Dynamo.Wpf.UI.GuidedTour;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
+using SharpDX.Direct3D9;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Web;
@@ -25,9 +29,13 @@ namespace Dynamo.DocumentationBrowser
         static readonly string HTML_IMAGE_PATH_PREFIX = @"http://";
         private bool hasBeenInitialized;
         private ScriptingObject comScriptingObject;
+        private string fontStylePath = "Dynamo.Wpf.Views.GuidedTour.HtmlPages.Resources.ArtifaktElement-Regular.woff";
 
         internal string WebBrowserUserDataFolder { get; set; }
         internal string FallbackDirectoryName { get; set; }
+
+        //Path in which the virtual folder for loading images will be created
+        internal string VirtualFolderPath { get; set; }
 
         /// <summary>
         /// Construct a new DocumentationBrowserView given an appropriate viewmodel.
@@ -130,6 +138,22 @@ namespace Dynamo.DocumentationBrowser
 
         async void InitializeAsync()
         {
+            VirtualFolderPath = string.Empty;
+            try
+            {
+                if (viewModel.Link != null && !string.IsNullOrEmpty(viewModel.CurrentPackageName))
+                {
+                    VirtualFolderPath = Path.GetDirectoryName(HttpUtility.UrlDecode(viewModel.Link.AbsolutePath));
+                }
+                else
+                    VirtualFolderPath = FallbackDirectoryName;
+            }
+            catch (Exception ex)
+            {
+                VirtualFolderPath = string.Empty;
+                Log(ex.Message);
+            }
+
             // Only initialize once 
             if (!hasBeenInitialized)
             {
@@ -141,12 +165,10 @@ namespace Dynamo.DocumentationBrowser
                         UserDataFolder = WebBrowserUserDataFolder
                     };
                 }
-
                 //Initialize the CoreWebView2 component otherwise we can't navigate to a web page
                 await documentationBrowser.EnsureCoreWebView2Async();
-
-                //Due that the Web Browser(WebView2 - Chromium) security CORS is blocking the load of resources like images then we need to create a virtual folder in which the image are located.
-                this.documentationBrowser.CoreWebView2.SetVirtualHostNameToFolderMapping(VIRTUAL_FOLDER_MAPPING, FallbackDirectoryName, CoreWebView2HostResourceAccessKind.DenyCors);
+                
+           
                 this.documentationBrowser.CoreWebView2.WebMessageReceived += CoreWebView2OnWebMessageReceived;
                 comScriptingObject = new ScriptingObject(this.viewModel);
                 //register the interop object into the browser.
@@ -158,7 +180,13 @@ namespace Dynamo.DocumentationBrowser
                 hasBeenInitialized = true;
             }
 
+            if(Directory.Exists(VirtualFolderPath))
+                //Due that the Web Browser(WebView2 - Chromium) security CORS is blocking the load of resources like images then we need to create a virtual folder in which the image are located.
+                this.documentationBrowser.CoreWebView2.SetVirtualHostNameToFolderMapping(VIRTUAL_FOLDER_MAPPING, VirtualFolderPath, CoreWebView2HostResourceAccessKind.DenyCors);
+
             string htmlContent = this.viewModel.GetContent();
+
+            htmlContent = ResourceUtilities.LoadResourceAndReplaceByKey(htmlContent, "#fontStyle", fontStylePath);
 
             Dispatcher.BeginInvoke(new Action(() =>
             {
@@ -180,5 +208,12 @@ namespace Dynamo.DocumentationBrowser
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
+        #region ILogSource Implementation
+        private void Log(string message)
+        {
+            viewModel.MessageLogged?.Invoke(LogMessage.Info(message));
+        }
+        #endregion
     }
 }
