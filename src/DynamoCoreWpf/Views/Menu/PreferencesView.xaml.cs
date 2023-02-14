@@ -28,7 +28,6 @@ namespace Dynamo.Wpf.Views
     {
         private readonly PreferencesViewModel viewModel;
         private readonly DynamoViewModel dynViewModel;
-        private readonly DynamoView dynView;
         private List<GroupStyleItem> originalCustomGroupStyles { get; set; }
 
         // Used for tracking the manage package command event
@@ -57,7 +56,6 @@ namespace Dynamo.Wpf.Views
         /// <param name="dynamoViewModel"> Dynamo ViewModel</param>
         public PreferencesView(DynamoView dynamoView)
         {
-            dynView = dynamoView;
             dynViewModel = dynamoView.DataContext as DynamoViewModel;            
             SetupPreferencesViewModel(dynViewModel);
 
