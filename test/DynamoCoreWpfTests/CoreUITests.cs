@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
@@ -936,7 +937,7 @@ namespace DynamoCoreWpfTests
             var currentWs = View.ChildOfType<WorkspaceView>();
             Assert.IsNotNull(currentWs, "DynamoView does not have any WorkspaceView");
             RightClick(currentWs.zoomBorder);
-
+            DispatcherUtil.DoEvents();
             Assert.IsTrue(currentWs.ContextMenuPopup.IsOpen);
         }
 
@@ -951,7 +952,7 @@ namespace DynamoCoreWpfTests
             DispatcherUtil.DoEvents();
             var node = currentWs.ChildOfType<NodeView>();
             RightClick(node);
-
+            DispatcherUtil.DoEvents();
             // workspace context menu shouldn't be open
             Assert.IsFalse(currentWs.ContextMenuPopup.IsOpen);
         }
@@ -1009,7 +1010,7 @@ namespace DynamoCoreWpfTests
 
             // open context menu
             RightClick(currentWs.zoomBorder);
-
+            DispatcherUtil.DoEvents();
             // set dummy content for search text
             currentWs.ViewModel.InCanvasSearchViewModel.SearchText = "dummy";
             DispatcherUtil.DoEvents();
@@ -1150,6 +1151,9 @@ namespace DynamoCoreWpfTests
             });
 
             DispatcherUtil.DoEvents();
+
+            //Wait 3 seconds until the Click Right context menu is opened
+            Task.WaitAll(new Task[] { Task.Delay(2000) });
         }
 
 

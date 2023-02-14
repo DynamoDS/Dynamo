@@ -16,6 +16,7 @@
     </BackgroundPreviewActiveState>
   </BackgroundPreviews>
   <IsBackgroundGridVisible>false</IsBackgroundGridVisible>
+  <DefaultScaleFactor>-2</DefaultScaleFactor>
   <RenderPrecision>8</RenderPrecision>
   <ShowEdges>true</ShowEdges>
   <ShowDetailedLayout>false</ShowDetailedLayout>

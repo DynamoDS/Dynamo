@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
@@ -347,11 +347,12 @@ namespace Dynamo.ViewModels
 
         private CustomPopupPlacement[] PlacePortContextMenu(Size popupSize, Size targetSize, Point offset)
         {
+            // The actual zoom here is confusing
+            // What matters is the zoom factor measured from the scaled : unscaled node size
             var zoom = node.WorkspaceViewModel.Zoom;
 
             double x;
             var scaledWidth = autocompletePopupSpacing * targetSize.Width / node.ActualWidth;
-            var scaledHeight = targetSize.Height / node.ActualHeight;
 
             if (PortModel.PortType == PortType.Input)
             {
@@ -363,10 +364,15 @@ namespace Dynamo.ViewModels
                 // Offset popup to the right by node width and spacing from left edge of node.
                 x = scaledWidth + targetSize.Width;
             }
-            // Offset popup down from the upper edge of the node by the node header and corresponding to the respective port.
-            // Scale the absolute heights by the target height (passed to the callback) and the actual height of the node.
-            var absoluteHeight = NodeModel.HeaderHeight + PortModel.Index * PortModel.Height;
-            var y = absoluteHeight * scaledHeight;
+            // Important - while zooming in and out, Node elements are scaled, while popup is not
+            // Calculate absolute popup halfheight to deduct from the overal y pos
+            // Then add the header, port height and port index position
+            var popupHeightOffset = - popupSize.Height * 0.5;
+            var headerHeightOffset = 2 * NodeModel.HeaderHeight * zoom;
+            var portHalfHeight = PortModel.Height * 0.5 * zoom;
+            var rowOffset = PortModel.Index * (1.5 * PortModel.Height) * zoom;
+
+            var y = popupHeightOffset + headerHeightOffset + portHalfHeight + rowOffset;
 
             var placement = new CustomPopupPlacement(new Point(x, y), PopupPrimaryAxis.None);
 

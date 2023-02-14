@@ -2222,7 +2222,7 @@ namespace Dynamo.Models
         /// Load the extra view information required to fully construct a WorkspaceModel object 
         /// </summary>
         /// <param name="json"></param>
-        static private ExtraWorkspaceViewInfo ExtraWorkspaceViewInfoFromJson(string json)
+        static internal ExtraWorkspaceViewInfo ExtraWorkspaceViewInfoFromJson(string json)
         {
             JsonReader reader = new JsonTextReader(new StringReader(json));
             var obj = JObject.Load(reader);
