@@ -1971,6 +1971,9 @@ namespace Dynamo.Models
                         {
                             ExtraWorkspaceViewInfo viewInfo = ExtraWorkspaceViewInfoFromJson(fileContents);
 
+                            // Update (assign new) GUIDs for each node, connection, note and group
+                            UpdateWorkspaceGUIDs(ref viewInfo, ref ws);
+
                             InsertWorkspace(ws, viewInfo);
                         }
                     }
@@ -1981,6 +1984,98 @@ namespace Dynamo.Models
             {
                 Console.WriteLine(e.Message);
                 throw e;
+            }
+        }
+
+        private void UpdateWorkspaceGUIDs(ref ExtraWorkspaceViewInfo viewInfo, ref WorkspaceModel ws)
+        {
+            var nodes = ws.Nodes;
+            var connectors = ws.Connectors;
+            var notes = viewInfo?.Annotations;
+
+            Dictionary<Guid, Guid> nodesGuids = new Dictionary<Guid, Guid>();
+            Dictionary<Guid, Guid> portsGuids = new Dictionary<Guid, Guid>();
+            Dictionary<Guid, Guid> connectorsGuids = new Dictionary<Guid, Guid>();
+            Dictionary<Guid, Guid> connectorPinsGuids = new Dictionary<Guid, Guid>();
+            Dictionary<string, string> notesGuids = new Dictionary<string, string>();
+
+            // Assign new GUIDs
+            foreach (var node in nodes)
+            {
+                var newGuid = Guid.NewGuid();
+                nodesGuids[node.GUID] = newGuid;
+                node.GUID = newGuid;
+
+                foreach (var port in node.InPorts)
+                {
+                    newGuid = Guid.NewGuid();
+                    portsGuids[port.GUID] = newGuid;
+                    port.GUID = newGuid;
+                }
+
+                foreach (var port in node.OutPorts)
+                {
+                    newGuid = Guid.NewGuid();
+                    portsGuids[port.GUID] = newGuid;
+                    port.GUID = newGuid;
+                }
+            }
+
+            foreach (var connector in connectors)
+            {
+                var newGuid = Guid.NewGuid();
+                connectorsGuids[connector.GUID] = newGuid;
+                connector.GUID = newGuid;
+
+                // Assign new pin GUIDs
+                foreach (var pin in connector.ConnectorPinModels)
+                {
+                    newGuid = Guid.NewGuid();
+                    connectorPinsGuids[pin.GUID] = newGuid;
+                    pin.GUID = Guid.NewGuid();
+                }
+            }
+
+            // Assign new annotation models new GUIDs
+            // TODO: What about the stuff that were grouped?!
+            // Or attached notes?
+            foreach (var note in notes)
+            {
+                string newGuid = Guid.NewGuid().ToString();
+                notesGuids[note.Id] = newGuid;
+                note.Id = newGuid;
+            }
+
+            if (viewInfo == null) return;
+
+            // Now propagate these changes to the viewInfo object
+            if (viewInfo.NodeViews != null)
+            {
+                foreach (var node in viewInfo.NodeViews)
+                {
+                    node.Id = nodesGuids[new Guid(node.Id)].ToString();
+                }
+            }
+
+            //foreach (var annotation in viewInfo.Annotations)
+            //{
+            //    annotation.Id = notesGuids[annotation.Id];
+            //}
+
+            if (viewInfo.Notes != null)
+            {
+                foreach (var note in viewInfo.Notes)
+                {
+                    note.Id = notesGuids[note.Id];
+                }
+            }
+
+            if (viewInfo.ConnectorPins != null)
+            {
+                foreach (var pin in viewInfo.ConnectorPins)
+                {
+                    pin.ConnectorGuid = connectorsGuids[new Guid(pin.ConnectorGuid)].ToString();
+                }
             }
         }
 
