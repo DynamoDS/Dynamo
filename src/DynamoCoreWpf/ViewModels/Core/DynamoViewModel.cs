@@ -2212,7 +2212,7 @@ namespace Dynamo.ViewModels
                     args.Name, args.Category, args.Description, true));
                 this.ShowStartPage = false;
 
-                SetDefaultScaleFactor();
+                SetDefaultScaleFactor(Workspaces.FirstOrDefault(viewModels => viewModels.Model is CustomNodeWorkspaceModel));
             }
         }
 
@@ -2526,7 +2526,7 @@ namespace Dynamo.ViewModels
 
                 ShowStartPage = false; // Hide start page if there's one.
 
-                SetDefaultScaleFactor();
+                SetDefaultScaleFactor(Workspaces.FirstOrDefault());
             }
         }
 
@@ -3176,10 +3176,8 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        private void SetDefaultScaleFactor()
+        private void SetDefaultScaleFactor(WorkspaceViewModel defaultWorkspace)
         {
-            var defaultWorkspace = Workspaces.FirstOrDefault();
-
             if (defaultWorkspace != null)
             {
                 defaultWorkspace.GeoScalingViewModel.ScaleValue = PreferenceSettings.DefaultScaleFactor;
