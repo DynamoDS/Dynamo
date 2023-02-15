@@ -945,7 +945,7 @@ namespace Dynamo.Models
             DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenLoadNodeLibrary, 50));
             InitializeNodeLibrary();
 
-            if (!IsServiceMode && extensions.Any())
+            if (extensions.Any())
             {
                 var startupParams = new StartupParams(this);
 
@@ -1640,6 +1640,10 @@ namespace Dynamo.Models
         {
             if (preferences != null) // If there is preference settings provided...
                 return preferences;
+
+            //Skip file handling in service mode.
+            if (IsServiceMode)
+                return new PreferenceSettings();
 
             // Is order for test cases not to interfere with the regular preference
             // settings xml file, a test case usually specify a temporary xml file
