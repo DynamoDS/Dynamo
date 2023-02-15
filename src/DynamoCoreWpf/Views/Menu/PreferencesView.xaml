@@ -1265,7 +1265,7 @@
                                       Grid.Row="3"
                                       Style="{StaticResource MenuExpanderStyle}" 
                                       IsExpanded="{Binding PreferencesTabs[VisualSettings].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=ZoomScaling}"
-                                      Header="Zoom Scaling">
+                                      Header="{x:Static p:Resources.PreferencesViewZoomScalingSettings}">
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
@@ -1302,16 +1302,15 @@
                                             Style="{StaticResource SliderStyle}"
                                             Width="440"
                                             Minimum="0.1"
-                                            Maximum="3"
-                                            Value="1">
+                                            Maximum="3">
                                         </Slider>
                                     </StackPanel>
                                     <StackPanel Grid.Row="2" Width="550">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="137"></ColumnDefinition>
-                                                <ColumnDefinition Width="137"></ColumnDefinition>
-                                                <ColumnDefinition Width="137"></ColumnDefinition>
+                                                <ColumnDefinition Width="125"></ColumnDefinition>
+                                                <ColumnDefinition Width="150"></ColumnDefinition>
+                                                <ColumnDefinition Width="135"></ColumnDefinition>
                                                 <ColumnDefinition Width="*"></ColumnDefinition>
                                             </Grid.ColumnDefinitions>
                                             <TextBlock Text="10%" Grid.Column="0"></TextBlock>

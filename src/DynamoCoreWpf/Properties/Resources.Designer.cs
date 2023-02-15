@@ -6918,6 +6918,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Zoom Scaling.
+        /// </summary>
+        public static string PreferencesViewZoomScalingSettings {
+            get {
+                return ResourceManager.GetString("PreferencesViewZoomScalingSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to When toggled on, Dynamo benefits from hardware acceleration to improve smoothness of graphics and overall performance, as work is offloaded from central processing units (CPUs) to graphics processing units (GPUs)..
         /// </summary>
         public static string PreferencesWindowHardwareAccelerationTooltip {
