@@ -1987,17 +1987,83 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        /// Update inserted workspace elements GUIDs 
+        /// </summary>
+        /// <param name="viewInfo">viewInfo</param>
+        /// <param name="ws">workspace</param>
         private void UpdateWorkspaceGUIDs(ref ExtraWorkspaceViewInfo viewInfo, ref WorkspaceModel ws)
         {
             var nodes = ws.Nodes;
             var connectors = ws.Connectors;
             var notes = viewInfo?.Annotations;
+            
+            var nodesGuids = UpdateNodeGUIDs(ref nodes);
+            var connectorsGuids = UpdateConnectorGUIDs(ref connectors);
+            var notesGuids = UpdateNoteGUIDs(nodesGuids, ref notes);
+            
+            // Now propagate these changes to the viewInfo object
+            if (viewInfo == null) return;
 
-            Dictionary<Guid, Guid> nodesGuids = new Dictionary<Guid, Guid>();
-            Dictionary<Guid, Guid> portsGuids = new Dictionary<Guid, Guid>();
-            Dictionary<Guid, Guid> connectorsGuids = new Dictionary<Guid, Guid>();
-            Dictionary<Guid, Guid> connectorPinsGuids = new Dictionary<Guid, Guid>();
+            PropagateUpdatesToViewInfo(viewInfo, nodesGuids, notesGuids, connectorsGuids);
+        }
+
+        private Dictionary<string, string> UpdateNoteGUIDs(Dictionary<Guid, Guid> nodesGuids, ref IEnumerable<ExtraAnnotationViewInfo> notes)
+        {
             Dictionary<string, string> notesGuids = new Dictionary<string, string>();
+
+            // Assign new annotation models new GUIDs
+            // We need two separate runs to first create the new GUIDs and second work with the new GUIDS
+            if (notes != null)
+            {
+                foreach (var note in notes)
+                {
+                    string id = Guid.NewGuid().ToString();
+                    notesGuids[note.Id] = id;
+                    note.Id = id;
+
+                    // Reassign the pinned node Id
+                    if (note.PinnedNode != null)
+                    {
+                        if (nodesGuids.TryGetValue(new Guid(note.PinnedNode), out var guid))
+                        {
+                            note.PinnedNode = guid.ToString();
+                        }
+                    }
+                }
+
+                foreach (var note in notes)
+                {
+                    // Repopulate the group elements
+                    if (note.Nodes != null)
+                    {
+                        var updatedNodes = new List<string>();
+
+                        foreach (var node in note.Nodes)
+                        {
+                            // In case it's a node
+                            if (nodesGuids.TryGetValue(new Guid(node), out var guid))
+                            {
+                                updatedNodes.Add(guid.ToString());
+                            }
+                            // In case it's a group or a note
+                            else if (notesGuids.TryGetValue(node, out var id))
+                            {
+                                updatedNodes.Add(id);
+                            }
+                        }
+
+                        note.Nodes = updatedNodes;
+                    }
+                }
+            }
+
+            return notesGuids;
+        }
+
+        private Dictionary<Guid, Guid> UpdateNodeGUIDs(ref IEnumerable<NodeModel> nodes)
+        {
+            Dictionary<Guid, Guid> nodesGuids = new Dictionary<Guid, Guid>();
 
             // Assign new GUIDs
             foreach (var node in nodes)
@@ -2005,21 +2071,14 @@ namespace Dynamo.Models
                 var newGuid = Guid.NewGuid();
                 nodesGuids[node.GUID] = newGuid;
                 node.GUID = newGuid;
-
-                foreach (var port in node.InPorts)
-                {
-                    newGuid = Guid.NewGuid();
-                    portsGuids[port.GUID] = newGuid;
-                    port.GUID = newGuid;
-                }
-
-                foreach (var port in node.OutPorts)
-                {
-                    newGuid = Guid.NewGuid();
-                    portsGuids[port.GUID] = newGuid;
-                    port.GUID = newGuid;
-                }
             }
+
+            return nodesGuids;
+        }
+
+        private Dictionary<Guid, Guid> UpdateConnectorGUIDs(ref IEnumerable<ConnectorModel> connectors)
+        {
+            Dictionary<Guid, Guid> connectorsGuids = new Dictionary<Guid, Guid>();
 
             foreach (var connector in connectors)
             {
@@ -2031,42 +2090,55 @@ namespace Dynamo.Models
                 foreach (var pin in connector.ConnectorPinModels)
                 {
                     newGuid = Guid.NewGuid();
-                    connectorPinsGuids[pin.GUID] = newGuid;
-                    pin.GUID = Guid.NewGuid();
+                    pin.GUID = newGuid;
                 }
             }
 
-            // Assign new annotation models new GUIDs
-            // TODO: What about the stuff that were grouped?!
-            // Or attached notes?
-            foreach (var note in notes)
-            {
-                string newGuid = Guid.NewGuid().ToString();
-                notesGuids[note.Id] = newGuid;
-                note.Id = newGuid;
-            }
+            return connectorsGuids;
+        }
 
-            if (viewInfo == null) return;
-
-            // Now propagate these changes to the viewInfo object
+        /// <summary>
+        /// Update GUIDs inside ExtraWorskapceViewInfo
+        /// </summary>
+        /// <param name="viewInfo">ViewInfo object containing information allowing to recreate the workspace</param>
+        /// <param name="nodesGuids">Nodes [old,new] GUID values</param>
+        /// <param name="notesGuids">Annotations [old,new] GUID values</param>
+        /// <param name="connectorsGuids">Connectors [old,new] GUID values</param>
+        private void PropagateUpdatesToViewInfo(ExtraWorkspaceViewInfo viewInfo,
+            Dictionary<Guid, Guid> nodesGuids,
+            Dictionary<string, string> notesGuids,
+            Dictionary<Guid, Guid> connectorsGuids)
+        {
             if (viewInfo.NodeViews != null)
             {
                 foreach (var node in viewInfo.NodeViews)
                 {
-                    node.Id = nodesGuids[new Guid(node.Id)].ToString();
+                    if (nodesGuids.TryGetValue(new Guid(node.Id), out var guid))
+                    {
+                        node.Id = guid.ToString();
+                    }
                 }
             }
-
-            //foreach (var annotation in viewInfo.Annotations)
-            //{
-            //    annotation.Id = notesGuids[annotation.Id];
-            //}
 
             if (viewInfo.Notes != null)
             {
                 foreach (var note in viewInfo.Notes)
                 {
-                    note.Id = notesGuids[note.Id];
+                    if (notesGuids.TryGetValue(note.Id, out var guid))
+                    {
+                        note.Id = guid;
+                    }
+                }
+            }
+
+            if (viewInfo.Annotations != null)
+            {
+                foreach (var note in viewInfo.Annotations)
+                {
+                    if (notesGuids.TryGetValue(note.Id, out var guid))
+                    {
+                        note.Id = guid;
+                    }
                 }
             }
 
@@ -2074,10 +2146,14 @@ namespace Dynamo.Models
             {
                 foreach (var pin in viewInfo.ConnectorPins)
                 {
-                    pin.ConnectorGuid = connectorsGuids[new Guid(pin.ConnectorGuid)].ToString();
+                    if (connectorsGuids.TryGetValue(new Guid(pin.ConnectorGuid), out var guid))
+                    {
+                        pin.ConnectorGuid = guid.ToString();
+                    }
                 }
             }
         }
+
 
         /// <summary>
         /// Opens a Dynamo workspace from a path to an Xml file on disk.
@@ -2214,7 +2290,7 @@ namespace Dynamo.Models
 
             CurrentWorkspace.UpdateWithExtraWorkspaceViewInfo(viewInfo, offsetX, offsetY);
 
-            InsertAnnotations(viewInfo.Annotations, offsetX, offsetY);
+            //InsertAnnotations(viewInfo.Annotations, offsetX, offsetY);
 
             List<NoteModel> insertedNotes = GetInsertedNotes(viewInfo.Annotations);
 
