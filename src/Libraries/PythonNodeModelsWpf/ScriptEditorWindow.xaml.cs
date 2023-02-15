@@ -91,6 +91,9 @@ namespace PythonNodeModelsWpf
             editText.TextArea.TextEntering += OnTextAreaTextEntering;
             editText.TextArea.TextEntered += OnTextAreaTextEntered;
 
+            // Hyperlink color
+            editText.TextArea.TextView.LinkTextForegroundBrush = new SolidColorBrush(Color.FromArgb(255, 106, 192, 231));
+
             // Initialize editor with global settings for show/hide tabs and spaces
             editText.Options = dynamoViewModel.PythonScriptEditorTextOptions.GetTextOptions();
 
