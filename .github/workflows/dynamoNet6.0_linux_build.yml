@@ -27,10 +27,11 @@ jobs:
         cd "${{ github.workspace }}/Dynamo/bin/NET60_Linux/Release"
         echo "***Locating DynamoCLI for Linux!***"
         test "./DynamoCLI.exe" && echo "DynamoCLI exists!"
-    - name: Run smoke tests
-      run: |
-        cd "${{ github.workspace }}/Dynamo/bin/NET60_Linux/Release"
-        echo "***Running Smoke tests on linux***"
-        dotnet test DynamoCoreTests.dll --test-adapter-path  ~/.nuget/packages/nunittestadapter/2.3.0/build/ --filter TestCategory=SmokeTest
+#TODO_NET6 - return to this when we can build subset of tests in net6/7/8
+#    - name: Run smoke tests
+#      run: |
+#        cd "${{ github.workspace }}/Dynamo/bin/NET60_Linux/Release"
+#        echo "***Running Smoke tests on linux***"
+#        dotnet test DynamoCoreTests.dll --test-adapter-path  ~/.nuget/packages/nunittestadapter/2.3.0/build/ --filter TestCategory=SmokeTest
 
        
