@@ -1892,7 +1892,6 @@ namespace Dynamo.Models
             }
         }
 
-
         static private DynamoPreferencesData DynamoPreferencesDataFromJson(string json)
         {
             JsonReader reader = new JsonTextReader(new StringReader(json));
