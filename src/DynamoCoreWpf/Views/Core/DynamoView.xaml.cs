@@ -800,7 +800,9 @@ namespace Dynamo.Controls
         {
             var workspaceView = this.ChildOfType<WorkspaceView>();
             if (workspaceView != null && workspaceView.GeoScalingPopup != null)
+            {
                 workspaceView.GeoScalingPopup.UpdatePopupLocation();
+            }               
         }
 
         private void InitializeShortcutBar()
