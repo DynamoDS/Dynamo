@@ -372,14 +372,17 @@ namespace Dynamo.Logging
         /// Hide event, e.g when a connection is hidden by user choice
         /// </summary>
         Hide,
+
         /// <summary>
         /// When a package conflict is encountered which involves at least one built-in package.
         /// </summary>
         BuiltInPackageConflict,
+
         /// <summary>
         /// Sort event, when user wants to sort some information
         /// </summary>
         Sort,
+
         /// <summary>
         /// View event, when user wants to see some information
         /// </summary>
@@ -426,14 +429,14 @@ namespace Dynamo.Logging
         SignOut,
 
         /// <summary>
-        /// ImportSettings event, e.g. tracks the ImportSettings event
+        /// Import event, e.g. tracks the ImportSettings event
         /// </summary>
-        ImportSettings,
+        Import,
 
         /// <summary>
-        /// ExportSettings event, e.g. tracks the ExportSettings event
+        /// Export event, e.g. tracks the ExportSettings event
         /// </summary>
-        ExportSettings
+        Export
     }
 
     /// <summary>

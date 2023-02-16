@@ -1,0 +1,21 @@
+<Workspace Version="1.0.0.1180" X="-81.8971249314717" Y="-61.7969145114488" zoom="1.34613730474456" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <CoreNodeModels.Watch guid="7cb04bcf-0a40-46e4-8ec5-292b2fc77d50" type="CoreNodeModels.Watch" nickname="Watch" x="683.953033479875" y="121.622721614749" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" />
+    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="10ab0859-33c9-4b9d-8eb7-ac8639b2e771" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Math.Round" x="524.080314905291" y="121.622721614749" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.Math.Round@double" />
+    <CoreNodeModels.Input.DoubleSlider guid="39e0b78e-707e-4212-b52a-739f0c4e2f53" type="CoreNodeModels.Input.DoubleSlider" nickname="Number Slider" x="181.771831234735" y="121.622721614749" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
+      <System.Double>51.3</System.Double>
+      <Range min="0" max="100" step="0.1" />
+    </CoreNodeModels.Input.DoubleSlider>
+  </Elements>
+  <Connectors>
+    <Dynamo.Graph.Connectors.ConnectorModel start="10ab0859-33c9-4b9d-8eb7-ac8639b2e771" start_index="0" end="7cb04bcf-0a40-46e4-8ec5-292b2fc77d50" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="39e0b78e-707e-4212-b52a-739f0c4e2f53" start_index="0" end="10ab0859-33c9-4b9d-8eb7-ac8639b2e771" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+  <Cameras>
+    <Camera Name="Background Preview" eyeX="-17" eyeY="24" eyeZ="50" lookX="12" lookY="-13" lookZ="-58" upX="0" upY="1" upZ="0" />
+  </Cameras>
+</Workspace>

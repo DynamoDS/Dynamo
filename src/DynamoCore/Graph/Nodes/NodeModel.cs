@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -106,6 +106,7 @@ namespace Dynamo.Graph.Nodes
         #endregion
 
         internal const double HeaderHeight = 46;
+        internal static string ExtensionNode = "ExtensionNode";
 
         #region public members
 
@@ -132,11 +133,12 @@ namespace Dynamo.Graph.Nodes
         /// server type for the node. This property should only be
         /// used for serialization.
         /// </summary>
+        [JsonProperty(Order = 2)]
         public virtual string NodeType
         {
             get
             {
-                return "ExtensionNode";
+                return ExtensionNode;
             }
         }
 
@@ -228,7 +230,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Id for this node, must be unique within the graph.
         /// </summary>
-        [JsonProperty("Id")]
+        [JsonProperty("Id",Order = 1)]
         [JsonConverter(typeof(IdToGuidConverter))]
         public override Guid GUID
         {
@@ -471,7 +473,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Collection of PortModels representing all Input ports.
         /// </summary>
-        [JsonProperty("Inputs")]
+        [JsonProperty("Inputs", Order = 3)]
         public ObservableCollection<PortModel> InPorts
         {
             get { return inPorts; }
@@ -486,7 +488,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Collection of PortModels representing all Output ports.
         /// </summary>
-        [JsonProperty("Outputs")]
+        [JsonProperty("Outputs", Order = 4)]
         public ObservableCollection<PortModel> OutPorts
         {
             get { return outPorts; }
@@ -513,7 +515,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Control how arguments lists of various sizes are laced.
         /// </summary>
-        [JsonProperty("Replication"), JsonConverter(typeof(StringEnumConverter))]
+        [JsonProperty("Replication", Order = 6), JsonConverter(typeof(StringEnumConverter))]
         public LacingStrategy ArgumentLacing
         {
             get
@@ -801,6 +803,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Description of this Node.
         /// </summary>
+        [JsonProperty(Order = 7)]
         public string Description
         {
             get
@@ -2709,6 +2712,25 @@ namespace Dynamo.Graph.Nodes
         public virtual bool RequestVisualUpdateAsync(IScheduler scheduler,
             EngineController engine, IRenderPackageFactory factory, bool forceUpdate = false)
         {
+            return RequestVisualUpdateAsync(scheduler, engine, factory, forceUpdate, false);
+        }
+
+        /// <summary>
+        /// Call this method to asynchronously regenerate render package for
+        /// this node. This method accesses core properties of a NodeModel and
+        /// therefore is typically called on the main/UI thread.
+        /// </summary>
+        /// <param name="scheduler">An IScheduler on which the task will be scheduled.</param>
+        /// <param name="engine">The EngineController which will be used to get MirrorData for the node.</param>
+        /// <param name="factory">An IRenderPackageFactory which will be used to generate IRenderPackage objects.</param>
+        /// <param name="forceUpdate">Normally, render packages are only generated when the node's IsUpdated parameter is true.
+        /// By setting forceUpdate to true, the render packages will be updated.</param>
+        /// <param name="ignoreIsVisible">Normally, render packages are only generated when the node's IsVisible parameter is true.
+        /// By setting ignore to true, the render package will be updated.</param>
+        /// <returns>Flag which indicates if geometry update has been scheduled</returns>
+        public virtual bool RequestVisualUpdateAsync(IScheduler scheduler,
+            EngineController engine, IRenderPackageFactory factory, bool forceUpdate, bool ignoreIsVisible = false)
+        {
             var initParams = new UpdateRenderPackageParams()
             {
                 Node = this,
@@ -2716,7 +2738,8 @@ namespace Dynamo.Graph.Nodes
                 EngineController = engine,
                 DrawableIdMap = GetDrawableIdMap(),
                 PreviewIdentifierName = AstIdentifierForPreview.Name,
-                ForceUpdate = forceUpdate
+                ForceUpdate = forceUpdate,
+                IgnoreIsVisible = ignoreIsVisible
             };
 
             var task = new UpdateRenderPackageAsyncTask(scheduler);

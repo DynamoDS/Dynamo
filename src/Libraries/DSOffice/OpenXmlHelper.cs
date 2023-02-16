@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -228,7 +228,7 @@ namespace DSOffice
                             currentColumnIndex++;
                             continue;
                         }
-
+                  
                         SetCellValue(data[i][j], cell, sharedStringTable, stylesheet, writeAsString);
                         currentColumnIndex++;
                     }
@@ -345,7 +345,7 @@ namespace DSOffice
                     else
                     {
                         // This is a number
-                        if (cell.CellValue.TryGetDouble(out var value))
+                        if (double.TryParse(cell.CellValue.InnerText, NumberStyles.Any, NumberFormatInfo.InvariantInfo, out var value))
                         {
                             if (readAsString)
                             {
@@ -396,8 +396,15 @@ namespace DSOffice
                 }
                 else
                 {
-                    // Default to raw string value for inline strings and unknown types.
-                    return cell.InnerText;
+                    if (cell.CellFormula == null)
+                    {
+                        // Default to raw string value for inline strings and unknown types.
+                        return cell.InnerText;
+                    }
+                    else
+                    {
+                        return cell.CellValue.Text;
+                    }
                 }
             }
 

@@ -89,20 +89,11 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to We are not very confident that the nodes below will work, you may try them or.
+        ///   Looks up a localized string similar to All recommendations are below the specified confidence level. You can try them or adjust the confidence settings in Preferences..
         /// </summary>
         public static string AutocompleteLowConfidenceMessage {
             get {
                 return ResourceManager.GetString("AutocompleteLowConfidenceMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to to view more options.
-        /// </summary>
-        public static string AutocompleteLowConfidenceMessageAditional {
-            get {
-                return ResourceManager.GetString("AutocompleteLowConfidenceMessageAditional", resourceCulture);
             }
         }
         
@@ -116,7 +107,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Low Confidence Tooltip.
+        ///   Looks up a localized string similar to Show Recommendations that are below the confidence level..
         /// </summary>
         public static string AutocompleteLowConfidenceTooltip {
             get {
@@ -125,7 +116,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There’s no node that we can recommend to you, you may try.
+        ///   Looks up a localized string similar to There are no recommendations yet. You can try switching to node type match autocomplete..
         /// </summary>
         public static string AutocompleteNoRecommendationsMessage {
             get {
@@ -148,15 +139,6 @@ namespace Dynamo.Properties {
         public static string AutocompleteSearchTextBlockText {
             get {
                 return ResourceManager.GetString("AutocompleteSearchTextBlockText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to switching to Object Type Autocomplete.
-        /// </summary>
-        public static string AutocompleteSwitchToObjectTypeMessage {
-            get {
-                return ResourceManager.GetString("AutocompleteSwitchToObjectTypeMessage", resourceCulture);
             }
         }
         
@@ -1002,6 +984,24 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Insert Dynamo Definition....
+        /// </summary>
+        public static string InsertDialogBoxText {
+            get {
+                return ResourceManager.GetString("InsertDialogBoxText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Example file added to workspace. Run mode changed to Manual..
+        /// </summary>
+        public static string InsertGraphRunModeNotificationText {
+            get {
+                return ResourceManager.GetString("InsertGraphRunModeNotificationText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The folder &apos;{0}&apos; does not exist.
         /// </summary>
         public static string InvalidCustomNodeFolderWarning {
@@ -1161,6 +1161,24 @@ namespace Dynamo.Properties {
         public static string LocateInDisk {
             get {
                 return ResourceManager.GetString("LocateInDisk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You need to login to your account to get recommendations. Please log in or switch to node type match autocomplete..
+        /// </summary>
+        public static string LoginNeededMessage {
+            get {
+                return ResourceManager.GetString("LoginNeededMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not authenticated.
+        /// </summary>
+        public static string LoginNeededTitle {
+            get {
+                return ResourceManager.GetString("LoginNeededTitle", resourceCulture);
             }
         }
         

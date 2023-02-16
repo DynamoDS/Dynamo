@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Dynamo.UI.Controls.StartPageView"
+<UserControl x:Class="Dynamo.UI.Controls.StartPageView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -31,47 +31,9 @@
         </Grid.RowDefinitions>
 
         <!-- Begin top part (i.e. the "Start" tab) -->
-        <Border HorizontalAlignment="Stretch" Background="#3C3C3C" Margin="220,-40,0,49"></Border>
-        
-        <Border Margin="218,-39,0,49"
-            HorizontalAlignment="Left"
-            Background="#2A2A2A"
-            BorderThickness="0,0,0,5"
-            BorderBrush="#ADE4DE">
-            <Grid Margin="10" Width="212">
-                <TextBlock Margin="3,2,0,-2"
-                           FontSize="16px"
-                           FontFamily="{StaticResource ArtifaktElementRegular}"
-                           Text="{x:Static p:Resources.StartPageStart}"
-                           Foreground="#EEEEEE"
-                           VerticalAlignment="Center" />
-                <Image Width="16px"
-                       Height="16px"
-                       Margin="0,1,0,0"
-                       HorizontalAlignment="Right"
-                       MouseLeftButtonUp="OnCloseStartPageClicked">
-                <Image.Style>
-                    <Style TargetType="{x:Type Image}">
-                        <Style.Triggers>
-                            <Trigger Property="IsMouseOver"
-                                     Value="False">
-                                <Setter Property="Source"
-                                        Value="/DynamoCoreWpf;component/UI/Images/closetab_normal.png" />
-                            </Trigger>
-                            <Trigger Property="IsMouseOver"
-                                     Value="True">
-                                <Setter Property="Source"
-                                        Value="/DynamoCoreWpf;component/UI/Images/closetab_hover.png" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </Image.Style>
-            </Image>
-            </Grid>
-        </Border>
-
+        <Border HorizontalAlignment="Stretch" Background="#3C3C3C" Margin="220,-40,0,50"></Border>
+  
         <!-- Begin Dynamo logo -->
-
         <Image Name="StartPageLogo"
                Grid.Row="1"
                Width="250"
@@ -79,7 +41,6 @@
                HorizontalAlignment="Center"/>
 
         <!-- Begin inner grid control for all other list boxes -->
-
         <ScrollViewer HorizontalScrollBarVisibility="Hidden"
                       HorizontalAlignment="Stretch"
                       Grid.Row="2">
@@ -93,7 +54,6 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Left rows of list boxes -->
-
                 <StackPanel Name="leftPanel"
                             Grid.Column="0"
                             Orientation="Vertical">
@@ -130,8 +90,6 @@
                              SelectionChanged="OnItemSelectionChanged">
                     </ListBox>
 
-
-
                     <Border BorderThickness="0,0,0,1"
                             BorderBrush="#dfd8cf">
                         <TextBlock Text="{Binding Path=BackupTitle}"
@@ -154,19 +112,17 @@
                           HorizontalAlignment="Stretch">
 
                         <Label Grid.Column="0"
-                           Name ="backupLocation"
-                           FontFamily="{StaticResource ArtifaktElementRegular}"
-                           Margin="0,0,0,0"
-                           HorizontalAlignment="Right"
-                           Style="{StaticResource StartPageLabel}"
-                           Content="{x:Static p:Resources.StartPageBackupLocation}"
-                           MouseLeftButtonUp="ShowBackupFilesInFolder" />
+                               Name="backupLocation"
+                               FontFamily="{StaticResource ArtifaktElementRegular}"
+                               Margin="0,0,0,0"
+                               HorizontalAlignment="Right"
+                               Style="{StaticResource StartPageLabel}"
+                               Content="{x:Static p:Resources.StartPageBackupLocation}"
+                               MouseLeftButtonUp="ShowBackupFilesInFolder" />
                     </Grid>
-
                 </StackPanel>
 
                 <!-- Right rows of list boxes -->
-
                 <StackPanel Name="rightPanel"
                             Grid.Column="2"
                             Orientation="Vertical">
@@ -253,11 +209,8 @@
                            Style="{StaticResource StartPageLabel}"
                            Content="{x:Static p:Resources.StartPageShowSamples}"
                            MouseLeftButtonUp="ShowSamplesInFolder" />
-                    
                 </StackPanel>
-
             </Grid>
         </ScrollViewer>
-
     </Grid>
 </UserControl>

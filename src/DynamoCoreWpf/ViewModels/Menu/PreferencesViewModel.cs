@@ -18,6 +18,7 @@ using Dynamo.Utilities;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels.Core.Converters;
 using DynamoUtilities;
+using ViewModels.Core;
 using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.ViewModels
@@ -68,26 +69,25 @@ namespace Dynamo.ViewModels
         private bool isVisibleAddStyleBorder;
         private bool isEnabledAddStyleButton;
         private GeometryScalingOptions optionsGeometryScale = null;
-
+        private GeometryScaleSize defaultGeometryScaling = GeometryScaleSize.Medium;
         #endregion Private Properties
 
-        public GeometryScaleSize ScaleSize { get; set; }
-
-        public Tuple<string, string, string> ScaleRange
+        public GeometryScaleSize DefaultGeometryScaling
         {
             get
             {
-                return scaleRanges[ScaleSize];
+                return defaultGeometryScaling;
+            }
+            set
+            {
+                if(defaultGeometryScaling != value)
+                {
+                    defaultGeometryScaling = value;
+                    SelectedDefaultScaleFactor = GeometryScalingOptions.ConvertUIToScaleFactor((int)defaultGeometryScaling);
+                    RaisePropertyChanged(nameof(DefaultGeometryScaling));
+                }              
             }
         }
-
-        private Dictionary<GeometryScaleSize, Tuple<string, string, string>> scaleRanges = new Dictionary<GeometryScaleSize, Tuple<string, string, string>>
-        {
-            {GeometryScaleSize.Medium, new Tuple<string, string, string>("medium", "0.0001", "10,000")},
-            {GeometryScaleSize.Small, new Tuple<string, string, string>("small", "0.000,001", "100")},
-            {GeometryScaleSize.Large, new Tuple<string, string, string>("large", "0.01", "1,000,000")},
-            {GeometryScaleSize.ExtraLarge, new Tuple<string, string, string>("extra large", "1", "100,000,000")}
-        };
 
         /// <summary>
         /// This property will be used by the Preferences screen to store and retrieve all the settings from the expanders
@@ -200,6 +200,22 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// This property holds the Geometry Scale factor selected in the Preferences panel (when a new workspace is created this will be the Geometry Scale used)
+        /// </summary>
+        public double SelectedDefaultScaleFactor
+        {
+            get
+            {
+                return preferenceSettings.DefaultScaleFactor;
+            }
+            set
+            {
+                preferenceSettings.DefaultScaleFactor = value;
+                RaisePropertyChanged(nameof(SelectedDefaultScaleFactor));
+            }
+        }
+
+        /// <summary>
         /// Time Interval for backup files in minutes
         /// Serialized as milliseconds in preferences setting.
         /// </summary>
@@ -255,33 +271,7 @@ namespace Dynamo.ViewModels
                 }
                 RaisePropertyChanged(nameof(RunSettingsIsChecked));
             }
-        }
-
-        /// <summary>
-        /// Controls if the the Node autocomplete Machine Learning option is checked for the radio buttons
-        /// </summary>
-        public bool NodeAutocompleteMachineLearningIsChecked
-        {
-            get
-            {
-                return preferenceSettings.DefaultNodeAutocompleteSuggestion == NodeAutocompleteSuggestion.MLRecommendation;                
-            }
-            set
-            {
-                if (value)
-                {
-                    preferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
-                    nodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
-                }
-                else
-                {
-                    preferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
-                    nodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
-                }
-                dynamoViewModel.HomeSpaceViewModel.NodeAutoCompleteSearchViewModel.ResetAutoCompleteSearchViewState();
-                RaisePropertyChanged(nameof(nodeAutocompleteSuggestion));
-            }
-        }
+        }        
 
         /// <summary>
         /// Controls the IsChecked property in the Show Run Preview toogle button
@@ -530,9 +520,7 @@ namespace Dynamo.ViewModels
             });
             RaisePropertyChanged(nameof(StyleItemsList));
         }
-
-      
-
+     
         /// <summary>
         /// This flag will be in true when the Style that user is trying to add already exists (otherwise will be false - Default)
         /// </summary>
@@ -838,22 +826,6 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Controls the IsChecked property in the "Node autocomplete" toogle button
-        /// </summary>
-        public bool NodeAutocompleteIsChecked
-        {
-            get
-            {
-                return preferenceSettings.EnableNodeAutoComplete;
-            }
-            set
-            {
-                preferenceSettings.EnableNodeAutoComplete = value;
-                RaisePropertyChanged(nameof(NodeAutocompleteIsChecked));
-            }
-        }
-
-        /// <summary>
         /// Controls the IsChecked property in the "Notification Center" toogle button
         /// </summary>
         public bool NotificationCenterIsChecked
@@ -868,6 +840,140 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(NotificationCenterIsChecked));
             }
         }
+
+        #region [ Node Autocomplete ]
+
+        /// <summary>
+        /// Controls the IsChecked property in the "Node autocomplete" toogle button
+        /// </summary>
+        public bool NodeAutocompleteIsChecked
+        {
+            get
+            {
+                return preferenceSettings.EnableNodeAutoComplete;
+            }
+            set
+            {
+                preferenceSettings.EnableNodeAutoComplete = value;
+                RaisePropertyChanged(nameof(NodeAutocompleteIsChecked));
+                RaisePropertyChanged(nameof(EnableHideNodesToggle));
+                RaisePropertyChanged(nameof(EnableConfidenceLevelSlider));
+            }
+        }
+
+        /// <summary>
+        /// Controls if the the Node autocomplete Machine Learning option is checked for the radio buttons
+        /// </summary>
+        public bool NodeAutocompleteMachineLearningIsChecked
+        {
+            get
+            {
+                return preferenceSettings.DefaultNodeAutocompleteSuggestion == NodeAutocompleteSuggestion.MLRecommendation;
+            }
+            set
+            {
+                if (value)
+                {
+                    preferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
+                    nodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
+                }
+                else
+                {
+                    preferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
+                    nodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
+                }
+
+                dynamoViewModel.HomeSpaceViewModel.NodeAutoCompleteSearchViewModel.ResetAutoCompleteSearchViewState();
+                RaisePropertyChanged(nameof(nodeAutocompleteSuggestion));
+                RaisePropertyChanged(nameof(NodeAutocompleteMachineLearningIsChecked));
+                RaisePropertyChanged(nameof(EnableHideNodesToggle));
+                RaisePropertyChanged(nameof(EnableConfidenceLevelSlider));
+            }
+        }
+
+        /// <summary>
+        /// Controls if the the Node autocomplete Machine Learning option is beta from feature flag
+        /// </summary>
+        public bool NodeAutocompleteMachineLearningIsBeta
+        {
+            get
+            {
+                return DynamoModel.FeatureFlags.CheckFeatureFlag("NodeAutocompleteMachineLearningIsBeta", false);
+            }
+        }
+
+        /// <summary>
+        /// Contains the numbers of result of the ML recommendation
+        /// </summary>
+        public int MLRecommendationNumberOfResults
+        {
+            get
+            {
+                return preferenceSettings.MLRecommendationNumberOfResults;
+            }
+            set
+            {
+                preferenceSettings.MLRecommendationNumberOfResults = value;
+                RaisePropertyChanged(nameof(MLRecommendationNumberOfResults));
+            }
+        }
+
+        /// <summary>
+        /// Controls the IsChecked property in the "Hide nodes below a specific confidence level" toogle button
+        /// </summary>
+        public bool HideNodesBelowSpecificConfidenceLevelIsChecked
+        {
+            get
+            {
+                return preferenceSettings.HideNodesBelowSpecificConfidenceLevel;
+            }
+            set
+            {
+                preferenceSettings.HideNodesBelowSpecificConfidenceLevel = value;
+                RaisePropertyChanged(nameof(HideNodesBelowSpecificConfidenceLevelIsChecked));
+                RaisePropertyChanged(nameof(EnableConfidenceLevelSlider));
+            }
+        }        
+
+        /// <summary>
+        /// Contains the confidence level of a ML recommendation
+        /// </summary>
+        public int MLRecommendationConfidenceLevel
+        {
+            get
+            {
+                return preferenceSettings.MLRecommendationConfidenceLevel;
+            }
+            set
+            {
+                preferenceSettings.MLRecommendationConfidenceLevel = value;
+                RaisePropertyChanged(nameof(MLRecommendationConfidenceLevel));
+            }
+        }
+
+        /// <summary>
+        /// If the user can click on the Hide Nodes toggle
+        /// </summary>
+        public bool EnableHideNodesToggle
+        {
+            get
+            {
+                return NodeAutocompleteIsChecked && NodeAutocompleteMachineLearningIsChecked;
+            }
+        }
+
+        /// <summary>
+        /// If the user can click on the confidence level Slider
+        /// </summary>
+        public bool EnableConfidenceLevelSlider
+        {
+            get
+            {
+                return NodeAutocompleteIsChecked && NodeAutocompleteMachineLearningIsChecked && HideNodesBelowSpecificConfidenceLevelIsChecked;
+            }
+        }
+
+        #endregion        
 
         /// <summary>
         /// Controls the IsChecked property in the "Enable T-spline nodes" toogle button
@@ -998,7 +1104,17 @@ namespace Dynamo.ViewModels
             preferenceSettings.SanitizeValues();
             RaisePropertyChanged(string.Empty);
             return true;
-        }        
+        }
+
+        internal void InitializeGeometryScaling()
+        {
+            int UIScaleFactor = GeometryScalingOptions.ConvertScaleFactorToUI((int)SelectedDefaultScaleFactor);
+
+            if (Enum.IsDefined(typeof(GeometryScaleSize), UIScaleFactor))
+            {
+                DefaultGeometryScaling = (GeometryScaleSize)UIScaleFactor;
+            }
+        }
 
         /// <summary>
         /// The PreferencesViewModel constructor basically initialize all the ItemsSource for the corresponding ComboBox in the View (PreferencesView.xaml)
@@ -1008,8 +1124,11 @@ namespace Dynamo.ViewModels
             this.preferenceSettings = dynamoViewModel.PreferenceSettings;
             this.pythonScriptEditorTextOptions = dynamoViewModel.PythonScriptEditorTextOptions;
             this.dynamoViewModel = dynamoViewModel;
-            this.installedPackagesViewModel = new InstalledPackagesViewModel(dynamoViewModel, 
-                dynamoViewModel.PackageManagerClientViewModel.PackageManagerExtension.PackageLoader);
+
+            if (dynamoViewModel.PackageManagerClientViewModel != null)
+            {
+                installedPackagesViewModel = new InstalledPackagesViewModel(dynamoViewModel, dynamoViewModel.PackageManagerClientViewModel.PackageManagerExtension.PackageLoader);
+            }
 
             // Scan for engines
             AddPythonEnginesOptions();
@@ -1062,17 +1181,15 @@ namespace Dynamo.ViewModels
             //This piece of code will populate all the description text for the RadioButtons in the Geometry Scaling section.
             optionsGeometryScale = new GeometryScalingOptions();
 
-            UpdateGeoScaleRadioButtonSelected(dynamoViewModel.ScaleFactorLog);
-
             optionsGeometryScale.DescriptionScaleRange = new ObservableCollection<string>();
-            optionsGeometryScale.DescriptionScaleRange.Add(string.Format(Res.ChangeScaleFactorPromptDescriptionContent, scaleRanges[GeometryScaleSize.Small].Item2,
-                                                                                              scaleRanges[GeometryScaleSize.Small].Item3));
-            optionsGeometryScale.DescriptionScaleRange.Add(string.Format(Res.ChangeScaleFactorPromptDescriptionContent, scaleRanges[GeometryScaleSize.Medium].Item2,
-                                                                                              scaleRanges[GeometryScaleSize.Medium].Item3));
-            optionsGeometryScale.DescriptionScaleRange.Add(string.Format(Res.ChangeScaleFactorPromptDescriptionContent, scaleRanges[GeometryScaleSize.Large].Item2,
-                                                                                              scaleRanges[GeometryScaleSize.Large].Item3));
-            optionsGeometryScale.DescriptionScaleRange.Add(string.Format(Res.ChangeScaleFactorPromptDescriptionContent, scaleRanges[GeometryScaleSize.ExtraLarge].Item2,
-                                                                                              scaleRanges[GeometryScaleSize.ExtraLarge].Item3));
+            optionsGeometryScale.DescriptionScaleRange.Add(string.Format(Res.ChangeScaleFactorPromptDescriptionContent, GeometryScalingViewModel.scaleRanges[GeometryScaleSize.Small].Item2,
+                                                                                              GeometryScalingViewModel.scaleRanges[GeometryScaleSize.Small].Item3));
+            optionsGeometryScale.DescriptionScaleRange.Add(string.Format(Res.ChangeScaleFactorPromptDescriptionContent, GeometryScalingViewModel.scaleRanges[GeometryScaleSize.Medium].Item2,
+                                                                                              GeometryScalingViewModel.scaleRanges[GeometryScaleSize.Medium].Item3));
+            optionsGeometryScale.DescriptionScaleRange.Add(string.Format(Res.ChangeScaleFactorPromptDescriptionContent, GeometryScalingViewModel.scaleRanges[GeometryScaleSize.Large].Item2,
+                                                                                              GeometryScalingViewModel.scaleRanges[GeometryScaleSize.Large].Item3));
+            optionsGeometryScale.DescriptionScaleRange.Add(string.Format(Res.ChangeScaleFactorPromptDescriptionContent, GeometryScalingViewModel.scaleRanges[GeometryScaleSize.ExtraLarge].Item2,
+                                                                                              GeometryScalingViewModel.scaleRanges[GeometryScaleSize.ExtraLarge].Item3));
 
             SavedChangesLabel = string.Empty;
             SavedChangesTooltip = string.Empty;
@@ -1093,8 +1210,6 @@ namespace Dynamo.ViewModels
             var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension()?.PackageLoader;            
             PackagePathsViewModel = new PackagePathViewModel(packageLoader, loadPackagesParams, customNodeManager);
             TrustedPathsViewModel = new TrustedPathViewModel(this.preferenceSettings, this.dynamoViewModel?.Model?.Logger);
-
-            WorkspaceEvents.WorkspaceSettingsChanged += PreferencesViewModel_WorkspaceSettingsChanged;
 
             PropertyChanged += Model_PropertyChanged;
             InitializeCommands();
@@ -1185,31 +1300,11 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// This method will be executed every time the WorkspaceModel.ScaleFactor value is updated.
-        /// </summary>
-        /// <param name="args"></param>
-        private void PreferencesViewModel_WorkspaceSettingsChanged(WorkspacesSettingsChangedEventArgs args)
-        {
-            //The WorkspaceSettingsChanged event is refering to the double ScaleFactor, then we need to make the conversion to Logarithm scale factor ScaleFactorLog       
-            UpdateGeoScaleRadioButtonSelected(Convert.ToInt32(Math.Log10(args.ScaleFactor)));
-        }
-
-        /// <summary>
-        /// This method will update the currently selected Radio Button in the Geometry Scaling section.
-        /// </summary>
-        /// <param name="scaleFactor"></param>
-        private void UpdateGeoScaleRadioButtonSelected(int scaleFactor)
-        {
-            ScaleSize = (GeometryScaleSize)GeometryScalingOptions.ConvertScaleFactorToUI(scaleFactor);
-        }
-
-        /// <summary>
         /// Called from DynamoViewModel::UnsubscribeAllEvents()
         /// </summary>
         internal virtual void UnsubscribeAllEvents()
         {
             PropertyChanged -= Model_PropertyChanged;
-            WorkspaceEvents.WorkspaceSettingsChanged -= PreferencesViewModel_WorkspaceSettingsChanged;
             PythonEngineManager.Instance.AvailableEngines.CollectionChanged -= PythonEnginesChanged;
         }
 
@@ -1282,7 +1377,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal void InitPackageListFilters()
         {
-            installedPackagesViewModel.PopulateFilters();
+            installedPackagesViewModel?.PopulateFilters();
         }
 
         /// <summary>
@@ -1370,6 +1465,18 @@ namespace Dynamo.ViewModels
                     goto default;
                 case nameof(DisableTrustWarnings):
                     description = Resources.ResourceManager.GetString(nameof(Res.PreferencesViewTrustWarningHeader), System.Globalization.CultureInfo.InvariantCulture);
+                    goto default;
+                // We track these this in two places, one in preference panel,
+                // one where user make such switch in Node AutoComplete UI
+                case nameof(nodeAutocompleteSuggestion):
+                    if (nodeAutocompleteSuggestion == NodeAutocompleteSuggestion.MLRecommendation)
+                        description = nameof(NodeAutocompleteSuggestion.MLRecommendation);
+                    else
+                        description = nameof(NodeAutocompleteSuggestion.ObjectType);
+                    goto default;
+                case nameof(MLRecommendationConfidenceLevel):
+                    // Internal use only, no need to localize for now
+                    description = "Confidence Level";
                     goto default;
                 default:
                     if (!string.IsNullOrEmpty(description))

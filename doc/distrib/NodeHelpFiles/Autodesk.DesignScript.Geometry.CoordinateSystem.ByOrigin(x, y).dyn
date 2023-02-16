@@ -1,0 +1,208 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "ByOrigin",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "d86188a165304a8385aae4a9531e3672",
+      "Inputs": [
+        {
+          "Id": "933ce3fde59d4090bfbbe06fa878b27c",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "581d836cee5e4dbc9d41c186f105b0be",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "4;",
+      "Id": "72602684b1b64b16b05cabb5f77a6fbd",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "62ea4fd8abd5464f8c892be2f2f73550",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin@double,double",
+      "Id": "2cab37306b9047ae92524cea004c712d",
+      "Inputs": [
+        {
+          "Id": "fe15fac6781b478ea321939fd61fa34f",
+          "Name": "x",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3dc607c1968244e097d9809f07e02bd6",
+          "Name": "y",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6a1a721031514c7787d972e9d484a60f",
+          "Name": "CoordinateSystem",
+          "Description": "CoordinateSystem",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a CoordinateSystem with origin at X and Y locations, with X and Y Axes set as WCS X and Y Axes. Z defaults to 0.\n\nCoordinateSystem.ByOrigin (x: double = 0, y: double = 0): CoordinateSystem"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "2;",
+      "Id": "c077b36479f44dc0b6e3ca931324e515",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "66d57c94cf6c4ee1a7a64fc423a04bbd",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "62ea4fd8abd5464f8c892be2f2f73550",
+      "End": "fe15fac6781b478ea321939fd61fa34f",
+      "Id": "6c507c7049a14d648792c2fa8c235a81"
+    },
+    {
+      "Start": "6a1a721031514c7787d972e9d484a60f",
+      "End": "933ce3fde59d4090bfbbe06fa878b27c",
+      "Id": "a4fd86e97f6544b5b7861eb19a7acc23"
+    },
+    {
+      "Start": "66d57c94cf6c4ee1a7a64fc423a04bbd",
+      "End": "3dc607c1968244e097d9809f07e02bd6",
+      "Id": "5b2813bbde574e06baa7803c6b022c21"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -10.351632118225098,
+      "EyeY": 13.915582656860352,
+      "EyeZ": 16.000629425048828,
+      "LookX": 16.128910064697266,
+      "LookY": -8.1650753021240234,
+      "LookZ": -20.504016876220703,
+      "UpX": 0.053885128349065781,
+      "UpY": 0.99619466066360474,
+      "UpZ": -0.068501941859722137
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "d86188a165304a8385aae4a9531e3672",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 319.57100915285741,
+        "Y": 2744.7147671743187
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "72602684b1b64b16b05cabb5f77a6fbd",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -114.949459328348,
+        "Y": 2707.36207577102
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "CoordinateSystem.ByOrigin",
+        "Id": "2cab37306b9047ae92524cea004c712d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 9.02207130170919,
+        "Y": 2742.7349661919507
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "c077b36479f44dc0b6e3ca931324e515",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -114.949459328348,
+        "Y": 2810.65245799496
+      }
+    ],
+    "Annotations": [],
+    "X": 254.05955117413305,
+    "Y": -3788.27144873543,
+    "Zoom": 1.51530382433281
+  }
+}

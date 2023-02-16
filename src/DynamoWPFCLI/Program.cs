@@ -4,7 +4,6 @@ using System.Threading;
 using Dynamo.Applications;
 using Dynamo.Models;
 using Dynamo.ViewModels;
-using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using static System.Windows.Threading.Dispatcher;
 
@@ -28,12 +27,16 @@ namespace DynamoWPFCLI
                 {
                     Dynamo.Logging.Analytics.DisableAnalytics = true;
                 }
-
+                if(cmdLineArgs.ServiceMode)
+                {
+                    Console.WriteLine("Starting DynamoWPFCLI in service mode");
+                }
                 if (cmdLineArgs.KeepAlive)
                 {
-                    var thread = new Thread(() => RunKeepAlive(cmdLineArgs));
-
-                    thread.Name = "DynamoModelKeepAlive";
+                    var thread = new Thread(() => RunKeepAlive(cmdLineArgs))
+                    {
+                        Name = "DynamoModelKeepAlive"
+                    };
                     thread.SetApartmentState(ApartmentState.STA);
                     thread.Start();
                     if (!useConsole)
@@ -86,7 +89,8 @@ namespace DynamoWPFCLI
             model = Dynamo.Applications.StartupUtils.MakeCLIModel(String.IsNullOrEmpty(cmdLineArgs.ASMPath) ? string.Empty : cmdLineArgs.ASMPath,
                 cmdLineArgs.UserDataFolder,
                 cmdLineArgs.CommonDataFolder,
-                cmdLineArgs.AnalyticsInfo);
+                cmdLineArgs.AnalyticsInfo,
+                cmdLineArgs.ServiceMode);
 
             if (!string.IsNullOrEmpty(cmdLineArgs.CERLocation))
             {

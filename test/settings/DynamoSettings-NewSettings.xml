@@ -8,6 +8,7 @@
   <ShowCodeBlockLineNumber>false</ShowCodeBlockLineNumber>
   <ShowConnector>false</ShowConnector>
   <ShowConnectorToolTip>false</ShowConnectorToolTip>
+  <LibraryZoomScale>2.03</LibraryZoomScale>
   <ConnectorType>POLYLINE</ConnectorType>
   <BackgroundPreviews>
     <BackgroundPreviewActiveState>
@@ -16,6 +17,7 @@
     </BackgroundPreviewActiveState>
   </BackgroundPreviews>
   <IsBackgroundGridVisible>false</IsBackgroundGridVisible>
+  <DefaultScaleFactor>-2</DefaultScaleFactor>
   <RenderPrecision>8</RenderPrecision>
   <ShowEdges>true</ShowEdges>
   <ShowDetailedLayout>false</ShowDetailedLayout>
@@ -62,6 +64,9 @@
   <IsIronPythonDialogDisabled>true</IsIronPythonDialogDisabled>
   <ShowTabsAndSpacesInScriptEditor>true</ShowTabsAndSpacesInScriptEditor>
   <EnableNodeAutoComplete>false</EnableNodeAutoComplete>
+  <HideNodesBelowSpecificConfidenceLevel>true</HideNodesBelowSpecificConfidenceLevel>
+  <MLRecommendationConfidenceLevel>99</MLRecommendationConfidenceLevel>
+  <MLRecommendationNumberOfResults>5</MLRecommendationNumberOfResults>
   <EnableNotificationCenter>false</EnableNotificationCenter>
   <EnableStaticSplashScreen>false</EnableStaticSplashScreen>
   <DefaultPythonEngine/>

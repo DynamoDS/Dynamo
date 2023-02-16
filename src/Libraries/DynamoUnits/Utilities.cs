@@ -1,10 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using Autodesk.DesignScript.Runtime;
 using System.Reflection;
 using System.IO;
 using System.Configuration;
+
+#if NET6_0_OR_GREATER
+using ForgeUnitsCLR = Autodesk.ForgeUnits;
+using SchemasCLR = Autodesk.ForgeUnits;
+#endif
 
 namespace DynamoUnits
 {

@@ -745,7 +745,7 @@
     <comment>Lacing strategy: use the shortest list</comment>
   </data>
   <data name="NodeContextMenuPreview" xml:space="preserve">
-    <value>Preview</value>
+    <value>Preview Geometry</value>
     <comment>Context menu item - preview geometry</comment>
   </data>
   <data name="NodeContextMenuRenameNode" xml:space="preserve">
@@ -835,9 +835,6 @@
   </data>
   <data name="StartPageShowSamples" xml:space="preserve">
     <value>Show Samples In Folder</value>
-  </data>
-  <data name="StartPageStart" xml:space="preserve">
-    <value>Start</value>
   </data>
   <data name="StartPageVideoTutorials" xml:space="preserve">
     <value>Video Tutorials</value>
@@ -2482,7 +2479,7 @@ Uninstall the following packages: {0}?</value>
     <comment>Preferences | Features | Python | Default Python Engine</comment>
   </data>
   <data name="PreferencesViewEnableNodeAutoComplete" xml:space="preserve">
-    <value>Node Autocomplete</value>
+    <value>Enable Node Autocomplete</value>
     <comment>Preferences | Features | Experimental | Enable Node Auto Complete</comment>
   </data>
   <data name="ErrorLoadingIcon" xml:space="preserve">
@@ -2537,15 +2534,15 @@ Uninstall the following packages: {0}?</value>
     <comment>Label used in the general tab</comment>
   </data>
   <data name="PreferencesNodeAutocompleteMethod" xml:space="preserve">
-    <value>Default method</value>
+    <value>Default Ranking Method</value>
     <comment>Label used in the features tab</comment>
   </data>
   <data name="ObjectType" xml:space="preserve">
-    <value>Object type</value>
+    <value>Node Type Match</value>
     <comment>Label used in the features tab</comment>
   </data>
-  <data name="MachineLearning" xml:space="preserve">
-    <value>ML Recommendation</value>
+  <data name="RecommendedNodes" xml:space="preserve">
+    <value>Recommended Nodes</value>
     <comment>Label used in the features tab</comment>
   </data>
   <data name="DynamoViewExtensionsMenu" xml:space="preserve">
@@ -2594,7 +2591,7 @@ You can try disabling loading packages from built-in package paths, or unload th
 Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try downloading {0} again.</value>
   </data>
   <data name="PreferencesViewVisualSettingsGeoScaling" xml:space="preserve">
-    <value>Geometry Scaling</value>
+    <value>Default Geometry Scaling</value>
     <comment>Expander Header Name</comment>
   </data>
   <data name="PreferencesViewVisualSettingsGroupStyles" xml:space="preserve">
@@ -3300,8 +3297,21 @@ You can manage this in Preferences -&gt; Security.</value>
     <value>Package Upload Scan</value>
   </data>
   <data name="ImportPreferencesInfo" xml:space="preserve">
-    <value>Your custom settings can be imported here. Settings not exposed via Preferences panel will be applied once Dynamo and any host program restarts.</value>
+    <value>You can import custom settings here, which will overwrite your current settings. If you'd like to preserve a copy of your current settings, export them before importing new settings. Settings not shown in the Preferences panel will be applied once Dynamo and any host program restarts.</value>
     <comment>Import Preferences Info.</comment>
+  </data>
+  <data name="PreferencesViewNodeAutocomplete" xml:space="preserve">
+    <value>Node Autocomplete</value>
+    <comment>Preferences | Features | Node Autocomplete</comment>
+  </data>
+  <data name="HideNodesBelowSpecificConfidenceLevel" xml:space="preserve">
+    <value>Hide nodes below a specified confidence level</value>
+  </data>
+  <data name="HideNodesBelowSpecificConfidenceLevelInfo" xml:space="preserve">
+    <value>Confidence level appears next to each recommended node and represents estimated probability that the node is a good choice. When toggled on, this setting hides recommended nodes that don’t meet the specified confidence level. You can click the Low Confidence header to show the nodes.</value>
+  </data>
+  <data name="MLRecommendationNumberOfResults" xml:space="preserve">
+    <value>Number of results</value>
   </data>
   <data name="ImportPreferencesText" xml:space="preserve">
     <value>Import</value>
@@ -3405,9 +3415,6 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="GroupStyleFontSizeToolTip" xml:space="preserve">
     <value>Font size</value>
   </data>
-  <data name="SplashScreenFailedImportSettings" xml:space="preserve">
-    <value>Failed to Import Settings</value>
-  </data>
   <data name="SplashScreenImportSettings" xml:space="preserve">
     <value>Import Settings</value>
   </data>
@@ -3423,11 +3430,8 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="SplashScreenLoadingTimeLabel" xml:space="preserve">
     <value>Loading time</value>
   </data>
-  <data name="SplashScreenSettingsImported" xml:space="preserve">
-    <value>Settings imported</value>
-  </data>
   <data name="SplashScreenShowScreenAgainLabel" xml:space="preserve">
-    <value>Don’t show this screen again</value>
+    <value>Don't show this again</value>
   </data>
   <data name="SplashScreenSignIn" xml:space="preserve">
     <value>Sign In</value>
@@ -3443,5 +3447,38 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   </data>
   <data name="ExportSettingsFailedMessage" xml:space="preserve">
     <value>Export Failed</value>
+  </data>
+  <data name="PreferencesWindowHardwareAccelerationTooltip" xml:space="preserve">
+    <value>When toggled on, Dynamo benefits from hardware acceleration to improve smoothness of graphics and overall performance, as work is offloaded from central processing units (CPUs) to graphics processing units (GPUs).</value>
+  </data>
+  <data name="PreferencesWindowIsolateSelectedGeoTooltip" xml:space="preserve">
+    <value>When toggled on, selecting a geometry node will highlight the geometry it produces in the background 3D preview.</value>
+  </data>
+  <data name="PreferencesWindowShowCodeBlockNodeLineNumberTooltip" xml:space="preserve">
+    <value>When toggled on, line numbers will be displayed in the Code Block node editor.</value>
+  </data>
+  <data name="PreferencesWindowShowEdgesTooltip" xml:space="preserve">
+    <value>When toggled on, more detailed edges will be displayed for geometry from topology subtypes.</value>
+  </data>
+  <data name="PreferencesWindowShowPreviewBubblesTooltip" xml:space="preserve">
+    <value>When toggled on, a preview of the node’s output will be displayed when hovering over the bottom of a node.</value>
+  </data>
+  <data name="PreferencesViewBetaTag" xml:space="preserve">
+    <value>Beta</value>
+  </data>
+  <data name="SplashScreenSigningIn" xml:space="preserve">
+    <value>Signing In</value>
+  </data>
+  <data name="InCanvasGeometryScalingToolTip" xml:space="preserve">
+    <value>Workspace Geometry Scaling</value>
+  </data>
+  <data name="GroupContextMenuPreview" xml:space="preserve">
+    <value>Preview Geometry</value>
+  </data>
+  <data name="LibraryZoomScaleTooltipText" xml:space="preserve">
+    <value>Drag to adjust Library zoom scale between 10% and 300%. You can also adjust this in Library by pressing “Shift” and scrolling the mouse wheel.</value>
+  </data>
+  <data name="PreferencesViewZoomScalingSettings" xml:space="preserve">
+    <value>Zoom Scaling</value>
   </data>
 </root>

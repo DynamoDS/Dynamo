@@ -1,0 +1,154 @@
+{
+  "Uuid": "93d7251f-6ed2-46b8-a188-00a0d7d9d6ae",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "DSCore.IO.FileSystem.DeleteFile_img",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Math": {
+        "Key": "DSCore.Math",
+        "Value": "DSCoreNodes.dll"
+      },
+      "Color": {
+        "Key": "DSCore.Color",
+        "Value": "DSCoreNodes.dll"
+      },
+      "UV": {
+        "Key": "Autodesk.DesignScript.Geometry.UV",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.IO.FileSystem.DeleteFile@string",
+      "Id": "36dfb84bf0cc4ff08d66c5f17e9c9184",
+      "Inputs": [
+        {
+          "Id": "8f1d91cc0de2492fb6ea35f9b3c37a12",
+          "Name": "path",
+          "Description": "File path to delete\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "235869cb00664c3f90ec200924058417",
+          "Name": "void",
+          "Description": "Node performs a task, doesn’t produce an output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Deletes the specified file.\n\nFileSystem.DeleteFile (path: string): void"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "C:\\Temp\\Sample.txt",
+      "InputValue": "..\\..\\..\\..\\..\\..\\..\\..\\..\\..\\Temp\\Sample.txt",
+      "NodeType": "ExtensionNode",
+      "Id": "3387196f3bd44ccca4cd6279916c4549",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "3ada6b465b094a11a6f1387d4cfaeb35",
+          "Name": "",
+          "Description": "File Path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system and returns its file path"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "3ada6b465b094a11a6f1387d4cfaeb35",
+      "End": "8f1d91cc0de2492fb6ea35f9b3c37a12",
+      "Id": "1f701fd814b5486498c50244553a8c72",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.17",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.17.0.3255",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -5.22369384765625,
+      "EyeY": 13.961121559143066,
+      "EyeZ": 14.827668190002441,
+      "LookX": 12.657733917236328,
+      "LookY": -14.124775886535645,
+      "LookZ": -24.96122932434082,
+      "UpX": 0.11247330158948898,
+      "UpY": 0.96858382225036621,
+      "UpZ": -0.2218000739812851
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "FileSystem.DeleteFile",
+        "ShowGeometry": true,
+        "Id": "36dfb84bf0cc4ff08d66c5f17e9c9184",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3519.4383620372905,
+        "Y": 3412.0341141590552
+      },
+      {
+        "Name": "File Path",
+        "ShowGeometry": true,
+        "Id": "3387196f3bd44ccca4cd6279916c4549",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3221.0383620372904,
+        "Y": 3412.0341141590552
+      }
+    ],
+    "Annotations": [],
+    "X": -2890.0463573187426,
+    "Y": -2593.9465969587027,
+    "Zoom": 0.96421855318101279
+  }
+}

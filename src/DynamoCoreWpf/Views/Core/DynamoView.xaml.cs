@@ -75,6 +75,7 @@ namespace Dynamo.Controls
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
         private readonly LoginService loginService;
         private ShortcutToolbar shortcutBar;
+        private PreferencesView preferencesWindow;
         private bool loaded = false;
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
         // called on the view model and the process is not cancelled
@@ -97,6 +98,12 @@ namespace Dynamo.Controls
         private FileTrustWarning fileTrustWarningPopup = null;
 
         internal ShortcutToolbar ShortcutBar { get { return shortcutBar; } }
+
+        internal PreferencesView PreferencesWindow {
+            get { return preferencesWindow; }
+        }
+
+        internal event Action OnPreferencesWindowChanged;
 
         /// <summary>
         /// Constructor
@@ -766,6 +773,8 @@ namespace Dynamo.Controls
             {
                 fileTrustWarningPopup.UpdatePopupLocation();
             }
+
+            UpdateGeometryScalingPopupLocation();
         }
 
         private void DynamoView_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -783,20 +792,22 @@ namespace Dynamo.Controls
             {
                 fileTrustWarningPopup.UpdatePopupLocation();
             }
+
+            UpdateGeometryScalingPopupLocation();
         }
 
-        private void InitializeLogin()
+        private void UpdateGeometryScalingPopupLocation()
         {
-            if (dynamoViewModel.ShowLogin && dynamoViewModel.Model.AuthenticationManager.HasAuthProvider)
+            var workspaceView = this.ChildOfType<WorkspaceView>();
+            if (workspaceView != null && workspaceView.GeoScalingPopup != null)
             {
-                var login = new Login(dynamoViewModel.PackageManagerClientViewModel);
-                loginGrid.Children.Add(login);
-            }
+                workspaceView.GeoScalingPopup.UpdatePopupLocation();
+            }               
         }
 
         private void InitializeShortcutBar()
         {
-            shortcutBar = new ShortcutToolbar(this.dynamoViewModel.Model.UpdateManager) { Name = "ShortcutToolbar" };
+            shortcutBar = new ShortcutToolbar(this.dynamoViewModel) { Name = "ShortcutToolbar" };
 
             var newScriptButton = new ShortcutBarItem
             {
@@ -958,7 +969,6 @@ namespace Dynamo.Controls
             _timer.Stop();
             dynamoViewModel.Model.Logger.Log(String.Format(Wpf.Properties.Resources.MessageLoadingTime,
                                                                      _timer.Elapsed, dynamoViewModel.BrandingResourceProvider.ProductName));
-            InitializeLogin();
             InitializeShortcutBar();
             InitializeStartPage(isFirstRun);
 
@@ -1865,7 +1875,8 @@ namespace Dynamo.Controls
 
         private void OnPreferencesWindowClick(object sender, RoutedEventArgs e)
         {
-            var preferencesWindow = new PreferencesView(this);
+            preferencesWindow = new PreferencesView(this);
+            OnPreferencesWindowChanged();
             preferencesWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             preferencesWindow.ShowDialog();
         }

@@ -11,7 +11,6 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web.UI.WebControls;
 using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Core;
@@ -208,6 +207,11 @@ namespace Dynamo.Models
         /// Host analytics info
         /// </summary>
         public HostAnalyticsInfo HostAnalyticsInfo { get; set; }
+
+        /// <summary>
+        /// Boolean indication of launching Dynamo in service mode, this mode is optimized for minimal launch time, mostly leveraged by CLI or WPF CLI.
+        /// </summary>
+        internal bool IsServiceMode { get; set; }
 
         /// <summary>
         /// UpdateManager to handle automatic upgrade to higher version.
@@ -552,6 +556,7 @@ namespace Dynamo.Models
             public IEnumerable<IExtension> Extensions { get; set; }
             public TaskProcessMode ProcessMode { get; set; }
             public bool IsHeadless { get; set; }
+            public bool IsServiceMode { get; set; }
             public string PythonTemplatePath { get; set; }
             /// <summary>
             /// Default Python script engine
@@ -617,6 +622,7 @@ namespace Dynamo.Models
                 // TODO: This fact should probably be revisited in 3.0.
                 DefaultPythonEngine = defaultStartConfig.DefaultPythonEngine;
                 CLIMode = defaultStartConfig.CLIMode;
+                IsServiceMode = defaultStartConfig.IsServiceMode;
             }
 
             if (config is IStartConfigCrashReporter cerConfig)
@@ -644,9 +650,13 @@ namespace Dynamo.Models
             DebugSettings = new DebugSettings();
             Logger = new DynamoLogger(DebugSettings, pathManager.LogDirectory, IsTestMode, CLIMode);
 
-            foreach (var exception in exceptions)
+            if (!IsServiceMode)
             {
-                Logger.Log(exception); // Log all exceptions.
+                // Log all exceptions as part of directories check.
+                foreach (var exception in exceptions)
+                {
+                    Logger.Log(exception); 
+                }
             }
 
             MigrationManager = new MigrationManager(DisplayFutureFileMessage, DisplayObsoleteFileMessage);
@@ -683,29 +693,44 @@ namespace Dynamo.Models
             }
 
             bool areAnalyticsDisabledFromConfig = false;
-            try
-            {
-                // Dynamo, behind a proxy server, has been known to have issues loading the Analytics binaries.
-                // Using the "DisableAnalytics" configuration setting, a user can skip loading analytics binaries altogether.
-                var assemblyConfig = ConfigurationManager.OpenExeConfiguration(GetType().Assembly.Location);
-                if (assemblyConfig != null)
+            if (!IsServiceMode)
+            {   // Skip getting the value for areAnalyticsDisabledFromConfig because analytics is disabled for searvice mode anyway
+                try
                 {
-                    var disableAnalyticsValue = assemblyConfig.AppSettings.Settings["DisableAnalytics"];
-                    if (disableAnalyticsValue != null)
-                        bool.TryParse(disableAnalyticsValue.Value, out areAnalyticsDisabledFromConfig);
+                    // Dynamo, behind a proxy server, has been known to have issues loading the Analytics binaries.
+                    // Using the "DisableAnalytics" configuration setting, a user can skip loading analytics binaries altogether.
+                    var assemblyConfig = ConfigurationManager.OpenExeConfiguration(GetType().Assembly.Location);
+                    if (assemblyConfig != null)
+                    {
+                        var disableAnalyticsValue = assemblyConfig.AppSettings.Settings["DisableAnalytics"];
+                        if (disableAnalyticsValue != null)
+                            bool.TryParse(disableAnalyticsValue.Value, out areAnalyticsDisabledFromConfig);
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                // Do nothing for now
+                catch (Exception)
+                {
+                    // Do nothing for now
+                }
             }
 
             // If user skipped analytics from assembly config, do not try to launch the analytics client
-            // or the feature flags client.
-            if (!areAnalyticsDisabledFromConfig && !Dynamo.Logging.Analytics.DisableAnalytics)
+            // or the feature flags client for web traffic reason.
+            if (!IsServiceMode && !areAnalyticsDisabledFromConfig && !Dynamo.Logging.Analytics.DisableAnalytics)
             {
-                AnalyticsService.Start(this, IsHeadless, IsTestMode);
-
+                // Start the Analytics service only when a session is not present.
+                // In an integrator host, as splash screen can be closed without shutting down the ViewModel, the analytics service is not stopped.
+                // So we don't want to start it when splash screen or dynamo window is launched again.
+                if (Analytics.client == null)
+                {
+                    AnalyticsService.Start(this, IsHeadless, IsTestMode);
+                }
+                else if (Analytics.client is DynamoAnalyticsClient dac)
+                {
+                    if (dac.Session == null)
+                    {
+                        AnalyticsService.Start(this, IsHeadless, IsTestMode);
+                    }
+                }
 
                 //run process startup/reading on another thread so we don't block dynamo startup.
                 //if we end up needing to control aspects of dynamo model or view startup that we can't make
@@ -735,7 +760,8 @@ namespace Dynamo.Models
 
             }
 
-            if (!IsTestMode && PreferenceSettings.IsFirstRun)
+            // TBD: Do we need settings migrator for service mode? If we config the docker correctly, this could be skipped I think
+            if (!IsServiceMode && !IsTestMode && PreferenceSettings.IsFirstRun)
             {
                 DynamoMigratorBase migrator = null;
 
@@ -762,7 +788,7 @@ namespace Dynamo.Models
                 }
             }
 
-            if (PreferenceSettings.IsFirstRun && !IsTestMode)
+            if (!IsServiceMode && PreferenceSettings.IsFirstRun && !IsTestMode)
             {
                 PreferenceSettings.AddDefaultTrustedLocations();
             }
@@ -797,7 +823,7 @@ namespace Dynamo.Models
             // 4) Set from OOTB hard-coded default template
 
             // If a custom python template path doesn't already exists in the DynamoSettings.xml
-            if (string.IsNullOrEmpty(PreferenceSettings.PythonTemplateFilePath) || !File.Exists(PreferenceSettings.PythonTemplateFilePath))
+            if (string.IsNullOrEmpty(PreferenceSettings.PythonTemplateFilePath) || !File.Exists(PreferenceSettings.PythonTemplateFilePath) && !IsServiceMode)
             {
                 // To supply a custom python template host integrators should supply a 'DefaultStartConfiguration' config file
                 // or create a new struct that inherits from 'DefaultStartConfiguration' making sure to set the 'PythonTemplatePath'
@@ -837,9 +863,12 @@ namespace Dynamo.Models
             pathManager.Preferences = PreferenceSettings;
             PreferenceSettings.RequestUserDataFolder += pathManager.GetUserDataFolder;
 
-            SearchModel = new NodeSearchModel(Logger);
-            SearchModel.ItemProduced +=
-                node => ExecuteCommand(new CreateNodeCommand(node, 0, 0, true, true));
+            if (!IsServiceMode)
+            {
+                SearchModel = new NodeSearchModel(Logger);
+                SearchModel.ItemProduced +=
+                    node => ExecuteCommand(new CreateNodeCommand(node, 0, 0, true, true));
+            }
 
             NodeFactory = new NodeFactory();
             NodeFactory.MessageLogged += LogMessage;
@@ -847,9 +876,15 @@ namespace Dynamo.Models
             //Initialize the ExtensionManager with the CommonDataDirectory so that extensions found here are checked first for dll's with signed certificates
             extensionManager = new ExtensionManager(new[] { PathManager.CommonDataDirectory });
             extensionManager.MessageLogged += LogMessage;
-            var extensions = config.Extensions ?? LoadExtensions();
-
-            LinterManager = new LinterManager(this.ExtensionManager);
+            var extensions = config.Extensions ?? new List<IExtension>();
+            if (!extensions.Any() && !IsServiceMode)
+            {
+                extensions = LoadExtensions();
+            }
+            if (!IsServiceMode)
+            {
+                LinterManager = new LinterManager(this.ExtensionManager);
+            }
 
             // when dynamo is ready, alert the loaded extensions
             DynamoReady += (readyParams) =>
@@ -893,10 +928,13 @@ namespace Dynamo.Models
 
             AddHomeWorkspace();
 
-            AuthenticationManager = new AuthenticationManager(config.AuthProvider);
+            if (!IsServiceMode)
+            {
+                AuthenticationManager = new AuthenticationManager(config.AuthProvider);
+            }
 
             UpdateManager.Log += UpdateManager_Log;
-            if (!IsTestMode && !IsHeadless)
+            if (!IsTestMode && !IsHeadless && !IsServiceMode)
             {
                 DefaultUpdateManager.CheckForProductUpdate(UpdateManager);
             }
@@ -913,8 +951,7 @@ namespace Dynamo.Models
 
                 foreach (var ext in extensions)
                 {
-                    var logSource = ext as ILogSource;
-                    if (logSource != null)
+                    if (ext is ILogSource logSource)
                         logSource.MessageLogged += LogMessage;
 
                     try
@@ -1426,7 +1463,7 @@ namespace Dynamo.Models
             NodeFactory.AddTypeFactoryAndLoader(outputData.Type);
             NodeFactory.AddAlsoKnownAs(outputData.Type, outputData.AlsoKnownAs);
 
-            SearchModel.Add(new CodeBlockNodeSearchElement(cbnData, LibraryServices));
+            SearchModel?.Add(new CodeBlockNodeSearchElement(cbnData, LibraryServices));
 
             var symbolSearchElement = new NodeModelSearchElement(symbolData)
             {
@@ -1444,8 +1481,8 @@ namespace Dynamo.Models
                 outputSearchElement.IsVisibleInSearch = isVisible;
             };
 
-            SearchModel.Add(symbolSearchElement);
-            SearchModel.Add(outputSearchElement);
+            SearchModel?.Add(symbolSearchElement);
+            SearchModel?.Add(outputSearchElement);
         }
 
         internal static bool IsDisabledPath(string packagesDirectory, IPreferences preferences)
@@ -1603,6 +1640,10 @@ namespace Dynamo.Models
         {
             if (preferences != null) // If there is preference settings provided...
                 return preferences;
+
+            //Skip file handling in service mode.
+            if (IsServiceMode)
+                return new PreferenceSettings();
 
             // Is order for test cases not to interfere with the regular preference
             // settings xml file, a test case usually specify a temporary xml file
@@ -2081,10 +2122,11 @@ namespace Dynamo.Models
         {
             var nodes = ws.Nodes;
             var connectors = ws.Connectors;
+            var notes = viewInfo?.Annotations;
 
             DynamoSelection.Instance.ClearSelection();
 
-            if (nodes == null || !nodes.Any() || NodesAlreadyLoaded(nodes))
+            if ((nodes == null && notes == null) || (!nodes.Any() && !notes.Any()) || (NodesAlreadyLoaded(nodes) || NotesAlreadyLoaded(notes)))
             {
                 OnRequestNotification(Resources.FailedInsertFileNodeExistNotification);
 
@@ -2109,11 +2151,11 @@ namespace Dynamo.Models
 
             InsertAnnotations(viewInfo.Annotations, offsetX, offsetY);
 
-            List<NoteModel> notes = GetInsertedNotes(viewInfo.Annotations);
+            List<NoteModel> insertedNotes = GetInsertedNotes(viewInfo.Annotations);
 
             DynamoSelection.Instance.Selection.AddRange(nodes);
-            DynamoSelection.Instance.Selection.AddRange(notes);
-
+            DynamoSelection.Instance.Selection.AddRange(insertedNotes);
+            
             currentWorkspace.HasUnsavedChanges = true;
         }
         
@@ -2210,7 +2252,7 @@ namespace Dynamo.Models
         /// Load the extra view information required to fully construct a WorkspaceModel object 
         /// </summary>
         /// <param name="json"></param>
-        static private ExtraWorkspaceViewInfo ExtraWorkspaceViewInfoFromJson(string json)
+        static internal ExtraWorkspaceViewInfo ExtraWorkspaceViewInfoFromJson(string json)
         {
             JsonReader reader = new JsonTextReader(new StringReader(json));
             var obj = JObject.Load(reader);
@@ -3096,7 +3138,7 @@ namespace Dynamo.Models
                 return;
             }
 
-            SearchModel.Add(new NodeModelSearchElement(typeLoadData));
+            SearchModel?.Add(new NodeModelSearchElement(typeLoadData));
         }
 
         /// <summary>
@@ -3143,7 +3185,7 @@ namespace Dynamo.Models
         {
             if (functionDescriptor.IsVisibleInLibrary)
             {
-                SearchModel.Add(new ZeroTouchSearchElement(functionDescriptor));
+                SearchModel?.Add(new ZeroTouchSearchElement(functionDescriptor));
             }
         }
 
@@ -3343,6 +3385,8 @@ namespace Dynamo.Models
         #region insert private methods
         private void InsertAnnotations(IEnumerable<ExtraAnnotationViewInfo> viewInfoAnnotations, double offsetX, double offsetY)
         {
+            List<ConnectorModel> newConnectors = new List<ConnectorModel>();
+
             foreach (var annotation in viewInfoAnnotations)
             {
                 if (annotation.Nodes.Any() || annotation.PinnedNode != null) continue;
@@ -3363,21 +3407,14 @@ namespace Dynamo.Models
                 
                 currentWorkspace.AddAndRegisterNode(node, false);
             }
+            RecordUndoModels(currentWorkspace, nodes.Cast<ModelBase>().ToList());
         }
 
-        private void ReverseNodesLocation(IEnumerable<NodeModel> nodes, IEnumerable<NodeModel> originalNodes)
-        {
-            foreach (var node in nodes)
-            {
-                var original = originalNodes.First(x => x.GUID == node.GUID);
-                
-                node.CenterX += original.CenterX;
-                node.CenterY += original.CenterY;
-            }
-        }
-
+        
         private void InsertConnectors(IEnumerable<ConnectorModel> connectors)
         {
+            List<ConnectorModel> newConnectors = new List<ConnectorModel>();
+
             foreach (var connectorModel in connectors)
             {
                 var startNode = connectorModel.Start.Owner;
@@ -3390,8 +3427,11 @@ namespace Dynamo.Models
                     connector.Delete();
                 }
 
-                ConnectorModel.Make(startNode, endNode, connectorModel.Start.Index, connectorModel.End.Index, connectorModel.GUID);
+                var newConnector = ConnectorModel.Make(startNode, endNode, connectorModel.Start.Index, connectorModel.End.Index, connectorModel.GUID);
+                newConnectors.Add(newConnector);
             }
+
+            RecordUndoModels(currentWorkspace, newConnectors.Cast<ModelBase>().ToList());
         }
 
         private List<NoteModel> GetInsertedNotes(IEnumerable<ExtraAnnotationViewInfo> viewInfoAnnotations)
@@ -3410,8 +3450,21 @@ namespace Dynamo.Models
                     result.Add(matchingNote);
                 }
             }
+            RecordUndoModels(currentWorkspace, result.Cast<ModelBase>().ToList());
 
             return result;
+        }
+
+        private void RecordUndoModels(WorkspaceModel workspace, List<ModelBase> undoItems)
+        {
+            var userActionDictionary = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();
+            //Add models that were newly created
+            foreach (var undoItem in undoItems)
+            {
+                userActionDictionary.Add(undoItem, UndoRedoRecorder.UserAction.Creation);
+            }
+
+            WorkspaceModel.RecordModelsForUndo(userActionDictionary, workspace.UndoRecorder);
         }
 
         private void GetInsertNodesOffset(IEnumerable<NodeModel> currentWorkspaceNodes
@@ -3484,6 +3537,20 @@ namespace Dynamo.Models
             foreach (var node in nodes)
             {
                 if (currentWorkspace.Nodes.Any(n => n.GUID == node.GUID))
+                {
+                    // if at least one node is inside the workspace, return true
+                    return true;
+                }
+            }
+            // If no nodes exist with the same GUID, then we are good to go
+            return false;
+        }
+
+        private bool NotesAlreadyLoaded(IEnumerable<ExtraAnnotationViewInfo> notes)
+        {
+            foreach (var note in notes)
+            {
+                if (currentWorkspace.Notes.Any(n => n.GUID.ToString() == note.Id))
                 {
                     // if at least one node is inside the workspace, return true
                     return true;

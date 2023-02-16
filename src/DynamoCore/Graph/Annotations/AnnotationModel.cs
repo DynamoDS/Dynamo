@@ -395,6 +395,26 @@ namespace Dynamo.Graph.Annotations
         /// </summary>
         public bool HasNestedGroups => nodes.OfType<AnnotationModel>().Any();
 
+        private bool isVisible = true;
+        /// <summary>
+        /// Preview visibility of the nodes in a group
+        /// </summary>
+        [JsonIgnore]
+        public bool IsVisible
+        {
+            get
+            {
+                return isVisible;
+            }
+            internal set
+            {
+                if (value != isVisible)
+                {
+                    isVisible = value;
+                    RaisePropertyChanged(nameof(IsVisible));
+                }
+            }
+        }
         #endregion
 
         /// <summary>

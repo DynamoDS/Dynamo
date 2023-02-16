@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Interfaces;
 using Dynamo.Library;
@@ -111,7 +111,7 @@ namespace Dynamo.Extensions
         /// </summary>
         internal StartupParams(DynamoModel dynamoModel)
         {
-            this.authProvider = dynamoModel.AuthenticationManager.AuthProvider;
+            this.authProvider = dynamoModel.AuthenticationManager?.AuthProvider;
             this.pathManager = dynamoModel.PathManager;
             this.libraryLoader = new ExtensionLibraryLoader(dynamoModel);
             this.customNodeManager = dynamoModel.CustomNodeManager;

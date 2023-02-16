@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,6 +8,7 @@ using System.Security.Permissions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using Dynamo.Controls;
 using Dynamo.Extensions;
 using Dynamo.LibraryViewExtensionWebView2.Handlers;
 using Dynamo.LibraryViewExtensionWebView2.ViewModels;
@@ -31,6 +32,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
     public class LibraryViewController : IDisposable
     {
         private Window dynamoWindow;
+        private DynamoView dynamoView;
         private ICommandExecutive commandExecutive;
         private DynamoViewModel dynamoViewModel;
         private FloatingLibraryTooltipPopup libraryViewTooltip;
@@ -49,6 +51,12 @@ namespace Dynamo.LibraryViewExtensionWebView2
         private LibraryViewCustomization customization;
         internal string WebBrowserUserDataFolder { get; set; }
 
+        //Assuming that the fon size is 14px and the screen height is 1080 initially
+        private const int standardFontSize = 14;
+        private const int standardScreenHeight = 1080;
+        private double libraryFontSize;
+
+
         /// <summary>
         /// Creates a LibraryViewController.
         /// </summary>
@@ -66,6 +74,9 @@ namespace Dynamo.LibraryViewExtensionWebView2
             dynamoWindow.StateChanged += DynamoWindowStateChanged;
             dynamoWindow.SizeChanged += DynamoWindow_SizeChanged;
 
+            this.dynamoView = dynamoView as DynamoView;
+            this.dynamoView.OnPreferencesWindowChanged += PreferencesWindowChanged;
+
             DirectoryInfo webBrowserUserDataFolder;
             var userDataDir = new DirectoryInfo(dynamoViewModel.Model.PathManager.UserDataDirectory);
             webBrowserUserDataFolder = userDataDir.Exists ? userDataDir : null;
@@ -73,6 +84,16 @@ namespace Dynamo.LibraryViewExtensionWebView2
             {
                 WebBrowserUserDataFolder = webBrowserUserDataFolder.FullName;
             }
+        }
+
+        private void Browser_ZoomFactorChanged(object sender, EventArgs e)
+        {
+            dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale = ((float)browser.ZoomFactor);
+        }
+
+        void PreferencesWindowChanged()
+        {
+            this.dynamoView.PreferencesWindow.LibraryZoomScalingSlider.ValueChanged += DynamoSliderValueChanged;
         }
 
         //if the window is resized toggle visibility of browser to force redraw
@@ -149,20 +170,22 @@ namespace Dynamo.LibraryViewExtensionWebView2
         {
             string layoutSpecsjson = String.Empty;
             string loadedTypesjson = String.Empty;
-
-            dynamoWindow.Dispatcher.BeginInvoke(
-            new Action(() =>
+            if (!dynamoViewModel.Model.IsServiceMode)
             {
-                var ext1 = string.Empty;
-                var ext2 = string.Empty;
-                var reader = new StreamReader(nodeProvider.GetResource(null, out ext1));
-                var loadedTypes = reader.ReadToEnd();
+                dynamoWindow.Dispatcher.BeginInvoke(
+                new Action(() =>
+                {
+                    var ext1 = string.Empty;
+                    var ext2 = string.Empty;
+                    var reader = new StreamReader(nodeProvider.GetResource(null, out ext1));
+                    var loadedTypes = reader.ReadToEnd();
 
-                var reader2 = new StreamReader(layoutProvider.GetResource(null, out ext2));
-                var layoutSpec = reader2.ReadToEnd();
+                    var reader2 = new StreamReader(layoutProvider.GetResource(null, out ext2));
+                    var layoutSpec = reader2.ReadToEnd();
 
-                ExecuteScriptFunctionAsync(browser, "refreshLibViewFromData", loadedTypes, layoutSpec);
-            }));
+                    ExecuteScriptFunctionAsync(browser, "refreshLibViewFromData", loadedTypes, layoutSpec);
+                }));
+            }
         }
 
         #endregion
@@ -266,6 +289,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
             twoWayScriptingObject = new ScriptingObject(this);
             //register the interop object into the browser.
             this.browser.CoreWebView2.AddHostObjectToScript("bridgeTwoWay", twoWayScriptingObject);
+            browser.CoreWebView2.Settings.IsZoomControlEnabled = true;
         }
 
         private void CoreWebView2_WebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs args)
@@ -312,6 +336,11 @@ namespace Dynamo.LibraryViewExtensionWebView2
             {
                 string msg = ex.Message;
             }
+
+            SetLibraryFontSize();
+            
+            browser.ZoomFactor = dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale;
+            browser.ZoomFactorChanged += Browser_ZoomFactorChanged;
         }
 
         private void Browser_Loaded(object sender, RoutedEventArgs e)
@@ -327,6 +356,25 @@ namespace Dynamo.LibraryViewExtensionWebView2
             {
                 browser.InvalidateVisual();
                 UpdatePopupLocation();
+                SetLibraryFontSize();
+            }
+        }
+
+        //Changes the size of the font's library depending of the screen height
+        private async void SetLibraryFontSize()
+        {
+            //Gets the height of the primary monitor
+            var height = SystemParameters.PrimaryScreenHeight;
+
+            //Calculates the proportion of the font size depending on the screen height
+            //Changing the scale also changes the screen height (F.E: height of 1080px with 150% will be actually 720px)
+            var fontSize = (standardFontSize * height) / standardScreenHeight;
+
+            if(fontSize != libraryFontSize)
+            {
+                var result = await ExecuteScriptFunctionAsync(browser, "setLibraryFontSize", fontSize);
+                if(result != null)
+                    libraryFontSize = fontSize;
             }
         }
 
@@ -433,18 +481,21 @@ namespace Dynamo.LibraryViewExtensionWebView2
             };
             Action<NodeSearchElement> onRemove = e => handler(null);
 
-            //Set up the event callback
-            model.EntryAdded += handler;
-            model.EntryRemoved += onRemove;
-            model.EntryUpdated += handler;
-
-            //Set up the dispose event handler
-            observer.Disposed += () =>
+            if (model != null)
             {
-                model.EntryAdded -= handler;
-                model.EntryRemoved -= onRemove;
-                model.EntryUpdated -= handler;
-            };
+                //Set up the event callback
+                model.EntryAdded += handler;
+                model.EntryRemoved += onRemove;
+                model.EntryUpdated += handler;
+
+                //Set up the dispose event handler
+                observer.Disposed += () =>
+                {
+                    model.EntryAdded -= handler;
+                    model.EntryRemoved -= onRemove;
+                    model.EntryUpdated -= handler;
+                };
+            }
 
             return observer;
         }
@@ -500,6 +551,13 @@ namespace Dynamo.LibraryViewExtensionWebView2
             layoutProvider = new LayoutSpecProvider(customization, iconProvider, "Dynamo.LibraryViewExtensionWebView2.web.library.layoutSpecs.json");
         }
 
+        private void DynamoSliderValueChanged(object sender, EventArgs e)
+        {
+            Slider slider = (Slider)sender;
+            browser.ZoomFactor = slider.Value;
+            dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale = ((float)slider.Value);
+        }
+
         /// <summary>
         /// This method will execute the action of moving the Guide to the next Step (it is triggered when a specific html div that contains the package is clicked).
         /// </summary>
@@ -539,6 +597,10 @@ namespace Dynamo.LibraryViewExtensionWebView2
             {
                 dynamoWindow.StateChanged -= DynamoWindowStateChanged;
                 dynamoWindow.SizeChanged -= DynamoWindow_SizeChanged;
+                browser.ZoomFactorChanged -= Browser_ZoomFactorChanged;
+                this.dynamoView.PreferencesWindow.LibraryZoomScalingSlider.ValueChanged -= DynamoSliderValueChanged;
+                this.dynamoView.OnPreferencesWindowChanged -= PreferencesWindowChanged;
+
                 dynamoWindow = null;
             }
             if (this.browser != null)
@@ -552,6 +614,9 @@ namespace Dynamo.LibraryViewExtensionWebView2
 
         public static async Task<string> ExecuteScriptFunctionAsync(WebView2 webView2, string functionName, params object[] parameters)
         {
+            if (webView2.CoreWebView2 == null)
+                return null;
+
             string script = functionName + "(";
             for (int i = 0; i < parameters.Length; i++)
             {

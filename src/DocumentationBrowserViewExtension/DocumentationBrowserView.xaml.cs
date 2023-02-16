@@ -1,11 +1,16 @@
 using Dynamo.Logging;
 using Dynamo.Utilities;
+using Dynamo.Wpf.UI.GuidedTour;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
+using SharpDX.Direct3D9;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Web;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,9 +27,15 @@ namespace Dynamo.DocumentationBrowser
         private readonly DocumentationBrowserViewModel viewModel;
         private const string VIRTUAL_FOLDER_MAPPING = "appassets";
         static readonly string HTML_IMAGE_PATH_PREFIX = @"http://";
+        private bool hasBeenInitialized;
+        private ScriptingObject comScriptingObject;
+        private string fontStylePath = "Dynamo.Wpf.Views.GuidedTour.HtmlPages.Resources.ArtifaktElement-Regular.woff";
 
         internal string WebBrowserUserDataFolder { get; set; }
         internal string FallbackDirectoryName { get; set; }
+
+        //Path in which the virtual folder for loading images will be created
+        internal string VirtualFolderPath { get; set; }
 
         /// <summary>
         /// Construct a new DocumentationBrowserView given an appropriate viewmodel.
@@ -113,47 +124,82 @@ namespace Dynamo.DocumentationBrowser
                 this.documentationBrowser.Dispose();
             }
             this.documentationBrowser.DpiChanged -= DocumentationBrowser_DpiChanged;
-            if(this.documentationBrowser.CoreWebView2 != null)
-                this.documentationBrowser.CoreWebView2.WebMessageReceived -= CoreWebView2OnWebMessageReceived;
+            try
+            {
+                if (this.documentationBrowser.CoreWebView2 != null)
+                    this.documentationBrowser.CoreWebView2.WebMessageReceived -= CoreWebView2OnWebMessageReceived;
+
+            }
+            catch (Exception)
+            {
+                return;
+            }
         }
 
         async void InitializeAsync()
         {
-            if (!string.IsNullOrEmpty(WebBrowserUserDataFolder))
+            VirtualFolderPath = string.Empty;
+            try
             {
-                //This indicates in which location will be created the WebView2 cache folder
-                documentationBrowser.CreationProperties = new CoreWebView2CreationProperties()
+                if (viewModel.Link != null && !string.IsNullOrEmpty(viewModel.CurrentPackageName))
                 {
-                    UserDataFolder = WebBrowserUserDataFolder
-                };
+                    VirtualFolderPath = Path.GetDirectoryName(HttpUtility.UrlDecode(viewModel.Link.AbsolutePath));
+                }
+                else
+                    VirtualFolderPath = FallbackDirectoryName;
+            }
+            catch (Exception ex)
+            {
+                VirtualFolderPath = string.Empty;
+                Log(ex.Message);
             }
 
-            //Initialize the CoreWebView2 component otherwise we can't navigate to a web page
-            await documentationBrowser.EnsureCoreWebView2Async();
+            // Only initialize once 
+            if (!hasBeenInitialized)
+            {
+                if (!string.IsNullOrEmpty(WebBrowserUserDataFolder))
+                {
+                    //This indicates in which location will be created the WebView2 cache folder
+                    documentationBrowser.CreationProperties = new CoreWebView2CreationProperties()
+                    {
+                        UserDataFolder = WebBrowserUserDataFolder
+                    };
+                }
+                //Initialize the CoreWebView2 component otherwise we can't navigate to a web page
+                await documentationBrowser.EnsureCoreWebView2Async();
+                
+           
+                this.documentationBrowser.CoreWebView2.WebMessageReceived += CoreWebView2OnWebMessageReceived;
+                comScriptingObject = new ScriptingObject(this.viewModel);
+                //register the interop object into the browser.
+                this.documentationBrowser.CoreWebView2.AddHostObjectToScript("bridge", comScriptingObject);
 
-            //Due that the Web Browser(WebView2 - Chromium) security CORS is blocking the load of resources like images then we need to create a virtual folder in which the image are located.
-            this.documentationBrowser.CoreWebView2.SetVirtualHostNameToFolderMapping(VIRTUAL_FOLDER_MAPPING, FallbackDirectoryName, CoreWebView2HostResourceAccessKind.DenyCors);
+                this.documentationBrowser.CoreWebView2.Settings.IsZoomControlEnabled = true;
+                this.documentationBrowser.CoreWebView2.Settings.AreDevToolsEnabled = true;
+
+                hasBeenInitialized = true;
+            }
+
+            if(Directory.Exists(VirtualFolderPath))
+                //Due that the Web Browser(WebView2 - Chromium) security CORS is blocking the load of resources like images then we need to create a virtual folder in which the image are located.
+                this.documentationBrowser.CoreWebView2.SetVirtualHostNameToFolderMapping(VIRTUAL_FOLDER_MAPPING, VirtualFolderPath, CoreWebView2HostResourceAccessKind.DenyCors);
 
             string htmlContent = this.viewModel.GetContent();
+
+            htmlContent = ResourceUtilities.LoadResourceAndReplaceByKey(htmlContent, "#fontStyle", fontStylePath);
 
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 this.documentationBrowser.NavigateToString(htmlContent);
             }));
-
-            this.documentationBrowser.CoreWebView2.WebMessageReceived += CoreWebView2OnWebMessageReceived;
         }
 
         private void CoreWebView2OnWebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs e)
         {
             var message = e.TryGetWebMessageAsString();
-            if (string.Equals(message, "insert"))
-            {
-                // Insert the graph inside the current worskspace
-                this.viewModel.InsertGraph();
-            }
+            comScriptingObject.Notify(message);
         }
-
+        
         /// <summary>
         /// Dispose function for DocumentationBrowser
         /// </summary>
@@ -162,5 +208,12 @@ namespace Dynamo.DocumentationBrowser
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
+        #region ILogSource Implementation
+        private void Log(string message)
+        {
+            viewModel.MessageLogged?.Invoke(LogMessage.Info(message));
+        }
+        #endregion
     }
 }

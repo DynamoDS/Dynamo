@@ -42,6 +42,7 @@ using Dynamo.Wpf.ViewModels.Core.Converters;
 using Dynamo.Wpf.ViewModels.FileTrust;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoUtilities;
+using ViewModels.Core;
 using ISelectable = Dynamo.Selection.ISelectable;
 using WpfResources = Dynamo.Wpf.Properties.Resources;
 
@@ -60,6 +61,9 @@ namespace Dynamo.ViewModels
         private Point transformOrigin;
         private bool showStartPage = false;
         private PreferencesViewModel preferencesViewModel;
+
+        // Can the user run the graph
+        private bool CanRunGraph => HomeSpace.RunSettings.RunEnabled && !HomeSpace.GraphRunInProgress;
 
         private ObservableCollection<DefaultWatch3DViewModel> watch3DViewModels = new ObservableCollection<DefaultWatch3DViewModel>();
 
@@ -94,6 +98,8 @@ namespace Dynamo.ViewModels
                 return preferencesViewModel;
             }
         }
+
+       
 
         /// <summary>
         /// Guided Tour Manager
@@ -684,7 +690,12 @@ namespace Dynamo.ViewModels
             UsageReportingManager.Instance.InitializeCore(this);
             this.WatchHandler = startConfiguration.WatchHandler;
             var pmExtension = model.GetPackageManagerExtension();
-            this.PackageManagerClientViewModel = new PackageManagerClientViewModel(this, pmExtension.PackageManagerClient);
+
+            if (pmExtension != null)
+            {
+                this.PackageManagerClientViewModel = new PackageManagerClientViewModel(this, pmExtension.PackageManagerClient);
+            }
+
             this.SearchViewModel = null;
 
             // Start page should not show up during test mode.
@@ -739,6 +750,7 @@ namespace Dynamo.ViewModels
             model.RequestNotification += model_RequestNotification;
 
             preferencesViewModel = new PreferencesViewModel(this);
+
 
             if (!DynamoModel.IsTestMode && !DynamoModel.IsHeadless)
             {
@@ -1073,7 +1085,7 @@ namespace Dynamo.ViewModels
 
         private void SelectionOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            PublishSelectedNodesCommand.RaiseCanExecuteChanged();
+            PublishSelectedNodesCommand?.RaiseCanExecuteChanged();
             AlignSelectedCommand.RaiseCanExecuteChanged();
             DeleteCommand.RaiseCanExecuteChanged();
             UngroupModelCommand.RaiseCanExecuteChanged();
@@ -1812,7 +1824,7 @@ namespace Dynamo.ViewModels
         /// <param name="notification"></param>
         private void model_RequestNotification(string notification)
         {
-            this.MainGuideManager.CreateRealTimeInfoWindow(notification, true);
+            this.MainGuideManager.CreateRealTimeInfoWindow(notification);
         }
 
         /// <summary>
@@ -1869,10 +1881,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private bool CanShowOpenDialogAndOpenResultCommand(object parameter)
-        {
-            return HomeSpace.RunSettings.RunEnabled;
-        }
+        private bool CanShowOpenDialogAndOpenResultCommand(object parameter) => CanRunGraph;
 
 
         /// <summary>
@@ -1889,7 +1898,7 @@ namespace Dynamo.ViewModels
                 Filter = string.Format(Resources.FileDialogDynamoDefinitions,
                          BrandingResourceProvider.ProductName, fileExtensions) + "|" +
                          string.Format(Resources.FileDialogAllFiles, "*.*"),
-                Title = string.Format("Insert Title (Replace)", BrandingResourceProvider.ProductName)
+                Title = string.Format(Properties.Resources.InsertDialogBoxText, BrandingResourceProvider.ProductName)
             };
 
             // if you've got the current space path, use it as the inital dir
@@ -1917,24 +1926,24 @@ namespace Dynamo.ViewModels
                     _fileDialog.InitialDirectory = path;
             }
 
-            if (HomeSpace.RunSettings.RunType != RunType.Manual)
-            {
-                MainGuideManager.CreateRealTimeInfoWindow("Example file added to workspace. Run mode changed to Manual.", true);
-                HomeSpace.RunSettings.RunType = RunType.Manual;
-            }
-
             if (_fileDialog.ShowDialog() == DialogResult.OK)
             {
                 if (CanOpen(_fileDialog.FileName))
                 {
                     Insert(new Tuple<string, bool>(_fileDialog.FileName, _fileDialog.RunManualMode));
+
+                    if (HomeSpace.RunSettings.RunType != RunType.Manual)
+                    {
+                        MainGuideManager.CreateRealTimeInfoWindow(Properties.Resources.InsertGraphRunModeNotificationText);
+                        HomeSpace.RunSettings.RunType = RunType.Manual;
+                    }
                 }
             }
         }
 
         private bool CanShowInsertDialogAndInsertResultCommand(object parameter)
         {
-            return HomeSpace.RunSettings.RunEnabled && !this.showStartPage;
+            return CanRunGraph && !this.showStartPage;
         }
 
         private void OpenRecent(object path)
@@ -1950,7 +1959,7 @@ namespace Dynamo.ViewModels
 
         private bool CanOpenRecent(object path)
         {
-            return HomeSpace.RunSettings.RunEnabled;
+            return CanRunGraph;
         }
 
         /// <summary>
@@ -2001,16 +2010,7 @@ namespace Dynamo.ViewModels
             try
             {
                 Model.Logger.Log(String.Format(Properties.Resources.SavingInProgress, path));
-
-                // If the current workspace is a CustomNodeWorkspaceModel, then call the save method on it.
-                if (CurrentSpaceViewModel.Model is CustomNodeWorkspaceModel)
-                {
-                    CurrentSpaceViewModel.Model.Save(path, false, Model.EngineController);
-                }
-                else
-                {
-                    CurrentSpaceViewModel.Save(path, isBackup, Model.EngineController, saveContext);
-                }
+                CurrentSpaceViewModel.Save(path, isBackup, Model.EngineController, saveContext);
 
                 if (!isBackup) AddToRecentFiles(path);
             }
@@ -2138,7 +2138,7 @@ namespace Dynamo.ViewModels
 
         internal bool CanShowPackageManagerSearch(object parameters)
         {
-            return true;
+            return !model.IsServiceMode;
         }
 
         /// <summary>
@@ -2216,6 +2216,8 @@ namespace Dynamo.ViewModels
                 this.ExecuteCommand(new DynamoModel.CreateCustomNodeCommand(Guid.NewGuid(),
                     args.Name, args.Category, args.Description, true));
                 this.ShowStartPage = false;
+
+                SetDefaultScaleFactor(Workspaces.FirstOrDefault(viewModels => viewModels.Model is CustomNodeWorkspaceModel));
             }
         }
 
@@ -2339,7 +2341,8 @@ namespace Dynamo.ViewModels
                     _fileDialog.InitialDirectory = fi.DirectoryName;
                     _fileDialog.FileName = fi.Name;
                 }
-                else if (vm.Model.CurrentWorkspace is CustomNodeWorkspaceModel)
+
+                if (vm.Model.CurrentWorkspace is CustomNodeWorkspaceModel)
                 {
                     var pathManager = vm.model.PathManager;
                     _fileDialog.InitialDirectory = pathManager.DefaultUserDefinitions;
@@ -2522,18 +2525,17 @@ namespace Dynamo.ViewModels
         public void MakeNewHomeWorkspace(object parameter)
         {
             if (ClearHomeWorkspaceInternal())
-            {
+            {   
                 var t = new DelegateBasedAsyncTask(model.Scheduler, () => model.ResetEngine());
                 model.Scheduler.ScheduleForExecution(t);
 
                 ShowStartPage = false; // Hide start page if there's one.
+
+                SetDefaultScaleFactor(Workspaces.FirstOrDefault());
             }
         }
 
-        internal bool CanMakeNewHomeWorkspace(object parameter)
-        {
-            return HomeSpace.RunSettings.RunEnabled;
-        }
+        internal bool CanMakeNewHomeWorkspace(object parameter) => CanRunGraph;
 
         private void CloseHomeWorkspace(object parameter)
         {
@@ -2548,7 +2550,7 @@ namespace Dynamo.ViewModels
 
         private bool CanCloseHomeWorkspace(object parameter)
         {
-            return HomeSpace.RunSettings.RunEnabled || RunSettings.ForceBlockRun;
+            return CanRunGraph || RunSettings.ForceBlockRun;
         }
 
         /// <summary>
@@ -2573,6 +2575,11 @@ namespace Dynamo.ViewModels
                 Model.CurrentWorkspace = HomeSpace;
 
                 model.ClearCurrentWorkspace();
+
+                var defaultWorkspace = Workspaces.FirstOrDefault();
+                //Every time that a new workspace is created we have to assign the Default Geometry Scaling value defined in Preferences
+                if (defaultWorkspace !=null && defaultWorkspace.GeoScalingViewModel != null && preferencesViewModel != null)
+                    defaultWorkspace.GeoScalingViewModel.ScaleSize = preferencesViewModel.DefaultGeometryScaling;
 
                 return true;
             }
@@ -2971,6 +2978,11 @@ namespace Dynamo.ViewModels
                 return;
             }
 
+            if (parameter is bool)
+            {
+                CurrentSpaceViewModel.FitViewInternal((bool)parameter);
+                return;
+            }
             CurrentSpaceViewModel.FitViewInternal();
         }
 
@@ -3167,6 +3179,15 @@ namespace Dynamo.ViewModels
         private bool CanSetNumberFormat(object parameter)
         {
             return true;
+        }
+
+        private void SetDefaultScaleFactor(WorkspaceViewModel defaultWorkspace)
+        {
+            if (defaultWorkspace != null)
+            {
+                defaultWorkspace.GeoScalingViewModel.ScaleValue = PreferenceSettings.DefaultScaleFactor;
+                defaultWorkspace.GeoScalingViewModel.UpdateGeometryScale(PreferenceSettings.DefaultScaleFactor);
+            }
         }
 
         #region Shutdown related methods

@@ -9,7 +9,7 @@
       "childElements": [
         {
           "text": "List",
-          "iconUrl": "./dist/resources/Category.List.svg",
+          "iconUrl": "http://localhost/dist/resources/Category.List.svg",
           "elementType": "category",
           "include": [],
           "childElements": [
@@ -297,7 +297,7 @@
         },
         {
           "text": "Dictionary",
-          "iconUrl": "./dist/resources/Category.Dictionary.svg",
+          "iconUrl": "http://localhost/dist/resources/Category.Dictionary.svg",
           "elementType": "category",
           "include": [
             {
@@ -329,7 +329,7 @@
         },
         {
           "text": "Input",
-          "iconUrl": "./dist/resources/Category.Input.svg",
+          "iconUrl": "http://localhost/dist/resources/Category.Input.svg",
           "elementType": "category",
           "include": [],
           "childElements": [
@@ -527,7 +527,7 @@
         },
         {
           "text": "Math",
-          "iconUrl": "./dist/resources/Category.Math.svg",
+          "iconUrl": "http://localhost/dist/resources/Category.Math.svg",
           "elementType": "category",
           "include": [],
           "childElements": [
@@ -655,7 +655,7 @@
             },
             {
               "text": "Operators",
-              "iconUrl": "./dist/resources/Category.Operators.svg",
+              "iconUrl": "http://localhost/dist/resources/Category.Operators.svg",
               "elementType": "group",
               "include": [
                 {
@@ -727,7 +727,7 @@
         },
         {
           "text": "Units",
-          "iconUrl": "./dist/resources/Category.Units.svg",
+          "iconUrl": "http://localhost/dist/resources/Category.Units.svg",
           "elementType": "category",
           "include": [],
           "childElements": [
@@ -854,7 +854,7 @@
         },
         {
           "text": "Script",
-          "iconUrl": "./dist/resources/Category.Script.svg",
+          "iconUrl": "http://localhost/dist/resources/Category.Script.svg",
           "elementType": "category",
           "include": [],
           "childElements": [
@@ -913,100 +913,126 @@
         },
         {
           "text": "Display",
-          "iconUrl": "./dist/resources/Category.Display.svg",
+          "iconUrl": "http://localhost/dist/resources/Category.Display.svg",
           "elementType": "category",
           "include": [
             {
               "path": "Analysis.Analysis.Label"
             }
           ],
-          "childElements": [
-            {
-              "text": "Color",
-              "iconUrl": "",
-              "elementType": "group",
-              "include": [
+            "childElements": [
                 {
-                  "path": "DSCoreNodes.DSCore.Color.Red"
+                    "text": "Color",
+                    "iconUrl": "",
+                    "elementType": "group",
+                    "include": [
+                        {
+                            "path": "DSCoreNodes.DSCore.Color.Red"
+                        },
+                        {
+                            "path": "DSCoreNodes.DSCore.Color.Green"
+                        },
+                        {
+                            "path": "DSCoreNodes.DSCore.Color.Blue"
+                        },
+                        {
+                            "path": "DSCoreNodes.DSCore.Color.Alpha"
+                        },
+                        {
+                            "path": "DSCoreNodes.DSCore.Color.ByARGB"
+                        },
+                        {
+                            "path": "DSCoreNodes.DSCore.Color.Brightness"
+                        },
+                        {
+                            "path": "DSCoreNodes.DSCore.Color.Saturation"
+                        },
+                        {
+                            "path": "DSCoreNodes.DSCore.Color.Hue"
+                        },
+                        {
+                            "path": "DSCoreNodes.DSCore.Color.Components"
+                        },
+                        {
+                            "path": "DSCoreNodes.DSCore.Color.Add"
+                        },
+                        {
+                            "path": "DSCoreNodes.DSCore.Color.Multiply"
+                        },
+                        {
+                            "path": "DSCoreNodes.DSCore.Color.Divide"
+                        },
+                        {
+                            "path": "Core.Color.Color Palette"
+                        }
+                    ],
+                    "childElements": []
                 },
                 {
-                  "path": "DSCoreNodes.DSCore.Color.Green"
+                    "text": "Color Range",
+                    "iconUrl": "",
+                    "elementType": "group",
+                    "include": [
+                        {
+                            "path": "Core.Color.Color Range"
+                        },
+                        {
+                            "path": "DSCoreNodes.DSCore.ColorRange.ByColorsAndParameters"
+                        },
+                        {
+                            "path": "DSCoreNodes.DSCore.ColorRange.GetColorAtParameter"
+                        }
+                    ],
+                    "childElements": []
                 },
                 {
-                  "path": "DSCoreNodes.DSCore.Color.Blue"
+                    "text": "Charts",
+                    "iconUrl": "",
+                    "elementType": "group",
+                    "include": [
+                        {
+                            "path": "Display.Charts.XY Line Plot"
+                        },
+                        {
+                            "path": "Display.Charts.Scatter Plot"
+                        },
+                        {
+                            "path": "Display.Charts.Pie Chart"
+                        },
+                        {
+                            "path": "Display.Charts.Heat Series Plot"
+                        },
+                        {
+                            "path": "Display.Charts.Index-Value Line Plot"
+                        },
+                        {
+                            "path": "Display.Charts.Bar Chart"
+                        }
+                    ],
+                    "childElements": []
                 },
                 {
-                  "path": "DSCoreNodes.DSCore.Color.Alpha"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.Color.ByARGB"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.Color.Brightness"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.Color.Saturation"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.Color.Hue"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.Color.Components"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.Color.Add"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.Color.Multiply"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.Color.Divide"
-                },
-                {
-                  "path": "Core.Color.Color Palette"
+                    "text": "Watch",
+                    "iconUrl": "",
+                    "elementType": "group",
+                    "include": [
+                        {
+                            "path": "Core.View.Watch"
+                        },
+                        {
+                            "path": "Core.View.Watch Image"
+                        },
+                        {
+                            "path": "Core.View.Watch 3D"
+                        }
+                    ],
+                    "childElements": []
                 }
-              ],
-              "childElements": []
-            },
-            {
-              "text": "Color Range",
-              "iconUrl": "",
-              "elementType": "group",
-              "include": [
-                {
-                  "path": "Core.Color.Color Range"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.ColorRange.ByColorsAndParameters"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.ColorRange.GetColorAtParameter"
-                }
-              ],
-              "childElements": []
-            },
-            {
-              "text": "Watch",
-              "iconUrl": "",
-              "elementType": "group",
-              "include": [
-                {
-                  "path": "Core.View.Watch"
-                },
-                {
-                  "path": "Core.View.Watch Image"
-                },
-                {
-                  "path": "Core.View.Watch 3D"
-                }
-              ],
-              "childElements": []
-            }
-          ]
+            ]
         },
         {
           "text": "ImportExport",
-          "iconUrl": "./dist/resources/Category.ImportExport.svg",
+          "iconUrl": "http://localhost/dist/resources/Category.ImportExport.svg",
           "elementType": "category",
           "include": [],
           "childElements": [
@@ -1177,7 +1203,7 @@
         },
         {
           "text": "String",
-          "iconUrl": "./dist/resources/Category.String.svg",
+          "iconUrl": "http://localhost/dist/resources/Category.String.svg",
           "elementType": "category",
           "include": [],
           "childElements": [
@@ -1296,7 +1322,7 @@
         },
         {
           "text": "Geometry",
-          "iconUrl": "./dist/resources/Category.Geometry.svg",
+          "iconUrl": "http://localhost/dist/resources/Category.Geometry.svg",
           "elementType": "category",
           "include": [],
           "childElements": [
@@ -1519,19 +1545,19 @@
       ]
     },
     {
-      "text": "Add-ons",
-      "iconUrl": "./dist/resources/plus-symbol.svg",
-      "elementType": "section",
-      "showHeader": true,
-      "include": [
-        {
-          "path": "pkg://"
-        },
-        {
-          "path": "dyf://"
-        }
-      ],
-      "childElements": []
+        "text": "Add-ons",
+        "iconUrl": " http://localhost/dist/resources/plus-symbol.svg",
+        "elementType": "section",
+        "showHeader": true,
+        "include": [
+            {
+                "path": "pkg://"
+            },
+            {
+                "path": "dyf://"
+            }
+        ],
+        "childElements": []
     }
   ]
 }

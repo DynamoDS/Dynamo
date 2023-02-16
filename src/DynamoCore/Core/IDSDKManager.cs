@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using Autodesk.IDSDK;
 using Greg;
 using Greg.AuthProviders;
@@ -85,6 +86,20 @@ namespace Dynamo.Core
                 throw new Exception("You must be logged in, to use the Package Manager.");
             }
             m.AddHeader("Authorization", $"Bearer {IDSDK_GetToken()}");
+        }
+
+        /// <summary>
+        /// Checks if the user is logged in and adds the token to request header.
+        /// </summary>
+        internal void LoginRequest(ref RestRequest m, RestClient client)
+        {
+            if (LoginState == LoginState.LoggedIn)
+            {
+                m.AddHeader("Authorization", $"Bearer {IDSDK_GetToken()}");          
+            }
+            else {
+                throw new Exception("You must be logged in, to use this service.");
+            }
         }
 
         private void OnLoginStateChanged(LoginState state)
@@ -177,6 +192,7 @@ namespace Dynamo.Core
             idsdk_status_code bRet = Client.SetProductConfig(oauthKey, "", productLineCode, DateTime.Now.Year.ToString(), "1.2.3.4", server);
             return Client.IsSuccess(bRet);
         }
+
         /// <summary>
         /// Returns the OAuth2 token for the current session, or an empty string if token is not available.
         /// </summary>
@@ -189,19 +205,35 @@ namespace Dynamo.Core
             }
             return String.Empty;
         }
+
         private bool Initialize()
         {
+            if (Client.IsInitialized()) return true;
             idsdk_status_code bRet = Client.Init();
 
             if (Client.IsSuccess(bRet))
             {
                 if (Client.IsInitialized())
                 {
-                    bool ret = GetClientIDAndServer(out idsdk_server server, out string client_id);
-                    if (ret)
+                    try
                     {
-                        ret = SetProductConfigs("Dynamo", server, client_id);
-                        return ret;
+                        IntPtr hWnd = Process.GetCurrentProcess().MainWindowHandle;
+                        if (hWnd != null)
+                        {
+                            Client.SetHost(hWnd);
+                        }
+
+                        bool ret = GetClientIDAndServer(out idsdk_server server, out string client_id);
+                        if (ret) 
+                        {
+                            ret = SetProductConfigs("Dynamo", server, client_id);
+                            Client.SetServer(server);
+                            return ret;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        return false;
                     }
                 }
             }

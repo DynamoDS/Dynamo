@@ -15,6 +15,7 @@ using Dynamo.Core;
 using Dynamo.Exceptions;
 using Dynamo.Logging;
 using Dynamo.UI;
+using Dynamo.UI.Views;
 using Dynamo.ViewModels;
 using Res = Dynamo.Wpf.Properties.Resources;
 
@@ -27,7 +28,6 @@ namespace Dynamo.Wpf.Views
     {
         private readonly PreferencesViewModel viewModel;
         private readonly DynamoViewModel dynViewModel;
-        private int scaleValue = 0;
         private List<GroupStyleItem> originalCustomGroupStyles { get; set; }
 
         // Used for tracking the manage package command event
@@ -55,12 +55,12 @@ namespace Dynamo.Wpf.Views
         /// </summary>
         /// <param name="dynamoViewModel"> Dynamo ViewModel</param>
         public PreferencesView(DynamoView dynamoView)
-        {            
+        {
             dynViewModel = dynamoView.DataContext as DynamoViewModel;            
             SetupPreferencesViewModel(dynViewModel);
 
             DataContext = dynViewModel.PreferencesViewModel;
- 
+
             InitializeComponent();
             Dynamo.Logging.Analytics.TrackEvent(
                 Actions.Open,
@@ -75,12 +75,15 @@ namespace Dynamo.Wpf.Views
 
             InitRadioButtonsDescription();
 
-            //We need to store the ScaleFactor value in a temporary variable always when the Preferences dialog is created.
-            scaleValue = dynViewModel.ScaleFactorLog;
             ResetGroupStyleForm();
             StoreOriginalCustomGroupStyles();
+            displayConfidenceLevel();
+
+            viewModel.InitializeGeometryScaling();
 
             viewModel.RequestShowFileDialog += OnRequestShowFileDialog;
+
+            LibraryZoomScalingSlider.Value = dynViewModel.Model.PreferenceSettings.LibraryZoomScale;
         }
 
         /// <summary>
@@ -152,40 +155,10 @@ namespace Dynamo.Wpf.Views
             TrustedPathView.Dispose();
             Dispose();
 
-            RunGraphWhenScaleFactorUpdated();
-
             dynViewModel.PreferencesViewModel.TrustedPathsViewModel.PropertyChanged -= TrustedPathsViewModel_PropertyChanged;
             dynViewModel.CheckCustomGroupStylesChanges(originalCustomGroupStyles);
 
             Close();
-        }
-
-        /// <summary>
-        /// This method will run the graph only if the Geometry Scaling was updated otherwise will not be executed
-        /// </summary>
-        private void RunGraphWhenScaleFactorUpdated()
-        {
-            //If the new radio button selected (ScaleValue) is different than the current one in Dynamo, we update the current one
-            if (dynViewModel.ScaleFactorLog != scaleValue)
-            {
-                dynViewModel.ScaleFactorLog = scaleValue;
-                dynViewModel.CurrentSpace.HasUnsavedChanges = true;
-
-                //Due that binding are done before the contructor of this class we need to execute the Log only if the viewModel was assigned previously
-                if (viewModel != null)
-                {
-                    Log(String.Format("Geometry working range changed to {0} ({1}, {2})",
-                    viewModel.ScaleRange.Item1, viewModel.ScaleRange.Item2, viewModel.ScaleRange.Item3));
-                    viewModel.UpdateSavedChangesLabel();
-                    Dynamo.Logging.Analytics.TrackEvent(
-                        Actions.Switch,
-                        Categories.Preferences,
-                        Res.PreferencesViewVisualSettingsGeoScaling);
-                }
-
-                var allNodes = dynViewModel.HomeSpace.Nodes;
-                dynViewModel.HomeSpace.MarkNodesAsModifiedAndRequestRun(allNodes, forceExecute: true);
-            }
         }
 
         /// <summary>
@@ -307,44 +280,9 @@ namespace Dynamo.Wpf.Views
             }
         }
 
-        /// <summary>
-        /// This event is generated every time the user clicks a Radio Button in the Geometry Scaling section
-        /// The method just get the Radio Button clicked and saves the ScaleValue selected
-        /// This are the values used for the scales:
-        /// - 2 - Small
-        ///   0 - Medium (Default)
-        ///   2 - Large
-        ///   4 - Extra Large
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Geometry_Scaling_Checked(object sender, RoutedEventArgs e)
-        {
-            RadioButton selectedScaling = sender as RadioButton;
-            var radioButtons = GeometryScalingRadiosPanel.Children.OfType<RadioButton>();
-
-            int index = 0;      
-
-            //We need to loop all the radiobuttons in the GeometryScaling section in order to find the index of the selected one
-            foreach (var radio in radioButtons)
-            {
-                if(radio == selectedScaling)
-                {
-                    scaleValue = GeometryScalingOptions.ConvertUIToScaleFactor(index);
-                    break;
-                }
-                index++;
-            }
-        }
-
         private void Log(ILogMessage obj)
         {
             dynViewModel.Model.Logger.Log(obj);
-        }
-
-        private void Log(string message)
-        {
-            Log(LogMessage.Info(message));
         }
 
         /// <summary>
@@ -466,7 +404,7 @@ namespace Dynamo.Wpf.Views
                         Wpf.Utilities.MessageBoxService.Show(
                             this, Res.ImportSettingsFailedMessage, Res.ImportSettingsDialogTitle, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     }
-                    Analytics.TrackEvent(Actions.ImportSettings, Categories.Preferences, isImported.ToString());
+                    Analytics.TrackEvent(Actions.Import, Categories.Preferences, isImported.ToString());
                 }
                 catch (Exception ex)
                 {
@@ -474,6 +412,11 @@ namespace Dynamo.Wpf.Views
                         this, ex.Message, Res.ImportSettingsFailedMessage, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 }
             }            
+        }
+
+        private void OnMoreInfoClicked(object sender, MouseButtonEventArgs e)
+        {
+            dynViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Dynamo.Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString, UriKind.Relative)));
         }
 
         private void exportTextBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -503,7 +446,7 @@ namespace Dynamo.Wpf.Views
                     File.Copy(dynViewModel.Model.PathManager.PreferenceFilePath, selectedPathFile);
                     string argument = "/select, \"" + selectedPathFile + "\"";
                     System.Diagnostics.Process.Start("explorer.exe", argument);
-                    Analytics.TrackEvent(Actions.ExportSettings, Categories.Preferences);
+                    Analytics.TrackEvent(Actions.Export, Categories.Preferences);
                 }
                 catch (Exception ex)
                 {
@@ -548,6 +491,44 @@ namespace Dynamo.Wpf.Views
         internal void Dispose()
         {
             viewModel.RequestShowFileDialog -= OnRequestShowFileDialog;
+        }
+
+        int getExtraLeftSpace(int confidenceLevel)
+        {
+            int value = 16;
+
+            for (int i = 1; i <= 9; i++)
+            {
+                if (confidenceLevel <= 9)
+                {
+                    break;
+                }               
+                else
+                {
+                    value--;
+                    if ((confidenceLevel == 10) || confidenceLevel >= (i * 10) + 1 && confidenceLevel <= (i + 1) * 10)
+                    {                        
+                        break;
+                    }
+                }
+            }
+            return value;
+        }       
+
+        private void sliderConfidenceLevel_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            displayConfidenceLevel();
+        }
+
+        private void displayConfidenceLevel()
+        {
+            if (this.lblConfidenceLevel != null && this.lblConfidenceLevelLabelStart != null)
+            {
+                int confidenceLevel = (int)lblConfidenceLevel.Content;
+
+                int left = ((int)lblConfidenceLevel.Content * 3) + getExtraLeftSpace(confidenceLevel);
+                this.lblConfidenceLevel.Margin = new Thickness(left, -15, 0, 0);
+            }
         }
     }
 }

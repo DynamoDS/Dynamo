@@ -51,10 +51,13 @@ namespace Dynamo.Configuration
         private string lastUpdateDownloadPath;
         private int maxNumRecentFiles;
         private bool isBackgroundGridVisible;
+        private double defaultScaleFactor;
         private bool disableTrustWarnings = false;
         private bool isNotificationCenterEnabled;
         private bool isStaticSplashScreenEnabled;
         private bool isCreatedFromValidFile = true;
+        private bool isADPChecked = false;
+        private bool isADPOptedIn = false;
 
         #region Constants
         /// <summary>
@@ -110,12 +113,23 @@ namespace Dynamo.Configuration
 
         /// <summary>
         /// Indicates whether ADP analytics reporting is approved or not.
+        /// Note that this property is called often and the inner call to IsADPOptinIn can be slow sometimes
+        /// especially when there is an error involved. And therefore we will only check this once per instance.
         /// </summary>
         [XmlIgnore]
         [Obsolete("Setter is obsolete - ADP consent should not be set directly, it should be set using the consent dialog.")]
         public bool IsADPAnalyticsReportingApproved
         {
-            get { return Logging.AnalyticsService.IsADPOptedIn; }
+            get
+            {
+                if (!isADPChecked)
+                {
+                    isADPChecked = true;
+                    isADPOptedIn = AnalyticsService.IsADPOptedIn;
+                }
+
+                return isADPOptedIn;
+            }
             set { throw new Exception("do not use"); }
         }
         #endregion
@@ -151,6 +165,11 @@ namespace Dynamo.Configuration
         /// Should connector tooltip be visible?
         /// </summary>
         public bool ShowConnectorToolTip { get; set; }
+
+        /// <summary>
+        /// Indicates the zoom scale of the library
+        /// </summary>
+        public float LibraryZoomScale { get; set; }
 
         /// <summary>
         /// The types of connector: Bezier or Polyline.
@@ -214,6 +233,24 @@ namespace Dynamo.Configuration
                 isBackgroundGridVisible = value;
 
                 RaisePropertyChanged(nameof(IsBackgroundGridVisible));
+            }
+        }
+
+        /// <summary>
+        /// Default geometry scale factor for a new workspace
+        /// </summary>
+        public double DefaultScaleFactor
+        {
+            get
+            {
+                return defaultScaleFactor;
+            }
+            set
+            {
+                if (value == defaultScaleFactor) return;
+                defaultScaleFactor = value;
+
+                RaisePropertyChanged(nameof(DefaultScaleFactor));
             }
         }
 
@@ -498,6 +535,21 @@ namespace Dynamo.Configuration
         public bool EnableNodeAutoComplete { get; set; }
 
         /// <summary>
+        /// This defines if user wants to hide the nodes below a specific confidenc level.
+        /// </summary>
+        public bool HideNodesBelowSpecificConfidenceLevel { get; set; }
+
+        /// <summary>
+        /// This defines the level of confidence related to the ML recommendation.
+        /// </summary>
+        public int MLRecommendationConfidenceLevel { get; set; }
+
+        /// <summary>
+        /// This defines the number of results of the  ML recommendation
+        /// </summary>
+        public int MLRecommendationNumberOfResults { get; set; }
+
+        /// <summary>
         /// This defines if user wants to see the enabled Dynamo Notification Center.
         /// </summary>
         public bool EnableNotificationCenter
@@ -730,12 +782,17 @@ namespace Dynamo.Configuration
             BackupFilesCount = 1;
             BackupFiles = new List<string>();
 
+            LibraryZoomScale = 1;
+
             CustomPackageFolders = new List<string>();
 
             PythonTemplateFilePath = "";
             IsIronPythonDialogDisabled = false;
             ShowTabsAndSpacesInScriptEditor = false;
             EnableNodeAutoComplete = true;
+            HideNodesBelowSpecificConfidenceLevel = false;
+            MLRecommendationConfidenceLevel = 10;
+            MLRecommendationNumberOfResults = 10;
             EnableNotificationCenter = true;
             isStaticSplashScreenEnabled = true;
             DefaultPythonEngine = string.Empty;

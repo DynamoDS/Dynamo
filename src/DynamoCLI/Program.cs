@@ -27,10 +27,10 @@ namespace DynamoCLI
 
                 if (cmdLineArgs.KeepAlive)
                 {
-                    var thread = new Thread(() => RunKeepAlive(cmdLineArgs));
-
-                    thread.Name = "DynamoModelKeepAlive";
-                    thread.SetApartmentState(ApartmentState.STA);
+                    var thread = new Thread(() => RunKeepAlive(cmdLineArgs))
+                    {
+                        Name = "DynamoModelKeepAlive"
+                    };
                     thread.Start();
 
                     if (!useConsole)
@@ -85,8 +85,6 @@ namespace DynamoCLI
                     Console.WriteLine("DynamoCLI is running in keepalive mode");
                     Console.WriteLine("Press Enter to shutdown...");
                 }
-
-                System.Windows.Threading.Dispatcher.Run();
             }
             catch
             {
@@ -105,7 +103,8 @@ namespace DynamoCLI
             model = Dynamo.Applications.StartupUtils.MakeCLIModel(String.IsNullOrEmpty(cmdLineArgs.ASMPath) ? string.Empty : cmdLineArgs.ASMPath,
                 cmdLineArgs.UserDataFolder,
                 cmdLineArgs.CommonDataFolder,
-                cmdLineArgs.AnalyticsInfo);
+                cmdLineArgs.AnalyticsInfo,
+                cmdLineArgs.ServiceMode);
 
             if (!string.IsNullOrEmpty(cmdLineArgs.CERLocation))
             {
