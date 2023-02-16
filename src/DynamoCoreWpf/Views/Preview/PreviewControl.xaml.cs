@@ -381,8 +381,6 @@ namespace Dynamo.UI.Controls
                             nodeViewModel.NodeModel.OutPorts.Select(p => p.Name).Where(n => !string.IsNullOrEmpty(n));
                     }
 
-                    WatchViewModel.PrecisionFormat = nodeViewModel.DynamoViewModel.PreferenceSettings.NumberFormat;
-
                     newViewModel = nodeViewModel.DynamoViewModel.WatchHandler.GenerateWatchViewModelForData(
                         nodeViewModel.NodeModel.CachedValue, preferredDictionaryOrdering,
                         null, nodeViewModel.NodeModel.AstIdentifierForPreview.Name, false);                    
