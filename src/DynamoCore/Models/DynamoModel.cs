@@ -209,6 +209,11 @@ namespace Dynamo.Models
         public HostAnalyticsInfo HostAnalyticsInfo { get; set; }
 
         /// <summary>
+        /// Boolean indication of launching Dynamo in service mode, this mode is optimized for minimal launch time, mostly leveraged by CLI or WPF CLI.
+        /// </summary>
+        internal bool IsServiceMode { get; set; }
+
+        /// <summary>
         /// UpdateManager to handle automatic upgrade to higher version.
         /// </summary>
         public IUpdateManager UpdateManager { get; private set; }
@@ -551,6 +556,7 @@ namespace Dynamo.Models
             public IEnumerable<IExtension> Extensions { get; set; }
             public TaskProcessMode ProcessMode { get; set; }
             public bool IsHeadless { get; set; }
+            public bool IsServiceMode { get; set; }
             public string PythonTemplatePath { get; set; }
             /// <summary>
             /// Default Python script engine
@@ -616,6 +622,7 @@ namespace Dynamo.Models
                 // TODO: This fact should probably be revisited in 3.0.
                 DefaultPythonEngine = defaultStartConfig.DefaultPythonEngine;
                 CLIMode = defaultStartConfig.CLIMode;
+                IsServiceMode = defaultStartConfig.IsServiceMode;
             }
 
             if (config is IStartConfigCrashReporter cerConfig)
@@ -643,9 +650,13 @@ namespace Dynamo.Models
             DebugSettings = new DebugSettings();
             Logger = new DynamoLogger(DebugSettings, pathManager.LogDirectory, IsTestMode, CLIMode);
 
-            foreach (var exception in exceptions)
+            if (!IsServiceMode)
             {
-                Logger.Log(exception); // Log all exceptions.
+                // Log all exceptions as part of directories check.
+                foreach (var exception in exceptions)
+                {
+                    Logger.Log(exception); 
+                }
             }
 
             MigrationManager = new MigrationManager(DisplayFutureFileMessage, DisplayObsoleteFileMessage);
@@ -682,26 +693,29 @@ namespace Dynamo.Models
             }
 
             bool areAnalyticsDisabledFromConfig = false;
-            try
-            {
-                // Dynamo, behind a proxy server, has been known to have issues loading the Analytics binaries.
-                // Using the "DisableAnalytics" configuration setting, a user can skip loading analytics binaries altogether.
-                var assemblyConfig = ConfigurationManager.OpenExeConfiguration(GetType().Assembly.Location);
-                if (assemblyConfig != null)
+            if (!IsServiceMode)
+            {   // Skip getting the value for areAnalyticsDisabledFromConfig because analytics is disabled for searvice mode anyway
+                try
                 {
-                    var disableAnalyticsValue = assemblyConfig.AppSettings.Settings["DisableAnalytics"];
-                    if (disableAnalyticsValue != null)
-                        bool.TryParse(disableAnalyticsValue.Value, out areAnalyticsDisabledFromConfig);
+                    // Dynamo, behind a proxy server, has been known to have issues loading the Analytics binaries.
+                    // Using the "DisableAnalytics" configuration setting, a user can skip loading analytics binaries altogether.
+                    var assemblyConfig = ConfigurationManager.OpenExeConfiguration(GetType().Assembly.Location);
+                    if (assemblyConfig != null)
+                    {
+                        var disableAnalyticsValue = assemblyConfig.AppSettings.Settings["DisableAnalytics"];
+                        if (disableAnalyticsValue != null)
+                            bool.TryParse(disableAnalyticsValue.Value, out areAnalyticsDisabledFromConfig);
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                // Do nothing for now
+                catch (Exception)
+                {
+                    // Do nothing for now
+                }
             }
 
             // If user skipped analytics from assembly config, do not try to launch the analytics client
-            // or the feature flags client.
-            if (!areAnalyticsDisabledFromConfig && !Dynamo.Logging.Analytics.DisableAnalytics)
+            // or the feature flags client for web traffic reason.
+            if (!IsServiceMode && !areAnalyticsDisabledFromConfig && !Dynamo.Logging.Analytics.DisableAnalytics)
             {
                 // Start the Analytics service only when a session is not present.
                 // In an integrator host, as splash screen can be closed without shutting down the ViewModel, the analytics service is not stopped.
@@ -746,7 +760,8 @@ namespace Dynamo.Models
 
             }
 
-            if (!IsTestMode && PreferenceSettings.IsFirstRun)
+            // TBD: Do we need settings migrator for service mode? If we config the docker correctly, this could be skipped I think
+            if (!IsServiceMode && !IsTestMode && PreferenceSettings.IsFirstRun)
             {
                 DynamoMigratorBase migrator = null;
 
@@ -773,7 +788,7 @@ namespace Dynamo.Models
                 }
             }
 
-            if (PreferenceSettings.IsFirstRun && !IsTestMode)
+            if (!IsServiceMode && PreferenceSettings.IsFirstRun && !IsTestMode)
             {
                 PreferenceSettings.AddDefaultTrustedLocations();
             }
@@ -808,7 +823,7 @@ namespace Dynamo.Models
             // 4) Set from OOTB hard-coded default template
 
             // If a custom python template path doesn't already exists in the DynamoSettings.xml
-            if (string.IsNullOrEmpty(PreferenceSettings.PythonTemplateFilePath) || !File.Exists(PreferenceSettings.PythonTemplateFilePath))
+            if (string.IsNullOrEmpty(PreferenceSettings.PythonTemplateFilePath) || !File.Exists(PreferenceSettings.PythonTemplateFilePath) && !IsServiceMode)
             {
                 // To supply a custom python template host integrators should supply a 'DefaultStartConfiguration' config file
                 // or create a new struct that inherits from 'DefaultStartConfiguration' making sure to set the 'PythonTemplatePath'
@@ -848,9 +863,12 @@ namespace Dynamo.Models
             pathManager.Preferences = PreferenceSettings;
             PreferenceSettings.RequestUserDataFolder += pathManager.GetUserDataFolder;
 
-            SearchModel = new NodeSearchModel(Logger);
-            SearchModel.ItemProduced +=
-                node => ExecuteCommand(new CreateNodeCommand(node, 0, 0, true, true));
+            if (!IsServiceMode)
+            {
+                SearchModel = new NodeSearchModel(Logger);
+                SearchModel.ItemProduced +=
+                    node => ExecuteCommand(new CreateNodeCommand(node, 0, 0, true, true));
+            }
 
             NodeFactory = new NodeFactory();
             NodeFactory.MessageLogged += LogMessage;
@@ -858,9 +876,15 @@ namespace Dynamo.Models
             //Initialize the ExtensionManager with the CommonDataDirectory so that extensions found here are checked first for dll's with signed certificates
             extensionManager = new ExtensionManager(new[] { PathManager.CommonDataDirectory });
             extensionManager.MessageLogged += LogMessage;
-            var extensions = config.Extensions ?? LoadExtensions();
-
-            LinterManager = new LinterManager(this.ExtensionManager);
+            var extensions = config.Extensions ?? new List<IExtension>();
+            if (!extensions.Any() && !IsServiceMode)
+            {
+                extensions = LoadExtensions();
+            }
+            if (!IsServiceMode)
+            {
+                LinterManager = new LinterManager(this.ExtensionManager);
+            }
 
             // when dynamo is ready, alert the loaded extensions
             DynamoReady += (readyParams) =>
@@ -904,10 +928,13 @@ namespace Dynamo.Models
 
             AddHomeWorkspace();
 
-            AuthenticationManager = new AuthenticationManager(config.AuthProvider);
+            if (!IsServiceMode)
+            {
+                AuthenticationManager = new AuthenticationManager(config.AuthProvider);
+            }
 
             UpdateManager.Log += UpdateManager_Log;
-            if (!IsTestMode && !IsHeadless)
+            if (!IsTestMode && !IsHeadless && !IsServiceMode)
             {
                 DefaultUpdateManager.CheckForProductUpdate(UpdateManager);
             }
@@ -924,8 +951,7 @@ namespace Dynamo.Models
 
                 foreach (var ext in extensions)
                 {
-                    var logSource = ext as ILogSource;
-                    if (logSource != null)
+                    if (ext is ILogSource logSource)
                         logSource.MessageLogged += LogMessage;
 
                     try
@@ -1437,7 +1463,7 @@ namespace Dynamo.Models
             NodeFactory.AddTypeFactoryAndLoader(outputData.Type);
             NodeFactory.AddAlsoKnownAs(outputData.Type, outputData.AlsoKnownAs);
 
-            SearchModel.Add(new CodeBlockNodeSearchElement(cbnData, LibraryServices));
+            SearchModel?.Add(new CodeBlockNodeSearchElement(cbnData, LibraryServices));
 
             var symbolSearchElement = new NodeModelSearchElement(symbolData)
             {
@@ -1455,8 +1481,8 @@ namespace Dynamo.Models
                 outputSearchElement.IsVisibleInSearch = isVisible;
             };
 
-            SearchModel.Add(symbolSearchElement);
-            SearchModel.Add(outputSearchElement);
+            SearchModel?.Add(symbolSearchElement);
+            SearchModel?.Add(outputSearchElement);
         }
 
         internal static bool IsDisabledPath(string packagesDirectory, IPreferences preferences)
@@ -1614,6 +1640,10 @@ namespace Dynamo.Models
         {
             if (preferences != null) // If there is preference settings provided...
                 return preferences;
+
+            //Skip file handling in service mode.
+            if (IsServiceMode)
+                return new PreferenceSettings();
 
             // Is order for test cases not to interfere with the regular preference
             // settings xml file, a test case usually specify a temporary xml file
@@ -3108,7 +3138,7 @@ namespace Dynamo.Models
                 return;
             }
 
-            SearchModel.Add(new NodeModelSearchElement(typeLoadData));
+            SearchModel?.Add(new NodeModelSearchElement(typeLoadData));
         }
 
         /// <summary>
@@ -3155,7 +3185,7 @@ namespace Dynamo.Models
         {
             if (functionDescriptor.IsVisibleInLibrary)
             {
-                SearchModel.Add(new ZeroTouchSearchElement(functionDescriptor));
+                SearchModel?.Add(new ZeroTouchSearchElement(functionDescriptor));
             }
         }
 
