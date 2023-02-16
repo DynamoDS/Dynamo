@@ -329,7 +329,6 @@ namespace Dynamo.UI.Controls
                 {
                     var mirrorData = nodeViewModel.NodeModel.CachedValue;
                     newContent = CompactBubbleHandler.Process(mirrorData);
-                    newContent.NodeLabel = checkNumberFormat(newContent.NodeLabel);
                 },
                 (m) =>
                 {
@@ -382,10 +381,11 @@ namespace Dynamo.UI.Controls
                             nodeViewModel.NodeModel.OutPorts.Select(p => p.Name).Where(n => !string.IsNullOrEmpty(n));
                     }
 
+                    WatchViewModel.PrecisionFormat = nodeViewModel.DynamoViewModel.PreferenceSettings.NumberFormat;
+
                     newViewModel = nodeViewModel.DynamoViewModel.WatchHandler.GenerateWatchViewModelForData(
                         nodeViewModel.NodeModel.CachedValue, preferredDictionaryOrdering,
-                        null, nodeViewModel.NodeModel.AstIdentifierForPreview.Name, false);
-                    newViewModel.NodeLabel = checkNumberFormat(newViewModel.NodeLabel);
+                        null, nodeViewModel.NodeModel.AstIdentifierForPreview.Name, false);                    
                 },
                 (m) =>
                 {
@@ -435,19 +435,7 @@ namespace Dynamo.UI.Controls
                 }
             );
         }
-
-        private string checkNumberFormat(string numberValue)
-        {
-            if (PreferencesPanelUtilities.IsValidDoubleNumber(numberValue))
-            {
-                return Convert.ToDouble(numberValue).ToString(nodeViewModel.DynamoViewModel.PreferenceSettings.NumberFormat);
-            }
-            else
-            {
-                return numberValue;
-            }
-        }        
-
+        
         /// <summary>
         /// It's used to apply Collapsed and Expanded events for TreeViewItems.
         /// </summary>

@@ -47,20 +47,5 @@ namespace Dynamo.Wpf.Utilities
             preferencesWindow.WindowStartupLocation = location;
             preferencesWindow.ShowDialog();
         }
-
-        /// <summary>
-        /// Indicates if a string value has a double number format
-        /// </summary>
-        /// <param name="valueToTest"></param>
-        /// <returns></returns>
-        public static bool IsValidDoubleNumber(string valueToTest)
-        {
-            if (double.TryParse(valueToTest, out double d) && !Double.IsNaN(d) && !Double.IsInfinity(d))
-            {
-                return true;
-            }
-
-            return false;
-        }
     }
 }

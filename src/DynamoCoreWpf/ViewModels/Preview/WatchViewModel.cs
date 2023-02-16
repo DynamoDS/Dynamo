@@ -241,6 +241,8 @@ namespace Dynamo.ViewModels
             IsCollection = label == WatchViewModel.LIST || label == WatchViewModel.DICTIONARY;
         }
 
+        internal static string PrecisionFormat { get; set; } = "f3";
+
         private static string GetStringFromObject(object obj)
         {
             TypeCode type = Type.GetTypeCode(obj.GetType());
@@ -249,7 +251,7 @@ namespace Dynamo.ViewModels
                 case TypeCode.Boolean:
                     return ObjectToLabelString(obj);
                 case TypeCode.Double:
-                    return ((double)obj).ToString(numberFormat, CultureInfo.InvariantCulture);
+                    return ((double)obj).ToString(ProtoCore.Mirror.MirrorData.PrecisionFormat, CultureInfo.InvariantCulture);
                 case TypeCode.Int32:
                     return ((int)obj).ToString(CultureInfo.InvariantCulture);
                 case TypeCode.Int64:
@@ -259,6 +261,10 @@ namespace Dynamo.ViewModels
                 case TypeCode.Object:
                     return ObjectToLabelString(obj);
                 default:
+                    if (double.TryParse(obj.ToString(), out double d))
+                    {
+                        return Convert.ToDouble(obj).ToString(PrecisionFormat, CultureInfo.InvariantCulture);
+                    }
                     return (string)obj;
             };
         }
