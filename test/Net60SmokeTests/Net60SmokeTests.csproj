@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <ImportGroup Label="PropertySheets">
+        <Import Project="$(SolutionDir)Config/CS_SDK.props" />
+    </ImportGroup>
+  <PropertyGroup>
+     <IsPackable>false</IsPackable>
+  </PropertyGroup>
+<!--TODO somehow don't copy this test binary and all deps into bin folder directly - don't want to pollute distrub?-->
+
+    <!--Lose hope all ye who enter here-->
+  <ItemGroup>
+    <Compile Include="..\..\test\DynamoCoreTests\DSEvaluationUnitTestBase.cs" Link="DSEvaluationUnitTestBase.cs" />
+    <Compile Include="..\..\test\DynamoCoreTests\DynamoModelTestBase.cs" Link="DynamoModelTestBase.cs" />
+    <Compile Include="..\..\test\DynamoCoreTests\UnitTestBase.cs" Link="UnitTestBase.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+    <PackageReference Include="NUnit" Version="3.13.3" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
+    <PackageReference Include="NUnit.Analyzers" Version="3.3.0" />
+    <PackageReference Include="coverlet.collector" Version="3.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Libraries\TestServices\TestServices.csproj" />
+    <ProjectReference Include="..\..\src\DynamoCore\DynamoCore.csproj" />
+    <ProjectReference Include="..\..\src\DynamoPackages\DynamoPackages.csproj" />
+    <ProjectReference Include="..\..\src\Engine\ProtoCore\ProtoCore.csproj" />
+    <ProjectReference Include="..\..\src\Libraries\CoreNodeModels\CoreNodeModels.csproj" />
+    <ProjectReference Include="..\..\src\Libraries\DSOffice\DSOffice.csproj" />
+    <ProjectReference Include="..\..\src\Tools\DynamoShapeManager\DynamoShapeManager.csproj" />
+  </ItemGroup>
+
+</Project>
