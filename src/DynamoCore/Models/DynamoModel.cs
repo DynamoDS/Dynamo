@@ -2121,8 +2121,6 @@ namespace Dynamo.Models
 
             CurrentWorkspace.UpdateWithExtraWorkspaceViewInfo(viewInfo, offsetX, offsetY);
 
-            //InsertAnnotations(viewInfo.Annotations, offsetX, offsetY);
-
             List<NoteModel> insertedNotes = GetInsertedNotes(viewInfo.Annotations);
 
             DynamoSelection.Instance.Selection.AddRange(nodes);
@@ -3355,18 +3353,6 @@ namespace Dynamo.Models
         }
 
         #region insert private methods
-        private void InsertAnnotations(IEnumerable<ExtraAnnotationViewInfo> viewInfoAnnotations, double offsetX, double offsetY)
-        {
-            List<ConnectorModel> newConnectors = new List<ConnectorModel>();
-
-            foreach (var annotation in viewInfoAnnotations)
-            {
-                if (annotation.Nodes.Any() || annotation.PinnedNode != null) continue;
-
-                var guidValue = WorkspaceModel.IdToGuidConverter(annotation.Id);
-                var matchingNote = CurrentWorkspace.Notes.FirstOrDefault(x => x.GUID == guidValue);
-            }
-        }
 
         private void InsertNodes(IEnumerable<NodeModel> nodes, double offsetX, double offsetY)
         {
