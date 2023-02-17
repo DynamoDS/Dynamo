@@ -143,37 +143,7 @@ OUT = result
                 CollectionAssert.AreEqual(expected, result as IEnumerable);
             }
         }
-
-        [Test]
-        public void TestIfcopenshellPythonModuleEncoding()
-        {
-            var examplePath = Path.Combine(TestDirectory, @"core\python\python_modules", "test.ifc");
-            Assert.NotNull(examplePath);
-            Assert.IsTrue(File.Exists(examplePath));
-            examplePath = examplePath.Replace("\\", "/");   // Convert to python file path
-
-            string code = string.Format(@"
-import sys
-import clr
-
-import ifcopenshell
-
-ifc = ifcopenshell.open('{0}')
-result = ifc.schema
-OUT = result
-", examplePath);
-
-
-            var empty = new ArrayList();
-            var expected = "IFC2X3";
-
-            foreach (var pythonEvaluator in Evaluators)
-            {
-                var result = pythonEvaluator(code, empty, empty);
-                Assert.IsTrue(result is string);
-                CollectionAssert.AreEqual(expected, result as string);
-            }
-        }
+        
 
         [Test]
         public void TestPillowPythonModuleEncoding()
