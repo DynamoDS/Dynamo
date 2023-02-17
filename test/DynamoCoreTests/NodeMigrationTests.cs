@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -10,7 +10,6 @@ using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.PackageManager;
 using NUnit.Framework;
 using PythonNodeModels;
-using SystemTestServices;
 
 namespace Dynamo.Tests
 {
@@ -2251,7 +2250,7 @@ namespace Dynamo.Tests
         public void TestPackageNodeMigrationForJSONGraphs()
         {
             // Define package loading reference paths
-            var dir = SystemTestBase.GetTestDirectory(ExecutingDirectory);
+            var dir = TestDirectory;
             var pkgDir = Path.Combine(dir, "pkgs\\MigrationTesting");
             var legacyGraph = Path.Combine(pkgDir, "extra\\LegacyPackageSampleGraph.dyn");
             var pkgMan = this.CurrentDynamoModel.GetPackageManagerExtension();

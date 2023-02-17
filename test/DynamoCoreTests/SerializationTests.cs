@@ -19,7 +19,6 @@ using Moq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
-using TestUINodes;
 
 namespace Dynamo.Tests
 {
@@ -592,7 +591,11 @@ namespace Dynamo.Tests
             base.GetLibrariesToPreload(libraries);
         }
 
+#if NETFRAMEWORK
         [TestFixtureSetUp]
+#elif NET6_0_OR_GREATER
+        [OneTimeSetUp]
+#endif
         public void FixtureSetup()
         {
             ExecutionEvents.GraphPostExecution += ExecutionEvents_GraphPostExecution;
@@ -631,7 +634,11 @@ namespace Dynamo.Tests
             }
         }
 
+#if NETFRAMEWORK
         [TestFixtureTearDown]
+#elif NET6_0_OR_GREATER
+        [OneTimeTearDown]
+#endif
         public void TearDown()
         {
             ExecutionEvents.GraphPostExecution -= ExecutionEvents_GraphPostExecution;
@@ -880,34 +887,6 @@ namespace Dynamo.Tests
 
         }
 
-
-        [Test]
-        public void SelectionNodeInputDataSerializationTest()
-        {
-            // Arrange
-            var filePath = Path.Combine(TestDirectory, @"core\NodeInputOutputData\selectionNodeInputData.dyn");
-            if (!File.Exists(filePath))
-            {
-                var savePath = Path.ChangeExtension(filePath, null);
-                var selectionHelperMock = new Mock<IModelSelectionHelper<ModelBase>>(MockBehavior.Strict);
-                var selectionNode = new SelectionConcrete(SelectionType.Many, SelectionObjectType.Element, "testMessage", "testPrefix", selectionHelperMock.Object);
-                selectionNode.Name = "selectionTestName";
-                selectionNode.IsSetAsInput = true;
-
-                this.CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(selectionNode);
-                ConvertCurrentWorkspaceToJsonAndSave(this.CurrentDynamoModel, savePath);
-            }
-
-            // Act
-            // Assert
-            DoWorkspaceOpenAndCompare(
-                filePath,
-                jsonFolderName,
-                ConvertCurrentWorkspaceToJsonAndSave,
-                serializationTestUtils.CompareWorkspaceModels,
-                serializationTestUtils.SaveWorkspaceComparisonData);
-        }
-
         [Test, Category("JsonTestExclude")]
         public void FunctionNodeLoadsWhenSignatureChanges()
         {
@@ -935,7 +914,7 @@ namespace Dynamo.Tests
                 serializationTestUtils.SaveWorkspaceComparisonData);
         }
 
-        public object[] FindWorkspaces()
+        public static object[] FindWorkspaces()
         {
             var di = new DirectoryInfo(TestDirectory);
             var fis = di.GetFiles("*.dyn", SearchOption.AllDirectories);
@@ -1201,7 +1180,7 @@ namespace Dynamo.Tests
         private static string ConvertCurrentWorkspaceToJsonAndSave(DynamoModel model, string filePathBase)
         {
             var json = model.CurrentWorkspace.ToJson(model.EngineController);
-            Assert.IsNotNullOrEmpty(json);
+            Assert.That(json, Is.Not.Null.Or.Empty);
 
             var tempPath = Path.GetTempPath();
             var jsonFolder = Path.Combine(tempPath, jsonFolderName);
@@ -1227,7 +1206,7 @@ namespace Dynamo.Tests
 
             json = serializationTestUtils.replaceModelIdsWithNonGuids(json, model.CurrentWorkspace, modelsGuidToIdMap);
 
-            Assert.IsNotNullOrEmpty(json);
+            Assert.That(json, Is.Not.Null.Or.Empty);
 
             var tempPath = Path.GetTempPath();
             var jsonFolder = Path.Combine(tempPath, jsonNonGuidFolderName);

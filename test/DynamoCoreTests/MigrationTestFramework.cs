@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using NUnit.Framework;
@@ -30,7 +30,7 @@ namespace Dynamo.Tests
         {
             //ensure that the incoming arguments are not empty or null
             //if a dyn file is found in the regression tests directory
-            Assert.IsNotNullOrEmpty(dynamoFilePath, "Dynamo file path is invalid or missing.");
+            Assert.That(dynamoFilePath, Is.Not.Null.Or.Empty, "Dynamo file path is invalid or missing.");
             
             //open the dyn file
             OpenModel(dynamoFilePath);

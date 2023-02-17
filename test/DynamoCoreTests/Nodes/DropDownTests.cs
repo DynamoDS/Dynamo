@@ -1,11 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CoreNodeModels;
 using Dynamo.PackageManager;
 using NUnit.Framework;
-using SystemTestServices;
 
 namespace Dynamo.Tests.Nodes
 {
@@ -23,7 +22,7 @@ namespace Dynamo.Tests.Nodes
         public void OpenJsonDYNwithSelectionNode()
         {
             // Define package loading reference path
-            var dir = SystemTestBase.GetTestDirectory(ExecutingDirectory);
+            var dir = TestDirectory;
             var pkgDir = Path.Combine(dir, "pkgs\\Dynamo Samples");
             var pkgMan = this.CurrentDynamoModel.GetPackageManagerExtension();
             var loader = pkgMan.PackageLoader;
@@ -49,7 +48,7 @@ namespace Dynamo.Tests.Nodes
         public void OpenJsonDYNwithSelectionNodeAndWrongSelectionIndexSerialized()
         {
             // Define package loading reference path
-            var dir = SystemTestBase.GetTestDirectory(ExecutingDirectory);
+            var dir = TestDirectory;
             var pkgDir = Path.Combine(dir, "pkgs\\Dynamo Samples");
             var pkgMan = this.CurrentDynamoModel.GetPackageManagerExtension();
             var loader = pkgMan.PackageLoader;
@@ -76,7 +75,7 @@ namespace Dynamo.Tests.Nodes
         public void OpenXmlDYNwithSelectionNode()
         {
             // Define package loading reference path
-            var dir = SystemTestBase.GetTestDirectory(ExecutingDirectory);
+            var dir = TestDirectory;
             var pkgDir = Path.Combine(dir, "pkgs\\Dynamo Samples");
             var pkgMan = this.CurrentDynamoModel.GetPackageManagerExtension();
             var loader = pkgMan.PackageLoader;
@@ -105,7 +104,7 @@ namespace Dynamo.Tests.Nodes
         public void OpenXmlDYNwithInvalidSelectedIndex()
         {
             // Define package loading reference path
-            var dir = SystemTestBase.GetTestDirectory(ExecutingDirectory);
+            var dir = TestDirectory;
             var pkgDir = Path.Combine(dir, "pkgs\\Dynamo Samples");
             var pkgMan = this.CurrentDynamoModel.GetPackageManagerExtension();
             var loader = pkgMan.PackageLoader;
@@ -134,7 +133,7 @@ namespace Dynamo.Tests.Nodes
         public void OpenXmlDYNwithInvalidSelectedIndex2()
         {
             // Define package loading reference path
-            var dir = SystemTestBase.GetTestDirectory(ExecutingDirectory);
+            var dir = TestDirectory;
             var pkgDir = Path.Combine(dir, "pkgs\\Dynamo Samples");
             var pkgMan = this.CurrentDynamoModel.GetPackageManagerExtension();
             var loader = pkgMan.PackageLoader;
@@ -163,7 +162,7 @@ namespace Dynamo.Tests.Nodes
         public void OpenXmlDYNwithInvalidSelectedIndex3()
         {
             // Define package loading reference path
-            var dir = SystemTestBase.GetTestDirectory(ExecutingDirectory);
+            var dir = TestDirectory;
             var pkgDir = Path.Combine(dir, "pkgs\\Dynamo Samples");
             var pkgMan = this.CurrentDynamoModel.GetPackageManagerExtension();
             var loader = pkgMan.PackageLoader;
@@ -188,7 +187,7 @@ namespace Dynamo.Tests.Nodes
         public void PopulateItemsShouldNotChangeSelectedIndex()
         {
             // Define package loading reference path
-            var dir = SystemTestBase.GetTestDirectory(ExecutingDirectory);
+            var dir = TestDirectory;
             var pkgDir = Path.Combine(dir, "pkgs\\Dynamo Samples");
             var pkgMan = this.CurrentDynamoModel.GetPackageManagerExtension();
             var loader = pkgMan.PackageLoader;
@@ -218,7 +217,7 @@ namespace Dynamo.Tests.Nodes
         public void GetSelectedStringFromItemShouldReturnString()
         {
             // Define package loading reference path
-            var dir = SystemTestBase.GetTestDirectory(ExecutingDirectory);
+            var dir = TestDirectory;
             var pkgDir = Path.Combine(dir, "pkgs\\Dynamo Samples");
             var pkgMan = this.CurrentDynamoModel.GetPackageManagerExtension();
             var loader = pkgMan.PackageLoader;

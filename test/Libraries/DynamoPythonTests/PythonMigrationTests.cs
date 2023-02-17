@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using Dynamo.PythonMigration.MigrationAssistant;
 using NUnit.Framework;
 
-namespace Dynamo.Tests
+namespace DynamoPythonTests
 {
+    [TestFixture]
     public class PythonMigrationAssistantTests
     {
         [Test]
