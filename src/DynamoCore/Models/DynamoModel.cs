@@ -1663,7 +1663,7 @@ namespace Dynamo.Models
 
         private static void InitializePreferences(IPreferences preferences)
         {
-            DynamoUnits.Display.PrecisionFormat = preferences.NumberFormat;
+            ProtoCore.Mirror.MirrorData.PrecisionFormat = DynamoUnits.Display.PrecisionFormat = preferences.NumberFormat;
 
             var settings = preferences as PreferenceSettings;
             if (settings != null)
@@ -1683,8 +1683,8 @@ namespace Dynamo.Models
         {
             switch (e.PropertyName)
             {
-                case "NumberFormat":
-                    DynamoUnits.Display.PrecisionFormat = PreferenceSettings.NumberFormat;
+                case nameof(PreferenceSettings.NumberFormat):
+                    ProtoCore.Mirror.MirrorData.PrecisionFormat = DynamoUnits.Display.PrecisionFormat = PreferenceSettings.NumberFormat;
                     break;
             }
         }
