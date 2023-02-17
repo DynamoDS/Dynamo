@@ -418,6 +418,36 @@ namespace PythonNodeModelsWpf
             foldingManager = null;
         }
 
+        private void OnUndoClicked(object sender, RoutedEventArgs e)
+        {
+            if (!editText.CanUndo) return;
+
+            editText.Undo();
+            e.Handled = true;
+        }
+
+        private void OnRedoClicked(object sender, RoutedEventArgs e)
+        {
+            if (!editText.CanRedo) return;
+
+            editText.Redo();
+            e.Handled = true;
+        }
+
+        private void OnZoomInClicked(object sender, RoutedEventArgs e)
+        {
+            UpdateFontSize(true);
+            e.Handled = true;
+        }
+
+        private void OnZoomOutClicked(object sender, RoutedEventArgs e)
+        {
+            UpdateFontSize(false);
+            e.Handled = true;
+        }
+
+        
+
         #endregion
 
         #region Navigation Controls

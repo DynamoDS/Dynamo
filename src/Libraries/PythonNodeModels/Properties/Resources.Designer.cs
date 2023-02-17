@@ -169,7 +169,7 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use this dropdown to choose the python version/engine to execute your code..
+        ///   Looks up a localized string similar to Select the Python version/engine to execute the script.
         /// </summary>
         public static string PythonScriptEditorEngineDropdownTooltip {
             get {
@@ -196,7 +196,7 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Run migration utility tool to make the script Python 3 compliant..
+        ///   Looks up a localized string similar to Convert script to Python 3....
         /// </summary>
         public static string PythonScriptEditorMigrationAssistantButtonTooltip {
             get {
@@ -205,7 +205,7 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Learn about Python3 updates..
+        ///   Looks up a localized string similar to Learn about the Python 2 to Python 3 conversion.
         /// </summary>
         public static string PythonScriptEditorMoreInfoButtonTooltip {
             get {
@@ -232,6 +232,44 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Undo.
+        /// </summary>
+        public static string PythonScriptEditorUndoButtonTooltip {
+            get {
+                return ResourceManager.GetString("PythonScriptEditorUndoButtonTooltip", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Redo.
+        /// </summary>
+        public static string PythonScriptEditorRedoButtonTooltip
+        {
+            get
+            {
+                return ResourceManager.GetString("PythonScriptEditorRedoButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zoom in.
+        /// </summary>
+        public static string PythonScriptEditorZoomInButtonTooltip {
+            get {
+                return ResourceManager.GetString("PythonScriptEditorZoomInButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zoom out.
+        /// </summary>
+        public static string PythonScriptEditorZoomOutButtonTooltip {
+            get {
+                return ResourceManager.GetString("PythonScriptEditorZoomOutButtonTooltip", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Save and run.
         /// </summary>
         public static string PythonScriptEditorRunButton {
@@ -241,7 +279,7 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save current code in Python node editor and run graph with it..
+        ///   Looks up a localized string similar to Save Python script and run it with the graph.
         /// </summary>
         public static string PythonScriptEditorRunButtonTooltip {
             get {
@@ -250,7 +288,7 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save the changes made to current Python node editor..
+        ///   Looks up a localized string similar to Save changes made in Python Script editor.
         /// </summary>
         public static string PythonScriptEditorSaveChangesButtonTooltip {
             get {

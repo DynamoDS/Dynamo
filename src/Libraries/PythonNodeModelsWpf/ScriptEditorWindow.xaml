@@ -226,6 +226,58 @@
                                    Source="/PythonNodeModelsWpf;component/Resources/reset_hover.png" />
                         </Button.Resources>
                     </Button>
+                    <Button Style="{StaticResource IconButton}"
+                            Name="UndoButton"
+                            Click="OnUndoClicked">
+                        <Button.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.PythonScriptEditorUndoButtonTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                        </Button.ToolTip>
+                        <Button.Resources>
+                            <Image x:Key="Shape"
+                                   Source="/PythonNodeModelsWpf;component/Resources/undo.png" />
+                            <Image x:Key="HighlightShape"
+                                   Source="/PythonNodeModelsWpf;component/Resources/undo_hover.png" />
+                        </Button.Resources>
+                    </Button>
+                    <Button Style="{StaticResource IconButton}"
+                            Name="RedoButton"
+                            Click="OnRedoClicked">
+                        <Button.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.PythonScriptEditorRedoButtonTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                        </Button.ToolTip>
+                        <Button.Resources>
+                            <Image x:Key="Shape"
+                                   Source="/PythonNodeModelsWpf;component/Resources/redo.png" />
+                            <Image x:Key="HighlightShape"
+                                   Source="/PythonNodeModelsWpf;component/Resources/redo_hover.png" />
+                        </Button.Resources>
+                    </Button>
+                    <Button Style="{StaticResource IconButton}"
+                            Name="ZoomInButton"
+                            Click="OnZoomInClicked">
+                        <Button.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.PythonScriptEditorZoomInButtonTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                        </Button.ToolTip>
+                        <Button.Resources>
+                            <Image x:Key="Shape"
+                                   Source="/PythonNodeModelsWpf;component/Resources/zoom-in.png" />
+                            <Image x:Key="HighlightShape"
+                                   Source="/PythonNodeModelsWpf;component/Resources/zoom-in_hover.png" />
+                        </Button.Resources>
+                    </Button>
+                    <Button Style="{StaticResource IconButton}"
+                            Name="ZoomOutButton"
+                            Click="OnZoomOutClicked">
+                        <Button.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.PythonScriptEditorZoomOutButtonTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                        </Button.ToolTip>
+                        <Button.Resources>
+                            <Image x:Key="Shape"
+                                   Source="/PythonNodeModelsWpf;component/Resources/zoom-out.png" />
+                            <Image x:Key="HighlightShape"
+                                   Source="/PythonNodeModelsWpf;component/Resources/zoom-out_hover.png" />
+                        </Button.Resources>
+                    </Button>
                     <ComboBox ItemsSource="{Binding AvailableEngines, RelativeSource={RelativeSource AncestorType=dww:ModelessChildWindow}}"
                               SelectedItem="{Binding CachedEngine, Mode=TwoWay}"
                               SelectionChanged="OnEngineChanged"
