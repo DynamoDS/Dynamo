@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
@@ -45,7 +45,7 @@ namespace Dynamo.Tests
         public static NodeModel GetDSFunctionNodeFromWorkspace(this WorkspaceModel model, string nodeName)
         {
             return model.Nodes.FirstOrDefault(node => node is DSFunction &&
-                node.Name == nodeName);
+                                                      node.Name == nodeName);
         }
     }
 }

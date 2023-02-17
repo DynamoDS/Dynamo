@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+    <!--Loo-->
+  <ItemGroup>
+    <Compile Include="..\..\test\DynamoCoreTests\DSEvaluationUnitTestBase.cs" Link="DSEvaluationUnitTestBase.cs" />
+    <Compile Include="..\..\test\DynamoCoreTests\DynamoModelTestBase.cs" Link="DynamoModelTestBase.cs" />
+    <Compile Include="..\..\test\DynamoCoreTests\UnitTestBase.cs" Link="UnitTestBase.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+    <PackageReference Include="NUnit" Version="3.13.3" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
+    <PackageReference Include="NUnit.Analyzers" Version="3.3.0" />
+    <PackageReference Include="coverlet.collector" Version="3.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\test\Libraries\TestServices\TestServices.csproj" />
+    <ProjectReference Include="..\DynamoCore\DynamoCore.csproj" />
+    <ProjectReference Include="..\DynamoPackages\DynamoPackages.csproj" />
+    <ProjectReference Include="..\Engine\ProtoCore\ProtoCore.csproj" />
+    <ProjectReference Include="..\Libraries\CoreNodeModels\CoreNodeModels.csproj" />
+    <ProjectReference Include="..\Libraries\DSOffice\DSOffice.csproj" />
+    <ProjectReference Include="..\Tools\DynamoShapeManager\DynamoShapeManager.csproj" />
+  </ItemGroup>
+
+</Project>
