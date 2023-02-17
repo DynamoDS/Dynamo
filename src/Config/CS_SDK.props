@@ -23,28 +23,19 @@
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'Debug' AND $(Platform.Contains('NET60')) ">
-    <DebugType>portable</DebugType>
+    <PropertyGroup>
+    <DebugType Condition="$(Platform.Contains('NET60')) ">portable</DebugType>
+    <DebugType Condition="!$(Platform.Contains('NET60')) ">full</DebugType>
+    </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug' ">
     <Optimize>false</Optimize>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)' == 'Debug' AND !$(Platform.Contains('NET60')) ">
-        <DebugType>full</DebugType>
-        <Optimize>false</Optimize>
-        <DefineConstants>DEBUG;TRACE</DefineConstants>
-    </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' AND $(Platform.Contains('NET60')) ">
-    <DebugType>portable</DebugType>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <Optimize>true</Optimize>
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)' == 'Release' AND !$(Platform.Contains('NET60')) ">
-        <DebugType>full</DebugType>
-        <Optimize>true</Optimize>
-        <DefineConstants>TRACE</DefineConstants>
-    </PropertyGroup>
-  <PropertyGroup Condition="$(Platform.Contains('NET60'))" >
+    <PropertyGroup Condition="$(Platform.Contains('NET60'))" >
     <TargetFramework>net6.0</TargetFramework>
     <!--Needed to copy nuget package assemblies to output folder. Anet6 issue-->
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
