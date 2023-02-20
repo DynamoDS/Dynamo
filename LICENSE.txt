@@ -565,7 +565,6 @@ https://scipy.org/ License: Distributed under a liberal BSD license
 https://pypi.org/project/openpyxl/ License: MIT License (MIT)
 https://matplotlib.org/ License: Matplotlib only uses BSD compatible code, and its license is based on the PSF license
 https://pypi.org/project/Pillow/ License: Historical Permission Notice and Disclaimer (HPND) 
-https://blenderbim.org/docs-python/ License: IfcOpenShell is a free software project by amazing volunteers
 
 SimplexNoise
 https://unlicense.org/
