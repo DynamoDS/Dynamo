@@ -59,6 +59,7 @@ namespace Dynamo.UI.Controls
             else {
                 logoutOption.Visibility = Visibility.Collapsed;
             }
+            EnableItems = false;
         }
 
         private void SignOutHandler(LoginState status)
@@ -105,6 +106,15 @@ namespace Dynamo.UI.Controls
                     LoginButton.ToolTip = null;
                     authManager.LoginStateChanged += SignOutHandler;
                 }
+            }
+        }
+
+        public bool EnableItems
+        {
+            set
+            {
+                this.exportMenu.IsEnabled = value;
+                this.NotificationCenter.IsEnabled = value;
             }
         }
     }

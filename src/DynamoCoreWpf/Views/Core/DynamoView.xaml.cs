@@ -227,6 +227,7 @@ namespace Dynamo.Controls
             this.dynamoViewModel.RequestReturnFocusToView += OnRequestReturnFocusToView;
             this.dynamoViewModel.Model.WorkspaceSaving += OnWorkspaceSaving;
             this.dynamoViewModel.Model.WorkspaceOpened += OnWorkspaceOpened;
+            this.dynamoViewModel.RequestEnableShortcutBarItems += DynamoViewModel_RequestEnableShortcutBarItems;
             FocusableGrid.InputBindings.Clear();
 
             if (fileTrustWarningPopup == null)
@@ -239,6 +240,11 @@ namespace Dynamo.Controls
             }
         }
 
+        private void DynamoViewModel_RequestEnableShortcutBarItems(bool enable)
+        {
+            shortcutBar.EnableItems = enable;
+        }
+
         private void OnWorkspaceOpened(WorkspaceModel workspace)
         {
             if (!(workspace is HomeWorkspaceModel hws))
@@ -248,6 +254,7 @@ namespace Dynamo.Controls
             {
                 DynamoModel.RaiseIExtensionStorageAccessWorkspaceOpened(hws, extension, dynamoViewModel.Model.Logger);
             }
+            shortcutBar.EnableItems = true;
         }
 
         private void OnWorkspaceSaving(WorkspaceModel workspace, Graph.SaveContext saveContext)
@@ -1650,6 +1657,8 @@ namespace Dynamo.Controls
             this.dynamoViewModel.Model.WorkspaceOpened -= OnWorkspaceOpened;
             DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved -= CheckTestFlags;
 
+            this.dynamoViewModel.RequestEnableShortcutBarItems -= DynamoViewModel_RequestEnableShortcutBarItems;
+
             this.Dispose();
             sharedViewExtensionLoadedParams?.Dispose();
         }
@@ -2464,6 +2473,7 @@ namespace Dynamo.Controls
             //We pass the root UIElement to the GuidesManager so we can found other child UIElements
             try
             {
+                shortcutBar.EnableItems = false;
                 dynamoViewModel.MainGuideManager.LaunchTour(GuidesManager.GetStartedGuideName);
             }
             catch (Exception)
