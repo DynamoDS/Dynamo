@@ -2530,7 +2530,7 @@ namespace Dynamo.Graph.Workspaces
                 var text = annotationViewInfo.Title;
 
                 var pinnedNode = this.Nodes.
-                    FirstOrDefault(x => x.GUID.ToString() == annotationViewInfo.PinnedNode);
+                    FirstOrDefault(x => x.GUID.ToString("N") == annotationViewInfo.PinnedNode);
 
                 NoteModel noteModel;
                 if (offsetX == 0.0 && offsetY == 0.0)
