@@ -1961,7 +1961,9 @@ namespace Dynamo.Models
         {
             try
             {
-                // Update (assign new) GUIDs for each node, connection, note and group
+                // Update (assign new) Guids for each node, connection, note and group
+                // The update of Guids is necessary to assure the insertion of dynamo graphs does not interfere with the current workspace
+                // This allows multiple inserts of the same or 'similar' graph to take place
                 fileContents = UpdateWorkspaceGUIDs(fileContents);
 
                 DynamoPreferencesData dynamoPreferences = DynamoPreferencesDataFromJson(fileContents);
