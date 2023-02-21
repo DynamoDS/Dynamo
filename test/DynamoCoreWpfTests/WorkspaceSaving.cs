@@ -613,6 +613,39 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void CanSaveAsNewWorkspaceWithNewGuids()
+        {
+            string examplePath = Path.Combine(TestDirectory, (@"UI\GroupStyleTest.dyn"));
+            ViewModel.OpenCommand.Execute(examplePath);
+            var legacyWorkspaceGuid = ViewModel.Model.CurrentWorkspace.Guid;
+            var legacyNodeGuid = ViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault().GUID;
+            var legacyGroupGuid = ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault().GUID;
+            var legacyGroupStyleId = ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault().GroupStyleId;
+            var legacyNoteId = ViewModel.Model.CurrentWorkspace.Notes.FirstOrDefault().GUID;
+            var legacyConnectorId = ViewModel.Model.CurrentWorkspace.Connectors.FirstOrDefault().GUID;
+
+            // Save As a new workspace
+            string fn = "ruthlessTurtles.dyn";
+            string path = Path.Combine(TempFolder, fn);
+            ViewModel.CurrentSpaceViewModel.Save(path, false, null, SaveContext.SaveAs);
+            ViewModel.OpenCommand.Execute(path);
+            var newWorkspaceGuid = ViewModel.Model.CurrentWorkspace.Guid;
+            var newNodeGuid = ViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault().GUID;
+
+            var newGroupGuid = ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault().GUID;
+            var newGroupStyleId = ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault().GroupStyleId;
+            var newNoteId = ViewModel.Model.CurrentWorkspace.Notes.FirstOrDefault().GUID;
+            var newConnectorId = ViewModel.Model.CurrentWorkspace.Connectors.FirstOrDefault().GUID;
+
+            Assert.AreNotEqual(legacyWorkspaceGuid, newWorkspaceGuid);
+            Assert.AreNotEqual(legacyNodeGuid, newNodeGuid);
+            Assert.AreNotEqual(legacyGroupGuid, newGroupGuid);
+            Assert.AreEqual(legacyGroupStyleId, newGroupStyleId);
+            Assert.AreNotEqual(legacyNoteId, newNoteId);
+            Assert.AreNotEqual(legacyConnectorId, newConnectorId);
+        }
+
+        [Test]
         [Category("UnitTests")]
         public void BackUpSaveDoesNotChangeName()
         {
