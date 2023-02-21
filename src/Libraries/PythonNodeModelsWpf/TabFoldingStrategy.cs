@@ -11,7 +11,7 @@ namespace PythonNodeModelsWpf
     /// Allows producing tab based foldings
     /// https://stackoverflow.com/questions/47224064/avalonedit-foldingstrategy-by-indent-python/47577500#47577500
     /// </summary>
-    public class TabFoldingStrategy : AbstractFoldingStrategy
+    internal class TabFoldingStrategy : AbstractFoldingStrategy
     {
         // How many spaces == one tab
         private const int SpacesInTab = 4;
@@ -19,7 +19,7 @@ namespace PythonNodeModelsWpf
         /// <summary>
         /// Creates a new TabFoldingStrategy.
         /// </summary>
-        public TabFoldingStrategy()
+        internal TabFoldingStrategy()
         {
         }
 
@@ -35,7 +35,7 @@ namespace PythonNodeModelsWpf
         /// <summary>
         /// Create <see cref="NewFolding"/>s for the specified document.
         /// </summary>
-        public IEnumerable<NewFolding> CreateNewFoldingsByLine(ITextSource document)
+        internal IEnumerable<NewFolding> CreateNewFoldingsByLine(ITextSource document)
         {
             List<NewFolding> newFoldings = new List<NewFolding>();
 

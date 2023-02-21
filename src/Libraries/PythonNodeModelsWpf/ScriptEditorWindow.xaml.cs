@@ -44,7 +44,7 @@ namespace PythonNodeModelsWpf
         private string originalScript;
         private FoldingManager foldingManager;
         private TabFoldingStrategy foldingStrategy;
-        private bool IsSaved { get; set; }
+        private bool IsSaved { get; set; } = true;
 
         // Reasonable max and min font size values for zooming limits
         private const double FONT_MAX_SIZE = 60d;
@@ -142,13 +142,12 @@ namespace PythonNodeModelsWpf
 
         private void UpdateFoldings()
         {
-            // Mark the script for saving
-            if (IsSaved) IsSaved = false;
             //if (!ShouldUpdate()) return;
 
             if (foldingManager == null)
                 throw new ArgumentNullException("foldingManager");
 
+            // Since we cannot 'set' these values any other way, we need to change them on each update
             var margins = editText.TextArea.LeftMargins.OfType<FoldingMargin>();
             foreach (var margin in margins)
             {
@@ -176,6 +175,8 @@ namespace PythonNodeModelsWpf
 
         private void EditTextOnTextChanged(object sender, EventArgs e)
         {
+            // Mark the script for saving
+            if (IsSaved) IsSaved = false;
             UpdateFoldings();
         }
 
@@ -476,6 +477,12 @@ namespace PythonNodeModelsWpf
             }
         }
 
+        // Don't change anything, just flip back the controls
+        private void ResumeButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            this.SaveButtonBar.Visibility = Visibility.Visible;
+            this.UnsavedChangesStatusBar.Visibility = Visibility.Collapsed;
+        }
 
         /// <summary>
         /// Toggles between the Maximize and Normalize buttons on the window
@@ -509,8 +516,16 @@ namespace PythonNodeModelsWpf
         // ESC Button pressed triggers Window close        
         private void OnCloseExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            if (!IsSaved) SaveScript();
-            this.Close();
+            e.Handled = true;
+            if (!IsSaved) WarnUserScript();
+            else this.Close();
+        }
+
+        // Show the warning bar, hide the save button bar
+        private void WarnUserScript()
+        {
+            this.SaveButtonBar.Visibility = Visibility.Collapsed;
+            this.UnsavedChangesStatusBar.Visibility = Visibility.Visible;
         }
 
         // Updates the IsEnterHit value

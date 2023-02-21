@@ -13,7 +13,7 @@ namespace PythonNodeModelsWpf
     /// Custom Indentation Strategy for Python 
     /// https://csharp.hotexamples.com/site/file?hash=0x1abeea836b72c6db1910df1767e84d7bfcb620ed58a499d176fdf158851c1d5f&fullName=Yanitta/LuaIndentationStrategy.cs&project=Konctantin/Yanitta
     /// </summary>
-    public class PythonIndentationStrategy : DefaultIndentationStrategy
+    internal class PythonIndentationStrategy : DefaultIndentationStrategy
     {
         #region Fields
 
@@ -25,7 +25,7 @@ namespace PythonNodeModelsWpf
 
         #region Constructors
 
-        public PythonIndentationStrategy(TextEditor textEditor)
+        internal PythonIndentationStrategy(TextEditor textEditor)
         {
             this.textEditor = textEditor;
         }

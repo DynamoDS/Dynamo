@@ -121,6 +121,71 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+            <Style x:Key="UnSaveButtonStyle"
+                   TargetType="{x:Type Button}"
+                   BasedOn="{StaticResource CtaButtonStyle}">
+                <Setter Property="Height" Value="35"></Setter>
+                <Setter Property="Width" Value="120"></Setter>
+                <Setter Property="Margin" Value="15 5 20 5"></Setter>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <Border x:Name="container"
+                                    Background="Transparent"
+                                    BorderBrush="#B8ABA1"
+                                    CornerRadius="2"
+                                    BorderThickness="1">
+                                <Grid x:Name="inner"
+                                      Background="Transparent">
+                                    <TextBlock x:Name="text"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               FontSize="14px"
+                                               Foreground="#3C3C3C"
+                                               Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
+                                </Grid>
+                            </Border>
+
+                            <ControlTemplate.Triggers>
+
+                                <Trigger Property="Button.IsMouseOver"
+                                         Value="true">
+                                    <Setter TargetName="container"
+                                            Property="BorderBrush"
+                                            Value="#26808080" />
+                                    <Setter TargetName="container"
+                                            Property="BorderThickness"
+                                            Value="2" />
+                                </Trigger>
+
+                                <Trigger Property="Button.IsPressed"
+                                         Value="true">
+                                    <Setter TargetName="container"
+                                            Property="BorderBrush"
+                                            Value="#40808080" />
+                                    <Setter TargetName="container"
+                                            Property="BorderThickness"
+                                            Value="4" />
+                                </Trigger>
+
+                                <Trigger Property="Button.IsEnabled"
+                                         Value="false">
+                                    <Setter TargetName="inner"
+                                            Property="Background"
+                                            Value="#218d81" />
+                                    <Setter TargetName="text"
+                                            Property="Foreground"
+                                            Value="#bebebe" />
+                                    <Setter TargetName="container"
+                                            Property="BorderBrush"
+                                            Value="#218d81" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
         </ResourceDictionary>
 
     </Window.Resources>
@@ -139,7 +204,8 @@
                     <RowDefinition Height="68" />
                     <RowDefinition Height="60" />
                     <RowDefinition Height="*" />
-                    <RowDefinition Height="60" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
 
 
@@ -338,8 +404,11 @@
                 </Border>
  
                 <!-- Run and Close Button -->
-                <StackPanel Orientation="Horizontal"
+                <StackPanel x:Name="SaveButtonBar"
+                            Orientation="Horizontal"
                             HorizontalAlignment="Right"
+                            Height="60"
+                            Visibility="Visible"
                             Grid.Row="3">
 
                     <Button Content="{x:Static p:Resources.PythonScriptEditorRunButton}"
@@ -365,6 +434,33 @@
                         </Button.Resources>
                     </Button>
                 </StackPanel>
+
+                <!-- The Warning Bar - activates on Esc if unsaved changes -->
+                <Grid Name="UnsavedChangesStatusBar"
+                        Grid.Row="4"
+                        Margin="0 -20 0 5"
+                        Height="95"
+                        Background="#EFD5C1"
+                        Visibility="Collapsed">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="44"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="180"/>
+                    </Grid.ColumnDefinitions>
+                        <Border Background="#FAA21B" Grid.Column="0"> 
+                            <Image Source="/PythonNodeModelsWpf;component/Resources/alert.png" Width="24" Height="24"/>
+                        </Border>
+                        <StackPanel Orientation="Vertical" VerticalAlignment="Center" Grid.Column="1">
+                        <TextBlock Margin="15 5" FontSize="14"  FontFamily="{StaticResource ArtifaktElementBold}" Text="Are you sure you want to leave?"/>
+                        <TextBlock Margin="15 5" FontSize="14" FontFamily="{StaticResource ArtifaktElementRegular}" TextWrapping="WrapWithOverflow" Text="It looks like you are still working on this. You may lose any unsaved changes if you leave now"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Center" Grid.Column="2">
+                        <Button 
+                            Style="{StaticResource UnSaveButtonStyle}" Content="Keep editing" Click="ResumeButton_OnClick"></Button>
+                        <Button 
+                            Style="{StaticResource UnSaveButtonStyle}" Content="Close" Click="CloseButton_OnClick"></Button>
+                    </StackPanel>
+                </Grid>
             </Grid>
         </Border>
     </Grid>
