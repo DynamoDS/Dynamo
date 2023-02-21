@@ -2472,9 +2472,9 @@ namespace Dynamo.Controls
         {
             //We pass the root UIElement to the GuidesManager so we can found other child UIElements
             try
-            {
-                shortcutBar.AreMenuItemsEnabled  = false;
+            {                
                 dynamoViewModel.MainGuideManager.LaunchTour(GuidesManager.GetStartedGuideName);
+                dynamoViewModel.OnEnableShortcutBarItems(false);
             }
             catch (Exception)
             {
