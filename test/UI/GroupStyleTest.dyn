@@ -1,7 +1,7 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "",
+  "Description": "Group Style Test",
   "Name": "GroupStyleTest",
   "ElementResolver": {
     "ResolutionMap": {
@@ -74,7 +74,7 @@
   ],
   "Dependencies": [],
   "NodeLibraryDependencies": [],
-  "Thumbnail": null,
+  "Thumbnail": "",
   "GraphDocumentationURL": null,
   "ExtensionWorkspaceData": [
     {
@@ -84,7 +84,7 @@
       "Data": {}
     }
   ],
-  "Author": "None provided",
+  "Author": "Dynamo Team",
   "Linting": {
     "activeLinter": "None",
     "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
@@ -155,7 +155,7 @@
         "FontSize": 36.0,
         "GroupStyleId": "00000000-0000-0000-0000-000000000000",
         "InitialTop": 201.66666666666666,
-        "InitialHeight": 161.2,
+        "InitialHeight": 144.99999999999997,
         "TextblockHeight": 106.66666666666667,
         "Background": "#FFC98132"
       },

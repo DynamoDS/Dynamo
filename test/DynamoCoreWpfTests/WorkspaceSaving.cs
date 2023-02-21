@@ -619,10 +619,11 @@ namespace Dynamo.Tests
             ViewModel.OpenCommand.Execute(examplePath);
             var legacyWorkspaceGuid = ViewModel.Model.CurrentWorkspace.Guid;
             var legacyNodeGuid = ViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault().GUID;
-            var legacyGroupGuid = ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault().GUID;
-            var legacyGroupStyleId = ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault().GroupStyleId;
+            var legacyGroupGuid = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault().AnnotationModel.GUID;
+            var legacyGroupStyleId = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault().GroupStyleId;
             var legacyNoteId = ViewModel.Model.CurrentWorkspace.Notes.FirstOrDefault().GUID;
             var legacyConnectorId = ViewModel.Model.CurrentWorkspace.Connectors.FirstOrDefault().GUID;
+            var legacyLinterId = ViewModel.CurrentSpaceViewModel.Model.linterManager.ActiveLinter.Id;
 
             // Save As a new workspace
             string fn = "ruthlessTurtles.dyn";
@@ -631,18 +632,19 @@ namespace Dynamo.Tests
             ViewModel.OpenCommand.Execute(path);
             var newWorkspaceGuid = ViewModel.Model.CurrentWorkspace.Guid;
             var newNodeGuid = ViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault().GUID;
-
-            var newGroupGuid = ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault().GUID;
-            var newGroupStyleId = ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault().GroupStyleId;
+            var newGroupGuid = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault().AnnotationModel.GUID;
+            var newGroupStyleId = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault().GroupStyleId;
             var newNoteId = ViewModel.Model.CurrentWorkspace.Notes.FirstOrDefault().GUID;
             var newConnectorId = ViewModel.Model.CurrentWorkspace.Connectors.FirstOrDefault().GUID;
+            var newLinterId = ViewModel.CurrentSpaceViewModel.Model.linterManager.ActiveLinter.Id;
 
             Assert.AreNotEqual(legacyWorkspaceGuid, newWorkspaceGuid);
             Assert.AreNotEqual(legacyNodeGuid, newNodeGuid);
             Assert.AreNotEqual(legacyGroupGuid, newGroupGuid);
-            Assert.AreEqual(legacyGroupStyleId, newGroupStyleId);
             Assert.AreNotEqual(legacyNoteId, newNoteId);
             Assert.AreNotEqual(legacyConnectorId, newConnectorId);
+            Assert.AreEqual(legacyGroupStyleId, newGroupStyleId);
+            Assert.AreEqual(legacyLinterId, newLinterId);
         }
 
         [Test]
