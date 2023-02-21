@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
@@ -1919,7 +1920,6 @@ namespace Dynamo.Models
             }
         }
 
-
         static private DynamoPreferencesData DynamoPreferencesDataFromJson(string json)
         {
             JsonReader reader = new JsonTextReader(new StringReader(json));
@@ -1988,6 +1988,11 @@ namespace Dynamo.Models
         {
             try
             {
+                // Update (assign new) Guids for each node, connection, note and group
+                // The update of Guids is necessary to assure the insertion of dynamo graphs does not interfere with the current workspace
+                // This allows multiple inserts of the same or 'similar' graph to take place
+                fileContents = UpdateWorkspaceGUIDs(fileContents);
+
                 DynamoPreferencesData dynamoPreferences = DynamoPreferencesDataFromJson(fileContents);
                 if (dynamoPreferences != null)
                 {
@@ -1997,7 +2002,7 @@ namespace Dynamo.Models
                         if (OpenJsonFile(filePath, fileContents, dynamoPreferences, forceManualExecutionMode, out ws))
                         {
                             ExtraWorkspaceViewInfo viewInfo = ExtraWorkspaceViewInfoFromJson(fileContents);
-
+                            
                             InsertWorkspace(ws, viewInfo);
                         }
                     }
@@ -2010,7 +2015,7 @@ namespace Dynamo.Models
                 throw e;
             }
         }
-
+        
         /// <summary>
         /// Opens a Dynamo workspace from a path to an Xml file on disk.
         /// </summary>
@@ -2145,8 +2150,6 @@ namespace Dynamo.Models
             InsertConnectors(connectors);
 
             CurrentWorkspace.UpdateWithExtraWorkspaceViewInfo(viewInfo, offsetX, offsetY);
-
-            InsertAnnotations(viewInfo.Annotations, offsetX, offsetY);
 
             List<NoteModel> insertedNotes = GetInsertedNotes(viewInfo.Annotations);
 
@@ -3380,18 +3383,6 @@ namespace Dynamo.Models
         }
 
         #region insert private methods
-        private void InsertAnnotations(IEnumerable<ExtraAnnotationViewInfo> viewInfoAnnotations, double offsetX, double offsetY)
-        {
-            List<ConnectorModel> newConnectors = new List<ConnectorModel>();
-
-            foreach (var annotation in viewInfoAnnotations)
-            {
-                if (annotation.Nodes.Any() || annotation.PinnedNode != null) continue;
-
-                var guidValue = WorkspaceModel.IdToGuidConverter(annotation.Id);
-                var matchingNote = CurrentWorkspace.Notes.FirstOrDefault(x => x.GUID == guidValue);
-            }
-        }
 
         private void InsertNodes(IEnumerable<NodeModel> nodes, double offsetX, double offsetY)
         {
@@ -3556,6 +3547,36 @@ namespace Dynamo.Models
             // If no nodes exist with the same GUID, then we are good to go
             return false;
         }
+        #endregion
+
+        #region Insert Private Methods
+
+        /// <summary>
+        /// Performs an update to all Guids inside the json string before deserialization.
+        /// Targets specifically Guids without the '-' hyphen, which are all the workspace elements.
+        /// Replacing all occurrences of each individual Guid guarantees that the relationships between the elements are retained.
+        /// </summary>
+        /// <param name="jsonData"></param>
+        /// <returns></returns>
+        private string UpdateWorkspaceGUIDs(string jsonData)
+        {
+            string pattern = @"([a-z0-9]{32})";
+            string updatedJsonData = jsonData;
+
+            // The unique collection of Guids
+            var mc = Regex.Matches(jsonData, pattern)
+                .Cast<Match>()
+                .Select(m => m.Value)
+                .Distinct();
+
+            foreach (var match in mc)
+            {
+                updatedJsonData = updatedJsonData.Replace(match, Guid.NewGuid().ToString("N"));
+            }
+
+            return updatedJsonData;
+        }
+
         #endregion
 
         #endregion
