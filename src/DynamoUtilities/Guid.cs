@@ -126,8 +126,8 @@ namespace Dynamo.Utilities
         /// Targets specifically Guids without the '-' hyphen, which are all the workspace elements.
         /// Replacing all occurrences of each individual Guid guarantees that the relationships between the elements are retained.
         /// </summary>
-        /// <param name="jsonData"></param>
-        /// <returns></returns>
+        /// <param name="jsonData">Json representation of workspace.</param>
+        /// <returns>String representation of workspace after all elements' Guids replaced.</returns>
         internal static string UpdateWorkspaceGUIDs(string jsonData)
         {
             string pattern = @"([a-z0-9]{32})";
