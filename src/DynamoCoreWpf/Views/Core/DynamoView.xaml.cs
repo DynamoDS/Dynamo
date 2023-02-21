@@ -242,7 +242,7 @@ namespace Dynamo.Controls
 
         private void DynamoViewModel_RequestEnableShortcutBarItems(bool enable)
         {
-            shortcutBar.EnableItems = enable;
+            shortcutBar.AreMenuItemsEnabled  = enable;
         }
 
         private void OnWorkspaceOpened(WorkspaceModel workspace)
@@ -254,7 +254,7 @@ namespace Dynamo.Controls
             {
                 DynamoModel.RaiseIExtensionStorageAccessWorkspaceOpened(hws, extension, dynamoViewModel.Model.Logger);
             }
-            shortcutBar.EnableItems = true;
+            shortcutBar.AreMenuItemsEnabled  = true;
         }
 
         private void OnWorkspaceSaving(WorkspaceModel workspace, Graph.SaveContext saveContext)
@@ -2473,7 +2473,7 @@ namespace Dynamo.Controls
             //We pass the root UIElement to the GuidesManager so we can found other child UIElements
             try
             {
-                shortcutBar.EnableItems = false;
+                shortcutBar.AreMenuItemsEnabled  = false;
                 dynamoViewModel.MainGuideManager.LaunchTour(GuidesManager.GetStartedGuideName);
             }
             catch (Exception)

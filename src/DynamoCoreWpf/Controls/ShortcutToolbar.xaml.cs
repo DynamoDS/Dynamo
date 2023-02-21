@@ -59,7 +59,7 @@ namespace Dynamo.UI.Controls
             else {
                 logoutOption.Visibility = Visibility.Collapsed;
             }
-            EnableItems = false;
+            AreMenuItemsEnabled  = false;
         }
 
         private void SignOutHandler(LoginState status)
@@ -109,7 +109,7 @@ namespace Dynamo.UI.Controls
             }
         }
 
-        public bool EnableItems
+        public bool AreMenuItemsEnabled
         {
             set
             {
