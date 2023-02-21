@@ -128,7 +128,7 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <param name="jsonData"></param>
         /// <returns></returns>
-        public static string UpdateWorkspaceGUIDs(string jsonData)
+        internal static string UpdateWorkspaceGUIDs(string jsonData)
         {
             string pattern = @"([a-z0-9]{32})";
             string updatedJsonData = jsonData;
