@@ -594,7 +594,9 @@ namespace Dynamo.ViewModels
         /// then adds a View property to serialized Workspace, and sets its value to the serialized ViewModel.
         /// </summary>
         /// <param name="filePath"></param>
+        /// <param name="isBackup"></param>
         /// <param name="engine"></param>
+        /// <param name="saveContext"></param>
         /// <exception cref="ArgumentNullException">Thrown when the file path is null.</exception>
         internal void Save(string filePath, bool isBackup = false, EngineController engine = null, SaveContext saveContext = SaveContext.None)
         {
@@ -620,7 +622,18 @@ namespace Dynamo.ViewModels
                 var jo = AddViewBlockToJSON(json_parsed);
 
                 // Stage 3: Save
-                File.WriteAllText(filePath, jo.ToString());
+                string saveContent;
+                if(saveContext == SaveContext.SaveAs && !isBackup)
+                {
+                    // For intentional SaveAs either through UI or API calls, replace workspace elements' Guids and workspace Id
+                    jo["Uuid"] = Guid.NewGuid().ToString();
+                    saveContent = GuidUtility.UpdateWorkspaceGUIDs(jo.ToString());
+                }
+                else
+                {
+                    saveContent = jo.ToString();
+                }
+                File.WriteAllText(filePath, saveContent);
 
                 // Handle Workspace or CustomNodeWorkspace related non-serialization internal logic
                 // Only for actual save, update file path and recent file list
