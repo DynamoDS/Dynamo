@@ -153,10 +153,10 @@ namespace PythonNodeModelsWpf
             foreach (var margin in margins)
             {
                 var test = margin;
-                test.FoldingMarkerBrush = new SolidColorBrush(Color.FromArgb(255, 120, 0, 200));
-                test.FoldingMarkerBackgroundBrush = new SolidColorBrush(Color.FromArgb(255, 255, 255, 0));
-                test.SelectedFoldingMarkerBackgroundBrush = new SolidColorBrush(Color.FromArgb(255, 0, 255, 255));
-                test.SelectedFoldingMarkerBrush = new SolidColorBrush(Color.FromArgb(255, 0, 125, 255));
+                test.FoldingMarkerBrush = new SolidColorBrush(Color.FromArgb(255, 153, 153, 153));
+                test.FoldingMarkerBackgroundBrush = new SolidColorBrush(Color.FromArgb(255, 53, 53, 53));
+                test.SelectedFoldingMarkerBrush = new SolidColorBrush(Color.FromArgb(255, 153, 153, 153));
+                test.SelectedFoldingMarkerBackgroundBrush = new SolidColorBrush(Color.FromArgb(255, 73, 73, 73));
             }
 
             foldingStrategy.UpdateFoldings(foldingManager, editText.Document);

@@ -49,7 +49,7 @@
       <KeyWords name="ClassStatement" color="#E0A86F" bold="false">
         <Key word="class" />
       </KeyWords>
-      <KeyWords name="ExceptionHandlingStatements" bold="false" color="#F92672">
+      <KeyWords name="ExceptionHandlingStatements" bold="false" color="#BC8CDF">
         <Key word="except" />
         <Key word="finally" />
         <Key word="raise" />
@@ -58,37 +58,37 @@
       <KeyWords name="FunctionDefinition" italic="true" color="#66D9EF">
         <Key word="def" />
       </KeyWords>
-      <KeyWords name="Imports" bold="false" color="#F2A9F2">
+      <KeyWords name="Imports" bold="false" color="#F5C1D1">
         <Key word="import" />
         <Key word="from" />
       </KeyWords>
-      <KeyWords name="IterationStatements" bold="false" color="#F92672">
+      <KeyWords name="IterationStatements" bold="false" color="#BC8CDF">
         <Key word="for" />
         <Key word="in" />
         <Key word="while" />
       </KeyWords>
-      <KeyWords name="JumpStatements" color="#F92672">
+      <KeyWords name="JumpStatements" color="#BC8CDF">
         <Key word="break" />
         <Key word="continue" />
         <Key word="yield" />
         <Key word="return" />
       </KeyWords>
-      <KeyWords name="OperatorStatements" bold="true" color="#F92672">
+      <KeyWords name="OperatorStatements" bold="true" color="#BC8CDF">
         <Key word="and" />
         <Key word="as" />
         <Key word="is" />
         <Key word="not" />
         <Key word="or" />
       </KeyWords>
-      <KeyWords name="PassStatement" color="#F92672">
+      <KeyWords name="PassStatement" color="#BC8CDF">
         <Key word="pass" />
       </KeyWords>
-      <KeyWords name="SelectionStatements" bold="true" color="#F92672">
+      <KeyWords name="SelectionStatements" bold="true" color="#BC8CDF">
         <Key word="elif" />
         <Key word="else" />
         <Key word="if" />
       </KeyWords>
-      <KeyWords name="WithStatement" color="#F92672">
+      <KeyWords name="WithStatement" color="#BC8CDF">
         <Key word="with" />
       </KeyWords>
     </RuleSet>
