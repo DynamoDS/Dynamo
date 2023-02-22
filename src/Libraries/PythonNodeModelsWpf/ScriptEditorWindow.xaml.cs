@@ -453,11 +453,6 @@ namespace PythonNodeModelsWpf
 
         #region Navigation Controls
 
-        private void CloseButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-
         private void MinimizeButton_OnClick(object sender, RoutedEventArgs e)
         {
             this.WindowState = WindowState.Minimized;
@@ -475,13 +470,6 @@ namespace PythonNodeModelsWpf
                 this.WindowState = WindowState.Normal;
                 ToggleButtons(false);
             }
-        }
-
-        // Don't change anything, just flip back the controls
-        private void ResumeButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            this.SaveButtonBar.Visibility = Visibility.Visible;
-            this.UnsavedChangesStatusBar.Visibility = Visibility.Collapsed;
         }
 
         /// <summary>
@@ -513,10 +501,29 @@ namespace PythonNodeModelsWpf
             DragMove();
         }
 
+        // Handles Close button 'X' 
+        private void CloseButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            e.Handled = true;
+            CloseWithWarning();
+        }
+
+        // Handles Close button on the Warning bar
+        private void CloseWarningBarButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
         // ESC Button pressed triggers Window close        
         private void OnCloseExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             e.Handled = true;
+            CloseWithWarning();
+        }
+
+        // Close the script window if it was saved, otherwise issue a warning
+        private void CloseWithWarning()
+        {
             if (!IsSaved) WarnUserScript();
             else this.Close();
         }
@@ -524,8 +531,35 @@ namespace PythonNodeModelsWpf
         // Show the warning bar, hide the save button bar
         private void WarnUserScript()
         {
+            this.editText.IsEnabled = false;
+            this.SaveScriptChangesButton.IsEnabled = false;
+            this.RevertScriptChangesButton.IsEnabled = false;
+            this.UndoButton.IsEnabled = false;
+            this.RedoButton.IsEnabled = false;
+            this.ZoomInButton.IsEnabled = false;
+            this.ZoomOutButton.IsEnabled = false;
+            this.EngineSelectorComboBox.IsEnabled = false;
+            this.MigrationAssistantButton.IsEnabled = false;
+            this.MoreInfoButton.IsEnabled = false;
             this.SaveButtonBar.Visibility = Visibility.Collapsed;
             this.UnsavedChangesStatusBar.Visibility = Visibility.Visible;
+        }
+
+        // Don't change anything, just flip back the controls
+        private void ResumeButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            this.editText.IsEnabled = true;
+            this.SaveScriptChangesButton.IsEnabled = true;
+            this.RevertScriptChangesButton.IsEnabled = true;
+            this.UndoButton.IsEnabled = true;
+            this.RedoButton.IsEnabled = true;
+            this.ZoomInButton.IsEnabled = true;
+            this.ZoomOutButton.IsEnabled = true;
+            this.EngineSelectorComboBox.IsEnabled = true;
+            this.MigrationAssistantButton.IsEnabled = true;
+            this.MoreInfoButton.IsEnabled = true;
+            this.SaveButtonBar.Visibility = Visibility.Visible;
+            this.UnsavedChangesStatusBar.Visibility = Visibility.Collapsed;
         }
 
         // Updates the IsEnterHit value

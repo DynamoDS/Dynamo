@@ -355,7 +355,7 @@
                         </ComboBox.ToolTip>
                     </ComboBox>
                     <Button Style="{StaticResource IconButton}"
-                            Name="MigrationAssistantBtn"
+                            Name="MigrationAssistantButton"
                             Click="OnMigrationAssistantClicked"
                             ToolTipService.ShowOnDisabled="True"
                             ToolTipService.IsEnabled="True"
@@ -392,6 +392,7 @@
                         Background="{StaticResource PreferencesWindowBackgroundColor}"
                         Grid.Row="2">
                     <avalonedit:TextEditor Name="editText"
+                                           IsEnabled="True"
                                            FontFamily="{StaticResource SourceCodePro}"
                                            FontSize="10pt"
                                            ShowLineNumbers="True"
@@ -458,7 +459,7 @@
                         <Button 
                             Style="{StaticResource UnSaveButtonStyle}" Content="Keep editing" Click="ResumeButton_OnClick"></Button>
                         <Button 
-                            Style="{StaticResource UnSaveButtonStyle}" Content="Close" Click="CloseButton_OnClick"></Button>
+                            Style="{StaticResource UnSaveButtonStyle}" Content="Close" Click="CloseWarningBarButton_OnClick"></Button>
                     </StackPanel>
                 </Grid>
             </Grid>
