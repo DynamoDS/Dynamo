@@ -74,10 +74,21 @@ namespace PythonNodeModelsWpf
                 bool foundColon = false;
                 //for (int i = 0; i < line.Length; i++)
                 int i = 0;
-                //TODO buffer the characters so you can have the line contents on the stack too for the folding name (display text)
+                
                 while (i < line.Length && !(foundText && foundColon))
                 {
                     char c = document.GetCharAt(offsetTracker + i);
+                    char nc;
+                    // we only want to tab if the line ends with ':'
+                    // i.e. in case of "https://foo.com" we don't want to tab
+                    try
+                    {
+                        nc = document.GetCharAt(offsetTracker + i + 1);  
+                    }
+                    catch(ArgumentOutOfRangeException ae)
+                    {
+                        nc = '\r';
+                    }
 
                     switch (c)
                     {
@@ -96,7 +107,7 @@ namespace PythonNodeModelsWpf
 
                             break;
                         case ':': // Tabs count as N
-                            if(!skip)
+                            if(!skip && IsNewLine(nc))
                                 foundColon = true;
                             break;
                         default
@@ -122,6 +133,7 @@ namespace PythonNodeModelsWpf
                 int numTabs = spaceCounter / SpacesInTab; // we know this will be an int because of the above check
                 if (numTabs >= startOffsets.Count && foundText && foundColon)
                 {
+
                     // we are starting a new folding
                     startOffsets.Push(offsetTracker);
 
@@ -159,6 +171,12 @@ namespace PythonNodeModelsWpf
 
             newFoldings.Sort((a, b) => (a.StartOffset.CompareTo(b.StartOffset)));
             return newFoldings;
+        }
+
+        // Check if the character is a newline
+        private bool IsNewLine(char c)
+        {
+            return c.Equals('\r');
         }
     }
 }
