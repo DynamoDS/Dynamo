@@ -86,7 +86,7 @@ namespace PythonNodeModelsWpf
                         nc = document.GetCharAt(offsetTracker + i + 1);  
                     }
                     catch(ArgumentOutOfRangeException ae)
-                    {
+                    {   
                         nc = '\r';
                     }
 
@@ -131,7 +131,7 @@ namespace PythonNodeModelsWpf
                 // Now we need to figure out if this line is a new folding by checking its tabbing
                 // relative to the current stack count. Convert into virtual tabs and compare to stack level
                 int numTabs = spaceCounter / SpacesInTab; // we know this will be an int because of the above check
-                if (numTabs >= startOffsets.Count && foundText && foundColon)
+                if (numTabs >= startOffsets.Count && foundText && foundColon)    
                 {
 
                     // we are starting a new folding
