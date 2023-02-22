@@ -1067,6 +1067,10 @@ namespace Dynamo.Configuration
             trustedLocations.AddRange(locs);
         }
 
+        /// <summary>
+        /// Disable Trust Warnings for file security
+        /// </summary>
+        /// <param name="disabled"></param>
         internal void SetTrustWarningsDisabled(bool disabled)
         {
             disableTrustWarnings = disabled;
