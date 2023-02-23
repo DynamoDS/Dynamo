@@ -782,7 +782,7 @@ namespace Dynamo.Configuration
             BackupFilesCount = 1;
             BackupFiles = new List<string>();
 
-            LibraryZoomScale = 1;
+            LibraryZoomScale = 100;
 
             CustomPackageFolders = new List<string>();
 

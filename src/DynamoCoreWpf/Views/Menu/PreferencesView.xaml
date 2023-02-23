@@ -1301,8 +1301,12 @@
                                             x:Name="LibraryZoomScalingSlider"
                                             Style="{StaticResource SliderStyle}"
                                             Width="440"
-                                            Minimum="0.1"
-                                            Maximum="3">
+                                            Minimum="10"
+                                            IsSnapToTickEnabled="True"
+                                            TickFrequency="1"
+                                            AutoToolTipPlacement="BottomRight"
+                                            AutoToolTipPrecision="0"
+                                            Maximum="300">
                                         </Slider>
                                     </StackPanel>
                                     <StackPanel Grid.Row="2" Width="550">
