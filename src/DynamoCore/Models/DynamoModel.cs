@@ -1639,9 +1639,13 @@ namespace Dynamo.Models
             if (preferences != null) // If there is preference settings provided...
                 return preferences;
 
-            //Skip file handling in service mode.
+            //Skip file handling and trust location in service mode.
             if (IsServiceMode)
-                return new PreferenceSettings();
+            {
+                var setting = new PreferenceSettings();
+                setting.SetTrustWarningsDisabled(true);
+                return setting;
+            }
 
             // Is order for test cases not to interfere with the regular preference
             // settings xml file, a test case usually specify a temporary xml file
