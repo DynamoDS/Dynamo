@@ -89,7 +89,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
         private void Browser_ZoomFactorChanged(object sender, EventArgs e)
         {
             //Multiplies by 100 so the value can be saved as a percentage
-            dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale = (float)browser.ZoomFactor * 100;
+            dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale = (int)browser.ZoomFactor * 100;
         }
 
         void PreferencesWindowChanged()
@@ -558,7 +558,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
             Slider slider = (Slider)sender;
             //The default value of the zoom factor is 1.0. The value that comes from the slider is in percentage, so we divide by 100 to be equivalent
             browser.ZoomFactor = slider.Value / 100;
-            dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale = ((float)slider.Value);
+            dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale = ((int)slider.Value);
         }
 
         /// <summary>

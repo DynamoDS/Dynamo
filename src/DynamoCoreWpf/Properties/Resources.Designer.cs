@@ -1937,6 +1937,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Library.
+        /// </summary>
+        public static string DynamoViewSettingLibraryZoomScale {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingLibraryZoomScale", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Settings.
         /// </summary>
         public static string DynamoViewSettingMenu {
