@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -208,6 +208,8 @@ namespace ProtoCore
                 return null;
             }
 
+            internal static string PrecisionFormat { get; set; } = "f3";
+
             /// <summary>
             /// Returns string representation of data
             /// </summary>
@@ -230,10 +232,23 @@ namespace ProtoCore
                         // https://msdn.microsoft.com/en-us/library/3hfd35ad(v=vs.110).aspx
                         // We should always use invariant culture format for formattable 
                         // object.
+
+                        //TODO: uncomment this once https://jira.autodesk.com/browse/DYN-5101 is complete
+                        //if (Data is double)
+                        //{
+                        //    return (Data as IFormattable).ToString(PrecisionFormat, CultureInfo.InvariantCulture);
+                        //}
+                        //else
+                        //{
                         return (Data as IFormattable).ToString(null, CultureInfo.InvariantCulture);
+                        //}
                     }
                     else
                     {
+                        if (double.TryParse(Data.ToString(), out double d))
+                        {
+                            return Convert.ToDouble(Data).ToString(PrecisionFormat, CultureInfo.InvariantCulture);
+                        }
                         return Data.ToString();
                     }
                 }

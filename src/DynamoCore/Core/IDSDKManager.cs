@@ -227,6 +227,7 @@ namespace Dynamo.Core
                         if (ret) 
                         {
                             ret = SetProductConfigs("Dynamo", server, client_id);
+                            Client.SetServer(server);
                             return ret;
                         }
                     }

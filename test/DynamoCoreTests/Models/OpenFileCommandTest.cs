@@ -116,12 +116,53 @@ namespace Dynamo.Tests.ModelsTest
             currentCount = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Count();
             Assert.AreNotEqual(0, currentCount);
 
-            //If we try to insert the same graph, currently Dynamo should not allow us
-            // TODO - this part of the test might change if we include a logic
-            // to recreate the GUIDs of the 'same' nodes to allow for duplicate or partial duplicate insertions
+            //Assert 2x
             this.CurrentDynamoModel.InsertFileFromPath(wspath);
             var updatedCount = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Count();
-            Assert.AreEqual(currentCount, updatedCount);
+            Assert.AreEqual(currentCount * 2, updatedCount);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestInsertNotes()
+        {
+            // Home space contains 0 nodes
+            var currentCount = this.CurrentDynamoModel.CurrentWorkspace.Notes.Count();
+            Assert.AreEqual(0, currentCount);
+
+            //Act
+            string wspath = Path.Combine(TestDirectory, @"core\callsite\insert_annotations.dyn");
+            this.CurrentDynamoModel.InsertFileFromPath(wspath);
+
+            //Assert
+            currentCount = this.CurrentDynamoModel.CurrentWorkspace.Notes.Count();
+            Assert.AreNotEqual(0, currentCount);
+
+            //Assert pinned/unpinned notes
+            var pinnedNotesCount = this.CurrentDynamoModel.CurrentWorkspace.Notes.Count(x => x.PinnedNode != null);
+            var unpinnedNotesCount = this.CurrentDynamoModel.CurrentWorkspace.Notes.Count(x => x.PinnedNode == null);
+            Assert.AreEqual(1, pinnedNotesCount, unpinnedNotesCount);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestInsertAnnotations()
+        {
+            // Home space contains 0 nodes
+            var currentCount = this.CurrentDynamoModel.CurrentWorkspace.Annotations.Count();
+            Assert.AreEqual(0, currentCount);
+
+            //Act
+            string wspath = Path.Combine(TestDirectory, @"core\callsite\insert_annotations.dyn");
+            this.CurrentDynamoModel.InsertFileFromPath(wspath);
+
+            //Assert
+            currentCount = this.CurrentDynamoModel.CurrentWorkspace.Notes.Count();
+            Assert.AreEqual(2, currentCount);
+
+            //Assert nested groups
+            var nestedGroupsCount = this.CurrentDynamoModel.CurrentWorkspace.Annotations.Count(x => x.Nodes.Count(y => y is Dynamo.Graph.Annotations.AnnotationModel) > 0);
+            Assert.AreEqual(1, nestedGroupsCount);
         }
     }
     
