@@ -315,10 +315,12 @@ namespace Dynamo.PackageManager
                 }
 
                 package.SetAsLoaded();
-                PackgeLoaded?.Invoke(package);
+
 
                 PythonServices.PythonEngineManager.Instance.
                     LoadPythonEngine(package.LoadedAssemblies.Select(x => x.Assembly));
+
+                PackgeLoaded?.Invoke(package);
             }
             catch (CustomNodePackageLoadException e)
             {
