@@ -58,11 +58,15 @@ namespace CoreNodeModelsWpf.Charts
         /// </summary>
         public BarChartNodeModel()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("labels", "A list of labels for the bar chart categories.")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("values", "A list (of lists) to supply values for the bars in each category.")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("colors", "A list of colors for each bar chart category.")));
+            InPorts.Add(new PortModel(PortType.Input, this,
+                new PortData("labels", "A list of labels for the bar chart categories.\n\nList<string>")));
+            InPorts.Add(new PortModel(PortType.Input, this,
+                new PortData("values", "A list (of lists) to supply values for the bars in each category.\n\nList<var>")));
+            InPorts.Add(new PortModel(PortType.Input, this,
+                new PortData("colors", "A list of colors for each bar chart category.\n\nList<color>")));
 
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("labels:values", "Dictionary containing label:value key-pairs")));
+            OutPorts.Add(new PortModel(PortType.Output, this,
+                new PortData("labels:values", "Dictionary containing label:value key-pairs\n\nDictionary<Label, Value>")));
 
             RegisterAllPorts();
 

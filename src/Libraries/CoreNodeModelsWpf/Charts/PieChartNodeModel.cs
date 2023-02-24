@@ -57,11 +57,15 @@ namespace CoreNodeModelsWpf.Charts
         /// </summary>
         public PieChartNodeModel()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("labels", "A list of string labels for each segment in the pie chart.")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("values", "A list of double values to supply a value for each segment of the pie chart.")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("colors", "A list of colors for each segment of the pie chart.")));
+            InPorts.Add(new PortModel(PortType.Input, this,
+                new PortData("labels", "A list of string labels for each segment in the pie chart.\n\nList<string>")));
+            InPorts.Add(new PortModel(PortType.Input, this,
+                new PortData("values", "A list of double values to supply a value for each segment of the pie chart.\n\nList<double>")));
+            InPorts.Add(new PortModel(PortType.Input, this,
+                new PortData("colors", "A list of colors for each segment of the pie chart.\n\nList<color>")));
 
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("labels:values", "Dictionary containing label:value key-pairs")));
+            OutPorts.Add(new PortModel(PortType.Output, this,
+                new PortData("labels:values", "Dictionary containing label:value key-pairs\n\nDictionary<Label, Value>")));
 
             RegisterAllPorts();
 

@@ -56,11 +56,15 @@ namespace CoreNodeModelsWpf.Charts
         /// </summary>
         public BasicLineChartNodeModel()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("labels", "A list of string labels for each line to be plotted.")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("values", "List of lists each containing double values to be plotted against X-Axis values.")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("colors", "A list of colors for each line.")));
+            InPorts.Add(new PortModel(PortType.Input, this,
+                new PortData("labels", "A list of string labels for each line to be plotted.\n\nList<string>")));
+            InPorts.Add(new PortModel(PortType.Input, this,
+                new PortData("values", "List of lists each containing double values to be plotted against X-Axis values.\n\nList<List<double>>")));
+            InPorts.Add(new PortModel(PortType.Input, this,
+                new PortData("colors", "A list of colors for each line.\n\nList<color>")));
 
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("labels:values", "Dictionary containing label:value key-pairs")));
+            OutPorts.Add(new PortModel(PortType.Output, this,
+                new PortData("labels:values", "Dictionary containing label:value key-pairs\n\nDictionary<string, double>")));
 
             RegisterAllPorts();
 

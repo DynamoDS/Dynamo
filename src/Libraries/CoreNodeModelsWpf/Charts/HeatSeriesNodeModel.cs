@@ -62,12 +62,17 @@ namespace CoreNodeModelsWpf.Charts
         /// </summary>
         public HeatSeriesNodeModel()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("x-labels", "A list of string labels for the x-axis.")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("y-labels", "A list of string labels for the y-axis.")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("values", "A list of lists each containing double values representing items in a column.")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("colors", "A list of colors used to generate a color range.")));
+            InPorts.Add(new PortModel(PortType.Input, this,
+                new PortData("x-labels", "A list of string labels for the x-axis.\n\nList<string>")));
+            InPorts.Add(new PortModel(PortType.Input, this,
+                new PortData("y-labels", "A list of string labels for the y-axis.\n\nList<string>")));
+            InPorts.Add(new PortModel(PortType.Input, this,
+                new PortData("values", "A list of lists each containing double values representing items in a column.\n\nList<List<double>>")));
+            InPorts.Add(new PortModel(PortType.Input, this,
+                new PortData("colors", "A list of colors used to generate a color range.\n\nList<color>")));
 
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("labels:values", "Dictionary containing label:value key-pairs")));
+            OutPorts.Add(new PortModel(PortType.Output, this,
+                new PortData("labels:values", "Dictionary containing label:value key-pairs\n\nobject[]")));
 
             RegisterAllPorts();
 
