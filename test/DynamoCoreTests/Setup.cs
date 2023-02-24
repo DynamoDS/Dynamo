@@ -33,7 +33,7 @@ namespace Dynamo.Tests
         }
 
 #if NETFRAMEWORK
-        [SetUp]
+        [TearDown]
 #elif NET6_0_OR_GREATER
         [OneTimeTearDown]
 #endif
