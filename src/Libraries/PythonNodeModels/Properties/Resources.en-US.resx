@@ -162,7 +162,7 @@
     <comment>It is comment in the code. IN shouldn't be translated.</comment>
   </data>
   <data name="PythonScriptEditorMoreInfoButtonTooltip" xml:space="preserve">
-    <value>Learn about Python3 updates.</value>
+    <value>Learn about the Python 2 to Python 3 conversion</value>
   </data>
   <data name="PythonScriptEditorOutputComment" xml:space="preserve">
     <value>Assign your output to the OUT variable.</value>
@@ -172,13 +172,13 @@
     <value>Revert the changes made to current Python node editor and close it.</value>
   </data>
   <data name="PythonScriptEditorRunButton" xml:space="preserve">
-    <value>Run</value>
+    <value>Save and run</value>
   </data>
   <data name="PythonScriptEditorRunButtonTooltip" xml:space="preserve">
-    <value>Save current code in Python node editor and run graph with it.</value>
+    <value>Save Python script and run it with the graph</value>
   </data>
   <data name="PythonScriptEditorSaveChangesButtonTooltip" xml:space="preserve">
-    <value>Save the changes made to current Python node editor.</value>
+    <value>Save changes made in Python Script editor</value>
   </data>
   <data name="PythonScriptFromStringDescription" xml:space="preserve">
     <value>Runs a Python script from a string.</value>
@@ -188,10 +188,10 @@
     <value>Python script to run.</value>
   </data>
   <data name="PythonScriptEditorEngineDropdownTooltip" xml:space="preserve">
-    <value>Use this dropdown to choose the python version/engine to execute your code.</value>
+    <value>Select the Python version/engine to execute the script</value>
   </data>
   <data name="PythonScriptEditorMigrationAssistantButtonTooltip" xml:space="preserve">
-    <value>Run migration utility tool to make the script Python 3 compliant.</value>
+    <value>Convert script to Python 3...</value>
   </data>
   <data name="PythonSearchTags" xml:space="preserve">
     <value>IronPython;CPython;</value>
