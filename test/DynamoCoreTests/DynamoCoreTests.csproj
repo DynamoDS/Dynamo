@@ -16,7 +16,7 @@
     <Compile Remove="Saving.cs" />
   </ItemGroup>
     <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-        <PackageReference Include="NUnit" Version="2.6.3" ExcludeAssets="none"  CopyXML="true"/>
+        <PackageReference Include="NUnit" Version="2.6.3" ExcludeAssets="none" CopyXML="true" />
         <PackageReference Include="NUnitTestAdapter" Version="2.3.0" ExcludeAssets="all" />
         <Reference Include="System.Configuration" />
         <Reference Include="Microsoft.CSharp" />
