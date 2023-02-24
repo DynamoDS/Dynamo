@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -1346,7 +1346,7 @@ namespace DSCore
             if (list == null)
                 return new List<int> { }; 
 
-            var indices = Enumerable.Range(0, list.Count).Where(i => list[i].Equals(item)).ToList();
+            var indices = Enumerable.Range(0, list.Count).Where(i => list[i] != null ? list[i].Equals(item) : item == null).ToList();
             return indices;
         }
 
