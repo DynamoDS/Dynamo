@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 using System.Collections.Generic;
 using System.IO;
 
@@ -14,7 +14,7 @@ namespace Dynamo.Tests
 
             base.GetLibrariesToPreload(libraries);
         }
-
+        //This test depends on the TestUINodes.dll - which depends on DynamoCoreWPF.
         [Test]
         public void TestUpdateInputNodeModel()
         {

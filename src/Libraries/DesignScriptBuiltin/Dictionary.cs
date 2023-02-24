@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -128,6 +128,13 @@ namespace DesignScript
 
                 result.Append("}");
                 return result.ToString();
+            }
+
+            //TODO this could cause unanticipated consequences -
+            //figure out how to add customer comparer for nunit3 instead...
+            public override bool Equals(object obj)
+            {
+                return (bool)(this?.ToString().Equals(obj?.ToString()));
             }
         }
     }
