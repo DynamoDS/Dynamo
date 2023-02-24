@@ -9,7 +9,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
@@ -1995,7 +1994,7 @@ namespace Dynamo.Models
                 // Update (assign new) Guids for each node, connection, note and group
                 // The update of Guids is necessary to assure the insertion of dynamo graphs does not interfere with the current workspace
                 // This allows multiple inserts of the same or 'similar' graph to take place
-                fileContents = UpdateWorkspaceGUIDs(fileContents);
+                fileContents = GuidUtility.UpdateWorkspaceGUIDs(fileContents);
 
                 DynamoPreferencesData dynamoPreferences = DynamoPreferencesDataFromJson(fileContents);
                 if (dynamoPreferences != null)
@@ -3551,36 +3550,6 @@ namespace Dynamo.Models
             // If no nodes exist with the same GUID, then we are good to go
             return false;
         }
-        #endregion
-
-        #region Insert Private Methods
-
-        /// <summary>
-        /// Performs an update to all Guids inside the json string before deserialization.
-        /// Targets specifically Guids without the '-' hyphen, which are all the workspace elements.
-        /// Replacing all occurrences of each individual Guid guarantees that the relationships between the elements are retained.
-        /// </summary>
-        /// <param name="jsonData"></param>
-        /// <returns></returns>
-        private string UpdateWorkspaceGUIDs(string jsonData)
-        {
-            string pattern = @"([a-z0-9]{32})";
-            string updatedJsonData = jsonData;
-
-            // The unique collection of Guids
-            var mc = Regex.Matches(jsonData, pattern)
-                .Cast<Match>()
-                .Select(m => m.Value)
-                .Distinct();
-
-            foreach (var match in mc)
-            {
-                updatedJsonData = updatedJsonData.Replace(match, Guid.NewGuid().ToString("N"));
-            }
-
-            return updatedJsonData;
-        }
-
         #endregion
 
         #endregion
