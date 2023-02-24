@@ -16,6 +16,7 @@ using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using PythonNodeModels;
 using System.Linq;
 using Dynamo.PythonServices;
+using Dynamo.Wpf.Views;
 
 namespace PythonNodeModelsWpf
 {
@@ -95,6 +96,9 @@ namespace PythonNodeModelsWpf
             editText.SyntaxHighlighting = HighlightingLoader.Load(
                 new XmlTextReader(elem), HighlightingManager.Instance);
 
+            // Add custom highlighting rules consistent with DesignScript
+            CodeHighlightingRuleFactory.AddCommonHighlighingRules(editText, dynamoViewModel.EngineController);
+
             AvailableEngines = new ObservableCollection<string>(PythonEngineManager.Instance.AvailableEngines.Select(x => x.Name));
             // Add the serialized Python Engine even if it is missing (so that the user does not see an empty slot)
             if (!AvailableEngines.Contains(nodeModel.EngineName))
@@ -108,6 +112,7 @@ namespace PythonNodeModelsWpf
             originalScript = propValue;
             CachedEngine = nodeModel.EngineName;
             EngineSelectorComboBox.SelectedItem = CachedEngine;
+
         }
 
         #region Text Zoom in Python Editor
