@@ -15,6 +15,7 @@ using Dynamo.Core;
 using Dynamo.Exceptions;
 using Dynamo.Logging;
 using Dynamo.UI;
+using Dynamo.UI.Views;
 using Dynamo.ViewModels;
 using Res = Dynamo.Wpf.Properties.Resources;
 
@@ -54,12 +55,12 @@ namespace Dynamo.Wpf.Views
         /// </summary>
         /// <param name="dynamoViewModel"> Dynamo ViewModel</param>
         public PreferencesView(DynamoView dynamoView)
-        {            
+        {
             dynViewModel = dynamoView.DataContext as DynamoViewModel;            
             SetupPreferencesViewModel(dynViewModel);
 
             DataContext = dynViewModel.PreferencesViewModel;
- 
+
             InitializeComponent();
             Dynamo.Logging.Analytics.TrackEvent(
                 Actions.Open,
@@ -81,6 +82,8 @@ namespace Dynamo.Wpf.Views
             viewModel.InitializeGeometryScaling();
 
             viewModel.RequestShowFileDialog += OnRequestShowFileDialog;
+
+            LibraryZoomScalingSlider.Value = dynViewModel.Model.PreferenceSettings.LibraryZoomScale;
         }
 
         /// <summary>

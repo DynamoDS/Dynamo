@@ -167,6 +167,11 @@ namespace Dynamo.Configuration
         public bool ShowConnectorToolTip { get; set; }
 
         /// <summary>
+        /// Indicates the zoom scale of the library
+        /// </summary>
+        public float LibraryZoomScale { get; set; }
+
+        /// <summary>
         /// The types of connector: Bezier or Polyline.
         /// </summary>
         public ConnectorType ConnectorType { get; set; }
@@ -777,6 +782,8 @@ namespace Dynamo.Configuration
             BackupFilesCount = 1;
             BackupFiles = new List<string>();
 
+            LibraryZoomScale = 1;
+
             CustomPackageFolders = new List<string>();
 
             PythonTemplateFilePath = "";
@@ -1060,6 +1067,10 @@ namespace Dynamo.Configuration
             trustedLocations.AddRange(locs);
         }
 
+        /// <summary>
+        /// Disable Trust Warnings for file security
+        /// </summary>
+        /// <param name="disabled"></param>
         internal void SetTrustWarningsDisabled(bool disabled)
         {
             disableTrustWarnings = disabled;

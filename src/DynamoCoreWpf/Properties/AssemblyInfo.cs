@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -46,6 +46,7 @@ using System.Windows;
 [assembly: InternalsVisibleTo("GraphMetadataViewExtension")]
 [assembly: InternalsVisibleTo("PackageDetailsViewExtension")]
 [assembly: InternalsVisibleTo("Notifications")]
+[assembly: InternalsVisibleTo("LibraryViewExtensionWebView2")]
 [assembly: InternalsVisibleTo("IronPythonTests")]
 [assembly: InternalsVisibleTo("DynamoPackagesWPF")]
 [assembly: InternalsVisibleTo("DynamoPlayerExtension")]

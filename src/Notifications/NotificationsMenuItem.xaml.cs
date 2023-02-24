@@ -24,6 +24,8 @@ namespace Dynamo.Notifications
               {
                   //create a window to display the list of notificationsModels
                   var window = new NotificationsView(notificationsExtension);
+                  window.Owner = notificationsExtension.dynamoWindow;
+                  window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                   window.Show();
               };
 
@@ -42,7 +44,7 @@ namespace Dynamo.Notifications
               //create our icon
                 var color = new SolidColorBrush(Colors.LightGray);
                 this.imageicon.Source = FontAwesome.WPF.ImageAwesome.CreateImageSource(FontAwesome.WPF.FontAwesomeIcon.ExclamationCircle, color);
-          
+
             //create some bindings
             //attach the visibility of the badge and menuItems enabledState to the number of notifications without a binding...
 

@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
@@ -1150,6 +1150,9 @@ namespace DynamoCoreWpfTests
             });
 
             DispatcherUtil.DoEvents();
+
+            //Wait 3 seconds until the Click Right context menu is opened
+            Task.WaitAll(new Task[] { Task.Delay(2000) });
         }
 
 
