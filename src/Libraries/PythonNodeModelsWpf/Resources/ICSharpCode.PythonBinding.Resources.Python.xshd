@@ -2,12 +2,12 @@
   <Environment>
     <Custom name="TypeReference" bold="false" italic="false" color="#04ABAB" />
     <Custom name="UnknownEntity" bold="false" italic="false" color="#AB0404" />
-    <Default bold="false" italic="false" color="White" bgcolor="#242424" />
+    <Default bold="false" italic="false" color="#C5C5C5" bgcolor="#242424" />
     <Selection bold="false" italic="false" color="#D4D0C8" bgcolor="Gray" />
     <VRuler bold="false" italic="false" color="#6897BB" />
     <InvalidLines bold="false" italic="false" color="#999999" />
     <CaretMarker bold="false" italic="false" color="#999999" />
-    <LineNumbers bold="false" italic="false" color="#6897BB" bgcolor="#242424" />
+    <LineNumbers bold="false" italic="false" color="#C5C5C5" bgcolor="#535353" />
     <FoldLine bold="false" italic="false" color="Gray" bgcolor="Gray" />
     <FoldMarker bold="false" italic="false" color="Gray" bgcolor="#242424" />
     <SelectedFoldLine bold="false" italic="false" color="Gray" />
@@ -26,11 +26,11 @@
         <Begin>'</Begin>
         <End>'</End>
       </Span>
-      <Span name="DocComment" color="#75715E">
+      <Span name="DocComment" color="#a8a8a8">
         <Begin>"""</Begin>
         <End>"""</End>
       </Span>
-      <Span name="LineComment" stopateol="true" color="#75715E">
+      <Span name="LineComment" stopateol="true" color="#a8a8a8">
         <Begin>#</Begin>
       </Span>
       <Span name="String" stopateol="true" color="#E6DB74" escapecharacter="\">
@@ -38,7 +38,7 @@
         <End>"</End>
       </Span>
       <MarkPrevious bold="true" color="White">(</MarkPrevious>
-      <KeyWords name="BuiltInStatements" bold="true" color="#F92672">
+      <KeyWords name="BuiltInStatements" bold="false" color="#B7D78C">
         <Key word="assert" />
         <Key word="del" />
         <Key word="exec" />
@@ -46,10 +46,10 @@
         <Key word="lambda" />
         <Key word="print" />
       </KeyWords>
-      <KeyWords name="ClassStatement" color="#A6E22E" bold="true">
+      <KeyWords name="ClassStatement" color="#E0A86F" bold="false">
         <Key word="class" />
       </KeyWords>
-      <KeyWords name="ExceptionHandlingStatements" bold="true" color="#F92672">
+      <KeyWords name="ExceptionHandlingStatements" bold="false" color="#F92672">
         <Key word="except" />
         <Key word="finally" />
         <Key word="raise" />
@@ -58,11 +58,11 @@
       <KeyWords name="FunctionDefinition" italic="true" color="#66D9EF">
         <Key word="def" />
       </KeyWords>
-      <KeyWords name="Imports" bold="true" color="#F92672">
+      <KeyWords name="Imports" bold="false" color="#F2A9F2">
         <Key word="import" />
         <Key word="from" />
       </KeyWords>
-      <KeyWords name="IterationStatements" bold="true" color="#F92672">
+      <KeyWords name="IterationStatements" bold="false" color="#F92672">
         <Key word="for" />
         <Key word="in" />
         <Key word="while" />
