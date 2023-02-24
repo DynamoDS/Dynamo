@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -946,6 +946,25 @@ namespace DSCoreNodesTests
 
             indices = List.AllIndicesOf(input, 21).Cast<int>();
             Assert.IsEmpty(indices);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void AllIndicesOfNullTest()
+        {
+            var input = new List<object> { true, false, null };
+
+            var indices = List.AllIndicesOf(input, true);
+            Assert.True(indices.Count == 1);
+            Assert.AreEqual(0, indices[0]);
+
+            indices = List.AllIndicesOf(input, false);
+            Assert.True(indices.Count == 1);
+            Assert.AreEqual(1, indices[0]);
+
+            indices = List.AllIndicesOf(input, null);
+            Assert.True(indices.Count == 1);
+            Assert.AreEqual(2, indices[0]);
         }
 
         [Test]
