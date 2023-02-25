@@ -530,5 +530,18 @@ namespace Dynamo.Wpf.Views
                 this.lblConfidenceLevel.Margin = new Thickness(left, -15, 0, 0);
             }
         }
+
+        private void zoomScaleLevel_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            Slider slider = (Slider)sender;
+
+            double percentage = slider.Value - 10;
+            double marginValue = (79 * percentage / 29) - 480;
+            if (lblZoomScalingValue != null)
+            {
+                lblZoomScalingValue.Margin = new Thickness(marginValue, 0, 0, 0);
+                lblZoomScalingValue.Content = slider.Value.ToString() + "%";
+            }
+        }
     }
 }
