@@ -535,7 +535,9 @@ namespace Dynamo.Wpf.Views
         {
             Slider slider = (Slider)sender;
 
+            //Since the percentage goes from 10 to 300, the value is decremented by 10 to standardize. 
             double percentage = slider.Value - 10;
+            //This is the relation between the margin in pixels and the value of the percentage
             double marginValue = (79 * percentage / 29) - 480;
             if (lblZoomScalingValue != null)
             {
