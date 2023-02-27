@@ -27,9 +27,17 @@ namespace CoreNodeModelsWpf.Charts
     [NodeCategory("Display.Charts.Create")]    
     [NodeDescription("ChartsScatterPlotDescription", typeof(CoreNodeModelWpfResources))]
     [NodeSearchTags("ChartsScatterPlotSearchTags", typeof(CoreNodeModelWpfResources))]
-
+    [InPortNames("labels", "x-labels", "y-labels", "colors")]
     [InPortTypes("List<string>", "List<List<double>>", "List<List<double>>", "List<color>")]
+    [InPortDescriptions(typeof(CoreNodeModelWpfResources),
+        "ChartsScatterPlotLabelsDataPortToolTip",
+        "ChartsScatterPlotXLabelsDataPortToolTip",
+        "ChartsScatterPlotYLabelsDataPortToolTip",
+        "ChartsScatterPlotColorsDataPortToolTip")]
+    [OutPortNames("labels:values")]
     [OutPortTypes("Dictionary<string, double>")]
+    [OutPortDescriptions(typeof(CoreNodeModelWpfResources),
+        "ChartsScatterPlotLabelsValuesDataPortToolTip")]
     [AlsoKnownAs("CoreNodeModelsWpf.Charts.ScatterPlot")]
     public class ScatterPlotNodeModel : NodeModel
     {
@@ -63,18 +71,6 @@ namespace CoreNodeModelsWpf.Charts
         /// </summary>
         public ScatterPlotNodeModel()
         {
-            InPorts.Add(new PortModel(PortType.Input, this,
-                new PortData("labels", "A list of string labels for each group of points to be plotted.\n\nList<string>")));
-            InPorts.Add(new PortModel(PortType.Input, this,
-                new PortData("x-values", "A list of lists each containing double values representing x-coordinates.\n\nList<List<double>>")));
-            InPorts.Add(new PortModel(PortType.Input, this,
-                new PortData("y-values", "A list of lists each containing double values representing y-coordinates.\n\nList<List<double>>")));
-            InPorts.Add(new PortModel(PortType.Input, this,
-                new PortData("colors", "A list of colors for each group of points.\n\nList<color>")));
-
-            OutPorts.Add(new PortModel(PortType.Output, this,
-                new PortData("labels:values", "Dictionary containing label:value key-pairs\n\nDictionary<string, double>")));
-
             RegisterAllPorts();
 
             PortDisconnected += ScatterPlotNodeModel_PortDisconnected;

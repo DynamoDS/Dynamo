@@ -26,9 +26,16 @@ namespace CoreNodeModelsWpf.Charts
     [NodeCategory("Display.Charts.Create")]
     [NodeDescription("ChartsBarChartDescription", typeof(CoreNodeModelWpfResources))]
     [NodeSearchTags("ChartsBarChartSearchTags", typeof(CoreNodeModelWpfResources))]
-
+    [InPortNames("labels", "values", "colors")]
     [InPortTypes("List<string>", "List<var>", "List<color>")]
-    [OutPortTypes("Dictionary<Label, Value>")]
+    [InPortDescriptions(typeof(CoreNodeModelWpfResources),
+        "ChartsBarChartLabelsDataPortToolTip",
+        "ChartsBarChartValuesDataPortToolTip",
+        "ChartsBarChartColorsDataPortToolTip")]
+    [OutPortNames("labels:values")]
+    [OutPortTypes("Dictionary<string, double>")]
+    [OutPortDescriptions(typeof(CoreNodeModelWpfResources),
+        "ChartsBarChartLabelsValuesDataPortToolTip")]
     [AlsoKnownAs("CoreNodeModelsWpf.Charts.BarChart")]
     public class BarChartNodeModel : NodeModel
     {
@@ -58,16 +65,6 @@ namespace CoreNodeModelsWpf.Charts
         /// </summary>
         public BarChartNodeModel()
         {
-            InPorts.Add(new PortModel(PortType.Input, this,
-                new PortData("labels", "A list of labels for the bar chart categories.\n\nList<string>")));
-            InPorts.Add(new PortModel(PortType.Input, this,
-                new PortData("values", "A list (of lists) to supply values for the bars in each category.\n\nList<var>")));
-            InPorts.Add(new PortModel(PortType.Input, this,
-                new PortData("colors", "A list of colors for each bar chart category.\n\nList<color>")));
-
-            OutPorts.Add(new PortModel(PortType.Output, this,
-                new PortData("labels:values", "Dictionary containing label:value key-pairs\n\nDictionary<Label, Value>")));
-
             RegisterAllPorts();
 
             PortDisconnected += BarChartNodeModel_PortDisconnected;
@@ -75,10 +72,10 @@ namespace CoreNodeModelsWpf.Charts
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        [JsonConstructor]
         /// <summary>
         /// Instantiate a new NodeModel instance.
         /// </summary>
+        [JsonConstructor]
         public BarChartNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             PortDisconnected += BarChartNodeModel_PortDisconnected;

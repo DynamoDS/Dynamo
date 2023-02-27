@@ -25,9 +25,16 @@ namespace CoreNodeModelsWpf.Charts
     [NodeCategory("Display.Charts.Create")]    
     [NodeDescription("ChartsBasicLineChartDescription", typeof(CoreNodeModelWpfResources))]
     [NodeSearchTags("ChartsBasicLineChartSearchTags", typeof(CoreNodeModelWpfResources))]
-
+    [InPortNames("labels", "values", "colors")]
     [InPortTypes("List<string>", "List<List<double>>", "List<color>")]
+    [InPortDescriptions(typeof(CoreNodeModelWpfResources),
+        "ChartsBasicLineChartLabelsDataPortToolTip",
+        "ChartsBasicLineChartValuesDataPortToolTip",
+        "ChartsBasicLineChartColorsDataPortToolTip")]
+    [OutPortNames("labels:values")]
     [OutPortTypes("Dictionary<string, double>")]
+    [OutPortDescriptions(typeof(CoreNodeModelWpfResources),
+        "ChartsBasicLineChartLabelsValuesDataPortToolTip")]
     [AlsoKnownAs("CoreNodeModelsWpf.Charts.Index-ValueLinePlot")]
     public class BasicLineChartNodeModel : NodeModel
     {
@@ -56,16 +63,6 @@ namespace CoreNodeModelsWpf.Charts
         /// </summary>
         public BasicLineChartNodeModel()
         {
-            InPorts.Add(new PortModel(PortType.Input, this,
-                new PortData("labels", "A list of string labels for each line to be plotted.\n\nList<string>")));
-            InPorts.Add(new PortModel(PortType.Input, this,
-                new PortData("values", "List of lists each containing double values to be plotted against X-Axis values.\n\nList<List<double>>")));
-            InPorts.Add(new PortModel(PortType.Input, this,
-                new PortData("colors", "A list of colors for each line.\n\nList<color>")));
-
-            OutPorts.Add(new PortModel(PortType.Output, this,
-                new PortData("labels:values", "Dictionary containing label:value key-pairs\n\nDictionary<string, double>")));
-
             RegisterAllPorts();
 
             PortDisconnected += BasicLineChartNodeModel_PortDisconnected;

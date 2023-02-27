@@ -26,9 +26,17 @@ namespace CoreNodeModelsWpf.Charts
     [NodeCategory("Display.Charts.Create")]        
     [NodeDescription("ChartsXYLineChartDescription", typeof(CoreNodeModelWpfResources))]
     [NodeSearchTags("ChartsXYLineChartSearchTags", typeof(CoreNodeModelWpfResources))]
-
+    [InPortNames("labels", "x-labels", "y-labels", "colors")]
     [InPortTypes("List<string>", "List<List<double>>", "List<List<double>>", "List<color>")]
+    [InPortDescriptions(typeof(CoreNodeModelWpfResources),
+        "ChartsXYLineChartLabelsDataPortToolTip",
+        "ChartsXYLineChartXLabelsDataPortToolTip",
+        "ChartsXYLineChartYLabelsDataPortToolTip",
+        "ChartsXYLineChartColorsDataPortToolTip")]
+    [OutPortNames("labels:values")]
     [OutPortTypes("Dictionary<string, double>")]
+    [OutPortDescriptions(typeof(CoreNodeModelWpfResources),
+        "ChartsXYLineChartLabelsValuesDataPortToolTip")]
     [AlsoKnownAs("CoreNodeModelsWpf.Charts.XYLinePlot")]
     public class XYLineChartNodeModel : NodeModel
     {
@@ -62,18 +70,6 @@ namespace CoreNodeModelsWpf.Charts
         /// </summary>
         public XYLineChartNodeModel()
         {
-            InPorts.Add(new PortModel(PortType.Input, this,
-                new PortData("labels", "A list of string labels for each line to be plotted\n\nList<string>")));
-            InPorts.Add(new PortModel(PortType.Input, this,
-                new PortData("x-values", "A list of lists each containing double values representing x-coordinates for each point in a line.\n\nList<List<double>>")));
-            InPorts.Add(new PortModel(PortType.Input, this,
-                new PortData("y-values", "A list of lists each containing double values representing y-coordinates for each point in a line.\n\nList<List<double>>")));
-            InPorts.Add(new PortModel(PortType.Input, this,
-                new PortData("colors", "A list of colors for each line in the line plot.\n\nList<color>\"")));
-
-            OutPorts.Add(new PortModel(PortType.Output, this,
-                new PortData("labels:values", "Dictionary containing label:value key-pairs\n\nDictionary<string, double>")));
-
             RegisterAllPorts();
 
             PortDisconnected += XYLineChartNodeModel_PortDisconnected;

@@ -26,9 +26,17 @@ namespace CoreNodeModelsWpf.Charts
     [NodeCategory("Display.Charts.Create")]    
     [NodeDescription("ChartsHeatSeriesDescription", typeof(CoreNodeModelWpfResources))]
     [NodeSearchTags("ChartsHeatSeriesSearchTags", typeof(CoreNodeModelWpfResources))]
-
+    [InPortNames("x-labels", "y-labels", "values", "colors")]
     [InPortTypes("List<string>", "List<string>", "List<List<double>>", "List<color>")]
-    [OutPortTypes("object[]")]
+    [InPortDescriptions(typeof(CoreNodeModelWpfResources),
+        "ChartsHeatSeriesXLabelsDataPortToolTip",
+        "ChartsHeatSeriesYLabelsDataPortToolTip",
+        "ChartsHeatSeriesValuesDataPortToolTip",
+        "ChartsHeatSeriesColorsDataPortToolTip")]
+    [OutPortNames("labels:values")]
+    [OutPortTypes("Dictionary<string, List<double>>")]
+    [OutPortDescriptions(typeof(CoreNodeModelWpfResources),
+        "ChartsHeatSeriesLabelsValuesDataPortToolTip")]
     [AlsoKnownAs("CoreNodeModelsWpf.Charts.HeatSeriesPlot")]
     public class HeatSeriesNodeModel : NodeModel
     {
@@ -62,18 +70,6 @@ namespace CoreNodeModelsWpf.Charts
         /// </summary>
         public HeatSeriesNodeModel()
         {
-            InPorts.Add(new PortModel(PortType.Input, this,
-                new PortData("x-labels", "A list of string labels for the x-axis.\n\nList<string>")));
-            InPorts.Add(new PortModel(PortType.Input, this,
-                new PortData("y-labels", "A list of string labels for the y-axis.\n\nList<string>")));
-            InPorts.Add(new PortModel(PortType.Input, this,
-                new PortData("values", "A list of lists each containing double values representing items in a column.\n\nList<List<double>>")));
-            InPorts.Add(new PortModel(PortType.Input, this,
-                new PortData("colors", "A list of colors used to generate a color range.\n\nList<color>")));
-
-            OutPorts.Add(new PortModel(PortType.Output, this,
-                new PortData("labels:values", "Dictionary containing label:value key-pairs\n\nobject[]")));
-
             RegisterAllPorts();
 
             PortDisconnected += XYLineChartNodeModel_PortDisconnected;
