@@ -11,8 +11,6 @@ jobs:
         path: Dynamo
     - name: Setup dotnet
       uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: '6.0.x'
    
     - name: Install dependencies for linux runtime
       run: dotnet restore ${{ github.workspace }}/Dynamo/src/DynamoCore.net6.sln -p:Platform=NET60_Linux --runtime=linux-x64
