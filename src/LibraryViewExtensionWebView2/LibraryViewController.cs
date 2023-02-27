@@ -8,6 +8,7 @@ using System.Security.Permissions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using Dynamo.Controls;
 using Dynamo.Extensions;
 using Dynamo.LibraryViewExtensionWebView2.Handlers;
 using Dynamo.LibraryViewExtensionWebView2.ViewModels;
@@ -31,6 +32,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
     public class LibraryViewController : IDisposable
     {
         private Window dynamoWindow;
+        private DynamoView dynamoView;
         private ICommandExecutive commandExecutive;
         private DynamoViewModel dynamoViewModel;
         private FloatingLibraryTooltipPopup libraryViewTooltip;
@@ -72,6 +74,9 @@ namespace Dynamo.LibraryViewExtensionWebView2
             dynamoWindow.StateChanged += DynamoWindowStateChanged;
             dynamoWindow.SizeChanged += DynamoWindow_SizeChanged;
 
+            this.dynamoView = dynamoView as DynamoView;
+            this.dynamoView.OnPreferencesWindowChanged += PreferencesWindowChanged;
+
             DirectoryInfo webBrowserUserDataFolder;
             var userDataDir = new DirectoryInfo(dynamoViewModel.Model.PathManager.UserDataDirectory);
             webBrowserUserDataFolder = userDataDir.Exists ? userDataDir : null;
@@ -79,6 +84,17 @@ namespace Dynamo.LibraryViewExtensionWebView2
             {
                 WebBrowserUserDataFolder = webBrowserUserDataFolder.FullName;
             }
+        }
+
+        private void Browser_ZoomFactorChanged(object sender, EventArgs e)
+        {
+            //Multiplies by 100 so the value can be saved as a percentage
+            dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale = (int)browser.ZoomFactor * 100;
+        }
+
+        void PreferencesWindowChanged()
+        {
+            this.dynamoView.PreferencesWindow.LibraryZoomScalingSlider.ValueChanged += DynamoSliderValueChanged;
         }
 
         //if the window is resized toggle visibility of browser to force redraw
@@ -155,20 +171,22 @@ namespace Dynamo.LibraryViewExtensionWebView2
         {
             string layoutSpecsjson = String.Empty;
             string loadedTypesjson = String.Empty;
-
-            dynamoWindow.Dispatcher.BeginInvoke(
-            new Action(() =>
+            if (!dynamoViewModel.Model.IsServiceMode)
             {
-                var ext1 = string.Empty;
-                var ext2 = string.Empty;
-                var reader = new StreamReader(nodeProvider.GetResource(null, out ext1));
-                var loadedTypes = reader.ReadToEnd();
+                dynamoWindow.Dispatcher.BeginInvoke(
+                new Action(() =>
+                {
+                    var ext1 = string.Empty;
+                    var ext2 = string.Empty;
+                    var reader = new StreamReader(nodeProvider.GetResource(null, out ext1));
+                    var loadedTypes = reader.ReadToEnd();
 
-                var reader2 = new StreamReader(layoutProvider.GetResource(null, out ext2));
-                var layoutSpec = reader2.ReadToEnd();
+                    var reader2 = new StreamReader(layoutProvider.GetResource(null, out ext2));
+                    var layoutSpec = reader2.ReadToEnd();
 
-                ExecuteScriptFunctionAsync(browser, "refreshLibViewFromData", loadedTypes, layoutSpec);
-            }));
+                    ExecuteScriptFunctionAsync(browser, "refreshLibViewFromData", loadedTypes, layoutSpec);
+                }));
+            }
         }
 
         #endregion
@@ -321,6 +339,10 @@ namespace Dynamo.LibraryViewExtensionWebView2
             }
 
             SetLibraryFontSize();
+
+            //The default value of the zoom factor is 1.0. The value that comes from the slider is in percentage, so we divide by 100 to be equivalent
+            browser.ZoomFactor = (double)dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale / 100;
+            browser.ZoomFactorChanged += Browser_ZoomFactorChanged;
         }
 
         private void Browser_Loaded(object sender, RoutedEventArgs e)
@@ -461,18 +483,21 @@ namespace Dynamo.LibraryViewExtensionWebView2
             };
             Action<NodeSearchElement> onRemove = e => handler(null);
 
-            //Set up the event callback
-            model.EntryAdded += handler;
-            model.EntryRemoved += onRemove;
-            model.EntryUpdated += handler;
-
-            //Set up the dispose event handler
-            observer.Disposed += () =>
+            if (model != null)
             {
-                model.EntryAdded -= handler;
-                model.EntryRemoved -= onRemove;
-                model.EntryUpdated -= handler;
-            };
+                //Set up the event callback
+                model.EntryAdded += handler;
+                model.EntryRemoved += onRemove;
+                model.EntryUpdated += handler;
+
+                //Set up the dispose event handler
+                observer.Disposed += () =>
+                {
+                    model.EntryAdded -= handler;
+                    model.EntryRemoved -= onRemove;
+                    model.EntryUpdated -= handler;
+                };
+            }
 
             return observer;
         }
@@ -528,6 +553,14 @@ namespace Dynamo.LibraryViewExtensionWebView2
             layoutProvider = new LayoutSpecProvider(customization, iconProvider, "Dynamo.LibraryViewExtensionWebView2.web.library.layoutSpecs.json");
         }
 
+        private void DynamoSliderValueChanged(object sender, EventArgs e)
+        {
+            Slider slider = (Slider)sender;
+            //The default value of the zoom factor is 1.0. The value that comes from the slider is in percentage, so we divide by 100 to be equivalent
+            browser.ZoomFactor = (double)slider.Value / 100;
+            dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale = ((int)slider.Value);
+        }
+
         /// <summary>
         /// This method will execute the action of moving the Guide to the next Step (it is triggered when a specific html div that contains the package is clicked).
         /// </summary>
@@ -567,6 +600,10 @@ namespace Dynamo.LibraryViewExtensionWebView2
             {
                 dynamoWindow.StateChanged -= DynamoWindowStateChanged;
                 dynamoWindow.SizeChanged -= DynamoWindow_SizeChanged;
+                browser.ZoomFactorChanged -= Browser_ZoomFactorChanged;
+                this.dynamoView.PreferencesWindow.LibraryZoomScalingSlider.ValueChanged -= DynamoSliderValueChanged;
+                this.dynamoView.OnPreferencesWindowChanged -= PreferencesWindowChanged;
+
                 dynamoWindow = null;
             }
             if (this.browser != null)

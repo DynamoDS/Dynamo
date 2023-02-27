@@ -61,7 +61,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create a new Bar Chart..
+        ///   Looks up a localized string similar to Create a new Bar Chart.
         /// </summary>
         public static string ChartsBarChartDescription {
             get {
@@ -79,7 +79,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create a new Basic Line Chart..
+        ///   Looks up a localized string similar to Create a new Basic Line Chart.
         /// </summary>
         public static string ChartsBasicLineChartDescription {
             get {
@@ -97,7 +97,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create a heat series plot..
+        ///   Looks up a localized string similar to Create a heat series plot.
         /// </summary>
         public static string ChartsHeatSeriesDescription {
             get {
@@ -115,7 +115,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create a new Pie Chart..
+        ///   Looks up a localized string similar to Create a new Pie Chart.
         /// </summary>
         public static string ChartsPieChartDescription {
             get {
@@ -133,7 +133,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create a scatter plot..
+        ///   Looks up a localized string similar to Create a scatter plot.
         /// </summary>
         public static string ChartsScatterPlotDescription {
             get {
@@ -151,7 +151,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create a new XY line plot..
+        ///   Looks up a localized string similar to Create a new XY line plot.
         /// </summary>
         public static string ChartsXYLineChartDescription {
             get {

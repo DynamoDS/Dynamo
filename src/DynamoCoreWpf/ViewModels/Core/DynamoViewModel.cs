@@ -690,7 +690,12 @@ namespace Dynamo.ViewModels
             UsageReportingManager.Instance.InitializeCore(this);
             this.WatchHandler = startConfiguration.WatchHandler;
             var pmExtension = model.GetPackageManagerExtension();
-            this.PackageManagerClientViewModel = new PackageManagerClientViewModel(this, pmExtension.PackageManagerClient);
+
+            if (pmExtension != null)
+            {
+                this.PackageManagerClientViewModel = new PackageManagerClientViewModel(this, pmExtension.PackageManagerClient);
+            }
+
             this.SearchViewModel = null;
 
             // Start page should not show up during test mode.
@@ -1080,7 +1085,7 @@ namespace Dynamo.ViewModels
 
         private void SelectionOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            PublishSelectedNodesCommand.RaiseCanExecuteChanged();
+            PublishSelectedNodesCommand?.RaiseCanExecuteChanged();
             AlignSelectedCommand.RaiseCanExecuteChanged();
             DeleteCommand.RaiseCanExecuteChanged();
             UngroupModelCommand.RaiseCanExecuteChanged();
@@ -2133,7 +2138,7 @@ namespace Dynamo.ViewModels
 
         internal bool CanShowPackageManagerSearch(object parameters)
         {
-            return true;
+            return !model.IsServiceMode;
         }
 
         /// <summary>
@@ -2212,7 +2217,7 @@ namespace Dynamo.ViewModels
                     args.Name, args.Category, args.Description, true));
                 this.ShowStartPage = false;
 
-                SetDefaultScaleFactor();
+                SetDefaultScaleFactor(Workspaces.FirstOrDefault(viewModels => viewModels.Model is CustomNodeWorkspaceModel));
             }
         }
 
@@ -2526,7 +2531,7 @@ namespace Dynamo.ViewModels
 
                 ShowStartPage = false; // Hide start page if there's one.
 
-                SetDefaultScaleFactor();
+                SetDefaultScaleFactor(Workspaces.FirstOrDefault());
             }
         }
 
@@ -3176,10 +3181,8 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        private void SetDefaultScaleFactor()
+        private void SetDefaultScaleFactor(WorkspaceViewModel defaultWorkspace)
         {
-            var defaultWorkspace = Workspaces.FirstOrDefault();
-
             if (defaultWorkspace != null)
             {
                 defaultWorkspace.GeoScalingViewModel.ScaleValue = PreferenceSettings.DefaultScaleFactor;

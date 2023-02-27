@@ -258,7 +258,7 @@
                                                    Width="53"
                                                    Margin="0 3 0 0">
                                             <Image
-                                               Margin="5,3,0,0"
+                                               Margin="-5,0,0,0"
                                                Width="14"
                                                Height="14"
                                                HorizontalAlignment="Center"
@@ -456,8 +456,8 @@
                                                  PreviewTextInput="NumberValidationTextBox"/>
                                         <Image Name="RecentFileNumberInfoIcon"
                                                Grid.Row="1"
-                                               Width="16"
-                                               Height="16"
+                                               Width="14"
+                                               Height="14"
                                                Margin="30,0,0,0"
                                                HorizontalAlignment="Left"
                                                VerticalAlignment="Center"
@@ -919,6 +919,7 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <!--Group Styles Expander-->
                             <Expander x:Name="Styles"
@@ -1255,6 +1256,77 @@
                                                 </Image.ToolTip>
                                             </Image>
                                         </Label>
+                                    </StackPanel>
+                                </Grid>
+                            </Expander>
+
+                            <!--Render Zoom Scaling Expander-->
+                            <Expander x:Name="ZoomScaling"
+                                      Grid.Row="3"
+                                      Style="{StaticResource MenuExpanderStyle}" 
+                                      IsExpanded="{Binding PreferencesTabs[VisualSettings].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=ZoomScaling}"
+                                      Header="{x:Static p:Resources.PreferencesViewZoomScalingSettings}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <StackPanel Margin="0,10,0,5" Grid.Row="0" Orientation="Horizontal">
+                                        <TextBlock  FontSize="12" VerticalAlignment="Center" Text="{x:Static p:Resources.DynamoViewSettingLibraryZoomScale}"></TextBlock>
+                                        <Label HorizontalAlignment="Left"
+                                                   Name="LibraryZoomScaleInfoLabel"
+                                                   VerticalAlignment="Bottom"
+                                                   Margin="0,2,0,0"
+                                                   Height="26" 
+                                                   Width="53">
+                                            <Image
+                                               Width="14"
+                                               Height="14"
+                                               Margin="0,0,0,0"
+                                               Grid.Column="1"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Style="{StaticResource QuestionIcon}"
+                                               ToolTipService.ShowDuration="30000">
+                                                <Image.ToolTip>
+                                                    <ToolTip Content="{x:Static p:Resources.LibraryZoomScaleTooltipText}" Style="{StaticResource GenericToolTipLight}"/>
+                                                </Image.ToolTip>
+                                            </Image>
+                                        </Label>
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="1" Margin="0,0,0,3">
+                                        <TextBlock Text="10%"></TextBlock>
+
+                                        <Slider
+                                            x:Name="LibraryZoomScalingSlider"
+                                            Style="{StaticResource SliderStyle}"
+                                            ValueChanged="zoomScaleLevel_ValueChanged"
+                                            Width="400"
+                                            Margin="5,0,5,0"
+                                            Minimum="10"
+                                            IsSnapToTickEnabled="True"
+                                            TickFrequency="1"
+                                            Maximum="300">
+                                        </Slider>
+                                        <TextBlock Text="300%"></TextBlock>
+
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="2" Width="550">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="125"></ColumnDefinition>
+                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                            </Grid.ColumnDefinitions>
+                                        </Grid>
+                                        <Label
+                                            Name="lblZoomScalingValue"
+                                            Width="50"
+                                            VerticalAlignment="Center"
+                                            HorizontalContentAlignment="Center"
+                                            Foreground="{StaticResource PreferencesWindowFontColor}"
+                                            FontWeight="Regular"/>
                                     </StackPanel>
                                 </Grid>
                             </Expander>

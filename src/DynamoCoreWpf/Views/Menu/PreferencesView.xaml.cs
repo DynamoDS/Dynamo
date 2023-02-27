@@ -15,6 +15,7 @@ using Dynamo.Core;
 using Dynamo.Exceptions;
 using Dynamo.Logging;
 using Dynamo.UI;
+using Dynamo.UI.Views;
 using Dynamo.ViewModels;
 using Res = Dynamo.Wpf.Properties.Resources;
 
@@ -54,12 +55,12 @@ namespace Dynamo.Wpf.Views
         /// </summary>
         /// <param name="dynamoViewModel"> Dynamo ViewModel</param>
         public PreferencesView(DynamoView dynamoView)
-        {            
+        {
             dynViewModel = dynamoView.DataContext as DynamoViewModel;            
             SetupPreferencesViewModel(dynViewModel);
 
             DataContext = dynViewModel.PreferencesViewModel;
- 
+
             InitializeComponent();
             Dynamo.Logging.Analytics.TrackEvent(
                 Actions.Open,
@@ -81,6 +82,8 @@ namespace Dynamo.Wpf.Views
             viewModel.InitializeGeometryScaling();
 
             viewModel.RequestShowFileDialog += OnRequestShowFileDialog;
+
+            LibraryZoomScalingSlider.Value = dynViewModel.Model.PreferenceSettings.LibraryZoomScale;
         }
 
         /// <summary>
@@ -525,6 +528,21 @@ namespace Dynamo.Wpf.Views
 
                 int left = ((int)lblConfidenceLevel.Content * 3) + getExtraLeftSpace(confidenceLevel);
                 this.lblConfidenceLevel.Margin = new Thickness(left, -15, 0, 0);
+            }
+        }
+
+        private void zoomScaleLevel_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            Slider slider = (Slider)sender;
+
+            //Since the percentage goes from 10 to 300, the value is decremented by 10 to standardize. 
+            double percentage = slider.Value - 10;
+            //This is the relation between the margin in pixels and the value of the percentage
+            double marginValue = (79 * percentage / 29) - 480;
+            if (lblZoomScalingValue != null)
+            {
+                lblZoomScalingValue.Margin = new Thickness(marginValue, 0, 0, 0);
+                lblZoomScalingValue.Content = slider.Value.ToString() + "%";
             }
         }
     }

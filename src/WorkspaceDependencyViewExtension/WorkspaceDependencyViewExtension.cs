@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Windows.Controls;
 using Dynamo.Core;
@@ -84,11 +84,13 @@ namespace Dynamo.WorkspaceDependency
             // as we may have installed a missing package.
 
             DependencyView.CustomNodeManager = (CustomNodeManager)viewLoadedParams.StartupParams.CustomNodeManager;
-
-            pmExtension.PackageLoader.PackgeLoaded += (package) =>
+            if (pmExtension != null)
             {
-                DependencyView.DependencyRegen(viewLoadedParams.CurrentWorkspaceModel as WorkspaceModel, true);
-            };
+                pmExtension.PackageLoader.PackgeLoaded += (package) =>
+                {
+                    DependencyView.DependencyRegen(viewLoadedParams.CurrentWorkspaceModel as WorkspaceModel, true);
+                };
+            }
 
             // Adding a button in view menu to refresh and show manually
             workspaceReferencesMenuItem = new MenuItem { Header = Resources.MenuItemString, IsCheckable = true, IsChecked = false };

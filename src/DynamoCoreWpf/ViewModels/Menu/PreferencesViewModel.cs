@@ -199,6 +199,9 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// This property holds the Geometry Scale factor selected in the Preferences panel (when a new workspace is created this will be the Geometry Scale used)
+        /// </summary>
         public double SelectedDefaultScaleFactor
         {
             get
@@ -1121,8 +1124,11 @@ namespace Dynamo.ViewModels
             this.preferenceSettings = dynamoViewModel.PreferenceSettings;
             this.pythonScriptEditorTextOptions = dynamoViewModel.PythonScriptEditorTextOptions;
             this.dynamoViewModel = dynamoViewModel;
-            this.installedPackagesViewModel = new InstalledPackagesViewModel(dynamoViewModel, 
-                dynamoViewModel.PackageManagerClientViewModel.PackageManagerExtension.PackageLoader);
+
+            if (dynamoViewModel.PackageManagerClientViewModel != null)
+            {
+                installedPackagesViewModel = new InstalledPackagesViewModel(dynamoViewModel, dynamoViewModel.PackageManagerClientViewModel.PackageManagerExtension.PackageLoader);
+            }
 
             // Scan for engines
             AddPythonEnginesOptions();
@@ -1371,7 +1377,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal void InitPackageListFilters()
         {
-            installedPackagesViewModel.PopulateFilters();
+            installedPackagesViewModel?.PopulateFilters();
         }
 
         /// <summary>

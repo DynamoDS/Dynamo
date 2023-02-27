@@ -1,7 +1,5 @@
 using System;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using Dynamo.Applications;
 using Dynamo.Models;
@@ -29,9 +27,10 @@ namespace DynamoCLI
 
                 if (cmdLineArgs.KeepAlive)
                 {
-                    var thread = new Thread(() => RunKeepAlive(cmdLineArgs));
-
-                    thread.Name = "DynamoModelKeepAlive";
+                    var thread = new Thread(() => RunKeepAlive(cmdLineArgs))
+                    {
+                        Name = "DynamoModelKeepAlive"
+                    };
                     thread.Start();
 
                     if (!useConsole)
@@ -104,7 +103,8 @@ namespace DynamoCLI
             model = Dynamo.Applications.StartupUtils.MakeCLIModel(String.IsNullOrEmpty(cmdLineArgs.ASMPath) ? string.Empty : cmdLineArgs.ASMPath,
                 cmdLineArgs.UserDataFolder,
                 cmdLineArgs.CommonDataFolder,
-                cmdLineArgs.AnalyticsInfo);
+                cmdLineArgs.AnalyticsInfo,
+                cmdLineArgs.ServiceMode);
 
             if (!string.IsNullOrEmpty(cmdLineArgs.CERLocation))
             {

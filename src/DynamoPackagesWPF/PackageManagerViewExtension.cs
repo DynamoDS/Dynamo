@@ -79,12 +79,15 @@ namespace Dynamo.PackageManager.UI
 
         public void Dispose()
         {
-            packageManager.PackageLoader.PackgeLoaded -= packageLoadedHandler;
+            if (packageManager != null)
+            {
+                packageManager.PackageLoader.PackgeLoaded -= packageLoadedHandler;
+            }
         }
 
         public void Loaded(ViewLoadedParams viewLoadedParams)
         {
-            RequestLoadLayoutSpecs(packageManager.PackageLoader.LocalPackages);
+            RequestLoadLayoutSpecs(packageManager?.PackageLoader.LocalPackages);
             var packagesToCheck = packageManager?.PackageLoader.LocalPackages;
             if(packagesToCheck != null)
             {
@@ -159,6 +162,7 @@ namespace Dynamo.PackageManager.UI
 
         private void RequestLoadLayoutSpecs(IEnumerable<Package> packages)
         {
+            if (packages == null) return;
             foreach(var package in packages)
             {
                 //only load layout specs for built in packages.

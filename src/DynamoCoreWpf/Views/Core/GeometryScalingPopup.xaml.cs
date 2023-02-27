@@ -75,7 +75,7 @@ namespace Dynamo.Views
                 if (viewModel != null)
                 {
                     Log(String.Format("Geometry working range changed to {0} ({1}, {2})",
-                    viewModel.ScaleRange.Item1, viewModel.ScaleRange.Item2, viewModel.ScaleRange.Item3));
+                    viewModel.ScaleRange.scaleName, viewModel.ScaleRange.minValue, viewModel.ScaleRange.maxValue));
                     Dynamo.Logging.Analytics.TrackEvent(
                         Actions.Switch,
                         Categories.Preferences,
