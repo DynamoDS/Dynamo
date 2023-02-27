@@ -169,7 +169,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Indicates the zoom scale of the library
         /// </summary>
-        public float LibraryZoomScale { get; set; }
+        public int LibraryZoomScale { get; set; }
 
         /// <summary>
         /// The types of connector: Bezier or Polyline.
@@ -782,7 +782,7 @@ namespace Dynamo.Configuration
             BackupFilesCount = 1;
             BackupFiles = new List<string>();
 
-            LibraryZoomScale = 1;
+            LibraryZoomScale = 100;
 
             CustomPackageFolders = new List<string>();
 
