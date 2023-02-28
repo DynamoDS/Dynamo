@@ -47,6 +47,10 @@
     <xsl:key name="moq-search" match="wix:Component[contains(wix:File/@Source, 'Moq')]" use="@Id"/>
     <xsl:template match="wix:Component[key('moq-search', @Id)]" />
 
+    <!--Exclude Caste.Core.dll-->
+    <xsl:key name="castle-search" match="wix:Component[contains(wix:File/@Source, 'Castle.Core')]" use="@Id"/>
+    <xsl:template match="wix:Component[key(castle-search', @Id)]" />
+
     <!--Exclude nunit*.dll-->
     <xsl:key name="nunit-search" match="wix:Component[contains(wix:File/@Source, 'nunit')]" use="@Id"/>
     <xsl:template match="wix:Component[key('nunit-search', @Id)]" />
