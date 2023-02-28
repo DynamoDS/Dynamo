@@ -157,13 +157,6 @@ namespace Dynamo.ViewModels
                 RequestReturnFocusToView();
         }
 
-        public event Action<bool> RequestEnableShortcutBarItems;
-        public virtual void OnEnableShortcutBarItems(bool enable)
-        {
-            if (RequestEnableShortcutBarItems != null)
-                RequestEnableShortcutBarItems(enable);
-        }
-
         /// <summary>
         /// Event used to verify that the correct dialog is being showed when saving a graph with unresolved linter issues.
         /// This is only meant to be used for unit testing purposes.
