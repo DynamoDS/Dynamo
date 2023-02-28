@@ -530,5 +530,20 @@ namespace Dynamo.Wpf.Views
                 this.lblConfidenceLevel.Margin = new Thickness(left, -15, 0, 0);
             }
         }
+
+        private void zoomScaleLevel_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            Slider slider = (Slider)sender;
+
+            //Since the percentage goes from 10 to 300, the value is decremented by 10 to standardize. 
+            double percentage = slider.Value - 10;
+            //This is the relation between the margin in pixels and the value of the percentage
+            double marginValue = (79 * percentage / 29) - 480;
+            if (lblZoomScalingValue != null)
+            {
+                lblZoomScalingValue.Margin = new Thickness(marginValue, 0, 0, 0);
+                lblZoomScalingValue.Content = slider.Value.ToString() + "%";
+            }
+        }
     }
 }

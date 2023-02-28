@@ -3481,4 +3481,7 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="PreferencesViewZoomScalingSettings" xml:space="preserve">
     <value>Zoom Scaling</value>
   </data>
+  <data name="DynamoViewSettingLibraryZoomScale" xml:space="preserve">
+    <value>Library</value>
+  </data>
 </root>
