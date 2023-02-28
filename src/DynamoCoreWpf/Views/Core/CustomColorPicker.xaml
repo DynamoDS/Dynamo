@@ -38,7 +38,29 @@
                     </Border>
                 </Grid>
             </DataTemplate>
-            
+
+            <Style x:Key="ColorDisplayStyle"
+         TargetType="ContentControl">
+                <Setter Property="Focusable"
+            Value="False" />
+                <Setter Property="ContentTemplate">
+                    <Setter.Value>
+                        <DataTemplate>
+                            <Border Background="{StaticResource CheckerBrush}">
+                                <Rectangle Fill="{Binding SelectedColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=xctk:ColorPicker}, Converter={StaticResource ColorToSolidColorBrushConverter}}" />
+                            </Border>
+                        </DataTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding SelectedColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=xctk:ColorPicker}}"
+                   Value="{x:Null}">
+                        <Setter Property="Visibility"
+                Value="Collapsed" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+
             <Style x:Key="ColorItemContainerStyle"
                 TargetType="{x:Type ListBoxItem}">
                 <Setter Property="ToolTip"
@@ -61,9 +83,9 @@
                                 </Grid.Resources>
                                 <ContentPresenter HorizontalAlignment="Center"
                                                VerticalAlignment="Center" />
-                                <Border BorderThickness="1"
+                                <Border BorderThickness="2"
                                         Background="Transparent"
-                                        BorderBrush="Red"
+                                        BorderBrush="{StaticResource PreferencesWindowButtonColor}"
                                         x:Name="_outerBorder"
                                         Visibility="{Binding Path=IsColorItemSelected,Converter={StaticResource BooleanToVisibilityConverter}}"
                                         HorizontalAlignment="Stretch"
@@ -174,14 +196,14 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type xctk:ColorPicker}">
                             <Popup x:Name="PART_ColorPickerPalettePopup"
-                               VerticalAlignment="Bottom"
-                               IsOpen="True"
-                               StaysOpen="False"
-                               Focusable="False"
-                               AllowsTransparency="True"
-                               Width="550"
-                               Height="490"
-                               PopupAnimation="Slide">
+                                   VerticalAlignment="Bottom"
+                                   IsOpen="True"
+                                   StaysOpen="False"
+                                   Focusable="False"
+                                   AllowsTransparency="True"
+                                   Width="550"
+                                   Height="Auto"
+                                   PopupAnimation="Slide">
                                 <Border BorderBrush="Transparent" 
                                     BorderThickness="10" 
                                     CornerRadius="10" 
@@ -252,16 +274,17 @@
                                                                Padding="2"/>
 
                                                     <ListBox x:Name="PART_AvailableColors"
-                                                         Margin="0, 5, 0, 5"
-                                                       Grid.Row="1"
-                                                       ItemsSource="{Binding CustomAvailableColors}"
-                                                       Style="{StaticResource ColorListStyle}"/>
+                                                             Margin="0, 5, 0, 5"
+                                                             Grid.Row="1"
+                                                             SelectionChanged="PART_BasicColors_SelectionChanged"
+                                                             ItemsSource="{Binding BasicColors}"
+                                                             Style="{StaticResource ColorListStyle}"/>
 
                                                 </Grid>
                                             </Grid>
 
                                             <!-- Custom Colors-->
-                                            <Grid Grid.Row="2">
+                                            <Grid Grid.Row="2" Visibility="Hidden">
                                                 <Grid>
                                                     <Grid.RowDefinitions>
                                                         <RowDefinition Height="Auto" />
@@ -273,19 +296,20 @@
                                                                 Foreground="Black"
                                                                 Padding="2"/>
 
-                                                    <ListBox x:Name="PART_StandardColors"
-                                                       Grid.Row="1"
-                                                       Margin="0, 5, 0, 5"
-                                                       ItemsSource="{Binding StandardColors, RelativeSource={RelativeSource TemplatedParent}}"
-                                                       Style="{StaticResource ColorListStyle}"/>
+                                                    <ListBox x:Name="PART_CustomColors"
+                                                             Grid.Row="1"
+                                                             Margin="0, 5, 0, 5"
+                                                             SelectionChanged="PART_CustomColors_SelectionChanged"
+                                                             ItemsSource="{Binding CustomColors, RelativeSource={RelativeSource TemplatedParent}}"
+                                                             Style="{StaticResource ColorListStyle}"/>
 
                                                 </Grid>
                                             </Grid>
 
                                             <!-- Define Colors-->
-                                            <Grid Grid.Row="3">
+                                            <Grid Grid.Row="3" Visibility="Hidden">
                                                 <Button x:Name="DefineColorBtn" 
-                                                    Content="Define Custom Colors"
+                                                        Content="Define Custom Colors"
                                                         Margin="5"
                                                     Padding="10"
                                                     HorizontalAlignment="Left"
@@ -365,7 +389,6 @@
             ShowStandardColors="False" 
             ShowRecentColors="True"
             Width="520"
-            SelectedColorChanged="xceedColorPickerControl_SelectedColorChanged"
             Style="{StaticResource CustomColorPicker}"
             RecentColorsHeader="Test">
         </xctk:ColorPicker>

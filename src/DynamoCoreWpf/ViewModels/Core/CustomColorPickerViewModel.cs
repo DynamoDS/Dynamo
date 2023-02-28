@@ -54,36 +54,47 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private ObservableCollection<CustomColorItem> customAvailableColors;
+        private ObservableCollection<CustomColorItem> basicColors;
 
-        public ObservableCollection<CustomColorItem> CustomAvailableColors
+        public ObservableCollection<CustomColorItem> BasicColors
         {
             get
             {
-                return customAvailableColors;
+                return basicColors;
             }
             set
             {
-                customAvailableColors = value;
-                RaisePropertyChanged(nameof(CustomAvailableColors));
+                basicColors = value;
+                RaisePropertyChanged(nameof(BasicColors));
+            }
+        }
+
+        private ObservableCollection<CustomColorItem> customColors;
+
+        public ObservableCollection<CustomColorItem> CustomColors
+        {
+            get
+            {
+                return customColors;
+            }
+            set
+            {
+                customColors = value;
+                RaisePropertyChanged(nameof(CustomColors));
             }
         }
 
         public CustomColorPickerViewModel()
         {
-            CustomAvailableColors = new ObservableCollection<CustomColorItem>();
-            CustomAvailableColors = CreateCustomAvailableColors();
+            BasicColors = new ObservableCollection<CustomColorItem>();
+            BasicColors = CreateBasicColorsCollection();
+
+            CustomColors = new ObservableCollection<CustomColorItem>();
+            CustomColors = CreateCustomColorsCollection();
         }
 
-        private static ObservableCollection<CustomColorItem> CreateCustomAvailableColors()
+        private static ObservableCollection<CustomColorItem> CreateBasicColorsCollection()
         {
-            double R = 0;
-            double G = 0;
-            double B = 0;
-            const int rows = 5;
-            const int columns = 16;
-            const int offset = 51;
-            var random = new Random();
 
             ObservableCollection<CustomColorItem> observableCollection = new ObservableCollection<CustomColorItem>();
 
@@ -178,6 +189,14 @@ namespace Dynamo.ViewModels
                 observableCollection.Add(new CustomColorItem(colorItem, string.Format("#{0},{1},{2}", color.R, color.G, color.B)));
             }
 
+            return observableCollection;
+        }
+
+        private static ObservableCollection<CustomColorItem> CreateCustomColorsCollection()
+        {
+            ObservableCollection<CustomColorItem> observableCollection = new ObservableCollection<CustomColorItem>();
+            var colorItem = Color.FromRgb(0, 255, 0);
+            observableCollection.Add(new CustomColorItem(colorItem, string.Format("#{0},{1},{2}", 0, 255, 0)));
             return observableCollection;
         }
     }

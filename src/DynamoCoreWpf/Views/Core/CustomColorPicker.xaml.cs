@@ -37,20 +37,28 @@ namespace Dynamo.Controls
             this.IsOpen = false;
         }
 
-        private void xceedColorPickerControl_SelectedColorChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<System.Windows.Media.Color?> e)
+        private void PART_BasicColors_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //Cast to ColorPicker so we can use ColorPicker.Template
-            var colorPicker = (sender as ColorPicker);
+            var listbox = sender as ListBox;
+            if (listbox == null) return;
+            
+            SelectColor(listbox);
+        }
 
-            //Get the ListBox for BasicColors
-            var basicColorsListBox = colorPicker.Template.FindName("PART_AvailableColors", colorPicker) as ListBox;
-            if (basicColorsListBox == null) return;
+        private void PART_CustomColors_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var listbox = sender as ListBox;
+            if (listbox == null) return;
 
-            basicColorsListBox.Items.Cast<CustomColorItem>().ToList().ForEach(color => color.IsColorItemSelected = false);
+            SelectColor(listbox);
+        }
 
-            //Find the color clicked in the ListBox.Items so we can put the IsColorItemSelected to true
-            var customColorItemSelected = basicColorsListBox.Items.Cast<CustomColorItem>().Where(item => item.Color.Value == e.NewValue.Value).FirstOrDefault();
+        private void SelectColor(ListBox listbox)
+        {
+            var customColorItemSelected = listbox.SelectedItem as CustomColorItem;
             if (customColorItemSelected == null) return;
+
+            listbox.Items.Cast<CustomColorItem>().ToList().ForEach(color => color.IsColorItemSelected = false);
             customColorItemSelected.IsColorItemSelected = true;
         }
     }
