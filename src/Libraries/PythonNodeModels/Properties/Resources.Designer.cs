@@ -232,7 +232,7 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Run.
+        ///   Looks up a localized string similar to Save and run.
         /// </summary>
         public static string PythonScriptEditorRunButton {
             get {

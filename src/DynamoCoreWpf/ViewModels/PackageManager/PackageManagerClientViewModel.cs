@@ -260,11 +260,14 @@ namespace Dynamo.ViewModels
 
             this.ToggleLoginStateCommand = new DelegateCommand(ToggleLoginState, CanToggleLoginState);
 
-            AuthenticationManager.LoginStateChanged += (loginState) =>
+            if (AuthenticationManager != null)
             {
-                RaisePropertyChanged("LoginState");
-                RaisePropertyChanged("Username");
-            };
+                AuthenticationManager.LoginStateChanged += (loginState) =>
+                {
+                    RaisePropertyChanged("LoginState");
+                    RaisePropertyChanged("Username");
+                };
+            }
         }
 
         private void ToggleLoginState()

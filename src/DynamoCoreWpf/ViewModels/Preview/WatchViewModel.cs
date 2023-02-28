@@ -250,6 +250,8 @@ namespace Dynamo.ViewModels
                     return ObjectToLabelString(obj);
                 case TypeCode.Double:
                     return ((double)obj).ToString(numberFormat, CultureInfo.InvariantCulture);
+                //TODO: uncomment this once https://jira.autodesk.com/browse/DYN-5101 is complete
+                //return ((double)obj).ToString(ProtoCore.Mirror.MirrorData.PrecisionFormat, CultureInfo.InvariantCulture);
                 case TypeCode.Int32:
                     return ((int)obj).ToString(CultureInfo.InvariantCulture);
                 case TypeCode.Int64:
@@ -259,6 +261,10 @@ namespace Dynamo.ViewModels
                 case TypeCode.Object:
                     return ObjectToLabelString(obj);
                 default:
+                    if (double.TryParse(obj.ToString(), out double d))
+                    {
+                        return Convert.ToDouble(obj).ToString(ProtoCore.Mirror.MirrorData.PrecisionFormat, CultureInfo.InvariantCulture);
+                    }
                     return (string)obj;
             };
         }
