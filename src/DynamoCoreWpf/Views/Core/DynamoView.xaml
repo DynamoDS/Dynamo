@@ -363,14 +363,12 @@
                         <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuSave}"
                                   Command="{Binding ShowSaveDialogIfNeededAndSaveResultCommand}"
                                   Name="saveThisButton"
-                                  InputGestureText="Ctrl + S"
-                                  IsEnabled="False">
+                                  InputGestureText="Ctrl + S">
                         </MenuItem>
                         <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuSaveAs}"
                                   Command="{Binding ShowSaveDialogAndSaveResultCommand}"
                                   Name="saveButton"
-                                  InputGestureText="Ctrl + Shift + S"
-                                  IsEnabled="False">
+                                  InputGestureText="Ctrl + Shift + S">
                         </MenuItem>
                         <Separator />
                         <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuImport}"
@@ -379,8 +377,7 @@
                         <Separator />
                         <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuExport}"
                                   Name="exportMenu"
-                                  Tag="NoDownArrow"
-                                  IsEnabled="False">
+                                  Tag="NoDownArrow">
                             <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuExportAsImage}"
                                       Command="{Binding ShowSaveImageDialogAndSaveResultCommand}"
                                       Name="saveImage">
