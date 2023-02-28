@@ -29,8 +29,8 @@ jobs:
       run: |
         cd "${{ github.workspace }}/Dynamo/bin/NET60_Linux/Release"
         echo "***Running Smoke tests on linux***"
-        #TODO add or remove more test categories here that can run on github runner (no geometry)
-        dotnet test DynamoCoreTests.dll --filter "TestCategory~UnitTest"
+        #TODO unfortunately dotnet does not find any tests in this assembly.
+        #dotnet test DynamoCoreTests.dll --filter "TestCategory~UnitTest"
 
 
        
