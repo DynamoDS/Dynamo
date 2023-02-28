@@ -103,7 +103,7 @@ namespace Dynamo.Controls
             get { return preferencesWindow; }
         }
 
-        internal event Action OnPreferencesWindowChanged;
+        internal event Action OnPreferencesWindowChanged = delegate { };
 
         /// <summary>
         /// Constructor

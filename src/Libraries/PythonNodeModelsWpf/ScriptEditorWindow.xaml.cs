@@ -16,6 +16,8 @@ using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using PythonNodeModels;
 using System.Linq;
 using Dynamo.PythonServices;
+using Dynamo.Utilities;
+using System.Windows.Controls;
 
 namespace PythonNodeModelsWpf
 {
@@ -33,9 +35,11 @@ namespace PythonNodeModelsWpf
         public PythonNode nodeModel { get; set; }
         private bool nodeWasModified = false;
         private string originalScript;
+        private int zoomScalePreviousValue;
+        private DynamoView dynamoView;
 
         // Reasonable max and min font size values for zooming limits
-        private const double FONT_MAX_SIZE = 60d;
+        private const double FONT_MAX_SIZE = 150d;
         private const double FONT_MIN_SIZE = 5d;
 
         public string CachedEngine { get; set; }
@@ -69,6 +73,22 @@ namespace PythonNodeModelsWpf
             EngineSelectorComboBox.Visibility = Visibility.Visible;
 
             Analytics.TrackScreenView("Python");
+        }
+
+        private void DynamoView_OnPreferencesWindowChanged()
+        {
+            if(dynamoView.PreferencesWindow != null)
+            {
+                dynamoView.PreferencesWindow.PythonZoomScalingSlider.ValueChanged += PythonZoomScalingSlider_ValueChanged;
+            }
+        }
+
+        private void PythonZoomScalingSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            var slider = (Slider)sender;
+            bool shouldIncrease = slider.Value > zoomScalePreviousValue;
+            UpdateFontSize(shouldIncrease);
+            zoomScalePreviousValue = (int)slider.Value;
         }
 
         internal void Initialize(Guid workspaceGuid, Guid nodeGuid, string propName, string propValue)
@@ -108,6 +128,10 @@ namespace PythonNodeModelsWpf
             originalScript = propValue;
             CachedEngine = nodeModel.EngineName;
             EngineSelectorComboBox.SelectedItem = CachedEngine;
+
+            dynamoView = WpfUtilities.FindUpVisualTree<DynamoView>(editText);
+            
+            dynamoView.OnPreferencesWindowChanged += DynamoView_OnPreferencesWindowChanged;
         }
 
         #region Text Zoom in Python Editor
@@ -119,7 +143,7 @@ namespace PythonNodeModelsWpf
         /// <param name="e"></param>
         private void EditorBox_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            bool ctrl = Keyboard.Modifiers == ModifierKeys.Control;
+            bool ctrl = Keyboard.Modifiers == System.Windows.Input.ModifierKeys.Control;
             if (ctrl)
             {
                 this.UpdateFontSize(e.Delta > 0);
@@ -319,6 +343,7 @@ namespace PythonNodeModelsWpf
             nodeModel.CodeMigrated -= OnNodeModelCodeMigrated;
             this.Closed -= OnScriptEditorWindowClosed;
             PythonEngineManager.Instance.AvailableEngines.CollectionChanged -= UpdateAvailableEngines;
+            dynamoView.PreferencesWindow.LibraryZoomScalingSlider.ValueChanged -= PythonZoomScalingSlider_ValueChanged;
 
             Analytics.TrackEvent(
                 Dynamo.Logging.Actions.Close,

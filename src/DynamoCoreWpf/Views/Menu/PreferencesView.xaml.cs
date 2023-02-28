@@ -61,6 +61,7 @@ namespace Dynamo.Wpf.Views
 
             DataContext = dynViewModel.PreferencesViewModel;
 
+
             InitializeComponent();
             Dynamo.Logging.Analytics.TrackEvent(
                 Actions.Open,
@@ -544,6 +545,11 @@ namespace Dynamo.Wpf.Views
                 lblZoomScalingValue.Margin = new Thickness(marginValue, 0, 0, 0);
                 lblZoomScalingValue.Content = slider.Value.ToString() + "%";
             }
+        }
+
+        private void PythonZoomScalingSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+
         }
     }
 }
