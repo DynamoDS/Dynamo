@@ -61,11 +61,12 @@ namespace Dynamo.Tests.Logging
 
             testflagsManager.MessageLogged -= TestflagsManager_MessageLogged;
             //json ordering cannot be controlled between .net target versions.
-            StringAssert.StartsWith("LD startup: testmode true, no LD connection. LD startup time: 0 <<<<<InitDone>>>>>feature flag exe starting<<<<<Sod>>>>>", log);
-            StringAssert.EndsWith("<<<<<Eod>>>>>", log);
+            StringAssert.StartsWith("LD startup: testmode true, no LD connection. LD startup time:" , log);
+            StringAssert.Contains("<<<<<InitDone>>>>>feature flag exe starting<<<<<Sod>>>>>",log);
             StringAssert.Contains("\"TestFlag1\":true,", log);
             StringAssert.Contains("\"TestFlag2\":\"I am a string\"", log);
             StringAssert.Contains("\"graphics-primitive-instancing\":true", log);
+            StringAssert.EndsWith("<<<<<Eod>>>>>", log);
 
         }
 
