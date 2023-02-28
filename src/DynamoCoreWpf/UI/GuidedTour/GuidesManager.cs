@@ -524,6 +524,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
         private void Popup_StepClosed(string name, Step.StepTypes stepType)
         {
+            dynamoViewModel.OnEnableShortcutBarItems(true);
             GuideFlowEvents.OnGuidedTourFinish(currentGuide.Name);
 
             //The exit tour popup will be shown only when a popup (doesn't apply for survey) is closed or when the tour is closed. 

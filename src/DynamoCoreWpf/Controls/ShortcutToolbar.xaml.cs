@@ -10,6 +10,7 @@ using Microsoft.Practices.Prism.ViewModel;
 using Greg.AuthProviders;
 using System.Linq;
 using System.Windows;
+using System.Collections.Generic;
 
 namespace Dynamo.UI.Controls
 {
@@ -45,9 +46,9 @@ namespace Dynamo.UI.Controls
         public ShortcutToolbar(DynamoViewModel dynamoViewModel)
         {
             shortcutBarItems = new ObservableCollection<ShortcutBarItem>();
-            shortcutBarRightSideItems = new ObservableCollection<ShortcutBarItem>();    
+            shortcutBarRightSideItems = new ObservableCollection<ShortcutBarItem>();
 
-            InitializeComponent();         
+            InitializeComponent();
 
             var shortcutToolbar = new ShortcutToolbarViewModel(dynamoViewModel);
             DataContext = shortcutToolbar;
@@ -59,6 +60,14 @@ namespace Dynamo.UI.Controls
             else {
                 logoutOption.Visibility = Visibility.Collapsed;
             }
+
+            this.Loaded += ShortcutToolbar_Loaded;
+        }
+
+        private void ShortcutToolbar_Loaded(object sender, RoutedEventArgs e)
+        {
+            IsSaveButtonEnabled = false;
+            IsExportMenuEnabled = false;
         }
 
         private void SignOutHandler(LoginState status)
@@ -105,6 +114,110 @@ namespace Dynamo.UI.Controls
                     LoginButton.ToolTip = null;
                     authManager.LoginStateChanged += SignOutHandler;
                 }
+            }
+        }
+
+        public List<Control> AllChildren(DependencyObject parent)
+        {
+            var _list = new List<Control> { };
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                var _child = VisualTreeHelper.GetChild(parent, i);
+                if (_child is Control)
+                {
+                    _list.Add(_child as Control);
+                    _list.AddRange(AllChildren(_child));
+                }
+            }
+            return _list;
+        }
+
+        private Button GetButton(string buttonKey)
+        {
+            if (this.shortcutBarItems.Count > 1)
+            {
+                try
+                {
+                    int buttonIndex = ShortcutBarItems.ToList().FindIndex(item => item.ShortcutToolTip.ToUpper().Contains(buttonKey));
+                    var _container = ShortcutItemsControl.ItemContainerGenerator.ContainerFromIndex(buttonIndex);
+                    var _children = AllChildren(_container);
+                    var _control = (Button)_children.First();
+                    return _control;
+                }
+                catch (System.Exception)
+                {
+                    return null;
+                }                
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        internal bool IsNewButtonEnabled
+        {
+            set
+            {
+                Button saveButton = GetButton("NEW");
+                if (saveButton != null)
+                {
+                    saveButton.IsEnabled = value;
+                    saveButton.Opacity = value ? 1 : 0.5;
+                }
+            }
+        }
+
+        internal bool IsOpenButtonEnabled
+        {
+            set
+            {
+                Button saveButton = GetButton("OPEN");
+                if (saveButton != null)
+                {
+                    saveButton.IsEnabled = value;
+                    saveButton.Opacity = value ? 1 : 0.5;
+                }
+            }
+        }
+
+        internal bool IsSaveButtonEnabled
+        {
+            set
+            {
+                Button saveButton = GetButton("SAVE");
+                if (saveButton != null)
+                {
+                    saveButton.IsEnabled = value;
+                    saveButton.Opacity = value ? 1 : 0.5;
+                }
+            }
+        }
+
+        internal bool IsLoginMenuEnabled
+        {
+            set
+            {
+                this.loginMenu.IsEnabled = value;
+                this.loginMenu.Opacity = value ? 1 : 0.5;
+            }
+        }
+
+        internal bool IsExportMenuEnabled
+        {
+            set
+            {
+                this.exportMenu.IsEnabled = value;
+                this.exportMenu.Opacity = value ? 1 : 0.5;
+            }
+        }
+
+        internal bool IsNotificationCenterEnabled
+        {
+            set
+            {
+                this.NotificationCenter.IsEnabled = value;
+                this.NotificationCenter.Opacity = value ? 1 : 0.5;
             }
         }
     }
