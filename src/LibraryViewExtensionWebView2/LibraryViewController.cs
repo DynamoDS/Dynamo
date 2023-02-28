@@ -89,7 +89,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
         private void Browser_ZoomFactorChanged(object sender, EventArgs e)
         {
             //Multiplies by 100 so the value can be saved as a percentage
-            dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale = (int)browser.ZoomFactor * 100;
+            dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale = (int)(browser.ZoomFactor * 100);
         }
 
         void PreferencesWindowChanged()
