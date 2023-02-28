@@ -133,6 +133,9 @@ namespace Dynamo.Wpf.Views
             var stream = typeof(CodeHighlightingRuleFactory).Assembly.GetManifestResourceStream(
                             "Dynamo.Wpf.UI.Resources." + Configurations.HighlightingFile);
 
+            // Hyperlink color
+            editor.TextArea.TextView.LinkTextForegroundBrush = new SolidColorBrush(Color.FromArgb(255, 106, 192, 231));
+
             editor.SyntaxHighlighting = HighlightingLoader.Load(
                 new XmlTextReader(stream), HighlightingManager.Instance);
 

@@ -17,6 +17,7 @@ using PythonNodeModels;
 using System.Linq;
 using Dynamo.PythonServices;
 using Dynamo.Wpf.Views;
+using System.Windows.Media;
 
 namespace PythonNodeModelsWpf
 {
@@ -84,6 +85,9 @@ namespace PythonNodeModelsWpf
 
             // Initialize editor with global settings for show/hide tabs and spaces
             editText.Options = dynamoViewModel.PythonScriptEditorTextOptions.GetTextOptions();
+
+            // Hyperlink color
+            editText.TextArea.TextView.LinkTextForegroundBrush = new SolidColorBrush(Color.FromArgb(255, 106, 192, 231));
 
             // Set options to reflect global settings when python script editor in initialized for the first time.
             editText.Options.ShowSpaces = dynamoViewModel.ShowTabsAndSpacesInScriptEditor;
