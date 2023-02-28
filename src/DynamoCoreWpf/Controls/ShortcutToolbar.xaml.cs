@@ -132,7 +132,7 @@ namespace Dynamo.UI.Controls
             return _list;
         }
 
-        Button GetButton(string buttonKey)
+        private Button GetButton(string buttonKey)
         {
             if (this.shortcutBarItems.Count > 1)
             {
@@ -155,7 +155,7 @@ namespace Dynamo.UI.Controls
             }
         }
 
-        public bool IsNewButtonEnabled
+        internal bool IsNewButtonEnabled
         {
             set
             {
@@ -167,7 +167,8 @@ namespace Dynamo.UI.Controls
                 }
             }
         }
-        public bool IsOpenButtonEnabled
+
+        internal bool IsOpenButtonEnabled
         {
             set
             {
@@ -179,7 +180,8 @@ namespace Dynamo.UI.Controls
                 }
             }
         }
-        public bool IsSaveButtonEnabled
+
+        internal bool IsSaveButtonEnabled
         {
             set
             {
@@ -192,7 +194,7 @@ namespace Dynamo.UI.Controls
             }
         }
 
-        public bool IsLoginMenuEnabled
+        internal bool IsLoginMenuEnabled
         {
             set
             {
@@ -201,7 +203,7 @@ namespace Dynamo.UI.Controls
             }
         }
 
-        public bool IsExportMenuEnabled
+        internal bool IsExportMenuEnabled
         {
             set
             {
@@ -210,7 +212,7 @@ namespace Dynamo.UI.Controls
             }
         }
 
-        public bool IsNotificationCenterEnabled
+        internal bool IsNotificationCenterEnabled
         {
             set
             {
