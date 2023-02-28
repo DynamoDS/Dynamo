@@ -37,7 +37,7 @@
         <Begin>"</Begin>
         <End>"</End>
       </Span>                   
-      <MarkPrevious bold="true" color="White">(</MarkPrevious>
+      <MarkPrevious bold="false" color="#84d7ce">(</MarkPrevious>
       <KeyWords name="BuiltInStatements" bold="false" color="#F2A9F2">
         <Key word="assert" />
         <Key word="del" />
