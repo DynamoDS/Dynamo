@@ -1294,14 +1294,15 @@
                                                VerticalAlignment="Center"
                                                Style="{StaticResource QuestionIcon}"
                                                ToolTipService.ShowDuration="30000">
-                                                    <Image.ToolTip>
-                                                        <ToolTip Content="{x:Static p:Resources.LibraryZoomScaleTooltipText}" Style="{StaticResource GenericToolTipLight}"/>
-                                                    </Image.ToolTip>
-                                                </Image>
-                                            </Label>
-                                        </StackPanel>
-                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="1" Margin="0,0,0,3">
-                                            <TextBlock Text="10%"></TextBlock>
+                                                <Image.ToolTip>
+                                                    <ToolTip Content="{x:Static p:Resources.LibraryZoomScaleTooltipText}" Style="{StaticResource GenericToolTipLight}"/>
+                                                </Image.ToolTip>
+                                            </Image>
+                                        </Label>
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="1" Margin="0,0,0,3">
+                                        <TextBlock Text="25%"></TextBlock>
 
                                             <Slider
                                             x:Name="LibraryZoomScalingSlider"
@@ -1309,7 +1310,7 @@
                                             ValueChanged="zoomScaleLevel_ValueChanged"
                                             Width="400"
                                             Margin="5,0,5,0"
-                                            Minimum="10"
+                                            Minimum="25"
                                             IsSnapToTickEnabled="True"
                                             TickFrequency="1"
                                             Maximum="300">
