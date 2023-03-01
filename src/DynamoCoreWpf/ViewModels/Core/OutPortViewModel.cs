@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
@@ -28,6 +28,7 @@ namespace Dynamo.ViewModels
         private bool areConnectorsHidden;
         private string showHideWiresButtonContent = "";
         private bool hideWiresButtonEnabled;
+        private bool renameNodeButtonEnabled;
         private bool portDefaultValueMarkerVisible;
         private int valueMarkerWidth;
 
@@ -110,6 +111,19 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        ///  Enables or disables the Rename Node button on the node output port context menu.
+        /// </summary>
+        public bool RenameNodeButtonEnabled
+        {
+            get => renameNodeButtonEnabled;
+            set
+            {
+                renameNodeButtonEnabled = value;
+                RaisePropertyChanged(nameof(RenameNodeButtonEnabled));
+            }
+        }
+
+        /// <summary>
         /// Sets the color of the small rectangular marker on each input port.
         /// </summary>
         public SolidColorBrush PortValueMarkerColor
@@ -173,6 +187,12 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged(nameof(ShowHideWiresButtonContent));
         }
 
+        internal void EnableRenamePort()
+        {
+            RenameNodeButtonEnabled = true;
+            RaisePropertyChanged(nameof(RenameNodeButtonEnabled));
+        }
+
         #endregion
 
         public OutPortViewModel(NodeViewModel node, PortModel port) :base(node, port)
@@ -181,6 +201,10 @@ namespace Dynamo.ViewModels
             node.NodeModel.PropertyChanged += NodeModel_PropertyChanged;
 
             RefreshHideWiresState();
+            if (node.NodeModel is PythonNodeModels.PythonNode)
+            {
+                EnableRenamePort();
+            }
         }
 
         public override void Dispose()

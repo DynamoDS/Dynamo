@@ -2578,6 +2578,9 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
   <data name="BreakConnectionsPopupMenuItem" xml:space="preserve">
     <value>Break Connections</value>
   </data>
+  <data name="RenamePortPopupMenuItem" xml:space="preserve">
+    <value>Edit Port Properties</value>
+  </data>
   <data name="HideWiresPopupMenuItem" xml:space="preserve">
     <value>Hide Wires</value>
   </data>
