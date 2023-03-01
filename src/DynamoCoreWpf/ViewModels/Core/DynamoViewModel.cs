@@ -2213,6 +2213,7 @@ namespace Dynamo.ViewModels
                 this.ShowStartPage = false;
 
                 SetDefaultScaleFactor(Workspaces.FirstOrDefault(viewModels => viewModels.Model is CustomNodeWorkspaceModel));
+                OnEnableShortcutBarItems(true);
             }
         }
 
@@ -2527,6 +2528,7 @@ namespace Dynamo.ViewModels
                 ShowStartPage = false; // Hide start page if there's one.
 
                 SetDefaultScaleFactor(Workspaces.FirstOrDefault());
+                OnEnableShortcutBarItems(true);
             }
         }
 
