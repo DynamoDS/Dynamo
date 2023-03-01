@@ -52,7 +52,7 @@
                 <Button Name="RenamePortButton"
                         Margin="0,3"
                         HorizontalAlignment="Left"
-                        Command="{Binding Path=HideConnectionsCommand}"
+                        Command="{Binding Path=EditPortPropertiesCommand}"
                         Content="{x:Static p:Resources.RenamePortPopupMenuItem}"
                         IsEnabled="{Binding RenameNodeButtonEnabled, UpdateSourceTrigger=PropertyChanged}"
                         Visibility="{Binding RenameNodeButtonEnabled, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
