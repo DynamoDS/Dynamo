@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -84,6 +84,7 @@ namespace Dynamo.Wpf.Views
             viewModel.RequestShowFileDialog += OnRequestShowFileDialog;
 
             LibraryZoomScalingSlider.Value = dynViewModel.Model.PreferenceSettings.LibraryZoomScale;
+            updateLibraryZoomScaleValueLabel(LibraryZoomScalingSlider);
         }
 
         /// <summary>
@@ -535,10 +536,19 @@ namespace Dynamo.Wpf.Views
         {
             Slider slider = (Slider)sender;
 
-            //Since the percentage goes from 10 to 300, the value is decremented by 10 to standardize. 
-            double percentage = slider.Value - 10;
+            updateLibraryZoomScaleValueLabel(slider);            
+        }
+
+        private void updateLibraryZoomScaleValueLabel(Slider slider)
+        {
+            //Since the percentage goes from 25 to 300, the value is decremented by 25 to standardize. 
+            double percentage = slider.Value - 25;
+
+            //The margin value for the label goes from - 480 to 310, resulting in 790 pixels from the starting point to the end.
+            //We also standardized the values ​​of the percentage(from 0 to 275).
+            //The value is decreased to 480 because the margin begins at - 480
             //This is the relation between the margin in pixels and the value of the percentage
-            double marginValue = (79 * percentage / 29) - 480;
+            double marginValue = (790 * percentage / 275) - 480;
             if (lblZoomScalingValue != null)
             {
                 lblZoomScalingValue.Margin = new Thickness(marginValue, 0, 0, 0);
