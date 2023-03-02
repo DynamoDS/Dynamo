@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using Dynamo.Graph.Nodes;
 
@@ -66,7 +66,7 @@ namespace Dynamo
 
         [Test]
         public void DerivedTestNodeHasToolTipsOnInputPorts()
-        {
+        {Assert.Fail();
             var node = new DerivedTestNode();
             Assert.AreEqual(node.InPorts[1].ToolTip, "This is input B.");
         }
