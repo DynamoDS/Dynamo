@@ -839,7 +839,8 @@ namespace Dynamo.Controls
                 ShortcutCommandParameter = null,
                 ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/new_normal.png",
                 ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/new_disabled.png",
-                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/new_normal.png"
+                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/new_normal.png",
+                Name = "New"
             };
 
             var openScriptButton = new ShortcutBarItem
@@ -849,7 +850,8 @@ namespace Dynamo.Controls
                 ShortcutCommandParameter = null,
                 ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/open_normal.png",
                 ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/open_disabled.png",
-                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/open_normal.png"
+                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/open_normal.png",
+                Name = "Open"
             };
 
             var saveButton = new ShortcutBarItem
@@ -859,7 +861,8 @@ namespace Dynamo.Controls
                 ShortcutCommandParameter = null,
                 ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/save_normal.png",
                 ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/save_disabled.png",
-                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/save_normal.png"
+                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/save_normal.png",
+                Name = "Save"
             };
 
             var undoButton = new ShortcutBarItem
@@ -869,7 +872,8 @@ namespace Dynamo.Controls
                 ShortcutCommandParameter = null,
                 ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/undo_normal.png",
                 ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/undo_disabled.png",
-                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/undo_normal.png"
+                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/undo_normal.png",
+                Name = "Undo"
             };
 
             var redoButton = new ShortcutBarItem
@@ -879,7 +883,8 @@ namespace Dynamo.Controls
                 ShortcutCommandParameter = null,
                 ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/redo_normal.png",
                 ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/redo_disabled.png",
-                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/redo_normal.png"
+                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/redo_normal.png",
+                Name = "Redo"
             };
 
             shortcutBar.ShortcutBarItems.Add(newScriptButton);

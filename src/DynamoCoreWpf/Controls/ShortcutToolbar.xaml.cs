@@ -132,13 +132,13 @@ namespace Dynamo.UI.Controls
             return _list;
         }
 
-        private Button GetButton(string buttonKey)
+        private Button GetButton(string shortcutName)
         {
             if (this.shortcutBarItems.Count > 1)
             {
                 try
                 {
-                    int buttonIndex = ShortcutBarItems.ToList().FindIndex(item => item.ShortcutToolTip.ToUpper().Contains(buttonKey));
+                    int buttonIndex = ShortcutBarItems.ToList().FindIndex(item => item.Name.ToUpper() == shortcutName);
                     var _container = ShortcutItemsControl.ItemContainerGenerator.ContainerFromIndex(buttonIndex);
                     var _children = AllChildren(_container);
                     var _control = (Button)_children.First();
@@ -262,6 +262,11 @@ namespace Dynamo.UI.Controls
             get { return shortcutToolTip; }
             set { shortcutToolTip = value; }
         }
+
+        /// <summary>
+        /// The Name of the shortcut
+        /// </summary>
+        public string Name { get; set; }
     }
 
     internal partial class ImageExportShortcutBarItem : ShortcutBarItem
