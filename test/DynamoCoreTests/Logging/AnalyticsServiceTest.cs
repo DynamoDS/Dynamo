@@ -85,7 +85,7 @@ namespace Dynamo.Tests.Loggings
 
     public class DynamoAnalyticsDisableTest
     {
-        [Test]
+        [Test,Category("FailureNET6")]//TODO this test requires finding ASM using the registry, will not run on linux.
         public void DisableAnalytics()
         {
             var versions = new List<Version>(){
