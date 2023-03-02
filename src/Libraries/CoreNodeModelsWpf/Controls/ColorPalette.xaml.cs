@@ -1,5 +1,3 @@
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
@@ -20,6 +18,9 @@ namespace CoreNodeModelsWpf.Controls
         /// </summary>
         public delegate void ColorPickerSelectedColorHandler();
 
+        /// <summary>
+        /// Event that will be raised when the user selected a color in the CustomColorPicker popup and then the popup is closed
+        /// </summary>
         public event ColorPickerSelectedColorHandler ColorPickerSelectedColor;
 
         public void OnColorPickerSelectedColor()

@@ -4,7 +4,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-       xmlns:converters="clr-namespace:Dynamo.Controls"
         xmlns:ui="clr-namespace:Dynamo.UI"
         mc:Ignorable="d" 
         d:DesignHeight="780" d:DesignWidth="860">
@@ -14,8 +13,7 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
-            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-            
+
             <Style x:Key="CustomColorPicker"
                    TargetType="{x:Type xctk:ColorPicker}">
                 <Setter Property="Template">
@@ -142,10 +140,6 @@
                                                         Padding="10"
                                                         HorizontalAlignment="Left"
                                                         MaxWidth="200">
-                                                    <Button.ToolTip>
-                                                        <ToolTip Content="Custom Button Style"
-                                                                 Style="{StaticResource GenericToolTipLight}" />
-                                                    </Button.ToolTip>
                                                     <Button.Style>
                                                         <Style BasedOn="{StaticResource SolidButtonStyle}"
                                                                TargetType="{x:Type Button}">
@@ -189,10 +183,6 @@
                                                             Padding="10,5,10,5"
                                                             Grid.Column="1"
                                                             Content="Apply">
-                                                        <Button.ToolTip>
-                                                            <ToolTip Content="Custom Button Style"
-                                                                     Style="{StaticResource GenericToolTipLight}" />
-                                                        </Button.ToolTip>
                                                         <Button.Style>
                                                             <Style BasedOn="{StaticResource SolidButtonStyle}"
                                                                    TargetType="{x:Type Button}">
@@ -215,17 +205,16 @@
         </ResourceDictionary>
     </Popup.Resources>
     <Grid>
-        <xctk:ColorPicker 
-            Name="xceedColorPickerControl" 
-            HorizontalAlignment="Center" 
-            VerticalAlignment="Center" 
-            AvailableColorsHeader="Basic colors:"
-            StandardColorsHeader="Custom colors:"
-            ShowStandardColors="False" 
-            ShowRecentColors="True"
-            Width="520"
-            Style="{StaticResource CustomColorPicker}"
-            RecentColorsHeader="Test">
+        <xctk:ColorPicker   Name="xceedColorPickerControl" 
+                            HorizontalAlignment="Center" 
+                            VerticalAlignment="Center" 
+                            AvailableColorsHeader="Basic colors:"
+                            StandardColorsHeader="Custom colors:"
+                            ShowStandardColors="False" 
+                            ShowRecentColors="True"
+                            Width="520"
+                            Style="{StaticResource CustomColorPicker}"
+                            RecentColorsHeader="Test">
         </xctk:ColorPicker>
     </Grid>
 </Popup>

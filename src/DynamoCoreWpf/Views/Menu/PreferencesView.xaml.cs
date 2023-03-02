@@ -256,14 +256,6 @@ namespace Dynamo.Wpf.Views
 
         private void ButtonColorPicker_Click(object sender, RoutedEventArgs e)
         {
-            //System.Windows.Forms.ColorDialog colorDialog = new System.Windows.Forms.ColorDialog();
-
-            //if (colorDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            //{
-            //    Button colorButton = sender as Button;
-            //    if (colorButton != null)
-            //        colorButton.Background = new SolidColorBrush(Color.FromRgb(colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B));
-            //}
             var colorPicker = new CustomColorPicker();
             if (colorPicker == null) return;
 
@@ -277,15 +269,15 @@ namespace Dynamo.Wpf.Views
         private void ColorPicker_Closed(object sender, EventArgs e)
         {
             var colorPicker = sender as CustomColorPicker;
-            if(colorPicker== null) return;  
+            if(colorPicker == null) return;  
             colorPicker.Closed -= ColorPicker_Closed;
 
             if (colorButtonSelected != null)
             {
                 var viewModel = colorPicker.DataContext as CustomColorPickerViewModel;
-                if (viewModel == null || viewModel.ColorPickerFinalSelectedColor == null) return;
+                if (viewModel == null || viewModel.ColorPickerFinalSelectedColor == null)
+                    return;
                 colorButtonSelected.Background = new SolidColorBrush(viewModel.ColorPickerFinalSelectedColor.Value);
-                colorButtonSelected = null;
             }
         }
 

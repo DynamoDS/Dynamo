@@ -7,6 +7,9 @@ namespace Dynamo.Wpf
     {
         private SolidColorBrush selectedColor;
 
+        /// <summary>
+        /// This Property will contain the selected color in the CustomColorPicker popup
+        /// </summary>
         public SolidColorBrush SelectedColor
         {
             get

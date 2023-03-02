@@ -3642,6 +3642,9 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// This converter is used to add margin/Padding from Popup in the CustomColorPicker
+    /// </summary>
     public class AdditionConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

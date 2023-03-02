@@ -31,6 +31,7 @@ namespace Dynamo.ViewModels
         {
 
         }
+
         // Create the OnPropertyChanged method to raise the event
         // The calling member's name will be used as the parameter.
         protected void OnPropertyChanged([CallerMemberName] string name = null)
@@ -38,9 +39,17 @@ namespace Dynamo.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
+
     internal class CustomColorPickerViewModel : NotificationObject
     {
         private Color? colorPickerFinalSelectedColor;
+        private ObservableCollection<CustomColorItem> basicColors;
+        private ObservableCollection<CustomColorItem> customColors;
+
+
+        /// <summary>
+        /// Color Selected in the ColorPicker
+        /// </summary>
         public Color? ColorPickerFinalSelectedColor
         {
             get
@@ -52,10 +61,11 @@ namespace Dynamo.ViewModels
                 colorPickerFinalSelectedColor = value;
                 RaisePropertyChanged(nameof(ColorPickerFinalSelectedColor));
             }
-        }
+        }      
 
-        private ObservableCollection<CustomColorItem> basicColors;
-
+        /// <summary>
+        /// List of Basic Colors that will be displayed in the CustomColorPicker
+        /// </summary>
         public ObservableCollection<CustomColorItem> BasicColors
         {
             get
@@ -69,8 +79,9 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private ObservableCollection<CustomColorItem> customColors;
-
+        /// <summary>
+        /// List of Custom Colors that will be displayed in the CustomColorPicker
+        /// </summary>
         public ObservableCollection<CustomColorItem> CustomColors
         {
             get
@@ -192,6 +203,10 @@ namespace Dynamo.ViewModels
             return observableCollection;
         }
 
+        /// <summary>
+        /// Creates de default List of Custom Colors (this will be modified by the user
+        /// </summary>
+        /// <returns></returns>
         private static ObservableCollection<CustomColorItem> CreateCustomColorsCollection()
         {
             ObservableCollection<CustomColorItem> observableCollection = new ObservableCollection<CustomColorItem>();

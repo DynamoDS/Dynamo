@@ -38,23 +38,20 @@ namespace Dynamo.Controls
         }
 
         private void PART_BasicColors_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var listbox = sender as ListBox;
-            if (listbox == null) return;
-            
-            SelectColor(listbox);
+        {         
+            SelectColor(sender);
         }
 
         private void PART_CustomColors_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            SelectColor(sender);
+        }
+
+        private void SelectColor(object sender)
+        {
             var listbox = sender as ListBox;
             if (listbox == null) return;
 
-            SelectColor(listbox);
-        }
-
-        private void SelectColor(ListBox listbox)
-        {
             var customColorItemSelected = listbox.SelectedItem as CustomColorItem;
             if (customColorItemSelected == null) return;
 
