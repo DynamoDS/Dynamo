@@ -314,7 +314,7 @@ namespace Dynamo.Tests
 
         internal static bool DynamoDictionaryEquality(Dictionary a, Dictionary b)
         {
-            return (bool)(a?.ToString().Equals(b?.ToString()));
+            return (bool)a?.Keys.SequenceEqual(b?.Keys) && (bool)a?.Values.SequenceEqual(b?.Values);
         }
 
 
