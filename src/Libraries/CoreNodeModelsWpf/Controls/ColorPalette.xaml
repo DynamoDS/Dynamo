@@ -3,83 +3,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
-             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d" 
              d:DesignHeight="30" d:DesignWidth="90">
     <UserControl.Resources>
-        <!--Control colors.-->
-        <Color x:Key="WindowColor">#FFE8EDF9</Color>
-        <Color x:Key="ContentAreaColorLight">#FFC5CBF9</Color>
-        <Color x:Key="ContentAreaColorDark">#FF7381F9</Color>
-
-        <Color x:Key="DisabledControlLightColor">#FFE8EDF9</Color>
-        <Color x:Key="DisabledControlDarkColor">#FFC5CBF9</Color>
-        <Color x:Key="DisabledForegroundColor">#FF888888</Color>
-
-        <Color x:Key="SelectedBackgroundColor">#FFC5CBF9</Color>
-        <Color x:Key="SelectedUnfocusedColor">#FFDDDDDD</Color>
-
-        <Color x:Key="ControlLightColor">White</Color>
-        <Color x:Key="ControlMediumColor">#FF7381F9</Color>
-        <Color x:Key="ControlDarkColor">#FF211AA9</Color>
-
-        <Color x:Key="ControlMouseOverColor">#FF3843C4</Color>
-        <Color x:Key="ControlPressedColor">#FF211AA9</Color>
-
-
-        <Color x:Key="GlyphColor">#FF444444</Color>
-        <Color x:Key="GlyphMouseOver">sc#1, 0.004391443, 0.002428215, 0.242281124</Color>
-
-        <!--Border colors-->
-        <Color x:Key="BorderLightColor">#FFCCCCCC</Color>
-        <Color x:Key="BorderMediumColor">#FF888888</Color>
-        <Color x:Key="BorderDarkColor">#FF444444</Color>
-
-        <Color x:Key="PressedBorderLightColor">#FF888888</Color>
-        <Color x:Key="PressedBorderDarkColor">#FF444444</Color>
-
-        <Color x:Key="DisabledBorderLightColor">#FFAAAAAA</Color>
-        <Color x:Key="DisabledBorderDarkColor">#FF888888</Color>
-
-        <Color x:Key="DefaultBorderBrushDarkColor">Black</Color>
-
-        <!--Control-specific resources.-->
-        <Color x:Key="HeaderTopColor">#FFC5CBF9</Color>
-        <Color x:Key="DatagridCurrentCellBorderColor">Black</Color>
-        <Color x:Key="SliderTrackDarkColor">#FFC5CBF9</Color>
-
-        <Color x:Key="NavButtonFrameColor">#FF3843C4</Color>
-
-        <LinearGradientBrush x:Key="MenuPopupBrush"
-                             EndPoint="0.5,1"
-                             StartPoint="0.5,0">
-            <GradientStop Color="{DynamicResource ControlLightColor}"
-                          Offset="0" />
-            <GradientStop Color="{DynamicResource ControlMediumColor}"
-                          Offset="0.5" />
-            <GradientStop Color="{DynamicResource ControlLightColor}"
-                          Offset="1" />
-        </LinearGradientBrush>
-
-        <LinearGradientBrush x:Key="ProgressBarIndicatorAnimatedFill"
-                             StartPoint="0,0"
-                             EndPoint="1,0">
-            <LinearGradientBrush.GradientStops>
-                <GradientStopCollection>
-                    <GradientStop Color="#000000FF"
-                                  Offset="0" />
-                    <GradientStop Color="#600000FF"
-                                  Offset="0.4" />
-                    <GradientStop Color="#600000FF"
-                                  Offset="0.6" />
-                    <GradientStop Color="#000000FF"
-                                  Offset="1" />
-                </GradientStopCollection>
-            </LinearGradientBrush.GradientStops>
-        </LinearGradientBrush>
-
-        <Style x:Key="CustomColorPicker"
+        <Style x:Key="CustomColorToggle"
                TargetType="{x:Type ToggleButton}">
             <Setter Property="Template">
                 <Setter.Value>
@@ -89,87 +16,28 @@
                                 <ColumnDefinition />
                                 <ColumnDefinition Width="20" />
                             </Grid.ColumnDefinitions>
-                            <VisualStateManager.VisualStateGroups>
-                                <VisualStateGroup x:Name="CommonStates">
-                                    <VisualState x:Name="Normal" />
-                                    <VisualState x:Name="MouseOver">
-                                        <Storyboard>
-                                            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(GradientBrush.GradientStops)[1].(GradientStop.Color)"
-                                                                          Storyboard.TargetName="Border">
-                                                <EasingColorKeyFrame KeyTime="0"
-                                                                     Value="{StaticResource ControlMouseOverColor}" />
-                                            </ColorAnimationUsingKeyFrames>
-                                        </Storyboard>
-                                    </VisualState>
-                                    <VisualState x:Name="Pressed" />
-                                    <VisualState x:Name="Disabled">
-                                        <Storyboard>
-                                            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(GradientBrush.GradientStops)[1].(GradientStop.Color)"
-                                                                          Storyboard.TargetName="Border">
-                                                <EasingColorKeyFrame KeyTime="0"
-                                                                     Value="{StaticResource DisabledControlDarkColor}" />
-                                            </ColorAnimationUsingKeyFrames>
-                                            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)"
-                                                                          Storyboard.TargetName="Arrow">
-                                                <EasingColorKeyFrame KeyTime="0"
-                                                                     Value="{StaticResource DisabledForegroundColor}" />
-                                            </ColorAnimationUsingKeyFrames>
-                                            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.BorderBrush).(GradientBrush.GradientStops)[1].(GradientStop.Color)"
-                                                                          Storyboard.TargetName="Border">
-                                                <EasingColorKeyFrame KeyTime="0"
-                                                                     Value="{StaticResource DisabledBorderDarkColor}" />
-                                            </ColorAnimationUsingKeyFrames>
-                                        </Storyboard>
-                                    </VisualState>
-                                </VisualStateGroup>
-                                <VisualStateGroup x:Name="CheckStates">
-                                    <VisualState x:Name="Checked">
-                                        <Storyboard>
-                                            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(GradientBrush.GradientStops)[1].(GradientStop.Color)"
-                                                                          Storyboard.TargetName="Border">
-                                                <EasingColorKeyFrame KeyTime="0"
-                                                                     Value="{StaticResource ControlPressedColor}" />
-                                            </ColorAnimationUsingKeyFrames>
-                                        </Storyboard>
-                                    </VisualState>
-                                    <VisualState x:Name="Unchecked" />
-                                    <VisualState x:Name="Indeterminate" />
-                                </VisualStateGroup>
-                            </VisualStateManager.VisualStateGroups>
                             <Border x:Name="Border"
+                                    Grid.Column="0"
+                                    Background="LightGray"
+                                    BorderBrush="Gray"
                                     Grid.ColumnSpan="2"
                                     CornerRadius="2"
-                                    BorderThickness="1">
-                                <Border.BorderBrush>
-                                    <LinearGradientBrush EndPoint="0,1"
-                                                         StartPoint="0,0">
-                                        <GradientStop Color="{DynamicResource BorderLightColor}"
-                                                      Offset="0" />
-                                        <GradientStop Color="{DynamicResource BorderDarkColor}"
-                                                      Offset="1" />
-                                    </LinearGradientBrush>
-                                </Border.BorderBrush>
-                                <Border.Background>
-
-                                    <LinearGradientBrush StartPoint="0,0"
-                                                         EndPoint="0,1">
-                                        <LinearGradientBrush.GradientStops>
-                                            <GradientStopCollection>
-                                                <GradientStop Color="{DynamicResource ControlLightColor}" />
-                                                <GradientStop Color="{DynamicResource ControlMediumColor}"
-                                                              Offset="1.0" />
-                                            </GradientStopCollection>
-                                        </LinearGradientBrush.GradientStops>
-                                    </LinearGradientBrush>
-
-                                </Border.Background>
+                                    BorderThickness="2">
                             </Border>
                             <Border Grid.Column="0"
+                                    BorderThickness="2"
+                                    BorderBrush="Gray"
                                     CornerRadius="2,0,0,2"
-                                    Margin="1">
+                                    Margin="0,0,0,0">
                                 <Border.Background>
-                                    <SolidColorBrush Color="{DynamicResource ControlLightColor}" />
+                                    <SolidColorBrush Color="White" />
                                 </Border.Background>
+                                <Border x:Name="CurrentColor"
+                                        Margin="2,2,2,2"
+                                        BorderBrush="Transparent"
+                                        Background="{Binding SelectedColor}">
+
+                                </Border>
                             </Border>
                             <Path x:Name="Arrow"
                                   Grid.Column="1"
@@ -177,7 +45,7 @@
                                   VerticalAlignment="Center"
                                   Data="M 0 0 L 4 4 L 8 0 Z">
                                 <Path.Fill>
-                                    <SolidColorBrush Color="{DynamicResource GlyphColor}" />
+                                    <SolidColorBrush Color="Black" />
                                 </Path.Fill>
                             </Path>
                         </Grid>
@@ -187,22 +55,11 @@
         </Style>
     </UserControl.Resources>
 
-    <Grid>
-        <!--<ToggleButton x:Name="xceedColorPickerControl"
-                      Width="100"
-                      Height="40"
-                      Click="xceedColorPickerControl_Click"
-                      Style="{StaticResource CustomColorPicker}" />-->
-        <xctk:ColorPicker Name="xceedColorPickerControl"
-                          HorizontalAlignment="Center"
-                          Margin="0,0,0,0"
-                          VerticalAlignment="Center"
-                          Width="80"
-                          AvailableColorsHeader="{x:Static p:CoreNodeModelWpfResources.ColorPaletteUIStandardColors}"
-                          ShowStandardColors="False"
-                          ShowRecentColors="True"
-                          StandardButtonHeader="{x:Static p:CoreNodeModelWpfResources.ColorPaletteUIStandardButtonHeader}"
-                          AdvancedButtonHeader="{x:Static p:CoreNodeModelWpfResources.ColorPaletteUIAdvancedButtonHeader}"
-                          RecentColorsHeader="{x:Static p:CoreNodeModelWpfResources.ColorPaletteUIRecentColors}" />
+    <Grid x:Name="mainGrid">
+        <ToggleButton x:Name="ColorToggleButton"
+                      Width="80"
+                      Height="25"
+                      Click="ColorToggleButton_Click"
+                      Style="{StaticResource CustomColorToggle}" />
     </Grid>
 </UserControl>

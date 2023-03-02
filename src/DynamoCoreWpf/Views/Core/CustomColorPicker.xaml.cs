@@ -2,13 +2,13 @@ using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Dynamo.ViewModels;
-using Xceed.Wpf.Toolkit;
 
 namespace Dynamo.Controls
 {
     public partial class CustomColorPicker : Popup
     {
-        CustomColorPickerViewModel viewModel;
+        private CustomColorPickerViewModel viewModel;
+
         public CustomColorPicker()
         {
             InitializeComponent();

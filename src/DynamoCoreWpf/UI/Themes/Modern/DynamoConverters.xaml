@@ -187,4 +187,6 @@
     <controls:ListHasMoreThanNItemsToVisibilityConverter x:Key="ListHasMoreThanNItemsToVisibilityConverter" />
     <controls:ObjectTypeConverter x:Key="ObjectTypeConverter" />
     <controls:TextForegroundSaturationColorConverter x:Key="TextForegroundSaturationColorConverter" />
+    <controls:AdditionConverter x:Key="AdditionConverter" />
+    <controls:ColorToSolidColorBrushConverter x:Key="ColorToSolidColorBrushConverter" />
 </ResourceDictionary>
