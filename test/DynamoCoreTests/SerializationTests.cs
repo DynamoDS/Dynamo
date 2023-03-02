@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using CoreNodeModels;
+using DesignScript.Builtin;
 using Dynamo.Engine;
 using Dynamo.Engine.NodeToCode;
 using Dynamo.Events;
@@ -292,7 +293,8 @@ namespace Dynamo.Tests
                     // When values are geometry, sometimes the creation
                     // of the string representation for forming this message
                     // fails.
-                    Assert.AreEqual(valueA, valueB,
+
+                    Assert.That(valueA, Is.EqualTo(valueB).Using<Dictionary>(DynamoDictionaryEquality),
                     string.Format("Node Type:{0} value, {1} is not equal to {2}",
                     a.NodeTypeMap[kvp.Key], valueA, valueB));
                 }
@@ -309,6 +311,12 @@ namespace Dynamo.Tests
                 Assert.AreEqual(vala, valb, "input datas are not the same.");
             }
         }
+
+        internal static bool DynamoDictionaryEquality(Dictionary a, Dictionary b)
+        {
+            return (bool)(a?.ToString().Equals(b?.ToString()));
+        }
+
 
         public static void CompareWorkspacesDifferentGuids(serializationTestUtils.WorkspaceComparisonData a,
             serializationTestUtils.WorkspaceComparisonData b,
@@ -398,7 +406,7 @@ namespace Dynamo.Tests
                     // When values are geometry, sometimes the creation
                     // of the string representation for forming this message
                     // fails.
-                    Assert.AreEqual(valueA, valueB,
+                    Assert.That(valueA, Is.EqualTo(valueB).Using<Dictionary>(DynamoDictionaryEquality),
                     string.Format("Node Type:{0} value, {1} is not equal to {2}",
                     a.NodeTypeMap[kvp.Key], valueA, valueB));
                 }
