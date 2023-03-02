@@ -342,6 +342,12 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void EditPortProperties(object parameter)
         {
+            var wsViewModel = node.WorkspaceViewModel;
+
+            //wsViewModel.CancelActiveState();
+            // Hide the popup, we no longer need it
+            wsViewModel.OnRequestPortContextMenu(ShowHideFlags.Show, this);
+
             var dialog = new PortPropertiesEditPrompt()
             {
                 DescriptionInput = { Text = port.ToolTip },

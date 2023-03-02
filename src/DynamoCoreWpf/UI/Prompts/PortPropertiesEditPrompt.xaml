@@ -225,7 +225,7 @@
     <Grid Name="mainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="58px" />
-            <RowDefinition Height="400" />
+            <RowDefinition Height="260" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
@@ -269,12 +269,6 @@
             <ScrollViewer Margin="0,5" VerticalScrollBarVisibility="Visible">
                 <StackPanel Margin="25,25,10,25">
 
-                    <!--  Add-Ons section note  -->
-                    <TextBlock Name="LocationNote"
-                               FontSize="14"
-                               Style="{StaticResource SubLabelStyle}"
-                               Text="{x:Static p:Resources.CustomNodePropertyWindowLocationNote}"
-                               TextWrapping="Wrap" />
 
                     <!--  Name  -->
                     <TextBlock Name="TitleLabel"
@@ -340,18 +334,6 @@
                              Tag="{x:Static p:Resources.CustomNodePropertyWindowDescriptionHint}"
                              TextWrapping="Wrap"
                              VerticalScrollBarVisibility="Auto" />
-
-                    <!--  Add-Ons Category  -->
-                    <TextBlock Name="label2"
-                               Height="28"
-                               Style="{StaticResource LabelStyle}"
-                               Text="{x:Static p:Resources.CustomNodePropertyWindowCategory}" />
-                    <ComboBox Name="categoryBox"
-                              Margin="0,0,0,0"
-                              Background="#353535"
-                              IsEditable="True"
-                              Style="{DynamicResource ResourceKey=RefreshComboBox}"
-                              TabIndex="1" />
                 </StackPanel>
             </ScrollViewer>
         </Border>

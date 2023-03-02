@@ -46,16 +46,6 @@ namespace UI.Prompts
                    MessageBoxImage.Error
                 );
             }
-            else if (string.IsNullOrEmpty(Category))
-            {
-                MessageBoxService.Show
-                (
-                    Dynamo.Wpf.Properties.Resources.MessageCustomNodeNeedNewCategory,
-                    Dynamo.Wpf.Properties.Resources.CustomNodePropertyErrorMessageBoxTitle,
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error
-                );
-            }
             else
             {
                 DialogResult = true;
@@ -75,11 +65,6 @@ namespace UI.Prompts
         public string Description
         {
             get { return DescriptionInput.Text; }
-        }
-
-        public string Category
-        {
-            get { return categoryBox.Text; }
         }
 
 
