@@ -30,7 +30,6 @@
         <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
         <PackageReference Include="NUnit.Analyzers" Version="3.3.0" />
         <PackageReference Include="coverlet.collector" Version="3.1.2" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" ExcludeAssets="none" />
     </ItemGroup>
     <ItemGroup>
     <PackageReference Include="DynamoVisualProgramming.Analytics" Version="3.0.0.2506">
