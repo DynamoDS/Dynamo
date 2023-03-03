@@ -33,7 +33,6 @@ namespace Dynamo.LibraryViewExtensionWebView2
     public class LibraryViewController : IDisposable
     {
         private Window dynamoWindow;
-        private DynamoView dynamoView;
         private ICommandExecutive commandExecutive;
         private DynamoViewModel dynamoViewModel;
         private FloatingLibraryTooltipPopup libraryViewTooltip;
@@ -75,8 +74,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
             dynamoWindow.StateChanged += DynamoWindowStateChanged;
             dynamoWindow.SizeChanged += DynamoWindow_SizeChanged;
 
-            this.dynamoView = dynamoView as DynamoView;
-            this.dynamoView.OnPreferencesWindowChanged += PreferencesWindowChanged;
+            dynamoViewModel.PreferencesWindowChanged += DynamoViewModel_PreferencesWindowChanged;
 
             DirectoryInfo webBrowserUserDataFolder;
             var userDataDir = new DirectoryInfo(dynamoViewModel.Model.PathManager.UserDataDirectory);
@@ -87,15 +85,16 @@ namespace Dynamo.LibraryViewExtensionWebView2
             }
         }
 
+        private void DynamoViewModel_PreferencesWindowChanged(object sender, EventArgs e)
+        {
+            var preferencesView = (Wpf.Views.PreferencesView)sender;
+            preferencesView.LibraryZoomScalingSlider.ValueChanged += DynamoSliderValueChanged;
+        }
+
         private void Browser_ZoomFactorChanged(object sender, EventArgs e)
         {
             //Multiplies by 100 so the value can be saved as a percentage
             dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale = (int)(browser.ZoomFactor * 100);
-        }
-
-        void PreferencesWindowChanged()
-        {
-            this.dynamoView.PreferencesWindow.LibraryZoomScalingSlider.ValueChanged += DynamoSliderValueChanged;
         }
 
         //if the window is resized toggle visibility of browser to force redraw
@@ -610,9 +609,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
                 dynamoWindow.StateChanged -= DynamoWindowStateChanged;
                 dynamoWindow.SizeChanged -= DynamoWindow_SizeChanged;
                 browser.ZoomFactorChanged -= Browser_ZoomFactorChanged;
-                this.dynamoView.PreferencesWindow.LibraryZoomScalingSlider.ValueChanged -= DynamoSliderValueChanged;
-                this.dynamoView.OnPreferencesWindowChanged -= PreferencesWindowChanged;
-
+                dynamoViewModel.PreferencesWindowChanged-= DynamoViewModel_PreferencesWindowChanged;
                 dynamoWindow = null;
             }
             if (this.browser != null)

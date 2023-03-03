@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -54,24 +54,24 @@ namespace Dynamo.Wpf.Views
         /// Constructor of Preferences View
         /// </summary>
         /// <param name="dynamoViewModel"> Dynamo ViewModel</param>
-        public PreferencesView(DynamoView dynamoView)
+        public PreferencesView(DynamoView viewModel)
         {
-            dynViewModel = dynamoView.DataContext as DynamoViewModel;            
+            dynViewModel = viewModel.DataContext as DynamoViewModel;            
             SetupPreferencesViewModel(dynViewModel);
 
             DataContext = dynViewModel.PreferencesViewModel;
 
-
             InitializeComponent();
+
             Dynamo.Logging.Analytics.TrackEvent(
                 Actions.Open,
                 Categories.Preferences);
 
-            Owner = dynamoView;
+            Owner = viewModel;
             dynViewModel.Owner = this;
             if (DataContext is PreferencesViewModel viewModelTemp)
             {
-                viewModel = viewModelTemp;
+                this.viewModel = viewModelTemp;
             }
 
             InitRadioButtonsDescription();
@@ -80,12 +80,15 @@ namespace Dynamo.Wpf.Views
             StoreOriginalCustomGroupStyles();
             displayConfidenceLevel();
 
-            viewModel.InitializeGeometryScaling();
+            this.viewModel.InitializeGeometryScaling();
 
-            viewModel.RequestShowFileDialog += OnRequestShowFileDialog;
+            this.viewModel.RequestShowFileDialog += OnRequestShowFileDialog;
 
             LibraryZoomScalingSlider.Value = dynViewModel.Model.PreferenceSettings.LibraryZoomScale;
-            updateLibraryZoomScaleValueLabel(LibraryZoomScalingSlider);
+            PythonZoomScalingSlider.Value = dynViewModel.Model.PreferenceSettings.PythonScriptZoomScale;
+
+            updateLibraryZoomScaleValueLabel(LibraryZoomScalingSlider, lblZoomScalingValue);
+            updatePythonZoomScaleValueLabel(PythonZoomScalingSlider, lblPythonScalingValue);
         }
 
         /// <summary>
@@ -537,10 +540,20 @@ namespace Dynamo.Wpf.Views
         {
             Slider slider = (Slider)sender;
 
-            updateLibraryZoomScaleValueLabel(slider);            
+            updateLibraryZoomScaleValueLabel(slider, lblZoomScalingValue);            
         }
 
-        private void updateLibraryZoomScaleValueLabel(Slider slider)
+        private void PythonZoomScalingSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            Slider slider = (Slider)sender;
+
+            if(lblPythonScalingValue != null)
+                dynViewModel.PreferenceSettings.PythonScriptZoomScale = (int)slider.Value;
+
+            updatePythonZoomScaleValueLabel(slider, lblPythonScalingValue);
+        }
+
+        private void updateLibraryZoomScaleValueLabel(Slider slider, Label label)
         {
             //Since the percentage goes from 25 to 300, the value is decremented by 25 to standardize. 
             double percentage = slider.Value - 25;
@@ -550,16 +563,28 @@ namespace Dynamo.Wpf.Views
             //The value is decreased to 480 because the margin begins at - 480
             //This is the relation between the margin in pixels and the value of the percentage
             double marginValue = (790 * percentage / 275) - 480;
-            if (lblZoomScalingValue != null)
+            if (label != null)
             {
-                lblZoomScalingValue.Margin = new Thickness(marginValue, 0, 0, 0);
-                lblZoomScalingValue.Content = slider.Value.ToString() + "%";
+                label.Margin = new Thickness(marginValue, 0, 0, 0);
+                label.Content = slider.Value.ToString() + "%";
             }
         }
 
-        private void PythonZoomScalingSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void updatePythonZoomScaleValueLabel(Slider slider, Label label)
         {
+            //Since the percentage goes from 25 to 300, the value is decremented by 25 to standardize. 
+            double percentage = slider.Value - 10;
 
+            //The margin value for the label goes from - 480 to 310, resulting in 790 pixels from the starting point to the end.
+            //We also standardized the values ​​of the percentage(from 0 to 275).
+            //The value is decreased to 480 because the margin begins at - 480
+            //This is the relation between the margin in pixels and the value of the percentage
+            double marginValue = (790 * percentage / 90) - 480;
+            if (label != null)
+            {
+                label.Margin = new Thickness(marginValue, 0, 0, 0);
+                label.Content = slider.Value.ToString() + "%";
+            }
         }
     }
 }

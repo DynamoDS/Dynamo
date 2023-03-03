@@ -171,6 +171,8 @@ namespace Dynamo.Configuration
         /// </summary>
         public int LibraryZoomScale { get; set; }
 
+        public int PythonScriptZoomScale { get; set; }
+
         /// <summary>
         /// The types of connector: Bezier or Polyline.
         /// </summary>
@@ -783,6 +785,7 @@ namespace Dynamo.Configuration
             BackupFiles = new List<string>();
 
             LibraryZoomScale = 100;
+            PythonScriptZoomScale = 22;
 
             CustomPackageFolders = new List<string>();
 
@@ -1205,5 +1208,6 @@ namespace Dynamo.Configuration
         {
             get { return isCreatedFromValidFile; }
         }
+
     }
 }

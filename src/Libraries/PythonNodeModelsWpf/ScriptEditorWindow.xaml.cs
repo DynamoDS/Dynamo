@@ -38,9 +38,14 @@ namespace PythonNodeModelsWpf
         private int zoomScalePreviousValue;
         private DynamoView dynamoView;
 
+        private double fontSizePreferencesSliderProportionValue;
+        
         // Reasonable max and min font size values for zooming limits
-        private const double FONT_MAX_SIZE = 150d;
+        private const double FONT_MAX_SIZE = 60d;
         private const double FONT_MIN_SIZE = 5d;
+
+        private const double pythonZoomScalingSliderMaximum = 100d;
+        private const double pythonZoomScalingSliderMinimum = 10d;
 
         public string CachedEngine { get; set; }
 
@@ -68,27 +73,40 @@ namespace PythonNodeModelsWpf
             nodeModel.CodeMigrated += OnNodeModelCodeMigrated;
 
             InitializeComponent();
+            SetFontSize();
             this.DataContext = this;
 
             EngineSelectorComboBox.Visibility = Visibility.Visible;
 
+
             Analytics.TrackScreenView("Python");
         }
 
-        private void DynamoView_OnPreferencesWindowChanged()
+        private void SetFontSize()
         {
-            if(dynamoView.PreferencesWindow != null)
-            {
-                dynamoView.PreferencesWindow.PythonZoomScalingSlider.ValueChanged += PythonZoomScalingSlider_ValueChanged;
-            }
+            fontSizePreferencesSliderProportionValue =
+                (FONT_MAX_SIZE - FONT_MIN_SIZE) /
+                (pythonZoomScalingSliderMaximum - pythonZoomScalingSliderMinimum);
+
+            var percentage = dynamoViewModel.PreferenceSettings.PythonScriptZoomScale;
+
+            double currentFontSize = percentage * fontSizePreferencesSliderProportionValue;
+
+            zoomScalePreviousValue = percentage;
+
+            editText.FontSize = currentFontSize;
         }
 
         private void PythonZoomScalingSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             var slider = (Slider)sender;
+
             bool shouldIncrease = slider.Value > zoomScalePreviousValue;
-            UpdateFontSize(shouldIncrease);
+
+            double deltaValue = fontSizePreferencesSliderProportionValue * Math.Abs(slider.Value - zoomScalePreviousValue);
+            UpdateFontSize(shouldIncrease, deltaValue);
             zoomScalePreviousValue = (int)slider.Value;
+            dynamoViewModel.PreferenceSettings.PythonScriptZoomScale = (int)slider.Value;
         }
 
         internal void Initialize(Guid workspaceGuid, Guid nodeGuid, string propName, string propValue)
@@ -129,9 +147,13 @@ namespace PythonNodeModelsWpf
             CachedEngine = nodeModel.EngineName;
             EngineSelectorComboBox.SelectedItem = CachedEngine;
 
-            dynamoView = WpfUtilities.FindUpVisualTree<DynamoView>(editText);
-            
-            dynamoView.OnPreferencesWindowChanged += DynamoView_OnPreferencesWindowChanged;
+            dynamoViewModel.PreferencesWindowChanged += DynamoViewModel_PreferencesWindowChanged;
+        }
+
+        private void DynamoViewModel_PreferencesWindowChanged(object sender, EventArgs e)
+        {
+            var preferencesView = (Dynamo.Wpf.Views.PreferencesView)sender;
+            preferencesView.PythonZoomScalingSlider.ValueChanged += PythonZoomScalingSlider_ValueChanged;
         }
 
         #region Text Zoom in Python Editor
@@ -149,13 +171,18 @@ namespace PythonNodeModelsWpf
                 this.UpdateFontSize(e.Delta > 0);
                 e.Handled = true;
             }
+
+            int percentage = Convert.ToInt32( editText.FontSize / fontSizePreferencesSliderProportionValue );
+            
+            dynamoViewModel.PreferenceSettings.PythonScriptZoomScale = percentage;
+            zoomScalePreviousValue = percentage;
         }
 
         /// <summary>
         /// Function to increases/decreases font size in avalon editor by a specific increment
         /// </summary>
         /// <param name="increase"></param>
-        private void UpdateFontSize(bool increase)
+        private void UpdateFontSize(bool increase, double delta = 1.0)
         {
             double currentSize = editText.FontSize;
 
@@ -163,7 +190,7 @@ namespace PythonNodeModelsWpf
             {
                 if (currentSize < FONT_MAX_SIZE)
                 {
-                    double newSize = Math.Min(FONT_MAX_SIZE, currentSize + 1);
+                    double newSize = Math.Min(FONT_MAX_SIZE, currentSize + delta);
                     editText.FontSize = newSize;
                 }
             }
@@ -171,7 +198,7 @@ namespace PythonNodeModelsWpf
             {
                 if (currentSize > FONT_MIN_SIZE)
                 {
-                    double newSize = Math.Max(FONT_MIN_SIZE, currentSize - 1);
+                    double newSize = Math.Max(FONT_MIN_SIZE, currentSize - delta);
                     editText.FontSize = newSize;
                 }
             }
@@ -343,7 +370,6 @@ namespace PythonNodeModelsWpf
             nodeModel.CodeMigrated -= OnNodeModelCodeMigrated;
             this.Closed -= OnScriptEditorWindowClosed;
             PythonEngineManager.Instance.AvailableEngines.CollectionChanged -= UpdateAvailableEngines;
-            dynamoView.PreferencesWindow.LibraryZoomScalingSlider.ValueChanged -= PythonZoomScalingSlider_ValueChanged;
 
             Analytics.TrackEvent(
                 Dynamo.Logging.Actions.Close,

@@ -816,6 +816,16 @@ namespace Dynamo.ViewModels
             }
         }
 
+
+        internal event EventHandler PreferencesWindowChanged;
+        internal void OnPreferencesWindowChanged(object preferencesView)
+        {
+            if(PreferencesWindowChanged != null)
+            {
+                PreferencesWindowChanged(preferencesView, new EventArgs());
+            }
+        }
+
         internal event EventHandler NodeViewReady;
         internal void OnNodeViewReady(object nodeView)
         {

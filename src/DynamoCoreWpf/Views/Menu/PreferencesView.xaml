@@ -1365,7 +1365,6 @@
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="1" Margin="0,0,0,3">
                                             <TextBlock Text="10%"></TextBlock>
-
                                             <Slider
                                             x:Name="PythonZoomScalingSlider"
                                             Style="{StaticResource SliderStyle}"
@@ -1375,9 +1374,9 @@
                                             Minimum="10"
                                             IsSnapToTickEnabled="True"
                                             TickFrequency="1"
-                                            Maximum="300">
+                                            Maximum="100">
                                             </Slider>
-                                            <TextBlock Text="300%"></TextBlock>
+                                            <TextBlock Text="100%"></TextBlock>
 
                                         </StackPanel>
                                         <StackPanel Grid.Row="2" Width="550">
