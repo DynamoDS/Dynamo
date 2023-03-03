@@ -97,8 +97,6 @@ namespace Dynamo.Controls
 
         private FileTrustWarning fileTrustWarningPopup = null;
 
-        private Action OnPreferencesWindowChanged;
-
         internal ShortcutToolbar ShortcutBar { get { return shortcutBar; } }
 
         internal PreferencesView PreferencesWindow {
@@ -2163,8 +2161,6 @@ namespace Dynamo.Controls
                 return extensionsCollapsed;
             }
         }
-
-        public double PythonZoomScalingSliderMaximum { get; internal set; }
 
         // Check if library is collapsed or expanded and apply appropriate button state
         private void UpdateLibraryCollapseIcon()

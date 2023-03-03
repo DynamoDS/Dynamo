@@ -54,9 +54,9 @@ namespace Dynamo.Wpf.Views
         /// Constructor of Preferences View
         /// </summary>
         /// <param name="dynamoViewModel"> Dynamo ViewModel</param>
-        public PreferencesView(DynamoView viewModel)
+        public PreferencesView(DynamoView dynamoView)
         {
-            dynViewModel = viewModel.DataContext as DynamoViewModel;            
+            dynViewModel = dynamoView.DataContext as DynamoViewModel;            
             SetupPreferencesViewModel(dynViewModel);
 
             DataContext = dynViewModel.PreferencesViewModel;
@@ -67,7 +67,7 @@ namespace Dynamo.Wpf.Views
                 Actions.Open,
                 Categories.Preferences);
 
-            Owner = viewModel;
+            Owner = dynamoView;
             dynViewModel.Owner = this;
             if (DataContext is PreferencesViewModel viewModelTemp)
             {
