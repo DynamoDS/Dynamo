@@ -1358,7 +1358,7 @@
                                                Style="{StaticResource QuestionIcon}"
                                                ToolTipService.ShowDuration="30000">
                                                     <Image.ToolTip>
-                                                        <ToolTip Content="{x:Static p:Resources.LibraryZoomScaleTooltipText}" Style="{StaticResource GenericToolTipLight}"/>
+                                                        <ToolTip Content="{x:Static p:Resources.PythonZoomScaleTooltipText}" Style="{StaticResource GenericToolTipLight}"/>
                                                     </Image.ToolTip>
                                                 </Image>
                                             </Label>

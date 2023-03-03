@@ -7633,6 +7633,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Drag to adjust Python Editor zoom scale between 10% and 100%. You can also adjust this in Python Editor by pressing Shift and scrolling the mouse wheel..
+        /// </summary>
+        public static string PythonZoomScaleTooltipText {
+            get {
+                return ResourceManager.GetString("PythonZoomScaleTooltipText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Query.
         /// </summary>
         public static string QueryMember {
