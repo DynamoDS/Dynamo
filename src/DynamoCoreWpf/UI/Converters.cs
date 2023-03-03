@@ -3643,7 +3643,7 @@ namespace Dynamo.Controls
     }
 
     /// <summary>
-    /// This converter is used to add margin/Padding from Popup in the CustomColorPicker
+    /// This converter is used to add extra space between the ListBox and the CustomColorPicker border
     /// </summary>
     public class AdditionConverter : IValueConverter
     {

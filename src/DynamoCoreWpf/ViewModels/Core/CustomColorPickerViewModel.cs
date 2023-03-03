@@ -11,6 +11,9 @@ namespace Dynamo.ViewModels
 {
     internal class CustomColorItem : ColorItem, INotifyPropertyChanged
     {
+        /// <summary>
+        /// This event will help to execute the method  OnPropertyChanged used for xaml bindings (NotificationObject class cannot be used due that we already derive from ColorItem)
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
         private bool isColorItemSelected = false;
@@ -27,6 +30,11 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Constructor that initialize the base class with the values passed as paramters
+        /// </summary>
+        /// <param name="color">color that will be displayed in the ColorPicker list</param>
+        /// <param name="name">description or color name that will be displayed as tooltip when mouse hover a specific color</param>
         public CustomColorItem(Color? color, string name) : base(color, name)
         {
 
@@ -106,7 +114,8 @@ namespace Dynamo.ViewModels
 
         private static ObservableCollection<CustomColorItem> CreateBasicColorsCollection()
         {
-
+            //This list of colors were taken from the design created by the UX team in the Jira task (based from the Weave component).
+            //Also you can find more details of the colors used in the next link:  https://weave.autodesk.com/web/basics/colors-data-viz
             ObservableCollection<CustomColorItem> observableCollection = new ObservableCollection<CustomColorItem>();
 
             List<(int R, int G, int B)> colors = new List<(int, int, int)>()
