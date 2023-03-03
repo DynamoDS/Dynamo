@@ -293,8 +293,12 @@ namespace Dynamo.Tests
                     // When values are geometry, sometimes the creation
                     // of the string representation for forming this message
                     // fails.
-
+#if NET6_0_OR_GREATER
                     Assert.That(valueA, Is.EqualTo(valueB).Using<Dictionary>(DynamoDictionaryEquality),
+
+#elif NETFRAMEWORK
+                    Assert.That(valueA, Is.EqualTo(valueB),
+#endif
                     string.Format("Node Type:{0} value, {1} is not equal to {2}",
                     a.NodeTypeMap[kvp.Key], valueA, valueB));
                 }
@@ -406,7 +410,12 @@ namespace Dynamo.Tests
                     // When values are geometry, sometimes the creation
                     // of the string representation for forming this message
                     // fails.
+#if NET6_0_OR_GREATER
                     Assert.That(valueA, Is.EqualTo(valueB).Using<Dictionary>(DynamoDictionaryEquality),
+
+#elif NETFRAMEWORK
+                    Assert.That(valueA, Is.EqualTo(valueB),
+#endif
                     string.Format("Node Type:{0} value, {1} is not equal to {2}",
                     a.NodeTypeMap[kvp.Key], valueA, valueB));
                 }
@@ -568,7 +577,7 @@ namespace Dynamo.Tests
             }
         }
     }
-    #endregion
+#endregion
 
     /* The Serialization tests compare the results of a workspace opened and executed from its
      * original .dyn format, to one converted to json, deserialized and executed. In the process,
