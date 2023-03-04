@@ -49,7 +49,7 @@
 <!--moq and deps - copied to test_dependencies folder-->
         <PackageReference Include="Moq" Version="4.18.4" GeneratePathProperty="true" />
         <PackageReference Include="Castle.Core" Version=" 5.1.1" GeneratePathProperty="true" />
-        <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" GeneratePathProperty="true" />
+        <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" GeneratePathProperty="true" Condition=" '$(TargetFramework)' == 'net48' " />
 
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="RestSharp" Version="106.12.0" />
@@ -149,7 +149,7 @@
   </ItemGroup>
 <Target Name="CopyDisableADPTestDeps">
     <!--ms diag runtime + deps -->
-
+    <Message Importance="High" Text="This is a test" />
     <Copy SourceFiles="$(PkgMicrosoft_Diagnostics_Runtime)\lib\netstandard2.0\Microsoft.Diagnostics.Runtime.dll" DestinationFolder="$(TestDependenciesPath)" />
     <Copy SourceFiles="$(PkgSystem_Collections_Immutable)\lib\netstandard2.0\System.Collections.Immutable.dll" DestinationFolder="$(TestDependenciesPath)" />
     <Copy SourceFiles="$(PkgSystem_Reflection_Metadata)\lib\netstandard2.0\System.Reflection.Metadata.dll" DestinationFolder="$(TestDependenciesPath)" />
@@ -158,15 +158,17 @@
     <Copy SourceFiles="$(PkgSystem_Buffers)\lib\netstandard2.0\System.Buffers.dll" DestinationFolder="$(TestDependenciesPath)" />
 </Target>
 
-  <Target Name="MoveSomeTestDepsOutOfBin_net48" AfterTargets="Build" Condition=" '$(TargetFramework)' == 'net4.8' ">
-    <CallTarget Targets="CopyDisableADPTestDeps"></CallTarget>
+  <Target Name="MoveSomeTestDepsOutOfBin_net48" AfterTargets="Build" Condition=" '$(TargetFramework)' == 'net48' ">
+      <Message Importance="High" Text="This is a test" />
+
+      <CallTarget Targets="CopyDisableADPTestDeps"></CallTarget>
     <!--moq + deps-->
           <Copy SourceFiles="$(PkgCastle_Core)\lib\net462\Castle.Core.dll" DestinationFolder="$(TestDependenciesPath)" />
           <Copy SourceFiles="$(PkgSystem_Threading_Tasks_Extensions)\lib\net461\System.Threading.Tasks.Extensions.dll" DestinationFolder="$(TestDependenciesPath)" />
           <Copy SourceFiles="$(PkgMoq)\lib\netstandard2.0\Moq.dll" DestinationFolder="$(TestDependenciesPath)" />
           <Copy SourceFiles="$(PkgMoq)\lib\netstandard2.0\Moq.dll" DestinationFolder="$(OutputPath)" />
   </Target>
-    <Target Name="MoveSomeTestDepsOutOfBin_net60" AfterTargets="Build" Condition=" '$(TargetFramework)' == 'net4.8' ">
+    <Target Name="MoveSomeTestDepsOutOfBin_net60" AfterTargets="Build" Condition=" '$(TargetFramework)' == 'net6.0' ">
         <CallTarget Targets="CopyDisableADPTestDeps"></CallTarget>
       
         <!--moq + deps-->
