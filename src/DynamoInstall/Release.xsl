@@ -14,7 +14,8 @@
             <xsl:apply-templates select="@*|node()"/>
         </xsl:copy>
     </xsl:template>
-  
+      <!--NOTE! THESE excludes do not affect the harvest folder-->
+
     <!--Exclude *.xml-->
     <xsl:key name="xml-search" match="wix:Component[contains(@Directory, 'INSTALLDIR') and (contains(wix:File/@Source, '.xml') or contains(wix:File/@Source, '.XML')) and not(contains(wix:File/@Source, '_DynamoCustomization.xml') or contains(wix:File/@Source, '.Migrations.xml'))]" use="@Id"/>
     <xsl:template match="wix:Component[key('xml-search', @Id)]" />
@@ -46,10 +47,6 @@
     <!--Exclude Moq.dll-->
     <xsl:key name="moq-search" match="wix:Component[contains(wix:File/@Source, 'Moq')]" use="@Id"/>
     <xsl:template match="wix:Component[key('moq-search', @Id)]" />
-
-    <!--Exclude Caste.Core.dll-->
-    <xsl:key name="castle-search" match="wix:Component[contains(wix:File/@Source, 'Castle.Core')]" use="@Id"/>
-    <xsl:template match="wix:Component[key(castle-search', @Id)]" />
 
     <!--Exclude nunit*.dll-->
     <xsl:key name="nunit-search" match="wix:Component[contains(wix:File/@Source, 'nunit')]" use="@Id"/>

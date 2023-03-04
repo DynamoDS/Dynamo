@@ -16,7 +16,7 @@
     <PackageReference Include="HelixToolkit" Version="2.17.0" />
     <PackageReference Include="HelixToolkit.Wpf" Version="2.17.0" />
     <PackageReference Include="HelixToolkit.Wpf.SharpDX" Version="2.17.0" />
-    <PackageReference Include="Moq" Version="4.18.4" ExcludeAssets="none" />
+    <PackageReference Include="Moq" Version="4.18.4" />
     <PackageReference Include="NUnit" Version="2.6.3" />
     <PackageReference Include="SharpDX" Version="4.2.0" />
     <PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0" />
