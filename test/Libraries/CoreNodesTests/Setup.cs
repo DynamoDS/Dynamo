@@ -1,11 +1,10 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Reflection;
 using Dynamo.Utilities;
 using NUnit.Framework;
 
-namespace DSCoreNodesTests
-{
+
     [SetUpFixture]
     public class Setup
     {
@@ -15,15 +14,17 @@ namespace DSCoreNodesTests
         public void SetUp()
         {
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
-            var moduleRootFolder = Path.GetDirectoryName(assemblyPath);
+            var moduleRootFolder = new DirectoryInfo(assemblyPath).Parent;
 
             var resolutionPaths = new[]
             {
                 // These tests need "CoreNodeModels.dll" under "nodes" folder.
-                Path.Combine(moduleRootFolder, "nodes")
+                Path.Combine(moduleRootFolder.FullName, "nodes"),
+                Path.Combine(moduleRootFolder.Parent.Parent.Parent.FullName, "test", "test_dependencies")
+
             };
 
-            assemblyHelper = new AssemblyHelper(moduleRootFolder, resolutionPaths,true);
+            assemblyHelper = new AssemblyHelper(moduleRootFolder.FullName, resolutionPaths,true);
             AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssembly;
         }
 
@@ -34,4 +35,3 @@ namespace DSCoreNodesTests
             assemblyHelper = null;
         }
     }
-}

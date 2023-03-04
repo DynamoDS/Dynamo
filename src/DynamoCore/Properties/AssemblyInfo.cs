@@ -50,7 +50,6 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("GraphNodeManagerViewExtension")]
 [assembly: InternalsVisibleTo("ExportSampleImagesViewExtension")]
 [assembly: InternalsVisibleTo("DocumentationBrowserViewExtension")]
-[assembly: InternalsVisibleTo("Net60SmokeTests")]
 
 
 [assembly: TypeForwardedTo(typeof(Dynamo.Scheduler.Disposable))]
