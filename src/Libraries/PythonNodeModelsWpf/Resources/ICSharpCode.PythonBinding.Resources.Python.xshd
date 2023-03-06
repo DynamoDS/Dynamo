@@ -46,7 +46,7 @@
         <Key word="lambda" />
         <Key word="print" />
       </KeyWords>
-      <KeyWords name="ClassStatement" color="#B2DFFF" bold="false">
+      <KeyWords name="ClassStatement" color="#6AC0E7" bold="false">
         <Key word="class" />
       </KeyWords>
       <KeyWords name="ExceptionHandlingStatements" bold="false" color="#F2A9F2">
@@ -55,7 +55,7 @@
         <Key word="raise" />
         <Key word="try" />
       </KeyWords>
-      <KeyWords name="FunctionDefinition" italic="true" color="#B2DFFF">
+      <KeyWords name="FunctionDefinition" italic="false" color="#6AC0E7">
         <Key word="def" />
       </KeyWords>
       <KeyWords name="Imports" bold="false" color="#F2A9F2">
@@ -83,7 +83,7 @@
       <KeyWords name="PassStatement" color="#F2A9F2">
         <Key word="pass" />
       </KeyWords>
-      <KeyWords name="SelectionStatements" bold="true" color="#F2A9F2">
+      <KeyWords name="SelectionStatements" bold="false" color="#F2A9F2">
         <Key word="elif" />
         <Key word="else" />
         <Key word="if" />
