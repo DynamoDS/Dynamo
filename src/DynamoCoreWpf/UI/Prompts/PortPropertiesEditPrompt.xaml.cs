@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using Dynamo.Controls;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Utilities;
@@ -5,17 +6,21 @@ using DynamoUtilities;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Dynamo.Core;
+using Dynamo.Graph.Nodes;
 
 namespace UI.Prompts
 {
     /// <summary>
     /// Interaction logic for PortPropertiesEditPrompt.xaml
     /// </summary>
-    public partial class PortPropertiesEditPrompt : Window
+    public partial class PortPropertiesEditPrompt : Window, INotifyPropertyChanged
     {
         public PortPropertiesEditPrompt()
         {
             InitializeComponent();
+            
+            this.DataContext = this;
 
             Owner = WpfUtilities.FindUpVisualTree<DynamoView>(this);
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -23,6 +28,7 @@ namespace UI.Prompts
             nameBox.Focus();
         }
 
+       
 
         void OK_Click(object sender, RoutedEventArgs e)
         {
@@ -65,6 +71,28 @@ namespace UI.Prompts
         public string Description
         {
             get { return DescriptionInput.Text; }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
+        {
+            var propertyChanged = this.PropertyChanged;
+            if (propertyChanged != null)
+                propertyChanged(this, e);
+        }
+
+        private PortType portType;
+        public PortType PortType
+        {
+            get
+            {
+                return portType;
+            }
+            set
+            {
+                portType = value;
+                OnPropertyChanged(new PropertyChangedEventArgs(nameof(PortType)));
+            }
         }
 
 

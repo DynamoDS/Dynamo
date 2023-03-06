@@ -6446,6 +6446,60 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Description of port.
+        /// </summary>
+        public static string PortPropertiesPromptDescriptionTooltip {
+            get {
+                return ResourceManager.GetString("PortPropertiesPromptDescriptionTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Input Port Properties.
+        /// </summary>
+        public static string PortPropertiesPromptInputWindowTitle {
+            get {
+                return ResourceManager.GetString("PortPropertiesPromptInputWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Port name.
+        /// </summary>
+        public static string PortPropertiesPromptNameTooltip {
+            get {
+                return ResourceManager.GetString("PortPropertiesPromptNameTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Output Port Properties.
+        /// </summary>
+        public static string PortPropertiesPromptOutputWindowTitle {
+            get {
+                return ResourceManager.GetString("PortPropertiesPromptOutputWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        public static string PortPropertiesPromptWindowDescription {
+            get {
+                return ResourceManager.GetString("PortPropertiesPromptWindowDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string PortPropertiesPromptWindowName {
+            get {
+                return ResourceManager.GetString("PortPropertiesPromptWindowName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use Default Value.
         /// </summary>
         public static string PortViewContextMenuUserDefaultValue {

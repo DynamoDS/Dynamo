@@ -352,6 +352,7 @@ namespace Dynamo.ViewModels
             {
                 DescriptionInput = { Text = port.ToolTip },
                 nameBox = { Text = port.Name },
+                PortType = PortType.Output,
                 WindowStartupLocation = WindowStartupLocation.CenterScreen
             };
 

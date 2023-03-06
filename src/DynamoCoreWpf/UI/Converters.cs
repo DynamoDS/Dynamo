@@ -3544,6 +3544,28 @@ namespace Dynamo.Controls
         }
     }
 
+    [ValueConversion(typeof(PortType), typeof(string))]
+    public class PortTypeToStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            switch (value)
+            {
+                case PortType.Input:
+                    return Wpf.Properties.Resources.PortPropertiesPromptInputWindowTitle;
+                case PortType.Output:
+                    return Wpf.Properties.Resources.PortPropertiesPromptOutputWindowTitle;
+                default:
+                    return "Port Properties";
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     /// <summary>
     /// Converts a PointColletion to a Geometry so the points can be drawn using a Path
     /// </summary>

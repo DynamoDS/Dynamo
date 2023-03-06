@@ -225,7 +225,7 @@
     <Grid Name="mainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="58px" />
-            <RowDefinition Height="260" />
+            <RowDefinition Height="220" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
@@ -256,7 +256,7 @@
                            FontSize="20px"
                            FontWeight="Regular"
                            Foreground="{StaticResource PreferencesWindowFontColor}"
-                           Text="Placeholder"
+                           Text="{Binding PortType, Converter={StaticResource PortTypeToStringConverter}, UpdateSourceTrigger=PropertyChanged}"
                            TextAlignment="Left" />
             </DockPanel>
         </Border>
@@ -266,76 +266,71 @@
                 Background="{StaticResource DarkMidGreyBrush}"
                 BorderBrush="#7E7E7E"
                 BorderThickness="0,1,0,0">
-            <ScrollViewer Margin="0,5" VerticalScrollBarVisibility="Visible">
-                <StackPanel Margin="25,25,10,25">
+            <StackPanel Margin="25,10,25,10">
 
+                <!--  Name  -->
+                <TextBlock Name="TitleLabel"
+                           Margin="0,10,0,5"
+                           Style="{StaticResource LabelStyle}"
+                           Text="{x:Static p:Resources.PortPropertiesPromptWindowName}">
+                    <TextBlock.ToolTip>
+                        <ToolTip Content="{x:Static p:Resources.PortPropertiesPromptNameTooltip}" Style="{StaticResource GenericToolTipLight}" />
+                    </TextBlock.ToolTip>
+                </TextBlock>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox Name="nameBox"
+                             Grid.Column="0"
+                             MinHeight="37"
+                             Margin="0"
+                             VerticalAlignment="Center"
+                             IsHitTestVisible="True"
+                             Style="{StaticResource HintingInputStyle}"
+                             TextChanged="NameBox_OnTextChanged" />
+                    <Image x:Name="ErrorIcon"
+                           Grid.Column="1"
+                           Width="16"
+                           Height="16"
+                           Margin="5,0,0,0"
+                           VerticalAlignment="Center"
+                           DockPanel.Dock="Right"
+                           Source="/DynamoCoreWpf;component/UI/Images/error.png"
+                           Visibility="Collapsed" />
+                    <StackPanel x:Name="ErrorUnderline"
+                                Grid.Column="0"
+                                VerticalAlignment="Bottom"
+                                Visibility="Collapsed">
+                        <Rectangle Name="Underline"
+                                   Height="1px"
+                                   VerticalAlignment="Bottom"
+                                   Fill="#EA5555" />
+                        <Rectangle Name="UnderlineShadow"
+                                   Height="3px"
+                                   Fill="#EA5555"
+                                   Opacity="0.5" />
+                    </StackPanel>
+                </Grid>
 
-                    <!--  Name  -->
-                    <TextBlock Name="TitleLabel"
-                               Margin="0,10,0,5"
-                               Style="{StaticResource LabelStyle}"
-                               Text="{x:Static p:Resources.CustomNodePropertyWindowName}">
-                        <TextBlock.ToolTip>
-                            <ToolTip Content="{x:Static p:Resources.CustomNodePromptNameTooltip}" Style="{StaticResource GenericToolTipLight}" />
-                        </TextBlock.ToolTip>
-                    </TextBlock>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <TextBox Name="nameBox"
-                                 Grid.Column="0"
-                                 MinHeight="37"
-                                 Margin="0"
-                                 VerticalAlignment="Center"
-                                 IsHitTestVisible="True"
-                                 Style="{StaticResource HintingInputStyle}"
-                                 Tag="{x:Static p:Resources.CustomNodePropertyWindowNameHint}"
-                                 TextChanged="NameBox_OnTextChanged" />
-                        <Image x:Name="ErrorIcon"
-                               Grid.Column="1"
-                               Width="16"
-                               Height="16"
-                               Margin="5,0,0,0"
-                               VerticalAlignment="Center"
-                               DockPanel.Dock="Right"
-                               Source="/DynamoCoreWpf;component/UI/Images/error.png"
-                               Visibility="Collapsed" />
-                        <StackPanel x:Name="ErrorUnderline"
-                                    Grid.Column="0"
-                                    VerticalAlignment="Bottom"
-                                    Visibility="Collapsed">
-                            <Rectangle Name="Underline"
-                                       Height="1px"
-                                       VerticalAlignment="Bottom"
-                                       Fill="#EA5555" />
-                            <Rectangle Name="UnderlineShadow"
-                                       Height="3px"
-                                       Fill="#EA5555"
-                                       Opacity="0.5" />
-                        </StackPanel>
-                    </Grid>
-
-                    <!--  Description  -->
-                    <TextBlock Name="DescriptionLabel"
-                               Margin="0,10,0,5"
-                               Style="{StaticResource LabelStyle}"
-                               Text="{x:Static p:Resources.CustomNodePropertyWindowDescription}">
-                        <TextBlock.ToolTip>
-                            <ToolTip Content="{x:Static p:Resources.CustomNodePromptDescriptionTooltip}" Style="{StaticResource GenericToolTipLight}" />
-                        </TextBlock.ToolTip>
-                    </TextBlock>
-                    <TextBox Name="DescriptionInput"
-                             MinHeight="75"
-                             AcceptsReturn="True"
-                             MinLines="3"
-                             Style="{DynamicResource HintingInputStyle}"
-                             Tag="{x:Static p:Resources.CustomNodePropertyWindowDescriptionHint}"
-                             TextWrapping="Wrap"
-                             VerticalScrollBarVisibility="Auto" />
-                </StackPanel>
-            </ScrollViewer>
+                <!--  Description  -->
+                <TextBlock Name="DescriptionLabel"
+                           Margin="0,10,0,5"
+                           Style="{StaticResource LabelStyle}"
+                           Text="{x:Static p:Resources.PortPropertiesPromptWindowDescription}">
+                    <TextBlock.ToolTip>
+                        <ToolTip Content="{x:Static p:Resources.PortPropertiesPromptDescriptionTooltip}" Style="{StaticResource GenericToolTipLight}" />
+                    </TextBlock.ToolTip>
+                </TextBlock>
+                <TextBox Name="DescriptionInput"
+                         MinHeight="75"
+                         AcceptsReturn="True"
+                         MinLines="3"
+                         Style="{DynamicResource HintingInputStyle}"
+                         TextWrapping="Wrap"
+                         VerticalScrollBarVisibility="Auto" />
+            </StackPanel>
         </Border>
 
         <!--  Lower Section: Buttons  -->

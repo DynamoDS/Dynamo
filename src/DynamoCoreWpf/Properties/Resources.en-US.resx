@@ -3500,4 +3500,28 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="DynamoViewSettingLibraryZoomScale" xml:space="preserve">
     <value>Library</value>
   </data>
+  <data name="PortPropertiesPromptInputWindowTitle">
+      <value>Input Port Properties</value>
+      <comment>Input Port title</comment>
+  </data>
+  <data name="PortPropertiesPromptOutputWindowTitle">
+      <value>Output Port Properties</value>
+      <comment>Output Port title</comment>
+  </data>
+  <data name="PortPropertiesPromptDescriptionTooltip">
+      <value>Description of port</value>
+      <comment>Description of port</comment>
+  </data>
+  <data name="PortPropertiesPromptWindowDescription">
+      <value>Description</value>
+      <comment>Port Description Label</comment>
+  </data>
+  <data name="PortPropertiesPromptNameTooltip">
+      <value>Port name</value>
+      <comment>Name of port</comment>
+  </data>
+    <data name="PortPropertiesPromptWindowName">
+      <value>Name</value>
+      <comment>Port Name Label</comment>
+  </data>
 </root>
