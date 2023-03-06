@@ -1079,10 +1079,5 @@ namespace Dynamo.Views
             }
             GeoScalingPopup.IsOpen = true;
         }
-
-        private void InCanvasSearchBar_Opened(object sender, EventArgs e)
-        {
-            int i = 0;
-        }
     }
 }
