@@ -21,14 +21,10 @@ namespace UI.Prompts
             InitializeComponent();
             
             this.DataContext = this;
-
-            Owner = WpfUtilities.FindUpVisualTree<DynamoView>(this);
-            WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
             nameBox.Focus();
         }
-
-       
 
         void OK_Click(object sender, RoutedEventArgs e)
         {
