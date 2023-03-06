@@ -232,7 +232,7 @@
                                               ItemsSource="{Binding Path=LanguagesList}"
                                               SelectedItem="{Binding Path=SelectedLanguage}"
                                               Style="{StaticResource NoBordersComboBoxStyle}"
-                                              IsEnabled="False">
+                                              IsEnabled="True">
                                         </ComboBox>
                                     </StackPanel>
                                 </Grid>
