@@ -1,7 +1,10 @@
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using DSCore;
 using Dynamo.Graph.Nodes;
 using Dynamo.Logging;
 using Dynamo.Nodes;
@@ -9,6 +12,7 @@ using Dynamo.UI;
 using Dynamo.UI.Commands;
 using ProtoCore.Utils;
 using UI.Prompts;
+using Color = System.Windows.Media.Color;
 
 namespace Dynamo.ViewModels
 {
@@ -353,6 +357,7 @@ namespace Dynamo.ViewModels
                 DescriptionInput = { Text = port.ToolTip },
                 nameBox = { Text = port.Name },
                 PortType = PortType.Output,
+                OutPortNames = ListOutportNames(this.NodeViewModel.OutPorts),
             };
 
             if (dialog.ShowDialog() != true)
@@ -360,10 +365,15 @@ namespace Dynamo.ViewModels
                 return;
             }
 
-            port.Name = dialog.Text;
+            port.Name = dialog.PortName;
             port.ToolTip = dialog.Description;
 
             RaisePropertyChanged(nameof(PortName));
+        }
+
+        private List<string> ListOutportNames(ObservableCollection<PortViewModel> outPorts)
+        {
+            return outPorts.Where(x => !x.PortName.Equals(this.PortName)).Select(x => x.PortName).ToList();
         }
 
         /// <summary>

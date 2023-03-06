@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using Dynamo.Controls;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Utilities;
@@ -16,6 +18,48 @@ namespace UI.Prompts
     /// </summary>
     public partial class PortPropertiesEditPrompt : Window, INotifyPropertyChanged
     {
+        #region Properties
+        private PortType portType;
+
+        /// <summary>
+        /// Port name
+        /// </summary>
+        public string PortName
+        {
+            get { return nameBox.Text; }
+        }
+        /// <summary>
+        /// Port Description
+        /// </summary>
+        public string Description
+        {
+            get { return DescriptionInput.Text; }
+        }
+
+        /// <summary>
+        /// Port Type
+        /// </summary>
+        public PortType PortType
+        {
+            get
+            {
+                return portType;
+            }
+            set
+            {
+                portType = value;
+                OnPropertyChanged(new PropertyChangedEventArgs(nameof(PortType)));
+            }
+        }
+
+        /// <summary>
+        /// Contains the names of all ports
+        /// Used in name validation check
+        /// </summary>
+        internal List<string> OutPortNames { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
+        #endregion
+
         public PortPropertiesEditPrompt()
         {
             InitializeComponent();
@@ -26,9 +70,10 @@ namespace UI.Prompts
             nameBox.Focus();
         }
 
+        #region Methods
         void OK_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(Text))
+            if (string.IsNullOrEmpty(PortName))
             {
                 MessageBoxService.Show
                 (
@@ -38,7 +83,7 @@ namespace UI.Prompts
                     MessageBoxImage.Error
                 );
             }
-            else if (PathHelper.IsFileNameInValid(Text))
+            else if (PathHelper.IsFileNameInValid(PortName))
             {
                 MessageBoxService.Show
                 (
@@ -59,39 +104,6 @@ namespace UI.Prompts
             DialogResult = false;
         }
 
-        public string Text
-        {
-            get { return nameBox.Text; }
-        }
-
-        public string Description
-        {
-            get { return DescriptionInput.Text; }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
-        {
-            var propertyChanged = this.PropertyChanged;
-            if (propertyChanged != null)
-                propertyChanged(this, e);
-        }
-
-        private PortType portType;
-        public PortType PortType
-        {
-            get
-            {
-                return portType;
-            }
-            set
-            {
-                portType = value;
-                OnPropertyChanged(new PropertyChangedEventArgs(nameof(PortType)));
-            }
-        }
-
-
         /// <summary>
         /// Allows for the dragging of this custom-styled window. 
         /// </summary>
@@ -106,9 +118,10 @@ namespace UI.Prompts
             }
         }
 
+        // Name validation 
         private void NameBox_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            if (PathHelper.IsFileNameInValid(nameBox.Text))
+            if (ValidatePortName(nameBox.Text))
             {
                 ErrorIcon.Visibility = Visibility.Visible;
                 ErrorUnderline.Visibility = Visibility.Visible;
@@ -119,5 +132,41 @@ namespace UI.Prompts
                 ErrorUnderline.Visibility = Visibility.Collapsed;
             }
         }
+
+        // Run all name validation checks here
+        private bool ValidatePortName(string name)
+        {
+            if (PathHelper.IsFileNameInValid(name)) return true;
+            if (!IsPortNameUnique(name)) return true;
+            if (IsPortNameNumber(name)) return true;
+
+            return false;
+        }
+
+        // Check if the name is a number
+        private bool IsPortNameNumber(string name)
+        {
+            return int.TryParse(name, out _);
+        }
+
+        // Check if the name is unique
+        private bool IsPortNameUnique(string name)
+        {
+            if (OutPortNames != null && OutPortNames.Any())
+            {
+                return !OutPortNames.Contains(name);
+            }
+
+            return true;
+        }
+
+        protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
+        {
+            var propertyChanged = this.PropertyChanged;
+            if (propertyChanged != null)
+                propertyChanged(this, e);
+        }
+        #endregion
+
     }
 }
