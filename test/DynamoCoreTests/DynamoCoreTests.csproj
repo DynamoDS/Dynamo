@@ -15,7 +15,27 @@
     <Compile Remove="AstBuilderTest.cs" />
     <Compile Remove="Saving.cs" />
   </ItemGroup>
-  <ItemGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
+        <PackageReference Include="NUnit" Version="2.6.3" ExcludeAssets="none" />
+        <PackageReference Include="NUnitTestAdapter" Version="2.3.0" ExcludeAssets="all" />
+       
+        <Reference Include="System.Configuration" />
+        <Reference Include="Microsoft.CSharp" />
+        <ProjectReference Include="..\..\src\DynamoCrypto\DynamoCrypto.csproj">
+            <Project>{96643e77-c786-498c-aaa9-80e449854ce9}</Project>
+            <Name>DynamoCrypto</Name>
+        </ProjectReference>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+    </ItemGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+        <PackageReference Include="NUnit" Version="3.13.3" ExcludeAssets="none" />
+        <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
+        <PackageReference Include="NUnit.Analyzers" Version="3.3.0" />
+        <PackageReference Include="coverlet.collector" Version="3.1.2" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" ExcludeAssets="none" />
+        <PackageReference Include="JunitXml.TestLogger" Version="3.0.124" />
+    </ItemGroup>
+    <ItemGroup>
     <PackageReference Include="DynamoVisualProgramming.Analytics" Version="3.0.0.2506">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -24,9 +44,14 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-	  <PackageReference Include="Moq" Version="4.2.1507.0118" ExcludeAssets="none" CopyXML="true" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="NUnit" Version="2.6.3" ExcludeAssets="none" CopyXML="true" />
+
+
+<!--moq and deps - copied to test_dependencies folder-->
+        <PackageReference Include="Moq" Version="4.18.4" GeneratePathProperty="true" />
+        <PackageReference Include="Castle.Core" Version=" 5.1.1" GeneratePathProperty="true" />
+        <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" GeneratePathProperty="true" Condition=" '$(TargetFramework)' == 'net48' " />
+
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="RestSharp" Version="106.12.0" />
     <PackageReference Include="Microsoft.Diagnostics.Runtime" Version="2.0.226801" GeneratePathProperty="true" />
     <PackageReference Include="System.Collections.Immutable" Version="5.0.0" GeneratePathProperty="true" />
@@ -34,27 +59,15 @@
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.3" GeneratePathProperty="true" />
     <PackageReference Include="System.Memory" Version="4.5.4" GeneratePathProperty="true" />
     <PackageReference Include="System.Buffers" Version="4.5.1" GeneratePathProperty="true" />
-    <PackageReference Include="NUnitTestAdapter" Version="2.3.0" ExcludeAssets="all" GeneratePathProperty="true" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.XML" />
-    <Reference Include="System.Xml.Linq" />
-  </ItemGroup>
+      
+    </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\DynamoCore\DynamoCore.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoCore</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\DynamoCrypto\DynamoCrypto.csproj">
-      <Project>{96643e77-c786-498c-aaa9-80e449854ce9}</Project>
-      <Name>DynamoCrypto</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\DynamoPackages\DynamoPackages.csproj">
+      <ProjectReference Include="..\..\src\DynamoPackages\DynamoPackages.csproj">
       <Project>{47533b7c-0e1a-44a4-8511-b438645f052a}</Project>
       <Name>DynamoPackages</Name>
     </ProjectReference>
@@ -110,11 +123,7 @@
       <Name>DynamoServices</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\PythonMigrationViewExtension\PythonMigrationViewExtension.csproj">
-      <Project>{10AF430D-0D3A-49CE-A63D-848912959745}</Project>
-      <Name>PythonMigrationViewExtension</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Tools\DynamoShapeManager\DynamoShapeManager.csproj">
+      <ProjectReference Include="..\..\src\Tools\DynamoShapeManager\DynamoShapeManager.csproj">
       <Project>{263fa9c1-f81e-4a8e-95e0-8cdae20f177b}</Project>
       <Name>DynamoShapeManager</Name>
     </ProjectReference>
@@ -122,18 +131,9 @@
       <Project>{c70fe632-5500-4c57-b3d6-9b5574137551}</Project>
       <Name>FFITarget</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Libraries\SystemTestServices\SystemTestServices.csproj">
-      <Project>{89563cd0-509b-40a5-8728-9d3ec6fe8410}</Project>
-      <Name>SystemTestServices</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Libraries\TestServices\TestServices.csproj">
+      <ProjectReference Include="..\Libraries\TestServices\TestServices.csproj">
       <Project>{6cd0f0cf-8199-49f9-b0ea-0b9598b44419}</Project>
       <Name>TestServices</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TestUINodes\TestUINodes.csproj">
-      <Project>{ED1EA294-1BA1-45D6-A669-ECD2E24E21A9}</Project>
-      <Name>TestUINodes</Name>
-      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -147,12 +147,32 @@
     <Content Include="Crypto\AnAlteredFile.txt" />
     <Content Include="Crypto\AnImportantFile.txt" />
   </ItemGroup>
-  <Target Name="CopyDisableADPTestDependencies" AfterTargets="Build">
-    <Copy SourceFiles="$(PkgMicrosoft_Diagnostics_Runtime)\lib\net461\Microsoft.Diagnostics.Runtime.dll" DestinationFolder="$(TestDependenciesPath)" />
-    <Copy SourceFiles="$(PkgSystem_Collections_Immutable)\lib\net461\System.Collections.Immutable.dll" DestinationFolder="$(TestDependenciesPath)" />
-    <Copy SourceFiles="$(PkgSystem_Reflection_Metadata)\lib\net461\System.Reflection.Metadata.dll" DestinationFolder="$(TestDependenciesPath)" />
-    <Copy SourceFiles="$(PkgSystem_Runtime_CompilerServices_Unsafe)\lib\net461\System.Runtime.CompilerServices.Unsafe.dll" DestinationFolder="$(TestDependenciesPath)" />
-    <Copy SourceFiles="$(PkgSystem_Memory)\lib\net461\System.Memory.dll" DestinationFolder="$(TestDependenciesPath)" />
-    <Copy SourceFiles="$(PkgSystem_Buffers)\lib\net461\System.Buffers.dll" DestinationFolder="$(TestDependenciesPath)" />
+<Target Name="CopyDisableADPTestDeps">
+    <!--ms diag runtime + deps -->
+    <Message Importance="High" Text="copying disable adp test deps to test dependencies folder" />
+    <Copy SourceFiles="$(PkgMicrosoft_Diagnostics_Runtime)\lib\netstandard2.0\Microsoft.Diagnostics.Runtime.dll" DestinationFolder="$(TestDependenciesPath)" />
+    <Copy SourceFiles="$(PkgSystem_Collections_Immutable)\lib\netstandard2.0\System.Collections.Immutable.dll" DestinationFolder="$(TestDependenciesPath)" />
+    <Copy SourceFiles="$(PkgSystem_Reflection_Metadata)\lib\netstandard2.0\System.Reflection.Metadata.dll" DestinationFolder="$(TestDependenciesPath)" />
+    <Copy SourceFiles="$(PkgSystem_Runtime_CompilerServices_Unsafe)\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll" DestinationFolder="$(TestDependenciesPath)" />
+    <Copy SourceFiles="$(PkgSystem_Memory)\lib\netstandard2.0\System.Memory.dll" DestinationFolder="$(TestDependenciesPath)" />
+    <Copy SourceFiles="$(PkgSystem_Buffers)\lib\netstandard2.0\System.Buffers.dll" DestinationFolder="$(TestDependenciesPath)" />
+</Target>
+
+  <Target Name="MoveSomeTestDepsOutOfBin_net48" AfterTargets="Build" Condition=" '$(TargetFramework)' == 'net48' ">
+      <Message Importance="High" Text="copying test dependencies to test dependencies folder" />
+      <CallTarget Targets="CopyDisableADPTestDeps"></CallTarget>
+    <!--moq + deps-->
+          <Copy SourceFiles="$(PkgCastle_Core)\lib\net462\Castle.Core.dll" DestinationFolder="$(TestDependenciesPath)" />
+          <Copy SourceFiles="$(PkgSystem_Threading_Tasks_Extensions)\lib\net461\System.Threading.Tasks.Extensions.dll" DestinationFolder="$(TestDependenciesPath)" />
+          <Copy SourceFiles="$(PkgMoq)\lib\netstandard2.0\Moq.dll" DestinationFolder="$(TestDependenciesPath)" />
+          <Copy SourceFiles="$(PkgMoq)\lib\netstandard2.0\Moq.dll" DestinationFolder="$(OutputPath)" />
   </Target>
+    <Target Name="MoveSomeTestDepsOutOfBin_net60" AfterTargets="Build" Condition=" '$(TargetFramework)' == 'net6.0' ">
+        <Message Importance="High" Text="copying test dependencies to test dependencies folder" />
+        <CallTarget Targets="CopyDisableADPTestDeps"></CallTarget>
+        <!--moq + deps-->
+        <Copy SourceFiles="$(PkgCastle_Core)\lib\netstandard2.0\Castle.Core.dll" DestinationFolder="$(TestDependenciesPath)" />
+        <Copy SourceFiles="$(PkgMoq)\lib\netstandard2.0\Moq.dll" DestinationFolder="$(TestDependenciesPath)" />
+        <Copy SourceFiles="$(PkgMoq)\lib\netstandard2.0\Moq.dll" DestinationFolder="$(OutputPath)" />
+    </Target>
 </Project>

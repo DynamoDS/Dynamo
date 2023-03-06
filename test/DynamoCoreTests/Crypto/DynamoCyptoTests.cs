@@ -1,7 +1,10 @@
-﻿using System.IO;
+using System.IO;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using NUnit.Framework;
+
+//TODO Get rid of these tests, DynamoSign and DynamoCrypto.
+#if NETFRAMEWORK
 
 namespace DynamoCrypto
 {
@@ -77,3 +80,5 @@ namespace DynamoCrypto
         }
     }
 }
+
+#endif

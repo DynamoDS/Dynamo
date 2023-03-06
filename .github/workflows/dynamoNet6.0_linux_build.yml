@@ -9,12 +9,8 @@ jobs:
       uses: actions/checkout@v2
       with:
         path: Dynamo
-        repository: DynamoDS/Dynamo
-        ref: master
     - name: Setup dotnet
       uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: '6.0.x'
    
     - name: Install dependencies for linux runtime
       run: dotnet restore ${{ github.workspace }}/Dynamo/src/DynamoCore.net6.sln -p:Platform=NET60_Linux --runtime=linux-x64
@@ -27,11 +23,12 @@ jobs:
         cd "${{ github.workspace }}/Dynamo/bin/NET60_Linux/Release"
         echo "***Locating DynamoCLI for Linux!***"
         test "./DynamoCLI.exe" && echo "DynamoCLI exists!"
-#TODO_NET6 - return to this when we can build subset of tests in net6/7/8
-#    - name: Run smoke tests
-#      run: |
-#        cd "${{ github.workspace }}/Dynamo/bin/NET60_Linux/Release"
-#        echo "***Running Smoke tests on linux***"
-#        dotnet test DynamoCoreTests.dll --test-adapter-path  ~/.nuget/packages/nunittestadapter/2.3.0/build/ --filter TestCategory=SmokeTest
+    - name: Run smoke tests
+      run: |
+        cd "${{ github.workspace }}/Dynamo/bin/NET60_Linux/Release"
+        echo "***Running Smoke tests on linux***"
+        #TODO unfortunately dotnet does not find any tests in this assembly.
+        #dotnet test DynamoCoreTests.dll --filter "TestCategory~UnitTest"
+
 
        
