@@ -48,6 +48,7 @@
     <None Remove="Packages\SplashScreen\build\index.bundle.js" />
     <None Remove="Packages\SplashScreen\build\index.html" />
     <None Remove="UI\Images\Canvas\canvas-button-geometry-scaling.png" />
+    <None Remove="Views\Core\CustomColorPicker.xaml" />
     <None Remove="Views\Core\GeometryScalingPopup.xaml" />
     <None Remove="UI\Images\question-hover-blue-16px.png" />
     <None Remove="Views\SplashScreen\WebApp\splashScreenBackground.png" />
@@ -143,6 +144,11 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
+	<PackageReference Include="Extended.Wpf.Toolkit" version="3.0.0">
+	  <GeneratePathProperty>true</GeneratePathProperty>
+    <!--Exclude copying the dll because we will handle it in the BinaryCompatibilityOps target -->
+    <ExcludeAssets>runtime</ExcludeAssets>
+	</PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\InstalledPackagesControl.xaml.cs">
@@ -337,6 +343,7 @@
     <Compile Include="Utilities\ResourceUtilities.cs" />
     <Compile Include="ViewModels\Core\Converters\DynamoPythonScriptEditorTextOptions.cs" />
     <Compile Include="ViewModels\Core\Converters\SerializationConverters.cs" />
+    <Compile Include="ViewModels\Core\CustomColorPickerViewModel.cs" />
     <Compile Include="ViewModels\Core\DynamoViewModelBranding.cs" />
     <Compile Include="ViewModels\Core\GeometryScalingViewModel.cs" />
     <Compile Include="ViewModels\Core\HomeWorkspaceViewModel.cs" />
@@ -385,6 +392,7 @@
     <Compile Include="Views\Core\ConnectorContextMenuView.xaml.cs">
       <DependentUpon>ConnectorContextMenuView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Core\CustomColorPicker.xaml.cs" />
     <Compile Include="Views\Core\DynamoOpenFileDialog.cs" />
     <Compile Include="Views\Core\ConnectorPinView.xaml.cs">
       <DependentUpon>ConnectorPinView.xaml</DependentUpon>
@@ -551,6 +559,10 @@
     </Page>
     <Page Include="Controls\InPortContextMenu.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Core\CustomColorPicker.xaml">
+      <CopyToOutputDirectory></CopyToOutputDirectory>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Core\GeometryScalingPopup.xaml">

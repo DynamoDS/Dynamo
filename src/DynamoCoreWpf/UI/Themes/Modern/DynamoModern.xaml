@@ -6,6 +6,8 @@
                     xmlns:nodes="clr-namespace:Dynamo.Nodes;assembly=DynamoCoreWpf"
                     xmlns:dynui="clr-namespace:Dynamo.UI.Controls;assembly=DynamoCoreWpf"
                     xmlns:fa="clr-namespace:FontAwesome.WPF;assembly=FontAwesome.WPF"
+                    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib"
                     xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
                     xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf">
 
@@ -5667,5 +5669,134 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+
+    <DataTemplate x:Key="ColorItemTemplate">
+        <Grid>
+            <Border Background="White"
+                    BorderBrush="LightGray"
+                    BorderThickness="1"
+                    Margin="1">
+                <Rectangle Width="26"
+                           Height="26">
+                    <Rectangle.Style>
+                        <Style TargetType="Rectangle">
+                            <Setter Property="Fill"
+                                    Value="{Binding Color, Converter={StaticResource ColorToSolidColorBrushConverter}}" />
+                        </Style>
+                    </Rectangle.Style>
+                </Rectangle>
+            </Border>
+        </Grid>
+    </DataTemplate>
+
+    <Style x:Key="ColorDisplayStyle"
+           TargetType="ContentControl">
+        <Setter Property="Focusable"
+                Value="False" />
+        <Setter Property="ContentTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <Border Background="{StaticResource CheckerBrush}">
+                        <Rectangle Fill="{Binding SelectedColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=xctk:ColorPicker}, Converter={StaticResource ColorToSolidColorBrushConverter}}" />
+                    </Border>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding SelectedColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=xctk:ColorPicker}}"
+                         Value="{x:Null}">
+                <Setter Property="Visibility"
+                        Value="Collapsed" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="ColorItemContainerStyle"
+           TargetType="{x:Type ListBoxItem}">
+        <Setter Property="ToolTip"
+                Value="{Binding Name}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                    <Grid x:Name="mainGrid"
+                          ToolTip="{Binding Name}">
+                        <Grid.Resources>
+                            <Style TargetType="ToolTip">
+                                <Style.Triggers>
+                                    <Trigger Property="Content"
+                                             Value="{x:Static sys:String.Empty}">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Resources>
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center" />
+                        <Border BorderThickness="2"
+                                Background="Transparent"
+                                BorderBrush="{StaticResource PreferencesWindowButtonColor}"
+                                x:Name="_outerBorder"
+                                Visibility="{Binding Path=IsColorItemSelected,Converter={StaticResource BooleanToVisibilityConverter}}"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch">
+                        </Border>
+                        <Border Background="Transparent"
+                                BorderThickness="1"
+                                BorderBrush="Transparent"
+                                x:Name="_innerBorder"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch">
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter TargetName="_outerBorder"
+                                    Property="BorderBrush"
+                                    Value="{StaticResource PreferencesWindowButtonColor}" />
+                            <Setter TargetName="_innerBorder"
+                                    Property="BorderBrush"
+                                    Value="{StaticResource PreferencesWindowButtonColor}" />
+                        </Trigger>
+                        <DataTrigger Binding="{Binding DisplayColorTooltip, RelativeSource={RelativeSource AncestorType={x:Type xctk:ColorPicker}}}"
+                                     Value="False">
+                            <Setter Property="ToolTip"
+                                    Value="{x:Static sys:String.Empty}"
+                                    TargetName="mainGrid" />
+                        </DataTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ColorListStyle"
+           TargetType="ListBox">
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="BorderThickness"
+                Value="0" />
+        <Setter Property="MaxHeight"
+                Value="300" />
+        <!-- ConverterParameter is margin/Padding from Popup-->
+        <Setter Property="Width"
+                Value="{Binding Width, RelativeSource={RelativeSource AncestorType={x:Type xctk:ColorPicker}}, Converter={StaticResource AdditionConverter}, ConverterParameter=-18}" />
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <WrapPanel Width="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBox}, Converter={StaticResource AdditionConverter}, ConverterParameter=-4}" />
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ItemContainerStyle"
+                Value="{StaticResource ColorItemContainerStyle}" />
+        <Setter Property="ItemTemplate"
+                Value="{StaticResource ColorItemTemplate}" />
+        <Setter Property="SelectionMode"
+                Value="Single" />
+    </Style>
+
+    
 
 </ResourceDictionary>
