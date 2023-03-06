@@ -30,6 +30,8 @@ namespace Dynamo.Wpf.Views
         private readonly DynamoViewModel dynViewModel;
         private List<GroupStyleItem> originalCustomGroupStyles { get; set; }
 
+        private Button colorButtonSelected;
+
         // Used for tracking the manage package command event
         // This is not a command any more but we keep it
         // around in a compatible way for now
@@ -255,13 +257,28 @@ namespace Dynamo.Wpf.Views
 
         private void ButtonColorPicker_Click(object sender, RoutedEventArgs e)
         {
-            System.Windows.Forms.ColorDialog colorDialog = new System.Windows.Forms.ColorDialog();
+            var colorPicker = new CustomColorPicker();
+            if (colorPicker == null) return;
 
-            if (colorDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            colorPicker.Placement = PlacementMode.Top;
+            colorPicker.PlacementTarget = sender as UIElement;
+            colorPicker.IsOpen = true;
+            colorPicker.Closed += ColorPicker_Closed;
+            colorButtonSelected = sender as Button;
+        }
+
+        private void ColorPicker_Closed(object sender, EventArgs e)
+        {
+            var colorPicker = sender as CustomColorPicker;
+            if(colorPicker == null) return;  
+            colorPicker.Closed -= ColorPicker_Closed;
+
+            if (colorButtonSelected != null)
             {
-                Button colorButton = sender as Button;
-                if (colorButton != null)
-                    colorButton.Background = new SolidColorBrush(Color.FromRgb(colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B));
+                var viewModel = colorPicker.DataContext as CustomColorPickerViewModel;
+                if (viewModel == null || viewModel.ColorPickerFinalSelectedColor == null)
+                    return;
+                colorButtonSelected.Background = new SolidColorBrush(viewModel.ColorPickerFinalSelectedColor.Value);
             }
         }
 

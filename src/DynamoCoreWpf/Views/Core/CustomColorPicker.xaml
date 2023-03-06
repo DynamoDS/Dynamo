@@ -1,0 +1,220 @@
+<Popup x:Class="Dynamo.Controls.CustomColorPicker"
+       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+       xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:ui="clr-namespace:Dynamo.UI"
+        mc:Ignorable="d" 
+        d:DesignHeight="780" d:DesignWidth="860">
+    <Popup.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="CustomColorPicker"
+                   TargetType="{x:Type xctk:ColorPicker}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type xctk:ColorPicker}">
+                            <Popup x:Name="PART_ColorPickerPalettePopup"
+                                   VerticalAlignment="Bottom"
+                                   IsOpen="True"
+                                   StaysOpen="False"
+                                   Focusable="False"
+                                   AllowsTransparency="True"
+                                   Width="550"
+                                   Height="Auto"
+                                   PopupAnimation="Slide">
+                                <Border BorderBrush="Transparent"
+                                        BorderThickness="10"
+                                        CornerRadius="10"
+                                        Background="Transparent">
+                                    <Border BorderBrush="Transparent"
+                                            BorderThickness="4"
+                                            CornerRadius="10"
+                                            Name="MainBorder"
+                                            Background="White">
+                                        <Border.Effect>
+                                            <DropShadowEffect BlurRadius="15"
+                                                              Direction="-90"
+                                                              RenderingBias="Quality"
+                                                              ShadowDepth="2"
+                                                              Color="LightGray" />
+                                        </Border.Effect>
+
+                                        <Grid x:Name="_colorPaletteHost"
+                                              HorizontalAlignment="Left"
+                                              Margin="20"
+                                              Background="Transparent">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+
+                                            <!--Title-->
+                                            <Grid Grid.Row="0">
+                                                <Grid x:Name="titleGrid">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="10*" />
+                                                        <ColumnDefinition Width="*" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="Color"
+                                                               Background="Transparent"
+                                                               Foreground="Black"
+                                                               FontSize="20"
+                                                               Margin="0, 10, 0, 10"
+                                                               FontWeight="Bold"
+                                                               Padding="2" />
+                                                    <Button Name="CloseButton"
+                                                            Height="12.8"
+                                                            Width="12.8"
+                                                            Grid.Column="1"
+                                                            Style="{StaticResource PopupCloseButtonStyle}"
+                                                            Click="CloseButton_Click">
+                                                    </Button>
+                                                </Grid>
+
+                                            </Grid>
+
+                                            <!-- Basic Colors -->
+                                            <Grid Grid.Row="1">
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition />
+                                                    </Grid.RowDefinitions>
+                                                    <TextBlock Text="{TemplateBinding AvailableColorsHeader}"
+                                                               Grid.Row="0"
+                                                               Margin="0, 5, 0, 5"
+                                                               Background="Transparent"
+                                                               Foreground="Black"
+                                                               Padding="2" />
+
+                                                    <ListBox x:Name="PART_AvailableColors"
+                                                             Margin="0, 5, 0, 5"
+                                                             Grid.Row="1"
+                                                             SelectionChanged="PART_BasicColors_SelectionChanged"
+                                                             ItemsSource="{Binding BasicColors}"
+                                                             Style="{StaticResource ColorListStyle}" />
+
+                                                </Grid>
+                                            </Grid>
+
+                                            <!-- Custom Colors-->
+                                            <Grid Grid.Row="2"
+                                                  Visibility="Collapsed">
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
+                                                    </Grid.RowDefinitions>
+                                                    <TextBlock Text="{TemplateBinding StandardColorsHeader}"
+                                                               Background="Transparent"
+                                                               Margin="0, 5, 0, 5"
+                                                               Foreground="Black"
+                                                               Padding="2" />
+
+                                                    <ListBox x:Name="PART_CustomColors"
+                                                             Grid.Row="1"
+                                                             Margin="0, 5, 0, 5"
+                                                             SelectionChanged="PART_CustomColors_SelectionChanged"
+                                                             ItemsSource="{Binding CustomColors, RelativeSource={RelativeSource TemplatedParent}}"
+                                                             Style="{StaticResource ColorListStyle}" />
+
+                                                </Grid>
+                                            </Grid>
+
+                                            <!-- Define Colors-->
+                                            <Grid Grid.Row="3"
+                                                  Visibility="Collapsed">
+                                                <Button x:Name="DefineColorBtn"
+                                                        Content="Define Custom Colors"
+                                                        Margin="5"
+                                                        Padding="10"
+                                                        HorizontalAlignment="Left"
+                                                        MaxWidth="200">
+                                                    <Button.Style>
+                                                        <Style BasedOn="{StaticResource SolidButtonStyle}"
+                                                               TargetType="{x:Type Button}">
+                                                            <Setter Property="IsEnabled"
+                                                                    Value="True" />
+                                                        </Style>
+                                                    </Button.Style>
+                                                </Button>
+                                            </Grid>
+
+                                            <!--Separator-->
+                                            <Grid Grid.Row="4">
+                                                <Separator Margin="5,5,0,5" />
+                                            </Grid>
+
+                                            <!-- Buttons-->
+                                            <Grid Grid.Row="5"
+                                                  HorizontalAlignment="Right">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <Button x:Name="CancelBtn"
+                                                            Click="CancelBtn_Click"
+                                                            Margin="10"
+                                                            Padding="10,5,10,5"
+                                                            Grid.Column="0"
+                                                            Content="Cancel">
+                                                        <Button.Style>
+                                                            <Style BasedOn="{StaticResource OutlinedButtonStyleInverted}"
+                                                                   TargetType="{x:Type Button}">
+                                                                <Setter Property="IsEnabled"
+                                                                        Value="True" />
+                                                            </Style>
+                                                        </Button.Style>
+                                                    </Button>
+                                                    <Button x:Name="Apply"
+                                                            Click="Apply_Click"
+                                                            Margin="10"
+                                                            Padding="10,5,10,5"
+                                                            Grid.Column="1"
+                                                            Content="Apply">
+                                                        <Button.Style>
+                                                            <Style BasedOn="{StaticResource SolidButtonStyle}"
+                                                                   TargetType="{x:Type Button}">
+                                                                <Setter Property="IsEnabled"
+                                                                        Value="True" />
+                                                            </Style>
+                                                        </Button.Style>
+                                                    </Button>
+                                                </Grid>
+                                            </Grid>
+
+                                        </Grid>
+                                    </Border>
+                                </Border>
+                            </Popup>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </Popup.Resources>
+    <Grid>
+        <xctk:ColorPicker   Name="xceedColorPickerControl" 
+                            HorizontalAlignment="Center" 
+                            VerticalAlignment="Center" 
+                            AvailableColorsHeader="Basic colors:"
+                            StandardColorsHeader="Custom colors:"
+                            ShowStandardColors="False" 
+                            ShowRecentColors="True"
+                            Width="520"
+                            Style="{StaticResource CustomColorPicker}"
+                            RecentColorsHeader="Test">
+        </xctk:ColorPicker>
+    </Grid>
+</Popup>
