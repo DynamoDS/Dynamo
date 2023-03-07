@@ -1117,8 +1117,9 @@ namespace Dynamo.ViewModels
             var engine = PythonEnginesList.FirstOrDefault(x => x.Equals(preferenceSettings.DefaultPythonEngine));
             SelectedPythonEngine  = string.IsNullOrEmpty(engine) ? Res.DefaultPythonEngineNone : preferenceSettings.DefaultPythonEngine;
 
+            // Fill language list using supported locale dictionary keys in current thread locale
             LanguagesList = PreferenceSettings.SupportedLocaleDic.Keys.ToObservableCollection();
-            SelectedLanguage = PreferenceSettings.SupportedLocaleDic.Where(x=> x.Value == preferenceSettings.Locale).FirstOrDefault().Key;
+            SelectedLanguage = PreferenceSettings.SupportedLocaleDic.FirstOrDefault(x => x.Value == preferenceSettings.Locale).Key;
 
             GroupStyleFontSizeList = preferenceSettings.PredefinedGroupStyleFontSizes;
 
