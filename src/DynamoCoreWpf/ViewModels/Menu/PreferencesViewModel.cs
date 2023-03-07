@@ -168,6 +168,7 @@ namespace Dynamo.ViewModels
                     if (PreferenceSettings.SupportedLocaleDic.TryGetValue(selectedLanguage, out string locale))
                     {
                         preferenceSettings.Locale = locale;
+                        dynamoViewModel.MainGuideManager?.CreateRealTimeInfoWindow(Res.PreferencesViewLanguageSwitchHelp, true);
                     }
                 }
             }

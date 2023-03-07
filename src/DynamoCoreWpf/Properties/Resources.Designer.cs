@@ -6684,6 +6684,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dynamo must be relaunched to apply the language selection..
+        /// </summary>
+        public static string PreferencesViewLanguageSwitchHelp {
+            get {
+                return ResourceManager.GetString("PreferencesViewLanguageSwitchHelp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Markdown documentation can be added to your package that will leverage the Documentation Browser to display author generated information on a per-node basis..
         /// </summary>
         public static string PreferencesViewMarkdownDirectoryTooltip {
