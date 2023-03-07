@@ -269,7 +269,8 @@
                     Foreground="White"
                     IsDefault="True"
                     Style="{DynamicResource ResourceKey=CtaButtonStyle}"
-                    TabIndex="2" />
+                    TabIndex="2"
+                    IsEnabled="{Binding IsStatusWarning, Converter={StaticResource InverseBooleanConverter}}"/>
         </DockPanel>
     </Grid>
 </Window>

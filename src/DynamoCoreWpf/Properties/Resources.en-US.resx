@@ -3530,4 +3530,7 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="MessageRemovePythonPort" xml:space="preserve">
     <value>Your custom port properties will be lost once the port is removed.</value>
   </data>
+  <data name="MessagePortNameInvalid" xml:space="preserve">
+    <value>Cannot contain special characters (# % * ? \ : [ ])</value>
+  </data>
 </root>

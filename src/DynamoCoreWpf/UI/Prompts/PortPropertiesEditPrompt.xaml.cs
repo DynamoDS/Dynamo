@@ -125,7 +125,7 @@ namespace UI.Prompts
                 return;
             }
 
-            DialogResult = true;
+            DialogResult = !string.IsNullOrEmpty(PortName);
         }
 
         void Cancel_Click(object sender, RoutedEventArgs e)
@@ -164,26 +164,33 @@ namespace UI.Prompts
         // Run all name validation checks here
         private bool ValidatePortName(string name)
         {
-            if (string.IsNullOrEmpty(name))
+            if (IsPortNameInValid(name))
             {
-                ErrorString = Dynamo.Wpf.Properties.Resources.MessageCustomNodeNoName;
-                return true;
-            }
-            if (PathHelper.IsFileNameInValid(name))
-            {
-                ErrorString = Dynamo.Wpf.Properties.Resources.MessageCustomNodeNameInvalid;
+                ErrorString = Dynamo.Wpf.Properties.Resources.MessagePortNameInvalid;
                 return true;
             }
             if (!IsPortNameUnique(name))
             {
-                ErrorString = Dynamo.Wpf.Properties.Resources.MessageCustomNodeNameInvalid;
+                ErrorString = Dynamo.Wpf.Properties.Resources.MessagePortNameInvalid;
                 return true;
             }
             if (IsPortNameNumber(name))
             {
-                ErrorString = Dynamo.Wpf.Properties.Resources.MessageCustomNodeNameInvalid;
+                ErrorString = Dynamo.Wpf.Properties.Resources.MessagePortNameInvalid;
                 return true;
             }
+
+            return false;
+        }
+
+
+        public bool IsPortNameInValid(string portName)
+        {
+            // Some other extra characters that are to be checked. 
+            char[] invalidCharactersFileName = { '#', '%', '&', '.', ' ', '[', ']' };
+
+            if (portName.IndexOfAny(invalidCharactersFileName) > -1)
+                return true;
 
             return false;
         }

@@ -4391,6 +4391,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot contain special characters (# % * ? \ : [ ]).
+        /// </summary>
+        public static string MessagePortNameInvalid {
+            get {
+                return ResourceManager.GetString("MessagePortNameInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Your custom port properties will be lost once the port is removed..
         /// </summary>
         public static string MessageRemovePythonPort {
