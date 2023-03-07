@@ -1008,6 +1008,60 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Apply.
+        /// </summary>
+        public static string CustomColorPickerApplyBtn {
+            get {
+                return ResourceManager.GetString("CustomColorPickerApplyBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Basic colors:.
+        /// </summary>
+        public static string CustomColorPickerBasicColors {
+            get {
+                return ResourceManager.GetString("CustomColorPickerBasicColors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string CustomColorPickerCancelBtn {
+            get {
+                return ResourceManager.GetString("CustomColorPickerCancelBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Define Custom Colors.
+        /// </summary>
+        public static string CustomColorPickerCustomColorBtn {
+            get {
+                return ResourceManager.GetString("CustomColorPickerCustomColorBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom colors:.
+        /// </summary>
+        public static string CustomColorPickerCustomColors {
+            get {
+                return ResourceManager.GetString("CustomColorPickerCustomColors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Color.
+        /// </summary>
+        public static string CustomColorPickerTitle {
+            get {
+                return ResourceManager.GetString("CustomColorPickerTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A description that helps people understand what the node might be used for..
         /// </summary>
         public static string CustomNodePromptDescriptionTooltip {
