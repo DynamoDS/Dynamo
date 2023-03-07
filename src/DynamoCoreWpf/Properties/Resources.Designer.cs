@@ -4391,6 +4391,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your custom port properties will be lost once the port is removed..
+        /// </summary>
+        public static string MessageRemovePythonPort {
+            get {
+                return ResourceManager.GetString("MessageRemovePythonPort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} cannot be installed as it conflicts with a different version of the built-in package, {1}, which is already installed.
         ///    
         ///You can try disabling loading packages from built-in package paths, or unload the conflicting package, then restart {2} and download {0} again..
@@ -7710,6 +7719,15 @@ namespace Dynamo.Wpf.Properties {
         public static string RecommendedNodes {
             get {
                 return ResourceManager.GetString("RecommendedNodes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove port?.
+        /// </summary>
+        public static string RemovePythonPortWarningMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("RemovePythonPortWarningMessageBoxTitle", resourceCulture);
             }
         }
         

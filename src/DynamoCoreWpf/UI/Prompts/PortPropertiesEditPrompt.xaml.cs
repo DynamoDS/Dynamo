@@ -83,7 +83,7 @@ namespace UI.Prompts
                     MessageBoxImage.Error
                 );
             }
-            else if (PathHelper.IsFileNameInValid(PortName))
+            else if (ValidatePortName(PortName))
             {
                 MessageBoxService.Show
                 (

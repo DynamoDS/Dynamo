@@ -3511,4 +3511,10 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
       <value>Name</value>
       <comment>Port Name Label</comment>
   </data>
+  <data name="RemovePythonPortWarningMessageBoxTitle" xml:space="preserve">
+    <value>Remove port?</value>
+  </data>
+  <data name="MessageRemovePythonPort" xml:space="preserve">
+    <value>Your custom port properties will be lost once the port is removed.</value>
+  </data>
 </root>
