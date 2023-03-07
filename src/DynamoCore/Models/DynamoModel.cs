@@ -674,6 +674,9 @@ namespace Dynamo.Models
             if (preferences is PreferenceSettings settings)
             {
                 PreferenceSettings = settings;
+                // Setting the new locale for Dynamo
+                Thread.CurrentThread.CurrentUICulture = new CultureInfo(preferences.Locale);
+                Thread.CurrentThread.CurrentCulture = new CultureInfo(preferences.Locale);
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
                 PreferenceSettings.MessageLogged += LogMessage;
             }

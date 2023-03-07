@@ -170,9 +170,6 @@ namespace Dynamo.ViewModels
                     // Change the application locale, if a locale information is supplied.
                     if (PreferenceSettings.SupportedLocale.TryGetValue(selectedLanguage, out string locale))
                     {
-                        // Setting the new locale for Dynamo
-                        Thread.CurrentThread.CurrentUICulture = new CultureInfo(locale);
-                        Thread.CurrentThread.CurrentCulture = new CultureInfo(locale);
                         preferenceSettings.Locale = locale;
                     }
                 }
