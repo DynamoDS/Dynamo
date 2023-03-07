@@ -10,6 +10,8 @@
     <AssemblyName>DynamoCore</AssemblyName>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <DocumentationFile>$(OutputPath)\DynamoCore.XML</DocumentationFile>
+    <LibGOsToken>windows</LibGOsToken>
+    <LibGOsToken Condition="$(Platform.Contains('Linux'))">linux</LibGOsToken>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(ExecutionEngine)' != 'FScheme' ">
     <DefineConstants>$(DefineConstants);USE_DSENGINE</DefineConstants>
@@ -34,6 +36,9 @@
     <PackageReference Include="Greg" Version="2.3.0.2505" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" CopyXML="true" />
 	  <PackageReference Include="RestSharp" Version="106.12.0" CopyXML="true" />
+    <Reference Include="System.Collections.Immutable">
+      <HintPath>$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\ProtoGeometry.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\GraphLayout\GraphLayout.csproj">
@@ -122,14 +127,14 @@
   </Choose>
   <Target Name="BeforeBuildOps" BeforeTargets="Build">
     <PropertyGroup>
-      <LibGProtoGeometryLibGLocale>$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\libg_locale</LibGProtoGeometryLibGLocale>
+      <LibGProtoGeometryLibGLocale>$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\libg_locale</LibGProtoGeometryLibGLocale>
     </PropertyGroup>
     <ItemGroup>
-      <LibGInterface Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\LibG.Interface.dll" />
-      <LibGProtoGeometryXml Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\lib\netstandard2.0\ProtoGeometry.XML" />
-      <LibGProtoGeometryUICulture Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(UICulture)\*" />
-      <LibG228 Include="$(PkgDynamoVisualProgramming_LibG_228_0_0)\tools\netstandard2.0\LibG_228_0_0\*" />
-      <LibG229 Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\LibG_229_0_0\*" />
+      <LibGInterface Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\LibG.Interface.dll" />
+      <LibGProtoGeometryXML Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\ProtoGeometry.XML" />
+      <LibGProtoGeometryUICulture Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\$(UICulture)\*" />
+      <LibG228 Include="$(PkgDynamoVisualProgramming_LibG_228_0_0)\tools\netstandard2.0\$(LibGOsToken)\LibG_228_0_0\*" />
+      <LibG229 Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\LibG_229_0_0\*" />
       <ExternSimplexNoise Include="$(SolutionDir)..\extern\SimplexNoise\*" />
       <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\**\*.*" />
       <NodeHelpFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.*" />
