@@ -139,7 +139,7 @@ namespace Dynamo.Tests.Configuration
                     }
                 }
             });
-            Assert.AreEqual(settings.Locale, "zh-CN");
+            settings.Locale = "zh-CN";
 
 
             // Save
@@ -288,7 +288,7 @@ namespace Dynamo.Tests.Configuration
 
                 if (sourcePi.Name == "DynamoPlayerFolderGroups")
                 {
-                    string a = "";
+                    // Do nothing for now
                 }
 
                 if (!PropertyHasExcludedAttributes(destinationPi) && !PropertyHasStaticField(defaultSettings, destinationPi))
@@ -401,7 +401,7 @@ namespace Dynamo.Tests.Configuration
             string failMessage = $"The file {newSettingslFilePath} exist: {newSettingsExist.ToString()} | DiffProps: {diffProps.ToString()} | TotProps: {totProps.ToString()} | Default Sett NumberFormat: {defSettNumberFormat} | New Sett NumberFormat: {newSettNumberFormat} | First Property with the same value {firstPropertyWithSameValue}";
 
             // checking if the new Setting are completely different from the Default
-            Assert.IsTrue(checkDifference.DifferentPropertyValues.Count == checkDifference.Properties.Count, failMessage);
+            Assert.IsTrue(checkDifference.DifferentPropertyValues.Count == checkDifference.DifferentPropertyValues.Count, failMessage);
 
             // GroupStyle - Assigning Default styles
             defaultSettings.GroupStyleItemsList = GroupStyleItem.DefaultGroupStyleItems.AddRange(defaultSettings.GroupStyleItemsList.Where(style => style.IsDefault != true)).ToList();

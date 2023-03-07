@@ -165,7 +165,7 @@ namespace Dynamo.ViewModels
                 {
                     selectedLanguage = value;
                     RaisePropertyChanged(nameof(SelectedLanguage));
-                    if (PreferenceSettings.SupportedLocaleDic.TryGetValue(selectedLanguage, out string locale))
+                    if (Configurations.SupportedLocaleDic.TryGetValue(selectedLanguage, out string locale))
                     {
                         preferenceSettings.Locale = locale;
                         dynamoViewModel.MainGuideManager?.CreateRealTimeInfoWindow(Res.PreferencesViewLanguageSwitchHelp, true);
@@ -1119,8 +1119,8 @@ namespace Dynamo.ViewModels
             SelectedPythonEngine  = string.IsNullOrEmpty(engine) ? Res.DefaultPythonEngineNone : preferenceSettings.DefaultPythonEngine;
 
             // Fill language list using supported locale dictionary keys in current thread locale
-            LanguagesList = PreferenceSettings.SupportedLocaleDic.Keys.ToObservableCollection();
-            SelectedLanguage = PreferenceSettings.SupportedLocaleDic.FirstOrDefault(x => x.Value == preferenceSettings.Locale).Key;
+            LanguagesList = Configurations.SupportedLocaleDic.Keys.ToObservableCollection();
+            SelectedLanguage = Configurations.SupportedLocaleDic.FirstOrDefault(x => x.Value == preferenceSettings.Locale).Key;
 
             GroupStyleFontSizeList = preferenceSettings.PredefinedGroupStyleFontSizes;
 

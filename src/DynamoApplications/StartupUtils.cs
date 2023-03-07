@@ -508,7 +508,7 @@ namespace Dynamo.Applications
 
         public static string SetLocale(CommandLineArguments cmdLineArgs)
         {
-            var supportedLocale = new HashSet<string>(Configuration.PreferenceSettings.SupportedLocaleDic.Values);
+            var supportedLocale = new HashSet<string>(Configuration.Configurations.SupportedLocaleDic.Values);
             string libgLocale = string.Empty;
 
             if (!string.IsNullOrEmpty(cmdLineArgs.Locale))

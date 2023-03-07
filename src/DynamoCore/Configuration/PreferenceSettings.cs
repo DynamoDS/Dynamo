@@ -90,25 +90,6 @@ namespace Dynamo.Configuration
         /// </summary>
         public static readonly DateTime DynamoDefaultTime = new DateTime(1977, 4, 12, 12, 12, 0, 0);
 
-        /// <summary>
-        /// Supported locales as a list
-        /// </summary>
-        internal static readonly List<string> SupportedLocaleList = new List<string>() { "en-US", "cs-CZ", "de-DE", "es-ES", "fr-FR", "it-IT", "ja-JP", "ko-KR", "pl-PL", "pt-BR", "pt-BR", "ru-RU", "zh-CN", "zh-TW" };
-
-        /// <summary>
-        /// Supported languages and locales as a dictionary in the current thread locale
-        /// </summary>
-        public static Dictionary<string, string> SupportedLocaleDic
-        {
-            get
-            {
-                // Dynamically create a dictionary mapping languages and locales in the current thread locale
-                // This is done so that Preferences Panel could display the languages selections using the current locale
-                return Properties.Resources.PreferencesWindowLanguages.Split(',').
-                    Zip(SupportedLocaleList, (k, v) => (k, v)).ToDictionary(x => x.k, x => x.v);
-            }
-        }
-
         #endregion
 
         // The following settings are persistent between Dynamo sessions and are user-controllable
@@ -781,7 +762,7 @@ namespace Dynamo.Configuration
             // Default Settings
             IsFirstRun = true;
             IsAnalyticsReportingApproved = true;
-            Locale = SupportedLocaleDic.FirstOrDefault().Value;
+            Locale = Configurations.SupportedLocaleDic.FirstOrDefault().Value;
             LibraryWidth = 304;
             ConsoleHeight = 0;
             ShowPreviewBubbles = true;
