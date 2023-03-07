@@ -88,19 +88,26 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Default time
         /// </summary>
-        public static readonly System.DateTime DynamoDefaultTime = new DateTime(1977, 4, 12, 12, 12, 0, 0);
+        public static readonly DateTime DynamoDefaultTime = new DateTime(1977, 4, 12, 12, 12, 0, 0);
 
         /// <summary>
-        /// 
+        /// Supported locales as a list
         /// </summary>
-        public static readonly Dictionary<string, string> SupportedLocale = new Dictionary<string, string>()
+        internal static readonly List<string> SupportedLocaleList = new List<string>() { "en-US", "cs-CZ", "de-DE", "es-ES", "fr-FR", "it-IT", "ja-JP", "ko-KR", "pl-PL", "pt-BR", "pt-BR", "ru-RU", "zh-CN", "zh-TW" };
+
+        /// <summary>
+        /// Supported languages and locales as a dictionary in the current thread locale
+        /// </summary>
+        public static Dictionary<string, string> SupportedLocaleDic
         {
-            {"English", "en-US"}, {"French","fr-FR"}, {"German", "de-DE"},
-            {"Czech", "cs-CZ"}, {"Spanish", "es-ES"}, {"Italian", "it-IT"},
-            {"Japanese", "ja-JP"}, {"Korean", "ko-KR"}, {"Polish", "pl-PL"},
-            {"Portuguese", "pt-BR"}, {"Brazilian", "pt-BR"}, {"Russian", "ru-RU"},
-            {"Chinese Simplified", "zh-CN"}, {"Chinese Traditional", "zh-TW"}
-        };
+            get
+            {
+                // Dynamically create a dictionary mapping languages and locales in the current thread locale
+                // This is done so that Preferences Panel could display the languages selections using the current locale
+                return Properties.Resources.PreferencesWindowLanguages.Split(',').
+                    Zip(SupportedLocaleList, (k, v) => (k, v)).ToDictionary(x => x.k, x => x.v);
+            }
+        }
 
         #endregion
 
@@ -774,7 +781,7 @@ namespace Dynamo.Configuration
             // Default Settings
             IsFirstRun = true;
             IsAnalyticsReportingApproved = true;
-            Locale = SupportedLocale.FirstOrDefault().Value;
+            Locale = SupportedLocaleDic.FirstOrDefault().Value;
             LibraryWidth = 304;
             ConsoleHeight = 0;
             ShowPreviewBubbles = true;

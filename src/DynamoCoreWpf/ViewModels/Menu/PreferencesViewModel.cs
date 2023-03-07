@@ -4,10 +4,8 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Logging;
@@ -167,8 +165,7 @@ namespace Dynamo.ViewModels
                 {
                     selectedLanguage = value;
                     RaisePropertyChanged(nameof(SelectedLanguage));
-                    // Change the application locale, if a locale information is supplied.
-                    if (PreferenceSettings.SupportedLocale.TryGetValue(selectedLanguage, out string locale))
+                    if (PreferenceSettings.SupportedLocaleDic.TryGetValue(selectedLanguage, out string locale))
                     {
                         preferenceSettings.Locale = locale;
                     }
@@ -1120,9 +1117,8 @@ namespace Dynamo.ViewModels
             var engine = PythonEnginesList.FirstOrDefault(x => x.Equals(preferenceSettings.DefaultPythonEngine));
             SelectedPythonEngine  = string.IsNullOrEmpty(engine) ? Res.DefaultPythonEngineNone : preferenceSettings.DefaultPythonEngine;
 
-            string languages = Res.PreferencesWindowLanguages;
-            LanguagesList = new ObservableCollection<string>(languages.Split(','));
-            SelectedLanguage = PreferenceSettings.SupportedLocale.Where(x=> x.Value == preferenceSettings.Locale).FirstOrDefault().Key;
+            LanguagesList = PreferenceSettings.SupportedLocaleDic.Keys.ToObservableCollection();
+            SelectedLanguage = PreferenceSettings.SupportedLocaleDic.Where(x=> x.Value == preferenceSettings.Locale).FirstOrDefault().Key;
 
             GroupStyleFontSizeList = preferenceSettings.PredefinedGroupStyleFontSizes;
 
