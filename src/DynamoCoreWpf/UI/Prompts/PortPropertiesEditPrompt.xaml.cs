@@ -20,6 +20,7 @@ namespace UI.Prompts
     {
         #region Properties
         private PortType portType;
+        private bool isStatusWarning;
 
         /// <summary>
         /// Port name
@@ -53,6 +54,48 @@ namespace UI.Prompts
         }
 
         /// <summary>
+        /// Shows if the port name validation has gone through or not
+        /// </summary>
+        public bool IsStatusWarning
+        {
+            get
+            {
+                return isStatusWarning;
+            }
+            set
+            {
+                isStatusWarning = value;
+                OnPropertyChanged(new PropertyChangedEventArgs(nameof(IsStatusWarning)));
+            }
+        }
+
+
+        private Window owner
+        {
+            get
+            {
+                var f = WpfUtilities.FindUpVisualTree<DynamoView>(this);
+                if (f != null) return f;
+
+                return null;
+            }
+        }
+
+
+        private string errorString = string.Empty;
+        /// <summary>
+        /// Contains the notification of the status label
+        /// </summary>
+        public string ErrorString
+        {
+            get { return errorString; }
+            set
+            {
+                errorString = value;
+                OnPropertyChanged(new PropertyChangedEventArgs(nameof(ErrorString)));
+            }
+        }
+        /// <summary>
         /// Contains the names of all ports
         /// Used in name validation check
         /// </summary>
@@ -67,36 +110,22 @@ namespace UI.Prompts
             this.DataContext = this;
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
+            Owner = WpfUtilities.FindUpVisualTree<DynamoView>(this);
+            WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
             nameBox.Focus();
         }
 
         #region Methods
         void OK_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(PortName))
+            // Prevent the prompt from closing if the validation conditions are not satisfied
+            if (ValidatePortName(PortName))
             {
-                MessageBoxService.Show
-                (
-                    Dynamo.Wpf.Properties.Resources.MessageCustomNodeNoName,
-                    Dynamo.Wpf.Properties.Resources.CustomNodePropertyErrorMessageBoxTitle,
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error
-                );
+                return;
             }
-            else if (ValidatePortName(PortName))
-            {
-                MessageBoxService.Show
-                (
-                   Dynamo.Wpf.Properties.Resources.MessageCustomNodeNameInvalid,
-                   Dynamo.Wpf.Properties.Resources.CustomNodePropertyErrorMessageBoxTitle,
-                   MessageBoxButton.OK,
-                   MessageBoxImage.Error
-                );
-            }
-            else
-            {
-                DialogResult = true;
-            }
+
+            DialogResult = true;
         }
 
         void Cancel_Click(object sender, RoutedEventArgs e)
@@ -121,24 +150,40 @@ namespace UI.Prompts
         // Name validation 
         private void NameBox_OnTextChanged(object sender, TextChangedEventArgs e)
         {
+            e.Handled = true;
             if (ValidatePortName(nameBox.Text))
             {
-                ErrorIcon.Visibility = Visibility.Visible;
-                ErrorUnderline.Visibility = Visibility.Visible;
+                IsStatusWarning = true;
             }
             else
             {
-                ErrorIcon.Visibility = Visibility.Collapsed;
-                ErrorUnderline.Visibility = Visibility.Collapsed;
+                IsStatusWarning = false;
             }
         }
-
+        
         // Run all name validation checks here
         private bool ValidatePortName(string name)
         {
-            if (PathHelper.IsFileNameInValid(name)) return true;
-            if (!IsPortNameUnique(name)) return true;
-            if (IsPortNameNumber(name)) return true;
+            if (string.IsNullOrEmpty(name))
+            {
+                ErrorString = Dynamo.Wpf.Properties.Resources.MessageCustomNodeNoName;
+                return true;
+            }
+            if (PathHelper.IsFileNameInValid(name))
+            {
+                ErrorString = Dynamo.Wpf.Properties.Resources.MessageCustomNodeNameInvalid;
+                return true;
+            }
+            if (!IsPortNameUnique(name))
+            {
+                ErrorString = Dynamo.Wpf.Properties.Resources.MessageCustomNodeNameInvalid;
+                return true;
+            }
+            if (IsPortNameNumber(name))
+            {
+                ErrorString = Dynamo.Wpf.Properties.Resources.MessageCustomNodeNameInvalid;
+                return true;
+            }
 
             return false;
         }

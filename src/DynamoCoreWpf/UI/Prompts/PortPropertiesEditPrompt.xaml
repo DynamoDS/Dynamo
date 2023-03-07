@@ -90,6 +90,29 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
+            <Style TargetType="FrameworkElement" x:Key="VisibleAnimation">
+                <Setter Property="Opacity" Value="0"></Setter>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Path=IsStatusWarning}" Value="True">
+                        <DataTrigger.EnterActions>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                     From="0" To="1" Duration="0:0:0.3"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </DataTrigger.EnterActions>
+                        <DataTrigger.ExitActions>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                     From="1" To="0" Duration="0:0:0.3"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </DataTrigger.ExitActions>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -149,31 +172,22 @@
                     </TextBlock.ToolTip>
                 </TextBlock>
                 <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
                     <TextBox Name="nameBox"
-                             Grid.Column="0"
+                             Grid.Row="0"
                              MinHeight="37"
                              Margin="0"
                              VerticalAlignment="Center"
                              IsHitTestVisible="True"
                              Style="{StaticResource HintingInputStyle}"
                              TextChanged="NameBox_OnTextChanged" />
-                    <Image x:Name="ErrorIcon"
-                           Grid.Column="1"
-                           Width="16"
-                           Height="16"
-                           Margin="5,0,0,0"
-                           VerticalAlignment="Center"
-                           DockPanel.Dock="Right"
-                           Source="/DynamoCoreWpf;component/UI/Images/error.png"
-                           Visibility="Collapsed" />
                     <StackPanel x:Name="ErrorUnderline"
-                                Grid.Column="0"
                                 VerticalAlignment="Bottom"
-                                Visibility="Collapsed">
+                                Grid.Row="0"
+                                Style="{StaticResource VisibleAnimation}">
                         <Rectangle Name="Underline"
                                    Height="1px"
                                    VerticalAlignment="Bottom"
@@ -183,6 +197,34 @@
                                    Fill="#EA5555"
                                    Opacity="0.5" />
                     </StackPanel>
+                    <StackPanel x:Name="ErrorMessage"
+                                Grid.Row="1"
+                                Orientation="Horizontal"
+                                VerticalAlignment="Top"
+                                Margin="0 6 0 0"
+                                Style="{StaticResource VisibleAnimation}">
+                        <Image x:Name="ErrorIcon"
+                               Width="16"
+                               Height="16"
+                               Margin="5,4,0,0"
+                               VerticalAlignment="Top"
+                               DockPanel.Dock="Right"
+                               Source="/DynamoCoreWpf;component/UI/Images/error.png" />
+
+                        <!--  Status Label  -->
+                        <TextBlock Name="statusLabel"
+                                   Margin="10,6,5,0"
+                                   VerticalAlignment="Top"
+                                   FontFamily="{StaticResource ArtifaktElementRegular}"
+                                   FontSize="10"
+                                   Style="{StaticResource LabelStyle}"
+                                   Text="{Binding ErrorString, UpdateSourceTrigger=PropertyChanged}"
+                                   TextTrimming="CharacterEllipsis">
+                            <TextBlock.ToolTip>
+                                <ToolTip Content="{Binding ErrorString, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource GenericToolTipLight}"/>
+                            </TextBlock.ToolTip>
+                        </TextBlock>
+                     </StackPanel>
                 </Grid>
 
                 <!--  Description  -->
