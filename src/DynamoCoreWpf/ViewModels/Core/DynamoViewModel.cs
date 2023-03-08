@@ -2862,6 +2862,7 @@ namespace Dynamo.ViewModels
                 {
                     OpenOnboardingGuideFile();
                     MainGuideManager.LaunchTour(GuidesManager.OnboardingGuideName);
+                    OnEnableShortcutBarItems(false);
                 }
             }
             catch (Exception ex)
