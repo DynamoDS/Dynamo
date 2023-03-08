@@ -10,7 +10,6 @@ using Dynamo.PackageManager;
 
 using NUnit.Framework;
 
-using SystemTestServices;
 
 namespace Dynamo.Tests.Nodes
 {
@@ -31,7 +30,7 @@ namespace Dynamo.Tests.Nodes
         public void OpenJsonDYNWithCorrectMenuItems()
         {
             // Define package loading reference path
-            string dir = SystemTestBase.GetTestDirectory(ExecutingDirectory);
+            string dir = TestDirectory;
             string pkgDir = Path.Combine(dir, "pkgs\\Dynamo Samples");
             PackageManagerExtension pkgMan = CurrentDynamoModel.GetPackageManagerExtension();
             PackageLoader loader = pkgMan.PackageLoader;
@@ -60,7 +59,7 @@ namespace Dynamo.Tests.Nodes
         public void OpenJsonDYNWithCorrectSelectedItem()
         {
             // Define package loading reference path
-            string dir = SystemTestBase.GetTestDirectory(ExecutingDirectory);
+            string dir = TestDirectory;
             string pkgDir = Path.Combine(dir, "pkgs\\Dynamo Samples");
             PackageManagerExtension pkgMan = CurrentDynamoModel.GetPackageManagerExtension();
             PackageLoader loader = pkgMan.PackageLoader;

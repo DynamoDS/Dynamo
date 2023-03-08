@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -10,11 +10,13 @@
     <AssemblyName>DSOffice</AssemblyName>
     <DocumentationFile>$(OutputPath)\$(UICulture)\DSOffice.xml</DocumentationFile>
   </PropertyGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
+        <PackageReference Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1000">
+            <ExcludeAssets>runtime</ExcludeAssets>
+        </PackageReference>
+    </ItemGroup>
   <ItemGroup>
 	<PackageReference Include="DocumentFormat.OpenXml" Version="2.12.3" CopyXML="true" />
-	<PackageReference Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1000">
-	  <ExcludeAssets>runtime</ExcludeAssets>
-	</PackageReference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
@@ -72,7 +74,7 @@
   <Target Name="CopyFiles" BeforeTargets="Build">
     <Copy SourceFiles="$(ProjectDir)DSOffice_DynamoCustomization.xml" DestinationFiles="$(OutDir)DSOffice_DynamoCustomization.xml" />
   </Target>
-  <Target Name="GenerateFiles" AfterTargets="Build" Condition=" '$(OS)' != 'Unix' ">
+  <Target Name="GenerateFiles" AfterTargets="Build" Condition=" '$(OS)' != 'Unix' AND '$(TargetFramework)' == 'net48'">
     <!-- Get System.Drawing.dll -->
     <GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=$(ResourceGeneration_FrameworkVersion)">
       <Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
