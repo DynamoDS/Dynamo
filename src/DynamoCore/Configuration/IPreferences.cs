@@ -147,11 +147,6 @@ namespace Dynamo.Interfaces
         bool GetIsBackgroundPreviewActive(string name);
 
         /// <summary>
-        /// Return the locale of Dynamo UI
-        /// </summary>
-        string Locale { get; set; }
-
-        /// <summary>
         /// Sets active state of specified background preview 
         /// </summary>
         /// <param name="name">Background preview name</param>
