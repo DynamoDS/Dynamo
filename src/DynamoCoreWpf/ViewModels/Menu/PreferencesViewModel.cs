@@ -8,7 +8,6 @@ using System.IO;
 using System.Linq;
 using Dynamo.Configuration;
 using Dynamo.Core;
-using Dynamo.Events;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.PackageManager;

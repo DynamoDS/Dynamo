@@ -12,10 +12,8 @@ using System.Windows.Media;
 using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Core;
-using Dynamo.Exceptions;
 using Dynamo.Logging;
 using Dynamo.UI;
-using Dynamo.UI.Views;
 using Dynamo.ViewModels;
 using Res = Dynamo.Wpf.Properties.Resources;
 
