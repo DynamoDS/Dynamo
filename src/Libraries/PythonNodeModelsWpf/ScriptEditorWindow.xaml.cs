@@ -36,7 +36,6 @@ namespace PythonNodeModelsWpf
         private bool nodeWasModified = false;
         private string originalScript;
         private int zoomScalePreviousValue;
-        private DynamoView dynamoView;
 
         private double fontSizePreferencesSliderProportionValue;
         

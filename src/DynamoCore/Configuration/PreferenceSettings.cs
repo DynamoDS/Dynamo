@@ -171,6 +171,9 @@ namespace Dynamo.Configuration
         /// </summary>
         public int LibraryZoomScale { get; set; }
 
+        /// <summary>
+        /// Indicates the zoom scale of the Python editor
+        /// </summary>
         public int PythonScriptZoomScale { get; set; }
 
         /// <summary>
