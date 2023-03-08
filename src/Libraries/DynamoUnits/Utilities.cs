@@ -53,11 +53,7 @@ namespace DynamoUnits
 
             try
             {
-#if NET6_0_OR_GREATER
-                unitsEngine = ForgeUnitsCLR.ForgeUnits.CreateUnitsEngine();
-#else
                 unitsEngine = new ForgeUnitsCLR.UnitsEngine();
-#endif
                 SchemasCLR.SchemaUtility.addDefinitionsFromFolder(SchemaDirectory, unitsEngine);
                 unitsEngine.resolveSchemas();
             }
@@ -76,11 +72,7 @@ namespace DynamoUnits
         {
             try
             {
-#if NET6_0_OR_GREATER
-                unitsEngine = ForgeUnitsCLR.ForgeUnits.CreateUnitsEngine();
-#else
                 unitsEngine = new ForgeUnitsCLR.UnitsEngine();
-#endif
                 SchemasCLR.SchemaUtility.addDefinitionsFromFolder(testSchemaDir, unitsEngine);
                 unitsEngine.resolveSchemas();
             }
