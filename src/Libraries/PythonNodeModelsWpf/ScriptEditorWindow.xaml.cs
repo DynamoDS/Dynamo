@@ -112,6 +112,7 @@ namespace PythonNodeModelsWpf
 
             // Set font size in editor and cache it
             editText.FontSize = dynamoViewModel.PreferenceSettings.PythonScriptZoomScale * fontSizePreferencesSliderProportionValue;
+            zoomScaleCacheValue = dynamoViewModel.PreferenceSettings.PythonScriptZoomScale;
 
             const string highlighting = "ICSharpCode.PythonBinding.Resources.Python.xshd";
             var elem = GetType().Assembly.GetManifestResourceStream(
