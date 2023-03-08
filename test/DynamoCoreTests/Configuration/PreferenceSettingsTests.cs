@@ -71,7 +71,7 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(settings.MaxNumRecentFiles, PreferenceSettings.DefaultMaxNumRecentFiles);
             Assert.AreEqual(settings.BackupInterval, PreferenceSettings.DefaultBackupInterval);
             Assert.AreEqual(settings.UseHardwareAcceleration, true);
-            Assert.AreEqual(settings.ViewExtensionSettings.Count, 0);
+            Assert.AreEqual(settings.ViewExtensionSettingsList.Count, 0);
             Assert.AreEqual(settings.DefaultRunType, RunType.Automatic);
             Assert.AreEqual(settings.DynamoPlayerFolderGroups.Count, 0);
 
@@ -90,7 +90,7 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(settings.MaxNumRecentFiles, PreferenceSettings.DefaultMaxNumRecentFiles);
             Assert.AreEqual(settings.BackupInterval, PreferenceSettings.DefaultBackupInterval);
             Assert.AreEqual(settings.UseHardwareAcceleration, true);
-            Assert.AreEqual(settings.ViewExtensionSettings.Count, 0);
+            Assert.AreEqual(settings.ViewExtensionSettingsList.Count, 0);
             Assert.AreEqual(settings.DefaultRunType, RunType.Automatic);
             Assert.AreEqual(settings.DynamoPlayerFolderGroups.Count, 0);
 
@@ -106,7 +106,7 @@ namespace Dynamo.Tests.Configuration
             settings.EnableNodeAutoComplete = false;
             settings.EnableNotificationCenter = false;
             settings.DefaultRunType = RunType.Manual;
-            settings.ViewExtensionSettings.Add(new ViewExtensionSettings()
+            settings.ViewExtensionSettingsList.Add(new ViewExtensionSettings()
             {
                 Name = "MyExtension",
                 UniqueId = "1234",
@@ -157,8 +157,8 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(settings.UseHardwareAcceleration, false);
             Assert.AreEqual(settings.EnableNodeAutoComplete, false);
             Assert.AreEqual(settings.EnableNotificationCenter, false);
-            Assert.AreEqual(settings.ViewExtensionSettings.Count, 1);
-            var extensionSettings = settings.ViewExtensionSettings[0];
+            Assert.AreEqual(settings.ViewExtensionSettingsList.Count, 1);
+            var extensionSettings = settings.ViewExtensionSettingsList[0];
             Assert.AreEqual(settings.DefaultRunType, RunType.Manual);
             Assert.AreEqual(extensionSettings.Name, "MyExtension");
             Assert.AreEqual(extensionSettings.UniqueId, "1234");

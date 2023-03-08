@@ -15,6 +15,7 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using Antlr.Runtime;
 using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Graph;
@@ -228,6 +229,19 @@ namespace Dynamo.Controls
             // Add an event handler to check if the collection is modified.   
             ExtensionTabItems.CollectionChanged += this.OnCollectionChanged;
 
+            var viewExtensionSettings = dynamoViewModel.PreferenceSettings.ViewExtensionSettingsList;
+            if (viewExtensionSettings != null)
+            {
+                foreach (ViewExtensionSettings ves in viewExtensionSettings)
+                {
+                    if (ves.IsOpen)
+                    {
+                        var ext = viewExtensions.Find(s => s.UniqueId == ves.UniqueId);
+                        AddOrFocusExtensionControl(ext, ((ViewExtensionBase)ext).ExtensionView);
+                    }
+                }
+            }
+
             this.HideOrShowRightSideBar();
 
             this.dynamoViewModel.RequestPaste += OnRequestPaste;
@@ -283,7 +297,7 @@ namespace Dynamo.Controls
 
             if (addExtensionControl)
             {
-                var settings = this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Find(s => s.UniqueId == viewExtension.UniqueId);
+                var settings = this.dynamoViewModel.PreferenceSettings.ViewExtensionSettingsList.Find(s => s.UniqueId == viewExtension.UniqueId);
                 // Create default settings if they do not currently exist
                 if (settings == null)
                 {
@@ -291,9 +305,10 @@ namespace Dynamo.Controls
                     {
                         Name = viewExtension.Name,
                         UniqueId = viewExtension.UniqueId,
-                        DisplayMode = ViewExtensionDisplayMode.DockRight
+                        DisplayMode = ViewExtensionDisplayMode.DockRight,
+                        IsOpen = true
                     };
-                    this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Add(settings);
+                    this.dynamoViewModel.PreferenceSettings.ViewExtensionSettingsList.Add(settings);
                 }
 
                 if (settings.DisplayMode == ViewExtensionDisplayMode.FloatingWindow)
@@ -385,7 +400,7 @@ namespace Dynamo.Controls
         private void SaveExtensionWindowSettings(ExtensionWindow window)
         {
             var extension = window.Tag as IViewExtension;
-            var settings = this.dynamoViewModel.Model.PreferenceSettings.ViewExtensionSettings.Find(ext => ext.UniqueId == extension.UniqueId);
+            var settings = this.dynamoViewModel.Model.PreferenceSettings.ViewExtensionSettingsList.Find(ext => ext.UniqueId == extension.UniqueId);
             if (settings != null)
             {
                 if (settings.WindowSettings == null)
@@ -532,7 +547,7 @@ namespace Dynamo.Controls
             var content = tabItem.Content as UIElement;
             CloseExtensionTab(tabItem);
             var extension = tabItem.Tag as IViewExtension;
-            var settings = this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Find(s => s.UniqueId == extension.UniqueId);
+            var settings = this.dynamoViewModel.PreferenceSettings.ViewExtensionSettingsList.Find(s => s.UniqueId == extension.UniqueId);
             AddExtensionWindow(extension, content, settings?.WindowSettings);
             if (settings != null)
             {
@@ -579,7 +594,7 @@ namespace Dynamo.Controls
             {
                 AddExtensionTab(extension, content);
 
-                var settings = this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Find(s => s.UniqueId == extension.UniqueId);
+                var settings = this.dynamoViewModel.PreferenceSettings.ViewExtensionSettingsList.Find(s => s.UniqueId == extension.UniqueId);
                 if (settings != null)
                 {
                     settings.DisplayMode = ViewExtensionDisplayMode.DockRight;

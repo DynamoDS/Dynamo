@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo.Logging;
@@ -32,6 +32,9 @@ namespace Dynamo.GraphNodeManager
         /// Extension Name
         /// </summary>
         public override string Name => Properties.Resources.ExtensionName;
+
+        public override UserControl ExtensionView => this.ManagerView;
+
         #endregion
 
         #region Add/Remove Extension 

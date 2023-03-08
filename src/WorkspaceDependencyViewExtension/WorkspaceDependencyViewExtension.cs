@@ -1,6 +1,3 @@
-using System;
-using System.Linq;
-using System.Windows.Controls;
 using Dynamo.Core;
 using Dynamo.Extensions;
 using Dynamo.Graph.Workspaces;
@@ -8,6 +5,9 @@ using Dynamo.Logging;
 using Dynamo.PackageManager;
 using Dynamo.WorkspaceDependency.Properties;
 using Dynamo.Wpf.Extensions;
+using System;
+using System.Linq;
+using System.Windows.Controls;
 
 namespace Dynamo.WorkspaceDependency
 {
@@ -26,6 +26,8 @@ namespace Dynamo.WorkspaceDependency
             get;
             set;
         }
+
+        public override UserControl ExtensionView => DependencyView;
 
         internal PackageManagerExtension pmExtension;
 
@@ -100,7 +102,7 @@ namespace Dynamo.WorkspaceDependency
                 {
                     // Refresh dependency data
                     DependencyView.DependencyRegen(viewLoadedParams.CurrentWorkspaceModel as WorkspaceModel, true);
-                    viewLoadedParams.AddToExtensionsSideBar(this, DependencyView);
+                    viewLoadedParams.AddToExtensionsSideBar(this, ExtensionView);
                     workspaceReferencesMenuItem.IsChecked = true;
                 }
                 else

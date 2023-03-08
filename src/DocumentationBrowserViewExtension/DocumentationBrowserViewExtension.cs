@@ -1,28 +1,26 @@
+using Dynamo.Configuration;
+using Dynamo.DocumentationBrowser.Properties;
+using Dynamo.Graph;
+using Dynamo.Graph.Annotations;
+using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
+using Dynamo.Models;
+using Dynamo.PackageManager;
+using Dynamo.Selection;
+using Dynamo.ViewModels;
+using Dynamo.Wpf.Extensions;
+using Dynamo.Wpf.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Security.Permissions;
-using System.Web.UI.WebControls;
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Threading;
-using DesignScript.Builtin;
-using Dynamo.Configuration;
-using Dynamo.Core;
-using Dynamo.DocumentationBrowser.Properties;
-using Dynamo.Graph;
-using Dynamo.Graph.Annotations;
-using Dynamo.Graph.Workspaces;
-using Dynamo.Logging;
-using Dynamo.Selection;
-using Dynamo.Models;
 using DynamoProperties = Dynamo.Properties;
-using Dynamo.PackageManager;
-using Dynamo.ViewModels;
-using Dynamo.Wpf.Extensions;
-using Dynamo.Wpf.Interfaces;
 using MenuItem = System.Windows.Controls.MenuItem;
 
 namespace Dynamo.DocumentationBrowser
@@ -57,6 +55,8 @@ namespace Dynamo.DocumentationBrowser
         /// GUID of the extension
         /// </summary>
         public override string UniqueId => "68B45FC0-0BD1-435C-BF28-B97CB03C71C8";
+
+        public override UserControl ExtensionView => this.BrowserView;
 
         public DocumentationBrowserViewExtension()
         {

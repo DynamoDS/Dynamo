@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Controls;
 using System.Collections.Generic;
 using Dynamo.Extensions;
@@ -20,6 +20,8 @@ namespace Dynamo.GraphMetadata
         public override string UniqueId => "28992e1d-abb9-417f-8b1b-05e053bee670";
 
         public override string Name => Resources.ExtensionName;
+
+        public override UserControl ExtensionView => this.graphMetadataView;
 
         public override void Loaded(ViewLoadedParams viewLoadedParams)
         {

@@ -54,6 +54,7 @@ namespace Dynamo.Configuration
         private double defaultScaleFactor;
         private bool disableTrustWarnings = false;
         private bool isNotificationCenterEnabled;
+        private bool isEnablePersistExtensionsEnabled;
         private bool isStaticSplashScreenEnabled;
         private bool isCreatedFromValidFile = true;
         private bool isADPChecked = false;
@@ -565,6 +566,22 @@ namespace Dynamo.Configuration
             }
         }
 
+        /// <summary>
+        /// This defines if user wants to the Extensions settings to persist across sessions.
+        /// </summary>
+        public bool EnablePersistExtensions
+        {
+            get
+            {
+                return isEnablePersistExtensionsEnabled;
+            }
+            set
+            {
+                isEnablePersistExtensionsEnabled = value;
+                RaisePropertyChanged(nameof(EnablePersistExtensions));
+            }
+        }
+
 
         /// <summary>
         /// This defines if the user wants to see the static splash screen again
@@ -645,7 +662,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Settings that apply to view extensions.
         /// </summary>
-        public List<ViewExtensionSettings> ViewExtensionSettings { get; set; }
+        public List<ViewExtensionSettings> ViewExtensionSettingsList { get; set; }
 
         private bool disableBuiltinPackages;
         /// <summary>
@@ -796,7 +813,7 @@ namespace Dynamo.Configuration
             EnableNotificationCenter = true;
             isStaticSplashScreenEnabled = true;
             DefaultPythonEngine = string.Empty;
-            ViewExtensionSettings = new List<ViewExtensionSettings>();
+            ViewExtensionSettingsList = new List<ViewExtensionSettings>();
             GroupStyleItemsList = new List<GroupStyleItem>();
             ReadNotificationIds = new List<string>();
             DynamoPlayerFolderGroups = new List<DynamoPlayerFolderGroup>();

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -25,6 +25,8 @@ namespace Dynamo.LintingViewExtension
         public override string UniqueId { get { return EXTENSION_GUID; } }
 
         public override string Name => Resources.ExtensionName;
+
+        public override UserControl ExtensionView => this.linterView;
 
         public override void Startup(ViewStartupParams viewStartupParams)
         {

@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace Dynamo.Wpf.Extensions
 {
@@ -23,6 +24,11 @@ namespace Dynamo.Wpf.Extensions
         /// A name for the extension instance.  This is used for more user-readable logging.
         /// </summary>
         public abstract string Name { get; }
+
+        /// <summary>
+        /// View for the extension. This will contain the ViewExtension view, and will be null for normal extensions.
+        /// </summary>
+        public abstract UserControl ExtensionView { get; }
 
         /// <summary>
         /// Dispose method for the view extension.

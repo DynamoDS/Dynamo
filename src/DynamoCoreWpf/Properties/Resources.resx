@@ -3484,4 +3484,11 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="DynamoViewSettingLibraryZoomScale" xml:space="preserve">
     <value>Library</value>
   </data>
+  <data name="PreferencesViewEnablePersistExtensions" xml:space="preserve">
+    <value>On launch, remember open extensions panels from last session</value>
+  </data>
+  <data name="PreferencesViewExtensions" xml:space="preserve">
+    <value>Extensions</value>
+    <comment>Preferences | Features | Extensions</comment>
+  </data>
 </root>

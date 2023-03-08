@@ -1,4 +1,5 @@
-﻿using System.Linq;
+using System.Linq;
+using System.Windows.Controls;
 using Dynamo.PackageManager;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
@@ -16,6 +17,8 @@ namespace Dynamo.PackageDetails
         public override string UniqueId => "C71CA1B9-BF9F-425A-A12C-53DF56770406";
 
         public override string Name => Properties.Resources.PackageDetailsViewExtensionName;
+
+        public override UserControl ExtensionView => PackageDetailsView;
 
         public override void Startup(ViewStartupParams viewStartupParams)
         {
