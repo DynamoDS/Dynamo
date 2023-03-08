@@ -4,12 +4,10 @@ using Dynamo.Configuration;
 using Dynamo.Models;
 using NUnit.Framework;
 using System.Linq;
-using System.Xml;
 using System;
 using Dynamo.Interfaces;
 using System.Reflection;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
 
 namespace Dynamo.Tests.Configuration
 {
@@ -415,30 +413,6 @@ namespace Dynamo.Tests.Configuration
             // checking if the default Setting instance has the same property values of the new one
             var checkEquality = comparePrefenceSettings(defaultSettings, newSettings);
             Assert.IsTrue(checkEquality.SamePropertyValues.Count == checkEquality.Properties.Count);
-        }
-
-        /// <summary>
-        /// Checks that we are serializing and deserializing the PreferenceSettings.DefaultScaleFactor in DynamoSettings.xml correctly
-        /// </summary>
-        [Test]
-        [Category("UnitTests")]
-        public void TestImportDefaultScaleFactor()
-        {
-            string settingDirectory = Path.Combine(TestDirectory, "settings");
-            string newSettingslFilePath = Path.Combine(settingDirectory, "DynamoSettings-NewSettings.xml");
-
-            var defaultSettings = new PreferenceSettings();
-            defaultSettings.DefaultScaleFactor = GeometryScalingOptions.ConvertUIToScaleFactor((int)GeometryScaleSize.ExtraLarge);
-
-            //Save in the DynamoSettings.xml the DefaultScaleFactor = 4 
-            defaultSettings.Save(newSettingslFilePath);
-
-            //Reload the saved settings file
-            var updatedSettings = PreferenceSettings.Load(newSettingslFilePath);
-            int UIIndex = GeometryScalingOptions.ConvertScaleFactorToUI((int)updatedSettings.DefaultScaleFactor);
-
-            //Validates that the content of DefaultScaleFactor match with ExtraLarge (4)
-            Assert.IsTrue(UIIndex == (int)GeometryScaleSize.ExtraLarge);
         }
 
         [Test]

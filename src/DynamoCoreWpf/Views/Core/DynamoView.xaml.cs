@@ -232,6 +232,7 @@ namespace Dynamo.Controls
             this.dynamoViewModel.RequestReturnFocusToView += OnRequestReturnFocusToView;
             this.dynamoViewModel.Model.WorkspaceSaving += OnWorkspaceSaving;
             this.dynamoViewModel.Model.WorkspaceOpened += OnWorkspaceOpened;
+            this.dynamoViewModel.RequestEnableShortcutBarItems += DynamoViewModel_RequestEnableShortcutBarItems;
             FocusableGrid.InputBindings.Clear();
 
             if (fileTrustWarningPopup == null)
@@ -244,15 +245,44 @@ namespace Dynamo.Controls
             }
         }
 
+        private void DynamoViewModel_RequestEnableShortcutBarItems(bool enable)
+        {
+            saveThisButton.IsEnabled = enable;
+            saveButton.IsEnabled = enable;
+            exportMenu.IsEnabled = enable;
+            
+            shortcutBar.IsNewButtonEnabled = enable;
+            shortcutBar.IsOpenButtonEnabled = enable;
+            shortcutBar.IsSaveButtonEnabled = enable;
+            shortcutBar.IsLoginMenuEnabled = enable;
+            shortcutBar.IsExportMenuEnabled  = enable;
+            shortcutBar.IsNotificationCenterEnabled = enable;
+
+            if(dynamoViewModel.ShowStartPage)
+            {
+                shortcutBar.IsNewButtonEnabled = true;
+                shortcutBar.IsOpenButtonEnabled = true;
+                shortcutBar.IsLoginMenuEnabled = true;
+                shortcutBar.IsNotificationCenterEnabled = true;
+            }
+        }
+
         private void OnWorkspaceOpened(WorkspaceModel workspace)
         {
-            if (!(workspace is HomeWorkspaceModel hws))
-                return;
+            saveThisButton.IsEnabled = true;
+            saveButton.IsEnabled = true;
+            exportMenu.IsEnabled = true;
 
+            ShortcutBar.IsSaveButtonEnabled = true;
+            shortcutBar.IsExportMenuEnabled = true;
+
+            if (!(workspace is HomeWorkspaceModel hws))
+            return;
+            
             foreach (var extension in viewExtensionManager.StorageAccessViewExtensions)
             {
                 DynamoModel.RaiseIExtensionStorageAccessWorkspaceOpened(hws, extension, dynamoViewModel.Model.Logger);
-            }
+            }            
         }
 
         private void OnWorkspaceSaving(WorkspaceModel workspace, Graph.SaveContext saveContext)
@@ -814,7 +844,8 @@ namespace Dynamo.Controls
                 ShortcutCommandParameter = null,
                 ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/new_normal.png",
                 ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/new_disabled.png",
-                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/new_normal.png"
+                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/new_normal.png",
+                Name = "New"
             };
 
             var openScriptButton = new ShortcutBarItem
@@ -824,7 +855,8 @@ namespace Dynamo.Controls
                 ShortcutCommandParameter = null,
                 ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/open_normal.png",
                 ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/open_disabled.png",
-                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/open_normal.png"
+                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/open_normal.png",
+                Name = "Open"
             };
 
             var saveButton = new ShortcutBarItem
@@ -834,7 +866,8 @@ namespace Dynamo.Controls
                 ShortcutCommandParameter = null,
                 ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/save_normal.png",
                 ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/save_disabled.png",
-                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/save_normal.png"
+                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/save_normal.png",
+                Name = "Save"
             };
 
             var undoButton = new ShortcutBarItem
@@ -844,7 +877,8 @@ namespace Dynamo.Controls
                 ShortcutCommandParameter = null,
                 ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/undo_normal.png",
                 ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/undo_disabled.png",
-                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/undo_normal.png"
+                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/undo_normal.png",
+                Name = "Undo"
             };
 
             var redoButton = new ShortcutBarItem
@@ -854,7 +888,8 @@ namespace Dynamo.Controls
                 ShortcutCommandParameter = null,
                 ImgNormalSource = "/DynamoCoreWpf;component/UI/Images/redo_normal.png",
                 ImgDisabledSource = "/DynamoCoreWpf;component/UI/Images/redo_disabled.png",
-                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/redo_normal.png"
+                ImgHoverSource = "/DynamoCoreWpf;component/UI/Images/redo_normal.png",
+                Name = "Redo"
             };
 
             shortcutBar.ShortcutBarItems.Add(newScriptButton);
@@ -862,7 +897,7 @@ namespace Dynamo.Controls
             shortcutBar.ShortcutBarItems.Add(saveButton);
             shortcutBar.ShortcutBarItems.Add(undoButton);
             shortcutBar.ShortcutBarItems.Add(redoButton);
-
+            
             shortcutBarGrid.Children.Add(shortcutBar);
         }
 
@@ -1056,7 +1091,7 @@ namespace Dynamo.Controls
             else
             {
                 DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved += CheckTestFlags;
-            }
+            }            
         }
 
         private void GuideFlowEvents_GuidedTourStart(GuidedTourStateEventArgs args)
@@ -1654,6 +1689,8 @@ namespace Dynamo.Controls
             this.dynamoViewModel.Model.WorkspaceSaving -= OnWorkspaceSaving;
             this.dynamoViewModel.Model.WorkspaceOpened -= OnWorkspaceOpened;
             DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved -= CheckTestFlags;
+
+            this.dynamoViewModel.RequestEnableShortcutBarItems -= DynamoViewModel_RequestEnableShortcutBarItems;
 
             this.Dispose();
             sharedViewExtensionLoadedParams?.Dispose();
@@ -2469,8 +2506,9 @@ namespace Dynamo.Controls
         {
             //We pass the root UIElement to the GuidesManager so we can found other child UIElements
             try
-            {
+            {                
                 dynamoViewModel.MainGuideManager.LaunchTour(GuidesManager.GetStartedGuideName);
+                dynamoViewModel.OnEnableShortcutBarItems(false);
             }
             catch (Exception)
             {

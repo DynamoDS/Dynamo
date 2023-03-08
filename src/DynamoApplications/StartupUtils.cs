@@ -38,7 +38,7 @@ namespace Dynamo.Applications
         [Option('x', "ConvertFile", Required = false, HelpText = "When used in combination with the 'O' flag, opens a .dyn file from the specified path and converts it to .json." +
             "File will have the .json extension and be located in the same directory as the original file.")]
         public bool ConvertFile { get; set; }
-        [Option('g', "Geometry", Required = false, HelpText = "Instruct Dynamo to output geometry from all evaluations to a json file at this path.")]
+        [Option( "Geometry", Required = false, HelpText = "Instruct Dynamo to output geometry from all evaluations to a json file at this path.")]
         public string GeometryFilePath { get; set; } = String.Empty;
         [Option('i', "Import", Required = false, HelpText = "Instruct Dynamo to import an assembly as a node library.This argument should be a filepath to a single.dll" +
             " - if you wish to import multiple dlls - list the dlls separated by a space: -i 'assembly1.dll' 'assembly2.dll'")]
@@ -223,10 +223,9 @@ namespace Dynamo.Applications
                 .Add("hn=|HN=|hostname", "Identify Dynamo variation associated with host", hn => hostname = hn)
                 .Add("si=|SI=|sessionId", "Identify Dynamo host analytics session id", si => sessionId = si)
                 .Add("pi=|PI=|parentId", "Identify Dynamo host analytics parent id", pi => parentId = pi)
-                .Add("da|DA|disableAnalytics", "Disables analytics in Dynamo for the process liftime", da => disableAnalytics = da != null)
+                .Add("da|DA|disableAnalytics|DisableAnalytics", "Disables analytics in Dynamo for the process liftime", da => disableAnalytics = da != null)
                 .Add("cr=|CR=|cerLocation", "Specify the crash error report tool location on disk ", cr => cerLocation = cr)
                 .Add("s|S|service mode", "Service mode, bypasses certain Dynamo launch steps for maximum startup performance", s => serviceMode = s != null);
-
                 optionsSet.Parse(args);
 
                 if (showHelp)

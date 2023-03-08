@@ -3487,4 +3487,22 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="PythonZoomScaleTooltipText" xml:space="preserve">
     <value>Drag to adjust Python Editor zoom scale between 10% and 100%. You can also adjust this in Python Editor by pressing Shift and scrolling the mouse wheel.</value>
   </data>
+  <data name="CustomColorPickerApplyBtn" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="CustomColorPickerBasicColors" xml:space="preserve">
+    <value>Basic colors:</value>
+  </data>
+  <data name="CustomColorPickerCancelBtn" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="CustomColorPickerCustomColorBtn" xml:space="preserve">
+    <value>Define Custom Colors</value>
+  </data>
+  <data name="CustomColorPickerCustomColors" xml:space="preserve">
+    <value>Custom colors:</value>
+  </data>
+  <data name="CustomColorPickerTitle" xml:space="preserve">
+    <value>Color</value>
+  </data>
 </root>

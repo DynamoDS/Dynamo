@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Autodesk.Analytics.Core;
 using Autodesk.Analytics.Events;
 using Dynamo.Configuration;
@@ -136,7 +136,7 @@ namespace Dynamo.Tests
             var client = new Mock<DynamoAnalyticsClient>(CurrentDynamoModel) { CallBase = true };
             var session = MockAnalyticsSession();
             client.Setup(c => c.Session).Returns(session);
-            return Mock.Get<IAnalyticsClient>(client.Object);
+            return client.As<IAnalyticsClient>();
         }
 
         private IAnalyticsSession MockAnalyticsSession()

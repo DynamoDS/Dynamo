@@ -215,7 +215,6 @@
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
 
                                 <!--The first Grid Row will contain the Language label and combobox added in a StackPanel vertical-->
@@ -236,58 +235,6 @@
                                               IsEnabled="False">
                                         </ComboBox>
                                     </StackPanel>
-                                </Grid>
-
-                                <!--This Grid contains controls for selecting Run Settings options-->
-                                <Grid Grid.Row="1"
-                                  Margin="4,0,0,20">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="*" />
-                                    </Grid.RowDefinitions>
-                                    <WrapPanel Grid.Row="0">
-                                        <Label 
-                                           Margin="-3,0,10,0"
-                                           FontWeight="Bold"
-                                           Content="{x:Static p:Resources.PreferencesViewRunSettingsLabel}" 
-                                           Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                        <Label HorizontalAlignment="Left"
-                                                   Name="RunSettingsInfoLabel"
-                                                   VerticalAlignment="Center" 
-                                                   Height="26" 
-                                                   Width="53"
-                                                   Margin="0 3 0 0">
-                                            <Image
-                                               Margin="-5,0,0,0"
-                                               Width="14"
-                                               Height="14"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               Style="{StaticResource QuestionIcon}"
-                                               ToolTipService.ShowDuration="30000">
-                                                <Image.ToolTip>
-                                                    <ToolTip Content="{x:Static p:Resources.PreferencesViewDefaultRunSettingsInfoTooltip}" Style="{StaticResource GenericToolTipLight}"/>
-                                                </Image.ToolTip>
-                                            </Image>                                            
-                                        </Label>
-                                    </WrapPanel>
-                                    <Grid Grid.Row="1">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <RadioButton Grid.Column="0" 
-                                                 MinWidth="80"
-                                                 Margin="2,0,0,0"
-                                                 Style="{StaticResource RunSettingsRadioButtons}"
-                                                 IsChecked="{Binding Path=RunSettingsIsChecked, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=True}"
-                                                 Content="{x:Static p:Resources.Manual}"/>
-                                        <RadioButton Grid.Column="1" 
-                                                 MinWidth="80"
-                                                 Style="{StaticResource RunSettingsRadioButtons}"
-                                                 IsChecked="{Binding Path=RunSettingsIsChecked, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=False}"
-                                                 Content="{x:Static p:Resources.Automatic}"/>
-                                    </Grid>
                                 </Grid>
 
                                 <!--This Grid contains controls for selecting Run Preview options-->
@@ -316,7 +263,7 @@
                                 </Grid>
 
                                 <!--This Grid contains controls for selecting Static Splash Screen Display options-->
-                                <Grid Grid.Row="3"
+                                <Grid Grid.Row="1"
                                   Margin="4,0,0,20">
                                     <Grid>
                                         <Grid.ToolTip>
@@ -341,33 +288,62 @@
                                 </Grid>
 
                                 <!--This Grid contains controls for selecting Font Size and Number Format options -->
-                                <Grid Grid.Row="4" Margin="4,0,0,20">
+                                <Grid Grid.Row="3" Margin="4,0,0,20">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <!--Controls for Font Size-->
-                                    <Grid Grid.Column="0">
+                                    <!--This Grid contains controls for selecting Run Settings options-->
+                                    <Grid Grid.Row="0" Margin="4,0,0,0">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="Auto" />
                                         </Grid.RowDefinitions>
-                                        <Label Name="FontSize"
-                                               Grid.Row="0"
-                                               Margin="-3,0,10,0"
-                                               FontWeight="Bold"
-                                               Content="{x:Static p:Resources.PreferencesViewFontSizeLabel}" 
-                                               Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                        <ComboBox Grid.Row="1"
-                                                  HorizontalAlignment="Left"
-                                                  Margin="2,0,0,0"
-                                                  ItemsSource="{Binding FontSizeList}"
-                                                  SelectedItem="{Binding Path=SelectedFontSize}"
-                                                  Style="{StaticResource NoBordersComboBoxStyle}"
-                                                  IsEnabled="False">
-                                        </ComboBox>
+                                        <WrapPanel Grid.Row="0">
+                                            <Label 
+                                           Margin="-3,0,10,0"
+                                           FontWeight="Bold"
+                                           Content="{x:Static p:Resources.PreferencesViewRunSettingsLabel}" 
+                                           Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                            <Label HorizontalAlignment="Left"
+                                                   Name="RunSettingsInfoLabel"
+                                                   VerticalAlignment="Center" 
+                                                   Height="26" 
+                                                   Width="53"
+                                                   Margin="0 3 0 0">
+                                                <Image
+                                               Margin="-5,0,0,0"
+                                               Width="14"
+                                               Height="14"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Style="{StaticResource QuestionIcon}"
+                                               ToolTipService.ShowDuration="30000">
+                                                    <Image.ToolTip>
+                                                        <ToolTip Content="{x:Static p:Resources.PreferencesViewDefaultRunSettingsInfoTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                                    </Image.ToolTip>
+                                                </Image>
+                                            </Label>
+                                        </WrapPanel>
+                                        <Grid Grid.Row="1">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <RadioButton Grid.Column="0" 
+                                                 MinWidth="80"
+                                                 Margin="2,0,0,0"
+                                                 Style="{StaticResource RunSettingsRadioButtons}"
+                                                 IsChecked="{Binding Path=RunSettingsIsChecked, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=True}"
+                                                 Content="{x:Static p:Resources.Manual}"/>
+                                            <RadioButton Grid.Column="1" 
+                                                 MinWidth="80"
+                                                 Style="{StaticResource RunSettingsRadioButtons}"
+                                                 IsChecked="{Binding Path=RunSettingsIsChecked, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=False}"
+                                                 Content="{x:Static p:Resources.Automatic}"/>
+                                        </Grid>
                                     </Grid>
-                                    
+
                                     <!-- Controls for Number Format options-->
                                     <Grid Grid.Column="1">
                                         <Grid.RowDefinitions>
@@ -391,7 +367,7 @@
                                 </Grid>
 
                                 <!--This Grid contains controls for backup files time interval and maximum number of recent files-->
-                                <Grid Grid.Row="5" Margin="4,0,0,20">
+                                <Grid Grid.Row="4" Margin="4,0,0,20">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="*" />
@@ -470,7 +446,7 @@
                                 </Grid>
 
                                 <!--Geometry Scaling Expander-->
-                                <Grid Grid.Row="6"
+                                <Grid Grid.Row="5"
                                   Margin="-3,0,1,20">
                                     <Expander x:Name="Scale"
                                       Grid.Row="1" 
