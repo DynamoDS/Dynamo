@@ -6981,6 +6981,51 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 0%.
+        /// </summary>
+        public static string PreferencesViewZoomScaling0Percent {
+            get {
+                return ResourceManager.GetString("PreferencesViewZoomScaling0Percent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 100%.
+        /// </summary>
+        public static string PreferencesViewZoomScaling100Percent {
+            get {
+                return ResourceManager.GetString("PreferencesViewZoomScaling100Percent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 10%.
+        /// </summary>
+        public static string PreferencesViewZoomScaling10Percent {
+            get {
+                return ResourceManager.GetString("PreferencesViewZoomScaling10Percent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 25%.
+        /// </summary>
+        public static string PreferencesViewZoomScaling25Percent {
+            get {
+                return ResourceManager.GetString("PreferencesViewZoomScaling25Percent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 300%.
+        /// </summary>
+        public static string PreferencesViewZoomScaling300Percent {
+            get {
+                return ResourceManager.GetString("PreferencesViewZoomScaling300Percent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Zoom Scaling.
         /// </summary>
         public static string PreferencesViewZoomScalingSettings {

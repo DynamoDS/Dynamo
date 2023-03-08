@@ -815,7 +815,7 @@
                                                     </Image>
                                                 </StackPanel>
                                                 <StackPanel Margin="-10,5,0,0" Orientation="Horizontal" Grid.Row="2">
-                                                    <Label Content="0%"
+                                                    <Label Content="{x:Static p:Resources.PreferencesViewZoomScaling0Percent}"
                                                         Name="lblConfidenceLevelLabelStart"
                                                         VerticalAlignment="Center"
                                                         Foreground="{StaticResource PreferencesWindowFontColor}"
@@ -827,7 +827,7 @@
                                                         IsEnabled="{Binding Path=EnableConfidenceLevelSlider}"
                                                         ValueChanged="sliderConfidenceLevel_ValueChanged">
                                                     </Slider>
-                                                    <Label Content="100%" 
+                                                    <Label Content="{x:Static p:Resources.PreferencesViewZoomScaling100Percent}" 
                                                         Margin="0,-5,0,0"
                                                         VerticalAlignment="Center"
                                                         Foreground="{StaticResource PreferencesWindowFontColor}"
@@ -1278,7 +1278,7 @@
                                     </StackPanel>
 
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="1" Margin="0,0,0,3">
-                                        <TextBlock Text="25%"></TextBlock>
+                                            <TextBlock Text="{x:Static p:Resources.PreferencesViewZoomScaling25Percent}"></TextBlock>
 
                                             <Slider
                                             x:Name="LibraryZoomScalingSlider"
@@ -1291,7 +1291,7 @@
                                             TickFrequency="1"
                                             Maximum="300">
                                             </Slider>
-                                            <TextBlock Text="300%"></TextBlock>
+                                            <TextBlock Text="{x:Static p:Resources.PreferencesViewZoomScaling300Percent}"></TextBlock>
 
                                         </StackPanel>
                                         <StackPanel Grid.Row="2" Width="550">
@@ -1340,7 +1340,7 @@
                                             </Label>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="1" Margin="0,0,0,3">
-                                            <TextBlock Text="10%"></TextBlock>
+                                            <TextBlock Text="{x:Static p:Resources.PreferencesViewZoomScaling10Percent}"></TextBlock>
                                             <Slider
                                             x:Name="PythonZoomScalingSlider"
                                             Style="{StaticResource SliderStyle}"
@@ -1352,7 +1352,7 @@
                                             TickFrequency="1"
                                             Maximum="100">
                                             </Slider>
-                                            <TextBlock Text="100%"></TextBlock>
+                                            <TextBlock Text="{x:Static p:Resources.PreferencesViewZoomScaling100Percent}"></TextBlock>
 
                                         </StackPanel>
                                         <StackPanel Grid.Row="2" Width="550">

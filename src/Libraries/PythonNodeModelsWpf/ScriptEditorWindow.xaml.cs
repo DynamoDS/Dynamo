@@ -26,25 +26,27 @@ namespace PythonNodeModelsWpf
     /// </summary>
     public partial class ScriptEditorWindow : ModelessChildWindow
     {
+        #region Private properties
         private string propertyName = string.Empty;
         private Guid boundNodeId = Guid.Empty;
         private Guid boundWorkspaceId = Guid.Empty;
         private CompletionWindow completionWindow = null;
         private readonly SharedCompletionProvider completionProvider;
         private readonly DynamoViewModel dynamoViewModel;
-        public PythonNode nodeModel { get; set; }
+        private PythonNode nodeModel { get; set; }
         private bool nodeWasModified = false;
         private string originalScript;
-        private int zoomScalePreviousValue;
+        private int zoomScaleCacheValue;
 
-        private double fontSizePreferencesSliderProportionValue;
-        
+        private readonly double fontSizePreferencesSliderProportionValue = (FONT_MAX_SIZE - FONT_MIN_SIZE) / (pythonZoomScalingSliderMaximum - pythonZoomScalingSliderMinimum);
+
         // Reasonable max and min font size values for zooming limits
         private const double FONT_MAX_SIZE = 60d;
         private const double FONT_MIN_SIZE = 5d;
 
         private const double pythonZoomScalingSliderMaximum = 100d;
         private const double pythonZoomScalingSliderMinimum = 10d;
+        #endregion
 
         public string CachedEngine { get; set; }
 
@@ -60,10 +62,10 @@ namespace PythonNodeModelsWpf
             DynamoViewModel dynamoViewModel,
             PythonNode nodeModel,
             NodeView nodeView,
-            ref ModelessChildWindow.WindowRect windowRect
+            ref WindowRect windowRect
             ) : base(nodeView, ref windowRect)
         {
-            this.Closed += OnScriptEditorWindowClosed;
+            Closed += OnScriptEditorWindowClosed;
             this.dynamoViewModel = dynamoViewModel;
             this.nodeModel = nodeModel;
 
@@ -72,39 +74,22 @@ namespace PythonNodeModelsWpf
             nodeModel.CodeMigrated += OnNodeModelCodeMigrated;
 
             InitializeComponent();
-            SetFontSize();
-            this.DataContext = this;
+            DataContext = this;
 
             EngineSelectorComboBox.Visibility = Visibility.Visible;
 
-
             Analytics.TrackScreenView("Python");
-        }
-
-        private void SetFontSize()
-        {
-            fontSizePreferencesSliderProportionValue =
-                (FONT_MAX_SIZE - FONT_MIN_SIZE) /
-                (pythonZoomScalingSliderMaximum - pythonZoomScalingSliderMinimum);
-
-            var percentage = dynamoViewModel.PreferenceSettings.PythonScriptZoomScale;
-
-            double currentFontSize = percentage * fontSizePreferencesSliderProportionValue;
-
-            zoomScalePreviousValue = percentage;
-
-            editText.FontSize = currentFontSize;
         }
 
         private void PythonZoomScalingSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             var slider = (Slider)sender;
 
-            bool shouldIncrease = slider.Value > zoomScalePreviousValue;
+            bool shouldIncrease = slider.Value > zoomScaleCacheValue;
 
-            double deltaValue = fontSizePreferencesSliderProportionValue * Math.Abs(slider.Value - zoomScalePreviousValue);
+            double deltaValue = fontSizePreferencesSliderProportionValue * Math.Abs(slider.Value - zoomScaleCacheValue);
             UpdateFontSize(shouldIncrease, deltaValue);
-            zoomScalePreviousValue = (int)slider.Value;
+            zoomScaleCacheValue = (int)slider.Value;
             dynamoViewModel.PreferenceSettings.PythonScriptZoomScale = (int)slider.Value;
         }
 
@@ -124,6 +109,9 @@ namespace PythonNodeModelsWpf
             // Set options to reflect global settings when python script editor in initialized for the first time.
             editText.Options.ShowSpaces = dynamoViewModel.ShowTabsAndSpacesInScriptEditor;
             editText.Options.ShowTabs = dynamoViewModel.ShowTabsAndSpacesInScriptEditor;
+
+            // Set font size in editor and cache it
+            editText.FontSize = dynamoViewModel.PreferenceSettings.PythonScriptZoomScale * fontSizePreferencesSliderProportionValue;
 
             const string highlighting = "ICSharpCode.PythonBinding.Resources.Python.xshd";
             var elem = GetType().Assembly.GetManifestResourceStream(
@@ -172,17 +160,17 @@ namespace PythonNodeModelsWpf
             }
 
             int percentage = Convert.ToInt32( editText.FontSize / fontSizePreferencesSliderProportionValue );
-            
+            zoomScaleCacheValue = percentage;
             dynamoViewModel.PreferenceSettings.PythonScriptZoomScale = percentage;
-            zoomScalePreviousValue = percentage;
         }
 
         /// <summary>
-        /// Function to increases/decreases font size in avalon editor by a specific increment
+        /// Function to increases/decreases font size in Avalon editor by a specific increment
         /// </summary>
         /// <param name="increase"></param>
         private void UpdateFontSize(bool increase, double delta = 1.0)
         {
+            if (delta == 0) return;
             double currentSize = editText.FontSize;
 
             if (increase)

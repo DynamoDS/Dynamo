@@ -3505,4 +3505,19 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="CustomColorPickerTitle" xml:space="preserve">
     <value>Color</value>
   </data>
+  <data name="PreferencesViewZoomScaling0Percent" xml:space="preserve">
+    <value>0%</value>
+  </data>
+  <data name="PreferencesViewZoomScaling100Percent" xml:space="preserve">
+    <value>100%</value>
+  </data>
+  <data name="PreferencesViewZoomScaling10Percent" xml:space="preserve">
+    <value>10%</value>
+  </data>
+  <data name="PreferencesViewZoomScaling25Percent" xml:space="preserve">
+    <value>25%</value>
+  </data>
+  <data name="PreferencesViewZoomScaling300Percent" xml:space="preserve">
+    <value>300%</value>
+  </data>
 </root>
