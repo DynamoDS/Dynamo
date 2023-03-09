@@ -3,6 +3,7 @@
   <IsFirstRun>false</IsFirstRun>
   <IsAnalyticsReportingApproved>false</IsAnalyticsReportingApproved>
   <LibraryWidth>300</LibraryWidth>
+  <Locale>zh-CN</Locale>
   <ConsoleHeight>123</ConsoleHeight>
   <ShowPreviewBubbles>false</ShowPreviewBubbles>
   <ShowCodeBlockLineNumber>false</ShowCodeBlockLineNumber>
