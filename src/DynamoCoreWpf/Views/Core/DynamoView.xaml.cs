@@ -103,8 +103,6 @@ namespace Dynamo.Controls
             get { return preferencesWindow; }
         }
 
-        internal event Action OnPreferencesWindowChanged;
-
         /// <summary>
         /// Constructor
         /// </summary>
@@ -1913,7 +1911,7 @@ namespace Dynamo.Controls
         private void OnPreferencesWindowClick(object sender, RoutedEventArgs e)
         {
             preferencesWindow = new PreferencesView(this);
-            OnPreferencesWindowChanged();
+            dynamoViewModel.OnPreferencesWindowChanged(preferencesWindow);
             preferencesWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             preferencesWindow.ShowDialog();
         }

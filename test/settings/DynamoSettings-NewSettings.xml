@@ -10,6 +10,7 @@
   <ShowConnector>false</ShowConnector>
   <ShowConnectorToolTip>false</ShowConnectorToolTip>
   <LibraryZoomScale>200</LibraryZoomScale>
+  <PythonScriptZoomScale>25</PythonScriptZoomScale>
   <ConnectorType>POLYLINE</ConnectorType>
   <BackgroundPreviews>
     <BackgroundPreviewActiveState>

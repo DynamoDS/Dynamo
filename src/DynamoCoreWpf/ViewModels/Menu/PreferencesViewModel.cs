@@ -1195,7 +1195,7 @@ namespace Dynamo.ViewModels
 
         public DelegateCommand AddPythonPathCommand { get; private set; }
         public DelegateCommand DeletePythonPathCommand { get; private set; }
-        public DelegateCommand UpdatePythonPathCommand { get; private set; }
+        public DelegateCommand UpdatePythonPathCommand { get; private set; }        
 
         private void InitializeCommands()
         {
