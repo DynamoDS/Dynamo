@@ -16,6 +16,8 @@ using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using PythonNodeModels;
 using System.Linq;
 using Dynamo.PythonServices;
+using Dynamo.Utilities;
+using System.Windows.Controls;
 
 namespace PythonNodeModelsWpf
 {
@@ -24,20 +26,36 @@ namespace PythonNodeModelsWpf
     /// </summary>
     public partial class ScriptEditorWindow : ModelessChildWindow
     {
+        #region Private properties
         private string propertyName = string.Empty;
         private Guid boundNodeId = Guid.Empty;
         private Guid boundWorkspaceId = Guid.Empty;
         private CompletionWindow completionWindow = null;
         private readonly SharedCompletionProvider completionProvider;
         private readonly DynamoViewModel dynamoViewModel;
-        public PythonNode nodeModel { get; set; }
         private bool nodeWasModified = false;
         private string originalScript;
+        private int zoomScaleCacheValue;
+
+        private readonly double fontSizePreferencesSliderProportionValue = (FONT_MAX_SIZE - FONT_MIN_SIZE) / (pythonZoomScalingSliderMaximum - pythonZoomScalingSliderMinimum);
 
         // Reasonable max and min font size values for zooming limits
         private const double FONT_MAX_SIZE = 60d;
         private const double FONT_MIN_SIZE = 5d;
 
+        private const double pythonZoomScalingSliderMaximum = 100d;
+        private const double pythonZoomScalingSliderMinimum = 10d;
+        #endregion
+
+        #region Public properties
+        /// <summary>
+        /// Python node model
+        /// </summary>
+        public PythonNode NodeModel { get; set; }
+
+        /// <summary>
+        /// Cached Python Engine value
+        /// </summary>
         public string CachedEngine { get; set; }
 
         /// <summary>
@@ -47,28 +65,41 @@ namespace PythonNodeModelsWpf
         {
             get; private set;
         }
+        #endregion
 
         public ScriptEditorWindow(
             DynamoViewModel dynamoViewModel,
             PythonNode nodeModel,
             NodeView nodeView,
-            ref ModelessChildWindow.WindowRect windowRect
+            ref WindowRect windowRect
             ) : base(nodeView, ref windowRect)
         {
-            this.Closed += OnScriptEditorWindowClosed;
+            Closed += OnScriptEditorWindowClosed;
             this.dynamoViewModel = dynamoViewModel;
-            this.nodeModel = nodeModel;
+            this.NodeModel = nodeModel;
 
             completionProvider = new SharedCompletionProvider(nodeModel.EngineName, dynamoViewModel.Model.PathManager.DynamoCoreDirectory);
             completionProvider.MessageLogged += dynamoViewModel.Model.Logger.Log;
             nodeModel.CodeMigrated += OnNodeModelCodeMigrated;
 
             InitializeComponent();
-            this.DataContext = this;
+            DataContext = this;
 
             EngineSelectorComboBox.Visibility = Visibility.Visible;
 
             Analytics.TrackScreenView("Python");
+        }
+
+        private void PythonZoomScalingSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            var slider = (Slider)sender;
+
+            bool shouldIncrease = slider.Value > zoomScaleCacheValue;
+
+            double deltaValue = fontSizePreferencesSliderProportionValue * Math.Abs(slider.Value - zoomScaleCacheValue);
+            UpdateFontSize(shouldIncrease, deltaValue);
+            zoomScaleCacheValue = (int)slider.Value;
+            dynamoViewModel.PreferenceSettings.PythonScriptZoomScale = (int)slider.Value;
         }
 
         internal void Initialize(Guid workspaceGuid, Guid nodeGuid, string propName, string propValue)
@@ -88,6 +119,10 @@ namespace PythonNodeModelsWpf
             editText.Options.ShowSpaces = dynamoViewModel.ShowTabsAndSpacesInScriptEditor;
             editText.Options.ShowTabs = dynamoViewModel.ShowTabsAndSpacesInScriptEditor;
 
+            // Set font size in editor and cache it
+            editText.FontSize = dynamoViewModel.PreferenceSettings.PythonScriptZoomScale * fontSizePreferencesSliderProportionValue;
+            zoomScaleCacheValue = dynamoViewModel.PreferenceSettings.PythonScriptZoomScale;
+
             const string highlighting = "ICSharpCode.PythonBinding.Resources.Python.xshd";
             var elem = GetType().Assembly.GetManifestResourceStream(
                         "PythonNodeModelsWpf.Resources." + highlighting);
@@ -97,17 +132,25 @@ namespace PythonNodeModelsWpf
 
             AvailableEngines = new ObservableCollection<string>(PythonEngineManager.Instance.AvailableEngines.Select(x => x.Name));
             // Add the serialized Python Engine even if it is missing (so that the user does not see an empty slot)
-            if (!AvailableEngines.Contains(nodeModel.EngineName))
+            if (!AvailableEngines.Contains(NodeModel.EngineName))
             {
-                AvailableEngines.Add(nodeModel.EngineName);
+                AvailableEngines.Add(NodeModel.EngineName);
             }
 
             PythonEngineManager.Instance.AvailableEngines.CollectionChanged += UpdateAvailableEngines;
 
             editText.Text = propValue;
             originalScript = propValue;
-            CachedEngine = nodeModel.EngineName;
+            CachedEngine = NodeModel.EngineName;
             EngineSelectorComboBox.SelectedItem = CachedEngine;
+
+            dynamoViewModel.PreferencesWindowChanged += DynamoViewModel_PreferencesWindowChanged;
+        }
+
+        private void DynamoViewModel_PreferencesWindowChanged(object sender, EventArgs e)
+        {
+            var preferencesView = (Dynamo.Wpf.Views.PreferencesView)sender;
+            preferencesView.PythonZoomScalingSlider.ValueChanged += PythonZoomScalingSlider_ValueChanged;
         }
 
         #region Text Zoom in Python Editor
@@ -119,27 +162,32 @@ namespace PythonNodeModelsWpf
         /// <param name="e"></param>
         private void EditorBox_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            bool ctrl = Keyboard.Modifiers == ModifierKeys.Control;
+            bool ctrl = Keyboard.Modifiers == System.Windows.Input.ModifierKeys.Control;
             if (ctrl)
             {
                 this.UpdateFontSize(e.Delta > 0);
                 e.Handled = true;
             }
+
+            int percentage = Convert.ToInt32( editText.FontSize / fontSizePreferencesSliderProportionValue );
+            zoomScaleCacheValue = percentage;
+            dynamoViewModel.PreferenceSettings.PythonScriptZoomScale = percentage;
         }
 
         /// <summary>
-        /// Function to increases/decreases font size in avalon editor by a specific increment
+        /// Function to increases/decreases font size in Avalon editor by a specific increment
         /// </summary>
         /// <param name="increase"></param>
-        private void UpdateFontSize(bool increase)
+        private void UpdateFontSize(bool increase, double delta = 1.0)
         {
+            if (delta == 0) return;
             double currentSize = editText.FontSize;
 
             if (increase)
             {
                 if (currentSize < FONT_MAX_SIZE)
                 {
-                    double newSize = Math.Min(FONT_MAX_SIZE, currentSize + 1);
+                    double newSize = Math.Min(FONT_MAX_SIZE, currentSize + delta);
                     editText.FontSize = newSize;
                 }
             }
@@ -147,7 +195,7 @@ namespace PythonNodeModelsWpf
             {
                 if (currentSize > FONT_MIN_SIZE)
                 {
-                    double newSize = Math.Max(FONT_MIN_SIZE, currentSize - 1);
+                    double newSize = Math.Max(FONT_MIN_SIZE, currentSize - delta);
                     editText.FontSize = newSize;
                 }
             }
@@ -241,7 +289,7 @@ namespace PythonNodeModelsWpf
         private void OnSaveClicked(object sender, RoutedEventArgs e)
         {
             originalScript = editText.Text;
-            nodeModel.EngineName = CachedEngine;
+            NodeModel.EngineName = CachedEngine;
             UpdateScript(editText.Text);
             Analytics.TrackEvent(
                 Dynamo.Logging.Actions.Save,
@@ -253,7 +301,7 @@ namespace PythonNodeModelsWpf
             if (nodeWasModified)
             {
                 editText.Text = originalScript;
-                CachedEngine = nodeModel.EngineName;
+                CachedEngine = NodeModel.EngineName;
                 EngineSelectorComboBox.SelectedItem = CachedEngine;
                 UpdateScript(originalScript);
             }
@@ -267,7 +315,7 @@ namespace PythonNodeModelsWpf
             dynamoViewModel.ExecuteCommand(command);
             this.Focus();
             nodeWasModified = true;
-            nodeModel.OnNodeModified();
+            NodeModel.OnNodeModified();
         }
 
         private void OnRunClicked(object sender, RoutedEventArgs e)
@@ -284,14 +332,14 @@ namespace PythonNodeModelsWpf
 
         private void OnMigrationAssistantClicked(object sender, RoutedEventArgs e)
         {
-            if (nodeModel == null)
-                throw new NullReferenceException(nameof(nodeModel));
+            if (NodeModel == null)
+                throw new NullReferenceException(nameof(NodeModel));
 
             UpdateScript(editText.Text);
             Analytics.TrackEvent(
                 Dynamo.Logging.Actions.Migration,
                 Dynamo.Logging.Categories.PythonOperations);
-            nodeModel.RequestCodeMigration(e);
+            NodeModel.RequestCodeMigration(e);
         }
 
         private void OnMoreInfoClicked(object sender, RoutedEventArgs e)
@@ -301,7 +349,7 @@ namespace PythonNodeModelsWpf
 
         private void OnEngineChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            if (CachedEngine != nodeModel.EngineName)
+            if (CachedEngine != NodeModel.EngineName)
             {
                 nodeWasModified = true;
                 // Cover what switch did user make. Only track when the new engine option is different with the previous one.
@@ -316,7 +364,7 @@ namespace PythonNodeModelsWpf
         private void OnScriptEditorWindowClosed(object sender, EventArgs e)
         {
             completionProvider?.Dispose();
-            nodeModel.CodeMigrated -= OnNodeModelCodeMigrated;
+            NodeModel.CodeMigrated -= OnNodeModelCodeMigrated;
             this.Closed -= OnScriptEditorWindowClosed;
             PythonEngineManager.Instance.AvailableEngines.CollectionChanged -= UpdateAvailableEngines;
 
