@@ -6738,6 +6738,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dynamo must be relaunched to apply the language selection..
+        /// </summary>
+        public static string PreferencesViewLanguageSwitchHelp {
+            get {
+                return ResourceManager.GetString("PreferencesViewLanguageSwitchHelp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Markdown documentation can be added to your package that will leverage the Documentation Browser to display author generated information on a per-node basis..
         /// </summary>
         public static string PreferencesViewMarkdownDirectoryTooltip {
@@ -7004,15 +7013,6 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesWindowIsolateSelectedGeoTooltip {
             get {
                 return ResourceManager.GetString("PreferencesWindowIsolateSelectedGeoTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to English,Czech,German,Spanish,French,Italian,Japanese,Korean,Polish,Portuguese,Brazilian,Russian,Chinese Simplified,Chinese Traditional.
-        /// </summary>
-        public static string PreferencesWindowLanguages {
-            get {
-                return ResourceManager.GetString("PreferencesWindowLanguages", resourceCulture);
             }
         }
         

@@ -2519,9 +2519,6 @@ Uninstall the following packages: {0}?</value>
   <data name="PreferencesViewVisualSettingsTab" xml:space="preserve">
     <value>Visual Settings</value>
   </data>
-  <data name="PreferencesWindowLanguages" xml:space="preserve">
-    <value>English,Czech,German,Spanish,French,Italian,Japanese,Korean,Polish,Portuguese,Brazilian,Russian,Chinese Simplified,Chinese Traditional</value>
-  </data>
   <data name="PreferencesViewFontSizeLabel" xml:space="preserve">
     <value>Node Font Size</value>
   </data>
@@ -3483,6 +3480,9 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   </data>
   <data name="DynamoViewSettingLibraryZoomScale" xml:space="preserve">
     <value>Library</value>
+  </data>
+  <data name="PreferencesViewLanguageSwitchHelp" xml:space="preserve">
+    <value>Dynamo must be relaunched to apply the language selection.</value>
   </data>
   <data name="CustomColorPickerApplyBtn" xml:space="preserve">
     <value>Apply</value>

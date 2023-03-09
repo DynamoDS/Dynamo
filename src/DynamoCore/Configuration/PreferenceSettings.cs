@@ -88,11 +88,11 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Default time
         /// </summary>
-        public static readonly System.DateTime DynamoDefaultTime = new System.DateTime(1977, 4, 12, 12, 12, 0, 0);
+        public static readonly DateTime DynamoDefaultTime = new DateTime(1977, 4, 12, 12, 12, 0, 0);
 
         #endregion
 
-        /// The following settings are persistent between Dynamo sessions and are user-controllable
+        // The following settings are persistent between Dynamo sessions and are user-controllable
         #region Collect Information settings
 
         /// <summary>
@@ -140,6 +140,11 @@ namespace Dynamo.Configuration
         /// The width of the library pane.
         /// </summary>
         public int LibraryWidth { get; set; }
+
+        /// <summary>
+        /// The locale of Dynamo UI, serialize locale instead of language name as ease of conversion back and forth
+        /// </summary>
+        public string Locale { get; set; }
 
         /// <summary>
         /// The height of the console display.
@@ -757,6 +762,7 @@ namespace Dynamo.Configuration
             // Default Settings
             IsFirstRun = true;
             IsAnalyticsReportingApproved = true;
+            Locale = Configurations.SupportedLocaleDic.FirstOrDefault().Value;
             LibraryWidth = 304;
             ConsoleHeight = 0;
             ShowPreviewBubbles = true;
