@@ -8,7 +8,7 @@
                          xmlns:p="clr-namespace:PythonNodeModels.Properties;assembly=PythonNodeModels"
                          xmlns:pw="clr-namespace:PythonNodeModelsWpf"
                          xmlns:sys="clr-namespace:System;assembly=mscorlib"
-                         Title="{Binding nodeModel.Name, Mode=OneWay, RelativeSource={RelativeSource Self}}"
+                         Title="{Binding NodeModel.Name, Mode=OneWay, RelativeSource={RelativeSource Self}}"
                          Height="560"
                          Width="600"
                          MinWidth="500"
