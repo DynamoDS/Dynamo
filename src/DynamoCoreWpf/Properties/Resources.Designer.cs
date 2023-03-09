@@ -6783,6 +6783,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Python Editor.
+        /// </summary>
+        public static string PreferencesViewPythonEditorLable {
+            get {
+                return ResourceManager.GetString("PreferencesViewPythonEditorLable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Requires relaunch of Dynamo.
         /// </summary>
         public static string PreferencesViewRequiresRelaunchOfDynamo {

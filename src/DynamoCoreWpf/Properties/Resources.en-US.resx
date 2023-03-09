@@ -3533,4 +3533,11 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="PreferencesViewZoomScaling300Percent" xml:space="preserve">
     <value>300%</value>
   </data>
+  <data name="PreferencesViewPythonEditorLable" xml:space="preserve">
+    <value>Python Editor</value>
+    <comment>Preferences -&gt; ZoomScalling -&gt; Python Editor</comment>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value />
+  </data>
 </root>
