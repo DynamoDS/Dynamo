@@ -8,14 +8,12 @@ using System.IO;
 using System.Linq;
 using Dynamo.Configuration;
 using Dynamo.Core;
-using Dynamo.Events;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.PythonServices;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
-using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels.Core.Converters;
 using DynamoUtilities;
 using ViewModels.Core;
@@ -24,7 +22,7 @@ using Res = Dynamo.Wpf.Properties.Resources;
 namespace Dynamo.ViewModels
 {
     /// <summary>
-    /// The next enum will contain the posible values for Scaling (Visual Settings -> Geometry Scaling section)
+    /// The next enum will contain the possible values for Scaling (Visual Settings -> Geometry Scaling section)
     /// </summary>
     public enum GeometryScaleSize
     {
@@ -34,6 +32,9 @@ namespace Dynamo.ViewModels
         ExtraLarge
     }
 
+    /// <summary>
+    /// Preferences data context
+    /// </summary>
     public class PreferencesViewModel : ViewModelBase, INotifyPropertyChanged
     {
         #region Private Properties
@@ -43,7 +44,6 @@ namespace Dynamo.ViewModels
         private string selectedPackagePathForInstall;
 
         private string selectedLanguage;
-        private string selectedFontSize;
         private string selectedNumberFormat;
         private string selectedPythonEngine;
 
@@ -161,24 +161,16 @@ namespace Dynamo.ViewModels
             }
             set
             {
-                selectedLanguage = value;
-                RaisePropertyChanged(nameof(SelectedLanguage));
-            }
-        }
-
-        /// <summary>
-        /// Controls the Selected option in Node Font Size ComboBox
-        /// </summary>
-        public string SelectedFontSize
-        {
-            get
-            {
-                return selectedFontSize;
-            }
-            set
-            {
-                selectedFontSize = value;
-                RaisePropertyChanged(nameof(SelectedFontSize));
+                if (selectedLanguage != value)
+                {
+                    selectedLanguage = value;
+                    RaisePropertyChanged(nameof(SelectedLanguage));
+                    if (Configurations.SupportedLocaleDic.TryGetValue(selectedLanguage, out string locale))
+                    {
+                        preferenceSettings.Locale = locale;
+                        dynamoViewModel.MainGuideManager?.CreateRealTimeInfoWindow(Res.PreferencesViewLanguageSwitchHelp, true);
+                    }
+                }
             }
         }
 
@@ -318,7 +310,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// LanguagesList property containt the list of all the languages listed in: https://wiki.autodesk.com/display/LOCGD/Dynamo+Languages
+        /// LanguagesList property contains the list of all the languages listed in: https://wiki.autodesk.com/display/LOCGD/Dynamo+Languages
         /// </summary>
         public ObservableCollection<string> LanguagesList
         {
@@ -442,21 +434,7 @@ namespace Dynamo.ViewModels
                 preferenceSettings.SetTrustWarningsDisabled(value);
             }
         }
-        /// <summary>
-        /// FontSizesList contains the list of sizes for fonts defined (the ones defined are Small, Medium, Large, Extra Large)
-        /// </summary>
-        public ObservableCollection<string> FontSizeList
-        {
-            get
-            {
-                return fontSizeList;
-            }
-            set
-            {
-                fontSizeList = value;
-                RaisePropertyChanged(nameof(FontSizeList));
-            }
-        }
+
         /// <summary>
         /// GroupStyleFontSizeList contains the list of sizes for defined fonts to be applied to a GroupStyle
         /// </summary>
@@ -1140,29 +1118,20 @@ namespace Dynamo.ViewModels
             var engine = PythonEnginesList.FirstOrDefault(x => x.Equals(preferenceSettings.DefaultPythonEngine));
             SelectedPythonEngine  = string.IsNullOrEmpty(engine) ? Res.DefaultPythonEngineNone : preferenceSettings.DefaultPythonEngine;
 
-            string languages = Wpf.Properties.Resources.PreferencesWindowLanguages;
-            LanguagesList = new ObservableCollection<string>(languages.Split(','));
-            SelectedLanguage = languages.Split(',').First();
-
-            FontSizeList = new ObservableCollection<string>
-            {
-                Wpf.Properties.Resources.ScalingSmallButton,
-                Wpf.Properties.Resources.ScalingMediumButton,
-                Wpf.Properties.Resources.ScalingLargeButton,
-                Wpf.Properties.Resources.ScalingExtraLargeButton
-            };
-            SelectedFontSize = Wpf.Properties.Resources.ScalingMediumButton;
+            // Fill language list using supported locale dictionary keys in current thread locale
+            LanguagesList = Configurations.SupportedLocaleDic.Keys.ToObservableCollection();
+            SelectedLanguage = Configurations.SupportedLocaleDic.FirstOrDefault(x => x.Value == preferenceSettings.Locale).Key;
 
             GroupStyleFontSizeList = preferenceSettings.PredefinedGroupStyleFontSizes;
 
             // Number format settings
             NumberFormatList = new ObservableCollection<string>
             {
-                Wpf.Properties.Resources.DynamoViewSettingMenuNumber0,
-                Wpf.Properties.Resources.DynamoViewSettingMenuNumber00,
-                Wpf.Properties.Resources.DynamoViewSettingMenuNumber000,
-                Wpf.Properties.Resources.DynamoViewSettingMenuNumber0000,
-                Wpf.Properties.Resources.DynamoViewSettingMenuNumber00000
+                Res.DynamoViewSettingMenuNumber0,
+                Res.DynamoViewSettingMenuNumber00,
+                Res.DynamoViewSettingMenuNumber000,
+                Res.DynamoViewSettingMenuNumber0000,
+                Res.DynamoViewSettingMenuNumber00000
             };
             SelectedNumberFormat = preferenceSettings.NumberFormat;
 
@@ -1391,80 +1360,77 @@ namespace Dynamo.ViewModels
             switch (e.PropertyName)
             {
                 case nameof(SelectedLanguage):
-                    // Do nothing for now
-                    break;
-                case nameof(SelectedFontSize):
-                    // Do nothing for now
-                    break;
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewLanguageLabel), System.Globalization.CultureInfo.InvariantCulture);
+                    goto default;
                 case nameof(SelectedNumberFormat):
-                    description = Resources.ResourceManager.GetString(nameof(Res.DynamoViewSettingMenuNumberFormat), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.DynamoViewSettingMenuNumberFormat), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(SelectedPackagePathForInstall):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesViewSelectedPackagePathForDownload), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewSelectedPackagePathForDownload), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(DisableBuiltInPackages):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesViewDisableBuiltInPackages), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewDisableBuiltInPackages), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(DisableCustomPackages):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesViewDisableCustomPackages), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewDisableCustomPackages), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(RunSettingsIsChecked):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesViewRunSettingsLabel), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewRunSettingsLabel), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(RunPreviewIsChecked):
-                    description = Resources.ResourceManager.GetString(nameof(Res.DynamoViewSettingShowRunPreview), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.DynamoViewSettingShowRunPreview), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(StyleItemsList):
-                    // Do nothing for now
-                    break;
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewVisualSettingsGroupStyles), System.Globalization.CultureInfo.InvariantCulture);
+                    goto default;
                 case nameof(OptionsGeometryScale):
-                    description = Resources.ResourceManager.GetString(nameof(Res.DynamoViewSettingsMenuChangeScaleFactor), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.DynamoViewSettingsMenuChangeScaleFactor), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(ShowEdges):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesViewVisualSettingShowEdges), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewVisualSettingShowEdges), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(IsolateSelectedGeometry):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesViewVisualSettingsIsolateSelectedGeo), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewVisualSettingsIsolateSelectedGeo), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(UseHardwareAcceleration):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesSettingHardwareAcceleration), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesSettingHardwareAcceleration), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(BackupIntervalInMinutes):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesSettingBackupInterval), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesSettingBackupInterval), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(MaxNumRecentFiles):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesSettingMaxRecentFiles), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesSettingMaxRecentFiles), System.Globalization.CultureInfo.InvariantCulture);
                     UpdateRecentFiles();
                     goto default;
                 case nameof(PythonTemplateFilePath):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesSettingCustomPythomTemplate), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesSettingCustomPythomTemplate), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(TessellationDivisions):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesViewVisualSettingsRenderPrecision), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewVisualSettingsRenderPrecision), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(SelectedPythonEngine):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesViewDefaultPythonEngine), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewDefaultPythonEngine), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(HideIronPythonAlertsIsChecked):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesViewIsIronPythonDialogDisabled), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewIsIronPythonDialogDisabled), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(ShowWhitespaceIsChecked):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesViewShowWhitespaceInPythonEditor), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewShowWhitespaceInPythonEditor), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(NodeAutocompleteIsChecked):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesViewEnableNodeAutoComplete), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewEnableNodeAutoComplete), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(EnableTSplineIsChecked):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesViewEnableTSplineNodes), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewEnableTSplineNodes), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(ShowPreviewBubbles):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesViewShowPreviewBubbles), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewShowPreviewBubbles), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(ShowCodeBlockLineNumber):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesViewShowCodeBlockNodeLineNumber), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewShowCodeBlockNodeLineNumber), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(DisableTrustWarnings):
-                    description = Resources.ResourceManager.GetString(nameof(Res.PreferencesViewTrustWarningHeader), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewTrustWarningHeader), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 // We track these this in two places, one in preference panel,
                 // one where user make such switch in Node AutoComplete UI

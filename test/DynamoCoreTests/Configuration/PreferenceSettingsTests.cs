@@ -20,7 +20,6 @@ namespace Dynamo.Tests.Configuration
         {
             string settingDirectory = Path.Combine(TestDirectory, "settings");
             string settingsFilePath = Path.Combine(settingDirectory, "DynamoSettings-PythonTemplate-initial.xml");
-            string initialPyFilePath = Path.Combine(settingDirectory, @"PythonTemplate-initial.py");
 
             // Assert files required for test exist
             Assert.IsTrue(File.Exists(settingsFilePath));
@@ -72,6 +71,7 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(settings.ViewExtensionSettings.Count, 0);
             Assert.AreEqual(settings.DefaultRunType, RunType.Automatic);
             Assert.AreEqual(settings.DynamoPlayerFolderGroups.Count, 0);
+            Assert.AreEqual(settings.Locale, "en-US");
 
             // Save
             settings.Save(tempPath);
@@ -91,6 +91,7 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(settings.ViewExtensionSettings.Count, 0);
             Assert.AreEqual(settings.DefaultRunType, RunType.Automatic);
             Assert.AreEqual(settings.DynamoPlayerFolderGroups.Count, 0);
+            Assert.AreEqual(settings.Locale, "en-US");
 
             // Change setting values
             settings.SetIsBackgroundPreviewActive("MyBackgroundPreview", false);
@@ -138,6 +139,7 @@ namespace Dynamo.Tests.Configuration
                     }
                 }
             });
+            settings.Locale = "zh-CN";
 
 
             // Save
@@ -175,6 +177,7 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(styleItemsList.HexColorString, "000000");
             Assert.AreEqual(settings.DynamoPlayerFolderGroups.Count, 1);
             Assert.AreEqual(settings.DynamoPlayerFolderGroups[0].Folders.Count, 1);
+            Assert.AreEqual(settings.Locale, "zh-CN");
         }
 
         [Test]
@@ -285,7 +288,7 @@ namespace Dynamo.Tests.Configuration
 
                 if (sourcePi.Name == "DynamoPlayerFolderGroups")
                 {
-                    string a = "";
+                    // Do nothing for now
                 }
 
                 if (!PropertyHasExcludedAttributes(destinationPi) && !PropertyHasStaticField(defaultSettings, destinationPi))

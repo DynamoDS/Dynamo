@@ -221,18 +221,39 @@
                                 <Grid Grid.Row="0" 
                                   Margin="4,0,0,20">
                                     <StackPanel Orientation="Vertical">
-                                        <Label  Content="{x:Static p:Resources.PreferencesViewLanguageLabel}" 
+                                        <WrapPanel Grid.Row="0">
+                                            <Label
+                                            Content="{x:Static p:Resources.PreferencesViewLanguageLabel}" 
                                             Margin="-3,0,10,0"
-                                            Grid.Row="0"
                                             FontWeight="Bold"
                                             Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                            <Label HorizontalAlignment="Left"
+                                                   Name="LanguageSettingsInfoLabel"
+                                                   VerticalAlignment="Center" 
+                                                   Height="26" 
+                                                   Width="53"
+                                                   Margin="0 3 0 0">
+                                                <Image
+                                                   Margin="-5,0,0,0"
+                                                   Width="14"
+                                                   Height="14"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   Style="{StaticResource QuestionIcon}"
+                                                   ToolTipService.ShowDuration="30000">
+                                                    <Image.ToolTip>
+                                                        <ToolTip Content="{x:Static p:Resources.PreferencesViewLanguageSwitchHelp}" Style="{StaticResource GenericToolTipLight}"/>
+                                                    </Image.ToolTip>
+                                                </Image>
+                                            </Label>
+                                        </WrapPanel>
                                         <ComboBox Grid.Row="1" 
                                               Width="213"
                                               HorizontalAlignment="Left"
                                               ItemsSource="{Binding Path=LanguagesList}"
                                               SelectedItem="{Binding Path=SelectedLanguage}"
                                               Style="{StaticResource NoBordersComboBoxStyle}"
-                                              IsEnabled="False">
+                                              IsEnabled="True">
                                         </ComboBox>
                                     </StackPanel>
                                 </Grid>
@@ -287,7 +308,7 @@
                                     </Grid>
                                 </Grid>
 
-                                <!--This Grid contains controls for selecting Font Size and Number Format options -->
+                                <!--This Grid contains controls for selecting Default Run Setting and Number Format options -->
                                 <Grid Grid.Row="3" Margin="4,0,0,20">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
