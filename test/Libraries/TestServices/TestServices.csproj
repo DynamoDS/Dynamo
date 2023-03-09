@@ -17,7 +17,7 @@
         <PackageReference Include="NUnit" Version="3.13.3" />
     </ItemGroup>
   <ItemGroup>
-      <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.17.1.3967"/>
+      <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.665"/>
 
 
       <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
