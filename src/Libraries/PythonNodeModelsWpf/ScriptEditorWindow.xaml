@@ -184,7 +184,7 @@
                                FontFamily="{StaticResource ArtifaktElementRegular}"
                                FontSize="20px"
                                Foreground="{StaticResource DarkThemeBodyMediumBrush}"
-                               Text="{Binding nodeModel.Name, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type dww:ModelessChildWindow}}}" 
+                               Text="{Binding NodeModel.Name, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type dww:ModelessChildWindow}}}" 
                                TextWrapping="Wrap" />
 
                 </DockPanel>
