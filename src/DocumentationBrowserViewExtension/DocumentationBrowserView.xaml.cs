@@ -1,20 +1,13 @@
-using Dynamo.Logging;
-using Dynamo.Utilities;
-using Dynamo.Wpf.UI.GuidedTour;
-using Microsoft.Web.WebView2.Core;
-using Microsoft.Web.WebView2.Wpf;
-using SharpDX.Direct3D9;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
 using System.Web;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Navigation;
+using Dynamo.Logging;
+using Dynamo.Utilities;
+using Microsoft.Web.WebView2.Core;
+using Microsoft.Web.WebView2.Wpf;
 
 namespace Dynamo.DocumentationBrowser
 {
