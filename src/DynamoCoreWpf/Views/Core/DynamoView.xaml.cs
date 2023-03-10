@@ -2508,7 +2508,6 @@ namespace Dynamo.Controls
             try
             {                
                 dynamoViewModel.MainGuideManager.LaunchTour(GuidesManager.GetStartedGuideName);
-                dynamoViewModel.OnEnableShortcutBarItems(false);
             }
             catch (Exception)
             {
@@ -2526,7 +2525,7 @@ namespace Dynamo.Controls
         {
             try
             {
-                dynamoViewModel.MainGuideManager.LaunchTour(GuidesManager.PackagesGuideName);
+                dynamoViewModel.MainGuideManager.LaunchTour(GuidesManager.PackagesGuideName);                
             }
             catch (Exception)
             {
