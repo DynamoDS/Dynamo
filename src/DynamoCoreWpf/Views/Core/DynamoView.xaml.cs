@@ -1644,14 +1644,12 @@ namespace Dynamo.Controls
                 SaveExtensionOpenState(tab);
             }
             //update open state of all existing view extension in setting, if option to remember extensions is enabled in preferences
-            if (dynamoViewModel.PreferenceSettings.EnablePersistExtensions) {
-                var settings = dynamoViewModel.PreferenceSettings.ViewExtensionSettings;
-                foreach (var setting in settings)
+            var settings = dynamoViewModel.PreferenceSettings.ViewExtensionSettings;
+            foreach (var setting in settings)
+            {
+                if (!ExtensionTabItems.Any(e => e.Uid == setting.UniqueId) && !ExtensionWindows.Values.Any(e => e.Uid == setting.UniqueId))
                 {
-                    if (!ExtensionTabItems.Any(e => e.Uid == setting.UniqueId) && !ExtensionWindows.Values.Any(e => e.Uid == setting.UniqueId))
-                    {
-                        setting.IsOpen = false;
-                    }
+                    setting.IsOpen = false;
                 }
             }
         }

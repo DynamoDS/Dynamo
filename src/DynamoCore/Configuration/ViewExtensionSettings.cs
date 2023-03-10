@@ -24,7 +24,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Specifies if the extension was Open in the last session before closing Dynamo, if the property to remember view extension status was enabled.<br/> <c>Default: False</c>
         /// </summary>
-        public bool IsOpen { get; set; } = false;
+        public bool IsOpen { get; set; }
     }
 
     /// <summary>
