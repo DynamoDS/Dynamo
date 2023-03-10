@@ -25,6 +25,10 @@ namespace Dynamo.Configuration
         /// Specifies if the extension was Open in the last session before closing Dynamo, if the property to remember view extension status was enabled.<br/> <c>Default: False</c>
         /// </summary>
         public bool IsOpen { get; set; } = false;
+        /// <summary>
+        /// Specifies the extension width as per the last session before closing Dynamo.
+        /// </summary>
+        public int TabWidth { get; set; }
     }
 
     /// <summary>

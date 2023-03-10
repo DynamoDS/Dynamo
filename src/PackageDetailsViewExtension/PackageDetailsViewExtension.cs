@@ -18,8 +18,6 @@ namespace Dynamo.PackageDetails
 
         public override string Name => Properties.Resources.PackageDetailsViewExtensionName;
 
-        public override UserControl ExtensionView => PackageDetailsView;
-
         public override void Startup(ViewStartupParams viewStartupParams)
         {
             var packageManager = viewStartupParams.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();

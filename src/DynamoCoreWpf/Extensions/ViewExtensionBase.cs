@@ -26,11 +26,6 @@ namespace Dynamo.Wpf.Extensions
         public abstract string Name { get; }
 
         /// <summary>
-        /// View for the extension. This will contain the ViewExtension view, and will be null for normal extensions.
-        /// </summary>
-        public abstract UserControl ExtensionView { get; }
-
-        /// <summary>
         /// Dispose method for the view extension.
         /// </summary>
         public abstract void Dispose();
@@ -72,6 +67,15 @@ namespace Dynamo.Wpf.Extensions
         /// displayed.
         /// </summary>
         public virtual void Startup(ViewStartupParams viewStartupParams)
+        {
+
+        }
+
+        /// <summary>
+        /// Action to be invoked when Dynamo starts up, to re-open the view extension which was open in the last session, if the preference setting
+        /// to remember the last opened extensions was enabled.
+        /// </summary>
+        public virtual void ReOpen()
         {
 
         }

@@ -27,8 +27,6 @@ namespace Dynamo.WorkspaceDependency
             set;
         }
 
-        public override UserControl ExtensionView => DependencyView;
-
         internal PackageManagerExtension pmExtension;
 
         /// <summary>
@@ -102,7 +100,7 @@ namespace Dynamo.WorkspaceDependency
                 {
                     // Refresh dependency data
                     DependencyView.DependencyRegen(viewLoadedParams.CurrentWorkspaceModel as WorkspaceModel, true);
-                    viewLoadedParams.AddToExtensionsSideBar(this, ExtensionView);
+                    viewLoadedParams.AddToExtensionsSideBar(this, DependencyView);
                     workspaceReferencesMenuItem.IsChecked = true;
                 }
                 else

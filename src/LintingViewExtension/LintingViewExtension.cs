@@ -26,8 +26,6 @@ namespace Dynamo.LintingViewExtension
 
         public override string Name => Resources.ExtensionName;
 
-        public override UserControl ExtensionView => this.linterView;
-
         public override void Startup(ViewStartupParams viewStartupParams)
         {
             // Do nothing for now

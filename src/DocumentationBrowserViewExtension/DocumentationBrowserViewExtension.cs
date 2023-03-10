@@ -56,8 +56,6 @@ namespace Dynamo.DocumentationBrowser
         /// </summary>
         public override string UniqueId => "68B45FC0-0BD1-435C-BF28-B97CB03C71C8";
 
-        public override UserControl ExtensionView => this.BrowserView;
-
         public DocumentationBrowserViewExtension()
         {
             // initialise the ViewModel and View for the window
@@ -179,8 +177,7 @@ namespace Dynamo.DocumentationBrowser
             this.ViewModel.DynamoView = viewLoadedParams.DynamoWindow;
         }
 
-
-        public void Shutdown()
+        public override void Shutdown()
         {
             Dispose();
         }

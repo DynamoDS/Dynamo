@@ -33,8 +33,6 @@ namespace Dynamo.GraphNodeManager
         /// </summary>
         public override string Name => Properties.Resources.ExtensionName;
 
-        public override UserControl ExtensionView => this.ManagerView;
-
         #endregion
 
         #region Add/Remove Extension 
@@ -94,6 +92,12 @@ namespace Dynamo.GraphNodeManager
             this.ViewModel.GraphNodeManagerView = this.ManagerView;
 
             this.viewLoadedParamsReference?.AddToExtensionsSideBar(this, this.ManagerView);
+        }
+
+        public override void ReOpen()
+        {
+            AddToSidebar();
+            this.graphNodeManagerMenuItem.IsChecked = true;
         }
         #endregion
 

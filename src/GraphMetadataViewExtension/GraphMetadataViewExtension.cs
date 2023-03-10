@@ -21,8 +21,6 @@ namespace Dynamo.GraphMetadata
 
         public override string Name => Resources.ExtensionName;
 
-        public override UserControl ExtensionView => this.graphMetadataView;
-
         public override void Loaded(ViewLoadedParams viewLoadedParams)
         {
             this.viewLoadedParamsReference = viewLoadedParams ?? throw new ArgumentNullException(nameof(viewLoadedParams));
@@ -44,6 +42,11 @@ namespace Dynamo.GraphMetadata
 
         private void MenuItemCheckHandler(object sender, RoutedEventArgs e)
         {
+            AddToSidebar();
+        }
+
+        private void AddToSidebar()
+        {
             // Dont allow the extension to show in anything that isnt a HomeWorkspaceModel
             if (!(this.viewLoadedParamsReference.CurrentWorkspaceModel is HomeWorkspaceModel))
             {
@@ -52,6 +55,12 @@ namespace Dynamo.GraphMetadata
             }
 
             this.viewLoadedParamsReference?.AddToExtensionsSideBar(this, this.graphMetadataView);
+        }
+
+        public override void ReOpen()
+        {
+            AddToSidebar();
+            this.graphMetadataMenuItem.IsChecked = true;
         }
 
         #region Storage Access implementation

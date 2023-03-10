@@ -15,7 +15,6 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using Antlr.Runtime;
 using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Graph;
@@ -64,6 +63,7 @@ namespace Dynamo.Controls
     public partial class DynamoView : Window, IDisposable
     {
         public const string BackgroundPreviewName = "BackgroundPreview";
+        private const int SideBarCollapseThreshold = 20;
         private const int navigationInterval = 100;
         // This is used to determine whether ESC key is being held down
         private bool IsEscKeyPressed = false;
@@ -228,19 +228,6 @@ namespace Dynamo.Controls
 
             // Add an event handler to check if the collection is modified.   
             ExtensionTabItems.CollectionChanged += this.OnCollectionChanged;
-
-            var viewExtensionSettings = dynamoViewModel.PreferenceSettings.ViewExtensionSettingsList;
-            if (viewExtensionSettings != null)
-            {
-                foreach (ViewExtensionSettings ves in viewExtensionSettings)
-                {
-                    if (ves.IsOpen)
-                    {
-                        var ext = viewExtensions.Find(s => s.UniqueId == ves.UniqueId);
-                        AddOrFocusExtensionControl(ext, ((ViewExtensionBase)ext).ExtensionView);
-                    }
-                }
-            }
 
             this.HideOrShowRightSideBar();
 
@@ -986,10 +973,31 @@ namespace Dynamo.Controls
                 try
                 {
                     ext.Loaded(loadedParams);
+                    ReOpenSavedExtensionOnDynamoStartup(ext);
                 }
                 catch (Exception exc)
                 {
                     Log(ext.Name + ": " + exc.Message);
+                }
+            }
+        }
+
+        /// <summary>
+        /// This method will re-open saved extension from last session,
+        /// if the setting to remember last opened extensions was enabled.
+        /// </summary>
+        /// <param name="ext">Extension to be re-opened, if saved from last session.</param>
+        private void ReOpenSavedExtensionOnDynamoStartup(IViewExtension ext) {
+            var viewExtensionSettings = dynamoViewModel.PreferenceSettings.EnablePersistExtensions ? dynamoViewModel.PreferenceSettings.ViewExtensionSettingsList : null;
+            if (viewExtensionSettings != null && viewExtensionSettings.Count > 0)
+            {
+                var setting = viewExtensionSettings.Find(s => s.UniqueId == ext.UniqueId);
+                if (setting != null && setting.IsOpen)
+                {
+                    if (ext is ViewExtensionBase viewExtensionBase)
+                    {
+                        viewExtensionBase.ReOpen();
+                    }
                 }
             }
         }
@@ -1603,7 +1611,7 @@ namespace Dynamo.Controls
 
         private void WindowClosing(object sender, CancelEventArgs e)
         {
-            SaveExtensionWindowsState();
+            SaveExtensionsState();
 
             if (!PerformShutdownSequenceOnViewModel() && !DynamoModel.IsTestMode)
             {
@@ -1616,14 +1624,30 @@ namespace Dynamo.Controls
         }
 
         /// <summary>
-        /// Saves the state of currently displayed extension windows. This is needed because the closing event is
+        /// Saves the state of currently displayed extension windows and tabs. This is needed because the closing event is
         /// not called on child windows: https://docs.microsoft.com/en-us/dotnet/api/system.windows.window.closing
         /// </summary>
-        private void SaveExtensionWindowsState()
+        private void SaveExtensionsState()
         {
+            //loop over all active extension windows and tabs.
             foreach (var window in ExtensionWindows.Values)
             {
                 SaveExtensionWindowSettings(window);
+            }
+            //update open state of each view extension, if option to remember extensions is enabled in preferences
+            if (dynamoViewModel.PreferenceSettings.EnablePersistExtensions) {
+                var settings = dynamoViewModel.PreferenceSettings.ViewExtensionSettingsList;
+                foreach (var setting in settings)
+                {
+                    if (ExtensionTabItems.Any(e => e.Uid == setting.UniqueId) || ExtensionWindows.Values.Any(e => e.Uid == setting.UniqueId))
+                    {
+                        setting.IsOpen = true;
+                    }
+                    else
+                    {
+                        setting.IsOpen = false;
+                    }
+                }
             }
         }
 
@@ -2183,7 +2207,7 @@ namespace Dynamo.Controls
             get
             {
                 // Threshold that determines if button should be displayed
-                if (LeftExtensionsViewColumn.Width.Value < 20)
+                if (LeftExtensionsViewColumn.Width.Value < SideBarCollapseThreshold)
                 { libraryCollapsed = true; }
 
                 else
@@ -2209,7 +2233,7 @@ namespace Dynamo.Controls
                 }
                 else
                 {
-                    extensionsCollapsed = RightExtensionsViewColumn.Width.Value < 20;
+                    extensionsCollapsed = RightExtensionsViewColumn.Width.Value < SideBarCollapseThreshold;
                 }
 
                 return extensionsCollapsed;
