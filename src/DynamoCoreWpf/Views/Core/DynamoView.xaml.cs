@@ -320,10 +320,14 @@ namespace Dynamo.Controls
                     {
                         Name = viewExtension.Name,
                         UniqueId = viewExtension.UniqueId,
-                        DisplayMode = ViewExtensionDisplayMode.DockRight,
-                        IsOpen = true
+                        DisplayMode = ViewExtensionDisplayMode.DockRight
                     };
                     this.dynamoViewModel.PreferenceSettings.ViewExtensionSettingsList.Add(settings);
+                }
+
+                if (this.dynamoViewModel.PreferenceSettings.EnablePersistExtensions)
+                {
+                    settings.IsOpen = true;
                 }
 
                 if (settings.DisplayMode == ViewExtensionDisplayMode.FloatingWindow)
@@ -985,7 +989,8 @@ namespace Dynamo.Controls
         /// if the setting to remember last opened extensions was enabled.
         /// </summary>
         /// <param name="ext">Extension to be re-opened, if saved from last session.</param>
-        private void ReOpenSavedExtensionOnDynamoStartup(IViewExtension ext) {
+        private void ReOpenSavedExtensionOnDynamoStartup(IViewExtension ext)
+        {
             var viewExtensionSettings = dynamoViewModel.PreferenceSettings.EnablePersistExtensions ? dynamoViewModel.PreferenceSettings.ViewExtensionSettingsList : null;
             if (viewExtensionSettings != null && viewExtensionSettings.Count > 0)
             {
@@ -1631,18 +1636,19 @@ namespace Dynamo.Controls
             foreach (var window in ExtensionWindows.Values)
             {
                 SaveExtensionWindowSettings(window);
-                SaveExtensionOpenState(window, null);
+                SaveExtensionOpenState(window);
             }
+            //for any new extensions that are opened for the first time
             foreach (var tab in ExtensionTabItems)
             {
-                SaveExtensionOpenState(null, tab);
+                SaveExtensionOpenState(tab);
             }
             //update open state of all existing view extension in setting, if option to remember extensions is enabled in preferences
             if (dynamoViewModel.PreferenceSettings.EnablePersistExtensions) {
                 var settings = dynamoViewModel.PreferenceSettings.ViewExtensionSettingsList;
                 foreach (var setting in settings)
                 {
-                    if (ExtensionTabItems.Any(e => e.Uid != setting.UniqueId) && ExtensionWindows.Values.Any(e => e.Uid != setting.UniqueId))
+                    if (!ExtensionTabItems.Any(e => e.Uid == setting.UniqueId) && !ExtensionWindows.Values.Any(e => e.Uid == setting.UniqueId))
                     {
                         setting.IsOpen = false;
                     }
@@ -1650,25 +1656,14 @@ namespace Dynamo.Controls
             }
         }
         //This method is to ensure that the extensions states are correctly saved for newly added extensions.
-        private void SaveExtensionOpenState(ExtensionWindow window, TabItem tab)
+        private void SaveExtensionOpenState(object o)
         {
-            if (!dynamoViewModel.PreferenceSettings.EnablePersistExtensions) return;
-
-            if (window != null)
+            if (!dynamoViewModel.PreferenceSettings.EnablePersistExtensions || o == null) return;
+            var extId = o is TabItem ? ((TabItem)o).Uid : ((ExtensionWindow)o).Uid;
+            var setting = dynamoViewModel.Model.PreferenceSettings.ViewExtensionSettingsList.Find(ext => ext.UniqueId == extId);
+            if (setting != null)
             {
-                var setting = dynamoViewModel.Model.PreferenceSettings.ViewExtensionSettingsList.Find(ext => ext.UniqueId == window.Uid);
-                if (setting != null)
-                {
-                    setting.IsOpen = true;
-                }
-            }
-            if (tab != null)
-            {
-                var setting = dynamoViewModel.Model.PreferenceSettings.ViewExtensionSettingsList.Find(ext => ext.UniqueId == tab.Uid);
-                if (setting != null)
-                {
-                    setting.IsOpen = true;
-                }
+                setting.IsOpen = true;
             }
         }
 
