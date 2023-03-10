@@ -6756,6 +6756,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dynamo must be relaunched to apply the language selection..
+        /// </summary>
+        public static string PreferencesViewLanguageSwitchHelp {
+            get {
+                return ResourceManager.GetString("PreferencesViewLanguageSwitchHelp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Markdown documentation can be added to your package that will leverage the Documentation Browser to display author generated information on a per-node basis..
         /// </summary>
         public static string PreferencesViewMarkdownDirectoryTooltip {
@@ -6797,6 +6806,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewPython {
             get {
                 return ResourceManager.GetString("PreferencesViewPython", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Python Editor.
+        /// </summary>
+        public static string PreferencesViewPythonEditorLable {
+            get {
+                return ResourceManager.GetString("PreferencesViewPythonEditorLable", resourceCulture);
             }
         }
         
@@ -6999,6 +7017,51 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 0%.
+        /// </summary>
+        public static string PreferencesViewZoomScaling0Percent {
+            get {
+                return ResourceManager.GetString("PreferencesViewZoomScaling0Percent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 100%.
+        /// </summary>
+        public static string PreferencesViewZoomScaling100Percent {
+            get {
+                return ResourceManager.GetString("PreferencesViewZoomScaling100Percent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 10%.
+        /// </summary>
+        public static string PreferencesViewZoomScaling10Percent {
+            get {
+                return ResourceManager.GetString("PreferencesViewZoomScaling10Percent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 25%.
+        /// </summary>
+        public static string PreferencesViewZoomScaling25Percent {
+            get {
+                return ResourceManager.GetString("PreferencesViewZoomScaling25Percent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 300%.
+        /// </summary>
+        public static string PreferencesViewZoomScaling300Percent {
+            get {
+                return ResourceManager.GetString("PreferencesViewZoomScaling300Percent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Zoom Scaling.
         /// </summary>
         public static string PreferencesViewZoomScalingSettings {
@@ -7022,15 +7085,6 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesWindowIsolateSelectedGeoTooltip {
             get {
                 return ResourceManager.GetString("PreferencesWindowIsolateSelectedGeoTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to English,Czech,German,Spanish,French,Italian,Japanese,Korean,Polish,Portuguese,Brazilian,Russian,Chinese Simplified,Chinese Traditional.
-        /// </summary>
-        public static string PreferencesWindowLanguages {
-            get {
-                return ResourceManager.GetString("PreferencesWindowLanguages", resourceCulture);
             }
         }
         
@@ -7701,6 +7755,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PythonTemplateAddPathTooltip {
             get {
                 return ResourceManager.GetString("PythonTemplateAddPathTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drag to adjust Python Editor zoom scale between 10% and 100%. You can also adjust this in Python Editor by pressing Shift and scrolling the mouse wheel..
+        /// </summary>
+        public static string PythonZoomScaleTooltipText {
+            get {
+                return ResourceManager.GetString("PythonZoomScaleTooltipText", resourceCulture);
             }
         }
         

@@ -3,12 +3,14 @@
   <IsFirstRun>false</IsFirstRun>
   <IsAnalyticsReportingApproved>false</IsAnalyticsReportingApproved>
   <LibraryWidth>300</LibraryWidth>
+  <Locale>zh-CN</Locale>
   <ConsoleHeight>123</ConsoleHeight>
   <ShowPreviewBubbles>false</ShowPreviewBubbles>
   <ShowCodeBlockLineNumber>false</ShowCodeBlockLineNumber>
   <ShowConnector>false</ShowConnector>
   <ShowConnectorToolTip>false</ShowConnectorToolTip>
   <LibraryZoomScale>200</LibraryZoomScale>
+  <PythonScriptZoomScale>25</PythonScriptZoomScale>
   <ConnectorType>POLYLINE</ConnectorType>
   <BackgroundPreviews>
     <BackgroundPreviewActiveState>
