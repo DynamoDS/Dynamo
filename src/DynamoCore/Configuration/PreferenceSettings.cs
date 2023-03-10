@@ -672,7 +672,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Settings that apply to view extensions.
         /// </summary>
-        public List<ViewExtensionSettings> ViewExtensionSettingsList { get; set; }
+        public List<ViewExtensionSettings> ViewExtensionSettings { get; set; }
 
         private bool disableBuiltinPackages;
         /// <summary>
@@ -825,7 +825,7 @@ namespace Dynamo.Configuration
             EnableNotificationCenter = true;
             isStaticSplashScreenEnabled = true;
             DefaultPythonEngine = string.Empty;
-            ViewExtensionSettingsList = new List<ViewExtensionSettings>();
+            ViewExtensionSettings = new List<ViewExtensionSettings>();
             GroupStyleItemsList = new List<GroupStyleItem>();
             ReadNotificationIds = new List<string>();
             DynamoPlayerFolderGroups = new List<DynamoPlayerFolderGroup>();

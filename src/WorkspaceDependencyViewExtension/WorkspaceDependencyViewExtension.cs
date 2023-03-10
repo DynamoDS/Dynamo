@@ -1,3 +1,6 @@
+using System;
+using System.Linq;
+using System.Windows.Controls;
 using Dynamo.Core;
 using Dynamo.Extensions;
 using Dynamo.Graph.Workspaces;
@@ -5,9 +8,6 @@ using Dynamo.Logging;
 using Dynamo.PackageManager;
 using Dynamo.WorkspaceDependency.Properties;
 using Dynamo.Wpf.Extensions;
-using System;
-using System.Linq;
-using System.Windows.Controls;
 
 namespace Dynamo.WorkspaceDependency
 {

@@ -312,7 +312,7 @@ namespace Dynamo.Controls
 
             if (addExtensionControl)
             {
-                var settings = this.dynamoViewModel.PreferenceSettings.ViewExtensionSettingsList.Find(s => s.UniqueId == viewExtension.UniqueId);
+                var settings = this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Find(s => s.UniqueId == viewExtension.UniqueId);
                 // Create default settings if they do not currently exist
                 if (settings == null)
                 {
@@ -322,7 +322,7 @@ namespace Dynamo.Controls
                         UniqueId = viewExtension.UniqueId,
                         DisplayMode = ViewExtensionDisplayMode.DockRight
                     };
-                    this.dynamoViewModel.PreferenceSettings.ViewExtensionSettingsList.Add(settings);
+                    this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Add(settings);
                 }
 
                 if (this.dynamoViewModel.PreferenceSettings.EnablePersistExtensions)
@@ -419,7 +419,7 @@ namespace Dynamo.Controls
         private void SaveExtensionWindowSettings(ExtensionWindow window)
         {
             var extension = window.Tag as IViewExtension;
-            var settings = this.dynamoViewModel.Model.PreferenceSettings.ViewExtensionSettingsList.Find(ext => ext.UniqueId == extension.UniqueId);
+            var settings = this.dynamoViewModel.Model.PreferenceSettings.ViewExtensionSettings.Find(ext => ext.UniqueId == extension.UniqueId);
             if (settings != null)
             {
                 if (settings.WindowSettings == null)
@@ -566,7 +566,7 @@ namespace Dynamo.Controls
             var content = tabItem.Content as UIElement;
             CloseExtensionTab(tabItem);
             var extension = tabItem.Tag as IViewExtension;
-            var settings = this.dynamoViewModel.PreferenceSettings.ViewExtensionSettingsList.Find(s => s.UniqueId == extension.UniqueId);
+            var settings = this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Find(s => s.UniqueId == extension.UniqueId);
             AddExtensionWindow(extension, content, settings?.WindowSettings);
             if (settings != null)
             {
@@ -613,7 +613,7 @@ namespace Dynamo.Controls
             {
                 AddExtensionTab(extension, content);
 
-                var settings = this.dynamoViewModel.PreferenceSettings.ViewExtensionSettingsList.Find(s => s.UniqueId == extension.UniqueId);
+                var settings = this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Find(s => s.UniqueId == extension.UniqueId);
                 if (settings != null)
                 {
                     settings.DisplayMode = ViewExtensionDisplayMode.DockRight;
@@ -991,7 +991,7 @@ namespace Dynamo.Controls
         /// <param name="ext">Extension to be re-opened, if saved from last session.</param>
         private void ReOpenSavedExtensionOnDynamoStartup(IViewExtension ext)
         {
-            var viewExtensionSettings = dynamoViewModel.PreferenceSettings.EnablePersistExtensions ? dynamoViewModel.PreferenceSettings.ViewExtensionSettingsList : null;
+            var viewExtensionSettings = dynamoViewModel.PreferenceSettings.EnablePersistExtensions ? dynamoViewModel.PreferenceSettings.ViewExtensionSettings : null;
             if (viewExtensionSettings != null && viewExtensionSettings.Count > 0)
             {
                 var setting = viewExtensionSettings.Find(s => s.UniqueId == ext.UniqueId);
@@ -1645,7 +1645,7 @@ namespace Dynamo.Controls
             }
             //update open state of all existing view extension in setting, if option to remember extensions is enabled in preferences
             if (dynamoViewModel.PreferenceSettings.EnablePersistExtensions) {
-                var settings = dynamoViewModel.PreferenceSettings.ViewExtensionSettingsList;
+                var settings = dynamoViewModel.PreferenceSettings.ViewExtensionSettings;
                 foreach (var setting in settings)
                 {
                     if (!ExtensionTabItems.Any(e => e.Uid == setting.UniqueId) && !ExtensionWindows.Values.Any(e => e.Uid == setting.UniqueId))
@@ -1659,8 +1659,24 @@ namespace Dynamo.Controls
         private void SaveExtensionOpenState(object o)
         {
             if (!dynamoViewModel.PreferenceSettings.EnablePersistExtensions || o == null) return;
-            var extId = o is TabItem ? ((TabItem)o).Uid : ((ExtensionWindow)o).Uid;
-            var setting = dynamoViewModel.Model.PreferenceSettings.ViewExtensionSettingsList.Find(ext => ext.UniqueId == extId);
+
+            var extId = "";
+            switch (o)
+            {
+                case TabItem t:
+                    extId = t.Uid;
+                    break;
+                case ExtensionWindow w:
+                    extId = w.Uid;
+                    break;
+                default:
+                    Log("Incorrect extension type, could not save extension state.");
+                    break;
+            }
+
+            if (extId == "") return;
+
+            var setting = dynamoViewModel.Model.PreferenceSettings.ViewExtensionSettings?.Find(ext => ext.UniqueId == extId);
             if (setting != null)
             {
                 setting.IsOpen = true;
