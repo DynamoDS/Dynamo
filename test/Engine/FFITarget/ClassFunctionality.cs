@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace FFITarget
 {
@@ -7,6 +7,15 @@ namespace FFITarget
     /// </summary>
     public class ClassFunctionality : IDisposable
     {
+        public static Microsoft.Office.Core.ContentVerificationResults DoStuf()
+        {
+            return Microsoft.Office.Core.ContentVerificationResults.contverresValid;
+        }
+
+        public static bool DoMore(Microsoft.Office.Core.ContentVerificationResults arg1)
+        {
+            return true;
+        }
 
         private int intVal;
         public int IntVal {

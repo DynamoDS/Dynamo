@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -10,6 +10,20 @@ using ProtoCore.Utils;
 
 namespace ProtoFFI
 {
+
+    internal class TypeEqualityComparer : IEqualityComparer<Type>
+    {
+        public bool Equals(Type x, Type y)
+        {
+            return x.IsEquivalentTo(y) || x.Equals(y);
+        }
+
+        public int GetHashCode(Type obj)
+        {
+            return obj.GetHashCode();
+        }
+    }
+
     /// <summary>
     /// This class creates ClassDeclNode for a given type and caches all the
     /// imported types. This class also keeps the list of FFIFunctionPointer
@@ -58,9 +72,12 @@ namespace ProtoFFI
                     {
                         mtype = new CLRModuleType(type);
                         //Now check that a type with same name is not imported.
+                        bool equivalentComTypes = false;
                         Type otherType;
                         if (mTypeNames.TryGetValue(mtype.FullName, out otherType))
+                        {
                             throw new InvalidOperationException(string.Format("Can't import {0}, {1} is already imported as {2}, namespace support needed.", type.FullName, type.Name, otherType.FullName));
+                        }
 
                         mTypes.Add(type, mtype);
                         mTypeNames.Add(mtype.FullName, type);
@@ -258,13 +275,13 @@ namespace ProtoFFI
 
         private Dictionary<MethodInfo, Attribute[]> mGetterAttributes = new Dictionary<MethodInfo, Attribute[]>();
 
-        private static readonly Dictionary<Type, CLRModuleType> mTypes = new Dictionary<Type, CLRModuleType>();
+        private static readonly Dictionary<Type, CLRModuleType> mTypes = new Dictionary<Type, CLRModuleType>(new TypeEqualityComparer());
 
         private static readonly Dictionary<string, Type> mTypeNames = new Dictionary<string, Type>();
 
-        private static readonly Dictionary<System.Type, ProtoCore.Type> mTypeMaps = new Dictionary<Type, ProtoCore.Type>();
+        private static readonly Dictionary<System.Type, ProtoCore.Type> mTypeMaps = new Dictionary<Type, ProtoCore.Type>(new TypeEqualityComparer());
 
-        private static readonly Dictionary<System.Type, FFIClassAttributes> mTypeAttributeMaps = new Dictionary<System.Type, FFIClassAttributes>();
+        private static readonly Dictionary<System.Type, FFIClassAttributes> mTypeAttributeMaps = new Dictionary<System.Type, FFIClassAttributes>(new TypeEqualityComparer());
 
         private Type GetBaseType(Type type)
         {

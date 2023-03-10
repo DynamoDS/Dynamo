@@ -712,6 +712,11 @@ namespace DSOffice
     /// </summary>
     public static class Data
     {
+
+        public static Microsoft.Office.Core.ContentVerificationResults DoStuf()
+        {
+            return Microsoft.Office.Core.ContentVerificationResults.contverresError;
+        }
         /// <summary>
         ///     Write a list of lists into a file using a comma-separated values 
         ///     format. Outer list represents rows, inner lists represent columns. 
