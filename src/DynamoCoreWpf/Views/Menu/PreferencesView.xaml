@@ -1304,7 +1304,7 @@
                                             <Slider
                                             x:Name="LibraryZoomScalingSlider"
                                             Style="{StaticResource SliderStyle}"
-                                            ValueChanged="zoomScaleLevel_ValueChanged"
+                                            ValueChanged="ZoomScaleLevel_ValueChanged"
                                             Width="400"
                                             Margin="5,0,5,0"
                                             Minimum="25"
@@ -1361,19 +1361,19 @@
                                             </Label>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="1" Margin="0,0,0,3">
-                                            <TextBlock Text="{x:Static p:Resources.PreferencesViewZoomScaling10Percent}"></TextBlock>
+                                            <TextBlock Text="{x:Static p:Resources.PreferencesViewZoomScaling25Percent}"></TextBlock>
                                             <Slider
                                             x:Name="PythonZoomScalingSlider"
                                             Style="{StaticResource SliderStyle}"
                                             ValueChanged="PythonZoomScalingSlider_ValueChanged"                                                
                                             Width="400"
                                             Margin="5,0,5,0"
-                                            Minimum="10"
+                                            Minimum="25"
                                             IsSnapToTickEnabled="True"
                                             TickFrequency="1"
-                                            Maximum="100">
+                                            Maximum="300">
                                             </Slider>
-                                            <TextBlock Text="{x:Static p:Resources.PreferencesViewZoomScaling100Percent}"></TextBlock>
+                                            <TextBlock Text="{x:Static p:Resources.PreferencesViewZoomScaling300Percent}"></TextBlock>
 
                                         </StackPanel>
                                         <StackPanel Grid.Row="2" Width="550">

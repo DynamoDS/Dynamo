@@ -43,8 +43,8 @@ namespace PythonNodeModelsWpf
         private const double FONT_MAX_SIZE = 60d;
         private const double FONT_MIN_SIZE = 5d;
 
-        private const double pythonZoomScalingSliderMaximum = 100d;
-        private const double pythonZoomScalingSliderMinimum = 10d;
+        private const double pythonZoomScalingSliderMaximum = 300d;
+        private const double pythonZoomScalingSliderMinimum = 25d;
         #endregion
 
         #region Public properties

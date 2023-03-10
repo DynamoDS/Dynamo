@@ -3966,7 +3966,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Drag to adjust Library zoom scale between 10% and 300%. You can also adjust this in Library by pressing “Shift” and scrolling the mouse wheel..
+        ///   Looks up a localized string similar to Drag to adjust Library zoom scale between 25% and 300%. You can also adjust this in Library by pressing “Ctrl” and scrolling the mouse wheel..
         /// </summary>
         public static string LibraryZoomScaleTooltipText {
             get {
@@ -7017,15 +7017,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 10%.
-        /// </summary>
-        public static string PreferencesViewZoomScaling10Percent {
-            get {
-                return ResourceManager.GetString("PreferencesViewZoomScaling10Percent", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to 25%.
         /// </summary>
         public static string PreferencesViewZoomScaling25Percent {
@@ -7741,7 +7732,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Drag to adjust Python Editor zoom scale between 10% and 100%. You can also adjust this in Python Editor by pressing Shift and scrolling the mouse wheel..
+        ///   Looks up a localized string similar to Drag to adjust Python Editor zoom scale between 25% and 300%. You can also adjust this in Python Editor by pressing &quot;Ctrl&quot; and scrolling the mouse wheel..
         /// </summary>
         public static string PythonZoomScaleTooltipText {
             get {

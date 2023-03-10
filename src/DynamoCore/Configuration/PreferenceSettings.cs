@@ -794,7 +794,7 @@ namespace Dynamo.Configuration
             BackupFiles = new List<string>();
 
             LibraryZoomScale = 100;
-            PythonScriptZoomScale = 22;
+            PythonScriptZoomScale = 100;
 
             CustomPackageFolders = new List<string>();
 

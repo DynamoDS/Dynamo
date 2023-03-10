@@ -3486,7 +3486,7 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
     <value>Preview Geometry</value>
   </data>
   <data name="LibraryZoomScaleTooltipText" xml:space="preserve">
-    <value>Drag to adjust Library zoom scale between 10% and 300%. You can also adjust this in Library by pressing “Shift” and scrolling the mouse wheel.</value>
+    <value>Drag to adjust Library zoom scale between 25% and 300%. You can also adjust this in Library by pressing “Ctrl” and scrolling the mouse wheel.</value>
   </data>
   <data name="PreferencesViewZoomScalingSettings" xml:space="preserve">
     <value>Zoom Scaling</value>
@@ -3495,7 +3495,7 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
     <value>Library</value>
   </data>
   <data name="PythonZoomScaleTooltipText" xml:space="preserve">
-    <value>Drag to adjust Python Editor zoom scale between 10% and 100%. You can also adjust this in Python Editor by pressing Shift and scrolling the mouse wheel.</value>
+    <value>Drag to adjust Python Editor zoom scale between 25% and 300%. You can also adjust this in Python Editor by pressing "Ctrl" and scrolling the mouse wheel.</value>
   </data>
   <data name="PreferencesViewLanguageSwitchHelp" xml:space="preserve">
     <value>Dynamo must be relaunched to apply the language selection.</value>
@@ -3523,9 +3523,6 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   </data>
   <data name="PreferencesViewZoomScaling100Percent" xml:space="preserve">
     <value>100%</value>
-  </data>
-  <data name="PreferencesViewZoomScaling10Percent" xml:space="preserve">
-    <value>10%</value>
   </data>
   <data name="PreferencesViewZoomScaling25Percent" xml:space="preserve">
     <value>25%</value>
