@@ -167,7 +167,7 @@ List&lt;color&gt;</value>
   <data name="ChartsBasicLineChartLabelsValuesDataPortToolTip" xml:space="preserve">
     <value>Dictionary containing label:value key-pairs
 
-Dictionary&lt;string, double&gt;</value>
+Dictionary&lt;string, List&lt;double&gt;&gt;</value>
   </data>
   <data name="ChartsHeatSeriesDescription" xml:space="preserve">
     <value>Create a heat series plot</value>
@@ -198,7 +198,7 @@ List&lt;color&gt;</value>
   <data name="ChartsHeatSeriesLabelsValuesDataPortToolTip" xml:space="preserve">
     <value>Dictionary containing label:value key-pairs
 
-Dictionary&lt;string, List&lt;double&gt;&gt;</value>
+Dictionary&lt;string, Dictionary&lt;string, double&gt;&gt;</value>
   </data>
   <data name="ChartsHeatSeriesLabelsDataPortToolTip" xml:space="preserve">
     <value>A list of labels for the bar chart categories.
@@ -260,7 +260,7 @@ List&lt;color&gt;</value>
   <data name="ChartsScatterPlotLabelsValuesDataPortToolTip" xml:space="preserve">
     <value>Dictionary containing label:value key-pairs
 
-Dictionary&lt;string,double&gt;</value>
+Dictionary&lt;string, List&lt;List&lt;double&gt;&gt;&gt;</value>
   </data>
   <data name="ChartsXYLineChartDescription" xml:space="preserve">
     <value>Create a new XY line plot</value>
@@ -273,7 +273,6 @@ Dictionary&lt;string,double&gt;</value>
 
 List&lt;string&gt;</value>
   </data>
-
   <data name="ChartsXYLineChartXLabelsDataPortToolTip" xml:space="preserve">
     <value>A list of lists each containing double values representing x-coordinates for each point in a line.
 
@@ -292,9 +291,9 @@ List&lt;color&gt;</value>
   <data name="ChartsXYLineChartLabelsValuesDataPortToolTip" xml:space="preserve">
     <value>Dictionary containing label:value key-pairs
 
-Dictionary&lt;string,double&gt;</value>
+Dictionary&lt;string, List&lt;List&lt;double&gt;&gt;&gt;</value>
   </data>
-    <data name="ColorPaletteUIAdvancedButtonHeader" xml:space="preserve">
+  <data name="ColorPaletteUIAdvancedButtonHeader" xml:space="preserve">
     <value>Advanced</value>
   </data>
   <data name="ColorPaletteUIRecentColors" xml:space="preserve">

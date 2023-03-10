@@ -25,7 +25,7 @@ namespace CoreNodes.ChartHelpers
         {
             var output = new Dictionary<string, List<double>>();
 
-            if (labels == null && values == null)
+            if (labels == null || values == null)
             {
                 for (var i = 0; i < defaultLabels.Count; i++)
                 {
@@ -53,7 +53,7 @@ namespace CoreNodes.ChartHelpers
         {
             var output = new Dictionary<string, double>();
 
-            if (labels == null && values == null)
+            if (labels == null || values == null)
             {
                 for (var i = 0; i < defaultLabels.Count; i++)
                 {
@@ -71,6 +71,19 @@ namespace CoreNodes.ChartHelpers
             for (var i = 0; i < labels.Count; i++)
             {
                 output.Add(labels[i], values[i]);
+            }
+
+            return output;
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public static Dictionary<string, double> GetDefaultNodeInput()
+        {
+            var output = new Dictionary<string, double>();
+
+            for (var i = 0; i < defaultLabels.Count; i++)
+            {
+                output.Add(defaultLabels[i], defaultValues[i]);
             }
 
             return output;

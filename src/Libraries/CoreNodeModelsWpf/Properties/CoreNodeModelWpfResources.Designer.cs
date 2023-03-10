@@ -156,7 +156,7 @@ namespace Dynamo.Wpf.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Dictionary containing label:value key-pairs
         ///
-        ///Dictionary&lt;string, double&gt;.
+        ///Dictionary&lt;string, List&lt;double&gt;&gt;.
         /// </summary>
         public static string ChartsBasicLineChartLabelsValuesDataPortToolTip {
             get {
@@ -207,7 +207,7 @@ namespace Dynamo.Wpf.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Dictionary containing label:value key-pairs
         ///
-        ///Dictionary&lt;string, List&lt;double&gt;&gt;.
+        ///Dictionary&lt;string, Dictionary&lt;string, double&gt;&gt;.
         /// </summary>
         public static string ChartsHeatSeriesLabelsValuesDataPortToolTip {
             get {
@@ -353,7 +353,7 @@ namespace Dynamo.Wpf.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Dictionary containing label:value key-pairs
         ///
-        ///Dictionary&lt;string,double&gt;.
+        ///Dictionary&lt;string, List&lt;List&lt;double&gt;&gt;&gt;.
         /// </summary>
         public static string ChartsScatterPlotLabelsValuesDataPortToolTip {
             get {
@@ -426,7 +426,7 @@ namespace Dynamo.Wpf.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Dictionary containing label:value key-pairs
         ///
-        ///Dictionary&lt;string,double&gt;.
+        ///Dictionary&lt;string, List&lt;List&lt;double&gt;&gt;&gt;.
         /// </summary>
         public static string ChartsXYLineChartLabelsValuesDataPortToolTip {
             get {

@@ -167,7 +167,7 @@ List&lt;color&gt;</value>
   <data name="ChartsBasicLineChartLabelsValuesDataPortToolTip" xml:space="preserve">
     <value>Dictionary containing label:value key-pairs
 
-Dictionary&lt;string, double&gt;</value>
+Dictionary&lt;string, List&lt;double&gt;&gt;</value>
   </data>
   <data name="ChartsHeatSeriesDescription" xml:space="preserve">
     <value>Create a heat series plot</value>
@@ -198,7 +198,7 @@ List&lt;color&gt;</value>
   <data name="ChartsHeatSeriesLabelsValuesDataPortToolTip" xml:space="preserve">
     <value>Dictionary containing label:value key-pairs
 
-Dictionary&lt;string, List&lt;double&gt;&gt;</value>
+Dictionary&lt;string, Dictionary&lt;string, double&gt;&gt;</value>
   </data>
   <data name="ChartsPieChartDescription" xml:space="preserve">
     <value>Create a new Pie Chart</value>
@@ -255,9 +255,9 @@ List&lt;color&gt;</value>
   <data name="ChartsScatterPlotLabelsValuesDataPortToolTip" xml:space="preserve">
     <value>Dictionary containing label:value key-pairs
 
-Dictionary&lt;string,double&gt;</value>
+Dictionary&lt;string, List&lt;List&lt;double&gt;&gt;&gt;</value>
   </data>
-    <data name="ChartsXYLineChartDescription" xml:space="preserve">
+  <data name="ChartsXYLineChartDescription" xml:space="preserve">
     <value>Create a new XY line plot</value>
   </data>
   <data name="ChartsXYLineChartSearchTags" xml:space="preserve">
@@ -286,9 +286,9 @@ List&lt;color&gt;</value>
   <data name="ChartsXYLineChartLabelsValuesDataPortToolTip" xml:space="preserve">
     <value>Dictionary containing label:value key-pairs
 
-Dictionary&lt;string,double&gt;</value>
+Dictionary&lt;string, List&lt;List&lt;double&gt;&gt;&gt;</value>
   </data>
-    <data name="ColorPaletteUIAdvancedButtonHeader" xml:space="preserve">
+  <data name="ColorPaletteUIAdvancedButtonHeader" xml:space="preserve">
     <value>Advanced</value>
   </data>
   <data name="ColorPaletteUIRecentColors" xml:space="preserve">

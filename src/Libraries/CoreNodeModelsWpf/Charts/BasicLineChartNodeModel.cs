@@ -32,7 +32,7 @@ namespace CoreNodeModelsWpf.Charts
         "ChartsBasicLineChartValuesDataPortToolTip",
         "ChartsBasicLineChartColorsDataPortToolTip")]
     [OutPortNames("labels:values")]
-    [OutPortTypes("Dictionary<string, double>")]
+    [OutPortTypes("Dictionary<string, List<double>>")]
     [OutPortDescriptions(typeof(CoreNodeModelWpfResources),
         "ChartsBasicLineChartLabelsValuesDataPortToolTip")]
     [AlsoKnownAs("CoreNodeModelsWpf.Charts.Index-ValueLinePlot")]
@@ -117,6 +117,9 @@ namespace CoreNodeModelsWpf.Charts
         /// <param name="data">The data passed through the data bridge.</param>
         private void DataBridgeCallback(object data)
         {
+            // Reset an info states if any
+            if (NodeInfos.Count > 0) this.ClearInfoMessages();
+
             // Grab input data which always returned as an ArrayList
             var inputs = data as ArrayList;
 
@@ -124,6 +127,9 @@ namespace CoreNodeModelsWpf.Charts
             var labels = inputs[0] as ArrayList;
             var values = inputs[1] as ArrayList;
             var colors = inputs[2] as ArrayList;
+
+            if (labels == null || values == null)
+                return;
 
             // Only continue if key/values match in length
             if (labels.Count != values.Count || labels.Count < 1)
@@ -203,17 +209,29 @@ namespace CoreNodeModelsWpf.Charts
             // WARNING!!!
             // Do not throw an exception during AST creation.
 
-            // If inputs are not connected return null
+            AssociativeNode inputNode;
+
+            // If inputs are not connected return default input
             if (!InPorts[0].IsConnected ||
                 !InPorts[1].IsConnected)
             {
+                inputNode = AstFactory.BuildFunctionCall(
+                    new Func<List<string>, List<List<double>>, List<DSCore.Color>, Dictionary<string, List<double>>>(BasicLineChartFunctions.GetNodeInput),
+                    new List<AssociativeNode> { inputAstNodes[0], inputAstNodes[1], inputAstNodes[2] }
+                );
+
                 return new[]
                 {
-                    AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()),
+                    AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), inputNode),
+                    AstFactory.BuildAssignment(
+                        AstFactory.BuildIdentifier(AstIdentifierBase + "_dummy"),
+                        VMDataBridge.DataBridge.GenerateBridgeDataAst(GUID.ToString(), AstFactory.BuildExprList(inputAstNodes)
+                        )
+                    ),
                 };
             }
 
-            AssociativeNode inputNode = AstFactory.BuildFunctionCall(
+            inputNode = AstFactory.BuildFunctionCall(
                 new Func<List<string>, List<List<double>>, List<DSCore.Color>, Dictionary<string, List<double>>>(BasicLineChartFunctions.GetNodeInput),
                 new List<AssociativeNode> { inputAstNodes[0], inputAstNodes[1], inputAstNodes[2] }
             );

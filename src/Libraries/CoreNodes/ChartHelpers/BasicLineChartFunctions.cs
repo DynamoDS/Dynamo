@@ -23,7 +23,7 @@ namespace CoreNodes.ChartHelpers
         {
             var output = new Dictionary<string, List<double>>();
 
-            if (titles == null && values == null)
+            if (titles == null || values == null)
             {
                 for (var i = 0; i < defaultLabels.Count; i++)
                 {

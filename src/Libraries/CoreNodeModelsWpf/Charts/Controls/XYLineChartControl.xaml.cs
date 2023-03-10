@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
@@ -56,7 +57,7 @@ namespace CoreNodeModelsWpf.Charts.Controls
                     new double[]{ 1, 2, 3, 4 },
                     new double[]{ 2, 3, 4, 5 }
                 };
-
+                List<string> labels = new List<string> {"Plot 1", "Plot 2", "Plot 3"};
                 LineSeries[] seriesRange = new LineSeries[defaultXValues.Length];
 
                 for (var i = 0; i < defaultXValues.Length; i++)
@@ -74,6 +75,7 @@ namespace CoreNodeModelsWpf.Charts.Controls
 
                     seriesRange[i] = new LineSeries
                     {
+                        Title = labels[i],
                         Values = points,
                         Fill = Brushes.Transparent
                     };

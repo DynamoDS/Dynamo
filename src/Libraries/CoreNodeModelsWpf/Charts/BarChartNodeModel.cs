@@ -119,6 +119,9 @@ namespace CoreNodeModelsWpf.Charts
         /// <param name="data">The data passed through the data bridge.</param>
         private void DataBridgeCallback(object data)
         {
+            // Reset an info states if any
+            if (NodeInfos.Count > 0) this.ClearInfoMessages();
+
             // Grab input data which always returned as an ArrayList
             var inputs = data as ArrayList;
 
@@ -127,12 +130,15 @@ namespace CoreNodeModelsWpf.Charts
             var values = inputs[1] as ArrayList;
             var colors = inputs[2] as ArrayList;
 
+            if (labels == null || values == null)
+                return;
+
             // Only continue if key/values match in length
             if (labels.Count != values.Count && labels.Count != (values[0] as ArrayList).Count)
             {
                 throw new Exception("Label and Values do not properly align in length.");
             }
-
+            
             // Update chart properties
             Labels = new List<string>();
             Values = new List<List<double>>();
@@ -167,7 +173,6 @@ namespace CoreNodeModelsWpf.Charts
                     }
                     else
                     {
-
                         var dynColor = (DSCore.Color)colors[i];
                         color = Color.FromArgb(dynColor.Alpha, dynColor.Red, dynColor.Green, dynColor.Blue);
                     }
@@ -228,17 +233,28 @@ namespace CoreNodeModelsWpf.Charts
             // WARNING!!!
             // Do not throw an exception during AST creation.
 
-            // If inputs are not connected return null
+            AssociativeNode inputNode;
+
+            // If inputs are not connected return default input
             if (!InPorts[0].IsConnected ||
                 !InPorts[1].IsConnected)
             {
+                inputNode = AstFactory.BuildFunctionCall(
+                    new Func<List<string>, List<double>, List<DSCore.Color>, Dictionary<string, double>>(BarChartFunctions.GetNodeInput),
+                    new List<AssociativeNode> { inputAstNodes[0], inputAstNodes[1], inputAstNodes[2] }
+                );
+
                 return new[]
                 {
-                    AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()),
+                    AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), inputNode),
+                    AstFactory.BuildAssignment(
+                        AstFactory.BuildIdentifier(AstIdentifierBase + "_dummy"),
+                        VMDataBridge.DataBridge.GenerateBridgeDataAst(GUID.ToString(), AstFactory.BuildExprList(inputAstNodes)
+                        )
+                    ),
                 };
             }
 
-            AssociativeNode inputNode;
             if (isNestedList)
             {
                 inputNode = AstFactory.BuildFunctionCall(
