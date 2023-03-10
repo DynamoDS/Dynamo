@@ -1,5 +1,4 @@
 using System.Linq;
-using System.Windows.Controls;
 using Dynamo.PackageManager;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
