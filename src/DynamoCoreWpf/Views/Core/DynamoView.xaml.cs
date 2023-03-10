@@ -1631,20 +1631,43 @@ namespace Dynamo.Controls
             foreach (var window in ExtensionWindows.Values)
             {
                 SaveExtensionWindowSettings(window);
+                SaveExtensionOpenState(window, null);
             }
-            //update open state of each view extension, if option to remember extensions is enabled in preferences
+            foreach (var tab in ExtensionTabItems)
+            {
+                SaveExtensionOpenState(null, tab);
+            }
+            //update open state of all existing view extension in setting, if option to remember extensions is enabled in preferences
             if (dynamoViewModel.PreferenceSettings.EnablePersistExtensions) {
                 var settings = dynamoViewModel.PreferenceSettings.ViewExtensionSettingsList;
                 foreach (var setting in settings)
                 {
-                    if (ExtensionTabItems.Any(e => e.Uid == setting.UniqueId) || ExtensionWindows.Values.Any(e => e.Uid == setting.UniqueId))
-                    {
-                        setting.IsOpen = true;
-                    }
-                    else
+                    if (ExtensionTabItems.Any(e => e.Uid != setting.UniqueId) && ExtensionWindows.Values.Any(e => e.Uid != setting.UniqueId))
                     {
                         setting.IsOpen = false;
                     }
+                }
+            }
+        }
+        //This method is to ensure that the extensions states are correctly saved for newly added extensions.
+        private void SaveExtensionOpenState(ExtensionWindow window, TabItem tab)
+        {
+            if (!dynamoViewModel.PreferenceSettings.EnablePersistExtensions) return;
+
+            if (window != null)
+            {
+                var setting = dynamoViewModel.Model.PreferenceSettings.ViewExtensionSettingsList.Find(ext => ext.UniqueId == window.Uid);
+                if (setting != null)
+                {
+                    setting.IsOpen = true;
+                }
+            }
+            if (tab != null)
+            {
+                var setting = dynamoViewModel.Model.PreferenceSettings.ViewExtensionSettingsList.Find(ext => ext.UniqueId == tab.Uid);
+                if (setting != null)
+                {
+                    setting.IsOpen = true;
                 }
             }
         }
