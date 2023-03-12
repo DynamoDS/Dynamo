@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,6 +11,7 @@ using System.Windows.Threading;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Controls;
+using Dynamo.Logging;
 using Dynamo.Wpf;
 using Dynamo.Wpf.Rendering;
 using Dynamo.Wpf.ViewModels.Watch3D;
@@ -20,7 +22,7 @@ using Watch3DNodeModelsWpf.Properties;
 
 namespace Watch3DNodeModelsWpf
 {
-    public class Watch3DNodeViewCustomization : INodeViewCustomization<Watch3D>
+    public class Watch3DNodeViewCustomization : VariableInputNodeViewCustomization, INodeViewCustomization<Watch3D>
     {
         private Watch3D watch3dModel;
         private Watch3DView watch3DView;
@@ -43,6 +45,8 @@ namespace Watch3DNodeModelsWpf
 
         public void CustomizeView(Watch3D model, NodeView nodeView)
         {
+            base.CustomizeView(model, nodeView);
+
             var dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
             watch3dModel = model;
 
@@ -93,16 +97,16 @@ namespace Watch3DNodeModelsWpf
                 DataContext = watch3DViewModel
             };
 
-            // When user sizes a watch node, only view gets resized. The actual 
-            // NodeModel does not get updated. This is where the view updates the 
-            // model whenever its size is updated. 
-            // Updated from (Watch3d)View.SizeChanged to nodeView.SizeChanged - height 
+            // When user sizes a watch node, only view gets resized. The actual
+            // NodeModel does not get updated. This is where the view updates the
+            // model whenever its size is updated.
+            // Updated from (Watch3d)View.SizeChanged to nodeView.SizeChanged - height
             // and width should correspond to node model and not watch3Dview
             nodeView.SizeChanged += (sender, args) =>
 			    model.SetSize(args.NewSize.Width, args.NewSize.Height);
 
             // set WatchSize in model
-            watch3DView.View.SizeChanged += (sender, args) => 
+            watch3DView.View.SizeChanged += (sender, args) =>
 			    model.SetWatchSize(args.NewSize.Width, args.NewSize.Height);
 
             var mi = new MenuItem { Header = Resources.ZoomToFit };
@@ -133,7 +137,7 @@ namespace Watch3DNodeModelsWpf
                     nodeView.Dispatcher.Invoke(
                         new Action<object>(RenderData),
                         DispatcherPriority.Render,
-                        obj));       
+                        obj));
         }
 
         void model_Serialized(XmlElement nodeElement)
@@ -145,12 +149,13 @@ namespace Watch3DNodeModelsWpf
         {
             var factory = new HelixRenderPackageFactory();
             var renderPackage = factory.CreateRenderPackage();
-            gItem.Tessellate(renderPackage, factory.TessellationParameters);
+            ////gItem.Tessellate(renderPackage, factory.TessellationParameters);
             return renderPackage;
         }
 
         private void RenderData(object data)
         {
+            Debug.WriteLine("Hello");
             IEnumerable<IRenderPackage> packages = UnpackRenderData(data).Select(CreateRenderPackageFromGraphicItem);
             watch3DViewModel.AddGeometryForRenderPackages(new RenderPackageCache(packages));
         }

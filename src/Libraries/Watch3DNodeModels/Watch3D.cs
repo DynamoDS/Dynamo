@@ -95,9 +95,9 @@ namespace Watch3DNodeModels
     [OutPortTypes("var")]
     [AlsoKnownAs("Dynamo.Nodes.dyn3DPreview", "Dynamo.Nodes.3DPreview", "Dynamo.Nodes.Watch3D", "DynamoWatch3D.Watch3D")]
     [IsDesignScriptCompatible]
-    public class Watch3D : NodeModel
+    public class Watch3D : VariableInputNode
     {
-        // If the view model, which maintains the camera, 
+        // If the view model, which maintains the camera,
         // is not created until the view customization is applied,
         // as in the case of a Watch3D node,
         // we cache the camera position data returned from the file
@@ -213,6 +213,16 @@ namespace Watch3DNodeModels
 
         #endregion
 
+        protected override string GetInputTooltip(int index)
+        {
+            return "[No Tooltip]";
+        }
+
+        protected override string GetInputName(int index)
+        {
+            return string.Concat("Input ", index);
+        }
+
         protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
         {
             base.SerializeCore(nodeElement, context);
@@ -241,14 +251,14 @@ namespace Watch3DNodeModels
                     WatchWidth = Convert.ToDouble(node.Attributes["width"].Value, CultureInfo.InvariantCulture);
                     WatchHeight = Convert.ToDouble(node.Attributes["height"].Value, CultureInfo.InvariantCulture);
 
-                    // Cache the data if we're using a node view customization 
+                    // Cache the data if we're using a node view customization
                     // to create the view model.
                     initialCameraData = node;
 
                     // Trigger the event, in case the view model already exists
                     OnDeserialized(node);
 
-                    // Deserialized can be null, when we are running on Unix. There is no WPF 
+                    // Deserialized can be null, when we are running on Unix. There is no WPF
                     // and that's why no Helix. But we still have to process camera position to use it in Flood.
                     if (Deserialized == null)
                     {
@@ -264,7 +274,7 @@ namespace Watch3DNodeModels
         }
 
         /// <summary>
-        /// Deserializes camera from XML, if there is no any Deserialized action. 
+        /// Deserializes camera from XML, if there is no any Deserialized action.
         /// It's used for creation of camera, that will be sent to Flood.
         /// </summary>
         private void DeserializeCamera()
