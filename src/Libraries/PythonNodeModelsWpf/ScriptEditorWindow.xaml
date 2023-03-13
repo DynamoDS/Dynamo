@@ -452,8 +452,8 @@
                             <Image Source="/PythonNodeModelsWpf;component/Resources/alert.png" Width="24" Height="24"/>
                         </Border>
                         <StackPanel Orientation="Vertical" VerticalAlignment="Center" Grid.Column="1">
-                        <TextBlock Margin="15 5" FontSize="14"  FontFamily="{StaticResource ArtifaktElementBold}" Text="Are you sure you want to leave?"/>
-                        <TextBlock Margin="15 5" FontSize="14" FontFamily="{StaticResource ArtifaktElementRegular}" TextWrapping="WrapWithOverflow" Text="It looks like you are still working on this. You may lose any unsaved changes if you leave now"/>
+                        <TextBlock Margin="15 5" FontSize="14"  FontFamily="{StaticResource ArtifaktElementBold}" Text="{x:Static p:Resources.PythonScriptUnsavedChangesPromptTitle} "/>
+                        <TextBlock Margin="15 5" FontSize="14" FontFamily="{StaticResource ArtifaktElementRegular}" TextWrapping="WrapWithOverflow" Text="{x:Static p:Resources.PythonScriptUnsavedChangesPromptText}"/>
                     </StackPanel>
                     <StackPanel Orientation="Vertical" VerticalAlignment="Center" Grid.Column="2">
                         <Button 

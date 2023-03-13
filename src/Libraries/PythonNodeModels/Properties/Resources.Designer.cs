@@ -223,6 +223,15 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Redo.
+        /// </summary>
+        public static string PythonScriptEditorRedoButtonTooltip {
+            get {
+                return ResourceManager.GetString("PythonScriptEditorRedoButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Revert the changes made to current Python node editor and close it..
         /// </summary>
         public static string PythonScriptEditorRevertButtonTooltip {
@@ -231,44 +240,6 @@ namespace PythonNodeModels.Properties {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized string similar to Undo.
-        /// </summary>
-        public static string PythonScriptEditorUndoButtonTooltip {
-            get {
-                return ResourceManager.GetString("PythonScriptEditorUndoButtonTooltip", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Redo.
-        /// </summary>
-        public static string PythonScriptEditorRedoButtonTooltip
-        {
-            get
-            {
-                return ResourceManager.GetString("PythonScriptEditorRedoButtonTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Zoom in.
-        /// </summary>
-        public static string PythonScriptEditorZoomInButtonTooltip {
-            get {
-                return ResourceManager.GetString("PythonScriptEditorZoomInButtonTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Zoom out.
-        /// </summary>
-        public static string PythonScriptEditorZoomOutButtonTooltip {
-            get {
-                return ResourceManager.GetString("PythonScriptEditorZoomOutButtonTooltip", resourceCulture);
-            }
-        }
-
         /// <summary>
         ///   Looks up a localized string similar to Save and run.
         /// </summary>
@@ -297,11 +268,56 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Undo.
+        /// </summary>
+        public static string PythonScriptEditorUndoButtonTooltip {
+            get {
+                return ResourceManager.GetString("PythonScriptEditorUndoButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zoom in.
+        /// </summary>
+        public static string PythonScriptEditorZoomInButtonTooltip {
+            get {
+                return ResourceManager.GetString("PythonScriptEditorZoomInButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zoom out.
+        /// </summary>
+        public static string PythonScriptEditorZoomOutButtonTooltip {
+            get {
+                return ResourceManager.GetString("PythonScriptEditorZoomOutButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Runs a Python script from a string..
         /// </summary>
         public static string PythonScriptFromStringDescription {
             get {
                 return ResourceManager.GetString("PythonScriptFromStringDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to It looks like you are still working on this. You may lose any unsaved changes if you leave now.
+        /// </summary>
+        public static string PythonScriptUnsavedChangesPromptText {
+            get {
+                return ResourceManager.GetString("PythonScriptUnsavedChangesPromptText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to leave?.
+        /// </summary>
+        public static string PythonScriptUnsavedChangesPromptTitle {
+            get {
+                return ResourceManager.GetString("PythonScriptUnsavedChangesPromptTitle", resourceCulture);
             }
         }
         
