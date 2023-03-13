@@ -22,18 +22,16 @@
         <Reference Include="Microsoft.CSharp" />
         <Reference Include="System.Data" />
         <Reference Include="System.Xml" />
-        <COMReference Include="Microsoft.Office.Core" Condition=" '$(OS)' != 'Unix' ">
+        <Reference Include="$(PkgMicrosoft_Office_Interop_Excel)\lib\net20\Microsoft.Office.Interop.Excel.dll">
+            <EmbedInteropTypes>True</EmbedInteropTypes>
             <WrapperTool>tlbimp</WrapperTool>
-            <VersionMinor>8</VersionMinor>
-            <VersionMajor>2</VersionMajor>
-            <Guid>2df8d04c-5bfa-101b-bde5-00aa0044de52</Guid>
-            <Lcid>0</Lcid>
-            <Isolated>false</Isolated>
-            <EmbedInteropTypes>true</EmbedInteropTypes>
-        </COMReference>
+        </Reference>
     </ItemGroup>
   <ItemGroup>
-      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+    <PackageReference Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1000" GeneratePathProperty="true">
+        <ExcludeAssets>all</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\DynamoCore\DynamoCore.csproj">

@@ -207,7 +207,7 @@ x = TestCSharpAttribute.TestReturnAttribute();
             thisTest.Verify("x", new object[] { 1.3, new double[] { 4.5, 7.8 } });
 
         }
-#if (NETFRAMEWORK && !__MonoCS__)
+#if NETFRAMEWORK
         [Test]
         public void Test_Embedded_Interop_Types()
         {
@@ -215,8 +215,8 @@ x = TestCSharpAttribute.TestReturnAttribute();
 import (ClassFunctionality from ""FFITarget.dll"");
 import (EmbeddedInteropTestClass from ""EmbeddedInterop.dll"");
 
-  val = EmbeddedInteropTestClass.GetOfficeInteropType();
-  o = ClassFunctionality.TestOfficeInteropType(val);
+  val = EmbeddedInteropTestClass.GetExcelInteropType();
+  o = ClassFunctionality.TestExcelInteropType(val);
 ";
 
             thisTest.RunScriptSource(code);
