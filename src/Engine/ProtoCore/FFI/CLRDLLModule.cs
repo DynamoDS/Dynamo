@@ -10,20 +10,6 @@ using ProtoCore.Utils;
 
 namespace ProtoFFI
 {
-
-    internal class TypeEqualityComparer : IEqualityComparer<Type>
-    {
-        public bool Equals(Type x, Type y)
-        {
-            return x.IsEquivalentTo(y) || x.Equals(y);
-        }
-
-        public int GetHashCode(Type obj)
-        {
-            return obj.GetHashCode();
-        }
-    }
-
     /// <summary>
     /// This class creates ClassDeclNode for a given type and caches all the
     /// imported types. This class also keeps the list of FFIFunctionPointer
@@ -63,25 +49,24 @@ namespace ProtoFFI
         /// <param name="alias">Alias name, if any. For now its not supported.</param>
         public static CLRModuleType GetInstance(Type type, CLRDLLModule module, string alias)
         {
-            CLRModuleType mtype;
-            if (!mTypes.TryGetValue(type, out mtype))
+            if (!mTypes.TryGetValue(type, out CLRModuleType mtype))
             {
                 lock (mTypes)
                 {
-                    if (!mTypes.TryGetValue(type, out mtype))
+                    mtype = new CLRModuleType(type);
+                    //Now check that a type with same name is not imported.
+                    Type otherType;
+                    if (mTypeNames.TryGetValue(mtype.FullName, out CLRModuleType otherMType))
                     {
-                        mtype = new CLRModuleType(type);
-                        //Now check that a type with same name is not imported.
-                        bool equivalentComTypes = false;
-                        Type otherType;
-                        if (mTypeNames.TryGetValue(mtype.FullName, out otherType))
+                        if (otherMType.CLRType.IsEquivalentTo(type))
                         {
-                            throw new InvalidOperationException(string.Format("Can't import {0}, {1} is already imported as {2}, namespace support needed.", type.FullName, type.Name, otherType.FullName));
+                            return otherMType;
                         }
-
-                        mTypes.Add(type, mtype);
-                        mTypeNames.Add(mtype.FullName, type);
+                        throw new InvalidOperationException(string.Format("Can't import {0}, {1} is already imported as {2}.", type.FullName, type.Name, otherMType.CLRType.FullName));
                     }
+
+                    mTypes.Add(type, mtype);
+                    mTypeNames.Add(mtype.FullName, mtype);
                 }
             }
 
@@ -259,9 +244,8 @@ namespace ProtoFFI
 
         public static System.Type GetImportedType(string typename)
         {
-            Type type = null;
-            if (mTypeNames.TryGetValue(typename, out type))
-                return type;
+            if (mTypeNames.TryGetValue(typename, out CLRModuleType mType))
+                return mType.CLRType;
 
             return null;
         }
@@ -275,13 +259,13 @@ namespace ProtoFFI
 
         private Dictionary<MethodInfo, Attribute[]> mGetterAttributes = new Dictionary<MethodInfo, Attribute[]>();
 
-        private static readonly Dictionary<Type, CLRModuleType> mTypes = new Dictionary<Type, CLRModuleType>(new TypeEqualityComparer());
+        private static readonly Dictionary<Type, CLRModuleType> mTypes = new Dictionary<Type, CLRModuleType>();
 
-        private static readonly Dictionary<string, Type> mTypeNames = new Dictionary<string, Type>();
+        private static readonly Dictionary<string, CLRModuleType> mTypeNames = new Dictionary<string, CLRModuleType>();
 
-        private static readonly Dictionary<System.Type, ProtoCore.Type> mTypeMaps = new Dictionary<Type, ProtoCore.Type>(new TypeEqualityComparer());
+        private static readonly Dictionary<System.Type, ProtoCore.Type> mTypeMaps = new Dictionary<Type, ProtoCore.Type>();
 
-        private static readonly Dictionary<System.Type, FFIClassAttributes> mTypeAttributeMaps = new Dictionary<System.Type, FFIClassAttributes>(new TypeEqualityComparer());
+        private static readonly Dictionary<System.Type, FFIClassAttributes> mTypeAttributeMaps = new Dictionary<System.Type, FFIClassAttributes>();
 
         private Type GetBaseType(Type type)
         {
