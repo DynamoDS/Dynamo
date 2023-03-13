@@ -141,7 +141,7 @@
                                                HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
                                                FontSize="14px"
-                                               Foreground="#3C3C3C"
+                                               Foreground="{StaticResource WorkspaceTabBorderSelectedFalse}"
                                                Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
                                 </Grid>
                             </Border>
@@ -256,7 +256,7 @@
                 </DockPanel>
 
                 <Rectangle Style="{StaticResource DividerRectangleStyle}"
-                           Fill="#808080"
+                           Fill="{StaticResource NodeContextMenuBackgroundHighlight}"
                            Grid.Row="0"
                            Margin="0 1 0 0"/>
 
@@ -396,8 +396,8 @@
                                            FontFamily="{StaticResource SourceCodePro}"
                                            FontSize="10pt"
                                            ShowLineNumbers="True"
-                                           Background="#353535"
-                                           Foreground="#f5f5f5"
+                                           Background="{StaticResource ExtensionBackgroundColor}"
+                                           Foreground="{StaticResource AutocompletionWindowFontColor}"
                                            Padding="5"
                                            HorizontalScrollBarVisibility="Disabled"
                                            PreviewMouseWheel="EditorBox_PreviewMouseWheel"
@@ -448,7 +448,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="180"/>
                     </Grid.ColumnDefinitions>
-                        <Border Background="#FAA21B" Grid.Column="0"> 
+                    <Border Background="{StaticResource YellowOrange500Brush}" Grid.Column="0"> 
                             <Image Source="/PythonNodeModelsWpf;component/Resources/alert.png" Width="24" Height="24"/>
                         </Border>
                         <StackPanel Orientation="Vertical" VerticalAlignment="Center" Grid.Column="1">
