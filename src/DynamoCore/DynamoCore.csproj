@@ -10,6 +10,8 @@
     <AssemblyName>DynamoCore</AssemblyName>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <DocumentationFile>$(OutputPath)\DynamoCore.XML</DocumentationFile>
+    <LibGOsToken>windows</LibGOsToken>
+    <LibGOsToken Condition="$(Platform.Contains('Linux'))">linux</LibGOsToken>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(ExecutionEngine)' != 'FScheme' ">
     <DefineConstants>$(DefineConstants);USE_DSENGINE</DefineConstants>
@@ -29,8 +31,8 @@
   <ItemGroup Label="Common dependencies">
     <PackageReference Include="Autodesk.IDSDK" Version="1.1.6" />
     <PackageReference Include="DynamoVisualProgramming.Analytics" Version="3.0.0.2506" />
-    <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.17.1.3967" GeneratePathProperty="true"/>
-    <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.17.1.3967" GeneratePathProperty="true"/>
+    <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.665" GeneratePathProperty="true"/>
+    <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.18.0.665" GeneratePathProperty="true"/>
     <PackageReference Include="Greg" Version="2.3.0.2505" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" CopyXML="true" />
 	  <PackageReference Include="RestSharp" Version="106.12.0" CopyXML="true" />
@@ -122,14 +124,17 @@
   </Choose>
   <Target Name="BeforeBuildOps" BeforeTargets="Build">
     <PropertyGroup>
-      <LibGProtoGeometryLibGLocale>$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\libg_locale</LibGProtoGeometryLibGLocale>
+      <LibGProtoGeometryLibGLocale>$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\libg_locale</LibGProtoGeometryLibGLocale>
     </PropertyGroup>
     <ItemGroup>
-      <LibGInterface Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\LibG.Interface.dll" />
-      <LibGProtoGeometryXml Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\lib\netstandard2.0\ProtoGeometry.XML" />
-      <LibGProtoGeometryUICulture Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(UICulture)\*" />
-      <LibG228 Include="$(PkgDynamoVisualProgramming_LibG_228_0_0)\tools\netstandard2.0\LibG_228_0_0\*" />
-      <LibG229 Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\LibG_229_0_0\*" />
+      <LibGInterface Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\LibG.Interface.dll" />
+      <LibGProtoGeometryDLL Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\ProtoGeometry.dll" />
+      <LibGProtoGeometryXML Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\ProtoGeometry.XML" />
+      <LibG229Deps Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\asm_deps.csproj" />
+      <LibG228Deps Include="$(PkgDynamoVisualProgramming_LibG_228_0_0)\tools\netstandard2.0\$(LibGOsToken)\asm_deps.csproj" />
+      <LibGProtoGeometryUICulture Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\$(UICulture)\*" />
+      <LibG228 Include="$(PkgDynamoVisualProgramming_LibG_228_0_0)\tools\netstandard2.0\$(LibGOsToken)\LibG_228_0_0\*" />
+      <LibG229 Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\LibG_229_0_0\*" />
       <ExternSimplexNoise Include="$(SolutionDir)..\extern\SimplexNoise\*" />
       <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\**\*.*" />
       <NodeHelpFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.*" />
@@ -147,9 +152,12 @@
     <Copy SourceFiles="@(NodeHelpFiles)" DestinationFolder="$(OutputPath)\en-US\fallback_docs\" />
     <Copy SourceFiles="@(OpenSourceLicenses)" DestinationFolder="$(OutputPath)Open Source Licenses\" />
     <Copy SourceFiles="@(LibGInterface)" DestinationFolder="$(OutputPath)" />
+    <Copy SourceFiles="@(LibGProtoGeometryDLL)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(LibGProtoGeometryXml)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(LibGProtoGeometryXml)" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="@(LibGProtoGeometryUICulture)" DestinationFolder="$(OutputPath)\$(UICulture)" />
+    <Copy Condition="$(Platform.Contains('Linux'))" SourceFiles="@(LibG229Deps)" DestinationFolder="$(OutputPath)libg_228_0_0\asm_deps\" />
+    <Copy Condition="$(Platform.Contains('Linux'))" SourceFiles="@(LibG228Deps)" DestinationFolder="$(OutputPath)libg_229_0_0\asm_deps\" />
     <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command Copy-Item -Path $(LibGProtoGeometryLibGLocale) -Destination $(OutputPath) -Recurse -Force" />
     <Copy SourceFiles="@(LibG228)" DestinationFolder="$(OutputPath)libg_228_0_0\" />
     <Copy SourceFiles="@(LibG229)" DestinationFolder="$(OutputPath)libg_229_0_0\" />

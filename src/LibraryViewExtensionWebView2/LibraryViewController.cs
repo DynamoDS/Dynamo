@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -32,7 +33,6 @@ namespace Dynamo.LibraryViewExtensionWebView2
     public class LibraryViewController : IDisposable
     {
         private Window dynamoWindow;
-        private DynamoView dynamoView;
         private ICommandExecutive commandExecutive;
         private DynamoViewModel dynamoViewModel;
         private FloatingLibraryTooltipPopup libraryViewTooltip;
@@ -55,7 +55,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
         private const int standardFontSize = 14;
         private const int standardScreenHeight = 1080;
         private double libraryFontSize;
-
+        private const double minimumZoomScale = 0.25d;
 
         /// <summary>
         /// Creates a LibraryViewController.
@@ -74,8 +74,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
             dynamoWindow.StateChanged += DynamoWindowStateChanged;
             dynamoWindow.SizeChanged += DynamoWindow_SizeChanged;
 
-            this.dynamoView = dynamoView as DynamoView;
-            this.dynamoView.OnPreferencesWindowChanged += PreferencesWindowChanged;
+            dynamoViewModel.PreferencesWindowChanged += DynamoViewModel_PreferencesWindowChanged;
 
             DirectoryInfo webBrowserUserDataFolder;
             var userDataDir = new DirectoryInfo(dynamoViewModel.Model.PathManager.UserDataDirectory);
@@ -86,14 +85,16 @@ namespace Dynamo.LibraryViewExtensionWebView2
             }
         }
 
-        private void Browser_ZoomFactorChanged(object sender, EventArgs e)
+        private void DynamoViewModel_PreferencesWindowChanged(object sender, EventArgs e)
         {
-            dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale = ((float)browser.ZoomFactor);
+            var preferencesView = (Wpf.Views.PreferencesView)sender;
+            preferencesView.LibraryZoomScalingSlider.ValueChanged += DynamoSliderValueChanged;
         }
 
-        void PreferencesWindowChanged()
+        private void Browser_ZoomFactorChanged(object sender, EventArgs e)
         {
-            this.dynamoView.PreferencesWindow.LibraryZoomScalingSlider.ValueChanged += DynamoSliderValueChanged;
+            //Multiplies by 100 so the value can be saved as a percentage
+            dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale = (int)(browser.ZoomFactor * 100);
         }
 
         //if the window is resized toggle visibility of browser to force redraw
@@ -338,8 +339,11 @@ namespace Dynamo.LibraryViewExtensionWebView2
             }
 
             SetLibraryFontSize();
-            
-            browser.ZoomFactor = dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale;
+            //The default value of the zoom factor is 1.0. The value that comes from the slider is in percentage, so we divide by 100 to be equivalent            
+            double zoomFactor = ((double)dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale / 100d);
+
+            //The default value of the zoom factor is 1.0. The value that comes from the slider is in percentage, so we divide by 100 to be equivalent
+            browser.ZoomFactor = (double)dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale / 100;
             browser.ZoomFactorChanged += Browser_ZoomFactorChanged;
         }
 
@@ -554,8 +558,15 @@ namespace Dynamo.LibraryViewExtensionWebView2
         private void DynamoSliderValueChanged(object sender, EventArgs e)
         {
             Slider slider = (Slider)sender;
-            browser.ZoomFactor = slider.Value;
-            dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale = ((float)slider.Value);
+            //The default value of the zoom factor is 1.0. The value that comes from the slider is in percentage, so we divide by 100 to be equivalent
+            double zoomFactor = slider.Value / 100d;
+
+            //To avoid an invalid value for the zoom factor
+            if (zoomFactor < minimumZoomScale)
+                zoomFactor = minimumZoomScale;
+
+            browser.ZoomFactor = zoomFactor;
+            dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale = ((int)slider.Value);
         }
 
         /// <summary>
@@ -598,9 +609,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
                 dynamoWindow.StateChanged -= DynamoWindowStateChanged;
                 dynamoWindow.SizeChanged -= DynamoWindow_SizeChanged;
                 browser.ZoomFactorChanged -= Browser_ZoomFactorChanged;
-                this.dynamoView.PreferencesWindow.LibraryZoomScalingSlider.ValueChanged -= DynamoSliderValueChanged;
-                this.dynamoView.OnPreferencesWindowChanged -= PreferencesWindowChanged;
-
+                dynamoViewModel.PreferencesWindowChanged-= DynamoViewModel_PreferencesWindowChanged;
                 dynamoWindow = null;
             }
             if (this.browser != null)
