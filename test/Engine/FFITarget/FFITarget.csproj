@@ -12,7 +12,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DocumentationFile>..\..\..\bin\AnyCPU\Debug\en-US\FFITarget.xml</DocumentationFile>
   </PropertyGroup>
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net48' And '$(OS)' != 'Unix'   ">
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net48'">
         <PackageReference Include="NUnitTestAdapter" Version="2.3.0" ExcludeAssets="all" />
         <Reference Include="System" />
         <Reference Include="System.Core" />
@@ -22,7 +22,7 @@
         <Reference Include="Microsoft.CSharp" />
         <Reference Include="System.Data" />
         <Reference Include="System.Xml" />
-        <COMReference Include="Microsoft.Office.Core">
+        <COMReference Include="Microsoft.Office.Core" Condition=" '$(OS)' != 'Unix' ">
             <WrapperTool>tlbimp</WrapperTool>
             <VersionMinor>8</VersionMinor>
             <VersionMajor>2</VersionMajor>
