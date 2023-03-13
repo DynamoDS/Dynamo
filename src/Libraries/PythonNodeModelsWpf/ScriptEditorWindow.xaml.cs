@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Windows;
@@ -15,7 +16,15 @@ using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using PythonNodeModels;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Windows.Media;
 using Dynamo.PythonServices;
+using ICSharpCode.AvalonEdit;
+using ICSharpCode.AvalonEdit.Document;
+using ICSharpCode.AvalonEdit.Editing;
+using ICSharpCode.AvalonEdit.Folding;
+using ICSharpCode.AvalonEdit.Indentation;
 using Dynamo.Utilities;
 using System.Windows.Controls;
 
@@ -35,6 +44,9 @@ namespace PythonNodeModelsWpf
         private readonly DynamoViewModel dynamoViewModel;
         private bool nodeWasModified = false;
         private string originalScript;
+        private FoldingManager foldingManager;
+        private TabFoldingStrategy foldingStrategy;
+        private bool IsSaved { get; set; } = true;
         private int zoomScaleCacheValue;
 
         private readonly double fontSizePreferencesSliderProportionValue = (FONT_MAX_SIZE - FONT_MIN_SIZE) / (pythonZoomScalingSliderMaximum - pythonZoomScalingSliderMinimum);
@@ -61,24 +73,23 @@ namespace PythonNodeModelsWpf
         /// <summary>
         /// Available Python engines.
         /// </summary>
-        public ObservableCollection<string> AvailableEngines
-        {
+        public ObservableCollection<string> AvailableEngines {
             get; private set;
         }
         #endregion
-
         public ScriptEditorWindow(
             DynamoViewModel dynamoViewModel,
             PythonNode nodeModel,
             NodeView nodeView,
-            ref WindowRect windowRect
-            ) : base(nodeView, ref windowRect)
+            ref ModelessChildWindow.WindowRect windowRect
+        ) : base(nodeView, ref windowRect)
         {
             Closed += OnScriptEditorWindowClosed;
             this.dynamoViewModel = dynamoViewModel;
             this.NodeModel = nodeModel;
 
-            completionProvider = new SharedCompletionProvider(nodeModel.EngineName, dynamoViewModel.Model.PathManager.DynamoCoreDirectory);
+            completionProvider = new SharedCompletionProvider(nodeModel.EngineName,
+                dynamoViewModel.Model.PathManager.DynamoCoreDirectory);
             completionProvider.MessageLogged += dynamoViewModel.Model.Logger.Log;
             nodeModel.CodeMigrated += OnNodeModelCodeMigrated;
 
@@ -112,6 +123,9 @@ namespace PythonNodeModelsWpf
             editText.TextArea.TextEntering += OnTextAreaTextEntering;
             editText.TextArea.TextEntered += OnTextAreaTextEntered;
 
+            // Hyperlink color
+            editText.TextArea.TextView.LinkTextForegroundBrush = new SolidColorBrush(Color.FromArgb(255, 106, 192, 231));
+
             // Initialize editor with global settings for show/hide tabs and spaces
             editText.Options = dynamoViewModel.PythonScriptEditorTextOptions.GetTextOptions();
 
@@ -125,12 +139,13 @@ namespace PythonNodeModelsWpf
 
             const string highlighting = "ICSharpCode.PythonBinding.Resources.Python.xshd";
             var elem = GetType().Assembly.GetManifestResourceStream(
-                        "PythonNodeModelsWpf.Resources." + highlighting);
+                "PythonNodeModelsWpf.Resources." + highlighting);
 
             editText.SyntaxHighlighting = HighlightingLoader.Load(
                 new XmlTextReader(elem), HighlightingManager.Instance);
 
-            AvailableEngines = new ObservableCollection<string>(PythonEngineManager.Instance.AvailableEngines.Select(x => x.Name));
+            AvailableEngines =
+                new ObservableCollection<string>(PythonEngineManager.Instance.AvailableEngines.Select(x => x.Name));
             // Add the serialized Python Engine even if it is missing (so that the user does not see an empty slot)
             if (!AvailableEngines.Contains(NodeModel.EngineName))
             {
@@ -144,6 +159,8 @@ namespace PythonNodeModelsWpf
             CachedEngine = NodeModel.EngineName;
             EngineSelectorComboBox.SelectedItem = CachedEngine;
 
+            InstallFoldingManager();
+
             dynamoViewModel.PreferencesWindowChanged += DynamoViewModel_PreferencesWindowChanged;
         }
 
@@ -153,7 +170,73 @@ namespace PythonNodeModelsWpf
             preferencesView.PythonZoomScalingSlider.ValueChanged += PythonZoomScalingSlider_ValueChanged;
         }
 
+        private void InstallFoldingManager()
+        {
+            editText.TextArea.IndentationStrategy = new PythonIndentationStrategy(editText);
+
+            foldingManager = FoldingManager.Install(editText.TextArea);
+            foldingStrategy = new TabFoldingStrategy();
+            foldingStrategy.UpdateFoldings(foldingManager, editText.Document);
+
+            editText.TextChanged += EditTextOnTextChanged;
+
+            UpdateFoldings();
+        }
+
+        private void UpdateFoldings()
+        {
+            //if (!ShouldUpdate()) return;
+
+            if (foldingManager == null)
+                throw new ArgumentNullException("foldingManager");
+
+            // Since we cannot 'set' these values any other way, we need to change them on each update
+            var margins = editText.TextArea.LeftMargins.OfType<FoldingMargin>();
+            foreach (var margin in margins)
+            {
+                var test = margin;
+                test.FoldingMarkerBrush = new SolidColorBrush(Color.FromArgb(255, 153, 153, 153));
+                test.FoldingMarkerBackgroundBrush = new SolidColorBrush(Color.FromArgb(255, 53, 53, 53));
+                test.SelectedFoldingMarkerBrush = new SolidColorBrush(Color.FromArgb(255, 153, 153, 153));
+                test.SelectedFoldingMarkerBackgroundBrush = new SolidColorBrush(Color.FromArgb(255, 73, 73, 73));
+            }
+
+            foldingStrategy.UpdateFoldings(foldingManager, editText.Document);
+
+            if (foldingManager.AllFoldings.Any())
+            {
+                foreach (var section in foldingManager.AllFoldings)
+                {
+                    // only set the title of the section once
+                    if (section.Title != null) continue;
+
+                    var title = section.TextContent.Split(new[] { '\r', '\n' }).FirstOrDefault() + "...";
+                    section.Title = title;
+                }
+            }
+        }
+
+        private void EditTextOnTextChanged(object sender, EventArgs e)
+        {
+            // Mark the script for saving
+            if (IsSaved) IsSaved = false;
+            UpdateFoldings();
+        }
+
+        // Keeps track of Enter key use
+        private bool IsEnterHit { get; set; }
+        private bool ShouldUpdate()
+        {
+            if (!IsEnterHit) return false;
+            var offset = editText.CaretOffset;
+            var line = editText.Document.GetLineByNumber(editText.Document.GetLineByOffset(offset).LineNumber - 1);
+            var text = editText.Document.GetText(line.Offset, line.Length);
+            return text.EndsWith(":");
+        }
+
+
         #region Text Zoom in Python Editor
+
         /// <summary>
         /// PreviewMouseWheel event handler to zoom in and out
         /// Additional check to make sure reacting to ctrl + mouse wheel
@@ -200,6 +283,7 @@ namespace PythonNodeModelsWpf
                 }
             }
         }
+
         #endregion
 
         #region Autocomplete Event Handlers
@@ -210,9 +294,9 @@ namespace PythonNodeModelsWpf
             {
                 foreach (var item in e.NewItems)
                 {
-                    if (!AvailableEngines.Contains((string)item))
+                    if (!AvailableEngines.Contains((string) item))
                     {
-                        AvailableEngines.Add((string)item);
+                        AvailableEngines.Add((string) item);
                     }
                 }
             }
@@ -257,10 +341,7 @@ namespace PythonNodeModelsWpf
                         data.Add(completion);
 
                     completionWindow.Show();
-                    completionWindow.Closed += delegate
-                    {
-                        completionWindow = null;
-                    };
+                    completionWindow.Closed += delegate { completionWindow = null; };
                 }
             }
             catch (Exception ex)
@@ -288,12 +369,18 @@ namespace PythonNodeModelsWpf
 
         private void OnSaveClicked(object sender, RoutedEventArgs e)
         {
+            SaveScript();
+        }
+
+        private void SaveScript()
+        {
             originalScript = editText.Text;
             NodeModel.EngineName = CachedEngine;
             UpdateScript(editText.Text);
             Analytics.TrackEvent(
                 Dynamo.Logging.Actions.Save,
                 Dynamo.Logging.Categories.PythonOperations);
+            IsSaved = true;
         }
 
         private void OnRevertClicked(object sender, RoutedEventArgs e)
@@ -325,6 +412,7 @@ namespace PythonNodeModelsWpf
             {
                 dynamoViewModel.HomeSpace.Run();
             }
+
             Analytics.TrackEvent(
                 Dynamo.Logging.Actions.Run,
                 Dynamo.Logging.Categories.PythonOperations);
@@ -344,7 +432,8 @@ namespace PythonNodeModelsWpf
 
         private void OnMoreInfoClicked(object sender, RoutedEventArgs e)
         {
-            dynamoViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(PythonNodeModels.Properties.Resources.PythonMigrationWarningUriString, UriKind.Relative)));
+            dynamoViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(
+                new Uri(PythonNodeModels.Properties.Resources.PythonMigrationWarningUriString, UriKind.Relative)));
         }
 
         private void OnEngineChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -358,6 +447,7 @@ namespace PythonNodeModelsWpf
                     Categories.PythonOperations,
                     CachedEngine);
             }
+
             editText.Options.ConvertTabsToSpaces = CachedEngine != PythonEngineManager.IronPython2EngineName;
         }
 
@@ -371,16 +461,45 @@ namespace PythonNodeModelsWpf
             Analytics.TrackEvent(
                 Dynamo.Logging.Actions.Close,
                 Dynamo.Logging.Categories.PythonOperations);
+            
+            editText.TextChanged -= EditTextOnTextChanged;
+            FoldingManager.Uninstall(foldingManager);
+            foldingManager = null;
         }
+
+        private void OnUndoClicked(object sender, RoutedEventArgs e)
+        {
+            if (!editText.CanUndo) return;
+
+            editText.Undo();
+            e.Handled = true;
+        }
+
+        private void OnRedoClicked(object sender, RoutedEventArgs e)
+        {
+            if (!editText.CanRedo) return;
+
+            editText.Redo();
+            e.Handled = true;
+        }
+
+        private void OnZoomInClicked(object sender, RoutedEventArgs e)
+        {
+            UpdateFontSize(true);
+            e.Handled = true;
+        }
+
+        private void OnZoomOutClicked(object sender, RoutedEventArgs e)
+        {
+            UpdateFontSize(false);
+            e.Handled = true;
+        }
+
+        
 
         #endregion
 
         #region Navigation Controls
-
-        private void CloseButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
 
         private void MinimizeButton_OnClick(object sender, RoutedEventArgs e)
         {
@@ -400,7 +519,6 @@ namespace PythonNodeModelsWpf
                 ToggleButtons(false);
             }
         }
-
 
         /// <summary>
         /// Toggles between the Maximize and Normalize buttons on the window
@@ -431,12 +549,82 @@ namespace PythonNodeModelsWpf
             DragMove();
         }
 
-        // ESC Button pressed triggers Window close        
-        private void OnCloseExecuted(object sender, ExecutedRoutedEventArgs e)
+        // Handles Close button 'X' 
+        private void CloseButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            e.Handled = true;
+            CloseWithWarning();
+        }
+
+        // Handles Close button on the Warning bar
+        private void CloseWarningBarButton_OnClick(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
 
+        // ESC Button pressed triggers Window close        
+        private void OnCloseExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            e.Handled = true;
+            CloseWithWarning();
+        }
+
+        // Close the script window if it was saved, otherwise issue a warning
+        private void CloseWithWarning()
+        {
+            if (!IsSaved) WarnUserScript();
+            else this.Close();
+        }
+
+        // Show the warning bar, hide the save button bar
+        private void WarnUserScript()
+        {
+            this.editText.IsEnabled = false;
+            this.SaveScriptChangesButton.IsEnabled = false;
+            this.RevertScriptChangesButton.IsEnabled = false;
+            this.UndoButton.IsEnabled = false;
+            this.RedoButton.IsEnabled = false;
+            this.ZoomInButton.IsEnabled = false;
+            this.ZoomOutButton.IsEnabled = false;
+            this.EngineSelectorComboBox.IsEnabled = false;
+            this.MigrationAssistantButton.IsEnabled = false;
+            this.MoreInfoButton.IsEnabled = false;
+            this.SaveButtonBar.Visibility = Visibility.Collapsed;
+            this.UnsavedChangesStatusBar.Visibility = Visibility.Visible;
+        }
+
+        // Don't change anything, just flip back the controls
+        private void ResumeButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            this.editText.IsEnabled = true;
+            this.SaveScriptChangesButton.IsEnabled = true;
+            this.RevertScriptChangesButton.IsEnabled = true;
+            this.UndoButton.IsEnabled = true;
+            this.RedoButton.IsEnabled = true;
+            this.ZoomInButton.IsEnabled = true;
+            this.ZoomOutButton.IsEnabled = true;
+            this.EngineSelectorComboBox.IsEnabled = true;
+            this.MigrationAssistantButton.IsEnabled = true;
+            this.MoreInfoButton.IsEnabled = true;
+            this.SaveButtonBar.Visibility = Visibility.Visible;
+            this.UnsavedChangesStatusBar.Visibility = Visibility.Collapsed;
+        }
+
+        // Updates the IsEnterHit value
+        private void EditText_OnPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                IsEnterHit = true;
+            }
+            else
+            {
+                IsEnterHit = false;
+            }
+        }
+
         #endregion
+
     }
+
 }

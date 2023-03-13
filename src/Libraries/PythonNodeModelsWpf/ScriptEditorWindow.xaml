@@ -121,6 +121,71 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+            <Style x:Key="UnSaveButtonStyle"
+                   TargetType="{x:Type Button}"
+                   BasedOn="{StaticResource CtaButtonStyle}">
+                <Setter Property="Height" Value="35"></Setter>
+                <Setter Property="Width" Value="120"></Setter>
+                <Setter Property="Margin" Value="15 5 20 5"></Setter>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <Border x:Name="container"
+                                    Background="Transparent"
+                                    BorderBrush="#B8ABA1"
+                                    CornerRadius="2"
+                                    BorderThickness="1">
+                                <Grid x:Name="inner"
+                                      Background="Transparent">
+                                    <TextBlock x:Name="text"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               FontSize="14px"
+                                               Foreground="{StaticResource WorkspaceTabBorderSelectedFalse}"
+                                               Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
+                                </Grid>
+                            </Border>
+
+                            <ControlTemplate.Triggers>
+
+                                <Trigger Property="Button.IsMouseOver"
+                                         Value="true">
+                                    <Setter TargetName="container"
+                                            Property="BorderBrush"
+                                            Value="#26808080" />
+                                    <Setter TargetName="container"
+                                            Property="BorderThickness"
+                                            Value="2" />
+                                </Trigger>
+
+                                <Trigger Property="Button.IsPressed"
+                                         Value="true">
+                                    <Setter TargetName="container"
+                                            Property="BorderBrush"
+                                            Value="#40808080" />
+                                    <Setter TargetName="container"
+                                            Property="BorderThickness"
+                                            Value="4" />
+                                </Trigger>
+
+                                <Trigger Property="Button.IsEnabled"
+                                         Value="false">
+                                    <Setter TargetName="inner"
+                                            Property="Background"
+                                            Value="#218d81" />
+                                    <Setter TargetName="text"
+                                            Property="Foreground"
+                                            Value="#bebebe" />
+                                    <Setter TargetName="container"
+                                            Property="BorderBrush"
+                                            Value="#218d81" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
         </ResourceDictionary>
 
     </Window.Resources>
@@ -139,7 +204,8 @@
                     <RowDefinition Height="68" />
                     <RowDefinition Height="60" />
                     <RowDefinition Height="*" />
-                    <RowDefinition Height="60" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
 
 
@@ -190,7 +256,7 @@
                 </DockPanel>
 
                 <Rectangle Style="{StaticResource DividerRectangleStyle}"
-                           Fill="#808080"
+                           Fill="{StaticResource NodeContextMenuBackgroundHighlight}"
                            Grid.Row="0"
                            Margin="0 1 0 0"/>
 
@@ -226,6 +292,58 @@
                                    Source="/PythonNodeModelsWpf;component/Resources/reset_hover.png" />
                         </Button.Resources>
                     </Button>
+                    <Button Style="{StaticResource IconButton}"
+                            Name="UndoButton"
+                            Click="OnUndoClicked">
+                        <Button.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.PythonScriptEditorUndoButtonTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                        </Button.ToolTip>
+                        <Button.Resources>
+                            <Image x:Key="Shape"
+                                   Source="/PythonNodeModelsWpf;component/Resources/undo.png" />
+                            <Image x:Key="HighlightShape"
+                                   Source="/PythonNodeModelsWpf;component/Resources/undo_hover.png" />
+                        </Button.Resources>
+                    </Button>
+                    <Button Style="{StaticResource IconButton}"
+                            Name="RedoButton"
+                            Click="OnRedoClicked">
+                        <Button.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.PythonScriptEditorRedoButtonTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                        </Button.ToolTip>
+                        <Button.Resources>
+                            <Image x:Key="Shape"
+                                   Source="/PythonNodeModelsWpf;component/Resources/redo.png" />
+                            <Image x:Key="HighlightShape"
+                                   Source="/PythonNodeModelsWpf;component/Resources/redo_hover.png" />
+                        </Button.Resources>
+                    </Button>
+                    <Button Style="{StaticResource IconButton}"
+                            Name="ZoomInButton"
+                            Click="OnZoomInClicked">
+                        <Button.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.PythonScriptEditorZoomInButtonTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                        </Button.ToolTip>
+                        <Button.Resources>
+                            <Image x:Key="Shape"
+                                   Source="/PythonNodeModelsWpf;component/Resources/zoom-in.png" />
+                            <Image x:Key="HighlightShape"
+                                   Source="/PythonNodeModelsWpf;component/Resources/zoom-in_hover.png" />
+                        </Button.Resources>
+                    </Button>
+                    <Button Style="{StaticResource IconButton}"
+                            Name="ZoomOutButton"
+                            Click="OnZoomOutClicked">
+                        <Button.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.PythonScriptEditorZoomOutButtonTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                        </Button.ToolTip>
+                        <Button.Resources>
+                            <Image x:Key="Shape"
+                                   Source="/PythonNodeModelsWpf;component/Resources/zoom-out.png" />
+                            <Image x:Key="HighlightShape"
+                                   Source="/PythonNodeModelsWpf;component/Resources/zoom-out_hover.png" />
+                        </Button.Resources>
+                    </Button>
                     <ComboBox ItemsSource="{Binding AvailableEngines, RelativeSource={RelativeSource AncestorType=dww:ModelessChildWindow}}"
                               SelectedItem="{Binding CachedEngine, Mode=TwoWay}"
                               SelectionChanged="OnEngineChanged"
@@ -237,7 +355,7 @@
                         </ComboBox.ToolTip>
                     </ComboBox>
                     <Button Style="{StaticResource IconButton}"
-                            Name="MigrationAssistantBtn"
+                            Name="MigrationAssistantButton"
                             Click="OnMigrationAssistantClicked"
                             ToolTipService.ShowOnDisabled="True"
                             ToolTipService.IsEnabled="True"
@@ -274,19 +392,24 @@
                         Background="{StaticResource PreferencesWindowBackgroundColor}"
                         Grid.Row="2">
                     <avalonedit:TextEditor Name="editText"
+                                           IsEnabled="True"
                                            FontFamily="{StaticResource SourceCodePro}"
                                            FontSize="10pt"
                                            ShowLineNumbers="True"
-                                           Background="#353535"
-                                           Foreground="#f5f5f5"
+                                           Background="{StaticResource ExtensionBackgroundColor}"
+                                           Foreground="{StaticResource AutocompletionWindowFontColor}"
                                            Padding="5"
                                            HorizontalScrollBarVisibility="Disabled"
-                                           PreviewMouseWheel="EditorBox_PreviewMouseWheel"/>
+                                           PreviewMouseWheel="EditorBox_PreviewMouseWheel"
+                                           PreviewKeyDown="EditText_OnPreviewKeyDown"/>
                 </Border>
  
                 <!-- Run and Close Button -->
-                <StackPanel Orientation="Horizontal"
+                <StackPanel x:Name="SaveButtonBar"
+                            Orientation="Horizontal"
                             HorizontalAlignment="Right"
+                            Height="60"
+                            Visibility="Visible"
                             Grid.Row="3">
 
                     <Button Content="{x:Static p:Resources.PythonScriptEditorRunButton}"
@@ -312,6 +435,33 @@
                         </Button.Resources>
                     </Button>
                 </StackPanel>
+
+                <!-- The Warning Bar - activates on Esc if unsaved changes -->
+                <Grid Name="UnsavedChangesStatusBar"
+                        Grid.Row="4"
+                        Margin="0 -20 0 5"
+                        Height="95"
+                        Background="#EFD5C1"
+                        Visibility="Collapsed">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="44"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="180"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Background="{StaticResource YellowOrange500Brush}" Grid.Column="0"> 
+                            <Image Source="/PythonNodeModelsWpf;component/Resources/alert.png" Width="24" Height="24"/>
+                        </Border>
+                        <StackPanel Orientation="Vertical" VerticalAlignment="Center" Grid.Column="1">
+                        <TextBlock Margin="15 5" FontSize="14"  FontFamily="{StaticResource ArtifaktElementBold}" Text="{x:Static p:Resources.PythonScriptUnsavedChangesPromptTitle}"/>
+                        <TextBlock Margin="15 5" FontSize="14" FontFamily="{StaticResource ArtifaktElementRegular}" TextWrapping="WrapWithOverflow" Text="{x:Static p:Resources.PythonScriptUnsavedChangesPromptText}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Center" Grid.Column="2">
+                        <Button 
+                            Style="{StaticResource UnSaveButtonStyle}" Content="Keep editing" Click="ResumeButton_OnClick"></Button>
+                        <Button 
+                            Style="{StaticResource UnSaveButtonStyle}" Content="Close" Click="CloseWarningBarButton_OnClick"></Button>
+                    </StackPanel>
+                </Grid>
             </Grid>
         </Border>
     </Grid>
