@@ -44,7 +44,7 @@ namespace PythonNodeModelsWpf
                 return newFoldings;
             }
 
-            //Can keep track of offset ourself and from testing it seems to be accurate
+            // Can keep track of offset ourself and from testing it seems to be accurate
             int offsetTracker = 0;
 
             // Keep track of start points since things nest
@@ -72,7 +72,6 @@ namespace PythonNodeModelsWpf
                 int spaceCounter = 0;
                 bool foundText = false;
                 bool foundColon = false;
-                //for (int i = 0; i < line.Length; i++)
                 int i = 0;
                 
                 while (i < line.Length && !(foundText && foundColon))
@@ -110,8 +109,7 @@ namespace PythonNodeModelsWpf
                             if(!skip && IsNewLine(nc))
                                 foundColon = true;
                             break;
-                        default
-                            : // anything else means we encountered not spaces or tabs, so keep making the line but stop counting
+                        default: // anything else means we encountered not spaces or tabs, so keep making the line but stop counting
                             foundText = true;
                             break;
                     }
@@ -123,13 +121,9 @@ namespace PythonNodeModelsWpf
                 int remainder = spaceCounter % SpacesInTab;
                 if (remainder > 0)
                 {
-                    // Some tabbing isn't correct. ignore this line for folding purposes.
-                    // This may break all foldings below that, but it's a complex problem to address.
                     continue;
                 }
 
-                // Now we need to figure out if this line is a new folding by checking its tabbing
-                // relative to the current stack count. Convert into virtual tabs and compare to stack level
                 int numTabs = spaceCounter / SpacesInTab; // we know this will be an int because of the above check
                 if (numTabs >= startOffsets.Count && foundText && foundColon)    
                 {
@@ -145,7 +139,6 @@ namespace PythonNodeModelsWpf
                     {
                         int foldingStart = startOffsets.Pop();
                         NewFolding tempFolding = new NewFolding();
-                        //tempFolding.Name = < could add logic here, possibly by tracking key words when starting the folding, to control what is shown when it's folded >
                         tempFolding.StartOffset = foldingStart;
                         tempFolding.EndOffset = offsetTracker - 2;
                         newFoldings.Add(tempFolding);
@@ -163,7 +156,6 @@ namespace PythonNodeModelsWpf
             {
                 int foldingStart = startOffsets.Pop();
                 NewFolding tempFolding = new NewFolding();
-                //tempFolding.Name = < could add logic here, possibly by tracking key words when starting the folding, to control what is shown when it's folded >
                 tempFolding.StartOffset = foldingStart;
                 tempFolding.EndOffset = offsetTracker;
                 newFoldings.Add(tempFolding);
