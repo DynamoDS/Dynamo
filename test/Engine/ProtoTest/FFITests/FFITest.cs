@@ -1,4 +1,5 @@
 using System.Linq;
+using FFITarget;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
 using ProtoCore.Mirror;
@@ -205,6 +206,21 @@ x = TestCSharpAttribute.TestReturnAttribute();
             var x = mirror.GetValue("x");
             thisTest.Verify("x", new object[] { 1.3, new double[] { 4.5, 7.8 } });
 
+        }
+
+        [Test]
+        public void Test_Embedded_Interop_Types()
+        {
+            string code = @"
+import (ClassFunctionality from ""FFITarget.dll"");
+import (EmbeddedInteropTestClass from ""EmbeddedInterop.dll"");
+
+  val = EmbeddedInteropTestClass.GetOfficeInteropType();
+  o = ClassFunctionality.TestOfficeInteropType(val);
+";
+
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("o", true);
         }
     }
 }

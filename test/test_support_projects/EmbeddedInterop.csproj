@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>EmbeddedInterop</RootNamespace>
+    <AssemblyName>EmbeddedInterop</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <COMReference Include="Microsoft.Office.Core">
+      <WrapperTool>tlbimp</WrapperTool>
+      <VersionMinor>8</VersionMinor>
+      <VersionMajor>2</VersionMajor>
+      <Guid>2df8d04c-5bfa-101b-bde5-00aa0044de52</Guid>
+      <Lcid>0</Lcid>
+      <Isolated>false</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <Private>False</Private>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+  </ItemGroup>
+</Project>

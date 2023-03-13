@@ -7,14 +7,17 @@ namespace FFITarget
     /// </summary>
     public class ClassFunctionality : IDisposable
     {
-        public static Microsoft.Office.Core.ContentVerificationResults DoStuf()
+        public static Microsoft.Office.Core.ContentVerificationResults GetOfficeInteropType()
         {
             return Microsoft.Office.Core.ContentVerificationResults.contverresValid;
         }
 
-        public static bool DoMore(Microsoft.Office.Core.ContentVerificationResults arg1)
+        public static bool TestOfficeInteropType(Microsoft.Office.Core.ContentVerificationResults arg1)
         {
-            return true;
+            if (arg1 == Microsoft.Office.Core.ContentVerificationResults.contverresValid)
+                return true;
+
+            return false;
         }
 
         private int intVal;
