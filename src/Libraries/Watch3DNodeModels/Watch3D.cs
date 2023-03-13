@@ -215,12 +215,12 @@ namespace Watch3DNodeModels
 
         protected override string GetInputTooltip(int index)
         {
-            return "[No Tooltip]";
+            return "Incoming Geometry Objects.";
         }
 
         protected override string GetInputName(int index)
         {
-            return string.Concat("Input ", index);
+            return string.Empty;
         }
 
         protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
