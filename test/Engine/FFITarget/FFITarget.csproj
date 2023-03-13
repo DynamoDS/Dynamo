@@ -22,17 +22,15 @@
         <Reference Include="Microsoft.CSharp" />
         <Reference Include="System.Data" />
         <Reference Include="System.Xml" />
-    </ItemGroup>
-    <ItemGroup>
-      <COMReference Include="Microsoft.Office.Core">
-        <WrapperTool>tlbimp</WrapperTool>
-        <VersionMinor>8</VersionMinor>
-        <VersionMajor>2</VersionMajor>
-        <Guid>2df8d04c-5bfa-101b-bde5-00aa0044de52</Guid>
-        <Lcid>0</Lcid>
-        <Isolated>false</Isolated>
-        <EmbedInteropTypes>true</EmbedInteropTypes>
-      </COMReference>
+        <COMReference Include="Microsoft.Office.Core">
+            <WrapperTool>tlbimp</WrapperTool>
+            <VersionMinor>8</VersionMinor>
+            <VersionMajor>2</VersionMajor>
+            <Guid>2df8d04c-5bfa-101b-bde5-00aa0044de52</Guid>
+            <Lcid>0</Lcid>
+            <Isolated>false</Isolated>
+            <EmbedInteropTypes>true</EmbedInteropTypes>
+        </COMReference>
     </ItemGroup>
   <ItemGroup>
       <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />

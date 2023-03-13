@@ -207,7 +207,7 @@ x = TestCSharpAttribute.TestReturnAttribute();
             thisTest.Verify("x", new object[] { 1.3, new double[] { 4.5, 7.8 } });
 
         }
-
+#if NETFRAMEWORK
         [Test]
         public void Test_Embedded_Interop_Types()
         {
@@ -222,5 +222,6 @@ import (EmbeddedInteropTestClass from ""EmbeddedInterop.dll"");
             thisTest.RunScriptSource(code);
             thisTest.Verify("o", true);
         }
+#endif
     }
 }

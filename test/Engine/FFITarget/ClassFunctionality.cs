@@ -7,6 +7,7 @@ namespace FFITarget
     /// </summary>
     public class ClassFunctionality : IDisposable
     {
+#if NETFRAMEWORK
         public static Microsoft.Office.Core.ContentVerificationResults GetOfficeInteropType()
         {
             return Microsoft.Office.Core.ContentVerificationResults.contverresValid;
@@ -19,7 +20,7 @@ namespace FFITarget
 
             return false;
         }
-
+#endif
         private int intVal;
         public int IntVal {
             get { return intVal; }
