@@ -7,7 +7,7 @@ namespace FFITarget
     /// </summary>
     public class ClassFunctionality : IDisposable
     {
-#if (NETFRAMEWORK && !__MonoCS__)
+#if NETFRAMEWORK
         public static Microsoft.Office.Interop.Excel.XlPivotLineType GetExcelInteropType()
         {
             return Microsoft.Office.Interop.Excel.XlPivotLineType.xlPivotLineBlank;
