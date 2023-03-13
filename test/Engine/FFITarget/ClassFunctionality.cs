@@ -7,7 +7,7 @@ namespace FFITarget
     /// </summary>
     public class ClassFunctionality : IDisposable
     {
-#if NETFRAMEWORK
+#if (NETFRAMEWORK && !__MonoCS__)
         public static Microsoft.Office.Core.ContentVerificationResults GetOfficeInteropType()
         {
             return Microsoft.Office.Core.ContentVerificationResults.contverresValid;

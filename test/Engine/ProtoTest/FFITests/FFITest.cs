@@ -207,7 +207,7 @@ x = TestCSharpAttribute.TestReturnAttribute();
             thisTest.Verify("x", new object[] { 1.3, new double[] { 4.5, 7.8 } });
 
         }
-#if NETFRAMEWORK
+#if (NETFRAMEWORK && !__MonoCS__)
         [Test]
         public void Test_Embedded_Interop_Types()
         {
