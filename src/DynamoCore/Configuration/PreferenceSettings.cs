@@ -577,7 +577,7 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
-        /// This defines if user wants to the Extensions settings to persist across sessions.
+        /// This defines if user wants the Extensions settings to persist across sessions.
         /// </summary>
         public bool EnablePersistExtensions
         {
