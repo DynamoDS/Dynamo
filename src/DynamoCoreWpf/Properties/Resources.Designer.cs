@@ -6675,6 +6675,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to On launch, remember open extensions panels from last session.
+        /// </summary>
+        public static string PreferencesViewEnablePersistExtensions {
+            get {
+                return ResourceManager.GetString("PreferencesViewEnablePersistExtensions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enable T-Spline nodes.
         /// </summary>
         public static string PreferencesViewEnableTSplineNodes {
@@ -6689,6 +6698,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewExperimentalLabel {
             get {
                 return ResourceManager.GetString("PreferencesViewExperimentalLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extensions.
+        /// </summary>
+        public static string PreferencesViewExtensions {
+            get {
+                return ResourceManager.GetString("PreferencesViewExtensions", resourceCulture);
             }
         }
         

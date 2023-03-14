@@ -3481,6 +3481,13 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="DynamoViewSettingLibraryZoomScale" xml:space="preserve">
     <value>Library</value>
   </data>
+  <data name="PreferencesViewEnablePersistExtensions" xml:space="preserve">
+    <value>On launch, remember open extensions panels from last session</value>
+  </data>
+  <data name="PreferencesViewExtensions" xml:space="preserve">
+    <value>Extensions</value>
+    <comment>Preferences | Features | Extensions</comment>
+  </data>
   <data name="PythonZoomScaleTooltipText" xml:space="preserve">
     <value>Drag to adjust Python Editor zoom scale between 25% and 300%. You can also adjust this in Python Editor by pressing "Ctrl" and scrolling the mouse wheel.</value>
   </data>

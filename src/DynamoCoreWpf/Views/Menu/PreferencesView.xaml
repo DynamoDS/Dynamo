@@ -541,6 +541,7 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
 
                             <!--This Grid row contains the Python section-->
@@ -899,6 +900,32 @@
                                                    Padding="5,0,5,5"
                                                    Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                         </StackPanel>
+                                    </StackPanel>
+                                </Grid>
+                            </Expander>
+
+                            <!--This Grid row contains the Extensions section-->
+                            <Expander x:Name="ExtentionsExpander" 
+                                      Style="{StaticResource MenuExpanderStyle}" 
+                                      IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=ExtentionsExpander}"
+                                      Grid.Row="4"
+                                      Header="{x:Static p:Resources.PreferencesViewExtensions}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="0">
+                                        <ToggleButton Name="ExtensionsToggle"
+                                                      Width="{StaticResource ToggleButtonWidth}"
+                                                      Height="{StaticResource ToggleButtonHeight}"
+                                                      VerticalAlignment="Center"
+                                                      IsChecked="{Binding Path=PersistExtensionsIsChecked}"
+                                                      Style="{StaticResource EllipseToggleButton1}"/>
+                                        <Label Content="{x:Static p:Resources.PreferencesViewEnablePersistExtensions}" 
+                                                   Margin="10,0,0,0"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                     </StackPanel>
                                 </Grid>
                             </Expander>
