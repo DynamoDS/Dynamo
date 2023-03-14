@@ -410,6 +410,7 @@ namespace PythonNodeModelsWpf
             dynamoViewModel.ExecuteCommand(command);
             this.Focus();
             nodeWasModified = true;
+            IsSaved = true;
             NodeModel.OnNodeModified();
         }
 
