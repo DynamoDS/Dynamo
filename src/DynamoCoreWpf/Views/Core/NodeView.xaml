@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Dynamo.Controls.NodeView"
+<UserControl x:Class="Dynamo.Controls.NodeView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore"
@@ -601,11 +601,15 @@
                 CornerRadius="8,8,0,0"
                 IsHitTestVisible="False"
                 Opacity="0.5"
-                Style="{StaticResource SZoomFadeInPreview}"
-                Visibility="{Binding Path=DataContext.Zoom, 
-                                     RelativeSource={RelativeSource FindAncestor, 
-                                     AncestorType={x:Type controls:WorkspaceView}}, 
-                                     Converter={StaticResource ZoomToVisibilityCollapsedConverter}}" />
+                Style="{StaticResource SZoomFadeInPreview}">
+            <Border.Visibility>
+                <MultiBinding Converter="{StaticResource ZoomToVisibilityCollapsedConverter}">
+                    <Binding Path="DataContext.Zoom" RelativeSource="{RelativeSource FindAncestor,AncestorType={x:Type controls:WorkspaceView}}"/>
+                    <Binding Path="State"/>
+                    <Binding Path="NodeWarningBarVisible"/>
+                </MultiBinding>
+            </Border.Visibility>
+        </Border>
 
         <!-- Grid containing the State overlay Glyphs in Zoomed Out state -->
         <Grid Name="zoomGlyphsGrid"
@@ -617,12 +621,15 @@
                     IsHitTestVisible="False"
                     Margin="0 5 0 0"
                     HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-                    Style="{StaticResource SZoomFadeInFrameworkElement}"                    
-                    Visibility="{Binding Path=DataContext.Zoom, 
-                                         RelativeSource={RelativeSource FindAncestor, 
-                                         AncestorType={x:Type controls:WorkspaceView}}, 
-                                         Converter={StaticResource ZoomToVisibilityCollapsedConverter}}" 
-                    MinWidth="48">
+                    Style="{StaticResource SZoomFadeInFrameworkElement}"
+              MinWidth="48">
+            <Grid.Visibility>
+                <MultiBinding Converter="{StaticResource ZoomToVisibilityCollapsedConverter}">
+                    <Binding Path="DataContext.Zoom" RelativeSource="{RelativeSource FindAncestor,AncestorType={x:Type controls:WorkspaceView}}"/>
+                    <Binding Path="State"/>
+                    <Binding Path="NodeWarningBarVisible"/>
+                </MultiBinding>
+            </Grid.Visibility>
             <Grid.RowDefinitions>
                 <RowDefinition Height="{Binding ImgGlyphThreeSource, Mode=OneWay, Converter={StaticResource EmptyToZeroLengthConverter}, UpdateSourceTrigger=PropertyChanged}" />
                 <RowDefinition></RowDefinition>

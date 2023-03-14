@@ -1912,6 +1912,31 @@ namespace Dynamo.Graph.Nodes
             infos.Add(new Info(p, ElementState.AstBuildBroken));
         }
 
+        public void UpdateAssociatedWarning(string fileFromPathNodeName, string imageReadFromFileNodeName)
+        {
+            
+            if (this.Name == imageReadFromFileNodeName && this.InputNodes.Count > 0)
+            {
+                if (this.InputNodes.First().Value != null)
+                {
+                    var previousNode = this.InputNodes.First().Value.Item2;
+                    
+
+                    if (previousNode != null && previousNode.Name == fileFromPathNodeName)
+                    {
+                        if (this.Infos.Count > 0)
+                        {
+                            previousNode.State = ElementState.AssociatedWarning;
+                        }
+                        else
+                        {
+                            previousNode.State = ElementState.Active;
+                        }
+                    }
+                }
+            }
+        }
+
         #endregion
 
         #region Port Management
@@ -2914,6 +2939,7 @@ namespace Dynamo.Graph.Nodes
         Active,
         Warning,
         PersistentWarning,
+        AssociatedWarning,
         Error,
         AstBuildBroken,
         Info

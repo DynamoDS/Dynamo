@@ -1736,19 +1736,21 @@ namespace Dynamo.Controls
     /// <summary>
     /// Hides (collapses) if the zoom level is larger than the designated value
     /// </summary>
-    public class ZoomToVisibilityCollapsedConverter : IValueConverter
+    public class ZoomToVisibilityCollapsedConverter : IMultiValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            double number = (double)System.Convert.ChangeType(value, typeof(double));
+            double number = (double)System.Convert.ChangeType(values[0], typeof(double));
+            ElementState state = (ElementState)values[1];
+            bool nodeWarningBarVisible = (bool)values[2];
 
-            if (number > Configurations.ZoomThreshold)
-                return Visibility.Collapsed;
+            if (number < Configurations.ZoomThreshold && (state == ElementState.AssociatedWarning || nodeWarningBarVisible))
+                return Visibility.Visible;
 
-            return Visibility.Visible;    
+            return Visibility.Collapsed;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object[] ConvertBack(object values, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotSupportedException();
         }
