@@ -53,11 +53,12 @@ namespace CoreNodeModelsWpf.Controls
         {
             var colorPickerPopupClosed = sender as CustomColorPicker;
             colorPickerPopupClosed.Closed -= ColorPickerPopup_Closed;
+            viewModel.IsColorPickerShown = false;
             var colorPickerViewModel = colorPickerPopupClosed.DataContext as CustomColorPickerViewModel;
             if (colorPickerViewModel == null || colorPickerViewModel.ColorPickerSelectedColor == null) return;
 
             viewModel.SelectedColor = new SolidColorBrush(colorPickerViewModel.ColorPickerSelectedColor.Value);
-            OnColorPickerSelectedColor();
+            OnColorPickerSelectedColor();        
         }
 
         private void ColorToggleButton_Click(object sender, System.Windows.RoutedEventArgs e)
