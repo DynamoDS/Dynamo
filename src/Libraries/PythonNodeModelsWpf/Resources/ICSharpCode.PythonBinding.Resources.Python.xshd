@@ -18,27 +18,27 @@
   <Properties>
     <Property name="LineComment" value="#" />
   </Properties>
-  <Digits name="Digits" color="#AE81FF" />
+  <Digits name="Digits" color="#6AC0E7" />
   <RuleSets>
     <RuleSet ignorecase="false">
       <Delimiters>()[]{}@,:.`=;+-*/% &amp;|^&gt;&lt;</Delimiters>
-      <Span name="Char" stopateol="true" color="#E6DB74" escapecharacter="\">
+      <Span name="Char" stopateol="true" color="#E0A86F" escapecharacter="\">
         <Begin>'</Begin>
         <End>'</End>
       </Span>
-      <Span name="DocComment" color="#a8a8a8">
+      <Span name="DocComment" color="#B7D78C">
         <Begin>"""</Begin>
         <End>"""</End>
       </Span>
-      <Span name="LineComment" stopateol="true" color="#a8a8a8">
+      <Span name="LineComment" stopateol="true" color="#B7D78C">
         <Begin>#</Begin>
       </Span>
-      <Span name="String" stopateol="true" color="#E6DB74" escapecharacter="\">
+      <Span name="String" stopateol="true" color="#E0A86F" escapecharacter="\">
         <Begin>"</Begin>
         <End>"</End>
-      </Span>
-      <MarkPrevious bold="true" color="White">(</MarkPrevious>
-      <KeyWords name="BuiltInStatements" bold="false" color="#B7D78C">
+      </Span>                   
+      <MarkPrevious bold="false" color="#84d7ce">(</MarkPrevious>
+      <KeyWords name="BuiltInStatements" bold="false" color="#F2A9F2">
         <Key word="assert" />
         <Key word="del" />
         <Key word="exec" />
@@ -46,50 +46,54 @@
         <Key word="lambda" />
         <Key word="print" />
       </KeyWords>
-      <KeyWords name="ClassStatement" color="#E0A86F" bold="false">
+      <KeyWords name="ClassStatement" color="#6AC0E7" bold="false">
         <Key word="class" />
       </KeyWords>
-      <KeyWords name="ExceptionHandlingStatements" bold="false" color="#BC8CDF">
+      <KeyWords name="ExceptionHandlingStatements" bold="false" color="#F2A9F2">
         <Key word="except" />
         <Key word="finally" />
         <Key word="raise" />
         <Key word="try" />
       </KeyWords>
-      <KeyWords name="FunctionDefinition" italic="true" color="#66D9EF">
+      <KeyWords name="FunctionDefinition" italic="false" color="#6AC0E7">
         <Key word="def" />
       </KeyWords>
       <KeyWords name="Imports" bold="false" color="#F5C1D1">
         <Key word="import" />
         <Key word="from" />
       </KeyWords>
-      <KeyWords name="IterationStatements" bold="false" color="#BC8CDF">
+      <KeyWords name="IterationStatements" bold="false" color="#F2A9F2">
         <Key word="for" />
         <Key word="in" />
         <Key word="while" />
       </KeyWords>
-      <KeyWords name="JumpStatements" color="#BC8CDF">
+      <KeyWords name="JumpStatements" color="#F2A9F2">
         <Key word="break" />
         <Key word="continue" />
         <Key word="yield" />
         <Key word="return" />
       </KeyWords>
-      <KeyWords name="OperatorStatements" bold="true" color="#BC8CDF">
+      <KeyWords name="OperatorStatements" bold="true" color="#F2A9F2">
         <Key word="and" />
         <Key word="as" />
         <Key word="is" />
         <Key word="not" />
         <Key word="or" />
       </KeyWords>
-      <KeyWords name="PassStatement" color="#BC8CDF">
+      <KeyWords name="PassStatement" color="#F2A9F2">
         <Key word="pass" />
       </KeyWords>
-      <KeyWords name="SelectionStatements" bold="true" color="#BC8CDF">
+      <KeyWords name="SelectionStatements" bold="false" color="#F2A9F2">
         <Key word="elif" />
         <Key word="else" />
         <Key word="if" />
       </KeyWords>
-      <KeyWords name="WithStatement" color="#BC8CDF">
+      <KeyWords name="WithStatement" color="#F2A9F2">
         <Key word="with" />
+      </KeyWords>
+      <KeyWords name="Constants" color="#F9F9A5">
+          <Key word="True" />
+          <Key word="False" />
       </KeyWords>
     </RuleSet>
   </RuleSets>

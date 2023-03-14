@@ -39,16 +39,16 @@
         <End>"</End>
       </Span>
       <!--<MarkPrevious color="#417693">(</MarkPrevious>-->
-      <KeyWords name="BuiltInStatements" color="#8C5EAA">
+      <KeyWords name="BuiltInStatements" color="#F2A9F2">
         <Key word="local" />
         <Key word="static" />
         <Key word="this" />
       </KeyWords>
-      <KeyWords name="ClassStatement" color="#8C5EAA">
+      <KeyWords name="ClassStatement" color="#F2A9F2">
         <Key word="class" />
         <Key word="extends" />
       </KeyWords>
-      <KeyWords name="ExceptionHandlingStatements" color="#8C5EAA">
+      <KeyWords name="ExceptionHandlingStatements" color="#F2A9F2">
         <Key word="throw" />
         <Key word="catch" />
         <Key word="try" />
@@ -58,7 +58,7 @@
         <Key word="function" />
         <Key word="constructor" />
       </KeyWords>
-      <KeyWords name="Imports" color="#8C5EAA">
+      <KeyWords name="Imports" color="#F2A9F2">
         <Key word="import" />
         <Key word="from" />
       </KeyWords>
@@ -72,7 +72,7 @@
         <Key word="continue" />
         <Key word="return" />
       </KeyWords>
-      <KeyWords name="AccessSpecifiers" color="#8C5EAA">
+      <KeyWords name="AccessSpecifiers" color="#F2A9F2">
         <Key word="public" />
         <Key word="private" />
         <Key word="protected" />
@@ -96,7 +96,7 @@
         <Key word="Imperative" />
         <Key word="Options" />
       </KeyWords>
-      <KeyWords name="SelectionStatements" color="#8C5EAA">
+      <KeyWords name="SelectionStatements" color="#F2A9F2">
         <Key word="elseif" />
         <Key word="else" />
         <Key word="if" />
