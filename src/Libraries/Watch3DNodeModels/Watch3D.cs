@@ -171,34 +171,12 @@ namespace Watch3DNodeModels
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            if (IsPartiallyApplied)
+            return new[]
             {
-                return new[]
-                {
-                    AstFactory.BuildAssignment(
-                        GetAstIdentifierForOutputIndex(0),
-                        AstFactory.BuildFunctionObject(
-                            new IdentifierListNode
-                            {
-                                LeftNode = AstFactory.BuildIdentifier("DataBridge"),
-                                RightNode = AstFactory.BuildIdentifier("BridgeData")
-                            },
-                            2,
-                            new[] { 0 },
-                            new List<AssociativeNode>
-                            {
-                                AstFactory.BuildStringNode(GUID.ToString()),
-                                AstFactory.BuildNullNode()
-                            }))
-                };
-            }
-
-            var resultAst = new[]
-            {
-                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), inputAstNodes[0])
+                AstFactory.BuildAssignment(
+                    GetAstIdentifierForOutputIndex(0),
+                    AstFactory.BuildExprList(inputAstNodes))
             };
-
-            return resultAst;
         }
 
         #endregion
