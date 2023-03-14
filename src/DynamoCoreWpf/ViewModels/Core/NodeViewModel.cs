@@ -1274,7 +1274,7 @@ namespace Dynamo.ViewModels
                 return errorColor;
             }
 
-            if (NodeModel.State == ElementState.Warning || NodeModel.State == ElementState.PersistentWarning)
+            if (NodeModel.State == ElementState.Warning || NodeModel.State == ElementState.PersistentWarning || NodeModel.State == ElementState.AssociatedWarning)
             {
                 //Handle the case where the user has dismissed the warning and no warnings are showing.
                 if (ErrorBubble != null && !ErrorBubble.DoesNodeDisplayMessages)
