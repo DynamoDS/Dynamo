@@ -25,6 +25,7 @@
         <Reference Include="$(PkgMicrosoft_Office_Interop_Excel)\lib\net20\Microsoft.Office.Interop.Excel.dll">
             <EmbedInteropTypes>True</EmbedInteropTypes>
             <WrapperTool>tlbimp</WrapperTool>
+            <Private>False</Private>
         </Reference>
     </ItemGroup>
   <ItemGroup>

@@ -213,7 +213,7 @@ x = TestCSharpAttribute.TestReturnAttribute();
         {
             string code = @"
 import (ClassFunctionality from ""FFITarget.dll"");
-import (EmbeddedInteropTestClass from ""EmbeddedInterop.dll"");
+import (EmbeddedInteropTestClass from ""..\\..\\..\\test\\test_dependencies\\EmbeddedInterop.dll"");
 
   val = EmbeddedInteropTestClass.GetExcelInteropType();
   o = ClassFunctionality.TestExcelInteropType(val);
