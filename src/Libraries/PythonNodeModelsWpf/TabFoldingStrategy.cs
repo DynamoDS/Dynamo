@@ -52,10 +52,10 @@ namespace PythonNodeModelsWpf
             foreach (DocumentLine line in (document as TextDocument).Lines)
             {
                 // If this is the final line, end this loop
-                if (line.EndOffset >= document.TextLength)
-                {
-                    break;
-                }
+                //if (line.EndOffset >= document.TextLength)
+                //{
+                //    break;
+                //}
 
                 var lineText = document.GetText(line.Offset, line.Length);
                 if (lineText.StartsWith("#")) continue;
@@ -69,19 +69,26 @@ namespace PythonNodeModelsWpf
                     var currentTabLevel = whiteSpaces / SpacesInTab;
                     if (tabLevel != currentTabLevel && currentTabLevel > tabLevel)
                     {
+                        // Don't tab if the line is empty
+                        if(string.IsNullOrEmpty(document.GetText(line.PreviousLine.Offset, line.PreviousLine.Length)))
+                            continue;
+
                         // We found a new Tab
                         tabLevel = currentTabLevel;
                         startOffsets.Push(line.PreviousLine.Offset);
                     }
                     else if (tabLevel != currentTabLevel && currentTabLevel < tabLevel)
                     {
-                        // we close a tab
-                        var tempFolding = new NewFolding();
-                        tempFolding.StartOffset = startOffsets.Pop();
-                        tempFolding.EndOffset = line.PreviousLine.EndOffset;
-                        newFoldings.Add(tempFolding);
+                        while (currentTabLevel < tabLevel)
+                        {
+                            // we close all nested tabs
+                            var tempFolding = new NewFolding();
+                            tempFolding.StartOffset = startOffsets.Pop();
+                            tempFolding.EndOffset = line.PreviousLine.EndOffset;
+                            newFoldings.Add(tempFolding);
 
-                        tabLevel = currentTabLevel;
+                            tabLevel--;
+                        }
                     }
                     else
                     {
@@ -104,7 +111,7 @@ namespace PythonNodeModelsWpf
                 }
             }
 
-            if (startOffsets.Any())
+            while (startOffsets.Any())
             {
                 var tempFolding = new NewFolding();
                 tempFolding.StartOffset = startOffsets.Pop();
