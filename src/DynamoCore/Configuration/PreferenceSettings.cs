@@ -54,6 +54,7 @@ namespace Dynamo.Configuration
         private double defaultScaleFactor;
         private bool disableTrustWarnings = false;
         private bool isNotificationCenterEnabled;
+        private bool isEnablePersistExtensionsEnabled;
         private bool isStaticSplashScreenEnabled;
         private bool isCreatedFromValidFile = true;
         private bool isADPChecked = false;
@@ -572,6 +573,22 @@ namespace Dynamo.Configuration
             {
                 isNotificationCenterEnabled = value;
                 RaisePropertyChanged(nameof(EnableNotificationCenter));
+            }
+        }
+
+        /// <summary>
+        /// This defines if user wants the Extensions settings to persist across sessions.
+        /// </summary>
+        public bool EnablePersistExtensions
+        {
+            get
+            {
+                return isEnablePersistExtensionsEnabled;
+            }
+            set
+            {
+                isEnablePersistExtensionsEnabled = value;
+                RaisePropertyChanged(nameof(EnablePersistExtensions));
             }
         }
 
