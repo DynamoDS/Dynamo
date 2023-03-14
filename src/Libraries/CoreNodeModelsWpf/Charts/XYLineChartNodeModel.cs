@@ -12,7 +12,9 @@ using CoreNodes.ChartHelpers;
 using CoreNodeModelsWpf.Charts.Controls;
 using CoreNodeModelsWpf.Charts.Utilities;
 using Dynamo.Controls;
+using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
+using Dynamo.ViewModels;
 using Dynamo.Wpf;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
@@ -62,6 +64,14 @@ namespace CoreNodeModelsWpf.Charts
         /// A list of color values, one for each plotted line.
         /// </summary>
         public List<SolidColorBrush> Colors { get; set; }
+
+        
+        public event EventHandler PortUpdated;
+
+        protected virtual void OnPortUpdated(EventArgs args)
+        {
+            PortUpdated?.Invoke(this, args);
+        }
         #endregion
 
         #region Constructors
@@ -72,17 +82,19 @@ namespace CoreNodeModelsWpf.Charts
         {
             RegisterAllPorts();
 
+            PortConnected += XYLineChartNodeModel_PortConnected;
             PortDisconnected += XYLineChartNodeModel_PortDisconnected;
 
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        [JsonConstructor]
         /// <summary>
         /// Instantiate a new NodeModel instance.
         /// </summary>
+        [JsonConstructor]
         public XYLineChartNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
+            PortConnected += XYLineChartNodeModel_PortConnected;
             PortDisconnected += XYLineChartNodeModel_PortDisconnected;
         }
         #endregion
@@ -90,7 +102,8 @@ namespace CoreNodeModelsWpf.Charts
         #region Events
         private void XYLineChartNodeModel_PortDisconnected(PortModel port)
         {
-            // Clear UI when a input port is disconnected
+            OnPortUpdated(null);
+            // Clear UI when an input port is disconnected
             if (port.PortType == PortType.Input && this.State == ElementState.Active)
             {
                 Labels.Clear();
@@ -100,6 +113,10 @@ namespace CoreNodeModelsWpf.Charts
 
                 RaisePropertyChanged("DataUpdated");
             }
+        }
+        private void XYLineChartNodeModel_PortConnected(PortModel port, ConnectorModel connector)
+        {
+            OnPortUpdated(null);
         }
         #endregion
 
@@ -126,7 +143,10 @@ namespace CoreNodeModelsWpf.Charts
         private void DataBridgeCallback(object data)
         {
             // Reset an info states if any
-            if (NodeInfos.Count > 0) this.ClearInfoMessages();
+            //if (NodeInfos.Count > 0)
+            //{
+            //    this.ClearInfoMessages();
+            //}
 
             // Grab input data which always returned as an ArrayList
             var inputs = data as ArrayList;
@@ -141,7 +161,7 @@ namespace CoreNodeModelsWpf.Charts
                 return;
 
             // Only continue if key/values match in length
-            if (labels.Count != xValues.Count || xValues.Count != yValues.Count || labels.Count < 1)
+            if (labels.Count != xValues.Count || xValues.Count != yValues.Count || labels.Count < 1 || xValues.Count < 1)
             {
                 throw new Exception("Label and Values do not properly align in length.");
             }
@@ -292,6 +312,8 @@ namespace CoreNodeModelsWpf.Charts
     public class XYLineChartNodeView : INodeViewCustomization<XYLineChartNodeModel>
     {
         private XYLineChartControl xyLineChartControl;
+        private NodeView view;
+        private XYLineChartNodeModel model;
 
         /// <summary>
         /// At run-time, this method is called during the node 
@@ -301,6 +323,8 @@ namespace CoreNodeModelsWpf.Charts
         /// <param name="nodeView">The NodeView representing the node in the graph.</param>
         public void CustomizeView(XYLineChartNodeModel model, NodeView nodeView)
         {
+            this.model = model;
+            this.view = nodeView;
             xyLineChartControl = new XYLineChartControl(model);
             nodeView.inputGrid.Children.Add(xyLineChartControl);
 
@@ -310,6 +334,42 @@ namespace CoreNodeModelsWpf.Charts
 
             var contextMenu = (nodeView.Content as Grid).ContextMenu;
             contextMenu.Items.Add(exportImage);
+            
+            model.PortUpdated += ModelOnPortUpdated;
+        }
+
+        private void ModelOnPortUpdated(object sender, EventArgs e)
+        {
+            UpdateDefaultInPortValues();
+        }
+        
+        private void UpdateDefaultInPortValues()
+        {
+            if (!this.view.ViewModel.InPorts.Any()) return;
+            var inPorts = this.view.ViewModel.InPorts;
+            // Only apply default values if all ports are disconnected
+            if (model.State != ElementState.Active && !inPorts[0].IsConnected && !inPorts[1].IsConnected && !inPorts[2].IsConnected)
+            {
+                ((InPortViewModel) inPorts[0]).PortDefaultValueMarkerVisible = true;
+                ((InPortViewModel) inPorts[1]).PortDefaultValueMarkerVisible = true;
+                ((InPortViewModel) inPorts[2]).PortDefaultValueMarkerVisible = true;
+            }
+            else
+            {
+                ((InPortViewModel)inPorts[0]).PortDefaultValueMarkerVisible = false;
+                ((InPortViewModel)inPorts[1]).PortDefaultValueMarkerVisible = false;
+                ((InPortViewModel)inPorts[2]).PortDefaultValueMarkerVisible = false;
+            }
+
+            // The color input uses default values if it's not connected
+            if(model.State != ElementState.Active && !inPorts[3].IsConnected)
+            {
+                ((InPortViewModel) inPorts[3]).PortDefaultValueMarkerVisible = true;
+            }
+            else
+            {
+                ((InPortViewModel)inPorts[3]).PortDefaultValueMarkerVisible = false;
+            }
         }
 
         private void ExportImage_Click(object sender, RoutedEventArgs e)
@@ -321,6 +381,9 @@ namespace CoreNodeModelsWpf.Charts
         /// Here you can do any cleanup you require if you've assigned callbacks for particular 
         /// UI events on your node.
         /// </summary>
-        public void Dispose() { }
+        public void Dispose()
+        {
+            model.PortUpdated -= ModelOnPortUpdated;
+        }
     }
 }
