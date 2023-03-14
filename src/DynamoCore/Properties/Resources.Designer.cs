@@ -1669,6 +1669,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to English,Czech,German,Spanish,French,Italian,Japanese,Korean,Polish,Portuguese,Brazilian,Russian,Chinese Simplified,Chinese Traditional.
+        /// </summary>
+        public static string PreferencesWindowLanguages {
+            get {
+                return ResourceManager.GetString("PreferencesWindowLanguages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 3D preview has been deactivated.
         /// </summary>
         public static string Preview3DOutageTitle {

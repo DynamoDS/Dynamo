@@ -157,7 +157,7 @@ namespace Dynamo.ViewModels
 
         internal MLNodeAutoCompletionRequest GenerateRequestForMLAutocomplete()
         {
-            // Intialize request for the the ML API
+            // Initialize request for the the ML API
             MLNodeAutoCompletionRequest request = new MLNodeAutoCompletionRequest(AssemblyHelper.GetDynamoVersion().ToString(), dynamoViewModel.PreferenceSettings.MLRecommendationNumberOfResults);
 
             var nodeInfo = PortViewModel.PortModel.Owner;

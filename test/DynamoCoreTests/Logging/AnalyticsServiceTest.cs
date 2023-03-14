@@ -85,7 +85,7 @@ namespace Dynamo.Tests.Loggings
 
     public class DynamoAnalyticsDisableTest
     {
-        [Test]
+        [Test,Category("FailureNET6")]//TODO this test requires finding ASM using the registry, will not run on linux.
         public void DisableAnalytics()
         {
             var versions = new List<Version>(){
@@ -107,10 +107,11 @@ namespace Dynamo.Tests.Loggings
             {
                 Assert.DoesNotThrow(() =>
                 {
-                    dynamoCLI = Process.Start(Path.Combine(coreDirectory, "DynamoCLI.exe"), $"-gp \"{locatedPath}\" -k -da -o \"{openPath}\" ");
+
+                    dynamoCLI = Process.Start(Path.Combine(coreDirectory, "DynamoCLI.exe"), $"--GeometryPath \"{locatedPath}\" -k --DisableAnalytics -o \"{openPath}\" ");
 
                     Thread.Sleep(5000);// Wait 5 seconds to open the dyn
-
+                    Assert.IsFalse(dynamoCLI.HasExited);
                     var dt = DataTarget.AttachToProcess(dynamoCLI.Id, false);
                     var assemblies = dt
                           .ClrVersions

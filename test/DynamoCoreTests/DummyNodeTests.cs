@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -98,8 +98,8 @@ namespace Dynamo.Tests
             var exceptionCount = 0;
             var handler = new ResolveEventHandler((o, e) =>
             {
-                var i = e.Name.IndexOf(",");
-                if (i == -1)
+               
+                if (e.Name.Contains("UNKNOWNASSEMBLY"))
                 {
                     exceptionCount = exceptionCount + 1;
                     throw new Exception("TestingTesting");
@@ -114,7 +114,12 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DummyNode>().Count());
             var dummyNode = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DummyNode>().First();
+            //runtime behavior has changed for assembly resolve handlers that throw exceptions.
+#if NET6_0_OR_GREATER
+            Assert.AreEqual(2, exceptionCount);
+#elif NETFRAMEWORK
             Assert.AreEqual(1, exceptionCount);
+#endif
             AppDomain.CurrentDomain.AssemblyResolve -= handler;
         }
 

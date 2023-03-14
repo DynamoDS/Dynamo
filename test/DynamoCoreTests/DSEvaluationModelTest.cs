@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -362,7 +362,7 @@ namespace Dynamo.Tests
             AssertValue("a", null);
         }
 
-        [Ignore] //Ignored because empty code block nodes should not exist
+        [Ignore("empty codeblocks should not exist")] //Ignored because empty code block nodes should not exist
         public void Regress722()
         {
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-722

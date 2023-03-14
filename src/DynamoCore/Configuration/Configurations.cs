@@ -1,6 +1,8 @@
-﻿using Dynamo.Properties;
+using Dynamo.Properties;
 using Dynamo.Utilities;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Dynamo.Configuration
 {
@@ -367,6 +369,29 @@ namespace Dynamo.Configuration
         ///     Default backup file name prefix
         /// </summary>
         public static string BackupFileNamePrefix = "backup";
+
+        #endregion
+
+        #region Locale info and constants
+
+        /// <summary>
+        /// Supported locales as a list
+        /// </summary>
+        internal static readonly List<string> SupportedLocaleList = new List<string>() { "en-US", "cs-CZ", "de-DE", "es-ES", "fr-FR", "it-IT", "ja-JP", "ko-KR", "pl-PL", "pt-BR", "pt-BR", "ru-RU", "zh-CN", "zh-TW" };
+
+        /// <summary>
+        /// Supported languages and locales as a dictionary in the current thread locale
+        /// </summary>
+        public static Dictionary<string, string> SupportedLocaleDic
+        {
+            get
+            {
+                // Dynamically create a dictionary mapping languages and locales in the current thread locale
+                // This is done so that Preferences Panel could display the languages selections using the current locale
+                return Properties.Resources.PreferencesWindowLanguages.Split(',').
+                    Zip(SupportedLocaleList, (k, v) => (k, v)).ToDictionary(x => x.k, x => x.v);
+            }
+        }
 
         #endregion
     }

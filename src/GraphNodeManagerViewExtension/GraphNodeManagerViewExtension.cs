@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo.Logging;
@@ -32,6 +32,7 @@ namespace Dynamo.GraphNodeManager
         /// Extension Name
         /// </summary>
         public override string Name => Properties.Resources.ExtensionName;
+
         #endregion
 
         #region Add/Remove Extension 
@@ -91,6 +92,12 @@ namespace Dynamo.GraphNodeManager
             this.ViewModel.GraphNodeManagerView = this.ManagerView;
 
             this.viewLoadedParamsReference?.AddToExtensionsSideBar(this, this.ManagerView);
+        }
+
+        public override void ReOpen()
+        {
+            AddToSidebar();
+            this.graphNodeManagerMenuItem.IsChecked = true;
         }
         #endregion
 
