@@ -58,7 +58,7 @@
       <KeyWords name="FunctionDefinition" italic="false" color="#6AC0E7">
         <Key word="def" />
       </KeyWords>
-      <KeyWords name="Imports" bold="false" color="#F2A9F2">
+      <KeyWords name="Imports" bold="false" color="#F5C1D1">
         <Key word="import" />
         <Key word="from" />
       </KeyWords>

@@ -54,6 +54,7 @@ namespace Dynamo.Configuration
         private double defaultScaleFactor;
         private bool disableTrustWarnings = false;
         private bool isNotificationCenterEnabled;
+        private bool isEnablePersistExtensionsEnabled;
         private bool isStaticSplashScreenEnabled;
         private bool isCreatedFromValidFile = true;
         private bool isADPChecked = false;
@@ -88,11 +89,11 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Default time
         /// </summary>
-        public static readonly System.DateTime DynamoDefaultTime = new System.DateTime(1977, 4, 12, 12, 12, 0, 0);
+        public static readonly DateTime DynamoDefaultTime = new DateTime(1977, 4, 12, 12, 12, 0, 0);
 
         #endregion
 
-        /// The following settings are persistent between Dynamo sessions and are user-controllable
+        // The following settings are persistent between Dynamo sessions and are user-controllable
         #region Collect Information settings
 
         /// <summary>
@@ -142,6 +143,11 @@ namespace Dynamo.Configuration
         public int LibraryWidth { get; set; }
 
         /// <summary>
+        /// The locale of Dynamo UI, serialize locale instead of language name as ease of conversion back and forth
+        /// </summary>
+        public string Locale { get; set; }
+
+        /// <summary>
         /// The height of the console display.
         /// </summary>
         public int ConsoleHeight { get; set; }
@@ -170,6 +176,11 @@ namespace Dynamo.Configuration
         /// Indicates the zoom scale of the library
         /// </summary>
         public int LibraryZoomScale { get; set; }
+
+        /// <summary>
+        /// Indicates the zoom scale of the Python editor
+        /// </summary>
+        public int PythonScriptZoomScale { get; set; }
 
         /// <summary>
         /// The types of connector: Bezier or Polyline.
@@ -565,6 +576,22 @@ namespace Dynamo.Configuration
             }
         }
 
+        /// <summary>
+        /// This defines if user wants the Extensions settings to persist across sessions.
+        /// </summary>
+        public bool EnablePersistExtensions
+        {
+            get
+            {
+                return isEnablePersistExtensionsEnabled;
+            }
+            set
+            {
+                isEnablePersistExtensionsEnabled = value;
+                RaisePropertyChanged(nameof(EnablePersistExtensions));
+            }
+        }
+
 
         /// <summary>
         /// This defines if the user wants to see the static splash screen again
@@ -757,6 +784,7 @@ namespace Dynamo.Configuration
             // Default Settings
             IsFirstRun = true;
             IsAnalyticsReportingApproved = true;
+            Locale = Configurations.SupportedLocaleDic.FirstOrDefault().Value;
             LibraryWidth = 304;
             ConsoleHeight = 0;
             ShowPreviewBubbles = true;
@@ -783,6 +811,7 @@ namespace Dynamo.Configuration
             BackupFiles = new List<string>();
 
             LibraryZoomScale = 100;
+            PythonScriptZoomScale = 100;
 
             CustomPackageFolders = new List<string>();
 
@@ -1205,5 +1234,6 @@ namespace Dynamo.Configuration
         {
             get { return isCreatedFromValidFile; }
         }
+
     }
 }

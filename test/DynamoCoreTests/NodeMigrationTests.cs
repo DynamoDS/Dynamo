@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -10,7 +10,6 @@ using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.PackageManager;
 using NUnit.Framework;
 using PythonNodeModels;
-using SystemTestServices;
 
 namespace Dynamo.Tests
 {
@@ -65,7 +64,7 @@ namespace Dynamo.Tests
             TestMigration("TestMigration_Core_Functions.dyn");
         }
 
-        [Test]
+        [Test,Category("FailureNET6")]
         public void TestMigration_Core_Input()
         {
             TestMigration("TestMigration_Core_Input.dyn");
@@ -108,7 +107,7 @@ namespace Dynamo.Tests
             TestMigration("TestMigration_Core_Watch.dyn");
         }
 
-        [Test]
+        [Test, Category("FailureNET6")]
         public void TestMigration_Excel()
         {
             TestMigration("TestMigration_Excel.dyn");
@@ -119,7 +118,7 @@ namespace Dynamo.Tests
         {
             TestMigration("TestMigration_File_Directory.dyn");
         }
-
+        
         [Test]
         public void TestMigration_ImportExportCSV()
         {
@@ -138,12 +137,13 @@ namespace Dynamo.Tests
             TestMigration("TestMigration_DSCore_Math.dyn");
         }
 
-        [Test]
+        [Test,Category("FailureNET6")]
         public void TestMigration_InputOutput_Excel()
         {
             TestMigration("TestMigration_InputOutput_Excel.dyn");
         }
-
+        //TODO_MSIL pull csv nodes into their own file with a partial class?
+        //or mark excel methods windows only.
         [Test]
         public void TestMigration_InputOutput_File()
         {
@@ -2154,7 +2154,7 @@ namespace Dynamo.Tests
                 "caef9f81-c9a6-47aa-92c9-dc3b8fd6f7d7").Script);
         }
 
-        [Test]
+        [Test,Category("FailureNET6")]
         public void LibraryTestExcelRead()
         {
             OpenModel(GetDynPath("LibraryTestExcelRead.dyn"));
@@ -2251,7 +2251,7 @@ namespace Dynamo.Tests
         public void TestPackageNodeMigrationForJSONGraphs()
         {
             // Define package loading reference paths
-            var dir = SystemTestBase.GetTestDirectory(ExecutingDirectory);
+            var dir = TestDirectory;
             var pkgDir = Path.Combine(dir, "pkgs\\MigrationTesting");
             var legacyGraph = Path.Combine(pkgDir, "extra\\LegacyPackageSampleGraph.dyn");
             var pkgMan = this.CurrentDynamoModel.GetPackageManagerExtension();

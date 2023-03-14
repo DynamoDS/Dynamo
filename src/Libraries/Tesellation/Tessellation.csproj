@@ -11,7 +11,7 @@
     <DocumentationFile>$(OutputPath)\$(UICulture)\Tessellation.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.17.1.3967"/>
+    <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.665"/>
     <PackageReference Include="MIConvexHull" version="1.1.17.0411" CopyPDB="true" />
 	<PackageReference Include="StarMath" version="2.0.14.1114" CopyPDB="true" />
   </ItemGroup>

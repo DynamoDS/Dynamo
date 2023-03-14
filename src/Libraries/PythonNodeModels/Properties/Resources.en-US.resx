@@ -171,6 +171,18 @@
   <data name="PythonScriptEditorRevertButtonTooltip" xml:space="preserve">
     <value>Revert the changes made to current Python node editor and close it.</value>
   </data>
+  <data name="PythonScriptEditorUndoButtonTooltip" xml:space="preserve">
+    <value>Undo</value>
+  </data>
+  <data name="PythonScriptEditorRedoButtonTooltip" xml:space="preserve">
+    <value>Redo</value>
+  </data>
+  <data name="PythonScriptEditorZoomInButtonTooltip" xml:space="preserve">
+    <value>Zoom in</value>
+  </data>
+  <data name="PythonScriptEditorZoomOutButtonTooltip" xml:space="preserve">
+    <value>Zoom out</value>
+  </data>
   <data name="PythonScriptEditorRunButton" xml:space="preserve">
     <value>Save and run</value>
   </data>
@@ -195,5 +207,11 @@
   </data>
   <data name="PythonSearchTags" xml:space="preserve">
     <value>IronPython;CPython;</value>
+  </data>
+  <data name="PythonScriptUnsavedChangesPromptText" xml:space="preserve">
+    <value>It looks like you are still working on this. You may lose any unsaved changes if you leave now</value>
+  </data>
+  <data name="PythonScriptUnsavedChangesPromptTitle" xml:space="preserve">
+    <value>Are you sure you want to leave?</value>
   </data>
 </root>

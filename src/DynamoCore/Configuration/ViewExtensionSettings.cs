@@ -1,4 +1,4 @@
-﻿namespace Dynamo.Configuration
+namespace Dynamo.Configuration
 {
     /// <summary>
     /// Settings that apply to a view extension specifically.
@@ -21,6 +21,10 @@
         /// Window settings for the extension control when displayed in FloatingWindow mode.
         /// </summary>
         public WindowSettings WindowSettings { get; set; }
+        /// <summary>
+        /// Specifies if the extension was Open in the last session before closing Dynamo, if the property to remember view extension status was enabled.<br/> <c>Default: False</c>
+        /// </summary>
+        public bool IsOpen { get; set; }
     }
 
     /// <summary>
