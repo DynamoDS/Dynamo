@@ -48,6 +48,7 @@
     <None Remove="Packages\SplashScreen\build\index.bundle.js" />
     <None Remove="Packages\SplashScreen\build\index.html" />
     <None Remove="UI\Images\Canvas\canvas-button-geometry-scaling.png" />
+    <None Remove="UI\Prompts\PortPropertiesEditPrompt.xaml" />
     <None Remove="Views\Core\CustomColorPicker.xaml" />
     <None Remove="Views\Core\GeometryScalingPopup.xaml" />
     <None Remove="UI\Images\question-hover-blue-16px.png" />
@@ -226,6 +227,7 @@
     <Compile Include="Controls\InPortContextMenu.xaml.cs">
       <DependentUpon>InPortContextMenu.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Prompts\PortPropertiesEditPrompt.xaml.cs" />
     <Compile Include="Utilities\CompactBubbleHandler.cs" />
     <Compile Include="Interfaces\IShellCom.cs" />
     <Compile Include="Rendering\HelixRenderPackage.cs" />
@@ -561,6 +563,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UI\Prompts\PortPropertiesEditPrompt.xaml"></Page>
     <Page Include="Views\Core\CustomColorPicker.xaml">
       <CopyToOutputDirectory></CopyToOutputDirectory>
       <Generator>MSBuild:Compile</Generator>
