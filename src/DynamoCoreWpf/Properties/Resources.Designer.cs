@@ -1062,6 +1062,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Custom.
+        /// </summary>
+        public static string CustomColorsPopupTitle {
+            get {
+                return ResourceManager.GetString("CustomColorsPopupTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A description that helps people understand what the node might be used for..
         /// </summary>
         public static string CustomNodePromptDescriptionTooltip {
