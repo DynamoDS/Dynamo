@@ -563,7 +563,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Prompts\PortPropertiesEditPrompt.xaml">
+    <Page Include="UI\Prompts\PortPropertiesEditPrompt.xaml"></Page>
     <Page Include="Views\Core\CustomColorPicker.xaml">
       <CopyToOutputDirectory></CopyToOutputDirectory>
       <Generator>MSBuild:Compile</Generator>
