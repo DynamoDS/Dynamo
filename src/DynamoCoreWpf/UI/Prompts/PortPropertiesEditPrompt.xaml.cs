@@ -186,10 +186,7 @@ namespace UI.Prompts
 
         public bool IsPortNameInValid(string portName)
         {
-            // Some other extra characters that are to be checked. 
-            char[] invalidCharactersFileName = { '#', '%', '&', '.', ' ', '[', ']' };
-
-            if (portName.IndexOfAny(invalidCharactersFileName) > -1)
+            if (DynamoUtilities.PathHelper.IsFileNameInValid(portName))
                 return true;
 
             return false;
