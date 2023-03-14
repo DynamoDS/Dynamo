@@ -348,7 +348,6 @@ namespace Dynamo.ViewModels
         {
             var wsViewModel = node.WorkspaceViewModel;
 
-            //wsViewModel.CancelActiveState();
             // Hide the popup, we no longer need it
             wsViewModel.OnRequestPortContextMenu(ShowHideFlags.Show, this);
 
