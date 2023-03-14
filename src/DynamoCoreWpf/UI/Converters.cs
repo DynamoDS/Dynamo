@@ -3544,6 +3544,9 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// Converts PortType (Inport or Outport) enum to hard-coded string resources
+    /// </summary>
     [ValueConversion(typeof(PortType), typeof(string))]
     public class PortTypeToStringConverter : IValueConverter
     {
