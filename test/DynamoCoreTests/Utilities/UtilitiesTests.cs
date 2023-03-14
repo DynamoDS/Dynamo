@@ -1,7 +1,8 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using Dynamo.Utilities;
 using NUnit.Framework;
-using SharpDX.Text;
 
 namespace Dynamo.Tests.Core
 {
@@ -51,7 +52,7 @@ namespace Dynamo.Tests.Core
             Assert.IsNotEmpty(ResourceLoader.Load(typeof(TestResource), resourceNames));
 
             //Empty string when one of the parameters is null
-            Assert.AreEqual(string.Empty, ResourceLoader.Load(null, resourceNames));
+            Assert.AreEqual(new List<string>(), ResourceLoader.Load(null, resourceNames));
 
             //Asking for a property that does not exist
             resourceNames = new string[] { "Test", "Test2" };

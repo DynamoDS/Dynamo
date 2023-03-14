@@ -1,9 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Dynamo.Wpf.Extensions
 {
     /// <summary>
@@ -66,6 +60,15 @@ namespace Dynamo.Wpf.Extensions
         /// displayed.
         /// </summary>
         public virtual void Startup(ViewStartupParams viewStartupParams)
+        {
+
+        }
+
+        /// <summary>
+        /// Action to be invoked when Dynamo starts up, to re-open the view extension which was open in the last session, if the preference setting
+        /// to remember the last opened extensions was enabled.
+        /// </summary>
+        public virtual void ReOpen()
         {
 
         }

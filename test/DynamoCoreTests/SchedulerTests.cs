@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -419,8 +419,12 @@ namespace Dynamo.Tests
         /// mechanism avoids concurrent calls to DynamoScheduler.NextTimeStamp 
         /// from getting the same time-stamp value.
         /// </summary>
-        /// 
+        ///
+#if NETFRAMEWORK
         [Test, RequiresMTA]
+#elif NET6_0_OR_GREATER
+        [Test, Apartment(ApartmentState.MTA)]
+#endif
         [Category("UnitTests")]
         public void TimeStampGenerator01()
         {

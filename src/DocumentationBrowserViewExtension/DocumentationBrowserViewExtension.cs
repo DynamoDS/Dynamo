@@ -4,25 +4,22 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Security.Permissions;
-using System.Web.UI.WebControls;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
-using DesignScript.Builtin;
 using Dynamo.Configuration;
-using Dynamo.Core;
 using Dynamo.DocumentationBrowser.Properties;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
-using Dynamo.Selection;
 using Dynamo.Models;
-using DynamoProperties = Dynamo.Properties;
 using Dynamo.PackageManager;
+using Dynamo.Selection;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.Interfaces;
+using DynamoProperties = Dynamo.Properties;
 using MenuItem = System.Windows.Controls.MenuItem;
 
 namespace Dynamo.DocumentationBrowser
@@ -179,8 +176,7 @@ namespace Dynamo.DocumentationBrowser
             this.ViewModel.DynamoView = viewLoadedParams.DynamoWindow;
         }
 
-
-        public void Shutdown()
+        public override void Shutdown()
         {
             Dispose();
         }

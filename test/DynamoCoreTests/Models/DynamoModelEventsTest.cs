@@ -7,7 +7,6 @@ using Dynamo.Graph;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
-using Dynamo.Wpf.Utilities;
 using NUnit.Framework;
 using DynCmd = Dynamo.Models.DynamoModel;
 

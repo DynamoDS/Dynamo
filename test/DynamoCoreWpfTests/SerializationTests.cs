@@ -21,6 +21,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Watch3D;
+using Moq;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using TestUINodes;
@@ -1144,6 +1145,33 @@ namespace DynamoCoreWpfTests
             var data = selectNode.InputData;
             Assert.AreEqual(NodeInputTypes.selectionInput, data.Type);
             Assert.AreEqual(NodeInputTypes.hostSelection, data.Type2);
+        }
+        [Test]
+        public void SelectionNodeInputDataSerializationTest()
+        {
+            // Arrange
+            var filePath = Path.Combine(TestDirectory, @"core\NodeInputOutputData\selectionNodeInputData.dyn");
+            if (!File.Exists(filePath))
+            {
+                var savePath = Path.ChangeExtension(filePath, null);
+                var selectionHelperMock = new Mock<IModelSelectionHelper<ModelBase>>(MockBehavior.Strict);
+                var selectionNode = new SelectionConcrete(SelectionType.Many, SelectionObjectType.Element, "testMessage", "testPrefix", selectionHelperMock.Object);
+                selectionNode.Name = "selectionTestName";
+                selectionNode.IsSetAsInput = true;
+
+                ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(selectionNode);
+                ConvertCurrentWorkspaceViewToJsonAndSave(ViewModel, savePath);
+            }
+
+            // Act
+            // Assert
+            DoWorkspaceOpenAndCompareView(
+                filePath,
+                jsonFolderName,
+                ConvertCurrentWorkspaceViewToJsonAndSave,
+                //TODO(MJK) potentially just use compareworkspacedata if test fails.
+                CompareWorkspaceViews,
+                serializationTestUtils.SaveWorkspaceComparisonData);
         }
 
         public object[] FindWorkspaces()

@@ -902,4 +902,7 @@ This package likely contains an assembly that is blocked. You will need to load 
   <data name="InsertGraphRunModeNotificationText" xml:space="preserve">
     <value>Example file added to workspace. Run mode changed to Manual.</value>
   </data>
+  <data name="PreferencesWindowLanguages" xml:space="preserve">
+    <value>English,Czech,German,Spanish,French,Italian,Japanese,Korean,Polish,Portuguese,Brazilian,Russian,Chinese Simplified,Chinese Traditional</value>
+  </data>
 </root>

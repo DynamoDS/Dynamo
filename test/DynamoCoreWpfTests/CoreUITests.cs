@@ -753,6 +753,28 @@ namespace DynamoCoreWpfTests
             Assert.That(Model.PreferenceSettings.ConnectorType == ConnectorType.POLYLINE);
             Assert.That(Model.ConnectorType == ConnectorType.BEZIER);
         }
+        /// <summary>
+        /// Checks that we are serializing and deserializing the PreferenceSettings.DefaultScaleFactor in DynamoSettings.xml correctly
+        /// </summary>
+        [Test]
+        public void TestImportDefaultScaleFactor()
+        {
+            string settingDirectory = Path.Combine(GetTestDirectory(ExecutingDirectory), "settings");
+            string newSettingslFilePath = Path.Combine(settingDirectory, "DynamoSettings-NewSettings.xml");
+
+            var defaultSettings = new PreferenceSettings();
+            defaultSettings.DefaultScaleFactor = GeometryScalingOptions.ConvertUIToScaleFactor((int)GeometryScaleSize.ExtraLarge);
+
+            //Save in the DynamoSettings.xml the DefaultScaleFactor = 4 
+            defaultSettings.Save(newSettingslFilePath);
+
+            //Reload the saved settings file
+            var updatedSettings = PreferenceSettings.Load(newSettingslFilePath);
+            int UIIndex = GeometryScalingOptions.ConvertScaleFactorToUI((int)updatedSettings.DefaultScaleFactor);
+
+            //Validates that the content of DefaultScaleFactor match with ExtraLarge (4)
+            Assert.IsTrue(UIIndex == (int)GeometryScaleSize.ExtraLarge);
+        }
 
         private void RestartTestSetup(bool startInTestMode)
         {
