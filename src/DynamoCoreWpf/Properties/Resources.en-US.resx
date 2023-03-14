@@ -2575,6 +2575,9 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
   <data name="BreakConnectionsPopupMenuItem" xml:space="preserve">
     <value>Break Connections</value>
   </data>
+  <data name="RenamePortPopupMenuItem" xml:space="preserve">
+    <value>Edit Port Properties</value>
+  </data>
   <data name="HideWiresPopupMenuItem" xml:space="preserve">
     <value>Hide Wires</value>
   </data>
@@ -3493,6 +3496,39 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   </data>
   <data name="DynamoViewSettingLibraryZoomScale" xml:space="preserve">
     <value>Library</value>
+  </data>
+  <data name="PortPropertiesPromptInputWindowTitle">
+      <value>Input Port Properties</value>
+      <comment>Input Port title</comment>
+  </data>
+  <data name="PortPropertiesPromptOutputWindowTitle">
+      <value>Output Port Properties</value>
+      <comment>Output Port title</comment>
+  </data>
+  <data name="PortPropertiesPromptDescriptionTooltip">
+      <value>Description of port</value>
+      <comment>Description of port</comment>
+  </data>
+  <data name="PortPropertiesPromptWindowDescription">
+      <value>Description</value>
+      <comment>Port Description Label</comment>
+  </data>
+  <data name="PortPropertiesPromptNameTooltip">
+      <value>Port name</value>
+      <comment>Name of port</comment>
+  </data>
+    <data name="PortPropertiesPromptWindowName">
+      <value>Name</value>
+      <comment>Port Name Label</comment>
+  </data>
+  <data name="RemovePythonPortWarningMessageBoxTitle" xml:space="preserve">
+    <value>Remove port?</value>
+  </data>
+  <data name="MessageRemovePythonPort" xml:space="preserve">
+    <value>Your custom port properties will be lost once the port is removed.</value>
+  </data>
+  <data name="MessagePortNameInvalid" xml:space="preserve">
+    <value>Cannot contain special characters (# % * ? \ : [ ])</value>
   </data>
   <data name="PreferencesViewEnablePersistExtensions" xml:space="preserve">
     <value>On launch, remember open extensions panels from last session</value>

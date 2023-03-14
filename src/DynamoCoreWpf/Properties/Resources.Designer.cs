@@ -4445,6 +4445,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot contain special characters (# % * ? \ : [ ]).
+        /// </summary>
+        public static string MessagePortNameInvalid {
+            get {
+                return ResourceManager.GetString("MessagePortNameInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your custom port properties will be lost once the port is removed..
+        /// </summary>
+        public static string MessageRemovePythonPort {
+            get {
+                return ResourceManager.GetString("MessageRemovePythonPort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} cannot be installed as it conflicts with a different version of the built-in package, {1}, which is already installed.
         ///    
         ///You can try disabling loading packages from built-in package paths, or unload the conflicting package, then restart {2} and download {0} again..
@@ -6500,6 +6518,60 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Description of port.
+        /// </summary>
+        public static string PortPropertiesPromptDescriptionTooltip {
+            get {
+                return ResourceManager.GetString("PortPropertiesPromptDescriptionTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Input Port Properties.
+        /// </summary>
+        public static string PortPropertiesPromptInputWindowTitle {
+            get {
+                return ResourceManager.GetString("PortPropertiesPromptInputWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Port name.
+        /// </summary>
+        public static string PortPropertiesPromptNameTooltip {
+            get {
+                return ResourceManager.GetString("PortPropertiesPromptNameTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Output Port Properties.
+        /// </summary>
+        public static string PortPropertiesPromptOutputWindowTitle {
+            get {
+                return ResourceManager.GetString("PortPropertiesPromptOutputWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        public static string PortPropertiesPromptWindowDescription {
+            get {
+                return ResourceManager.GetString("PortPropertiesPromptWindowDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string PortPropertiesPromptWindowName {
+            get {
+                return ResourceManager.GetString("PortPropertiesPromptWindowName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use Default Value.
         /// </summary>
         public static string PortViewContextMenuUserDefaultValue {
@@ -7782,6 +7854,24 @@ namespace Dynamo.Wpf.Properties {
         public static string RecommendedNodes {
             get {
                 return ResourceManager.GetString("RecommendedNodes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove port?.
+        /// </summary>
+        public static string RemovePythonPortWarningMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("RemovePythonPortWarningMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit Port Properties.
+        /// </summary>
+        public static string RenamePortPopupMenuItem {
+            get {
+                return ResourceManager.GetString("RenamePortPopupMenuItem", resourceCulture);
             }
         }
         

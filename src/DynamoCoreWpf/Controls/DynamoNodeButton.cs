@@ -7,6 +7,7 @@ using Dynamo.Models;
 using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Utilities;
 
 namespace Dynamo.Nodes
 {
@@ -25,6 +26,17 @@ namespace Dynamo.Nodes
                 if (f != null) this.dynamoViewModel = f.ViewModel.DynamoViewModel;
 
                 return this.dynamoViewModel;
+            }
+        }
+
+        private Window Owner
+        {
+            get
+            {
+                var f = WpfUtilities.FindUpVisualTree<DynamoView>(this);
+                if (f != null) return f;
+
+                return null;
             }
         }
 
@@ -49,6 +61,25 @@ namespace Dynamo.Nodes
             // 
             if (null != this.model && (!string.IsNullOrEmpty(this.eventName)))
             {
+                MessageBoxResult result = MessageBoxResult.None;
+
+                if (eventName.Equals("RemoveInPort"))
+                {
+                    result = MessageBoxService.Show
+                    (
+                        Owner,
+                        Dynamo.Wpf.Properties.Resources.MessageRemovePythonPort,
+                        Dynamo.Wpf.Properties.Resources.RemovePythonPortWarningMessageBoxTitle,
+                        MessageBoxButton.OKCancel,
+                        MessageBoxImage.Information
+                    );
+                }
+
+                if (result == MessageBoxResult.Cancel)
+                {
+                    return;
+                }
+
                 var command = new DynamoModel.ModelEventCommand(model.GUID, eventName);
                 this.DynamoViewModel.ExecuteCommand(command);
             }
