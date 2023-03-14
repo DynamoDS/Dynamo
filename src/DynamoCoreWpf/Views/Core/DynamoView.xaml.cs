@@ -1658,7 +1658,7 @@ namespace Dynamo.Controls
         {
             if (!dynamoViewModel.PreferenceSettings.EnablePersistExtensions || o == null) return;
 
-            var extId = "";
+            var extId = string.Empty;
             switch (o)
             {
                 case TabItem t:
@@ -1672,7 +1672,7 @@ namespace Dynamo.Controls
                     break;
             }
 
-            if (extId == "") return;
+            if (string.IsNullOrEmpty(extId)) return;
 
             var setting = dynamoViewModel.Model.PreferenceSettings.ViewExtensionSettings?.Find(ext => ext.UniqueId == extId);
             if (setting != null)
