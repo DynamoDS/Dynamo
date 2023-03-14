@@ -21,6 +21,7 @@ namespace UI.Prompts
         #region Properties
         private PortType portType;
         private bool isStatusWarning;
+        private string errorString = string.Empty;
 
         /// <summary>
         /// Port name
@@ -82,7 +83,6 @@ namespace UI.Prompts
         }
 
 
-        private string errorString = string.Empty;
         /// <summary>
         /// Contains the notification of the status label
         /// </summary>
