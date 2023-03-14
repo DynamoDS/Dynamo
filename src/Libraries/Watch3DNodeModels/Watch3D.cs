@@ -171,11 +171,21 @@ namespace Watch3DNodeModels
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
+            List<AssociativeNode> nonEmptyInputAstNodes = new List<AssociativeNode>();
+
+            for (int i = 0; i < InPorts.Count; i++)
+            {
+                if (InPorts[i].Connectors.Count > 0)
+                {
+                    nonEmptyInputAstNodes.Add(inputAstNodes[i]);
+                }
+            }
+
             return new[]
             {
                 AstFactory.BuildAssignment(
                     GetAstIdentifierForOutputIndex(0),
-                    AstFactory.BuildExprList(inputAstNodes))
+                    AstFactory.BuildExprList(nonEmptyInputAstNodes))
             };
         }
 
