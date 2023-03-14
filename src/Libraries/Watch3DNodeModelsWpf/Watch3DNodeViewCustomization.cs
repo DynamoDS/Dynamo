@@ -11,6 +11,7 @@ using System.Windows.Threading;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Controls;
+using Dynamo.Graph.Nodes;
 using Dynamo.Logging;
 using Dynamo.Wpf;
 using Dynamo.Wpf.Rendering;
@@ -19,10 +20,11 @@ using Dynamo.Visualization;
 using VMDataBridge;
 using Watch3DNodeModels;
 using Watch3DNodeModelsWpf.Properties;
+using Watch3d = Watch3DNodeModels.Watch3D;
 
 namespace Watch3DNodeModelsWpf
 {
-    public class Watch3DNodeViewCustomization : VariableInputNodeViewCustomization, INodeViewCustomization<Watch3D>
+    public class Watch3DNodeViewCustomization : VariableInputNodeViewCustomization
     {
         private Watch3D watch3dModel;
         private Watch3DView watch3DView;
@@ -43,12 +45,13 @@ namespace Watch3DNodeModelsWpf
             watch3dModel.Camera.UpZ = camera.UpDirection.Z;
         }
 
-        public void CustomizeView(Watch3D model, NodeView nodeView)
+        public override void CustomizeView(VariableInputNode nodeModel, NodeView nodeView)
         {
-            base.CustomizeView(model, nodeView);
+            watch3dModel = (Watch3d)nodeModel;
+
+            base.CustomizeView(watch3dModel, nodeView);
 
             var dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
-            watch3dModel = model;
 
             var renderingTier = (RenderCapability.Tier >> 16);
             if (renderingTier < 2) return;
@@ -60,11 +63,11 @@ namespace Watch3DNodeModelsWpf
             watch3DViewModel.Setup(dynamoViewModel,
                 dynamoViewModel.RenderPackageFactoryViewModel.Factory);
 
-            if (model.Camera != null)
+            if (watch3dModel.Camera != null)
             {
                 try
                 {
-                    var camera = model.Camera;
+                    var camera = watch3dModel.Camera;
                     var camData = new CameraData
                     {
                         Name = camera.Name,
@@ -87,13 +90,13 @@ namespace Watch3DNodeModelsWpf
                 }
             }
 
-            model.Serialized += model_Serialized;
+            watch3dModel.Serialized += model_Serialized;
             watch3DViewModel.ViewCameraChanged += onCameraChanged;
 
             watch3DView = new Watch3DView()
             {
-                Width = model.WatchWidth,
-                Height = model.WatchHeight,
+                Width = watch3dModel.WatchWidth,
+                Height = watch3dModel.WatchHeight,
                 DataContext = watch3DViewModel
             };
 
@@ -103,11 +106,11 @@ namespace Watch3DNodeModelsWpf
             // Updated from (Watch3d)View.SizeChanged to nodeView.SizeChanged - height
             // and width should correspond to node model and not watch3Dview
             nodeView.SizeChanged += (sender, args) =>
-			    model.SetSize(args.NewSize.Width, args.NewSize.Height);
+                watch3dModel.SetSize(args.NewSize.Width, args.NewSize.Height);
 
             // set WatchSize in model
             watch3DView.View.SizeChanged += (sender, args) =>
-			    model.SetWatchSize(args.NewSize.Width, args.NewSize.Height);
+                watch3dModel.SetWatchSize(args.NewSize.Width, args.NewSize.Height);
 
             var mi = new MenuItem { Header = Resources.ZoomToFit };
             mi.Click += mi_Click;
@@ -132,7 +135,7 @@ namespace Watch3DNodeModelsWpf
             nodeView.PresentationGrid.Visibility = Visibility.Visible;
 
             DataBridge.Instance.RegisterCallback(
-                model.GUID.ToString(),
+                watch3dModel.GUID.ToString(),
                 obj =>
                     nodeView.Dispatcher.Invoke(
                         new Action<object>(RenderData),
