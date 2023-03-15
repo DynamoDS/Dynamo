@@ -36,7 +36,7 @@
         <PackageReference Include="JunitXml.TestLogger" Version="3.0.124" />
     </ItemGroup>
     <ItemGroup>
-    <PackageReference Include="DynamoVisualProgramming.Analytics" Version="3.0.0.2506">
+    <PackageReference Include="DynamoVisualProgramming.Analytics" Version="3.0.1.740">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Dynamo.Controls;
+using Dynamo.Logging;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels.GuidedTour;
@@ -474,7 +475,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                         Sequence = jsonStepInfo.Sequence,
                         RatingTextTitle = formattedText.ToString(),
                         StepType = Step.StepTypes.SURVEY,
-                        IsRatingVisible = dynamoViewModel.Model.PreferenceSettings.IsADPAnalyticsReportingApproved,
+                        IsRatingVisible = !Analytics.DisableAnalytics && Analytics.IsEnabled,
                         StepContent = new Content()
                         {
                             FormattedText = formattedText,
