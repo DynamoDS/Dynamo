@@ -315,7 +315,7 @@
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
                                     <!--This Grid contains controls for selecting Run Settings options-->
-                                    <Grid Grid.Row="0" Margin="4,0,0,0">
+                                    <Grid Grid.Row="0">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="Auto" />
