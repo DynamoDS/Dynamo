@@ -12,7 +12,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DocumentationFile>..\..\..\bin\AnyCPU\Debug\en-US\FFITarget.xml</DocumentationFile>
   </PropertyGroup>
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net48'">
         <PackageReference Include="NUnitTestAdapter" Version="2.3.0" ExcludeAssets="all" />
         <Reference Include="System" />
         <Reference Include="System.Core" />
@@ -22,9 +22,17 @@
         <Reference Include="Microsoft.CSharp" />
         <Reference Include="System.Data" />
         <Reference Include="System.Xml" />
+        <Reference Include="$(PkgMicrosoft_Office_Interop_Excel)\lib\net20\Microsoft.Office.Interop.Excel.dll">
+            <EmbedInteropTypes>True</EmbedInteropTypes>
+            <WrapperTool>tlbimp</WrapperTool>
+            <Private>False</Private>
+        </Reference>
     </ItemGroup>
   <ItemGroup>
-      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+    <PackageReference Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1000" GeneratePathProperty="true">
+        <ExcludeAssets>all</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\DynamoCore\DynamoCore.csproj">
