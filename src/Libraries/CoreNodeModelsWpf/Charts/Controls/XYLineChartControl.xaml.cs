@@ -19,6 +19,9 @@ namespace CoreNodeModelsWpf.Charts.Controls
         private Random rnd = new Random();
         private readonly XYLineChartNodeModel model;
 
+        private double MIN_WIDTH = 300;
+        private double MIN_HEIGHT = 300;
+
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -168,12 +171,12 @@ namespace CoreNodeModelsWpf.Charts.Controls
             {
                 var inputGrid = this.Parent as Grid;
 
-                if (xAdjust >= inputGrid.MinWidth)
+                if (xAdjust >= inputGrid.MinWidth && xAdjust >= MIN_WIDTH)
                 {
                     Width = xAdjust;
                 }
 
-                if (yAdjust >= inputGrid.MinHeight)
+                if (yAdjust >= inputGrid.MinHeight && xAdjust >= MIN_HEIGHT)
                 {
                     Height = yAdjust;
                 }

@@ -116,6 +116,12 @@ namespace CoreNodeModelsWpf.Charts
         }
         private void XYLineChartNodeModel_PortConnected(PortModel port, ConnectorModel connector)
         {
+            // Reset an info states if any
+            if (InPorts[3].IsConnected && NodeInfos.Any(x => x.State.Equals(ElementState.Info)))
+            {
+                this.ClearInfoMessages();
+            }
+
             OnPortUpdated(null);
         }
         #endregion
@@ -142,12 +148,6 @@ namespace CoreNodeModelsWpf.Charts
         /// <param name="data">The data passed through the data bridge.</param>
         private void DataBridgeCallback(object data)
         {
-            // Reset an info states if any
-            //if (NodeInfos.Count > 0)
-            //{
-            //    this.ClearInfoMessages();
-            //}
-
             // Grab input data which always returned as an ArrayList
             var inputs = data as ArrayList;
 
@@ -156,12 +156,16 @@ namespace CoreNodeModelsWpf.Charts
             var xValues = inputs[1] as ArrayList;
             var yValues = inputs[2] as ArrayList;
             var colors = inputs[3] as ArrayList;
-
-            if (xValues == null || yValues == null || labels == null)
+                        
+            if (!InPorts[0].IsConnected && !InPorts[1].IsConnected && !InPorts[2].IsConnected)
+            {
                 return;
+            }
+
+            var anyNullData = labels == null || xValues == null || yValues == null;
 
             // Only continue if key/values match in length
-            if (labels.Count != xValues.Count || xValues.Count != yValues.Count || labels.Count < 1 || xValues.Count < 1)
+            if (anyNullData || labels.Count != xValues.Count || xValues.Count != yValues.Count || labels.Count == 0 || xValues.Count == 0)
             {
                 throw new Exception("Label and Values do not properly align in length.");
             }
@@ -175,6 +179,7 @@ namespace CoreNodeModelsWpf.Charts
             // If color count doesn't match title count use random colors
             if (colors == null || colors.Count == 0 || colors.Count != labels.Count)
             {
+                if(InPorts[3].IsConnected) { return; }
                 // In case colors are not provided, we supply some from the default library of colors
                 Info(Dynamo.Wpf.Properties.CoreNodeModelWpfResources.ProvideDefaultColorsWarningMessage);
 
@@ -225,11 +230,18 @@ namespace CoreNodeModelsWpf.Charts
                     XValues.Add(outputXValues);
                     YValues.Add(outputYValues);
 
-                    var dynColor = (DSCore.Color)colors[i];
-                    var convertedColor = Color.FromArgb(dynColor.Alpha, dynColor.Red, dynColor.Green, dynColor.Blue);
-                    SolidColorBrush brush = new SolidColorBrush(convertedColor);
-                    brush.Freeze();
-                    Colors.Add(brush);
+                    try
+                    {
+                        var dynColor = (DSCore.Color)colors[i];
+                        var convertedColor = Color.FromArgb(dynColor.Alpha, dynColor.Red, dynColor.Green, dynColor.Blue);
+                        SolidColorBrush brush = new SolidColorBrush(convertedColor);
+                        brush.Freeze();
+                        Colors.Add(brush);
+                    }
+                    catch(Exception)
+                    {
+                        throw new Exception("Colors are not properly defined list of colors.");
+                    }
                 }
             }
 
@@ -334,7 +346,9 @@ namespace CoreNodeModelsWpf.Charts
 
             var contextMenu = (nodeView.Content as Grid).ContextMenu;
             contextMenu.Items.Add(exportImage);
-            
+
+            UpdateDefaultInPortValues();
+
             model.PortUpdated += ModelOnPortUpdated;
         }
 
@@ -348,7 +362,11 @@ namespace CoreNodeModelsWpf.Charts
             if (!this.view.ViewModel.InPorts.Any()) return;
             var inPorts = this.view.ViewModel.InPorts;
             // Only apply default values if all ports are disconnected
-            if (model.State != ElementState.Active && !inPorts[0].IsConnected && !inPorts[1].IsConnected && !inPorts[2].IsConnected)
+            if (!model.IsInErrorState &&
+                    model.State != ElementState.Active &&
+                    !inPorts[0].IsConnected &&
+                    !inPorts[1].IsConnected &&
+                    !inPorts[2].IsConnected)
             {
                 ((InPortViewModel) inPorts[0]).PortDefaultValueMarkerVisible = true;
                 ((InPortViewModel) inPorts[1]).PortDefaultValueMarkerVisible = true;
@@ -361,8 +379,11 @@ namespace CoreNodeModelsWpf.Charts
                 ((InPortViewModel)inPorts[2]).PortDefaultValueMarkerVisible = false;
             }
 
+            var allPortsConnected = inPorts[0].IsConnected && inPorts[1].IsConnected && inPorts[2].IsConnected && model.State != ElementState.Warning;
+            var noPortsConnected = !inPorts[0].IsConnected && !inPorts[1].IsConnected && !inPorts[2].IsConnected;
+
             // The color input uses default values if it's not connected
-            if(model.State != ElementState.Active && !inPorts[3].IsConnected)
+            if (!inPorts[3].IsConnected && (allPortsConnected || noPortsConnected))
             {
                 ((InPortViewModel) inPorts[3]).PortDefaultValueMarkerVisible = true;
             }
