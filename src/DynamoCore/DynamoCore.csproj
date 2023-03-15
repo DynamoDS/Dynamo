@@ -30,7 +30,7 @@
   </ItemGroup>
   <ItemGroup Label="Common dependencies">
     <PackageReference Include="Autodesk.IDSDK" Version="1.1.6" />
-    <PackageReference Include="DynamoVisualProgramming.Analytics" Version="3.0.0.2506" />
+    <PackageReference Include="DynamoVisualProgramming.Analytics" Version="3.0.1.740" />
     <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.665" GeneratePathProperty="true"/>
     <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.18.0.665" GeneratePathProperty="true"/>
     <PackageReference Include="Greg" Version="2.3.0.2505" />
