@@ -236,7 +236,13 @@ namespace Dynamo.Views
                             if (portViewModel is OutPortViewModel outPortViewModel)
                             {
                                 outPortViewModel.RefreshHideWiresState();
+
+                                if (portViewModel.NodeViewModel.NodeModel is PythonNodeModels.PythonNode)
+                                {
+                                    outPortViewModel.EnableRenamePort();
+                                }
                             }
+
 
                             portViewModel.SetupPortContextMenuPlacement(popup);
                         }

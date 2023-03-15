@@ -54,10 +54,9 @@ namespace Dynamo.Configuration
         private double defaultScaleFactor;
         private bool disableTrustWarnings = false;
         private bool isNotificationCenterEnabled;
+        private bool isEnablePersistExtensionsEnabled;
         private bool isStaticSplashScreenEnabled;
         private bool isCreatedFromValidFile = true;
-        private bool isADPChecked = false;
-        private bool isADPOptedIn = false;
 
         #region Constants
         /// <summary>
@@ -113,22 +112,16 @@ namespace Dynamo.Configuration
 
         /// <summary>
         /// Indicates whether ADP analytics reporting is approved or not.
-        /// Note that this property is called often and the inner call to IsADPOptinIn can be slow sometimes
-        /// especially when there is an error involved. And therefore we will only check this once per instance.
+        /// Note that the getter will communicate to a analytics server which might be slow.
+        /// This API should only be used in UI scenarios (not in performance sensitive areas)
         /// </summary>
         [XmlIgnore]
-        [Obsolete("Setter is obsolete - ADP consent should not be set directly, it should be set using the consent dialog.")]
+        [Obsolete("API obsolete - This is an internal API and should not be used.")]
         public bool IsADPAnalyticsReportingApproved
         {
             get
             {
-                if (!isADPChecked)
-                {
-                    isADPChecked = true;
-                    isADPOptedIn = AnalyticsService.IsADPOptedIn;
-                }
-
-                return isADPOptedIn;
+                return AnalyticsService.IsADPOptedIn;
             }
             set { throw new Exception("do not use"); }
         }
@@ -575,6 +568,22 @@ namespace Dynamo.Configuration
             }
         }
 
+        /// <summary>
+        /// This defines if user wants the Extensions settings to persist across sessions.
+        /// </summary>
+        public bool EnablePersistExtensions
+        {
+            get
+            {
+                return isEnablePersistExtensionsEnabled;
+            }
+            set
+            {
+                isEnablePersistExtensionsEnabled = value;
+                RaisePropertyChanged(nameof(EnablePersistExtensions));
+            }
+        }
+
 
         /// <summary>
         /// This defines if the user wants to see the static splash screen again
@@ -794,7 +803,7 @@ namespace Dynamo.Configuration
             BackupFiles = new List<string>();
 
             LibraryZoomScale = 100;
-            PythonScriptZoomScale = 22;
+            PythonScriptZoomScale = 100;
 
             CustomPackageFolders = new List<string>();
 

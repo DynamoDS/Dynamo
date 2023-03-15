@@ -771,7 +771,7 @@ namespace Dynamo.ViewModels
         }
         
         /// <summary>
-        /// Controls the IsChecked property in the "Hide IronPython alerts" toogle button
+        /// Controls the IsChecked property in the "Hide IronPython alerts" toggle button
         /// </summary>
         public bool HideIronPythonAlertsIsChecked
         {
@@ -787,7 +787,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Controls the IsChecked property in the "Show Whitespace in Python editor" toogle button
+        /// Controls the IsChecked property in the "Show Whitespace in Python editor" toggle button
         /// </summary>
         public bool ShowWhitespaceIsChecked
         {
@@ -804,7 +804,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Controls the IsChecked property in the "Notification Center" toogle button
+        /// Controls the IsChecked property in the "Notification Center" toggle button
         /// </summary>
         public bool NotificationCenterIsChecked
         {
@@ -816,6 +816,23 @@ namespace Dynamo.ViewModels
             {
                 preferenceSettings.EnableNotificationCenter = value;
                 RaisePropertyChanged(nameof(NotificationCenterIsChecked));
+            }
+        }
+
+        /// <summary>
+        /// Controls the IsChecked property in the "Extensions" toggle button, to enable persisted extensions, that will remember
+        /// extensions setting as per the last session.
+        /// </summary>
+        public bool PersistExtensionsIsChecked
+        {
+            get
+            {
+                return preferenceSettings.EnablePersistExtensions;
+            }
+            set
+            {
+                preferenceSettings.EnablePersistExtensions = value;
+                RaisePropertyChanged(nameof(PersistExtensionsIsChecked));
             }
         }
 

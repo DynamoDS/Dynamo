@@ -254,7 +254,7 @@ namespace Dynamo.Wpf.Utilities
                     var miniDumpFilePath = CreateMiniDumpFile(cerDir.FullName);
                     var upiConfigFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "upiconfig.xml");
 
-                    var cerArgs = $"/UPITOKEN {upiConfigFilePath} /DMP {miniDumpFilePath} /APPXML \"{appConfig}\" {dynConfig} {extras}";
+                    var cerArgs = $"/UPITOKEN {upiConfigFilePath} /DMP {miniDumpFilePath} /APPXML \"{appConfig}\" {dynConfig} {extras} /USEEXCEPTIONTRACE";
                     
                     Process.Start(new ProcessStartInfo(cerToolPath, cerArgs)).WaitForExit();
                     return true;

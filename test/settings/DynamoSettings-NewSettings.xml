@@ -71,6 +71,7 @@
   <MLRecommendationNumberOfResults>5</MLRecommendationNumberOfResults>
   <EnableNotificationCenter>false</EnableNotificationCenter>
   <EnableStaticSplashScreen>false</EnableStaticSplashScreen>
+  <EnablePersistExtensions>true</EnablePersistExtensions>
   <DefaultPythonEngine/>
   <SelectedPackagePathForInstall>C:\Users\jesus.alvino\AppData\Roaming\Dynamo\Dynamo Core\2.16</SelectedPackagePathForInstall>
   <NamespacesToExcludeFromLibrary>

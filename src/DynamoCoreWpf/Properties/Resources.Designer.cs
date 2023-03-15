@@ -3975,7 +3975,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Drag to adjust Library zoom scale between 10% and 300%. You can also adjust this in Library by pressing “Shift” and scrolling the mouse wheel..
+        ///   Looks up a localized string similar to Drag to adjust Library zoom scale between 25% and 300%. You can also adjust this in Library by pressing “Ctrl” and scrolling the mouse wheel..
         /// </summary>
         public static string LibraryZoomScaleTooltipText {
             get {
@@ -4450,6 +4450,24 @@ namespace Dynamo.Wpf.Properties {
         public static string MessagePackageVersionNotFound {
             get {
                 return ResourceManager.GetString("MessagePackageVersionNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot contain special characters (# % * ? \ : [ ]).
+        /// </summary>
+        public static string MessagePortNameInvalid {
+            get {
+                return ResourceManager.GetString("MessagePortNameInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your custom port properties will be lost once the port is removed..
+        /// </summary>
+        public static string MessageRemovePythonPort {
+            get {
+                return ResourceManager.GetString("MessageRemovePythonPort", resourceCulture);
             }
         }
         
@@ -6509,6 +6527,60 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Description of port.
+        /// </summary>
+        public static string PortPropertiesPromptDescriptionTooltip {
+            get {
+                return ResourceManager.GetString("PortPropertiesPromptDescriptionTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Input Port Properties.
+        /// </summary>
+        public static string PortPropertiesPromptInputWindowTitle {
+            get {
+                return ResourceManager.GetString("PortPropertiesPromptInputWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Port name.
+        /// </summary>
+        public static string PortPropertiesPromptNameTooltip {
+            get {
+                return ResourceManager.GetString("PortPropertiesPromptNameTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Output Port Properties.
+        /// </summary>
+        public static string PortPropertiesPromptOutputWindowTitle {
+            get {
+                return ResourceManager.GetString("PortPropertiesPromptOutputWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        public static string PortPropertiesPromptWindowDescription {
+            get {
+                return ResourceManager.GetString("PortPropertiesPromptWindowDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string PortPropertiesPromptWindowName {
+            get {
+                return ResourceManager.GetString("PortPropertiesPromptWindowName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use Default Value.
         /// </summary>
         public static string PortViewContextMenuUserDefaultValue {
@@ -6684,6 +6756,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to On launch, remember open extensions panels from last session.
+        /// </summary>
+        public static string PreferencesViewEnablePersistExtensions {
+            get {
+                return ResourceManager.GetString("PreferencesViewEnablePersistExtensions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enable T-Spline nodes.
         /// </summary>
         public static string PreferencesViewEnableTSplineNodes {
@@ -6698,6 +6779,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewExperimentalLabel {
             get {
                 return ResourceManager.GetString("PreferencesViewExperimentalLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extensions.
+        /// </summary>
+        public static string PreferencesViewExtensions {
+            get {
+                return ResourceManager.GetString("PreferencesViewExtensions", resourceCulture);
             }
         }
         
@@ -7022,15 +7112,6 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewZoomScaling100Percent {
             get {
                 return ResourceManager.GetString("PreferencesViewZoomScaling100Percent", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 10%.
-        /// </summary>
-        public static string PreferencesViewZoomScaling10Percent {
-            get {
-                return ResourceManager.GetString("PreferencesViewZoomScaling10Percent", resourceCulture);
             }
         }
         
@@ -7750,7 +7831,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Drag to adjust Python Editor zoom scale between 10% and 100%. You can also adjust this in Python Editor by pressing Shift and scrolling the mouse wheel..
+        ///   Looks up a localized string similar to Drag to adjust Python Editor zoom scale between 25% and 300%. You can also adjust this in Python Editor by pressing &quot;Ctrl&quot; and scrolling the mouse wheel..
         /// </summary>
         public static string PythonZoomScaleTooltipText {
             get {
@@ -7782,6 +7863,24 @@ namespace Dynamo.Wpf.Properties {
         public static string RecommendedNodes {
             get {
                 return ResourceManager.GetString("RecommendedNodes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove port?.
+        /// </summary>
+        public static string RemovePythonPortWarningMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("RemovePythonPortWarningMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit Port Properties.
+        /// </summary>
+        public static string RenamePortPopupMenuItem {
+            get {
+                return ResourceManager.GetString("RenamePortPopupMenuItem", resourceCulture);
             }
         }
         
