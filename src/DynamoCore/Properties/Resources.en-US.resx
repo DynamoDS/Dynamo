@@ -222,7 +222,7 @@ Default value: 1</value>
     <value>Download latest version</value>
     <comment>Button Download Lastest</comment>
   </data>
-  <data name="ArggOKButton" xml:space="preserve">
+  <data name="052465" xml:space="preserve">
     <value>Arrrrg, ok</value>
     <comment>Button OK</comment>
   </data>
@@ -899,7 +899,7 @@ This package likely contains an assembly that is blocked. You will need to load 
   <data name="InsertGraphRunModeNotificationText" xml:space="preserve">
     <value>Example file added to workspace. Run mode changed to Manual.</value>
   </data>
-  <data name="PreferencesWindowLanguages" xml:space="preserve">
+  <data name="DynamoLanguages_noxlate" xml:space="preserve">
     <value>English,Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文</value>
   </data>
 </root>
