@@ -388,7 +388,7 @@ namespace Dynamo.Configuration
             {
                 // Dynamically create a dictionary mapping languages and locales in the current thread locale
                 // This is done so that Preferences Panel could display the languages selections using the current locale
-                return Properties.Resources.PreferencesWindowLanguages.Split(',').
+                return Properties.Resources.DynamoLanguages_noxlate.Split(',').
                     Zip(SupportedLocaleList, (k, v) => (k, v)).ToDictionary(x => x.k, x => x.v);
             }
         }

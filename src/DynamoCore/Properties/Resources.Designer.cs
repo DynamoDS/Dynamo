@@ -570,6 +570,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to English,Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文.
+        /// </summary>
+        public static string DynamoLanguages_noxlate {
+            get {
+                return ResourceManager.GetString("DynamoLanguages_noxlate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dynamo is up to date..
         /// </summary>
         public static string DynamoUpToDate {
@@ -1665,15 +1674,6 @@ namespace Dynamo.Properties {
         public static string PortsNameDescriptionDoNotEqualWarningMessage {
             get {
                 return ResourceManager.GetString("PortsNameDescriptionDoNotEqualWarningMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to English,Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文.
-        /// </summary>
-        public static string PreferencesWindowLanguages {
-            get {
-                return ResourceManager.GetString("PreferencesWindowLanguages", resourceCulture);
             }
         }
         
