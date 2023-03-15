@@ -17,7 +17,7 @@
     d:DesignHeight="550"
     d:DesignWidth="800"
     AllowsTransparency="True"
-    Focusable="False"
+    Focusable="True"
     PopupAnimation="Slide"
     StaysOpen="False"
     mc:Ignorable="d">
