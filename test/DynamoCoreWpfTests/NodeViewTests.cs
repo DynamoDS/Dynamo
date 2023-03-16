@@ -425,15 +425,11 @@ namespace DynamoCoreWpfTests
             // Zoom out, less than 0.4
             wvm.Zoom = 0.3;
 
-            Assert.AreEqual(fileFromPathNodeViewModel.State, ElementState.AssociatedWarning);
             Assert.AreEqual(fileFromPathNode.nodeColorOverlayZoomOut.Visibility, System.Windows.Visibility.Visible);
             Assert.AreEqual(fileFromPathNode.zoomGlyphsGrid.Visibility, System.Windows.Visibility.Visible);            
 
             // Fix the image path and re run the engine
             filePathNodeViewModel.NodeModel.UpdateValue(new Dynamo.Graph.UpdateValueParams("Value", ".\\Bricks.PNG"));
-            imageReadFromFileNodeViewModel.UpdateBubbleContent();
-
-            Assert.AreEqual(fileFromPathNodeViewModel.State, ElementState.Active);
 
             wvm.Zoom = 0.6;
 

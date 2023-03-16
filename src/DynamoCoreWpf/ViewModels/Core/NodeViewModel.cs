@@ -899,7 +899,14 @@ namespace Dynamo.ViewModels
             // 1. Compile-time warnings in CBNs
             // 2. Obsolete nodes with warnings
             // 3. Dummy or unresolved nodes
-            if (nodeLogic.State == ElementState.Error || nodeLogic.State == ElementState.PersistentWarning || ErrorBubble == null) return;
+            if (nodeLogic.State == ElementState.Error || nodeLogic.State == ElementState.PersistentWarning) return;
+
+            // For certain nodes without ErrorBubble in place, handle color overlay specifically
+            if (ErrorBubble == null)
+            {
+                HandleColorOverlayChange();
+                return;
+            }
 
             if (DynamoViewModel.UIDispatcher != null)
             {
