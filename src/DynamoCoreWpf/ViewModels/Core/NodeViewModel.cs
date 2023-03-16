@@ -1342,7 +1342,8 @@ namespace Dynamo.ViewModels
                     ImgGlyphThreeSource = infoGlyph;
                 }
             }
-            if (NodeModel.State == ElementState.Warning || NodeModel.State == ElementState.PersistentWarning || NodeModel.State == ElementState.AssociatedWarning)
+
+            if (NodeModel.State == ElementState.Warning || NodeModel.State == ElementState.PersistentWarning)
             {
                 result = warningColor;
                 if (ImgGlyphTwoSource == null)
@@ -1365,7 +1366,7 @@ namespace Dynamo.ViewModels
                 {
                     ImgGlyphThreeSource = errorGlyph;
                 }
-            }            
+            }
 
             return result;
         }
@@ -1398,19 +1399,14 @@ namespace Dynamo.ViewModels
             ErrorBubble.PropertyChanged -= ErrorBubble_PropertyChanged;
 
             ErrorBubble.Dispose();
-        }        
+        }
 
         public void UpdateBubbleContent()
         {
             if (DynamoViewModel == null) return;
 
-            bool hasErrorOrWarning = NodeModel.IsInErrorState || NodeModel.State == ElementState.Warning;
+            bool hasErrorOrWarning = NodeModel.IsInErrorState || NodeModel.State == ElementState.Warning; 
             bool isNodeStateInfo = NodeModel.State == ElementState.Info;
-
-            var fileFromPathNode = typeof(CoreNodeModels.Input.FileObject).GetCustomAttributes(typeof(NodeNameAttribute), true).FirstOrDefault() as NodeNameAttribute;
-            string imageReadFromFileNodeName = "Image.ReadFromFile";
-
-            NodeModel.UpdateAssociatedWarning(fileFromPathNode.Name, imageReadFromFileNodeName);
 
             // Persistent warnings should continue to be displayed even if nodes are not involved in an execution as they can include:
             // 1. Compile-time warnings in CBNs
@@ -1492,7 +1488,7 @@ namespace Dynamo.ViewModels
                 }
                 HandleColorOverlayChange();
             }
-            ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
+            ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);            
         }
 
         private void UpdateErrorBubblePosition()
