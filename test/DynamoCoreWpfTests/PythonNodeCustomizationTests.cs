@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -14,6 +14,7 @@ using Dynamo.PythonServices;
 using Dynamo.Tests;
 using Dynamo.Utilities;
 using DynamoCoreWpfTests.Utility;
+using ICSharpCode.AvalonEdit.Folding;
 using NUnit.Framework;
 using PythonNodeModels;
 using PythonNodeModelsWpf;
@@ -707,6 +708,56 @@ namespace DynamoCoreWpfTests
             var errorBubble = GetInfoBubble(View);
             Assert.IsNotNull(errorBubble);
             Assert.AreEqual(Visibility.Visible, (errorBubble as UIElement).Visibility);
+        }
+
+        /// <summary>
+        /// This test evaluates the functionality of the Tab Folding Strategy
+        /// Tab consists of 4 spaces and every tab yields a new folding
+        /// A folding closes when reaching a line with the same number of tabs it was opened with
+        /// </summary>
+        [Test]
+        public void AvalonEditTabFoldingStrategyTest()
+        {
+            // Arrange
+            string pythonCode = "from System.Collections import ArrayList";
+            Open(@"core\python\python.dyn");
+
+            var nodeView = NodeViewWithGuid("3bcad14e-d086-4278-9e08-ed2759ef92f3");
+            var nodeModel = nodeView.ViewModel.NodeModel as PythonNodeBase;
+            Assert.NotNull(nodeModel);
+
+            var scriptWindow = EditPythonCode(nodeView, View);
+            var codeEditor = FindCodeEditor(scriptWindow);
+            var foldings = scriptWindow.foldingManager.AllFoldings.Count();
+            DispatcherUtil.DoEvents();
+
+            Assert.IsTrue(foldings == 0);
+
+            var textWithFourFoldings =
+                @"def TestDef(self):
+    # Every tab will cause a new foldnig to be created
+    self.data = 'reloaded'    
+
+try:
+    data = true
+    if data:
+        pass
+except:
+    data = false
+
+# Inadequate number of spaces different than 4 should not form a folding
+# Therefore leaving any amount of spaces not divisible by 4 should not yield further foldings
+
+class NoTabs():
+   value = true
+       pass
+
+";
+            SetTextEditorText(scriptWindow, textWithFourFoldings);
+            foldings = scriptWindow.foldingManager.AllFoldings.Count();
+            DispatcherUtil.DoEvents();
+
+            Assert.IsTrue(foldings == 4);
         }
     }
 }

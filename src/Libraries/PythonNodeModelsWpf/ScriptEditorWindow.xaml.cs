@@ -46,7 +46,7 @@ namespace PythonNodeModelsWpf
         private readonly DynamoViewModel dynamoViewModel;
         private bool nodeWasModified = false;
         private string originalScript;
-        private FoldingManager foldingManager;
+        internal FoldingManager foldingManager;
         private TabFoldingStrategy foldingStrategy;
         private bool IsSaved { get; set; } = true;
         private int zoomScaleCacheValue;
@@ -202,11 +202,10 @@ namespace PythonNodeModelsWpf
             var margins = editText.TextArea.LeftMargins.OfType<FoldingMargin>();
             foreach (var margin in margins)
             {
-                var test = margin;
-                test.FoldingMarkerBrush = new SolidColorBrush(Color.FromArgb(255, 153, 153, 153));
-                test.FoldingMarkerBackgroundBrush = new SolidColorBrush(Color.FromArgb(255, 53, 53, 53));
-                test.SelectedFoldingMarkerBrush = new SolidColorBrush(Color.FromArgb(255, 153, 153, 153));
-                test.SelectedFoldingMarkerBackgroundBrush = new SolidColorBrush(Color.FromArgb(255, 73, 73, 73));
+                margin.FoldingMarkerBrush = new SolidColorBrush(Color.FromArgb(255, 153, 153, 153));
+                margin.FoldingMarkerBackgroundBrush = new SolidColorBrush(Color.FromArgb(255, 53, 53, 53));
+                margin.SelectedFoldingMarkerBrush = new SolidColorBrush(Color.FromArgb(255, 153, 153, 153));
+                margin.SelectedFoldingMarkerBackgroundBrush = new SolidColorBrush(Color.FromArgb(255, 73, 73, 73));
             }
 
             foldingStrategy.UpdateFoldings(foldingManager, editText.Document);
