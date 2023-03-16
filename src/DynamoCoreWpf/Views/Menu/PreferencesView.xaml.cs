@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -34,6 +35,9 @@ namespace Dynamo.Wpf.Views
         // This is not a command any more but we keep it
         // around in a compatible way for now
         private IDisposable managePackageCommandEvent;
+
+        //This list will be passed everytime that we create a new GroupStyle so the custom colors can remain
+        private ObservableCollection<CustomColorItem> stylesCustomColors;
 
         /// <summary>
         /// Storing the original custom styles before the user could update them
@@ -87,6 +91,7 @@ namespace Dynamo.Wpf.Views
             LibraryZoomScalingSlider.Value = dynViewModel.Model.PreferenceSettings.LibraryZoomScale;
             PythonZoomScalingSlider.Value = dynViewModel.Model.PreferenceSettings.PythonScriptZoomScale;
 
+            stylesCustomColors = new ObservableCollection<CustomColorItem>();
             UpdateZoomScaleValueLabel(LibraryZoomScalingSlider, lblZoomScalingValue);
             UpdateZoomScaleValueLabel(PythonZoomScalingSlider, lblPythonScalingValue);
         }
@@ -260,6 +265,8 @@ namespace Dynamo.Wpf.Views
         private void ButtonColorPicker_Click(object sender, RoutedEventArgs e)
         {
             var colorPicker = new CustomColorPicker();
+            //This will set the custom colors list so the custom colors will remain the same for the Preferences panel (no matter if preferences is closed the list will remain).
+            colorPicker.SetCustomColors(stylesCustomColors);
             if (colorPicker == null) return;
 
             colorPicker.Placement = PlacementMode.Top;
@@ -267,6 +274,13 @@ namespace Dynamo.Wpf.Views
             colorPicker.IsOpen = true;
             colorPicker.Closed += ColorPicker_Closed;
             colorButtonSelected = sender as Button;
+
+            var brushColor = (colorButtonSelected.Background as SolidColorBrush);
+            if(brushColor != null)
+            {
+                //if the current color in the Group Style already exists in the CustomColorPicker then it will be selected
+                colorPicker.InitializeSelectedColor(brushColor.Color);
+            }         
         }
 
         private void ColorPicker_Closed(object sender, EventArgs e)
@@ -278,9 +292,9 @@ namespace Dynamo.Wpf.Views
             if (colorButtonSelected != null)
             {
                 var viewModel = colorPicker.DataContext as CustomColorPickerViewModel;
-                if (viewModel == null || viewModel.ColorPickerFinalSelectedColor == null)
+                if (viewModel == null || viewModel.ColorPickerSelectedColor == null)
                     return;
-                colorButtonSelected.Background = new SolidColorBrush(viewModel.ColorPickerFinalSelectedColor.Value);
+                colorButtonSelected.Background = new SolidColorBrush(viewModel.ColorPickerSelectedColor.Value);
             }
         }
 

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -17,6 +16,10 @@ namespace Dynamo.ViewModels
         public event PropertyChangedEventHandler PropertyChanged;
 
         private bool isColorItemSelected = false;
+
+        /// <summary>
+        /// This property will decide if we show a blue square over the color selected in CustomColoPicker or not.
+        /// </summary>
         public bool IsColorItemSelected
         {
             get
@@ -50,26 +53,40 @@ namespace Dynamo.ViewModels
 
     internal class CustomColorPickerViewModel : NotificationObject
     {
-        private Color? colorPickerFinalSelectedColor;
         private ObservableCollection<CustomColorItem> basicColors;
         private ObservableCollection<CustomColorItem> customColors;
 
+        private bool isCustomColorSelectionEnabled = false;
+        private Color? colorPickerSelectedColor = null;
 
         /// <summary>
-        /// Color Selected in the ColorPicker
+        /// This property will decide if we should show the normal color selection controls or the custom colors selection controls in the Popup
         /// </summary>
-        public Color? ColorPickerFinalSelectedColor
+        public bool IsCustomColorSelectionEnabled
         {
             get
             {
-                return colorPickerFinalSelectedColor;
+                return isCustomColorSelectionEnabled;
             }
             set
             {
-                colorPickerFinalSelectedColor = value;
-                RaisePropertyChanged(nameof(ColorPickerFinalSelectedColor));
+                isCustomColorSelectionEnabled = value;
+                RaisePropertyChanged(nameof(IsCustomColorSelectionEnabled));
             }
-        }      
+        }
+
+        /// <summary>
+        /// This property will contain the current color selected in the CustomColorPicker
+        /// </summary>
+        public Color? ColorPickerSelectedColor
+        {
+            get { return colorPickerSelectedColor; }
+            set
+            {
+                colorPickerSelectedColor = value;
+                RaisePropertyChanged(nameof(ColorPickerSelectedColor));
+            }
+        }
 
         /// <summary>
         /// List of Basic Colors that will be displayed in the CustomColorPicker
@@ -108,8 +125,7 @@ namespace Dynamo.ViewModels
             BasicColors = new ObservableCollection<CustomColorItem>();
             BasicColors = CreateBasicColorsCollection();
 
-            CustomColors = new ObservableCollection<CustomColorItem>();
-            CustomColors = CreateCustomColorsCollection();
+            CustomColors = new ObservableCollection<CustomColorItem>(); ;
         }
 
         private static ObservableCollection<CustomColorItem> CreateBasicColorsCollection()
@@ -209,18 +225,6 @@ namespace Dynamo.ViewModels
                 observableCollection.Add(new CustomColorItem(colorItem, string.Format("#{0},{1},{2}", color.R, color.G, color.B)));
             }
 
-            return observableCollection;
-        }
-
-        /// <summary>
-        /// Creates de default List of Custom Colors (this will be modified by the user
-        /// </summary>
-        /// <returns></returns>
-        private static ObservableCollection<CustomColorItem> CreateCustomColorsCollection()
-        {
-            ObservableCollection<CustomColorItem> observableCollection = new ObservableCollection<CustomColorItem>();
-            var colorItem = Color.FromRgb(0, 255, 0);
-            observableCollection.Add(new CustomColorItem(colorItem, string.Format("#{0},{1},{2}", 0, 255, 0)));
             return observableCollection;
         }
     }
