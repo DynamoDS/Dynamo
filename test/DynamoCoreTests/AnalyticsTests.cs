@@ -192,8 +192,8 @@ namespace Dynamo.Tests
             dynamoSettings.IsAnalyticsReportingApproved = true;
             dynamoSettings.IsUsageReportingApproved = true;
 
-            //1 startup + 2 analytics optin status events
-            trackerMoq.Verify(t => t.Track(It.IsAny<AnalyticsEvent>(), factoryMoq.Object), Times.Exactly(3));
+            //1 startup + 1 analytics optin status event (google analytics)
+            trackerMoq.Verify(t => t.Track(It.IsAny<AnalyticsEvent>(), factoryMoq.Object), Times.Exactly(2));
         }
 
         [Test]
@@ -227,25 +227,32 @@ namespace Dynamo.Tests
         {
             //Modify preferences
             dynamoSettings.IsAnalyticsReportingApproved = false;
-            
             var variable = "TimeVariable";
             var description = "Some description";
-
+            
+            Analytics.DisableAnalytics = true;
             var e = Analytics.CreateTimedEvent(Categories.Performance, variable, description);
             Assert.IsNotInstanceOf<TimedEvent>(e);
             e.Dispose();
+
+            Analytics.DisableAnalytics = false;
+
             //1 ApplicationLifecycle Start
             trackerMoq.Verify(t => t.Track(It.IsAny<TimedEvent>(), factoryMoq.Object), Times.Exactly(1));
 
             e = Analytics.TrackCommandEvent("TestCommand");
-            Assert.IsNotInstanceOf<CommandEvent>(e);
+            // CommandEvent will be created unless DisableAnalytics is on (because Dynamo does not know the ADP opted-in status)
+            Assert.IsInstanceOf<CommandEvent>(e);
             e.Dispose();
             
             trackerMoq.Verify(t => t.Track(It.IsAny<CommandEvent>(), factoryMoq.Object), Times.Never());
 
             e = Analytics.TrackFileOperationEvent(this.TempFolder, Actions.Save, 5);
-            Assert.IsNotInstanceOf<FileOperationEvent>(e);
+            // CommandEvent will be created unless DisableAnalytics is on (because Dynamo does not know the ADP opted-in status)
+            Assert.IsInstanceOf<FileOperationEvent>(e);
             e.Dispose();
+
+            dynamoSettings.IsAnalyticsReportingApproved = false;
 
             trackerMoq.Verify(t => t.Track(It.IsAny<FileOperationEvent>(), factoryMoq.Object), Times.Never());
 
