@@ -655,6 +655,11 @@ namespace Dynamo.ViewModels
             /// If true, Analytics and Usage options are hidden from UI 
             /// </summary>
             public bool HideReportOptions { get; set; }
+
+            /// <summary>
+            /// If true, autocomplete method options are hidden from UI 
+            /// </summary>
+            public bool HideAutocompleteMethodOptions { get; set; }
         }
 
         public static DynamoViewModel Start(StartConfiguration startConfiguration = new StartConfiguration())
@@ -750,6 +755,8 @@ namespace Dynamo.ViewModels
             model.RequestNotification += model_RequestNotification;
 
             preferencesViewModel = new PreferencesViewModel(this);
+            preferencesViewModel.HideAutocompleteMethodOptions = startConfiguration.HideAutocompleteMethodOptions;
+
 
 
             if (!DynamoModel.IsTestMode && !DynamoModel.IsHeadless)
