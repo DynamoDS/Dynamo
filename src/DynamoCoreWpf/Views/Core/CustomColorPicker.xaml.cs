@@ -96,6 +96,8 @@ namespace Dynamo.Controls
         private void DefineColorBtn_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             viewModel.IsCustomColorSelectionEnabled = true;
+            if(colorCanvasControl.SelectedColor == null)
+                colorCanvasControl.SelectedColor = Colors.Black;
         }
 
         private void CustomColorsCloseButton_Click(object sender, System.Windows.RoutedEventArgs e)
