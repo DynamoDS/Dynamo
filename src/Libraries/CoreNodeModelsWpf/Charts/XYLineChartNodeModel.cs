@@ -167,6 +167,8 @@ namespace CoreNodeModelsWpf.Charts
             // Only continue if key/values match in length
             if (anyNullData || labels.Count != xValues.Count || xValues.Count != yValues.Count || labels.Count == 0 || xValues.Count == 0)
             {
+                // Let's try not to throw, but just return
+                //return;
                 throw new Exception("Label and Values do not properly align in length.");
             }
 
@@ -267,8 +269,8 @@ namespace CoreNodeModelsWpf.Charts
             AssociativeNode inputNode;
 
             // If inputs are not connected return default input 
-            if (!InPorts[0].IsConnected ||
-                !InPorts[1].IsConnected ||
+            if (!InPorts[0].IsConnected &&
+                !InPorts[1].IsConnected &&
                 !InPorts[2].IsConnected)
             {
                 inputNode = AstFactory.BuildFunctionCall(
@@ -286,21 +288,33 @@ namespace CoreNodeModelsWpf.Charts
                     ),
                 };
             }
-
-            inputNode = AstFactory.BuildFunctionCall(
-                new Func<List<string>, List<List<double>>, List<List<double>>, List<DSCore.Color>, Dictionary<string, List<List<double>>>>(XYLineChartFunctions.GetNodeInput),
-                new List<AssociativeNode> { inputAstNodes[0], inputAstNodes[1], inputAstNodes[2], inputAstNodes[3] }
-            );
-
-            return new[]
+            else if (!InPorts[0].IsConnected ||
+                     !InPorts[1].IsConnected ||
+                     !InPorts[2].IsConnected)
             {
-                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), inputNode),
+                return new[]
+                {
+                    AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()),
+                };
+            }
+            else
+            {
+                inputNode = AstFactory.BuildFunctionCall(
+                                new Func<List<string>, List<List<double>>, List<List<double>>, List<DSCore.Color>, Dictionary<string, List<List<double>>>>(XYLineChartFunctions.GetNodeInput),
+                                new List<AssociativeNode> { inputAstNodes[0], inputAstNodes[1], inputAstNodes[2], inputAstNodes[3] }
+                            );
+
+                return new[]
+                {
+                    AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), inputNode),
                     AstFactory.BuildAssignment(
                         AstFactory.BuildIdentifier(AstIdentifierBase + "_dummy"),
                         VMDataBridge.DataBridge.GenerateBridgeDataAst(GUID.ToString(), AstFactory.BuildExprList(inputAstNodes)
-                    )
-                ),
-            };
+                        )
+                    ),
+                };
+            }
+            
         }
         #endregion
 
