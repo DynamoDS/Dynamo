@@ -28,7 +28,7 @@ namespace CoreNodeModelsWpf.Charts
     [NodeCategory("Display.Charts.Create")]        
     [NodeDescription("ChartsXYLineChartDescription", typeof(CoreNodeModelWpfResources))]
     [NodeSearchTags("ChartsXYLineChartSearchTags", typeof(CoreNodeModelWpfResources))]
-    [InPortNames("labels", "x-labels", "y-labels", "colors")]
+    [InPortNames("labels", "x-values", "y-values", "colors")]
     [InPortTypes("List<string>", "List<List<double>>", "List<List<double>>", "List<color>")]
     [InPortDescriptions(typeof(CoreNodeModelWpfResources),
         "ChartsXYLineChartLabelsDataPortToolTip",
