@@ -104,12 +104,12 @@ namespace CoreNodeModelsWpf.Charts
         {
             OnPortUpdated(null);
             // Clear UI when an input port is disconnected
-            if (port.PortType == PortType.Input && this.State == ElementState.Active)
+            if (port.PortType == PortType.Input)
             {
-                Labels.Clear();
-                XValues.Clear();
-                YValues.Clear();
-                Colors.Clear();
+                Labels?.Clear();
+                XValues?.Clear();
+                YValues?.Clear();
+                Colors?.Clear();
 
                 RaisePropertyChanged("DataUpdated");
             }
@@ -123,6 +123,7 @@ namespace CoreNodeModelsWpf.Charts
             }
 
             OnPortUpdated(null);
+            RaisePropertyChanged("DataUpdated");
         }
         #endregion
 
@@ -167,8 +168,6 @@ namespace CoreNodeModelsWpf.Charts
             // Only continue if key/values match in length
             if (anyNullData || labels.Count != xValues.Count || xValues.Count != yValues.Count || labels.Count == 0 || xValues.Count == 0)
             {
-                // Let's try not to throw, but just return
-                //return;
                 throw new Exception("Label and Values do not properly align in length.");
             }
 
@@ -181,7 +180,8 @@ namespace CoreNodeModelsWpf.Charts
             // If color count doesn't match title count use random colors
             if (colors == null || colors.Count == 0 || colors.Count != labels.Count)
             {
-                if(InPorts[3].IsConnected) { return; }
+                if(InPorts[3].IsConnected) return;
+
                 // In case colors are not provided, we supply some from the default library of colors
                 Info(Dynamo.Wpf.Properties.CoreNodeModelWpfResources.ProvideDefaultColorsWarningMessage);
 
@@ -325,6 +325,7 @@ namespace CoreNodeModelsWpf.Charts
         /// </summary>
         public override void Dispose()
         {
+            PortConnected -= XYLineChartNodeModel_PortConnected;
             PortDisconnected -= XYLineChartNodeModel_PortDisconnected;
             VMDataBridge.DataBridge.Instance.UnregisterCallback(GUID.ToString());
         }
