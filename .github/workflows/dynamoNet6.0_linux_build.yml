@@ -11,7 +11,9 @@ jobs:
         path: Dynamo
     - name: Setup dotnet
       uses: actions/setup-dotnet@v3
-   
+    - name: Disable problem matcher
+      run: echo "::remove-matcher owner=csc::"
+
     - name: Install dependencies for linux runtime
       run: dotnet restore ${{ github.workspace }}/Dynamo/src/DynamoCore.net6.sln -p:Platform=NET60_Linux --runtime=linux-x64
     - name: Build Dynamo with MSBuild for Linux
@@ -29,6 +31,3 @@ jobs:
         echo "***Running Smoke tests on linux***"
         #TODO unfortunately dotnet does not find any tests in this assembly.
         #dotnet test DynamoCoreTests.dll --filter "TestCategory~UnitTest"
-
-
-       

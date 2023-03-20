@@ -3577,4 +3577,7 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
     <value>Python Editor</value>
     <comment>Preferences -&gt; ZoomScalling -&gt; Python Editor</comment>
   </data>
+  <data name="CustomColorsPopupTitle" xml:space="preserve">
+    <value>Custom</value>
+  </data>
 </root>
