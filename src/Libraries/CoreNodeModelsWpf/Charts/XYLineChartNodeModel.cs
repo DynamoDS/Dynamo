@@ -117,7 +117,7 @@ namespace CoreNodeModelsWpf.Charts
         private void XYLineChartNodeModel_PortConnected(PortModel port, ConnectorModel connector)
         {
             // Reset an info states if any
-            if (InPorts[3].IsConnected && NodeInfos.Any(x => x.State.Equals(ElementState.Info)))
+            if (port.PortType == PortType.Input && InPorts[3].IsConnected && NodeInfos.Any(x => x.State.Equals(ElementState.Info)))
             {
                 this.ClearInfoMessages();
             }
@@ -163,6 +163,12 @@ namespace CoreNodeModelsWpf.Charts
                 return;
             }
 
+            // Clear current chart values
+            Labels = new List<string>();
+            XValues = new List<List<double>>();
+            YValues = new List<List<double>>();
+            Colors = new List<SolidColorBrush>();
+
             var anyNullData = labels == null || xValues == null || yValues == null;
 
             // Only continue if key/values match in length
@@ -170,12 +176,6 @@ namespace CoreNodeModelsWpf.Charts
             {
                 throw new Exception("Label and Values do not properly align in length.");
             }
-
-            // Clear current chart values
-            Labels = new List<string>();
-            XValues = new List<List<double>>();
-            YValues = new List<List<double>>();
-            Colors = new List<SolidColorBrush>();
 
             // If color count doesn't match title count use random colors
             if (colors == null || colors.Count == 0 || colors.Count != labels.Count)

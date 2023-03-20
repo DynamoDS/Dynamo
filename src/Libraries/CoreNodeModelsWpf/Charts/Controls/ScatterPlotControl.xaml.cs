@@ -8,6 +8,7 @@ using LiveCharts.Defaults;
 using LiveCharts.Wpf;
 using System.ComponentModel;
 using System.Windows;
+using System.Linq;
 
 namespace CoreNodeModelsWpf.Charts.Controls
 {
@@ -112,14 +113,16 @@ namespace CoreNodeModelsWpf.Charts.Controls
         private List<ScatterSeries> UpdateSeries(ScatterPlotNodeModel model = null)
         {
             var plots = new List<ScatterSeries>();
+
             if(model == null)
             {
                 model = this.model;
             }
-            if (model.Labels != null
-            && model.XValues != null
-            && model.YValues != null
-            && model.Colors != null)
+
+            if (model.Labels != null && model.Labels.Any()
+             && model.XValues != null && model.XValues.Any()
+             && model.YValues != null && model.YValues.Any()
+             && model.Colors != null && model.Colors.Any())
             {
                 // For each set of points
                 for (var i = 0; i < model.Labels.Count; i++)
