@@ -838,7 +838,16 @@ namespace Dynamo.ViewModels
 
         #region [ Node Autocomplete ]
 
-        public bool HideAutocompleteMethodOptions { get; set; }
+        /// <summary>
+        /// If true, autocomplete method options are hidden from UI 
+        /// </summary>
+        public bool HideAutocompleteMethodOptions
+        {
+            get
+            {
+                return preferenceSettings.HideAutocompleteMethodOptions;
+            }
+        }
 
         /// <summary>
         /// Controls the IsChecked property in the "Node autocomplete" toogle button
