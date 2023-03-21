@@ -923,9 +923,7 @@ namespace Dynamo.ViewModels
         /// <param name="subset">Subset of nodes that should be used for the search instead of the complete set of nodes. This is a list of NodeSearchElement types</param>
         internal IEnumerable<NodeSearchElementViewModel> Search(string search, IEnumerable<NodeSearchElement> subset = null)
         {
-            // Create an analyzer to process the text 
-            Analyzer standardAnalyzer = new StandardAnalyzer(Configurations.LuceneNetVersion);
-            QueryParser parser = new QueryParser(Configurations.LuceneNetVersion, "Name", standardAnalyzer);
+            QueryParser parser = new QueryParser(Configurations.LuceneNetVersion, "Name", Model.StandardAnalyzer);
             Query query = parser.Parse(search);
             TopDocs topDocs = Model.Searcher.Search(query, n: 10);         //indicate we want the first 10 results
             for (int i = 0; i < topDocs.TotalHits; i++)
