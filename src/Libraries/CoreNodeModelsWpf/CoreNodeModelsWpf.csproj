@@ -35,11 +35,6 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
-	<PackageReference Include="Extended.Wpf.Toolkit" version="3.0.0">
-	  <GeneratePathProperty>true</GeneratePathProperty>
-    <!--Exclude copying the dll because we will handle it in the BinaryCompatibilityOps target -->
-    <ExcludeAssets>runtime</ExcludeAssets>
-	</PackageReference>
 	<PackageReference Include="LiveCharts" Version="0.9.7" />
 	<PackageReference Include="LiveCharts.Wpf" Version="0.9.7" />
 	<Reference Include="Xceed.Wpf.Toolkit, Version=3.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">

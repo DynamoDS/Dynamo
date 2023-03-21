@@ -48,6 +48,8 @@
     <None Remove="Packages\SplashScreen\build\index.bundle.js" />
     <None Remove="Packages\SplashScreen\build\index.html" />
     <None Remove="UI\Images\Canvas\canvas-button-geometry-scaling.png" />
+    <None Remove="UI\Prompts\PortPropertiesEditPrompt.xaml" />
+    <None Remove="Views\Core\CustomColorPicker.xaml" />
     <None Remove="Views\Core\GeometryScalingPopup.xaml" />
     <None Remove="UI\Images\question-hover-blue-16px.png" />
     <None Remove="Views\SplashScreen\WebApp\splashScreenBackground.png" />
@@ -100,7 +102,7 @@
     <None Remove="Views\GuidedTour\HtmlPages\Resources\ConnectTheNode.gif" />
   </ItemGroup>
   <ItemGroup>
-  <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.17.1.3967" />
+  <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.665" />
   <PackageReference Include="AvalonEdit" Version="4.3.1.9430" CopyXML="true" />
   <PackageReference Include="Greg" Version="2.3.0.2505" />
   <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" />
@@ -143,6 +145,11 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
+	<PackageReference Include="Extended.Wpf.Toolkit" version="3.0.0">
+	  <GeneratePathProperty>true</GeneratePathProperty>
+    <!--Exclude copying the dll because we will handle it in the BinaryCompatibilityOps target -->
+    <ExcludeAssets>runtime</ExcludeAssets>
+	</PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\InstalledPackagesControl.xaml.cs">
@@ -220,6 +227,7 @@
     <Compile Include="Controls\InPortContextMenu.xaml.cs">
       <DependentUpon>InPortContextMenu.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Prompts\PortPropertiesEditPrompt.xaml.cs" />
     <Compile Include="Utilities\CompactBubbleHandler.cs" />
     <Compile Include="Interfaces\IShellCom.cs" />
     <Compile Include="Rendering\HelixRenderPackage.cs" />
@@ -337,6 +345,7 @@
     <Compile Include="Utilities\ResourceUtilities.cs" />
     <Compile Include="ViewModels\Core\Converters\DynamoPythonScriptEditorTextOptions.cs" />
     <Compile Include="ViewModels\Core\Converters\SerializationConverters.cs" />
+    <Compile Include="ViewModels\Core\CustomColorPickerViewModel.cs" />
     <Compile Include="ViewModels\Core\DynamoViewModelBranding.cs" />
     <Compile Include="ViewModels\Core\GeometryScalingViewModel.cs" />
     <Compile Include="ViewModels\Core\HomeWorkspaceViewModel.cs" />
@@ -385,6 +394,7 @@
     <Compile Include="Views\Core\ConnectorContextMenuView.xaml.cs">
       <DependentUpon>ConnectorContextMenuView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Core\CustomColorPicker.xaml.cs" />
     <Compile Include="Views\Core\DynamoOpenFileDialog.cs" />
     <Compile Include="Views\Core\ConnectorPinView.xaml.cs">
       <DependentUpon>ConnectorPinView.xaml</DependentUpon>
@@ -551,6 +561,11 @@
     </Page>
     <Page Include="Controls\InPortContextMenu.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Prompts\PortPropertiesEditPrompt.xaml"></Page>
+    <Page Include="Views\Core\CustomColorPicker.xaml">
+      <CopyToOutputDirectory></CopyToOutputDirectory>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Core\GeometryScalingPopup.xaml">

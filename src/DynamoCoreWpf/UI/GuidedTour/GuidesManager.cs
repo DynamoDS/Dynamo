@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Dynamo.Controls;
+using Dynamo.Logging;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels.GuidedTour;
@@ -174,6 +175,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 Initialize();
                 GuideFlowEvents.OnGuidedTourStart(tourName);
+                dynamoViewModel.OnEnableShortcutBarItems(false);
                 Logging.Analytics.TrackScreenView("InteractiveGuidedTours");
                 Logging.Analytics.TrackEvent(Logging.Actions.Start, Logging.Categories.GuidedTourOperations, Resources.ResourceManager.GetString(currentGuide.GuideNameResource, System.Globalization.CultureInfo.InvariantCulture).Replace("_", ""), currentGuide.SequenceOrder);
             }
@@ -230,7 +232,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         internal void ExitTour()
         {
-
             if (currentGuide != null)
             {
                 foreach (Step tmpStep in currentGuide.GuideSteps)
@@ -259,12 +260,13 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     exitGuideWindow.ContinueTourButton.Click -= ContinueTourButton_Click;
                 }
 
+                dynamoViewModel.OnEnableShortcutBarItems(true);
+
                 //Hide guide background overlay
                 guideBackgroundElement.Visibility = Visibility.Hidden;
                 GuidesValidationMethods.CurrentExecutingGuide = null;
                 tourStarted = false;
             }
-
         }
 
         /// <summary>
@@ -473,7 +475,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                         Sequence = jsonStepInfo.Sequence,
                         RatingTextTitle = formattedText.ToString(),
                         StepType = Step.StepTypes.SURVEY,
-                        IsRatingVisible = dynamoViewModel.Model.PreferenceSettings.IsADPAnalyticsReportingApproved,
+                        IsRatingVisible = !Analytics.DisableAnalytics && Analytics.IsEnabled,
                         StepContent = new Content()
                         {
                             FormattedText = formattedText,
@@ -523,7 +525,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
 
         private void Popup_StepClosed(string name, Step.StepTypes stepType)
-        {
+        {            
             GuideFlowEvents.OnGuidedTourFinish(currentGuide.Name);
 
             //The exit tour popup will be shown only when a popup (doesn't apply for survey) is closed or when the tour is closed. 

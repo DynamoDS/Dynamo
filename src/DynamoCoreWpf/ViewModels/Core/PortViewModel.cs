@@ -520,9 +520,11 @@ namespace Dynamo.ViewModels
         {
             // If this port does not display a Chevron button to open the context menu and it doesn't
             // have a default value then using right-click to open the context menu should also do nothing.
+            // Added check for Python node model (allow input context menu for rename)
             if (obj is InPortViewModel inPortViewModel &&
                 inPortViewModel.UseLevelVisibility == Visibility.Collapsed &&
-                !inPortViewModel.DefaultValueEnabled) return;
+                !inPortViewModel.DefaultValueEnabled &&
+                !(inPortViewModel.NodeViewModel.NodeModel is PythonNodeModels.PythonNode)) return;
             
             var wsViewModel = node.WorkspaceViewModel;
             

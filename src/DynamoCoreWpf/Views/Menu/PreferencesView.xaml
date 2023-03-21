@@ -221,18 +221,39 @@
                                 <Grid Grid.Row="0" 
                                   Margin="4,0,0,20">
                                     <StackPanel Orientation="Vertical">
-                                        <Label  Content="{x:Static p:Resources.PreferencesViewLanguageLabel}" 
+                                        <WrapPanel Grid.Row="0">
+                                            <Label
+                                            Content="{x:Static p:Resources.PreferencesViewLanguageLabel}" 
                                             Margin="-3,0,10,0"
-                                            Grid.Row="0"
                                             FontWeight="Bold"
                                             Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                            <Label HorizontalAlignment="Left"
+                                                   Name="LanguageSettingsInfoLabel"
+                                                   VerticalAlignment="Center" 
+                                                   Height="26" 
+                                                   Width="53"
+                                                   Margin="0 3 0 0">
+                                                <Image
+                                                   Margin="-5,0,0,0"
+                                                   Width="14"
+                                                   Height="14"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   Style="{StaticResource QuestionIcon}"
+                                                   ToolTipService.ShowDuration="30000">
+                                                    <Image.ToolTip>
+                                                        <ToolTip Content="{x:Static p:Resources.PreferencesViewLanguageSwitchHelp}" Style="{StaticResource GenericToolTipLight}"/>
+                                                    </Image.ToolTip>
+                                                </Image>
+                                            </Label>
+                                        </WrapPanel>
                                         <ComboBox Grid.Row="1" 
                                               Width="213"
                                               HorizontalAlignment="Left"
                                               ItemsSource="{Binding Path=LanguagesList}"
                                               SelectedItem="{Binding Path=SelectedLanguage}"
                                               Style="{StaticResource NoBordersComboBoxStyle}"
-                                              IsEnabled="False">
+                                              IsEnabled="True">
                                         </ComboBox>
                                     </StackPanel>
                                 </Grid>
@@ -287,14 +308,14 @@
                                     </Grid>
                                 </Grid>
 
-                                <!--This Grid contains controls for selecting Font Size and Number Format options -->
+                                <!--This Grid contains controls for selecting Default Run Setting and Number Format options -->
                                 <Grid Grid.Row="3" Margin="4,0,0,20">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
                                     <!--This Grid contains controls for selecting Run Settings options-->
-                                    <Grid Grid.Row="0" Margin="4,0,0,0">
+                                    <Grid Grid.Row="0">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="Auto" />
@@ -516,6 +537,7 @@
                               Margin="1"
                               HorizontalAlignment="Stretch">
                             <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
@@ -815,7 +837,7 @@
                                                     </Image>
                                                 </StackPanel>
                                                 <StackPanel Margin="-10,5,0,0" Orientation="Horizontal" Grid.Row="2">
-                                                    <Label Content="0%"
+                                                    <Label Content="{x:Static p:Resources.PreferencesViewZoomScaling0Percent}"
                                                         Name="lblConfidenceLevelLabelStart"
                                                         VerticalAlignment="Center"
                                                         Foreground="{StaticResource PreferencesWindowFontColor}"
@@ -827,7 +849,7 @@
                                                         IsEnabled="{Binding Path=EnableConfidenceLevelSlider}"
                                                         ValueChanged="sliderConfidenceLevel_ValueChanged">
                                                     </Slider>
-                                                    <Label Content="100%" 
+                                                    <Label Content="{x:Static p:Resources.PreferencesViewZoomScaling100Percent}" 
                                                         Margin="0,-5,0,0"
                                                         VerticalAlignment="Center"
                                                         Foreground="{StaticResource PreferencesWindowFontColor}"
@@ -878,6 +900,32 @@
                                                    Padding="5,0,5,5"
                                                    Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                         </StackPanel>
+                                    </StackPanel>
+                                </Grid>
+                            </Expander>
+
+                            <!--This Grid row contains the Extensions section-->
+                            <Expander x:Name="ExtentionsExpander" 
+                                      Style="{StaticResource MenuExpanderStyle}" 
+                                      IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=ExtentionsExpander}"
+                                      Grid.Row="4"
+                                      Header="{x:Static p:Resources.PreferencesViewExtensions}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="0">
+                                        <ToggleButton Name="ExtensionsToggle"
+                                                      Width="{StaticResource ToggleButtonWidth}"
+                                                      Height="{StaticResource ToggleButtonHeight}"
+                                                      VerticalAlignment="Center"
+                                                      IsChecked="{Binding Path=PersistExtensionsIsChecked}"
+                                                      Style="{StaticResource EllipseToggleButton1}"/>
+                                        <Label Content="{x:Static p:Resources.PreferencesViewEnablePersistExtensions}" 
+                                                   Margin="10,0,0,0"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                     </StackPanel>
                                 </Grid>
                             </Expander>
@@ -1246,17 +1294,22 @@
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
-                                    <StackPanel Margin="0,10,0,5" Grid.Row="0" Orientation="Horizontal">
-                                        <TextBlock  FontSize="12" VerticalAlignment="Center" Text="{x:Static p:Resources.DynamoViewSettingLibraryZoomScale}"></TextBlock>
-                                        <Label HorizontalAlignment="Left"
+                                    <Grid x:Name="LibraryZoomScale" Grid.Row="0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <StackPanel Margin="0,10,0,5" Grid.Row="0" Orientation="Horizontal">
+                                            <TextBlock  FontSize="12" VerticalAlignment="Center" Text="{x:Static p:Resources.DynamoViewSettingLibraryZoomScale}"></TextBlock>
+                                            <Label HorizontalAlignment="Left"
                                                    Name="LibraryZoomScaleInfoLabel"
                                                    VerticalAlignment="Bottom"
                                                    Margin="0,2,0,0"
                                                    Height="26" 
                                                    Width="53">
-                                            <Image
+                                                <Image
                                                Width="14"
                                                Height="14"
                                                Margin="0,0,0,0"
@@ -1273,38 +1326,101 @@
                                     </StackPanel>
 
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="1" Margin="0,0,0,3">
-                                        <TextBlock Text="25%"></TextBlock>
+                                            <TextBlock Text="{x:Static p:Resources.PreferencesViewZoomScaling25Percent}"></TextBlock>
 
-                                        <Slider
+                                            <Slider
                                             x:Name="LibraryZoomScalingSlider"
                                             Style="{StaticResource SliderStyle}"
-                                            ValueChanged="zoomScaleLevel_ValueChanged"
+                                            ValueChanged="ZoomScaleLevel_ValueChanged"
                                             Width="400"
                                             Margin="5,0,5,0"
                                             Minimum="25"
                                             IsSnapToTickEnabled="True"
                                             TickFrequency="1"
                                             Maximum="300">
-                                        </Slider>
-                                        <TextBlock Text="300%"></TextBlock>
+                                            </Slider>
+                                            <TextBlock Text="{x:Static p:Resources.PreferencesViewZoomScaling300Percent}"></TextBlock>
 
-                                    </StackPanel>
-                                    <StackPanel Grid.Row="2" Width="550">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="125"></ColumnDefinition>
-                                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                            </Grid.ColumnDefinitions>
-                                        </Grid>
-                                        <Label
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="2" Width="550">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="125"></ColumnDefinition>
+                                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                                </Grid.ColumnDefinitions>
+                                            </Grid>
+                                            <Label
                                             Name="lblZoomScalingValue"
                                             Width="50"
                                             VerticalAlignment="Center"
                                             HorizontalContentAlignment="Center"
                                             Foreground="{StaticResource PreferencesWindowFontColor}"
                                             FontWeight="Regular"/>
-                                    </StackPanel>
+                                        </StackPanel>
+                                    </Grid>
+                                    <Grid x:Name="PythonZoomScale" Grid.Row="1">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <StackPanel Margin="0,10,0,5" Grid.Row="0" Orientation="Horizontal">
+                                            <TextBlock  FontSize="12" VerticalAlignment="Center" Text="{x:Static p:Resources.PreferencesViewPythonEditorLable}"></TextBlock>
+                                            <Label HorizontalAlignment="Left"
+                                                   Name="PythonZoomScaleInfoLabel"
+                                                   VerticalAlignment="Bottom"
+                                                   Margin="0,2,0,0"
+                                                   Height="26" 
+                                                   Width="53">
+                                                <Image
+                                               Width="14"
+                                               Height="14"
+                                               Margin="0,0,0,0"
+                                               Grid.Column="1"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Style="{StaticResource QuestionIcon}"
+                                               ToolTipService.ShowDuration="30000">
+                                                    <Image.ToolTip>
+                                                        <ToolTip Content="{x:Static p:Resources.PythonZoomScaleTooltipText}" Style="{StaticResource GenericToolTipLight}"/>
+                                                    </Image.ToolTip>
+                                                </Image>
+                                            </Label>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="1" Margin="0,0,0,3">
+                                            <TextBlock Text="{x:Static p:Resources.PreferencesViewZoomScaling25Percent}"></TextBlock>
+                                            <Slider
+                                            x:Name="PythonZoomScalingSlider"
+                                            Style="{StaticResource SliderStyle}"
+                                            ValueChanged="PythonZoomScalingSlider_ValueChanged"                                                
+                                            Width="400"
+                                            Margin="5,0,5,0"
+                                            Minimum="25"
+                                            IsSnapToTickEnabled="True"
+                                            TickFrequency="1"
+                                            Maximum="300">
+                                            </Slider>
+                                            <TextBlock Text="{x:Static p:Resources.PreferencesViewZoomScaling300Percent}"></TextBlock>
+
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="2" Width="550">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="125"></ColumnDefinition>
+                                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                                </Grid.ColumnDefinitions>
+                                            </Grid>
+                                            <Label
+                                            Name="lblPythonScalingValue"
+                                            Width="50"
+                                            VerticalAlignment="Center"
+                                            HorizontalContentAlignment="Center"
+                                            Foreground="{StaticResource PreferencesWindowFontColor}"
+                                            FontWeight="Regular"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </Grid>
+                               
                             </Expander>
                         </Grid>
                     </TabItem>
