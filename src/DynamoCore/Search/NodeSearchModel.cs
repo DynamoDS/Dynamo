@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -15,6 +15,8 @@ namespace Dynamo.Search
     /// </summary>
     public class NodeSearchModel : SearchLibrary<NodeSearchElement, NodeModel>
     {
+        internal XmlDocument document;
+
         /// <summary>
         ///     Construct a NodeSearchModel object
         /// </summary>
@@ -52,7 +54,7 @@ namespace Dynamo.Search
         /// <returns></returns>
         internal XmlDocument ComposeXmlForLibrary(string dynamoPath)
         {
-            var document = XmlHelper.CreateDocument("LibraryTree");
+            document = XmlHelper.CreateDocument("LibraryTree");
 
             var root = SearchCategoryUtil.CategorizeSearchEntries(
                 SearchEntries,
@@ -67,7 +69,7 @@ namespace Dynamo.Search
             return document;
         }
 
-        private static void AddEntryToXml(XmlNode parent, NodeSearchElement entry, string dynamoPath)
+        private void AddEntryToXml(XmlNode parent, NodeSearchElement entry, string dynamoPath)
         {
             var element = XmlHelper.AddNode(parent, entry.GetType().ToString());
             XmlHelper.AddNode(element, "FullCategoryName", entry.FullCategoryName);
@@ -172,17 +174,17 @@ namespace Dynamo.Search
             XmlHelper.AddNode(element, "LargeIcon", File.Exists(Path.Combine(dynamoPath, @"..\..\..\", pathToLargeIcon)) ? pathToLargeIcon : "Not found");
         }
 
-        private static void AddCategoryToXml(
+        private void AddCategoryToXml(
             XmlNode parent, ISearchCategory<NodeSearchElement> category, string dynamoPath)
         {
-            var element = XmlHelper.AddNode(parent, "Category");
-            XmlHelper.AddAttribute(element, "Name", category.Name);
+            //var element = XmlHelper.AddNode(parent, "Category");
+            //XmlHelper.AddAttribute(element, "Name", category.Name);
 
             foreach (var subCategory in category.SubCategories)
-                AddCategoryToXml(element, subCategory, dynamoPath);
+                AddCategoryToXml(document.DocumentElement, subCategory, dynamoPath);
 
             foreach (var entry in category.Entries)
-                AddEntryToXml(element, entry, dynamoPath);
+                AddEntryToXml(document.DocumentElement, entry, dynamoPath);
         }
 
         /// <summary>

@@ -50,6 +50,15 @@ using FunctionGroup = Dynamo.Engine.FunctionGroup;
 using Symbol = Dynamo.Graph.Nodes.CustomNodes.Symbol;
 using Utils = Dynamo.Graph.Nodes.Utilities;
 
+using Lucene.Net.Analysis;
+using Lucene.Net.Analysis.Standard;
+using Lucene.Net.Documents;
+using Lucene.Net.Index;
+using Lucene.Net.QueryParsers.Classic;
+using Lucene.Net.Search;
+using Lucene.Net.Store;
+using Lucene.Net.Util;
+
 namespace Dynamo.Models
 {
     /// <summary>
@@ -919,6 +928,23 @@ namespace Dynamo.Models
             LibraryServices.MessageLogged += LogMessage;
             LibraryServices.LibraryLoaded += LibraryLoaded;
 
+            // Index existing node info dump xml - TODO: move to a runtime dump and index process or rely on pipeline
+            // Specify the compatibility version we want
+            const LuceneVersion luceneVersion = LuceneVersion.LUCENE_48;
+
+            // Open the Directory using a Lucene Directory class
+            string indexPath = Environment.CurrentDirectory;
+            Lucene.Net.Store.Directory indexDir = FSDirectory.Open(indexPath);
+
+            // Create an analyzer to process the text 
+            Analyzer standardAnalyzer = new StandardAnalyzer(luceneVersion);
+
+            //Create an index writer
+            IndexWriterConfig indexConfig = new IndexWriterConfig(luceneVersion, standardAnalyzer);
+            indexConfig.OpenMode = OpenMode.CREATE; // create/overwrite index. TODO: see if overwrite needed 
+            IndexWriter writer = new IndexWriter(indexDir, indexConfig);
+
+
             CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager, LibraryServices);
             InitializeCustomNodeManager();
 
@@ -1071,7 +1097,7 @@ namespace Dynamo.Models
         /// <param name="file"> The file to add when importing a library.</param>
         public bool AddPackagePath(string path, string file = "")
         {
-            if (!Directory.Exists(path))
+            if (!System.IO.Directory.Exists(path))
                 return false;
 
             string fullFilename = path;
@@ -1529,7 +1555,7 @@ namespace Dynamo.Models
                 DirectoryInfo parentPath;
                 try
                 {
-                    parentPath = Directory.GetParent(path);
+                    parentPath = System.IO.Directory.GetParent(path);
                 }
                 catch (ArgumentException)
                 {
