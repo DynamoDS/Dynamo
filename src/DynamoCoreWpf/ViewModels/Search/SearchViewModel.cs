@@ -19,6 +19,8 @@ using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Services;
 using Dynamo.Wpf.ViewModels;
+using Lucene.Net.Analysis.Standard;
+using Lucene.Net.Analysis;
 using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
 using Lucene.Net.Util;
@@ -920,9 +922,11 @@ namespace Dynamo.ViewModels
         /// <param name="subset">Subset of nodes that should be used for the search instead of the complete set of nodes. This is a list of NodeSearchElement types</param>
         internal IEnumerable<NodeSearchElementViewModel> Search(string search, IEnumerable<NodeSearchElement> subset = null)
         {
+            // Create an analyzer to process the text 
+            Analyzer standardAnalyzer = new StandardAnalyzer(Configurations.LuceneNetVersion);
             QueryParser parser = new QueryParser(Configurations.LuceneNetVersion, "title", standardAnalyzer);
             Query query = parser.Parse("open source");
-            TopDocs topDocs = searcher.Search(query, n: 3);         //indicate we want the first 3 results
+            TopDocs topDocs = Model.searcher.Search(query, n: 3);         //indicate we want the first 3 results
 
             var foundNodes = Model.Search(search, 0, subset);
             return foundNodes.Select(MakeNodeSearchElementVM);
