@@ -18,7 +18,7 @@ namespace Dynamo.Search
     {
         internal XmlDocument document;
 
-        internal IndexSearcher searcher;
+        internal IndexSearcher Searcher;
 
         /// <summary>
         ///     Construct a NodeSearchModel object

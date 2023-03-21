@@ -960,7 +960,8 @@ namespace Dynamo.Models
             writer.Commit();
             DirectoryReader dirReader = writer.GetReader(applyAllDeletes: true);
             IndexSearcher searcher = new IndexSearcher(dirReader);
-            SearchModel.searcher = searcher;
+
+            SearchModel.Searcher = searcher;
 
             CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager, LibraryServices);
             InitializeCustomNodeManager();

@@ -24,6 +24,7 @@ using Lucene.Net.Analysis;
 using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
 using Lucene.Net.Util;
+using Lucene.Net.Documents;
 
 namespace Dynamo.ViewModels
 {
@@ -924,10 +925,19 @@ namespace Dynamo.ViewModels
         {
             // Create an analyzer to process the text 
             Analyzer standardAnalyzer = new StandardAnalyzer(Configurations.LuceneNetVersion);
-            QueryParser parser = new QueryParser(Configurations.LuceneNetVersion, "title", standardAnalyzer);
-            Query query = parser.Parse("open source");
-            TopDocs topDocs = Model.searcher.Search(query, n: 3);         //indicate we want the first 3 results
+            QueryParser parser = new QueryParser(Configurations.LuceneNetVersion, "Name", standardAnalyzer);
+            Query query = parser.Parse(search);
+            TopDocs topDocs = Model.Searcher.Search(query, n: 10);         //indicate we want the first 10 results
+            for (int i = 0; i < topDocs.TotalHits; i++)
+            {
+                //read back a doc from results
+                Document resultDoc = Model.Searcher.Doc(topDocs.ScoreDocs[i].Doc);
 
+                string name = resultDoc.Get("Name");
+                Console.WriteLine($"Node name of the result {i + 1}: {name}");
+            }
+
+            // Legacy search
             var foundNodes = Model.Search(search, 0, subset);
             return foundNodes.Select(MakeNodeSearchElementVM);
         }
