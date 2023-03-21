@@ -411,6 +411,7 @@ namespace CoreNodeModelsWpf.Charts
                 ((InPortViewModel)inPorts[3]).PortDefaultValueMarkerVisible = false;
             }
         }
+
         private void ExportImage_Click(object sender, RoutedEventArgs e)
         {
             Export.ToPng(scatterPlotControl.ScatterPlot);
