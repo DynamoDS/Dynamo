@@ -65,7 +65,9 @@ namespace CoreNodeModelsWpf.Charts
         /// </summary>
         public List<SolidColorBrush> Colors { get; set; }
 
-        
+        /// <summary>
+        /// Triggers when port is connected or disconnected
+        /// </summary>
         public event EventHandler PortUpdated;
 
         protected virtual void OnPortUpdated(EventArgs args)

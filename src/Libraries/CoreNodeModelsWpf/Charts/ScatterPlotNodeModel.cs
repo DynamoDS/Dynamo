@@ -66,6 +66,9 @@ namespace CoreNodeModelsWpf.Charts
         /// </summary>
         public List<SolidColorBrush> Colors { get; set; }
 
+        /// <summary>
+        /// Triggers when port is connected or disconnected
+        /// </summary>
         public event EventHandler PortUpdated;
 
         protected virtual void OnPortUpdated(EventArgs args)
@@ -150,9 +153,6 @@ namespace CoreNodeModelsWpf.Charts
         /// <param name="data">The data passed through the data bridge.</param>
         private void DataBridgeCallback(object data)
         {
-            // Reset an info states if any
-            if (NodeInfos.Count > 0) this.ClearInfoMessages();
-
             // Grab input data which always returned as an ArrayList
             var inputs = data as ArrayList;
 
@@ -423,7 +423,6 @@ namespace CoreNodeModelsWpf.Charts
         public void Dispose()
         {
             model.PortUpdated -= ModelOnPortUpdated;
-
         }
     }
 }
