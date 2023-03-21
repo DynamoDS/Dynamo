@@ -19,6 +19,8 @@ using ProtoCore.AST.AssociativeAST;
 using DynamoServices;
 using Dynamo.Wpf.Properties;
 using Xceed.Wpf.Toolkit;
+using Dynamo.Graph.Connectors;
+using Dynamo.ViewModels;
 
 namespace CoreNodeModelsWpf.Charts
 {
@@ -56,6 +58,16 @@ namespace CoreNodeModelsWpf.Charts
         /// Pie chart color values.
         /// </summary>
         public List<SolidColorBrush> Colors { get; set; }
+
+        /// <summary>
+        /// Triggers when port is connected or disconnected
+        /// </summary>
+        public event EventHandler PortUpdated;
+
+        protected virtual void OnPortUpdated(EventArgs args)
+        {
+            PortUpdated?.Invoke(this, args);
+        }
         #endregion
 
         #region Constructors
@@ -66,10 +78,12 @@ namespace CoreNodeModelsWpf.Charts
         {
             RegisterAllPorts();
 
+            PortConnected += PieChartNodeModel_PortConnected;
             PortDisconnected += PieChartNodeModel_PortDisconnected;
 
             ArgumentLacing = LacingStrategy.Disabled;
         }
+
 
         [JsonConstructor]
         /// <summary>
@@ -77,6 +91,7 @@ namespace CoreNodeModelsWpf.Charts
         /// </summary>
         public PieChartNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
+            PortConnected += PieChartNodeModel_PortConnected;
             PortDisconnected += PieChartNodeModel_PortDisconnected;
         }
         #endregion
@@ -84,15 +99,28 @@ namespace CoreNodeModelsWpf.Charts
         #region Events
         private void PieChartNodeModel_PortDisconnected(PortModel port)
         {
+            OnPortUpdated(null);
             // Clear UI when a input port is disconnected
-            if (port.PortType == PortType.Input && this.State == ElementState.Active)
+            if (port.PortType == PortType.Input)
             {
-                Labels.Clear();
-                Values.Clear();
-                Colors.Clear();
+                Labels?.Clear();
+                Values?.Clear();
+                Colors?.Clear();
 
                 RaisePropertyChanged("DataUpdated");
             }
+        }
+
+        private void PieChartNodeModel_PortConnected(PortModel port, ConnectorModel arg2)
+        {
+            // Reset an info states if any
+            if (port.PortType == PortType.Input && InPorts[2].IsConnected && NodeInfos.Any(x => x.State.Equals(ElementState.Info)))
+            {
+                this.ClearInfoMessages();
+            }
+
+            OnPortUpdated(null);
+            RaisePropertyChanged("DataUpdated");
         }
         #endregion
 
@@ -118,9 +146,6 @@ namespace CoreNodeModelsWpf.Charts
         /// <param name="data">The data passed through the data bridge.</param>
         private void DataBridgeCallback(object data)
         {
-            // Reset an info states if any
-            if (NodeInfos.Count > 0) this.ClearInfoMessages();
-
             // Grab input data which always returned as an ArrayList
             var inputs = data as ArrayList;
 
@@ -129,13 +154,9 @@ namespace CoreNodeModelsWpf.Charts
             var values = inputs[1] as ArrayList;
             var colors = inputs[2] as ArrayList;
 
-            if (keys == null || values == null)
-                return;
-
-            // Only continue if key/values match in length
-            if (keys.Count != values.Count || keys.Count < 1)
+            if (!InPorts[0].IsConnected && !InPorts[1].IsConnected && !InPorts[2].IsConnected)
             {
-                throw new Exception("Label and Values do not properly align in length.");
+                return;
             }
 
             // Update chart properties
@@ -143,8 +164,18 @@ namespace CoreNodeModelsWpf.Charts
             Values = new List<double>();
             Colors = new List<SolidColorBrush>();
 
+            var anyNullData = keys == null || values == null;
+
+            // Only continue if key/values match in length
+            if (anyNullData || keys.Count != values.Count || keys.Count == 0)
+            {
+                throw new Exception("Label and Values do not properly align in length.");
+            }
+
             if (colors == null || colors.Count == 0 || colors.Count != keys.Count)
             {
+                if (InPorts[2].IsConnected) return;
+
                 // In case colors are not provided, we supply some from the default library of colors
                 Info(Dynamo.Wpf.Properties.CoreNodeModelWpfResources.ProvideDefaultColorsWarningMessage);
 
@@ -196,8 +227,7 @@ namespace CoreNodeModelsWpf.Charts
             AssociativeNode inputNode;
 
             // If inputs are not connected return default input
-            if (!InPorts[0].IsConnected ||
-                !InPorts[1].IsConnected)
+            if (!InPorts[0].IsConnected && !InPorts[1].IsConnected)
             {
                 inputNode = AstFactory.BuildFunctionCall(
                     new Func<List<string>, List<double>, List<DSCore.Color>, Dictionary<string, double>>(PieChartFunctions.GetNodeInput),
@@ -214,21 +244,32 @@ namespace CoreNodeModelsWpf.Charts
                     ),
                 };
             }
-
-            inputNode = AstFactory.BuildFunctionCall(
-                new Func<List<string>, List<double>, List<DSCore.Color>, Dictionary<string, double>>(PieChartFunctions.GetNodeInput),
-                new List<AssociativeNode> { inputAstNodes[0], inputAstNodes[1], inputAstNodes[2] }
-            );
-
-            return new[]
+            else if (!InPorts[0].IsConnected || !InPorts[1].IsConnected)
             {
-                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), inputNode),
-                    AstFactory.BuildAssignment(
-                        AstFactory.BuildIdentifier(AstIdentifierBase + "_dummy"),
-                        VMDataBridge.DataBridge.GenerateBridgeDataAst(GUID.ToString(), AstFactory.BuildExprList(inputAstNodes)
-                    )
-                ),
-            };
+                return new[]
+                {
+                    AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()),
+                };
+
+            }
+            else
+            {
+                inputNode = AstFactory.BuildFunctionCall(
+                    new Func<List<string>, List<double>, List<DSCore.Color>, Dictionary<string, double>>(PieChartFunctions.GetNodeInput),
+                    new List<AssociativeNode> { inputAstNodes[0], inputAstNodes[1], inputAstNodes[2] }
+                );
+
+                return new[]
+                {
+                    AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), inputNode),
+                        AstFactory.BuildAssignment(
+                            AstFactory.BuildIdentifier(AstIdentifierBase + "_dummy"),
+                            VMDataBridge.DataBridge.GenerateBridgeDataAst(GUID.ToString(), AstFactory.BuildExprList(inputAstNodes)
+                        )
+                    ),
+                };
+            }
+
         }
         #endregion
 
@@ -239,6 +280,7 @@ namespace CoreNodeModelsWpf.Charts
         /// </summary>
         public override void Dispose()
         {
+            PortConnected -= PieChartNodeModel_PortConnected;
             PortDisconnected -= PieChartNodeModel_PortDisconnected;
             VMDataBridge.DataBridge.Instance.UnregisterCallback(GUID.ToString());
         }
@@ -252,6 +294,8 @@ namespace CoreNodeModelsWpf.Charts
     public class PieChartNodeView : INodeViewCustomization<PieChartNodeModel>
     {
         private PieChartControl pieChartControl;
+        private NodeView view;
+        private PieChartNodeModel model;
 
         /// <summary>
         /// At run-time, this method is called during the node 
@@ -261,6 +305,8 @@ namespace CoreNodeModelsWpf.Charts
         /// <param name="nodeView">The NodeView representing the node in the graph.</param>
         public void CustomizeView(PieChartNodeModel model, NodeView nodeView)
         {
+            this.model = model;
+            this.view = nodeView;
             pieChartControl = new PieChartControl(model);
             nodeView.inputGrid.Children.Add(pieChartControl);
 
@@ -270,6 +316,49 @@ namespace CoreNodeModelsWpf.Charts
 
             var contextMenu = (nodeView.Content as Grid).ContextMenu;
             contextMenu.Items.Add(exportImage);
+
+            UpdateDefaultInPortValues();
+
+            model.PortUpdated += ModelOnPortUpdated;
+        }
+
+        private void ModelOnPortUpdated(object sender, EventArgs e)
+        {
+            UpdateDefaultInPortValues();
+        }
+
+        private void UpdateDefaultInPortValues()
+        {
+            if (!this.view.ViewModel.InPorts.Any()) return;
+            var inPorts = this.view.ViewModel.InPorts;
+
+            // Only apply default values if all ports are disconnected
+            if (!model.IsInErrorState &&
+                    model.State != ElementState.Active &&
+                    !inPorts[0].IsConnected &&
+                    !inPorts[1].IsConnected)
+            {
+                ((InPortViewModel)inPorts[0]).PortDefaultValueMarkerVisible = true;
+                ((InPortViewModel)inPorts[1]).PortDefaultValueMarkerVisible = true;
+            }
+            else
+            {
+                ((InPortViewModel)inPorts[0]).PortDefaultValueMarkerVisible = false;
+                ((InPortViewModel)inPorts[1]).PortDefaultValueMarkerVisible = false;
+            }
+
+            var allPortsConnected = inPorts[0].IsConnected && inPorts[1].IsConnected && model.State != ElementState.Warning;
+            var noPortsConnected = !inPorts[0].IsConnected && !inPorts[1].IsConnected;
+
+            // The color input uses default values if it's not connected
+            if (!inPorts[2].IsConnected && (allPortsConnected || noPortsConnected))
+            {
+                ((InPortViewModel)inPorts[2]).PortDefaultValueMarkerVisible = true;
+            }
+            else
+            {
+                ((InPortViewModel)inPorts[2]).PortDefaultValueMarkerVisible = false;
+            }
         }
 
         private void ExportImage_Click(object sender, RoutedEventArgs e)
@@ -281,6 +370,9 @@ namespace CoreNodeModelsWpf.Charts
         /// Here you can do any cleanup you require if you've assigned callbacks for particular 
         /// UI events on your node.
         /// </summary>
-        public void Dispose() { }
+        public void Dispose()
+        {
+            model.PortUpdated -= ModelOnPortUpdated;
+        }
     }
 }

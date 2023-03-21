@@ -81,7 +81,7 @@ namespace CoreNodeModelsWpf.Charts.Controls
                     {
                         var seriesRange = UpdateSeries(model);
 
-                        BarChart.Series.AddRange(seriesRange);
+                        BarChart.Series.AddRange(seriesRange.ToArray());
                     }
                 });
             }
