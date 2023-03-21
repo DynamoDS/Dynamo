@@ -940,20 +940,18 @@ namespace Dynamo.Models
             indexConfig.OpenMode = OpenMode.CREATE; // create/overwrite index. TODO: see if overwrite needed 
             IndexWriter writer = new IndexWriter(indexDir, indexConfig);
 
-            //XmlSerializer serializer = new XmlSerializer(typeof(NodeSearchElement));
             StreamReader reader = new StreamReader(Path.Combine(Environment.CurrentDirectory, "NodeDump.xml"));
-            //var elements = (NodeSearchElement[])serializer.Deserialize(reader);
-
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(reader.ReadToEnd());
-
             string xpath = "LibraryTree";
 
             foreach (XmlNode childrenNode in xmlDoc.SelectNodes(xpath)[0].ChildNodes)
             {
-                var doc = new Document();
-                doc.Add(new StringField("FullCategoryName", childrenNode.SelectSingleNode("//FullCategoryName").FirstChild.Value, Field.Store.YES));
-                doc.Add(new TextField("Name", childrenNode.SelectSingleNode("//Name").FirstChild.Value, Field.Store.YES));
+                var doc = new Document
+                {
+                    new StringField("FullCategoryName", childrenNode.SelectSingleNode("FullCategoryName").FirstChild.Value, Field.Store.YES),
+                    new TextField("Name", childrenNode.SelectSingleNode("Name").FirstChild.Value, Field.Store.YES)
+                };
 
                 //foreach (var keyword in element.SearchKeywords)
                 //{
