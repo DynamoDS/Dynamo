@@ -917,6 +917,9 @@ namespace Dynamo.ViewModels
         /// <param name="subset">Subset of nodes that should be used for the search instead of the complete set of nodes. This is a list of NodeSearchElement types</param>
         internal IEnumerable<NodeSearchElementViewModel> Search(string search, IEnumerable<NodeSearchElement> subset = null)
         {
+            QueryParser parser = new QueryParser(luceneVersion, "title", standardAnalyzer);
+            Query query = parser.Parse("open source");
+            TopDocs topDocs = searcher.Search(query, n: 3);         //indicate we want the first 3 results
 
             var foundNodes = Model.Search(search, 0, subset);
             return foundNodes.Select(MakeNodeSearchElementVM);

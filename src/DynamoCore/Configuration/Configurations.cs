@@ -50,6 +50,9 @@ namespace Dynamo.Configuration
         [Obsolete("This property is no longer used. Remove in Dynamo 3.0")]
         public static readonly double MaxWatchNodeHeight = 310.0;
 
+        // Specify the Lucene.Net compatibility version we want
+        public static LuceneVersion luceneVersion = LuceneVersion.LUCENE_48;
+
         #endregion
 
         #region Usage Reporting Error Message

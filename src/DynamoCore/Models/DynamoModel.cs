@@ -12,6 +12,7 @@ using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Xml.Serialization;
 using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Engine;
@@ -664,7 +665,7 @@ namespace Dynamo.Models
                 // Log all exceptions as part of directories check.
                 foreach (var exception in exceptions)
                 {
-                    Logger.Log(exception); 
+                    Logger.Log(exception);
                 }
             }
 
@@ -929,9 +930,6 @@ namespace Dynamo.Models
             LibraryServices.LibraryLoaded += LibraryLoaded;
 
             // Index existing node info dump xml - TODO: move to a runtime dump and index process or rely on pipeline
-            // Specify the compatibility version we want
-            const LuceneVersion luceneVersion = LuceneVersion.LUCENE_48;
-
             // Open the Directory using a Lucene Directory class
             string indexPath = Environment.CurrentDirectory;
             Lucene.Net.Store.Directory indexDir = FSDirectory.Open(indexPath);
@@ -944,6 +942,27 @@ namespace Dynamo.Models
             indexConfig.OpenMode = OpenMode.CREATE; // create/overwrite index. TODO: see if overwrite needed 
             IndexWriter writer = new IndexWriter(indexDir, indexConfig);
 
+            XmlSerializer serializer = new XmlSerializer(typeof(NodeSearchElement));
+            StreamReader reader = new StreamReader(Path.Combine(Environment.CurrentDirectory, "NodeIndex.xml"));
+            reader.ReadToEnd();
+            var elements = (NodeSearchElement[])serializer.Deserialize(reader);
+            foreach (var element in elements)
+            {
+                var doc = new Document();
+                doc.Add(new StringField(element.FullCategoryName.ToString(), element.FullCategoryName, Field.Store.YES));
+                doc.Add(new TextField(element.Name.ToString(), element.Name, Field.Store.YES));
+                foreach (var keyword in element.SearchKeywords)
+                {
+                    doc.Add(new TextField(element.SearchKeywords.ToString(), keyword, Field.Store.YES));
+                }
+                doc.Add(new TextField(element.Description.ToString(), element.Description, Field.Store.YES));
+                writer.AddDocument(doc);
+            }
+            //Flush and commit the index data to the directory
+            writer.Commit();
+            DirectoryReader dirReader = writer.GetReader(applyAllDeletes: true);
+            IndexSearcher searcher = new IndexSearcher(dirReader);
+            SearchModel.searcher = searcher;
 
             CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager, LibraryServices);
             InitializeCustomNodeManager();

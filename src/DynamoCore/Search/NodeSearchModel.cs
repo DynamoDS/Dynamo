@@ -7,6 +7,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Search.SearchElements;
 using DynamoUtilities;
 using Dynamo.Logging;
+using Lucene.Net.Search;
 
 namespace Dynamo.Search
 {
@@ -16,6 +17,8 @@ namespace Dynamo.Search
     public class NodeSearchModel : SearchLibrary<NodeSearchElement, NodeModel>
     {
         internal XmlDocument document;
+
+        internal IndexSearcher searcher;
 
         /// <summary>
         ///     Construct a NodeSearchModel object
