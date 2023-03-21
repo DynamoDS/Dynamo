@@ -2590,8 +2590,12 @@ You can try disabling loading packages from built-in package paths, or unload th
 
 Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try downloading {0} again.</value>
   </data>
-  <data name="PreferencesViewVisualSettingsGeoScaling" xml:space="preserve">
+  <data name="PreferencesViewGeneralSettingsGeoScaling" xml:space="preserve">
     <value>Default Geometry Scaling</value>
+    <comment>Expander Header Name</comment>
+  </data>
+  <data name="PreferencesViewGeneralSettingsBackup" xml:space="preserve">
+    <value>Backup Settings</value>
     <comment>Expander Header Name</comment>
   </data>
   <data name="PreferencesViewVisualSettingsGroupStyles" xml:space="preserve">

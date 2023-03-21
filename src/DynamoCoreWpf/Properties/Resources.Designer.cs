@@ -1062,15 +1062,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Custom.
-        /// </summary>
-        public static string CustomColorsPopupTitle {
-            get {
-                return ResourceManager.GetString("CustomColorsPopupTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to A description that helps people understand what the node might be used for..
         /// </summary>
         public static string CustomNodePromptDescriptionTooltip {
@@ -6810,6 +6801,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Backup Settings.
+        /// </summary>
+        public static string PreferencesViewGeneralSettingsBackup {
+            get {
+                return ResourceManager.GetString("PreferencesViewGeneralSettingsBackup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default Geometry Scaling.
+        /// </summary>
+        public static string PreferencesViewGeneralSettingsGeoScaling {
+            get {
+                return ResourceManager.GetString("PreferencesViewGeneralSettingsGeoScaling", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to General.
         /// </summary>
         public static string PreferencesViewGeneralTab {
@@ -7031,15 +7040,6 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewVisualSettingsDisplaySettings {
             get {
                 return ResourceManager.GetString("PreferencesViewVisualSettingsDisplaySettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Default Geometry Scaling.
-        /// </summary>
-        public static string PreferencesViewVisualSettingsGeoScaling {
-            get {
-                return ResourceManager.GetString("PreferencesViewVisualSettingsGeoScaling", resourceCulture);
             }
         }
         

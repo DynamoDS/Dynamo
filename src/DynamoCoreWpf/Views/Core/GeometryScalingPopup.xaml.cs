@@ -79,7 +79,7 @@ namespace Dynamo.Views
                     Dynamo.Logging.Analytics.TrackEvent(
                         Actions.Switch,
                         Categories.Preferences,
-                        Res.PreferencesViewVisualSettingsGeoScaling);
+                        Res.PreferencesViewGeneralSettingsGeoScaling);
                 }
 
                 var allNodes = dynamoViewModel.HomeSpace.Nodes;

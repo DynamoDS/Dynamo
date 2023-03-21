@@ -314,7 +314,7 @@
                                     FontFamily="{StaticResource ArtifaktElementRegular}"
                                     FontSize="20"
                                     Foreground="Black"
-                                    Text="{x:Static p:Resources.CustomColorsPopupTitle}" />
+                                    Text="X" />
                                 <Button
                                     Name="CustomColorsCloseButton"
                                     Grid.Column="1"
