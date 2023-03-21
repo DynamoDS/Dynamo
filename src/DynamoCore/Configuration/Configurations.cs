@@ -1,8 +1,9 @@
-using Dynamo.Properties;
-using Dynamo.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Dynamo.Properties;
+using Dynamo.Utilities;
+using Lucene.Net.Util;
 
 namespace Dynamo.Configuration
 {
@@ -50,8 +51,10 @@ namespace Dynamo.Configuration
         [Obsolete("This property is no longer used. Remove in Dynamo 3.0")]
         public static readonly double MaxWatchNodeHeight = 310.0;
 
-        // Specify the Lucene.Net compatibility version we want
-        public static LuceneVersion luceneVersion = LuceneVersion.LUCENE_48;
+        /// <summary>
+        /// Specify the Lucene.Net compatibility version
+        /// </summary>
+        public static LuceneVersion LuceneNetVersion = LuceneVersion.LUCENE_48;
 
         #endregion
 

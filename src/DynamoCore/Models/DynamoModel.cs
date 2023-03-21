@@ -40,6 +40,13 @@ using Dynamo.Updates;
 using Dynamo.Utilities;
 using DynamoServices;
 using Greg;
+using Lucene.Net.Analysis;
+using Lucene.Net.Analysis.Standard;
+using Lucene.Net.Documents;
+using Lucene.Net.Index;
+using Lucene.Net.Search;
+using Lucene.Net.Store;
+using Lucene.Net.Util;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ProtoCore;
@@ -50,15 +57,6 @@ using DefaultUpdateManager = Dynamo.Updates.UpdateManager;
 using FunctionGroup = Dynamo.Engine.FunctionGroup;
 using Symbol = Dynamo.Graph.Nodes.CustomNodes.Symbol;
 using Utils = Dynamo.Graph.Nodes.Utilities;
-
-using Lucene.Net.Analysis;
-using Lucene.Net.Analysis.Standard;
-using Lucene.Net.Documents;
-using Lucene.Net.Index;
-using Lucene.Net.QueryParsers.Classic;
-using Lucene.Net.Search;
-using Lucene.Net.Store;
-using Lucene.Net.Util;
 
 namespace Dynamo.Models
 {
@@ -935,10 +933,10 @@ namespace Dynamo.Models
             Lucene.Net.Store.Directory indexDir = FSDirectory.Open(indexPath);
 
             // Create an analyzer to process the text 
-            Analyzer standardAnalyzer = new StandardAnalyzer(luceneVersion);
+            Analyzer standardAnalyzer = new StandardAnalyzer(Configurations.LuceneNetVersion);
 
             //Create an index writer
-            IndexWriterConfig indexConfig = new IndexWriterConfig(luceneVersion, standardAnalyzer);
+            IndexWriterConfig indexConfig = new IndexWriterConfig(Configurations.LuceneNetVersion, standardAnalyzer);
             indexConfig.OpenMode = OpenMode.CREATE; // create/overwrite index. TODO: see if overwrite needed 
             IndexWriter writer = new IndexWriter(indexDir, indexConfig);
 
