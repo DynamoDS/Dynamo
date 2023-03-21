@@ -209,7 +209,7 @@ List&lt;string&gt;</value>
     <value>Create a new Pie Chart</value>
   </data>
   <data name="ChartsPieChartSearchTags" xml:space="preserve">
-    <value>CoreNodeModelsWpf.Charts.PieChart;Pie Chart; piechart</value>
+    <value>CoreNodeModelsWpf.Charts.PieChart;Pie Chart;piechart</value>
   </data>
   <data name="ChartsPieChartLabelsDataPortToolTip" xml:space="preserve">
     <value>A list of string labels for each segment in the pie chart.

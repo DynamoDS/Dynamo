@@ -168,7 +168,7 @@ namespace CoreNodeModelsWpf.Charts
             var anyNullData = labels == null || values == null;
 
             // Only continue if key/values match in length
-            if (anyNullData || labels.Count != values.Count && labels.Count != (values[0] as ArrayList).Count)
+            if (anyNullData || labels.Count != values.Count && labels.Count != (values[0] as ArrayList).Count || labels.Count == 0)
             {
                 throw new Exception("Label and Values do not properly align in length.");
             }
