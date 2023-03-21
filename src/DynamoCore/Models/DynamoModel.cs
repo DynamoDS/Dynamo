@@ -929,7 +929,7 @@ namespace Dynamo.Models
 
             // Index existing node info dump xml - TODO: move to a runtime dump and index process or rely on pipeline
             // Open the Directory using a Lucene Directory class
-            string indexPath = Environment.CurrentDirectory;
+            string indexPath = Path.Combine(Environment.CurrentDirectory, "Index");
             Lucene.Net.Store.Directory indexDir = FSDirectory.Open(indexPath);
 
             // Create an analyzer to process the text 
@@ -940,20 +940,27 @@ namespace Dynamo.Models
             indexConfig.OpenMode = OpenMode.CREATE; // create/overwrite index. TODO: see if overwrite needed 
             IndexWriter writer = new IndexWriter(indexDir, indexConfig);
 
-            XmlSerializer serializer = new XmlSerializer(typeof(NodeSearchElement));
+            //XmlSerializer serializer = new XmlSerializer(typeof(NodeSearchElement));
             StreamReader reader = new StreamReader(Path.Combine(Environment.CurrentDirectory, "NodeIndex.xml"));
-            reader.ReadToEnd();
-            var elements = (NodeSearchElement[])serializer.Deserialize(reader);
-            foreach (var element in elements)
+            //var elements = (NodeSearchElement[])serializer.Deserialize(reader);
+
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.LoadXml(reader.ReadToEnd());
+
+            string xpath = "LibraryTree";
+            var nodes = xmlDoc.SelectNodes(xpath);
+
+            foreach (XmlNode childrenNode in nodes)
             {
                 var doc = new Document();
-                doc.Add(new StringField(element.FullCategoryName.ToString(), element.FullCategoryName, Field.Store.YES));
-                doc.Add(new TextField(element.Name.ToString(), element.Name, Field.Store.YES));
-                foreach (var keyword in element.SearchKeywords)
-                {
-                    doc.Add(new TextField(element.SearchKeywords.ToString(), keyword, Field.Store.YES));
-                }
-                doc.Add(new TextField(element.Description.ToString(), element.Description, Field.Store.YES));
+                doc.Add(new StringField("FullCategoryName", childrenNode.SelectSingleNode("//FullCategoryName").Value, Field.Store.YES));
+                doc.Add(new TextField("Name", childrenNode.SelectSingleNode("//Name").Value, Field.Store.YES));
+
+                //foreach (var keyword in element.SearchKeywords)
+                //{
+                //    doc.Add(new TextField(element.SearchKeywords.ToString(), keyword, Field.Store.YES));
+                //}
+                //doc.Add(new TextField(element.Description.ToString(), element.Description, Field.Store.YES));
                 writer.AddDocument(doc);
             }
             //Flush and commit the index data to the directory
