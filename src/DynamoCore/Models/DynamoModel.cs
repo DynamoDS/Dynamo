@@ -990,29 +990,8 @@ namespace Dynamo.Models
             {
                 stream?.Dispose();
             }
-
-            ///
-
-
             writer.Commit();
 
-            //foreach (XmlNode childrenNode in xmlDoc.SelectNodes(xpath)[0].ChildNodes)
-            //{
-            //    var doc = new Document
-            //    {
-            //        new StringField("FullCategoryName", childrenNode.SelectSingleNode("FullCategoryName").FirstChild.Value, Field.Store.YES),
-            //        new TextField("Name", childrenNode.SelectSingleNode("Name").FirstChild.Value, Field.Store.YES)
-            //    };
-
-            //    //foreach (var keyword in element.SearchKeywords)
-            //    //{
-            //    //    doc.Add(new TextField(element.SearchKeywords.ToString(), keyword, Field.Store.YES));
-            //    //}
-            //    //doc.Add(new TextField(element.Description.ToString(), element.Description, Field.Store.YES));
-            //    writer.AddDocument(doc);
-            //}
-            ////Flush and commit the index data to the directory
-            //writer.Commit();
             DirectoryReader dirReader = writer.GetReader(applyAllDeletes: true);
             IndexSearcher searcher = new IndexSearcher(dirReader);
 
