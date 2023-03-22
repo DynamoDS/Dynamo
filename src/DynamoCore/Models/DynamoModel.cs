@@ -50,9 +50,7 @@ using Lucene.Net.Util;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ProtoCore;
-using ProtoCore.DSASM;
 using ProtoCore.Runtime;
-using static Lucene.Net.Util.Packed.PackedInt32s;
 using Compiler = ProtoAssociative.Compiler;
 // Dynamo package manager
 using DefaultUpdateManager = Dynamo.Updates.UpdateManager;
