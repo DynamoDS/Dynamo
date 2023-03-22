@@ -981,7 +981,7 @@ namespace Dynamo.Models
                     stream = null;
                     mdString = sreader.ReadToEnd();
                 }
-                string InDepthDesc = mdString.Substring(mdString.IndexOf("## In Depth") + 1, mdString.IndexOf("## Example File"));
+                string InDepthDesc = mdString.Substring(mdString.IndexOf("## In Depth") + 11, mdString.IndexOf("## Example File")-3);
 
                 fullCat.SetStringValue("");
                 name.SetStringValue("");
