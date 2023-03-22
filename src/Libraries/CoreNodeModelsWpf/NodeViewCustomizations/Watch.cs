@@ -43,20 +43,32 @@ namespace CoreNodeModelsWpf.Nodes
             rootWatchViewModel = new WatchViewModel(dynamoViewModel.BackgroundPreviewViewModel.AddLabelForPath);
 
             var watchTree = new WatchTree(rootWatchViewModel);
+
+            rootWatchViewModel.WatchNode = watch;
             watchTree.BorderThickness = new Thickness(1, 1, 1, 1);
             watchTree.BorderBrush = new SolidColorBrush(Color.FromRgb(220,220,220));
 
             watchTree.SetWatchNodeProperties();
+
+            nodeView.SizeChanged += (sender, args) =>
+                nodeModel.SetSize(args.NewSize.Width, args.NewSize.Height);
+
+            watchTree.SizeChanged += (sender, args) =>
+                nodeModel.SetWatchSize(args.NewSize.Width, args.NewSize.Height);
 
             nodeView.PresentationGrid.Children.Add(watchTree);
             nodeView.PresentationGrid.Visibility = Visibility.Visible;
             // disable preview control
             nodeView.TogglePreviewControlAllowance();
 
+            ResetWatch();
+
+            watchTree.Width = nodeModel.WatchWidth;
+            watchTree.Height = nodeModel.WatchHeight;
+
             Bind(watchTree, nodeView);
 
             Subscribe();
-            ResetWatch();
         }
 
         private void Bind(WatchTree watchTree, NodeView nodeView)
@@ -126,6 +138,7 @@ namespace CoreNodeModelsWpf.Nodes
 
             watch.PortConnected -= OnPortConnected;
             watch.PortDisconnected -= OnPortDisconnected;
+            Watch.NodeSizes.Remove(watch.GUID);
         }
 
         private void OnPortConnected(PortModel port, ConnectorModel connectorModel)
@@ -151,6 +164,7 @@ namespace CoreNodeModelsWpf.Nodes
             {
                 ResetWatch();
             }
+            watch.SetWatchSize(WatchTree.DefaultWidthSize, WatchTree.DefaultHeightSize);
         }
 
         private void OnPortDisconnected(PortModel obj)
