@@ -141,26 +141,6 @@
   <data name="ChartsPieChartSearchTags" xml:space="preserve">
     <value>pie;piechart</value>
   </data>
-  <data name="ChartsPieChartLabelsDataPortToolTip" xml:space="preserve">
-    <value>A list of string labels for each segment in the pie chart.
-
-List&lt;string&gt;</value>
-  </data>
-  <data name="ChartsPieChartValuesDataPortToolTip" xml:space="preserve">
-    <value>A list of double values to supply a value for each segment of the pie chart.
-
-List&lt;double&gt;</value>
-  </data>
-  <data name="ChartsPieChartColorsDataPortToolTip" xml:space="preserve">
-    <value>A list of colors for each segment of the pie chart.
-
-List&lt;color&gt;</value>
-  </data>
-  <data name="ChartsPieChartLabelsValuesDataPortToolTip" xml:space="preserve">
-    <value>Dictionary containing label:value key-pairs
-
-Dictionary&lt;string, double&gt;</value>
-  </data>
   <data name="ChartsScatterPlotDescription" xml:space="preserve">
     <value>Create a scatter plot</value>
   </data>
