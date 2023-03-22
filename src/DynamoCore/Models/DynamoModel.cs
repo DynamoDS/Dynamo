@@ -50,7 +50,9 @@ using Lucene.Net.Util;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ProtoCore;
+using ProtoCore.DSASM;
 using ProtoCore.Runtime;
+using static Lucene.Net.Util.Packed.PackedInt32s;
 using Compiler = ProtoAssociative.Compiler;
 // Dynamo package manager
 using DefaultUpdateManager = Dynamo.Updates.UpdateManager;
@@ -945,23 +947,75 @@ namespace Dynamo.Models
             xmlDoc.LoadXml(reader.ReadToEnd());
             string xpath = "LibraryTree";
 
+            var fullCat = new TextField("FullCategoryName", "", Field.Store.YES);
+            var name = new TextField("Name", "", Field.Store.YES);
+            var desc = new TextField("Description", "", Field.Store.YES);
+            var fulldesc = new TextField("Documentation", "", Field.Store.YES);
+
+            var d = new Document()
+            {
+                fullCat,
+                name,
+                desc,
+                fulldesc
+            };
+
             foreach (XmlNode childrenNode in xmlDoc.SelectNodes(xpath)[0].ChildNodes)
             {
-                var doc = new Document
-                {
-                    new StringField("FullCategoryName", childrenNode.SelectSingleNode("FullCategoryName").FirstChild.Value, Field.Store.YES),
-                    new TextField("Name", childrenNode.SelectSingleNode("Name").FirstChild.Value, Field.Store.YES)
-                };
-
-                //foreach (var keyword in element.SearchKeywords)
-                //{
-                //    doc.Add(new TextField(element.SearchKeywords.ToString(), keyword, Field.Store.YES));
-                //}
-                //doc.Add(new TextField(element.Description.ToString(), element.Description, Field.Store.YES));
-                writer.AddDocument(doc);
+                fullCat.SetStringValue(childrenNode.SelectSingleNode("FullCategoryName").FirstChild.Value);
+                name.SetStringValue(childrenNode.SelectSingleNode("Name").FirstChild.Value);
+                desc.SetStringValue(childrenNode.SelectSingleNode("Description").FirstChild.Value);
+                writer.AddDocument(d);
             }
-            //Flush and commit the index data to the directory
+
+            ////Node Docs
+
+            Stream stream = null;
+            try
+            {
+                //C:\rmWorkspace\github\Dynamo\bin\AnyCPU\Debug\en-US\fallback_docs
+                string mdString;
+                stream = File.Open(Path.Combine(Environment.CurrentDirectory, "en-US", "fallback_docs", "Analysis.Label.ByPointAndString.md"), FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                using (StreamReader sreader = new StreamReader(stream))
+                {
+                    stream = null;
+                    mdString = sreader.ReadToEnd();
+                }
+                string InDepthDesc = mdString.Substring(mdString.IndexOf("## In Depth") + 1, mdString.IndexOf("## Example File"));
+
+                fullCat.SetStringValue("");
+                name.SetStringValue("");
+                desc.SetStringValue("");
+                fulldesc.SetStringValue(InDepthDesc);
+                writer.AddDocument(d);
+            }
+            finally
+            {
+                stream?.Dispose();
+            }
+
+            ///
+
+
             writer.Commit();
+
+            //foreach (XmlNode childrenNode in xmlDoc.SelectNodes(xpath)[0].ChildNodes)
+            //{
+            //    var doc = new Document
+            //    {
+            //        new StringField("FullCategoryName", childrenNode.SelectSingleNode("FullCategoryName").FirstChild.Value, Field.Store.YES),
+            //        new TextField("Name", childrenNode.SelectSingleNode("Name").FirstChild.Value, Field.Store.YES)
+            //    };
+
+            //    //foreach (var keyword in element.SearchKeywords)
+            //    //{
+            //    //    doc.Add(new TextField(element.SearchKeywords.ToString(), keyword, Field.Store.YES));
+            //    //}
+            //    //doc.Add(new TextField(element.Description.ToString(), element.Description, Field.Store.YES));
+            //    writer.AddDocument(doc);
+            //}
+            ////Flush and commit the index data to the directory
+            //writer.Commit();
             DirectoryReader dirReader = writer.GetReader(applyAllDeletes: true);
             IndexSearcher searcher = new IndexSearcher(dirReader);
 

@@ -923,19 +923,43 @@ namespace Dynamo.ViewModels
         /// <param name="subset">Subset of nodes that should be used for the search instead of the complete set of nodes. This is a list of NodeSearchElement types</param>
         internal IEnumerable<NodeSearchElementViewModel> Search(string search, IEnumerable<NodeSearchElement> subset = null)
         {
-            QueryParser parser = new QueryParser(Configurations.LuceneNetVersion, "Name", Model.StandardAnalyzer);
+            var candidates = new List<NodeSearchElementViewModel>();
+            //QueryParser parser = new QueryParser(Configurations.LuceneNetVersion, "Name", Model.StandardAnalyzer);
+            string[] fnames = { "Name", "FullCategoryName", "Description", "Documentation" };
+            var parser = new MultiFieldQueryParser(Configurations.LuceneNetVersion, fnames, Model.StandardAnalyzer);
             Query query = parser.Parse(search);
-            TopDocs topDocs = Model.Searcher.Search(query, n: 10);         //indicate we want the first 10 results
-            for (int i = 0; i < topDocs.TotalHits; i++)
+            TopDocs topDocs = Model.Searcher.Search(query, n: 50);         //indicate we want the first 10 results
+            for (int i = 0; i < topDocs.ScoreDocs.Length; i++)
             {
                 //read back a doc from results
                 Document resultDoc = Model.Searcher.Doc(topDocs.ScoreDocs[i].Doc);
 
                 string name = resultDoc.Get("Name");
-                Console.WriteLine($"Node name of the result {i + 1}: {name}");
-            }
+                string fulldesc = resultDoc.Get("Documentation");
 
+
+                if (!string.IsNullOrEmpty(fulldesc))
+                {
+                    Console.WriteLine("Doc");
+                }
+                else
+                { 
+                    var foundNode = SearchOld(name).FirstOrDefault();
+                    if (foundNode != null)
+                    {
+                        candidates.Add(foundNode);
+                    }
+                }
+
+            }
+            return candidates;
             // Legacy search
+            //var foundNodes = Model.Search(search, 0, subset);
+            //return foundNodes.Select(MakeNodeSearchElementVM);
+        }
+
+        internal IEnumerable<NodeSearchElementViewModel> SearchOld(string search, IEnumerable<NodeSearchElement> subset = null)
+        {
             var foundNodes = Model.Search(search, 0, subset);
             return foundNodes.Select(MakeNodeSearchElementVM);
         }
