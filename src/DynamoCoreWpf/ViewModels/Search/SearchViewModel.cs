@@ -970,7 +970,7 @@ namespace Dynamo.ViewModels
                 }
                 else
                 { 
-                    var foundNode = FindViewModelForNodeShortName(name).FirstOrDefault();
+                    var foundNode = FindViewModelForNodeShortName(name);
                     if (foundNode != null)
                     {
                         candidates.Add(foundNode);
