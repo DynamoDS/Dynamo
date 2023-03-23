@@ -8,10 +8,13 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Xml.Linq;
 using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Engine;
@@ -142,7 +145,9 @@ namespace Dynamo.Models
         /// During sandbox initializing, Dynamo checks specifically if ASM loading was correct
         /// </summary>
         internal bool IsASMLoaded = true;
-
+        IndexWriter writer;
+        Lucene.Net.Store.Directory indexDir;
+        DirectoryReader dirReader;
         #endregion
 
         #region static properties
@@ -929,74 +934,15 @@ namespace Dynamo.Models
             // Index existing node info dump xml - TODO: move to a runtime dump and index process or rely on pipeline
             // Open the Directory using a Lucene Directory class
             string indexPath = Path.Combine(Environment.CurrentDirectory, "Index");
-            Lucene.Net.Store.Directory indexDir = FSDirectory.Open(indexPath);
+            indexDir = FSDirectory.Open(indexPath);
 
             // Create an analyzer to process the text 
-            Analyzer standardAnalyzer = new StandardAnalyzer(Configurations.LuceneNetVersion);
+            SearchModel.StandardAnalyzer = new StandardAnalyzer(Configurations.LuceneNetVersion);
 
             //Create an index writer
-            IndexWriterConfig indexConfig = new IndexWriterConfig(Configurations.LuceneNetVersion, standardAnalyzer);
+            IndexWriterConfig indexConfig = new IndexWriterConfig(Configurations.LuceneNetVersion, SearchModel.StandardAnalyzer);
             indexConfig.OpenMode = OpenMode.CREATE; // create/overwrite index. TODO: see if overwrite needed 
-            IndexWriter writer = new IndexWriter(indexDir, indexConfig);
-
-            StreamReader reader = new StreamReader(Path.Combine(Environment.CurrentDirectory, "NodeDump.xml"));
-            XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.LoadXml(reader.ReadToEnd());
-            string xpath = "LibraryTree";
-
-            var fullCat = new TextField("FullCategoryName", "", Field.Store.YES);
-            var name = new TextField("Name", "", Field.Store.YES);
-            var desc = new TextField("Description", "", Field.Store.YES);
-            var fulldesc = new TextField("Documentation", "", Field.Store.YES);
-
-            var d = new Document()
-            {
-                fullCat,
-                name,
-                desc,
-                fulldesc
-            };
-
-            foreach (XmlNode childrenNode in xmlDoc.SelectNodes(xpath)[0].ChildNodes)
-            {
-                fullCat.SetStringValue(childrenNode.SelectSingleNode("FullCategoryName").FirstChild.Value);
-                name.SetStringValue(childrenNode.SelectSingleNode("Name").FirstChild.Value);
-                desc.SetStringValue(childrenNode.SelectSingleNode("Description").FirstChild.Value);
-                writer.AddDocument(d);
-            }
-
-            ////Node Docs
-
-            Stream stream = null;
-            try
-            {
-                //C:\rmWorkspace\github\Dynamo\bin\AnyCPU\Debug\en-US\fallback_docs
-                string mdString;
-                stream = File.Open(Path.Combine(Environment.CurrentDirectory, "en-US", "fallback_docs", "Analysis.Label.ByPointAndString.md"), FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                using (StreamReader sreader = new StreamReader(stream))
-                {
-                    stream = null;
-                    mdString = sreader.ReadToEnd();
-                }
-                string InDepthDesc = mdString.Substring(mdString.IndexOf("## In Depth") + 11, mdString.IndexOf("## Example File")-3);
-
-                fullCat.SetStringValue("");
-                name.SetStringValue("");
-                desc.SetStringValue("");
-                fulldesc.SetStringValue(InDepthDesc);
-                writer.AddDocument(d);
-            }
-            finally
-            {
-                stream?.Dispose();
-            }
-            writer.Commit();
-
-            DirectoryReader dirReader = writer.GetReader(applyAllDeletes: true);
-            IndexSearcher searcher = new IndexSearcher(dirReader);
-
-            SearchModel.Searcher = searcher;
-            SearchModel.StandardAnalyzer = standardAnalyzer;
+            writer = new IndexWriter(indexDir, indexConfig);
 
             CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager, LibraryServices);
             InitializeCustomNodeManager();
@@ -1400,6 +1346,11 @@ namespace Dynamo.Models
 
             LinterManager.Dispose();
 
+            //Lucene disposals
+            writer.Dispose();
+            indexDir.Dispose();
+            dirReader.Dispose();
+
             LibraryServices.Dispose();
             LibraryServices.LibraryManagementCore.Cleanup();
             LibraryServices.MessageLogged -= LogMessage;
@@ -1698,6 +1649,7 @@ namespace Dynamo.Models
 
         private void LoadNodeModels(List<TypeLoadData> nodes, bool isPackageMember)
         {
+            var iDoc = InitializeIndexDocument();
             foreach (var type in nodes)
             {
                 // Protect ourselves from exceptions thrown by malformed third party nodes.
@@ -1706,14 +1658,102 @@ namespace Dynamo.Models
                     NodeFactory.AddTypeFactoryAndLoader(type.Type);
                     NodeFactory.AddAlsoKnownAs(type.Type, type.AlsoKnownAs);
                     type.IsPackageMember = isPackageMember;
-                    AddNodeTypeToSearch(type);
+                    var ele = AddNodeTypeToSearch(type);
+                    if (ele != null)
+                    {
+                        AddNodeTypeToSearchIndex(ele, iDoc);
+                    }
                 }
                 catch (Exception e)
                 {
                     Logger.Log(e);
                 }
             }
+            AddNodeDocumentationToSearchIndex(iDoc);
+            writer.Commit();
+
+            //Initialize searcher
+            dirReader = writer.GetReader(applyAllDeletes: true);
+            IndexSearcher searcher = new IndexSearcher(dirReader);
+
+            SearchModel.Searcher = searcher;
+            
         }
+
+        private void AddNodeDocumentationToSearchIndex(Document doc)
+        {
+            //148 docs are skipped, because they are incomplete, and 2 are read till end because they do not have the ending delimeter(___).
+            Stream stream = null;
+            try
+            {
+                string[] files = System.IO.Directory.GetFiles(Path.Combine(Environment.CurrentDirectory, "en-US", "fallback_docs"), "*.md");
+                foreach (string file in files)
+                {
+                    //C:\rmWorkspace\github\Dynamo\bin\AnyCPU\Debug\en-US\fallback_docs
+                    string mdString;
+                    stream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                    using (StreamReader sreader = new StreamReader(stream))
+                    {
+                        stream = null;
+                        mdString = sreader.ReadToEnd().Trim();
+                    }
+                    string InDepthDesc = string.Empty;
+                    int idx1 = mdString.IndexOf("## In Depth") + 10;
+                    int idx2 = mdString.IndexOf("___");
+                    int totallen = mdString.Length;
+                    int len = idx2 - 10;
+                    if (idx1 < 0) continue;
+                    if (idx2 < 0) len = totallen - 10;
+                                        
+                    InDepthDesc = mdString.Substring(idx1, len);
+                    ((TextField)doc.GetField("FullCategoryName")).SetStringValue("");
+                    ((TextField)doc.GetField("Name")).SetStringValue("");
+                    ((TextField)doc.GetField("Description")).SetStringValue("");
+                    ((TextField)doc.GetField("SearchKeywords")).SetStringValue("");
+                    ((TextField)doc.GetField("InputParameters")).SetStringValue("");
+                    ((TextField)doc.GetField("OutputParameters")).SetStringValue("");
+                    ((TextField)doc.GetField("Documentation")).SetStringValue(InDepthDesc);
+                    writer.AddDocument(doc);
+                    
+                    //Trace.WriteLine("File indexed: " + i.ToString());
+                }
+                //Trace.WriteLine("Total index skipped: " + t1.ToString());
+                //Trace.WriteLine("Total read till end: " + t2.ToString());
+            }
+            finally
+            {
+                stream?.Dispose();
+            }
+        }
+        private Document InitializeIndexDocument()
+        {
+            var fullCategory = new TextField("FullCategoryName", "", Field.Store.YES);
+            var name = new TextField("Name", "", Field.Store.YES);
+            var description = new TextField("Description", "", Field.Store.YES);
+            var keywords = new TextField("SearchKeywords", "", Field.Store.YES);
+            var inp = new TextField("InputParameters", "", Field.Store.YES);
+            var outp = new TextField("OutputParameters", "", Field.Store.YES);
+            var fulldesc = new TextField("Documentation", "", Field.Store.YES);
+
+            var d = new Document()
+            {
+                fullCategory, name, description,
+                keywords, inp,outp, fulldesc
+            };
+            return d;
+        }
+        private void AddNodeTypeToSearchIndex(NodeModelSearchElement node, Document doc)
+        {
+            ((TextField)doc.GetField("FullCategoryName")).SetStringValue(node.FullCategoryName);
+            ((TextField)doc.GetField("Name")).SetStringValue(node.Name); ((TextField)doc.GetField("Name")).Boost = 2;
+            ((TextField)doc.GetField("Description")).SetStringValue(node.Description);
+            ((TextField)doc.GetField("SearchKeywords")).SetStringValue(node.SearchKeywords.Aggregate((x,y) => x + " " + y));
+            ((TextField)doc.GetField("InputParameters")).SetStringValue(string.Join(" ", node.InputParameters.Select(t => $"{t.Item1}:{t.Item2}")));
+            ((TextField)doc.GetField("OutputParameters")).SetStringValue(node.OutputParameters.Aggregate((x, y) => x + " " + y));
+            writer.AddDocument(doc);
+        }
+
+
 
         private IPreferences CreateOrLoadPreferences(IPreferences preferences)
         {
@@ -3215,15 +3255,16 @@ namespace Dynamo.Models
         }
 #endif
 
-        private void AddNodeTypeToSearch(TypeLoadData typeLoadData)
+        private NodeModelSearchElement AddNodeTypeToSearch(TypeLoadData typeLoadData)
         {
             if (!typeLoadData.IsDSCompatible || typeLoadData.IsDeprecated || typeLoadData.IsHidden
                 || typeLoadData.IsMetaNode)
             {
-                return;
+                return null;
             }
-
-            SearchModel?.Add(new NodeModelSearchElement(typeLoadData));
+            var node = new NodeModelSearchElement(typeLoadData);
+            SearchModel?.Add(node);
+            return node;
         }
 
         /// <summary>

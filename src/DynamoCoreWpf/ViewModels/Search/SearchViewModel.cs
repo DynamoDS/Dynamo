@@ -919,13 +919,19 @@ namespace Dynamo.ViewModels
         /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
         /// <param name="search"> The search query </param>
         /// <param name="subset">Subset of nodes that should be used for the search instead of the complete set of nodes. This is a list of NodeSearchElement types</param>
-        internal IEnumerable<NodeSearchElementViewModel> Search(string search, IEnumerable<NodeSearchElement> subset = null)
+        public IEnumerable<NodeSearchElementViewModel> Search(string search, IEnumerable<NodeSearchElement> subset = null)
         {
             var candidates = new List<NodeSearchElementViewModel>();
             //QueryParser parser = new QueryParser(Configurations.LuceneNetVersion, "Name", Model.StandardAnalyzer);
-            string[] fnames = { "Name", "FullCategoryName", "Description", "Documentation" };
+            string[] fnames = { "Name", "FullCategoryName", "Description", "SearchKeywords", "InputParameters", "OutputParameters", "Documentation" };
+
+
             var parser = new MultiFieldQueryParser(Configurations.LuceneNetVersion, fnames, Model.StandardAnalyzer);
-            Query query = parser.Parse(search);
+
+
+            Query query = parser.Parse(search.Trim()+"*");
+
+
             TopDocs topDocs = Model.Searcher.Search(query, n: 50);         //indicate we want the first 10 results
             for (int i = 0; i < topDocs.ScoreDocs.Length; i++)
             {
