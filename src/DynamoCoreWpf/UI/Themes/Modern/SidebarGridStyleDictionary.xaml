@@ -249,6 +249,8 @@
                        Margin="7,10,8,0"
                        Visibility="{Binding Path=AutoCompletionNodeMachineLearningInfo.IsByUse, Converter={StaticResource BooleanToVisibilityConverter}}" />
             </StackPanel>
+
+            <!--Node Search element Icon-->
             <Image HorizontalAlignment="Left"
                    Height="36"
                    Margin="2,0,16,0"
@@ -268,6 +270,7 @@
                         </MultiBinding>
                     </Rectangle.Margin>
                 </Rectangle>
+                <!--Node search element short name-->
                 <TextBlock Grid.Column="1"
                            Name="memberName"
                            HorizontalAlignment="Left"
