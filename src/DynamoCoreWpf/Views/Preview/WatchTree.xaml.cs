@@ -84,7 +84,7 @@ namespace Dynamo.Controls
                     // When it doesn't have any element, it should be set back the width to the default.
                     if (_vm.Children != null && _vm.Children.Count == 0)
                     {
-                        this.Width = this.Width != customWidth ? defaultWidthSize : this.Width;
+                        this.Width = defaultWidthSize;
                     }
                 }
             }
@@ -220,6 +220,8 @@ namespace Dynamo.Controls
             {
                 Height = yAdjust;
             }
+
+            Watch.NodeSizes[_vm.WatchNode.GUID] = new Tuple<double, double>(Width, Height);
         }
     }
 }

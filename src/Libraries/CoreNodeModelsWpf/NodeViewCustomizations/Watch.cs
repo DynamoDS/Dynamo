@@ -63,8 +63,10 @@ namespace CoreNodeModelsWpf.Nodes
 
             ResetWatch();
 
-            watchTree.Width = nodeModel.WatchWidth;
-            watchTree.Height = nodeModel.WatchHeight;
+            watchTree.Width = nodeModel.WatchWidth == 0 ? watchTree.Width : nodeModel.WatchWidth;
+            watchTree.Height = nodeModel.WatchHeight == 0 ? watchTree.Height : nodeModel.WatchHeight;
+
+            Watch.NodeSizes[watch.GUID] = new Tuple<double, double>(nodeModel.WatchWidth, nodeModel.WatchHeight);
 
             Bind(watchTree, nodeView);
 
@@ -138,12 +140,14 @@ namespace CoreNodeModelsWpf.Nodes
 
             watch.PortConnected -= OnPortConnected;
             watch.PortDisconnected -= OnPortDisconnected;
-            Watch.NodeSizes.Remove(watch.GUID);
+            //Watch.NodeSizes.Remove(watch.GUID);
         }
 
         private void OnPortConnected(PortModel port, ConnectorModel connectorModel)
         {
             Tuple<int, NodeModel> input;
+
+            watch.SetWatchSize(WatchTree.DefaultWidthSize, WatchTree.DefaultHeightSize);
 
             if (!watch.TryGetInput(watch.InPorts.IndexOf(connectorModel.End), out input)
                 || astBeingComputed == null) return;
@@ -164,7 +168,6 @@ namespace CoreNodeModelsWpf.Nodes
             {
                 ResetWatch();
             }
-            watch.SetWatchSize(WatchTree.DefaultWidthSize, WatchTree.DefaultHeightSize);
         }
 
         private void OnPortDisconnected(PortModel obj)

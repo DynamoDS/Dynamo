@@ -50,7 +50,7 @@ namespace CoreNodeModels
         {
             WatchWidth = w;
             WatchHeight = h;
-            NodeSizes[GUID] = new Tuple<double, double>(w, h);
+            //NodeSizes[GUID] = new Tuple<double, double>(w, h);
         }
 
         public Watch()
