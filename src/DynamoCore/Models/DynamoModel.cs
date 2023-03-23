@@ -1684,10 +1684,11 @@ namespace Dynamo.Models
             Stream stream = null;
             try
             {
+                // e.g. //C:\rmWorkspace\github\Dynamo\bin\AnyCPU\Debug\en-US\fallback_docs
+                // TODO: dynamic and consider localizated docs
                 string[] files = System.IO.Directory.GetFiles(Path.Combine(Environment.CurrentDirectory, "en-US", "fallback_docs"), "*.md");
                 foreach (string file in files)
                 {
-                    //C:\rmWorkspace\github\Dynamo\bin\AnyCPU\Debug\en-US\fallback_docs
                     string mdString;
                     stream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                     using (StreamReader sreader = new StreamReader(stream))
@@ -1705,7 +1706,7 @@ namespace Dynamo.Models
                                         
                     InDepthDesc = mdString.Substring(idx1, len);
                     ((TextField)doc.GetField("FullCategoryName")).SetStringValue("");
-                    ((TextField)doc.GetField("Name")).SetStringValue("");
+                    ((TextField)doc.GetField("Name")).SetStringValue(Path.GetFileName(file).Replace(".md", string.Empty).Split('.').LastOrDefault() + ".md");
                     ((TextField)doc.GetField("Description")).SetStringValue("");
                     ((TextField)doc.GetField("SearchKeywords")).SetStringValue("");
                     ((TextField)doc.GetField("InputParameters")).SetStringValue("");
@@ -1723,6 +1724,11 @@ namespace Dynamo.Models
                 stream?.Dispose();
             }
         }
+
+        /// <summary>
+        /// Initialize Lucene index document object for reuse
+        /// </summary>
+        /// <returns></returns>
         private Document InitializeIndexDocument()
         {
             var fullCategory = new TextField("FullCategoryName", "", Field.Store.YES);
@@ -1740,6 +1746,12 @@ namespace Dynamo.Models
             };
             return d;
         }
+
+        /// <summary>
+        /// Add node information to Lucene index
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="doc"></param>
         private void AddNodeTypeToSearchIndex(NodeModelSearchElement node, Document doc)
         {
             ((TextField)doc.GetField("FullCategoryName")).SetStringValue(node.FullCategoryName);
@@ -1750,8 +1762,6 @@ namespace Dynamo.Models
             ((TextField)doc.GetField("OutputParameters")).SetStringValue(node.OutputParameters.Aggregate((x, y) => x + " " + y));
             writer.AddDocument(doc);
         }
-
-
 
         private IPreferences CreateOrLoadPreferences(IPreferences preferences)
         {

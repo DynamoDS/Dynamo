@@ -967,6 +967,8 @@ namespace Dynamo.ViewModels
                 if (!string.IsNullOrEmpty(fulldesc))
                 {
                     Console.WriteLine("Doc");
+                    var doc = new DocSearchElement(name);
+                    candidates.Add(new NodeSearchElementViewModel(doc, this));
                 }
                 else
                 { 

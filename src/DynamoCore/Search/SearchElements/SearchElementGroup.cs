@@ -1,4 +1,4 @@
-﻿namespace Dynamo.Search.SearchElements
+namespace Dynamo.Search.SearchElements
 {
     /// <summary>
     /// Returns one of the possible values: None, Create, Action, Query.
@@ -35,5 +35,9 @@
         /// Type for a packaged element (either zero-touch DLLs or DYFs)
         /// </summary>
         Packaged = 0x00020000,
+        /// <summary>
+        /// Type for a documentation entry
+        /// </summary>
+        Doc = 0x00000003,
     }
 }

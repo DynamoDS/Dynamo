@@ -33,7 +33,14 @@ namespace Dynamo.Models
             if (CommandStarting != null)
                 CommandStarting(command);
 
-            command.Execute(this);
+            try
+            {
+                command.Execute(this);
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex.ToString());
+            }
 
             if (CommandCompleted != null)
                 CommandCompleted(command);
@@ -189,8 +196,8 @@ namespace Dynamo.Models
                     proxyCommand.NickName, proxyCommand.Inputs, proxyCommand.Outputs);
             }
 
+            if(String.IsNullOrEmpty(name)) return null;
             // Then, we have to figure out what kind of node to make, based on the name.
-
             NodeModel node = CreateNodeFromNameOrType(nodeId, name);
             if (node != null) return node;
 

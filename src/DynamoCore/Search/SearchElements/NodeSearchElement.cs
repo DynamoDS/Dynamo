@@ -197,7 +197,7 @@ namespace Dynamo.Search.SearchElements
         {
             get
             {
-                if (!inputParameters.Any())
+                if (inputParameters!=null && !inputParameters.Any())
                     GenerateInputParameters();
 
                 return inputParameters;
@@ -209,7 +209,7 @@ namespace Dynamo.Search.SearchElements
         {
             get
             {
-                if (!outputParameters.Any())
+                if (outputParameters!= null && !outputParameters.Any())
                     GenerateOutputParameters();
 
                 return outputParameters;

@@ -143,7 +143,7 @@ namespace Dynamo.ViewModels
             var candidates = new List<NodeSearchElementViewModel>();
             // TODO: These are basic input types in Dynamo
             // This should be only served as a temporary default case.
-            var queries = new List<string>(){ "Cross-Reference", "String", "Number Slider", "Integer Slider", "Number", "Boolean", "Watch", "Watch 3D", "Python Script"};
+            var queries = new List<string>(){ "Cross-Reference","Point", "String", "Number Slider", "Integer Slider", "Number", "Boolean", "Watch", "Watch 3D", "Python Script"};
             foreach (var query in queries)
             {
                 var foundNode = Search(query).FirstOrDefault();

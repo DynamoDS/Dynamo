@@ -842,6 +842,7 @@ namespace Dynamo.Models
                 NodeModel node, double x, double y, bool defaultPosition, bool transformCoordinates)
                 : base(node != null ? new[] { node.GUID } : new[] { Guid.Empty })
             {
+                if (node == null) return;
                 Node = node;
                 SetProperties(x, y, defaultPosition, transformCoordinates);
             }
