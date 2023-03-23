@@ -325,7 +325,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// To get view model for a node based on its name
+        /// To get view model for a node based on its creation name
         /// </summary>
         /// <param name="nodeName"></param>
         /// <returns></returns>
@@ -348,7 +348,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// To get view model for a node based on its name
+        /// To get view model for a node based on its short name
         /// </summary>
         /// <param name="nodeName"></param>
         /// <returns></returns>
