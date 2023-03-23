@@ -1654,7 +1654,9 @@ namespace Dynamo.Models
                     NodeFactory.AddTypeFactoryAndLoader(type.Type);
                     NodeFactory.AddAlsoKnownAs(type.Type, type.AlsoKnownAs);
                     type.IsPackageMember = isPackageMember;
+                    // Legacy index process to search dictionary
                     var ele = AddNodeTypeToSearch(type);
+                    // New index process from Lucene
                     if (ele != null)
                     {
                         AddNodeTypeToSearchIndex(ele, iDoc);
