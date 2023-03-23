@@ -347,6 +347,29 @@ namespace Dynamo.ViewModels
             return MakeNodeSearchElementVM(result.ElementAt(0));
         }
 
+        /// <summary>
+        /// To get view model for a node based on its name
+        /// </summary>
+        /// <param name="nodeName"></param>
+        /// <returns></returns>
+        public NodeSearchElementViewModel FindViewModelForNodeShortName(string nodeName)
+        {
+            var result = Model.SearchEntries.Where(e => {
+                if (e.Name.Equals(nodeName))
+                {
+                    return true;
+                }
+                return false;
+            });
+
+            if (!result.Any())
+            {
+                return null;
+            }
+
+            return MakeNodeSearchElementVM(result.ElementAt(0));
+        }
+
         public NodeSearchModel Model { get; private set; }
         internal readonly DynamoViewModel dynamoViewModel;
 
@@ -948,7 +971,7 @@ namespace Dynamo.ViewModels
                 }
                 else
                 { 
-                    var foundNode = SearchOld(name).FirstOrDefault();
+                    var foundNode = FindViewModelForNodeShortName(name).FirstOrDefault();
                     if (foundNode != null)
                     {
                         candidates.Add(foundNode);
@@ -960,12 +983,6 @@ namespace Dynamo.ViewModels
             // Legacy search
             //var foundNodes = Model.Search(search, 0, subset);
             //return foundNodes.Select(MakeNodeSearchElementVM);
-        }
-
-        internal IEnumerable<NodeSearchElementViewModel> SearchOld(string search, IEnumerable<NodeSearchElement> subset = null)
-        {
-            var foundNodes = Model.Search(search, 0, subset);
-            return foundNodes.Select(MakeNodeSearchElementVM);
         }
 
         private static IEnumerable<NodeSearchElementViewModel> GetVisibleSearchResults(NodeCategoryViewModel category)
