@@ -954,8 +954,8 @@ namespace Dynamo.ViewModels
 
             Query query = parser.Parse(search.Trim()+"*");
 
-
-            TopDocs topDocs = Model.Searcher.Search(query, n: 50);         //indicate we want the first 10 results
+            //indicate we want the first 50 results
+            TopDocs topDocs = Model.Searcher.Search(query, n: 50);
             for (int i = 0; i < topDocs.ScoreDocs.Length; i++)
             {
                 //read back a doc from results
@@ -963,7 +963,6 @@ namespace Dynamo.ViewModels
 
                 string name = resultDoc.Get("Name");
                 string fulldesc = resultDoc.Get("Documentation");
-
 
                 if (!string.IsNullOrEmpty(fulldesc))
                 {
