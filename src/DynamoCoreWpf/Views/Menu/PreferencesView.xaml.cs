@@ -493,8 +493,40 @@ namespace Dynamo.Wpf.Views
             }
         }
 
-        // Show File path dialog
-        private void OnRequestShowFileDialog(object sender, EventArgs e)
+        private void SelectBackupLocation(object sender, RoutedEventArgs e)
+        {
+            var dialog = new DynamoFolderBrowserDialog
+            {
+                Title = "New Backup Location",//Res.ExportSettingsDialogTitle,
+                Owner = this
+            };
+
+            //Saves the current settings before exporting the xml file
+            //dynViewModel.PreferenceSettings.SaveInternal(dynViewModel.Model.PathManager.PreferenceFilePath);
+
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string selectedBackupLocation = dialog.SelectedPath;
+
+                viewModel.UpdateBackupLocation(selectedBackupLocation);
+
+                try
+                {
+                    //Analytics.TrackEvent(Actions.Export, Categories.Preferences);
+                }
+                catch (Exception ex)
+                {
+                    Wpf.Utilities.MessageBoxService.Show(
+                        this,
+                        ex.Message,
+                        Res.ExportSettingsFailedMessage,
+                        MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+            }
+        }
+
+            // Show File path dialog
+            private void OnRequestShowFileDialog(object sender, EventArgs e)
         {
             var args = e as PythonTemplatePathEventArgs;
             args.Cancel = true;
@@ -583,7 +615,7 @@ namespace Dynamo.Wpf.Views
             double percentage = slider.Value - 25;
 
             //The margin value for the label goes from - 480 to 310, resulting in 790 pixels from the starting point to the end.
-            //We also standardized the values ​​of the percentage(from 0 to 275).
+            //We also standardized the values â€‹â€‹of the percentage(from 0 to 275).
             //The value is decreased to 480 because the margin begins at - 480
             //This is the relation between the margin in pixels and the value of the percentage
             double marginValue = (790 * percentage / 275) - 480;

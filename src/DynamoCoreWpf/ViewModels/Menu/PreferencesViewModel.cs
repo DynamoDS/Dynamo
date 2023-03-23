@@ -225,6 +225,22 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Backup files path
+        /// </summary>
+        public string BackupLocation
+        {
+            get
+            {
+                return preferenceSettings.BackupLocation;
+            }
+            set
+            {
+                preferenceSettings.BackupLocation = value;
+                RaisePropertyChanged(nameof(BackupLocation));
+            }
+        }
+
+        /// <summary>
         /// Maximum number of recent files on startup page.
         /// </summary>
         public int MaxNumRecentFiles
@@ -1151,6 +1167,7 @@ namespace Dynamo.ViewModels
                 Res.DynamoViewSettingMenuNumber00000
             };
             SelectedNumberFormat = preferenceSettings.NumberFormat;
+            BackupLocation = preferenceSettings.BackupLocation;
 
             runSettingsIsChecked = preferenceSettings.DefaultRunType;
             RunPreviewIsChecked = preferenceSettings.ShowRunPreview;
@@ -1212,13 +1229,19 @@ namespace Dynamo.ViewModels
 
         public DelegateCommand AddPythonPathCommand { get; private set; }
         public DelegateCommand DeletePythonPathCommand { get; private set; }
-        public DelegateCommand UpdatePythonPathCommand { get; private set; }        
+        public DelegateCommand UpdatePythonPathCommand { get; private set; }
 
         private void InitializeCommands()
         {
             AddPythonPathCommand = new DelegateCommand(p => AddPath());
             DeletePythonPathCommand = new DelegateCommand(p => RemovePath(), p => CanDelete());
             UpdatePythonPathCommand = new DelegateCommand(p => UpdatePathAt());
+        }
+
+        public void UpdateBackupLocation(string backupLocation)
+        {
+            BackupLocation = backupLocation;
+            dynamoViewModel.Model.UpdateBackupLocation(backupLocation);
         }
 
         // Add python template path
@@ -1414,6 +1437,9 @@ namespace Dynamo.ViewModels
                     goto default;
                 case nameof(BackupIntervalInMinutes):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesSettingBackupInterval), System.Globalization.CultureInfo.InvariantCulture);
+                    goto default;
+                case nameof(BackupLocation):
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesSettingDefaultBackupLocation), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(MaxNumRecentFiles):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesSettingMaxRecentFiles), System.Globalization.CultureInfo.InvariantCulture);

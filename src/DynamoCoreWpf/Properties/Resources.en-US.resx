@@ -3364,6 +3364,10 @@ You can manage this in Preferences -&gt; Security.</value>
     <value>Auto-Backup Interval</value>
     <comment>Setting menu | Auto-Backup Interval</comment>
   </data>
+  <data name="PreferencesSettingDefaultBackupLocation" xml:space="preserve">
+    <value>Default Backup Location</value>
+    <comment>Default Backup Location</comment>
+  </data>
   <data name="PreferencesSettingMaxRecentFiles" xml:space="preserve">
     <value>Maximum Number of Recent Files</value>
     <comment>Setting menu | Maximum Number of Recent Files</comment>

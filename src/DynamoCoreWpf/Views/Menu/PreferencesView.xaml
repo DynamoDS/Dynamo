@@ -544,34 +544,31 @@
                                                             <RowDefinition Height="Auto" />
                                                             <RowDefinition Height="Auto" />
                                                         </Grid.RowDefinitions>
-                                                        <Label Content="{x:Static p:Resources.PreferencesViewDisableBuiltInPackages}" 
+                                                        <Label Content="{x:Static p:Resources.PreferencesSettingDefaultBackupLocation}" 
                                                                 VerticalAlignment="Center"
-                                                                Margin="-3,5,0,0"
+                                                                Margin="-3,15,0,0"
                                                                 Grid.Row="0"
                                                                 Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                                         <Grid Grid.Row="1">
                                                             <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition MaxWidth="250"></ColumnDefinition>
-                                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                                <ColumnDefinition Width="auto"></ColumnDefinition>
                                                             </Grid.ColumnDefinitions>
                                                             <!--the backup location text-->
                                                             <TextBlock x:Name="BackupLocationTextBlock" Style="{StaticResource DarkTextBlock}" 
-                                                                Text="{Binding}"
+                                                                Text="{Binding BackupLocation}"
                                                                 Grid.Column="0"
-                                                                Margin="7,4,7,4"
+                                                                Margin="0,4,7,4"
                                                                 Background="{StaticResource PreferencesWindowItemDarkerBackgroundColor}"
                                                                 MinHeight="24"
                                                                 Padding="5,5,5,5"
                                                                 Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                                            <!--the edit backup location button-->
+                                                            <!--the select backup location button-->
                                                             <Button
                                                                  Grid.Column="1"
                                                                  Margin="7,7,7,7"
                                                                  x:Name="UpdateBackupLocationButton"
-                                                                Command="{Binding Path=DataContext.UpdatePathCommand,
-                                                                RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
-                                                                 CommandParameter="{Binding}"
-                                                                 ToolTipService.ShowOnDisabled="True"
+                                                                 Click="SelectBackupLocation"
                                                                  Background="{StaticResource PreferencesWindowBackgroundColor}"
                                                                  Style="{StaticResource EditFolderButtonStyle}">
                                                                 <Button.ToolTip>

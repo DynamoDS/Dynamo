@@ -460,6 +460,17 @@ namespace Dynamo.Core
             exceptions.RemoveAll(x => x == null); // Remove all null entries.
         }
 
+        internal void UpdateBackupLocation(string backupLocation)
+        {
+            // check the pathmanager to see the backup folders vs the preferences pathManager.
+            string defaultBackupLocation = BackupDirectory;
+            string preferenceBackupLocation = backupLocation;
+            if (!defaultBackupLocation.Equals(preferenceBackupLocation) && !string.IsNullOrEmpty(preferenceBackupLocation))
+            {
+                //PreferenceSettings.BackupLocation = currentBackupFolder;
+            }
+        }
+
         /// <summary>
         /// Returns the backup file path for a workspace
         /// </summary>

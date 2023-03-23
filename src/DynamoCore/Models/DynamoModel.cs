@@ -630,7 +630,7 @@ namespace Dynamo.Models
                 CERLocation = cerConfig.CRStartConfig.CERLocation;
             }
 
-            ClipBoard = new ObservableCollection<ModelBase>();
+            ClipBoard = new ObservableCollection<ModelBase>();            
 
             pathManager = new PathManager(new PathManagerParams
             {
@@ -670,6 +670,7 @@ namespace Dynamo.Models
             geometryFactoryPath = config.GeometryFactoryPath;
 
             OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenInitPreferencesSettings, 30));
+
             IPreferences preferences = CreateOrLoadPreferences(config.Preferences);
             if (preferences is PreferenceSettings settings)
             {
@@ -796,7 +797,7 @@ namespace Dynamo.Models
                 PreferenceSettings.AddDefaultTrustedLocations();
             }
 
-            InitializePreferences(PreferenceSettings);
+            InitializePreferences();
 
             // At this point, pathManager.PackageDirectories only has 1 element which is the directory
             // in AppData. If list of PackageFolders is empty, add the folder in AppData to the list since there
@@ -1668,15 +1669,19 @@ namespace Dynamo.Models
             return new PreferenceSettings();
         }
 
-        private static void InitializePreferences(IPreferences preferences)
+        private void InitializePreferences()
         {
-            ProtoCore.Mirror.MirrorData.PrecisionFormat = DynamoUnits.Display.PrecisionFormat = preferences.NumberFormat;
-
-            var settings = preferences as PreferenceSettings;
-            if (settings != null)
+            if (PreferenceSettings != null)
             {
-                settings.InitializeNamespacesToExcludeFromLibrary();
+                ProtoCore.Mirror.MirrorData.PrecisionFormat = DynamoUnits.Display.PrecisionFormat = PreferenceSettings.NumberFormat;
+                PreferenceSettings.InitializeNamespacesToExcludeFromLibrary();
+                UpdateBackupLocation(PreferenceSettings.BackupLocation);
             }
+        }
+
+        public void UpdateBackupLocation(string selectedBackupLocation)
+        {
+            pathManager.UpdateBackupLocation(selectedBackupLocation);
         }
 
         /// <summary>
