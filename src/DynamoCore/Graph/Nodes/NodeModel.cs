@@ -1735,10 +1735,15 @@ namespace Dynamo.Graph.Nodes
 
         /// <summary>
         /// Clears the info messages that are generated when running the graph,
-        /// the State will be set to ElementState.Dead.
+        /// the State will be set to ElementState.Active.
         /// </summary>
         public virtual void ClearInfoMessages()
         {
+            if (State == ElementState.Info)
+            {
+                State = ElementState.Active;
+            }
+
             infos.RemoveWhere(x => x.State == ElementState.Info);
             OnNodeInfoMessagesClearing();
         }
