@@ -371,6 +371,30 @@ namespace Dynamo.ViewModels
             return MakeNodeSearchElementVM(result.ElementAt(0));
         }
 
+        /// <summary>
+        /// To get view model for a node based on its name and category
+        /// </summary>
+        /// <param name="nodeName">Name of the node</param>
+        /// <param name="nodeCategory">Full Category of the node</param>
+        /// <returns></returns>
+        public NodeSearchElementViewModel FindViewModelForNodeNameAndCategory(string nodeName, string nodeCategory)
+        {
+            var result = Model.SearchEntries.Where(e => {
+                if (e.Name.Equals(nodeName) && e.FullCategoryName.Equals(nodeCategory))
+                {
+                    return true;
+                }
+                return false;
+            });
+
+            if (!result.Any())
+            {
+                return null;
+            }
+
+            return MakeNodeSearchElementVM(result.ElementAt(0));
+        }
+
         public NodeSearchModel Model { get; private set; }
         internal readonly DynamoViewModel dynamoViewModel;
 
@@ -947,6 +971,7 @@ namespace Dynamo.ViewModels
         {
             string searchTerm = search.Trim();
             var candidates = new List<NodeSearchElementViewModel>();
+            var doclist = new List<NodeSearchElementViewModel>();
 
             string[] fnames = { "Name", "FullCategoryName", "Description", "SearchKeywords", "InputParameters", "OutputParameters", "DocName", "Documentation" };
 
@@ -957,35 +982,7 @@ namespace Dynamo.ViewModels
                 FuzzyMinSim = 0.5f
             };
 
-            var booleanQuery = new BooleanQuery();
-            foreach (string f in fnames)
-            {
-                FuzzyQuery fuzzyQuery;
-                if (searchTerm.Length > 3)
-                {
-                    fuzzyQuery = new FuzzyQuery(new Term(f, searchTerm), 2);
-                    booleanQuery.Add(fuzzyQuery, Occur.SHOULD);
-                }
-
-                var wildcardQuery = new WildcardQuery(new Term(f, searchTerm + "*"));
-                booleanQuery.Add(wildcardQuery, Occur.SHOULD);
-
-                if (searchTerm.Contains(' ') || searchTerm.Contains('.'))
-                {
-                    foreach (string s in searchTerm.Split(' ','.'))
-                    {
-                        wildcardQuery = new WildcardQuery(new Term(f, s + "*"));
-                        booleanQuery.Add(wildcardQuery, Occur.SHOULD);
-                        if (s.Length > 3)
-                        {
-                            fuzzyQuery = new FuzzyQuery(new Term(f, s), 2);
-                            booleanQuery.Add(fuzzyQuery, Occur.SHOULD);
-                        }
-                    }
-                }
-            }
-
-            Query query = parser.Parse(booleanQuery.ToString());
+            Query query = parser.Parse(CreateSearchQuery(fnames,searchTerm));
 
             //indicate we want the first 50 results
             TopDocs topDocs = Model.Searcher.Search(query, n: 50);
@@ -995,6 +992,7 @@ namespace Dynamo.ViewModels
                 Document resultDoc = Model.Searcher.Doc(topDocs.ScoreDocs[i].Doc);
 
                 string name = resultDoc.Get("Name");
+                string cat = resultDoc.Get("FullCategoryName");
                 string fulldesc = resultDoc.Get("Documentation");
 
                 if (!string.IsNullOrEmpty(fulldesc))
@@ -1002,11 +1000,11 @@ namespace Dynamo.ViewModels
                     //TODO handle documentation nodes
                     Console.WriteLine("Doc");
                     var doc = new DocSearchElement(name);
-                    candidates.Add(new NodeSearchElementViewModel(doc, this));
+                    doclist.Add(new NodeSearchElementViewModel(doc, this));
                 }
                 else
                 { 
-                    var foundNode = FindViewModelForNodeShortName(name);
+                    var foundNode = FindViewModelForNodeNameAndCategory(name, cat);
                     if (foundNode != null)
                     {
                         candidates.Add(foundNode);
@@ -1014,10 +1012,70 @@ namespace Dynamo.ViewModels
                 }
 
             }
+            candidates.AddRange(doclist);
             return candidates;
             // Legacy search
             //var foundNodes = Model.Search(search, 0, subset);
             //return foundNodes.Select(MakeNodeSearchElementVM);
+        }
+
+        /// <summary>
+        /// Creates a search query with adjusted priority, fuzzy logic and wildcards.
+        /// Complete Search term appearing in Name of the node will be given highest priority.
+        /// Then, complete search term appearing in other metadata,
+        /// Then, a part of the search term(if containing multiple words) appearing in Name of the node
+        /// Then, a part of the search term appearing in other metadata of the node.
+        /// Then priority will be given based on fuzzy logic- that is if the complete search term may have been misspelled for upto 2 characters.
+        /// Then, the same fuzzy logic will be applied to each part of the search term.
+        /// </summary>
+        /// <param name="fields">All fields to be searched in.</param>
+        /// <param name="searchTerm">Search key to be searched for.</param>
+        /// <returns></returns>
+        private string CreateSearchQuery(string[] fields, string searchTerm)
+        {
+            int fuzzyLogicThreshold = 4;
+            int fuzzyLogicRange = 2;
+
+            var fnames = fields;
+            var booleanQuery = new BooleanQuery();
+
+            foreach (string f in fnames)
+            {
+                FuzzyQuery fuzzyQuery;
+                if (searchTerm.Length > fuzzyLogicThreshold)
+                {
+                    fuzzyQuery = new FuzzyQuery(new Term(f, searchTerm), fuzzyLogicRange);
+                    booleanQuery.Add(fuzzyQuery, Occur.SHOULD);
+
+                }
+
+                var wildcardQuery = new WildcardQuery(new Term(f, searchTerm));
+                if (f.Equals("Name")) { wildcardQuery.Boost = 10; }
+                else { wildcardQuery.Boost = 6; }
+                booleanQuery.Add(wildcardQuery, Occur.SHOULD);
+
+                wildcardQuery = new WildcardQuery(new Term(f, searchTerm +"*"));
+                if (f.Equals("Name")) { wildcardQuery.Boost = 5; }
+                else { wildcardQuery.Boost = 4; }
+                booleanQuery.Add(wildcardQuery, Occur.SHOULD);
+
+                if (searchTerm.Contains(' ') || searchTerm.Contains('.'))
+                {
+                    foreach (string s in searchTerm.Split(' ', '.'))
+                    {
+                        if (s.Length > fuzzyLogicThreshold)
+                        {
+                            fuzzyQuery = new FuzzyQuery(new Term(f, s), fuzzyLogicRange);
+                            booleanQuery.Add(fuzzyQuery, Occur.SHOULD);
+                        }
+                        wildcardQuery = new WildcardQuery(new Term(f, s + "*"));
+                        if (f.Equals("Name")) { wildcardQuery.Boost = 5; }
+                        else { wildcardQuery.Boost = 2; }
+                        booleanQuery.Add(wildcardQuery, Occur.SHOULD);
+                    }
+                }
+            }
+            return booleanQuery.ToString();
         }
 
         private static IEnumerable<NodeSearchElementViewModel> GetVisibleSearchResults(NodeCategoryViewModel category)
