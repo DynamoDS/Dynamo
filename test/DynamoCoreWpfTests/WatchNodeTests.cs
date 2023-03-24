@@ -1,16 +1,17 @@
-﻿using Dynamo.Interfaces;
-using NUnit.Framework;
-using System.IO;
-using Dynamo.ViewModels;
-using ProtoCore.Mirror;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Threading;
 using CoreNodeModels;
+using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
+using Dynamo.Interfaces;
 using Dynamo.Tests;
-using System.Globalization;
-using System.Threading;
+using Dynamo.ViewModels;
+using NUnit.Framework;
+using ProtoCore.Mirror;
 
 namespace DynamoCoreWpfTests 
 {
@@ -254,6 +255,44 @@ namespace DynamoCoreWpfTests
 
             Assert.AreEqual(3, watchVM.Levels.ElementAt(0));
             Assert.AreEqual(2, watchVM.NumberOfItems);
+        }
+
+        [Test]
+        public void WatchNodeSizeSerializationTest()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\watch\WatchSerializationTest.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+            ViewModel.HomeSpace.Run();
+
+            var watchNode = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("76ea40b1-5e21-48b8-9051-0b6b03ee5075") as Watch;
+
+            //assert default width and height for the watch node.
+            Assert.AreEqual(watchNode.WatchWidth, WatchTree.DefaultWidthSize);
+            Assert.AreEqual(watchNode.WatchHeight, WatchTree.DefaultHeightSize);
+            
+            //Set the width and height of watch node to new values.
+            watchNode.WatchWidth = 150;
+            watchNode.WatchHeight = 300;
+
+            //save the workspace and reopen it to test (de)seralization
+            ViewModel.HomeSpace.Save(openPath);
+            ViewModel.HomeSpace.Clear();
+
+            ViewModel.OpenCommand.Execute(openPath);
+            ViewModel.HomeSpace.Run();
+
+            watchNode = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("76ea40b1-5e21-48b8-9051-0b6b03ee5075") as Watch;
+
+            //Assert new width and height
+            Assert.AreEqual(watchNode.WatchWidth, 150);
+            Assert.AreEqual(watchNode.WatchHeight, 300);
+
+            //reset back to default.
+            watchNode.WatchWidth = WatchTree.DefaultWidthSize;
+            watchNode.WatchHeight = WatchTree.DefaultHeightSize;
+
+            ViewModel.HomeSpace.Save(openPath);
+            ViewModel.HomeSpace.Clear();
         }
 
         [Test]
