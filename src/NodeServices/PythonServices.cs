@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -19,7 +19,8 @@ namespace PythonNodeModels
     {
         Unspecified,
         IronPython2,
-        CPython3
+        CPython3,
+        Unknown
     }
 }
 
