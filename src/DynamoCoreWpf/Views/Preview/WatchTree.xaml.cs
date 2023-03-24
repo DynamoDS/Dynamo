@@ -55,10 +55,15 @@ namespace Dynamo.Controls
         private void _vm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             var customSizesDict = Watch.NodeSizes;
+            var customWidth = double.NaN;
+            var customHeight= double.NaN;
 
-            customSizesDict.TryGetValue(_vm.WatchNode.GUID, out var customSizes);
-            var customWidth = customSizes == null ? double.NaN : customSizes.Item1;
-            var customHeight = customSizes == null ? double.NaN : customSizes.Item2;
+            if (_vm.WatchNode != null)
+            {
+                customSizesDict.TryGetValue(_vm.WatchNode.GUID, out var customSizes);
+                customWidth = customSizes == null ? double.NaN : customSizes.Item1;
+                customHeight = customSizes == null ? double.NaN : customSizes.Item2;
+            }
 
             if (e.PropertyName == nameof(WatchViewModel.IsCollection))
             {
