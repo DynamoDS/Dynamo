@@ -59,7 +59,20 @@ namespace Dynamo.Wpf.Properties {
                 resourceCulture = value;
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Dictionary containing label:value key-pairs
+        ///
+        ///Dictionary&lt;string, double&gt;
+        /// </summary>
+        public static string ChartsBarChartLabelsValuesDataPortToolTip
+        {
+            get
+            {
+                return ResourceManager.GetString("ChartsBarChartLabelsValuesDataPortToolTip", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to A list of colors for each bar chart category.
         ///
@@ -88,7 +101,19 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("ChartsBarChartSearchTags", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to A list of labels for the bar chart categories.
+        ///
+        ///List&lt;string&gt;.
+        /// </summary>
+        public static string ChartsBarChartLabelsDataPortToolTip {
+            get
+            {
+                return ResourceManager.GetString("ChartsBarChartLabelsDataPortToolTip", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to A list (of lists) to supply values for the bars in each category.
         ///
@@ -99,15 +124,29 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("ChartsBarChartValuesDataPortToolTip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to A list of colors for each line.
         ///
         ///List&lt;color&gt;.
         /// </summary>
-        public static string ChartsBasicLineChartColorsDataPortToolTip {
-            get {
+        public static string ChartsBasicLineChartColorsDataPortToolTip
+        {
+            get
+            {
                 return ResourceManager.GetString("ChartsBasicLineChartColorsDataPortToolTip", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Dictionary containing label:value key-pairs
+        ///
+        ///Dictionary&lt;string, List&lt;double&gt;&gt;.
+        /// </summary>
+        public static string ChartsBasicLineChartLabelsValuesDataPortToolTip
+        {
+            get {
+                return ResourceManager.GetString("ChartsBasicLineChartLabelsValuesDataPortToolTip", resourceCulture);
             }
         }
         
@@ -128,7 +167,20 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("ChartsBasicLineChartSearchTags", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to A list of string labels for each line to be plotted.
+        ///
+        ///List&lt;string&gt;.
+        /// </summary>
+        public static string ChartsBasicLineChartLabelsDataPortToolTip
+        {
+            get
+            {
+                return ResourceManager.GetString("ChartsBasicLineChartLabelsDataPortToolTip", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to List of lists each containing double values to be plotted against X-Axis values.
         ///
@@ -150,7 +202,20 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("ChartsHeatSeriesColorsDataPortToolTip", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Dictionary containing label:value key-pairs
+        ///
+        ///Dictionary&lt;string, Dictionary&lt;string, double&gt;&gt;
+        /// </summary>
+        public static string ChartsHeatSeriesLabelsValuesDataPortToolTip
+        {
+            get
+            {
+                return ResourceManager.GetString("ChartsHeatSeriesLabelsValuesDataPortToolTip", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Create a heat series plot.
         /// </summary>
@@ -241,7 +306,33 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("ChartsPieChartValuesDataPortToolTip", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to A list of string labels for each segment in the pie chart.
+        ///
+        ///List&lt;string&gt;.
+        /// </summary>
+        public static string ChartsPieChartLabelsDataPortToolTip
+        {
+            get
+            {
+                return ResourceManager.GetString("ChartsPieChartLabelsDataPortToolTip", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Dictionary containing label:value key-pairs
+        ///
+        ///Dictionary&lt;string, double&gt;.
+        /// </summary>
+        public static string ChartsPieChartLabelsValuesDataPortToolTip
+        {
+            get
+            {
+                return ResourceManager.GetString("ChartsPieChartLabelsValuesDataPortToolTip", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to A list of colors for each group of points.
         ///
@@ -252,7 +343,20 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("ChartsScatterPlotColorsDataPortToolTip", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Dictionary containing label:value key-pairs
+        ///
+        ///Dictionary&lt;string, List&lt;List&lt;double&gt;&gt;&gt;.
+        /// </summary>
+        public static string ChartsScatterPlotLabelsValuesDataPortToolTip
+        {
+            get
+            {
+                return ResourceManager.GetString("ChartsScatterPlotLabelsValuesDataPortToolTip", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Create a scatter plot.
         /// </summary>
@@ -270,7 +374,20 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("ChartsScatterPlotSearchTags", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to A list of string labels for each group of points to be plotted.
+        ///
+        ///List&lt;string&gt.;
+        /// </summary>
+        public static string ChartsScatterPlotLabelsDataPortToolTip
+        {
+            get
+            {
+                return ResourceManager.GetString("ChartsScatterPlotLabelsDataPortToolTip", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to A list of lists each containing double values representing x-coordinates.
         ///
@@ -303,7 +420,20 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("ChartsXYLineChartColorsDataPortToolTip", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Dictionary containing label:value key-pairs
+        ///
+        ///Dictionary&lt;string, List&lt;List&lt;double&gt;&gt;&gt;.
+        /// </summary>
+        public static string ChartsXYLineChartLabelsValuesDataPortToolTip
+        {
+            get
+            {
+                return ResourceManager.GetString("ChartsXYLineChartColorsDataPortToolTip", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Create a new XY line plot.
         /// </summary>
@@ -321,7 +451,20 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("ChartsXYLineChartSearchTags", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to A list of string labels for each line to be plotted
+        ///
+        ///List&lt;string&gt;
+        /// </summary>
+        public static string ChartsXYLineChartLabelsDataPortToolTip
+        {
+            get
+            {
+                return ResourceManager.GetString("ChartsXYLineChartLabelsDataPortToolTip", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to A list of lists each containing double values representing x-coordinates for each point in a line.
         ///
