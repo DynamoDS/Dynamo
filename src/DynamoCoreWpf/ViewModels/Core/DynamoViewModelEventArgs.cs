@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Media;
 using Dynamo.Graph.Nodes;
@@ -158,6 +157,26 @@ namespace Dynamo.ViewModels
 
             Link = link;
             IsRemoteResource = link.IsAbsoluteUri && !link.IsFile;
+        }
+    }
+
+    /// <summary>
+    /// A node documentation request with documentation name specified so that no node instance was required
+    /// </summary>
+    public class OpenAnnotationByNameEventArgs : OpenDocumentationLinkEventArgs
+    {
+        /// <summary>
+        /// Documentation name
+        /// </summary>
+        public string DocName { get; internal set; }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="docName"></param>
+        public OpenAnnotationByNameEventArgs(string docName ) : base(new Uri(String.Empty, UriKind.Relative))
+        {
+            DocName = docName;
         }
     }
 

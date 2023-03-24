@@ -220,6 +220,16 @@ namespace Dynamo.DocumentationBrowser
                         graphName = openNodeAnnotationEventArgs.MinimumQualifiedName;
                         break;
 
+                    case OpenAnnotationByNameEventArgs openAnnotationByNameEventArgs:
+                        var mdlink = packageManagerDoc.GetAnnotationDoc(
+                                openAnnotationByNameEventArgs.DocName, string.Empty);
+                        link = string.IsNullOrEmpty(mdlink) ? new Uri(String.Empty, UriKind.Relative) : new Uri(mdlink);
+                        graph = GetGraphLinkFromMDLocation(link);
+                        // Load md content somehow
+                        targetContent = ResourceUtilities.LoadContentFromResources(link.ToString(), GetType().Assembly);
+                        graphName = openAnnotationByNameEventArgs.DocName;
+                        break;
+
                     case OpenDocumentationLinkEventArgs openDocumentationLink:
                         link = openDocumentationLink.Link;
                         graph = GetGraphLinkFromMDLocation(link);

@@ -362,8 +362,16 @@ namespace Dynamo.Wpf.ViewModels
         {
             if (Clicked != null)
             {
-                var nodeModel = Model.CreateNode();
-                Clicked(nodeModel, Position);
+                if (Model.ElementType == ElementTypes.Doc)
+                {
+                    // Open documentation
+                    searchViewModel.dynamoViewModel.OnRequestOpenDocumentationLink(new OpenAnnotationByNameEventArgs((Model as DocSearchElement).DocName));
+                }
+                else
+                {
+                    var nodeModel = Model.CreateNode();
+                    Clicked(nodeModel, Position);
+                }
             }
         }
 

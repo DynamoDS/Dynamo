@@ -994,14 +994,13 @@ namespace Dynamo.ViewModels
                 //read back a doc from results
                 Document resultDoc = Model.Searcher.Doc(topDocs.ScoreDocs[i].Doc);
 
+                // TODO: use consts in static class for the Lucene field names
                 string name = resultDoc.Get("Name");
-                string fulldesc = resultDoc.Get("Documentation");
+                string docName = resultDoc.Get("DocName");
 
-                if (!string.IsNullOrEmpty(fulldesc))
+                if (!string.IsNullOrEmpty(docName))
                 {
-                    //TODO handle documentation nodes
-                    Console.WriteLine("Doc");
-                    var doc = new DocSearchElement(name);
+                    var doc = new DocSearchElement(name, docName);
                     var elementVM = new NodeSearchElementViewModel(doc, this);
                     elementVM.RequestBitmapSource += SearchViewModelRequestBitmapSource;
                     candidates.Add(elementVM);
@@ -1014,7 +1013,6 @@ namespace Dynamo.ViewModels
                         candidates.Add(foundNode);
                     }
                 }
-
             }
             return candidates;
             // Legacy search
