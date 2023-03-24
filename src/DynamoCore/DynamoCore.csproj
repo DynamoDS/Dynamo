@@ -183,7 +183,6 @@
         <GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
             <Output TaskParameter="Assemblies" ItemName="DynamoCoreInfo" />
         </GetAssemblyIdentity>
-        <Message Text="Project taret = $(TargetFramework)" Importance="high" />
   </Target>
     <Target AfterTargets="AfterBuildOps" Name="gen_resources" Condition=" '$(OS)' != 'Unix' ">
         <!-- Generate customization dll for DynamoCore -->
