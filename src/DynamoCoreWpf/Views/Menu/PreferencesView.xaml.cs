@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -12,10 +13,8 @@ using System.Windows.Media;
 using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Core;
-using Dynamo.Exceptions;
 using Dynamo.Logging;
 using Dynamo.UI;
-using Dynamo.UI.Views;
 using Dynamo.ViewModels;
 using Res = Dynamo.Wpf.Properties.Resources;
 
@@ -30,10 +29,15 @@ namespace Dynamo.Wpf.Views
         private readonly DynamoViewModel dynViewModel;
         private List<GroupStyleItem> originalCustomGroupStyles { get; set; }
 
+        private Button colorButtonSelected;
+
         // Used for tracking the manage package command event
         // This is not a command any more but we keep it
         // around in a compatible way for now
         private IDisposable managePackageCommandEvent;
+
+        //This list will be passed everytime that we create a new GroupStyle so the custom colors can remain
+        private ObservableCollection<CustomColorItem> stylesCustomColors;
 
         /// <summary>
         /// Storing the original custom styles before the user could update them
@@ -62,6 +66,7 @@ namespace Dynamo.Wpf.Views
             DataContext = dynViewModel.PreferencesViewModel;
 
             InitializeComponent();
+
             Dynamo.Logging.Analytics.TrackEvent(
                 Actions.Open,
                 Categories.Preferences);
@@ -70,7 +75,7 @@ namespace Dynamo.Wpf.Views
             dynViewModel.Owner = this;
             if (DataContext is PreferencesViewModel viewModelTemp)
             {
-                viewModel = viewModelTemp;
+                this.viewModel = viewModelTemp;
             }
 
             InitRadioButtonsDescription();
@@ -79,11 +84,16 @@ namespace Dynamo.Wpf.Views
             StoreOriginalCustomGroupStyles();
             displayConfidenceLevel();
 
-            viewModel.InitializeGeometryScaling();
+            this.viewModel.InitializeGeometryScaling();
 
-            viewModel.RequestShowFileDialog += OnRequestShowFileDialog;
+            this.viewModel.RequestShowFileDialog += OnRequestShowFileDialog;
 
             LibraryZoomScalingSlider.Value = dynViewModel.Model.PreferenceSettings.LibraryZoomScale;
+            PythonZoomScalingSlider.Value = dynViewModel.Model.PreferenceSettings.PythonScriptZoomScale;
+
+            stylesCustomColors = new ObservableCollection<CustomColorItem>();
+            UpdateZoomScaleValueLabel(LibraryZoomScalingSlider, lblZoomScalingValue);
+            UpdateZoomScaleValueLabel(PythonZoomScalingSlider, lblPythonScalingValue);
         }
 
         /// <summary>
@@ -254,13 +264,37 @@ namespace Dynamo.Wpf.Views
 
         private void ButtonColorPicker_Click(object sender, RoutedEventArgs e)
         {
-            System.Windows.Forms.ColorDialog colorDialog = new System.Windows.Forms.ColorDialog();
+            var colorPicker = new CustomColorPicker();
+            //This will set the custom colors list so the custom colors will remain the same for the Preferences panel (no matter if preferences is closed the list will remain).
+            colorPicker.SetCustomColors(stylesCustomColors);
+            if (colorPicker == null) return;
 
-            if (colorDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            colorPicker.Placement = PlacementMode.Top;
+            colorPicker.PlacementTarget = sender as UIElement;
+            colorPicker.IsOpen = true;
+            colorPicker.Closed += ColorPicker_Closed;
+            colorButtonSelected = sender as Button;
+
+            var brushColor = (colorButtonSelected.Background as SolidColorBrush);
+            if(brushColor != null)
             {
-                Button colorButton = sender as Button;
-                if (colorButton != null)
-                    colorButton.Background = new SolidColorBrush(Color.FromRgb(colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B));
+                //if the current color in the Group Style already exists in the CustomColorPicker then it will be selected
+                colorPicker.InitializeSelectedColor(brushColor.Color);
+            }         
+        }
+
+        private void ColorPicker_Closed(object sender, EventArgs e)
+        {
+            var colorPicker = sender as CustomColorPicker;
+            if(colorPicker == null) return;  
+            colorPicker.Closed -= ColorPicker_Closed;
+
+            if (colorButtonSelected != null)
+            {
+                var viewModel = colorPicker.DataContext as CustomColorPickerViewModel;
+                if (viewModel == null || viewModel.ColorPickerSelectedColor == null)
+                    return;
+                colorButtonSelected.Background = new SolidColorBrush(viewModel.ColorPickerSelectedColor.Value);
             }
         }
 
@@ -528,6 +562,35 @@ namespace Dynamo.Wpf.Views
 
                 int left = ((int)lblConfidenceLevel.Content * 3) + getExtraLeftSpace(confidenceLevel);
                 this.lblConfidenceLevel.Margin = new Thickness(left, -15, 0, 0);
+            }
+        }
+
+        private void ZoomScaleLevel_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            Slider slider = (Slider)sender;
+            UpdateZoomScaleValueLabel(slider, lblZoomScalingValue);
+        }
+
+        private void PythonZoomScalingSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            Slider slider = (Slider)sender;
+            UpdateZoomScaleValueLabel(slider, lblPythonScalingValue);
+        }
+
+        private void UpdateZoomScaleValueLabel(Slider slider, Label label)
+        {
+            //Since the percentage goes from 25 to 300, the value is decremented by 25 to standardize. 
+            double percentage = slider.Value - 25;
+
+            //The margin value for the label goes from - 480 to 310, resulting in 790 pixels from the starting point to the end.
+            //We also standardized the values ​​of the percentage(from 0 to 275).
+            //The value is decreased to 480 because the margin begins at - 480
+            //This is the relation between the margin in pixels and the value of the percentage
+            double marginValue = (790 * percentage / 275) - 480;
+            if (label != null)
+            {
+                label.Margin = new Thickness(marginValue, 0, 0, 0);
+                label.Content = slider.Value.ToString() + "%";
             }
         }
     }

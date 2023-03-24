@@ -2,10 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Markup;
 using System.Windows.Media;
 using Dynamo.Configuration;
+using Dynamo.Controls;
+using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.GraphNodeManager;
@@ -14,6 +18,8 @@ using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Scheduler;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
+using Dynamo.Wpf.Extensions;
 using NUnit.Framework;
 using ProtoCore.Mirror;
 
@@ -25,13 +31,17 @@ namespace DynamoCoreWpfTests
 
         protected override DynamoModel.IStartConfiguration CreateStartConfiguration(IPathResolver pathResolver)
         {
+            string settingDirectory = Path.Combine(GetTestDirectory(ExecutingDirectory), "settings");
+            string viewExtSettingFilePath = Path.Combine(settingDirectory, "DynamoSettings-ViewExtension.xml");
+            PreferenceSettings.DynamoTestPath = viewExtSettingFilePath;
+
             return new DynamoModel.DefaultStartConfiguration()
             {
                 PathResolver = pathResolver,
                 StartInTestMode = true,
                 GeometryFactoryPath = preloader.GeometryFactoryPath,
                 ProcessMode = TaskProcessMode.Synchronous,
-                Preferences = new PreferenceSettings() { CustomPackageFolders = new List<string>() { this.PackagesDirectory } }
+                Preferences = PreferenceSettings.Load(viewExtSettingFilePath)
             };
         }
 
@@ -201,6 +211,111 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(emptyListNodesCount, emptyListNodesImageCount);
             Assert.AreEqual(nullNodesCount, nullNodesImageCount);
         }
+
+        #region EnablePersistExtensions Tests
+        /// <summary>
+        /// Test if the Extension loads correctly when remembered
+        /// </summary>
+        [Test]
+        public void ViewExtensionOpensWithDynamoWhenRememberedTest()
+        {
+            RaiseLoadedEvent(this.View);
+            ViewModel.PreferenceSettings.EnablePersistExtensions = true;
+
+            //assert that option is enabled
+            Assert.IsTrue(ViewModel.PreferenceSettings.EnablePersistExtensions);
+
+            //open extension
+            var extensionManager = View.viewExtensionManager;
+            var viewExtension = extensionManager.ViewExtensions
+                    .FirstOrDefault(x => x as GraphNodeManagerViewExtension != null)
+                as GraphNodeManagerViewExtension;
+            LoadExtension(viewExtension);
+
+            //confirm that extension was opened
+            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+
+            //Restart Dynamo
+            Exit();
+            Start();
+
+            Utility.DispatcherUtil.DoEvents();
+
+            //confirm that extension is reopened after restart
+            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+            Assert.IsNotNull(View.ExtensionTabItems.FirstOrDefault(x => x.Tag as GraphNodeManagerViewExtension != null));
+        }
+
+        /// <summary>
+        /// Test if the Extension does not open when closed in the last session, and remember setting was enabled.
+        /// </summary>
+        [Test]
+        public void ViewExtensionDoesNotOpensWithDynamoWhenClosedTest()
+        {
+            RaiseLoadedEvent(this.View);
+            ViewModel.PreferenceSettings.EnablePersistExtensions = true;
+
+            //assert that option is enabled
+            Assert.IsTrue(ViewModel.PreferenceSettings.EnablePersistExtensions);
+
+            //open extension
+            var extensionManager = View.viewExtensionManager;
+            var viewExtension = extensionManager.ViewExtensions
+                    .FirstOrDefault(x => x as GraphNodeManagerViewExtension != null)
+                as GraphNodeManagerViewExtension;
+            LoadExtension(viewExtension);
+
+            //close extension
+            var loadedParams = new ViewLoadedParams(View, ViewModel);
+            loadedParams.CloseExtensioninInSideBar(viewExtension);
+
+            //confirm that extension was closed
+            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+
+            //Restart Dynamo
+            Exit();
+            Start();
+
+            Utility.DispatcherUtil.DoEvents();
+
+            //confirm that extension is still closed after restart
+            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+            Assert.IsNull(View.ExtensionTabItems.FirstOrDefault(x => x.Tag as GraphNodeManagerViewExtension != null));
+        }
+
+        /// <summary>
+        /// Test if the Extension loads correctly when remembered
+        /// </summary>
+        [Test]
+        public void ViewExtensionDoesNotOpenWhenNotRememberedTest()
+        {
+            RaiseLoadedEvent(this.View);
+            ViewModel.PreferenceSettings.EnablePersistExtensions = false;
+
+            //assert that option is disabled
+            Assert.IsFalse(ViewModel.PreferenceSettings.EnablePersistExtensions);
+
+            //open extension
+            var extensionManager = View.viewExtensionManager;
+            var viewExtension = extensionManager.ViewExtensions
+                    .FirstOrDefault(x => x as GraphNodeManagerViewExtension != null)
+                as GraphNodeManagerViewExtension;
+            LoadExtension(viewExtension);
+
+            //confirm that extension was opened
+            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+
+            //Restart Dynamo
+            Exit();
+            Start();
+
+            Utility.DispatcherUtil.DoEvents();
+
+            //confirm that extension is still closed after restart
+            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+            Assert.IsNull(View.ExtensionTabItems.FirstOrDefault(x => x.Tag as GraphNodeManagerViewExtension != null));
+        }
+        #endregion
 
         #endregion
 

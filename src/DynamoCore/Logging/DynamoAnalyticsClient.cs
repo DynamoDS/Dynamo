@@ -101,7 +101,8 @@ namespace Dynamo.Logging
         {
             get
             {
-                return Service.IsInitialized && (ReportingGoogleAnalytics || ReportingADPAnalytics);
+                return !Analytics.DisableAnalytics &&
+                    Service.IsInitialized;
             }
         }
 
@@ -116,20 +117,6 @@ namespace Dynamo.Logging
                     && Service.IsInitialized
                     && !Analytics.DisableAnalytics
                     && preferences.IsAnalyticsReportingApproved;
-            }
-        }
-
-        /// <summary>
-        /// Return if ADP Analytics Client is allowed to send analytics info
-        /// </summary>
-        private bool ReportingADPAnalytics
-        {
-            get
-            {
-                return preferences != null
-                    && Service.IsInitialized
-                    && !Analytics.DisableAnalytics
-                    && preferences.IsADPAnalyticsReportingApproved;
             }
         }
 
@@ -199,7 +186,7 @@ namespace Dynamo.Logging
             if (service.GetTrackerFactory(ADPTrackerFactory.Name) == null)
             {
                 service.Register(new ADPTrackerFactory());
-                service.AddTrackerFactoryFilter(ADPTrackerFactory.Name, () => ReportingADPAnalytics);
+                service.AddTrackerFactoryFilter(ADPTrackerFactory.Name, () => ReportingAnalytics);
             }
         }
 
@@ -209,8 +196,10 @@ namespace Dynamo.Logging
         /// </summary>
         public void Start()
         {
-            if (preferences != null &&
-                (preferences.IsAnalyticsReportingApproved || preferences.IsADPAnalyticsReportingApproved))
+            // Start Analytics service regardless of optin status.
+            // Each track event will be enabled/disabled based on the corresponding optin status.
+            // Ex. ADP will manage optin status internally
+            if (preferences != null && !Analytics.DisableAnalytics)
             {
                 //Register trackers
                 var service = Service.Instance;
@@ -222,14 +211,13 @@ namespace Dynamo.Logging
                 if (preferences.IsAnalyticsReportingApproved)
                     RegisterGATracker(service);
 
-                // Register ADP Tracker only if the user is opted in.
-                if (preferences.IsADPAnalyticsReportingApproved)
-                    RegisterADPTracker(service);
+                // Always register ADP Tracker.
+                // ADP manages opt in status internally.
+                RegisterADPTracker(service);
 
                 //If not ReportingAnalytics, then set the idle time as infinite so idle state is not recorded.
                 Service.StartUp(product, new UserInfo(Session.UserId), hostInfo, TimeSpan.FromMinutes(30));
                 TrackPreferenceInternal("ReportingAnalytics", "", ReportingAnalytics ? 1 : 0);
-                TrackPreferenceInternal("ReportingADPAnalytics", "", ReportingADPAnalytics ? 1 : 0);
             }
         }
 

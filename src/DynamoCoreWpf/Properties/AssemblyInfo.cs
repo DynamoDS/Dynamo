@@ -47,6 +47,7 @@ using System.Windows;
 [assembly: InternalsVisibleTo("PackageDetailsViewExtension")]
 [assembly: InternalsVisibleTo("Notifications")]
 [assembly: InternalsVisibleTo("LibraryViewExtensionWebView2")]
+[assembly: InternalsVisibleTo("PythonNodeModelsWpf")]
 [assembly: InternalsVisibleTo("IronPythonTests")]
 [assembly: InternalsVisibleTo("DynamoPackagesWPF")]
 [assembly: InternalsVisibleTo("DynamoPlayerExtension")]

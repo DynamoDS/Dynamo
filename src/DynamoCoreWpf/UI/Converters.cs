@@ -3545,6 +3545,31 @@ namespace Dynamo.Controls
     }
 
     /// <summary>
+    /// Converts PortType (Inport or Outport) enum to hard-coded string resources
+    /// </summary>
+    [ValueConversion(typeof(PortType), typeof(string))]
+    public class PortTypeToStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            switch (value)
+            {
+                case PortType.Input:
+                    return Wpf.Properties.Resources.PortPropertiesPromptInputWindowTitle;
+                case PortType.Output:
+                    return Wpf.Properties.Resources.PortPropertiesPromptOutputWindowTitle;
+                default:
+                    return "Port Properties";
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
     /// Converts a PointColletion to a Geometry so the points can be drawn using a Path
     /// </summary>
     [ValueConversion(typeof(PointCollection), typeof(Geometry))]
@@ -3639,6 +3664,62 @@ namespace Dynamo.Controls
             else B = Math.Pow((B + 0.055) / 1.055, 2.4);
 
             return 0.2126 * R + 0.7152 * G + 0.0722 * B;
+        }
+    }
+
+    /// <summary>
+    /// This converter is used to add extra space between the ListBox and the CustomColorPicker border
+    /// </summary>
+    public class AdditionConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if ((value != null) && (parameter != null))
+            {
+                var firstValue = System.Convert.ToDouble(value);
+                var secondValue = double.Parse(parameter as string);
+
+                return firstValue + secondValue;
+            }
+
+            return 0d;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class ColorToSolidColorBrushConverter : IValueConverter
+    {
+        /// <summary>
+        /// Converts a Color to a SolidColorBrush.
+        /// </summary>
+        /// <returns>
+        /// A converted SolidColorBrush. If the method returns null, the valid null value is used.
+        /// </returns>
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value != null)
+                return new SolidColorBrush((Color)value);
+
+            return value;
+        }
+
+
+        /// <summary>
+        /// Converts a SolidColorBrush to a Color.
+        /// </summary>
+        /// <returns>
+        /// A converted value. If the method returns null, the valid null value is used.
+        /// </returns>
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value != null)
+                return ((SolidColorBrush)value).Color;
+
+            return value;
         }
     }
 }

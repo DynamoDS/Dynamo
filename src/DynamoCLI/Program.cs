@@ -113,7 +113,7 @@ namespace DynamoCLI
 
             model.ShutdownCompleted += (m) => { ShutDown(); };
 
-            cmdLineArgs.ImportedPaths.ToList().ForEach(path =>
+            cmdLineArgs.ImportedPaths?.ToList().ForEach(path =>
             {
                 CommandLineRunner.ImportAssembly(model, path);
             });

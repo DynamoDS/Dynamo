@@ -5,7 +5,9 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+#if NETFRAMEWORK
 using Microsoft.Office.Interop.Excel;
+#endif
 using DynamoServices;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Graph.Nodes;
@@ -15,6 +17,7 @@ using System.Collections.Generic;
 
 namespace DSOffice
 {
+#if NETFRAMEWORK
     internal class ExcelCloseEventArgs : EventArgs
     {
         public ExcelCloseEventArgs(bool saveWorkbooks = true)
@@ -341,7 +344,7 @@ namespace DSOffice
     [IsVisibleInDynamoLibrary(false)]
     public class WorkSheet
     {
-        #region Helper methods
+#region Helper methods
 
         private static object[][] ConvertToJaggedArray(object[,] input, bool convertToString = false)
         {
@@ -447,7 +450,7 @@ namespace DSOffice
             return output;
         }
 
-        #endregion
+#endregion
         /// <summary>
         /// Returns data from given worksheet (GetDataFromExcelWorksheet node)
         /// </summary>
@@ -703,7 +706,7 @@ namespace DSOffice
         }
 
     }
-
+#endif
     /// <summary>
     ///     Methods for Import/Export category.
     /// </summary>
@@ -806,6 +809,7 @@ namespace DSOffice
             if (transpose) return CSVdatalist;
             else return DSCore.List.Transpose(CSVdatalist);
         }
+#if NETFRAMEWORK
 
         /// <summary>
         ///     Read data from a Microsoft Excel spreadsheet. Data is read by row and
@@ -869,7 +873,7 @@ namespace DSOffice
         {
             return Excel.WriteData(filePath, sheetName, startRow, startColumn, data, overWrite, writeAsString);
         }
-
+#endif
         /// <summary>
         /// Read data from a Microsoft Excel spreadsheet by using the Open XML standard.
         /// Data is read by row and returned in a series of lists by row.

@@ -3,12 +3,14 @@
   <IsFirstRun>false</IsFirstRun>
   <IsAnalyticsReportingApproved>false</IsAnalyticsReportingApproved>
   <LibraryWidth>300</LibraryWidth>
+  <Locale>zh-CN</Locale>
   <ConsoleHeight>123</ConsoleHeight>
   <ShowPreviewBubbles>false</ShowPreviewBubbles>
   <ShowCodeBlockLineNumber>false</ShowCodeBlockLineNumber>
   <ShowConnector>false</ShowConnector>
   <ShowConnectorToolTip>false</ShowConnectorToolTip>
-  <LibraryZoomScale>2.03</LibraryZoomScale>
+  <LibraryZoomScale>200</LibraryZoomScale>
+  <PythonScriptZoomScale>25</PythonScriptZoomScale>
   <ConnectorType>POLYLINE</ConnectorType>
   <BackgroundPreviews>
     <BackgroundPreviewActiveState>
@@ -69,6 +71,7 @@
   <MLRecommendationNumberOfResults>5</MLRecommendationNumberOfResults>
   <EnableNotificationCenter>false</EnableNotificationCenter>
   <EnableStaticSplashScreen>false</EnableStaticSplashScreen>
+  <EnablePersistExtensions>true</EnablePersistExtensions>
   <DefaultPythonEngine/>
   <SelectedPackagePathForInstall>C:\Users\jesus.alvino\AppData\Roaming\Dynamo\Dynamo Core\2.16</SelectedPackagePathForInstall>
   <NamespacesToExcludeFromLibrary>

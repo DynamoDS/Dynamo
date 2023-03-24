@@ -2303,9 +2303,6 @@ Uninstall the following packages: {0}?</value>
   <data name="PreferencesViewVisualSettingsTab" xml:space="preserve">
     <value>Visual Settings</value>
   </data>
-  <data name="PreferencesWindowLanguages" xml:space="preserve">
-    <value>English,Czech,German,Spanish,French,Italian,Japanese,Korean,Polish,Portuguese,Brazilian,Russian,Chinese Simplified,Chinese Traditional</value>
-  </data>
   <data name="PreferencesViewFontSizeLabel" xml:space="preserve">
     <value>Node Font Size</value>
   </data>
@@ -2577,6 +2574,9 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
   </data>
   <data name="BreakConnectionsPopupMenuItem" xml:space="preserve">
     <value>Break Connections</value>
+  </data>
+  <data name="RenamePortPopupMenuItem" xml:space="preserve">
+    <value>Edit Port Properties</value>
   </data>
   <data name="HideWiresPopupMenuItem" xml:space="preserve">
     <value>Hide Wires</value>
@@ -3489,9 +3489,95 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
     <value>Preview Geometry</value>
   </data>
   <data name="LibraryZoomScaleTooltipText" xml:space="preserve">
-    <value>Drag to adjust Library zoom scale between 10% and 300%. You can also adjust this in Library by pressing “Shift” and scrolling the mouse wheel.</value>
+    <value>Drag to adjust Library zoom scale between 25% and 300%. You can also adjust this in Library by pressing “Ctrl” and scrolling the mouse wheel.</value>
   </data>
   <data name="PreferencesViewZoomScalingSettings" xml:space="preserve">
     <value>Zoom Scaling</value>
+  </data>
+  <data name="DynamoViewSettingLibraryZoomScale" xml:space="preserve">
+    <value>Library</value>
+  </data>
+  <data name="PortPropertiesPromptInputWindowTitle">
+      <value>Input Port Properties</value>
+      <comment>Input Port title</comment>
+  </data>
+  <data name="PortPropertiesPromptOutputWindowTitle">
+      <value>Output Port Properties</value>
+      <comment>Output Port title</comment>
+  </data>
+  <data name="PortPropertiesPromptDescriptionTooltip">
+      <value>Description of port</value>
+      <comment>Description of port</comment>
+  </data>
+  <data name="PortPropertiesPromptWindowDescription">
+      <value>Description</value>
+      <comment>Port Description Label</comment>
+  </data>
+  <data name="PortPropertiesPromptNameTooltip">
+      <value>Port name</value>
+      <comment>Name of port</comment>
+  </data>
+    <data name="PortPropertiesPromptWindowName">
+      <value>Name</value>
+      <comment>Port Name Label</comment>
+  </data>
+  <data name="RemovePythonPortWarningMessageBoxTitle" xml:space="preserve">
+    <value>Remove port?</value>
+  </data>
+  <data name="MessageRemovePythonPort" xml:space="preserve">
+    <value>Your custom port properties will be lost once the port is removed.</value>
+  </data>
+  <data name="MessagePortNameInvalid" xml:space="preserve">
+    <value>Cannot contain special characters (# % * ? \ : [ ])</value>
+  </data>
+  <data name="PreferencesViewEnablePersistExtensions" xml:space="preserve">
+    <value>On launch, remember open extensions panels from last session</value>
+  </data>
+  <data name="PreferencesViewExtensions" xml:space="preserve">
+    <value>Extensions</value>
+    <comment>Preferences | Features | Extensions</comment>
+  </data>
+  <data name="PythonZoomScaleTooltipText" xml:space="preserve">
+    <value>Drag to adjust Python Editor zoom scale between 25% and 300%. You can also adjust this in Python Editor by pressing "Ctrl" and scrolling the mouse wheel.</value>
+  </data>
+  <data name="PreferencesViewLanguageSwitchHelp" xml:space="preserve">
+    <value>Dynamo must be relaunched to apply the language selection.</value>
+  </data>
+  <data name="CustomColorPickerApplyBtn" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="CustomColorPickerBasicColors" xml:space="preserve">
+    <value>Basic colors:</value>
+  </data>
+  <data name="CustomColorPickerCancelBtn" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="CustomColorPickerCustomColorBtn" xml:space="preserve">
+    <value>Define Custom Colors</value>
+  </data>
+  <data name="CustomColorPickerCustomColors" xml:space="preserve">
+    <value>Custom colors:</value>
+  </data>
+  <data name="CustomColorPickerTitle" xml:space="preserve">
+    <value>Color</value>
+  </data>
+  <data name="PreferencesViewZoomScaling0Percent" xml:space="preserve">
+    <value>0%</value>
+  </data>
+  <data name="PreferencesViewZoomScaling100Percent" xml:space="preserve">
+    <value>100%</value>
+  </data>
+  <data name="PreferencesViewZoomScaling25Percent" xml:space="preserve">
+    <value>25%</value>
+  </data>
+  <data name="PreferencesViewZoomScaling300Percent" xml:space="preserve">
+    <value>300%</value>
+  </data>
+  <data name="PreferencesViewPythonEditorLable" xml:space="preserve">
+    <value>Python Editor</value>
+    <comment>Preferences -&gt; ZoomScalling -&gt; Python Editor</comment>
+  </data>
+  <data name="CustomColorsPopupTitle" xml:space="preserve">
+    <value>Custom</value>
   </data>
 </root>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo.ViewModels;
@@ -6,7 +6,7 @@ using Dynamo.ViewModels;
 namespace Dynamo.UI.Controls
 {
     /// <summary>
-    /// Interaction logic for InPortContextMenu.xaml
+    /// Interaction logic for OutPortContextMenu.xaml
     /// </summary>
     public partial class OutPortContextMenu : UserControl
     {

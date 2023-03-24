@@ -1,6 +1,8 @@
-﻿using System;
+using System;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 
 // drawn from: https://github.com/LogosBible/Logos.Utility/blob/master/src/Logos.Utility/GuidUtility.cs
 namespace Dynamo.Utilities
@@ -117,6 +119,32 @@ namespace Dynamo.Utilities
             byte temp = guid[left];
             guid[left] = guid[right];
             guid[right] = temp;
+        }
+
+        /// <summary>
+        /// Performs an update to all Guids inside the json string before deserialization.
+        /// Targets specifically Guids without the '-' hyphen, which are all the workspace elements.
+        /// Replacing all occurrences of each individual Guid guarantees that the relationships between the elements are retained.
+        /// </summary>
+        /// <param name="jsonData">Json representation of workspace.</param>
+        /// <returns>String representation of workspace after all elements' Guids replaced.</returns>
+        internal static string UpdateWorkspaceGUIDs(string jsonData)
+        {
+            string pattern = @"([a-z0-9]{32})";
+            string updatedJsonData = jsonData;
+
+            // The unique collection of Guids
+            var mc = Regex.Matches(jsonData, pattern)
+                .Cast<Match>()
+                .Select(m => m.Value)
+                .Distinct();
+
+            foreach (var match in mc)
+            {
+                updatedJsonData = updatedJsonData.Replace(match, Guid.NewGuid().ToString("N"));
+            }
+
+            return updatedJsonData;
         }
     }
 }
