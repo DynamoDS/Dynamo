@@ -971,7 +971,6 @@ namespace Dynamo.ViewModels
         {
             string searchTerm = search.Trim();
             var candidates = new List<NodeSearchElementViewModel>();
-            var doclist = new List<NodeSearchElementViewModel>();
 
             string[] fnames = { "Name", "FullCategoryName", "Description", "SearchKeywords", "InputParameters", "OutputParameters", "DocName", "Documentation" };
 
@@ -993,6 +992,7 @@ namespace Dynamo.ViewModels
 
                 // TODO: use consts in static class for the Lucene field names
                 string name = resultDoc.Get("Name");
+
                 string docName = resultDoc.Get("DocName");
                 string cat = resultDoc.Get("FullCategoryName");
                 string fulldesc = resultDoc.Get("Documentation");
@@ -1013,7 +1013,6 @@ namespace Dynamo.ViewModels
                     }
                 }
             }
-            candidates.AddRange(doclist);
             return candidates;
             // Legacy search
             //var foundNodes = Model.Search(search, 0, subset);
