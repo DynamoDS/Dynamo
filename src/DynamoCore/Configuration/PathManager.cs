@@ -78,7 +78,7 @@ namespace Dynamo.Core
         private readonly string commonPackages;
         private readonly string logDirectory;
         private readonly string samplesDirectory;
-        private readonly string backupDirectory;
+        private string backupDirectory;
         private readonly string preferenceFilePath;
         private string pythonTemplateFilePath;
 
@@ -462,12 +462,11 @@ namespace Dynamo.Core
 
         internal void UpdateBackupLocation(string backupLocation)
         {
-            // check the pathmanager to see the backup folders vs the preferences pathManager.
             string defaultBackupLocation = BackupDirectory;
             string preferenceBackupLocation = backupLocation;
             if (!defaultBackupLocation.Equals(preferenceBackupLocation) && !string.IsNullOrEmpty(preferenceBackupLocation))
-            {
-                //PreferenceSettings.BackupLocation = currentBackupFolder;
+            {                
+                backupDirectory = preferenceBackupLocation;
             }
         }
 

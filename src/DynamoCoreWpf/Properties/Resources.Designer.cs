@@ -6673,6 +6673,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select Folder to Backup.
+        /// </summary>
+        public static string PreferencesSettingsBackupLocationDialogTitle {
+            get {
+                return ResourceManager.GetString("PreferencesSettingsBackupLocationDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit Backup Location.
+        /// </summary>
+        public static string PreferencesSettingUpdateBackupLocationTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesSettingUpdateBackupLocationTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Style name already in use.
         /// </summary>
         public static string PreferencesViewAlreadyExistingStyleWarning {

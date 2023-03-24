@@ -572,7 +572,7 @@
                                                                  Background="{StaticResource PreferencesWindowBackgroundColor}"
                                                                  Style="{StaticResource EditFolderButtonStyle}">
                                                                 <Button.ToolTip>
-                                                                    <ToolTip Content="{x:Static p:Resources.PackagePathUpdatePathTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                                                    <ToolTip Content="{x:Static p:Resources.PreferencesSettingUpdateBackupLocationTooltip}" Style="{StaticResource GenericToolTipLight}"/>
                                                                 </Button.ToolTip>
                                                             </Button>
                                                         </Grid>

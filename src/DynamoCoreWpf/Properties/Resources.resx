@@ -3355,6 +3355,12 @@ You can manage this in Preferences -&gt; Security.</value>
     <value>Default Backup Location</value>
     <comment>Default Backup Location</comment>
   </data>
+  <data name="PreferencesSettingUpdateBackupLocationTooltip" xml:space="preserve">
+    <value>Edit Backup Location</value>
+  </data>
+  <data name="PreferencesSettingsBackupLocationDialogTitle" xml:space="preserve">
+    <value>Select Folder to Backup</value>
+  </data>
   <data name="PreferencesSettingMaxRecentFiles" xml:space="preserve">
     <value>Maximum Number of Recent Files</value>
     <comment>Setting menu | Maximum Number of Recent Files</comment>
