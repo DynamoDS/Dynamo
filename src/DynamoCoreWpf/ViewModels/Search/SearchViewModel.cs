@@ -1002,7 +1002,9 @@ namespace Dynamo.ViewModels
                     //TODO handle documentation nodes
                     Console.WriteLine("Doc");
                     var doc = new DocSearchElement(name);
-                    candidates.Add(new NodeSearchElementViewModel(doc, this));
+                    var elementVM = new NodeSearchElementViewModel(doc, this);
+                    elementVM.RequestBitmapSource += SearchViewModelRequestBitmapSource;
+                    candidates.Add(elementVM);
                 }
                 else
                 { 

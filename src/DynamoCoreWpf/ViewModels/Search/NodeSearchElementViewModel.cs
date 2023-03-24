@@ -395,8 +395,17 @@ namespace Dynamo.Wpf.ViewModels
             if (resourceType == ResourceType.LargeIcon)
                 return null;
 
-            var iconRequest = new IconRequestEventArgs(Configurations.DefaultAssembly,
-                Configurations.DefaultIcon);
+            IconRequestEventArgs iconRequest;
+            if (ElementType == ElementTypes.Doc)
+            {
+                iconRequest = new IconRequestEventArgs(Configurations.DefaultAssembly,
+                    Configurations.DefaultDocIcon);
+            }
+            else
+            {
+                iconRequest = new IconRequestEventArgs(Configurations.DefaultAssembly,
+                    Configurations.DefaultNodeIcon);
+            }
             OnRequestBitmapSource(iconRequest);
 
             return iconRequest.Icon;

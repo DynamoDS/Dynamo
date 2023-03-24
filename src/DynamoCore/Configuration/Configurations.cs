@@ -322,7 +322,8 @@ namespace Dynamo.Configuration
         internal const string SmallIconPostfix = ".Small";
         internal const string LargeIconPostfix = ".Large";
         internal const string IconResourcesDLL = ".customization.dll";
-        internal const string DefaultIcon = "DefaultIcon";
+        internal const string DefaultNodeIcon = "DefaultIcon";
+        internal const string DefaultDocIcon = "DefaultDocIcon";
         internal const string DefaultCustomNodeIcon = "DefaultCustomNode";
         internal const string DefaultAssembly = "DynamoCore";
 

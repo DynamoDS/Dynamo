@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -543,7 +543,7 @@ namespace Dynamo.Wpf.ViewModels
         private ImageSource LoadDefaultIcon()
         {
             var iconRequest = new IconRequestEventArgs(Configurations.DefaultAssembly,
-                Configurations.DefaultIcon);
+                Configurations.DefaultNodeIcon);
             OnRequestBitmapSource(iconRequest);
 
             return iconRequest.Icon;
