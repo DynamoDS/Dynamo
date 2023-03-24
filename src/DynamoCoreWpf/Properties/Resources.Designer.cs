@@ -6673,6 +6673,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid Backup location.
+        /// </summary>
+        public static string PreferencesSettingsBackupFailedMessage {
+            get {
+                return ResourceManager.GetString("PreferencesSettingsBackupFailedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Backup location Failed.
+        /// </summary>
+        public static string PreferencesSettingsBackupFailedTitle {
+            get {
+                return ResourceManager.GetString("PreferencesSettingsBackupFailedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select Folder to Backup.
         /// </summary>
         public static string PreferencesSettingsBackupLocationDialogTitle {

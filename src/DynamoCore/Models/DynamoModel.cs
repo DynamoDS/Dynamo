@@ -1675,13 +1675,17 @@ namespace Dynamo.Models
             {
                 ProtoCore.Mirror.MirrorData.PrecisionFormat = DynamoUnits.Display.PrecisionFormat = PreferenceSettings.NumberFormat;
                 PreferenceSettings.InitializeNamespacesToExcludeFromLibrary();
+                if (string.IsNullOrEmpty(PreferenceSettings.BackupLocation))
+                {
+                    PreferenceSettings.BackupLocation = pathManager.BackupDirectory;
+                }
                 UpdateBackupLocation(PreferenceSettings.BackupLocation);
             }
         }
 
-        public void UpdateBackupLocation(string selectedBackupLocation)
+        public bool UpdateBackupLocation(string selectedBackupLocation)
         {
-            pathManager.UpdateBackupLocation(selectedBackupLocation);
+            return pathManager.UpdateBackupLocation(selectedBackupLocation);
         }
 
         /// <summary>

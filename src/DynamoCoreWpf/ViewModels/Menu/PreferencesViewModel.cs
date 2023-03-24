@@ -1238,10 +1238,19 @@ namespace Dynamo.ViewModels
             UpdatePythonPathCommand = new DelegateCommand(p => UpdatePathAt());
         }
 
-        public void UpdateBackupLocation(string backupLocation)
+        public bool UpdateBackupLocation(string newBackupLocation)
         {
-            BackupLocation = backupLocation;
-            dynamoViewModel.Model.UpdateBackupLocation(backupLocation);
+            var previousBackupLocation = BackupLocation;
+            BackupLocation = newBackupLocation;
+
+            if (dynamoViewModel.Model.UpdateBackupLocation(newBackupLocation))
+            {
+                return true;
+            } else
+            {
+                BackupLocation = previousBackupLocation;
+                return false;
+            }
         }
 
         // Add python template path

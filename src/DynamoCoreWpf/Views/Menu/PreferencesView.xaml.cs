@@ -506,20 +506,24 @@ namespace Dynamo.Wpf.Views
 
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                string selectedBackupLocation = dialog.SelectedPath;
-
-                viewModel.UpdateBackupLocation(selectedBackupLocation);
-
                 try
                 {
-                    //Analytics.TrackEvent(Actions.Export, Categories.Preferences);
+                    string selectedBackupLocation = dialog.SelectedPath;
+                    if (!viewModel.UpdateBackupLocation(selectedBackupLocation))
+                    {
+                        Wpf.Utilities.MessageBoxService.Show(
+                          this,
+                          Res.PreferencesSettingsBackupFailedMessage,
+                          Res.PreferencesSettingsBackupFailedTitle,
+                          MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    }
                 }
                 catch (Exception ex)
                 {
                     Wpf.Utilities.MessageBoxService.Show(
                         this,
                         ex.Message,
-                        Res.ExportSettingsFailedMessage,
+                        Res.PreferencesSettingsBackupFailedTitle,
                         MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 }
             }
@@ -615,7 +619,7 @@ namespace Dynamo.Wpf.Views
             double percentage = slider.Value - 25;
 
             //The margin value for the label goes from - 480 to 310, resulting in 790 pixels from the starting point to the end.
-            //We also standardized the values Ã¢â‚¬â€¹Ã¢â‚¬â€¹of the percentage(from 0 to 275).
+            //We also standardized the values ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â¹ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â¹of the percentage(from 0 to 275).
             //The value is decreased to 480 because the margin begins at - 480
             //This is the relation between the margin in pixels and the value of the percentage
             double marginValue = (790 * percentage / 275) - 480;

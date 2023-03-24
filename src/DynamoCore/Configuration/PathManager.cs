@@ -460,14 +460,19 @@ namespace Dynamo.Core
             exceptions.RemoveAll(x => x == null); // Remove all null entries.
         }
 
-        internal void UpdateBackupLocation(string backupLocation)
+        internal bool UpdateBackupLocation(string newBackupLocation)
         {
+            var isValidFolder = PathHelper.CreateFolderIfNotExist(newBackupLocation);
+            if (isValidFolder != null)
+                return false;
+
             string defaultBackupLocation = BackupDirectory;
-            string preferenceBackupLocation = backupLocation;
+            string preferenceBackupLocation = newBackupLocation;
             if (!defaultBackupLocation.Equals(preferenceBackupLocation) && !string.IsNullOrEmpty(preferenceBackupLocation))
             {                
                 backupDirectory = preferenceBackupLocation;
             }
+            return true;
         }
 
         /// <summary>
