@@ -121,7 +121,7 @@
     <value>Create a new Bar Chart</value>
   </data>
   <data name="ChartsBarChartSearchTags" xml:space="preserve">
-    <value>CoreNodeModelsWpf.Charts.BarChart;Bar Chart;barchart</value>
+    <value>bar;barchart</value>
   </data>
   <data name="ChartsBarChartLabelsDataPortToolTip" xml:space="preserve">
     <value>A list of labels for the bar chart categories.
@@ -147,7 +147,7 @@ Dictionary&lt;string, double&gt;</value>
     <value>Create a new Basic Line Chart</value>
   </data>
   <data name="ChartsBasicLineChartSearchTags" xml:space="preserve">
-    <value>CoreNodeModelsWpf.Charts.Index-ValueLinePlot;Index-Value Line Plot;indexvaluelineplot</value>
+    <value>index;indexvalue;indexvaluelineplot</value>
   </data>
   <data name="ChartsBasicLineChartLabelsDataPortToolTip" xml:space="preserve">
     <value>A list of string labels for each line to be plotted.
@@ -173,7 +173,7 @@ Dictionary&lt;string, List&lt;double&gt;&gt;</value>
     <value>Create a heat series plot</value>
   </data>
   <data name="ChartsHeatSeriesSearchTags" xml:space="preserve">
-    <value>CoreNodeModelsWpf.Charts.HeatSeriesPlot;Heat Series Plot;heatseriesplot</value>
+    <value>heat;heatseries;heatseriesplot</value>
   </data>
   <data name="ChartsHeatSeriesXLabelsDataPortToolTip" xml:space="preserve">
     <value>A list of string labels for the x-axis.
@@ -204,7 +204,7 @@ Dictionary&lt;string, Dictionary&lt;string, double&gt;&gt;</value>
     <value>Create a new Pie Chart</value>
   </data>
   <data name="ChartsPieChartSearchTags" xml:space="preserve">
-    <value>CoreNodeModelsWpf.Charts.PieChart;Pie Chart; piechart</value>
+    <value>pie;piechart</value>
   </data>
   <data name="ChartsPieChartLabelsDataPortToolTip" xml:space="preserve">
     <value>A list of string labels for each segment in the pie chart.
@@ -230,7 +230,7 @@ Dictionary&lt;string, double&gt;</value>
     <value>Create a scatter plot</value>
   </data>
   <data name="ChartsScatterPlotSearchTags" xml:space="preserve">
-    <value>CoreNodeModelsWpf.Charts.ScatterPlot;Scatter Plot;scatterplot</value>
+    <value>scatter;scatterplot</value>
   </data>
   <data name="ChartsScatterPlotLabelsDataPortToolTip" xml:space="preserve">
     <value>A list of string labels for each group of points to be plotted.
@@ -261,7 +261,7 @@ Dictionary&lt;string, List&lt;List&lt;double&gt;&gt;&gt;</value>
     <value>Create a new XY line plot</value>
   </data>
   <data name="ChartsXYLineChartSearchTags" xml:space="preserve">
-    <value>CoreNodeModelsWpf.Charts.XYLinePlot;XY Line Plot;xylineplot</value>
+    <value>lineplot;xylineplot</value>
   </data>
   <data name="ChartsXYLineChartLabelsDataPortToolTip" xml:space="preserve">
     <value>A list of string labels for each line to be plotted
