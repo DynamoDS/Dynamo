@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
@@ -1712,7 +1713,9 @@ namespace Dynamo.Models
                                         
                     InDepthDesc = mdString.Substring(idx1, len);
                     ((TextField)doc.GetField("FullCategoryName")).SetStringValue("");
-                    ((TextField)doc.GetField("Name")).SetStringValue(Path.GetFileName(file).Replace(".md", string.Empty).Split('.').LastOrDefault() + ".md");
+                    // Get file name without category
+                    Match match = Regex.Match(file, "[^.]+\\.md");
+                    ((TextField)doc.GetField("Name")).SetStringValue(match.Success? match.Captures[0].Value : string.Empty);
                     ((TextField)doc.GetField("Description")).SetStringValue("");
                     ((TextField)doc.GetField("SearchKeywords")).SetStringValue("");
                     ((TextField)doc.GetField("InputParameters")).SetStringValue("");
