@@ -41,6 +41,7 @@ using Dynamo.Utilities;
 using DynamoServices;
 using Greg;
 using Lucene.Net.Analysis.Core;
+using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.Search;
@@ -932,7 +933,7 @@ namespace Dynamo.Models
             indexDir = FSDirectory.Open(indexPath);
 
             // Create an analyzer to process the text
-            SearchModel.Analyzer = new StopAnalyzer(Configurations.LuceneNetVersion);
+            SearchModel.Analyzer = new StandardAnalyzer(Configurations.LuceneNetVersion);
 
             //Create an index writer
             IndexWriterConfig indexConfig = new IndexWriterConfig(Configurations.LuceneNetVersion, SearchModel.Analyzer);
@@ -1593,6 +1594,15 @@ namespace Dynamo.Models
             }
 
             CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.CommonDefinitions, IsTestMode);
+
+            //Initialize searcher
+            dirReader = writer.GetReader(applyAllDeletes: true);
+            IndexSearcher searcher = new IndexSearcher(dirReader);
+
+            SearchModel.Searcher = searcher;
+
+            Trace.WriteLine("Total documents added: " + doccount.ToString());
+            writer.Commit();
         }
 
         /// <summary>
@@ -1669,20 +1679,12 @@ namespace Dynamo.Models
                     Logger.Log(e);
                 }
             }
-            Trace.WriteLine("Total time for indexing nodes: " + watch.ElapsedMilliseconds + " ms");
+            Trace.WriteLine("Total time for indexing node model nodes: " + watch.ElapsedMilliseconds + " ms");
 
             watch.Restart();
             AddNodeDocumentationToSearchIndex(iDoc);
             watch.Stop();
-            Trace.WriteLine("Total time for indexing docs: " + watch.ElapsedMilliseconds + " ms");
-            writer.Commit();
-
-            //Initialize searcher
-            dirReader = writer.GetReader(applyAllDeletes: true);
-            IndexSearcher searcher = new IndexSearcher(dirReader);
-
-            SearchModel.Searcher = searcher;
-            
+            Trace.WriteLine("Total time for indexing docs: " + watch.ElapsedMilliseconds + " ms");            
         }
 
         private void AddNodeDocumentationToSearchIndex(Document doc)
@@ -1757,25 +1759,29 @@ namespace Dynamo.Models
             };
             return d;
         }
-
+        int doccount = 0;
         /// <summary>
         /// Add node information to Lucene index
         /// </summary>
         /// <param name="node"></param>
         /// <param name="doc"></param>
-        private void AddNodeTypeToSearchIndex(NodeModelSearchElement node, Document doc)
+        private void AddNodeTypeToSearchIndex(NodeSearchElement node, Document doc)
         {
-            if (node.Name.ToLower().Contains("join") || node.FullCategoryName.ToLower().Contains("join") || node.Description.ToLower().Contains("join")
+            if (node.Name.ToLower().Contains("join") && !string.IsNullOrEmpty(node.FullCategoryName)) {
+                Console.WriteLine("Hit");
+            }
+            if (node.FullCategoryName.ToLower().Contains("join") || node.Description.ToLower().Contains("join")
                 || node.SearchKeywords.Contains("join")) {
                 Console.WriteLine("Hit");
             }
             ((TextField)doc.GetField("FullCategoryName")).SetStringValue(node.FullCategoryName);
             ((TextField)doc.GetField("Name")).SetStringValue(node.Name); ((TextField)doc.GetField("Name")).Boost = 2;
             ((TextField)doc.GetField("Description")).SetStringValue(node.Description);
-            ((TextField)doc.GetField("SearchKeywords")).SetStringValue(node.SearchKeywords.Aggregate((x,y) => x + " " + y));
+            if(node.SearchKeywords.Count > 0) ((TextField)doc.GetField("SearchKeywords")).SetStringValue(node.SearchKeywords.Aggregate((x,y) => x + " " + y));
             ((TextField)doc.GetField("InputParameters")).SetStringValue(string.Join(" ", node.InputParameters.Select(t => $"{t.Item1}:{t.Item2}")));
             ((TextField)doc.GetField("OutputParameters")).SetStringValue(node.OutputParameters.Aggregate((x, y) => x + " " + y));
             writer.AddDocument(doc);
+            doccount++;
         }
 
         private IPreferences CreateOrLoadPreferences(IPreferences preferences)
@@ -3318,23 +3324,26 @@ namespace Dynamo.Models
 
         internal void AddZeroTouchNodesToSearch(IEnumerable<FunctionGroup> functionGroups)
         {
+            var iDoc = InitializeIndexDocument();
             foreach (var funcGroup in functionGroups)
-                AddZeroTouchNodeToSearch(funcGroup);
+                AddZeroTouchNodeToSearch(funcGroup, iDoc);
         }
 
-        private void AddZeroTouchNodeToSearch(FunctionGroup funcGroup)
+        private void AddZeroTouchNodeToSearch(FunctionGroup funcGroup, Document iDoc)
         {
             foreach (var functionDescriptor in funcGroup.Functions)
             {
-                AddZeroTouchNodeToSearch(functionDescriptor);
+                AddZeroTouchNodeToSearch(functionDescriptor, iDoc);
             }
         }
 
-        private void AddZeroTouchNodeToSearch(FunctionDescriptor functionDescriptor)
+        private void AddZeroTouchNodeToSearch(FunctionDescriptor functionDescriptor, Document iDoc)
         {
             if (functionDescriptor.IsVisibleInLibrary)
             {
-                SearchModel?.Add(new ZeroTouchSearchElement(functionDescriptor));
+                var ele = new ZeroTouchSearchElement(functionDescriptor);
+                SearchModel?.Add(ele);
+                AddNodeTypeToSearchIndex(ele, iDoc);
             }
         }
 
