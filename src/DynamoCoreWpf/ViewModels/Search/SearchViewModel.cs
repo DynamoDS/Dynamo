@@ -20,6 +20,7 @@ using Dynamo.Utilities;
 using Dynamo.Wpf.Services;
 using Dynamo.Wpf.ViewModels;
 using Lucene.Net.Documents;
+using Lucene.Net.Index;
 using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
 using Lucene.Net.Util;
@@ -944,15 +945,47 @@ namespace Dynamo.ViewModels
         /// <param name="subset">Subset of nodes that should be used for the search instead of the complete set of nodes. This is a list of NodeSearchElement types</param>
         public IEnumerable<NodeSearchElementViewModel> Search(string search, IEnumerable<NodeSearchElement> subset = null)
         {
+            string searchTerm = search.Trim();
             var candidates = new List<NodeSearchElementViewModel>();
-            //QueryParser parser = new QueryParser(Configurations.LuceneNetVersion, "Name", Model.StandardAnalyzer);
-            string[] fnames = { "Name", "FullCategoryName", "Description", "SearchKeywords", "InputParameters", "OutputParameters", "Documentation" };
 
+            string[] fnames = { "Name", "FullCategoryName", "Description", "SearchKeywords", "InputParameters", "OutputParameters", "DocName", "Documentation" };
 
-            var parser = new MultiFieldQueryParser(Configurations.LuceneNetVersion, fnames, Model.StandardAnalyzer);
+            var parser = new MultiFieldQueryParser(Configurations.LuceneNetVersion, fnames, Model.Analyzer)
+            {
+                AllowLeadingWildcard = true,
+                DefaultOperator = Operator.OR,
+                FuzzyMinSim = 0.5f
+            };
 
+            var booleanQuery = new BooleanQuery();
+            foreach (string f in fnames)
+            {
+                FuzzyQuery fuzzyQuery;
+                if (searchTerm.Length > 3)
+                {
+                    fuzzyQuery = new FuzzyQuery(new Term(f, searchTerm), 2);
+                    booleanQuery.Add(fuzzyQuery, Occur.SHOULD);
+                }
 
-            Query query = parser.Parse(search.Trim()+"*");
+                var wildcardQuery = new WildcardQuery(new Term(f, searchTerm + "*"));
+                booleanQuery.Add(wildcardQuery, Occur.SHOULD);
+
+                if (searchTerm.Contains(' ') || searchTerm.Contains('.'))
+                {
+                    foreach (string s in searchTerm.Split(' ','.'))
+                    {
+                        wildcardQuery = new WildcardQuery(new Term(f, s + "*"));
+                        booleanQuery.Add(wildcardQuery, Occur.SHOULD);
+                        if (s.Length > 3)
+                        {
+                            fuzzyQuery = new FuzzyQuery(new Term(f, s), 2);
+                            booleanQuery.Add(fuzzyQuery, Occur.SHOULD);
+                        }
+                    }
+                }
+            }
+
+            Query query = parser.Parse(booleanQuery.ToString());
 
             //indicate we want the first 50 results
             TopDocs topDocs = Model.Searcher.Search(query, n: 50);
@@ -966,6 +999,7 @@ namespace Dynamo.ViewModels
 
                 if (!string.IsNullOrEmpty(fulldesc))
                 {
+                    //TODO handle documentation nodes
                     Console.WriteLine("Doc");
                     var doc = new DocSearchElement(name);
                     candidates.Add(new NodeSearchElementViewModel(doc, this));

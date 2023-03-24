@@ -21,7 +21,7 @@ namespace Dynamo.Search
 
         internal IndexSearcher Searcher;
 
-        internal Analyzer StandardAnalyzer;
+        internal Analyzer Analyzer;
 
         /// <summary>
         ///     Construct a NodeSearchModel object

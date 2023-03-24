@@ -39,7 +39,7 @@ using Dynamo.Updates;
 using Dynamo.Utilities;
 using DynamoServices;
 using Greg;
-using Lucene.Net.Analysis.Standard;
+using Lucene.Net.Analysis.Core;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.Search;
@@ -927,17 +927,15 @@ namespace Dynamo.Models
             LibraryServices.MessageLogged += LogMessage;
             LibraryServices.LibraryLoaded += LibraryLoaded;
 
-            // Index existing node info dump xml - TODO: move to a runtime dump and index process or rely on pipeline
-            // Open the Directory using a Lucene Directory class
             string indexPath = Path.Combine(Environment.CurrentDirectory, "Index");
             indexDir = FSDirectory.Open(indexPath);
 
-            // Create an analyzer to process the text 
-            SearchModel.StandardAnalyzer = new StandardAnalyzer(Configurations.LuceneNetVersion);
+            // Create an analyzer to process the text
+            SearchModel.Analyzer = new StopAnalyzer(Configurations.LuceneNetVersion);
 
             //Create an index writer
-            IndexWriterConfig indexConfig = new IndexWriterConfig(Configurations.LuceneNetVersion, SearchModel.StandardAnalyzer);
-            indexConfig.OpenMode = OpenMode.CREATE; // create/overwrite index. TODO: see if overwrite needed 
+            IndexWriterConfig indexConfig = new IndexWriterConfig(Configurations.LuceneNetVersion, SearchModel.Analyzer);
+            indexConfig.OpenMode = OpenMode.CREATE; 
             writer = new IndexWriter(indexDir, indexConfig);
 
             CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager, LibraryServices);
@@ -1645,6 +1643,7 @@ namespace Dynamo.Models
 
         private void LoadNodeModels(List<TypeLoadData> nodes, bool isPackageMember)
         {
+            var watch = new System.Diagnostics.Stopwatch();
             var iDoc = InitializeIndexDocument();
             foreach (var type in nodes)
             {
@@ -1659,7 +1658,9 @@ namespace Dynamo.Models
                     // New index process from Lucene
                     if (ele != null)
                     {
+                        watch.Start();
                         AddNodeTypeToSearchIndex(ele, iDoc);
+                        watch.Stop();
                     }
                 }
                 catch (Exception e)
@@ -1667,7 +1668,12 @@ namespace Dynamo.Models
                     Logger.Log(e);
                 }
             }
+            Trace.WriteLine("Total time for indexing nodes: " + watch.ElapsedMilliseconds + " ms");
+
+            watch.Restart();
             AddNodeDocumentationToSearchIndex(iDoc);
+            watch.Stop();
+            Trace.WriteLine("Total time for indexing docs: " + watch.ElapsedMilliseconds + " ms");
             writer.Commit();
 
             //Initialize searcher
@@ -1711,6 +1717,7 @@ namespace Dynamo.Models
                     ((TextField)doc.GetField("SearchKeywords")).SetStringValue("");
                     ((TextField)doc.GetField("InputParameters")).SetStringValue("");
                     ((TextField)doc.GetField("OutputParameters")).SetStringValue("");
+                    ((StringField)doc.GetField("DocName")).SetStringValue(Path.GetFileNameWithoutExtension(file));
                     ((TextField)doc.GetField("Documentation")).SetStringValue(InDepthDesc);
                     writer.AddDocument(doc);
                     
@@ -1737,12 +1744,13 @@ namespace Dynamo.Models
             var keywords = new TextField("SearchKeywords", "", Field.Store.YES);
             var inp = new TextField("InputParameters", "", Field.Store.YES);
             var outp = new TextField("OutputParameters", "", Field.Store.YES);
+            var docname = new StringField("DocName", "", Field.Store.YES);
             var fulldesc = new TextField("Documentation", "", Field.Store.YES);
 
             var d = new Document()
             {
                 fullCategory, name, description,
-                keywords, inp,outp, fulldesc
+                keywords, inp,outp, fulldesc, docname
             };
             return d;
         }
@@ -1754,6 +1762,10 @@ namespace Dynamo.Models
         /// <param name="doc"></param>
         private void AddNodeTypeToSearchIndex(NodeModelSearchElement node, Document doc)
         {
+            if (node.Name.ToLower().Contains("join") || node.FullCategoryName.ToLower().Contains("join") || node.Description.ToLower().Contains("join")
+                || node.SearchKeywords.Contains("join")) {
+                Console.WriteLine("Hit");
+            }
             ((TextField)doc.GetField("FullCategoryName")).SetStringValue(node.FullCategoryName);
             ((TextField)doc.GetField("Name")).SetStringValue(node.Name); ((TextField)doc.GetField("Name")).Boost = 2;
             ((TextField)doc.GetField("Description")).SetStringValue(node.Description);
