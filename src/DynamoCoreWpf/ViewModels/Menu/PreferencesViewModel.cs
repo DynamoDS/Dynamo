@@ -70,6 +70,8 @@ namespace Dynamo.ViewModels
         private bool isEnabledAddStyleButton;
         private GeometryScalingOptions optionsGeometryScale = null;
         private GeometryScaleSize defaultGeometryScaling = GeometryScaleSize.Medium;
+        private bool canResetBackupLocation = false;
+
         #endregion Private Properties
 
         public GeometryScaleSize DefaultGeometryScaling
@@ -236,7 +238,23 @@ namespace Dynamo.ViewModels
             set
             {
                 preferenceSettings.BackupLocation = value;
-                RaisePropertyChanged(nameof(BackupLocation));
+                RaisePropertyChanged(nameof(BackupLocation));                
+            }
+        }
+
+        /// <summary>
+        /// Indicates if the user can reset the Backup Location to the default value
+        /// </summary>
+        public bool CanResetBackupLocation
+        {
+            get
+            {
+                return canResetBackupLocation;
+            }
+            set
+            {
+                canResetBackupLocation = value;
+                RaisePropertyChanged(nameof(CanResetBackupLocation));
             }
         }
 
@@ -1245,12 +1263,20 @@ namespace Dynamo.ViewModels
 
             if (dynamoViewModel.Model.UpdateBackupLocation(newBackupLocation))
             {
+                CanResetBackupLocation = !dynamoViewModel.Model.IsDefaultBackupLocation();
                 return true;
             } else
             {
                 BackupLocation = previousBackupLocation;
+                CanResetBackupLocation = !dynamoViewModel.Model.IsDefaultBackupLocation();
                 return false;
             }
+        }
+
+        public void ResetBackupLocation()
+        {
+            BackupLocation = dynamoViewModel.Model.DefaultBackupLocation();
+            UpdateBackupLocation(BackupLocation);
         }
 
         // Add python template path

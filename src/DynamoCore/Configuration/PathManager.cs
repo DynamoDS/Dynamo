@@ -79,6 +79,7 @@ namespace Dynamo.Core
         private readonly string logDirectory;
         private readonly string samplesDirectory;
         private string backupDirectory;
+        private string defaultBackupDirectory;
         private readonly string preferenceFilePath;
         private string pythonTemplateFilePath;
 
@@ -230,6 +231,11 @@ namespace Dynamo.Core
         public string BackupDirectory
         {
             get { return backupDirectory; }
+        }
+
+        public string DefaultBackupDirectory
+        {
+            get { return defaultBackupDirectory; }
         }
 
         public string PreferenceFilePath
@@ -405,6 +411,7 @@ namespace Dynamo.Core
             preferenceFilePath = Path.Combine(userDataDir, PreferenceSettingsFileName);
             pythonTemplateFilePath = Path.Combine(userDataDir, PythonTemplateFileName);
             backupDirectory = Path.Combine(userDataDirNoVersion, BackupDirectoryName);
+            defaultBackupDirectory = backupDirectory;
 
             // Common directories.
             commonDataDir = GetCommonDataFolder();
@@ -462,16 +469,11 @@ namespace Dynamo.Core
 
         internal bool UpdateBackupLocation(string newBackupLocation)
         {
-            var isValidFolder = PathHelper.CreateFolderIfNotExist(newBackupLocation);
-            if (isValidFolder != null)
+            bool isValidFolder = PathHelper.CreateFolderIfNotExist(newBackupLocation) == null;
+            if (!isValidFolder)
                 return false;
 
-            string defaultBackupLocation = BackupDirectory;
-            string preferenceBackupLocation = newBackupLocation;
-            if (!defaultBackupLocation.Equals(preferenceBackupLocation) && !string.IsNullOrEmpty(preferenceBackupLocation))
-            {                
-                backupDirectory = preferenceBackupLocation;
-            }
+            backupDirectory = newBackupLocation;
             return true;
         }
 

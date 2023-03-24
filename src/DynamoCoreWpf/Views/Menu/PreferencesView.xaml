@@ -553,6 +553,7 @@
                                                             <Grid.ColumnDefinitions>
                                                                 <ColumnDefinition Width="*"></ColumnDefinition>
                                                                 <ColumnDefinition Width="auto"></ColumnDefinition>
+                                                                <ColumnDefinition Width="auto"></ColumnDefinition>
                                                             </Grid.ColumnDefinitions>
                                                             <!--the backup location text-->
                                                             <TextBlock x:Name="BackupLocationTextBlock" Style="{StaticResource DarkTextBlock}" 
@@ -573,6 +574,19 @@
                                                                  Style="{StaticResource EditFolderButtonStyle}">
                                                                 <Button.ToolTip>
                                                                     <ToolTip Content="{x:Static p:Resources.PreferencesSettingUpdateBackupLocationTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                                                </Button.ToolTip>
+                                                            </Button>
+                                                            <!--the Reset backup location button-->
+                                                            <Button
+                                                                 Grid.Column="2"
+                                                                 Margin="7,7,7,7"
+                                                                 x:Name="ResetBackupLocationButton"
+                                                                 Click="ResetBackupLocation"
+                                                                 Background="{StaticResource PreferencesWindowBackgroundColor}"
+                                                                 Style="{StaticResource ResetButtonStyle}"
+                                                                 IsEnabled="{Binding Path=CanResetBackupLocation}">
+                                                                <Button.ToolTip>
+                                                                    <ToolTip Content="{x:Static p:Resources.PreferencesSettingResetBackupLocationTooltip}" Style="{StaticResource GenericToolTipLight}"/>
                                                                 </Button.ToolTip>
                                                             </Button>
                                                         </Grid>

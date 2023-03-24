@@ -3358,6 +3358,9 @@ You can manage this in Preferences -&gt; Security.</value>
   <data name="PreferencesSettingUpdateBackupLocationTooltip" xml:space="preserve">
     <value>Edit Backup Location</value>
   </data>
+  <data name="PreferencesSettingResetBackupLocationTooltip" xml:space="preserve">
+    <value>Reset Backup Location</value>
+  </data>
   <data name="PreferencesSettingsBackupLocationDialogTitle" xml:space="preserve">
     <value>Select Folder to Backup</value>
   </data>

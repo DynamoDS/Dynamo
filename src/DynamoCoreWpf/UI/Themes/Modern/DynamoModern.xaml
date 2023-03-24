@@ -3202,6 +3202,27 @@
         </Setter>
     </Style>
 
+    <Style x:Key="ResetButtonStyle" TargetType="Button">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Image Name="folderIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/reset-default.png"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="folderIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/reset-hover.png" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value=".5" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="MenuButtonStyle" TargetType="Button">
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Template">
@@ -3650,7 +3671,7 @@
                                VerticalAlignment="Center"
                                HorizontalContentAlignment="Center"
                                VerticalContentAlignment="Center"
-                               Content="✓"
+                               Content="âœ“"
                                DockPanel.Dock="Left"
                                FontSize="9px"
                                Foreground="White"
@@ -3750,7 +3771,7 @@
                                VerticalAlignment="Center"
                                HorizontalContentAlignment="Center"
                                VerticalContentAlignment="Center"
-                               Content="✓"
+                               Content="âœ“"
                                DockPanel.Dock="Left"
                                FontSize="9px"
                                Foreground="White"
@@ -5046,7 +5067,7 @@
                                VerticalAlignment="Center"
                                HorizontalContentAlignment="Center"
                                VerticalContentAlignment="Center"
-                               Content="✓"
+                               Content="âœ“"
                                DockPanel.Dock="Left"
                                FontSize="9px"
                                Foreground="White"

@@ -1675,17 +1675,28 @@ namespace Dynamo.Models
             {
                 ProtoCore.Mirror.MirrorData.PrecisionFormat = DynamoUnits.Display.PrecisionFormat = PreferenceSettings.NumberFormat;
                 PreferenceSettings.InitializeNamespacesToExcludeFromLibrary();
+
                 if (string.IsNullOrEmpty(PreferenceSettings.BackupLocation))
                 {
-                    PreferenceSettings.BackupLocation = pathManager.BackupDirectory;
+                    PreferenceSettings.BackupLocation = pathManager.DefaultBackupDirectory;
                 }
                 UpdateBackupLocation(PreferenceSettings.BackupLocation);
             }
         }
 
         public bool UpdateBackupLocation(string selectedBackupLocation)
-        {
+        {            
             return pathManager.UpdateBackupLocation(selectedBackupLocation);
+        }
+
+        public bool IsDefaultBackupLocation()
+        {
+            return PreferenceSettings.BackupLocation.Replace(@"\\", @"\").Equals(pathManager.DefaultBackupDirectory.Replace(@"\\", @"\"));
+        }
+
+        public string DefaultBackupLocation()
+        {
+            return pathManager.DefaultBackupDirectory;
         }
 
         /// <summary>
