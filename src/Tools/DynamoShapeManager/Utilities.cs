@@ -443,10 +443,10 @@ namespace DynamoShapeManager
                 var methodParams = new object[] { asmLocation };
                 preloadMethod.Invoke(null, methodParams);
             }
-            catch
+            catch(Exception ex)
             {
                 //log for clients like CLI.
-                var message = $"Could not load geometry library binaries from : {asmLocation}";
+                var message = $"Could not load geometry library binaries from : {asmLocation} {ex.Message}";
                 Console.WriteLine(message);
                 throw new Exception(message);
             }
