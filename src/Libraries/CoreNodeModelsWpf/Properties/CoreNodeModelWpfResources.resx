@@ -121,37 +121,37 @@
     <value>Create a new Bar Chart</value>
   </data>
   <data name="ChartsBarChartSearchTags" xml:space="preserve">
-    <value>CoreNodeModelsWpf.Charts.BarChart;Bar Chart;barchart</value>
+    <value>bar;barchart</value>
   </data>
   <data name="ChartsBasicLineChartDescription" xml:space="preserve">
     <value>Create a new Basic Line Chart</value>
   </data>
   <data name="ChartsBasicLineChartSearchTags" xml:space="preserve">
-    <value>CoreNodeModelsWpf.Charts.Index-ValueLinePlot;Index-Value Line Plot;indexvaluelineplot</value>
+    <value>index;indexvalue;indexvaluelineplot</value>
   </data>
   <data name="ChartsHeatSeriesDescription" xml:space="preserve">
     <value>Create a heat series plot</value>
   </data>
   <data name="ChartsHeatSeriesSearchTags" xml:space="preserve">
-    <value>CoreNodeModelsWpf.Charts.HeatSeriesPlot;Heat Series Plot;heatseriesplot</value>
+    <value>heat;heatseries;heatseriesplot</value>
   </data>
   <data name="ChartsPieChartDescription" xml:space="preserve">
     <value>Create a new Pie Chart</value>
   </data>
   <data name="ChartsPieChartSearchTags" xml:space="preserve">
-    <value>CoreNodeModelsWpf.Charts.PieChart;Pie Chart; piechart</value>
+    <value>pie;piechart</value>
   </data>
   <data name="ChartsScatterPlotDescription" xml:space="preserve">
     <value>Create a scatter plot</value>
   </data>
   <data name="ChartsScatterPlotSearchTags" xml:space="preserve">
-    <value>CoreNodeModelsWpf.Charts.ScatterPlot;Scatter Plot;scatterplot</value>
+    <value>scatter;scatterplot</value>
   </data>
   <data name="ChartsXYLineChartDescription" xml:space="preserve">
     <value>Create a new XY line plot</value>
   </data>
   <data name="ChartsXYLineChartSearchTags" xml:space="preserve">
-    <value>CoreNodeModelsWpf.Charts.XYLinePlot;XY Line Plot;xylineplot</value>
+    <value>lineplot;xylineplot</value>
   </data>
   <data name="ColorPaletteUIAdvancedButtonHeader" xml:space="preserve">
     <value>Advanced</value>
