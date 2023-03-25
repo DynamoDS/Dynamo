@@ -446,7 +446,7 @@ namespace DynamoShapeManager
             catch(Exception ex)
             {
                 //log for clients like CLI.
-                var message = $"Could not load geometry library binaries from : {asmLocation} {ex.Message}";
+                var message = $"Could not load geometry library binaries from : {asmLocation} {ex} {ex.InnerException}";
                 Console.WriteLine(message);
                 throw new Exception(message);
             }
