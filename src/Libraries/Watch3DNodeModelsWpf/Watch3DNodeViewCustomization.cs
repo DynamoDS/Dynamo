@@ -152,13 +152,12 @@ namespace Watch3DNodeModelsWpf
         {
             var factory = new HelixRenderPackageFactory();
             var renderPackage = factory.CreateRenderPackage();
-            ////gItem.Tessellate(renderPackage, factory.TessellationParameters);
+            gItem.Tessellate(renderPackage, factory.TessellationParameters);
             return renderPackage;
         }
 
         private void RenderData(object data)
         {
-            Debug.WriteLine("Hello");
             IEnumerable<IRenderPackage> packages = UnpackRenderData(data).Select(CreateRenderPackageFromGraphicItem);
             watch3DViewModel.AddGeometryForRenderPackages(new RenderPackageCache(packages));
         }
