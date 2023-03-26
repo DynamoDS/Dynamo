@@ -1690,7 +1690,10 @@ namespace Dynamo.Models
             watch.Stop();
             Trace.WriteLine("Total time for indexing package data: " + watch.ElapsedMilliseconds + " ms");
         }
-
+        /// <summary>
+        /// Download package data to beindexed from https://myshare.autodesk.com/:u:/g/personal/ashish_aggarwal_autodesk_com/ETY_g5MNDEBAii9sLzz1_GQBtshJOkYIPlXFIJ4oP5Q7WQ?e=uUOvOB
+        /// </summary>
+        /// <param name="doc"></param>
         private void AddPackageDataToSearchIndex(Document doc)
         {
             //148 docs are skipped, because they are incomplete, and 2 are read till end because they do not have the ending delimeter(___).
@@ -1698,8 +1701,11 @@ namespace Dynamo.Models
             try
             {
                 // e.g. //..\Dynamo\bin\AnyCPU\Debug\packageData
-                // TODO: dynamic and consider localizated docs
-                string[] files = System.IO.Directory.GetFiles(Path.Combine(Environment.CurrentDirectory, "packageData"), "*.json");
+                var pkgdatapath = Path.Combine(Environment.CurrentDirectory, "packageData");
+
+                if (!System.IO.Directory.Exists(pkgdatapath)) return;
+
+                string[] files = System.IO.Directory.GetFiles(pkgdatapath, "*.json");
                 foreach (string file in files)
                 {
                     string fileContents = string.Empty;

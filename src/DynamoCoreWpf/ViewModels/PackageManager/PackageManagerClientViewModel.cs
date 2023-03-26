@@ -225,6 +225,7 @@ namespace Dynamo.ViewModels
         }
 
         public List<PackageManagerSearchElement> CachedPackageList { get; private set; }
+        public List<PackageManagerSearchElement> CachedPackageHeaderList { get; private set; }
         public List<PackageManagerSearchElement> InfectedPackageList { get; private set; }
 
         public readonly DynamoViewModel DynamoViewModel;
@@ -257,6 +258,7 @@ namespace Dynamo.ViewModels
             this.AuthenticationManager = dynamoViewModel.Model.AuthenticationManager;
             Model = model;
             CachedPackageList = new List<PackageManagerSearchElement>();
+            CachedPackageHeaderList = new List<PackageManagerSearchElement>();
 
             this.ToggleLoginStateCommand = new DelegateCommand(ToggleLoginState, CanToggleLoginState);
 
@@ -486,9 +488,22 @@ namespace Dynamo.ViewModels
         public PackageManagerSearchElement GetPackage(string name)
         {
             PackageHeader header;
-            Model.DownloadPackageHeaderByName(name, out header);
+            PackageManagerSearchElement ele = null;
+
+            if (CachedPackageHeaderList != null && CachedPackageHeaderList.Count > 0)
+            {
+                ele = CachedPackageHeaderList.FirstOrDefault(x => x.Name == name);
+            }
+            if (ele == null && CachedPackageList != null && CachedPackageList.Count > 0)
+            {
+                ele = CachedPackageList.FirstOrDefault(x => x.Name == name);
+            }
+            if (ele == null)
+            {
+                Model.DownloadPackageHeaderByName(name, out header);
+                ele = new PackageManagerSearchElement(header);
+            }
             
-            var ele = new PackageManagerSearchElement(header);
             if (ele != null) return ele;
             return null;
         }
