@@ -56,6 +56,10 @@ namespace Dynamo.Configuration
         /// </summary>
         public static LuceneVersion LuceneNetVersion = LuceneVersion.LUCENE_48;
 
+        /// <summary>
+        /// Fields to be indexed by Lucene Search
+        /// </summary>
+        public static string[] IndexFields = { "Name", "FullCategoryName", "Description", "SearchKeywords", "InputParameters", "OutputParameters", "DocName", "Documentation", "PackageName", "PackageVersion" };
         #endregion
 
         #region Usage Reporting Error Message

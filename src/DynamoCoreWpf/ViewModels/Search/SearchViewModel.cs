@@ -972,7 +972,7 @@ namespace Dynamo.ViewModels
             string searchTerm = search.Trim();
             var candidates = new List<NodeSearchElementViewModel>();
 
-            string[] fnames = { "Name", "FullCategoryName", "Description", "SearchKeywords", "InputParameters", "OutputParameters", "DocName", "Documentation" };
+            string[] fnames = Configurations.IndexFields;
 
             var parser = new MultiFieldQueryParser(Configurations.LuceneNetVersion, fnames, Model.Analyzer)
             {
@@ -996,11 +996,19 @@ namespace Dynamo.ViewModels
                 string docName = resultDoc.Get("DocName");
                 string cat = resultDoc.Get("FullCategoryName");
                 string fulldesc = resultDoc.Get("Documentation");
+                string pkgName = resultDoc.Get("PackageName");
 
                 if (!string.IsNullOrEmpty(docName))
                 {
                     var doc = new DocSearchElement(name, docName);
                     var elementVM = new NodeSearchElementViewModel(doc, this);
+                    elementVM.RequestBitmapSource += SearchViewModelRequestBitmapSource;
+                    candidates.Add(elementVM);
+                }
+                else if (!string.IsNullOrEmpty(pkgName))
+                {
+                    var pkgNode = new PackageSearchElement(resultDoc);
+                    var elementVM = new NodeSearchElementViewModel(pkgNode, this);
                     elementVM.RequestBitmapSource += SearchViewModelRequestBitmapSource;
                     candidates.Add(elementVM);
                 }
@@ -1031,13 +1039,14 @@ namespace Dynamo.ViewModels
         /// <param name="fields">All fields to be searched in.</param>
         /// <param name="searchTerm">Search key to be searched for.</param>
         /// <returns></returns>
-        private string CreateSearchQuery(string[] fields, string searchTerm)
+        private string CreateSearchQuery(string[] fields, string searchKey)
         {
             int fuzzyLogicThreshold = 4;
             int fuzzyLogicRange = 2;
-
+            
             var fnames = fields;
             var booleanQuery = new BooleanQuery();
+            string searchTerm = QueryParser.Escape(searchKey);
 
             foreach (string f in fnames)
             {
@@ -1055,7 +1064,7 @@ namespace Dynamo.ViewModels
                 booleanQuery.Add(wildcardQuery, Occur.SHOULD);
 
                 wildcardQuery = new WildcardQuery(new Term(f, searchTerm +"*"));
-                if (f.Equals("Name")) { wildcardQuery.Boost = 5; }
+                if (f.Equals("Name")) { wildcardQuery.Boost = 7; }
                 else { wildcardQuery.Boost = 4; }
                 booleanQuery.Add(wildcardQuery, Occur.SHOULD);
 

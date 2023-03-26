@@ -40,7 +40,6 @@ using Dynamo.Updates;
 using Dynamo.Utilities;
 using DynamoServices;
 using Greg;
-using Lucene.Net.Analysis.Core;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
@@ -1343,7 +1342,6 @@ namespace Dynamo.Models
             LinterManager.Dispose();
 
             //Lucene disposals
-            writer.Dispose();
             indexDir.Dispose();
             dirReader.Dispose();
 
@@ -1593,7 +1591,7 @@ namespace Dynamo.Models
                 CustomNodeManager.AddUninitializedCustomNodesInPath(path, IsTestMode);
             }
 
-            CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.CommonDefinitions, IsTestMode);
+            var customNodeList = CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.CommonDefinitions, IsTestMode);
 
             //Initialize searcher
             dirReader = writer.GetReader(applyAllDeletes: true);
@@ -1603,6 +1601,7 @@ namespace Dynamo.Models
 
             Trace.WriteLine("Total documents added: " + doccount.ToString());
             writer.Commit();
+            writer.Dispose();
         }
 
         /// <summary>
@@ -1654,7 +1653,7 @@ namespace Dynamo.Models
 
         private void LoadNodeModels(List<TypeLoadData> nodes, bool isPackageMember)
         {
-            var watch = new System.Diagnostics.Stopwatch();
+            var watch = new Stopwatch();
             var iDoc = InitializeIndexDocument();
             foreach (var type in nodes)
             {
@@ -1684,7 +1683,56 @@ namespace Dynamo.Models
             watch.Restart();
             AddNodeDocumentationToSearchIndex(iDoc);
             watch.Stop();
-            Trace.WriteLine("Total time for indexing docs: " + watch.ElapsedMilliseconds + " ms");            
+            Trace.WriteLine("Total time for indexing docs: " + watch.ElapsedMilliseconds + " ms");
+
+            watch.Restart();
+            AddPackageDataToSearchIndex(iDoc);
+            watch.Stop();
+            Trace.WriteLine("Total time for indexing package data: " + watch.ElapsedMilliseconds + " ms");
+        }
+
+        private void AddPackageDataToSearchIndex(Document doc)
+        {
+            //148 docs are skipped, because they are incomplete, and 2 are read till end because they do not have the ending delimeter(___).
+            Stream stream = null;
+            try
+            {
+                // e.g. //..\Dynamo\bin\AnyCPU\Debug\packageData
+                // TODO: dynamic and consider localizated docs
+                string[] files = System.IO.Directory.GetFiles(Path.Combine(Environment.CurrentDirectory, "packageData"), "*.json");
+                foreach (string file in files)
+                {
+                    string fileContents = string.Empty;
+                    Exception ex;
+                    JObject obj;
+                    if (DynamoUtilities.PathHelper.isValidJson(file, out fileContents, out ex))
+                    {
+                        JsonReader reader = new JsonTextReader(new StringReader(fileContents));
+                        obj = JObject.Load(reader);
+                        foreach (var parent in obj)
+                        {
+                            JToken pkg = parent.Value;
+
+                            SetDocumentFieldValue(doc, "Name", pkg["nodeName"] == null ? "" : pkg["nodeName"].ToString());
+                            //SetDocumentFieldValue(doc, "FullCategoryName", pkg["nodeCategory"] == null ? "" : pkg["nodeCategory"].ToString());
+                            SetDocumentFieldValue(doc, "Description", pkg["nodeDescription"] == null ? "" : pkg["nodeDescription"].ToString());
+                            //SetDocumentFieldValue(doc, "InputParameters", pkg["nodeInputParameters"] == null ? "" : pkg["nodeInputParameters"].ToString());
+                            //SetDocumentFieldValue(doc, "OutputParameters", pkg["nodOutputParameters"] == null ? "" : pkg["nodOutputParameters"].ToString());
+                            SetDocumentFieldValue(doc, "PackageName", pkg["packageName"] == null ? "" : pkg["packageName"].ToString());
+                            SetDocumentFieldValue(doc, "PackageVersion", pkg["packageVersion"] == null ? "" : pkg["packageVersion"].ToString(), true, true);
+                            writer.AddDocument(doc);
+                        }
+                    }
+                    else
+                    {
+                        throw ex;
+                    }
+                }
+            }
+            finally
+            {
+                stream?.Dispose();
+            }
         }
 
         private void AddNodeDocumentationToSearchIndex(Document doc)
@@ -1714,22 +1762,14 @@ namespace Dynamo.Models
                     if (idx2 < 0) len = totallen - 10;
                                         
                     InDepthDesc = mdString.Substring(idx1, len);
-                    ((TextField)doc.GetField("FullCategoryName")).SetStringValue("");
+
                     // Get file name without category
                     Match match = Regex.Match(file, "[^.]+\\.md");
-                    ((TextField)doc.GetField("Name")).SetStringValue(match.Success? match.Captures[0].Value : string.Empty);
-                    ((TextField)doc.GetField("Description")).SetStringValue("");
-                    ((TextField)doc.GetField("SearchKeywords")).SetStringValue("");
-                    ((TextField)doc.GetField("InputParameters")).SetStringValue("");
-                    ((TextField)doc.GetField("OutputParameters")).SetStringValue("");
-                    ((StringField)doc.GetField("DocName")).SetStringValue(Path.GetFileNameWithoutExtension(file));
-                    ((TextField)doc.GetField("Documentation")).SetStringValue(InDepthDesc);
+                    SetDocumentFieldValue(doc, "Name", Path.GetFileNameWithoutExtension(match.Success ? match.Captures[0].Value : string.Empty));
+                    SetDocumentFieldValue(doc, "DocName", Path.GetFileNameWithoutExtension(file), false);
+                    SetDocumentFieldValue(doc, "Documentation", InDepthDesc, true, true);
                     writer.AddDocument(doc);
-                    
-                    //Trace.WriteLine("File indexed: " + i.ToString());
                 }
-                //Trace.WriteLine("Total index skipped: " + t1.ToString());
-                //Trace.WriteLine("Total read till end: " + t2.ToString());
             }
             finally
             {
@@ -1749,13 +1789,18 @@ namespace Dynamo.Models
             var keywords = new TextField("SearchKeywords", "", Field.Store.YES);
             var inp = new TextField("InputParameters", "", Field.Store.YES);
             var outp = new TextField("OutputParameters", "", Field.Store.YES);
-            var docname = new StringField("DocName", "", Field.Store.YES);
-            var fulldesc = new TextField("Documentation", "", Field.Store.YES);
+
+            var docName = new StringField("DocName", "", Field.Store.YES);
+            var fullDoc = new TextField("Documentation", "", Field.Store.YES);
+
+            var pkgName = new TextField("PackageName", "", Field.Store.YES);
+            var pkgVer = new TextField("PackageVersion", "", Field.Store.YES);
 
             var d = new Document()
             {
-                fullCategory, name, description,
-                keywords, inp,outp, fulldesc, docname
+                fullCategory, name, description, keywords, inp,outp,
+                fullDoc, docName,
+                pkgName, pkgVer
             };
             return d;
         }
@@ -1767,21 +1812,38 @@ namespace Dynamo.Models
         /// <param name="doc"></param>
         private void AddNodeTypeToSearchIndex(NodeSearchElement node, Document doc)
         {
-            if (node.Name.ToLower().Contains("join") && !string.IsNullOrEmpty(node.FullCategoryName)) {
-                Console.WriteLine("Hit");
-            }
-            if (node.FullCategoryName.ToLower().Contains("join") || node.Description.ToLower().Contains("join")
-                || node.SearchKeywords.Contains("join")) {
-                Console.WriteLine("Hit");
-            }
-            ((TextField)doc.GetField("FullCategoryName")).SetStringValue(node.FullCategoryName);
-            ((TextField)doc.GetField("Name")).SetStringValue(node.Name); ((TextField)doc.GetField("Name")).Boost = 2;
-            ((TextField)doc.GetField("Description")).SetStringValue(node.Description);
-            if(node.SearchKeywords.Count > 0) ((TextField)doc.GetField("SearchKeywords")).SetStringValue(node.SearchKeywords.Aggregate((x,y) => x + " " + y));
-            ((TextField)doc.GetField("InputParameters")).SetStringValue(string.Join(" ", node.InputParameters.Select(t => $"{t.Item1}:{t.Item2}")));
-            ((TextField)doc.GetField("OutputParameters")).SetStringValue(node.OutputParameters.Aggregate((x, y) => x + " " + y));
+            SetDocumentFieldValue(doc, "FullCategoryName", node.FullCategoryName);
+            SetDocumentFieldValue(doc, "Name", node.Name);
+            SetDocumentFieldValue(doc, "Description", node.Description);
+            SetDocumentFieldValue(doc, "InputParameters", string.Join(" ", node.InputParameters.Select(t => $"{t.Item1}:{t.Item2}")));
+            SetDocumentFieldValue(doc, "OutputParameters", node.OutputParameters.Aggregate((x, y) => x + " " + y));
+            if (node.SearchKeywords.Count > 0) SetDocumentFieldValue(doc, "SearchKeywords", node.SearchKeywords.Aggregate((x, y) => x + " " + y), true, true);
+
             writer.AddDocument(doc);
             doccount++;
+        }
+
+        List<string> addedFields = new List<string>();
+        private void SetDocumentFieldValue(Document doc, string field, string value, bool isTextField = true, bool isLast = false)
+        {
+            addedFields.Add(field);
+            if (isTextField && !field.Equals("DocName"))
+            {
+                ((TextField)doc.GetField(field)).SetStringValue(value);
+            }
+            else
+            {
+                ((StringField)doc.GetField(field)).SetStringValue(value);
+            }
+            if (isLast)
+            {
+                List<string> diff = Configurations.IndexFields.Except(addedFields).ToList();
+                foreach (var d in diff)
+                {
+                    SetDocumentFieldValue(doc, d, "");
+                }
+                addedFields.Clear();
+            }
         }
 
         private IPreferences CreateOrLoadPreferences(IPreferences preferences)

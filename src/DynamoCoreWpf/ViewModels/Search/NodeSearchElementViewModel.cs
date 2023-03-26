@@ -9,6 +9,7 @@ using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
+using Dynamo.PackageManager;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.ViewModels;
@@ -127,7 +128,41 @@ namespace Dynamo.Wpf.ViewModels
 
         public string Description
         {
-            get { return Model.Description; }
+            get
+            {
+                if (Model is PackageSearchElement)
+                {
+                    var model = Model as PackageSearchElement;
+                    return "From Package: " + model.PackageName + Environment.NewLine +
+                        "Version: " + model.PackageVersion + Environment.NewLine +
+                        Environment.NewLine + model.Description;
+                }
+                return Model.Description;
+            }
+        }
+
+        public string NodePackageName
+        {
+            get {
+                if (Model is PackageSearchElement)
+                {
+                    var model = Model as PackageSearchElement;
+                    return model.PackageName;
+                }
+                return "";
+            }
+        }
+        public string NodePackageVersion
+        {
+            get
+            {
+                if (Model is PackageSearchElement)
+                {
+                    var model = Model as PackageSearchElement;
+                    return model.PackageVersion;
+                }
+                return "";
+            }
         }
 
         /// <summary>
@@ -366,6 +401,16 @@ namespace Dynamo.Wpf.ViewModels
                 {
                     // Open documentation
                     searchViewModel.dynamoViewModel.OnRequestOpenDocumentationLink(new OpenAnnotationByNameEventArgs((Model as DocSearchElement).DocName));
+                }
+                else if (Model.ElementType == ElementTypes.Packaged)
+                {
+                    if (!(Model is PackageSearchElement pkgsearchres)) return;
+
+                    var pkg = searchViewModel.dynamoViewModel.PackageManagerClientViewModel.GetPackage(pkgsearchres.PackageName);
+
+                    searchViewModel.dynamoViewModel
+                        .OnViewExtensionOpenWithParameterRequest("C71CA1B9-BF9F-425A-A12C-53DF56770406", pkg);
+
                 }
                 else
                 {

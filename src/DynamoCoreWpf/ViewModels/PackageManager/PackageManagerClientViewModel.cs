@@ -483,6 +483,16 @@ namespace Dynamo.ViewModels
             return CachedPackageList;
         }
 
+        public PackageManagerSearchElement GetPackage(string name)
+        {
+            PackageHeader header;
+            Model.DownloadPackageHeaderByName(name, out header);
+            
+            var ele = new PackageManagerSearchElement(header);
+            if (ele != null) return ele;
+            return null;
+        }
+
         /// <summary>
         /// Returns a dictionary of infected package(s) with name and version, if the last published version of package uploaded by the current user was flagged as infected.
         /// </summary>

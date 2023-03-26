@@ -279,6 +279,26 @@ namespace Dynamo.PackageManager
             return new PackageManagerResult("", true);
         }
 
+        internal PackageManagerResult DownloadPackageHeaderByName(string name, out PackageHeader header)
+        {
+            var pkgDownload = new HeaderDownload("dynamo", name);
+
+            try
+            {
+                var response = this.client.ExecuteAndDeserializeWithContent<PackageHeader>(pkgDownload);
+                if (!response.success) throw new Exception(response.message);
+                header = response.content;
+            }
+            catch (Exception e)
+            {
+                var a = PackageManagerResult.Failed(e.Message);
+                header = null;
+                return a;
+            }
+
+            return new PackageManagerResult("", true);
+        }
+
         internal PackageManagerResult Deprecate(string name)
         {
             return FailFunc.TryExecute(() =>
