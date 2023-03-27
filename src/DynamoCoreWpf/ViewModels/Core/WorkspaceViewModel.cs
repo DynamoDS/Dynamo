@@ -646,7 +646,9 @@ namespace Dynamo.ViewModels
                 // If a new CustomNodeWorkspaceModel is created, store that info in CustomNodeManager without creating an instance of the custom node.
                 if (this.Model is CustomNodeWorkspaceModel customNodeWorkspaceModel)
                 {
-                    customNodeWorkspaceModel.SetInfo(Path.GetFileNameWithoutExtension(filePath));
+                    //If the custom node Name is already set and the FileName is already set then we don't need to change the Name with "backup"
+                    if(string.IsNullOrEmpty(customNodeWorkspaceModel.Name) && string.IsNullOrEmpty(customNodeWorkspaceModel.FileName))
+                        customNodeWorkspaceModel.SetInfo(Path.GetFileNameWithoutExtension(filePath));
                 }
             }
             catch (Exception ex)
