@@ -2876,9 +2876,9 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("FilePathConverterNoFileSelected", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to Trust this fileâ€™s location in the future..
+        ///   Looks up a localized string similar to Trust this file’s location in the future..
         /// </summary>
         public static string FileTrustWarningCheckBoxText {
             get {
@@ -6880,6 +6880,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewGeneralSettingsGeoScaling {
             get {
                 return ResourceManager.GetString("PreferencesViewGeneralSettingsGeoScaling", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run Settings.
+        /// </summary>
+        public static string PreferencesViewGeneralSettingsRun {
+            get {
+                return ResourceManager.GetString("PreferencesViewGeneralSettingsRun", resourceCulture);
             }
         }
         
