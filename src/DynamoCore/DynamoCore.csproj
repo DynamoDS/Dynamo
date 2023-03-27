@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -183,7 +183,8 @@
         <GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
             <Output TaskParameter="Assemblies" ItemName="DynamoCoreInfo" />
         </GetAssemblyIdentity>
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
+  </Target>
+    <Target AfterTargets="AfterBuildOps" Name="gen_resources" Condition=" '$(OS)' != 'Unix' ">
         <!-- Generate customization dll for DynamoCore -->
         <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)DynamoCoreImages.resx" OutputResources="$(ProjectDir)DynamoCoreImages.resources" References="$(SystemDrawingDllPath)" />
         <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)DynamoCoreImages.resources" OutputAssembly="$(OutDir)DynamoCore.customization.dll" Version="%(DynamoCoreInfo.Version)" />
@@ -193,6 +194,5 @@
         <!-- Generate customization dll for BuiltIn -->
         <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resx" OutputResources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resources" References="$(SystemDrawingDllPath)" />
         <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resources" OutputAssembly="$(OutDir)BuiltIn.customization.dll" Version="%(DynamoCoreInfo.Version)" />
-    </ItemGroup>
-  </Target>
+    </Target>
 </Project>
