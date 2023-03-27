@@ -65,7 +65,8 @@ namespace CoreNodeModelsWpf.Nodes
 
             watchTree.Width = nodeModel.WatchWidth == 0 ? watchTree.Width : nodeModel.WatchWidth;
             watchTree.Height = nodeModel.WatchHeight == 0 ? watchTree.Height : nodeModel.WatchHeight;
-
+            
+            //Store width and height info of the node in the dictionary.
             Watch.NodeSizes[watch.GUID] = new Tuple<double, double>(nodeModel.WatchWidth, nodeModel.WatchHeight);
 
             Bind(watchTree, nodeView);
@@ -140,13 +141,13 @@ namespace CoreNodeModelsWpf.Nodes
 
             watch.PortConnected -= OnPortConnected;
             watch.PortDisconnected -= OnPortDisconnected;
-            //Watch.NodeSizes.Remove(watch.GUID);
         }
 
         private void OnPortConnected(PortModel port, ConnectorModel connectorModel)
         {
             Tuple<int, NodeModel> input;
 
+            //set default width and height when a new connection is made to the watch node.
             watch.SetWatchSize(WatchTree.DefaultWidthSize, WatchTree.DefaultHeightSize);
 
             if (!watch.TryGetInput(watch.InPorts.IndexOf(connectorModel.End), out input)

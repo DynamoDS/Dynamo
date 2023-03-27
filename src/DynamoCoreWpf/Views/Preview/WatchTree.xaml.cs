@@ -54,6 +54,7 @@ namespace Dynamo.Controls
 
         private void _vm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
+            //We need to restore the custom size for the watch nodes in the workspace. 
             var customSizesDict = Watch.NodeSizes;
             var customWidth = double.NaN;
             var customHeight= double.NaN;

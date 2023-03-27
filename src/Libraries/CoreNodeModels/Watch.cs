@@ -40,17 +40,20 @@ namespace CoreNodeModels
             HasRunOnce = false;
         }
 
+        /// <summary>
+        ///     Watch node's Width
         public double WatchWidth { get; set; }
+        /// <summary>
+        ///     Watch node's Height
         public double WatchHeight { get; set; }
 
-        //Stores the custom sizes for each watch node instance.
+        //Stores the custom sizes for each watch node.
         public static Dictionary<Guid, Tuple<double,double>> NodeSizes = new Dictionary<Guid, Tuple<double, double>>();
 
         public void SetWatchSize(double w, double h)
         {
             WatchWidth = w;
             WatchHeight = h;
-            //NodeSizes[GUID] = new Tuple<double, double>(w, h);
         }
 
         public Watch()
@@ -61,7 +64,6 @@ namespace CoreNodeModels
             RegisterAllPorts();
 
             ArgumentLacing = LacingStrategy.Disabled;
-          
             ShouldDisplayPreviewCore = false;
             HasRunOnce = false;
         }
