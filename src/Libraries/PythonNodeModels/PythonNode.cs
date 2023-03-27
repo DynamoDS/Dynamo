@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -54,6 +54,11 @@ namespace PythonNodeModels
                 if (!Enum.TryParse(engine, out PythonEngineVersion engineVersion) ||
                     engineVersion == PythonEngineVersion.Unspecified)
                 {
+                    //if this is a valid dynamically loaded engine, return unknown, and serialize the name.
+                    if (PythonEngineManager.Instance.AvailableEngines.Any(x=>x.Name == engine))
+                    {
+                        return PythonEngineVersion.Unknown;
+                    }
                     // This is a first-time case for newly created nodes only
                     SetEngineByDefault();
                 }
