@@ -9,6 +9,7 @@ using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 using Microsoft.Practices.Prism.ViewModel;
 using Dynamo.Configuration;
+using CoreNodeModels;
 
 namespace Dynamo.ViewModels
 {
@@ -35,6 +36,8 @@ namespace Dynamo.ViewModels
         public const string LIST = "List";
         public const string EMPTY_DICTIONARY = "Empty Dictionary";
         public const string DICTIONARY = "Dictionary";
+
+        internal Watch WatchNode { get; set; }
 
         private ObservableCollection<WatchViewModel> children = new ObservableCollection<WatchViewModel>();
         private string label;
