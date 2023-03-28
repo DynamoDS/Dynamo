@@ -1,8 +1,9 @@
-﻿using System.Windows;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Dynamo.ViewModels;
 using System;
+using CoreNodeModels;
 
 namespace Dynamo.Controls
 {
@@ -15,10 +16,10 @@ namespace Dynamo.Controls
     {
         private WatchViewModel _vm;
         private WatchViewModel prevWatchViewModel;
-        private readonly double defaultWidthSize = 200;
+        private static readonly double defaultWidthSize = 200;
         private readonly double extraWidthSize = 20;
         private readonly double widthPerCharacter = 7.5;
-        private readonly int defaultHeightSize = 200;
+        private static readonly int defaultHeightSize = 200;
         private readonly int minWidthSize = 100;
         private readonly int minHeightSize = 38;
         private readonly int minHeightForList = 83;
@@ -34,8 +35,8 @@ namespace Dynamo.Controls
             this.Unloaded += WatchTree_Unloaded;
         }
 
-        internal double DefaultWidthSize { get { return defaultWidthSize; } }
-        internal double DefaultHeightSize { get { return defaultHeightSize; } }
+        internal static double DefaultWidthSize { get { return defaultWidthSize; } }
+        internal static double DefaultHeightSize { get { return defaultHeightSize; } }
         internal double ExtratWidthSize { get { return extraWidthSize; } }
         internal double WidthPerCharacter { get { return widthPerCharacter; } }
         internal double MaxWidthSize { get { return defaultWidthSize * 2; } }
@@ -53,6 +54,18 @@ namespace Dynamo.Controls
 
         private void _vm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
+            //We need to restore the custom size for the watch nodes in the workspace. 
+            var customSizesDict = Watch.NodeSizes;
+            var customWidth = double.NaN;
+            var customHeight= double.NaN;
+
+            if (_vm.WatchNode != null)
+            {
+                customSizesDict.TryGetValue(_vm.WatchNode.GUID, out var customSizes);
+                customWidth = customSizes == null ? double.NaN : customSizes.Item1;
+                customHeight = customSizes == null ? double.NaN : customSizes.Item2;
+            }
+
             if (e.PropertyName == nameof(WatchViewModel.IsCollection))
             {
                 // // The WatchTree controll will resize only if its role is a WatchNode (starts with an specific height), otherwise it won't resize (Bubble role).
@@ -60,8 +73,8 @@ namespace Dynamo.Controls
                 {
                     if (_vm.IsCollection)
                     {
-                        this.Height = defaultHeightSize;
-                        this.inputGrid.MinHeight = minHeightForList;
+                        Height = this.Height != customHeight ? defaultHeightSize : Height;
+                        inputGrid.MinHeight = minHeightForList;
                     }
                     else
                     {
@@ -70,7 +83,7 @@ namespace Dynamo.Controls
                         {
                             if (NodeLabel.Contains(Environment.NewLine) || NodeLabel.ToUpper() == nameof(WatchViewModel.DICTIONARY))
                             {
-                                this.Height = defaultHeightSize;
+                                Height = this.Height != customHeight ? defaultHeightSize : Height;
                             }
                         }
                     }
@@ -99,7 +112,7 @@ namespace Dynamo.Controls
                     }
                     else
                     {
-                        this.Width = defaultWidthSize;
+                        this.Width = this.Width != customWidth ? defaultWidthSize : this.Width;
                     }
                 }
             }
@@ -213,6 +226,8 @@ namespace Dynamo.Controls
             {
                 Height = yAdjust;
             }
+
+            Watch.NodeSizes[_vm.WatchNode.GUID] = new Tuple<double, double>(Width, Height);
         }
     }
 }

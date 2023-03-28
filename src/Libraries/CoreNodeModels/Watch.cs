@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using CoreNodeModels.Properties;
 using Dynamo.Engine;
@@ -40,6 +40,22 @@ namespace CoreNodeModels
             HasRunOnce = false;
         }
 
+        /// <summary>
+        ///     Watch node's Width
+        public double WatchWidth { get; set; }
+        /// <summary>
+        ///     Watch node's Height
+        public double WatchHeight { get; set; }
+
+        //Stores the custom sizes for each watch node.
+        public static Dictionary<Guid, Tuple<double,double>> NodeSizes = new Dictionary<Guid, Tuple<double, double>>();
+
+        public void SetWatchSize(double w, double h)
+        {
+            WatchWidth = w;
+            WatchHeight = h;
+        }
+
         public Watch()
         {
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("", Resources.WatchPortDataInputToolTip)));
@@ -48,7 +64,6 @@ namespace CoreNodeModels
             RegisterAllPorts();
 
             ArgumentLacing = LacingStrategy.Disabled;
-
             ShouldDisplayPreviewCore = false;
             HasRunOnce = false;
         }
