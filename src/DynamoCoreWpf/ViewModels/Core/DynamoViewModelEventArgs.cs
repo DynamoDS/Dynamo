@@ -171,11 +171,18 @@ namespace Dynamo.ViewModels
         public string DocName { get; internal set; }
 
         /// <summary>
+        /// Node name
+        /// </summary>
+        public string Name { get; internal set; }
+
+        /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="docName"></param>
-        public OpenAnnotationByNameEventArgs(string docName ) : base(new Uri(String.Empty, UriKind.Relative))
+        /// <param name="name">Node name</param>
+        /// <param name="docName">Doc name</param>
+        public OpenAnnotationByNameEventArgs(string name, string docName ) : base(new Uri(String.Empty, UriKind.Relative))
         {
+            Name = name;
             DocName = docName;
         }
     }
@@ -255,6 +262,18 @@ namespace Dynamo.ViewModels
             NodeInfos = model.NodeInfos;
             SetInputs(model);
             SetOutputs(model);
+        }
+
+        /// <summary>
+        /// Creates a new instance of OpenNodeAnnotationEventArgs
+        /// </summary>
+        /// <param name="name">Node name</param>
+        /// <param name="cate"></param>
+        public OpenNodeAnnotationEventArgs(string name, string cate) : base(new Uri(String.Empty, UriKind.Relative))
+        {
+            MinimumQualifiedName = name;
+            OriginalName = name;
+            Category = cate;
         }
 
         private void SetOutputs(NodeModel nodeModel)

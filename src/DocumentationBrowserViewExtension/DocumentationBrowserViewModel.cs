@@ -226,7 +226,7 @@ namespace Dynamo.DocumentationBrowser
                         link = string.IsNullOrEmpty(mdlink) ? new Uri(String.Empty, UriKind.Relative) : new Uri(mdlink);
                         graph = GetGraphLinkFromMDLocation(link);
                         // Load md content somehow
-                        targetContent = ResourceUtilities.LoadContentFromResources(link.ToString(), GetType().Assembly);
+                        targetContent = CreateNodeAnnotationContent(openAnnotationByNameEventArgs);
                         graphName = openAnnotationByNameEventArgs.DocName;
                         break;
 
@@ -356,6 +356,46 @@ namespace Dynamo.DocumentationBrowser
                     LogWarning(Resources.ScriptTagsRemovalWarning, WarningLevel.Mild);
                 }
                 
+                // inject the syntax highlighting script at the bottom at the document.
+                output += DocumentationBrowserUtils.GetImageNavigationScript();
+                output += DocumentationBrowserUtils.GetDPIScript();
+                output += DocumentationBrowserUtils.GetSyntaxHighlighting();
+
+                return output;
+            }
+            finally
+            {
+                writer?.Dispose();
+            }
+        }
+
+        private string CreateNodeAnnotationContent(OpenAnnotationByNameEventArgs e)
+        {
+            var writer = new StringWriter();
+            try
+            {
+                writer.WriteLine(DocumentationBrowserUtils.GetContentFromEmbeddedResource(STYLE_RESOURCE));
+
+                // Convert the markdown file to html
+                var mkDown = MarkdownHandlerInstance.ParseToHtml(e.DocName, string.Empty);
+                //BreadCrumbs = GetBreadCrumbsValue(e);
+
+                writer.WriteLine(NodeDocumentationHtmlGenerator.OpenDocument());
+                // Get the Node info section
+                var nodeDocumentation = NodeDocumentationHtmlGenerator.FromAnnotationEventArgs(new OpenNodeAnnotationEventArgs(e.Name,
+                    e.DocName.Replace(e.Name, string.Empty)), string.Empty, mkDown);
+                writer.WriteLine(nodeDocumentation);
+                writer.WriteLine(NodeDocumentationHtmlGenerator.CloseDocument());
+
+                writer.Flush();
+                var output = writer.ToString();
+
+                // Sanitize html and warn if any changes where made
+                if (MarkdownHandlerInstance.SanitizeHtml(ref output))
+                {
+                    LogWarning(Resources.ScriptTagsRemovalWarning, WarningLevel.Mild);
+                }
+
                 // inject the syntax highlighting script at the bottom at the document.
                 output += DocumentationBrowserUtils.GetImageNavigationScript();
                 output += DocumentationBrowserUtils.GetDPIScript();

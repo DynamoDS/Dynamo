@@ -400,7 +400,7 @@ namespace Dynamo.Wpf.ViewModels
                 if (Model.ElementType == ElementTypes.Doc)
                 {
                     // Open documentation
-                    searchViewModel.dynamoViewModel.OnRequestOpenDocumentationLink(new OpenAnnotationByNameEventArgs((Model as DocSearchElement).DocName));
+                    searchViewModel.dynamoViewModel.OnRequestOpenDocumentationLink(new OpenAnnotationByNameEventArgs((Model as DocSearchElement).Name, (Model as DocSearchElement).DocName));
                 }
                 else if (Model.ElementType == ElementTypes.Packaged)
                 {

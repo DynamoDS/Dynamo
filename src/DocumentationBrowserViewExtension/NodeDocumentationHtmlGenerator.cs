@@ -92,7 +92,7 @@ namespace Dynamo.DocumentationBrowser
             StringBuilder sb = new StringBuilder();
 
             sb.AppendLine(CreateInfo(e, mkDown));
-            if (e.NodeInfos.Any())
+            if (e.NodeInfos != null && e.NodeInfos.Any())
             {
                 sb.AppendLine(CreateHelp(e));
             }
@@ -226,13 +226,16 @@ namespace Dynamo.DocumentationBrowser
         private static string CreateNodeInfo(OpenNodeAnnotationEventArgs e)
         {
             StringBuilder sb = new StringBuilder();
-            if (!e.Type.Equals(e.OriginalName))
+            if (e.Type!= null && !e.Type.Equals(e.OriginalName))
             {
                 sb.AppendLine($"<h2>{Resources.NodeDocumentationOriginalNodeName}</h2>");
                 sb.AppendLine($"<p>{e.OriginalName}</p>");
             }
             sb.AppendLine($"<h2>{Resources.NodeDocumentationDescription}</h2>");
-            sb.AppendLine($"<p>{Regex.Replace(e.Description, @"\r\n?|\n", "<br>")}</p>");
+            if (e.Description != null)
+            {
+                sb.AppendLine($"<p>{Regex.Replace(e.Description, @"\r\n?|\n", "<br>")}</p>");
+            }
             
             return sb.ToString();
         }
@@ -250,19 +253,22 @@ namespace Dynamo.DocumentationBrowser
             sb.AppendLine($"<th class=\"table--border\">{Resources.NodeInputsValue}</th>");
             sb.AppendLine(@"</tr>");
 
-            for (int i = 0; i < e.InputNames.Count(); i++)
+            if (e.InputNames != null)
             {
-                sb.AppendLine("<tr class=\"table--border\">");
-                sb.AppendLine($"<td class=\"table--border\">{e.InputNames.ElementAt(i)}</td>");
-                sb.AppendLine($"<td class=\"table--border\">{GetTypeFromDescription(e.InputDescriptions.ElementAt(i))}</td>");
-                sb.AppendLine($"<td class=\"table--border\">{GetNthRowFromStringSplit(e.InputDescriptions.ElementAt(i), 0)}</td>");
-                sb.AppendLine($"<td class=\"table--border broken\">{GetDefaultValueFromDescription(e.InputDescriptions.ElementAt(i))}</td>");
-                sb.AppendLine(@"</tr>");
-            }
+                for (int i = 0; i < e.InputNames.Count(); i++)
+                {
+                    sb.AppendLine("<tr class=\"table--border\">");
+                    sb.AppendLine($"<td class=\"table--border\">{e.InputNames.ElementAt(i)}</td>");
+                    sb.AppendLine($"<td class=\"table--border\">{GetTypeFromDescription(e.InputDescriptions.ElementAt(i))}</td>");
+                    sb.AppendLine($"<td class=\"table--border\">{GetNthRowFromStringSplit(e.InputDescriptions.ElementAt(i), 0)}</td>");
+                    sb.AppendLine($"<td class=\"table--border broken\">{GetDefaultValueFromDescription(e.InputDescriptions.ElementAt(i))}</td>");
+                    sb.AppendLine(@"</tr>");
+                }
 
-            sb.AppendLine(@"</td>");
-            sb.AppendLine(@"</tr>");
-            sb.AppendLine(@"</table>");
+                sb.AppendLine(@"</td>");
+                sb.AppendLine(@"</tr>");
+                sb.AppendLine(@"</table>");
+            }
 
 
             sb.AppendLine($"<h2>{Resources.NodeDocumentationOutputs}</h2>");
@@ -273,17 +279,20 @@ namespace Dynamo.DocumentationBrowser
             sb.AppendLine($"<th class=\"table--border\">{Resources.NodeInputsDataType}</th>");
             sb.AppendLine(@"</tr>");
 
-            for (int i = 0; i < e.OutputNames.Count(); i++)
+            if (e.OutputNames != null)
             {
-                sb.AppendLine(" <tr class=\"table--border\">");
-                sb.AppendLine($"<td class=\"table--border\">{e.OutputNames.ElementAt(i)}</td>");
-                sb.AppendLine($"<td class=\"table--border\">{GetNthRowFromStringSplit(e.OutputDescriptions.ElementAt(i), 0)}</td>");
-                sb.AppendLine(@"</tr>");
-            }
+                for (int i = 0; i < e.OutputNames.Count(); i++)
+                {
+                    sb.AppendLine(" <tr class=\"table--border\">");
+                    sb.AppendLine($"<td class=\"table--border\">{e.OutputNames.ElementAt(i)}</td>");
+                    sb.AppendLine($"<td class=\"table--border\">{GetNthRowFromStringSplit(e.OutputDescriptions.ElementAt(i), 0)}</td>");
+                    sb.AppendLine(@"</tr>");
+                }
 
-            sb.AppendLine(@"</td>");
-            sb.AppendLine(@"</tr>");
-            sb.AppendLine(@"</table>");
+                sb.AppendLine(@"</td>");
+                sb.AppendLine(@"</tr>");
+                sb.AppendLine(@"</table>");
+            }
 
             return sb.ToString();
         }
