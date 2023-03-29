@@ -745,11 +745,11 @@
                                                 <RowDefinition Height="*" />
                                                 <RowDefinition Height="*" />
                                             </Grid.RowDefinitions>
-                                            <Label Grid.Row="0"
+                                            <Label Grid.Row="0" Visibility="{Binding HideAutocompleteMethodOptions, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"
                                                 Margin="-8,15,10,3"                                               
                                                 Content="{x:Static p:Resources.PreferencesNodeAutocompleteMethod}" 
                                                 Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                            <Grid Grid.Row="1">
+                                            <Grid Grid.Row="1" Visibility="{Binding HideAutocompleteMethodOptions, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition x:Name="colObjectType" Width="Auto"/>
                                                     <ColumnDefinition x:Name="colMachineLearning" Width="Auto"/>
