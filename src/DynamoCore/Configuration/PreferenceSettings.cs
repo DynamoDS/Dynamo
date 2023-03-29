@@ -45,7 +45,7 @@ namespace Dynamo.Configuration
     /// from a XML file from DYNAMO_SETTINGS_FILE.
     /// When GUI is closed, the settings are saved back into the XML file.
     /// </summary>
-    public class PreferenceSettings : NotificationObject, IPreferences, IRenderPrecisionPreference, IDisablePackageLoadingPreferences, ILogSource
+    public class PreferenceSettings : NotificationObject, IPreferences, IRenderPrecisionPreference, IDisablePackageLoadingPreferences, ILogSource, IHideAutocompleteMethodOptions
     {
         private string numberFormat;
         private string lastUpdateDownloadPath;
@@ -553,6 +553,11 @@ namespace Dynamo.Configuration
         public int MLRecommendationNumberOfResults { get; set; }
 
         /// <summary>
+        /// If true, autocomplete method options are hidden from UI 
+        /// </summary>
+        public bool HideAutocompleteMethodOptions { get; set; }
+
+        /// <summary>
         /// This defines if user wants to see the enabled Dynamo Notification Center.
         /// </summary>
         public bool EnableNotificationCenter
@@ -814,6 +819,7 @@ namespace Dynamo.Configuration
             HideNodesBelowSpecificConfidenceLevel = false;
             MLRecommendationConfidenceLevel = 10;
             MLRecommendationNumberOfResults = 10;
+            HideAutocompleteMethodOptions = false;
             EnableNotificationCenter = true;
             isStaticSplashScreenEnabled = true;
             DefaultPythonEngine = string.Empty;

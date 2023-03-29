@@ -69,6 +69,7 @@
   <HideNodesBelowSpecificConfidenceLevel>true</HideNodesBelowSpecificConfidenceLevel>
   <MLRecommendationConfidenceLevel>99</MLRecommendationConfidenceLevel>
   <MLRecommendationNumberOfResults>5</MLRecommendationNumberOfResults>
+  <HideAutocompleteMethodOptions>true</HideAutocompleteMethodOptions>
   <EnableNotificationCenter>false</EnableNotificationCenter>
   <EnableStaticSplashScreen>false</EnableStaticSplashScreen>
   <EnablePersistExtensions>true</EnablePersistExtensions>
