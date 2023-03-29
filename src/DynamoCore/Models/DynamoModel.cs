@@ -630,7 +630,7 @@ namespace Dynamo.Models
                 CERLocation = cerConfig.CRStartConfig.CERLocation;
             }
 
-            ClipBoard = new ObservableCollection<ModelBase>();            
+            ClipBoard = new ObservableCollection<ModelBase>();
 
             pathManager = new PathManager(new PathManagerParams
             {
