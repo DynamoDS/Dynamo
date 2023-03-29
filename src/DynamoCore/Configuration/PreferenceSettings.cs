@@ -815,7 +815,7 @@ namespace Dynamo.Configuration
             BackupInterval = DefaultBackupInterval;
             BackupFilesCount = 1;
             BackupFiles = new List<string>();
-            BackupLocation = "";
+            BackupLocation = string.Empty;
 
             LibraryZoomScale = 100;
             PythonScriptZoomScale = 100;
