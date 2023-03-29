@@ -738,7 +738,7 @@ namespace Dynamo.ViewModels
             model.ComputeModelDeserialized += model_ComputeModelDeserialized;
             model.RequestNotification += model_RequestNotification;
 
-            preferencesViewModel = new PreferencesViewModel(this);
+            preferencesViewModel = new PreferencesViewModel(this);            
 
             if (!DynamoModel.IsTestMode && !DynamoModel.IsHeadless)
             {
