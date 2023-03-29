@@ -103,11 +103,6 @@ namespace Dynamo.Interfaces
         List<string> RecentFiles { get; set; }
 
         /// <summary>
-        /// Returns path of the Backup location
-        /// </summary>
-        string BackupLocation { get; set; }
-
-        /// <summary>
         /// Returns list of backup files
         /// </summary>
         List<string> BackupFiles { get; set; }

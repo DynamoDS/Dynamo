@@ -203,6 +203,7 @@
                              Style="{StaticResource LeftTab}">
 
                         <ScrollViewer VerticalScrollBarVisibility="Auto" Height="Auto">
+                            <!--This Grid contains controls for selecting the Language-->
                             <Grid x:Name="GeneralTab" 
                               Margin="4 0 0 0"
                               HorizontalAlignment="Left">

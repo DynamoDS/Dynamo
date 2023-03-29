@@ -1684,17 +1684,17 @@ namespace Dynamo.Models
             }
         }
 
-        public bool UpdateBackupLocation(string selectedBackupLocation)
+        internal bool UpdateBackupLocation(string selectedBackupLocation)
         {            
             return pathManager.UpdateBackupLocation(selectedBackupLocation);
         }
 
-        public bool IsDefaultBackupLocation()
+        internal bool IsDefaultBackupLocation()
         {
             return PreferenceSettings.BackupLocation.Replace(@"\\", @"\").Equals(pathManager.DefaultBackupDirectory.Replace(@"\\", @"\"));
         }
 
-        public string DefaultBackupLocation()
+        internal string DefaultBackupLocation()
         {
             return pathManager.DefaultBackupDirectory;
         }

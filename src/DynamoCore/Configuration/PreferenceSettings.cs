@@ -836,6 +836,7 @@ namespace Dynamo.Configuration
             GroupStyleItemsList = new List<GroupStyleItem>();
             ReadNotificationIds = new List<string>();
             DynamoPlayerFolderGroups = new List<DynamoPlayerFolderGroup>();
+            backupLocation = string.Empty;
         }
 
         /// <summary>
