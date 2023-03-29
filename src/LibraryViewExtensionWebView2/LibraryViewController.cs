@@ -8,6 +8,7 @@ using System.Security.Permissions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using CoreNodeModels.Properties;
 using Dynamo.Controls;
 using Dynamo.Extensions;
 using Dynamo.LibraryViewExtensionWebView2.Handlers;
@@ -339,6 +340,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
             }
 
             SetLibraryFontSize();
+            SetTooltipText();
             //The default value of the zoom factor is 1.0. The value that comes from the slider is in percentage, so we divide by 100 to be equivalent            
             double zoomFactor = ((double)dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale / 100d);
 
@@ -383,6 +385,13 @@ namespace Dynamo.LibraryViewExtensionWebView2
                 if(result != null)
                     libraryFontSize = fontSize;
             }
+        }
+
+        private async void SetTooltipText()
+        {
+            var jsonTooltipText = new { create = Resources.TooltipTextCreate, action = Resources.TooltipTextAction, query = Resources.TooltipTextQuery };
+            var jsonString = JsonConvert.SerializeObject(jsonTooltipText);
+            var result = await ExecuteScriptFunctionAsync(browser, "setTooltipText", jsonString);
         }
 
         #region Tooltip
