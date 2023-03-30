@@ -257,6 +257,67 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void WatchDictionary()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\watch\WatchDictionary.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+            ViewModel.HomeSpace.Run();
+
+            var watchNode = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("daa19ed1-36b0-4586-ae11-6470e7c196bd") as Watch;
+
+            var watchVM = GetWatchViewModel(watchNode);
+
+            Assert.AreEqual(3, watchVM.Children.Count);
+
+            Assert.AreEqual("1", watchVM.Children.ElementAt(0).NodeLabel);
+            Assert.AreEqual("Int64", watchVM.Children.ElementAt(0).ValueType);
+
+            Assert.AreEqual("null", watchVM.Children.ElementAt(1).NodeLabel);
+            Assert.AreEqual("null", watchVM.Children.ElementAt(1).ValueType);
+
+            Assert.AreEqual("null", watchVM.Children.ElementAt(2).NodeLabel);
+            Assert.AreEqual("String", watchVM.Children.ElementAt(2).ValueType);
+        }
+
+        [Test]
+        public void WatchNodeSizeSerializationTest()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\watch\WatchSerializationTest.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+            ViewModel.HomeSpace.Run();
+
+            var watchNode = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("76ea40b1-5e21-48b8-9051-0b6b03ee5075") as Watch;
+
+            //assert default width and height for the watch node.
+            Assert.AreEqual(watchNode.WatchWidth, WatchTree.DefaultWidthSize);
+            Assert.AreEqual(watchNode.WatchHeight, WatchTree.DefaultHeightSize);
+            
+            //Set the width and height of watch node to new values.
+            watchNode.WatchWidth = 150;
+            watchNode.WatchHeight = 300;
+
+            //save the workspace and reopen it to test (de)seralization
+            ViewModel.HomeSpace.Save(openPath);
+            ViewModel.HomeSpace.Clear();
+
+            ViewModel.OpenCommand.Execute(openPath);
+            ViewModel.HomeSpace.Run();
+
+            watchNode = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("76ea40b1-5e21-48b8-9051-0b6b03ee5075") as Watch;
+
+            //Assert new width and height
+            Assert.AreEqual(watchNode.WatchWidth, 150);
+            Assert.AreEqual(watchNode.WatchHeight, 300);
+
+            //reset back to default.
+            watchNode.WatchWidth = WatchTree.DefaultWidthSize;
+            watchNode.WatchHeight = WatchTree.DefaultHeightSize;
+
+            ViewModel.HomeSpace.Save(openPath);
+            ViewModel.HomeSpace.Clear();
+        }
+
+        [Test]
         public void WatchNumber()
         {
             // Switch to a culture where decimal is used for thousands

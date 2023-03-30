@@ -249,6 +249,9 @@ namespace Dynamo.ViewModels
 
         private static string GetStringFromObject(object obj)
         {
+            if (obj == null)
+                return Resources.NullString;
+
             TypeCode type = Type.GetTypeCode(obj.GetType());
             switch (type)
             {
@@ -285,6 +288,9 @@ namespace Dynamo.ViewModels
 
         private string GetDisplayType(object obj)
         {
+            if (obj == null)
+                return Resources.NullString;
+
             TypeCode typeCode = Type.GetTypeCode(obj.GetType());
             // returning a customized user friendly string instead of just returning the name of the type 
             switch (typeCode)
