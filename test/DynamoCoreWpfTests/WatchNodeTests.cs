@@ -257,6 +257,29 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void WatchDictionary()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\watch\WatchDictionary.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+            ViewModel.HomeSpace.Run();
+
+            var watchNode = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("daa19ed1-36b0-4586-ae11-6470e7c196bd") as Watch;
+
+            var watchVM = GetWatchViewModel(watchNode);
+
+            Assert.AreEqual(3, watchVM.Children.Count);
+
+            Assert.AreEqual("1", watchVM.Children.ElementAt(0).NodeLabel);
+            Assert.AreEqual("Int64", watchVM.Children.ElementAt(0).ValueType);
+
+            Assert.AreEqual("null", watchVM.Children.ElementAt(1).NodeLabel);
+            Assert.AreEqual("null", watchVM.Children.ElementAt(1).ValueType);
+
+            Assert.AreEqual("null", watchVM.Children.ElementAt(2).NodeLabel);
+            Assert.AreEqual("String", watchVM.Children.ElementAt(2).ValueType);
+        }
+
+        [Test]
         public void WatchNumber()
         {
             // Switch to a culture where decimal is used for thousands
