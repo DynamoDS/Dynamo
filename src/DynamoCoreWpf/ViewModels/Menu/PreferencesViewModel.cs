@@ -249,7 +249,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return !dynamoViewModel.Model.IsDefaultBackupLocation();
+                return canResetBackupLocation;
             }
             set
             {
