@@ -1680,18 +1680,19 @@ namespace Dynamo.Models
                 {
                     PreferenceSettings.BackupLocation = pathManager.DefaultBackupDirectory;
                 }
+
                 UpdateBackupLocation(PreferenceSettings.BackupLocation);
             }
         }
 
         internal bool UpdateBackupLocation(string selectedBackupLocation)
-        {            
+        {
             return pathManager.UpdateBackupLocation(selectedBackupLocation);
         }
 
         internal bool IsDefaultBackupLocation()
         {
-            return PreferenceSettings.BackupLocation.Replace(@"\\", @"\").Equals(pathManager.DefaultBackupDirectory.Replace(@"\\", @"\"));
+            return PreferenceSettings.BackupLocation.Equals(pathManager.DefaultBackupDirectory);
         }
 
         internal string DefaultBackupLocation()

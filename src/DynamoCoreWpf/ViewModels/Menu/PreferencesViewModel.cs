@@ -238,7 +238,7 @@ namespace Dynamo.ViewModels
             set
             {
                 preferenceSettings.BackupLocation = value;
-                RaisePropertyChanged(nameof(BackupLocation));                
+                RaisePropertyChanged(nameof(BackupLocation));
             }
         }
 
@@ -249,7 +249,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return canResetBackupLocation;
+                return !dynamoViewModel.Model.IsDefaultBackupLocation();
             }
             set
             {
@@ -1258,17 +1258,16 @@ namespace Dynamo.ViewModels
 
         public bool UpdateBackupLocation(string newBackupLocation)
         {
-            var previousBackupLocation = BackupLocation;
-            BackupLocation = newBackupLocation;
 
-            if (dynamoViewModel.Model.UpdateBackupLocation(newBackupLocation))
+            bool isSafelyLocation = dynamoViewModel.Model.UpdateBackupLocation(newBackupLocation);
+            if (isSafelyLocation)
             {
+                BackupLocation = newBackupLocation;
                 CanResetBackupLocation = !dynamoViewModel.Model.IsDefaultBackupLocation();
                 return true;
-            } else
+            }
+            else
             {
-                BackupLocation = previousBackupLocation;
-                CanResetBackupLocation = !dynamoViewModel.Model.IsDefaultBackupLocation();
                 return false;
             }
         }
