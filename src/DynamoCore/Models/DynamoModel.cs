@@ -648,7 +648,7 @@ namespace Dynamo.Models
             IsHeadless = config.IsHeadless;
 
             DebugSettings = new DebugSettings();
-            Logger = new DynamoLogger(DebugSettings, pathManager.LogDirectory, IsTestMode, CLIMode);
+            Logger = new DynamoLogger(DebugSettings, pathManager.LogDirectory, IsTestMode, CLIMode, IsServiceMode);
 
             if (!IsServiceMode)
             {
@@ -2418,6 +2418,12 @@ namespace Dynamo.Models
         /// </summary>
         protected void SaveBackupFiles(object state)
         {
+            //No backup files in ServiceMode due to Lambda restrictions
+            if (IsServiceMode)
+            {
+                return;
+            }
+
             OnRequestDispatcherBeginInvoke(() =>
             {
                 // tempDict stores the list of backup files and their corresponding workspaces IDs

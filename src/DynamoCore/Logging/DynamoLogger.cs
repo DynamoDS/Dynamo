@@ -77,6 +77,7 @@ namespace Dynamo.Logging
         private bool _isDisposed;
         private readonly bool testMode;
         private readonly bool cliMode;
+        private readonly bool serviceMode;
 
         private TextWriter FileWriter { get; set; }
         private StringBuilder ConsoleWriter { get; set; }
@@ -214,6 +215,41 @@ namespace Dynamo.Logging
         }
 
         /// <summary>
+        /// Initializes a new instance of <see cref="DynamoLogger"/> class
+        /// with specified debug settings and directory where to write logs
+        /// </summary>
+        /// <param name="debugSettings">Debug settings</param>
+        /// <param name="logDirectory">Directory path where log file will be written</param>
+        /// <param name="isTestMode">Test mode is true or false.</param>
+        /// <param name="isCLIMode">We want to allow logging when CLI mode is true even if we are in test mode.</param>
+        /// <param name="isServiceMode">We want restrict logging in service mode to console only due to lambda limitations.</param>
+        public DynamoLogger(DebugSettings debugSettings, string logDirectory, Boolean isTestMode, Boolean isCLIMode, Boolean isServiceMode)
+            : this(debugSettings, logDirectory, isTestMode)
+        {
+            lock (guardMutex)
+            {
+                this.debugSettings = debugSettings;
+                _isDisposed = false;
+
+                WarningLevel = WarningLevel.Mild;
+                Warning = "";
+
+                notifications = new List<NotificationMessage>();
+
+                testMode = isTestMode;
+                cliMode = isCLIMode;
+                serviceMode = isServiceMode;
+
+                if (!testMode && !isServiceMode)
+                {
+                    StartLoggingToConsoleAndFile(logDirectory);
+                }
+
+                XmlDocumentationExtensions.LogToConsole += Log;
+            }
+        }
+
+        /// <summary>
         /// Logs the specified message.
         /// </summary>
         /// <param name="message">The message.</param>
@@ -242,6 +278,12 @@ namespace Dynamo.Logging
                 {
                     Console.WriteLine(string.Format("{0} : {1}", DateTime.UtcNow.ToString("u"), message));
                     return;
+                }
+
+                if (serviceMode && (level == LogLevel.Console || level == LogLevel.File))
+                {
+                    ConsoleWriter.AppendLine("LogLevel switched to ConsoleOnly in service mode");
+                    level = LogLevel.ConsoleOnly;
                 }
 
                 switch (level)
@@ -444,7 +486,8 @@ namespace Dynamo.Logging
         {
             lock (this.guardMutex)
             {
-                if (FileWriter != null && ConsoleWriter != null)
+                if (serviceMode ||
+                    (FileWriter != null && ConsoleWriter != null))
                 {
                     return;
                 }
