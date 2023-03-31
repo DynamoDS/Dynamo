@@ -57,6 +57,7 @@ namespace Dynamo.Configuration
         private bool isEnablePersistExtensionsEnabled;
         private bool isStaticSplashScreenEnabled;
         private bool isCreatedFromValidFile = true;
+        private string backupLocation;
 
         #region Constants
         /// <summary>
@@ -356,6 +357,19 @@ namespace Dynamo.Configuration
         /// A list of recently opened file paths.
         /// </summary>
         public List<string> RecentFiles { get; set; }
+
+        /// <summary>
+        /// Backup files path
+        /// </summary>
+        public string BackupLocation
+        {
+            get { return backupLocation; }
+            set
+            {
+                backupLocation = value;
+                RaisePropertyChanged(nameof(BackupLocation));
+            }
+        }
 
         /// <summary>
         /// A list of backup file paths.
@@ -806,6 +820,7 @@ namespace Dynamo.Configuration
             BackupInterval = DefaultBackupInterval;
             BackupFilesCount = 1;
             BackupFiles = new List<string>();
+            BackupLocation = string.Empty;
 
             LibraryZoomScale = 100;
             PythonScriptZoomScale = 100;
@@ -827,6 +842,7 @@ namespace Dynamo.Configuration
             GroupStyleItemsList = new List<GroupStyleItem>();
             ReadNotificationIds = new List<string>();
             DynamoPlayerFolderGroups = new List<DynamoPlayerFolderGroup>();
+            backupLocation = string.Empty;
         }
 
         /// <summary>
