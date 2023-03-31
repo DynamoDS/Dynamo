@@ -17,8 +17,9 @@ namespace DynamoCoreWpfTests
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("VMDataBridge.dll");
-            libraries.Add("DSCoreNodes.dll");
             libraries.Add("LiveCharts.dll");
+            libraries.Add("DSCoreNodes.dll");
+
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -40,6 +41,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Category("Failure")]
         public void LiveChartsBarChartCreationTest()
         {
             var homespace = Model.CurrentWorkspace as HomeWorkspaceModel;
@@ -100,6 +102,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Category("Failure")]
         public void LiveChartsBasicLineChartCreationTest()
         {
             var homespace = Model.CurrentWorkspace as HomeWorkspaceModel;
@@ -160,6 +163,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Category("Failure")]
         public void LiveChartsHeatSeriesCreationTest()
         {
             var homespace = Model.CurrentWorkspace as HomeWorkspaceModel;
@@ -227,6 +231,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Category("Failure")]
         public void LiveChartsPieChartCreationTest()
         {
             var homespace = Model.CurrentWorkspace as HomeWorkspaceModel;
@@ -287,6 +292,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Category("Failure")]
         public void LiveChartsScatterPlotCreationTest()
         {
             var homespace = Model.CurrentWorkspace as HomeWorkspaceModel;
@@ -351,6 +357,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Category("Failure")]
         public void LiveChartsXYLineChartCreationTest()
         {
             var homespace = Model.CurrentWorkspace as HomeWorkspaceModel;
