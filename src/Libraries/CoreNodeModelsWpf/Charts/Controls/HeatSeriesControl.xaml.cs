@@ -7,6 +7,7 @@ using LiveCharts.Defaults;
 using LiveCharts.Wpf;
 using System.ComponentModel;
 using System.Windows;
+using System.Linq;
 
 namespace CoreNodeModelsWpf.Charts.Controls
 {
@@ -17,6 +18,9 @@ namespace CoreNodeModelsWpf.Charts.Controls
     {
         private Random rnd = new Random();
         private readonly HeatSeriesNodeModel model;
+
+        private double MIN_WIDTH = 300;
+        private double MIN_HEIGHT = 300;
 
         private void OnPropertyChanged(string propertyName)
         {
@@ -43,41 +47,8 @@ namespace CoreNodeModelsWpf.Charts.Controls
             // Load sample data if any ports are not connected
             if (!model.InPorts[0].IsConnected && !model.InPorts[1].IsConnected && !model.InPorts[2].IsConnected && !model.InPorts[3].IsConnected)
             {
-                // X - Products
-                var XLabels = new[]
-                {
-                    "Item-1",
-                    "Item-2",
-                    "Item-3",
-                    "Item-4",
-                    "Item-5"
-                };
+                var chartValues = DefaultValues();
 
-                // Y - Day of the week
-                var YLabels = new[]
-                {
-                    "Monday",
-                    "Tuesday",
-                    "Wednesday",
-                    "Thursday",
-                    "Friday",
-                    "Saturday",
-                    "Sunday"
-                };
-
-                // Value for each product on every day of the week
-                var chartValues = new ChartValues<HeatPoint>();
-
-                for(var i = 0; i < XLabels.Length; i++)
-                {
-                    for ( var j = 0; j < YLabels.Length; j++)
-                    {
-                        chartValues.Add(new HeatPoint(i, j, rnd.Next(0, 10)));
-                    }
-                }
-
-                XAxis.Labels = XLabels;
-                YAxis.Labels = YLabels;
                 HeatSeriesUI.Series.Add(new HeatSeries()
                 {
                     Values = chartValues,
@@ -89,34 +60,10 @@ namespace CoreNodeModelsWpf.Charts.Controls
             {
                 if (model.XLabels.Count == model.Values.Count && model.XLabels.Count > 0)
                 {
-                    var chartValues = new ChartValues<HeatPoint>();
-
-                    for (var i = 0; i < model.XLabels.Count; i++)
-                    {
-                        for (var j = 0; j < model.YLabels.Count; j++)
-                        {
-                            chartValues.Add(new HeatPoint(i, j, model.Values[i][j]));
-                        }
-                    }
-
-                    var colors = BuildColors(model);
-                    var hoverIconColor = new SolidColorBrush(Color.FromArgb(255, 94, 92, 90));
-
-                    XAxis.Labels = model.XLabels;
-                    YAxis.Labels = model.YLabels;
-                    HeatSeriesUI.Series.Add(new HeatSeries()
-                    {
-                        Values = chartValues,
-                        DrawsHeatRange = false,
-                        GradientStopCollection = colors,
-                        //Fill = hoverIconColor,
-                        PointGeometry = DefaultGeometries.Square
-                        //DataLabels = true
-                    });
+                    UpdateValues(model);
                 }
             }
         }
-
         private void NodeModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "DataUpdated")
@@ -126,33 +73,103 @@ namespace CoreNodeModelsWpf.Charts.Controls
                 // Invoke on UI thread
                 this.Dispatcher.Invoke(() =>
                 {
-                    var chartValues = new ChartValues<HeatPoint>();
-
-                    for (var i = 0; i < model.XLabels.Count; i++)
+                    if (!model.InPorts[0].IsConnected && !model.InPorts[1].IsConnected && !model.InPorts[2].IsConnected && !model.InPorts[3].IsConnected)
                     {
-                        for (var j = 0; j < model.YLabels.Count; j++)
+                        var chartValues = DefaultValues();
+
+                        HeatSeriesUI.Series.Add(new HeatSeries()
                         {
-                            chartValues.Add(new HeatPoint(i, j, model.Values[i][j]));
-                        }
+                            Values = chartValues,
+                            DrawsHeatRange = false,
+                        });
                     }
-
-                    var colors = BuildColors(model);
-                    var hoverIconColor = new SolidColorBrush(Color.FromArgb(255, 94, 92, 90));
-
-                    HeatSeriesUI.Series.Clear();
-                    XAxis.Labels = model.XLabels;
-                    YAxis.Labels = model.YLabels;
-                    HeatSeriesUI.Series.Add(new HeatSeries()
+                    else
                     {
-                        Values = chartValues,
-                        DrawsHeatRange = false,
-                        GradientStopCollection = colors,
-                        //Fill = hoverIconColor,
-                        PointGeometry = DefaultGeometries.Square
-                        //DataLabels = true
-                    });
+                        UpdateValues(model);
+                    }
                 });
             }
+        }
+
+        private ChartValues<HeatPoint> DefaultValues()
+        {
+            // X - Products
+            var XLabels = new[]
+            {
+                    "Item-1",
+                    "Item-2",
+                    "Item-3",
+                    "Item-4",
+                    "Item-5"
+                };
+
+            // Y - Day of the week
+            var YLabels = new[]
+            {
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday",
+                    "Saturday",
+                    "Sunday"
+                };
+
+            // Value for each product on every day of the week
+            var chartValues = new ChartValues<HeatPoint>();
+
+            for (var i = 0; i < XLabels.Length; i++)
+            {
+                for (var j = 0; j < YLabels.Length; j++)
+                {
+                    chartValues.Add(new HeatPoint(i, j, rnd.Next(0, 10)));
+                }
+            }
+
+            XAxis.Labels = XLabels;
+            YAxis.Labels = YLabels;
+
+            return chartValues;
+        }
+
+        private void UpdateValues(HeatSeriesNodeModel model)
+        {
+            var chartValues = new ChartValues<HeatPoint>();
+            HeatSeriesUI.Series.Clear();
+
+            if (model == null)
+            {
+                model = this.model;
+            }
+
+            var colors = new GradientStopCollection();
+
+            if (model.XLabels != null && model.XLabels.Any()
+             && model.YLabels != null && model.YLabels.Any()
+             && model.Values != null && model.Values.Any()
+             && model.Colors != null && model.Colors.Any())
+            {
+                for (var i = 0; i < model.XLabels.Count; i++)
+                {
+                    for (var j = 0; j < model.YLabels.Count; j++)
+                    {
+                        chartValues.Add(new HeatPoint(i, j, model.Values[i][j]));
+                    }
+                }
+
+                colors = BuildColors(model);
+
+                XAxis.Labels = model.XLabels;
+                YAxis.Labels = model.YLabels;
+            }
+
+            HeatSeriesUI.Series.Add(new HeatSeries()
+            {
+                Values = chartValues,
+                DrawsHeatRange = false,
+                GradientStopCollection = colors,
+                PointGeometry = DefaultGeometries.Square
+            });
         }
 
         private GradientStopCollection BuildColors(HeatSeriesNodeModel model)
@@ -202,12 +219,12 @@ namespace CoreNodeModelsWpf.Charts.Controls
             {
                 var inputGrid = this.Parent as Grid;
 
-                if (xAdjust >= inputGrid.MinWidth)
+                if (xAdjust >= inputGrid.MinWidth && xAdjust >= MIN_WIDTH)
                 {
                     Width = xAdjust;
                 }
 
-                if (yAdjust >= inputGrid.MinHeight)
+                if (yAdjust >= inputGrid.MinHeight && yAdjust >= MIN_HEIGHT)
                 {
                     Height = yAdjust;
                 }
