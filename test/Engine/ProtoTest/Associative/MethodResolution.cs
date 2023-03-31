@@ -100,6 +100,19 @@ val = c.execute(c);
         }
 
         [Test]
+        public void TestMethodOverload_ReplicationEmptyOrNullItem()
+        {
+            string code =
+                @"
+import (""DSCoreNodes.dll"");
+c = [[],0.2,0.4];
+val = Math.Max(c,0);
+                ";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("val", new Object[]{null,.2,.4});
+        }
+
+        [Test]
         public void TestMethodResolutionOverInheritance()
         {
             string code =
