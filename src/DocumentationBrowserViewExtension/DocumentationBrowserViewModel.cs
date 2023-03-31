@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Web;
 using System.Windows;
 using System.Windows.Markup;
 using Dynamo.Core;
@@ -436,7 +437,10 @@ namespace Dynamo.DocumentationBrowser
                 }
                 else
                 {
-                    raiseInsertGraph(this, new InsertDocumentationLinkEventArgs(Resources.FileNotFoundFailureMessage, DynamoGraphFromMDFilePath(this.Link.AbsolutePath)));
+                    string fileAbsolutePath = this.Link.AbsolutePath;
+                    if(fileAbsolutePath.Contains("%20"))
+                        fileAbsolutePath = HttpUtility.UrlDecode(this.Link.AbsolutePath);
+                    raiseInsertGraph(this, new InsertDocumentationLinkEventArgs(Resources.FileNotFoundFailureMessage, DynamoGraphFromMDFilePath(fileAbsolutePath)));
                     return;
                 }
             }
