@@ -437,10 +437,7 @@ namespace Dynamo.DocumentationBrowser
                 }
                 else
                 {
-                    string fileAbsolutePath = this.Link.AbsolutePath;
-                    if(fileAbsolutePath.Contains("%20"))
-                        fileAbsolutePath = HttpUtility.UrlDecode(this.Link.AbsolutePath);
-                    raiseInsertGraph(this, new InsertDocumentationLinkEventArgs(Resources.FileNotFoundFailureMessage, DynamoGraphFromMDFilePath(fileAbsolutePath)));
+                    raiseInsertGraph(this, new InsertDocumentationLinkEventArgs(Resources.FileNotFoundFailureMessage, DynamoGraphFromMDFilePath(this.Link.AbsolutePath)));
                     return;
                 }
             }
@@ -452,8 +449,7 @@ namespace Dynamo.DocumentationBrowser
         private string DynamoGraphFromMDFilePath(string path)
         {
             var dynPath = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path).Replace("%20", " ")) + ".dyn";
-            return dynPath;
-            return path.Replace("%20", " ").Replace(".md", ".dyn");
+            return dynPath.Replace("%20", " ");
         }
 
 
