@@ -1,18 +1,14 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Web;
 using System.Windows;
-using System.Windows.Markup;
 using Dynamo.Core;
 using Dynamo.DocumentationBrowser.Properties;
 using Dynamo.Logging;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using Dynamo.Wpf.Extensions;
 
 namespace Dynamo.DocumentationBrowser
 {
