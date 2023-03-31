@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Web;
 using System.Windows;
 using Dynamo.Core;
 using Dynamo.DocumentationBrowser.Properties;
@@ -444,8 +445,8 @@ namespace Dynamo.DocumentationBrowser
 
         private string DynamoGraphFromMDFilePath(string path)
         {
-            var dynPath = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path).Replace("%20", " ")) + ".dyn";
-            return dynPath.Replace("%20", " ");
+            path = HttpUtility.UrlDecode(path);
+            return Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path)) + ".dyn";
         }
 
 
