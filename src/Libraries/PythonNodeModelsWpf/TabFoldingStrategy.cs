@@ -51,12 +51,6 @@ namespace PythonNodeModelsWpf
 
             foreach (DocumentLine line in (document as TextDocument).Lines)
             {
-                // If this is the final line, end this loop
-                //if (line.EndOffset >= document.TextLength)
-                //{
-                //    break;
-                //}
-
                 var lineText = document.GetText(line.Offset, line.Length);
                 if (lineText.StartsWith("#")) continue;
 
