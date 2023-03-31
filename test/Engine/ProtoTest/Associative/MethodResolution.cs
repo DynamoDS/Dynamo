@@ -109,7 +109,7 @@ c = [[],0.2,0.4];
 val = Math.Max(c,0);
                 ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("val", new Object[]{null,.2,.4});
+            thisTest.Verify("val", new Object[]{Array.Empty<object>(),.2,.4});
         }
 
         [Test]

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ProtoCore.DSASM;
@@ -298,7 +298,7 @@ namespace ProtoCore.Lang.Replication
         /// <param name="formalParams"></param>
         /// <param name="replicationInstructions"></param>
         /// <returns></returns>
-        public static List<StackValue> EstimateReducedParams(List<StackValue> formalParams, List<ReplicationInstruction> replicationInstructions, RuntimeCore runtimeCore)
+        public static List<StackValue> EstimateReducedParams(List<StackValue> formalParams, List<ReplicationInstruction> replicationInstructions, RuntimeCore runtimeCore, bool ignoreEmpty = true)
         {
             //Compute the reduced Type args
             List<StackValue> reducedParamTypes = new List<StackValue>(formalParams);
@@ -319,7 +319,7 @@ namespace ProtoCore.Lang.Replication
                         //It is a collection, so cast it to an array and pull the type of the first element
                         //The elements of the array are still type structures
                         if (array.Count == 0)
-                            reducedSV = StackValue.Null;
+                            continue;
                         else
                             reducedSV = array.GetValueFromIndex(0, runtimeCore);
                     }
