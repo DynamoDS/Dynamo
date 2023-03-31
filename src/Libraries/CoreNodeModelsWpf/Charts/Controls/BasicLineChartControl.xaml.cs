@@ -6,6 +6,8 @@ using LiveCharts;
 using LiveCharts.Wpf;
 using System.ComponentModel;
 using System.Windows;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CoreNodeModelsWpf.Charts
 {
@@ -16,6 +18,9 @@ namespace CoreNodeModelsWpf.Charts
     {
         private Random rnd = new Random();
         private readonly BasicLineChartNodeModel model;
+
+        private double MIN_WIDTH = 300;
+        private double MIN_HEIGHT = 300;
 
         private void OnPropertyChanged(string propertyName)
         {
@@ -42,12 +47,7 @@ namespace CoreNodeModelsWpf.Charts
             // Load sample data if any ports are not connected
             if (!model.InPorts[0].IsConnected && !model.InPorts[1].IsConnected && !model.InPorts[2].IsConnected)
             {
-                var seriesRange = new LineSeries[]
-                {
-                    new LineSeries { Title = "Series 1", Values = new ChartValues<double> { 4, 6, 5, 2, 4 } },
-                    new LineSeries { Title = "Series 2", Values = new ChartValues<double> { 6, 7, 3, 4, 6 } },
-                    new LineSeries { Title = "Series 3", Values = new ChartValues<double> { 4, 2, 7, 2, 7 } }
-                };
+                var seriesRange = DefaultSeries();
 
                 BasicLineChart.Series.AddRange(seriesRange);
             }
@@ -55,19 +55,7 @@ namespace CoreNodeModelsWpf.Charts
             {
                 if (model.Labels.Count == model.Values.Count && model.Labels.Count > 0)
                 {
-                    LineSeries[] seriesRange = new LineSeries[model.Labels.Count];
-
-                    for (var i = 0; i < model.Labels.Count; i++)
-                    {
-                        seriesRange[i] = new LineSeries
-                        {
-                            Title = model.Labels[i],
-                            Values = new ChartValues<double>(model.Values[i]),
-                            Stroke = model.Colors[i],
-                            StrokeThickness = 2.0,
-                            //Fill = Brushes.Transparent
-                        };
-                    }
+                    var seriesRange = UpdateSeries(model);
 
                     BasicLineChart.Series.AddRange(seriesRange);
                 }
@@ -76,32 +64,71 @@ namespace CoreNodeModelsWpf.Charts
 
         private void NodeModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if(e.PropertyName == "DataUpdated")
+            if (e.PropertyName == "DataUpdated")
             {
                 var model = sender as BasicLineChartNodeModel;
 
                 // Invoke on UI thread
                 this.Dispatcher.Invoke(() =>
                 {
-                    LineSeries[] seriesRange = new LineSeries[model.Labels.Count];
-
-                    for (var i = 0; i < model.Labels.Count; i++)
-                    {
-                        seriesRange[i] = new LineSeries
-                        {
-                            Title = model.Labels[i],
-                            Values = new ChartValues<double>(model.Values[i]),
-                            Stroke = model.Colors[i],
-                            StrokeThickness = 2.0,
-                            //Fill = Brushes.Transparent,
-                            //PointGeometrySize = 0
-                        };
-                    }
-
                     BasicLineChart.Series.Clear();
-                    BasicLineChart.Series.AddRange(seriesRange);
+
+                    if (!model.InPorts[0].IsConnected && !model.InPorts[1].IsConnected && !model.InPorts[2].IsConnected)
+                    {
+                        var seriesRange = DefaultSeries();
+
+                        BasicLineChart.Series.AddRange(seriesRange);
+                    }
+                    else
+                    {
+                        var seriesRange = UpdateSeries(model);
+
+                        BasicLineChart.Series.AddRange(seriesRange);
+                    }
                 });
             }
+        }
+
+
+        private LineSeries[] DefaultSeries()
+        {
+            var series = new LineSeries[]
+                {
+                    new LineSeries { Title = "Series 1", Values = new ChartValues<double> { 4, 6, 5, 2, 4 } },
+                    new LineSeries { Title = "Series 2", Values = new ChartValues<double> { 6, 7, 3, 4, 6 } },
+                    new LineSeries { Title = "Series 3", Values = new ChartValues<double> { 4, 2, 7, 2, 7 } }
+                };
+
+            return series;
+        }
+
+        private List<LineSeries> UpdateSeries(BasicLineChartNodeModel model)
+        {
+            var seriesRange = new List<LineSeries>();
+
+            if (model == null)
+            {
+                model = this.model;
+            }
+
+            if (model.Labels != null && model.Labels.Any()
+             && model.Values != null && model.Values.Any()
+             && model.Colors != null && model.Colors.Any())
+            {
+                for (var i = 0; i < model.Labels.Count; i++)
+                {
+                    seriesRange.Add(new LineSeries
+                    {
+                        Title = model.Labels[i],
+                        Values = new ChartValues<double>(model.Values[i]),
+                        Stroke = model.Colors[i],
+                        StrokeThickness = 2.0,
+                    });
+                }
+
+            }
+
+            return seriesRange;
         }
 
         private void ThumbResizeThumbOnDragDeltaHandler(object sender, DragDeltaEventArgs e)
@@ -113,12 +140,12 @@ namespace CoreNodeModelsWpf.Charts
             {
                 var inputGrid = this.Parent as Grid;
 
-                if (xAdjust >= inputGrid.MinWidth)
+                if (xAdjust >= inputGrid.MinWidth && xAdjust >= MIN_WIDTH)
                 {
                     Width = xAdjust;
                 }
 
-                if (yAdjust >= inputGrid.MinHeight)
+                if (yAdjust >= inputGrid.MinHeight && xAdjust >= MIN_HEIGHT)
                 {
                     Height = yAdjust;
                 }
