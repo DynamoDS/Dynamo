@@ -160,7 +160,7 @@ namespace Dynamo.Logging
         /// </summary>
         /// <param name="debugSettings">Debug settings</param>
         /// <param name="logDirectory">Directory path where log file will be written</param>
-        [Obsolete("This will be removed in 3.0, please use DynamoLogger(debugSettings, logDirectory, isTestMode) instead.")]
+        [Obsolete("This will be removed in 3.0, please use DynamoLogger(debugSettings, logDirectory, isTestMode, isCLIMode, isServiceMode) instead.")]
         public DynamoLogger(DebugSettings debugSettings, string logDirectory) : this(debugSettings, logDirectory, false)
         {
             
@@ -173,6 +173,7 @@ namespace Dynamo.Logging
         /// <param name="debugSettings">Debug settings</param>
         /// <param name="logDirectory">Directory path where log file will be written</param>
         /// <param name="isTestMode">Test mode is true or false.</param>
+        [Obsolete("This will be removed in 3.0, please use DynamoLogger(debugSettings, logDirectory, isTestMode, isCLIMode, isServiceMode) instead.")]
         public DynamoLogger(DebugSettings debugSettings, string logDirectory, Boolean isTestMode)
         {
             lock (guardMutex)
@@ -204,6 +205,7 @@ namespace Dynamo.Logging
         /// <param name="logDirectory">Directory path where log file will be written</param>
         /// <param name="isTestMode">Test mode is true or false.</param>
         /// <param name="isCLIMode">We want to allow logging when CLI mode is true even if we are in test mode.</param>
+        [Obsolete("This will be removed in 3.0, please use DynamoLogger(debugSettings, logDirectory, isTestMode, isCLIMode, isServiceMode) instead.")]
         public DynamoLogger(DebugSettings debugSettings, string logDirectory, Boolean isTestMode, Boolean isCLIMode)
             :this(debugSettings, logDirectory, isTestMode)
         {
@@ -223,6 +225,7 @@ namespace Dynamo.Logging
         /// <param name="isTestMode">Test mode is true or false.</param>
         /// <param name="isCLIMode">We want to allow logging when CLI mode is true even if we are in test mode.</param>
         /// <param name="isServiceMode">We want restrict logging in service mode to console only due to lambda limitations.</param>
+        /// TODO(DYN-5757): Review usage of isTestMode,isTestMode,isServiceMode across Dynamo and see how we can consildate all these flags.
         public DynamoLogger(DebugSettings debugSettings, string logDirectory, Boolean isTestMode, Boolean isCLIMode, Boolean isServiceMode)
             : this(debugSettings, logDirectory, isTestMode)
         {
