@@ -144,7 +144,6 @@
                         </ListBox.ItemTemplate>
                     </ListBox>
                 </Border>
-                
                 <StackPanel Visibility="{Binding Path=DisplayAutocompleteMLStaticPage, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <Image Name="NoRecommendations"
                            Width="205"
