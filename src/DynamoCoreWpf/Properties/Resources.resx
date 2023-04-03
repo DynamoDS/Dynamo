@@ -2537,6 +2537,18 @@ Uninstall the following packages: {0}?</value>
     <value>Default Ranking Method</value>
     <comment>Label used in the features tab</comment>
   </data>
+  <data name="ConfidenceToolTipTitle" xml:space="preserve">
+    <value>Confidence rating</value>
+    <comment>Confidence tooltip title</comment>
+  </data>
+    <data name="ConfidenceToolTipDescription" xml:space="preserve">
+    <value>Represents estimated probability that the given node is the right choice. Recommended nodes are listed in order from highest to lowest confidence level. Confidence level percentages for all recommended nodes add up to about 100%.</value>
+    <comment>Confidence tooltip description</comment>
+  </data>
+    <data name="ConfidenceToolTipoLearnMore" xml:space="preserve">
+    <value>Learn more</value>
+    <comment>Confidence tooltip Learn more</comment>
+  </data>
   <data name="ObjectType" xml:space="preserve">
     <value>Node Type Match</value>
     <comment>Label used in the features tab</comment>

@@ -14,6 +14,7 @@ using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels;
+using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.UI.Controls
 {
@@ -27,6 +28,10 @@ namespace Dynamo.UI.Controls
         ListBoxItem HighlightedItem;
 
         internal event Action<ShowHideFlags> RequestShowNodeAutoCompleteSearch;
+
+        double currentX;
+
+        ListBoxItem currentListBoxItem;
 
         /// <summary>
         /// Node AutoComplete Search ViewModel DataContext
@@ -117,6 +122,30 @@ namespace Dynamo.UI.Controls
                     searchElementInfo);
                 }
             }
+        }        
+
+        private void OnMouseMove(object sender, MouseEventArgs e)
+        {
+            if (!(sender is FrameworkElement fromSender)) return;
+            currentX = e.GetPosition(MembersListBox).X;
+
+            DisplayOrHideConfidenceTooltip(sender);
+        }
+
+        private void DisplayOrHideConfidenceTooltip(object sender)
+        {
+            currentListBoxItem = sender as ListBoxItem;
+            if (currentX <= 35)
+            {
+                confidenceToolTip.PlacementTarget = currentListBoxItem;
+                confidenceToolTip.Placement = PlacementMode.Bottom;
+                confidenceToolTip.IsOpen = true;
+            }
+            else
+            {
+                confidenceToolTip.IsOpen = false;
+                confidenceToolTip.PlacementTarget = null;
+            }
         }
 
         private void OnMouseEnter(object sender, MouseEventArgs e)
@@ -126,6 +155,17 @@ namespace Dynamo.UI.Controls
             HighlightedItem.IsSelected = false;
             toolTipPopup.DataContext = fromSender.DataContext;
             toolTipPopup.IsOpen = true;
+            confidenceToolTip.IsOpen = false;
+
+            DisplayOrHideConfidenceTooltip(sender);
+
+            dynamic currentNodeSearchElement = currentListBoxItem.DataContext;
+            confidenceScoreTitle.Text = $"{Res.ConfidenceToolTipTitle}: {currentNodeSearchElement.AutoCompletionNodeMachineLearningInfo.ConfidenceScore}%";           
+        }
+
+        private void onCloseConfidenceToolTip(object sender, RoutedEventArgs e)
+        {
+            confidenceToolTip.IsOpen = false;
         }
 
         private void OnMouseLeave(object sender, MouseEventArgs e)
@@ -135,6 +175,12 @@ namespace Dynamo.UI.Controls
             HighlightedItem.IsSelected = true;
             toolTipPopup.DataContext = null;
             toolTipPopup.IsOpen = false;
+        }
+
+        private void onConfidenceToolTipLearnMoreClicked(object sender, MouseButtonEventArgs e)
+        {
+            confidenceToolTip.IsOpen = false;
+            ViewModel.dynamoViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Res.NodeAutocompleteDocumentationUriString, UriKind.Relative)));
         }
 
         private void OnNodeAutoCompleteSearchControlVisibilityChanged(object sender, DependencyPropertyChangedEventArgs e)

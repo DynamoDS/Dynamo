@@ -3650,7 +3650,7 @@
                                VerticalAlignment="Center"
                                HorizontalContentAlignment="Center"
                                VerticalContentAlignment="Center"
-                               Content="✓"
+                               Content="âœ“"
                                DockPanel.Dock="Left"
                                FontSize="9px"
                                Foreground="White"
@@ -3750,7 +3750,7 @@
                                VerticalAlignment="Center"
                                HorizontalContentAlignment="Center"
                                VerticalContentAlignment="Center"
-                               Content="✓"
+                               Content="âœ“"
                                DockPanel.Dock="Left"
                                FontSize="9px"
                                Foreground="White"
@@ -5046,7 +5046,7 @@
                                VerticalAlignment="Center"
                                HorizontalContentAlignment="Center"
                                VerticalContentAlignment="Center"
-                               Content="✓"
+                               Content="âœ“"
                                DockPanel.Dock="Left"
                                FontSize="9px"
                                Foreground="White"
@@ -5559,6 +5559,26 @@
     <Style x:Key="TextBlockLink" TargetType="TextBlock">
         <Setter Property="Foreground" Value="{StaticResource TextBlockLinkForegroundColor}" />
         <Setter Property="Cursor" Value="Hand" />
+    </Style>
+
+    <!-- TextBlock Dark as a Link -->
+    <Style x:Key="TextBlockLinkDark" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{StaticResource TextBlockLinkForegroundColorDark}" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="FontSize" Value="11" />
+    </Style>
+
+    <!-- TextBlock ToolTip Title -->
+    <Style x:Key="TextBlockToolTipTitle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementBold}" />
+        <Setter Property="FontSize" Value="12" />
+    </Style>
+
+    
+    <!-- TextBlock ToolTip Description -->
+    <Style x:Key="TextBlockToolTipDescription" TargetType="Run">
+        <Setter Property="Foreground" Value="{StaticResource TextBlockToolTipDescriptionColor}" />
+        <Setter Property="FontSize" Value="11" />
     </Style>
 
     <!-- Common Information Icon -->
