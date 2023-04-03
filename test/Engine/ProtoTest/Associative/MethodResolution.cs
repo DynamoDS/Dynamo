@@ -1,4 +1,5 @@
 using System;
+using FFITarget;
 using NUnit.Framework;
 namespace ProtoTest.Associative
 {
@@ -100,7 +101,7 @@ val = c.execute(c);
         }
 
         [Test]
-        public void TestMethodOverload_ReplicationEmptyOrNullItem()
+        public void TestMethodOverload_ReplicationEmptFirstItem()
         {
             string code =
                 @"
@@ -110,6 +111,20 @@ val = Math.Max(c,0);
                 ";
             thisTest.RunScriptSource(code);
             thisTest.Verify("val", new Object[]{Array.Empty<object>(),.2,.4});
+        }
+        [Test]
+        public void TestMethodResolution_ReplicationOverArrayWithNullFirstItem()
+        {
+            string code =
+                @"
+import (""FFITarget.dll"");
+a = DummyPoint.ByCoordinates(0,0,0);
+c = [null,a,a];
+val = c == null ? ""nothing"" : c.Translate(5,5,5);
+                ";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("val", new Object[]
+                {"nothing", DummyPoint.ByCoordinates(5, 5, 5), DummyPoint.ByCoordinates(5, 5, 5) });
         }
 
         [Test]
