@@ -86,9 +86,9 @@ namespace DynamoCLI
                     Console.WriteLine("Press Enter to shutdown...");
                 }
             }
-            catch
+            catch(Exception ex)
             {
-                Console.WriteLine("Server is shutting down due to an error");
+                Console.WriteLine("Server is shutting down due to an error : " + ex.ToString());
             }
         }
 
