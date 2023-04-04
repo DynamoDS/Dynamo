@@ -26,6 +26,7 @@
     <Color x:Key="Blue300">#6AC0E7</Color>
     <Color x:Key="Blue350">#6DD2FF</Color>
     <Color x:Key="Blue400">#38ABDF</Color>
+    <Color x:Key="Blue450">#006EAF</Color>
     <Color x:Key="DarkBlue200">#BCD3EE</Color>
     <Color x:Key="DefaultFontColor">#DCDCDC</Color>
     <Color x:Key="HoverFontColor">#1AFFFFFF</Color>
@@ -54,6 +55,7 @@
     <SolidColorBrush x:Key="Blue200Brush" Color="{StaticResource Blue200}" />
     <SolidColorBrush x:Key="Blue300Brush" Color="{StaticResource Blue300}" />
     <SolidColorBrush x:Key="Blue400Brush" Color="{StaticResource Blue400}" />
+    <SolidColorBrush x:Key="Blue450Brush" Color="{StaticResource Blue450}" />
     <SolidColorBrush x:Key="DarkBlue200Brush" Color="{StaticResource DarkBlue200}" />
     <SolidColorBrush x:Key="DefaultFontColorBrush" Color="{StaticResource DefaultFontColor}" />
     <SolidColorBrush x:Key="HoverFontColorBrush" Color="{StaticResource HoverFontColor}" />
@@ -189,5 +191,13 @@
 
     <!--  TextBlock Link  -->
     <SolidColorBrush x:Key="TextBlockLinkForegroundColor" Color="{StaticResource Blue350}" />
-    
+
+    <!--  TextBlock Link Dark  -->
+    <SolidColorBrush x:Key="TextBlockLinkForegroundColorDark" Color="{StaticResource Blue450}" />
+
+    <!--  TextBlock ToolTip color -->
+    <SolidColorBrush x:Key="TextBlockToolTipDescriptionColor" Color="{StaticResource DarkerGrey}" />
+
+    <!--  Custom ToolTip border color  -->
+    <SolidColorBrush x:Key="CustomToolTipBorderColor" Color="#808080" />
 </ResourceDictionary>
