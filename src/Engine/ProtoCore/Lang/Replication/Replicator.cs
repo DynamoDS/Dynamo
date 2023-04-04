@@ -319,7 +319,8 @@ namespace ProtoCore.Lang.Replication
                         //It is a collection, so cast it to an array and pull the type of the first element
                         //The elements of the array are still type structures
                         if (array.Count == 0)
-                            continue;
+                            reducedSV = StackValue.Null;
+                            //continue;
                         else
                             reducedSV = array.GetValueFromIndex(0, runtimeCore);
                     }

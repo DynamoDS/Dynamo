@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ProtoCore.DSASM;
@@ -260,6 +260,57 @@ namespace ProtoCore.Utils
                         usageFreq.Add(cn, 0);
 
                     usageFreq[cn] += 1;
+                }
+            }
+
+            return usageFreq;
+        }
+
+        /// <summary>
+        /// Generate type statistics for the whole array and keep track of first index of each type.
+        /// </summary>
+        /// <param name="array"></param>
+        /// <param name="core"></param>
+        /// <returns>usage frequency by type</returns>
+        public static Dictionary<ClassNode, (int firstIndex,int count)> GetTypeStatisticsAndOffsetsForArray(StackValue array, RuntimeCore runtimeCore)
+        {
+            if (!array.IsArray)
+            {
+                var ret = new Dictionary<ClassNode, (int,int)>();
+                ret.Add(runtimeCore.DSExecutable.classTable.ClassNodes[array.metaData.type], (0,1));
+                return ret;
+            }
+
+            var usageFreq = new Dictionary<ClassNode, (int firstIndex, int count)>();
+
+            //This is the element on the heap that manages the data structure
+            var dsArray = runtimeCore.Heap.ToHeapObject<DSArray>(array);
+            for (int i = 0; i < dsArray.Count; i++)
+            {
+                var sv = dsArray.GetValueFromIndex(i,runtimeCore);
+                if (sv.IsArray)
+                {
+                    //Recurse
+                    var subLayer = GetTypeStatisticsAndOffsetsForArray(sv, runtimeCore);
+                    foreach (ClassNode cn in subLayer.Keys)
+                    {
+                        if (!usageFreq.ContainsKey(cn))
+                            usageFreq.Add(cn, (i,1));
+
+                        var currentuse = usageFreq[cn];
+                        currentuse.count = usageFreq[cn].count + subLayer[cn].count;
+
+                    }
+                }
+                else
+                {
+
+                    ClassNode cn = runtimeCore.DSExecutable.classTable.ClassNodes[sv.metaData.type];
+                    if (!usageFreq.ContainsKey(cn))
+                        usageFreq.Add(cn, (i, 1));
+
+                    var currentuse = usageFreq[cn];
+                    currentuse.count = usageFreq[cn].count + 1;
                 }
             }
 

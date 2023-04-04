@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -564,7 +564,25 @@ namespace ProtoCore.Lang
             StackValue thisObject = lhs;
             if (thisObject.IsArray)
             {
-                isValidThisPointer = ArrayUtils.GetFirstNonArrayStackValue(lhs, ref thisObject, runtimeCore);
+                //TODO mjk this should have been precomputed when selecting this FEP... cache somewhere.
+                //so we actually need to first non null, non array object, not just its type
+                //we need it to create the new stack frame for the function call.
+                //so1.  we can either modify getTypestatistics to all return some pointer to the object.
+                //2. we can modify Arrayutils.FirstNonArrayItem - to also filter out nulls.
+
+
+                //TODO currently testing approach 1 -
+                //this is only useful if we do it as part of a previous computation - otherwise, just march the array and break.
+                //test passes.
+                var arrayTypes = ArrayUtils.GetTypeStatisticsAndOffsetsForArray(thisObject, runtimeCore);
+                var nonnull = arrayTypes.FirstOrDefault(x => x.Key.ID != (int)PrimitiveType.Null );
+
+                isValidThisPointer = !nonnull.Equals(default(KeyValuePair<ClassNode, (int firstIndex, int count)>));
+                if (isValidThisPointer)
+                {
+                    var dsArray = runtimeCore.Heap.ToHeapObject<DSArray>(thisObject);
+                    thisObject = dsArray.GetValueFromIndex(nonnull.Value.firstIndex, runtimeCore);
+                }
             }
 
             bool isInvalidDotCall = !isValidThisPointer || (!thisObject.IsPointer && !thisObject.IsArray);
