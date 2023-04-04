@@ -29,6 +29,8 @@
                              Handler="OnMouseEnter" />
                 <EventSetter Event="MouseLeave"
                              Handler="OnMouseLeave" />
+                <EventSetter Event="MouseMove"
+                             Handler="OnMouseMove" />
             </Style>
 
             <Style TargetType="{x:Type ScrollViewer}"
@@ -142,7 +144,6 @@
                         </ListBox.ItemTemplate>
                     </ListBox>
                 </Border>
-
                 <StackPanel Visibility="{Binding Path=DisplayAutocompleteMLStaticPage, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <Image Name="NoRecommendations"
                            Width="205"
@@ -216,6 +217,30 @@
                     <uicontrols:ToolTipWindow />
                 </Popup>
             </Border>
+            <Popup Name="confidenceToolTip" Height="auto" Width="250"  StaysOpen="True" AllowsTransparency="True"  Margin="50,-10,0,0" PopupAnimation="Fade">
+                <Grid x:Name="ShadowBackground" Background="Transparent">
+                    <Path Margin="5 0 0 0" Width="20" Height="6" HorizontalAlignment="Left" VerticalAlignment="Top" Data="M0,6 L6,0 12,6Z" Stroke="{StaticResource CustomToolTipBorderColor}" Fill="{StaticResource objectLabelBackground}" Stretch="None" />
+                    <Path Margin="5 0 0 0" Width="30" Height="6" HorizontalAlignment="Left" VerticalAlignment="Top" Data="M12 6 L26 6 L26 0 L4 0" Fill="{StaticResource LibraryCommonBackground}" Stretch="None" />
+                    <Border BorderThickness="1 0 1 1" CornerRadius="2" Margin="0 5 7 7" BorderBrush="{StaticResource CustomToolTipBorderColor}" Background="{StaticResource objectLabelBackground}" Padding="10,8" MouseLeftButtonUp="onCloseConfidenceToolTip">
+                        <StackPanel Margin="3">
+                            <TextBlock Margin="0,0,0,10" Name="confidenceScoreTitle" Style="{StaticResource TextBlockToolTipTitle}"/>
+                            <TextBlock Margin="0,0,0,10" LineHeight="14px" TextWrapping="Wrap">
+                                <TextBlock.Inlines>
+                                    <Run Text="{x:Static p:Resources.ConfidenceToolTipDescription}" Style="{StaticResource TextBlockToolTipDescription}"/>
+                                </TextBlock.Inlines>
+                            </TextBlock>
+                            <TextBlock Name="confidenceLearnMore"
+                                    Text="{x:Static p:Resources.ConfidenceToolTipoLearnMore}"
+                                    Style="{StaticResource TextBlockLinkDark}"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    MouseLeftButtonDown="onConfidenceToolTipLearnMoreClicked"/>
+                        </StackPanel>
+                        </Border>
+                    <Border BorderThickness="0 1 0 0" CornerRadius="0 0 2 0" Margin="16 5 9 0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="7" BorderBrush="#999999" />
+                    <Border BorderThickness="0 1 0 0" CornerRadius="2 0 0 0" Margin="0 5 0 0"  HorizontalAlignment="Left" VerticalAlignment="Top" Height="7" Width="6" BorderBrush="#999999" />
+                </Grid>
+            </Popup>
 
             <Grid Name="SearchText"
                   Background="{StaticResource LibraryCommonBackground}"

@@ -448,6 +448,33 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Represents estimated probability that the given node is the right choice. Recommended nodes are listed in order from highest to lowest confidence level. Confidence level percentages for all recommended nodes add up to about 100%..
+        /// </summary>
+        public static string ConfidenceToolTipDescription {
+            get {
+                return ResourceManager.GetString("ConfidenceToolTipDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Learn more.
+        /// </summary>
+        public static string ConfidenceToolTipoLearnMore {
+            get {
+                return ResourceManager.GetString("ConfidenceToolTipoLearnMore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confidence rating.
+        /// </summary>
+        public static string ConfidenceToolTipTitle {
+            get {
+                return ResourceManager.GetString("ConfidenceToolTipTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Configure Autodesk Analytics Program.
         /// </summary>
         public static string ConfigureADPButtonText {
