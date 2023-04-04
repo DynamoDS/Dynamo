@@ -24,7 +24,7 @@ using Watch3d = Watch3DNodeModels.Watch3D;
 
 namespace Watch3DNodeModelsWpf
 {
-    public class Watch3DNodeViewCustomization : VariableInputNodeViewCustomization
+    public class Watch3DNodeViewCustomization : INodeViewCustomization<Watch3d>
     {
         private Watch3D watch3dModel;
         private Watch3DView watch3DView;
@@ -45,11 +45,9 @@ namespace Watch3DNodeModelsWpf
             watch3dModel.Camera.UpZ = camera.UpDirection.Z;
         }
 
-        public override void CustomizeView(VariableInputNode nodeModel, NodeView nodeView)
+        public void CustomizeView(Watch3d nodeModel, NodeView nodeView)
         {
             watch3dModel = (Watch3d)nodeModel;
-
-            base.CustomizeView(watch3dModel, nodeView);
 
             var dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
 
