@@ -1,17 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Web;
 using System.Windows;
-using System.Windows.Markup;
 using Dynamo.Core;
 using Dynamo.DocumentationBrowser.Properties;
 using Dynamo.Logging;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using Dynamo.Wpf.Extensions;
 
 namespace Dynamo.DocumentationBrowser
 {
@@ -447,9 +445,8 @@ namespace Dynamo.DocumentationBrowser
 
         private string DynamoGraphFromMDFilePath(string path)
         {
-            var dynPath = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path).Replace("%20", " ")) + ".dyn";
-            return dynPath;
-            return path.Replace("%20", " ").Replace(".md", ".dyn");
+            path = HttpUtility.UrlDecode(path);
+            return Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path)) + ".dyn";
         }
 
 
