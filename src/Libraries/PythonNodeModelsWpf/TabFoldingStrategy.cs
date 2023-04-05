@@ -1,7 +1,9 @@
+using Dynamo.UI.Controls;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Folding;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Windows.Media.Animation;
 
@@ -33,131 +35,81 @@ namespace PythonNodeModelsWpf
         }
 
         /// <summary>
-        /// Create <see cref="NewFolding"/>s for the specified document.
+        /// Creates a new folding sequence 
         /// </summary>
+        /// <param name="document">The current avalon edit text document</param>
+        /// <returns></returns>
         internal IEnumerable<NewFolding> CreateNewFoldingsByLine(ITextSource document)
         {
             List<NewFolding> newFoldings = new List<NewFolding>();
 
-            if (document == null || (document as TextDocument).LineCount <= 1)
-            {
-                return newFoldings;
-            }
+            // Terminate if the document text is empty
+            if (IsEmptyDocument(document)) return newFoldings;
 
-            // Can keep track of offset ourself and from testing it seems to be accurate
-            int offsetTracker = 0;
-
-            // Keep track of start points since things nest
-            Stack<int> startOffsets = new Stack<int>();
-
-            StringBuilder lineBuffer = new StringBuilder();
-
-            bool skip = false;
+            var startOffsets = new Stack<int>();
+            var tabLevel = 0;
 
             foreach (DocumentLine line in (document as TextDocument).Lines)
             {
-                if (offsetTracker >= document.TextLength)
+                var lineText = document.GetText(line.Offset, line.Length);
+                if (lineText.StartsWith("#")) continue;
+
+                var whiteSpaces = lineText.TakeWhile(Char.IsWhiteSpace).Count();
+
+                // If the number of white spaces is multiple of tab spaces
+                // then we have either a new folding or a folded text
+                if (whiteSpaces > 0 && whiteSpaces % SpacesInTab == 0)
                 {
-                    break;
-                }
-
-                // discard comment lines
-                var lineText = document.GetText(line.Offset, line.Length).TrimStart();
-                if (lineText.StartsWith("#")) skip = true;
-
-                lineBuffer.Clear();
-
-
-                // First task is to get the line and figure out the spacing in front of it
-                int spaceCounter = 0;
-                bool foundText = false;
-                bool foundColon = false;
-                int i = 0;
-                
-                while (i < line.Length && !(foundText && foundColon))
-                {
-                    char c = document.GetCharAt(offsetTracker + i);
-                    char nc;
-                    // we only want to tab if the line ends with ':'
-                    // i.e. in case of "https://foo.com" we don't want to tab
-                    try
+                    var currentTabLevel = whiteSpaces / SpacesInTab;
+                    if (tabLevel != currentTabLevel && currentTabLevel > tabLevel)
                     {
-                        nc = document.GetCharAt(offsetTracker + i + 1);  
-                    }
-                    catch(ArgumentOutOfRangeException ae)
-                    {   
-                        nc = '\r';
-                    }
+                        // Don't tab if the line is empty
+                        if(string.IsNullOrEmpty(document.GetText(line.PreviousLine.Offset, line.PreviousLine.Length)))
+                            continue;
 
-                    switch (c)
+                        // We found a new Tab
+                        tabLevel = currentTabLevel;
+                        startOffsets.Push(line.PreviousLine.Offset);
+                    }
+                    else if (tabLevel != currentTabLevel && currentTabLevel < tabLevel)
                     {
-                        case ' ': // spaces count as one
-                            if (!foundText)
-                            {
-                                spaceCounter++;
-                            }
+                        while (currentTabLevel < tabLevel)
+                        {
+                            // we close all nested tabs
+                            var tempFolding = new NewFolding();
+                            tempFolding.StartOffset = startOffsets.Pop();
+                            tempFolding.EndOffset = line.PreviousLine.EndOffset;
+                            newFoldings.Add(tempFolding);
 
-                            break;
-                        case '\t': // Tabs count as N
-                            if (!foundText)
-                            {
-                                spaceCounter += SpacesInTab;
-                            }
-
-                            break;
-                        case ':': // Tabs count as N
-                            if(!skip && IsNewLine(nc))
-                                foundColon = true;
-                            break;
-                        default: // anything else means we encountered not spaces or tabs, so keep making the line but stop counting
-                            foundText = true;
-                            break;
+                            tabLevel--;
+                        }
                     }
-
-                    i++;
-                }
-
-                // before we continue, we need to make sure its a correct multiple
-                int remainder = spaceCounter % SpacesInTab;
-                if (remainder > 0)
-                {
-                    continue;
-                }
-
-                int numTabs = spaceCounter / SpacesInTab; // we know this will be an int because of the above check
-                if (numTabs >= startOffsets.Count && foundText && foundColon)    
-                {
-
-                    // we are starting a new folding
-                    startOffsets.Push(offsetTracker);
-
-                }
-                else // numtabs < offsets
-                {
-                    // we know that this is the end of a folding. It could be the end of multiple foldings. So pop until it matches.
-                    while (numTabs < startOffsets.Count)
+                    else
                     {
-                        int foldingStart = startOffsets.Pop();
-                        NewFolding tempFolding = new NewFolding();
-                        tempFolding.StartOffset = foldingStart;
-                        tempFolding.EndOffset = offsetTracker - 2;
+                        // We keep going
+                        continue;
+                    }
+                }
+                else if (whiteSpaces == 0 && tabLevel > 0)
+                {
+                    while(tabLevel> 0)
+                    { 
+                        // we close all nested tabs
+                        var tempFolding = new NewFolding();
+                        tempFolding.StartOffset = startOffsets.Pop();
+                        tempFolding.EndOffset = line.PreviousLine.EndOffset;
                         newFoldings.Add(tempFolding);
+
+                        tabLevel --;
                     }
                 }
-
-
-                // Increment tracker. Much faster than getting it from the line
-                offsetTracker += line.TotalLength;
-                skip = false;
             }
 
-            // Complete last foldings
-            while (startOffsets.Count > 0)
+            while (startOffsets.Any())
             {
-                int foldingStart = startOffsets.Pop();
-                NewFolding tempFolding = new NewFolding();
-                tempFolding.StartOffset = foldingStart;
-                tempFolding.EndOffset = offsetTracker;
+                var tempFolding = new NewFolding();
+                tempFolding.StartOffset = startOffsets.Pop();
+                tempFolding.EndOffset = document.TextLength;
                 newFoldings.Add(tempFolding);
             }
 
@@ -165,10 +117,15 @@ namespace PythonNodeModelsWpf
             return newFoldings;
         }
 
-        // Check if the character is a newline
-        private bool IsNewLine(char c)
+
+        private bool IsEmptyDocument(ITextSource document)
         {
-            return c.Equals('\r');
+            if (document == null || (document as TextDocument).LineCount <= 1)
+            {
+                return true;
+            }
+            
+            return false;
         }
     }
 }
