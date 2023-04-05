@@ -558,6 +558,14 @@ Python Standard Library
 https://docs.python.org/2.7/library/
 https://docs.python.org/2.7/license.html
 
+Python Modules
+https://numpy.org/ License: Distributed under a liberal BSD license
+https://pandas.pydata.org/ License: BSD 3-Clause "New" or "Revised" License
+https://scipy.org/ License: Distributed under a liberal BSD license
+https://pypi.org/project/openpyxl/ License: MIT License (MIT)
+https://matplotlib.org/ License: Matplotlib only uses BSD compatible code, and its license is based on the PSF license
+https://pypi.org/project/Pillow/ License: Historical Permission Notice and Disclaimer (HPND) 
+
 SimplexNoise
 https://unlicense.org/
 
