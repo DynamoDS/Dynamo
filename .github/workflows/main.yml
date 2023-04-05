@@ -1,0 +1,11 @@
+name: Check file size
+on: [pull_request, push]
+
+jobs:
+  sync-to-hub:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check large files
+        uses: ppremk/lfs-warning@v3.2
+        with:
+          filesizelimit: 50mb
