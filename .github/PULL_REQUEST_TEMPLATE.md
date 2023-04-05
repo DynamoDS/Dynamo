@@ -24,6 +24,7 @@ Check these if you believe they are true
 - [ ] Snapshot of UI changes, if any.
 - [ ] Changes to the API follow [Semantic Versioning](https://github.com/DynamoDS/Dynamo/wiki/Dynamo-Versions) and are documented in the [API Changes](https://github.com/DynamoDS/Dynamo/wiki/API-Changes) document.
 - [ ] This PR modifies some build requirements and the readme is updated
+- [ ] This PR contains no files larger than 50 MB 
 
 ### Release Notes
 
