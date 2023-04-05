@@ -1,4 +1,6 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
@@ -7,6 +9,7 @@ using Dynamo.Models;
 using Dynamo.UI;
 using Dynamo.UI.Commands;
 using ProtoCore.Utils;
+using UI.Prompts;
 
 namespace Dynamo.ViewModels
 {
@@ -17,8 +20,10 @@ namespace Dynamo.ViewModels
         private DelegateCommand useLevelsCommand;
         private DelegateCommand keepListStructureCommand;
         private DelegateCommand portMouseLeftButtonOnLevelCommand;
+        private DelegateCommand editPortPropertiesCommand;
 
         private bool showUseLevelMenu;
+        private bool isPythonNodePort;
 
         private SolidColorBrush portValueMarkerColor = new SolidColorBrush(Color.FromArgb(255, 204, 204, 204));
 
@@ -59,6 +64,18 @@ namespace Dynamo.ViewModels
             {
                 showUseLevelMenu = value;
                 RaisePropertyChanged(nameof(ShowUseLevelMenu));
+            }
+        }
+
+        /// <summary>
+        /// Returns whether the port belongs to a Python node
+        /// </summary>
+        public bool IsPythonNodePort
+        {
+            get => isPythonNodePort;
+            set
+            {
+                isPythonNodePort = value;
             }
         }
 
@@ -156,6 +173,7 @@ namespace Dynamo.ViewModels
             node.NodeModel.PropertyChanged += NodeModel_PropertyChanged;
 
             RefreshPortDefaultValueMarkerVisible();
+            IsPythonNodePort = node.NodeModel is PythonNodeModels.PythonNode;
         }
 
         private void NodeModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -208,6 +226,9 @@ namespace Dynamo.ViewModels
                 case nameof(IsConnected):
                     RaisePropertyChanged(nameof(IsConnected));
                     RefreshAllInportsColors();
+                    break;
+                case nameof(IsPythonNodePort):
+                    RaisePropertyChanged(nameof(IsPythonNodePort));
                     break;
             }
         }
@@ -282,6 +303,53 @@ namespace Dynamo.ViewModels
                 return portMouseLeftButtonOnLevelCommand ?? (portMouseLeftButtonOnLevelCommand =
                     new DelegateCommand(OnMouseLeftButtonDownOnLevel, CanConnect));
             }
+        }
+
+        /// <summary>
+        /// Used by the 'Edit Port Properties' button in the node output context menu.
+        /// Triggers the Port Properties Panel
+        /// </summary>
+        public DelegateCommand EditPortPropertiesCommand
+        {
+            get
+            {
+                return editPortPropertiesCommand ??
+                       (editPortPropertiesCommand = new DelegateCommand(EditPortProperties));
+            }
+        }
+        /// <summary>
+        /// Used by the 'Edit Port Properties' button in the node output context menu.
+        /// Triggers the Port Properties Panel
+        /// </summary>
+        private void EditPortProperties(object parameter)
+        {
+            var wsViewModel = node.WorkspaceViewModel;
+
+            // Hide the popup, we no longer need it
+            wsViewModel.OnRequestPortContextMenu(ShowHideFlags.Show, this);
+
+            var dialog = new PortPropertiesEditPrompt()
+            {
+                DescriptionInput = { Text = port.ToolTip },
+                nameBox = { Text = port.Name },
+                PortType = PortType.Output,
+                OutPortNames = ListOutportNames(this.NodeViewModel.InPorts),
+            };
+
+            if (dialog.ShowDialog() != true)
+            {
+                return;
+            }
+
+            port.Name = dialog.PortName;
+            port.ToolTip = dialog.Description;
+
+            RaisePropertyChanged(nameof(PortName));
+        }
+
+        private List<string> ListOutportNames(ObservableCollection<PortViewModel> outPorts)
+        {
+            return outPorts.Where(x => !x.PortName.Equals(this.PortName)).Select(x => x.PortName).ToList();
         }
 
         /// <summary>

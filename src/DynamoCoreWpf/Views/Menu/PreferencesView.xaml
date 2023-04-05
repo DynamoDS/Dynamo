@@ -202,14 +202,12 @@
                     <TabItem Header="{x:Static p:Resources.PreferencesViewGeneralTab}"
                              Style="{StaticResource LeftTab}">
 
-                        <ScrollViewer VerticalScrollBarVisibility="Auto" 
-                                              Height="Auto">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" Height="Auto">
                             <!--This Grid contains controls for selecting the Language-->
                             <Grid x:Name="GeneralTab" 
                               Margin="4 0 0 0"
                               HorizontalAlignment="Left">
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
@@ -258,31 +256,6 @@
                                     </StackPanel>
                                 </Grid>
 
-                                <!--This Grid contains controls for selecting Run Preview options-->
-                                <Grid Grid.Row="2"
-                                  Margin="4,0,0,20">
-                                    <Grid>
-                                        <Grid.ToolTip>
-                                            <ToolTip Content="{x:Static p:Resources.PreferencesViewShowRunPreviewTooltip}" Style="{StaticResource GenericToolTipLight}"/>
-                                        </Grid.ToolTip>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <ToggleButton Width="{StaticResource ToggleButtonWidth}"
-                                                  Height="{StaticResource ToggleButtonHeight}"
-                                                  VerticalAlignment="Center"
-                                                  Margin="2,0,0,0"
-                                                  Grid.Column="0" 
-                                                  IsEnabled="{Binding Path=RunPreviewEnabled}"
-                                                  IsChecked="{Binding Path=RunPreviewIsChecked}"
-                                                  Style="{StaticResource EllipseToggleButton1}"/>
-                                        <Label Grid.Column="1"
-                                           Content="{x:Static p:Resources.DynamoViewSettingShowRunPreview}"
-                                           Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                    </Grid>
-                                </Grid>
-
                                 <!--This Grid contains controls for selecting Static Splash Screen Display options-->
                                 <Grid Grid.Row="1"
                                   Margin="4,0,0,20">
@@ -308,128 +281,37 @@
                                     </Grid>
                                 </Grid>
 
-                                <!--This Grid contains controls for selecting Default Run Setting and Number Format options -->
-                                <Grid Grid.Row="3" Margin="4,0,0,20">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <!--This Grid contains controls for selecting Run Settings options-->
-                                    <Grid Grid.Row="0" Margin="4,0,0,0">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
-                                        <WrapPanel Grid.Row="0">
-                                            <Label 
-                                           Margin="-3,0,10,0"
-                                           FontWeight="Bold"
-                                           Content="{x:Static p:Resources.PreferencesViewRunSettingsLabel}" 
-                                           Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                            <Label HorizontalAlignment="Left"
-                                                   Name="RunSettingsInfoLabel"
-                                                   VerticalAlignment="Center" 
-                                                   Height="26" 
-                                                   Width="53"
-                                                   Margin="0 3 0 0">
-                                                <Image
-                                               Margin="-5,0,0,0"
-                                               Width="14"
-                                               Height="14"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               Style="{StaticResource QuestionIcon}"
-                                               ToolTipService.ShowDuration="30000">
-                                                    <Image.ToolTip>
-                                                        <ToolTip Content="{x:Static p:Resources.PreferencesViewDefaultRunSettingsInfoTooltip}" Style="{StaticResource GenericToolTipLight}"/>
-                                                    </Image.ToolTip>
-                                                </Image>
-                                            </Label>
-                                        </WrapPanel>
-                                        <Grid Grid.Row="1">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-                                            <RadioButton Grid.Column="0" 
-                                                 MinWidth="80"
-                                                 Margin="2,0,0,0"
-                                                 Style="{StaticResource RunSettingsRadioButtons}"
-                                                 IsChecked="{Binding Path=RunSettingsIsChecked, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=True}"
-                                                 Content="{x:Static p:Resources.Manual}"/>
-                                            <RadioButton Grid.Column="1" 
-                                                 MinWidth="80"
-                                                 Style="{StaticResource RunSettingsRadioButtons}"
-                                                 IsChecked="{Binding Path=RunSettingsIsChecked, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=False}"
-                                                 Content="{x:Static p:Resources.Automatic}"/>
-                                        </Grid>
-                                    </Grid>
-
-                                    <!-- Controls for Number Format options-->
-                                    <Grid Grid.Column="1">
+                                <!-- This Grid contains controls for the Number Format-->
+                                <Grid Grid.Row="2"
+                                      Margin="4,0,0,20">
+                                    <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="Auto" />
                                         </Grid.RowDefinitions>
                                         <Label Grid.Row="0"
-                                               Content="{x:Static p:Resources.DynamoViewSettingMenuNumberFormat}" 
-                                               Margin="-3,0,10,0"
-                                               FontWeight="Bold"
-                                               Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                            Content="{x:Static p:Resources.DynamoViewSettingMenuNumberFormat}" 
+                                            Margin="-3,0,10,0"
+                                            FontWeight="Bold"
+                                            Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                         <ComboBox Name="numberFormatCmb"
-                                                  Grid.Row="1" 
-                                                  HorizontalAlignment="Left"
-                                                  Margin="2,0,0,0"
-                                                  SelectedItem="{Binding Path=SelectedNumberFormat, Converter={StaticResource NumberFormatConverter}}"
-                                                  ItemsSource="{Binding NumberFormatList}"
-                                                  Style="{StaticResource NoBordersComboBoxStyle}">
+                                            Grid.Row="1" 
+                                            HorizontalAlignment="Left"
+                                            Margin="2,0,0,0"
+                                            SelectedItem="{Binding Path=SelectedNumberFormat, Converter={StaticResource NumberFormatConverter}}"
+                                            ItemsSource="{Binding NumberFormatList}"
+                                            Style="{StaticResource NoBordersComboBoxStyle}">
                                         </ComboBox>
                                     </Grid>
                                 </Grid>
-
-                                <!--This Grid contains controls for backup files time interval and maximum number of recent files-->
-                                <Grid Grid.Row="4" Margin="4,0,0,20">
+                                
+                                <!--This Grid contains controls for the maximum number of recent files-->
+                                <Grid Grid.Row="3"
+                                      Margin="4,0,0,20">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <!--Controls for backup files time interval-->
                                     <Grid Grid.Column="0">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
-                                        <Label Grid.Row="0"
-                                               Content="{x:Static p:Resources.PreferencesSettingBackupInterval}" 
-                                               Margin="-3,0,10,0"
-                                               FontWeight="Bold"
-                                               Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                        <Grid Grid.Row="1">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto" />
-                                                <ColumnDefinition Width="Auto" />
-                                            </Grid.ColumnDefinitions>
-                                            <TextBox Name="NumberTextBox"
-                                                     Grid.Column="0"
-                                                     HorizontalAlignment="Left"
-                                                     Margin="2,0,0,0"
-                                                     MinWidth="25"
-                                                     Height="20"
-                                                     FontWeight="Regular"
-                                                     Text="{Binding BackupIntervalInMinutes}"
-                                                     Background="{StaticResource PreferencesWindowBackgroundColor}"
-                                                     Foreground="{StaticResource PreferencesWindowFontColor}"
-                                                     BorderThickness="0,0,0,2"
-                                                     PreviewTextInput="NumberValidationTextBox"/>
-                                            <Label Grid.Column="1"
-                                                   FontWeight="Regular"
-                                                   Content="{x:Static p:Resources.BackupInternalUnit}"
-                                                   Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                        </Grid>
-                                    </Grid>
-
-                                    <!-- Controls for maximum number of recent files -->
-                                    <Grid Grid.Column="1">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="Auto" />
@@ -466,64 +348,267 @@
                                     </Grid>
                                 </Grid>
 
-                                <!--Geometry Scaling Expander-->
-                                <Grid Grid.Row="5"
+                                <!--This Grid contains Expanders for Run, Default Geometry Scaling and Backup settings-->
+                                <Grid Grid.Row="4"
                                   Margin="-3,0,1,20">
-                                    <Expander x:Name="Scale"
-                                      Grid.Row="1" 
-                                      Style="{StaticResource MenuExpanderStyle}"
-                                      IsExpanded="{Binding PreferencesTabs[VisualSettings].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=Scale}"
-                                      Header="{x:Static p:Resources.PreferencesViewVisualSettingsGeoScaling}">
-                                        <StackPanel x:Name="GeometryScalingRadiosPanel"
-                                            Width="380"
-                                            HorizontalAlignment="Left"
-                                            VerticalAlignment="Top">
-                                            <RadioButton x:Name="RadioSmall"
-                                                GroupName="GeometryScaling"
-                                                MinWidth="80"
-                                                Margin="3,10,0,0"
-                                                IsChecked="{Binding DefaultGeometryScaling, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.Small}}"
-                                                Style="{StaticResource GeometryScaleRadioButtons}"
-                                                Content="{x:Static p:Resources.ScalingSmallButton}"/>
-                                            <TextBlock x:Name="RadioSmallDesc"
-                                                Margin="25,5,0,0"
-                                                Style="{StaticResource GeometryScaleDescTextBox}"
-                                                Visibility="{Binding IsChecked, ElementName=RadioSmall, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                                            <RadioButton x:Name="RadioMedium"
-                                                 GroupName="GeometryScaling"
-                                                 Margin="3,10,0,0"
-                                                 MinWidth="80"
-                                                 IsChecked="{Binding DefaultGeometryScaling, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.Medium}}"
-                                                 Style="{StaticResource GeometryScaleRadioButtons}"
-                                                 Content="{x:Static p:Resources.ScalingMediumButton}"/>
-                                            <TextBlock  x:Name="RadioMediumDesc"
-                                                Margin="25,5,0,0"
-                                                Style="{StaticResource GeometryScaleDescTextBox}"
-                                                Visibility="{Binding IsChecked, ElementName=RadioMedium, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                                            <RadioButton x:Name="RadioLarge" 
-                                                 GroupName="GeometryScaling"
-                                                 MinWidth="80"
-                                                 Margin="3,10,0,0"
-                                                 IsChecked="{Binding DefaultGeometryScaling, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.Large}}"
-                                                 Style="{StaticResource GeometryScaleRadioButtons}"
-                                                 Content="{x:Static p:Resources.ScalingLargeButton}"/>
-                                            <TextBlock  x:Name="RadioLargeDesc"
-                                                Margin="25,5,0,0"
-                                                Style="{StaticResource GeometryScaleDescTextBox}"
-                                                Visibility="{Binding IsChecked, ElementName=RadioLarge, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                                            <RadioButton x:Name="RadioExtraLarge"
-                                                 GroupName="GeometryScaling"
-                                                 MinWidth="80"
-                                                 Margin="3,10,0,0"
-                                                 IsChecked="{Binding DefaultGeometryScaling, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.ExtraLarge}}"
-                                                 Style="{StaticResource GeometryScaleRadioButtons}"
-                                                 Content="{x:Static p:Resources.ScalingExtraLargeButton}"/>
-                                            <TextBlock  x:Name="RadioExtraLargeDesc"
-                                                Margin="25,5,0,0"
-                                                Style="{StaticResource GeometryScaleDescTextBox}"
-                                                Visibility="{Binding IsChecked, ElementName=RadioExtraLarge, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                                        </StackPanel>
-                                    </Expander>
+                                    <Grid HorizontalAlignment="Stretch">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <!--Run Settings Expander-->
+                                        <Expander x:Name="RunSettingsExpander"                                      
+                                        Style="{StaticResource MenuExpanderStyle}"
+                                        Grid.Row="0" 
+                                          IsExpanded="{Binding PreferencesTabs[General].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=RunSettingsExpander}"
+                                          Header="{x:Static p:Resources.PreferencesViewGeneralSettingsRun}">
+                                            <StackPanel x:Name="RunSettingsPanel">
+                                                <Grid Margin="4,0,0,0">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
+                                                    </Grid.RowDefinitions>
+                                                    <!--This Grid contains controls for selecting Default Run Setting and Number Format options -->
+                                                    <Grid Grid.Row="0" Margin="0,0,0,15">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <!--This Grid contains controls for selecting Run Settings options-->
+                                                        <Grid Grid.Row="0">
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition Height="Auto" />
+                                                                <RowDefinition Height="Auto" />
+                                                            </Grid.RowDefinitions>
+                                                            <WrapPanel Grid.Row="0">
+                                                                <Label 
+                                                                   Margin="-3,0,10,0"
+                                                                   FontWeight="Bold"
+                                                                   Content="{x:Static p:Resources.PreferencesViewRunSettingsLabel}" 
+                                                                   Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                                                <Label HorizontalAlignment="Left"
+                                                                           Name="RunSettingsInfoLabel"
+                                                                           VerticalAlignment="Center" 
+                                                                           Height="26" 
+                                                                           Width="53"
+                                                                           Margin="0 3 0 0">
+                                                                    <Image
+                                                                       Margin="-5,0,0,0"
+                                                                       Width="14"
+                                                                       Height="14"
+                                                                       HorizontalAlignment="Center"
+                                                                       VerticalAlignment="Center"
+                                                                       Style="{StaticResource QuestionIcon}"
+                                                                       ToolTipService.ShowDuration="30000">
+                                                                        <Image.ToolTip>
+                                                                            <ToolTip Content="{x:Static p:Resources.PreferencesViewDefaultRunSettingsInfoTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                                                        </Image.ToolTip>
+                                                                    </Image>
+                                                                </Label>
+                                                            </WrapPanel>
+                                                            <Grid Grid.Row="1">
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="Auto"/>
+                                                                    <ColumnDefinition Width="Auto"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <RadioButton Grid.Column="0" 
+                                                                 MinWidth="80"
+                                                                 Margin="2,0,0,0"
+                                                                 Style="{StaticResource RunSettingsRadioButtons}"
+                                                                 IsChecked="{Binding Path=RunSettingsIsChecked, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=True}"
+                                                                 Content="{x:Static p:Resources.Manual}"/>
+                                                                <RadioButton Grid.Column="1" 
+                                                                 MinWidth="80"
+                                                                 Style="{StaticResource RunSettingsRadioButtons}"
+                                                                 IsChecked="{Binding Path=RunSettingsIsChecked, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=False}"
+                                                                 Content="{x:Static p:Resources.Automatic}"/>
+                                                            </Grid>
+                                                        </Grid>
+                                                    </Grid>
+                                                    <!--This Grid contains controls for selecting Run Preview options-->
+                                                    <Grid Grid.Row="1" Margin="0,0,0,0">
+                                                        <Grid>
+                                                            <Grid.ToolTip>
+                                                                <ToolTip Content="{x:Static p:Resources.PreferencesViewShowRunPreviewTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                                            </Grid.ToolTip>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <ToggleButton Width="{StaticResource ToggleButtonWidth}"
+                                                              Height="{StaticResource ToggleButtonHeight}"
+                                                              VerticalAlignment="Center"
+                                                              Margin="2,0,0,0"
+                                                              Grid.Column="0" 
+                                                              IsEnabled="{Binding Path=RunPreviewEnabled}"
+                                                              IsChecked="{Binding Path=RunPreviewIsChecked}"
+                                                              Style="{StaticResource EllipseToggleButton1}"/>
+                                                                        <Label Grid.Column="1"
+                                                            Content="{x:Static p:Resources.DynamoViewSettingShowRunPreview}"
+                                                            Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                                        </Grid>
+                                                    </Grid>
+                                                </Grid>
+                                            </StackPanel>
+                                        </Expander>
+                                        <!--Geometry Scaling Expander-->
+                                        <Expander x:Name="Scale"                                      
+                                        Style="{StaticResource MenuExpanderStyle}"
+                                        Grid.Row="1" 
+                                          IsExpanded="{Binding PreferencesTabs[General].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=Scale}"
+                                          Header="{x:Static p:Resources.PreferencesViewGeneralSettingsGeoScaling}">
+                                            <StackPanel x:Name="GeometryScalingRadiosPanel"
+                                                Width="380"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Top">
+                                                <RadioButton x:Name="RadioSmall"
+                                                    GroupName="GeometryScaling"
+                                                    MinWidth="80"
+                                                    Margin="3,10,0,0"
+                                                    IsChecked="{Binding DefaultGeometryScaling, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.Small}}"
+                                                    Style="{StaticResource GeometryScaleRadioButtons}"
+                                                    Content="{x:Static p:Resources.ScalingSmallButton}"/>
+                                                <TextBlock x:Name="RadioSmallDesc"
+                                                    Margin="25,5,0,0"
+                                                    Style="{StaticResource GeometryScaleDescTextBox}"
+                                                    Visibility="{Binding IsChecked, ElementName=RadioSmall, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                                <RadioButton x:Name="RadioMedium"
+                                                     GroupName="GeometryScaling"
+                                                     Margin="3,10,0,0"
+                                                     MinWidth="80"
+                                                     IsChecked="{Binding DefaultGeometryScaling, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.Medium}}"
+                                                     Style="{StaticResource GeometryScaleRadioButtons}"
+                                                     Content="{x:Static p:Resources.ScalingMediumButton}"/>
+                                                <TextBlock  x:Name="RadioMediumDesc"
+                                                    Margin="25,5,0,0"
+                                                    Style="{StaticResource GeometryScaleDescTextBox}"
+                                                    Visibility="{Binding IsChecked, ElementName=RadioMedium, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                                <RadioButton x:Name="RadioLarge" 
+                                                     GroupName="GeometryScaling"
+                                                     MinWidth="80"
+                                                     Margin="3,10,0,0"
+                                                     IsChecked="{Binding DefaultGeometryScaling, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.Large}}"
+                                                     Style="{StaticResource GeometryScaleRadioButtons}"
+                                                     Content="{x:Static p:Resources.ScalingLargeButton}"/>
+                                                <TextBlock  x:Name="RadioLargeDesc"
+                                                    Margin="25,5,0,0"
+                                                    Style="{StaticResource GeometryScaleDescTextBox}"
+                                                    Visibility="{Binding IsChecked, ElementName=RadioLarge, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                                <RadioButton x:Name="RadioExtraLarge"
+                                                     GroupName="GeometryScaling"
+                                                     MinWidth="80"
+                                                     Margin="3,10,0,0"
+                                                     IsChecked="{Binding DefaultGeometryScaling, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.ExtraLarge}}"
+                                                     Style="{StaticResource GeometryScaleRadioButtons}"
+                                                     Content="{x:Static p:Resources.ScalingExtraLargeButton}"/>
+                                                <TextBlock  x:Name="RadioExtraLargeDesc"
+                                                    Margin="25,5,0,0"
+                                                    Style="{StaticResource GeometryScaleDescTextBox}"
+                                                    Visibility="{Binding IsChecked, ElementName=RadioExtraLarge, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                            </StackPanel>
+                                        </Expander>
+                                        <!--Backup Settings Expander-->
+                                        <Expander x:Name="BackupSettingsExpander"                                      
+                                        Style="{StaticResource MenuExpanderStyle}"
+                                        Grid.Row="2" 
+                                          IsExpanded="{Binding PreferencesTabs[General].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=BackupSettingsExpander}"
+                                          Header="{x:Static p:Resources.PreferencesViewGeneralSettingsBackup}">
+                                            <StackPanel x:Name="BackupSettingsPanel">
+                                                <Grid HorizontalAlignment="Stretch">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
+                                                    </Grid.RowDefinitions>
+                                                    <!--Controls for backup files time interval-->
+                                                    <Grid Grid.Row="0">
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="Auto" />
+                                                            <RowDefinition Height="Auto" />
+                                                        </Grid.RowDefinitions>
+                                                        <Label Grid.Row="0"
+                                                       Content="{x:Static p:Resources.PreferencesSettingBackupInterval}" 
+                                                       Margin="-3,0,10,0"
+                                                       FontWeight="Bold"
+                                                       Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                                        <Grid Grid.Row="1">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="Auto" />
+                                                                <ColumnDefinition Width="Auto" />
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBox Name="NumberTextBox"
+                                                             Grid.Column="0"
+                                                             HorizontalAlignment="Left"
+                                                             Margin="2,0,0,0"
+                                                             MinWidth="25"
+                                                             Height="20"
+                                                             FontWeight="Regular"
+                                                             Text="{Binding BackupIntervalInMinutes}"
+                                                             Background="{StaticResource PreferencesWindowBackgroundColor}"
+                                                             Foreground="{StaticResource PreferencesWindowFontColor}"
+                                                             BorderThickness="0,0,0,2"
+                                                             PreviewTextInput="NumberValidationTextBox"/>
+                                                            <Label Grid.Column="1"
+                                                           FontWeight="Regular"
+                                                           Content="{x:Static p:Resources.BackupInternalUnit}"
+                                                           Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                                        </Grid>
+                                                    </Grid>
+                                                    <Grid Grid.Row="1">
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="Auto" />
+                                                            <RowDefinition Height="Auto" />
+                                                        </Grid.RowDefinitions>
+                                                        <Label Content="{x:Static p:Resources.PreferencesSettingDefaultBackupLocation}" 
+                                                                VerticalAlignment="Center"
+                                                                Margin="-3,15,0,0"
+                                                                Grid.Row="0"
+                                                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                                        <Grid Grid.Row="1">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                                                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                                                            </Grid.ColumnDefinitions>
+                                                            <!--the backup location text-->
+                                                            <TextBlock x:Name="BackupLocationTextBlock" Style="{StaticResource DarkTextBlock}" 
+                                                                Text="{Binding BackupLocation}"
+                                                                Grid.Column="0"
+                                                                Margin="0,4,7,4"
+                                                                Background="{StaticResource PreferencesWindowItemDarkerBackgroundColor}"
+                                                                MinHeight="24"
+                                                                Padding="5,5,5,5"
+                                                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                                            <!--the select backup location button-->
+                                                            <Button
+                                                                 Grid.Column="1"
+                                                                 Margin="7,7,7,7"
+                                                                 x:Name="UpdateBackupLocationButton"
+                                                                 Click="SelectBackupLocation"
+                                                                 Background="{StaticResource PreferencesWindowBackgroundColor}"
+                                                                 Style="{StaticResource EditFolderButtonStyle}">
+                                                                <Button.ToolTip>
+                                                                    <ToolTip Content="{x:Static p:Resources.PreferencesSettingUpdateBackupLocationTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                                                </Button.ToolTip>
+                                                            </Button>
+                                                            <!--the Reset backup location button-->
+                                                            <Button
+                                                                 Grid.Column="2"
+                                                                 Margin="7,7,7,7"
+                                                                 x:Name="ResetBackupLocationButton"
+                                                                 Click="ResetBackupLocation"
+                                                                 Background="{StaticResource PreferencesWindowBackgroundColor}"
+                                                                 Style="{StaticResource ResetButtonStyle}"
+                                                                 IsEnabled="{Binding Path=CanResetBackupLocation}">
+                                                                <Button.ToolTip>
+                                                                    <ToolTip Content="{x:Static p:Resources.PreferencesSettingResetBackupLocationTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                                                </Button.ToolTip>
+                                                            </Button>
+                                                        </Grid>
+                                                    </Grid>
+                                                </Grid>
+                                            </StackPanel>
+                                        </Expander>
+                                    </Grid>
                                 </Grid>
                             </Grid>
                         </ScrollViewer>
@@ -737,7 +822,8 @@
                                         </Image>
                                     </StackPanel>
 
-                                    <StackPanel Orientation="Horizontal" Margin="0,-5,0,0" Grid.Row="1">
+                                    <StackPanel Orientation="Horizontal" Margin="0,-5,0,0" Grid.Row="1"
+                                                Visibility="{Binding HideAutocompleteMethodOptions, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}">
                                         <!-- This Grid contains controls for selecting the Node autocomplete method -->
                                         <Grid Margin="60,0,0,0">
                                             <Grid.RowDefinitions>
@@ -745,11 +831,11 @@
                                                 <RowDefinition Height="*" />
                                                 <RowDefinition Height="*" />
                                             </Grid.RowDefinitions>
-                                            <Label Grid.Row="0"
+                                            <Label Grid.Row="0" 
                                                 Margin="-8,15,10,3"                                               
                                                 Content="{x:Static p:Resources.PreferencesNodeAutocompleteMethod}" 
                                                 Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                            <Grid Grid.Row="1">
+                                            <Grid Grid.Row="1" >
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition x:Name="colObjectType" Width="Auto"/>
                                                     <ColumnDefinition x:Name="colMachineLearning" Width="Auto"/>

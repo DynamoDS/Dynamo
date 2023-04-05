@@ -20,6 +20,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
 using Dynamo.PythonServices;
+using Dynamo.Wpf.Views;
+using System.Windows.Media;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
@@ -129,6 +131,9 @@ namespace PythonNodeModelsWpf
             // Initialize editor with global settings for show/hide tabs and spaces
             editText.Options = dynamoViewModel.PythonScriptEditorTextOptions.GetTextOptions();
 
+            // Hyperlink color
+            editText.TextArea.TextView.LinkTextForegroundBrush = new SolidColorBrush(Color.FromArgb(255, 106, 192, 231));
+
             // Set options to reflect global settings when python script editor in initialized for the first time.
             editText.Options.ShowSpaces = dynamoViewModel.ShowTabsAndSpacesInScriptEditor;
             editText.Options.ShowTabs = dynamoViewModel.ShowTabsAndSpacesInScriptEditor;
@@ -143,6 +148,9 @@ namespace PythonNodeModelsWpf
 
             editText.SyntaxHighlighting = HighlightingLoader.Load(
                 new XmlTextReader(elem), HighlightingManager.Instance);
+
+            // Add custom highlighting rules consistent with DesignScript
+            CodeHighlightingRuleFactory.AddCommonHighlighingRules(editText, dynamoViewModel.EngineController);
 
             AvailableEngines =
                 new ObservableCollection<string>(PythonEngineManager.Instance.AvailableEngines.Select(x => x.Name));
@@ -402,6 +410,7 @@ namespace PythonNodeModelsWpf
             dynamoViewModel.ExecuteCommand(command);
             this.Focus();
             nodeWasModified = true;
+            IsSaved = true;
             NodeModel.OnNodeModified();
         }
 

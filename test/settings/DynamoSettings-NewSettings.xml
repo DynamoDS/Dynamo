@@ -31,23 +31,15 @@
   <NumberFormat>f4</NumberFormat>
   <MaxNumRecentFiles>12</MaxNumRecentFiles>
   <RecentFiles>
-    <string>C:\Users\jesus.alvino\Documents\outport_valuemarker_portDefaultValueMarkerVisible.dyn</string>
-    <string>C:\Users\jesus.alvino\AppData\Roaming\Dynamo\Dynamo Core\backup\Altura-Minima.dyn</string>
-    <string>C:\Dynamo\bin\AnyCPU\Debug\samples\en-US\Core\Core_AttractorPoint.dyn</string>
-    <string>C:\Users\jesus.alvino\Documents\customnode.dyf</string>
-    <string>C:\Users\jesus.alvino\Documents\Altura-Minima.dyn</string>
-    <string>C:\Users\jesus.alvino\Documents\DYN-4825-Draw.dyn</string>
-    <string>C:\Users\jesus.alvino\Downloads\dyn-5003.dyn</string>
-    <string>C:\Users\jesus.alvino\Documents\armadar.dyf</string>
-    <string>C:\Users\jesus.alvino\Documents\WatchNode-4-Dictionary.dyn</string>
-    <string>C:\Dynamo\test\core\WatchTree.dyn</string>
+    <string>C:\Users\user\Documents\dynamofile.dyn</string>
   </RecentFiles>
+  <BackupLocation>C:\Users\user\AppData\Roaming\Dynamo\Dynamo Core\backup</BackupLocation>
   <BackupFiles>
-    <string>C:\Users\jesus.alvino\AppData\Roaming\Dynamo\Dynamo Core\backup\backup.DYN</string>
+    <string>C:\Users\user\Documents\dynamofile.dyn</string>
   </BackupFiles>
   <CustomPackageFolders>
     <string>%BuiltInPackages%</string>
-    <string>C:\Users\jesus.alvino\AppData\Roaming\Dynamo\Dynamo Core\2.16</string>
+    <string>C:\Users\user\AppData\Roaming\Dynamo\Dynamo Core\2.16</string>
     <string>C:\ProgramData\Dynamo\Dynamo Core\2.16\packages</string>
   </CustomPackageFolders>
   <DisableTrustWarnings>true</DisableTrustWarnings>
@@ -56,7 +48,7 @@
     <string>E:\</string>
   </TrustedLocations>
   <PackageDirectoriesToUninstall>
-    <string>C:\Users\jesus.alvino\AppData\Roaming\Dynamo\Dynamo Core\2.14\packages\Dynamo Samples</string>
+    <string>C:\Users\user\AppData\Roaming\Dynamo\Dynamo Core\2.14\packages\Dynamo Samples</string>
   </PackageDirectoriesToUninstall>
   <PythonTemplateFilePath>testpath</PythonTemplateFilePath>
   <BackupInterval>70000</BackupInterval>
@@ -69,11 +61,12 @@
   <HideNodesBelowSpecificConfidenceLevel>true</HideNodesBelowSpecificConfidenceLevel>
   <MLRecommendationConfidenceLevel>99</MLRecommendationConfidenceLevel>
   <MLRecommendationNumberOfResults>5</MLRecommendationNumberOfResults>
+  <HideAutocompleteMethodOptions>true</HideAutocompleteMethodOptions>
   <EnableNotificationCenter>false</EnableNotificationCenter>
   <EnableStaticSplashScreen>false</EnableStaticSplashScreen>
   <EnablePersistExtensions>true</EnablePersistExtensions>
   <DefaultPythonEngine/>
-  <SelectedPackagePathForInstall>C:\Users\jesus.alvino\AppData\Roaming\Dynamo\Dynamo Core\2.16</SelectedPackagePathForInstall>
+  <SelectedPackagePathForInstall>C:\Users\user\AppData\Roaming\Dynamo\Dynamo Core\2.16</SelectedPackagePathForInstall>
   <NamespacesToExcludeFromLibrary>
 	<string>OnlyForTesting</string>
   </NamespacesToExcludeFromLibrary>

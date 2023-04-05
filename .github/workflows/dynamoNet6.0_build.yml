@@ -14,6 +14,9 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: '6.0.x'
+    - name: Disable problem matcher
+      run: echo "::remove-matcher owner=csc::"
+
     - name: Install dependencies for windows runtime
       run: dotnet restore $Env:GITHUB_WORKSPACE\Dynamo\src\DynamoCore.net6.sln -p:Platform=NET60_Windows --runtime=win10-x64
     - name: Build Dynamo with MSBuild for Windows

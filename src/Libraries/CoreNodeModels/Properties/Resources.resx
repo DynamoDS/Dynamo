@@ -632,4 +632,13 @@ Default value: {0}</value>
   <data name="CustomSelectionOutputDescription" xml:space="preserve">
     <value>Selected value</value>
   </data>
+  <data name="TooltipTextAction" xml:space="preserve">
+    <value>Nodes that execute an action</value>
+  </data>
+  <data name="TooltipTextCreate" xml:space="preserve">
+    <value>Nodes that create data</value>
+  </data>
+  <data name="TooltipTextQuery" xml:space="preserve">
+    <value>Nodes that query data</value>
+  </data>
 </root>

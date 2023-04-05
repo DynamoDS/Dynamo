@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace FFITarget
 {
@@ -7,7 +7,20 @@ namespace FFITarget
     /// </summary>
     public class ClassFunctionality : IDisposable
     {
+#if NETFRAMEWORK
+        public static Microsoft.Office.Interop.Excel.XlPivotLineType GetExcelInteropType()
+        {
+            return Microsoft.Office.Interop.Excel.XlPivotLineType.xlPivotLineBlank;
+        }
 
+        public static bool TestExcelInteropType(Microsoft.Office.Interop.Excel.XlPivotLineType arg1)
+        {
+            if (arg1 == Microsoft.Office.Interop.Excel.XlPivotLineType.xlPivotLineBlank)
+                return true;
+
+            return false;
+        }
+#endif
         private int intVal;
         public int IntVal {
             get { return intVal; }

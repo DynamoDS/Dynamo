@@ -183,6 +183,18 @@ namespace Dynamo.Interfaces
     }
 
     /// <summary>
+    /// Temporary interface to avoid breaking changes.
+    /// TODO: Merge with StartupConfiguration for 3.0 (DYN-1699)
+    /// </summary>
+    internal interface IHideAutocompleteMethodOptions
+    {
+        /// <summary>
+        /// If true, autocomplete method options are hidden from UI 
+        /// </summary>
+        bool HideAutocompleteMethodOptions { get; set; }
+    }
+
+    /// <summary>
     /// Represents data about active state of preview background
     /// </summary>
     public class BackgroundPreviewActiveState

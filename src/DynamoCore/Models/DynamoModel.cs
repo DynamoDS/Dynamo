@@ -648,7 +648,7 @@ namespace Dynamo.Models
             IsHeadless = config.IsHeadless;
 
             DebugSettings = new DebugSettings();
-            Logger = new DynamoLogger(DebugSettings, pathManager.LogDirectory, IsTestMode, CLIMode);
+            Logger = new DynamoLogger(DebugSettings, pathManager.LogDirectory, IsTestMode, CLIMode, IsServiceMode);
 
             if (!IsServiceMode)
             {
@@ -670,6 +670,7 @@ namespace Dynamo.Models
             geometryFactoryPath = config.GeometryFactoryPath;
 
             OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenInitPreferencesSettings, 30));
+
             IPreferences preferences = CreateOrLoadPreferences(config.Preferences);
             if (preferences is PreferenceSettings settings)
             {
@@ -796,7 +797,7 @@ namespace Dynamo.Models
                 PreferenceSettings.AddDefaultTrustedLocations();
             }
 
-            InitializePreferences(PreferenceSettings);
+            InitializePreferences();
 
             // At this point, pathManager.PackageDirectories only has 1 element which is the directory
             // in AppData. If list of PackageFolders is empty, add the folder in AppData to the list since there
@@ -1668,15 +1669,35 @@ namespace Dynamo.Models
             return new PreferenceSettings();
         }
 
-        private static void InitializePreferences(IPreferences preferences)
+        private void InitializePreferences()
         {
-            ProtoCore.Mirror.MirrorData.PrecisionFormat = DynamoUnits.Display.PrecisionFormat = preferences.NumberFormat;
-
-            var settings = preferences as PreferenceSettings;
-            if (settings != null)
+            if (PreferenceSettings != null)
             {
-                settings.InitializeNamespacesToExcludeFromLibrary();
+                ProtoCore.Mirror.MirrorData.PrecisionFormat = DynamoUnits.Display.PrecisionFormat = PreferenceSettings.NumberFormat;
+                PreferenceSettings.InitializeNamespacesToExcludeFromLibrary();
+
+                if (string.IsNullOrEmpty(PreferenceSettings.BackupLocation))
+                {
+                    PreferenceSettings.BackupLocation = pathManager.DefaultBackupDirectory;
+                }
+
+                UpdateBackupLocation(PreferenceSettings.BackupLocation);
             }
+        }
+
+        internal bool UpdateBackupLocation(string selectedBackupLocation)
+        {
+            return pathManager.UpdateBackupLocation(selectedBackupLocation);
+        }
+
+        internal bool IsDefaultBackupLocation()
+        {
+            return PreferenceSettings.BackupLocation.Equals(pathManager.DefaultBackupDirectory);
+        }
+
+        internal string DefaultBackupLocation()
+        {
+            return pathManager.DefaultBackupDirectory;
         }
 
         /// <summary>
@@ -2418,6 +2439,12 @@ namespace Dynamo.Models
         /// </summary>
         protected void SaveBackupFiles(object state)
         {
+            //No backup files in ServiceMode due to Lambda restrictions
+            if (IsServiceMode)
+            {
+                return;
+            }
+
             OnRequestDispatcherBeginInvoke(() =>
             {
                 // tempDict stores the list of backup files and their corresponding workspaces IDs

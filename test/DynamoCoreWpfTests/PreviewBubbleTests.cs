@@ -294,7 +294,7 @@ namespace DynamoCoreWpfTests
             DispatcherUtil.DoEvents();
 
             Assert.NotNull(rawEmptyWatchNode);
-            Assert.AreEqual(rawEmptyWatchNode.Width, rawEmptyWatchNode.DefaultWidthSize);
+            Assert.AreEqual(rawEmptyWatchNode.Width, WatchTree.DefaultWidthSize);
         }
 
         [Test]
@@ -358,7 +358,7 @@ namespace DynamoCoreWpfTests
 
             Assert.NotNull(listWatchNode);
             Assert.IsTrue(isTheCodeAList);
-            Assert.AreEqual(rawListWatchNode.Height, rawListWatchNode.DefaultHeightSize);
+            Assert.AreEqual(rawListWatchNode.Height, WatchTree.DefaultHeightSize);
         }
 
         [Test]
@@ -444,7 +444,7 @@ namespace DynamoCoreWpfTests
 
             Assert.NotNull(multiLineStringWatchNode);
             Assert.IsTrue(containsNewLine);
-            Assert.AreEqual(rawMultiLineStringtWatchNode.DefaultHeightSize, rawMultiLineStringtWatchNode.Height);
+            Assert.AreEqual(WatchTree.DefaultHeightSize, rawMultiLineStringtWatchNode.Height);
         }
 
         [Test]
@@ -470,7 +470,7 @@ namespace DynamoCoreWpfTests
 
             Assert.NotNull(dictionaryWatchNode);
             Assert.IsTrue(isDictionary);
-            Assert.AreEqual(rawDictionaryWatchNode.DefaultHeightSize, rawDictionaryWatchNode.Height);
+            Assert.AreEqual(WatchTree.DefaultHeightSize, rawDictionaryWatchNode.Height);
         }
 
         #endregion

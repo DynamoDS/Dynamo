@@ -70,6 +70,8 @@ namespace Dynamo.ViewModels
         private bool isEnabledAddStyleButton;
         private GeometryScalingOptions optionsGeometryScale = null;
         private GeometryScaleSize defaultGeometryScaling = GeometryScaleSize.Medium;
+        private bool canResetBackupLocation = false;
+
         #endregion Private Properties
 
         public GeometryScaleSize DefaultGeometryScaling
@@ -221,6 +223,38 @@ namespace Dynamo.ViewModels
             {
                 preferenceSettings.BackupInterval = value * 60000;
                 RaisePropertyChanged(nameof(BackupIntervalInMinutes));
+            }
+        }
+
+        /// <summary>
+        /// Backup files path
+        /// </summary>
+        public string BackupLocation
+        {
+            get
+            {
+                return preferenceSettings.BackupLocation;
+            }
+            set
+            {
+                preferenceSettings.BackupLocation = value;
+                RaisePropertyChanged(nameof(BackupLocation));
+            }
+        }
+
+        /// <summary>
+        /// Indicates if the user can reset the Backup Location to the default value
+        /// </summary>
+        public bool CanResetBackupLocation
+        {
+            get
+            {
+                return canResetBackupLocation;
+            }
+            set
+            {
+                canResetBackupLocation = value;
+                RaisePropertyChanged(nameof(CanResetBackupLocation));
             }
         }
 
@@ -839,6 +873,17 @@ namespace Dynamo.ViewModels
         #region [ Node Autocomplete ]
 
         /// <summary>
+        /// If true, autocomplete method options are hidden from UI 
+        /// </summary>
+        public bool HideAutocompleteMethodOptions
+        {
+            get
+            {
+                return preferenceSettings.HideAutocompleteMethodOptions;
+            }
+        }
+
+        /// <summary>
         /// Controls the IsChecked property in the "Node autocomplete" toogle button
         /// </summary>
         public bool NodeAutocompleteIsChecked
@@ -1151,6 +1196,7 @@ namespace Dynamo.ViewModels
                 Res.DynamoViewSettingMenuNumber00000
             };
             SelectedNumberFormat = preferenceSettings.NumberFormat;
+            BackupLocation = preferenceSettings.BackupLocation;
 
             runSettingsIsChecked = preferenceSettings.DefaultRunType;
             RunPreviewIsChecked = preferenceSettings.ShowRunPreview;
@@ -1212,13 +1258,35 @@ namespace Dynamo.ViewModels
 
         public DelegateCommand AddPythonPathCommand { get; private set; }
         public DelegateCommand DeletePythonPathCommand { get; private set; }
-        public DelegateCommand UpdatePythonPathCommand { get; private set; }        
+        public DelegateCommand UpdatePythonPathCommand { get; private set; }
 
         private void InitializeCommands()
         {
             AddPythonPathCommand = new DelegateCommand(p => AddPath());
             DeletePythonPathCommand = new DelegateCommand(p => RemovePath(), p => CanDelete());
             UpdatePythonPathCommand = new DelegateCommand(p => UpdatePathAt());
+        }
+
+        public bool UpdateBackupLocation(string newBackupLocation)
+        {
+
+            bool isSafelyLocation = dynamoViewModel.Model.UpdateBackupLocation(newBackupLocation);
+            if (isSafelyLocation)
+            {
+                BackupLocation = newBackupLocation;
+                CanResetBackupLocation = !dynamoViewModel.Model.IsDefaultBackupLocation();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public void ResetBackupLocation()
+        {
+            BackupLocation = dynamoViewModel.Model.DefaultBackupLocation();
+            UpdateBackupLocation(BackupLocation);
         }
 
         // Add python template path
@@ -1414,6 +1482,9 @@ namespace Dynamo.ViewModels
                     goto default;
                 case nameof(BackupIntervalInMinutes):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesSettingBackupInterval), System.Globalization.CultureInfo.InvariantCulture);
+                    goto default;
+                case nameof(BackupLocation):
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesSettingDefaultBackupLocation), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(MaxNumRecentFiles):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesSettingMaxRecentFiles), System.Globalization.CultureInfo.InvariantCulture);

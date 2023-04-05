@@ -16,6 +16,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf;
 using Dynamo.Wpf.ViewModels;
+using Dynamo.Wpf.ViewModels.Core;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 
@@ -1410,6 +1411,53 @@ namespace Dynamo.Tests
             var newJObject = JObject.Parse(newJSON);
 
             Assert.AreEqual(oldJObject["View"], newJObject["View"]);
+        }
+
+        /// <summary>
+        /// When focusing the Custom Node tab if the Save functionality is triggered was changing the CustomNode name automatically, then this test is validating that is not happening anymore
+        /// </summary>
+        [Test]
+        public void CustomNodeWorkspaceSaveBackupKeepNodeName()
+        {
+            var funcguid = GuidUtility.Create(GuidUtility.UrlNamespace, "NewCustomNodeKeepName");
+            var initialNodeName = "testnode";
+            //first create a new custom node.
+            this.ViewModel.ExecuteCommand(new DynamoModel.CreateCustomNodeCommand(funcguid, initialNodeName, "testcategory", "atest", true));
+
+            var customNodeWorspaceViewModel = this.ViewModel.Workspaces.OfType<WorkspaceViewModel>().FirstOrDefault();
+            var homeWorspaceViewModel = this.ViewModel.Workspaces.OfType<HomeWorkspaceViewModel>().FirstOrDefault();
+            
+            //Adds the CustomNode to the HomeWorkspaceViewModel so later we can check that the node name is not renamed after saving
+            var customNodeInstance = this.ViewModel.Model.CustomNodeManager.CreateCustomNodeInstance(funcguid);
+            homeWorspaceViewModel.Model.AddAndRegisterNode(customNodeInstance);
+
+            Assert.True(initialNodeName == customNodeInstance.Name);
+
+            //Create nodes that will be added to the Custom Node Workspace
+            var outnode1 = new Output();
+            outnode1.Symbol = "out1";
+            var outnode2 = new Output();
+            outnode1.Symbol = "out2";
+            var cbn = new CodeBlockNodeModel(this.ViewModel.EngineController.LibraryServices);
+            cbn.SetCodeContent("5;", this.ViewModel.CurrentSpace.ElementResolver);
+
+            //Add nodes to the Custom Node Workspace
+            customNodeWorspaceViewModel.Model.AddAndRegisterNode(cbn);
+            customNodeWorspaceViewModel.Model.AddAndRegisterNode(outnode1);
+            customNodeWorspaceViewModel.Model.AddAndRegisterNode(outnode2);
+
+            //Get the path in which the temporary dyf file is created and then Save 
+            var savePath = GetNewFileNameOnTempPath("dyf");
+
+            //Change to the CustomNodeWorkspaceViewModel (like focusing the Custom Node tab)
+            ViewModel.CurrentWorkspaceIndex = 1;
+
+            //Before was changing the CustomNode name but it shouldn't be changed
+            ViewModel.SaveAs(savePath, SaveContext.SaveAs, true);
+
+            //Verify that the CustomNode name remains in the same value that was created previously
+            Assert.True(initialNodeName == customNodeInstance.Name);
+            Assert.False(Path.GetFileNameWithoutExtension(savePath) == customNodeInstance.Name);
         }
         #endregion
     }

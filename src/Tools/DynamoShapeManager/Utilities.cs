@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
 namespace DynamoShapeManager
@@ -443,10 +444,15 @@ namespace DynamoShapeManager
                 var methodParams = new object[] { asmLocation };
                 preloadMethod.Invoke(null, methodParams);
             }
-            catch
+            catch(Exception ex)
             {
                 //log for clients like CLI.
-                var message = $"Could not load geometry library binaries from : {asmLocation}";
+                
+                var message = $"Could not load geometry library binaries from : {asmLocation} {ex} {ex.InnerException}";
+                if (ex is SEHException sehex)
+                {
+                    message += $"external error code {sehex.ErrorCode}";
+                }
                 Console.WriteLine(message);
                 throw new Exception(message);
             }

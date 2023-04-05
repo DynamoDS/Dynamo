@@ -2318,6 +2318,18 @@ Uninstall the following packages: {0}?</value>
     <value>Default Ranking Method</value>
     <comment>Label used in the features tab</comment>
   </data>
+  <data name="ConfidenceToolTipTitle" xml:space="preserve">
+    <value>Confidence rating</value>
+    <comment>Confidence tooltip title</comment>
+  </data>
+  <data name="ConfidenceToolTipDescription" xml:space="preserve">
+    <value>Represents estimated probability that the given node is the right choice. Recommended nodes are listed in order from highest to lowest confidence level. Confidence level percentages for all recommended nodes add up to about 100%.</value>
+    <comment>Confidence tooltip description</comment>
+  </data>
+  <data name="ConfidenceToolTipoLearnMore" xml:space="preserve">
+    <value>Learn more</value>
+    <comment>Confidence tooltip Learn more</comment>
+  </data>
   <data name="ObjectType" xml:space="preserve">
     <value>Node Type Match</value>
     <comment>Label used in the features tab</comment>
@@ -2371,8 +2383,16 @@ You can try disabling loading packages from built-in package paths, or unload th
 
 Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try downloading {0} again.</value>
   </data>
-  <data name="PreferencesViewVisualSettingsGeoScaling" xml:space="preserve">
+  <data name="PreferencesViewGeneralSettingsRun" xml:space="preserve">
+    <value>Run Settings</value>
+    <comment>Expander Header Name</comment>
+  </data>
+  <data name="PreferencesViewGeneralSettingsGeoScaling" xml:space="preserve">
     <value>Default Geometry Scaling</value>
+    <comment>Expander Header Name</comment>
+  </data>
+  <data name="PreferencesViewGeneralSettingsBackup" xml:space="preserve">
+    <value>Backup Settings</value>
     <comment>Expander Header Name</comment>
   </data>
   <data name="PreferencesViewVisualSettingsGroupStyles" xml:space="preserve">
@@ -2574,6 +2594,9 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
   </data>
   <data name="BreakConnectionsPopupMenuItem" xml:space="preserve">
     <value>Break Connections</value>
+  </data>
+  <data name="RenamePortPopupMenuItem" xml:space="preserve">
+    <value>Edit Port Properties</value>
   </data>
   <data name="HideWiresPopupMenuItem" xml:space="preserve">
     <value>Hide Wires</value>
@@ -3357,6 +3380,25 @@ You can manage this in Preferences -&gt; Security.</value>
     <value>Auto-Backup Interval</value>
     <comment>Setting menu | Auto-Backup Interval</comment>
   </data>
+  <data name="PreferencesSettingDefaultBackupLocation" xml:space="preserve">
+    <value>Default Backup Location</value>
+    <comment>Default Backup Location</comment>
+  </data>
+  <data name="PreferencesSettingUpdateBackupLocationTooltip" xml:space="preserve">
+    <value>Edit Backup Location</value>
+  </data>
+  <data name="PreferencesSettingResetBackupLocationTooltip" xml:space="preserve">
+    <value>Reset Backup Location</value>
+  </data>
+  <data name="PreferencesSettingsBackupLocationDialogTitle" xml:space="preserve">
+    <value>Select Folder to Backup</value>
+  </data>
+  <data name="PreferencesSettingsBackupFailedTitle" xml:space="preserve">
+    <value>Backup location Failed</value>
+  </data>
+  <data name="PreferencesSettingsBackupFailedMessage" xml:space="preserve">
+    <value>Invalid Backup location</value>
+  </data>
   <data name="PreferencesSettingMaxRecentFiles" xml:space="preserve">
     <value>Maximum Number of Recent Files</value>
     <comment>Setting menu | Maximum Number of Recent Files</comment>
@@ -3494,6 +3536,39 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="DynamoViewSettingLibraryZoomScale" xml:space="preserve">
     <value>Library</value>
   </data>
+  <data name="PortPropertiesPromptInputWindowTitle">
+      <value>Input Port Properties</value>
+      <comment>Input Port title</comment>
+  </data>
+  <data name="PortPropertiesPromptOutputWindowTitle">
+      <value>Output Port Properties</value>
+      <comment>Output Port title</comment>
+  </data>
+  <data name="PortPropertiesPromptDescriptionTooltip">
+      <value>Description of port</value>
+      <comment>Description of port</comment>
+  </data>
+  <data name="PortPropertiesPromptWindowDescription">
+      <value>Description</value>
+      <comment>Port Description Label</comment>
+  </data>
+  <data name="PortPropertiesPromptNameTooltip">
+      <value>Port name</value>
+      <comment>Name of port</comment>
+  </data>
+    <data name="PortPropertiesPromptWindowName">
+      <value>Name</value>
+      <comment>Port Name Label</comment>
+  </data>
+  <data name="RemovePythonPortWarningMessageBoxTitle" xml:space="preserve">
+    <value>Remove port?</value>
+  </data>
+  <data name="MessageRemovePythonPort" xml:space="preserve">
+    <value>Your custom port properties will be lost once the port is removed.</value>
+  </data>
+  <data name="MessagePortNameInvalid" xml:space="preserve">
+    <value>Cannot contain special characters (# % * ? \ : [ ])</value>
+  </data>
   <data name="PreferencesViewEnablePersistExtensions" xml:space="preserve">
     <value>On launch, remember open extensions panels from last session</value>
   </data>
@@ -3540,5 +3615,8 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="PreferencesViewPythonEditorLable" xml:space="preserve">
     <value>Python Editor</value>
     <comment>Preferences -&gt; ZoomScalling -&gt; Python Editor</comment>
+  </data>
+  <data name="CustomColorsPopupTitle" xml:space="preserve">
+    <value>Custom</value>
   </data>
 </root>

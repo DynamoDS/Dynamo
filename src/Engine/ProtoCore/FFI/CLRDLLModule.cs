@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -49,22 +49,24 @@ namespace ProtoFFI
         /// <param name="alias">Alias name, if any. For now its not supported.</param>
         public static CLRModuleType GetInstance(Type type, CLRDLLModule module, string alias)
         {
-            CLRModuleType mtype;
-            if (!mTypes.TryGetValue(type, out mtype))
+            if (!mTypes.TryGetValue(type, out CLRModuleType mtype))
             {
                 lock (mTypes)
                 {
-                    if (!mTypes.TryGetValue(type, out mtype))
+                    mtype = new CLRModuleType(type);
+                    //Now check that a type with same name is not imported.
+                    Type otherType;
+                    if (mTypeNames.TryGetValue(mtype.FullName, out CLRModuleType otherMType))
                     {
-                        mtype = new CLRModuleType(type);
-                        //Now check that a type with same name is not imported.
-                        Type otherType;
-                        if (mTypeNames.TryGetValue(mtype.FullName, out otherType))
-                            throw new InvalidOperationException(string.Format("Can't import {0}, {1} is already imported as {2}, namespace support needed.", type.FullName, type.Name, otherType.FullName));
-
-                        mTypes.Add(type, mtype);
-                        mTypeNames.Add(mtype.FullName, type);
+                        if (otherMType.CLRType.IsEquivalentTo(type))
+                        {
+                            return otherMType;
+                        }
+                        throw new InvalidOperationException(string.Format("Can't import {0}, {1} is already imported as {2}.", type.FullName, type.Name, otherMType.CLRType.FullName));
                     }
+
+                    mTypes.Add(type, mtype);
+                    mTypeNames.Add(mtype.FullName, mtype);
                 }
             }
 
@@ -242,9 +244,8 @@ namespace ProtoFFI
 
         public static System.Type GetImportedType(string typename)
         {
-            Type type = null;
-            if (mTypeNames.TryGetValue(typename, out type))
-                return type;
+            if (mTypeNames.TryGetValue(typename, out CLRModuleType mType))
+                return mType.CLRType;
 
             return null;
         }
@@ -260,7 +261,7 @@ namespace ProtoFFI
 
         private static readonly Dictionary<Type, CLRModuleType> mTypes = new Dictionary<Type, CLRModuleType>();
 
-        private static readonly Dictionary<string, Type> mTypeNames = new Dictionary<string, Type>();
+        private static readonly Dictionary<string, CLRModuleType> mTypeNames = new Dictionary<string, CLRModuleType>();
 
         private static readonly Dictionary<System.Type, ProtoCore.Type> mTypeMaps = new Dictionary<Type, ProtoCore.Type>();
 

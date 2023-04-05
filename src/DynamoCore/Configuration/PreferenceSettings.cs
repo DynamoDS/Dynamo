@@ -45,7 +45,7 @@ namespace Dynamo.Configuration
     /// from a XML file from DYNAMO_SETTINGS_FILE.
     /// When GUI is closed, the settings are saved back into the XML file.
     /// </summary>
-    public class PreferenceSettings : NotificationObject, IPreferences, IRenderPrecisionPreference, IDisablePackageLoadingPreferences, ILogSource
+    public class PreferenceSettings : NotificationObject, IPreferences, IRenderPrecisionPreference, IDisablePackageLoadingPreferences, ILogSource, IHideAutocompleteMethodOptions
     {
         private string numberFormat;
         private string lastUpdateDownloadPath;
@@ -57,8 +57,7 @@ namespace Dynamo.Configuration
         private bool isEnablePersistExtensionsEnabled;
         private bool isStaticSplashScreenEnabled;
         private bool isCreatedFromValidFile = true;
-        private bool isADPChecked = false;
-        private bool isADPOptedIn = false;
+        private string backupLocation;
 
         #region Constants
         /// <summary>
@@ -114,22 +113,16 @@ namespace Dynamo.Configuration
 
         /// <summary>
         /// Indicates whether ADP analytics reporting is approved or not.
-        /// Note that this property is called often and the inner call to IsADPOptinIn can be slow sometimes
-        /// especially when there is an error involved. And therefore we will only check this once per instance.
+        /// Note that the getter will communicate to a analytics server which might be slow.
+        /// This API should only be used in UI scenarios (not in performance sensitive areas)
         /// </summary>
         [XmlIgnore]
-        [Obsolete("Setter is obsolete - ADP consent should not be set directly, it should be set using the consent dialog.")]
+        [Obsolete("API obsolete - This is an internal API and should not be used.")]
         public bool IsADPAnalyticsReportingApproved
         {
             get
             {
-                if (!isADPChecked)
-                {
-                    isADPChecked = true;
-                    isADPOptedIn = AnalyticsService.IsADPOptedIn;
-                }
-
-                return isADPOptedIn;
+                return AnalyticsService.IsADPOptedIn;
             }
             set { throw new Exception("do not use"); }
         }
@@ -366,6 +359,19 @@ namespace Dynamo.Configuration
         public List<string> RecentFiles { get; set; }
 
         /// <summary>
+        /// Backup files path
+        /// </summary>
+        public string BackupLocation
+        {
+            get { return backupLocation; }
+            set
+            {
+                backupLocation = value;
+                RaisePropertyChanged(nameof(BackupLocation));
+            }
+        }
+
+        /// <summary>
         /// A list of backup file paths.
         /// </summary>
         public List<string> BackupFiles { get; set; }
@@ -559,6 +565,11 @@ namespace Dynamo.Configuration
         /// This defines the number of results of the  ML recommendation
         /// </summary>
         public int MLRecommendationNumberOfResults { get; set; }
+
+        /// <summary>
+        /// If true, autocomplete method options are hidden from UI 
+        /// </summary>
+        public bool HideAutocompleteMethodOptions { get; set; }
 
         /// <summary>
         /// This defines if user wants to see the enabled Dynamo Notification Center.
@@ -809,6 +820,7 @@ namespace Dynamo.Configuration
             BackupInterval = DefaultBackupInterval;
             BackupFilesCount = 1;
             BackupFiles = new List<string>();
+            BackupLocation = string.Empty;
 
             LibraryZoomScale = 100;
             PythonScriptZoomScale = 100;
@@ -822,6 +834,7 @@ namespace Dynamo.Configuration
             HideNodesBelowSpecificConfidenceLevel = false;
             MLRecommendationConfidenceLevel = 10;
             MLRecommendationNumberOfResults = 10;
+            HideAutocompleteMethodOptions = false;
             EnableNotificationCenter = true;
             isStaticSplashScreenEnabled = true;
             DefaultPythonEngine = string.Empty;
@@ -829,6 +842,7 @@ namespace Dynamo.Configuration
             GroupStyleItemsList = new List<GroupStyleItem>();
             ReadNotificationIds = new List<string>();
             DynamoPlayerFolderGroups = new List<DynamoPlayerFolderGroup>();
+            backupLocation = string.Empty;
         }
 
         /// <summary>

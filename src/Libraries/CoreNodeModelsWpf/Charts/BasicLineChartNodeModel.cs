@@ -17,6 +17,8 @@ using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 using DynamoServices;
 using Dynamo.Wpf.Properties;
+using Dynamo.Graph.Connectors;
+using Dynamo.ViewModels;
 
 namespace CoreNodeModelsWpf.Charts
 {
@@ -25,9 +27,16 @@ namespace CoreNodeModelsWpf.Charts
     [NodeCategory("Display.Charts.Create")]    
     [NodeDescription("ChartsBasicLineChartDescription", typeof(CoreNodeModelWpfResources))]
     [NodeSearchTags("ChartsBasicLineChartSearchTags", typeof(CoreNodeModelWpfResources))]
-
+    [InPortNames("labels", "values", "colors")]
     [InPortTypes("List<string>", "List<List<double>>", "List<color>")]
-    [OutPortTypes("Dictionary<string, double>")]
+    [InPortDescriptions(typeof(CoreNodeModelWpfResources),
+        "ChartsBasicLineChartLabelsDataPortToolTip",
+        "ChartsBasicLineChartValuesDataPortToolTip",
+        "ChartsBasicLineChartColorsDataPortToolTip")]
+    [OutPortNames("labels:values")]
+    [OutPortTypes("Dictionary<string, List<double>>")]
+    [OutPortDescriptions(typeof(CoreNodeModelWpfResources),
+        "ChartsBasicLineChartLabelsValuesDataPortToolTip")]
     [AlsoKnownAs("CoreNodeModelsWpf.Charts.Index-ValueLinePlot")]
     public class BasicLineChartNodeModel : NodeModel
     {
@@ -48,6 +57,16 @@ namespace CoreNodeModelsWpf.Charts
         /// A list of color values, one for each plotted line.
         /// </summary>
         public List<SolidColorBrush> Colors { get; set; }
+
+        /// <summary>
+        /// Triggers when port is connected or disconnected
+        /// </summary>
+        public event EventHandler PortUpdated;
+
+        protected virtual void OnPortUpdated(EventArgs args)
+        {
+            PortUpdated?.Invoke(this, args);
+        }
         #endregion
 
         #region Constructors
@@ -56,14 +75,9 @@ namespace CoreNodeModelsWpf.Charts
         /// </summary>
         public BasicLineChartNodeModel()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("labels", "A list of string labels for each line to be plotted.")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("values", "List of lists each containing double values to be plotted against X-Axis values.")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("colors", "A list of colors for each line.")));
-
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("labels:values", "Dictionary containing label:value key-pairs")));
-
             RegisterAllPorts();
 
+            PortConnected += BasicLineChartNodeModel_PortConnected;
             PortDisconnected += BasicLineChartNodeModel_PortDisconnected;
 
             ArgumentLacing = LacingStrategy.Disabled;
@@ -75,6 +89,7 @@ namespace CoreNodeModelsWpf.Charts
         /// </summary>
         public BasicLineChartNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
+            PortConnected += BasicLineChartNodeModel_PortConnected;
             PortDisconnected += BasicLineChartNodeModel_PortDisconnected;
         }
         #endregion
@@ -82,15 +97,28 @@ namespace CoreNodeModelsWpf.Charts
         #region Events
         private void BasicLineChartNodeModel_PortDisconnected(PortModel port)
         {
+            OnPortUpdated(null);
             // Clear UI when a input port is disconnected
-            if (port.PortType == PortType.Input && this.State == ElementState.Active)
+            if (port.PortType == PortType.Input)
             {
-                Labels.Clear();
-                Values.Clear();
-                Colors.Clear();
+                Labels?.Clear();
+                Values?.Clear();
+                Colors?.Clear();
 
                 RaisePropertyChanged("DataUpdated");
             }
+        }
+
+        private void BasicLineChartNodeModel_PortConnected(PortModel port, ConnectorModel arg2)
+        {
+            // Reset an info states if any
+            if (port.PortType == PortType.Input && InPorts[2].IsConnected && NodeInfos.Any(x => x.State.Equals(ElementState.Info)))
+            {
+                this.ClearInfoMessages();
+            }
+
+            OnPortUpdated(null);
+            RaisePropertyChanged("DataUpdated");
         }
         #endregion
 
@@ -124,10 +152,9 @@ namespace CoreNodeModelsWpf.Charts
             var values = inputs[1] as ArrayList;
             var colors = inputs[2] as ArrayList;
 
-            // Only continue if key/values match in length
-            if (labels.Count != values.Count || labels.Count < 1)
+            if (!InPorts[0].IsConnected && !InPorts[1].IsConnected && !InPorts[2].IsConnected)
             {
-                throw new Exception("Label and Values do not properly align in length.");
+                return;
             }
 
             // Clear current chart values
@@ -135,9 +162,19 @@ namespace CoreNodeModelsWpf.Charts
             Values = new List<List<double>>();
             Colors = new List<SolidColorBrush>();
 
+            var anyNullData = labels == null || values == null;
+
+            // Only continue if key/values match in length
+            if (anyNullData || labels.Count != values.Count || labels.Count < 1 || labels.Count == 0)
+            {
+                throw new Exception("Label and Values do not properly align in length.");
+            }
+
             // If color count doesn't match title count use random colors
             if (colors == null || colors.Count == 0 || colors.Count != labels.Count)
             {
+                if (InPorts[2].IsConnected) return;
+
                 // In case colors are not provided, we supply some from the default library of colors
                 Info(Dynamo.Wpf.Properties.CoreNodeModelWpfResources.ProvideDefaultColorsWarningMessage);
 
@@ -202,30 +239,50 @@ namespace CoreNodeModelsWpf.Charts
             // WARNING!!!
             // Do not throw an exception during AST creation.
 
-            // If inputs are not connected return null
-            if (!InPorts[0].IsConnected ||
-                !InPorts[1].IsConnected)
+            AssociativeNode inputNode;
+
+            // If inputs are not connected return default input
+            if (!InPorts[0].IsConnected && !InPorts[1].IsConnected)
+            {
+                inputNode = AstFactory.BuildFunctionCall(
+                    new Func<List<string>, List<List<double>>, List<DSCore.Color>, Dictionary<string, List<double>>>(BasicLineChartFunctions.GetNodeInput),
+                    new List<AssociativeNode> { inputAstNodes[0], inputAstNodes[1], inputAstNodes[2] }
+                );
+
+                return new[]
+                {
+                    AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), inputNode),
+                    AstFactory.BuildAssignment(
+                        AstFactory.BuildIdentifier(AstIdentifierBase + "_dummy"),
+                        VMDataBridge.DataBridge.GenerateBridgeDataAst(GUID.ToString(), AstFactory.BuildExprList(inputAstNodes)
+                        )
+                    ),
+                };
+            }
+            else if (!InPorts[0].IsConnected || !InPorts[1].IsConnected)
             {
                 return new[]
                 {
                     AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()),
                 };
             }
-
-            AssociativeNode inputNode = AstFactory.BuildFunctionCall(
-                new Func<List<string>, List<List<double>>, List<DSCore.Color>, Dictionary<string, List<double>>>(BasicLineChartFunctions.GetNodeInput),
-                new List<AssociativeNode> { inputAstNodes[0], inputAstNodes[1], inputAstNodes[2] }
-            );
-
-            return new[]
+            else
             {
-                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), inputNode),
-                    AstFactory.BuildAssignment(
-                        AstFactory.BuildIdentifier(AstIdentifierBase + "_dummy"),
-                        VMDataBridge.DataBridge.GenerateBridgeDataAst(GUID.ToString(), AstFactory.BuildExprList(inputAstNodes)
-                    )
-                ),
-            };
+                inputNode = AstFactory.BuildFunctionCall(
+                    new Func<List<string>, List<List<double>>, List<DSCore.Color>, Dictionary<string, List<double>>>(BasicLineChartFunctions.GetNodeInput),
+                    new List<AssociativeNode> { inputAstNodes[0], inputAstNodes[1], inputAstNodes[2] }
+                );
+
+                return new[]
+                {
+                    AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), inputNode),
+                        AstFactory.BuildAssignment(
+                            AstFactory.BuildIdentifier(AstIdentifierBase + "_dummy"),
+                            VMDataBridge.DataBridge.GenerateBridgeDataAst(GUID.ToString(), AstFactory.BuildExprList(inputAstNodes)
+                        )
+                    ),
+                };
+            }
         }
         #endregion
 
@@ -236,6 +293,7 @@ namespace CoreNodeModelsWpf.Charts
         /// </summary>
         public override void Dispose()
         {
+            PortConnected -= BasicLineChartNodeModel_PortConnected;
             PortDisconnected -= BasicLineChartNodeModel_PortDisconnected;
             VMDataBridge.DataBridge.Instance.UnregisterCallback(GUID.ToString());
         }
@@ -250,6 +308,9 @@ namespace CoreNodeModelsWpf.Charts
     {
 
         private BasicLineChartControl basicLineChartControl;
+        private NodeView view;
+        private BasicLineChartNodeModel model;
+
 
         /// <summary>
         /// At run-time, this method is called during the node 
@@ -259,6 +320,8 @@ namespace CoreNodeModelsWpf.Charts
         /// <param name="nodeView">The NodeView representing the node in the graph.</param>
         public void CustomizeView(BasicLineChartNodeModel model, NodeView nodeView)
         {
+            this.model = model;
+            this.view = nodeView;
             basicLineChartControl = new BasicLineChartControl(model);
             nodeView.inputGrid.Children.Add(basicLineChartControl);
 
@@ -268,6 +331,49 @@ namespace CoreNodeModelsWpf.Charts
 
             var contextMenu = (nodeView.Content as Grid).ContextMenu;
             contextMenu.Items.Add(exportImage);
+
+            UpdateDefaultInPortValues();
+
+            model.PortUpdated += ModelOnPortUpdated;
+        }
+
+        private void ModelOnPortUpdated(object sender, EventArgs e)
+        {
+            UpdateDefaultInPortValues();
+        }
+
+        private void UpdateDefaultInPortValues()
+        {
+            if (!this.view.ViewModel.InPorts.Any()) return;
+            var inPorts = this.view.ViewModel.InPorts;
+
+            // Only apply default values if all ports are disconnected
+            if (!model.IsInErrorState &&
+                    model.State != ElementState.Active &&
+                    !inPorts[0].IsConnected &&
+                    !inPorts[1].IsConnected)
+            {
+                ((InPortViewModel)inPorts[0]).PortDefaultValueMarkerVisible = true;
+                ((InPortViewModel)inPorts[1]).PortDefaultValueMarkerVisible = true;
+            }
+            else
+            {
+                ((InPortViewModel)inPorts[0]).PortDefaultValueMarkerVisible = false;
+                ((InPortViewModel)inPorts[1]).PortDefaultValueMarkerVisible = false;
+            }
+
+            var allPortsConnected = inPorts[0].IsConnected && inPorts[1].IsConnected && model.State != ElementState.Warning;
+            var noPortsConnected = !inPorts[0].IsConnected && !inPorts[1].IsConnected;
+
+            // The color input uses default values if it's not connected
+            if (!inPorts[2].IsConnected && (allPortsConnected || noPortsConnected))
+            {
+                ((InPortViewModel)inPorts[2]).PortDefaultValueMarkerVisible = true;
+            }
+            else
+            {
+                ((InPortViewModel)inPorts[2]).PortDefaultValueMarkerVisible = false;
+            }
         }
 
         private void ExportImage_Click(object sender, RoutedEventArgs e)
@@ -279,6 +385,9 @@ namespace CoreNodeModelsWpf.Charts
         /// Here you can do any cleanup you require if you've assigned callbacks for particular 
         /// UI events on your node.
         /// </summary>
-        public void Dispose() { }
+        public void Dispose()
+        {
+            model.PortUpdated -= ModelOnPortUpdated;
+        }
     }
 }
