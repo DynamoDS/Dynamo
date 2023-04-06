@@ -301,8 +301,10 @@ namespace Watch3DNodeModels
 
         protected override void RemoveInput()
         {
-            if (InPorts.Count > 0)
+            if (InPorts.Count > 1)
+            {
                 base.RemoveInput();
+            }
         }
     }
 }
