@@ -60,9 +60,9 @@ namespace DynamoPerformanceTests
             internal TimeSpan StdDev { get; set; }
 
             // Values + Units
-            internal string MeanString => Mean.TotalMilliseconds.ToString("N", CultureInfo.InvariantCulture);
-            internal string ErrorString => Error.TotalMilliseconds.ToString("N", CultureInfo.InvariantCulture);
-            internal string StdDevString => StdDev.TotalMilliseconds.ToString("N", CultureInfo.InvariantCulture);
+            internal string MeanString => Mean.TotalMilliseconds.ToString("N", CultureInfo.InvariantCulture) + "ms";
+            internal string ErrorString => Error.TotalMilliseconds.ToString("N", CultureInfo.InvariantCulture) + "ms";
+            internal string StdDevString => StdDev.TotalMilliseconds.ToString("N", CultureInfo.InvariantCulture) + "ms";
 
             /// <summary>
             /// Create a Benchmark result from values parsed from results csv
@@ -116,7 +116,7 @@ namespace DynamoPerformanceTests
             /// </summary>
             internal double MeanDelta
             {
-                get { return Math.Round(100 * (NewResult.Mean.TotalMilliseconds - BaseResult.Mean.TotalMilliseconds) / BaseResult.Mean.TotalMilliseconds, 2); }
+                get { return Math.Round(100 * (NewResult.Mean.TotalMilliseconds - BaseResult.Mean.TotalMilliseconds) / BaseResult.Mean.TotalMilliseconds, 4); }
             }
 
             /// <summary>
@@ -124,7 +124,7 @@ namespace DynamoPerformanceTests
             /// </summary>
             internal double ErrorDelta
             {
-                get { return Math.Round(100 * (NewResult.Error.TotalMilliseconds - BaseResult.Error.TotalMilliseconds) / BaseResult.Error.TotalMilliseconds, 2); }
+                get { return Math.Round(100 * (NewResult.Error.TotalMilliseconds - BaseResult.Error.TotalMilliseconds) / BaseResult.Error.TotalMilliseconds, 4); }
             }
 
             /// <summary>
@@ -132,7 +132,7 @@ namespace DynamoPerformanceTests
             /// </summary>
             internal double StdDevDelta
             {
-                get { return Math.Round(100 * (NewResult.StdDev.TotalMilliseconds - BaseResult.StdDev.TotalMilliseconds) / BaseResult.StdDev.TotalMilliseconds, 2); }
+                get { return Math.Round(100 * (NewResult.StdDev.TotalMilliseconds - BaseResult.StdDev.TotalMilliseconds) / BaseResult.StdDev.TotalMilliseconds, 4); }
             }
 
             /// <summary>
