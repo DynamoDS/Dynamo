@@ -95,7 +95,7 @@ namespace Watch3DNodeModels
     [OutPortTypes("var")]
     [AlsoKnownAs("Dynamo.Nodes.dyn3DPreview", "Dynamo.Nodes.3DPreview", "Dynamo.Nodes.Watch3D", "DynamoWatch3D.Watch3D")]
     [IsDesignScriptCompatible]
-    public class Watch3D : VariableInputNode
+    public class Watch3D : BasicVariableInputNode
     {
         // If the view model, which maintains the camera,
         // is not created until the view customization is applied,
@@ -190,16 +190,6 @@ namespace Watch3DNodeModels
         }
 
         #endregion
-
-        protected override string GetInputTooltip(int index)
-        {
-            return "Incoming Geometry Objects.";
-        }
-
-        protected override string GetInputName(int index)
-        {
-            return string.Empty;
-        }
 
         protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
         {

@@ -133,7 +133,7 @@ namespace Dynamo.Graph.Nodes
     }
 
     /// <summary>
-    /// This is a helper class that processess inputs of VariableInputNode.
+    /// This is a helper class that processes inputs of VariableInputNode.
     /// </summary>
     public abstract class VariableInputNodeController
     {
@@ -185,7 +185,7 @@ namespace Dynamo.Graph.Nodes
                 model.InPorts.Remove(port);
                 MarkNodeDirty();
             }
-            
+
         }
 
         /// <summary>
@@ -322,5 +322,34 @@ namespace Dynamo.Graph.Nodes
         }
 
         #endregion
+    }
+
+    /// <summary>
+    /// This is a basic version of VariableInputNode with default basic implementation of GetInputTooltip and GetInputName
+    /// </summary>
+    public abstract class BasicVariableInputNode : VariableInputNode
+    {
+        /// <summary>
+        /// Protected constructor for deserialization
+        /// </summary>
+        /// <param name="inPorts"></param>
+        /// <param name="outPorts"></param>
+        protected BasicVariableInputNode(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+        }
+
+        protected BasicVariableInputNode() : base()
+        {
+        }
+
+        protected override string GetInputTooltip(int index)
+        {
+            return "";
+        }
+
+        protected override string GetInputName(int index)
+        {
+            return string.Empty;
+        }
     }
 }
