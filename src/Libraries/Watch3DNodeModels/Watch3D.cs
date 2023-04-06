@@ -298,5 +298,11 @@ namespace Watch3DNodeModels
             // No visualization update is required for this node type.
             return false;
         }
+
+        protected override void RemoveInput()
+        {
+            if (InPorts.Count > 0)
+                base.RemoveInput();
+        }
     }
 }

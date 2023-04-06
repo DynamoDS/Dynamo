@@ -13,6 +13,8 @@ using Autodesk.DesignScript.Interfaces;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Logging;
+using Dynamo.Nodes;
+using Dynamo.UI;
 using Dynamo.Wpf;
 using Dynamo.Wpf.Rendering;
 using Dynamo.Wpf.ViewModels.Watch3D;
@@ -139,6 +141,33 @@ namespace Watch3DNodeModelsWpf
                         new Action<object>(RenderData),
                         DispatcherPriority.Render,
                         obj));
+
+            //////////////////////////////////////////////
+            // Buttons for adding and removing ports
+            //////////////////////////////////////////////
+
+            var addButton = new DynamoNodeButton(nodeView.ViewModel.NodeModel, "AddInPort")
+            {
+                Content = "+",
+                Style = (Style)SharedDictionaryManager.DynamoModernDictionary["AddRemoveButton"]
+            };
+
+            var subButton = new DynamoNodeButton(nodeView.ViewModel.NodeModel, "RemoveInPort")
+            {
+                Content = "-",
+                Style = (Style)SharedDictionaryManager.DynamoModernDictionary["AddRemoveButton"]
+            };
+
+            var wp = new WrapPanel
+            {
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalAlignment = HorizontalAlignment.Center
+            };
+
+            wp.Children.Add(addButton);
+            wp.Children.Add(subButton);
+
+            nodeView.inputGrid.Children.Add(wp);
         }
 
         void model_Serialized(XmlElement nodeElement)
