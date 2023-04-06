@@ -19,16 +19,14 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         /// <param name="inPorts"></param>
         /// <param name="outPorts"></param>
-        /// <param name="minInputCount"></param>
-        /// <param name="maxInputCount"></param>
-        protected VariableInputNode(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts, int minInputCount = 0, int maxInputCount = 9999) :base(inPorts,outPorts)
+        protected VariableInputNode(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) :base(inPorts,outPorts)
         {
-            VariableInputController = new BasicVariableInputNodeController(this, minInputCount, maxInputCount);
+            VariableInputController = new BasicVariableInputNodeController(this);
         }
 
-        protected VariableInputNode(int minInputCount = 0, int maxInputCount = 9999)
+        protected VariableInputNode()
         {
-            VariableInputController = new BasicVariableInputNodeController(this, minInputCount, maxInputCount);
+            VariableInputController = new BasicVariableInputNodeController(this);
         }
 
         /// <summary>
@@ -46,8 +44,7 @@ namespace Dynamo.Graph.Nodes
         {
             private readonly VariableInputNode model;
 
-            public BasicVariableInputNodeController(VariableInputNode node, int minInputCount = 0, int maxInputCount = 9999)
-                : base(node, minInputCount, maxInputCount)
+            public BasicVariableInputNodeController(VariableInputNode node) : base(node)
             {
                 model = node;
             }
@@ -136,22 +133,18 @@ namespace Dynamo.Graph.Nodes
     }
 
     /// <summary>
-    /// This is a helper class that processes inputs of VariableInputNode.
+    /// This is a helper class that processess inputs of VariableInputNode.
     /// </summary>
     public abstract class VariableInputNodeController
     {
         private readonly NodeModel model;
-        private readonly int minInputCount;
-        private readonly int maxInputCount;
 
         private int inputAmtLastBuild;
         private readonly Dictionary<int, bool> connectedLastBuild = new Dictionary<int, bool>();
 
-        protected VariableInputNodeController(NodeModel model, int minInputCount = 0, int maxInputCount = 9999)
+        protected VariableInputNodeController(NodeModel model)
         {
             this.model = model;
-            this.minInputCount = minInputCount;
-            this.maxInputCount = maxInputCount;
         }
 
         protected abstract string GetInputName(int index);
@@ -182,10 +175,6 @@ namespace Dynamo.Graph.Nodes
         public virtual void RemoveInputFromModel()
         {
             int count = model.InPorts.Count;
-
-            if (count <= minInputCount)
-                return;
-
             // Do not remove input port if there aren't any
             // or if the node is a DSVarArgFunction and doing so would remove a default port
             bool countIsGreaterThanDefault = !(model is DSVarArgFunction dSVarArgFunction) || count > dSVarArgFunction.DefaultNumInputs;
@@ -196,7 +185,7 @@ namespace Dynamo.Graph.Nodes
                 model.InPorts.Remove(port);
                 MarkNodeDirty();
             }
-
+            
         }
 
         /// <summary>
@@ -204,9 +193,6 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public virtual void AddInputToModel()
         {
-            if (model.InPorts.Count >= maxInputCount)
-                return;
-
             var idx = GetInputIndexFromModel();
             model.InPorts.Add(new PortModel(PortType.Input,model, new PortData(GetInputName(idx), GetInputTooltip(idx))));
             MarkNodeDirty();
@@ -219,7 +205,7 @@ namespace Dynamo.Graph.Nodes
         public void SetNumInputs(int numInputs)
         {
             // Ignore negative values, as those are impossible.
-            if (numInputs < 0 || numInputs < minInputCount || numInputs > maxInputCount)
+            if (numInputs < 0)
             {
                 return;
             }

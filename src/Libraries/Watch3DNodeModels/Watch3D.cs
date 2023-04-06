@@ -131,13 +131,13 @@ namespace Watch3DNodeModels
         #region constructors
 
         [JsonConstructor]
-        private Watch3D(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts, 1)
+        private Watch3D(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             ArgumentLacing = LacingStrategy.Disabled;
             ShouldDisplayPreviewCore = false;
         }
 
-        public Watch3D() : base(1)
+        public Watch3D()
         {
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("", Resources.Watch3DPortDataInputToolTip)));
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("", Resources.Watch3DPortDataInputToolTip)));
