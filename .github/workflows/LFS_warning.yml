@@ -2,7 +2,7 @@ name: Check file size
 on: [pull_request, push]
 
 jobs:
-  sync-to-hub:
+  check:
     runs-on: ubuntu-latest
     steps:
       - name: Check large files
