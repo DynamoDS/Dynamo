@@ -88,9 +88,9 @@ namespace DynamoPerformanceTests
             {
                 if(unitString.ToLowerInvariant().Contains("us"))
                 {
-                    const long TicksPerMicrosecond = 10;
-                    long microseconds = (long)(val / TicksPerMicrosecond);
-                    return TimeSpan.FromTicks(microseconds);
+                    const long ticksPerMicrosecond = 10;
+                    long ticks = (long)(val * ticksPerMicrosecond);
+                    return TimeSpan.FromTicks(ticks);
                 }
                 if (unitString.ToLowerInvariant().Contains("ms"))
                 {
