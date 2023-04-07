@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -33,11 +33,18 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         public IPreferences Preferences { get; set; }
         public IEngineControllerManager EngineControllerManager { get; set; }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public Watch3DViewModelStartupParams()
         {
             
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="model"></param>
         public Watch3DViewModelStartupParams(DynamoModel model)
         {
             Model = model;
@@ -133,6 +140,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
 
         private bool canNavigateBackground = false;
+        /// <summary>
+        /// Indicate if user can natigvate background geometry view
+        /// </summary>
         public bool CanNavigateBackground
         {
             get
@@ -142,15 +152,15 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             set
             {
                 canNavigateBackground = value;
-                Dynamo.Logging.Analytics.TrackScreenView(canNavigateBackground ? "Geometry" : "Nodes");
-                RaisePropertyChanged("CanNavigateBackground");
+                Analytics.TrackScreenView(canNavigateBackground ? "Geometry" : "Nodes");
+                RaisePropertyChanged(nameof(CanNavigateBackground));
             }
         }
 
+        private bool isolationMode;
         /// <summary>
         /// A flag which indicates whether Isolate Selected Geometry mode is activated.
         /// </summary>
-        private bool isolationMode;
         public bool IsolationMode
         {
             get
@@ -554,6 +564,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         public virtual void UnHighlightNodeGraphics(IEnumerable<NodeModel> nodes)
         {
             // Override in derived classes.
+
+            // Reset state machine
+            CurrentSpaceViewModel.CancelActiveState();
         }
 
         private void RegisterNodeEventHandlers(NodeModel node)

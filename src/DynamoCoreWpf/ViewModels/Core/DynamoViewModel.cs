@@ -810,6 +810,8 @@ namespace Dynamo.ViewModels
                     {
                         // Return focus back to Dynamo View
                         OnRequestReturnFocusToView();
+                        // Reset state machine
+                        CurrentSpaceViewModel.CancelActiveState();
                     }
                     break;
             }
