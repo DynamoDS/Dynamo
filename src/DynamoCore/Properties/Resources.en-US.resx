@@ -784,7 +784,7 @@ This package has not been loaded because another conflicting package was loaded 
     <value>Description &lt;Double click here to edit group description&gt;</value>
   </data>
   <data name="GroupNameDefaultText" xml:space="preserve">
-    <value>Titile &lt;Double click here to edit group title&gt;</value>
+    <value>Title &lt;Double click here to edit group title&gt;</value>
   </data>
   <data name="OutputPortAlternativeName" xml:space="preserve">
     <value>output</value>
