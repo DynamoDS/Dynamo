@@ -1087,18 +1087,7 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("CustomColorPickerTitle", resourceCulture);
             }
         }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Custom.
-        /// </summary>
-        public static string CustomColorsPopupTitle
-        {
-            get
-            {
-                return ResourceManager.GetString("CustomColorsPopupTitle", resourceCulture);
-            }
-        }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to A description that helps people understand what the node might be used for..
         /// </summary>
@@ -3419,7 +3408,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;Double click here to edit group description&gt;.
+        ///   Looks up a localized string similar to Description &lt;Double click here to edit group description&gt;.
         /// </summary>
         public static string GroupDefaultText {
             get {
@@ -3428,7 +3417,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;Double click here to edit group title&gt;.
+        ///   Looks up a localized string similar to Title &lt;Double click here to edit group title&gt;.
         /// </summary>
         public static string GroupNameDefaultText {
             get {
