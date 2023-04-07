@@ -217,7 +217,7 @@
                                               Command="{Binding SignOutCommand}"
                                               Name="logoutOption">
                             <MenuItem.ToolTip>
-                                <ToolTip Content="Sign Out" Style="{StaticResource GenericToolTipLight}"/>
+                                <ToolTip Content="{x:Static p:Resources.LogoutMenuItemText}" Style="{StaticResource GenericToolTipLight}"/>
                             </MenuItem.ToolTip>
                         </MenuItem>
                     </MenuItem>
