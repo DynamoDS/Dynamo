@@ -326,13 +326,13 @@ namespace Dynamo.Wpf.Views
         /// <param name="e"></param>
         private void OnMoreInfoClicked(object sender, RoutedEventArgs e)
         {
-            if (sender is Label lable)
+            if (sender is Label label)
             {
-                if (lable.Name == "Titleinfo")
+                if (label.Name == "MLNodeAutocompleteLabel")
                 {
                     dynViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString, UriKind.Relative)));
                 }
-                else if (lable.Name == "TrustWarningInfoLabel")
+                else if (label.Name == "TrustWarningInfoLabel")
                 {
                     dynViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Wpf.Properties.Resources.FileTrustWarningDocumentationUriString, UriKind.Relative)));
 
@@ -448,10 +448,10 @@ namespace Dynamo.Wpf.Views
             }            
         }
 
-        private void OnMoreInfoClicked(object sender, MouseButtonEventArgs e)
-        {
-            dynViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Dynamo.Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString, UriKind.Relative)));
-        }
+        //private void OnMoreInfoClicked(object sender, MouseButtonEventArgs e)
+        //{
+        //    dynViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Dynamo.Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString, UriKind.Relative)));
+        //}
 
         private void exportTextBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
