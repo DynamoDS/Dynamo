@@ -235,11 +235,12 @@
             <StackPanel Visibility="{Binding Path=AutoCompletionNodeMachineLearningInfo.DisplayIcon, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <TextBlock
                     HorizontalAlignment="Center"
-                    Width="25"
+                    MinWidth="25"
+                    MaxWidth="33"
                     FontSize="11"
                     Margin="5,12,0,0"
                     Visibility="{Binding Path=AutoCompletionNodeMachineLearningInfo.IsByRecommendation, Converter={StaticResource BooleanToVisibilityConverter}}"
-                    Text="{Binding AutoCompletionNodeMachineLearningInfo.ConfidenceScore, StringFormat= {}{0} %, Mode=OneWay}" Foreground="{StaticResource DynamoStandardLabelTextBrush}">
+                    Text="{Binding AutoCompletionNodeMachineLearningInfo.ConfidenceScore, StringFormat= {}{0} %, Mode=OneWay, Converter={StaticResource ConfidenceScoreFormattingConverter}}" Foreground="{StaticResource DynamoStandardLabelTextBrush}">
                 </TextBlock>
                 <Image HorizontalAlignment="Center"
                        Height="14"     
