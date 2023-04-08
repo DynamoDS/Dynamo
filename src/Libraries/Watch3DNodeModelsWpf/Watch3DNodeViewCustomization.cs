@@ -117,22 +117,8 @@ namespace Watch3DNodeModelsWpf
 
             nodeView.MainContextMenu.Items.Add(mi);
 
-            var backgroundRect = new Rectangle
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch,
-                IsHitTestVisible = false,
-            };
-            var bc = new BrushConverter();
-            var strokeBrush = (Brush)bc.ConvertFrom("#313131");
-            backgroundRect.Stroke = strokeBrush;
-            backgroundRect.StrokeThickness = 1;
-            var backgroundBrush = new SolidColorBrush(Color.FromRgb(240, 240, 240));
-            backgroundRect.Fill = backgroundBrush;
-
-            nodeView.PresentationGrid.Children.Add(backgroundRect);
-            nodeView.PresentationGrid.Children.Add(watch3DView);
-            nodeView.PresentationGrid.Visibility = Visibility.Visible;
+            nodeView.centralGrid.Children.Add(watch3DView);
+            Grid.SetRow(watch3DView, 1);
 
             DataBridge.Instance.RegisterCallback(
                 watch3dModel.GUID.ToString(),
@@ -146,28 +132,28 @@ namespace Watch3DNodeModelsWpf
             // Buttons for adding and removing ports
             //////////////////////////////////////////////
 
-            var addButton = new DynamoNodeButton(nodeView.ViewModel.NodeModel, "AddInPort")
-            {
-                Content = "+",
-                Style = (Style)SharedDictionaryManager.DynamoModernDictionary["AddRemoveButton"]
-            };
-
-            var subButton = new DynamoNodeButton(nodeView.ViewModel.NodeModel, "RemoveInPort")
-            {
-                Content = "-",
-                Style = (Style)SharedDictionaryManager.DynamoModernDictionary["AddRemoveButton"]
-            };
-
-            var wp = new WrapPanel
+            WrapPanel wrapPanel = new WrapPanel
             {
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalAlignment = HorizontalAlignment.Center
             };
 
-            wp.Children.Add(addButton);
-            wp.Children.Add(subButton);
+            wrapPanel.Children.Add(
+                new DynamoNodeButton(nodeView.ViewModel.NodeModel, "AddInPort")
+                {
+                    Content = "+",
+                    Style = (Style)SharedDictionaryManager.DynamoModernDictionary["AddRemoveButton"]
+                });
 
-            nodeView.inputGrid.Children.Add(wp);
+            wrapPanel.Children.Add(
+                new DynamoNodeButton(nodeView.ViewModel.NodeModel, "RemoveInPort")
+                {
+                    Content = "-",
+                    Style = (Style)SharedDictionaryManager.DynamoModernDictionary["AddRemoveButton"]
+                });
+
+            nodeView.centralGrid.Children.Add(wrapPanel);
+            Grid.SetRow(wrapPanel, 0);
         }
 
         void model_Serialized(XmlElement nodeElement)
