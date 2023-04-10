@@ -807,19 +807,20 @@
                                                Margin="10,0,0,0"
                                                VerticalAlignment="Center"
                                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                        <Image Name="MLNodeAutocompleteToolTip"
-                                               Margin="5,3,0,0"
-                                               Width="14"
-                                               Height="14"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               Style="{StaticResource QuestionIconClickable}"
-                                               MouseDown="OnMoreInfoClicked"
-                                               ToolTipService.ShowDuration="30000">
-                                            <Image.ToolTip>
-                                                <ToolTip Content="{x:Static p:Resources.PreferencesViewEnableNodeAutoCompleteTooltipText}" Style="{StaticResource GenericToolTipLight}"/>
-                                            </Image.ToolTip>
-                                        </Image>
+                                        <Label Name="MLNodeAutocompleteLabel" MouseLeftButtonDown="OnMoreInfoClicked">
+                                            <Image Name="MLNodeAutocompleteToolTip"
+                                                   Margin="5,3,0,0"
+                                                   Width="14"
+                                                   Height="14"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   Style="{StaticResource QuestionIconClickable}"
+                                                   ToolTipService.ShowDuration="30000">
+                                                <Image.ToolTip>
+                                                    <ToolTip Content="{x:Static p:Resources.PreferencesViewEnableNodeAutoCompleteTooltipText}" Style="{StaticResource GenericToolTipLight}"/>
+                                                </Image.ToolTip>
+                                            </Image>
+                                        </Label>
                                     </StackPanel>
 
                                     <StackPanel Orientation="Horizontal" Margin="0,-5,0,0" Grid.Row="1"
@@ -1681,7 +1682,7 @@
                                                    Height="14"
                                                    HorizontalAlignment="Center"
                                                    VerticalAlignment="Center"
-                                                   Style="{StaticResource QuestionIcon}"
+                                                   Style="{StaticResource QuestionIconClickable}"
                                                    ToolTipService.ShowDuration="30000">
                                                         <Image.ToolTip>
                                                             <ToolTip Content="{x:Static p:Resources.PreferencesViewTrustWarningTooltipText}" Style="{StaticResource GenericToolTipLight}"/>

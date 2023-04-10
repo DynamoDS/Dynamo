@@ -2595,6 +2595,29 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// This converts the ML node autocomplete confidence score to a formatted string for display.
+    /// </summary>
+    public class ConfidenceScoreFormattingConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var text = value == null ? string.Empty : value.ToString();
+            var score = value == null ? 0 : (double)value;
+            if (score < 1)
+            {
+                text = "<1";
+            }
+            return text;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var text = value.ToString();
+            return text;
+        }
+    }
+
     public class MenuItemCheckConverter : IValueConverter
     {
         /// <summary>

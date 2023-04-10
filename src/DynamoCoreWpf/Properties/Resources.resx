@@ -1835,7 +1835,7 @@ Do you want to install the latest Dynamo update?</value>
     <value>Run started with new working range...</value>
   </data>
   <data name="GroupDefaultText" xml:space="preserve">
-    <value>&lt;Double click here to edit group description&gt;</value>
+    <value>Description &lt;Double click here to edit group description&gt;</value>
   </data>
   <data name="GroupContextMenuBackground" xml:space="preserve">
     <value>Select Background</value>
@@ -2541,11 +2541,11 @@ Uninstall the following packages: {0}?</value>
     <value>Confidence rating</value>
     <comment>Confidence tooltip title</comment>
   </data>
-    <data name="ConfidenceToolTipDescription" xml:space="preserve">
+  <data name="ConfidenceToolTipDescription" xml:space="preserve">
     <value>Represents estimated probability that the given node is the right choice. Recommended nodes are listed in order from highest to lowest confidence level. Confidence level percentages for all recommended nodes add up to about 100%.</value>
     <comment>Confidence tooltip description</comment>
   </data>
-    <data name="ConfidenceToolTipoLearnMore" xml:space="preserve">
+  <data name="ConfidenceToolTipoLearnMore" xml:space="preserve">
     <value>Learn more</value>
     <comment>Confidence tooltip Learn more</comment>
   </data>
@@ -2805,7 +2805,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>Finished</value>
   </data>
   <data name="GroupNameDefaultText" xml:space="preserve">
-    <value>&lt;Double click here to edit group title&gt;</value>
+    <value>Title &lt;Double click here to edit group title&gt;</value>
   </data>
   <data name="GroupContextMenuAddGroupToGroup" xml:space="preserve">
     <value>Add Group to This Group</value>
@@ -3524,28 +3524,28 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
     <value>Library</value>
   </data>
   <data name="PortPropertiesPromptInputWindowTitle">
-      <value>Input Port Properties</value>
-      <comment>Input Port title</comment>
+    <value>Input Port Properties</value>
+    <comment>Input Port title</comment>
   </data>
   <data name="PortPropertiesPromptOutputWindowTitle">
-      <value>Output Port Properties</value>
-      <comment>Output Port title</comment>
+    <value>Output Port Properties</value>
+    <comment>Output Port title</comment>
   </data>
   <data name="PortPropertiesPromptDescriptionTooltip">
-      <value>Description of port</value>
-      <comment>Description of port</comment>
+    <value>Description of port</value>
+    <comment>Description of port</comment>
   </data>
   <data name="PortPropertiesPromptWindowDescription">
-      <value>Description</value>
-      <comment>Port Description Label</comment>
+    <value>Description</value>
+    <comment>Port Description Label</comment>
   </data>
   <data name="PortPropertiesPromptNameTooltip">
-      <value>Port name</value>
-      <comment>Name of port</comment>
+    <value>Port name</value>
+    <comment>Name of port</comment>
   </data>
   <data name="PortPropertiesPromptWindowName">
-      <value>Name</value>
-      <comment>Port Name Label</comment>
+    <value>Name</value>
+    <comment>Port Name Label</comment>
   </data>
   <data name="RemovePythonPortWarningMessageBoxTitle" xml:space="preserve">
     <value>Remove port?</value>
