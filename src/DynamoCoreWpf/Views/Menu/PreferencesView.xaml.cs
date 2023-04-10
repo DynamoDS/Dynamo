@@ -448,11 +448,6 @@ namespace Dynamo.Wpf.Views
             }            
         }
 
-        //private void OnMoreInfoClicked(object sender, MouseButtonEventArgs e)
-        //{
-        //    dynViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Dynamo.Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString, UriKind.Relative)));
-        //}
-
         private void exportTextBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var dialog = new DynamoFolderBrowserDialog
