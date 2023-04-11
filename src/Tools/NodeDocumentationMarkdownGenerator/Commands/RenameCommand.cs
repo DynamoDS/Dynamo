@@ -18,7 +18,12 @@ namespace NodeDocumentationMarkdownGenerator.Commands
         internal static bool Verbose { get; set; }
         internal static void HandleRename(RenameOptions opts)
         {
+            
             Verbose=opts.Verbose;
+            if (Verbose)
+            {
+                Log.Add($"Rename Command{DateTime.Now}");
+            }
             if (opts.InputMdFile is null && opts.InputMdDirectory != null)
             {
                 RenameDirectory(opts.InputMdDirectory, opts.MaxLength);
@@ -154,7 +159,14 @@ namespace NodeDocumentationMarkdownGenerator.Commands
                         Console.WriteLine($"{file.Name} was not found in the rename log");
                     }
                 }
-                File.WriteAllText(Path.Combine(directory,"rename_log.txt"),String.Join(Environment.NewLine,Log));
+
+                var outputpath = Path.Combine(directory, "rename_log.txt");
+                var logString = String.Join(Environment.NewLine, Log);
+                if (File.Exists(outputpath))
+                {
+                    File.AppendAllText(outputpath,logString);
+                }
+                File.WriteAllText(outputpath,logString);
             }
         }
     }
