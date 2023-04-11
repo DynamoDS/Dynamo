@@ -227,7 +227,6 @@ namespace Dynamo.Logging
         /// <param name="isServiceMode">We want restrict logging in service mode to console only due to lambda limitations.</param>
         /// TODO(DYN-5757): Review usage of isTestMode,isTestMode,isServiceMode across Dynamo and see how we can consildate all these flags.
         public DynamoLogger(DebugSettings debugSettings, string logDirectory, Boolean isTestMode, Boolean isCLIMode, Boolean isServiceMode)
-            : this(debugSettings, logDirectory, isTestMode)
         {
             lock (guardMutex)
             {
