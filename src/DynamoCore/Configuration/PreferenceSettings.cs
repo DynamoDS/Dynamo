@@ -51,6 +51,7 @@ namespace Dynamo.Configuration
         private string lastUpdateDownloadPath;
         private int maxNumRecentFiles;
         private bool isBackgroundGridVisible;
+        private float gridScaleFactor;
         private double defaultScaleFactor;
         private bool disableTrustWarnings = false;
         private bool isNotificationCenterEnabled;
@@ -237,6 +238,24 @@ namespace Dynamo.Configuration
                 isBackgroundGridVisible = value;
 
                 RaisePropertyChanged(nameof(IsBackgroundGridVisible));
+            }
+        }
+
+        /// <summary>
+        /// Sets the background grid element scale
+        /// </summary>
+        public float GridScaleFactor
+        {
+            get
+            {
+                return gridScaleFactor;
+            }
+            set
+            {
+                if (value == gridScaleFactor) return;
+                gridScaleFactor = value;
+
+                RaisePropertyChanged(nameof(GridScaleFactor));
             }
         }
 
@@ -804,6 +823,7 @@ namespace Dynamo.Configuration
             ShowConnectorToolTip = true;
             ConnectorType = ConnectorType.BEZIER;
             IsBackgroundGridVisible = true;
+            GridScaleFactor = 5.0f;
             PackageDirectoriesToUninstall = new List<string>();
             NumberFormat = "f3";
             UseHardwareAcceleration = true;

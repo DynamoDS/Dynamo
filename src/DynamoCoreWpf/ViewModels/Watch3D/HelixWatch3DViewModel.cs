@@ -1401,11 +1401,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var indices = new IntCollection();
             var colors = new Color4Collection();
 
+            var scale = gridScale;
+
             for (var i = 0; i < 10; i += 1)
             {
                 for (var j = 0; j < 10; j += 1)
                 {
-                    DrawGridPatch(positions, indices, colors, -50 + i * 10, -50 + j * 10);
+                    DrawGridPatch(positions, indices, colors, -50 + i * 10, -50 + j * 10, scale);
                 }
             }
 
@@ -1456,7 +1458,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
 
         private static void DrawGridPatch(
-            Vector3Collection positions, IntCollection indices, Color4Collection colors, int startX, int startY)
+            Vector3Collection positions, IntCollection indices, Color4Collection colors, int startX, int startY, float scale)
         {
             var c1 = (System.Windows.Media.Color)ColorConverter.ConvertFromString("#c5d1d8");
             c1.Clamp();
@@ -1472,10 +1474,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 if (x == 0 && startY < 0) continue;
 
-                var v = new Vector3(x, -.001f, startY);
+                var v = new Vector3(x * scale, -.001f, startY * scale);
                 positions.Add(v);
                 indices.Add(positions.Count - 1);
-                positions.Add(new Vector3(x, -.001f, startY + size));
+                positions.Add(new Vector3(x * scale, -.001f, (startY + size) * scale));
                 indices.Add(positions.Count - 1);
 
                 if (x % 5 == 0)
@@ -1494,9 +1496,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 if (y == 0 && startX >= 0) continue;
 
-                positions.Add(new Vector3(startX, -.001f, y));
+                positions.Add(new Vector3(startX * scale, -.001f, y * scale));
                 indices.Add(positions.Count - 1);
-                positions.Add(new Vector3(startX + size, -.001f, y));
+                positions.Add(new Vector3((startX + size) * scale, -.001f, y * scale));
                 indices.Add(positions.Count - 1);
 
                 if (y % 5 == 0)

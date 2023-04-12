@@ -75,6 +75,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         protected List<NodeModel> recentlyAddedNodes = new List<NodeModel>();
         protected bool active;
         protected bool isGridVisible;
+        protected float gridScale;
 
         /// <summary>
         /// Represents the name of current Watch3DViewModel which will be saved in preference settings
@@ -263,6 +264,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             isGridVisible = parameters.Preferences.IsBackgroundGridVisible;
             active = parameters.Preferences.IsBackgroundPreviewActive;
             logger = parameters.Logger;
+            gridScale = parameters.Preferences.GridScaleFactor;
 
             RegisterEventHandlers();
 
