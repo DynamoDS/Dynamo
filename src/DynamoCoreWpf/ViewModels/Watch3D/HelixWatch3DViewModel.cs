@@ -411,7 +411,22 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 SetGridVisibility();
             }
         }
-        
+
+
+        /// <summary>
+        /// Sets the scale of the Grid helper
+        /// </summary>
+        public override float GridScale
+        {
+            get { return gridScale; }
+            set
+            {
+                if (gridScale == value) return;
+
+                base.GridScale = value;
+            }
+        }
+
         /// <summary>
         /// Identifies if the Graph yields any rendered, visible or hidden, geometry
         /// Any graph would always render at least 3 elements:
@@ -500,6 +515,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         public bool SupportDeferredRender { get; private set; }
 
         #endregion
+
+        #region public methods
 
         /// <summary>
         /// Attempt to create a HelixWatch3DViewModel. If one cannot be created,
@@ -1062,6 +1079,35 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             return true;
         }
+
+        /// <summary>
+        /// Updates background graphic helpers
+        /// </summary>
+        public override void UpdateHelpers()
+        {
+            DrawGrid();
+            UpdateGrid();
+            UpdateSceneItems();
+            OnRequestViewRefresh();
+        }
+
+        private void UpdateGrid()
+        {
+            // Recreate the Grid element
+            gridModel3D = new DynamoLineGeometryModel3D
+            {
+                Geometry = Grid,
+                Transform = SceneTransform,
+                Color = Colors.White,
+                Thickness = 0.3,
+                IsHitTestVisible = false,
+                Name = DefaultGridName
+            };
+            // Update the dictionary value of the singleton
+            Element3DDictionary[DefaultGridName] = gridModel3D;
+        }
+
+        #endregion
 
         #region internal methods
 

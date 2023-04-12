@@ -127,6 +127,22 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
 
         /// <summary>
+        /// Sets the scale of the Grid helper
+        /// </summary>
+        public virtual float GridScale
+        {
+            get { return gridScale; }
+            set
+            {
+                if (gridScale == value) return;
+
+                gridScale = value;
+                RaisePropertyChanged(nameof(GridScale));
+            }
+        }
+
+
+        /// <summary>
         /// A name which identifies this view model when multiple
         /// Watch3DViewModel objects exist.
         /// </summary>
@@ -264,7 +280,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             isGridVisible = parameters.Preferences.IsBackgroundGridVisible;
             active = parameters.Preferences.IsBackgroundPreviewActive;
             logger = parameters.Logger;
-            gridScale = parameters.Preferences.GridScaleFactor;
+            GridScale = parameters.Preferences.GridScaleFactor;
 
             RegisterEventHandlers();
 
@@ -299,6 +315,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         protected virtual void OnClear()
         {
             // Override in inherited classes.
+        }
+
+        /// <summary>
+        /// Updates background graphic helpers
+        /// </summary>
+        public virtual void UpdateHelpers()
+        {
+            // Override in inherited classes
         }
 
         protected virtual void OnActiveStateChanged()

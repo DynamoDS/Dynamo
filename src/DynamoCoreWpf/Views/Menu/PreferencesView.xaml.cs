@@ -16,6 +16,7 @@ using Dynamo.Core;
 using Dynamo.Logging;
 using Dynamo.UI;
 using Dynamo.ViewModels;
+using static Dynamo.UI.Controls.DynamoToolTip;
 using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.Wpf.Views
@@ -90,10 +91,12 @@ namespace Dynamo.Wpf.Views
 
             LibraryZoomScalingSlider.Value = dynViewModel.Model.PreferenceSettings.LibraryZoomScale;
             PythonZoomScalingSlider.Value = dynViewModel.Model.PreferenceSettings.PythonScriptZoomScale;
+            GraphicHelpersScalingSlider.Value = dynViewModel.Model.PreferenceSettings.GridScaleFactor;
 
             stylesCustomColors = new ObservableCollection<CustomColorItem>();
             UpdateZoomScaleValueLabel(LibraryZoomScalingSlider, lblZoomScalingValue);
             UpdateZoomScaleValueLabel(PythonZoomScalingSlider, lblPythonScalingValue);
+            UpdateGraphicScaleValueLabel(GraphicHelpersScalingSlider, lblHelpersScalingValue, true);
         }
 
         /// <summary>
@@ -624,6 +627,33 @@ namespace Dynamo.Wpf.Views
             {
                 label.Margin = new Thickness(marginValue, 0, 0, 0);
                 label.Content = slider.Value.ToString() + "%";
+            }
+        }
+
+        private void GraphicHelpersScalingSlider_DragCompleted(object sender, DragCompletedEventArgs e)
+        {
+            Slider slider = (Slider)sender;
+            UpdateGraphicScaleValueLabel(slider, lblHelpersScalingValue);
+        }
+
+        private void UpdateGraphicScaleValueLabel(Slider slider, Label label, bool initialRun = false)
+        {
+            double value = slider.Value;
+            if (label != null)
+            {
+                //The margin value for the label goes from - 480 to 310, resulting in 790 pixels from the starting point to the end.
+                //The value is decreased to 480 because the margin begins at - 480
+                //This is the relation between the margin in pixels and the value
+                double marginValue = (790 * value / 10000) - 480;
+
+                label.Margin = new Thickness(marginValue, 0, 0, 0);
+                label.Content = slider.Value.ToString();
+
+                if (initialRun) return;
+
+                //Update preferences setting and update the grapic helpers
+                dynViewModel.Model.PreferenceSettings.GridScaleFactor = (float)value;
+                dynViewModel.UpdateGraphicHelpersScaleCommand.Execute(null);
             }
         }
     }

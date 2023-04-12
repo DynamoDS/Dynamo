@@ -2456,7 +2456,22 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Updates grapic helpers (grid) inside the background preview VM
+        /// </summary>
+        /// <param name="parameter"></param>
+        public void UpdateGraphicHelpersScale(object parameter)
+        {
+            BackgroundPreviewViewModel.GridScale = PreferenceSettings.GridScaleFactor;
+            BackgroundPreviewViewModel.UpdateHelpers();
+        }
+
         internal bool CanToggleBackgroundGridVisibility(object parameter)
+        {
+            return true;
+        }
+
+        internal bool CanUpdateGraphicHelpersScale(object parameter)
         {
             return true;
         }
