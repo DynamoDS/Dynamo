@@ -16,6 +16,9 @@ namespace Dynamo.Nodes
         private string eventName = string.Empty;
         private ModelBase model = null;
         private DynamoViewModel dynamoViewModel;
+
+        public bool ShowWarningForRemovingInPort { get; set; }
+
         private DynamoViewModel DynamoViewModel
         {
             get
@@ -40,6 +43,8 @@ namespace Dynamo.Nodes
             }
         }
 
+
+
         public DynamoNodeButton()
         {
         }
@@ -54,16 +59,16 @@ namespace Dynamo.Nodes
 
         private void OnDynamoNodeButtonClick(object sender, RoutedEventArgs e)
         {
-            // If this DynamoNodeButton was created with an associated model 
-            // and the event name, then the owner of this button (a ModelBase) 
+            // If this DynamoNodeButton was created with an associated model
+            // and the event name, then the owner of this button (a ModelBase)
             // needs the "ModelEventCommand" to be sent when user clicks
             // on the button.
-            // 
+            //
             if (null != this.model && (!string.IsNullOrEmpty(this.eventName)))
             {
                 MessageBoxResult result = MessageBoxResult.None;
 
-                if (eventName.Equals("RemoveInPort"))
+                if (eventName.Equals("RemoveInPort") && ShowWarningForRemovingInPort)
                 {
                     result = MessageBoxService.Show
                     (
