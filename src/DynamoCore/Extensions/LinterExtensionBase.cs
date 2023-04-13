@@ -26,9 +26,12 @@ namespace Dynamo.Extensions
         private LinterManager linterManager;
         private HomeWorkspaceModel currentWorkspace;
 
-        internal ReadyParams ReadyParamsRef { get; set; }
+        public ReadyParams ReadyParamsRef { get; private set; }
 
-        internal bool IsActive => this.linterManager?.IsExtensionActive(UniqueId) ?? false;
+        /// <summary>
+        /// Is this linter currently active for the active workspace.
+        /// </summary>
+        public bool IsActive => this.linterManager?.IsExtensionActive(UniqueId) ?? false;
 
         internal bool SetupComplete { get; set; } = false;
   
