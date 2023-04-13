@@ -106,7 +106,7 @@ namespace Dynamo.Extensions
         internal void Deactivate()
         {
             //Nothing to deactivate if we have not setup everything properly
-            //yet or we alreay deativated this linter extension
+            //yet or we already deactivated this linter extension
             if (!SetupComplete)
             {
                 return;
