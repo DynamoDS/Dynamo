@@ -719,10 +719,10 @@ namespace DynamoCoreWpfTests
             //First check that the directory doesn't exist
             Assert.IsTrue(!Directory.Exists(tempDynDirectory));
 
-            //Creates a directory that use empty spaces in the name
+            //Creates a directory that has empty spaces in the name
             Directory.CreateDirectory(tempDynDirectory);
 
-            //Copy the dyn file to the Directory with empty spaces
+            //Copy the dyn file to the new directory with empty spaces
             File.Copy(dynFileName, insertDynFilePath);
 
             //Adds a Number node into the Current Workspace
