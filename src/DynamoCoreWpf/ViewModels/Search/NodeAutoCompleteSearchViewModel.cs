@@ -303,12 +303,18 @@ namespace Dynamo.ViewModels
                     // DS Function node
                     if (result.Node.Type.NodeType.Equals(Function.FunctionNode))
                     {
+                        NodeSearchElement nodeSearchElement = null;
                         var element = zeroTouchSearchElements.FirstOrDefault(n => n.Descriptor.MangledName.Equals(result.Node.Type.Id));
 
-                        // Set PortToConnect for each element based on port-index and port-name
                         if (element != null)
                         {
-                            element.AutoCompletionNodeElementInfo = new AutoCompletionNodeElementInfo
+                            nodeSearchElement = (NodeSearchElement)element.Clone();
+                        }
+
+                        // Set PortToConnect for each element based on port-index and port-name
+                        if (nodeSearchElement != null)
+                        {
+                            nodeSearchElement.AutoCompletionNodeElementInfo = new AutoCompletionNodeElementInfo
                             {
                                 PortToConnect = portIndex
                             };
@@ -317,13 +323,13 @@ namespace Dynamo.ViewModels
                             {
                                 if (inputParameter.value.Name.Equals(portName))
                                 {
-                                    element.AutoCompletionNodeElementInfo.PortToConnect = element.Descriptor.Type == FunctionType.InstanceMethod ? inputParameter.index + 1 : inputParameter.index;
+                                    nodeSearchElement.AutoCompletionNodeElementInfo.PortToConnect = element.Descriptor.Type == FunctionType.InstanceMethod ? inputParameter.index + 1 : inputParameter.index;
                                     break;
                                 }
                             }
                         }
 
-                        var viewModelElement = GetViewModelForNodeSearchElement(element);
+                        var viewModelElement = GetViewModelForNodeSearchElement(nodeSearchElement);
 
                         if (viewModelElement != null)
                         {
@@ -338,19 +344,25 @@ namespace Dynamo.ViewModels
                         var typeInfo = GetInfoFromTypeId(result.Node.Type.Id);
                         string fullName = typeInfo.FullName;
                         string assemblyName = typeInfo.AssemblyName;
+                        NodeSearchElement nodeSearchElement = null;
 
                         var nodesFromAssembly = nodeModelSearchElements.Where(n => Path.GetFileNameWithoutExtension(n.Assembly).Equals(assemblyName));
                         var element = nodesFromAssembly.FirstOrDefault(n => n.CreationName.Equals(fullName));
 
                         if (element != null)
                         {
-                            element.AutoCompletionNodeElementInfo = new AutoCompletionNodeElementInfo
+                            nodeSearchElement = (NodeSearchElement)element.Clone();
+                        }
+
+                        if (nodeSearchElement != null)
+                        {
+                            nodeSearchElement.AutoCompletionNodeElementInfo = new AutoCompletionNodeElementInfo
                             {
                                 PortToConnect = portIndex
                             };
                         }
 
-                        var viewModelElement = GetViewModelForNodeSearchElement(element);
+                        var viewModelElement = GetViewModelForNodeSearchElement(nodeSearchElement);
 
                         if (viewModelElement != null)
                         {
