@@ -217,7 +217,7 @@
 
                                 <!--The first Grid Row will contain the Language label and combobox added in a StackPanel vertical-->
                                 <Grid Grid.Row="0" 
-                                  Margin="4,0,0,20">
+                                  Margin="14,0,0,20">
                                     <StackPanel Orientation="Vertical">
                                         <WrapPanel Grid.Row="0">
                                             <Label
@@ -258,7 +258,7 @@
 
                                 <!--This Grid contains controls for selecting Static Splash Screen Display options-->
                                 <Grid Grid.Row="1"
-                                  Margin="4,0,0,20">
+                                  Margin="14,0,0,20">
                                     <Grid>
                                         <Grid.ToolTip>
                                             <ToolTip Content="{x:Static p:Resources.PreferencesViewShowStaticSplashScreenTooltip}" Style="{StaticResource GenericToolTipLight}"/>
@@ -283,7 +283,7 @@
 
                                 <!-- This Grid contains controls for the Number Format-->
                                 <Grid Grid.Row="2"
-                                      Margin="4,0,0,20">
+                                      Margin="14,0,0,20">
                                     <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
@@ -307,7 +307,7 @@
                                 
                                 <!--This Grid contains controls for the maximum number of recent files-->
                                 <Grid Grid.Row="3"
-                                      Margin="4,0,0,20">
+                                      Margin="14,0,0,20">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
