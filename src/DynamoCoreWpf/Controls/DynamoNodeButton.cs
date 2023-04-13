@@ -17,6 +17,9 @@ namespace Dynamo.Nodes
         private ModelBase model = null;
         private DynamoViewModel dynamoViewModel;
 
+        /// <summary>
+        /// If true, display a warning message when a port is about to be removed
+        /// </summary>
         public bool ShowWarningForRemovingInPort { get; set; }
 
         private DynamoViewModel DynamoViewModel
@@ -42,8 +45,6 @@ namespace Dynamo.Nodes
                 return null;
             }
         }
-
-
 
         public DynamoNodeButton()
         {

@@ -289,7 +289,7 @@ namespace Watch3DNodeModels
 
         protected override string GetInputTooltip(int index)
         {
-            return string.Empty;
+            return "Incoming Geometry Objects";
         }
 
         protected override string GetInputName(int index)
