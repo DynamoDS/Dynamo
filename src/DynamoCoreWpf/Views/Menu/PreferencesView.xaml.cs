@@ -265,6 +265,17 @@ namespace Dynamo.Wpf.Views
         private void ButtonColorPicker_Click(object sender, RoutedEventArgs e)
         {
             var colorPicker = new CustomColorPicker();
+
+            //This section populate the CustomColorPicker custom colors with the colors defined in the custom GroupStyles
+            var customStylesColorsList = viewModel.StyleItemsList.Where(style => style.IsDefault == false);
+            foreach (var styleItem in customStylesColorsList)
+            {
+                Color color = (Color)ColorConverter.ConvertFromString("#"+styleItem.HexColorString);
+                var customColorItem = new CustomColorItem(color, string.Format("#{0},{1},{2}", color.R, color.G, color.B));
+                if (!stylesCustomColors.Contains(customColorItem))
+                    stylesCustomColors.Add(customColorItem);
+            }
+
             //This will set the custom colors list so the custom colors will remain the same for the Preferences panel (no matter if preferences is closed the list will remain).
             colorPicker.SetCustomColors(stylesCustomColors);
             if (colorPicker == null) return;
