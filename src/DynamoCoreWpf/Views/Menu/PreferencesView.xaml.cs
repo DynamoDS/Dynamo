@@ -37,7 +37,7 @@ namespace Dynamo.Wpf.Views
         private IDisposable managePackageCommandEvent;
 
         //This list will be passed everytime that we create a new GroupStyle so the custom colors can remain
-        private ObservableCollection<CustomColorItem> stylesCustomColors;
+        internal ObservableCollection<CustomColorItem> stylesCustomColors;
 
         /// <summary>
         /// Storing the original custom styles before the user could update them

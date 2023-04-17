@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
@@ -33,8 +34,9 @@ namespace CoreNodeModelsWpf.Controls
         }
 
         private ColorPaletteViewModel viewModel = null;
+        private DynamoViewModel dynViewModel = null;
 
-        public ColorPaletteUI()
+        public ColorPaletteUI(DynamoViewModel dynViewM)
         {
             InitializeComponent();
             if(viewModel == null)
@@ -42,6 +44,7 @@ namespace CoreNodeModelsWpf.Controls
                 viewModel = new ColorPaletteViewModel();
             }
             this.DataContext = viewModel;
+            dynViewModel = dynViewM;
 
             //By default the ToggleButton will contain the Black color
             viewModel.SelectedColor = new SolidColorBrush(Colors.Black);
@@ -64,6 +67,20 @@ namespace CoreNodeModelsWpf.Controls
         private void ColorToggleButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             var colorPickerPopup = new CustomColorPicker();
+
+            if (dynViewModel != null)
+            {
+                //This section populate the CustomColorPicker custom colors with the colors defined in the custom GroupStyles
+                var customStylesColorsList = dynViewModel.PreferencesViewModel.StyleItemsList.Where(style => style.IsDefault == false);
+                foreach (var styleItem in customStylesColorsList)
+                {
+                    Color color = (Color)ColorConverter.ConvertFromString("#" + styleItem.HexColorString);
+                    var customColorItem = new CustomColorItem(color, string.Format("#{0},{1},{2}", color.R, color.G, color.B));
+                    if (!nodeCustomColors.Contains(customColorItem))
+                        nodeCustomColors.Add(customColorItem);
+                }
+            }
+
             //This will set the custom colors list so the custom colors will remain the same just for this node.
             colorPickerPopup.SetCustomColors(nodeCustomColors);
             colorPickerPopup.Placement = PlacementMode.Bottom;

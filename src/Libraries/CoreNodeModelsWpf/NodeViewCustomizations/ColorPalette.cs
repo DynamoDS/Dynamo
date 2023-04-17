@@ -31,7 +31,8 @@ namespace CoreNodeModelsWpf.Nodes
             viewNode = nodeView;
             colorPaletteNode = model;
             converter = new Converters.MediatoDSColorConverter();
-            ColorPaletteUINode = new ColorPaletteUI();
+           
+            ColorPaletteUINode = new ColorPaletteUI(viewNode.ViewModel.DynamoViewModel);
             colorPaletteViewModel = ColorPaletteUINode.DataContext as ColorPaletteViewModel;
             if(colorPaletteNode == null ) return;
 
