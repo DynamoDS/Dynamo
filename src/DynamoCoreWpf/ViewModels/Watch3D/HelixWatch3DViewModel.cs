@@ -1087,6 +1087,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             DrawGrid();
             UpdateGrid();
+            UpdateAxes();
             UpdateSceneItems();
             OnRequestViewRefresh();
         }
@@ -1105,6 +1106,21 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             };
             // Update the dictionary value of the singleton
             Element3DDictionary[DefaultGridName] = gridModel3D;
+        }
+
+        private void UpdateAxes()
+        {
+            var axesModel3D = new DynamoLineGeometryModel3D
+            {
+                Geometry = Axes,
+                Transform = SceneTransform,
+                Color = Colors.White,
+                Thickness = 0.3,
+                IsHitTestVisible = false,
+                Name = DefaultAxesName
+            };
+
+            Element3DDictionary[DefaultAxesName] = axesModel3D;
         }
 
         #endregion
@@ -1469,21 +1485,21 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Draw the coordinate axes
             axesPositions.Add(new Vector3());
             axesIndices.Add(axesPositions.Count - 1);
-            axesPositions.Add(new Vector3(50, 0, 0));
+            axesPositions.Add(new Vector3(50 * scale, 0, 0));
             axesIndices.Add(axesPositions.Count - 1);
             axesColors.Add(Color.Red);
             axesColors.Add(Color.Red);
 
             axesPositions.Add(new Vector3());
             axesIndices.Add(axesPositions.Count - 1);
-            axesPositions.Add(new Vector3(0, 5, 0));
+            axesPositions.Add(new Vector3(0, 5 * scale, 0));
             axesIndices.Add(axesPositions.Count - 1);
             axesColors.Add(Color.Blue);
             axesColors.Add(Color.Blue);
 
             axesPositions.Add(new Vector3());
             axesIndices.Add(axesPositions.Count - 1);
-            axesPositions.Add(new Vector3(0, 0, -50));
+            axesPositions.Add(new Vector3(0, 0, -50 * scale));
             axesIndices.Add(axesPositions.Count - 1);
             axesColors.Add(Color.Green);
             axesColors.Add(Color.Green);
