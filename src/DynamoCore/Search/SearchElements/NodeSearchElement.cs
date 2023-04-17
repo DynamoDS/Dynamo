@@ -284,7 +284,6 @@ namespace Dynamo.Search.SearchElements
             return inputParameters;
         }
 
-
         /// <summary>
         ///    Clones the NodeSearchElement
         /// </summary>
