@@ -3603,4 +3603,13 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
     <value>Python Editor</value>
     <comment>Preferences -&gt; ZoomScalling -&gt; Python Editor</comment>
   </data>
+  <data name="CustomColorsPopupTitle" xml:space="preserve">
+    <value>Custom</value>
+  </data>
+  <data name="PreferencesGrahicHelpersScale" xml:space="preserve">
+    <value>Graphic Elements Scale</value>
+  </data>
+  <data name="PreferencesGrahicHelpersScaleTooltip" xml:space="preserve">
+    <value>Graphic Elements Scale tooltip</value>
+  </data>
 </root>

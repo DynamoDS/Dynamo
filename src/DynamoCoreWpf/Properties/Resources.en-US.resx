@@ -3619,4 +3619,10 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="CustomColorsPopupTitle" xml:space="preserve">
     <value>Custom</value>
   </data>
+  <data name="PreferencesGrahicHelpersScale" xml:space="preserve">
+    <value>Graphic Elements Scale</value>
+  </data>
+  <data name="PreferencesGrahicHelpersScaleTooltip" xml:space="preserve">
+    <value>Graphic Elements Scale tooltip</value>
+  </data>    
 </root>
