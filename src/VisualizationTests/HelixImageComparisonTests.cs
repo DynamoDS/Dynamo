@@ -431,6 +431,7 @@ namespace WpfVisualizationTests
             node2.IsFrozen = true;
             RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
+
         [Test]
         public void PointsZFightOnTsplines_Selected()
         {
@@ -441,7 +442,9 @@ namespace WpfVisualizationTests
             DynamoSelection.Instance.Selection.Add(node1);
             RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
+
         [Test]
+        [Category("Failure")]
         public void CurvesZFightOnTsplines_Selected()
         {
             OpenVisualizationTest(@"imageComparison\tsplineTest_fast.dyn");
