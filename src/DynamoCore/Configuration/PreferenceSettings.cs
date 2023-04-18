@@ -142,6 +142,11 @@ namespace Dynamo.Configuration
         public string Locale { get; set; }
 
         /// <summary>
+        /// Contains the currently selected unit used for scaling the graphic helpers (grids, axes)
+        /// </summary>
+        public string GraphicScaleUnit { get; set; }
+
+        /// <summary>
         /// The height of the console display.
         /// </summary>
         public int ConsoleHeight { get; set; }
@@ -823,7 +828,8 @@ namespace Dynamo.Configuration
             ShowConnectorToolTip = true;
             ConnectorType = ConnectorType.BEZIER;
             IsBackgroundGridVisible = true;
-            GridScaleFactor = 1.0f;
+            GraphicScaleUnit = Configurations.SupportedUnits.FirstOrDefault().Key;
+            GridScaleFactor = (float)Configurations.SupportedUnits.FirstOrDefault().Value;
             PackageDirectoriesToUninstall = new List<string>();
             NumberFormat = "f3";
             UseHardwareAcceleration = true;

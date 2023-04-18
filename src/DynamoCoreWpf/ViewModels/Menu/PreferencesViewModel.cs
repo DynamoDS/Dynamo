@@ -44,10 +44,12 @@ namespace Dynamo.ViewModels
         private string selectedPackagePathForInstall;
 
         private string selectedLanguage;
+        private string selectedUnits;
         private string selectedNumberFormat;
         private string selectedPythonEngine;
 
         private ObservableCollection<string> languagesList;
+        private ObservableCollection<string> unitList;
         private ObservableCollection<string> packagePathsForInstall;
         private ObservableCollection<string> fontSizeList;
         private ObservableCollection<int> groupStyleFontSizeList;
@@ -171,6 +173,32 @@ namespace Dynamo.ViewModels
                     {
                         preferenceSettings.Locale = locale;
                         dynamoViewModel.MainGuideManager?.CreateRealTimeInfoWindow(Res.PreferencesViewLanguageSwitchHelp, true);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Contains the currently selected scaling unit used for grahic helpers (grids, axes)
+        /// </summary>
+        public string SelectedUnits
+        {
+            get
+            {
+                return selectedUnits;
+            }
+            set
+            {
+                if (selectedUnits != value)
+                {
+                    selectedUnits = value;
+                    RaisePropertyChanged(nameof(SelectedUnits));
+                    if (Configurations.SupportedUnits.TryGetValue(selectedUnits, out double units))
+                    {
+                        //Update preferences setting and update the grapic helpers
+                        preferenceSettings.GraphicScaleUnit = value;
+                        preferenceSettings.GridScaleFactor = (float)units;
+                        dynamoViewModel.UpdateGraphicHelpersScaleCommand.Execute(null);
                     }
                 }
             }
@@ -356,6 +384,22 @@ namespace Dynamo.ViewModels
             {
                 languagesList = value;
                 RaisePropertyChanged(nameof(LanguagesList));
+            }
+        }
+
+        /// <summary>
+        /// Supported units in Revit, used in scaling of grapic helpers (grid, axes)
+        /// </summary>
+        public ObservableCollection<string> UnitList
+        {
+            get
+            {
+                return unitList;
+            }
+            set
+            {
+                unitList = value;
+                RaisePropertyChanged(nameof(UnitList));
             }
         }
 
@@ -1183,6 +1227,10 @@ namespace Dynamo.ViewModels
             // Fill language list using supported locale dictionary keys in current thread locale
             LanguagesList = Configurations.SupportedLocaleDic.Keys.ToObservableCollection();
             SelectedLanguage = Configurations.SupportedLocaleDic.FirstOrDefault(x => x.Value == preferenceSettings.Locale).Key;
+
+            // Chose the scaling unit, if option is allowed by user
+            UnitList = Configurations.SupportedUnits.Keys.ToObservableCollection();
+            SelectedUnits = Configurations.SupportedUnits.FirstOrDefault(x => x.Key == preferenceSettings.GraphicScaleUnit).Key;
 
             GroupStyleFontSizeList = preferenceSettings.PredefinedGroupStyleFontSizes;
 
