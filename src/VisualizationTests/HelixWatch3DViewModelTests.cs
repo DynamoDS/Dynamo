@@ -190,14 +190,14 @@ namespace WpfVisualizationTests
 
             //now flip off the preview on one of the points
             //and ensure that the visualization updates without re-running
-            var p1 = model.CurrentWorkspace.Nodes.First(x => x.GUID == new Guid("db613b8d091c497ab7f453dc4698a4cc"));
+            var p1 = model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == "a7c70c13-cc62-41a6-85ed-dc42e788181d");
             p1.UpdateValue(new UpdateValueParams("IsVisible", "false"));
 
             Assert.True(BackgroundPreviewGeometry.HasNumberOfPointsCurvesAndMeshes(7, 6, 0));
             Assert.AreEqual(1, BackgroundPreviewGeometry.NumberOfInvisiblePoints());
 
             //flip off the lines node
-            var l1 = model.CurrentWorkspace.Nodes.First(x => x.GUID== new Guid("d65f4db8f5524952a4be34a79e244b13"));
+            var l1 = model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
             l1.UpdateValue(new UpdateValueParams("IsVisible", "false"));
 
             Assert.True(BackgroundPreviewGeometry.HasNumberOfPointsCurvesAndMeshes(7, 6, 0));
@@ -268,7 +268,7 @@ namespace WpfVisualizationTests
 
             var lineNode =
                 model.CurrentWorkspace.Nodes.FirstOrDefault(
-                    x => x.GUID== new Guid("d65f4db8f5524952a4be34a79e244b13"));
+                    x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
             var port = lineNode.InPorts.First();
             port.Connectors.First().Delete();
 
@@ -362,7 +362,7 @@ namespace WpfVisualizationTests
             //some nodes have values. toggle on label display
             var crvNode =
                 model.CurrentWorkspace.Nodes.FirstOrDefault(
-                    x => x.GUID== new Guid("d65f4db8f5524952a4be34a79e244b13"));
+                    x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
             Assert.IsNotNull(crvNode);
             crvNode.DisplayLabels = true;
 
@@ -380,7 +380,7 @@ namespace WpfVisualizationTests
 
             //now flip off the preview on one of the points
             //and ensure that the visualization updates without re-running
-            var p1 = model.CurrentWorkspace.Nodes.First(x => x.GUID == new Guid("db613b8d091c497ab7f453dc4698a4cc"));
+            var p1 = model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == "a7c70c13-cc62-41a6-85ed-dc42e788181d");
             p1.UpdateValue(new UpdateValueParams("IsVisible", "false"));
 
             Assert.True(BackgroundPreviewGeometry.HasNumberOfPointsCurvesAndMeshes(7, 6, 0));
@@ -388,7 +388,7 @@ namespace WpfVisualizationTests
 
             // Now change the number of points
             var cbn =
-                Model.CurrentWorkspace.Nodes.First(x => x.GUID == new Guid("e22b85cced3641319b2eca44293d5de1")) as CodeBlockNodeModel;
+                Model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == "cbc582bf-1040-4184-9b28-2d8d5419e411") as CodeBlockNodeModel;
             Assert.NotNull(cbn);
             cbn.SetCodeContent("0..2", Model.CurrentWorkspace.ElementResolver);
 
@@ -656,7 +656,7 @@ namespace WpfVisualizationTests
             var view = FindFirstWatch3DNodeView();
             Assert.AreEqual(3, ((HelixWatch3DViewModel)view.DataContext).Element3DDictionary.Count());
 
-            var linesNode = ws.Nodes.First(n => n.GUID== new Guid("d65f4db8f5524952a4be34a79e244b13"));
+            var linesNode = ws.Nodes.First(n => n.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
 
             var cmd1 = new DynamoModel.MakeConnectionCommand(linesNode.GUID.ToString(), 0, PortType.Output,
                 DynamoModel.MakeConnectionCommand.Mode.Begin);
