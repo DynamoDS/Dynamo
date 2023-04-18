@@ -380,7 +380,7 @@
 
             <TreeView.Resources>
                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
-                                 Color="{StaticResource Blue300}" />
+                                 Color="{StaticResource Blue450}" Opacity="0.4"/>
             </TreeView.Resources>
         </TreeView>
 
