@@ -320,140 +320,158 @@ namespace ProtoFFI
 
         private ClassDeclNode ParseSystemType(Type type, string alias)
         {
-            Validity.Assert(!SupressesImport(type), "Supressed type is being imported!!");
-
-            string classname = alias;
-            if (classname == null | classname == string.Empty)
-                classname = CLRObjectMarshaler.GetTypeName(type);
-
-            ProtoCore.AST.AssociativeAST.ClassDeclNode classnode = CreateEmptyClassNode(classname);
-            classnode.ExternLibName = Module.Name;
-            classnode.Name = type.Name;
-
-            Type baseType = GetBaseType(type);
-            if (baseType != null && !CLRObjectMarshaler.IsMarshaledAsNativeType(baseType))
+            ClassDeclNode classnode = null;
+            //var used for logging issues as we attempt to import this type.
+            MemberInfo currentMember  = null;
+            try
             {
-                string baseTypeName = CLRObjectMarshaler.GetTypeName(baseType);
+                Validity.Assert(!SupressesImport(type), "Suppressed type is being imported!!");
 
-                classnode.BaseClass = baseTypeName;
-                //Make sure that base class is imported properly.
-                CLRModuleType.GetInstance(baseType, Module, string.Empty);
-            }
+                string classname = alias;
+                if (classname == null | classname == string.Empty)
+                    classname = CLRObjectMarshaler.GetTypeName(type);
 
-            classnode.IsInterface = type.IsInterface;
+                classnode = CreateEmptyClassNode(classname);
+                classnode.ExternLibName = Module.Name;
+                classnode.Name = type.Name;
 
-            foreach (var interf in type.GetInterfaces())
-            {
-                if (!CLRObjectMarshaler.IsMarshaledAsNativeType(interf))
+                Type baseType = GetBaseType(type);
+                if (baseType != null && !CLRObjectMarshaler.IsMarshaledAsNativeType(baseType))
                 {
-                    string interfName = CLRObjectMarshaler.GetTypeName(interf);
+                    string baseTypeName = CLRObjectMarshaler.GetTypeName(baseType);
 
-                    classnode.Interfaces.Add(interfName);
-                    CLRModuleType.GetInstance(interf, Module, string.Empty);
+                    classnode.BaseClass = baseTypeName;
+                    //Make sure that base class is imported properly.
+                    CLRModuleType.GetInstance(baseType, Module, string.Empty);
                 }
-            }
 
-            // There is no static class in runtime. static class is simply 
-            // marked as sealed and abstract. 
-            classnode.IsStatic = type.IsAbstract && type.IsSealed;
-            
-            // If all methods are static, it doesn't make sense to expose
-            // constructor. 
-            if (!classnode.IsStatic)
-            {
-                ConstructorInfo[] ctors = type.GetConstructors();
-                foreach (var c in ctors)
+                classnode.IsInterface = type.IsInterface;
+
+                foreach (var interf in type.GetInterfaces())
                 {
-                    if (c.IsPublic && !c.IsGenericMethod && !SupressesImport(c))
+                    if (!CLRObjectMarshaler.IsMarshaledAsNativeType(interf))
                     {
-                        ConstructorDefinitionNode node = ParseConstructor(c, type);
-                        classnode.Procedures.Add(node);
+                        string interfName = CLRObjectMarshaler.GetTypeName(interf);
 
-                        List<ProtoCore.Type> argTypes = GetArgumentTypes(node);
-                        RegisterFunctionPointer(node.Name, c, argTypes, node.ReturnType);
+                        classnode.Interfaces.Add(interfName);
+                        CLRModuleType.GetInstance(interf, Module, string.Empty);
                     }
                 }
-            }
 
-            BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static;
-            bool isDerivedClass = !string.IsNullOrEmpty(classnode.BaseClass);
-            if (isDerivedClass) //has base class
-                flags |= BindingFlags.DeclaredOnly; //for derived class, parse only class declared methods.
+                // There is no static class in runtime. static class is simply 
+                // marked as sealed and abstract. 
+                classnode.IsStatic = type.IsAbstract && type.IsSealed;
 
-            PropertyInfo[] properties = type.GetProperties(flags);
-            foreach (var p in properties)
-            {
-                AssociativeNode node = ParseProperty(p);
-                if (null != node)
-                    classnode.Variables.Add(node);
-            }
-
-            bool isDisposable = typeof(IDisposable).IsAssignableFrom(type);
-            MethodInfo[] methods = type.GetMethods(flags);
-            bool hasDisposeMethod = false;
-            
-            foreach (var m in methods)
-            {
-                if (SupressesImport(m, mGetterAttributes))
-                    continue;
-
-                if (classnode.IsStatic && m.GetBaseDefinition().DeclaringType == baseType && baseType == typeof(object))
-                    continue;
-
-                // Mono issue: m == m.GetBaseDefinition() for methods from Object class returns True instead of False
-                if (m.DeclaringType == typeof(object) && m == m.GetBaseDefinition())
-                    continue;
-
-                //Don't include overriden methods or generic methods
-                if (m.IsPublic && !m.IsGenericMethod && m == m.GetBaseDefinition())
+                // If all methods are static, it doesn't make sense to expose
+                // constructor. 
+                if (!classnode.IsStatic)
                 {
-                    AssociativeNode node = ParseAndRegisterFunctionPointer(isDisposable, ref hasDisposeMethod, m);
-                    classnode.Procedures.Add(node);
-                }
-                else if (!hasDisposeMethod && isDisposable && baseType == typeof(Object) && isDisposeMethod(m))
-                {
-                    AssociativeNode node = ParseAndRegisterFunctionPointer(isDisposable, ref hasDisposeMethod, m);
-                    classnode.Procedures.Add(node);
-                }
-            }
-            if (!hasDisposeMethod && !isDisposable)
-            {
-                AssociativeNode node = ParseAndRegisterFunctionPointer(true, ref hasDisposeMethod, mDisposeMethod);
-                classnode.Procedures.Add(node);
-            }
-
-            FieldInfo[] fields = type.GetFields();
-            foreach (var f in fields)
-            {
-                if (SupressesImport(f))
-                    continue;
-
-                //Supress if defined in super-type
-                if (isDerivedClass)
-                {
-                    FieldInfo[] supertypeFields = baseType.GetFields();
-
-                    if (supertypeFields.Any(superF => superF.Name == f.Name))
+                    ConstructorInfo[] ctors = type.GetConstructors();
+                    foreach (var c in ctors)
                     {
+                        currentMember = c;
+                        if (c.IsPublic && !c.IsGenericMethod && !SupressesImport(c))
+                        {
+                            ConstructorDefinitionNode node = ParseConstructor(c, type);
+                            classnode.Procedures.Add(node);
+
+                            List<ProtoCore.Type> argTypes = GetArgumentTypes(node);
+                            RegisterFunctionPointer(node.Name, c, argTypes, node.ReturnType);
+                        }
+                    }
+                }
+
+                BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static;
+                bool isDerivedClass = !string.IsNullOrEmpty(classnode.BaseClass);
+                if (isDerivedClass) //has base class
+                    flags |= BindingFlags.DeclaredOnly; //for derived class, parse only class declared methods.
+
+                PropertyInfo[] properties = type.GetProperties(flags);
+                foreach (var p in properties)
+                {
+                    currentMember = p;
+                    AssociativeNode node = ParseProperty(p);
+                    if (null != node)
+                        classnode.Variables.Add(node);
+                }
+
+                bool isDisposable = typeof(IDisposable).IsAssignableFrom(type);
+                MethodInfo[] methods = type.GetMethods(flags);
+                bool hasDisposeMethod = false;
+
+                foreach (var m in methods)
+                {
+                    currentMember = m;
+                    if (SupressesImport(m, mGetterAttributes))
                         continue;
+
+                    if (classnode.IsStatic && m.GetBaseDefinition().DeclaringType == baseType &&
+                        baseType == typeof(object))
+                        continue;
+
+                    // Mono issue: m == m.GetBaseDefinition() for methods from Object class returns True instead of False
+                    if (m.DeclaringType == typeof(object) && m == m.GetBaseDefinition())
+                        continue;
+
+                    //Don't include overriden methods or generic methods
+                    if (m.IsPublic && !m.IsGenericMethod && m == m.GetBaseDefinition())
+                    {
+                        AssociativeNode node = ParseAndRegisterFunctionPointer(isDisposable, ref hasDisposeMethod, m);
+                        classnode.Procedures.Add(node);
+                    }
+                    else if (!hasDisposeMethod && isDisposable && baseType == typeof(Object) && isDisposeMethod(m))
+                    {
+                        AssociativeNode node = ParseAndRegisterFunctionPointer(isDisposable, ref hasDisposeMethod, m);
+                        classnode.Procedures.Add(node);
                     }
                 }
+                if (!hasDisposeMethod && !isDisposable)
+                {
+                    currentMember = mDisposeMethod;
+                    AssociativeNode node = ParseAndRegisterFunctionPointer(true, ref hasDisposeMethod, mDisposeMethod);
+                    classnode.Procedures.Add(node);
+                }
+
+                FieldInfo[] fields = type.GetFields();
+                foreach (var f in fields)
+                {
+                    currentMember = f;
+                    if (SupressesImport(f))
+                        continue;
+
+                    //Supress if defined in super-type
+                    if (isDerivedClass)
+                    {
+                        FieldInfo[] supertypeFields = baseType.GetFields();
+
+                        if (supertypeFields.Any(superF => superF.Name == f.Name))
+                        {
+                            continue;
+                        }
+                    }
 
 
-                VarDeclNode variable = ParseFieldDeclaration(f);
-                if (null == variable)
-                    continue;
-                classnode.Variables.Add(variable);
-                FunctionDefinitionNode func = ParseFieldAccessor(f);
-                if (null != func)
-                    RegisterFunctionPointer(func.Name, f, null, func.ReturnType);
+                    VarDeclNode variable = ParseFieldDeclaration(f);
+                    if (null == variable)
+                        continue;
+                    classnode.Variables.Add(variable);
+                    FunctionDefinitionNode func = ParseFieldAccessor(f);
+                    if (null != func)
+                        RegisterFunctionPointer(func.Name, f, null, func.ReturnType);
+                }
+
+                FFIClassAttributes cattrs = new FFIClassAttributes(type);
+                classnode.ClassAttributes = cattrs;
+                SetTypeAttributes(type, cattrs);
+
             }
-
-            FFIClassAttributes cattrs = new FFIClassAttributes(type);
-            classnode.ClassAttributes = cattrs;
-            SetTypeAttributes(type, cattrs);
+            catch(Exception e)
+            {
+                throw new Exception($"error importing {type.FullName} {currentMember} ", e);
+            }
 
             return classnode;
+
         }
 
         private AssociativeNode ParseAndRegisterFunctionPointer(bool isDisposable, ref bool hasDisposeMethod, MethodInfo m)

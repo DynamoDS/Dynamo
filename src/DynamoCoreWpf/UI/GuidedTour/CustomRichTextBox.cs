@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -171,8 +171,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
                         imageFig.Height = new FigureLength(30);
                         para.Inlines.Add(imageFig);
                     }
-                    //End fo the Bullet Items formatting
-                    if (word.EndsWith("-"))
+                    //End oo the Bullet Items formatting
+                    if (word.EndsWith("-") && bulletedItemsList != null)
                     {
                         bBulletListActive = false;
                         bulletedItemsList.ListItems.Add(new ListItem(new Paragraph(new Run(bulletEntryText.Replace("-", "")))));
