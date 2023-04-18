@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -43,6 +43,13 @@ namespace Dynamo.PackageManager
         /// Used for package dependency serialization.
         /// </summary>
         private Dictionary<string, List<PackageInfo>> NodePackageDictionary;
+
+        // TODO : Update all packages to use this hostname and replace the hostname in package manager as well.
+        /// <summary>
+        /// This will be used to match Civil 3D specific packages,
+        /// as there is a mismatch between the host dependency name in packages and the host name used by Civil 3D for Dynamo.
+        /// </summary>
+        private readonly string Civil3DHostName = "Dynamo Civil 3D";
 
         public string Name { get { return "DynamoPackageManager"; } }
 
@@ -351,13 +358,20 @@ namespace Dynamo.PackageManager
             }
             else
             {
+                string currentHost = Host;
+                if (Host.ToLower().Equals(Civil3DHostName.ToLower()))
+                {
+                    //To mitigate the mismatch between Dynamo Civil3D hostname and Dynamo Packages Host dependency name,
+                    //setting the current host name as the one used by package autors to mark their package Civil3D dependent.
+                    currentHost = "Civil 3D";
+                }
                 // Warn if there are packages targeting other hosts but not our host
-                var otherHosts = knownHosts.Except(new List<string>() { Host });
+                var otherHosts = knownHosts.Except(new List<string>() { currentHost });
                 containsPackagesThatTargetOtherHosts = newPackageHeaders.Any(x =>
                 {
                     // Is our host in the list?
                     // If not, is any other host in the list?
-                    return x.host_dependencies != null && !x.host_dependencies.Contains(Host) && otherHosts.Any(y => x.host_dependencies.Contains(y));
+                    return x.host_dependencies != null && !x.host_dependencies.Contains(currentHost) && otherHosts.Any(y => x.host_dependencies.Contains(y));
                 });
             }
 
