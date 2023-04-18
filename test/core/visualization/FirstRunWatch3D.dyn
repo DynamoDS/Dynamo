@@ -1,36 +1,297 @@
-<Workspace Version="1.0.0.343" X="0" Y="0" zoom="1" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
-  <NamespaceResolutionMap />
-  <Elements>
-    <CoreNodeModels.Input.DoubleInput guid="9e320455-d69b-4c22-b9f3-03c510b0268e" type="CoreNodeModels.Input.DoubleInput" nickname="Number" x="28.5" y="223" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false">
-      <System.Double value="10" />
-    </CoreNodeModels.Input.DoubleInput>
-    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="b8d2a9d4-b87a-4077-9c27-e97bb870c44d" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Point.ByCoordinates" x="160.5" y="194" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double">
-      <PortInfo index="0" default="True" />
-      <PortInfo index="1" default="True" />
-      <PortInfo index="2" default="True" />
-    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
-    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="fb256aa2-819a-4037-80fb-40dc2a70f2f0" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Cuboid.ByCorners" x="307.5" y="60" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Cuboid.ByCorners@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point">
-      <PortInfo index="0" default="True" />
-      <PortInfo index="1" default="True" />
-    </Dynamo.Graph.Nodes.ZeroTouch.DSFunction>
-    <Watch3DNodeModels.Watch3D guid="60a5fa8a-c0ef-41c8-b717-5465ef759f80" type="Watch3DNodeModels.Watch3D" nickname="Watch 3D" x="487.5" y="22" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false">
-      <view width="200" height="200">
-        <Camera Name="60a5fa8a-c0ef-41c8-b717-5465ef759f80 Preview" eyeX="-17" eyeY="24" eyeZ="50" lookX="12" lookY="-13" lookZ="-58" upX="0" upY="1" upZ="0" />
-        <Camera Name="60a5fa8a-c0ef-41c8-b717-5465ef759f80 Preview" eyeX="-17" eyeY="24" eyeZ="50" lookX="12" lookY="-13" lookZ="-58" upX="0" upY="1" upZ="0" />
-      </view>
-    </Watch3DNodeModels.Watch3D>
-  </Elements>
-  <Connectors>
-    <Dynamo.Graph.Connectors.ConnectorModel start="9e320455-d69b-4c22-b9f3-03c510b0268e" start_index="0" end="b8d2a9d4-b87a-4077-9c27-e97bb870c44d" end_index="1" portType="0" />
-    <Dynamo.Graph.Connectors.ConnectorModel start="9e320455-d69b-4c22-b9f3-03c510b0268e" start_index="0" end="b8d2a9d4-b87a-4077-9c27-e97bb870c44d" end_index="2" portType="0" />
-    <Dynamo.Graph.Connectors.ConnectorModel start="9e320455-d69b-4c22-b9f3-03c510b0268e" start_index="0" end="b8d2a9d4-b87a-4077-9c27-e97bb870c44d" end_index="0" portType="0" />
-    <Dynamo.Graph.Connectors.ConnectorModel start="b8d2a9d4-b87a-4077-9c27-e97bb870c44d" start_index="0" end="fb256aa2-819a-4037-80fb-40dc2a70f2f0" end_index="1" portType="0" />
-    <Dynamo.Graph.Connectors.ConnectorModel start="fb256aa2-819a-4037-80fb-40dc2a70f2f0" start_index="0" end="60a5fa8a-c0ef-41c8-b717-5465ef759f80" end_index="0" portType="0" />
-  </Connectors>
-  <Notes />
-  <Annotations />
-  <Presets />
-  <Cameras>
-    <Camera Name="Background Preview" eyeX="-17" eyeY="24" eyeZ="50" lookX="12" lookY="-13" lookZ="-58" upX="0" upY="1" upZ="0" />
-  </Cameras>
-</Workspace>
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "FirstRunWatch3D",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "9e320455d69b4c22b9f303c510b0268e",
+      "Name": "Number",
+      "Type": "number",
+      "Type2": "number",
+      "Value": "10",
+      "NumberType": "Double",
+      "Description": "Creates a number",
+      "SelectedIndex": 0
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NumberType": "Double",
+      "Id": "9e320455d69b4c22b9f303c510b0268e",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "8d697a6033274a078f023e3e51018144",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number",
+      "InputValue": 10.0
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "b8d2a9d4b87a40779c27e97bb870c44d",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "4bc6001af14f45e6a4226bf0a092a1e4",
+          "Name": "x",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "16f59dfb502a48669b802f238966b4e1",
+          "Name": "y",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "ea11d56b89f8412591797b1ad6802355",
+          "Name": "z",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "70fd559093cf40e98155294f0ddaa744",
+          "Name": "Point",
+          "Description": "Point created by coordinates",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Replication": "Auto",
+      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "fb256aa2819a403780fb40dc2a70f2f0",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "28bf1006ee0a4cd78a269eba3367ef16",
+          "Name": "lowPoint",
+          "Description": "Corner low point of cuboid\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "1d07cf227d6b4c1da78b10d6543587ef",
+          "Name": "highPoint",
+          "Description": "Corner high point of cuboid\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(1, 1, 1)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "97c840f0e9944d05aeaeba1670d4a532",
+          "Name": "Cuboid",
+          "Description": "Cuboind created by corners",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Cuboid.ByCorners@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
+      "Replication": "Auto",
+      "Description": "Create an Cuboid spanning from low Point to high Point.\n\nCuboid.ByCorners (lowPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), highPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(1, 1, 1)): Cuboid"
+    },
+    {
+      "ConcreteType": "Watch3DNodeModels.Watch3D, Watch3DNodeModels",
+      "WatchWidth": 200.0,
+      "WatchHeight": 200.0,
+      "WasExecuted": true,
+      "Camera": {
+        "Name": "60a5fa8a-c0ef-41c8-b717-5465ef759f80 Preview",
+        "EyeX": -17.0,
+        "EyeY": 24.0,
+        "EyeZ": 50.0,
+        "LookX": 12.0,
+        "LookY": -13.0,
+        "LookZ": -58.0,
+        "UpX": 0.0,
+        "UpY": 1.0,
+        "UpZ": 0.0
+      },
+      "Id": "60a5fa8ac0ef41c8b7175465ef759f80",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "84518674a2bb41cbb8542e1017ad0cc5",
+          "Name": "",
+          "Description": "Incoming geometry objects.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "716cc2b274cf445880656fa19f56a79c",
+          "Name": "",
+          "Description": "Incoming geometry objects.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Shows a dynamic preview of geometry"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "8d697a6033274a078f023e3e51018144",
+      "End": "16f59dfb502a48669b802f238966b4e1",
+      "Id": "7ae855b47ae2409baf1d1d23836c8dae",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "8d697a6033274a078f023e3e51018144",
+      "End": "ea11d56b89f8412591797b1ad6802355",
+      "Id": "3516f5d35dda4cb2a6a06e52469c1616",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "8d697a6033274a078f023e3e51018144",
+      "End": "4bc6001af14f45e6a4226bf0a092a1e4",
+      "Id": "1d2f27c2437641f1af8e96eee49cedca",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "70fd559093cf40e98155294f0ddaa744",
+      "End": "1d07cf227d6b4c1da78b10d6543587ef",
+      "Id": "f28027a2d6174ac39004941766d54ddf",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "97c840f0e9944d05aeaeba1670d4a532",
+      "End": "84518674a2bb41cbb8542e1017ad0cc5",
+      "Id": "7ac1ffdd2cea458587b362fd694560cb",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": null,
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.18",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.18.0.4710",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "9e320455d69b4c22b9f303c510b0268e",
+        "Name": "Number",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 28.5,
+        "Y": 223.0
+      },
+      {
+        "Id": "b8d2a9d4b87a40779c27e97bb870c44d",
+        "Name": "Point.ByCoordinates",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 160.5,
+        "Y": 194.0
+      },
+      {
+        "Id": "fb256aa2819a403780fb40dc2a70f2f0",
+        "Name": "Cuboid.ByCorners",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 307.5,
+        "Y": 60.0
+      },
+      {
+        "Id": "60a5fa8ac0ef41c8b7175465ef759f80",
+        "Name": "Watch 3D",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 487.5,
+        "Y": 22.0
+      }
+    ],
+    "Annotations": [],
+    "X": 35.428571428571445,
+    "Y": 17.714285714285666,
+    "Zoom": 1.0
+  }
+}
