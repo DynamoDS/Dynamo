@@ -171,7 +171,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                         imageFig.Height = new FigureLength(30);
                         para.Inlines.Add(imageFig);
                     }
-                    //End oo the Bullet Items formatting
+                    //End of the Bullet Items formatting
                     if (word.EndsWith("-") && bulletedItemsList != null)
                     {
                         bBulletListActive = false;
