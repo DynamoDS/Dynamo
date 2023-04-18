@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -55,7 +55,10 @@ namespace Dynamo.Nodes
 
         void OnNoteViewUnloaded(object sender, RoutedEventArgs e)
         {
-            ViewModel.RequestsSelection -= OnViewModelRequestsSelection;
+            if (ViewModel != null)
+            {
+                ViewModel.RequestsSelection -= OnViewModelRequestsSelection;
+            }
         }
 
         void OnViewModelRequestsSelection(object sender, EventArgs e)
