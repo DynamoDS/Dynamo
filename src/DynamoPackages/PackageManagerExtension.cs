@@ -50,6 +50,7 @@ namespace Dynamo.PackageManager
         /// as there is a mismatch between the host dependency name in packages and the host name used by Civil 3D for Dynamo.
         /// </summary>
         private readonly string Civil3DHostName = "Dynamo Civil 3D";
+        private readonly string oldCivil3DHostName = "Civil 3D";
 
         public string Name { get { return "DynamoPackageManager"; } }
 
@@ -363,7 +364,7 @@ namespace Dynamo.PackageManager
                 {
                     //To mitigate the mismatch between Dynamo Civil3D hostname and Dynamo Packages Host dependency name,
                     //setting the current host name as the one used by package authors to mark their package Civil3D dependent.
-                    currentHost = "Civil 3D";
+                    currentHost = oldCivil3DHostName;
                 }
                 // Warn if there are packages targeting other hosts but not our host
                 var otherHosts = knownHosts.Except(new List<string>() { currentHost });
