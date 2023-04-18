@@ -362,7 +362,7 @@ namespace Dynamo.PackageManager
                 if (Host.ToLower().Equals(Civil3DHostName.ToLower()))
                 {
                     //To mitigate the mismatch between Dynamo Civil3D hostname and Dynamo Packages Host dependency name,
-                    //setting the current host name as the one used by package autors to mark their package Civil3D dependent.
+                    //setting the current host name as the one used by package authors to mark their package Civil3D dependent.
                     currentHost = "Civil 3D";
                 }
                 // Warn if there are packages targeting other hosts but not our host
