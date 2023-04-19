@@ -351,12 +351,13 @@ namespace Dynamo.PackageManager
             }
             else
             {
-                bool civilflag = false;
-                if (Host.ToLower().Contains("civil"))
+                string civilStr = "civil";
+                bool civilFlag = false;
+                if (Host.ToLower().Contains(civilStr))
                 {
                     //To mitigate the mismatch between Dynamo Civil3D hostname and Dynamo Packages Host dependency name,
                     //setting the civil flag to true in case of Civil3D host.
-                    civilflag = true;
+                    civilFlag = true;
                 }
                 // Warn if there are packages targeting other hosts but not our host
                 var otherHosts = knownHosts.Except(new List<string>() { Host });
@@ -364,7 +365,7 @@ namespace Dynamo.PackageManager
                 {
                     // Is our host in the list?
                     // If not, is any other host in the list?
-                    return x.host_dependencies != null && !x.host_dependencies.Contains(Host) && !(civilflag && x.host_dependencies.Any(y => y.Contains("civil"))) && otherHosts.Any(y => x.host_dependencies.Contains(y));
+                    return x.host_dependencies != null && !x.host_dependencies.Contains(Host) && !(civilFlag && x.host_dependencies.Any(y => y.Contains(civilStr))) && otherHosts.Any(y => x.host_dependencies.Contains(y));
                 });
             }
 
