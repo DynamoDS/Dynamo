@@ -23,7 +23,7 @@ namespace ProtoFFI
         /// Private constructor to create empty CLRModuleType.
         /// </summary>
         /// <param name="type">System.Type</param>
-        private CLRModuleType(Type type)
+        internal CLRModuleType(Type type)
         {
             CLRType = type;
             string classname = CLRObjectMarshaler.GetTypeName(type);
@@ -318,7 +318,7 @@ namespace ProtoFFI
             return classnode;
         }
 
-        private ClassDeclNode ParseSystemType(Type type, string alias)
+        internal ClassDeclNode ParseSystemType(Type type, string alias)
         {
             ClassDeclNode classnode = null;
             //var used for logging issues as we attempt to import this type.
