@@ -3523,27 +3523,27 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="DynamoViewSettingLibraryZoomScale" xml:space="preserve">
     <value>Library</value>
   </data>
-  <data name="PortPropertiesPromptInputWindowTitle">
+  <data name="PortPropertiesPromptInputWindowTitle" xml:space="preserve">
     <value>Input Port Properties</value>
     <comment>Input Port title</comment>
   </data>
-  <data name="PortPropertiesPromptOutputWindowTitle">
+  <data name="PortPropertiesPromptOutputWindowTitle" xml:space="preserve">
     <value>Output Port Properties</value>
     <comment>Output Port title</comment>
   </data>
-  <data name="PortPropertiesPromptDescriptionTooltip">
+  <data name="PortPropertiesPromptDescriptionTooltip" xml:space="preserve">
     <value>Description of port</value>
     <comment>Description of port</comment>
   </data>
-  <data name="PortPropertiesPromptWindowDescription">
+  <data name="PortPropertiesPromptWindowDescription" xml:space="preserve">
     <value>Description</value>
     <comment>Port Description Label</comment>
   </data>
-  <data name="PortPropertiesPromptNameTooltip">
+  <data name="PortPropertiesPromptNameTooltip" xml:space="preserve">
     <value>Port name</value>
     <comment>Name of port</comment>
   </data>
-  <data name="PortPropertiesPromptWindowName">
+  <data name="PortPropertiesPromptWindowName" xml:space="preserve">
     <value>Name</value>
     <comment>Port Name Label</comment>
   </data>
@@ -3605,5 +3605,8 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   </data>
   <data name="CustomColorsPopupTitle" xml:space="preserve">
     <value>Custom</value>
+  </data>
+  <data name="LibraryLoadFailureMessageSuffix" xml:space="preserve">
+    <value>See the console log for the details of the import failure.</value>
   </data>
 </root>
