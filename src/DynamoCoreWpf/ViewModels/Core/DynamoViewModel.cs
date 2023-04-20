@@ -3048,7 +3048,7 @@ namespace Dynamo.ViewModels
                 {
                     Wpf.Utilities.MessageBoxService.Show(
                         Owner,
-                        $"{ex.Message}-{Dynamo.Wpf.Properties.Resources.LibraryLoadFailureMessageSuffix}"  ,
+                        $"{ex.Message}-{WpfResources.LibraryLoadFailureMessageSuffix}"  ,
                         Properties.Resources.LibraryLoadFailureMessageBoxTitle,
                         MessageBoxButton.OK,
                         MessageBoxImage.Exclamation);
