@@ -3048,10 +3048,10 @@ namespace Dynamo.ViewModels
                 {
                     Wpf.Utilities.MessageBoxService.Show(
                         Owner,
-                        ex.Message,
+                        $"{ex.Message}-{WpfResources.LibraryLoadFailureMessageSuffix}"  ,
                         Properties.Resources.LibraryLoadFailureMessageBoxTitle,
                         MessageBoxButton.OK,
-                        MessageBoxImage.Exclamation);;
+                        MessageBoxImage.Exclamation);
                 }
                 catch(DynamoServices.AssemblyBlockedException ex)
                 {

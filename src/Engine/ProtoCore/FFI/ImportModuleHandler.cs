@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -106,9 +106,7 @@ namespace ProtoFFI
                     }
                     _coreObj.BuildStatus.LogSemanticError(sb.ToString());
                 }
-                if (ex.InnerException != null)
-                    _coreObj.BuildStatus.LogSemanticError(ex.InnerException.Message);
-                _coreObj.BuildStatus.LogSemanticError(ex.Message);
+                _coreObj.BuildStatus.LogSemanticError(ex.ToString());
             }
 
             //Cache the codeblock of root import node.
