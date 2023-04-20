@@ -76,6 +76,10 @@
             Height="25"
             Click="ColorToggleButton_Click"
             IsChecked="{Binding IsColorPickerShown}"
-            Style="{StaticResource CustomColorToggle}" />
+            Style="{StaticResource CustomColorToggle}">
+            <ToggleButton.ToolTip>
+                <ToolTip Content="{Binding SelectedColorValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </ToggleButton.ToolTip>
+        </ToggleButton>
     </Grid>
 </UserControl>

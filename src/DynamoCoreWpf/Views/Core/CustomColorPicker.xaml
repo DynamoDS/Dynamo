@@ -301,14 +301,14 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <Grid Grid.Row="0">
+                        <Grid Grid.Row="0" Margin="0,0,0,-15">
                             <Grid x:Name="titleGrid">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="10*" />
+                                    <ColumnDefinition Width="7*" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock
-                                    Margin="0,20,0,20"
+                                    Margin="-5,2,0,20"
                                     Padding="2"
                                     Background="Transparent"
                                     FontFamily="{StaticResource ArtifaktElementRegular}"
@@ -320,15 +320,15 @@
                                     Grid.Column="1"
                                     Width="12"
                                     Height="12"
-                                    Margin="0,0,0,10"
+                                    Margin="0,-8,0,10"
                                     Click="CustomColorsCloseButton_Click"
                                     Style="{StaticResource PopupCloseButtonStyle}" />
                             </Grid>
                         </Grid>
                         <Grid Grid.Row="1">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="420" />
-                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="420"/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
@@ -337,6 +337,7 @@
 
                             <!--  Contains all the colors in a Canvas  -->
                             <Border
+                                Margin="0,0,5,0"
                                 Background="{StaticResource CheckerBrush}"
                                 BorderBrush="DarkGray"
                                 BorderThickness="1"
@@ -415,7 +416,7 @@
                                         x:Name="PART_HexadecimalTextBox"
                                         Grid.Column="1"
                                         MinHeight="22"
-                                        Margin="2,0,2,0"
+                                        Margin="2,0,5,0"
                                         VerticalAlignment="Center"
                                         FontFamily="{StaticResource ArtifaktElementRegular}"
                                         Style="{StaticResource ColorCanvasTextBoxStyle}" />
@@ -426,7 +427,7 @@
                             <Border
                                 Grid.RowSpan="2"
                                 Grid.Column="1"
-                                Margin="4,-8,0,0"
+                                Margin="7,-8,0,0"
                                 ClipToBounds="False">
                                 <xctk:ColorSpectrumSlider x:Name="PART_SpectrumSlider" VerticalAlignment="Stretch" />
                             </Border>
@@ -642,7 +643,7 @@
                 <!--  Normal Colors Window  -->
                 <Grid
                     x:Name="gridNormalColorSelection"
-                    Margin="20"
+                    Margin="20,7,20,10"
                     HorizontalAlignment="Left"
                     Background="Transparent"
                     Visibility="{Binding Path=IsCustomColorSelectionEnabled, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
@@ -659,18 +660,16 @@
                     <Grid Grid.Row="0">
                         <Grid x:Name="titleCustomColorsGrid">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="10*" />
+                                <ColumnDefinition Width="20*" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <TextBlock
-                                Margin="0,10,0,10"
-                                Padding="2"
-                                Background="Transparent"
+                                Margin="0"
                                 FontFamily="{StaticResource ArtifaktElementRegular}"
                                 FontSize="20"
                                 FontWeight="Bold"
                                 Foreground="Black"
-                                Text="{x:Static p:Resources.CustomColorPickerTitle}" />
+                                Text="{x:Static p:Resources.CustomColorPickerTitle}"/>
                             <Button
                                 Name="NormalColorsCloseButton"
                                 Grid.Column="1"
@@ -695,6 +694,7 @@
                                 Margin="0,10,0,0"
                                 Padding="2"
                                 Background="Transparent"
+                                FontSize="14"
                                 FontFamily="{StaticResource ArtifaktElementRegular}"
                                 Foreground="Black"
                                 Text="{x:Static p:Resources.CustomColorPickerBasicColors}" />
@@ -723,6 +723,7 @@
                                 Padding="2"
                                 Background="Transparent"
                                 FontFamily="{StaticResource ArtifaktElementRegular}"
+                                FontSize="14"
                                 Foreground="Black"
                                 Text="{x:Static p:Resources.CustomColorPickerCustomColors}" />
 
@@ -761,7 +762,7 @@
 
                     <!--  Buttons  -->
                     <Grid Grid.Row="5" HorizontalAlignment="Right">
-                        <Grid Margin="10,10,0,0">
+                        <Grid Margin="10,7,0,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
