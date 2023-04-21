@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Reflection;
-using Dynamo.Configuration;
 using Dynamo.Extensions;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
@@ -351,21 +349,14 @@ namespace Dynamo.PackageManager
             }
             else
             {
-                string civilStr = "civil";
-                bool civilFlag = false;
-                if (Host.ToLower().Contains(civilStr))
-                {
-                    //To mitigate the mismatch between Dynamo Civil3D hostname and Dynamo Packages Host dependency name,
-                    //setting the civil flag to true in case of Civil3D host.
-                    civilFlag = true;
-                }
                 // Warn if there are packages targeting other hosts but not our host
                 var otherHosts = knownHosts.Except(new List<string>() { Host });
                 containsPackagesThatTargetOtherHosts = newPackageHeaders.Any(x =>
                 {
                     // Is our host in the list?
                     // If not, is any other host in the list?
-                    return x.host_dependencies != null && !x.host_dependencies.Contains(Host) && !(civilFlag && x.host_dependencies.Any(y => y.Contains(civilStr))) && otherHosts.Any(y => x.host_dependencies.Contains(y));
+                    // Also, check if any dependency contains the hostname or vice-versa.
+                    return x.host_dependencies != null && !x.host_dependencies.Contains(Host) && !x.host_dependencies.Any(y => Host.Contains(y)) && otherHosts.Any(y => x.host_dependencies.Contains(y));
                 });
             }
 
