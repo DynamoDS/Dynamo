@@ -3157,8 +3157,10 @@ namespace Dynamo.ViewModels
                 Model.CurrentWorkspace.RequestRun();
                 return;
             }
+
+            var targetPath = String.IsNullOrEmpty(FileTrustViewModel.DynFileDirectoryName) ? Path.GetDirectoryName(currentWorkspaceViewModel.FileName) : FileTrustViewModel.DynFileDirectoryName;
             if (!FileTrustViewModel.ShowWarningPopup
-                && !model.PreferenceSettings.IsTrustedLocation(FileTrustViewModel.DynFileDirectoryName)
+                && !model.PreferenceSettings.IsTrustedLocation(targetPath)
                 && (currentWorkspaceViewModel?.IsHomeSpace ?? false) && !ShowStartPage
                 && !FileTrustViewModel.AllowOneTimeTrust
                 && !model.PreferenceSettings.DisableTrustWarnings
