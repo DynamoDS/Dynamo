@@ -308,7 +308,7 @@
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock
-                                    Margin="-5,2,0,20"
+                                    Margin="-4,5,0,20"
                                     Padding="2"
                                     Background="Transparent"
                                     FontFamily="{StaticResource ArtifaktElementRegular}"
@@ -643,7 +643,7 @@
                 <!--  Normal Colors Window  -->
                 <Grid
                     x:Name="gridNormalColorSelection"
-                    Margin="20,7,20,10"
+                    Margin="21,10,20,10"
                     HorizontalAlignment="Left"
                     Background="Transparent"
                     Visibility="{Binding Path=IsCustomColorSelectionEnabled, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
@@ -719,7 +719,7 @@
                             </Grid.RowDefinitions>
                             <TextBlock
                                 Grid.Row="0"
-                                Margin="0,10,0,0"
+                                Margin="0,10,0,-9"
                                 Padding="2"
                                 Background="Transparent"
                                 FontFamily="{StaticResource ArtifaktElementRegular}"
@@ -742,7 +742,7 @@
                         <Button
                             x:Name="DefineColorBtn"
                             MaxWidth="200"
-                            Margin="2,0,0,0"
+                            Margin="3,0,0,0"
                             Padding="10"
                             HorizontalAlignment="Left"
                             Click="DefineColorBtn_Click"
