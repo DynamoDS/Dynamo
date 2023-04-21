@@ -334,7 +334,7 @@
                                                         Value="{StaticResource NodeOptionsButtonBackground}" />
                                                 <Setter TargetName="DotsImage"
                                                         Property="Source"
-                                                        Value="/DynamoCoreWpf;component/UI/Images/sort-hover-16px.png" />
+                                                        Value="/DynamoCoreWpf;component/UI/Images/switch-hover-16px.png" />
                                             </Trigger>
                                             <Trigger Property="IsMouseOver"
                                                      Value="False">
@@ -343,7 +343,7 @@
                                                         Value="Transparent" />
                                                 <Setter TargetName="DotsImage"
                                                         Property="Source"
-                                                        Value="/DynamoCoreWpf;component/UI/Images/Sort.png" />
+                                                        Value="/DynamoCoreWpf;component/UI/Images/switch.png" />
                                             </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
