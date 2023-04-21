@@ -239,5 +239,18 @@ import (EmbeddedInteropTestClass from ""..\\..\\..\\test\\test_dependencies\\Emb
             Assert.IsTrue(ex.Message.Contains($"error importing {typeof(FFITarget.HiddenDisposer).FullName}"));
 
         }
+        [Test]
+        public void Test_FFI_CanImportEnumDefaultValue()
+        {
+            string code = @"
+import (EnumReferencingClass from ""FFITarget.dll"");
+
+    x = EnumReferencingClass();
+    val = x.TestEnumDefaultVal();
+";
+
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("val", "Friday is the best");
+        }
     }
 }
