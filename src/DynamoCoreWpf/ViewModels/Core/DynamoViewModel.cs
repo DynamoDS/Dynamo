@@ -3158,7 +3158,16 @@ namespace Dynamo.ViewModels
                 return;
             }
 
-            var targetPath = String.IsNullOrEmpty(FileTrustViewModel.DynFileDirectoryName) ? Path.GetDirectoryName(currentWorkspaceViewModel.FileName) : FileTrustViewModel.DynFileDirectoryName;
+            var targetPath = string.Empty;
+            if (String.IsNullOrEmpty(FileTrustViewModel.DynFileDirectoryName))
+            {
+                if(!String.IsNullOrEmpty(currentWorkspaceViewModel.FileName))
+                    targetPath = Path.GetDirectoryName(currentWorkspaceViewModel.FileName);
+            }
+            else
+            {
+                targetPath = FileTrustViewModel.DynFileDirectoryName;
+            }
             if (!FileTrustViewModel.ShowWarningPopup
                 && !model.PreferenceSettings.IsTrustedLocation(targetPath)
                 && (currentWorkspaceViewModel?.IsHomeSpace ?? false) && !ShowStartPage
