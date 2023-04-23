@@ -1463,7 +1463,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var indices = new IntCollection();
             var colors = new Color4Collection();
 
-            var scale = gridScale;
+            var scale = GridScale;
 
             for (var i = 0; i < 10; i += 1)
             {

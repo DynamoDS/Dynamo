@@ -52,6 +52,7 @@ namespace Dynamo.Configuration
         private int maxNumRecentFiles;
         private bool isBackgroundGridVisible;
         private float gridScaleFactor;
+        private bool setScaleFromRevit;
         private double defaultScaleFactor;
         private bool disableTrustWarnings = false;
         private bool isNotificationCenterEnabled;
@@ -155,6 +156,11 @@ namespace Dynamo.Configuration
         /// Indicates if preview bubbles should be displayed on nodes.
         /// </summary>
         public bool ShowPreviewBubbles { get; set; }
+
+        /// <summary>
+        /// Indicates if Revit units should be used for graphic helpers for Dynamo Revit
+        /// </summary>
+        public bool UseRevitScaleUnits { get; set; }
 
         /// <summary>
         /// Indicates if code block node line numbers should  be displayed.
@@ -261,6 +267,24 @@ namespace Dynamo.Configuration
                 gridScaleFactor = value;
 
                 RaisePropertyChanged(nameof(GridScaleFactor));
+            }
+        }
+
+        /// <summary>
+        /// If we should set the GridScaleFactor based on Revit current document units under DynamoRevit
+        /// </summary>
+        public bool SetScaleFromRevit
+        {
+            get
+            {
+                return setScaleFromRevit;
+            }
+            set
+            {
+                if (value == setScaleFromRevit) return;
+                setScaleFromRevit = value;
+
+                RaisePropertyChanged(nameof(SetScaleFromRevit));    
             }
         }
 

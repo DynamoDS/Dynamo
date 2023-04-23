@@ -2763,6 +2763,13 @@ If the toggle is off custom packages that are not already loaded will load once 
     <value>Show Preview Bubbles</value>
     <comment>Preferences | Visual Settings | Display Settings | Show Preview Bubbles</comment>
   </data>
+  <data name="PreferencesUseRevitScaleUnits" xml:space="preserve">
+    <value>Use Revit to scale background graphic helpers</value>
+  </data>
+  <data name="PreferencesUseRevitScaleUnitsToolTip" xml:space="preserve">
+    <value>Determins if the current document units will be used to scale the background graphic helpers (grids, axes),
+    or if this will be determined by the Graphic Helper Scale dropdown</value>
+  </data>
   <data name="PublishPackageVersionMajorWatermark" xml:space="preserve">
     <value>0</value>
   </data>

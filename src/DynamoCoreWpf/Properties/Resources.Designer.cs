@@ -6761,6 +6761,25 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use Revit to scale background graphic helpers.
+        /// </summary>
+        public static string PreferencesUseRevitScaleUnits {
+            get {
+                return ResourceManager.GetString("PreferencesUseRevitScaleUnits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Determins if the current document units will be used to scale the background graphic helpers (grids, axes),
+        ///    or if this will be determined by the Graphic Helper Scale dropdown.
+        /// </summary>
+        public static string PreferencesUseRevitScaleUnitsToolTip {
+            get {
+                return ResourceManager.GetString("PreferencesUseRevitScaleUnitsToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Style name already in use.
         /// </summary>
         public static string PreferencesViewAlreadyExistingStyleWarning {

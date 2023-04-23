@@ -738,6 +738,37 @@ namespace Dynamo.ViewModels
             }
         }
 
+
+        /// <summary>
+        /// Indicates if Revit units should be used for graphic helpers for Dynamo Revit
+        /// </summary>
+        public bool UseRevitScaleUnits
+        {
+            get
+            {
+                return preferenceSettings.UseRevitScaleUnits;
+            }
+            set
+            {
+                preferenceSettings.UseRevitScaleUnits = value;
+                RaisePropertyChanged(nameof(EnableManualScaleOverrides));
+                RaisePropertyChanged(nameof(UseRevitScaleUnits));
+            }
+        }
+
+        /// <summary>
+        /// If not in DynamoRevit, then enable this option
+        /// Else, control via the Revit-specific toggle
+        /// </summary>
+        public bool EnableManualScaleOverrides
+        {
+            get
+            {
+                if (!IsDynamoRevit) return true;
+                return !UseRevitScaleUnits;
+            }
+        }
+
         /// <summary>
         /// Indicates if line numbers should be displayed on code block nodes.
         /// </summary>
@@ -924,6 +955,19 @@ namespace Dynamo.ViewModels
             get
             {
                 return preferenceSettings.HideAutocompleteMethodOptions;
+            }
+        }
+
+        /// <summary>
+        /// Returns if the current session is Dynamo Revit
+        /// </summary>
+        public bool IsDynamoRevit
+        {
+            get
+            {
+                // HostAnaltyicsInfo is not set when this is invoked??
+                //return this.dynamoViewModel.Model.HostAnalyticsInfo.HostName.Equals("Dynamo Revit");
+                return this.dynamoViewModel.Model.HostName.Equals("Dynamo Revit");
             }
         }
 

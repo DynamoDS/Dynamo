@@ -1022,11 +1022,17 @@
                     <!--Visual Settings Tab-->
                     <TabItem Header="{x:Static p:Resources.PreferencesViewVisualSettingsTab}"
                              Style="{StaticResource LeftTab}">
-                        <Grid x:Name="VisualSettingsTab" 
+
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" Height="Auto">
+                            
+                            <Grid x:Name="VisualSettingsTab" 
                               Background="{StaticResource PreferencesWindowVisualSettingsBackground}"
                               HorizontalAlignment="Left"
                               Margin="1">
                             <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
@@ -1197,8 +1203,9 @@
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
 
                                     <StackPanel Orientation="Horizontal" 
                                                     Margin="0,12,0,0" 
@@ -1369,9 +1376,44 @@
                                             </Image>
                                         </Label>
                                     </StackPanel>
+                                    
+                                    <StackPanel Orientation="Horizontal" 
+                                                Margin="0,12,0,0" 
+                                                Grid.Row="5"
+                                                Visibility="{Binding IsDynamoRevit, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <ToggleButton Name="UseRevitScaleUnitsToggle"
+                                                      Width="{StaticResource ToggleButtonWidth}"
+                                                      Height="{StaticResource ToggleButtonHeight}"
+                                                      VerticalAlignment="Center"
+                                                      IsChecked="{Binding Path=UseRevitScaleUnits}"
+                                                      Style="{StaticResource EllipseToggleButton1}"/>
+                                        <Label Content="{x:Static p:Resources.PreferencesUseRevitScaleUnits}" 
+                                               VerticalAlignment="Center"
+                                               Margin="10,0,0,0"
+                                               Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                        <Label HorizontalAlignment="Left"
+                                                   Name="UseRevitScaleUnitsInfoLabel"
+                                                   VerticalAlignment="Center" 
+                                                   Height="26" 
+                                                   Width="53"
+                                                   Margin="0 3 0 0">
+                                            <Image
+                                               Margin="5,3,0,0"
+                                               Width="14"
+                                               Height="14"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Style="{StaticResource QuestionIcon}"
+                                               ToolTipService.ShowDuration="30000">
+                                                <Image.ToolTip>
+                                                        <ToolTip Content="{x:Static p:Resources.PreferencesUseRevitScaleUnitsToolTip}" Style="{StaticResource GenericToolTipLight}"/>
+                                                </Image.ToolTip>
+                                            </Image>
+                                        </Label>
+                                    </StackPanel>
 
                                     <Grid x:Name="GraphicHelpersScale"
-                                          Grid.Row="5">
+                                          Grid.Row="6">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
@@ -1411,7 +1453,7 @@
                                               ItemsSource="{Binding Path=UnitList}"
                                               SelectedItem="{Binding Path=SelectedUnits}"
                                               Style="{StaticResource NoBordersComboBoxStyle}"
-                                              IsEnabled="True">
+                                              IsEnabled="{Binding EnableManualScaleOverrides}">
                                         </ComboBox>
 
                                     </Grid>
@@ -1559,6 +1601,8 @@
                                
                             </Expander>
                         </Grid>
+
+                        </ScrollViewer>
                     </TabItem>
 
                     <!--Package Manager Settings Tab-->
