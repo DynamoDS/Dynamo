@@ -177,7 +177,7 @@
                         <ControlTemplate>
                             <Rectangle Width="16" Height="16">
                                 <Rectangle.Fill>
-                                    <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Sort.png" />
+                                    <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/sort.png" />
                                 </Rectangle.Fill>
                             </Rectangle>
                         </ControlTemplate>
