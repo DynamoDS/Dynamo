@@ -32,7 +32,7 @@
     <Content Include="PackageManagerExtension_ExtensionDefinition.xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Greg" Version="2.3.0.2505" />
+    <PackageReference Include="Greg" Version="2.4.0.4766" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="RestSharp" Version="106.12.0" />
   </ItemGroup>
