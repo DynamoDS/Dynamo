@@ -128,8 +128,8 @@
                         HorizontalAlignment="Left"
                         Command="{Binding Path=EditPortPropertiesCommand}"
                         Content="{x:Static p:Resources.RenamePortPopupMenuItem}"
-                        IsEnabled="{Binding RenameNodeButtonEnabled, UpdateSourceTrigger=PropertyChanged}"
-                        Visibility="{Binding RenameNodeButtonEnabled, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                        IsEnabled="{Binding IsPythonNodePort, UpdateSourceTrigger=PropertyChanged}"
+                        Visibility="{Binding IsPythonNodePort, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                         Style="{StaticResource PopupButtonStyle}" />
 
             </StackPanel>

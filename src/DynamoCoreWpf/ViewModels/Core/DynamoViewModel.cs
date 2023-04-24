@@ -3048,10 +3048,10 @@ namespace Dynamo.ViewModels
                 {
                     Wpf.Utilities.MessageBoxService.Show(
                         Owner,
-                        ex.Message,
+                        $"{ex.Message}-{WpfResources.LibraryLoadFailureMessageSuffix}"  ,
                         Properties.Resources.LibraryLoadFailureMessageBoxTitle,
                         MessageBoxButton.OK,
-                        MessageBoxImage.Exclamation);;
+                        MessageBoxImage.Exclamation);
                 }
                 catch(DynamoServices.AssemblyBlockedException ex)
                 {
@@ -3157,8 +3157,19 @@ namespace Dynamo.ViewModels
                 Model.CurrentWorkspace.RequestRun();
                 return;
             }
+
+            var targetPath = string.Empty;
+            if (String.IsNullOrEmpty(FileTrustViewModel.DynFileDirectoryName))
+            {
+                if(!String.IsNullOrEmpty(currentWorkspaceViewModel.FileName))
+                    targetPath = Path.GetDirectoryName(currentWorkspaceViewModel.FileName);
+            }
+            else
+            {
+                targetPath = FileTrustViewModel.DynFileDirectoryName;
+            }
             if (!FileTrustViewModel.ShowWarningPopup
-                && !model.PreferenceSettings.IsTrustedLocation(FileTrustViewModel.DynFileDirectoryName)
+                && !model.PreferenceSettings.IsTrustedLocation(targetPath)
                 && (currentWorkspaceViewModel?.IsHomeSpace ?? false) && !ShowStartPage
                 && !FileTrustViewModel.AllowOneTimeTrust
                 && !model.PreferenceSettings.DisableTrustWarnings

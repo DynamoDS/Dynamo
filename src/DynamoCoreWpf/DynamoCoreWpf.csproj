@@ -1603,8 +1603,9 @@
     <Resource Include="UI\Images\Profile.png" />
     <Resource Include="UI\Images\Profile_48px.png" />
     <Resource Include="UI\Images\Requirements.png" />
-    <Resource Include="UI\Images\Sort.png" />
-    <Resource Include="UI\Images\sort-hover-16px.png" />
+    <Resource Include="UI\Images\sort.png" />
+    <Resource Include="UI\Images\switch.png" />
+    <Resource Include="UI\Images\switch-hover-16px.png" />
     <Resource Include="UI\Images\View details.png" />
     <Resource Include="UI\Images\more-vertical_selected_16px.png" />
     <Resource Include="UI\Images\pin_default_48_48.png" />
