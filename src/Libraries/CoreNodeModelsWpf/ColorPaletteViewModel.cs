@@ -6,6 +6,7 @@ namespace Dynamo.Wpf
     internal class ColorPaletteViewModel : NotificationObject
     {
         private SolidColorBrush selectedColor;
+        private string selectedColorValue;
         private bool isColorPickerShown;
 
         /// <summary>
@@ -21,6 +22,21 @@ namespace Dynamo.Wpf
             {
                 selectedColor = value;
                 RaisePropertyChanged(nameof(SelectedColor));
+            }
+        }
+        /// <summary>
+        /// This property will contain the selected color value in the CustomColorPicker popup
+        /// </summary>
+        public string SelectedColorValue
+        {
+            get
+            {
+                return selectedColorValue;
+            }
+            set
+            {
+                selectedColorValue = value;
+                RaisePropertyChanged(nameof(SelectedColorValue));
             }
         }
 

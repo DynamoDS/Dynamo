@@ -60,6 +60,7 @@ namespace CoreNodeModelsWpf.Nodes
                 if (!isSameColor)
                 {
                     colorPaletteViewModel.SelectedColor = new SolidColorBrush(convertedModelColor);
+                    colorPaletteViewModel.SelectedColorValue = colorPaletteViewModel.SelectedColor.ToString();
                 }
             }
         }
