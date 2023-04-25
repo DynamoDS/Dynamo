@@ -334,7 +334,8 @@
                                   x:Name="miMLRecommendation"
                                   Click="OnSuggestion_Click"
                                   IsCheckable="True"
-                                  IsChecked="{Binding Path=IsDisplayingMLRecommendation, Mode=OneWay, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=True}" />
+                                  IsChecked="{Binding Path=IsDisplayingMLRecommendation, Mode=OneWay, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=True}"
+                                  Visibility="{Binding HideAutocompleteMethodOptions, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"/>
                         <MenuItem Header="{x:Static p:Resources.ObjectType}"
                                   x:Name="miObjectType"
                                   Click="OnSuggestion_Click"

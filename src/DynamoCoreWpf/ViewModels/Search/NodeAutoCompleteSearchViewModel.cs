@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
@@ -60,6 +61,18 @@ namespace Dynamo.ViewModels
                 return dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion == Models.NodeAutocompleteSuggestion.MLRecommendation;
             }
         }
+
+        /// <summary>
+        /// If true, autocomplete method options are hidden from UI 
+        /// </summary>
+        public bool HideAutocompleteMethodOptions
+        {
+            get
+            {
+                return dynamoViewModel.PreferenceSettings.HideAutocompleteMethodOptions;
+            }
+        }
+
 
         /// <summary>
         /// The No Recommendations or Low Confidence Title
