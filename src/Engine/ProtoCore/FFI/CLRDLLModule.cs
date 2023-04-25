@@ -848,7 +848,19 @@ namespace ProtoFFI
                     var defaultValue = parameter.DefaultValue;
                     if (defaultValue != null)
                     {
-                        var rhs = AstFactory.BuildPrimitiveNodeFromObject(defaultValue);
+                        //param is an enum, which is imported as a class - if we've imported it we can generate a
+                        //an assignment to class.get_field call for a specific enum value.
+                        AssociativeNode rhs = null;
+                        if (parameter.ParameterType.IsEnum)
+                        {
+                            rhs = AstFactory.BuildFunctionCall(parameter.ParameterType.FullName,
+                                $"{ProtoCore.DSASM.Constants.kGetterPrefix}{parameter.ParameterType.GetEnumName(defaultValue)}", new List<AssociativeNode>());
+                        }
+                        else
+                        {
+                            rhs = AstFactory.BuildPrimitiveNodeFromObject(defaultValue);
+
+                        }
                         paramNode.NameNode = AstFactory.BuildBinaryExpression(lhs, rhs, ProtoCore.DSASM.Operator.assign);
                     }
                 }
