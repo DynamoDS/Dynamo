@@ -8,7 +8,7 @@
         <upi_attribute name='id' value='DYN'/>
         <upi_element name='level'>
           <upi_attribute name='name' value='release'/>
-          <upi_attribute name='id' value='2.19.0'/>
+          <upi_attribute name='id' value='2.18.0'/>
           <upi_element name='level'>
             <upi_attribute name='name' value='master'/>
             <upi_attribute name='id' value='Win64'/>
