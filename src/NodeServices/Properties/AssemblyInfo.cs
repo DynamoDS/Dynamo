@@ -38,3 +38,6 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("DSCoreNodes")]
 [assembly: InternalsVisibleTo("FFITarget")]
 [assembly: InternalsVisibleTo("DynamoPlayerExtension")]
+[assembly: InternalsVisibleTo("DynamoPlayer.Extension")]
+[assembly: InternalsVisibleTo("DynamoPlayer.Workflows")]
+[assembly: InternalsVisibleTo("DynamoPlayer.WorkflowsUi")]
