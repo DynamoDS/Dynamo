@@ -2008,7 +2008,7 @@ namespace Dynamo.Controls
                     return; // User has not saved his/her work.
             }
 
-            
+            dynamoViewModel.Model.CurrentWorkspace = dynamoViewModel.HomeSpace;
             dynamoViewModel.OpenCommand.Execute(path);
         }
 
