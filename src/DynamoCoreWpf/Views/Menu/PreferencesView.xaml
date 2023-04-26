@@ -1810,6 +1810,65 @@
                         </Label.ToolTip>
                     </Label>
                 </Grid>
+                <Popup Name="mustBeClosedMessage" Height="140" Width="472" StaysOpen="True" Placement="RelativePoint" VerticalOffset="-70" HorizontalOffset="180" AllowsTransparency="True">
+                    <Border Background="{StaticResource RealTimeInfoWindowBackgroundColor}" Margin="0,17,0,17" BorderThickness="1" CornerRadius="2">
+                        <Border.Effect>
+                            <DropShadowEffect Color="#000" ShadowDepth="0" Opacity="0.25" BlurRadius="8.0" />
+                        </Border.Effect>
+                        <Grid Background="Transparent" Margin="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Width="4" Height="Auto" Background="{StaticResource RealTimeInfoWindowIconColor}" CornerRadius="3,0,0,3"  Grid.Column="0"/>
+                            <Canvas
+                                Width="20"
+                                Margin="20,15,20,0"
+                                Grid.Column="1">
+                                <Ellipse Width="20"
+                                         Height="20"
+                                         Canvas.Left="0"
+                                         Canvas.Top="15"
+                                         Fill="Transparent"
+                                         Stroke="{StaticResource RealTimeInfoWindowIconColor}" />
+                                <Ellipse Width="2"
+                                         Height="2"
+                                         Canvas.Left="9"
+                                         Canvas.Top="19"
+                                         Fill="{StaticResource RealTimeInfoWindowIconColor}"/>
+                                <Line X1="10" 
+                                          Y1="10"
+                                          X2="10" 
+                                          Y2="18"
+                                          Canvas.Left="0"
+                                          Canvas.Top="13"
+                                          Stroke="{StaticResource RealTimeInfoWindowIconColor}"
+                                          StrokeThickness="2"/>
+                            </Canvas>
+                            <TextBlock Text="{x:Static p:Resources.PreferencesMustBeClosedMessage}"
+                                    FontFamily="Artifakt Element"
+                                    FontSize="12"
+                                    TextWrapping="WrapWithOverflow"
+                                    VerticalAlignment="Center"
+                                    MaxWidth="360"
+                                    Height="50"
+                                    Foreground="White"
+                                    Grid.Column="2"/>
+                            <Button Name="btnMustBeClosedMessage"
+                                VerticalAlignment="Top"
+                                Margin="0,30,5,0"
+                                Height="25"  
+                                Width="25"
+                                HorizontalAlignment="Right"
+                                Grid.Column="3"
+                                Style="{StaticResource RealTimeInfoCloseButtonStyle}"
+                                Click="btnMustBeClosedMessage_Click">
+                            </Button>
+                        </Grid>
+                    </Border>
+                </Popup>
             </Grid>
         </Grid>
     </Grid>

@@ -641,5 +641,15 @@ namespace Dynamo.Wpf.Views
                 label.Content = slider.Value.ToString() + "%";
             }
         }
+
+        public void ShowMustBeClosedMessage()
+        {                     
+            this.mustBeClosedMessage.IsOpen = true;
+        }
+
+        private void btnMustBeClosedMessage_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            this.mustBeClosedMessage.IsOpen = false;
+        }
     }
 }

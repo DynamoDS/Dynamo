@@ -1984,7 +1984,14 @@ namespace Dynamo.Controls
             preferencesWindow = new PreferencesView(this);
             dynamoViewModel.OnPreferencesWindowChanged(preferencesWindow);
             preferencesWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            preferencesWindow.Deactivated += PreferencesWindow_Deactivated;            
             preferencesWindow.ShowDialog();
+        }
+
+
+        private void PreferencesWindow_Deactivated(object sender, EventArgs e)
+        {
+            preferencesWindow.ShowMustBeClosedMessage();
         }
 
         /// <summary>
@@ -2001,7 +2008,7 @@ namespace Dynamo.Controls
                     return; // User has not saved his/her work.
             }
 
-            dynamoViewModel.Model.CurrentWorkspace = dynamoViewModel.HomeSpace;
+            
             dynamoViewModel.OpenCommand.Execute(path);
         }
 
