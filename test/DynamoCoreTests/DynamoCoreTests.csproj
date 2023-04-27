@@ -16,7 +16,7 @@
     <Compile Remove="Saving.cs" />
   </ItemGroup>
     <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-        <PackageReference Include="NUnit" Version="2.6.3" ExcludeAssets="none" />
+        <PackageReference Include="NUnit" Version="2.6.3" ExcludeAssets="none" GeneratePathProperty="true" />
         <PackageReference Include="NUnitTestAdapter" Version="2.3.0" ExcludeAssets="all" />
        
         <Reference Include="System.Configuration" />
@@ -166,6 +166,9 @@
           <Copy SourceFiles="$(PkgSystem_Threading_Tasks_Extensions)\lib\net461\System.Threading.Tasks.Extensions.dll" DestinationFolder="$(TestDependenciesPath)" />
           <Copy SourceFiles="$(PkgMoq)\lib\netstandard2.0\Moq.dll" DestinationFolder="$(TestDependenciesPath)" />
           <Copy SourceFiles="$(PkgMoq)\lib\netstandard2.0\Moq.dll" DestinationFolder="$(OutputPath)" />
+      <!-- for .net48 build we also copy some test .xml files to output to satisfy patch installer reqs -->
+          <Copy SourceFiles="$(PkgMoq)\lib\netstandard2.0\Moq.xml" DestinationFolder="$(OutputPath)" />
+          <Copy SourceFiles="$(PkgNUnit)\lib\nunit.framework.xml" DestinationFolder="$(OutputPath)" />
   </Target>
     <Target Name="MoveSomeTestDepsOutOfBin_net60" AfterTargets="Build" Condition=" '$(TargetFramework)' == 'net6.0' ">
         <Message Importance="High" Text="copying test dependencies to test dependencies folder" />
