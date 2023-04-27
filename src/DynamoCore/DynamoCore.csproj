@@ -176,11 +176,9 @@
     <ItemGroup>
       <ASMLibG Include="$(SolutionDir)..\extern\LibG_*\*" />
       <ExternProtoGeometry Include="$(SolutionDir)..\extern\ProtoGeometry\*" />
-	  <WebView2Libs Include="$(SolutionDir)..\extern\WebView2\*\*\*" />
     </ItemGroup>
     <Copy SourceFiles="@(ASMLibG)" DestinationFolder="$(OutputPath)\%(RecursiveDir)" />
     <Copy SourceFiles="@(ExternProtoGeometry)" DestinationFolder="$(OutputPath)" />
-	<Copy SourceFiles="@(WebView2Libs)" DestinationFolder="$(OutputPath)\runtimes\%(RecursiveDir)" />
         <!-- Get DynamoCore -->
         <GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
             <Output TaskParameter="Assemblies" ItemName="DynamoCoreInfo" />
