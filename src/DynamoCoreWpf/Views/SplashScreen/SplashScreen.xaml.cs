@@ -133,7 +133,7 @@ namespace Dynamo.UI.Views
             RequestLaunchDynamo = LaunchDynamo;
             RequestImportSettings = ImportSettings;
             RequestSignIn = SignIn;
-            RequestSignOut = SignOut;
+            RequestSignOut = SignOut; 
         }
 
         private void WebView_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
@@ -144,6 +144,9 @@ namespace Dynamo.UI.Views
                 webView.NavigationCompleted -= WebView_NavigationCompleted;
             }
             OnRequestDynamicSplashScreen();
+
+            this.webView.Focus();            
+            System.Windows.Forms.SendKeys.SendWait("{TAB}");
         }
 
         /// <summary>
