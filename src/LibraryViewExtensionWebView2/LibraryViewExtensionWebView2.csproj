@@ -176,7 +176,7 @@
     <EmbeddedResource Include="web\library\resources\Tessellation.Voronoi.png" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" GeneratePathProperty="true" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Dynamo.Microsoft.Xaml.Behaviors">
@@ -211,5 +211,7 @@
       <ExtensionDefinition Include="Library_ViewExtensionDefinition.xml" />
     </ItemGroup>
     <Copy SourceFiles="@(ExtensionDefinition)" DestinationFolder="$(OutputPath)\viewExtensions\" />
+	<Copy SourceFiles="$(PkgMicrosoft_Web_WebView2)\runtimes\win-arm64\native\WebView2Loader.dll" DestinationFolder="$(OutputPath)\runtimes\win-arm64\native" />
+	<Copy SourceFiles="$(PkgMicrosoft_Web_WebView2)\runtimes\win-x86\native\WebView2Loader.dll" DestinationFolder="$(OutputPath)\runtimes\win-x86\native" />
   </Target>
 </Project>
