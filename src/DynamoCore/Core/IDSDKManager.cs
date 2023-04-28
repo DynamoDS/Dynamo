@@ -10,7 +10,7 @@ namespace Dynamo.Core
     /// <summary>
     /// The class to provide auth APIs for IDSDK related methods.
     /// </summary>
-    public class IDSDKManager : IOAuth2AuthProvider
+    public class IDSDKManager : IOAuth2AuthProvider, IOAuth2AccessTokenProvider
     {
         /// <summary>
         /// Used by the auth provider to request authentication.
@@ -86,6 +86,10 @@ namespace Dynamo.Core
                 throw new Exception("You must be logged in, to use the Package Manager.");
             }
             m.AddHeader("Authorization", $"Bearer {IDSDK_GetToken()}");
+        }
+        public string GetAccessToken()
+        {
+            return IDSDK_GetToken();
         }
 
         /// <summary>
