@@ -650,12 +650,9 @@ namespace Dynamo.Controls
         internal void UndockWindow(string name)
         {
             var tabItem = ExtensionTabItems.OfType<TabItem>().SingleOrDefault(tab => tab.Header.ToString() == name);
-            var content = tabItem.Content as UIElement;
-
             CloseExtensionTab(tabItem);
 
             dynamoViewModel.DockedWindows.TryGetValue(tabItem.Uid, out NodeModel nodeModel);
-
             dynamoViewModel.DockedWindows.Remove(tabItem.Uid);
             dynamoViewModel.NodeWindowStates[tabItem.Uid] = ViewExtensionDisplayMode.FloatingWindow;
 

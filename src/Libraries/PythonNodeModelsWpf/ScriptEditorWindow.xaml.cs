@@ -170,9 +170,8 @@ namespace PythonNodeModelsWpf
         /// <param name="name"></param>
         internal void DockWindow(string tabName)
         {
-            Analytics.TrackEvent(
-                       Actions.Dock,
-                       Categories.ViewExtensionOperations, tabName);
+            Analytics.TrackEvent(Actions.Dock,
+                                 Categories.ViewExtensionOperations, tabName);
 
             var dynamoView = Owner as DynamoView;
             var titleBar = FindName("TitleBar") as DockPanel;
