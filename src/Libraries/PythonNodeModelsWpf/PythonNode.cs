@@ -1,11 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using Dynamo.Configuration;
 using Dynamo.Controls;
+using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.PythonServices;
@@ -41,6 +43,7 @@ namespace PythonNodeModelsWpf
 
             nodeView.MainContextMenu.Items.Add(editWindowItem);
             editWindowItem.Click += EditScriptContent;
+            pythonNodeModel.EditNode += EditScriptContent;
 
             pythonEngineVersionMenu = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineSwitcher, IsCheckable = false };
             nodeView.MainContextMenu.Items.Add(pythonEngineVersionMenu);
@@ -92,7 +95,10 @@ namespace PythonNodeModelsWpf
             {
                 editWindow.Close();
             }
+
             editWindowItem.Click -= EditScriptContent;
+            pythonNodeModel.EditNode -= EditScriptContent;
+
             if (pythonEngineVersionMenu != null)
             {
                 foreach (var item in pythonEngineVersionMenu.Items)
@@ -151,12 +157,30 @@ namespace PythonNodeModelsWpf
                 }
                 else
                 {
-                    editWindow = new ScriptEditorWindow(dynamoViewModel, pythonNodeModel, pythonNodeView, ref editorWindowRect);
-                    editWindow.Initialize(workspaceModel.Guid, pythonNodeModel.GUID, "ScriptContent", pythonNodeModel.Script);
-                    editWindow.Closed += editWindow_Closed;
-                    editWindow.Show();
+                    var nodemodel = pythonNodeModel as NodeModel;
+                    dynamoViewModel.NodeWindowStates.TryGetValue(nodemodel.GUID.ToString(), out ViewExtensionDisplayMode viewExtensionDisplayMode);
+
+                    if (viewExtensionDisplayMode.Equals(ViewExtensionDisplayMode.DockRight))
+                    {
+                        editWindow = new ScriptEditorWindow(dynamoViewModel, pythonNodeModel, pythonNodeView, ref editorWindowRect);
+                        editWindow.Initialize(workspaceModel.Guid, pythonNodeModel.GUID, "ScriptContent", pythonNodeModel.Script);
+                        editWindow.Closed += editWindow_Closed;
+                        editWindow.DockWindow(pythonNodeModel.Name);
+                    }
+                    else
+                    {
+                        editWindow = new ScriptEditorWindow(dynamoViewModel, pythonNodeModel, pythonNodeView, ref editorWindowRect);
+                        editWindow.Initialize(workspaceModel.Guid, pythonNodeModel.GUID, "ScriptContent", pythonNodeModel.Script);
+                        editWindow.Closed += editWindow_Closed;
+                        editWindow.Show();
+                    }
                 }
             }
+        }
+
+        internal void EditScriptContent()
+        {
+            EditScriptContent(null, null);
         }
 
         /// <summary>

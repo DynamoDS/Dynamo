@@ -328,6 +328,17 @@ namespace PythonNodeModels
             OnCodeMigrated(e);
         }
 
+        // Event triggered when this node is edited.
+        internal event Action EditNode;
+
+        /// <summary>
+        /// This is called to edit the python node script.
+        /// </summary>
+        public void OnNodeEdited()
+        {
+            EditNode?.Invoke();
+        }
+
         /// <summary>
         /// Fires when the Script content is migrated to Python 3.
         /// NOTE: This is a temporary event used during the Python 2 to Python 3 transistion period,

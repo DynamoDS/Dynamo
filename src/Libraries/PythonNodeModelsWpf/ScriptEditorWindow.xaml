@@ -201,7 +201,7 @@
         <Border Name="MainBorder" Style="{StaticResource NoStyleWindowBorderStyle}" Background="#535353">
             <Grid Margin="0">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="68" />
+                    <RowDefinition Height="auto" />
                     <RowDefinition Height="60" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="auto" />
@@ -210,13 +210,13 @@
 
 
                 <!--  Title Bar + Close Button  -->
-                <DockPanel Grid.Row="0"
+                <DockPanel Grid.Row="0" Name="TitleBar" Height="68" 
                            VerticalAlignment="Stretch"
                            HorizontalAlignment="Stretch">
                     <DockPanel DockPanel.Dock="Right" 
                                 VerticalAlignment="Center"
                                 HorizontalAlignment="Center"
-                                Width="100"
+                                Width="150"
                                 Margin="0 0 20 0">
 
                         <Button Name="CloseButton"
@@ -241,6 +241,26 @@
                                 Click="MinimizeButton_OnClick"
                                 DockPanel.Dock="Right"
                                 Style="{StaticResource MinimizeButtonDarkStyle}" />
+
+                        <Button Name="UndockButton" DockPanel.Dock="Right" Click="OnDockButtonClicked" Margin="0 0 25 0" Height="16"
+                                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Name}">
+                            <Image Width="16" Height="16" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                <Image.Style>
+                                    <Style TargetType="{x:Type Image}">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="False">
+                                                <Setter Property="Source"
+                                                            Value="/DynamoCoreWpf;component/UI/Images/undock_normal.png" />
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Source"
+                                                            Value="/DynamoCoreWpf;component/UI/Images/undock_hover.png" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
+                        </Button>
                     </DockPanel>
 
                     <TextBlock Name="TitleTextBlock"

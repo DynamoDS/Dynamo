@@ -1,34 +1,26 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Xml;
 using Dynamo.Controls;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Python;
+using Dynamo.PythonServices;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Views;
 using Dynamo.Wpf.Windows;
 using ICSharpCode.AvalonEdit.CodeCompletion;
+using ICSharpCode.AvalonEdit.Folding;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using PythonNodeModels;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Windows.Media;
-using Dynamo.PythonServices;
-using Dynamo.Wpf.Views;
-using System.Windows.Media;
-using ICSharpCode.AvalonEdit;
-using ICSharpCode.AvalonEdit.Document;
-using ICSharpCode.AvalonEdit.Editing;
-using ICSharpCode.AvalonEdit.Folding;
-using ICSharpCode.AvalonEdit.Indentation;
-using Dynamo.Utilities;
-using System.Windows.Controls;
 
 namespace PythonNodeModelsWpf
 {
@@ -170,6 +162,32 @@ namespace PythonNodeModelsWpf
             InstallFoldingManager();
 
             dynamoViewModel.PreferencesWindowChanged += DynamoViewModel_PreferencesWindowChanged;
+        }
+
+        /// <summary>
+        /// Docks this window in the right side bar panel.
+        /// </summary>
+        /// <param name="name"></param>
+        internal void DockWindow(string tabName)
+        {
+            Analytics.TrackEvent(
+                       Actions.Dock,
+                       Categories.ViewExtensionOperations, tabName);
+
+            var dynamoView = Owner as DynamoView;
+            var titleBar = FindName("TitleBar") as DockPanel;
+            Uid = NodeModel.GUID.ToString();
+
+            dynamoView.DockWindowInSideBar(this, NodeModel, titleBar);
+            EngineSelectorComboBox.SelectedItem = NodeModel.EngineName;
+
+            Close();
+        }
+
+        private void OnDockButtonClicked(object sender, RoutedEventArgs e)
+        {
+            var tabName = (sender as Button).DataContext.ToString();
+            DockWindow(tabName);
         }
 
         private void DynamoViewModel_PreferencesWindowChanged(object sender, EventArgs e)
@@ -461,18 +479,23 @@ namespace PythonNodeModelsWpf
 
         private void OnScriptEditorWindowClosed(object sender, EventArgs e)
         {
-            completionProvider?.Dispose();
-            NodeModel.CodeMigrated -= OnNodeModelCodeMigrated;
-            this.Closed -= OnScriptEditorWindowClosed;
-            PythonEngineManager.Instance.AvailableEngines.CollectionChanged -= UpdateAvailableEngines;
+            var dybnamoView = Owner as DynamoView;
 
-            Analytics.TrackEvent(
-                Dynamo.Logging.Actions.Close,
-                Dynamo.Logging.Categories.PythonOperations);
-            
-            editText.TextChanged -= EditTextOnTextChanged;
-            FoldingManager.Uninstall(foldingManager);
-            foldingManager = null;
+            if (!dynamoViewModel.DockedWindows.ContainsKey(Uid))
+            {
+                completionProvider?.Dispose();
+                NodeModel.CodeMigrated -= OnNodeModelCodeMigrated;
+                this.Closed -= OnScriptEditorWindowClosed;
+                PythonEngineManager.Instance.AvailableEngines.CollectionChanged -= UpdateAvailableEngines;
+
+                Analytics.TrackEvent(
+                    Dynamo.Logging.Actions.Close,
+                    Dynamo.Logging.Categories.PythonOperations);
+
+                editText.TextChanged -= EditTextOnTextChanged;
+                FoldingManager.Uninstall(foldingManager);
+                foldingManager = null;
+            }
         }
 
         private void OnUndoClicked(object sender, RoutedEventArgs e)
@@ -630,9 +653,6 @@ namespace PythonNodeModelsWpf
                 IsEnterHit = false;
             }
         }
-
         #endregion
-
     }
-
 }

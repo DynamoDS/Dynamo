@@ -37,7 +37,6 @@ using Dynamo.ViewModels;
 using Dynamo.Views;
 using Dynamo.Wpf;
 using Dynamo.Wpf.Authentication;
-using Dynamo.Wpf.Controls;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.Utilities;
@@ -46,6 +45,7 @@ using Dynamo.Wpf.Views.Debug;
 using Dynamo.Wpf.Views.FileTrust;
 using Dynamo.Wpf.Windows;
 using HelixToolkit.Wpf.SharpDX;
+using PythonNodeModels;
 using Brush = System.Windows.Media.Brush;
 using Exception = System.Exception;
 using Image = System.Windows.Controls.Image;
@@ -465,6 +465,57 @@ namespace Dynamo.Controls
         }
 
         /// <summary>
+        /// Dock the window to right side bar panel.
+        /// </summary>
+        /// <param name="window">the window which needs to be docked</param>
+        /// <param name="nodeModel">nodemodel if it is a node window</param>
+        /// <param name="hideUIElement">Any UI element to hide after docking it in the right side panel(like the toolbar).</param>
+        /// <returns></returns>
+        internal TabItem DockWindowInSideBar(Window window, NodeModel nodeModel = null, UIElement hideUIElement = null)
+        {
+            tabDynamic.DataContext = null;
+            string uniqueId;
+
+            if (hideUIElement != null)
+            {
+                hideUIElement.Visibility = Visibility.Collapsed;
+            }
+
+            var content = window.Content;
+
+            // creates a new tab item
+            var tab = new TabItem();
+            tab.Header = window.Title;
+            tab.Tag = window;
+            tab.Uid = window.Uid;
+            tab.HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate;
+
+            // setting the extension UI to the current tab content 
+            // based on whether it is a UserControl element or window element. 
+            if (content is Window container)
+            {
+                content = container.Content as UIElement;
+                // Make sure the extension window closes with Dynamo
+                container.Owner = this;
+            }
+            tab.Content = content;
+
+            //Insert the tab at the end
+            ExtensionTabItems.Insert(ExtensionTabItems.Count, tab);
+
+            tabDynamic.DataContext = ExtensionTabItems;
+            tabDynamic.SelectedItem = tab;
+
+            if (nodeModel != null)
+            {
+                dynamoViewModel.DockedWindows[window.Uid] = nodeModel;
+                dynamoViewModel.NodeWindowStates[window.Uid] = ViewExtensionDisplayMode.DockRight;
+            }
+
+            return tab;
+        }
+
+        /// <summary>
         /// This method will close an extension control, whether it's on the side bar or undocked as a window.
         /// </summary>
         /// <param name="viewExtension">Extension to be closed</param>
@@ -500,6 +551,11 @@ namespace Dynamo.Controls
             }
 
             CloseExtensionTab(tabitem);
+
+            if (dynamoViewModel.DockedWindows.ContainsKey(tabitem.Uid))
+            {
+                dynamoViewModel.DockedWindows.Remove(tabitem.Uid);
+            }
         }
 
         /// <summary>
@@ -549,10 +605,23 @@ namespace Dynamo.Controls
         internal void UndockExtensionTab(object sender, RoutedEventArgs e)
         {
             var tabName = (sender as Button).DataContext.ToString();
-            UndockExtension(tabName);
-            Logging.Analytics.TrackEvent(
-               Actions.Undock,
-               Categories.ViewExtensionOperations, tabName);
+            var tabItem = ExtensionTabItems.OfType<TabItem>().SingleOrDefault(tab => tab.Header.ToString() == tabName);
+
+            // If docked window is a node window, close it and call the action on the node. 
+            if (dynamoViewModel.DockedWindows.ContainsKey(tabItem.Uid))
+            {
+                UndockWindow(tabName);
+                Logging.Analytics.TrackEvent(
+                               Actions.Undock,
+                               Categories.PythonOperations, tabName);
+            }
+            else// if it an extension, just close it and update settings.
+            {
+                UndockExtension(tabName);
+                Logging.Analytics.TrackEvent(
+                               Actions.Undock,
+                               Categories.ViewExtensionOperations, tabName);
+            }
         }
 
         /// <summary>
@@ -571,6 +640,30 @@ namespace Dynamo.Controls
             if (settings != null)
             {
                 settings.DisplayMode = ViewExtensionDisplayMode.FloatingWindow;
+            }
+        }
+
+        /// <summary>
+        /// Undocks to an internal Dynamo window by checking the window type.
+        /// </summary>
+        /// <param name="name">Name of the window</param>
+        internal void UndockWindow(string name)
+        {
+            var tabItem = ExtensionTabItems.OfType<TabItem>().SingleOrDefault(tab => tab.Header.ToString() == name);
+            var content = tabItem.Content as UIElement;
+
+            CloseExtensionTab(tabItem);
+
+            dynamoViewModel.DockedWindows.TryGetValue(tabItem.Uid, out NodeModel nodeModel);
+
+            dynamoViewModel.DockedWindows.Remove(tabItem.Uid);
+            dynamoViewModel.NodeWindowStates[tabItem.Uid] = ViewExtensionDisplayMode.FloatingWindow;
+
+            //if the undocked window is a python node, open the script edit window.
+            if (nodeModel is PythonNode)
+            {
+                var pythonNode = nodeModel as PythonNode;
+                pythonNode.OnNodeEdited();
             }
         }
 
