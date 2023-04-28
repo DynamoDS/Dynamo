@@ -133,7 +133,7 @@ namespace Dynamo.UI.Views
             RequestLaunchDynamo = LaunchDynamo;
             RequestImportSettings = ImportSettings;
             RequestSignIn = SignIn;
-            RequestSignOut = SignOut; 
+            RequestSignOut = SignOut;
         }
 
         private void WebView_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
