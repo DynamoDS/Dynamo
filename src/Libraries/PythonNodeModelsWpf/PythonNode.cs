@@ -157,28 +157,31 @@ namespace PythonNodeModelsWpf
                 }
                 else
                 {
-                    var nodemodel = pythonNodeModel as NodeModel;
-                    dynamoViewModel.NodeWindowStates.TryGetValue(nodemodel.GUID.ToString(), out ViewExtensionDisplayMode viewExtensionDisplayMode);
+                    editWindow = new ScriptEditorWindow(dynamoViewModel, pythonNodeModel, pythonNodeView, ref editorWindowRect);
+                    editWindow.Initialize(workspaceModel.Guid, pythonNodeModel.GUID, "ScriptContent", pythonNodeModel.Script);
+                    editWindow.Closed += editWindow_Closed;
 
-                    if (viewExtensionDisplayMode.Equals(ViewExtensionDisplayMode.DockRight))
+                    if (IsEditorInDockedState())
                     {
-                        editWindow = new ScriptEditorWindow(dynamoViewModel, pythonNodeModel, pythonNodeView, ref editorWindowRect);
-                        editWindow.Initialize(workspaceModel.Guid, pythonNodeModel.GUID, "ScriptContent", pythonNodeModel.Script);
-                        editWindow.Closed += editWindow_Closed;
                         editWindow.DockWindow(pythonNodeModel.Name);
                     }
                     else
                     {
-                        editWindow = new ScriptEditorWindow(dynamoViewModel, pythonNodeModel, pythonNodeView, ref editorWindowRect);
-                        editWindow.Initialize(workspaceModel.Guid, pythonNodeModel.GUID, "ScriptContent", pythonNodeModel.Script);
-                        editWindow.Closed += editWindow_Closed;
                         editWindow.Show();
                     }
                 }
             }
         }
 
-        internal void EditScriptContent()
+        private bool IsEditorInDockedState()
+        {
+            var nodemodel = pythonNodeModel as NodeModel;
+            dynamoViewModel.NodeWindowStates.TryGetValue(nodemodel.GUID.ToString(), out ViewExtensionDisplayMode viewExtensionDisplayMode);
+
+            return viewExtensionDisplayMode.Equals(ViewExtensionDisplayMode.DockRight);
+        }
+
+        private void EditScriptContent()
         {
             EditScriptContent(null, null);
         }
