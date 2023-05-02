@@ -31,6 +31,7 @@ namespace Dynamo.Wpf.Views
 
         private Button colorButtonSelected;
         private bool groupStyleItemExisting = false;
+        private bool closingWindow = false;
 
         // Used for tracking the manage package command event
         // This is not a command any more but we keep it
@@ -168,6 +169,7 @@ namespace Dynamo.Wpf.Views
 
             dynViewModel.PreferencesViewModel.TrustedPathsViewModel.PropertyChanged -= TrustedPathsViewModel_PropertyChanged;
             dynViewModel.CheckCustomGroupStylesChanges(originalCustomGroupStyles);
+            closingWindow = true;
 
             Close();
         }
@@ -644,7 +646,7 @@ namespace Dynamo.Wpf.Views
 
         public void ShowMustBeClosedMessage()
         {
-            if (this.HasEffectiveKeyboardFocus)
+            if (!closingWindow)
             {
                 dynViewModel.MainGuideManager?.CreateRealTimeInfoWindow(Res.PreferencesMustBeClosedMessage, true);
             }            
