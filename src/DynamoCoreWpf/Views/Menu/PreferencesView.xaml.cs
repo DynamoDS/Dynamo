@@ -643,13 +643,16 @@ namespace Dynamo.Wpf.Views
         }
 
         public void ShowMustBeClosedMessage()
-        {                     
-            this.mustBeClosedMessage.IsOpen = true;
+        {
+            if (this.HasEffectiveKeyboardFocus)
+            {
+                dynViewModel.MainGuideManager?.CreateRealTimeInfoWindow(Res.PreferencesMustBeClosedMessage, true);
+            }            
         }
 
-        private void btnMustBeClosedMessage_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void btnClosePopupMessage_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            this.mustBeClosedMessage.IsOpen = false;
+            this.popupMessage.IsOpen = false;
         }
     }
 }

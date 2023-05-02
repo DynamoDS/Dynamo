@@ -1810,7 +1810,7 @@
                         </Label.ToolTip>
                     </Label>
                 </Grid>
-                <Popup Name="mustBeClosedMessage" Height="140" Width="472" StaysOpen="True" Placement="RelativePoint" VerticalOffset="-70" HorizontalOffset="180" AllowsTransparency="True">
+                <Popup Name="popupMessage" Height="140" Width="472" StaysOpen="True" Placement="RelativePoint" VerticalOffset="-70" HorizontalOffset="180" AllowsTransparency="True">
                     <Border Background="{StaticResource RealTimeInfoWindowBackgroundColor}" Margin="0,17,0,17" BorderThickness="1" CornerRadius="2">
                         <Border.Effect>
                             <DropShadowEffect Color="#000" ShadowDepth="0" Opacity="0.25" BlurRadius="8.0" />
@@ -1856,7 +1856,7 @@
                                     Height="50"
                                     Foreground="White"
                                     Grid.Column="2"/>
-                            <Button Name="btnMustBeClosedMessage"
+                            <Button Name="btnClosePopupMessage"
                                 VerticalAlignment="Top"
                                 Margin="0,30,5,0"
                                 Height="25"  
@@ -1864,7 +1864,7 @@
                                 HorizontalAlignment="Right"
                                 Grid.Column="3"
                                 Style="{StaticResource RealTimeInfoCloseButtonStyle}"
-                                Click="btnMustBeClosedMessage_Click">
+                                Click="btnClosePopupMessage_Click">
                             </Button>
                         </Grid>
                     </Border>
