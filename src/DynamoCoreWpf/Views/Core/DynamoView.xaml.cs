@@ -1983,7 +1983,7 @@ namespace Dynamo.Controls
         {
             preferencesWindow = new PreferencesView(this);
             dynamoViewModel.OnPreferencesWindowChanged(preferencesWindow);
-            preferencesWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;         
+            preferencesWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             preferencesWindow.ShowDialog();
         }
 
