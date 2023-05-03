@@ -123,8 +123,8 @@ namespace Dynamo.Applications
             public static CommandLineArguments Parse(string[] args)
             {
 #if NET6_0_OR_GREATER
-
-                return Parser.Default.ParseArguments<CMDLineOptions>(args).MapResult((cmdArgs) => {
+                var parser = new Parser(options => options.IgnoreUnknownArguments = true);
+                return parser.ParseArguments<CMDLineOptions>(args).MapResult((cmdArgs) => {
                     if (!string.IsNullOrEmpty(cmdArgs.Verbose) && string.IsNullOrEmpty(cmdArgs.OpenFilePath))
                     {
                         Console.WriteLine("you must supply a file to open if you want to save an evaluation output ");
