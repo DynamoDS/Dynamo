@@ -1983,15 +1983,8 @@ namespace Dynamo.Controls
         {
             preferencesWindow = new PreferencesView(this);
             dynamoViewModel.OnPreferencesWindowChanged(preferencesWindow);
-            preferencesWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            preferencesWindow.Deactivated += PreferencesWindow_Deactivated;            
+            preferencesWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;         
             preferencesWindow.ShowDialog();
-        }
-
-
-        private void PreferencesWindow_Deactivated(object sender, EventArgs e)
-        {
-            preferencesWindow.ShowMustBeClosedMessage();
         }
 
         /// <summary>

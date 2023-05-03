@@ -96,6 +96,7 @@ namespace Dynamo.Wpf.Views
             stylesCustomColors = new ObservableCollection<CustomColorItem>();
             UpdateZoomScaleValueLabel(LibraryZoomScalingSlider, lblZoomScalingValue);
             UpdateZoomScaleValueLabel(PythonZoomScalingSlider, lblPythonScalingValue);
+            this.Deactivated += PreferencesView_Deactivated;
         }
 
         /// <summary>
@@ -170,6 +171,7 @@ namespace Dynamo.Wpf.Views
             dynViewModel.PreferencesViewModel.TrustedPathsViewModel.PropertyChanged -= TrustedPathsViewModel_PropertyChanged;
             dynViewModel.CheckCustomGroupStylesChanges(originalCustomGroupStyles);
             closingWindow = true;
+            this.Deactivated -= PreferencesView_Deactivated;
 
             Close();
         }
@@ -644,12 +646,12 @@ namespace Dynamo.Wpf.Views
             }
         }
 
-        public void ShowMustBeClosedMessage()
+        private void PreferencesView_Deactivated(object sender, EventArgs e)
         {
             if (!closingWindow)
             {
                 dynViewModel.MainGuideManager?.CreateRealTimeInfoWindow(Res.PreferencesMustBeClosedMessage, true);
-            }            
+            }
         }
 
         private void btnClosePopupMessage_Click(object sender, System.Windows.RoutedEventArgs e)
