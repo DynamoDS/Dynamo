@@ -653,10 +653,5 @@ namespace Dynamo.Wpf.Views
                 dynViewModel.MainGuideManager?.CreateRealTimeInfoWindow(Res.PreferencesMustBeClosedMessage, true);
             }
         }
-
-        private void btnClosePopupMessage_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            this.popupMessage.IsOpen = false;
-        }
     }
 }
