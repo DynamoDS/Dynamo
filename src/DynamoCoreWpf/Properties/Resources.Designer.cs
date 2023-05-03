@@ -6626,7 +6626,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Graphic Elements Scale tooltip.
+        ///   Looks up a localized string similar to Select a scale for the background graphic helpers (grids, axes)..
         /// </summary>
         public static string PreferencesGrahicHelpersScaleTooltip {
             get {
@@ -6770,8 +6770,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Determins if the current document units will be used to scale the background graphic helpers (grids, axes),
-        ///    or if this will be determined by the Graphic Helper Scale dropdown.
+        ///   Looks up a localized string similar to When toggled on, the current Revit document units will be used to scale the background graphic helpers (grids, axes). Otherwise, the Graphic Elements Scale drop-down will determine scale..
         /// </summary>
         public static string PreferencesUseRevitScaleUnitsToolTip {
             get {

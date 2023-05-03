@@ -52,7 +52,8 @@ namespace Dynamo.Configuration
         private int maxNumRecentFiles;
         private bool isBackgroundGridVisible;
         private float gridScaleFactor;
-        private bool setScaleFromRevit;
+        private Configurations.Units currentRevitUnits;
+        //private bool setScaleFromRevit;
         private double defaultScaleFactor;
         private bool disableTrustWarnings = false;
         private bool isNotificationCenterEnabled;
@@ -271,20 +272,20 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
-        /// If we should set the GridScaleFactor based on Revit current document units under DynamoRevit
+        /// The current Revit document units. Will be updated the first time Dynamo is started
         /// </summary>
-        public bool SetScaleFromRevit
+        public Configurations.Units CurrentRevitUnits
         {
             get
             {
-                return setScaleFromRevit;
+                return currentRevitUnits;
             }
             set
             {
-                if (value == setScaleFromRevit) return;
-                setScaleFromRevit = value;
+                if (value == currentRevitUnits) return;
+                currentRevitUnits = value;
 
-                RaisePropertyChanged(nameof(SetScaleFromRevit));    
+                RaisePropertyChanged(nameof(CurrentRevitUnits));
             }
         }
 
@@ -852,7 +853,7 @@ namespace Dynamo.Configuration
             ShowConnectorToolTip = true;
             ConnectorType = ConnectorType.BEZIER;
             IsBackgroundGridVisible = true;
-            GraphicScaleUnit = Configurations.SupportedUnits.FirstOrDefault().Key;
+            GraphicScaleUnit = Configurations.SupportedUnits.FirstOrDefault().Key.ToString();
             GridScaleFactor = (float)Configurations.SupportedUnits.FirstOrDefault().Value;
             PackageDirectoriesToUninstall = new List<string>();
             NumberFormat = "f3";

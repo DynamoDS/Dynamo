@@ -17,6 +17,7 @@ using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels.Core.Converters;
 using DynamoUtilities;
 using ViewModels.Core;
+using static Dynamo.Configuration.Configurations;
 using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.ViewModels
@@ -193,9 +194,13 @@ namespace Dynamo.ViewModels
                 {
                     selectedUnits = value;
                     RaisePropertyChanged(nameof(SelectedUnits));
-                    if (Configurations.SupportedUnits.TryGetValue(selectedUnits, out double units))
+
+                    var result = Enum.TryParse(selectedUnits, out Configurations.Units currentUnit);
+                    if (!result) return;
+
+                    if (Configurations.SupportedUnits.TryGetValue(currentUnit, out double units))
                     {
-                        //Update preferences setting and update the grapic helpers
+                        // Update preferences setting and update the grapic helpers
                         preferenceSettings.GraphicScaleUnit = value;
                         preferenceSettings.GridScaleFactor = (float)units;
                         dynamoViewModel.UpdateGraphicHelpersScaleCommand.Execute(null);
@@ -738,9 +743,9 @@ namespace Dynamo.ViewModels
             }
         }
 
-
         /// <summary>
         /// Indicates if Revit units should be used for graphic helpers for Dynamo Revit
+        /// Also toggles between Revit and Dynamo units 
         /// </summary>
         public bool UseRevitScaleUnits
         {
@@ -753,6 +758,18 @@ namespace Dynamo.ViewModels
                 preferenceSettings.UseRevitScaleUnits = value;
                 RaisePropertyChanged(nameof(EnableManualScaleOverrides));
                 RaisePropertyChanged(nameof(UseRevitScaleUnits));
+                                
+                var revitUnits = preferenceSettings.CurrentRevitUnits;
+                var result = Enum.TryParse(preferenceSettings.GraphicScaleUnit, out Configurations.Units dynamoUnits);
+                if (!result) return;
+
+                var unitsToUse = value ? revitUnits : dynamoUnits;
+
+                if (Configurations.SupportedUnits.TryGetValue(unitsToUse, out double units))
+                {
+                    preferenceSettings.GridScaleFactor = (float)units;
+                    dynamoViewModel.UpdateGraphicHelpersScaleCommand.Execute(null);
+                }
             }
         }
 
@@ -1273,8 +1290,8 @@ namespace Dynamo.ViewModels
             SelectedLanguage = Configurations.SupportedLocaleDic.FirstOrDefault(x => x.Value == preferenceSettings.Locale).Key;
 
             // Chose the scaling unit, if option is allowed by user
-            UnitList = Configurations.SupportedUnits.Keys.ToObservableCollection();
-            SelectedUnits = Configurations.SupportedUnits.FirstOrDefault(x => x.Key == preferenceSettings.GraphicScaleUnit).Key;
+            UnitList = Configurations.SupportedUnits.Keys.Select(x => x.ToString()).ToObservableCollection();
+            SelectedUnits = Configurations.SupportedUnits.FirstOrDefault(x => x.Key.ToString() == preferenceSettings.GraphicScaleUnit).Key.ToString();
 
             GroupStyleFontSizeList = preferenceSettings.PredefinedGroupStyleFontSizes;
 

@@ -393,21 +393,34 @@ namespace Dynamo.Configuration
             }
         }
 
+        public enum Units
+        {
+            Millimeters,
+            Centimeters,
+            Meters,
+            Kilometers,
+            Feet,
+            Inches,
+            Miles
+        }
+
         /// <summary>
         /// Supported Revit units and their conversion to dynamo units
         /// Used in graphic helpers scaling (grid, axes)
         /// </summary>
-        public static Dictionary<string, double> SupportedUnits
+        public static Dictionary<Units, double> SupportedUnits
         {
             get
             {
-                return new Dictionary<string, double>
+                return new Dictionary<Units, double>
                 {
-                    { "Millimeters", 1 },
-                    { "Centimeters", 100 },
-                    { "Meters", 1000 },
-                    { "Kilometers", 100000 },
-                    { "Feet", 1 },
+                    { Units.Millimeters, 1 },
+                    { Units.Centimeters, 10 },
+                    { Units.Meters, 1000 },
+                    { Units.Kilometers, 100000 },
+                    { Units.Feet, 1 },
+                    { Units.Inches, 10 },
+                    { Units.Miles, 1000 },
                 };
             }
         }

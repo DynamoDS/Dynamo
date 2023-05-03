@@ -2767,8 +2767,7 @@ If the toggle is off custom packages that are not already loaded will load once 
     <value>Use Revit to scale background graphic helpers</value>
   </data>
   <data name="PreferencesUseRevitScaleUnitsToolTip" xml:space="preserve">
-    <value>Determins if the current document units will be used to scale the background graphic helpers (grids, axes),
-    or if this will be determined by the Graphic Helper Scale dropdown</value>
+    <value>When toggled on, the current Revit document units will be used to scale the background graphic helpers (grids, axes). Otherwise, the Graphic Elements Scale drop-down will determine scale.</value>
   </data>
   <data name="PublishPackageVersionMajorWatermark" xml:space="preserve">
     <value>0</value>
@@ -3630,6 +3629,6 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
     <value>Graphic Elements Scale</value>
   </data>
   <data name="PreferencesGrahicHelpersScaleTooltip" xml:space="preserve">
-    <value>Graphic Elements Scale tooltip</value>
+    <value>Select a scale for the background graphic helpers (grids, axes).</value>
   </data>    
 </root>
