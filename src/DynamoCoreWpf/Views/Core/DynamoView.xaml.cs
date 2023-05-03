@@ -473,8 +473,14 @@ namespace Dynamo.Controls
         /// <returns></returns>
         internal TabItem DockWindowInSideBar(Window window, NodeModel nodeModel = null, UIElement hideUIElement = null)
         {
+            var tabItem = ExtensionTabItems.OfType<TabItem>().SingleOrDefault(tabtem => tabtem.Uid.ToString() == window.Uid);
+            if (tabItem != null)
+            {
+                tabDynamic.SelectedItem = tabItem;
+                return tabItem;
+            }
+
             tabDynamic.DataContext = null;
-            string uniqueId;
 
             if (hideUIElement != null)
             {
@@ -505,6 +511,9 @@ namespace Dynamo.Controls
 
             tabDynamic.DataContext = ExtensionTabItems;
             tabDynamic.SelectedItem = tab;
+
+            Analytics.TrackEvent(Actions.Dock,
+                     Categories.ViewExtensionOperations, tab.Header.ToString());
 
             if (nodeModel != null)
             {
@@ -542,8 +551,8 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         internal void CloseExtensionTab(object sender, RoutedEventArgs e)
         {
-            string tabName = (sender as Button).DataContext.ToString();
-            TabItem tabitem = ExtensionTabItems.OfType<TabItem>().SingleOrDefault(n => n.Header.ToString() == tabName);
+            string tabId = (sender as Button).Uid.ToString();
+            TabItem tabitem = ExtensionTabItems.OfType<TabItem>().SingleOrDefault(n => n.Uid.ToString() == tabId);
 
             if (tabitem.Tag is ViewExtensionBase viewExtensionBase)
             {
@@ -604,20 +613,21 @@ namespace Dynamo.Controls
 
         internal void UndockExtensionTab(object sender, RoutedEventArgs e)
         {
-            var tabName = (sender as Button).DataContext.ToString();
-            var tabItem = ExtensionTabItems.OfType<TabItem>().SingleOrDefault(tab => tab.Header.ToString() == tabName);
+            var tabId = (sender as Button).Uid.ToString();
+            var tabItem = ExtensionTabItems.OfType<TabItem>().SingleOrDefault(tab => tab.Uid.ToString() == tabId);
+            var tabName = tabItem.Header.ToString();
 
             // If docked window is a node window, close it and call the action on the node. 
             if (dynamoViewModel.DockedWindows.ContainsKey(tabItem.Uid))
             {
-                UndockWindow(tabName);
+                UndockWindow(tabItem);
                 Logging.Analytics.TrackEvent(
                                Actions.Undock,
                                Categories.PythonOperations, tabName);
             }
             else// if it an extension, just close it and update settings.
             {
-                UndockExtension(tabName);
+                UndockExtension(tabItem);
                 Logging.Analytics.TrackEvent(
                                Actions.Undock,
                                Categories.ViewExtensionOperations, tabName);
@@ -644,12 +654,28 @@ namespace Dynamo.Controls
         }
 
         /// <summary>
+        /// Undocks the extension from the right side bar.
+        /// </summary>
+        /// <param name="tabItem">Tab item to be undocked</param>
+        internal void UndockExtension(TabItem tabItem)
+        {
+            var content = tabItem.Content as UIElement;
+            CloseExtensionTab(tabItem);
+            var extension = tabItem.Tag as IViewExtension;
+            var settings = this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Find(s => s.UniqueId == extension.UniqueId);
+            AddExtensionWindow(extension, content, settings?.WindowSettings);
+            if (settings != null)
+            {
+                settings.DisplayMode = ViewExtensionDisplayMode.FloatingWindow;
+            }
+        }
+
+        /// <summary>
         /// Undocks to an internal Dynamo window by checking the window type.
         /// </summary>
-        /// <param name="name">Name of the window</param>
-        internal void UndockWindow(string name)
+        /// <param name="tabItem">Tab item to be undocked</param>
+        internal void UndockWindow(TabItem tabItem)
         {
-            var tabItem = ExtensionTabItems.OfType<TabItem>().SingleOrDefault(tab => tab.Header.ToString() == name);
             CloseExtensionTab(tabItem);
 
             dynamoViewModel.DockedWindows.TryGetValue(tabItem.Uid, out NodeModel nodeModel);
@@ -660,7 +686,17 @@ namespace Dynamo.Controls
             if (nodeModel is PythonNode)
             {
                 var pythonNode = nodeModel as PythonNode;
-                pythonNode.OnNodeEdited();
+                Window window = tabItem.Tag as Window;
+                var textEditor = window.FindName("editText") as ICSharpCode.AvalonEdit.TextEditor;
+
+                if (textEditor.IsModified)
+                {
+                    pythonNode.OnNodeEdited(textEditor.Text);
+                }
+                else {
+
+                    pythonNode.OnNodeEdited(null);
+                }
             }
         }
 

@@ -329,14 +329,14 @@ namespace PythonNodeModels
         }
 
         // Event triggered when this node is edited.
-        internal event Action EditNode;
+        internal event Action<string> EditNode;
 
         /// <summary>
         /// This is called to edit the python node script.
         /// </summary>
-        public void OnNodeEdited()
+        public void OnNodeEdited(string content)
         {
-            EditNode?.Invoke();
+            EditNode?.Invoke(content);
         }
 
         /// <summary>

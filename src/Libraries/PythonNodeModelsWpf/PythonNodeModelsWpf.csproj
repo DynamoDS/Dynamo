@@ -98,8 +98,6 @@
     <Resource Include="Resources\zoom-in.png" />
     <Resource Include="Resources\zoom-in_hover.png" />
     <Resource Include="Resources\zoom-out.png" />
-    <Resource Include="Resources\undock_hover.png" />
-    <Resource Include="Resources\undock_normal.png" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\EngineLabel.xaml">

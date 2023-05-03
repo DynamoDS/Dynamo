@@ -1596,7 +1596,7 @@
                             <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Header}" HorizontalAlignment="Stretch"/>
                             <!--Button to close a particular tab-->
                             <Button Name="CloseButton" Style="{StaticResource CloseButtonStyle}" DockPanel.Dock="Right" Click="CloseExtensionTab"
-                                              CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Name}">
+                                              Uid="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Uid}">
                                 <Image Width="14" Height="14" HorizontalAlignment="Right" VerticalAlignment="Center">
                                     <Image.Style>
                                         <Style TargetType="{x:Type Image}">
@@ -1616,7 +1616,7 @@
                             </Button>
                             <!-- Undock -->
                             <Button Name="UndockButton" Style="{StaticResource CloseButtonStyle}" DockPanel.Dock="Right" Click="UndockExtensionTab"
-                                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Name}">
+                                             Uid="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Uid}">
                                 <Image Width="14" Height="14" HorizontalAlignment="Right" VerticalAlignment="Center">
                                     <Image.Style>
                                         <Style TargetType="{x:Type Image}">

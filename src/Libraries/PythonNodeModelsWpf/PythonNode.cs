@@ -79,6 +79,19 @@ namespace PythonNodeModelsWpf
         }
 
         /// <summary>
+        /// Check if the script editor is saved.
+        /// </summary>
+        /// <returns></returns>
+        internal bool IsEditorSaved()
+        {
+            if (editWindow != null)
+            {
+                return editWindow.IsSaved;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Learn More button handler
         /// </summary>
         /// <param name="sender"></param>
@@ -158,12 +171,20 @@ namespace PythonNodeModelsWpf
                 else
                 {
                     editWindow = new ScriptEditorWindow(dynamoViewModel, pythonNodeModel, pythonNodeView, ref editorWindowRect);
-                    editWindow.Initialize(workspaceModel.Guid, pythonNodeModel.GUID, "ScriptContent", pythonNodeModel.Script);
+                    if (sender == null)
+                    {
+                        editWindow.Initialize(workspaceModel.Guid, pythonNodeModel.GUID, "ScriptContent", pythonNodeModel.Script);
+                    }
+                    else
+                    {
+                        editWindow.Initialize(workspaceModel.Guid, pythonNodeModel.GUID, "ScriptContent", sender.ToString());
+                        editWindow.IsSaved = false;
+                    }
                     editWindow.Closed += editWindow_Closed;
 
                     if (IsEditorInDockedState())
                     {
-                        editWindow.DockWindow(pythonNodeModel.Name);
+                        editWindow.DockWindow();
                     }
                     else
                     {
@@ -181,9 +202,9 @@ namespace PythonNodeModelsWpf
             return viewExtensionDisplayMode.Equals(ViewExtensionDisplayMode.DockRight);
         }
 
-        private void EditScriptContent()
+        private void EditScriptContent(string text)
         {
-            EditScriptContent(null, null);
+            EditScriptContent(text, null);
         }
 
         /// <summary>

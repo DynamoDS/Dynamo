@@ -3139,6 +3139,24 @@
         </Setter>
     </Style>
 
+    <!-- Window Control Button Dark Styles - Dock Button -->
+    <Style x:Key="DockButtonDarkStyle" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Image Name="dockIcon"  Width="16" Height="16" Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/dock-darktheme-default.png"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="dockIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/dock-darktheme-hover.png" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="DownButtonStyle" TargetType="Button">
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Template">

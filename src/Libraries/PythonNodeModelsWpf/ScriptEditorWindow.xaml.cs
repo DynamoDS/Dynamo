@@ -40,7 +40,6 @@ namespace PythonNodeModelsWpf
         private string originalScript;
         internal FoldingManager foldingManager;
         private TabFoldingStrategy foldingStrategy;
-        private bool IsSaved { get; set; } = true;
         private int zoomScaleCacheValue;
 
         private readonly double fontSizePreferencesSliderProportionValue = (FONT_MAX_SIZE - FONT_MIN_SIZE) / (pythonZoomScalingSliderMaximum - pythonZoomScalingSliderMinimum);
@@ -51,7 +50,21 @@ namespace PythonNodeModelsWpf
 
         private const double pythonZoomScalingSliderMaximum = 300d;
         private const double pythonZoomScalingSliderMinimum = 25d;
+        private bool isSaved = true;
         #endregion
+
+        /// <summary>
+        /// Flag to check if the editor window is saved.
+        /// </summary>
+        internal bool IsSaved
+        {
+            get { return isSaved; }
+            set
+            {
+                isSaved = value;
+                editText.IsModified = !IsSaved;
+            }
+        }
 
         #region Public properties
         /// <summary>
@@ -168,11 +181,8 @@ namespace PythonNodeModelsWpf
         /// Docks this window in the right side bar panel.
         /// </summary>
         /// <param name="name"></param>
-        internal void DockWindow(string tabName)
+        internal void DockWindow()
         {
-            Analytics.TrackEvent(Actions.Dock,
-                                 Categories.ViewExtensionOperations, tabName);
-
             var dynamoView = Owner as DynamoView;
             var titleBar = FindName("TitleBar") as DockPanel;
             Uid = NodeModel.GUID.ToString();
@@ -185,8 +195,7 @@ namespace PythonNodeModelsWpf
 
         private void OnDockButtonClicked(object sender, RoutedEventArgs e)
         {
-            var tabName = (sender as Button).DataContext.ToString();
-            DockWindow(tabName);
+            DockWindow();
         }
 
         private void DynamoViewModel_PreferencesWindowChanged(object sender, EventArgs e)
