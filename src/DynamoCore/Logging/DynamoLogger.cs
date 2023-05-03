@@ -242,7 +242,7 @@ namespace Dynamo.Logging
                 cliMode = isCLIMode;
                 serviceMode = isServiceMode;
 
-                if (!testMode && !isServiceMode)
+                if ((!testMode || cliMode) && !isServiceMode)
                 {
                     StartLoggingToConsoleAndFile(logDirectory);
                 }
