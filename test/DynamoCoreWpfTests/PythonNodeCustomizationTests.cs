@@ -5,7 +5,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using System.Windows.Media;
 using CoreNodeModels;
 using Dynamo.Controls;
 using Dynamo.DocumentationBrowser;
@@ -14,7 +13,6 @@ using Dynamo.PythonServices;
 using Dynamo.Tests;
 using Dynamo.Utilities;
 using DynamoCoreWpfTests.Utility;
-using ICSharpCode.AvalonEdit.Folding;
 using NUnit.Framework;
 using PythonNodeModels;
 using PythonNodeModelsWpf;
@@ -708,6 +706,30 @@ namespace DynamoCoreWpfTests
             var errorBubble = GetInfoBubble(View);
             Assert.IsNotNull(errorBubble);
             Assert.AreEqual(Visibility.Visible, (errorBubble as UIElement).Visibility);
+        }
+
+        [Test]
+        public void PythonEditorDockingTest()
+        {
+            Open(@"core\python\python.dyn");
+            var nodeView = NodeViewWithGuid("3bcad14e-d086-4278-9e08-ed2759ef92f3");
+            var nodeModel = nodeView.ViewModel.NodeModel as PythonNode;
+            Assert.NotNull(nodeModel);
+
+            // Dock python editor
+            var scriptWindow = EditPythonCode(nodeView, View);
+            scriptWindow.DockWindow();
+            Assert.IsTrue(ViewModel.DockedWindows.ContainsKey(nodeModel.GUID.ToString()));
+
+            var editorTab = View.ExtensionTabItems.FirstOrDefault(x => x.Uid == nodeModel.GUID.ToString());
+            Assert.IsNotNull(editorTab);
+            Assert.AreEqual(editorTab.Header.ToString(), "Python Script");
+
+            // Undock editor tab from right side panel.
+            View.UndockWindow(editorTab);
+
+            Assert.IsFalse(ViewModel.DockedWindows.ContainsKey(nodeModel.GUID.ToString()));
+            Assert.IsNull(View.ExtensionTabItems.FirstOrDefault(x => x.Uid == nodeModel.GUID.ToString()));
         }
 
         /// <summary>

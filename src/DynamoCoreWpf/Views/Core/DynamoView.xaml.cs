@@ -763,7 +763,14 @@ namespace Dynamo.Controls
 
         private TabItem FindExtensionTab(IViewExtension viewExtension)
         {
-            return ExtensionTabItems.FirstOrDefault(tab => ((IViewExtension)tab.Tag).GetType().Equals(viewExtension.GetType()));
+            foreach (var tabItem in ExtensionTabItems)
+            {
+                if (tabItem.Tag is IViewExtension extension && extension.GetType().Equals(viewExtension.GetType()))
+                {
+                    return tabItem;
+                }
+            }
+            return null;
         }
 
         private void OnRequestReturnFocusToView()
