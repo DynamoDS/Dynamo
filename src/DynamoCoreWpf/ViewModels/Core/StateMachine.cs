@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -857,7 +857,52 @@ namespace Dynamo.ViewModels
                     // Update the dragged nodes (note: this isn't recorded).
                     owningWorkspace.UpdateDraggedSelection(mouseCursor.AsDynamoType());
 
+                    var draggedNodes = DynamoSelection.Instance.Selection.OfType<NodeModel>();
                     var draggedGroups = DynamoSelection.Instance.Selection.OfType<AnnotationModel>();
+
+                    // Here we check if the mouse cursor is inside any Nodes
+                    var dropNodes = owningWorkspace.Nodes
+                        .Where(x =>
+                        !draggedNodes.Select(a => a.GUID).Contains(x.NodeModel.GUID) &&
+                        x.NodeModel.Rect.Contains(mouseCursor.X, mouseCursor.Y));
+
+                    var dropNode = dropNodes.FirstOrDefault();
+                    if (dropNode is null)
+                    {
+                        // Reset the workspace from hovered nodes
+                        owningWorkspace.Nodes
+                            .Where(x => x.NodeHoveringState)
+                            .ToList()
+                            .ForEach(x => x.NodeHoveringState = false);
+                    }
+                    else if (!dropNode.NodeHoveringState)
+                    {
+                        // make sure there are no other node
+                        // set to NodeHoveringState before setting
+                        // the current node.
+                        // If we dont do this there are scenarios where
+                        // two nodes are very close and a note is dragged
+                        // quickly between the two where the hovering state
+                        // is not reset.
+                        owningWorkspace.Nodes
+                            .Where(x => x.NodeHoveringState)
+                            .ToList()
+                            .ForEach(x => x.NodeHoveringState = false);
+
+                        // also make sure no Annotation groups are marked as hovered
+                        // in case the Note is being dropped over a Node inside a Group
+                        owningWorkspace.Annotations
+                            .Where(x => x.NodeHoveringState)
+                            .ToList()
+                            .ForEach(x => x.NodeHoveringState = false);
+
+                        dropNode.NodeHoveringState = true;
+
+                        return false;   // Mouse event has not been handled
+                    }
+
+                    // Terminate early if a Note is being hovered over a Node
+                    if (owningWorkspace.Nodes.Any(x => x.NodeHoveringState)) return false;
 
                     // Here we check if the mouse cursor is inside any Annotation groups
                     var dropGroups = owningWorkspace.Annotations
