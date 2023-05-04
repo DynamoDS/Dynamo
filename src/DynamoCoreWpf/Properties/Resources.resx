@@ -3320,6 +3320,9 @@ You can manage this in Preferences -&gt; Security.</value>
     <value>You can import custom settings here, which will overwrite your current settings. If you'd like to preserve a copy of your current settings, export them before importing new settings. Settings not shown in the Preferences panel will be applied once Dynamo and any host program restarts.</value>
     <comment>Import Preferences Info.</comment>
   </data>
+  <data name="PreferencesMustBeClosedMessage" xml:space="preserve">
+    <value>Preferences must be closed before you proceed. All changes saved automatically.</value>
+  </data>
   <data name="PreferencesViewNodeAutocomplete" xml:space="preserve">
     <value>Node Autocomplete</value>
     <comment>Preferences | Features | Node Autocomplete</comment>
