@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using Dynamo.Controls;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Utilities;
@@ -716,6 +718,29 @@ namespace Dynamo.ViewModels
 
                     owningWorkspace.DynamoViewModel.ExecuteCommand(command);
 
+                    // Pin hovered Note to Node
+                    var dropNode = owningWorkspace.Nodes
+                        .Where(x => x.NodeHoveringState)
+                        .FirstOrDefault();
+
+                    if(dropNode != null)
+                    {
+                        // Only allow one note to be pinned
+                        var draggedNote = DynamoSelection.Instance.Selection
+                            .OfType<NoteModel>()
+                            .First();
+
+                        DynamoSelection.Instance.ClearSelection();
+                        DynamoSelection.Instance.Selection.AddUnique(dropNode.NodeModel);
+
+                        var note = owningWorkspace.Notes.First(n => n.Model.GUID.Equals(draggedNote.GUID));
+                        note.PinToNodeCommand.Execute(null);
+
+                        // Clean up
+                        dropNode.NodeHoveringState = false;
+                        DynamoSelection.Instance.ClearSelection();
+                    }
+
                     // When mouse is released get any group with NodeHoveringState
                     // set to true (this should only ever be one),
                     // and add all ModelBase items in selection to that group
@@ -963,7 +988,9 @@ namespace Dynamo.ViewModels
                     !draggedNodes.Select(a => a.GUID).Contains(x.NodeModel.GUID) &&
                     x.NodeModel.Rect.Contains(mouseCursor.X, mouseCursor.Y));
 
+                // Only select one Node, in case they are overlapping
                 var dropNode = dropNodes.FirstOrDefault();
+
                 if (dropNode is null)
                 {
                     // Reset the workspace from hovered nodes
@@ -974,6 +1001,13 @@ namespace Dynamo.ViewModels
                 }
                 else if (!dropNode.NodeHoveringState)
                 {
+                    // also skip nodes that already have pinned note to them
+                    var nodeAlreadyPinned = owningWorkspace.Notes
+                        .Where(n => n.PinnedNode != null)
+                        .Any(n => n.PinnedNode.NodeModel.GUID == dropNode.NodeModel.GUID);
+
+                    if (nodeAlreadyPinned) return false;
+
                     // make sure there are no other node
                     // set to NodeHoveringState before setting
                     // the current node.
