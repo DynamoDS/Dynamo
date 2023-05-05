@@ -45,6 +45,7 @@ using Dynamo.Wpf.Views.Debug;
 using Dynamo.Wpf.Views.FileTrust;
 using Dynamo.Wpf.Windows;
 using HelixToolkit.Wpf.SharpDX;
+using ICSharpCode.AvalonEdit;
 using PythonNodeModels;
 using Brush = System.Windows.Media.Brush;
 using Exception = System.Exception;
@@ -559,6 +560,19 @@ namespace Dynamo.Controls
                 viewExtensionBase.Closed();
             }
 
+            dynamoViewModel.DockedWindows.TryGetValue(tabitem.Uid, out NodeModel nodeModel);
+
+            if (nodeModel is PythonNode pythonNode)
+            {
+                var editor = (tabitem.Content as Grid).ChildOfType<TextEditor>();
+
+                if (editor != null && editor.IsModified)
+                {
+                    pythonNode.OnWarnUserScript();
+                    return;
+                }
+            }
+
             CloseExtensionTab(tabitem);
 
             if (dynamoViewModel.DockedWindows.ContainsKey(tabitem.Uid))
@@ -676,10 +690,7 @@ namespace Dynamo.Controls
         /// <param name="tabItem">Tab item to be undocked</param>
         internal void UndockWindow(TabItem tabItem)
         {
-            CloseExtensionTab(tabItem);
-
             dynamoViewModel.DockedWindows.TryGetValue(tabItem.Uid, out NodeModel nodeModel);
-            dynamoViewModel.DockedWindows.Remove(tabItem.Uid);
             dynamoViewModel.NodeWindowStates[tabItem.Uid] = ViewExtensionDisplayMode.FloatingWindow;
 
             //if the undocked window is a python node, open the script edit window.
@@ -698,6 +709,9 @@ namespace Dynamo.Controls
                     pythonNode.OnNodeEdited(null);
                 }
             }
+
+            CloseExtensionTab(tabItem);
+            dynamoViewModel.DockedWindows.Remove(tabItem.Uid);
         }
 
         /// <summary>

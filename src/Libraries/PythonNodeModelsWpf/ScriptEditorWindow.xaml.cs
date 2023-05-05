@@ -16,6 +16,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Views;
 using Dynamo.Wpf.Windows;
+using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Folding;
 using ICSharpCode.AvalonEdit.Highlighting;
@@ -104,6 +105,7 @@ namespace PythonNodeModelsWpf
             DataContext = this;
 
             EngineSelectorComboBox.Visibility = Visibility.Visible;
+            NodeModel.UserScriptWarned += WarnUserScript;
 
             Analytics.TrackScreenView("Python");
         }
@@ -183,9 +185,12 @@ namespace PythonNodeModelsWpf
         /// <param name="name"></param>
         internal void DockWindow()
         {
+            Uid = NodeModel.GUID.ToString();
+
             var dynamoView = Owner as DynamoView;
             var titleBar = FindName("TitleBar") as DockPanel;
-            Uid = NodeModel.GUID.ToString();
+            var editor = FindName("editText") as TextEditor;
+            editor.IsModified = !IsSaved;
 
             dynamoView.DockWindowInSideBar(this, NodeModel, titleBar);
             EngineSelectorComboBox.SelectedItem = NodeModel.EngineName;
@@ -493,6 +498,7 @@ namespace PythonNodeModelsWpf
             {
                 completionProvider?.Dispose();
                 NodeModel.CodeMigrated -= OnNodeModelCodeMigrated;
+                NodeModel.UserScriptWarned -= WarnUserScript;
                 this.Closed -= OnScriptEditorWindowClosed;
                 PythonEngineManager.Instance.AvailableEngines.CollectionChanged -= UpdateAvailableEngines;
 

@@ -331,12 +331,23 @@ namespace PythonNodeModels
         // Event triggered when this node is edited.
         internal event Action<string> EditNode;
 
+        // Event triggered when the script editor is not saved and shows a warning when closed.
+        internal event Action UserScriptWarned;
+
         /// <summary>
         /// This is called to edit the python node script.
         /// </summary>
         public void OnNodeEdited(string content)
         {
             EditNode?.Invoke(content);
+        }
+
+        /// <summary>
+        /// This is called to show a warning that the script editor is not saved yet.
+        /// </summary>
+        public void OnWarnUserScript()
+        {
+            UserScriptWarned?.Invoke();
         }
 
         /// <summary>
