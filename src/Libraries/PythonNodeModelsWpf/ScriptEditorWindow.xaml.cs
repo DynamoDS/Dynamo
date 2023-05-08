@@ -604,7 +604,18 @@ namespace PythonNodeModelsWpf
         // Handles Close button on the Warning bar
         private void CloseWarningBarButton_OnClick(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            var senderContext = (sender as Button).DataContext;
+
+            if (senderContext.Equals(this))
+            {
+                Close();
+            }
+            else // Close the right side extension tab if the close button is clicked on the docked editor. 
+            {
+                var dynamoView = Owner as DynamoView;
+                TabItem tabItem = dynamoView.ExtensionTabItems.OfType<TabItem>().SingleOrDefault(n => n.Uid.ToString() == NodeModel.GUID.ToString());
+                dynamoView.CloseExtensionTab(tabItem);
+            }
         }
 
         // ESC Button pressed triggers Window close        

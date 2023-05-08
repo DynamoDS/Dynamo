@@ -585,7 +585,7 @@ namespace Dynamo.Controls
         /// Close extension tab by extension tab item
         /// </summary>
         /// <param name="tabitem">target tab item</param>
-        private void CloseExtensionTab(TabItem tabitem)
+        internal void CloseExtensionTab(TabItem tabitem)
         {
             TabItem tabToBeRemoved = tabitem;
 
