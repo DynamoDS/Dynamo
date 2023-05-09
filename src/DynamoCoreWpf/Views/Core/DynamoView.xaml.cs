@@ -549,32 +549,41 @@ namespace Dynamo.Controls
         /// <param name="e"></param>
         internal void CloseExtensionTab(object sender, RoutedEventArgs e)
         {
-            string tabId = (sender as Button).Uid.ToString();
-            TabItem tabitem = ExtensionTabItems.OfType<TabItem>().SingleOrDefault(n => n.Uid.ToString() == tabId);
-
-            if (tabitem.Tag is ViewExtensionBase viewExtensionBase)
+            try
             {
-                viewExtensionBase.Closed();
-            }
+                string tabId = (sender as Button).Uid.ToString();
+                TabItem tabitem = ExtensionTabItems.OfType<TabItem>().SingleOrDefault(n => n.Uid.ToString() == tabId);
 
-            NodeModel nodeModel = dynamoViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID.ToString() == tabitem.Uid.ToString());
-
-            if (nodeModel is PythonNode pythonNode)
-            {
-                var editor = (tabitem.Content as Grid).ChildOfType<TextEditor>();
-
-                if (editor != null && editor.IsModified)
+                if (tabitem.Tag is ViewExtensionBase viewExtensionBase)
                 {
-                    pythonNode.OnWarnUserScript();
-                    return;
+                    viewExtensionBase.Closed();
+                }
+
+                NodeModel nodeModel = dynamoViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID.ToString() == tabitem.Uid.ToString());
+
+                if (nodeModel is PythonNode pythonNode)
+                {
+                    var editor = (tabitem.Content as Grid).ChildOfType<TextEditor>();
+
+                    if (editor != null && editor.IsModified)
+                    {
+                        pythonNode.OnWarnUserScript();
+                        return;
+                    }
+                }
+
+                CloseExtensionTab(tabitem);
+
+                if (dynamoViewModel.CurrentDockedWindows.Contains(tabitem.Uid))
+                {
+                    dynamoViewModel.CurrentDockedWindows.Remove(tabitem.Uid);
                 }
             }
-
-            CloseExtensionTab(tabitem);
-
-            if (dynamoViewModel.CurrentDockedWindows.Contains(tabitem.Uid))
+            catch (Exception ex)
             {
-                dynamoViewModel.CurrentDockedWindows.Remove(tabitem.Uid);
+                dynamoViewModel.Model.Logger.Log("Failed to close the tab from right side-bar panel.");
+                dynamoViewModel.Model.Logger.Log(ex.Message);
+                dynamoViewModel.Model.Logger.Log(ex.StackTrace);
             }
         }
 
@@ -624,24 +633,33 @@ namespace Dynamo.Controls
 
         internal void UndockExtensionTab(object sender, RoutedEventArgs e)
         {
-            var tabId = (sender as Button).Uid.ToString();
-            var tabItem = ExtensionTabItems.OfType<TabItem>().SingleOrDefault(tab => tab.Uid.ToString() == tabId);
-            var tabName = tabItem.Header.ToString();
+            try
+            {
+                var tabId = (sender as Button).Uid.ToString();
+                var tabItem = ExtensionTabItems.OfType<TabItem>().SingleOrDefault(tab => tab.Uid.ToString() == tabId);
+                var tabName = tabItem.Header.ToString();
 
-            // If docked window is a node window, undock the window and call the action on the node. 
-            if (dynamoViewModel.CurrentDockedWindows.Contains(tabItem.Uid))
-            {
-                UndockWindow(tabItem);
-                Logging.Analytics.TrackEvent(
-                               Actions.Undock,
-                               Categories.PythonOperations, tabName);
+                // If docked window is a node window, undock the window and call the action on the node. 
+                if (dynamoViewModel.CurrentDockedWindows.Contains(tabItem.Uid))
+                {
+                    UndockWindow(tabItem);
+                    Logging.Analytics.TrackEvent(
+                                   Actions.Undock,
+                                   Categories.PythonOperations, tabName);
+                }
+                else// if it an extension, undock the extension and update settings.
+                {
+                    UndockExtension(tabItem);
+                    Logging.Analytics.TrackEvent(
+                                   Actions.Undock,
+                                   Categories.ViewExtensionOperations, tabName);
+                }
             }
-            else// if it an extension, undock the extension and update settings.
+            catch (Exception ex)
             {
-                UndockExtension(tabItem);
-                Logging.Analytics.TrackEvent(
-                               Actions.Undock,
-                               Categories.ViewExtensionOperations, tabName);
+                dynamoViewModel.Model.Logger.Log("Failed to undock the tab from right side-bar panel.");
+                dynamoViewModel.Model.Logger.Log(ex.Message);
+                dynamoViewModel.Model.Logger.Log(ex.StackTrace);
             }
         }
 

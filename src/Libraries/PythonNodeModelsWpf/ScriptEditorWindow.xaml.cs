@@ -187,15 +187,24 @@ namespace PythonNodeModelsWpf
         {
             Uid = NodeModel.GUID.ToString();
 
-            var dynamoView = Owner as DynamoView;
-            var titleBar = FindName("TitleBar") as DockPanel;
-            var editor = FindName("editText") as TextEditor;
-            editor.IsModified = !IsSaved;
+            try
+            {
+                var dynamoView = Owner as DynamoView;
+                var titleBar = FindName("TitleBar") as DockPanel;
+                var editor = FindName("editText") as TextEditor;
+                editor.IsModified = !IsSaved;
 
-            dynamoView.DockWindowInSideBar(this, NodeModel, titleBar);
-            EngineSelectorComboBox.SelectedItem = NodeModel.EngineName;
+                dynamoView.DockWindowInSideBar(this, NodeModel, titleBar);
+                EngineSelectorComboBox.SelectedItem = NodeModel.EngineName;
 
-            Close();
+                Close();
+            }
+            catch (Exception ex)
+            {
+                dynamoViewModel.Model.Logger.Log("Failed to dock the Python Script editor.");
+                dynamoViewModel.Model.Logger.Log(ex.Message);
+                dynamoViewModel.Model.Logger.Log(ex.StackTrace);
+            }
         }
 
         private void OnDockButtonClicked(object sender, RoutedEventArgs e)
@@ -606,17 +615,26 @@ namespace PythonNodeModelsWpf
         // Handles Close button on the Warning bar
         private void CloseWarningBarButton_OnClick(object sender, RoutedEventArgs e)
         {
-            var senderContext = (sender as Button)?.DataContext;
+            try
+            {
+                var senderContext = (sender as Button)?.DataContext;
 
-            if (this.Equals(senderContext))
-            {
-                Close();
+                if (this.Equals(senderContext))
+                {
+                    Close();
+                }
+                else // Close the right side extension tab if the close button is clicked on the docked editor. 
+                {
+                    var dynamoView = Owner as DynamoView;
+                    TabItem tabItem = dynamoView.ExtensionTabItems.OfType<TabItem>().SingleOrDefault(n => n.Uid.ToString() == NodeModel.GUID.ToString());
+                    dynamoView.CloseExtensionTab(tabItem);
+                }
             }
-            else // Close the right side extension tab if the close button is clicked on the docked editor. 
+            catch (Exception ex)
             {
-                var dynamoView = Owner as DynamoView;
-                TabItem tabItem = dynamoView.ExtensionTabItems.OfType<TabItem>().SingleOrDefault(n => n.Uid.ToString() == NodeModel.GUID.ToString());
-                dynamoView.CloseExtensionTab(tabItem);
+                dynamoViewModel.Model.Logger.Log("Failed to close the Python editor.");
+                dynamoViewModel.Model.Logger.Log(ex.Message);
+                dynamoViewModel.Model.Logger.Log(ex.StackTrace);
             }
         }
 
