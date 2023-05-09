@@ -1997,7 +1997,7 @@ namespace Dynamo.Controls
             preferencesWindow.Show();
         }
 
-        public void EnableEnvironment(bool isEnabled)
+        internal void EnableEnvironment(bool isEnabled)
         {
             this.mainGrid.IsEnabled = isEnabled;
         }
