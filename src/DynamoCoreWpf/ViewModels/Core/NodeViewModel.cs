@@ -61,6 +61,7 @@ namespace Dynamo.ViewModels
         private bool isRenamed = false;
         private bool isNodeInCollapsedGroup = false;
         private const string WatchNodeName = "Watch";
+        private bool nodeHoveringState;
         #endregion
 
         #region public members
@@ -541,6 +542,28 @@ namespace Dynamo.ViewModels
                 }
 
                 return PreviewState.None;
+            }
+        }
+
+        /// <summary>
+        /// This is used to determine if there is
+        /// a node hovering over this group.
+        /// When this is true the views nodeHoveringStateBorder
+        /// is activated.
+        /// </summary>
+        [JsonIgnore]
+        public bool NodeHoveringState
+        {
+            get => nodeHoveringState;
+            set
+            {
+                if (nodeHoveringState == value)
+                {
+                    return;
+                }
+
+                nodeHoveringState = value;
+                RaisePropertyChanged(nameof(NodeHoveringState));
             }
         }
 

@@ -686,6 +686,30 @@
             </Border.Visibility>
         </Border>
 
+        <!--
+        If a note is dragged over this group
+        this border is activated, indicating that the node can be dropped into the group.
+        The visibility of this is controlled by the NodeViewModel property 'NodeHoveringState'
+        which is set in the StateMachine.
+        -->
+        <Border x:Name="nodeHoveringStateBorder"
+                Grid.Row="1"
+                Grid.RowSpan="4"
+                Grid.ColumnSpan="3"
+                Margin="-3"
+                Background="Transparent"
+                IsHitTestVisible="False"
+                Canvas.ZIndex="41"
+                CornerRadius="10,10,0,0"
+                BorderBrush="#CCCCCC"
+                BorderThickness="6px"
+                Visibility="{Binding NodeHoveringState,
+                    Converter={StaticResource BooleanToVisibilityConverter},
+                    Mode=OneWay,
+                    UpdateSourceTrigger=PropertyChanged}"
+                >
+        </Border>
+
         <!--  DO NOT ERASE. THIS IS FOR DEBUGGING  -->
         <!--<Rectangle Name="ForceReexecBorder"
                    Grid.Row="1"
