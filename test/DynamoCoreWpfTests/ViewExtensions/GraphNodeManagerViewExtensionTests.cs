@@ -2,14 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Markup;
 using System.Windows.Media;
 using Dynamo.Configuration;
-using Dynamo.Controls;
-using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.GraphNodeManager;
@@ -18,7 +14,6 @@ using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Scheduler;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using NUnit.Framework;
 using ProtoCore.Mirror;
@@ -77,7 +72,7 @@ namespace DynamoCoreWpfTests
 
             // Close
             Utility.DispatcherUtil.DoEvents();
-            View.CloseExtensionTab(WpfUtilities.ChildrenOfType<Button>(View.ExtensionTabItems.FirstOrDefault()).FirstOrDefault(), null);
+            View.OnCloseRightSidePanelTab(WpfUtilities.ChildrenOfType<Button>(View.ExtensionTabItems.FirstOrDefault()).FirstOrDefault(), null);
             Assert.AreEqual(0, View.ExtensionTabItems.Count);
         }
 

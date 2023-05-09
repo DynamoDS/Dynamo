@@ -3,21 +3,19 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Shapes;
 using System.Windows.Threading;
 using Dynamo.Controls;
+using Dynamo.Graph.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
 using Dynamo.PackageManager.ViewModels;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Views.GuidedTour;
+using Newtonsoft.Json.Linq;
 using static Dynamo.PackageManager.PackageManagerSearchViewModel;
 using static Dynamo.Wpf.UI.GuidedTour.Guide;
-using Dynamo.Wpf.Views.GuidedTour;
-using Dynamo.Utilities;
-using Newtonsoft.Json.Linq;
-using System.Windows.Shapes;
-using Dynamo.Graph.Nodes;
-using Dynamo.Graph.Connectors;
-using System.ComponentModel;
 
 namespace Dynamo.Wpf.UI.GuidedTour
 {
@@ -586,7 +584,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 Button closeButton = GuideUtilities.FindChild(tabitem, closeButtonName) as Button;
                 if (closeButton == null)
                     return;
-                dynamoView.CloseExtensionTab(closeButton, null);
+                dynamoView.OnCloseRightSidePanelTab(closeButton, null);
             }
         }
 

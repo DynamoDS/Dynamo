@@ -627,7 +627,7 @@ namespace PythonNodeModelsWpf
                 {
                     var dynamoView = Owner as DynamoView;
                     TabItem tabItem = dynamoView.ExtensionTabItems.OfType<TabItem>().SingleOrDefault(n => n.Uid.ToString() == NodeModel.GUID.ToString());
-                    dynamoView.CloseExtensionTab(tabItem);
+                    dynamoView.CloseRightSidePanelTab(tabItem);
                 }
             }
             catch (Exception ex)

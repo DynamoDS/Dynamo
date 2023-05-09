@@ -537,7 +537,7 @@ namespace Dynamo.Controls
                 viewExtensionBase.Closed();
             }
 
-            CloseExtensionTab(tabitem);
+            CloseRightSidePanelTab(tabitem);
             CloseExtensionWindow(tabName);
         }
  
@@ -547,7 +547,7 @@ namespace Dynamo.Controls
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        internal void CloseExtensionTab(object sender, RoutedEventArgs e)
+        internal void OnCloseRightSidePanelTab(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -572,7 +572,7 @@ namespace Dynamo.Controls
                     }
                 }
 
-                CloseExtensionTab(tabitem);
+                CloseRightSidePanelTab(tabitem);
 
                 if (dynamoViewModel.CurrentDockedWindows.Contains(tabitem.Uid))
                 {
@@ -588,10 +588,10 @@ namespace Dynamo.Controls
         }
 
         /// <summary>
-        /// Close extension tab by extension tab item
+        /// Close right side-bar panel tab by extension tab item
         /// </summary>
         /// <param name="tabitem">target tab item</param>
-        internal void CloseExtensionTab(TabItem tabitem)
+        internal void CloseRightSidePanelTab(TabItem tabitem)
         {
             TabItem tabToBeRemoved = tabitem;
 
@@ -631,7 +631,7 @@ namespace Dynamo.Controls
             }
         }
 
-        internal void UndockExtensionTab(object sender, RoutedEventArgs e)
+        internal void OnUndockRightSidePanelTab(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -672,7 +672,7 @@ namespace Dynamo.Controls
         {
             var tabItem = ExtensionTabItems.OfType<TabItem>().SingleOrDefault(tab => tab.Header.ToString() == name);
             var content = tabItem.Content as UIElement;
-            CloseExtensionTab(tabItem);
+            CloseRightSidePanelTab(tabItem);
             var extension = tabItem.Tag as IViewExtension;
             var settings = this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Find(s => s.UniqueId == extension.UniqueId);
             AddExtensionWindow(extension, content, settings?.WindowSettings);
@@ -689,7 +689,7 @@ namespace Dynamo.Controls
         internal void UndockExtension(TabItem tabItem)
         {
             var content = tabItem.Content as UIElement;
-            CloseExtensionTab(tabItem);
+            CloseRightSidePanelTab(tabItem);
             var extension = tabItem.Tag as IViewExtension;
             var settings = this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Find(s => s.UniqueId == extension.UniqueId);
             AddExtensionWindow(extension, content, settings?.WindowSettings);
@@ -726,7 +726,7 @@ namespace Dynamo.Controls
                 }
             }
 
-            CloseExtensionTab(tabItem);
+            CloseRightSidePanelTab(tabItem);
             dynamoViewModel.CurrentDockedWindows.Remove(tabItem.Uid);
         }
 

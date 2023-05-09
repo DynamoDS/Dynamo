@@ -1,8 +1,6 @@
-﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo.Configuration;
@@ -13,8 +11,8 @@ using Dynamo.PackageManager;
 using Dynamo.Scheduler;
 using Dynamo.Utilities;
 using Dynamo.WorkspaceDependency;
-using Dynamo.Wpf.Extensions;
 using Dynamo.WorkspaceDependency.Properties;
+using Dynamo.Wpf.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
@@ -122,7 +120,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1, View.ExtensionTabItems.Count);
 
             Utility.DispatcherUtil.DoEvents();
-            View.CloseExtensionTab(WpfUtilities.ChildrenOfType<Button>(View.ExtensionTabItems.FirstOrDefault()).FirstOrDefault(), null);
+            View.OnCloseRightSidePanelTab(WpfUtilities.ChildrenOfType<Button>(View.ExtensionTabItems.FirstOrDefault()).FirstOrDefault(), null);
             Assert.AreEqual(0, View.ExtensionTabItems.Count);
         }
 

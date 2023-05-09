@@ -2366,8 +2366,8 @@ Want to publish a different package?</value>
   <data name="EditNoteWindowTitle" xml:space="preserve">
     <value>Write note here</value>
   </data>
-  <data name="ExtensionsViewTitle" xml:space="preserve">
-    <value>Extensions</value>
+  <data name="SideBarPanelViewTitle" xml:space="preserve">
+    <value>SideBar Panel</value>
   </data>
   <data name="ExtensionAdded" xml:space="preserve">
     <value>Extension tab added to the extensions side bar.</value>
