@@ -515,8 +515,8 @@ namespace Dynamo.Controls
 
             if (nodeModel != null)
             {
-                dynamoViewModel.DockedWindows[window.Uid] = nodeModel;
-                dynamoViewModel.NodeWindowStates[window.Uid] = ViewExtensionDisplayMode.DockRight;
+                dynamoViewModel.CurrentDockedWindows.Add(window.Uid);
+                dynamoViewModel.NodeWindowsState[window.Uid] = ViewExtensionDisplayMode.DockRight;
             }
 
             return tab;
@@ -557,7 +557,7 @@ namespace Dynamo.Controls
                 viewExtensionBase.Closed();
             }
 
-            dynamoViewModel.DockedWindows.TryGetValue(tabitem.Uid, out NodeModel nodeModel);
+            NodeModel nodeModel = dynamoViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID.ToString() == tabitem.Uid.ToString());
 
             if (nodeModel is PythonNode pythonNode)
             {
@@ -572,9 +572,9 @@ namespace Dynamo.Controls
 
             CloseExtensionTab(tabitem);
 
-            if (dynamoViewModel.DockedWindows.ContainsKey(tabitem.Uid))
+            if (dynamoViewModel.CurrentDockedWindows.Contains(tabitem.Uid))
             {
-                dynamoViewModel.DockedWindows.Remove(tabitem.Uid);
+                dynamoViewModel.CurrentDockedWindows.Remove(tabitem.Uid);
             }
         }
 
@@ -628,15 +628,15 @@ namespace Dynamo.Controls
             var tabItem = ExtensionTabItems.OfType<TabItem>().SingleOrDefault(tab => tab.Uid.ToString() == tabId);
             var tabName = tabItem.Header.ToString();
 
-            // If docked window is a node window, close it and call the action on the node. 
-            if (dynamoViewModel.DockedWindows.ContainsKey(tabItem.Uid))
+            // If docked window is a node window, undock the window and call the action on the node. 
+            if (dynamoViewModel.CurrentDockedWindows.Contains(tabItem.Uid))
             {
                 UndockWindow(tabItem);
                 Logging.Analytics.TrackEvent(
                                Actions.Undock,
                                Categories.PythonOperations, tabName);
             }
-            else// if it an extension, just close it and update settings.
+            else// if it an extension, undock the extension and update settings.
             {
                 UndockExtension(tabItem);
                 Logging.Analytics.TrackEvent(
@@ -687,8 +687,9 @@ namespace Dynamo.Controls
         /// <param name="tabItem">Tab item to be undocked</param>
         internal void UndockWindow(TabItem tabItem)
         {
-            dynamoViewModel.DockedWindows.TryGetValue(tabItem.Uid, out NodeModel nodeModel);
-            dynamoViewModel.NodeWindowStates[tabItem.Uid] = ViewExtensionDisplayMode.FloatingWindow;
+            NodeModel nodeModel = dynamoViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID.ToString() == tabItem.Uid.ToString());
+
+            dynamoViewModel.NodeWindowsState[tabItem.Uid] = ViewExtensionDisplayMode.FloatingWindow;
 
             //if the undocked window is a python node, open the script edit window.
             if (nodeModel is PythonNode)
@@ -708,7 +709,7 @@ namespace Dynamo.Controls
             }
 
             CloseExtensionTab(tabItem);
-            dynamoViewModel.DockedWindows.Remove(tabItem.Uid);
+            dynamoViewModel.CurrentDockedWindows.Remove(tabItem.Uid);
         }
 
         /// <summary>

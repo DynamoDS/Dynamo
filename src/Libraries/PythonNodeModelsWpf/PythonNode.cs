@@ -197,7 +197,7 @@ namespace PythonNodeModelsWpf
         private bool IsEditorInDockedState()
         {
             var nodemodel = pythonNodeModel as NodeModel;
-            dynamoViewModel.NodeWindowStates.TryGetValue(nodemodel.GUID.ToString(), out ViewExtensionDisplayMode viewExtensionDisplayMode);
+            dynamoViewModel.NodeWindowsState.TryGetValue(nodemodel.GUID.ToString(), out ViewExtensionDisplayMode viewExtensionDisplayMode);
 
             return viewExtensionDisplayMode.Equals(ViewExtensionDisplayMode.DockRight);
         }

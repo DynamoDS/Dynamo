@@ -719,7 +719,7 @@ namespace DynamoCoreWpfTests
             // Dock python editor
             var scriptWindow = EditPythonCode(nodeView, View);
             scriptWindow.DockWindow();
-            Assert.IsTrue(ViewModel.DockedWindows.ContainsKey(nodeModel.GUID.ToString()));
+            Assert.IsTrue(ViewModel.CurrentDockedWindows.Contains(nodeModel.GUID.ToString()));
 
             var editorTab = View.ExtensionTabItems.FirstOrDefault(x => x.Uid == nodeModel.GUID.ToString());
             Assert.IsNotNull(editorTab);
@@ -728,7 +728,7 @@ namespace DynamoCoreWpfTests
             // Undock editor tab from right side panel.
             View.UndockWindow(editorTab);
 
-            Assert.IsFalse(ViewModel.DockedWindows.ContainsKey(nodeModel.GUID.ToString()));
+            Assert.IsFalse(ViewModel.CurrentDockedWindows.Contains(nodeModel.GUID.ToString()));
             Assert.IsNull(View.ExtensionTabItems.FirstOrDefault(x => x.Uid == nodeModel.GUID.ToString()));
         }
 

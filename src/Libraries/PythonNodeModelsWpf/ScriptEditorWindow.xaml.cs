@@ -496,7 +496,7 @@ namespace PythonNodeModelsWpf
 
             // When the script editor is docked, we don't want to dispose the editor functionality.
             // Dispose it only when the window is closed.
-            if (!dynamoViewModel.DockedWindows.ContainsKey(Uid))
+            if (!dynamoViewModel.CurrentDockedWindows.Contains(Uid))
             {
                 completionProvider?.Dispose();
                 NodeModel.CodeMigrated -= OnNodeModelCodeMigrated;

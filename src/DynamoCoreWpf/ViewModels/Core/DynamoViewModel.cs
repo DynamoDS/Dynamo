@@ -72,14 +72,14 @@ namespace Dynamo.ViewModels
         private ObservableCollection<WorkspaceViewModel> workspaces = new ObservableCollection<WorkspaceViewModel>();
 
         /// <summary>
-        /// Docked windows in sidebar
+        /// Set of node window id's that are currently docked in right side sidebar
         /// </summary>
-        internal Dictionary<string, NodeModel> DockedWindows { get; set; } = new Dictionary<string, NodeModel>();
+        internal HashSet<string> CurrentDockedWindows { get; set; } = new HashSet<string>();
 
         /// <summary>
-        /// Docked node windows in sidebar
+        ///  Node window's state, either DockRight or FloatingWindow.
         /// </summary>
-        internal Dictionary<string, ViewExtensionDisplayMode> NodeWindowStates { get; set; } = new Dictionary<string, ViewExtensionDisplayMode>();
+        internal Dictionary<string, ViewExtensionDisplayMode> NodeWindowsState { get; set; } = new Dictionary<string, ViewExtensionDisplayMode>();
 
         public ObservableCollection<WorkspaceViewModel> Workspaces
         {
