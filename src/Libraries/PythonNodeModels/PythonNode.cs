@@ -328,6 +328,11 @@ namespace PythonNodeModels
             OnCodeMigrated(e);
         }
 
+        /// <summary>
+        //  Boolean to check if script content is saved or not.
+        /// </summary>
+        internal bool ScriptContentSaved = true;
+
         // Event triggered when this node is edited.
         internal event Action<string> EditNode;
 

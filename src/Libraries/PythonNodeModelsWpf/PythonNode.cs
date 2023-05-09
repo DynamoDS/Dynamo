@@ -171,7 +171,7 @@ namespace PythonNodeModelsWpf
                 else
                 {
                     editWindow = new ScriptEditorWindow(dynamoViewModel, pythonNodeModel, pythonNodeView, ref editorWindowRect);
-                    if (sender == null)
+                    if (pythonNodeModel.ScriptContentSaved)
                     {
                         editWindow.Initialize(workspaceModel.Guid, pythonNodeModel.GUID, "ScriptContent", pythonNodeModel.Script);
                     }

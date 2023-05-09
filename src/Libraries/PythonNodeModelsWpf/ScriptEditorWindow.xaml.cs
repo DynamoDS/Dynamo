@@ -64,6 +64,7 @@ namespace PythonNodeModelsWpf
             {
                 isSaved = value;
                 editText.IsModified = !IsSaved;
+                NodeModel.ScriptContentSaved = isSaved;
             }
         }
 
