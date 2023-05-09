@@ -10,6 +10,8 @@ using System.Windows.Threading;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Controls;
+using Dynamo.Nodes;
+using Dynamo.UI;
 using Dynamo.Wpf;
 using Dynamo.Wpf.Rendering;
 using Dynamo.Wpf.ViewModels.Watch3D;
@@ -93,16 +95,16 @@ namespace Watch3DNodeModelsWpf
                 DataContext = watch3DViewModel
             };
 
-            // When user sizes a watch node, only view gets resized. The actual 
-            // NodeModel does not get updated. This is where the view updates the 
-            // model whenever its size is updated. 
-            // Updated from (Watch3d)View.SizeChanged to nodeView.SizeChanged - height 
+            // When user sizes a watch node, only view gets resized. The actual
+            // NodeModel does not get updated. This is where the view updates the
+            // model whenever its size is updated.
+            // Updated from (Watch3d)View.SizeChanged to nodeView.SizeChanged - height
             // and width should correspond to node model and not watch3Dview
             nodeView.SizeChanged += (sender, args) =>
 			    model.SetSize(args.NewSize.Width, args.NewSize.Height);
 
             // set WatchSize in model
-            watch3DView.View.SizeChanged += (sender, args) => 
+            watch3DView.View.SizeChanged += (sender, args) =>
 			    model.SetWatchSize(args.NewSize.Width, args.NewSize.Height);
 
             var mi = new MenuItem { Header = Resources.ZoomToFit };
@@ -110,22 +112,9 @@ namespace Watch3DNodeModelsWpf
 
             nodeView.MainContextMenu.Items.Add(mi);
 
-            var backgroundRect = new Rectangle
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch,
-                IsHitTestVisible = false,
-            };
-            var bc = new BrushConverter();
-            var strokeBrush = (Brush)bc.ConvertFrom("#313131");
-            backgroundRect.Stroke = strokeBrush;
-            backgroundRect.StrokeThickness = 1;
-            var backgroundBrush = new SolidColorBrush(Color.FromRgb(240, 240, 240));
-            backgroundRect.Fill = backgroundBrush;
+            nodeView.centralGrid.Children.Add(watch3DView);
+            Grid.SetRow(watch3DView, 1);
 
-            nodeView.PresentationGrid.Children.Add(backgroundRect);
-            nodeView.PresentationGrid.Children.Add(watch3DView);
-            nodeView.PresentationGrid.Visibility = Visibility.Visible;
 
             DataBridge.Instance.RegisterCallback(
                 model.GUID.ToString(),
@@ -133,7 +122,36 @@ namespace Watch3DNodeModelsWpf
                     nodeView.Dispatcher.Invoke(
                         new Action<object>(RenderData),
                         DispatcherPriority.Render,
-                        obj));       
+                        obj));
+
+
+            //////////////////////////////////////////////
+            // Buttons for adding and removing ports
+            //////////////////////////////////////////////
+
+            WrapPanel wrapPanel = new WrapPanel
+            {
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalAlignment = HorizontalAlignment.Center
+            };
+
+            wrapPanel.Children.Add(
+                new DynamoNodeButton(nodeView.ViewModel.NodeModel, "AddInPort")
+                {
+                    Content = "+",
+                    Style = (Style)SharedDictionaryManager.DynamoModernDictionary["AddRemoveButton"]
+                });
+
+            wrapPanel.Children.Add(
+                new DynamoNodeButton(nodeView.ViewModel.NodeModel, "RemoveInPort")
+                {
+                    Content = "-",
+                    Style = (Style)SharedDictionaryManager.DynamoModernDictionary["AddRemoveButton"],
+                    ShowWarningForRemovingInPort = false
+                });
+
+            nodeView.centralGrid.Children.Add(wrapPanel);
+            Grid.SetRow(wrapPanel, 0);
         }
 
         void model_Serialized(XmlElement nodeElement)

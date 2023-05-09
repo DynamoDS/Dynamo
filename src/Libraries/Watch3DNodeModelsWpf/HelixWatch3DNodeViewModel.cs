@@ -100,7 +100,7 @@ namespace Watch3DNodeModelsWpf
             if (e.PropertyName == "IsFrozen")
             {
                 if (!watchModel.UpstreamCache.Contains(node))
-                { 
+                {
                     return;
                 }
 
@@ -116,11 +116,11 @@ namespace Watch3DNodeModelsWpf
         {
             if (obj.PortType == PortType.Input  && watchModel == obj.Owner)
             {
-                OnClear();
+                UpdateUpstream();
             }
         }
 
-        
+
         protected override void OnRenderPackagesUpdated(NodeModel node,
             RenderPackageCache renderPackages)
         {
@@ -136,9 +136,9 @@ namespace Watch3DNodeModelsWpf
 
         protected override void OnWorkspaceSaving(XmlDocument doc)
         {
-            // In the node version of this view model, we don't save when 
+            // In the node version of this view model, we don't save when
             // the workspace is saving. See Watch3D.SeralizeCore where we call
-            // the view model's SerializeCamera method, and Watch3D.DeserializeCore 
+            // the view model's SerializeCamera method, and Watch3D.DeserializeCore
             // where we call the view model's DeserializeCamera method.
         }
 
