@@ -626,7 +626,7 @@ namespace PythonNodeModelsWpf
                 else // Close the right side extension tab if the close button is clicked on the docked editor. 
                 {
                     var dynamoView = Owner as DynamoView;
-                    TabItem tabItem = dynamoView.ExtensionTabItems.OfType<TabItem>().SingleOrDefault(n => n.Uid.ToString() == NodeModel.GUID.ToString());
+                    TabItem tabItem = dynamoView.SideBarPanelTabItems.OfType<TabItem>().SingleOrDefault(n => n.Uid.ToString() == NodeModel.GUID.ToString());
                     dynamoView.CloseRightSidePanelTab(tabItem);
                 }
             }

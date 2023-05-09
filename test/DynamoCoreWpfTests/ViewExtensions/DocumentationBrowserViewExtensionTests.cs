@@ -1,12 +1,3 @@
-using Dynamo.Configuration;
-using Dynamo.DocumentationBrowser;
-using Dynamo.Interfaces;
-using Dynamo.Models;
-using Dynamo.Scheduler;
-using Dynamo.Utilities;
-using Dynamo.ViewModels;
-using Dynamo.Wpf.Extensions;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -17,6 +8,15 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo;
+using Dynamo.Configuration;
+using Dynamo.DocumentationBrowser;
+using Dynamo.Interfaces;
+using Dynamo.Models;
+using Dynamo.Scheduler;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
+using Dynamo.Wpf.Extensions;
+using NUnit.Framework;
 
 namespace DynamoCoreWpfTests
 {
@@ -154,9 +154,9 @@ namespace DynamoCoreWpfTests
             using (var viewExtension = SetupNewViewExtension())
             {
                 // Act
-                var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                var tabsBeforeExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
                 viewExtension.HandleRequestOpenDocumentationLink(externalEvent);
-                var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                var tabsAfterExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
 
                 // Assert
                 Assert.IsTrue(externalEvent.IsRemoteResource);
@@ -173,9 +173,9 @@ namespace DynamoCoreWpfTests
             using (var viewExtension = SetupNewViewExtension(true))
             {
                 // Act
-                var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                var tabsBeforeExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
                 viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
-                var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                var tabsAfterExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
                 var htmlContent = GetSidebarDocsBrowserContents();
 
                 // Assert
@@ -193,9 +193,9 @@ namespace DynamoCoreWpfTests
             var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(localDocsFileLink, UriKind.Relative));
 
             // Act
-            var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
+            var tabsBeforeExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
             this.ViewModel.OpenDocumentationLinkCommand.Execute(docsEvent);
-            var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
+            var tabsAfterExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
             var htmlContent = GetSidebarDocsBrowserContents();
 
             // Assert
@@ -213,9 +213,9 @@ namespace DynamoCoreWpfTests
             using (var viewExtension = SetupNewViewExtension(true))
             {
                 // Act
-                var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                var tabsBeforeExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
                 viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
-                var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                var tabsAfterExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
                 var htmlContent = GetSidebarDocsBrowserContents();
 
                 // Assert
@@ -239,9 +239,9 @@ namespace DynamoCoreWpfTests
                 var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(uri, UriKind.Relative));
 
                 // Act
-                var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                var tabsBeforeExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
                 viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
-                var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                var tabsAfterExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
                 var htmlContent = GetSidebarDocsBrowserContents();
 
                 // Assert
@@ -266,9 +266,9 @@ namespace DynamoCoreWpfTests
                 var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(uri, UriKind.Relative));
 
                 // Act
-                var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                var tabsBeforeExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
                 viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
-                var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                var tabsAfterExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
                 var htmlContent = GetSidebarDocsBrowserContents();
 
                 // Assert
@@ -430,9 +430,9 @@ namespace DynamoCoreWpfTests
                 var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(uri, UriKind.Relative));
 
                 // Act
-                var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                var tabsBeforeExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
                 viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
-                var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                var tabsAfterExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
                 var htmlContent = GetSidebarDocsBrowserContents();
 
                 // Assert
@@ -457,9 +457,9 @@ namespace DynamoCoreWpfTests
                 var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(uri, UriKind.Relative));
 
                 // Act
-                var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                var tabsBeforeExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
                 viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
-                var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                var tabsAfterExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
                 var htmlContent = GetSidebarDocsBrowserContents();
 
                 // Assert
@@ -516,9 +516,9 @@ namespace DynamoCoreWpfTests
             node.Name = nodeRename; // Forces original name header to appear 
             var nodeAnnotationEventArgs = new OpenNodeAnnotationEventArgs(node, this.ViewModel);
 
-            var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
+            var tabsBeforeExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
             docBrowserviewExtension.HandleRequestOpenDocumentationLink(nodeAnnotationEventArgs);
-            var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
+            var tabsAfterExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
             var htmlContent = GetSidebarDocsBrowserContents();
 
             // Assert
@@ -563,9 +563,9 @@ namespace DynamoCoreWpfTests
             node.Name = nodeRename; // Forces original name header to appear 
             var nodeAnnotationEventArgs = new OpenNodeAnnotationEventArgs(node, this.ViewModel);
 
-            var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
+            var tabsBeforeExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
             docBrowserviewExtension.HandleRequestOpenDocumentationLink(nodeAnnotationEventArgs);
-            var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
+            var tabsAfterExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
             var htmlContent = GetSidebarDocsBrowserContents();
             htmlContent = htmlContent.Replace(@"%5C", "/");
 
@@ -798,7 +798,7 @@ namespace DynamoCoreWpfTests
 
         private TabItem GetDocsTabItem()
         {
-            return this.View.ExtensionTabItems
+            return this.View.SideBarPanelTabItems
                 .Where(x => x.Content.GetType().Equals(typeof(DocumentationBrowserView)))
                 .FirstOrDefault();
         }
