@@ -502,8 +502,6 @@ namespace PythonNodeModelsWpf
 
         private void OnScriptEditorWindowClosed(object sender, EventArgs e)
         {
-            var dybnamoView = Owner as DynamoView;
-
             // When the script editor is docked, we don't want to dispose the editor functionality.
             // Dispose it only when the window is closed.
             if (!dynamoViewModel.CurrentDockedWindows.Contains(Uid))

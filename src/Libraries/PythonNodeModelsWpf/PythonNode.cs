@@ -162,35 +162,44 @@ namespace PythonNodeModelsWpf
 
         private void EditScriptContent(object sender, EventArgs e)
         {
-            using (var cmd = Dynamo.Logging.Analytics.TrackCommandEvent("PythonEdit"))
+            try
             {
-                if (editWindow != null)
+                using (var cmd = Dynamo.Logging.Analytics.TrackCommandEvent("PythonEdit"))
                 {
-                    editWindow.Activate();
-                }
-                else
-                {
-                    editWindow = new ScriptEditorWindow(dynamoViewModel, pythonNodeModel, pythonNodeView, ref editorWindowRect);
-                    if (pythonNodeModel.ScriptContentSaved)
+                    if (editWindow != null)
                     {
-                        editWindow.Initialize(workspaceModel.Guid, pythonNodeModel.GUID, "ScriptContent", pythonNodeModel.Script);
+                        editWindow.Activate();
                     }
                     else
                     {
-                        editWindow.Initialize(workspaceModel.Guid, pythonNodeModel.GUID, "ScriptContent", sender.ToString());
-                        editWindow.IsSaved = false;
-                    }
-                    editWindow.Closed += editWindow_Closed;
+                        editWindow = new ScriptEditorWindow(dynamoViewModel, pythonNodeModel, pythonNodeView, ref editorWindowRect);
+                        if (pythonNodeModel.ScriptContentSaved)
+                        {
+                            editWindow.Initialize(workspaceModel.Guid, pythonNodeModel.GUID, "ScriptContent", pythonNodeModel.Script);
+                        }
+                        else
+                        {
+                            editWindow.Initialize(workspaceModel.Guid, pythonNodeModel.GUID, "ScriptContent", sender.ToString());
+                            editWindow.IsSaved = false;
+                        }
+                        editWindow.Closed += editWindow_Closed;
 
-                    if (IsEditorInDockedState())
-                    {
-                        editWindow.DockWindow();
-                    }
-                    else
-                    {
-                        editWindow.Show();
+                        if (IsEditorInDockedState())
+                        {
+                            editWindow.DockWindow();
+                        }
+                        else
+                        {
+                            editWindow.Show();
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                dynamoViewModel.Model.Logger.Log("Failed to open script editor window.");
+                dynamoViewModel.Model.Logger.Log(ex.Message);
+                dynamoViewModel.Model.Logger.Log(ex.StackTrace);
             }
         }
 
