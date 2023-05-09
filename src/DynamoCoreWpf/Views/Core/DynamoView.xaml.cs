@@ -497,12 +497,12 @@ namespace Dynamo.Controls
             tab.Uid = window.Uid;
             tab.HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate;
 
-            // setting the extension UI to the current tab content 
+            // setting the window UI to the current tab content 
             // based on whether it is a UserControl element or window element. 
             if (content is Window container)
             {
                 content = container.Content as UIElement;
-                // Make sure the extension window closes with Dynamo
+                // Make sure the window closes with Dynamo
                 container.Owner = this;
             }
             tab.Content = content;
@@ -512,9 +512,6 @@ namespace Dynamo.Controls
 
             tabDynamic.DataContext = ExtensionTabItems;
             tabDynamic.SelectedItem = tab;
-
-            Analytics.TrackEvent(Actions.Dock,
-                     Categories.ViewExtensionOperations, tab.Header.ToString());
 
             if (nodeModel != null)
             {

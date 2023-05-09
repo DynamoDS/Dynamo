@@ -494,6 +494,8 @@ namespace PythonNodeModelsWpf
         {
             var dybnamoView = Owner as DynamoView;
 
+            // When the script editor is docked, we don't want to dispose the editor functionality.
+            // Dispose it only when the window is closed.
             if (!dynamoViewModel.DockedWindows.ContainsKey(Uid))
             {
                 completionProvider?.Dispose();
@@ -604,9 +606,9 @@ namespace PythonNodeModelsWpf
         // Handles Close button on the Warning bar
         private void CloseWarningBarButton_OnClick(object sender, RoutedEventArgs e)
         {
-            var senderContext = (sender as Button).DataContext;
+            var senderContext = (sender as Button)?.DataContext;
 
-            if (senderContext.Equals(this))
+            if (this.Equals(senderContext))
             {
                 Close();
             }
