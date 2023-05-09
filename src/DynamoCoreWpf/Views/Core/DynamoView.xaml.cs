@@ -1999,11 +1999,7 @@ namespace Dynamo.Controls
 
         public void EnableEnvironment(bool isEnabled)
         {
-            this.titleBarGrid.IsEnabled = isEnabled;
-            this.shortcutBarGrid.IsEnabled = isEnabled;
-            this.sidebarGrid.IsEnabled = isEnabled;
-            this.WorkspaceTabs.IsEnabled = isEnabled;
-            this.bottomBarGrid.IsEnabled = isEnabled;
+            this.mainGrid.IsEnabled = isEnabled;
         }
 
         /// <summary>
