@@ -140,6 +140,7 @@ namespace Dynamo.Controls
 
             SizeChanged += DynamoView_SizeChanged;
             LocationChanged += DynamoView_LocationChanged;
+            MouseLeftButtonDown += DynamoView_MouseLeftButtonDown;
 
             // Apply appropriate expand/collapse library button state depending on initial width
             UpdateLibraryCollapseIcon();
@@ -243,6 +244,14 @@ namespace Dynamo.Controls
             if (!DynamoModel.IsTestMode && Application.Current != null)
             {
                 Application.Current.MainWindow = this;
+            }
+        }
+
+        void DynamoView_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (PreferencesWindow != null && PreferencesWindow.IsLoaded)
+            {
+                dynamoViewModel.MainGuideManager?.CreateRealTimeInfoWindow(Res.PreferencesMustBeClosedMessage, true);
             }
         }
 
@@ -1603,6 +1612,7 @@ namespace Dynamo.Controls
                 //Shutdown wasn't cancelled
                 SizeChanged -= DynamoView_SizeChanged;
                 LocationChanged -= DynamoView_LocationChanged;
+                MouseLeftButtonDown -= DynamoView_MouseLeftButtonDown;
                 return true;
             }
             else
@@ -1984,7 +1994,12 @@ namespace Dynamo.Controls
             preferencesWindow = new PreferencesView(this);
             dynamoViewModel.OnPreferencesWindowChanged(preferencesWindow);
             preferencesWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            preferencesWindow.ShowDialog();
+            preferencesWindow.Show();
+        }
+
+        internal void EnableEnvironment(bool isEnabled)
+        {
+            this.mainGrid.IsEnabled = isEnabled;
         }
 
         /// <summary>
