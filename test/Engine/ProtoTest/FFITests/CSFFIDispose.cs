@@ -155,15 +155,11 @@ using System;using System.Collections.Generic;using FFITarget;using NUnit.Fra
             thisTest.Verify("count2", 2);
         }
 
-        [Test]
-        public void DisposeMultipleDispoableObject()
-        {
-            string code =
-@"import(""FFITarget.dll"");tracer1 = HiddenDisposeTracer();tracer2 = HiddenDisposeTracer();count1 = tracer1.DisposeCount;count2 = tracer2.DisposeCount;[Associative]{    disposer1a = tracer1.GetHiddenDisposer();    disposer1a = null;    disposer1b = tracer1.GetHiddenDisposer();    disposer1b = null;    disposer2a = tracer2.GetHiddenDisposer();    disposer2a = null;    disposer2b = tracer2.GetHiddenDisposer();    disposer2b = null;    disposer2c = tracer2.GetHiddenDisposer();    disposer2c = null;}__GC();d1 = tracer1.DisposeCount;d2 = tracer2.DisposeCount;
+        [Test]        public void DisposeMultipleDispoableObject()        {            string code =@"import(""FFITarget.dll"");tracer1 = HiddenDisposeTracer();tracer2 = HiddenDisposeTracer();count1 = tracer1.DisposeCount;count2 = tracer2.DisposeCount;[Associative]{    disposer1a = tracer1.GetHiddenDisposer();    disposer1a = null;    disposer1b = tracer1.GetHiddenDisposer();    disposer1b = null;    disposer2a = tracer2.GetHiddenDisposer();    disposer2a = null;    disposer2b = tracer2.GetHiddenDisposer();    disposer2b = null;    disposer2c = tracer2.GetHiddenDisposer();    disposer2c = null;}__GC();d1 = tracer1.DisposeCount;d2 = tracer2.DisposeCount;
+";            thisTest.RunScriptSource(code);            thisTest.Verify("count1", 0);            thisTest.Verify("count2", 0);            thisTest.Verify("d1", 2);            thisTest.Verify("d2", 3);        }        [Test]        public void DisposeEnumWrapper()        {            string code =                @"import(""FFITarget.dll"");x = Days.Monday;
+__GC();x = Days.Monday;
+__GC();
+x = Days.Monday;
 ";
-            thisTest.RunScriptSource(code);
-            thisTest.Verify("count1", 0);
-            thisTest.Verify("count2", 0);
-
-            thisTest.Verify("d1", 2);
-            thisTest.Verify("d2", 3);        }        //Migrate this code into the test framework        private Subtree CreateSubTreeFromCode(Guid guid, string code)        {            var cbn = ProtoCore.Utils.ParserUtils.Parse(code);            var subtree = null == cbn ? new Subtree(null, guid) : new Subtree(cbn.Body, guid);            return subtree;        }        private void AssertValue(string varname, object value)        {            var mirror = astLiveRunner.InspectNodeValue(varname);            MirrorData data = mirror.GetData();            object svValue = data.Data;            if (value is double)            {                Assert.AreEqual((double)svValue, Convert.ToDouble(value));            }            else if (value is int)            {                Assert.AreEqual(Convert.ToInt64(svValue), Convert.ToInt64(value));            }            else if (value is bool)            {                Assert.AreEqual((bool)svValue, Convert.ToBoolean(value));            }        }    }}
+            thisTest.RunScriptSource(code);            thisTest.Verify("x", Days.Monday);        }        //Migrate this code into the test framework
+        private Subtree CreateSubTreeFromCode(Guid guid, string code)        {            var cbn = ProtoCore.Utils.ParserUtils.Parse(code);            var subtree = null == cbn ? new Subtree(null, guid) : new Subtree(cbn.Body, guid);            return subtree;        }        private void AssertValue(string varname, object value)        {            var mirror = astLiveRunner.InspectNodeValue(varname);            MirrorData data = mirror.GetData();            object svValue = data.Data;            if (value is double)            {                Assert.AreEqual((double)svValue, Convert.ToDouble(value));            }            else if (value is int)            {                Assert.AreEqual(Convert.ToInt64(svValue), Convert.ToInt64(value));            }            else if (value is bool)            {                Assert.AreEqual((bool)svValue, Convert.ToBoolean(value));            }        }    }}
