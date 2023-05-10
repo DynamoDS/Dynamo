@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Dynamo.Wpf.Properties {
-    using System;
-    
-    
+namespace Dynamo.Wpf.Properties
+{
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -2734,15 +2734,6 @@ namespace Dynamo.Wpf.Properties {
         public static string ExtensionAlreadyPresent {
             get {
                 return ResourceManager.GetString("ExtensionAlreadyPresent", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Extensions.
-        /// </summary>
-        public static string ExtensionsViewTitle {
-            get {
-                return ResourceManager.GetString("ExtensionsViewTitle", resourceCulture);
             }
         }
         
@@ -8412,6 +8403,15 @@ namespace Dynamo.Wpf.Properties {
         public static string ShowWiresPopupMenuItem {
             get {
                 return ResourceManager.GetString("ShowWiresPopupMenuItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SideBar Panel.
+        /// </summary>
+        public static string SideBarPanelViewTitle {
+            get {
+                return ResourceManager.GetString("SideBarPanelViewTitle", resourceCulture);
             }
         }
         

@@ -1644,6 +1644,8 @@
     <EmbeddedResource Include="ViewModels\PackageManager\Docs\PublishPackageDocumentation.html" />
     <Resource Include="UI\Images\undock_hover.png" />
     <Resource Include="UI\Images\undock_normal.png" />
+    <Resource Include="UI\Images\TitleBarButtons\dock-darktheme-default.png" />
+    <Resource Include="UI\Images\TitleBarButtons\dock-darktheme-hover.png" />
     <None Include="ViewModels\Watch3D\shaderSource\helix_shader_defs\COMMON\Common.hlsl" />
     <None Include="ViewModels\Watch3D\shaderSource\helix_shader_defs\COMMON\CommonBuffers.hlsl" />
     <None Include="ViewModels\Watch3D\shaderSource\helix_shader_defs\COMMON\DataStructs.hlsl" />

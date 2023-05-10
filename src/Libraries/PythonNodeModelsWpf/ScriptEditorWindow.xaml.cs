@@ -1,34 +1,27 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Xml;
 using Dynamo.Controls;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Python;
+using Dynamo.PythonServices;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Views;
 using Dynamo.Wpf.Windows;
+using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.CodeCompletion;
+using ICSharpCode.AvalonEdit.Folding;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using PythonNodeModels;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Windows.Media;
-using Dynamo.PythonServices;
-using Dynamo.Wpf.Views;
-using System.Windows.Media;
-using ICSharpCode.AvalonEdit;
-using ICSharpCode.AvalonEdit.Document;
-using ICSharpCode.AvalonEdit.Editing;
-using ICSharpCode.AvalonEdit.Folding;
-using ICSharpCode.AvalonEdit.Indentation;
-using Dynamo.Utilities;
-using System.Windows.Controls;
 
 namespace PythonNodeModelsWpf
 {
@@ -48,7 +41,6 @@ namespace PythonNodeModelsWpf
         private string originalScript;
         internal FoldingManager foldingManager;
         private TabFoldingStrategy foldingStrategy;
-        private bool IsSaved { get; set; } = true;
         private int zoomScaleCacheValue;
 
         private readonly double fontSizePreferencesSliderProportionValue = (FONT_MAX_SIZE - FONT_MIN_SIZE) / (pythonZoomScalingSliderMaximum - pythonZoomScalingSliderMinimum);
@@ -59,7 +51,22 @@ namespace PythonNodeModelsWpf
 
         private const double pythonZoomScalingSliderMaximum = 300d;
         private const double pythonZoomScalingSliderMinimum = 25d;
+        private bool isSaved = true;
         #endregion
+
+        /// <summary>
+        /// Flag to check if the editor window is saved.
+        /// </summary>
+        internal bool IsSaved
+        {
+            get { return isSaved; }
+            set
+            {
+                isSaved = value;
+                editText.IsModified = !IsSaved;
+                NodeModel.ScriptContentSaved = isSaved;
+            }
+        }
 
         #region Public properties
         /// <summary>
@@ -99,6 +106,7 @@ namespace PythonNodeModelsWpf
             DataContext = this;
 
             EngineSelectorComboBox.Visibility = Visibility.Visible;
+            NodeModel.UserScriptWarned += WarnUserScript;
 
             Analytics.TrackScreenView("Python");
         }
@@ -170,6 +178,39 @@ namespace PythonNodeModelsWpf
             InstallFoldingManager();
 
             dynamoViewModel.PreferencesWindowChanged += DynamoViewModel_PreferencesWindowChanged;
+        }
+
+        /// <summary>
+        /// Docks this window in the right side bar panel.
+        /// </summary>
+        /// <param name="name"></param>
+        internal void DockWindow()
+        {
+            Uid = NodeModel.GUID.ToString();
+
+            try
+            {
+                var dynamoView = Owner as DynamoView;
+                var titleBar = FindName("TitleBar") as DockPanel;
+                var editor = FindName("editText") as TextEditor;
+                editor.IsModified = !IsSaved;
+
+                dynamoView.DockWindowInSideBar(this, NodeModel, titleBar);
+                EngineSelectorComboBox.SelectedItem = NodeModel.EngineName;
+
+                Close();
+            }
+            catch (Exception ex)
+            {
+                dynamoViewModel.Model.Logger.Log("Failed to dock the Python Script editor.");
+                dynamoViewModel.Model.Logger.Log(ex.Message);
+                dynamoViewModel.Model.Logger.Log(ex.StackTrace);
+            }
+        }
+
+        private void OnDockButtonClicked(object sender, RoutedEventArgs e)
+        {
+            DockWindow();
         }
 
         private void DynamoViewModel_PreferencesWindowChanged(object sender, EventArgs e)
@@ -461,18 +502,24 @@ namespace PythonNodeModelsWpf
 
         private void OnScriptEditorWindowClosed(object sender, EventArgs e)
         {
-            completionProvider?.Dispose();
-            NodeModel.CodeMigrated -= OnNodeModelCodeMigrated;
-            this.Closed -= OnScriptEditorWindowClosed;
-            PythonEngineManager.Instance.AvailableEngines.CollectionChanged -= UpdateAvailableEngines;
+            // When the script editor is docked, we don't want to dispose the editor functionality.
+            // Dispose it only when the window is closed.
+            if (!dynamoViewModel.CurrentDockedWindows.Contains(Uid))
+            {
+                completionProvider?.Dispose();
+                NodeModel.CodeMigrated -= OnNodeModelCodeMigrated;
+                NodeModel.UserScriptWarned -= WarnUserScript;
+                this.Closed -= OnScriptEditorWindowClosed;
+                PythonEngineManager.Instance.AvailableEngines.CollectionChanged -= UpdateAvailableEngines;
 
-            Analytics.TrackEvent(
-                Dynamo.Logging.Actions.Close,
-                Dynamo.Logging.Categories.PythonOperations);
-            
-            editText.TextChanged -= EditTextOnTextChanged;
-            FoldingManager.Uninstall(foldingManager);
-            foldingManager = null;
+                Analytics.TrackEvent(
+                    Dynamo.Logging.Actions.Close,
+                    Dynamo.Logging.Categories.PythonOperations);
+
+                editText.TextChanged -= EditTextOnTextChanged;
+                FoldingManager.Uninstall(foldingManager);
+                foldingManager = null;
+            }
         }
 
         private void OnUndoClicked(object sender, RoutedEventArgs e)
@@ -567,7 +614,27 @@ namespace PythonNodeModelsWpf
         // Handles Close button on the Warning bar
         private void CloseWarningBarButton_OnClick(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            try
+            {
+                var senderContext = (sender as Button)?.DataContext;
+
+                if (this.Equals(senderContext))
+                {
+                    Close();
+                }
+                else // Close the right side extension tab if the close button is clicked on the docked editor. 
+                {
+                    var dynamoView = Owner as DynamoView;
+                    TabItem tabItem = dynamoView.SideBarPanelTabItems.OfType<TabItem>().SingleOrDefault(n => n.Uid.ToString() == NodeModel.GUID.ToString());
+                    dynamoView.CloseRightSidePanelTab(tabItem);
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamoViewModel.Model.Logger.Log("Failed to close the Python editor.");
+                dynamoViewModel.Model.Logger.Log(ex.Message);
+                dynamoViewModel.Model.Logger.Log(ex.StackTrace);
+            }
         }
 
         // ESC Button pressed triggers Window close        
@@ -630,9 +697,6 @@ namespace PythonNodeModelsWpf
                 IsEnterHit = false;
             }
         }
-
         #endregion
-
     }
-
 }

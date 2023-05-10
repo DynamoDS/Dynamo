@@ -2,14 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Markup;
 using System.Windows.Media;
 using Dynamo.Configuration;
-using Dynamo.Controls;
-using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.GraphNodeManager;
@@ -18,7 +14,6 @@ using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Scheduler;
 using Dynamo.Utilities;
-using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using NUnit.Framework;
 using ProtoCore.Mirror;
@@ -73,12 +68,12 @@ namespace DynamoCoreWpfTests
             // Open
             LoadExtension(viewExtension);
 
-            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+            Assert.AreEqual(1, View.SideBarPanelTabItems.Count);
 
             // Close
             Utility.DispatcherUtil.DoEvents();
-            View.CloseExtensionTab(WpfUtilities.ChildrenOfType<Button>(View.ExtensionTabItems.FirstOrDefault()).FirstOrDefault(), null);
-            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+            View.OnCloseRightSidePanelTab(WpfUtilities.ChildrenOfType<Button>(View.SideBarPanelTabItems.FirstOrDefault()).FirstOrDefault(), null);
+            Assert.AreEqual(0, View.SideBarPanelTabItems.Count);
         }
 
         /// <summary>
@@ -233,7 +228,7 @@ namespace DynamoCoreWpfTests
             LoadExtension(viewExtension);
 
             //confirm that extension was opened
-            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+            Assert.AreEqual(1, View.SideBarPanelTabItems.Count);
 
             //Restart Dynamo
             Exit();
@@ -242,8 +237,8 @@ namespace DynamoCoreWpfTests
             Utility.DispatcherUtil.DoEvents();
 
             //confirm that extension is reopened after restart
-            Assert.AreEqual(1, View.ExtensionTabItems.Count);
-            Assert.IsNotNull(View.ExtensionTabItems.FirstOrDefault(x => x.Tag as GraphNodeManagerViewExtension != null));
+            Assert.AreEqual(1, View.SideBarPanelTabItems.Count);
+            Assert.IsNotNull(View.SideBarPanelTabItems.FirstOrDefault(x => x.Tag as GraphNodeManagerViewExtension != null));
         }
 
         /// <summary>
@@ -270,7 +265,7 @@ namespace DynamoCoreWpfTests
             loadedParams.CloseExtensioninInSideBar(viewExtension);
 
             //confirm that extension was closed
-            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+            Assert.AreEqual(0, View.SideBarPanelTabItems.Count);
 
             //Restart Dynamo
             Exit();
@@ -279,8 +274,8 @@ namespace DynamoCoreWpfTests
             Utility.DispatcherUtil.DoEvents();
 
             //confirm that extension is still closed after restart
-            Assert.AreEqual(0, View.ExtensionTabItems.Count);
-            Assert.IsNull(View.ExtensionTabItems.FirstOrDefault(x => x.Tag as GraphNodeManagerViewExtension != null));
+            Assert.AreEqual(0, View.SideBarPanelTabItems.Count);
+            Assert.IsNull(View.SideBarPanelTabItems.FirstOrDefault(x => x.Tag as GraphNodeManagerViewExtension != null));
         }
 
         /// <summary>
@@ -303,7 +298,7 @@ namespace DynamoCoreWpfTests
             LoadExtension(viewExtension);
 
             //confirm that extension was opened
-            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+            Assert.AreEqual(1, View.SideBarPanelTabItems.Count);
 
             //Restart Dynamo
             Exit();
@@ -312,8 +307,8 @@ namespace DynamoCoreWpfTests
             Utility.DispatcherUtil.DoEvents();
 
             //confirm that extension is still closed after restart
-            Assert.AreEqual(0, View.ExtensionTabItems.Count);
-            Assert.IsNull(View.ExtensionTabItems.FirstOrDefault(x => x.Tag as GraphNodeManagerViewExtension != null));
+            Assert.AreEqual(0, View.SideBarPanelTabItems.Count);
+            Assert.IsNull(View.SideBarPanelTabItems.FirstOrDefault(x => x.Tag as GraphNodeManagerViewExtension != null));
         }
         #endregion
 

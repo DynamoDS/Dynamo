@@ -42,7 +42,6 @@ using Dynamo.Wpf.ViewModels.Core.Converters;
 using Dynamo.Wpf.ViewModels.FileTrust;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoUtilities;
-using ViewModels.Core;
 using ISelectable = Dynamo.Selection.ISelectable;
 using WpfResources = Dynamo.Wpf.Properties.Resources;
 
@@ -71,6 +70,17 @@ namespace Dynamo.ViewModels
         /// An observable collection of workspace view models which tracks the model
         /// </summary>
         private ObservableCollection<WorkspaceViewModel> workspaces = new ObservableCollection<WorkspaceViewModel>();
+
+        /// <summary>
+        /// Set of node window id's that are currently docked in right side sidebar
+        /// </summary>
+        internal HashSet<string> CurrentDockedWindows { get; set; } = new HashSet<string>();
+
+        /// <summary>
+        ///  Node window's state, either DockRight or FloatingWindow.
+        /// </summary>
+        internal Dictionary<string, ViewExtensionDisplayMode> NodeWindowsState { get; set; } = new Dictionary<string, ViewExtensionDisplayMode>();
+
         public ObservableCollection<WorkspaceViewModel> Workspaces
         {
             get { return workspaces; }
