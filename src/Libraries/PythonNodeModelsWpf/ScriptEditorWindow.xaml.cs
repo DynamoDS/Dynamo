@@ -488,6 +488,12 @@ namespace PythonNodeModelsWpf
 
         private void OnEngineChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
+            var enginecomboBox = sender as ComboBox;
+            if (enginecomboBox != null && enginecomboBox.Name.Equals("EngineSelectorComboBox"))
+            {
+                CachedEngine = enginecomboBox.SelectedItem.ToString();
+            }
+
             if (CachedEngine != NodeModel.EngineName)
             {
                 nodeWasModified = true;
