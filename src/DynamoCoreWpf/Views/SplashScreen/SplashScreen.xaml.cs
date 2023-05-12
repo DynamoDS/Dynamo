@@ -143,18 +143,10 @@ namespace Dynamo.UI.Views
             if (webView != null)
             {
                 webView.NavigationCompleted -= WebView_NavigationCompleted;
+                webView.Focus();
+                System.Windows.Forms.SendKeys.SendWait("{TAB}");
             }
-            OnRequestDynamicSplashScreen();
-
-            this.webView.Focus();            
-            System.Windows.Forms.SendKeys.SendWait("{TAB}");
-            webView.KeyDown += WebView_KeyDown;
-        }
-
-        private void WebView_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
-        {
-            if (e.Key == Key.Escape)
-                CloseWindow();
+            OnRequestDynamicSplashScreen();           
         }
         /// <summary>
         /// Request to close SplashScreen.
@@ -303,7 +295,7 @@ namespace Dynamo.UI.Views
                 var resourceBase64 = Utilities.ResourceUtilities.ConvertToBase64(stream);
                 jsonString = jsonString.Replace("#base64BackgroundImage", $"data:image/{imageFileExtension};base64,{resourceBase64}");
             }
-
+           
             htmlString = htmlString.Replace("mainJs", jsonString);
 
             webView.NavigateToString(htmlString);
@@ -482,7 +474,6 @@ namespace Dynamo.UI.Views
             base.OnClosed(e);
 
             DynamoModel.RequestUpdateLoadBarStatus -= DynamoModel_RequestUpdateLoadBarStatus;
-            webView.KeyDown -= WebView_KeyDown;
             webView.Dispose();
             webView = null;
 
