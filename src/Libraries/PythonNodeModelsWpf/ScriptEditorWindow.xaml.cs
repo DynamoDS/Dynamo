@@ -197,7 +197,6 @@ namespace PythonNodeModelsWpf
                 editor.IsModified = !IsSaved;
 
                 dynamoView.DockWindowInSideBar(this, NodeModel, titleBar);
-                //CachedEngine = NodeModel.EngineName;
 
                 Close();
             }
