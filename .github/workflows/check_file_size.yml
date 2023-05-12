@@ -1,0 +1,18 @@
+name: Check file size
+on: pull_request
+
+jobs:
+  check_file_size:
+    name: Check file size
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Get changed files
+        id: get_changed_files
+        uses: tj-actions/changed-files@v35
+      - name: Check file size
+        run: |
+            for file in ${{ steps.get_changed_files.outputs.all_changed_files }}; do
+              [[ -n $(find ${file} -type f -size +50M) ]] && { echo "❌ $file exceeds file size limit"; exit 1; } || echo "✅ $file"
+            done
