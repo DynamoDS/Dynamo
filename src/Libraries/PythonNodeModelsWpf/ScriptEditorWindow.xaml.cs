@@ -457,7 +457,6 @@ namespace PythonNodeModelsWpf
 
         private void OnRunClicked(object sender, RoutedEventArgs e)
         {
-            originalScript = editText.Text;
             NodeModel.EngineName = CachedEngine;
             UpdateScript(editText.Text);
             if (dynamoViewModel.HomeSpace.RunSettings.RunType != RunType.Automatic)
