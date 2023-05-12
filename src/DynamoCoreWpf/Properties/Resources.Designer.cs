@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Dynamo.Wpf.Properties {
-    using System;
-    
-    
+namespace Dynamo.Wpf.Properties
+{
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -19,7 +19,7 @@ namespace Dynamo.Wpf.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -2738,15 +2738,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Extensions.
-        /// </summary>
-        public static string ExtensionsViewTitle {
-            get {
-                return ResourceManager.GetString("ExtensionsViewTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to All Files ({0})|{0}.
         /// </summary>
         public static string FileDialogAllFiles {
@@ -3962,6 +3953,15 @@ namespace Dynamo.Wpf.Properties {
         public static string LearnMore {
             get {
                 return ResourceManager.GetString("LearnMore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to See the console log for the details of the import failure..
+        /// </summary>
+        public static string LibraryLoadFailureMessageSuffix {
+            get {
+                return ResourceManager.GetString("LibraryLoadFailureMessageSuffix", resourceCulture);
             }
         }
         
@@ -6633,6 +6633,14 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("PreferencesGrahicHelpersScaleTooltip", resourceCulture);
             }
         }
+
+        ///   Looks up a localized string similar to Preferences must be closed before you proceed. All changes saved automatically..
+        /// </summary>
+        public static string PreferencesMustBeClosedMessage {
+            get {
+                return ResourceManager.GetString("PreferencesMustBeClosedMessage", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Default Ranking Method.
@@ -8430,6 +8438,15 @@ namespace Dynamo.Wpf.Properties {
         public static string ShowWiresPopupMenuItem {
             get {
                 return ResourceManager.GetString("ShowWiresPopupMenuItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SideBar Panel.
+        /// </summary>
+        public static string SideBarPanelViewTitle {
+            get {
+                return ResourceManager.GetString("SideBarPanelViewTitle", resourceCulture);
             }
         }
         

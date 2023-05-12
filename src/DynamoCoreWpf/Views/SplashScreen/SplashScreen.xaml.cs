@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Input;
 using System.Xml.Serialization;
 using Dynamo.Configuration;
 using Dynamo.Controls;
@@ -144,8 +145,17 @@ namespace Dynamo.UI.Views
                 webView.NavigationCompleted -= WebView_NavigationCompleted;
             }
             OnRequestDynamicSplashScreen();
+
+            this.webView.Focus();            
+            System.Windows.Forms.SendKeys.SendWait("{TAB}");
+            webView.KeyDown += WebView_KeyDown;
         }
 
+        private void WebView_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+                CloseWindow();
+        }
         /// <summary>
         /// Request to close SplashScreen.
         /// </summary>
@@ -472,6 +482,7 @@ namespace Dynamo.UI.Views
             base.OnClosed(e);
 
             DynamoModel.RequestUpdateLoadBarStatus -= DynamoModel_RequestUpdateLoadBarStatus;
+            webView.KeyDown -= WebView_KeyDown;
             webView.Dispose();
             webView = null;
 

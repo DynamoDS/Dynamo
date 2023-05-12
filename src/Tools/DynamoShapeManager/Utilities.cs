@@ -453,6 +453,10 @@ namespace DynamoShapeManager
                 {
                     message += $"external error code {sehex.ErrorCode}";
                 }
+                if (ex.InnerException is SEHException sehex2)
+                {
+                    message += $"external error code {sehex2.ErrorCode}";
+                }
                 Console.WriteLine(message);
                 throw new Exception(message);
             }

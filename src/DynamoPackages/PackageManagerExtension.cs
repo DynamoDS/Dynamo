@@ -1,9 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Reflection;
-using Dynamo.Configuration;
 using Dynamo.Extensions;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
@@ -357,7 +355,8 @@ namespace Dynamo.PackageManager
                 {
                     // Is our host in the list?
                     // If not, is any other host in the list?
-                    return x.host_dependencies != null && !x.host_dependencies.Contains(Host) && otherHosts.Any(y => x.host_dependencies.Contains(y));
+                    // Also, check if any dependency contains the hostname or vice-versa.
+                    return x.host_dependencies != null && !x.host_dependencies.Contains(Host) && !x.host_dependencies.Any(y => Host.Contains(y)) && otherHosts.Any(y => x.host_dependencies.Contains(y));
                 });
             }
 

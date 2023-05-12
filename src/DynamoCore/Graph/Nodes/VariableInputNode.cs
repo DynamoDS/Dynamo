@@ -185,7 +185,7 @@ namespace Dynamo.Graph.Nodes
                 model.InPorts.Remove(port);
                 MarkNodeDirty();
             }
-            
+
         }
 
         /// <summary>
@@ -271,8 +271,8 @@ namespace Dynamo.Graph.Nodes
         /// <param name="context">save context</param>
         public void DeserializeCore(XmlElement element, SaveContext context)
         {
-            int amt = Convert.ToInt32(element.Attributes["inputcount"].Value);
-            SetNumInputs(amt);
+            XmlAttribute inputCount = element.Attributes["inputcount"];
+            SetNumInputs(inputCount == null ? 1 : Convert.ToInt32(inputCount.Value));
         }
 
         #endregion

@@ -13,6 +13,9 @@ namespace NodeDocumentationMarkdownGenerator.Verbs
         public string InputMdDirectory { get; set; }
         [Option('m', "maxlength", HelpText = "Max length of the base file name before renaming to a shorter length (~56-60 characters) base file name.", Required = false, Default = 65)]
         public int MaxLength { get; set; }
+        [Option('v', "verbose", HelpText = "Log more info, and save a log of renamed files to disk.", Required = false, Default = true)]
+        public bool Verbose { get; set; }
+
         [Usage(ApplicationAlias = "Dynamo docs generator")]
         public static IEnumerable<Example> Examples
         {

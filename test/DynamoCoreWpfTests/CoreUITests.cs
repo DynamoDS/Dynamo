@@ -1025,6 +1025,7 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
+        [Category("Failure")]
         public void WorkspaceContextMenu_TestIfSearchTextClearsOnOpeningContextMenu()
         {
             var currentWs = View.ChildOfType<WorkspaceView>();

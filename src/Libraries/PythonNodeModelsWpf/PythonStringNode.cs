@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
@@ -49,8 +49,17 @@ namespace PythonNodeModelsWpf
 
             nodeModel.Disposed += NodeModel_Disposed;
 
-            nodeView.PresentationGrid.Visibility = Visibility.Visible;
-            nodeView.PresentationGrid.Children.Add(new EngineLabel(pythonStringNodeModel));
+            var engineLabel = new EngineLabel(pythonStringNodeModel);
+            engineLabel.HorizontalAlignment = HorizontalAlignment.Left;
+            engineLabel.VerticalAlignment = VerticalAlignment.Bottom;
+            engineLabel.Margin = new Thickness(14, -4, -10, 4);
+            Canvas.SetZIndex(engineLabel, 5);
+
+            nodeView.grid.Visibility = Visibility.Visible;
+            nodeView.grid.Children.Add(engineLabel);
+
+            Grid.SetColumn(engineLabel, 0);
+            Grid.SetRow(engineLabel, 3);
         }
 
         private void NodeModel_Disposed(Dynamo.Graph.ModelBase obj)

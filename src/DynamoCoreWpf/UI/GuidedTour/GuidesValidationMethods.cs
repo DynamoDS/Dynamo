@@ -3,21 +3,19 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Shapes;
 using System.Windows.Threading;
 using Dynamo.Controls;
+using Dynamo.Graph.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
 using Dynamo.PackageManager.ViewModels;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Views.GuidedTour;
+using Newtonsoft.Json.Linq;
 using static Dynamo.PackageManager.PackageManagerSearchViewModel;
 using static Dynamo.Wpf.UI.GuidedTour.Guide;
-using Dynamo.Wpf.Views.GuidedTour;
-using Dynamo.Utilities;
-using Newtonsoft.Json.Linq;
-using System.Windows.Shapes;
-using Dynamo.Graph.Nodes;
-using Dynamo.Graph.Connectors;
-using System.ComponentModel;
 
 namespace Dynamo.Wpf.UI.GuidedTour
 {
@@ -579,14 +577,14 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 if (packageDetailsWindow == null)
                     return;
                 //In order to close the Package Details tab we need first to get the Tab, then get the Close button and finally call the event to close it
-                TabItem tabitem = dynamoView.ExtensionTabItems.OfType<TabItem>().SingleOrDefault(n => n.Header.ToString() == packageDetailsName);
+                TabItem tabitem = dynamoView.SideBarPanelTabItems.OfType<TabItem>().SingleOrDefault(n => n.Header.ToString() == packageDetailsName);
                 if (tabitem == null)
                     return;
                 //Get the Close button from the PackageDetailsView
                 Button closeButton = GuideUtilities.FindChild(tabitem, closeButtonName) as Button;
                 if (closeButton == null)
                     return;
-                dynamoView.CloseExtensionTab(closeButton, null);
+                dynamoView.OnCloseRightSidePanelTab(closeButton, null);
             }
         }
 

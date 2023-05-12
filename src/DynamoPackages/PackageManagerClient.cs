@@ -14,6 +14,7 @@ namespace Dynamo.PackageManager
         #region Properties/Fields
 
         public const string PackageEngineName = "dynamo";
+        private IEnumerable<string> cachedHosts;
 
         // These were used early on in order to identify packages with binaries and python scripts
         // This is now a bona fide field in the DB so they are obsolete. 
@@ -179,12 +180,16 @@ namespace Dynamo.PackageManager
         /// </summary>
         internal virtual IEnumerable<string> GetKnownHosts()
         {
-            return FailFunc.TryExecute(() =>
+            if (cachedHosts == null)
             {
-                var hosts = new Hosts();
-                var hostsResponse = this.client.ExecuteAndDeserializeWithContent<List<String>>(hosts);
-                return hostsResponse.content;
-            }, new List<string>());
+                cachedHosts = FailFunc.TryExecute(() =>
+                {
+                    var hosts = new Hosts();
+                    var hostsResponse = this.client.ExecuteAndDeserializeWithContent<List<String>>(hosts);
+                    return hostsResponse.content;
+                }, new List<string>());
+            }
+            return cachedHosts;
         }
 
         internal bool GetTermsOfUseAcceptanceStatus()

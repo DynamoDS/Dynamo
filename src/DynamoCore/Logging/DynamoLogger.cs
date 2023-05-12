@@ -242,7 +242,7 @@ namespace Dynamo.Logging
                 cliMode = isCLIMode;
                 serviceMode = isServiceMode;
 
-                if (!testMode && !isServiceMode)
+                if ((!testMode || cliMode) && !isServiceMode)
                 {
                     StartLoggingToConsoleAndFile(logDirectory);
                 }
@@ -284,7 +284,7 @@ namespace Dynamo.Logging
 
                 if (serviceMode && (level == LogLevel.Console || level == LogLevel.File))
                 {
-                    ConsoleWriter.AppendLine("LogLevel switched to ConsoleOnly in service mode");
+                    Console.WriteLine("LogLevel switched to ConsoleOnly in service mode");
                     level = LogLevel.ConsoleOnly;
                 }
 
