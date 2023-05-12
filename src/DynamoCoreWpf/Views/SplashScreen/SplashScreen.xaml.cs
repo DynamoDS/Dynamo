@@ -295,7 +295,7 @@ namespace Dynamo.UI.Views
                 var resourceBase64 = Utilities.ResourceUtilities.ConvertToBase64(stream);
                 jsonString = jsonString.Replace("#base64BackgroundImage", $"data:image/{imageFileExtension};base64,{resourceBase64}");
             }
-           
+
             htmlString = htmlString.Replace("mainJs", jsonString);
 
             webView.NavigateToString(htmlString);
