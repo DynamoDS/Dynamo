@@ -8407,7 +8407,7 @@ namespace Dynamo.Wpf.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SideBar.
+        ///   Looks up a localized string similar to Sidebar.
         /// </summary>
         public static string SideBarPanelViewTitle {
             get {
