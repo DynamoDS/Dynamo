@@ -2367,7 +2367,7 @@ Want to publish a different package?</value>
     <value>Write note here</value>
   </data>
   <data name="SideBarPanelViewTitle" xml:space="preserve">
-    <value>SideBar Panel</value>
+    <value>SideBar</value>
   </data>
   <data name="ExtensionAdded" xml:space="preserve">
     <value>Extension tab added to the extensions side bar.</value>

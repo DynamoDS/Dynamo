@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -63,8 +64,8 @@ namespace Dynamo.ViewModels
 
         // Can the user run the graph
         private bool CanRunGraph => HomeSpace.RunSettings.RunEnabled && !HomeSpace.GraphRunInProgress;
-
         private ObservableCollection<DefaultWatch3DViewModel> watch3DViewModels = new ObservableCollection<DefaultWatch3DViewModel>();
+        private ObservableCollection<TabItem> sideBarTabItems = new ObservableCollection<TabItem>();
 
         /// <summary>
         /// An observable collection of workspace view models which tracks the model
@@ -80,6 +81,22 @@ namespace Dynamo.ViewModels
         ///  Node window's state, either DockRight or FloatingWindow.
         /// </summary>
         internal Dictionary<string, ViewExtensionDisplayMode> NodeWindowsState { get; set; } = new Dictionary<string, ViewExtensionDisplayMode>();
+
+        /// <summary>
+        /// Collection of Right SideBar tab items: view extensions and docked windows.
+        /// </summary>
+        public ObservableCollection<TabItem> SideBarTabItems
+        {
+            get
+            {
+                return sideBarTabItems;
+            }
+            set
+            {
+                sideBarTabItems = value;
+                RaisePropertyChanged(nameof(SideBarTabItems));
+            }
+        }
 
         public ObservableCollection<WorkspaceViewModel> Workspaces
         {

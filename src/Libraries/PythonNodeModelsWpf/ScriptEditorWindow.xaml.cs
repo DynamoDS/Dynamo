@@ -173,6 +173,7 @@ namespace PythonNodeModelsWpf
             editText.Text = propValue;
             originalScript = propValue;
             CachedEngine = NodeModel.EngineName;
+            EngineSelectorComboBox.ItemsSource = AvailableEngines;
             EngineSelectorComboBox.SelectedItem = CachedEngine;
 
             InstallFoldingManager();
@@ -196,7 +197,7 @@ namespace PythonNodeModelsWpf
                 editor.IsModified = !IsSaved;
 
                 dynamoView.DockWindowInSideBar(this, NodeModel, titleBar);
-                EngineSelectorComboBox.SelectedItem = NodeModel.EngineName;
+                //CachedEngine = NodeModel.EngineName;
 
                 Close();
             }
@@ -456,6 +457,8 @@ namespace PythonNodeModelsWpf
 
         private void OnRunClicked(object sender, RoutedEventArgs e)
         {
+            originalScript = editText.Text;
+            NodeModel.EngineName = CachedEngine;
             UpdateScript(editText.Text);
             if (dynamoViewModel.HomeSpace.RunSettings.RunType != RunType.Automatic)
             {
@@ -625,8 +628,8 @@ namespace PythonNodeModelsWpf
                 else // Close the right side extension tab if the close button is clicked on the docked editor. 
                 {
                     var dynamoView = Owner as DynamoView;
-                    TabItem tabItem = dynamoView.SideBarPanelTabItems.OfType<TabItem>().SingleOrDefault(n => n.Uid.ToString() == NodeModel.GUID.ToString());
-                    dynamoView.CloseRightSidePanelTab(tabItem);
+                    TabItem tabItem = dynamoViewModel.SideBarTabItems.OfType<TabItem>().SingleOrDefault(n => n.Uid.ToString() == NodeModel.GUID.ToString());
+                    dynamoView.CloseRightSideBarTab(tabItem);
                 }
             }
             catch (Exception ex)
