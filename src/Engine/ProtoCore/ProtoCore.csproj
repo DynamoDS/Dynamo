@@ -30,11 +30,7 @@
     <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="FFI\FFICppFunction.cs" />
-    <None Include="FFI\PInvokeFFI.cs" />
-    <Compile Condition=" '$(TargetFramework)' == 'net6.0' " Remove="FFI\FFICppFunction.cs" />
-    <Compile Condition=" '$(TargetFramework)' == 'net6.0' " Remove="FFI\PInvokeFFI.cs" />
-    <Compile Remove="LexUtils.cs" />
+      <Compile Remove="LexUtils.cs" />
     <Compile Remove="Parser\AssociativeGraph.cs" />
   </ItemGroup>
   <ItemGroup>
