@@ -3637,4 +3637,10 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="LibraryLoadFailureMessageSuffix" xml:space="preserve">
     <value>See the console log for the details of the import failure.</value>
   </data>
+  <data name="PreferencesRevitGenericScaleImperialUnits" xml:space="preserve">
+    <value>Imperial</value>
+  </data>
+  <data name="PreferencesRevitGenericScaleMetricUnits" xml:space="preserve">
+    <value>Metric</value>
+  </data>
 </root>

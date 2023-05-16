@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Dynamo.Wpf.Properties
-{
-
-
+namespace Dynamo.Wpf.Properties {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -6633,7 +6633,8 @@ namespace Dynamo.Wpf.Properties
                 return ResourceManager.GetString("PreferencesGrahicHelpersScaleTooltip", resourceCulture);
             }
         }
-
+        
+        /// <summary>
         ///   Looks up a localized string similar to Preferences must be closed before you proceed. All changes saved automatically..
         /// </summary>
         public static string PreferencesMustBeClosedMessage {
@@ -6666,6 +6667,24 @@ namespace Dynamo.Wpf.Properties
         public static string PreferencesPackageManagerSettingsTab {
             get {
                 return ResourceManager.GetString("PreferencesPackageManagerSettingsTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Imperial.
+        /// </summary>
+        public static string PreferencesRevitGenericScaleImperialUnits {
+            get {
+                return ResourceManager.GetString("PreferencesRevitGenericScaleImperialUnits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Metric.
+        /// </summary>
+        public static string PreferencesRevitGenericScaleMetricUnits {
+            get {
+                return ResourceManager.GetString("PreferencesRevitGenericScaleMetricUnits", resourceCulture);
             }
         }
         

@@ -195,6 +195,8 @@ namespace Dynamo.ViewModels
                     selectedUnits = value;
                     RaisePropertyChanged(nameof(SelectedUnits));
 
+                    if (UseRevitScaleUnits) return;
+
                     var result = Enum.TryParse(selectedUnits, out Configurations.Units currentUnit);
                     if (!result) return;
 
@@ -758,17 +760,60 @@ namespace Dynamo.ViewModels
                 preferenceSettings.UseRevitScaleUnits = value;
                 RaisePropertyChanged(nameof(EnableManualScaleOverrides));
                 RaisePropertyChanged(nameof(UseRevitScaleUnits));
-                                
+                RaisePropertyChanged(nameof(RevitGenericScaleUnits));
+
                 var revitUnits = preferenceSettings.CurrentRevitUnits;
                 var result = Enum.TryParse(preferenceSettings.GraphicScaleUnit, out Configurations.Units dynamoUnits);
                 if (!result) return;
 
-                var unitsToUse = value ? revitUnits : dynamoUnits;
+                var unitsToUse = value ? GetTransformedRevitUnits(revitUnits) : dynamoUnits;
 
                 if (Configurations.SupportedUnits.TryGetValue(unitsToUse, out double units))
                 {
                     preferenceSettings.GridScaleFactor = (float)units;
                     dynamoViewModel.UpdateGraphicHelpersScaleCommand.Execute(null);
+                }
+            }
+        }
+
+        // Perform unit reverse conversion to create a uniform grid for any Revit units
+        private Configurations.Units GetTransformedRevitUnits(Configurations.Units revitUnits)
+        {
+            if(revitUnits == Configurations.Units.Millimeters)
+            {
+                return Configurations.Units.Meters;
+            }
+            else if(revitUnits == Configurations.Units.Centimeters)
+            {
+                return Configurations.Units.Centimeters;
+            }
+            else if (revitUnits == Configurations.Units.Meters)
+            {
+                return Configurations.Units.Millimeters;
+            }
+            else if (revitUnits == Configurations.Units.Inches)
+            {
+                return Configurations.Units.Feet;
+            }
+            else
+            {
+                return revitUnits;
+            }
+        }
+
+        public string RevitGenericScaleUnits
+        {
+            get
+            {
+                if (preferenceSettings.CurrentRevitUnits == Configurations.Units.Feet
+                    || preferenceSettings.CurrentRevitUnits == Configurations.Units.Inches
+                    || preferenceSettings.CurrentRevitUnits == Configurations.Units.Miles)
+                {
+                    return Res.PreferencesRevitGenericScaleImperialUnits;
+                }
+                else
+                {
+                    return Res.PreferencesRevitGenericScaleMetricUnits;
                 }
             }
         }
@@ -982,9 +1027,18 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                // HostAnaltyicsInfo is not set when this is invoked??
+                // HostAnalyticsInfo is not set when this is invoked??
                 //return this.dynamoViewModel.Model.HostAnalyticsInfo.HostName.Equals("Dynamo Revit");
-                return this.dynamoViewModel.Model.HostName.Equals("Dynamo Revit");
+                var host = this.dynamoViewModel.Model.HostAnalyticsInfo.HostName;
+
+                if (host != null)
+                {
+                    return host.Equals("Dynamo Revit");
+                }
+                else
+                {
+                    return this.dynamoViewModel.Model.HostName.Equals("Dynamo Revit");
+                }
             }
         }
 
@@ -1267,6 +1321,7 @@ namespace Dynamo.ViewModels
         public PreferencesViewModel(DynamoViewModel dynamoViewModel)
         {
             this.preferenceSettings = dynamoViewModel.PreferenceSettings;
+            this.preferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
             this.pythonScriptEditorTextOptions = dynamoViewModel.PythonScriptEditorTextOptions;
             this.dynamoViewModel = dynamoViewModel;
 
@@ -1354,6 +1409,18 @@ namespace Dynamo.ViewModels
 
             PropertyChanged += Model_PropertyChanged;
             InitializeCommands();
+        }
+
+        private void PreferenceSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            var property = e.PropertyName;
+            if (property.Equals(nameof(preferenceSettings.CurrentRevitUnits)))
+            {
+                // Forces update to revit units
+                // The (revit) units are set after the DynamoViewModel has been initialized and the grid scaled up or down
+                // The units are set inside the preferenceSettings, so we are listening for when this happens to set the scale
+                UseRevitScaleUnits = UseRevitScaleUnits;
+            }
         }
 
         public event EventHandler<PythonTemplatePathEventArgs> RequestShowFileDialog;
@@ -1468,6 +1535,7 @@ namespace Dynamo.ViewModels
         internal virtual void UnsubscribeAllEvents()
         {
             PropertyChanged -= Model_PropertyChanged;
+            this.preferenceSettings.PropertyChanged -= PreferenceSettings_PropertyChanged;
             PythonEngineManager.Instance.AvailableEngines.CollectionChanged -= PythonEnginesChanged;
         }
 
