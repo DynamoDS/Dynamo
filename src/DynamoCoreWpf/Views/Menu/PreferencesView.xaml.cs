@@ -16,7 +16,6 @@ using Dynamo.Core;
 using Dynamo.Logging;
 using Dynamo.UI;
 using Dynamo.ViewModels;
-using static Dynamo.UI.Controls.DynamoToolTip;
 using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.Wpf.Views
