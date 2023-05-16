@@ -68,12 +68,12 @@ namespace Dynamo.ViewModels
         private ObservableCollection<TabItem> sideBarTabItems = new ObservableCollection<TabItem>();
 
         /// <summary>
-        /// An observable collection of workspace view models which tracks the model
+        /// An observable collection of workspace view models which tracks the model.
         /// </summary>
         private ObservableCollection<WorkspaceViewModel> workspaces = new ObservableCollection<WorkspaceViewModel>();
 
         /// <summary>
-        /// Set of node window id's that are currently docked in right side sidebar
+        /// Set of node window id's that are currently docked in right side sidebar.
         /// </summary>
         internal HashSet<string> DockedNodeWindows { get; set; } = new HashSet<string>();
 
