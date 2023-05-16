@@ -469,9 +469,9 @@ namespace Dynamo.Controls
         /// <summary>
         /// Dock the window to right side bar panel.
         /// </summary>
-        /// <param name="window">the window which needs to be docked</param>
-        /// <param name="nodeModel">nodemodel if it is a node window</param>
-        /// <param name="hideUIElement">Any UI element to hide after docking it in the right side panel(like the toolbar).</param>
+        /// <param name="window">The window that needs to be docked</param>
+        /// <param name="nodeModel">NodeModel, if it is a node window</param>
+        /// <param name="hideUIElement">Any UI element to hide after docking it in the right sidebar(like the toolbar).</param>
         /// <returns></returns>
         internal TabItem DockWindowInSideBar(Window window, NodeModel nodeModel = null, UIElement hideUIElement = null)
         {
@@ -513,7 +513,7 @@ namespace Dynamo.Controls
 
             if (nodeModel != null)
             {
-                dynamoViewModel.CurrentDockedWindows.Add(window.Uid);
+                dynamoViewModel.DockedNodeWindows.Add(window.Uid);
                 dynamoViewModel.NodeWindowsState[window.Uid] = ViewExtensionDisplayMode.DockRight;
             }
 
@@ -557,7 +557,7 @@ namespace Dynamo.Controls
                     viewExtensionBase.Closed();
                 }
 
-                NodeModel nodeModel = dynamoViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID.ToString() == tabitem.Uid.ToString());
+                NodeModel nodeModel = dynamoViewModel.GetDockedWindowNodeModel(tabitem.Uid);
 
                 if (nodeModel is PythonNode pythonNode)
                 {
@@ -572,9 +572,9 @@ namespace Dynamo.Controls
 
                 CloseRightSideBarTab(tabitem);
 
-                if (dynamoViewModel.CurrentDockedWindows.Contains(tabitem.Uid))
+                if (dynamoViewModel.DockedNodeWindows.Contains(tabitem.Uid))
                 {
-                    dynamoViewModel.CurrentDockedWindows.Remove(tabitem.Uid);
+                    dynamoViewModel.DockedNodeWindows.Remove(tabitem.Uid);
                 }
             }
             catch (Exception ex)
@@ -636,7 +636,7 @@ namespace Dynamo.Controls
                 var tabName = tabItem.Header.ToString();
 
                 // If docked window is a node window, undock the window and call the action on the node. 
-                if (dynamoViewModel.CurrentDockedWindows.Contains(tabItem.Uid))
+                if (dynamoViewModel.DockedNodeWindows.Contains(tabItem.Uid))
                 {
                     UndockWindow(tabItem);
                     Logging.Analytics.TrackEvent(
@@ -701,7 +701,7 @@ namespace Dynamo.Controls
         /// <param name="tabItem">Tab item to be undocked</param>
         internal void UndockWindow(TabItem tabItem)
         {
-            NodeModel nodeModel = dynamoViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID.ToString() == tabItem.Uid.ToString());
+            NodeModel nodeModel = dynamoViewModel.GetDockedWindowNodeModel(tabItem.Uid);
 
             dynamoViewModel.NodeWindowsState[tabItem.Uid] = ViewExtensionDisplayMode.FloatingWindow;
 
@@ -710,7 +710,7 @@ namespace Dynamo.Controls
             {
                 var pythonNode = nodeModel as PythonNode;
                 Window window = tabItem.Tag as Window;
-                var textEditor = window.FindName("editText") as ICSharpCode.AvalonEdit.TextEditor;
+                var textEditor = window.FindName("editText") as TextEditor;
 
                 if (textEditor.IsModified)
                 {
@@ -722,7 +722,7 @@ namespace Dynamo.Controls
             }
 
             CloseRightSideBarTab(tabItem);
-            dynamoViewModel.CurrentDockedWindows.Remove(tabItem.Uid);
+            dynamoViewModel.DockedNodeWindows.Remove(tabItem.Uid);
         }
 
         /// <summary>

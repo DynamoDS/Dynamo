@@ -185,7 +185,7 @@ namespace PythonNodeModelsWpf
                     {
                         editWindow = new ScriptEditorWindow(dynamoViewModel, pythonNodeModel, pythonNodeView, ref editorWindowRect);
 
-                        if (pythonNodeModel.ScriptContentSaved)
+                        if (pythonNodeModel.ScriptContentSaved || sender == null)
                         {
                             editWindow.Initialize(workspaceModel.Guid, pythonNodeModel.GUID, "ScriptContent", pythonNodeModel.Script);
                         }
@@ -230,7 +230,7 @@ namespace PythonNodeModelsWpf
         private bool IsEditorCurrentlyDocked()
         {
             var nodemodel = pythonNodeModel as NodeModel;
-            return dynamoViewModel.CurrentDockedWindows.Contains(nodemodel.GUID.ToString());
+            return dynamoViewModel.DockedNodeWindows.Contains(nodemodel.GUID.ToString());
         }
 
         private void EditScriptContent(string text)
@@ -247,7 +247,10 @@ namespace PythonNodeModelsWpf
                     if (dynamoView != null && IsEditorCurrentlyDocked())
                     {
                         TabItem tabItem = dynamoViewModel.SideBarTabItems.OfType<TabItem>().SingleOrDefault(n => n.Uid.ToString() == pythonNodeModel.GUID.ToString());
-                        tabItem.Header = pythonNodeModel.Name;
+                        if (tabItem != null)
+                        {
+                            tabItem.Header = pythonNodeModel.Name;
+                        }
                     }
                     break;
             }

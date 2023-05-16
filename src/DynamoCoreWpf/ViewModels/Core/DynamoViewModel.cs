@@ -75,7 +75,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Set of node window id's that are currently docked in right side sidebar
         /// </summary>
-        internal HashSet<string> CurrentDockedWindows { get; set; } = new HashSet<string>();
+        internal HashSet<string> DockedNodeWindows { get; set; } = new HashSet<string>();
 
         /// <summary>
         ///  Node window's state, either DockRight or FloatingWindow.
@@ -1485,6 +1485,23 @@ namespace Dynamo.ViewModels
             {
                 RecentFiles.RemoveRange(maxNumRecentFiles, RecentFiles.Count - maxNumRecentFiles);
             }
+        }
+
+        // Get the nodemodel if a node is present in any open workspace.
+        internal NodeModel GetDockedWindowNodeModel(string tabId)
+        {
+            var workspaces = Model.Workspaces;
+            NodeModel nodeModel = null;
+
+            foreach (WorkspaceModel workspace in workspaces)
+            {
+                nodeModel = workspace.Nodes.FirstOrDefault(x => x.GUID.ToString() == tabId);
+                if (nodeModel != null)
+                {
+                    return nodeModel;
+                }
+            }
+            return nodeModel;
         }
 
         /// <summary>

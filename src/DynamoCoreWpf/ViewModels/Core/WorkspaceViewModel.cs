@@ -8,6 +8,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using Dynamo.Configuration;
@@ -25,8 +26,10 @@ using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoUtilities;
+using ICSharpCode.AvalonEdit;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PythonNodeModels;
 using ViewModels.Core;
 using Function = Dynamo.Graph.Nodes.CustomNodes.Function;
 
@@ -1329,8 +1332,37 @@ namespace Dynamo.ViewModels
             }
             else
             {
+                // When closing the custom node workspace, close any docked python script windows if there are no unsaved changes.
+                // Show warning message on the script editor if it has unsaved changes.
+                foreach (var node in Nodes)
+                {
+                    var id = node.NodeModel.GUID.ToString();
+                    if (DynamoViewModel.DockedNodeWindows.Contains(id))
+                    {
+                        var tabItem = DynamoViewModel.SideBarTabItems.OfType<TabItem>().SingleOrDefault(n => n.Uid.ToString() == id);
+                        NodeModel nodeModel = DynamoViewModel.GetDockedWindowNodeModel(tabItem.Uid);
+
+                        if (nodeModel is PythonNode pythonNode)
+                        {
+                            var editor = (tabItem.Content as Grid).ChildOfType<TextEditor>();
+                            if (editor != null && editor.IsModified)
+                            {
+                                pythonNode.OnWarnUserScript();
+                                tabItem.Focus();
+                                return;
+                            }
+                            pythonNode.Dispose();
+                        }
+
+                        DynamoViewModel.SideBarTabItems.Remove(tabItem);
+                        DynamoViewModel.DockedNodeWindows.Remove(id);
+                    }
+                }
+
                 if (!Model.HasUnsavedChanges || DynamoViewModel.AskUserToSaveWorkspaceOrCancel(Model))
+                {
                     DynamoViewModel.Model.RemoveWorkspace(Model);
+                }
             }
         }
 
