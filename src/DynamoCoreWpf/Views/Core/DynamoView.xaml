@@ -113,7 +113,7 @@
                     Modifiers="Control"
                     Command="{Binding Path=DataContext.ShowOpenDialogAndOpenResultCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="I"
-                    Modifiers="Control"
+                    Modifiers="Control+Shift"
                     Command="{Binding Path=DataContext.ShowInsertDialogAndInsertResultCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="H"
                     Modifiers="Control"
@@ -344,11 +344,11 @@
                         <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuInsert}"
                                   Command="{Binding ShowInsertDialogAndInsertResultCommand}"
                                   Name="insertButton"
-                                  InputGestureText="Ctrl + I">
+                                  InputGestureText="Ctrl + Shift + I">
                         </MenuItem>
                         <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuRecentFiles}"
                                   ItemsSource="{Binding RecentFiles}">
-                            <MenuItem.ItemContainerStyle>
+                            <MenuItem.ItemContainerStyle>   
                                 <Style TargetType="MenuItem">
                                     <Setter Property="Header"
                                             Value="{Binding Converter={StaticResource FilePathDisplayConverter}}" />
