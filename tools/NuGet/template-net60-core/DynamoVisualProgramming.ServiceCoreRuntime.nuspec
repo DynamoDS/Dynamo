@@ -17,6 +17,8 @@
         </dependencies>
     </metadata>
     <files>
-        <file src="**" target="lib\net6.0" />
+        <!--we expect that the base path is bin\NET60_Linux\Release\-->
+        <file src="..\..\NET60_Windows\Release\**" target="lib\net6.0\windows\" />
+        <file src="**" target="lib\net6.0\linux\" />
     </files>
 </package>
