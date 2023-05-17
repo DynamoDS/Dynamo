@@ -577,14 +577,14 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 if (packageDetailsWindow == null)
                     return;
                 //In order to close the Package Details tab we need first to get the Tab, then get the Close button and finally call the event to close it
-                TabItem tabitem = dynamoView.SideBarPanelTabItems.OfType<TabItem>().SingleOrDefault(n => n.Header.ToString() == packageDetailsName);
+                TabItem tabitem = stepInfo.DynamoViewModelStep.SideBarTabItems.OfType<TabItem>().SingleOrDefault(n => n.Header.ToString() == packageDetailsName);
                 if (tabitem == null)
                     return;
                 //Get the Close button from the PackageDetailsView
                 Button closeButton = GuideUtilities.FindChild(tabitem, closeButtonName) as Button;
                 if (closeButton == null)
                     return;
-                dynamoView.OnCloseRightSidePanelTab(closeButton, null);
+                dynamoView.OnCloseRightSideBarTab(closeButton, null);
             }
         }
 

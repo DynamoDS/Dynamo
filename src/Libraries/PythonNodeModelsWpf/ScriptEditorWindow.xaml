@@ -350,8 +350,8 @@
                                    Source="/PythonNodeModelsWpf;component/Resources/zoom-out_hover.png" />
                         </Button.Resources>
                     </Button>
-                    <ComboBox ItemsSource="{Binding AvailableEngines, RelativeSource={RelativeSource AncestorType=dww:ModelessChildWindow}}"
-                              SelectedItem="{Binding CachedEngine, Mode=TwoWay}"
+                    <ComboBox SelectedItem="{Binding CachedEngine, RelativeSource={RelativeSource AncestorType=dww:ModelessChildWindow}, Mode=TwoWay}"
+                              ItemsSource="{Binding AvailableEngines, RelativeSource={RelativeSource AncestorType=dww:ModelessChildWindow}}"
                               SelectionChanged="OnEngineChanged"
                               Style="{StaticResource DropDown}"
                               Name="EngineSelectorComboBox"
