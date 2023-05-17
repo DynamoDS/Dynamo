@@ -639,14 +639,11 @@ namespace Dynamo.Controls
                 if (dynamoViewModel.DockedNodeWindows.Contains(tabItem.Uid))
                 {
                     UndockWindow(tabItem);
-                    Logging.Analytics.TrackEvent(
-                                   Actions.Undock,
-                                   Categories.PythonOperations, tabName);
                 }
                 else// if it an extension, undock the extension and update settings.
                 {
                     UndockExtension(tabItem);
-                    Logging.Analytics.TrackEvent(
+                    Analytics.TrackEvent(
                                    Actions.Undock,
                                    Categories.ViewExtensionOperations, tabName);
                 }
@@ -719,6 +716,10 @@ namespace Dynamo.Controls
                 else {
                     pythonNode.OnNodeEdited(null);
                 }
+
+                Analytics.TrackEvent(
+                               Actions.Undock,
+                               Categories.PythonOperations, tabItem.Header.ToString());
             }
 
             CloseRightSideBarTab(tabItem);

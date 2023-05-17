@@ -43,6 +43,8 @@ using Dynamo.Wpf.ViewModels.Core.Converters;
 using Dynamo.Wpf.ViewModels.FileTrust;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoUtilities;
+using ICSharpCode.AvalonEdit;
+using PythonNodeModels;
 using ISelectable = Dynamo.Selection.ISelectable;
 using WpfResources = Dynamo.Wpf.Properties.Resources;
 
@@ -1502,6 +1504,40 @@ namespace Dynamo.ViewModels
                 }
             }
             return nodeModel;
+        }
+
+        /// <summary>
+        /// Closes any docked python script windows if there are no unsaved changes.
+        /// Show warning message on the script editor if it has unsaved changes.
+        /// </summary>
+        /// <param name="nodes">Nodes in the workspace</param>
+        internal bool CanCloseDockedNodeWindows(ObservableCollection<NodeViewModel> nodes)
+        {
+            foreach (var node in nodes)
+            {
+                var id = node.NodeModel.GUID.ToString();
+                if (DockedNodeWindows.Contains(id))
+                {
+                    var tabItem = SideBarTabItems.OfType<TabItem>().SingleOrDefault(n => n.Uid.ToString() == id);
+                    NodeModel nodeModel = GetDockedWindowNodeModel(tabItem.Uid);
+
+                    if (nodeModel is PythonNode pythonNode)
+                    {
+                        var editor = (tabItem.Content as Grid).ChildOfType<TextEditor>();
+                        if (editor != null && editor.IsModified)
+                        {
+                            pythonNode.OnWarnUserScript();
+                            tabItem.Focus();
+                            return false;
+                        }
+                        pythonNode.Dispose();
+                    }
+
+                    SideBarTabItems.Remove(tabItem);
+                    DockedNodeWindows.Remove(id);
+                }
+            }
+            return true;
         }
 
         /// <summary>

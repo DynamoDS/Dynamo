@@ -44,6 +44,14 @@ namespace PythonNodeModelsWpf
 
             nodeView.MainContextMenu.Items.Add(editWindowItem);
             editWindowItem.Click += EditScriptContent;
+
+            var previousdelegates = pythonNodeModel.GetInvocationListForEditAction();
+
+            foreach (Delegate d in previousdelegates)
+            {
+                pythonNodeModel.EditNode -= (Action<string>)d;
+            }
+
             pythonNodeModel.EditNode += EditScriptContent;
             pythonNodeModel.PropertyChanged += NodeModel_PropertyChanged;
 

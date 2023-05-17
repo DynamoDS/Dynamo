@@ -198,6 +198,10 @@ namespace PythonNodeModelsWpf
 
                 dynamoView.DockWindowInSideBar(this, NodeModel, titleBar);
 
+                Analytics.TrackEvent(
+                               Actions.Dock,
+                               Categories.PythonOperations, NodeModel.Name);
+
                 Close();
             }
             catch (Exception ex)
