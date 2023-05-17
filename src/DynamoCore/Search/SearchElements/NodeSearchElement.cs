@@ -9,7 +9,7 @@ namespace Dynamo.Search.SearchElements
     /// <summary>
     ///     Base class for all Dynamo Node search elements.
     /// </summary>
-    public abstract class NodeSearchElement : ISearchEntry, ISource<NodeModel>
+    public abstract class NodeSearchElement : ISearchEntry, ISource<NodeModel>, ICloneable
     {
         protected string iconName;
 
@@ -282,6 +282,14 @@ namespace Dynamo.Search.SearchElements
         {
             inputParameters.Add(Tuple.Create(String.Empty, Properties.Resources.NoneString));
             return inputParameters;
+        }
+
+        /// <summary>
+        ///    Clones the NodeSearchElement
+        /// </summary>
+        public object Clone()
+        {
+            return this.MemberwiseClone();
         }
     }
 

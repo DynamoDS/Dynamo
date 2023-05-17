@@ -1,4 +1,4 @@
-@DYNAMO v.2.18.0 © 2022 Autodesk, Inc.  All rights reserved.
+@DYNAMO v.2.19.0 © 2023 Autodesk, Inc.  All rights reserved.
 Dynamo License
 
 Those portions created by Ian are provided with the following copyright:
@@ -256,7 +256,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 License Note
 This license is based on the open source zlib/libpng license (https://opensource.org/licenses/zlib-license.html). The idea was to keep the license as simple as possible to encourage use of NUnit in free and commercial applications and libraries, but to keep the source code together and to give credit to the NUnit contributors for their efforts. While this license allows shipping NUnit in source and binary form, if shipping a NUnit variant is the sole purpose of your product, please let us know (cpoole@pooleconsulting.com ).
 
-Moq v.4.2.1:
+Moq v.4.18.4:
 https://github.com/moq/moq4/blob/master/License.txt/
 BSD 3-Clause License
 Copyright (c) 2007, Clarius Consulting, Manas Technology Solutions, InSTEDD, and Contributors. All rights reserved.

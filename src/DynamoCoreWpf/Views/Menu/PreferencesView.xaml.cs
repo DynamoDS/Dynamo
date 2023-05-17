@@ -30,6 +30,7 @@ namespace Dynamo.Wpf.Views
         private List<GroupStyleItem> originalCustomGroupStyles { get; set; }
 
         private Button colorButtonSelected;
+        private bool groupStyleItemExisting = false;
 
         // Used for tracking the manage package command event
         // This is not a command any more but we keep it
@@ -37,7 +38,7 @@ namespace Dynamo.Wpf.Views
         private IDisposable managePackageCommandEvent;
 
         //This list will be passed everytime that we create a new GroupStyle so the custom colors can remain
-        private ObservableCollection<CustomColorItem> stylesCustomColors;
+        internal ObservableCollection<CustomColorItem> stylesCustomColors;
 
         /// <summary>
         /// Storing the original custom styles before the user could update them
@@ -94,6 +95,7 @@ namespace Dynamo.Wpf.Views
             stylesCustomColors = new ObservableCollection<CustomColorItem>();
             UpdateZoomScaleValueLabel(LibraryZoomScalingSlider, lblZoomScalingValue);
             UpdateZoomScaleValueLabel(PythonZoomScalingSlider, lblPythonScalingValue);
+            dynamoView.EnableEnvironment(false);
         }
 
         /// <summary>
@@ -167,6 +169,7 @@ namespace Dynamo.Wpf.Views
 
             dynViewModel.PreferencesViewModel.TrustedPathsViewModel.PropertyChanged -= TrustedPathsViewModel_PropertyChanged;
             dynViewModel.CheckCustomGroupStylesChanges(originalCustomGroupStyles);
+            (this.Owner as DynamoView).EnableEnvironment(true);
 
             Close();
         }
@@ -262,9 +265,48 @@ namespace Dynamo.Wpf.Views
             Logging.Analytics.TrackEvent(Actions.Delete, Categories.GroupStyleOperations, nameof(GroupStyleItem));
         }
 
+        private void ColorPicker_Closed(object sender, EventArgs e)
+        {
+            var colorPicker = sender as CustomColorPicker;
+            if (colorPicker == null) return;  
+            colorPicker.Closed -= ColorPicker_Closed;
+
+            if (colorButtonSelected != null)
+            {
+                var viewModel = colorPicker.DataContext as CustomColorPickerViewModel;
+                if (viewModel == null || viewModel.ColorPickerSelectedColor == null)
+                    return;
+                colorButtonSelected.Background = new SolidColorBrush(viewModel.ColorPickerSelectedColor.Value);
+
+                //In case we are editing a Custom Style color then groupStyleItemExisting will be true and we need to set the GroupStyleItem.HexColorString
+                if (groupStyleItemExisting == true)
+                {
+                    GroupStyleItem selectedGroupStyle = (GroupStyleItem)colorButtonSelected.DataContext;
+                    selectedGroupStyle.HexColorString = viewModel.ColorPickerSelectedColor.Value.R.ToString("X2") + viewModel.ColorPickerSelectedColor.Value.G.ToString("X2") + viewModel.ColorPickerSelectedColor.Value.B.ToString("X2");
+                }
+            }
+            groupStyleItemExisting = false;
+        }
+
         private void ButtonColorPicker_Click(object sender, RoutedEventArgs e)
         {
+            ShowCustomColorPicker(sender);
+        }
+
+        private void ShowCustomColorPicker(object sender)
+        {
             var colorPicker = new CustomColorPicker();
+
+            //This section populate the CustomColorPicker custom colors with the colors defined in the custom GroupStyles
+            var customStylesColorsList = viewModel.StyleItemsList.Where(style => style.IsDefault == false);
+            foreach (var styleItem in customStylesColorsList)
+            {
+                Color color = (Color)ColorConverter.ConvertFromString("#" + styleItem.HexColorString);
+                var customColorItem = new CustomColorItem(color, string.Format("#{0},{1},{2}", color.R, color.G, color.B));
+                if (!stylesCustomColors.Contains(customColorItem))
+                    stylesCustomColors.Add(customColorItem);
+            }
+
             //This will set the custom colors list so the custom colors will remain the same for the Preferences panel (no matter if preferences is closed the list will remain).
             colorPicker.SetCustomColors(stylesCustomColors);
             if (colorPicker == null) return;
@@ -276,42 +318,17 @@ namespace Dynamo.Wpf.Views
             colorButtonSelected = sender as Button;
 
             var brushColor = (colorButtonSelected.Background as SolidColorBrush);
-            if(brushColor != null)
+            if (brushColor != null)
             {
                 //if the current color in the Group Style already exists in the CustomColorPicker then it will be selected
                 colorPicker.InitializeSelectedColor(brushColor.Color);
-            }         
-        }
-
-        private void ColorPicker_Closed(object sender, EventArgs e)
-        {
-            var colorPicker = sender as CustomColorPicker;
-            if(colorPicker == null) return;  
-            colorPicker.Closed -= ColorPicker_Closed;
-
-            if (colorButtonSelected != null)
-            {
-                var viewModel = colorPicker.DataContext as CustomColorPickerViewModel;
-                if (viewModel == null || viewModel.ColorPickerSelectedColor == null)
-                    return;
-                colorButtonSelected.Background = new SolidColorBrush(viewModel.ColorPickerSelectedColor.Value);
             }
         }
 
         private void onChangedGroupStyleColor_Click(object sender, RoutedEventArgs e)
         {
-            System.Windows.Forms.ColorDialog colorDialog = new System.Windows.Forms.ColorDialog();
-
-            if (colorDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                Button colorButton = sender as Button;
-                
-                if (colorButton != null)
-                {
-                    GroupStyleItem selectedGroupStyle = (GroupStyleItem)colorButton.DataContext;
-                    selectedGroupStyle.HexColorString = colorDialog.Color.R.ToString("X2") + colorDialog.Color.G.ToString("X2") + colorDialog.Color.B.ToString("X2");
-                }                
-            }
+            groupStyleItemExisting = true;
+            ShowCustomColorPicker(sender);
         }
 
         private void Log(ILogMessage obj)
@@ -326,13 +343,13 @@ namespace Dynamo.Wpf.Views
         /// <param name="e"></param>
         private void OnMoreInfoClicked(object sender, RoutedEventArgs e)
         {
-            if (sender is Label lable)
+            if (sender is Label label)
             {
-                if (lable.Name == "Titleinfo")
+                if (label.Name == "MLNodeAutocompleteLabel")
                 {
                     dynViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString, UriKind.Relative)));
                 }
-                else if (lable.Name == "TrustWarningInfoLabel")
+                else if (label.Name == "TrustWarningInfoLabel")
                 {
                     dynViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Wpf.Properties.Resources.FileTrustWarningDocumentationUriString, UriKind.Relative)));
 
@@ -446,11 +463,6 @@ namespace Dynamo.Wpf.Views
                         this, ex.Message, Res.ImportSettingsFailedMessage, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 }
             }            
-        }
-
-        private void OnMoreInfoClicked(object sender, MouseButtonEventArgs e)
-        {
-            dynViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Dynamo.Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString, UriKind.Relative)));
         }
 
         private void exportTextBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

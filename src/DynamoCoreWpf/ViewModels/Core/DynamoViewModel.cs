@@ -42,7 +42,6 @@ using Dynamo.Wpf.ViewModels.Core.Converters;
 using Dynamo.Wpf.ViewModels.FileTrust;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoUtilities;
-using ViewModels.Core;
 using ISelectable = Dynamo.Selection.ISelectable;
 using WpfResources = Dynamo.Wpf.Properties.Resources;
 
@@ -71,6 +70,17 @@ namespace Dynamo.ViewModels
         /// An observable collection of workspace view models which tracks the model
         /// </summary>
         private ObservableCollection<WorkspaceViewModel> workspaces = new ObservableCollection<WorkspaceViewModel>();
+
+        /// <summary>
+        /// Set of node window id's that are currently docked in right side sidebar
+        /// </summary>
+        internal HashSet<string> CurrentDockedWindows { get; set; } = new HashSet<string>();
+
+        /// <summary>
+        ///  Node window's state, either DockRight or FloatingWindow.
+        /// </summary>
+        internal Dictionary<string, ViewExtensionDisplayMode> NodeWindowsState { get; set; } = new Dictionary<string, ViewExtensionDisplayMode>();
+
         public ObservableCollection<WorkspaceViewModel> Workspaces
         {
             get { return workspaces; }
@@ -810,6 +820,8 @@ namespace Dynamo.ViewModels
                     {
                         // Return focus back to Dynamo View
                         OnRequestReturnFocusToView();
+                        // Reset state machine
+                        CurrentSpaceViewModel.CancelActiveState();
                     }
                     break;
             }
@@ -3046,10 +3058,10 @@ namespace Dynamo.ViewModels
                 {
                     Wpf.Utilities.MessageBoxService.Show(
                         Owner,
-                        ex.Message,
+                        $"{ex.Message}-{WpfResources.LibraryLoadFailureMessageSuffix}"  ,
                         Properties.Resources.LibraryLoadFailureMessageBoxTitle,
                         MessageBoxButton.OK,
-                        MessageBoxImage.Exclamation);;
+                        MessageBoxImage.Exclamation);
                 }
                 catch(DynamoServices.AssemblyBlockedException ex)
                 {
@@ -3155,8 +3167,19 @@ namespace Dynamo.ViewModels
                 Model.CurrentWorkspace.RequestRun();
                 return;
             }
+
+            var targetPath = string.Empty;
+            if (String.IsNullOrEmpty(FileTrustViewModel.DynFileDirectoryName))
+            {
+                if(!String.IsNullOrEmpty(currentWorkspaceViewModel.FileName))
+                    targetPath = Path.GetDirectoryName(currentWorkspaceViewModel.FileName);
+            }
+            else
+            {
+                targetPath = FileTrustViewModel.DynFileDirectoryName;
+            }
             if (!FileTrustViewModel.ShowWarningPopup
-                && !model.PreferenceSettings.IsTrustedLocation(FileTrustViewModel.DynFileDirectoryName)
+                && !model.PreferenceSettings.IsTrustedLocation(targetPath)
                 && (currentWorkspaceViewModel?.IsHomeSpace ?? false) && !ShowStartPage
                 && !FileTrustViewModel.AllowOneTimeTrust
                 && !model.PreferenceSettings.DisableTrustWarnings

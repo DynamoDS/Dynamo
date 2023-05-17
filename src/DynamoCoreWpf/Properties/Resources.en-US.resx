@@ -2142,8 +2142,8 @@ Do you want to install the latest Dynamo update?</value>
   <data name="EditNoteWindowTitle" xml:space="preserve">
     <value>Write note here</value>
   </data>
-  <data name="ExtensionsViewTitle" xml:space="preserve">
-    <value>Extensions</value>
+  <data name="SideBarPanelViewTitle" xml:space="preserve">
+    <value>SideBar Panel</value>
   </data>
   <data name="ExtensionAdded" xml:space="preserve">
     <value>Extension tab added to the extensions side bar.</value>
@@ -2560,10 +2560,10 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>Finished</value>
   </data>
   <data name="GroupDefaultText" xml:space="preserve">
-    <value>&lt;Double click here to edit group description&gt;</value>
+    <value>Description &lt;Double click here to edit group description&gt;</value>
   </data>
   <data name="GroupNameDefaultText" xml:space="preserve">
-    <value>&lt;Click here to edit the group title&gt;</value>
+    <value>Title &lt;Click here to edit the group title&gt;</value>
   </data>
   <data name="GroupContextMenuAddGroupToGroup" xml:space="preserve">
     <value>Add Group to This Group</value>
@@ -3333,6 +3333,9 @@ You can manage this in Preferences -&gt; Security.</value>
     <value>You can import custom settings here, which will overwrite your current settings. If you'd like to preserve a copy of your current settings, export them before importing new settings. Settings not shown in the Preferences panel will be applied once Dynamo and any host program restarts.</value>
     <comment>Import Preferences Info.</comment>
   </data>
+  <data name="PreferencesMustBeClosedMessage" xml:space="preserve">
+    <value>Preferences must be closed before you proceed. All changes saved automatically.</value>
+  </data>
   <data name="PreferencesViewNodeAutocomplete" xml:space="preserve">
     <value>Node Autocomplete</value>
     <comment>Preferences | Features | Node Autocomplete</comment>
@@ -3536,29 +3539,29 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="DynamoViewSettingLibraryZoomScale" xml:space="preserve">
     <value>Library</value>
   </data>
-  <data name="PortPropertiesPromptInputWindowTitle">
-      <value>Input Port Properties</value>
-      <comment>Input Port title</comment>
+  <data name="PortPropertiesPromptInputWindowTitle" xml:space="preserve">
+    <value>Input Port Properties</value>
+    <comment>Input Port title</comment>
   </data>
-  <data name="PortPropertiesPromptOutputWindowTitle">
-      <value>Output Port Properties</value>
-      <comment>Output Port title</comment>
+  <data name="PortPropertiesPromptOutputWindowTitle" xml:space="preserve">
+    <value>Output Port Properties</value>
+    <comment>Output Port title</comment>
   </data>
-  <data name="PortPropertiesPromptDescriptionTooltip">
-      <value>Description of port</value>
-      <comment>Description of port</comment>
+  <data name="PortPropertiesPromptDescriptionTooltip" xml:space="preserve">
+    <value>Description of port</value>
+    <comment>Description of port</comment>
   </data>
-  <data name="PortPropertiesPromptWindowDescription">
-      <value>Description</value>
-      <comment>Port Description Label</comment>
+  <data name="PortPropertiesPromptWindowDescription" xml:space="preserve">
+    <value>Description</value>
+    <comment>Port Description Label</comment>
   </data>
-  <data name="PortPropertiesPromptNameTooltip">
-      <value>Port name</value>
-      <comment>Name of port</comment>
+  <data name="PortPropertiesPromptNameTooltip" xml:space="preserve">
+    <value>Port name</value>
+    <comment>Name of port</comment>
   </data>
-    <data name="PortPropertiesPromptWindowName">
-      <value>Name</value>
-      <comment>Port Name Label</comment>
+  <data name="PortPropertiesPromptWindowName" xml:space="preserve">
+    <value>Name</value>
+    <comment>Port Name Label</comment>
   </data>
   <data name="RemovePythonPortWarningMessageBoxTitle" xml:space="preserve">
     <value>Remove port?</value>
@@ -3618,5 +3621,8 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   </data>
   <data name="CustomColorsPopupTitle" xml:space="preserve">
     <value>Custom</value>
+  </data>
+  <data name="LibraryLoadFailureMessageSuffix" xml:space="preserve">
+    <value>See the console log for the details of the import failure.</value>
   </data>
 </root>

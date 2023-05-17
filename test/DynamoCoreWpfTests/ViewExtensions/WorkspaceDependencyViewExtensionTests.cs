@@ -1,8 +1,6 @@
-﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo.Configuration;
@@ -13,8 +11,8 @@ using Dynamo.PackageManager;
 using Dynamo.Scheduler;
 using Dynamo.Utilities;
 using Dynamo.WorkspaceDependency;
-using Dynamo.Wpf.Extensions;
 using Dynamo.WorkspaceDependency.Properties;
+using Dynamo.Wpf.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
@@ -119,11 +117,11 @@ namespace DynamoCoreWpfTests
             extensionManager.Add(viewExtension);
             // Open a graph which should bring up the Workspace References view extension window with one tab
             Open(@"pkgs\Dynamo Samples\extra\CustomRenderExample.dyn");
-            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+            Assert.AreEqual(1, View.SideBarPanelTabItems.Count);
 
             Utility.DispatcherUtil.DoEvents();
-            View.CloseExtensionTab(WpfUtilities.ChildrenOfType<Button>(View.ExtensionTabItems.FirstOrDefault()).FirstOrDefault(), null);
-            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+            View.OnCloseRightSidePanelTab(WpfUtilities.ChildrenOfType<Button>(View.SideBarPanelTabItems.FirstOrDefault()).FirstOrDefault(), null);
+            Assert.AreEqual(0, View.SideBarPanelTabItems.Count);
         }
 
         /// <summary>
@@ -138,11 +136,11 @@ namespace DynamoCoreWpfTests
             extensionManager.Add(viewExtension);
             // Open a graph which should bring up the Workspace References view extension window with one tab
             Open(@"pkgs\Dynamo Samples\extra\CustomRenderExample.dyn");
-            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+            Assert.AreEqual(1, View.SideBarPanelTabItems.Count);
 
             var loadedParams = new ViewLoadedParams(View, ViewModel);
             loadedParams.CloseExtensioninInSideBar(this.viewExtension);
-            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+            Assert.AreEqual(0, View.SideBarPanelTabItems.Count);
         }
 
         /// <summary>
@@ -156,7 +154,7 @@ namespace DynamoCoreWpfTests
 
             // Open a graph which should bring up the Workspace References view extension window with one tab
             Open(@"pkgs\Dynamo Samples\extra\CustomRenderExample.dyn");
-            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+            Assert.AreEqual(1, View.SideBarPanelTabItems.Count);
 
             var loadedParams = new ViewLoadedParams(View, ViewModel);
 
@@ -167,7 +165,7 @@ namespace DynamoCoreWpfTests
             // This will un-check the workspace references menu item.
             loadedParams.CloseExtensioninInSideBar(WorkspaceReferencesExtension);
 
-            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+            Assert.AreEqual(0, View.SideBarPanelTabItems.Count);
 
             // Assert that the workspace references menu item is un-checked.
             Assert.IsFalse(WorkspaceReferencesExtension.workspaceReferencesMenuItem.IsChecked);
@@ -184,10 +182,10 @@ namespace DynamoCoreWpfTests
             extensionManager.Add(viewExtension);
             // Open a graph which should bring up the Workspace References view extension window with one tab
             Open(@"pkgs\Dynamo Samples\extra\CustomRenderExample.dyn");
-            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+            Assert.AreEqual(1, View.SideBarPanelTabItems.Count);
             var homeSpace = Model.Workspaces.First(ws => ws is HomeWorkspaceModel) as HomeWorkspaceModel;
             homeSpace.Clear();
-            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+            Assert.AreEqual(0, View.SideBarPanelTabItems.Count);
         }
 
         /// <summary>
@@ -267,12 +265,12 @@ namespace DynamoCoreWpfTests
 
             var extensionManager = View.viewExtensionManager;
 
-            var initialNum = View.ExtensionTabItems.Count;
+            var initialNum = View.SideBarPanelTabItems.Count;
 
             // Adding the workspace references extension will 
             // not add a dup tab in the extensions side bar
             extensionManager.Add(viewExtension);
-            Assert.AreEqual(initialNum, View.ExtensionTabItems.Count);
+            Assert.AreEqual(initialNum, View.SideBarPanelTabItems.Count);
         }
 
         [Test]
@@ -291,7 +289,7 @@ namespace DynamoCoreWpfTests
 
             var examplePath = Path.Combine(@"core\packageDependencyTests\PackageDependencyStates.dyn");
             Open(examplePath);
-            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+            Assert.AreEqual(1, View.SideBarPanelTabItems.Count);
 
             foreach (PackageDependencyRow packageDependencyRow in WorkspaceReferencesExtension.DependencyView.dataRows)
             {

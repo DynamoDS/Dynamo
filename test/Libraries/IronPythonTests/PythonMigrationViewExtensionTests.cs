@@ -1,12 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using Dynamo;
-using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
@@ -244,16 +242,16 @@ namespace IronPythonTests
             DispatcherUtil.DoEvents();
 
             var ironPythonDialog = this.View.GetChildrenWindowsOfType<IronPythonInfoDialog>().First();
-            var viewExtensionTabsBeforeBtnClick = this.View.ExtensionTabItems.Count;
+            var viewExtensionTabsBeforeBtnClick = this.View.SideBarPanelTabItems.Count;
             DispatcherUtil.DoEvents();
 
             ironPythonDialog.MoreInformationBtn.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-            var hasDocumentationBrowserTab = this.View.ExtensionTabItems
+            var hasDocumentationBrowserTab = this.View.SideBarPanelTabItems
                 .Any(x => x.Header.ToString() == "Documentation Browser");
             DispatcherUtil.DoEvents();
 
             // Assert
-            Assert.AreEqual(viewExtensionTabsBeforeBtnClick + 1, this.View.ExtensionTabItems.Count);
+            Assert.AreEqual(viewExtensionTabsBeforeBtnClick + 1, this.View.SideBarPanelTabItems.Count);
             Assert.IsTrue(hasDocumentationBrowserTab);
             DynamoModel.IsTestMode = true;
             DispatcherUtil.DoEvents();

@@ -31,7 +31,8 @@ namespace CoreNodeModelsWpf.Nodes
             viewNode = nodeView;
             colorPaletteNode = model;
             converter = new Converters.MediatoDSColorConverter();
-            ColorPaletteUINode = new ColorPaletteUI();
+           
+            ColorPaletteUINode = new ColorPaletteUI(viewNode.ViewModel.DynamoViewModel);
             colorPaletteViewModel = ColorPaletteUINode.DataContext as ColorPaletteViewModel;
             if(colorPaletteNode == null ) return;
 
@@ -59,6 +60,7 @@ namespace CoreNodeModelsWpf.Nodes
                 if (!isSameColor)
                 {
                     colorPaletteViewModel.SelectedColor = new SolidColorBrush(convertedModelColor);
+                    colorPaletteViewModel.SelectedColorValue = colorPaletteViewModel.SelectedColor.ToString();
                 }
             }
         }

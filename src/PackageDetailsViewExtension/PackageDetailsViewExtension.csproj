@@ -10,7 +10,7 @@
     <AssemblyName>PackageDetailsViewExtension</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-	<PackageReference Include="Greg" Version="2.3.0.2505" />
+	<PackageReference Include="Greg" Version="2.4.0.4766" />
 	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 	<PackageReference Include="RestSharp" Version="106.12.0" />
     <Reference Include="Microsoft.Practices.Prism, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">

@@ -1,12 +1,3 @@
-using Dynamo.Configuration;
-using Dynamo.DocumentationBrowser;
-using Dynamo.Interfaces;
-using Dynamo.Models;
-using Dynamo.Scheduler;
-using Dynamo.Utilities;
-using Dynamo.ViewModels;
-using Dynamo.Wpf.Extensions;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -17,6 +8,15 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo;
+using Dynamo.Configuration;
+using Dynamo.DocumentationBrowser;
+using Dynamo.Interfaces;
+using Dynamo.Models;
+using Dynamo.Scheduler;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
+using Dynamo.Wpf.Extensions;
+using NUnit.Framework;
 
 namespace DynamoCoreWpfTests
 {
@@ -154,9 +154,9 @@ namespace DynamoCoreWpfTests
             using (var viewExtension = SetupNewViewExtension())
             {
                 // Act
-                var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                var tabsBeforeExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
                 viewExtension.HandleRequestOpenDocumentationLink(externalEvent);
-                var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                var tabsAfterExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
 
                 // Assert
                 Assert.IsTrue(externalEvent.IsRemoteResource);
@@ -173,9 +173,9 @@ namespace DynamoCoreWpfTests
             using (var viewExtension = SetupNewViewExtension(true))
             {
                 // Act
-                var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                var tabsBeforeExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
                 viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
-                var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                var tabsAfterExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
                 var htmlContent = GetSidebarDocsBrowserContents();
 
                 // Assert
@@ -193,9 +193,9 @@ namespace DynamoCoreWpfTests
             var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(localDocsFileLink, UriKind.Relative));
 
             // Act
-            var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
+            var tabsBeforeExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
             this.ViewModel.OpenDocumentationLinkCommand.Execute(docsEvent);
-            var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
+            var tabsAfterExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
             var htmlContent = GetSidebarDocsBrowserContents();
 
             // Assert
@@ -213,9 +213,9 @@ namespace DynamoCoreWpfTests
             using (var viewExtension = SetupNewViewExtension(true))
             {
                 // Act
-                var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                var tabsBeforeExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
                 viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
-                var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                var tabsAfterExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
                 var htmlContent = GetSidebarDocsBrowserContents();
 
                 // Assert
@@ -239,9 +239,9 @@ namespace DynamoCoreWpfTests
                 var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(uri, UriKind.Relative));
 
                 // Act
-                var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                var tabsBeforeExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
                 viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
-                var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                var tabsAfterExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
                 var htmlContent = GetSidebarDocsBrowserContents();
 
                 // Assert
@@ -266,9 +266,9 @@ namespace DynamoCoreWpfTests
                 var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(uri, UriKind.Relative));
 
                 // Act
-                var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                var tabsBeforeExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
                 viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
-                var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                var tabsAfterExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
                 var htmlContent = GetSidebarDocsBrowserContents();
 
                 // Assert
@@ -430,9 +430,9 @@ namespace DynamoCoreWpfTests
                 var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(uri, UriKind.Relative));
 
                 // Act
-                var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                var tabsBeforeExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
                 viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
-                var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                var tabsAfterExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
                 var htmlContent = GetSidebarDocsBrowserContents();
 
                 // Assert
@@ -457,9 +457,9 @@ namespace DynamoCoreWpfTests
                 var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(uri, UriKind.Relative));
 
                 // Act
-                var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                var tabsBeforeExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
                 viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
-                var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                var tabsAfterExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
                 var htmlContent = GetSidebarDocsBrowserContents();
 
                 // Assert
@@ -516,9 +516,9 @@ namespace DynamoCoreWpfTests
             node.Name = nodeRename; // Forces original name header to appear 
             var nodeAnnotationEventArgs = new OpenNodeAnnotationEventArgs(node, this.ViewModel);
 
-            var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
+            var tabsBeforeExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
             docBrowserviewExtension.HandleRequestOpenDocumentationLink(nodeAnnotationEventArgs);
-            var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
+            var tabsAfterExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
             var htmlContent = GetSidebarDocsBrowserContents();
 
             // Assert
@@ -563,9 +563,9 @@ namespace DynamoCoreWpfTests
             node.Name = nodeRename; // Forces original name header to appear 
             var nodeAnnotationEventArgs = new OpenNodeAnnotationEventArgs(node, this.ViewModel);
 
-            var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
+            var tabsBeforeExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
             docBrowserviewExtension.HandleRequestOpenDocumentationLink(nodeAnnotationEventArgs);
-            var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
+            var tabsAfterExternalEventTrigger = this.View.SideBarPanelTabItems.Count;
             var htmlContent = GetSidebarDocsBrowserContents();
             htmlContent = htmlContent.Replace(@"%5C", "/");
 
@@ -708,6 +708,58 @@ namespace DynamoCoreWpfTests
             return GetSidebarDocsBrowserContents();
         }
 
+        [Test]
+        public void AddGraphInSpecificLocationToWorkspace()
+        {
+            var testDirectory = GetTestDirectory(ExecutingDirectory);
+            var tempDynDirectory = Path.Combine(testDirectory, "Temp Test Path");
+            var dynFileName = Path.Combine(testDirectory, @"UI\BasicAddition.dyn");
+            var insertDynFilePath = Path.Combine(tempDynDirectory, @"BasicAddition.dyn");
+
+            //First check that the directory doesn't exist
+            Assert.IsTrue(!Directory.Exists(tempDynDirectory));
+
+            //Creates a directory that has empty spaces in the name
+            Directory.CreateDirectory(tempDynDirectory);
+
+            //Copy the dyn file to the new directory with empty spaces
+            File.Copy(dynFileName, insertDynFilePath);
+
+            //Adds a Number node into the Current Workspace
+            var nodeName = "Number";
+            this.ViewModel.ExecuteCommand(
+            new DynamoModel.CreateNodeCommand(
+                Guid.NewGuid().ToString(), nodeName, 0, 0, false, false)
+            );
+
+            //Validates that we have just one node in the CurrentWorkspace
+            Assert.AreEqual(ViewModel.Model.CurrentWorkspace.Nodes.Count(), 1);
+
+            var node = ViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault();
+            RequestNodeDocs(node);
+
+            // Show the DocumentationBrowser so we can get the DocumentationBrowserViewModel
+            ShowDocsBrowser();
+            var docsView = GetDocsTabItem().Content as DocumentationBrowserView;
+            var docsViewModel = docsView.DataContext as DocumentationBrowserViewModel;
+
+            //Using reflection change the path of the dyn file for using the created directory (which has empty spaces in the name)
+            FieldInfo fi = typeof(DocumentationBrowserViewModel).GetField("graphPath", BindingFlags.NonPublic | BindingFlags.Instance);
+            fi.SetValue(docsViewModel, insertDynFilePath);
+
+            //Insert the Graph into the current workspace
+            docsViewModel.InsertGraph();
+
+            //Deletes the Directory created previously
+            if (Directory.Exists(tempDynDirectory))
+            {
+                Directory.Delete(tempDynDirectory, true);
+            }
+
+            //Validates that we have 5 nodes the CurrentWorkspace (after the graph was added)
+            Assert.AreEqual(ViewModel.Model.CurrentWorkspace.Nodes.Count(), 5);         
+        }
+
         #region Helpers
 
         private DocumentationBrowserViewExtension SetupNewViewExtension(bool runLoadedMethod = false)
@@ -746,7 +798,7 @@ namespace DynamoCoreWpfTests
 
         private TabItem GetDocsTabItem()
         {
-            return this.View.ExtensionTabItems
+            return this.View.SideBarPanelTabItems
                 .Where(x => x.Content.GetType().Equals(typeof(DocumentationBrowserView)))
                 .FirstOrDefault();
         }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -160,7 +161,9 @@ namespace Dynamo.UI.Controls
             DisplayOrHideConfidenceTooltip(sender);
 
             dynamic currentNodeSearchElement = currentListBoxItem.DataContext;
-            confidenceScoreTitle.Text = $"{Res.ConfidenceToolTipTitle}: {currentNodeSearchElement.AutoCompletionNodeMachineLearningInfo.ConfidenceScore}%";           
+            var scoreFormatter = new Dynamo.Controls.ConfidenceScoreFormattingConverter();
+            var score = scoreFormatter.Convert(currentNodeSearchElement.AutoCompletionNodeMachineLearningInfo.ConfidenceScore, null, null, CultureInfo.CurrentCulture);
+            confidenceScoreTitle.Text = $"{Res.ConfidenceToolTipTitle}: {score}%";
         }
 
         private void onCloseConfidenceToolTip(object sender, RoutedEventArgs e)

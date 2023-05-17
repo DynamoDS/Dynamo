@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Input;
 using System.Xml.Serialization;
 using Dynamo.Configuration;
 using Dynamo.Controls;
@@ -142,10 +143,11 @@ namespace Dynamo.UI.Views
             if (webView != null)
             {
                 webView.NavigationCompleted -= WebView_NavigationCompleted;
+                webView.Focus();
+                System.Windows.Forms.SendKeys.SendWait("{TAB}");
             }
-            OnRequestDynamicSplashScreen();
+            OnRequestDynamicSplashScreen();           
         }
-
         /// <summary>
         /// Request to close SplashScreen.
         /// </summary>

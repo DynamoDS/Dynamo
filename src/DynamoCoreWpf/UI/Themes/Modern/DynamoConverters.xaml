@@ -131,6 +131,7 @@
     <controls:NullValueToCollapsedConverter x:Key="NullValueToCollapsedConverter" />
     <controls:NullValueToGridRow1Converter x:Key="NullValueToGridRow1Converter" />
     <controls:SearchHighlightMarginConverter x:Key="SearchHighlightMarginConverter" />
+    <controls:ConfidenceScoreFormattingConverter x:Key="ConfidenceScoreFormattingConverter" />
     <controls:InOutParamTypeConverter x:Key="InOutParamTypeConverter" />
     <controls:NodeTypeToColorConverter
         x:Key="NodeTypeToColorConverter"

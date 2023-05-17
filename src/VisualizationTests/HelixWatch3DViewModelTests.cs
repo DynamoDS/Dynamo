@@ -671,6 +671,21 @@ namespace WpfVisualizationTests
         }
 
         [Test]
+        public void Watch3D_MultipleInPorts()
+        {
+            OpenVisualizationTest("ASM_Watch3D_MultipleInPorts.dyn");
+
+            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
+            var watch3DNode = ws.FirstNodeFromWorkspace<Watch3D>();
+
+            Assert.AreEqual(watch3DNode.InPorts.Count, 4);
+
+            var view = FindFirstWatch3DNodeView();
+
+            Assert.AreEqual(((HelixWatch3DViewModel)view.DataContext).Element3DDictionary.Values.TotalPoints(), 2);
+        }
+
+        [Test]
         public void HelixWatch3dViewModel_HeadLight_Camera_HaveSameLookVector()
         {
             var bPreviewVm = ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel;
