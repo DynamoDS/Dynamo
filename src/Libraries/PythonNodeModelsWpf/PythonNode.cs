@@ -47,6 +47,7 @@ namespace PythonNodeModelsWpf
 
             var previousdelegates = pythonNodeModel.GetInvocationListForEditAction();
 
+            // Unsubscibe any previous listeners to the EditNode action when switching views.
             foreach (Delegate d in previousdelegates)
             {
                 pythonNodeModel.EditNode -= (Action<string>)d;
