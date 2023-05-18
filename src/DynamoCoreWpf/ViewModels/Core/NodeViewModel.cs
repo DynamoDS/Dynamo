@@ -287,7 +287,15 @@ namespace Dynamo.ViewModels
         {
             get { return nodeLogic.IsCustomFunction ? true : false; }
         }
-        
+
+
+        [JsonIgnore]
+        public bool IsPythonNode
+        {
+            get { return nodeLogic is PythonNodeModels.PythonNode ? true : false; }
+        }
+
+
         /// <summary>
         /// Element's left position is two-way bound to this value
         /// </summary>
@@ -580,6 +588,7 @@ namespace Dynamo.ViewModels
         private static readonly string infoGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/info-64px.png";
         private static readonly string previewGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/hidden-64px.png";
         private static readonly string frozenGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/frozen-64px.png";
+        private static readonly string packageGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/package-64px.png";
 
         [JsonIgnore]
         public bool IsNodeAddedRecently
@@ -1342,6 +1351,12 @@ namespace Dynamo.ViewModels
 
             ResetColorGlyphs();
 
+
+            if (this.NodeModel.IsCustomFunction)
+            {
+                result = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeCustomColor"];
+                ImgGlyphOneSource = packageGlyph;
+            }
             if (!this.IsVisible)
             {
                 result = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodePreviewColor"];
