@@ -274,7 +274,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// The current Revit document units. Will be updated the first time Dynamo is started
         /// </summary>
-        public Configurations.Units CurrentRevitUnits
+        internal Configurations.Units CurrentRevitUnits
         {
             get
             {

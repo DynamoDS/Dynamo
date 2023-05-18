@@ -393,7 +393,7 @@ namespace Dynamo.Configuration
             }
         }
 
-        public enum Units
+        internal enum Units
         {
             Millimeters,
             Centimeters,
@@ -408,7 +408,7 @@ namespace Dynamo.Configuration
         /// Supported Revit units and their conversion to dynamo units
         /// Used in graphic helpers scaling (grid, axes)
         /// </summary>
-        public static Dictionary<Units, double> SupportedUnits
+        internal static Dictionary<Units, double> SupportedUnits
         {
             get
             {
