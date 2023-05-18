@@ -2,7 +2,7 @@
 name: Dynamo-BinDiff
 on: [push,pull_request]
 jobs:
- build:
+ run-bin-diff:
   runs-on: windows-2022
   steps:
     - name: Checkout Dynamo Repo current branch
@@ -42,3 +42,8 @@ jobs:
         cd "$Env:GITHUB_WORKSPACE\master_Dynamo\bin\AnyCPU\Debug"
         echo "***Locating DynamoSandbox after master build!***"
         test ".\DynamoSandbox.exe" && echo "DynamoSandbox exists!"
+    - name: Run Binary Diff Job
+      run: |
+          echo "***Running the binary diff job between the current branch and the master branch!***"
+          cd "$Env:GITHUB_WORKSPACE\Dynamo\.github\scripts"
+            .\bin_diff.ps1 $Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Debug,$Env:GITHUB_WORKSPACE\master_Dynamo\bin\AnyCPU\Debug
