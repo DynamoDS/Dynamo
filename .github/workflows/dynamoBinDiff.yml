@@ -25,7 +25,7 @@ jobs:
         echo "***Locating DynamoSandbox after current build!***"
         test ".\DynamoSandbox.exe" && echo "DynamoSandbox exists!"
     - name: Cache Current Build
-      uses: actions/cache@v3
+      uses: actions/cache/save@v3
       with:
         path: $Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Debug
         key: cache-current-${{ github.run_id }}-${{ github.run_attempt }}
@@ -52,8 +52,8 @@ jobs:
         cd "$Env:GITHUB_WORKSPACE\master_Dynamo\bin\AnyCPU\Debug"
         echo "***Locating DynamoSandbox after master build!***"
         test ".\DynamoSandbox.exe" && echo "DynamoSandbox exists!"
-    - name: Cache Current Build
-      uses: actions/cache@v3
+    - name: Cache Master Build
+      uses: actions/cache/save@v3
       with:
         path: $Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Debug
         key: cache-master-${{ github.run_id }}-${{ github.run_attempt }}
@@ -62,13 +62,15 @@ jobs:
   runs-on: windows-2022
   steps:
     - name: Restore Current Build
-      uses: actions/cache@v3
+      uses: actions/cache/restore@v3
       with:
+        fail-on-cache-miss: true
         path: $Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Debug
         key: cache-current-${{ github.run_id }}-${{ github.run_attempt }}
     - name: Restore Master Build
-      uses: actions/cache@v3
+      uses: actions/cache/restore@v3
       with:
+        fail-on-cache-miss: true
         path: $Env:GITHUB_WORKSPACE\master_Dynamo\bin\AnyCPU\Debug
         key: cache-master-${{ github.run_id }}-${{ github.run_attempt }}
     - name: Run Binary Diff Job
