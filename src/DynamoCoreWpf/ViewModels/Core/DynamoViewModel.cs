@@ -2472,6 +2472,8 @@ namespace Dynamo.ViewModels
         /// <param name="parameter"></param>
         public void UpdateGraphicHelpersScale(object parameter)
         {
+            if (BackgroundPreviewViewModel == null) return;
+
             BackgroundPreviewViewModel.GridScale = PreferenceSettings.GridScaleFactor;
             BackgroundPreviewViewModel.UpdateHelpers();
         }
