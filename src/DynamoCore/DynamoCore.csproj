@@ -13,10 +13,7 @@
     <LibGOsToken>windows</LibGOsToken>
     <LibGOsToken Condition="$(Platform.Contains('Linux'))">linux</LibGOsToken>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(ExecutionEngine)' != 'FScheme' ">
-    <DefineConstants>$(DefineConstants);USE_DSENGINE</DefineConstants>
-  </PropertyGroup>
-  <ItemGroup>
+    <ItemGroup>
     <Compile Remove="Graph\ConnectorPinModel.cs" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">

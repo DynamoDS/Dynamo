@@ -560,7 +560,7 @@ m = i.Mul(list1, list2); // { 8, 20 }";
             thisTest.Verify("m", _m);
         }
 
-        [Ignore]
+        [Ignore("unknown reason")]
         [Category("DSDefinedClass_Ported")]
         public void T24_Pass_3x3_List_And_2x4_List()
         {
