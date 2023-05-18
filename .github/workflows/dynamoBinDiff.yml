@@ -12,7 +12,7 @@ jobs:
         repository: DynamoDS/Dynamo
     - name: Setup Nuget.exe to use on VM
       uses: nuget/setup-nuget@v1
-    - name: Nuget Restore in Dynamo solution
+    - name: Nuget Restore in Dynamo solution (current)
       run: nuget restore $Env:GITHUB_WORKSPACE\Dynamo\src\Dynamo.All.sln
     - name: Build Dynamo current branch with MSBuild
       run: |
@@ -24,16 +24,14 @@ jobs:
         cd "$Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Debug"
         echo "***Locating DynamoSandbox after current build!***"
         test ".\DynamoSandbox.exe" && echo "DynamoSandbox exists!"
-    - name: Checkout Dynamo Repo master
+    - name: Checkout Dynamo Repo master branch
       uses: actions/checkout@v3
       with:
         ref: master
         path: master_Dynamo
         repository: DynamoDS/Dynamo
-    - name: Setup Nuget.exe to use on VM
-      uses: nuget/setup-nuget@v1
     - name: Nuget Restore in Dynamo solution (master)
-      run: nuget restore $Env:GITHUB_WORKSPACE\Dynamo\src\Dynamo.All.sln
+      run: nuget restore $Env:GITHUB_WORKSPACE\master_Dynamo\src\Dynamo.All.sln
     - name: Build Dynamo master branch with MSBuild
       run: |
         echo "***Continue with the build, Good luck developer!***"
