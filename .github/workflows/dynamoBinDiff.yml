@@ -1,0 +1,46 @@
+# Build Dynamo using latest VS and DotNET and perform a Bin Diff
+name: Dynamo-BinDiff
+on: [push,pull_request]
+jobs:
+ build:
+  runs-on: windows-2022
+  steps:
+    - name: Checkout Dynamo Repo current branch
+      uses: actions/checkout@v3
+      with:
+        path: Dynamo
+        repository: DynamoDS/Dynamo
+    - name: Setup Nuget.exe to use on VM
+      uses: nuget/setup-nuget@v1
+    - name: Nuget Restore in Dynamo solution
+      run: nuget restore $Env:GITHUB_WORKSPACE\Dynamo\src\Dynamo.All.sln
+    - name: Build Dynamo current branch with MSBuild
+      run: |
+        echo "***Continue with the build, Good luck developer!***"
+        cd "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\amd64"
+           .\MSBuild.exe $Env:GITHUB_WORKSPACE\Dynamo\src\Dynamo.All.sln
+    - name: Confirm Dynamo Build (current)
+      run: |
+        cd "$Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Debug"
+        echo "***Locating DynamoSandbox after current build!***"
+        test ".\DynamoSandbox.exe" && echo "DynamoSandbox exists!"
+    - name: Checkout Dynamo Repo master
+      uses: actions/checkout@v3
+      with:
+        ref: master
+        path: master_Dynamo
+        repository: DynamoDS/Dynamo
+    - name: Setup Nuget.exe to use on VM
+      uses: nuget/setup-nuget@v1
+    - name: Nuget Restore in Dynamo solution (master)
+      run: nuget restore $Env:GITHUB_WORKSPACE\Dynamo\src\Dynamo.All.sln
+    - name: Build Dynamo master branch with MSBuild
+      run: |
+        echo "***Continue with the build, Good luck developer!***"
+        cd "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\amd64"
+           .\MSBuild.exe $Env:GITHUB_WORKSPACE\master_Dynamo\src\Dynamo.All.sln
+    - name: Confirm Dynamo Build (master)
+      run: |
+        cd "$Env:GITHUB_WORKSPACE\master_Dynamo\bin\AnyCPU\Debug"
+        echo "***Locating DynamoSandbox after master build!***"
+        test ".\DynamoSandbox.exe" && echo "DynamoSandbox exists!"
