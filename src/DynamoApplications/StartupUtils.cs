@@ -38,6 +38,8 @@ namespace Dynamo.Applications
         [Option('x', "ConvertFile", Required = false, HelpText = "When used in combination with the 'O' flag, opens a .dyn file from the specified path and converts it to .json." +
             "File will have the .json extension and be located in the same directory as the original file.")]
         public bool ConvertFile { get; set; }
+        [Option('h', "ShowHelp", Required = false, HelpText = "Get some help")]
+        public bool ShowHelp { get; set; }
         [Option( "Geometry", Required = false, HelpText = "Instruct Dynamo to output geometry from all evaluations to a json file at this path.")]
         public string GeometryFilePath { get; set; } = String.Empty;
         [Option('i', "Import", Required = false, HelpText = "Instruct Dynamo to import an assembly as a node library.This argument should be a filepath to a single.dll" +
@@ -137,6 +139,7 @@ namespace Dynamo.Applications
                         OpenFilePath = cmdArgs.OpenFilePath,
                         Verbose = cmdArgs.Verbose,
                         ConvertFile = cmdArgs.ConvertFile,
+                        ShowHelp = cmdArgs.ShowHelp,
                         GeometryFilePath = cmdArgs.GeometryFilePath,
                         ImportedPaths = cmdArgs.ImportedPaths,
                         ASMPath = cmdArgs.ASMPath,
@@ -261,6 +264,7 @@ namespace Dynamo.Applications
             }
 
 #if NET6_0_OR_GREATER
+            public bool ShowHelp { get; set; }            
 #else
             private static void ShowHelp(OptionSet opSet)
             {
