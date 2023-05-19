@@ -57,7 +57,7 @@ jobs:
     - name: Cache Master Build
       uses: actions/cache/save@v3
       with:
-        path: ${{ github.workspace }}\Dynamo\bin\AnyCPU\Debug
+        path: ${{ github.workspace }}\master_Dynamo\bin\AnyCPU\Debug
         key: cache-master-${{ github.run_id }}-${{ github.run_attempt }}
  run-bin-diff:
   needs: [build-current, build-master]
