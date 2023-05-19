@@ -82,11 +82,9 @@ jobs:
     - name: Run Binary Diff Job
       run: |
           echo "***Running the binary diff job between the current branch and the master branch!***"
-          dir D:/a/Dynamo/Dynamo/Dynamo
-          dir D:/a/Dynamo/Dynamo/master_Dynamo
           cd "$Env:GITHUB_WORKSPACE\Dynamo\.github\scripts"
           .\bin_diff.ps1 $Env:GITHUB_WORKSPACE\master_Dynamo\bin\AnyCPU\Debug,$Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Debug
     - name: Cleanup Caches
-      run: gh actions-cache delete cache-master-${{ github.run_id }}-${{ github.run_attempt }} && gh actions-cache delete cache-current-${{ github.run_id }}-${{ github.run_attempt }}
+      run: gh extension install actions/gh-actions-cache && gh actions-cache delete cache-master-${{ github.run_id }}-${{ github.run_attempt }} && gh actions-cache delete cache-current-${{ github.run_id }}-${{ github.run_attempt }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
