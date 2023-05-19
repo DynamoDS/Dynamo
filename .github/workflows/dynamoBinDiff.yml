@@ -84,7 +84,3 @@ jobs:
           echo "***Running the binary diff job between the current branch and the master branch!***"
           cd "$Env:GITHUB_WORKSPACE\Dynamo\.github\scripts"
           .\bin_diff.ps1 $Env:GITHUB_WORKSPACE\master_Dynamo\bin\AnyCPU\Debug,$Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Debug
-    - name: Cleanup Caches
-      run: |
-          curl.exe -L -X DELETE -H "Accept: application/vnd.github.v3+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/DynamoDS/Dynamo/actions/caches?key=cache-master-${{ github.run_id }}-${{ github.run_attempt }}
-          curl.exe -L -X DELETE -H "Accept: application/vnd.github.v3+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/DynamoDS/Dynamo/actions/caches?key=cache-current-${{ github.run_id }}-${{ github.run_attempt }}
