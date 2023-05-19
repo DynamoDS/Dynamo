@@ -86,6 +86,7 @@ jobs:
 #           .\bin_diff.ps1 $Env:GITHUB_WORKSPACE\master_Dynamo\bin\AnyCPU\Debug,$Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Debug
     - name: Cleanup Caches
       run: |
-          curl.exe -H "Accept: application/vnd.github.v3+json" -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/DynamoDS/Dynamo/actions/caches
+          curl.exe -L -X DELETE -H "Accept: application/vnd.github.v3+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/DynamoDS/Dynamo/actions/caches?key=cache-master-5021203829-1
+          curl.exe -L -X DELETE -H "Accept: application/vnd.github.v3+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/DynamoDS/Dynamo/actions/caches?key=cache-current-5021203829-1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
