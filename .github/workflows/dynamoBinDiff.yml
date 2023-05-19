@@ -16,72 +16,67 @@ jobs:
       run: nuget restore $Env:GITHUB_WORKSPACE\Dynamo\src\Dynamo.All.sln
     - name: Test var
       run: echo "${{ github.workspace }}"
+    - name: Build Dynamo current branch with MSBuild
+      run: |
+        echo "***Continue with the build, Good luck developer!***"
+        cd "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\amd64"
+           .\MSBuild.exe $Env:GITHUB_WORKSPACE\Dynamo\src\Dynamo.All.sln
+    - name: Confirm Dynamo Build (current)
+      run: |
+        cd "$Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Debug"
+        echo "***Locating DynamoSandbox after current build!***"
+        test ".\DynamoSandbox.exe" && echo "DynamoSandbox exists!"
     - name: Cache Current Build
       uses: actions/cache/save@v3
       with:
-        path: ${{ github.workspace }}
+        path: ${{ github.workspace }}\Dynamo\bin\AnyCPU\Debug
         key: cache-current-${{ github.run_id }}-${{ github.run_attempt }}
-#     - name: Build Dynamo current branch with MSBuild
-#       run: |
-#         echo "***Continue with the build, Good luck developer!***"
-#         cd "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\amd64"
-#            .\MSBuild.exe $Env:GITHUB_WORKSPACE\Dynamo\src\Dynamo.All.sln
-#     - name: Confirm Dynamo Build (current)
-#       run: |
-#         cd "$Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Debug"
-#         echo "***Locating DynamoSandbox after current build!***"
-#         test ".\DynamoSandbox.exe" && echo "DynamoSandbox exists!"
-#     - name: Cache Current Build
-#       uses: actions/cache/save@v3
-#       with:
-#         path: $Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Debug
-#         key: cache-current-${{ github.run_id }}-${{ github.run_attempt }}
-#  build-master:
-#   runs-on: windows-2022
-#   steps:
-#     - name: Checkout Dynamo Repo master branch
-#       uses: actions/checkout@v3
-#       with:
-#         ref: master
-#         path: master_Dynamo
-#         repository: DynamoDS/Dynamo
-#     - name: Setup Nuget.exe to use on VM (master)
-#       uses: nuget/setup-nuget@v1
-#     - name: Nuget Restore in Dynamo solution (master)
-#       run: nuget restore $Env:GITHUB_WORKSPACE\master_Dynamo\src\Dynamo.All.sln
-#     - name: Build Dynamo master branch with MSBuild
-#       run: |
-#         echo "***Continue with the build, Good luck developer!***"
-#         cd "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\amd64"
-#            .\MSBuild.exe $Env:GITHUB_WORKSPACE\master_Dynamo\src\Dynamo.All.sln
-#     - name: Confirm Dynamo Build (master)
-#       run: |
-#         cd "$Env:GITHUB_WORKSPACE\master_Dynamo\bin\AnyCPU\Debug"
-#         echo "***Locating DynamoSandbox after master build!***"
-#         test ".\DynamoSandbox.exe" && echo "DynamoSandbox exists!"
-#     - name: Cache Master Build
-#       uses: actions/cache/save@v3
-#       with:
-#         path: ${GITHUB_WORKSPACE}\Dynamo\bin\AnyCPU\Debug
-#         key: cache-master-${{ github.run_id }}-${{ github.run_attempt }}
-#  run-bin-diff:
-#   needs: [build-current, build-master]
-#   runs-on: windows-2022
-#   steps:
-#     - name: Restore Current Build
-#       uses: actions/cache/restore@v3
-#       with:
-#         fail-on-cache-miss: true
-#         path: $Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Debug
-#         key: cache-current-${{ github.run_id }}-${{ github.run_attempt }}
-#     - name: Restore Master Build
-#       uses: actions/cache/restore@v3
-#       with:
-#         fail-on-cache-miss: true
-#         path: $Env:GITHUB_WORKSPACE\master_Dynamo\bin\AnyCPU\Debug
-#         key: cache-master-${{ github.run_id }}-${{ github.run_attempt }}
-#     - name: Run Binary Diff Job
-#       run: |
-#           echo "***Running the binary diff job between the current branch and the master branch!***"
-#           cd "$Env:GITHUB_WORKSPACE\Dynamo\.github\scripts"
-#             .\bin_diff.ps1 $Env:GITHUB_WORKSPACE\master_Dynamo\bin\AnyCPU\Debug,$Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Debug
+ build-master:
+  runs-on: windows-2022
+  steps:
+    - name: Checkout Dynamo Repo master branch
+      uses: actions/checkout@v3
+      with:
+        ref: master
+        path: master_Dynamo
+        repository: DynamoDS/Dynamo
+    - name: Setup Nuget.exe to use on VM (master)
+      uses: nuget/setup-nuget@v1
+    - name: Nuget Restore in Dynamo solution (master)
+      run: nuget restore $Env:GITHUB_WORKSPACE\master_Dynamo\src\Dynamo.All.sln
+    - name: Build Dynamo master branch with MSBuild
+      run: |
+        echo "***Continue with the build, Good luck developer!***"
+        cd "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\amd64"
+           .\MSBuild.exe $Env:GITHUB_WORKSPACE\master_Dynamo\src\Dynamo.All.sln
+    - name: Confirm Dynamo Build (master)
+      run: |
+        cd "$Env:GITHUB_WORKSPACE\master_Dynamo\bin\AnyCPU\Debug"
+        echo "***Locating DynamoSandbox after master build!***"
+        test ".\DynamoSandbox.exe" && echo "DynamoSandbox exists!"
+    - name: Cache Master Build
+      uses: actions/cache/save@v3
+      with:
+        path: ${{ github.workspace }}\Dynamo\bin\AnyCPU\Debug
+        key: cache-master-${{ github.run_id }}-${{ github.run_attempt }}
+ run-bin-diff:
+  needs: [build-current, build-master]
+  runs-on: windows-2022
+  steps:
+    - name: Restore Current Build
+      uses: actions/cache/restore@v3
+      with:
+        fail-on-cache-miss: true
+        path: $Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Debug
+        key: cache-current-${{ github.run_id }}-${{ github.run_attempt }}
+    - name: Restore Master Build
+      uses: actions/cache/restore@v3
+      with:
+        fail-on-cache-miss: true
+        path: $Env:GITHUB_WORKSPACE\master_Dynamo\bin\AnyCPU\Debug
+        key: cache-master-${{ github.run_id }}-${{ github.run_attempt }}
+    - name: Run Binary Diff Job
+      run: |
+          echo "***Running the binary diff job between the current branch and the master branch!***"
+          cd "$Env:GITHUB_WORKSPACE\Dynamo\.github\scripts"
+            .\bin_diff.ps1 $Env:GITHUB_WORKSPACE\master_Dynamo\bin\AnyCPU\Debug,$Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Debug
