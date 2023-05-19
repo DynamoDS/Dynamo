@@ -1,7 +1,7 @@
-#########################################################################
-### USAGE: rdiff path/to/left,path/to/right [-s path/to/summary/dir]  ###
-### ADD LOCATION OF THIS SCRIPT TO PATH                               ###
-#########################################################################
+################################################################################
+### USAGE: bin_diff.ps1 path/to/left,path/to/right [-s path/to/summary/dir]  ###
+### ADD LOCATION OF THIS SCRIPT TO PATH                                      ###
+################################################################################
 [CmdletBinding()]
 param (
   [parameter(HelpMessage="Stores the execution working directory.")]
@@ -163,6 +163,17 @@ function GetFilesWithHash {
   }
 }
 
+filter UpdatedOnlyFilter{
+param(
+        [Parameter(Position=0, Mandatory=$true,ValueFromPipeline = $true)]
+        [ValidateNotNullOrEmpty()]
+        [PSCustomObject]
+        $obj
+    )
+
+    $obj|?{$_.Status -ne '--'}
+}
+
 # COMPARE TWO DIRECTORIES RECURSIVELY #
 # RETURNS LIST OF @{RelativePath, Hash, FullName}
 function DiffDirectories {
@@ -179,9 +190,31 @@ function DiffDirectories {
   PROCESS {
     $LeftHash = GetFilesWithHash $LeftPath
     $RightHash = GetFilesWithHash $RightPath
-    diff -ReferenceObject $LeftHash -DifferenceObject $RightHash -Property RelativePath,Hash
+    diff -ReferenceObject $LeftHash -DifferenceObject $RightHash -Property RelativePath,Hash | 
+    Select-Object *, @{
+    Name = 'Status'
+    Expression = {
+        if ($_.SideIndicator -eq "=>") {
+          if (-not (Test-Path (Join-Path -Path $LeftPath -ChildPath $_.RelativePath))) {
+                'Added'
+          }
+          else {
+                'Modified'
+          }
+        }
+        if ($_.SideIndicator -eq "<=") {
+          if (-not (Test-Path (Join-Path -Path $RightPath -ChildPath $_.RelativePath))) {
+                'Deleted'
+          }
+          else {
+                '--'
+          }
+        }
+      }
+    } | UpdatedOnlyFilter | Sort-Object Status
   }
 }
+
 
 ### END FUNCTION DEFINITIONS ###
 
