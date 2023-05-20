@@ -22,6 +22,10 @@ using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Services;
 using Dynamo.Wpf.ViewModels;
+using Lucene.Net.Documents;
+using Lucene.Net.Index;
+using Lucene.Net.QueryParsers.Classic;
+using Lucene.Net.Search;
 
 namespace Dynamo.ViewModels
 {
@@ -918,10 +922,139 @@ namespace Dynamo.ViewModels
         /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
         /// <param name="search"> The search query </param>
         /// <param name="subset">Subset of nodes that should be used for the search instead of the complete set of nodes. This is a list of NodeSearchElement types</param>
-        internal IEnumerable<NodeSearchElementViewModel> Search(string search, IEnumerable<NodeSearchElement> subset = null)
+        public IEnumerable<NodeSearchElementViewModel> Search(string search, IEnumerable<NodeSearchElement> subset = null)
         {
-            var foundNodes = Model.Search(search, 0, subset);
-            return foundNodes.Select(MakeNodeSearchElementVM);
+            string searchTerm = search.Trim();
+            var candidates = new List<NodeSearchElementViewModel>();
+
+            string[] fnames = Configurations.IndexFields;
+
+            var parser = new MultiFieldQueryParser(Configurations.LuceneNetVersion, fnames, Model.Analyzer)
+            {
+                AllowLeadingWildcard = true,
+                DefaultOperator = Operator.OR,
+                FuzzyMinSim = 0.5f
+            };
+
+            Query query = parser.Parse(CreateSearchQuery(fnames, searchTerm));
+
+            //indicate we want the first 50 results
+            TopDocs topDocs = Model.Searcher.Search(query, n: 50);
+            for (int i = 0; i < topDocs.ScoreDocs.Length; i++)
+            {
+                //read back a doc from results
+                Document resultDoc = Model.Searcher.Doc(topDocs.ScoreDocs[i].Doc);
+
+                // TODO: use consts in static class for the Lucene field names
+                string name = resultDoc.Get("Name");
+
+                string docName = resultDoc.Get("DocName");
+                string cat = resultDoc.Get("FullCategoryName");
+                string fulldesc = resultDoc.Get("Documentation");
+                string pkgName = resultDoc.Get("PackageName");
+
+                if (!string.IsNullOrEmpty(docName))
+                {
+                    //code for setting up documentation info
+                }
+                else if (!string.IsNullOrEmpty(pkgName))
+                {
+                    //code for setting up package info
+                }
+                else
+                {
+                    var foundNode = FindViewModelForNodeNameAndCategory(name, cat);
+                    if (foundNode != null)
+                    {
+                        candidates.Add(foundNode);
+                    }
+                }
+            }
+            return candidates;
+        }
+
+        /// <summary>
+        /// Creates a search query with adjusted priority, fuzzy logic and wildcards.
+        /// Complete Search term appearing in Name of the node will be given highest priority.
+        /// Then, complete search term appearing in other metadata,
+        /// Then, a part of the search term(if containing multiple words) appearing in Name of the node
+        /// Then, a part of the search term appearing in other metadata of the node.
+        /// Then priority will be given based on fuzzy logic- that is if the complete search term may have been misspelled for upto 2 characters.
+        /// Then, the same fuzzy logic will be applied to each part of the search term.
+        /// </summary>
+        /// <param name="fields">All fields to be searched in.</param>
+        /// <param name="searchTerm">Search key to be searched for.</param>
+        /// <returns></returns>
+        private string CreateSearchQuery(string[] fields, string searchKey)
+        {
+            int fuzzyLogicThreshold = 4;
+            int fuzzyLogicRange = 2;
+
+            var fnames = fields;
+            var booleanQuery = new BooleanQuery();
+            string searchTerm = QueryParser.Escape(searchKey);
+
+            foreach (string f in fnames)
+            {
+                FuzzyQuery fuzzyQuery;
+                if (searchTerm.Length > fuzzyLogicThreshold)
+                {
+                    fuzzyQuery = new FuzzyQuery(new Term(f, searchTerm), fuzzyLogicRange);
+                    booleanQuery.Add(fuzzyQuery, Occur.SHOULD);
+
+                }
+
+                var wildcardQuery = new WildcardQuery(new Term(f, searchTerm));
+                if (f.Equals("Name")) { wildcardQuery.Boost = 10; }
+                else { wildcardQuery.Boost = 6; }
+                booleanQuery.Add(wildcardQuery, Occur.SHOULD);
+
+                wildcardQuery = new WildcardQuery(new Term(f, searchTerm + "*"));
+                if (f.Equals("Name")) { wildcardQuery.Boost = 7; }
+                else { wildcardQuery.Boost = 4; }
+                booleanQuery.Add(wildcardQuery, Occur.SHOULD);
+
+                if (searchTerm.Contains(' ') || searchTerm.Contains('.'))
+                {
+                    foreach (string s in searchTerm.Split(' ', '.'))
+                    {
+                        if (s.Length > fuzzyLogicThreshold)
+                        {
+                            fuzzyQuery = new FuzzyQuery(new Term(f, s), fuzzyLogicRange);
+                            booleanQuery.Add(fuzzyQuery, Occur.SHOULD);
+                        }
+                        wildcardQuery = new WildcardQuery(new Term(f, s + "*"));
+                        if (f.Equals("Name")) { wildcardQuery.Boost = 5; }
+                        else { wildcardQuery.Boost = 2; }
+                        booleanQuery.Add(wildcardQuery, Occur.SHOULD);
+                    }
+                }
+            }
+            return booleanQuery.ToString();
+        }
+
+        /// <summary>
+        /// To get view model for a node based on its name and category
+        /// </summary>
+        /// <param name="nodeName">Name of the node</param>
+        /// <param name="nodeCategory">Full Category of the node</param>
+        /// <returns></returns>
+        private NodeSearchElementViewModel FindViewModelForNodeNameAndCategory(string nodeName, string nodeCategory)
+        {
+            var result = Model.SearchEntries.Where(e => {
+                if (e.Name.Equals(nodeName) && e.FullCategoryName.Equals(nodeCategory))
+                {
+                    return true;
+                }
+                return false;
+            });
+
+            if (!result.Any())
+            {
+                return null;
+            }
+
+            return MakeNodeSearchElementVM(result.ElementAt(0));
         }
 
         private static IEnumerable<NodeSearchElementViewModel> GetVisibleSearchResults(NodeCategoryViewModel category)
