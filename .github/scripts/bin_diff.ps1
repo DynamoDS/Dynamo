@@ -152,7 +152,7 @@ function GetFilesWithHash {
     [string]$Path,
 
     [parameter(HelpMessage="The hash algorithm to use.")]
-    [string]$Algorithm="MD5"
+    [string]$Algorithm="SHA256"
   )
   PROCESS {
     $OriginalPath = $PWD
