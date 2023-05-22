@@ -1627,7 +1627,7 @@ namespace Dynamo.Models
 
             CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.CommonDefinitions, IsTestMode);
 
-            //Initialize searcher
+            //Initialize searcher, if the applyAllDeletes is true all buffered deletes on documents will be applied (made visible) in the returned reader
             dirReader = writer.GetReader(applyAllDeletes: true);
             IndexSearcher searcher = new IndexSearcher(dirReader);
 
@@ -3254,6 +3254,7 @@ namespace Dynamo.Models
         /// <returns></returns>
         private Document InitializeIndexDocument()
         {
+            //TODO: all this harcoded string values should be moved to a different class.
             var fullCategory = new TextField("FullCategoryName", "", Field.Store.YES);
             var name = new TextField("Name", "", Field.Store.YES);
             var description = new TextField("Description", "", Field.Store.YES);
