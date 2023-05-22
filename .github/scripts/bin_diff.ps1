@@ -1,4 +1,5 @@
 ################################################################################
+### SOURCE: https://gist.github.com/cchamberlain/883959151aa1162e73f1        ###
 ### USAGE: bin_diff.ps1 path/to/left,path/to/right [-s path/to/summary/dir]  ###
 ### ADD LOCATION OF THIS SCRIPT TO PATH                                      ###
 ################################################################################
@@ -163,6 +164,22 @@ function GetFilesWithHash {
   }
 }
 
+function Format-Color([hashtable] $Colors = @{}, [switch] $SimpleMatch) {
+	$lines = ($input | Out-String) -replace "`r", "" -split "`n"
+	foreach($line in $lines) {
+		$color = ''
+		foreach($pattern in $Colors.Keys){
+			if(!$SimpleMatch -and $line -match $pattern) { $color = $Colors[$pattern] }
+			elseif ($SimpleMatch -and $line -like $pattern) { $color = $Colors[$pattern] }
+		}
+		if($color) {
+			Write-Host -ForegroundColor $color $line
+		} else {
+			Write-Host $line
+		}
+	}
+}
+
 filter UpdatedOnlyFilter{
 param(
         [Parameter(Position=0, Mandatory=$true,ValueFromPipeline = $true)]
@@ -196,22 +213,21 @@ function DiffDirectories {
     Expression = {
         if ($_.SideIndicator -eq "=>") {
           if (-not (Test-Path (Join-Path -Path $LeftPath -ChildPath $_.RelativePath))) {
-                'Added'
-          }
+                'Added'          }
           else {
                 'Modified'
           }
         }
         if ($_.SideIndicator -eq "<=") {
           if (-not (Test-Path (Join-Path -Path $RightPath -ChildPath $_.RelativePath))) {
-                'Deleted'
+              'Deleted'
           }
           else {
                 '--'
           }
         }
       }
-    } | UpdatedOnlyFilter | Sort-Object Status
+    } | UpdatedOnlyFilter | Sort-Object Status | Format-Color @{'Deleted' = 'Red'; 'Added' = 'Green'}
   }
 }
 
