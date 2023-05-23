@@ -952,7 +952,9 @@ namespace Dynamo.Models
             LibraryServices.LibraryLoaded += LibraryLoaded;
 
             CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager, LibraryServices);
+
             InitializeLuceneConfig();
+
             InitializeCustomNodeManager();
 
             ResetEngineInternal();
@@ -1381,9 +1383,9 @@ namespace Dynamo.Models
                 PreferenceSettings.MessageLogged -= LogMessage;
             }
 
-            //Lucene disposals
-            indexDir.Dispose();
-            dirReader.Dispose();
+            //Lucene disposals (just if LuceneNET was initialized)
+            indexDir?.Dispose();
+            dirReader?.Dispose();
 
 #if DEBUG
             CurrentWorkspace.NodeAdded -= CrashOnDemand.CurrentWorkspace_NodeAdded;
@@ -3296,6 +3298,10 @@ namespace Dynamo.Models
             writer.AddDocument(doc);
         }
 
+        //TODO:
+        //isLast option is used for the last value set in the document, and it will fetch all the other field not set for the document and add them with an empty string.
+        //isTextField is used when the value need to be tokenized(broken down into pieces), whereas StringTextFields are tokenized.
+        //The SetDocumentFieldValue method should be optimized later
         private void SetDocumentFieldValue(Document doc, string field, string value, bool isTextField = true, bool isLast = false)
         {
             addedFields.Add(field);
@@ -3364,7 +3370,7 @@ namespace Dynamo.Models
             if (functionDescriptor.IsVisibleInLibrary)
             {
                 var ele = new ZeroTouchSearchElement(functionDescriptor);
-                SearchModel?.Add(new ZeroTouchSearchElement(functionDescriptor));
+                SearchModel?.Add(ele);
                 AddNodeTypeToSearchIndex(ele, iDoc);
             }
         }
