@@ -113,7 +113,9 @@ jobs:
     - name: Cache Current NET6 Windows Build
       uses: actions/cache/save@v3
       with:
-        path: ${{ github.workspace }}\net60_Win_Dynamo\bin\NET60_Windows\Release
+        path: |
+          ${{ github.workspace }}\net60_Win_Dynamo\bin\NET60_Windows\Release
+          ${{ github.workspace }}\net60_Win_Dynamo\.github\scripts
         key: cache-net60Win-current-${{ github.run_id }}-${{ github.run_attempt }}
  build-dotnet-windows-master:
   runs-on: windows-latest
