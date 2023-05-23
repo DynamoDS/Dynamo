@@ -175,6 +175,7 @@ jobs:
  cleanup-caches:
   needs: [run-bin-diff-net60-windows, run-bin-diff]
   runs-on: ubuntu-latest
+  permissions: write-all
   steps:
     - name: Checkout Dynamo Repo current branch
       uses: actions/checkout@v3
