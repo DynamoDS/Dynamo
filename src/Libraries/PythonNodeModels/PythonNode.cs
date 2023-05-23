@@ -355,6 +355,17 @@ namespace PythonNodeModels
             UserScriptWarned?.Invoke();
         }
 
+        internal List<Delegate> GetInvocationListForEditAction()
+        {
+            var delegates = new List<Delegate>();
+            if (EditNode != null)
+            {
+                delegates = EditNode.GetInvocationList().ToList();
+            }
+
+            return delegates;
+        }
+
         /// <summary>
         /// Fires when the Script content is migrated to Python 3.
         /// NOTE: This is a temporary event used during the Python 2 to Python 3 transistion period,

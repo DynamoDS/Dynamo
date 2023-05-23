@@ -1,11 +1,8 @@
-using Dynamo.UI.Controls;
-using ICSharpCode.AvalonEdit.Document;
-using ICSharpCode.AvalonEdit.Folding;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Windows.Media.Animation;
+using ICSharpCode.AvalonEdit.Document;
+using ICSharpCode.AvalonEdit.Folding;
 
 namespace PythonNodeModelsWpf
 {
@@ -73,7 +70,7 @@ namespace PythonNodeModelsWpf
                     }
                     else if (tabLevel != currentTabLevel && currentTabLevel < tabLevel)
                     {
-                        while (currentTabLevel < tabLevel)
+                        while (currentTabLevel < tabLevel && startOffsets.Any())
                         {
                             // we close all nested tabs
                             var tempFolding = new NewFolding();
@@ -92,7 +89,7 @@ namespace PythonNodeModelsWpf
                 }
                 else if (whiteSpaces == 0 && tabLevel > 0)
                 {
-                    while(tabLevel> 0)
+                    while(tabLevel> 0 && startOffsets.Any())
                     { 
                         // we close all nested tabs
                         var tempFolding = new NewFolding();

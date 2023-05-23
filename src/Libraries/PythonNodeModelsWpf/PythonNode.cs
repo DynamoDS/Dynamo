@@ -27,6 +27,7 @@ namespace PythonNodeModelsWpf
         private NodeView pythonNodeView;
         private WorkspaceModel workspaceModel;
         private ScriptEditorWindow editWindow;
+        private DynamoView dynamoView;
         private ModelessChildWindow.WindowRect editorWindowRect;
         private readonly MenuItem editWindowItem = new MenuItem { Header = PythonNodeModels.Properties.Resources.EditHeader, IsCheckable = false };
         private MenuItem pythonEngineVersionMenu;
@@ -43,7 +44,17 @@ namespace PythonNodeModelsWpf
 
             nodeView.MainContextMenu.Items.Add(editWindowItem);
             editWindowItem.Click += EditScriptContent;
+
+            var previousdelegates = pythonNodeModel.GetInvocationListForEditAction();
+
+            // Unsubscibe any previous listeners to the EditNode action when switching views.
+            foreach (Delegate d in previousdelegates)
+            {
+                pythonNodeModel.EditNode -= (Action<string>)d;
+            }
+
             pythonNodeModel.EditNode += EditScriptContent;
+            pythonNodeModel.PropertyChanged += NodeModel_PropertyChanged;
 
             pythonEngineVersionMenu = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineSwitcher, IsCheckable = false };
             nodeView.MainContextMenu.Items.Add(pythonEngineVersionMenu);
@@ -109,8 +120,16 @@ namespace PythonNodeModelsWpf
                 editWindow.Close();
             }
 
+            // When the node is disposed, close the script editor if it is docked in the right SideBar
+            if (dynamoView != null && IsEditorCurrentlyDocked())
+            {
+                var tabItem = dynamoViewModel.SideBarTabItems.FirstOrDefault(t => t.Uid == pythonNodeModel.GUID.ToString());
+                dynamoView.CloseRightSideBarTab(tabItem);
+            }
+
             editWindowItem.Click -= EditScriptContent;
             pythonNodeModel.EditNode -= EditScriptContent;
+            pythonNodeModel.PropertyChanged -= NodeModel_PropertyChanged;
 
             if (pythonEngineVersionMenu != null)
             {
@@ -129,7 +148,7 @@ namespace PythonNodeModelsWpf
 
         private void NodeModel_DeletionStarted(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (editWindow != null)
+            if (editWindow != null || IsEditorCurrentlyDocked())
             {
                 var res = MessageBoxService.Show(
                     String.Format(
@@ -169,11 +188,13 @@ namespace PythonNodeModelsWpf
                     if (editWindow != null)
                     {
                         editWindow.Activate();
+                        dynamoView = editWindow.Owner as DynamoView;
                     }
                     else
                     {
                         editWindow = new ScriptEditorWindow(dynamoViewModel, pythonNodeModel, pythonNodeView, ref editorWindowRect);
-                        if (pythonNodeModel.ScriptContentSaved)
+
+                        if (pythonNodeModel.ScriptContentSaved || sender == null)
                         {
                             editWindow.Initialize(workspaceModel.Guid, pythonNodeModel.GUID, "ScriptContent", pythonNodeModel.Script);
                         }
@@ -182,7 +203,9 @@ namespace PythonNodeModelsWpf
                             editWindow.Initialize(workspaceModel.Guid, pythonNodeModel.GUID, "ScriptContent", sender.ToString());
                             editWindow.IsSaved = false;
                         }
+
                         editWindow.Closed += editWindow_Closed;
+                        dynamoView = editWindow.Owner as DynamoView;
 
                         if (IsEditorInDockedState())
                         {
@@ -203,6 +226,7 @@ namespace PythonNodeModelsWpf
             }
         }
 
+        // Checks the state of this node script editor, either DockRight or FloatingWindow
         private bool IsEditorInDockedState()
         {
             var nodemodel = pythonNodeModel as NodeModel;
@@ -211,10 +235,36 @@ namespace PythonNodeModelsWpf
             return viewExtensionDisplayMode.Equals(ViewExtensionDisplayMode.DockRight);
         }
 
+        // Checks if this node editor is currrently docked(and opened) in the right side-bar
+        private bool IsEditorCurrentlyDocked()
+        {
+            var nodemodel = pythonNodeModel as NodeModel;
+            return dynamoViewModel.DockedNodeWindows.Contains(nodemodel.GUID.ToString());
+        }
+
         private void EditScriptContent(string text)
         {
             EditScriptContent(text, null);
         }
+
+        private void NodeModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                // If this node is renamed, update the tab header in the right SideBar
+                case nameof(NodeModel.Name):
+                    if (dynamoView != null && IsEditorCurrentlyDocked())
+                    {
+                        TabItem tabItem = dynamoViewModel.SideBarTabItems.OfType<TabItem>().SingleOrDefault(n => n.Uid.ToString() == pythonNodeModel.GUID.ToString());
+                        if (tabItem != null)
+                        {
+                            tabItem.Header = pythonNodeModel.Name;
+                        }
+                    }
+                    break;
+            }
+        }
+
 
         /// <summary>
         /// MenuItem click handler

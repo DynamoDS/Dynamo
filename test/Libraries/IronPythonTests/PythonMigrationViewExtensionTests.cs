@@ -242,16 +242,16 @@ namespace IronPythonTests
             DispatcherUtil.DoEvents();
 
             var ironPythonDialog = this.View.GetChildrenWindowsOfType<IronPythonInfoDialog>().First();
-            var viewExtensionTabsBeforeBtnClick = this.View.SideBarPanelTabItems.Count;
+            var viewExtensionTabsBeforeBtnClick = this.ViewModel.SideBarTabItems.Count;
             DispatcherUtil.DoEvents();
 
             ironPythonDialog.MoreInformationBtn.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-            var hasDocumentationBrowserTab = this.View.SideBarPanelTabItems
+            var hasDocumentationBrowserTab = this.ViewModel.SideBarTabItems
                 .Any(x => x.Header.ToString() == "Documentation Browser");
             DispatcherUtil.DoEvents();
 
             // Assert
-            Assert.AreEqual(viewExtensionTabsBeforeBtnClick + 1, this.View.SideBarPanelTabItems.Count);
+            Assert.AreEqual(viewExtensionTabsBeforeBtnClick + 1, this.ViewModel.SideBarTabItems.Count);
             Assert.IsTrue(hasDocumentationBrowserTab);
             DynamoModel.IsTestMode = true;
             DispatcherUtil.DoEvents();

@@ -269,7 +269,7 @@ namespace DynamoCoreWpfTests
             codeEditor.Focus();
 
             //Check that we don't have any extension tabs shown right now
-            Assert.That(this.View.SideBarPanelTabItems.Count, Is.EqualTo(0));
+            Assert.That(this.ViewModel.SideBarTabItems.Count, Is.EqualTo(0));
 
             var moreInfoButton = scriptWindow.FindName("MoreInfoButton") as Button;
 
@@ -278,9 +278,9 @@ namespace DynamoCoreWpfTests
             DispatcherUtil.DoEvents();
 
             //Check that now we are showing a extension tab (DocumentationBrowser)
-            Assert.That(this.View.SideBarPanelTabItems.Count, Is.EqualTo(1));
+            Assert.That(this.ViewModel.SideBarTabItems.Count, Is.EqualTo(1));
 
-            var docBrowser = this.View.SideBarPanelTabItems
+            var docBrowser = this.ViewModel.SideBarTabItems
                             .Where(x => x.Content.GetType().Equals(typeof(DocumentationBrowserView)))
                             .FirstOrDefault();
 
@@ -317,7 +317,7 @@ namespace DynamoCoreWpfTests
 
             DispatcherUtil.DoEvents();
 
-            var learnMoreTab = this.View.SideBarPanelTabItems
+            var learnMoreTab = this.ViewModel.SideBarTabItems
                                 .Where(x => x.Content.GetType().Equals(typeof(DocumentationBrowserView)))
                                 .FirstOrDefault();
 
@@ -351,7 +351,7 @@ namespace DynamoCoreWpfTests
 
             DispatcherUtil.DoEvents();
 
-            var learnMoreTab = this.View.SideBarPanelTabItems
+            var learnMoreTab = this.ViewModel.SideBarTabItems
                                 .Where(x => x.Content.GetType().Equals(typeof(DocumentationBrowserView)))
                                 .FirstOrDefault();
 
@@ -719,17 +719,17 @@ namespace DynamoCoreWpfTests
             // Dock python editor
             var scriptWindow = EditPythonCode(nodeView, View);
             scriptWindow.DockWindow();
-            Assert.IsTrue(ViewModel.CurrentDockedWindows.Contains(nodeModel.GUID.ToString()));
+            Assert.IsTrue(ViewModel.DockedNodeWindows.Contains(nodeModel.GUID.ToString()));
 
-            var editorTab = View.SideBarPanelTabItems.FirstOrDefault(x => x.Uid == nodeModel.GUID.ToString());
+            var editorTab = ViewModel.SideBarTabItems.FirstOrDefault(x => x.Uid == nodeModel.GUID.ToString());
             Assert.IsNotNull(editorTab);
             Assert.AreEqual(editorTab.Header.ToString(), "Python Script");
 
             // Undock editor tab from right side panel.
             View.UndockWindow(editorTab);
 
-            Assert.IsFalse(ViewModel.CurrentDockedWindows.Contains(nodeModel.GUID.ToString()));
-            Assert.IsNull(View.SideBarPanelTabItems.FirstOrDefault(x => x.Uid == nodeModel.GUID.ToString()));
+            Assert.IsFalse(ViewModel.DockedNodeWindows.Contains(nodeModel.GUID.ToString()));
+            Assert.IsNull(ViewModel.SideBarTabItems.FirstOrDefault(x => x.Uid == nodeModel.GUID.ToString()));
         }
 
         /// <summary>
