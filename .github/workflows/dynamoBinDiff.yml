@@ -197,6 +197,7 @@ jobs:
               echo $cacheKey
               gh actions-cache delete $cacheKey -R $REPO -B $BRANCH --confirm
           done
+          echo "::warning file=app.py,line=10,col=5::Code formatting issues detected"
           echo "Done"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
