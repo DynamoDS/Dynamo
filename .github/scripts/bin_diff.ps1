@@ -14,7 +14,11 @@ param (
 
   [parameter(HelpMessage="Export a summary to path.")]
   [alias("s")]
-  [string]$ExportSummary
+  [string]$ExportSummary,
+
+  [parameter(HelpMessage="Source of the diff job.")]
+  [alias("src")]
+  [string]$DiffBuildSource
 )
 
 ### FUNCTION DEFINITIONS ###
@@ -187,15 +191,15 @@ function Format-Color([hashtable] $Colors = @{}, [switch] $SimpleMatch) {
 			Write-Host $line
 		}
 	}
-    if($addedCount -gt 0){
-        Write-Host "::warning title=Files Added::$addedCount New files have been detected!"
+    if($addedCount -gt 0 -or $deletedCount -gt 0){
+        $msg=''
+        if($addedCount -gt 0) {$msg+="$addedCount new file(s) have been added"}
+        if($addedCount -gt 0 -and $deletedCount -gt 0){$msg+=' and '}
+        if($deletedCount -gt 0) {$msg+="$deletedCount file(s) have been deleted!"}
+
+        Write-Host "::warning title=($DiffBuildSource) Files Added/Deleted::$msg"
     } else{
-        Write-Host "::notice title=No New Files Added::The job has detected that no new files have been added."
-    }
-    if($deletedCount -gt 0){
-        Write-Host "::warning title=Files Deleted::$deletedCount files have been deleted!"
-    } else{
-        Write-Host "::notice title=No New Files Deleted::The job has detected that no files have been deleted."
+        Write-Host "::notice title=($DiffBuildSource) No New Files Added/Deleted::The job has detected that no new files were added or deleted."
     }
 }
 

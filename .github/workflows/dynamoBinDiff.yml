@@ -83,7 +83,7 @@ jobs:
       run: |
           echo "***Running the binary diff job between the current branch and the master branch!***"
           cd "$Env:GITHUB_WORKSPACE\Dynamo\.github\scripts"
-          .\bin_diff.ps1 $Env:GITHUB_WORKSPACE\master_Dynamo\bin\AnyCPU\Debug,$Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Debug
+          .\bin_diff.ps1 $Env:GITHUB_WORKSPACE\master_Dynamo\bin\AnyCPU\Debug,$Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Debug -src ${{ github.job }}
  build-dotnet-windows-current:
   runs-on: windows-latest
   steps:
@@ -171,4 +171,4 @@ jobs:
       run: |
           echo "***Running the binary diff job between the current branch and the master branch of NET60-Windows Config!***"
           cd "$Env:GITHUB_WORKSPACE\net60_Win_Dynamo\.github\scripts"
-          .\bin_diff.ps1 $Env:GITHUB_WORKSPACE\master_net60_Win_Dynamo\bin\NET60_Windows\Release,$Env:GITHUB_WORKSPACE\net60_Win_Dynamo\bin\NET60_Windows\Release
+          .\bin_diff.ps1 $Env:GITHUB_WORKSPACE\master_net60_Win_Dynamo\bin\NET60_Windows\Release,$Env:GITHUB_WORKSPACE\net60_Win_Dynamo\bin\NET60_Windows\Release -src ${{ github.job }}
