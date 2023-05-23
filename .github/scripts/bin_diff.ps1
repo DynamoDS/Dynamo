@@ -189,11 +189,14 @@ function Format-Color([hashtable] $Colors = @{}, [switch] $SimpleMatch) {
 	}
     if($addedCount -gt 0){
         Write-Host "::warning title=Files Added::$addedCount New files have been detected!"
+    } else{
+        Write-Host "::notice title=No New Files Added::The job has detected that no new files have been added."
     }
     if($deletedCount -gt 0){
         Write-Host "::warning title=Files Deleted::$deletedCount files have been deleted!"
+    } else{
+        Write-Host "::notice title=No New Files Deleted::The job has detected that no files have been deleted."
     }
-     Write-Host "::warning title=Files Deleted::$deletedCount files have been test!"
 }
 
 filter UpdatedOnlyFilter{
