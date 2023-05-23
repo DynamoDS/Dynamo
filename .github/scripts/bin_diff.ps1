@@ -227,7 +227,7 @@ function DiffDirectories {
           }
         }
       }
-    } | UpdatedOnlyFilter | Sort-Object Status | Format-Color @{'Deleted' = 'Red'; 'Added' = 'Green'}
+    } | UpdatedOnlyFilter | Sort-Object Status | Format-Color @{'Modified' = 'Yellow'}
   }
 }
 
