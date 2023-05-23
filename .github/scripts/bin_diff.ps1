@@ -166,6 +166,8 @@ function GetFilesWithHash {
 
 function Format-Color([hashtable] $Colors = @{}, [switch] $SimpleMatch) {
 	$lines = ($input | Out-String) -replace "`r", "" -split "`n"
+    $addedCount = 0
+    $deletedCount = 0
 	foreach($line in $lines) {
 		$color = ''
 		foreach($pattern in $Colors.Keys){
@@ -174,15 +176,23 @@ function Format-Color([hashtable] $Colors = @{}, [switch] $SimpleMatch) {
 		}
 		if($color) {
             if($color -eq 'Red'){
+                $deletedCount++
 			    Write-Host "`e[31;1m$line`e[0m"
             }
             if($color -eq 'Green'){
+                $addedCount++
 			    Write-Host "`e[32;1m$line`e[0m"
             }
 		} else {
 			Write-Host $line
 		}
 	}
+    if($addedCount -gt 0){
+        Write-Host "::warning title=Files Added::New files have been detected!"
+    }
+    if($deletedCount -gt 0){
+        Write-Host "::warning title=Files Deleted::Some files have been deleted!"
+    }
 }
 
 filter UpdatedOnlyFilter{
@@ -218,7 +228,8 @@ function DiffDirectories {
     Expression = {
         if ($_.SideIndicator -eq "=>") {
           if (-not (Test-Path (Join-Path -Path $LeftPath -ChildPath $_.RelativePath))) {
-                'Added'          }
+                'Added'
+          }
           else {
                 'Modified'
           }
