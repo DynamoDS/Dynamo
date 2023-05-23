@@ -173,7 +173,12 @@ function Format-Color([hashtable] $Colors = @{}, [switch] $SimpleMatch) {
 			elseif ($SimpleMatch -and $line -like $pattern) { $color = $Colors[$pattern] }
 		}
 		if($color) {
-			Write-Host "`e[32;1m$line`e[0m"
+            if($color -eq 'Red'){
+			    Write-Host "`e[31;1m$line`e[0m"
+            }
+            if($color -eq 'Green'){
+			    Write-Host "`e[32;1m$line`e[0m"
+            }
 		} else {
 			Write-Host $line
 		}
@@ -227,7 +232,7 @@ function DiffDirectories {
           }
         }
       }
-    } | UpdatedOnlyFilter | Sort-Object Status | Format-Color @{'Modified' = 'Yellow'}
+    } | UpdatedOnlyFilter | Sort-Object Status | Format-Color @{'Added' = 'Green'; 'Deleted' = 'Red'}
   }
 }
 
