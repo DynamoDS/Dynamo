@@ -173,7 +173,7 @@ function Format-Color([hashtable] $Colors = @{}, [switch] $SimpleMatch) {
 			elseif ($SimpleMatch -and $line -like $pattern) { $color = $Colors[$pattern] }
 		}
 		if($color) {
-			Write-Host -ForegroundColor $color $line
+			Write-Host "[32;1m$line[0m"
 		} else {
 			Write-Host $line
 		}
