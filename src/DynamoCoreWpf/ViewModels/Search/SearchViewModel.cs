@@ -874,7 +874,8 @@ namespace Dynamo.ViewModels
             if (string.IsNullOrEmpty(query))
                 return;
 
-            var foundNodes = Search(query);
+            //Passing the second parameter as true will search using Lucene.NET
+            var foundNodes = Search(query, true);
             searchResults = new List<NodeSearchElementViewModel>(foundNodes);
 
             FilteredResults = searchResults;
@@ -921,8 +922,20 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
         /// <param name="search"> The search query </param>
-        /// <param name="subset">Subset of nodes that should be used for the search instead of the complete set of nodes. This is a list of NodeSearchElement types</param>
+        /// <param name="subset">Subset of nodes that should be used for the search instead of the complete set of nodes. This is a list of NodeSearchElement types</param>   
         public IEnumerable<NodeSearchElementViewModel> Search(string search, IEnumerable<NodeSearchElement> subset = null)
+        {
+            var foundNodes = Model.Search(search, 0, subset);
+            return foundNodes.Select(MakeNodeSearchElementVM);
+        }
+
+        /// <summary>
+        ///     Performs a search using the given string as query and subset, if provided.
+        /// </summary>
+        /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
+        /// <param name="search"> The search query </param>
+        /// <param name="useLucene"> Temporary flag that will be used for searching using Lucene.NET </param>
+        public IEnumerable<NodeSearchElementViewModel> Search(string search, bool useLucene)
         {
             string searchTerm = search.Trim();
             var candidates = new List<NodeSearchElementViewModel>();

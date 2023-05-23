@@ -953,7 +953,9 @@ namespace Dynamo.Models
 
             CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager, LibraryServices);
 
-            InitializeLuceneConfig();
+            //When running parallel tests several are trying to write in the AppData folder then the job is failing and in a wrong state so we prevent to initialize Lucene when we are in test mode.
+            if(IsTestMode == false)
+                InitializeLuceneConfig();
 
             InitializeCustomNodeManager();
 
