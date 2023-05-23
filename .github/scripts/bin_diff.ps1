@@ -208,7 +208,7 @@ function DiffDirectories {
     $LeftHash = GetFilesWithHash $LeftPath
     $RightHash = GetFilesWithHash $RightPath
     diff -ReferenceObject $LeftHash -DifferenceObject $RightHash -Property RelativePath,Hash | 
-    Select-Object *, @{
+    Select-Object RelativePath, @{
     Name = 'Status'
     Expression = {
         if ($_.SideIndicator -eq "=>") {
