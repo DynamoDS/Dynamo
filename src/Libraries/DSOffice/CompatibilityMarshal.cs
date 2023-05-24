@@ -4,13 +4,18 @@ using System.Runtime.Versioning;
 using System.Security;
 using System;
 
-//Can't use Marshall on NET6 so creating this class in order to keep functionality on Excel.cs file
-public static class CompatibilityMarshall
+/// <summary>
+/// Can't use Marshall on NET6 so this class replaces that functionality in order to keep the Excel.cs file (Excel nodes) working
+/// </summary>
+public static class CompatibilityMarshal
 {
     internal const String OLEAUT32 = "oleaut32.dll";
     internal const String OLE32 = "ole32.dll";
 
-    [System.Security.SecurityCritical]  // auto-generated_required
+    /// <summary>
+    /// Works like Marshal.GetActiveObject on Net6
+    /// </summary>
+    [SecurityCritical]  // auto-generated_required
     public static Object GetActiveObject(String progID)
     {
         Object obj = null;
@@ -34,19 +39,19 @@ public static class CompatibilityMarshall
     [DllImport(OLE32, PreserveSig = false)]
     [ResourceExposure(ResourceScope.None)]
     [SuppressUnmanagedCodeSecurity]
-    [SecurityCritical]
+    [SecurityCritical]  // auto-generated_required
     private static extern void CLSIDFromProgIDEx([MarshalAs(UnmanagedType.LPWStr)] String progId, out Guid clsid);
 
     [DllImport(OLE32, PreserveSig = false)]
     [ResourceExposure(ResourceScope.None)]
     [SuppressUnmanagedCodeSecurity]
-    [SecurityCritical]
+    [SecurityCritical]  // auto-generated_required
     private static extern void CLSIDFromProgID([MarshalAs(UnmanagedType.LPWStr)] String progId, out Guid clsid);
 
     [DllImport(OLEAUT32, PreserveSig = false)]
     [ResourceExposure(ResourceScope.None)]
     [SuppressUnmanagedCodeSecurity]
-    [SecurityCritical]
+    [SecurityCritical]  // auto-generated_required
     private static extern void GetActiveObject(ref Guid rclsid, IntPtr reserved, [MarshalAs(UnmanagedType.Interface)] out Object ppunk);
 
 }

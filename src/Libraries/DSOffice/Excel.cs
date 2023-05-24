@@ -63,7 +63,7 @@ namespace DSOffice
             try
             {
 #if NET5_0_OR_GREATER
-                excel = (Microsoft.Office.Interop.Excel.Application)CompatibilityMarshall.GetActiveObject("Excel.Application");
+                excel = (Microsoft.Office.Interop.Excel.Application)CompatibilityMarshal.GetActiveObject("Excel.Application");
 #else
                 excel = (Microsoft.Office.Interop.Excel.Application)Marshal.GetActiveObject("Excel.Application");
 #endif
