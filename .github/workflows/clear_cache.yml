@@ -24,10 +24,12 @@ jobs:
           gh extension install actions/gh-actions-cache
           
           PRNUM=$(<pr/NR)
-          echo $PRNUM
           REPO=${{ github.repository }}
           BRANCH="refs/pull/$PRNUM/merge"
           echo "Fetching list of cache key"
+          echo $REPO
+          echo $BRANCH
+          echo $PRNUM
           cacheKeysForPR=$(gh actions-cache list -R $REPO -B $BRANCH | cut -f 1 )
           ## Setting this to not fail the workflow while deleting cache keys. 
           set +e
