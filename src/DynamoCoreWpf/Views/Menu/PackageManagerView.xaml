@@ -38,7 +38,55 @@
             
         </ResourceDictionary>
     </Window.Resources>
-    <Grid>
+
+    <!--The main grid of the Package Manager window-->
+    <Grid x:Name="mainGrid"
+    	  Background="{StaticResource PreferencesWindowBackgroundColor}">
+        <Grid.Resources>
+            <sys:Double x:Key="ToggleButtonWidth">40</sys:Double>
+            <sys:Double x:Key="ToggleButtonHeight">20</sys:Double>
+        </Grid.Resources>
+        <!--The Window is divided basically in three rows, TitleBar, Content, and ButtonsBottomSection-->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <!--Section/Row of the TitleBar it contains a TextBlock for the windows title and the close button-->
+        <!--The CloseButtonStyle and Color Styles are located in the DynamoModer.xaml file-->
+        <Grid x:Name="TitleBar" 
+                Grid.Row="0"  
+                MouseDown="PackageManagerPanel_MouseDown"
+                VerticalAlignment="Top" 
+                Margin="0" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="46" />
+            </Grid.ColumnDefinitions>
+            <TextBlock x:Name="HeaderTitle" 
+                       Text="Package Manager (placeholder)"        
+                       Foreground="{StaticResource PreferencesWindowFontColor}" 
+                       Grid.Column="0" 
+                       Margin="25,10,0,0" 
+                       TextAlignment="Left" 
+                       FontSize="17" 
+                       FontFamily="Helvetica" 
+                       HorizontalAlignment="Left" 
+                       Width="459" />
+            <StackPanel Grid.Column="1" 
+                        VerticalAlignment="Top"
+                        Orientation="Horizontal" 
+                        HorizontalAlignment="Right">
+                <Button x:Name="CloseButton"
+                        Style="{DynamicResource CloseButtonStyle}"
+                        Click="CloseButton_Click"
+                        VerticalAlignment="Center"
+                        KeyboardNavigation.IsTabStop="False"
+                        Margin="10,12,20,8"/>
+            </StackPanel>
+        </Grid>
+
         
     </Grid>
 </Window>

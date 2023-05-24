@@ -2150,7 +2150,7 @@ namespace Dynamo.Controls
 
         private void OnPackageManagerWindowClick(object sender, RoutedEventArgs e)
         {
-            packageManagerWindow = new PackageManagerView();
+            packageManagerWindow = new PackageManagerView(this);
             packageManagerWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             packageManagerWindow.Show();
         }
