@@ -2,184 +2,185 @@
 name: Dynamo-BinDiff
 on: [push,pull_request]
 jobs:
-#  build-current:
-#   runs-on: windows-latest
-#   steps:
-#     - name: Checkout Dynamo Repo current branch
-#       uses: actions/checkout@v3
-#       with:
-#         path: Dynamo
-#         repository: DynamoDS/Dynamo
-#     - name: Setup Nuget.exe to use on VM (current)
-#       uses: nuget/setup-nuget@v1
-#     - name: Nuget Restore in Dynamo solution (current)
-#       run: nuget restore $Env:GITHUB_WORKSPACE\Dynamo\src\Dynamo.All.sln
-#     - name: Test var
-#       run: echo "${{ github.workspace }}"
-#     - name: Build Dynamo current branch with MSBuild
-#       run: |
-#         echo "***Continue with the build, Good luck developer!***"
-#         cd "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\amd64"
-#            .\MSBuild.exe $Env:GITHUB_WORKSPACE\Dynamo\src\Dynamo.All.sln
-#     - name: Confirm Dynamo Build (current)
-#       run: |
-#         cd "$Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Debug"
-#         echo "***Locating DynamoSandbox after current build!***"
-#         test ".\DynamoSandbox.exe" && echo "DynamoSandbox exists!"
-#     - name: Cache Current Build
-#       uses: actions/cache/save@v3
-#       with:
-#         path: |
-#            ${{ github.workspace }}\Dynamo\bin\AnyCPU\Debug
-#            ${{ github.workspace }}\Dynamo\.github\scripts
-#         key: ${{ github.run_id }}-${{ github.run_attempt }}-cache-current
-#  build-master:
-#   runs-on: windows-latest
-#   steps:
-#     - name: Checkout Dynamo Repo master branch
-#       uses: actions/checkout@v3
-#       with:
-#         ref: master
-#         path: master_Dynamo
-#         repository: DynamoDS/Dynamo
-#     - name: Setup Nuget.exe to use on VM (master)
-#       uses: nuget/setup-nuget@v1
-#     - name: Nuget Restore in Dynamo solution (master)
-#       run: nuget restore $Env:GITHUB_WORKSPACE\master_Dynamo\src\Dynamo.All.sln
-#     - name: Build Dynamo master branch with MSBuild
-#       run: |
-#         echo "***Continue with the build, Good luck developer!***"
-#         cd "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\amd64"
-#            .\MSBuild.exe $Env:GITHUB_WORKSPACE\master_Dynamo\src\Dynamo.All.sln
-#     - name: Confirm Dynamo Build (master)
-#       run: |
-#         cd "$Env:GITHUB_WORKSPACE\master_Dynamo\bin\AnyCPU\Debug"
-#         echo "***Locating DynamoSandbox after master build!***"
-#         test ".\DynamoSandbox.exe" && echo "DynamoSandbox exists!"
-#     - name: Cache Master Build
-#       uses: actions/cache/save@v3
-#       with:
-#         path: ${{ github.workspace }}\master_Dynamo\bin\AnyCPU\Debug
-#         key: ${{ github.run_id }}-${{ github.run_attempt }}-cache-master
-#  run-bin-diff:
-#   needs: [build-current, build-master]
-#   runs-on: windows-latest
-#   steps:
-#     - name: Restore Current Build
-#       uses: actions/cache/restore@v3
-#       with:
-#         fail-on-cache-miss: true
-#         path: |
-#           ${{ github.workspace }}\Dynamo\bin\AnyCPU\Debug
-#           ${{ github.workspace }}\Dynamo\.github\scripts
-#         key: ${{ github.run_id }}-${{ github.run_attempt }}-cache-current
-#     - name: Restore Master Build
-#       uses: actions/cache/restore@v3
-#       with:
-#         fail-on-cache-miss: true
-#         path: ${{ github.workspace }}\master_Dynamo\bin\AnyCPU\Debug
-#         key: ${{ github.run_id }}-${{ github.run_attempt }}-cache-master
-#     - name: Run Binary Diff Job
-#       run: |
-#           echo "***Running the binary diff job between the current branch and the master branch!***"
-#           cd "$Env:GITHUB_WORKSPACE\Dynamo\.github\scripts"
-#           .\bin_diff.ps1 $Env:GITHUB_WORKSPACE\master_Dynamo\bin\AnyCPU\Debug,$Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Debug -src ${{ github.job }}
-#  build-dotnet-windows-current:
-#   runs-on: windows-latest
-#   steps:
-#     - name: Checkout Dynamo Repo
-#       uses: actions/checkout@v3
-#       with:
-#         path: net60_Win_Dynamo
-#         repository: DynamoDS/Dynamo
-#     - name: Setup dotnet
-#       uses: actions/setup-dotnet@v3
-#       with:
-#         dotnet-version: '6.0.x'
-#     - name: Disable problem matcher
-#       run: echo "::remove-matcher owner=csc::"
-#     - name: Install dependencies for windows runtime
-#       run: dotnet restore $Env:GITHUB_WORKSPACE\net60_Win_Dynamo\src\DynamoCore.net6.sln -p:Platform=NET60_Windows --runtime=win10-x64
-#     - name: Build Dynamo current branch with MSBuild for NET60-Windows
-#       run: |
-#         echo "***Continue with the build, Good luck developer!***"
-#         cd "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\"
-#             .\MSBuild.exe $Env:GITHUB_WORKSPACE\net60_Win_Dynamo\src\DynamoCore.net6.sln /p:Configuration=Release  /p:Platform=NET60_Windows
-#     - name: Navigate to Dynamo DotNet6 Windows Folder
-#       run: |
-#         cd "$Env:GITHUB_WORKSPACE\net60_Win_Dynamo\bin\NET60_Windows\Release"
-#         echo "***Locating DynamoCLI for Windows!***"
-#         test ".\DynamoCLI.exe" && echo "DynamoCLI exists!"
-#     - name: Cache Current NET6 Windows Build
-#       uses: actions/cache/save@v3
-#       with:
-#         path: |
-#           ${{ github.workspace }}\net60_Win_Dynamo\bin\NET60_Windows\Release
-#           ${{ github.workspace }}\net60_Win_Dynamo\.github\scripts
-#         key: ${{ github.run_id }}-${{ github.run_attempt }}-cache-net60Win-current
-#  build-dotnet-windows-master:
-#   runs-on: windows-latest
-#   steps:
-#     - name: Checkout Dynamo Repo
-#       uses: actions/checkout@v3
-#       with:
-#         ref: master
-#         path: master_net60_Win_Dynamo
-#         repository: DynamoDS/Dynamo
-#     - name: Setup dotnet
-#       uses: actions/setup-dotnet@v3
-#       with:
-#         dotnet-version: '6.0.x'
-#     - name: Disable problem matcher
-#       run: echo "::remove-matcher owner=csc::"
-#     - name: Install dependencies for windows runtime
-#       run: dotnet restore $Env:GITHUB_WORKSPACE\master_net60_Win_Dynamo\src\DynamoCore.net6.sln -p:Platform=NET60_Windows --runtime=win10-x64
-#     - name: Build Dynamo master branch with MSBuild for NET60-Windows
-#       run: |
-#         echo "***Continue with the build, Good luck developer!***"
-#         cd "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\"
-#             .\MSBuild.exe $Env:GITHUB_WORKSPACE\master_net60_Win_Dynamo\src\DynamoCore.net6.sln /p:Configuration=Release  /p:Platform=NET60_Windows
-#     - name: Navigate to Dynamo DotNet6 Windows Folder
-#       run: |
-#         cd "$Env:GITHUB_WORKSPACE\master_net60_Win_Dynamo\bin\NET60_Windows\Release"
-#         echo "***Locating DynamoCLI for Windows!***"
-#         test ".\DynamoCLI.exe" && echo "DynamoCLI exists!"
-#     - name: Cache Current NET6 Windows Build
-#       uses: actions/cache/save@v3
-#       with:
-#         path: ${{ github.workspace }}\master_net60_Win_Dynamo\bin\NET60_Windows\Release
-#         key: ${{ github.run_id }}-${{ github.run_attempt }}-cache-net60Win-master
-#  run-bin-diff-net60-windows:
-#   needs: [build-dotnet-windows-current, build-dotnet-windows-master]
-#   runs-on: windows-latest
-#   steps:
-#     - name: Restore Current Net60 Windows Build
-#       uses: actions/cache/restore@v3
-#       with:
-#         fail-on-cache-miss: true
-#         path: |
-#           ${{ github.workspace }}\net60_Win_Dynamo\bin\NET60_Windows\Release
-#           ${{ github.workspace }}\net60_Win_Dynamo\.github\scripts
-#         key: ${{ github.run_id }}-${{ github.run_attempt }}-cache-net60Win-current
-#     - name: Restore Master Net60 Windows Build
-#       uses: actions/cache/restore@v3
-#       with:
-#         fail-on-cache-miss: true
-#         path: ${{ github.workspace }}\master_net60_Win_Dynamo\bin\NET60_Windows\Release
-#         key: ${{ github.run_id }}-${{ github.run_attempt }}-cache-net60Win-master
-#     - name: Run Binary Diff Job
-#       run: |
-#           echo "***Running the binary diff job between the current branch and the master branch of NET60-Windows Config!***"
-#           cd "$Env:GITHUB_WORKSPACE\net60_Win_Dynamo\.github\scripts"
-#           .\bin_diff.ps1 $Env:GITHUB_WORKSPACE\master_net60_Win_Dynamo\bin\NET60_Windows\Release,$Env:GITHUB_WORKSPACE\net60_Win_Dynamo\bin\NET60_Windows\Release -src ${{ github.job }}
-  save-diff-results:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Save Diff Results
-        run: |
-          mkdir -p ./pr
-          echo ${{ github.event.number }} > ./pr/NR
-      - uses: actions/upload-artifact@v3
-        with:
-          name: pr
-          path: pr/
+ build-current:
+  runs-on: windows-latest
+  steps:
+    - name: Checkout Dynamo Repo current branch
+      uses: actions/checkout@v3
+      with:
+        path: Dynamo
+        repository: DynamoDS/Dynamo
+    - name: Setup Nuget.exe to use on VM (current)
+      uses: nuget/setup-nuget@v1
+    - name: Nuget Restore in Dynamo solution (current)
+      run: nuget restore $Env:GITHUB_WORKSPACE\Dynamo\src\Dynamo.All.sln
+    - name: Test var
+      run: echo "${{ github.workspace }}"
+    - name: Build Dynamo current branch with MSBuild
+      run: |
+        echo "***Continue with the build, Good luck developer!***"
+        cd "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\amd64"
+           .\MSBuild.exe $Env:GITHUB_WORKSPACE\Dynamo\src\Dynamo.All.sln
+    - name: Confirm Dynamo Build (current)
+      run: |
+        cd "$Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Debug"
+        echo "***Locating DynamoSandbox after current build!***"
+        test ".\DynamoSandbox.exe" && echo "DynamoSandbox exists!"
+    - name: Cache Current Build
+      uses: actions/cache/save@v3
+      with:
+        path: |
+           ${{ github.workspace }}\Dynamo\bin\AnyCPU\Debug
+           ${{ github.workspace }}\Dynamo\.github\scripts
+        key: ${{ github.run_id }}-${{ github.run_attempt }}-cache-current
+ build-master:
+  runs-on: windows-latest
+  steps:
+    - name: Checkout Dynamo Repo master branch
+      uses: actions/checkout@v3
+      with:
+        ref: master
+        path: master_Dynamo
+        repository: DynamoDS/Dynamo
+    - name: Setup Nuget.exe to use on VM (master)
+      uses: nuget/setup-nuget@v1
+    - name: Nuget Restore in Dynamo solution (master)
+      run: nuget restore $Env:GITHUB_WORKSPACE\master_Dynamo\src\Dynamo.All.sln
+    - name: Build Dynamo master branch with MSBuild
+      run: |
+        echo "***Continue with the build, Good luck developer!***"
+        cd "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\amd64"
+           .\MSBuild.exe $Env:GITHUB_WORKSPACE\master_Dynamo\src\Dynamo.All.sln
+    - name: Confirm Dynamo Build (master)
+      run: |
+        cd "$Env:GITHUB_WORKSPACE\master_Dynamo\bin\AnyCPU\Debug"
+        echo "***Locating DynamoSandbox after master build!***"
+        test ".\DynamoSandbox.exe" && echo "DynamoSandbox exists!"
+    - name: Cache Master Build
+      uses: actions/cache/save@v3
+      with:
+        path: ${{ github.workspace }}\master_Dynamo\bin\AnyCPU\Debug
+        key: ${{ github.run_id }}-${{ github.run_attempt }}-cache-master
+ run-bin-diff:
+  needs: [build-current, build-master]
+  runs-on: windows-latest
+  steps:
+    - name: Restore Current Build
+      uses: actions/cache/restore@v3
+      with:
+        fail-on-cache-miss: true
+        path: |
+          ${{ github.workspace }}\Dynamo\bin\AnyCPU\Debug
+          ${{ github.workspace }}\Dynamo\.github\scripts
+        key: ${{ github.run_id }}-${{ github.run_attempt }}-cache-current
+    - name: Restore Master Build
+      uses: actions/cache/restore@v3
+      with:
+        fail-on-cache-miss: true
+        path: ${{ github.workspace }}\master_Dynamo\bin\AnyCPU\Debug
+        key: ${{ github.run_id }}-${{ github.run_attempt }}-cache-master
+    - name: Run Binary Diff Job
+      run: |
+          echo "***Running the binary diff job between the current branch and the master branch!***"
+          cd "$Env:GITHUB_WORKSPACE\Dynamo\.github\scripts"
+          .\bin_diff.ps1 $Env:GITHUB_WORKSPACE\master_Dynamo\bin\AnyCPU\Debug,$Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Debug -src ${{ github.job }}
+ build-dotnet-windows-current:
+  runs-on: windows-latest
+  steps:
+    - name: Checkout Dynamo Repo
+      uses: actions/checkout@v3
+      with:
+        path: net60_Win_Dynamo
+        repository: DynamoDS/Dynamo
+    - name: Setup dotnet
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '6.0.x'
+    - name: Disable problem matcher
+      run: echo "::remove-matcher owner=csc::"
+    - name: Install dependencies for windows runtime
+      run: dotnet restore $Env:GITHUB_WORKSPACE\net60_Win_Dynamo\src\DynamoCore.net6.sln -p:Platform=NET60_Windows --runtime=win10-x64
+    - name: Build Dynamo current branch with MSBuild for NET60-Windows
+      run: |
+        echo "***Continue with the build, Good luck developer!***"
+        cd "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\"
+            .\MSBuild.exe $Env:GITHUB_WORKSPACE\net60_Win_Dynamo\src\DynamoCore.net6.sln /p:Configuration=Release  /p:Platform=NET60_Windows
+    - name: Navigate to Dynamo DotNet6 Windows Folder
+      run: |
+        cd "$Env:GITHUB_WORKSPACE\net60_Win_Dynamo\bin\NET60_Windows\Release"
+        echo "***Locating DynamoCLI for Windows!***"
+        test ".\DynamoCLI.exe" && echo "DynamoCLI exists!"
+    - name: Cache Current NET6 Windows Build
+      uses: actions/cache/save@v3
+      with:
+        path: |
+          ${{ github.workspace }}\net60_Win_Dynamo\bin\NET60_Windows\Release
+          ${{ github.workspace }}\net60_Win_Dynamo\.github\scripts
+        key: ${{ github.run_id }}-${{ github.run_attempt }}-cache-net60Win-current
+ build-dotnet-windows-master:
+  runs-on: windows-latest
+  steps:
+    - name: Checkout Dynamo Repo
+      uses: actions/checkout@v3
+      with:
+        ref: master
+        path: master_net60_Win_Dynamo
+        repository: DynamoDS/Dynamo
+    - name: Setup dotnet
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '6.0.x'
+    - name: Disable problem matcher
+      run: echo "::remove-matcher owner=csc::"
+    - name: Install dependencies for windows runtime
+      run: dotnet restore $Env:GITHUB_WORKSPACE\master_net60_Win_Dynamo\src\DynamoCore.net6.sln -p:Platform=NET60_Windows --runtime=win10-x64
+    - name: Build Dynamo master branch with MSBuild for NET60-Windows
+      run: |
+        echo "***Continue with the build, Good luck developer!***"
+        cd "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\"
+            .\MSBuild.exe $Env:GITHUB_WORKSPACE\master_net60_Win_Dynamo\src\DynamoCore.net6.sln /p:Configuration=Release  /p:Platform=NET60_Windows
+    - name: Navigate to Dynamo DotNet6 Windows Folder
+      run: |
+        cd "$Env:GITHUB_WORKSPACE\master_net60_Win_Dynamo\bin\NET60_Windows\Release"
+        echo "***Locating DynamoCLI for Windows!***"
+        test ".\DynamoCLI.exe" && echo "DynamoCLI exists!"
+    - name: Cache Current NET6 Windows Build
+      uses: actions/cache/save@v3
+      with:
+        path: ${{ github.workspace }}\master_net60_Win_Dynamo\bin\NET60_Windows\Release
+        key: ${{ github.run_id }}-${{ github.run_attempt }}-cache-net60Win-master
+ run-bin-diff-net60-windows:
+  needs: [build-dotnet-windows-current, build-dotnet-windows-master]
+  runs-on: windows-latest
+  steps:
+    - name: Restore Current Net60 Windows Build
+      uses: actions/cache/restore@v3
+      with:
+        fail-on-cache-miss: true
+        path: |
+          ${{ github.workspace }}\net60_Win_Dynamo\bin\NET60_Windows\Release
+          ${{ github.workspace }}\net60_Win_Dynamo\.github\scripts
+        key: ${{ github.run_id }}-${{ github.run_attempt }}-cache-net60Win-current
+    - name: Restore Master Net60 Windows Build
+      uses: actions/cache/restore@v3
+      with:
+        fail-on-cache-miss: true
+        path: ${{ github.workspace }}\master_net60_Win_Dynamo\bin\NET60_Windows\Release
+        key: ${{ github.run_id }}-${{ github.run_attempt }}-cache-net60Win-master
+    - name: Run Binary Diff Job
+      run: |
+          echo "***Running the binary diff job between the current branch and the master branch of NET60-Windows Config!***"
+          cd "$Env:GITHUB_WORKSPACE\net60_Win_Dynamo\.github\scripts"
+          .\bin_diff.ps1 $Env:GITHUB_WORKSPACE\master_net60_Win_Dynamo\bin\NET60_Windows\Release,$Env:GITHUB_WORKSPACE\net60_Win_Dynamo\bin\NET60_Windows\Release -src ${{ github.job }}
+ save-diff-results:
+  needs: [run-bin-diff-net60-windows, run-bin-diff]
+  runs-on: ubuntu-latest
+  steps:
+    - name: Save Diff Results
+      run: |
+        mkdir -p ./pr
+        echo ${{ github.event.number }} > ./pr/NR
+    - uses: actions/upload-artifact@v3
+      with:
+        name: pr
+        path: pr/
