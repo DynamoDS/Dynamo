@@ -33,8 +33,9 @@ jobs:
       #       var fs = require('fs');
       #       fs.writeFileSync('${{github.workspace}}/pr.zip', Buffer.from(download.data));
       - name: 'Download 2'
-        uses: actions/download-artifact@v3
+        uses: dawidd6/action-download-artifact@v2
         with:
+          run_id: ${{github.event.workflow_run.id }}
           name: pr
           path: pr/
       - run: ls -R
