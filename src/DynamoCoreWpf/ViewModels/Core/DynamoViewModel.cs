@@ -1519,22 +1519,26 @@ namespace Dynamo.ViewModels
                 if (DockedNodeWindows.Contains(id))
                 {
                     var tabItem = SideBarTabItems.OfType<TabItem>().SingleOrDefault(n => n.Uid.ToString() == id);
-                    NodeModel nodeModel = GetDockedWindowNodeModel(tabItem.Uid);
 
-                    if (nodeModel is PythonNode pythonNode)
+                    if (tabItem != null)
                     {
-                        var editor = (tabItem.Content as Grid).ChildOfType<TextEditor>();
-                        if (editor != null && editor.IsModified)
-                        {
-                            pythonNode.OnWarnUserScript();
-                            tabItem.Focus();
-                            return false;
-                        }
-                        pythonNode.Dispose();
-                    }
+                        NodeModel nodeModel = GetDockedWindowNodeModel(tabItem.Uid);
 
-                    SideBarTabItems.Remove(tabItem);
-                    DockedNodeWindows.Remove(id);
+                        if (nodeModel is PythonNode pythonNode)
+                        {
+                            var editor = (tabItem.Content as Grid).ChildOfType<TextEditor>();
+                            if (editor != null && editor.IsModified)
+                            {
+                                pythonNode.OnWarnUserScript();
+                                tabItem.Focus();
+                                return false;
+                            }
+                            pythonNode.Dispose();
+                        }
+
+                        SideBarTabItems.Remove(tabItem);
+                        DockedNodeWindows.Remove(id);
+                    }
                 }
             }
             return true;
