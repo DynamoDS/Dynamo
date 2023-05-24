@@ -11,29 +11,33 @@ jobs:
     if: >
       github.event.workflow_run.event == 'pull_request'
     steps:
-      - name: 'Download Diff Results'
-        uses: actions/github-script@v3.1.0
+      # - name: 'Download Diff Results'
+      #   uses: actions/github-script@v3.1.0
+      #   with:
+      #     script: |
+      #       echo RUNID-${{github.event.workflow_run.id }}
+      #       var artifacts = await github.actions.listWorkflowRunArtifacts({
+      #          owner: context.repo.owner,
+      #          repo: context.repo.repo,
+      #          run_id: ${{github.event.workflow_run.id }},
+      #       });
+      #       var matchArtifact = artifacts.data.artifacts.filter((artifact) => {
+      #         return artifact.name == "pr"
+      #       })[0];
+      #       var download = await github.actions.downloadArtifact({
+      #          owner: context.repo.owner,
+      #          repo: context.repo.repo,
+      #          artifact_id: matchArtifact.id,
+      #          archive_format: 'zip',
+      #       });
+      #       var fs = require('fs');
+      #       fs.writeFileSync('${{github.workspace}}/pr.zip', Buffer.from(download.data));
+      - name: 'Download 2'
+        uses: actions/download-artifact@v3
         with:
-          script: |
-            echo RUNID-${{github.event.workflow_run.id }}
-            var artifacts = await github.actions.listWorkflowRunArtifacts({
-               owner: context.repo.owner,
-               repo: context.repo.repo,
-               run_id: ${{github.event.workflow_run.id }},
-            });
-            var matchArtifact = artifacts.data.artifacts.filter((artifact) => {
-              return artifact.name == "pr"
-            })[0];
-            var download = await github.actions.downloadArtifact({
-               owner: context.repo.owner,
-               repo: context.repo.repo,
-               artifact_id: matchArtifact.id,
-               archive_format: 'zip',
-            });
-            var fs = require('fs');
-            fs.writeFileSync('${{github.workspace}}/pr.zip', Buffer.from(download.data));
-      - run: unzip pr.zip
-      - run: ls -al 
+          name: pr
+          path: pr/
+      - run: ls -R
 
 #  cleanup-caches:
 #     runs-on: ubuntu-latest
