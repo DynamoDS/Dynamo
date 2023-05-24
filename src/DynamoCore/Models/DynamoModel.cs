@@ -637,8 +637,14 @@ namespace Dynamo.Models
             //Create an index writer
             IndexWriterConfig indexConfig = new IndexWriterConfig(Configurations.LuceneNetVersion, SearchModel.Analyzer);
             indexConfig.OpenMode = OpenMode.CREATE;
-            writer = new IndexWriter(indexDir, indexConfig);
 
+            // When running parallel tests several are trying to write in the AppData folder then the job
+            // is failing and in a wrong state so we prevent to initialize Lucene when we are in test mode.
+            // TODO: make Lucene writer a singleton
+            if (!IsTestMode)
+            {
+                writer = new IndexWriter(indexDir, indexConfig);
+            }
         }
 
         /// <summary>
@@ -3299,7 +3305,7 @@ namespace Dynamo.Models
             SetDocumentFieldValue(doc, "OutputParameters", node.OutputParameters.Aggregate((x, y) => x + " " + y));
             if (node.SearchKeywords.Count > 0) SetDocumentFieldValue(doc, "SearchKeywords", node.SearchKeywords.Aggregate((x, y) => x + " " + y), true, true);
 
-            writer.AddDocument(doc);
+            writer?.AddDocument(doc);
         }
 
         //TODO:
