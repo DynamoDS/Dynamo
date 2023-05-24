@@ -37,6 +37,5 @@
       <Project>{A4794476-7D0E-41C0-AD83-4AB929C0A46C}</Project>
       <Name>ProtoScript</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ProtoTest\ProtoTest.csproj" />
   </ItemGroup>
 </Project>
