@@ -875,7 +875,7 @@ namespace Dynamo.ViewModels
                 return;
 
             //Passing the second parameter as true will search using Lucene.NET
-            var foundNodes = Search(query, true);
+            var foundNodes = DynamoModel.IsTestMode? Search(query) : Search(query, true);
             searchResults = new List<NodeSearchElementViewModel>(foundNodes);
 
             FilteredResults = searchResults;

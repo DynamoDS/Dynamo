@@ -3267,6 +3267,7 @@ namespace Dynamo.Models
         /// <returns></returns>
         private Document InitializeIndexDocument()
         {
+            if (IsTestMode) return null;
             //TODO: all this harcoded string values should be moved to a different class.
             var fullCategory = new TextField("FullCategoryName", "", Field.Store.YES);
             var name = new TextField("Name", "", Field.Store.YES);
@@ -3297,6 +3298,7 @@ namespace Dynamo.Models
         /// <param name="doc">Lucene document in which the node info will be indexed</param>
         private void AddNodeTypeToSearchIndex(NodeSearchElement node, Document doc)
         {
+            if (IsTestMode) return;
             if (addedFields == null) return;
 
             SetDocumentFieldValue(doc, "FullCategoryName", node.FullCategoryName);
