@@ -1635,14 +1635,15 @@ namespace Dynamo.Models
 
             CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.CommonDefinitions, IsTestMode);
 
-            //Initialize searcher, if the applyAllDeletes is true all buffered deletes on documents will be applied (made visible) in the returned reader
-            dirReader = writer?.GetReader(applyAllDeletes: true);
-            IndexSearcher searcher = new IndexSearcher(dirReader);
-            SearchModel.Searcher = searcher;
+            // Initialize searcher, if the applyAllDeletes is true all buffered deletes on documents will be applied (made visible) in the returned reader
             // When running parallel tests several are trying to write in the AppData folder then the job
             // is failing and in a wrong state so we prevent to initialize Lucene when we are in test mode.
             if (!IsTestMode)
             {
+                dirReader = writer?.GetReader(applyAllDeletes: true);
+                IndexSearcher searcher = new IndexSearcher(dirReader);
+                SearchModel.Searcher = searcher;
+
                 writer?.Commit();
                 writer?.Dispose();
             }
