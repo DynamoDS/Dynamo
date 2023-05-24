@@ -18,10 +18,10 @@ namespace Dynamo.Search
     public class NodeSearchModel : SearchLibrary<NodeSearchElement, NodeModel>
     {
 
-        //Holds the instance for the IndexSearcher
+        // Holds the instance for the IndexSearcher
         internal IndexSearcher Searcher;
 
-        ////Used in DynamoModel for creating the StandardAnalyzer
+        // Used in DynamoModel for creating the StandardAnalyzer
         internal Analyzer Analyzer;
 
         /// <summary>

@@ -134,10 +134,10 @@ namespace Dynamo.Models
         private Timer backupFilesTimer;
         private Dictionary<Guid, string> backupFilesDict = new Dictionary<Guid, string>();
         internal readonly Stopwatch stopwatch = Stopwatch.StartNew();
-        IndexWriter writer;
-        Lucene.Net.Store.Directory indexDir;
-        DirectoryReader dirReader;
-        List<string> addedFields;
+        internal IndexWriter writer;
+        internal Lucene.Net.Store.Directory indexDir;
+        internal DirectoryReader dirReader;
+        internal List<string> addedFields;
 
         /// <summary>
         /// Indicating if ASM is loaded correctly, defaulting to true because integrators most likely have code for ASM preloading
@@ -953,9 +953,12 @@ namespace Dynamo.Models
 
             CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager, LibraryServices);
 
-            //When running parallel tests several are trying to write in the AppData folder then the job is failing and in a wrong state so we prevent to initialize Lucene when we are in test mode.
-            if(IsTestMode == false)
+            // When running parallel tests several are trying to write in the AppData folder then the job
+            // is failing and in a wrong state so we prevent to initialize Lucene when we are in test mode.
+            if (!IsTestMode)
+            {
                 InitializeLuceneConfig();
+            }
 
             InitializeCustomNodeManager();
 
@@ -1385,7 +1388,7 @@ namespace Dynamo.Models
                 PreferenceSettings.MessageLogged -= LogMessage;
             }
 
-            //Lucene disposals (just if LuceneNET was initialized)
+            // Lucene disposals (just if LuceneNET was initialized)
             indexDir?.Dispose();
             dirReader?.Dispose();
 
@@ -1702,6 +1705,7 @@ namespace Dynamo.Models
                     // Legacy index process to search dictionary
                     var ele = AddNodeTypeToSearch(type);
                     // New index process from Lucene
+                    // TODO: get search element some other way
                     if (ele != null)
                     {
                         AddNodeTypeToSearchIndex(ele, iDoc);
