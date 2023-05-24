@@ -77,6 +77,7 @@ namespace Dynamo.Controls
         private readonly LoginService loginService;
         private ShortcutToolbar shortcutBar;
         private PreferencesView preferencesWindow;
+        private PackageManagerView packageManagerWindow;
         private bool loaded = false;
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
         // called on the view model and the process is not cancelled
@@ -2145,6 +2146,13 @@ namespace Dynamo.Controls
             dynamoViewModel.OnPreferencesWindowChanged(preferencesWindow);
             preferencesWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             preferencesWindow.Show();
+        }
+
+        private void OnPackageManagerWindowClick(object sender, RoutedEventArgs e)
+        {
+            packageManagerWindow = new PackageManagerView();
+            packageManagerWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            packageManagerWindow.Show();
         }
 
         internal void EnableEnvironment(bool isEnabled)
