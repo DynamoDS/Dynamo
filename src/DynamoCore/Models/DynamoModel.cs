@@ -1531,20 +1531,23 @@ namespace Dynamo.Models
             SearchModel?.Add(symbolSearchElement);
             SearchModel?.Add(outputSearchElement);
 
+            //Adding this nodes are breaking the tests (due that we have two input and two output nodes):
+            //WhenHomeWorkspaceIsFocusedInputAndOutputNodesAreMissingFromSearch
+            //WhenStartingDynamoInputAndOutputNodesAreNolongerMissingFromSearch
             // New index process from Lucene, adding missing nodes: Code Block, Input and Output
-            var ele = AddNodeTypeToSearch(outputData);      
-            if (ele != null)
-            {
-                AddNodeTypeToSearchIndex(ele, iDoc);
-            }
+            //var ele = AddNodeTypeToSearch(outputData);      
+            //if (ele != null)
+            //{
+            //    AddNodeTypeToSearchIndex(ele, iDoc);
+            //}
 
-            ele = AddNodeTypeToSearch(symbolData);
-            if (ele != null)
-            {
-                AddNodeTypeToSearchIndex(ele, iDoc);
-            }
+            //ele = AddNodeTypeToSearch(symbolData);
+            //if (ele != null)
+            //{
+            //    AddNodeTypeToSearchIndex(ele, iDoc);
+            //}
 
-            ele = AddNodeTypeToSearch(cbnData);
+            var ele = AddNodeTypeToSearch(cbnData);
             if (ele != null)
             {
                 AddNodeTypeToSearchIndex(ele, iDoc);
@@ -1646,6 +1649,7 @@ namespace Dynamo.Models
 
                 writer?.Commit();
                 writer?.Dispose();
+                writer = null;
             }
         }
 
