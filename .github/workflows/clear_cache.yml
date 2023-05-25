@@ -6,7 +6,7 @@ on:
     types:
       - completed
 jobs:
- download-diff-results:
+ diff-cache-cleanup:
     runs-on: ubuntu-latest
     if: >
       github.event.workflow_run.event == 'pull_request'
