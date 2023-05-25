@@ -32,7 +32,7 @@ jobs:
         path: |
            ${{ github.workspace }}\Dynamo\bin\AnyCPU\Debug
            ${{ github.workspace }}\Dynamo\.github\scripts
-        key: cache-current-${{ github.run_id }}-${{ github.run_attempt }}
+        key: ${{ github.run_id }}-${{ github.run_attempt }}-cache-current
  build-master:
   runs-on: windows-latest
   steps:
@@ -60,7 +60,7 @@ jobs:
       uses: actions/cache/save@v3
       with:
         path: ${{ github.workspace }}\master_Dynamo\bin\AnyCPU\Debug
-        key: cache-master-${{ github.run_id }}-${{ github.run_attempt }}
+        key: ${{ github.run_id }}-${{ github.run_attempt }}-cache-master
  run-bin-diff:
   needs: [build-current, build-master]
   runs-on: windows-latest
@@ -72,18 +72,18 @@ jobs:
         path: |
           ${{ github.workspace }}\Dynamo\bin\AnyCPU\Debug
           ${{ github.workspace }}\Dynamo\.github\scripts
-        key: cache-current-${{ github.run_id }}-${{ github.run_attempt }}
+        key: ${{ github.run_id }}-${{ github.run_attempt }}-cache-current
     - name: Restore Master Build
       uses: actions/cache/restore@v3
       with:
         fail-on-cache-miss: true
         path: ${{ github.workspace }}\master_Dynamo\bin\AnyCPU\Debug
-        key: cache-master-${{ github.run_id }}-${{ github.run_attempt }}
+        key: ${{ github.run_id }}-${{ github.run_attempt }}-cache-master
     - name: Run Binary Diff Job
       run: |
           echo "***Running the binary diff job between the current branch and the master branch!***"
           cd "$Env:GITHUB_WORKSPACE\Dynamo\.github\scripts"
-          .\bin_diff.ps1 $Env:GITHUB_WORKSPACE\master_Dynamo\bin\AnyCPU\Debug,$Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Debug
+          .\bin_diff.ps1 $Env:GITHUB_WORKSPACE\master_Dynamo\bin\AnyCPU\Debug,$Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Debug -src ${{ github.job }}
  build-dotnet-windows-current:
   runs-on: windows-latest
   steps:
@@ -116,7 +116,7 @@ jobs:
         path: |
           ${{ github.workspace }}\net60_Win_Dynamo\bin\NET60_Windows\Release
           ${{ github.workspace }}\net60_Win_Dynamo\.github\scripts
-        key: cache-net60Win-current-${{ github.run_id }}-${{ github.run_attempt }}
+        key: ${{ github.run_id }}-${{ github.run_attempt }}-cache-net60Win-current
  build-dotnet-windows-master:
   runs-on: windows-latest
   steps:
@@ -148,7 +148,7 @@ jobs:
       uses: actions/cache/save@v3
       with:
         path: ${{ github.workspace }}\master_net60_Win_Dynamo\bin\NET60_Windows\Release
-        key: cache-net60Win-master-${{ github.run_id }}-${{ github.run_attempt }}
+        key: ${{ github.run_id }}-${{ github.run_attempt }}-cache-net60Win-master
  run-bin-diff-net60-windows:
   needs: [build-dotnet-windows-current, build-dotnet-windows-master]
   runs-on: windows-latest
@@ -160,15 +160,27 @@ jobs:
         path: |
           ${{ github.workspace }}\net60_Win_Dynamo\bin\NET60_Windows\Release
           ${{ github.workspace }}\net60_Win_Dynamo\.github\scripts
-        key: cache-net60Win-current-${{ github.run_id }}-${{ github.run_attempt }}
+        key: ${{ github.run_id }}-${{ github.run_attempt }}-cache-net60Win-current
     - name: Restore Master Net60 Windows Build
       uses: actions/cache/restore@v3
       with:
         fail-on-cache-miss: true
         path: ${{ github.workspace }}\master_net60_Win_Dynamo\bin\NET60_Windows\Release
-        key: cache-net60Win-master-${{ github.run_id }}-${{ github.run_attempt }}
+        key: ${{ github.run_id }}-${{ github.run_attempt }}-cache-net60Win-master
     - name: Run Binary Diff Job
       run: |
           echo "***Running the binary diff job between the current branch and the master branch of NET60-Windows Config!***"
           cd "$Env:GITHUB_WORKSPACE\net60_Win_Dynamo\.github\scripts"
-          .\bin_diff.ps1 $Env:GITHUB_WORKSPACE\master_net60_Win_Dynamo\bin\NET60_Windows\Release,$Env:GITHUB_WORKSPACE\net60_Win_Dynamo\bin\NET60_Windows\Release
+          .\bin_diff.ps1 $Env:GITHUB_WORKSPACE\master_net60_Win_Dynamo\bin\NET60_Windows\Release,$Env:GITHUB_WORKSPACE\net60_Win_Dynamo\bin\NET60_Windows\Release -src ${{ github.job }}
+ save-PR-number:
+  needs: [run-bin-diff-net60-windows, run-bin-diff]
+  runs-on: ubuntu-latest
+  steps:
+    - name: Save PR Number
+      run: |
+        mkdir -p ./pr
+        echo ${{ github.event.number }} > ./pr/NR
+    - uses: actions/upload-artifact@v3
+      with:
+        name: pr
+        path: pr/
