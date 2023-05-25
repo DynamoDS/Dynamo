@@ -634,15 +634,14 @@ namespace Dynamo.Models
             // Create an analyzer to process the text
             SearchModel.Analyzer = new StandardAnalyzer(Configurations.LuceneNetVersion);
 
-            //Create an index writer
-            IndexWriterConfig indexConfig = new IndexWriterConfig(Configurations.LuceneNetVersion, SearchModel.Analyzer);
-            indexConfig.OpenMode = OpenMode.CREATE;
-
             // When running parallel tests several are trying to write in the AppData folder then the job
             // is failing and in a wrong state so we prevent to initialize Lucene when we are in test mode.
             // TODO: make Lucene writer a singleton
             if (!IsTestMode)
             {
+                //Create an index writer
+                IndexWriterConfig indexConfig = new IndexWriterConfig(Configurations.LuceneNetVersion, SearchModel.Analyzer);
+                indexConfig.OpenMode = OpenMode.CREATE;
                 writer = new IndexWriter(indexDir, indexConfig);
             }
         }
