@@ -172,11 +172,11 @@ jobs:
           echo "***Running the binary diff job between the current branch and the master branch of NET60-Windows Config!***"
           cd "$Env:GITHUB_WORKSPACE\net60_Win_Dynamo\.github\scripts"
           .\bin_diff.ps1 $Env:GITHUB_WORKSPACE\master_net60_Win_Dynamo\bin\NET60_Windows\Release,$Env:GITHUB_WORKSPACE\net60_Win_Dynamo\bin\NET60_Windows\Release -src ${{ github.job }}
- save-diff-results:
+ save-PR-number:
   needs: [run-bin-diff-net60-windows, run-bin-diff]
   runs-on: ubuntu-latest
   steps:
-    - name: Save Diff Results
+    - name: Save PR Number
       run: |
         mkdir -p ./pr
         echo ${{ github.event.number }} > ./pr/NR
