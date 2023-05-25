@@ -635,13 +635,14 @@ namespace Dynamo.Models
             SearchModel.Analyzer = new StandardAnalyzer(Configurations.LuceneNetVersion);
 
             // When running parallel tests several are trying to write in the AppData folder then the job
-            // is failing and in a wrong state so we prevent to initialize Lucene when we are in test mode.
-            // TODO: make Lucene writer a singleton
+            // is failing and in a wrong state so we prevent to initialize Lucene index writer during test mode.
             if (!IsTestMode)
             {
-                //Create an index writer
-                IndexWriterConfig indexConfig = new IndexWriterConfig(Configurations.LuceneNetVersion, SearchModel.Analyzer);
-                indexConfig.OpenMode = OpenMode.CREATE;
+                // Create an index writer
+                IndexWriterConfig indexConfig = new IndexWriterConfig(Configurations.LuceneNetVersion, SearchModel.Analyzer)
+                {
+                    OpenMode = OpenMode.CREATE
+                };
                 writer = new IndexWriter(indexDir, indexConfig);
             }
         }
@@ -1639,7 +1640,8 @@ namespace Dynamo.Models
 
             // Initialize searcher, if the applyAllDeletes is true all buffered deletes on documents will be applied (made visible) in the returned reader
             // When running parallel tests several are trying to write in the AppData folder then the job
-            // is failing and in a wrong state so we prevent to initialize Lucene when we are in test mode.
+            // is failing and in a wrong state so we prevent to initialize Lucene index writer during test mode.
+            // Without the index files on disk, the dirReader cant be initialized correctly. So does the searcher.
             if (!IsTestMode)
             {
                 dirReader = writer?.GetReader(applyAllDeletes: true);
