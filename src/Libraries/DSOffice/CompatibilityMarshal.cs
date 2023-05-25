@@ -5,18 +5,18 @@ using System.Security;
 using System;
 
 /// <summary>
-/// Can't use Marshall on NET6 so this class replaces that functionality in order to keep the Excel.cs file (Excel nodes) working
+/// Can't use Marshal on NET6 so this class replaces that functionality in order to keep the Excel.cs file (Excel nodes) working
 /// </summary>
-public static class CompatibilityMarshal
+internal static class CompatibilityMarshal
 {
-    internal const String OLEAUT32 = "oleaut32.dll";
-    internal const String OLE32 = "ole32.dll";
+    private const String OLEAUT32 = "oleaut32.dll";
+    private const String OLE32 = "ole32.dll";
 
     /// <summary>
     /// Works like Marshal.GetActiveObject on Net6
     /// </summary>
     [SecurityCritical]  // auto-generated_required
-    public static Object GetActiveObject(String progID)
+    internal static Object GetActiveObject(String progID)
     {
         Object obj = null;
         Guid clsid;
