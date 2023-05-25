@@ -170,8 +170,8 @@ function GetFilesWithHash {
 
 function Format-Color([hashtable] $Colors = @{}, [switch] $SimpleMatch) {
 	$lines = ($input | Out-String) -replace "`r", "" -split "`n"
-    $addedCount = 0
-    $deletedCount = 0
+  $addedCount = 0
+  $deletedCount = 0
 	foreach($line in $lines) {
 		$color = ''
 		foreach($pattern in $Colors.Keys){
