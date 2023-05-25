@@ -14,7 +14,11 @@ param (
 
   [parameter(HelpMessage="Export a summary to path.")]
   [alias("s")]
-  [string]$ExportSummary
+  [string]$ExportSummary,
+
+  [parameter(HelpMessage="Source of the diff job.")]
+  [alias("src")]
+  [string]$DiffBuildSource
 )
 
 ### FUNCTION DEFINITIONS ###
@@ -166,6 +170,8 @@ function GetFilesWithHash {
 
 function Format-Color([hashtable] $Colors = @{}, [switch] $SimpleMatch) {
 	$lines = ($input | Out-String) -replace "`r", "" -split "`n"
+    $addedCount = 0
+    $deletedCount = 0
 	foreach($line in $lines) {
 		$color = ''
 		foreach($pattern in $Colors.Keys){
@@ -173,11 +179,28 @@ function Format-Color([hashtable] $Colors = @{}, [switch] $SimpleMatch) {
 			elseif ($SimpleMatch -and $line -like $pattern) { $color = $Colors[$pattern] }
 		}
 		if($color) {
-			Write-Host -ForegroundColor $color $line
+            if($color -eq 'Red'){
+                $deletedCount++
+			    Write-Host "`e[31;1m$line`e[0m"
+            }
+            if($color -eq 'Green'){
+                $addedCount++
+			    Write-Host "`e[32;1m$line`e[0m"
+            }
 		} else {
 			Write-Host $line
 		}
 	}
+    if($addedCount -gt 0 -or $deletedCount -gt 0){
+        $msg=''
+        if($addedCount -gt 0) {$msg+="$addedCount new file(s) have been added"}
+        if($addedCount -gt 0 -and $deletedCount -gt 0){$msg+=' and '}
+        if($deletedCount -gt 0) {$msg+="$deletedCount file(s) have been deleted!"}
+
+        Write-Host "::warning title=($DiffBuildSource) Files Added/Deleted::$msg"
+    } else{
+        Write-Host "::notice title=($DiffBuildSource) No New Files Added/Deleted::The job has detected that no new files were added or deleted."
+    }
 }
 
 filter UpdatedOnlyFilter{
@@ -213,7 +236,8 @@ function DiffDirectories {
     Expression = {
         if ($_.SideIndicator -eq "=>") {
           if (-not (Test-Path (Join-Path -Path $LeftPath -ChildPath $_.RelativePath))) {
-                'Added'          }
+                'Added'
+          }
           else {
                 'Modified'
           }
@@ -227,7 +251,7 @@ function DiffDirectories {
           }
         }
       }
-    } | UpdatedOnlyFilter | Sort-Object Status | Format-Color @{'Deleted' = 'Red'; 'Added' = 'Green'}
+    } | UpdatedOnlyFilter | Sort-Object Status | Format-Color @{'Added' = 'Green'; 'Deleted' = 'Red'}
   }
 }
 
