@@ -6,12 +6,12 @@ on:
     types:
       - completed
 jobs:
- download-diff-results:
+ diff-cache-cleanup:
     runs-on: ubuntu-latest
     if: >
       github.event.workflow_run.event == 'pull_request'
     steps:
-      - name: Download Diff Results
+      - name: Download PR Number
         uses: dawidd6/action-download-artifact@v2
         with:
           run_id: ${{github.event.workflow_run.id }}
