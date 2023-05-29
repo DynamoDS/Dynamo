@@ -11,7 +11,7 @@
     xmlns:viewmodel="clr-namespace:Dynamo.ViewModels"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     x:Name="PART_ColorPickerPalettePopup"
-    Width="530"
+    Width="Auto"
     Height="Auto"
     VerticalAlignment="Bottom"
     d:DesignHeight="550"
@@ -137,9 +137,6 @@
                 <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="MaxHeight" Value="300" />
 
-                <!--  ConverterParameter is margin/Padding from Popup  -->
-
-                <Setter Property="Width" Value="{Binding Width, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Popup}}, Converter={StaticResource AdditionConverter}, ConverterParameter=-18}" />
                 <Setter Property="ItemsPanel">
                     <Setter.Value>
                         <ItemsPanelTemplate>
@@ -425,9 +422,10 @@
 
                             <!--  Contains the right side vertical Colors Slider  -->
                             <Border
+                                Grid.Row="0"
                                 Grid.RowSpan="2"
                                 Grid.Column="1"
-                                Margin="7,-8,0,0"
+                                Margin="7,-8,10,0"
                                 ClipToBounds="False">
                                 <xctk:ColorSpectrumSlider x:Name="PART_SpectrumSlider" VerticalAlignment="Stretch" />
                             </Border>
@@ -645,7 +643,6 @@
                     <!--  Normal Colors Window  -->
                     <Grid
                         x:Name="gridNormalColorSelection"
-                        Width="530"
                         Margin="21,10,20,10"
                         HorizontalAlignment="Left"
                         Background="Transparent"
@@ -690,7 +687,7 @@
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
-                                    <RowDefinition />
+                                    <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <TextBlock
                                     Grid.Row="0"
@@ -701,15 +698,14 @@
                                     FontSize="14"
                                     Foreground="Black"
                                     Text="{x:Static p:Resources.CustomColorPickerBasicColors}" />
-
                                 <ListBox
                                     x:Name="PART_AvailableColors"
                                     Grid.Row="1"
+                                    MinWidth="485"
                                     Margin="0,5,0,5"
                                     ItemsSource="{Binding BasicColors}"
                                     SelectionChanged="PART_BasicColors_SelectionChanged"
                                     Style="{StaticResource ColorListStyle}" />
-
                             </Grid>
                         </Grid>
 
@@ -733,6 +729,7 @@
                                 <ListBox
                                     x:Name="PART_CustomColors"
                                     Grid.Row="1"
+                                    MinWidth="485"
                                     Margin="0,5,0,5"
                                     ItemsSource="{Binding CustomColors}"
                                     SelectionChanged="PART_CustomColors_SelectionChanged"
