@@ -35,12 +35,12 @@ namespace Dynamo.Applications
         public bool ConvertFile { get; set; }
         [Option('h', "ShowHelp", Required = false, HelpText = "Get some help")]
         public bool ShowHelp { get; set; }
-        [Option( "Geometry", Required = false, HelpText = "Instruct Dynamo to output geometry from all evaluations to a json file at this path.")]
+        [Option('g', "Geometry", Required = false, HelpText = "Instruct Dynamo to output geometry from all evaluations to a json file at this path.")]
         public string GeometryFilePath { get; set; } = String.Empty;
         [Option('i', "Import", Required = false, HelpText = "Instruct Dynamo to import an assembly as a node library.This argument should be a filepath to a single.dll" +
             " - if you wish to import multiple dlls - list the dlls separated by a space: -i 'assembly1.dll' 'assembly2.dll'")]
         public IEnumerable<String> ImportedPaths { get; set; } = new List<string>();
-        [Option('g', "GeometryPath", Required = false, HelpText = "relative or absolute path to a directory containing ASM. When supplied, instead of searching the hard disk for ASM, it will be loaded directly from this path.")]
+        [Option('e', "GeometryPath", Required = false, HelpText = "relative or absolute path to a directory containing ASM. When supplied, instead of searching the hard disk for ASM, it will be loaded directly from this path.")]
         public string ASMPath { get; set; } = String.Empty;
         [Option('k', "KeepAlive", Required = false, HelpText = "Keepalive mode, leave the Dynamo process running until a loaded extension shuts it down.")]
         public bool KeepAlive { get; set; }
@@ -50,13 +50,13 @@ namespace Dynamo.Applications
         public string UserDataFolder { get; set; } = String.Empty;
         [Option("CommonData", Required = false, HelpText = "Specify common data folder to be used by PathResolver with CLI.")]
         public string CommonDataFolder { get; set; } = String.Empty;
-        [Option("HostName", Required = false, HelpText = "Identify Dynamo variation associated with host.")]
+        [Option('t', "HostName", Required = false, HelpText = "Identify Dynamo variation associated with host.")]
         public string HostName { get; set; } = String.Empty;
         [Option("DisableAnalytics", Required = false, HelpText = "Disables analytics in Dynamo for the process liftime.")]
         public bool DisableAnalytics { get; set; }
-        [Option("ParentId", Required = false, HelpText = "Identify Dynamo host analytics parent id.")]
+        [Option('p', "ParentId", Required = false, HelpText = "Identify Dynamo host analytics parent id.")]
         public string ParentId { get; set; } = String.Empty;
-        [Option("SessionId", Required = false, HelpText = "Identify Dynamo host analytics session id.")]
+        [Option('s', "SessionId", Required = false, HelpText = "Identify Dynamo host analytics session id.")]
         public string SessionId { get; set; } = String.Empty;
         [Option("CERLocation", Required = false, HelpText = "Specify the crash error report tool location on disk.")]
         public string CERLocation { get; set; } = String.Empty;
