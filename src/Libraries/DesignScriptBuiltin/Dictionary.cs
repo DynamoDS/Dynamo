@@ -13,9 +13,15 @@ namespace DesignScript
         {
             private readonly ImmutableDictionary<string, object> D;
 
+            /// <summary>
+            /// Use backingDict to read from D.
+            /// </summary>
+            private Dictionary<string, object> backingDict;
+
             private Dictionary(ImmutableDictionary<string, object> dict)
             {
-                this.D = dict;
+                D = dict;
+                backingDict = D.ToDictionary(pair =>  pair.Key, pair => pair.Value);
             }
 
             /// <summary>
@@ -44,8 +50,8 @@ namespace DesignScript
             {
                 return new Dictionary<string, object>
                 {
-                    {"keys", D.Keys},
-                    {"values", D.Values}
+                    {"keys", backingDict.Keys},
+                    {"values", backingDict.Values}
                 };
             }
 
@@ -53,7 +59,7 @@ namespace DesignScript
             ///     Produces the keys in a Dictionary.
             /// </summary>
             /// <returns name="keys">Keys of the Dictionary</returns>
-            public IEnumerable<string> Keys => D.Keys;
+            public IEnumerable<string> Keys => backingDict.Keys;
 
             /// <summary>
             ///     Produces the values in a Dictionary.
@@ -62,7 +68,7 @@ namespace DesignScript
             public IEnumerable<object> Values
             {
                 [return: ArbitraryDimensionArrayImport]
-                get { return D.Values; }
+                get { return backingDict.Values; }
             }
 
             /// <summary>
@@ -116,7 +122,7 @@ namespace DesignScript
             {
                 var result = new StringBuilder();
                 result.Append("{");
-                foreach (var key in D.Keys)
+                foreach (var key in backingDict.Keys)
                 {
                     result.Append($"{key}:{D[key]},");
                 }
