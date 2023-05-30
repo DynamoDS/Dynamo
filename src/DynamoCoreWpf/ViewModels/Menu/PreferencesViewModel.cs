@@ -791,10 +791,6 @@ namespace Dynamo.ViewModels
             {
                 return Configurations.Units.Millimeters;
             }
-            else if (revitUnits == Configurations.Units.Inches)
-            {
-                return Configurations.Units.Feet;
-            }
             else
             {
                 return revitUnits;
