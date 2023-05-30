@@ -16,7 +16,7 @@ namespace DesignScript
             /// <summary>
             /// Use backingDict to read from D.
             /// </summary>
-            private Dictionary<string, object> backingDict;
+            private readonly Dictionary<string, object> backingDict;
 
             private Dictionary(ImmutableDictionary<string, object> dict)
             {
