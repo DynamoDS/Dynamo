@@ -3262,7 +3262,7 @@ namespace Dynamo.Models
                 return null;
             }
             var node = new NodeModelSearchElement(typeLoadData);
-            SearchModel?.Add(new NodeModelSearchElement(typeLoadData));
+            SearchModel?.Add(node);
             return node;
         }
 
