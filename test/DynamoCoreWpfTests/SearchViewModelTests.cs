@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Configuration;
@@ -11,7 +11,7 @@ using NUnit.Framework;
 namespace Dynamo.Tests
 {
     [TestFixture]
-    internal class SearchViewModelTests
+    internal class SearchViewModelTests : DynamoViewModelUnitTest
     {
         private static NodeSearchModel model;
         private static SearchViewModel viewModel;

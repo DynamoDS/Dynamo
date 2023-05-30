@@ -1,0 +1,43 @@
+# Clean up caches created by BinDiff job
+name: Dynamo-CacheCleanup
+on:
+  workflow_run:
+    workflows: [Dynamo-BinDiff]
+    types:
+      - completed
+jobs:
+ diff-cache-cleanup:
+    runs-on: ubuntu-latest
+    if: >
+      github.event.workflow_run.event == 'pull_request'
+    steps:
+      - name: Download PR Number
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          run_id: ${{github.event.workflow_run.id }}
+          name: pr
+          path: pr/
+      - name: Check Artifact
+        run: ls -R
+      - name: Cleanup Caches
+        run: |
+          gh extension install actions/gh-actions-cache
+          
+          PRNUM=$(<pr/NR)
+          REPO=${{ github.repository }}
+          BRANCH="refs/pull/$PRNUM/merge"
+          echo "Fetching list of cache key"
+          echo $REPO
+          echo $BRANCH
+          echo $PRNUM
+          cacheKeysForPR=$(gh actions-cache list -R $REPO -B $BRANCH | cut -f 1 )
+          ## Setting this to not fail the workflow while deleting cache keys. 
+          set +e
+          echo "Deleting caches..."
+          for cacheKey in $cacheKeysForPR
+          do
+              echo "Deleting: $cacheKey"
+              gh actions-cache delete $cacheKey -R $REPO -B $BRANCH --confirm
+          done
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

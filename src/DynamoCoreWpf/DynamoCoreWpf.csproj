@@ -102,9 +102,9 @@
     <None Remove="Views\GuidedTour\HtmlPages\Resources\ConnectTheNode.gif" />
   </ItemGroup>
   <ItemGroup>
-  <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.1365" />
+  <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.1400" />
   <PackageReference Include="AvalonEdit" Version="4.3.1.9430" CopyXML="true" />
-  <PackageReference Include="Greg" Version="2.4.0.4766" />
+  <PackageReference Include="Greg" Version="2.5.0.5076" />
   <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" />
 	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 	<PackageReference Include="RestSharp" Version="106.12.0" />
