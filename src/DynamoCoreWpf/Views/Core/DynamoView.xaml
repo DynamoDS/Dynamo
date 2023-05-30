@@ -622,7 +622,7 @@
                                   Command="{Binding Path=DataContext.PublishCurrentWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                                   Name="publishCurrent" />
                         <MenuItem Header="New Package Manager Placeholder"
-                                  Click="OnPackageManagerWindowClick" 
+                                  Command="{Binding Path=DataContext.ShowPackageManagerCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                                   Name="showPM" />
                     </MenuItem>
 

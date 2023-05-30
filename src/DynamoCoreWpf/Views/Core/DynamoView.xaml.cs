@@ -1201,6 +1201,7 @@ namespace Dynamo.Controls
 
             dynamoViewModel.RequestPackagePublishDialog += DynamoViewModelRequestRequestPackageManagerPublish;
             dynamoViewModel.RequestPackageManagerSearchDialog += DynamoViewModelRequestShowPackageManagerSearch;
+            dynamoViewModel.RequestPackageManagerDialog += DynamoViewModelRequestShowPackageManager;
 
             #endregion
 
@@ -2148,11 +2149,33 @@ namespace Dynamo.Controls
             preferencesWindow.Show();
         }
 
-        private void OnPackageManagerWindowClick(object sender, RoutedEventArgs e)
+        private void DynamoViewModelRequestShowPackageManager(object s, EventArgs e)
         {
-            packageManagerWindow = new PackageManagerView(this);
-            packageManagerWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            packageManagerWindow.Show();
+            if (!DisplayTermsOfUseForAcceptance())
+                return; // Terms of use not accepted.
+
+            var cmd = Analytics.TrackCommandEvent("SearchPackage");
+            if (_pkgSearchVM == null)
+            {
+                _pkgSearchVM = new PackageManagerSearchViewModel(dynamoViewModel.PackageManagerClientViewModel);
+            }
+
+            if (packageManagerWindow == null)
+            {
+                packageManagerWindow = new PackageManagerView(this, dynamoViewModel, _pkgSearchVM)
+                {
+                    Owner = this,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                };
+
+                packageManagerWindow.Closed += (sender, args) => { packageManagerWindow = null; cmd.Dispose(); };
+                packageManagerWindow.Show();
+
+                if (packageManagerWindow.IsLoaded && IsLoaded) packageManagerWindow.Owner = this;
+            }
+
+            packageManagerWindow.Focus();
+            _pkgSearchVM.RefreshAndSearchAsync();
         }
 
         internal void EnableEnvironment(bool isEnabled)

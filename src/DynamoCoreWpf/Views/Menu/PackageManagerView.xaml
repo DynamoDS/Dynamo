@@ -16,9 +16,10 @@
         xmlns:local="clr-namespace:Dynamo.Wpf.Views"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None"
+        Closed="WindowClosed"
         mc:Ignorable="d" 
         Height="480" 
-        Width="665"
+        Width="720"
         ResizeMode="NoResize">
     <Window.Resources>
         <ResourceDictionary>
@@ -34,7 +35,6 @@
             <controls:InverseBoolToVisibilityConverter  x:Key="InverseBoolToVisibilityConverter "/>
             <controls:InverseBoolToEnablingConverter  x:Key="InverseBoolToEnablingConverter "/>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-
             
         </ResourceDictionary>
     </Window.Resources>
@@ -42,15 +42,10 @@
     <!--The main grid of the Package Manager window-->
     <Grid x:Name="mainGrid"
     	  Background="{StaticResource PreferencesWindowBackgroundColor}">
-        <Grid.Resources>
-            <sys:Double x:Key="ToggleButtonWidth">40</sys:Double>
-            <sys:Double x:Key="ToggleButtonHeight">20</sys:Double>
-        </Grid.Resources>
         <!--The Window is divided basically in three rows, TitleBar, Content, and ButtonsBottomSection-->
         <Grid.RowDefinitions>
             <RowDefinition Height="40"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="50"></RowDefinition>
         </Grid.RowDefinitions>
 
         <!--Section/Row of the TitleBar it contains a TextBlock for the windows title and the close button-->
@@ -87,6 +82,314 @@
             </StackPanel>
         </Grid>
 
+        <!--Section/Row of the Tabs content, it contains all the tabs left side aligned and the controls in the right section for each tab-->
+        <!--The LeftTab Style is located in the DynamoModern.xaml file-->
+        <Grid x:Name="TabsContent" 
+              Grid.Row="1" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid x:Name="ContentGrid" 
+                  Grid.Column="0" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <TabControl x:Name="projectManagerTabControl"
+                            TabStripPlacement="Left"
+                            Padding="0"
+                            BorderThickness="0"
+                            Background="{StaticResource PreferencesWindowBackgroundColor}">
+
+                    <!--Search Packages Tab-->
+                    <TabItem Header="Search for Packages"
+                             Style="{StaticResource PackageManagerTab}">
+                        <!--This Grid contains the search tab-->
+                        <Grid x:Name="SearchPackagesTab" 
+                              Margin="0"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch"
+                              Background="{StaticResource PackageManagerTabBackgroundColor}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <ListBox
+                                Grid.Row="0"
+                                Name="searchResultsListBox"
+                                Background="{StaticResource PackageManagerTabBackgroundColor}"
+                                BorderThickness="0"
+                                ItemsSource="{Binding Path=SearchResults}"
+                                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                SelectedIndex="{Binding Path=SelectedIndex}"
+                                VirtualizingPanel.ScrollUnit="Pixel">
+
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem">
+                                        <Setter Property="Padding" Value="0" />
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                        <Setter Property="BorderThickness" Value="0" />
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
+
+                                <!--  The template for all package search results  -->
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate DataType="viewModels:PackageManagerSearchElementViewModel">
+                                        <Grid Name="resultItemTemplate" VerticalAlignment="Center">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="40px" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="35px" />
+                                            </Grid.RowDefinitions>
+
+                                            <!--  Top Row  -->
+                                            <DockPanel
+                                                Name="resultTopRow"
+                                                Grid.Row="0"
+                                                Margin="15,15,5,0"
+                                                LastChildFill="False">
+
+                                                <!--  View Details Button  -->
+                                                <Button
+                                    Name="viewDetailsButton"
+                                    Click="ViewDetailsButton_OnClick"
+                                    Content="Test"
+                                    DockPanel.Dock="Right">
+                                                </Button>
+
+
+                                                <!--  Contains Package Name and New Label  -->
+                                                <Grid Margin="0,0,0,0" DockPanel.Dock="Left">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock
+                                        Name="packageName"
+                                        Grid.Column="0"
+                                        VerticalAlignment="Center"
+                                        FontFamily="{StaticResource ArtifaktElementRegular}"
+                                        FontSize="14"
+                                        FontWeight="SemiBold"
+                                        Text="{Binding Path=Model.Name}"
+                                        TextTrimming="CharacterEllipsis"
+                                        TextWrapping="NoWrap">
+                                                    </TextBlock>
+                                                    <Border
+                                        Name="newPackageLabel"
+                                        Grid.Column="1"
+                                        Width="Auto"
+                                        Height="18"
+                                        Margin="7,-3,7,0"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        Background="Transparent"
+                                        BorderBrush="{StaticResource PrimaryCharcoal200Brush}"
+                                        BorderThickness="1"
+                                        CornerRadius="3">
+                                                        <TextBlock
+                                                            Margin="3,0"
+                                                            Padding="0,2,0,0"
+                                                            HorizontalAlignment="Center"
+                                                            VerticalAlignment="Center"
+                                                            FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                            FontSize="11"
+                                                            Foreground="{StaticResource PrimaryCharcoal200Brush}"
+                                                            Text="{Binding Path=Model}">
+                                                        </TextBlock>
+                                                    </Border>
+                                                </Grid>
+                                            </DockPanel>
+
+                                            <!--  Middle Row  -->
+                                            <DockPanel
+                                                Name="requirementsRow"
+                                                Grid.Row="1"
+                                                Margin="15,0,0,0"
+                                                VerticalAlignment="Center"
+                                                LastChildFill="False">
+                                                <Rectangle
+                                                        Width="9"
+                                                        Height="9"
+                                                        Margin="0,0,0,1"
+                                                        VerticalAlignment="Center"
+                                                        DockPanel.Dock="Left">
+                                                    <Rectangle.Fill>
+                                                        <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Requirements - disabled.png" />
+                                                    </Rectangle.Fill>
+                                                </Rectangle>
+                                                <TextBlock
+                                                    x:Name="requirementsLabel"
+                                                    Margin="5,0"
+                                                    DockPanel.Dock="Left"
+                                                    Text="{Binding Model.Hosts}"/>
+                                            </DockPanel>
+
+                                            <!--  Bottom Row  -->
+                                            <DockPanel
+                                                Name="resultBottomRow"
+                                                Grid.Row="2"
+                                                Margin="15,0,5,15"
+                                                VerticalAlignment="Bottom"
+                                                LastChildFill="True">
+                                                <TextBlock
+                                                    Name="dateLabel"
+                                                    Margin="5,0"
+                                                    DockPanel.Dock="Right"
+                                                    Text="{Binding Path=Model.LatestVersionCreated}" />
+                                                <Rectangle
+                                                    Width="10"
+                                                    Height="10"
+                                                    Margin="5,0,0,2"
+                                                    VerticalAlignment="Center"
+                                                    DockPanel.Dock="Right">
+                                                    <Rectangle.Fill>
+                                                        <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Date.png" />
+                                                    </Rectangle.Fill>
+                                                </Rectangle>
+                                                <TextBlock
+                                                    Name="noDownloadsLabel"
+                                                    Margin="5,0"
+                                                    DockPanel.Dock="Right"
+                                                    Text="{Binding Path=Model.Downloads}" />
+                                                <Rectangle
+                                                    Width="10"
+                                                    Height="10"
+                                                    Margin="5,0,0,2"
+                                                    VerticalAlignment="Center"
+                                                    DockPanel.Dock="Right">
+                                                    <Rectangle.Fill>
+                                                        <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Download.png" />
+                                                    </Rectangle.Fill>
+                                                </Rectangle>
+                                                <TextBlock
+                                                    Name="noFavoritesLabel"
+                                                    Margin="5,0"
+                                                    DockPanel.Dock="Right"
+                                                    Text="{Binding Path=Model.Votes}" />
+                                                <Rectangle
+                                                    Width="10"
+                                                    Height="10"
+                                                    Margin="5,0,0,2"
+                                                    VerticalAlignment="Center"
+                                                    DockPanel.Dock="Right">
+                                                    <Rectangle.Fill>
+                                                        <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Favorite.png" />
+                                                    </Rectangle.Fill>
+                                                </Rectangle>
+                                                <TextBlock
+                                                    Name="versionLabel"
+                                                    Margin="5,0"
+                                                    DockPanel.Dock="Right"
+                                                    Text="{Binding Path=Model.LatestVersion}" />
+                                                <Rectangle
+                                                    Width="10"
+                                                    Height="10"
+                                                    Margin="5,0,0,2"
+                                                    VerticalAlignment="Center"
+                                                    DockPanel.Dock="Right">
+                                                    <Rectangle.Fill>
+                                                        <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Flag.png" />
+                                                    </Rectangle.Fill>
+                                                </Rectangle>
+                                                <Rectangle
+                                                    Width="10"
+                                                    Height="10"
+                                                    Margin="0,0,0,2"
+                                                    VerticalAlignment="Center"
+                                                    DockPanel.Dock="Left">
+                                                    <Rectangle.Fill>
+                                                        <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Profile.png" />
+                                                    </Rectangle.Fill>
+                                                </Rectangle>
+                                                <TextBlock
+                                                    Name="authorName"
+                                                    Margin="5,0"
+                                                    DockPanel.Dock="Left"
+                                                    Text="{Binding Path=Model.Maintainers}"
+                                                    TextTrimming="CharacterEllipsis" />
+                                            </DockPanel>
+
+                                            <!--  A 1px bar that separates List Items  -->
+                                            <Rectangle
+                                                Name="separator"
+                                                Grid.Row="2"
+                                                Height="1"
+                                                VerticalAlignment="Bottom"
+                                                Fill="{StaticResource DarkMidGreyBrush}" />
+
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+
+
+
+                        </Grid>
+                    </TabItem>
+
+
+                    <!--Publish Packages Tab-->
+                    <TabItem Header="Publish a Packages"
+                             Style="{StaticResource PackageManagerTab}">
+                        <!--This Grid contains the search tab-->
+                        <Grid x:Name="PublishPackagesTab" 
+                              Margin="1"
+                              HorizontalAlignment="Stretch">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                        </Grid>
+                    </TabItem>
+
+                    <!--Installed Packages Tab-->
+                    <TabItem Header="Installed Packages"
+                             Style="{StaticResource PackageManagerTab}">
+                        <!--This Grid contains the search tab-->
+                        <Grid x:Name="InstalledPackagesTab" 
+                              Margin="1"
+                              HorizontalAlignment="Stretch">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                        </Grid>
+                    </TabItem>
+
+                    <!--My Packages Tab-->
+                    <TabItem Header="My Packages"
+                             Style="{StaticResource PackageManagerTab}">
+                        <!--This Grid contains the search tab-->
+                        <Grid x:Name="MyPackagesTab" 
+                              Margin="1"
+                              HorizontalAlignment="Stretch">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                        </Grid>
+                    </TabItem>
+
+                    <!--Package Settings Tab-->
+                    <TabItem Header="Package Settings"
+                             Style="{StaticResource PackageManagerTab}">
+                        <!--This Grid contains the search tab-->
+                        <Grid x:Name="PackageSettingsTab" 
+                              Margin="1"
+                              HorizontalAlignment="Stretch">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                        </Grid>
+                    </TabItem>
+
+                </TabControl>
+            </Grid>
+        </Grid>
         
     </Grid>
 </Window>
