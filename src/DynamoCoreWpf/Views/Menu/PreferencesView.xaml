@@ -1438,18 +1438,18 @@
                                             Margin="0,6,0,8" 
                                             Grid.Row="1"
                                             Visibility="{Binding IsDynamoRevit, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                            <ToggleButton Name="UseRevitScaleUnitsToggle"
+                                                <ToggleButton Name="UseHostScaleUnitsToggle"
                                                     Width="{StaticResource ToggleButtonWidth}"
                                                     Height="{StaticResource ToggleButtonHeight}"
                                                     VerticalAlignment="Center"
-                                                    IsChecked="{Binding Path=UseRevitScaleUnits}"
+                                                    IsChecked="{Binding Path=UseHostScaleUnits}"
                                                     Style="{StaticResource EllipseToggleButton1}"/>
-                                            <Label Content="{x:Static p:Resources.PreferencesUseRevitScaleUnits}" 
+                                                <Label Content="{x:Static p:Resources.PreferencesUseHostScaleUnits}" 
                                                 VerticalAlignment="Center"
                                                 Margin="10,0,0,0"
                                                 Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                             <Label HorizontalAlignment="Left"
-                                                Name="UseRevitScaleUnitsInfoLabel"
+                                                Name="UseHostScaleUnitsInfoLabel"
                                                 VerticalAlignment="Center" 
                                                 Height="26" 
                                                 Width="53"
@@ -1463,7 +1463,7 @@
                                                     Style="{StaticResource QuestionIcon}"
                                                     ToolTipService.ShowDuration="30000">
                                                     <Image.ToolTip>
-                                                        <ToolTip Content="{x:Static p:Resources.PreferencesUseRevitScaleUnitsToolTip}" Style="{StaticResource GenericToolTipLight}"/>
+                                                            <ToolTip Content="{x:Static p:Resources.PreferencesUseHostScaleUnitsToolTip}" Style="{StaticResource GenericToolTipLight}"/>
                                                     </Image.ToolTip>
                                                 </Image>
                                             </Label>
@@ -1478,13 +1478,13 @@
                                               IsEnabled="{Binding EnableManualScaleOverrides}">
                                         </ComboBox>
                                         <TextBlock Grid.Row="3"
-                                                    x:Name="RevitUnitsTextBlock"
+                                                    x:Name="HostUnitsTextBlock"
                                                     Padding="2"
                                                     Margin="0 2"
                                                     Width="190"
                                                     FontWeight="Regular"
                                                     HorizontalAlignment="Left"
-                                                    Text="{Binding RevitGenericScaleUnits}"
+                                                    Text="{Binding HostGenericScaleUnits}"
                                                     Foreground="#888888"
                                                     Background="{StaticResource PreferencesWindowBackgroundColor}"
                                                     Visibility="{Binding EnableManualScaleOverrides, Converter={StaticResource InverseBoolToVisibilityConverter}}">

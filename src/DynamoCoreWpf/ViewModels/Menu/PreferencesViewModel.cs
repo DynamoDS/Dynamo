@@ -195,7 +195,7 @@ namespace Dynamo.ViewModels
                     selectedUnits = value;
                     RaisePropertyChanged(nameof(SelectedUnits));
 
-                    if (UseRevitScaleUnits) return;
+                    if (UseHostScaleUnits) return;
 
                     var result = Enum.TryParse(selectedUnits, out Configurations.Units currentUnit);
                     if (!result) return;
@@ -395,7 +395,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Supported units in Revit, used in scaling of grapic helpers (grid, axes)
+        /// Supported units in Host (Revit), used in scaling of grapic helpers (grid, axes)
         /// </summary>
         public ObservableCollection<string> UnitList
         {
@@ -746,27 +746,27 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Indicates if Revit units should be used for graphic helpers for Dynamo Revit
-        /// Also toggles between Revit and Dynamo units 
+        /// Indicates if Host units should be used for graphic helpers for Dynamo Revit
+        /// Also toggles between Host and Dynamo units 
         /// </summary>
-        public bool UseRevitScaleUnits
+        public bool UseHostScaleUnits
         {
             get
             {
-                return preferenceSettings.UseRevitScaleUnits;
+                return preferenceSettings.UseHostScaleUnits;
             }
             set
             {
-                preferenceSettings.UseRevitScaleUnits = value;
+                preferenceSettings.UseHostScaleUnits = value;
                 RaisePropertyChanged(nameof(EnableManualScaleOverrides));
-                RaisePropertyChanged(nameof(UseRevitScaleUnits));
-                RaisePropertyChanged(nameof(RevitGenericScaleUnits));
+                RaisePropertyChanged(nameof(UseHostScaleUnits));
+                RaisePropertyChanged(nameof(HostGenericScaleUnits));
 
-                var revitUnits = preferenceSettings.CurrentRevitUnits;
+                var hostUnits = preferenceSettings.CurrentHostUnits;
                 var result = Enum.TryParse(preferenceSettings.GraphicScaleUnit, out Configurations.Units dynamoUnits);
                 if (!result) return;
 
-                var unitsToUse = value ? GetTransformedRevitUnits(revitUnits) : dynamoUnits;
+                var unitsToUse = value ? GetTransformedHostUnits(hostUnits) : dynamoUnits;
 
                 if (Configurations.SupportedUnits.TryGetValue(unitsToUse, out double units))
                 {
@@ -776,40 +776,40 @@ namespace Dynamo.ViewModels
             }
         }
 
-        // Perform unit reverse conversion to create a uniform grid for any Revit units
-        private Configurations.Units GetTransformedRevitUnits(Configurations.Units revitUnits)
+        // Perform unit reverse conversion to create a uniform grid for any Host units
+        internal Configurations.Units GetTransformedHostUnits(Configurations.Units hostUnits)
         {
-            if(revitUnits == Configurations.Units.Millimeters)
+            if(hostUnits == Configurations.Units.Millimeters)
             {
                 return Configurations.Units.Meters;
             }
-            else if(revitUnits == Configurations.Units.Centimeters)
+            else if(hostUnits == Configurations.Units.Centimeters)
             {
                 return Configurations.Units.Centimeters;
             }
-            else if (revitUnits == Configurations.Units.Meters)
+            else if (hostUnits == Configurations.Units.Meters)
             {
                 return Configurations.Units.Millimeters;
             }
             else
             {
-                return revitUnits;
+                return hostUnits;
             }
         }
 
-        public string RevitGenericScaleUnits
+        public string HostGenericScaleUnits
         {
             get
             {
-                if (preferenceSettings.CurrentRevitUnits == Configurations.Units.Feet
-                    || preferenceSettings.CurrentRevitUnits == Configurations.Units.Inches
-                    || preferenceSettings.CurrentRevitUnits == Configurations.Units.Miles)
+                if (preferenceSettings.CurrentHostUnits == Configurations.Units.Feet
+                    || preferenceSettings.CurrentHostUnits == Configurations.Units.Inches
+                    || preferenceSettings.CurrentHostUnits == Configurations.Units.Miles)
                 {
-                    return Res.PreferencesRevitGenericScaleImperialUnits;
+                    return Res.PreferencesHostGenericScaleImperialUnits;
                 }
                 else
                 {
-                    return Res.PreferencesRevitGenericScaleMetricUnits;
+                    return Res.PreferencesHostGenericScaleMetricUnits;
                 }
             }
         }
@@ -823,7 +823,7 @@ namespace Dynamo.ViewModels
             get
             {
                 if (!IsDynamoRevit) return true;
-                return !UseRevitScaleUnits;
+                return !UseHostScaleUnits;
             }
         }
 
@@ -1410,12 +1410,12 @@ namespace Dynamo.ViewModels
         private void PreferenceSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             var property = e.PropertyName;
-            if (property.Equals(nameof(preferenceSettings.CurrentRevitUnits)))
+            if (property.Equals(nameof(preferenceSettings.CurrentHostUnits)))
             {
-                // Forces update to revit units
-                // The (revit) units are set after the DynamoViewModel has been initialized and the grid scaled up or down
+                // Forces update to host units
+                // The host (revit) units are set after the DynamoViewModel has been initialized and the grid scaled up or down
                 // The units are set inside the preferenceSettings, so we are listening for when this happens to set the scale
-                UseRevitScaleUnits = UseRevitScaleUnits;
+                UseHostScaleUnits = UseHostScaleUnits;
             }
         }
 

@@ -2763,11 +2763,11 @@ If the toggle is off custom packages that are not already loaded will load once 
     <value>Show Preview Bubbles</value>
     <comment>Preferences | Visual Settings | Display Settings | Show Preview Bubbles</comment>
   </data>
-  <data name="PreferencesUseRevitScaleUnits" xml:space="preserve">
+  <data name="PreferencesUseHostScaleUnits" xml:space="preserve">
     <value>Use Revit to scale background graphic helpers</value>
   </data>
-  <data name="PreferencesUseRevitScaleUnitsToolTip" xml:space="preserve">
-    <value>When toggled on, the current Revit document units will be used to scale the background graphic helpers (grids, axes). Otherwise, the Graphic Elements Scale drop-down will determine scale.</value>
+  <data name="PreferencesUseHostScaleUnitsToolTip" xml:space="preserve">
+    <value>When toggled on, the current Host document units will be used to scale the background graphic helpers (grids, axes). Otherwise, the Graphic Elements Scale drop-down will determine scale.</value>
   </data>
   <data name="PublishPackageVersionMajorWatermark" xml:space="preserve">
     <value>0</value>
@@ -3637,10 +3637,10 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="LibraryLoadFailureMessageSuffix" xml:space="preserve">
     <value>See the console log for the details of the import failure.</value>
   </data>
-  <data name="PreferencesRevitGenericScaleImperialUnits" xml:space="preserve">
+  <data name="PreferencesHostGenericScaleImperialUnits" xml:space="preserve">
     <value>Imperial</value>
   </data>
-  <data name="PreferencesRevitGenericScaleMetricUnits" xml:space="preserve">
+  <data name="PreferencesHostGenericScaleMetricUnits" xml:space="preserve">
     <value>Metric</value>
   </data>
 </root>

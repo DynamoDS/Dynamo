@@ -393,6 +393,9 @@ namespace Dynamo.Configuration
             }
         }
 
+        /// <summary>
+        /// Host units, used to scale background grid graphic element
+        /// </summary>
         internal enum Units
         {
             Millimeters,
@@ -405,7 +408,7 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
-        /// Supported Revit units and their conversion to dynamo units
+        /// Supported Host units and their conversion to dynamo units
         /// Used in graphic helpers scaling (grid, axes)
         /// </summary>
         internal static Dictionary<Units, double> SupportedUnits

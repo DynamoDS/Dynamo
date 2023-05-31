@@ -6635,6 +6635,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Imperial.
+        /// </summary>
+        public static string PreferencesHostGenericScaleImperialUnits {
+            get {
+                return ResourceManager.GetString("PreferencesHostGenericScaleImperialUnits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Metric.
+        /// </summary>
+        public static string PreferencesHostGenericScaleMetricUnits {
+            get {
+                return ResourceManager.GetString("PreferencesHostGenericScaleMetricUnits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Preferences must be closed before you proceed. All changes saved automatically..
         /// </summary>
         public static string PreferencesMustBeClosedMessage {
@@ -6667,24 +6685,6 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesPackageManagerSettingsTab {
             get {
                 return ResourceManager.GetString("PreferencesPackageManagerSettingsTab", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Imperial.
-        /// </summary>
-        public static string PreferencesRevitGenericScaleImperialUnits {
-            get {
-                return ResourceManager.GetString("PreferencesRevitGenericScaleImperialUnits", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Metric.
-        /// </summary>
-        public static string PreferencesRevitGenericScaleMetricUnits {
-            get {
-                return ResourceManager.GetString("PreferencesRevitGenericScaleMetricUnits", resourceCulture);
             }
         }
         
@@ -6790,18 +6790,18 @@ namespace Dynamo.Wpf.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Use Revit to scale background graphic helpers.
         /// </summary>
-        public static string PreferencesUseRevitScaleUnits {
+        public static string PreferencesUseHostScaleUnits {
             get {
-                return ResourceManager.GetString("PreferencesUseRevitScaleUnits", resourceCulture);
+                return ResourceManager.GetString("PreferencesUseHostScaleUnits", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to When toggled on, the current Revit document units will be used to scale the background graphic helpers (grids, axes). Otherwise, the Graphic Elements Scale drop-down will determine scale..
         /// </summary>
-        public static string PreferencesUseRevitScaleUnitsToolTip {
+        public static string PreferencesUseHostScaleUnitsToolTip {
             get {
-                return ResourceManager.GetString("PreferencesUseRevitScaleUnitsToolTip", resourceCulture);
+                return ResourceManager.GetString("PreferencesUseHostScaleUnitsToolTip", resourceCulture);
             }
         }
         

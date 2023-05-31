@@ -52,8 +52,7 @@ namespace Dynamo.Configuration
         private int maxNumRecentFiles;
         private bool isBackgroundGridVisible;
         private float gridScaleFactor;
-        private Configurations.Units currentRevitUnits;
-        //private bool setScaleFromRevit;
+        private Configurations.Units currentHostUnits;
         private double defaultScaleFactor;
         private bool disableTrustWarnings = false;
         private bool isNotificationCenterEnabled;
@@ -159,9 +158,9 @@ namespace Dynamo.Configuration
         public bool ShowPreviewBubbles { get; set; }
 
         /// <summary>
-        /// Indicates if Revit units should be used for graphic helpers for Dynamo Revit
+        /// Indicates if Host units should be used for graphic helpers for Dynamo Revit
         /// </summary>
-        public bool UseRevitScaleUnits { get; set; }
+        public bool UseHostScaleUnits { get; set; }
 
         /// <summary>
         /// Indicates if code block node line numbers should  be displayed.
@@ -272,20 +271,20 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
-        /// The current Revit document units. Will be updated the first time Dynamo is started
+        /// The current Host document units. Will be updated the first time Dynamo is started
         /// </summary>
-        internal Configurations.Units CurrentRevitUnits
+        internal Configurations.Units CurrentHostUnits
         {
             get
             {
-                return currentRevitUnits;
+                return currentHostUnits;
             }
             set
             {
-                if (value == currentRevitUnits) return;
-                currentRevitUnits = value;
+                if (value == currentHostUnits) return;
+                currentHostUnits = value;
 
-                RaisePropertyChanged(nameof(CurrentRevitUnits));
+                RaisePropertyChanged(nameof(CurrentHostUnits));
             }
         }
 
