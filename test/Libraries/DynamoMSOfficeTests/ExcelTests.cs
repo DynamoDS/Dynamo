@@ -1,23 +1,25 @@
-using System;
+using DSOffice;
+using NUnit.Framework;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using CoreNodeModels.Input;
-using DSOffice;
-using Dynamo.Configuration;
-using Dynamo.Graph.Connectors;
-using Dynamo.Graph.Nodes;
-using NUnit.Framework;
-using ProtoCore.DSASM;
-using ProtoCore.Mirror;
+using System.Threading;
 
 
 namespace Dynamo.Tests
 {
-    [TestFixture, RequiresSTA]
+
+#if NET6_0_OR_GREATER
+    [TestFixture, Apartment(ApartmentState.MTA)]
+    public class ExcelTests
+    {
+    }
+#elif NETFRAMEWORK
+        [TestFixture, RequiresSTA] 
     public class ExcelTests : DynamoViewModelUnitTest
     {
+
+
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("DesignScriptBuiltin.dll");
@@ -1362,10 +1364,12 @@ namespace Dynamo.Tests
         }     
         #endregion
     }
-
+#endif
     [TestFixture]
     public class CSVTests : UnitTestBase
     {
+#if NET6_0_OR_GREATER 
+#endif
         [Test]
         [Category("UnitTests")]
         public static void ImportCSV_PathTest()

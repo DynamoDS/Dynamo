@@ -123,6 +123,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeometryColorTests", "..\te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PackageManagerTests", "..\test\Libraries\PackageManagerTests\PackageManagerTests.csproj", "{2A70F3B5-7AEA-42FE-8DD5-8427C28D0025}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoMSOfficeTests", "..\test\Libraries\DynamoMSOfficeTests\DynamoMSOfficeTests.csproj", "{269039F1-126A-46CF-8BEA-257587EDCA6B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -791,6 +793,22 @@ Global
 		{2A70F3B5-7AEA-42FE-8DD5-8427C28D0025}.Release|NET60_Windows.Build.0 = Release|NET60_Windows
 		{2A70F3B5-7AEA-42FE-8DD5-8427C28D0025}.Release|x64.ActiveCfg = Release|x64
 		{2A70F3B5-7AEA-42FE-8DD5-8427C28D0025}.Release|x64.Build.0 = Release|x64
+		{269039F1-126A-46CF-8BEA-257587EDCA6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{269039F1-126A-46CF-8BEA-257587EDCA6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{269039F1-126A-46CF-8BEA-257587EDCA6B}.Debug|NET60_Linux.ActiveCfg = Debug|NET60_Linux
+		{269039F1-126A-46CF-8BEA-257587EDCA6B}.Debug|NET60_Linux.Build.0 = Debug|NET60_Linux
+		{269039F1-126A-46CF-8BEA-257587EDCA6B}.Debug|NET60_Windows.ActiveCfg = Debug|NET60_Windows
+		{269039F1-126A-46CF-8BEA-257587EDCA6B}.Debug|NET60_Windows.Build.0 = Debug|NET60_Windows
+		{269039F1-126A-46CF-8BEA-257587EDCA6B}.Debug|x64.ActiveCfg = Debug|x64
+		{269039F1-126A-46CF-8BEA-257587EDCA6B}.Debug|x64.Build.0 = Debug|x64
+		{269039F1-126A-46CF-8BEA-257587EDCA6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{269039F1-126A-46CF-8BEA-257587EDCA6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{269039F1-126A-46CF-8BEA-257587EDCA6B}.Release|NET60_Linux.ActiveCfg = Release|NET60_Linux
+		{269039F1-126A-46CF-8BEA-257587EDCA6B}.Release|NET60_Linux.Build.0 = Release|NET60_Linux
+		{269039F1-126A-46CF-8BEA-257587EDCA6B}.Release|NET60_Windows.ActiveCfg = Release|NET60_Windows
+		{269039F1-126A-46CF-8BEA-257587EDCA6B}.Release|NET60_Windows.Build.0 = Release|NET60_Windows
+		{269039F1-126A-46CF-8BEA-257587EDCA6B}.Release|x64.ActiveCfg = Release|x64
+		{269039F1-126A-46CF-8BEA-257587EDCA6B}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -832,6 +850,7 @@ Global
 		{AB735028-22B0-4083-9CC5-805C582818EA} = {4CA0BC62-DCB3-456B-80D6-348247640BAB}
 		{F8D2E3E5-4505-4463-9367-2EB2629D7DCD} = {4CA0BC62-DCB3-456B-80D6-348247640BAB}
 		{2A70F3B5-7AEA-42FE-8DD5-8427C28D0025} = {4CA0BC62-DCB3-456B-80D6-348247640BAB}
+		{269039F1-126A-46CF-8BEA-257587EDCA6B} = {4CA0BC62-DCB3-456B-80D6-348247640BAB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89CB19C6-BF0A-4E6A-BFDA-79D143EAB59D}

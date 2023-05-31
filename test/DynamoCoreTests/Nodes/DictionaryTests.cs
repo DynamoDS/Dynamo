@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using DesignScript.Builtin;
 using NUnit.Framework;
@@ -79,7 +79,7 @@ namespace Dynamo.Tests.Nodes
             Assert.AreEqual(dict.ToString(), "{}");
         }
 
-        [Test,Category("FailureNET6")]
+        [Test]
         public void Dictionary_ListOfValues_ReturnedAsExpected()
         {
             var dynFilePath = Path.Combine(TestDirectory, @"core\dictionary\Dictionary.Values2.dyn");

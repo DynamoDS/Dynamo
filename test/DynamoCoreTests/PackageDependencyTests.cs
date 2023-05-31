@@ -94,7 +94,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(package.Nodes.Select(n => n.ToString("N")), nodes);
         }
 
-        [Test,Category("FailureNET6")]
+        [Test,Category("WindowsOnly")]
         public void NodeModelPackageDependencyIsCollected()
         {
             // Load JSON file graph
@@ -452,7 +452,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(pi, packageDependencies.First());
         }
 
-        [Test,Category("FailureNET6")]
+        [Test,Category("WindowsOnly")]
         public void PackageDependencyStatechangeTestAfterLoadingPackage()
         {
             // Before loading the clockworkpackage,veify the package dependency states. 
