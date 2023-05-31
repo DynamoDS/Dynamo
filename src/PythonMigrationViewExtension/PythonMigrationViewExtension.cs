@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -185,28 +185,19 @@ namespace Dynamo.PythonMigration
 
         private void OnCurrentWorkspaceChanged(IWorkspaceModel workspace)
         {
-            if (!IsIronPythonDialogOpen())
-            {
-                UnSubscribeWorkspaceEvents();
-                CurrentWorkspace = workspace as WorkspaceModel;
-                PythonDependencies.UpdateWorkspace(CurrentWorkspace);
-                SubscribeToWorkspaceEvents();
+            UnSubscribeWorkspaceEvents();
+            CurrentWorkspace = workspace as WorkspaceModel;
+            PythonDependencies.UpdateWorkspace(CurrentWorkspace);
+            SubscribeToWorkspaceEvents();
 
-                NotificationTracker.Remove(CurrentWorkspace.Guid);
-                GraphPythonDependencies.CustomNodePythonDependencyMap.Clear();
+            NotificationTracker.Remove(CurrentWorkspace.Guid);
+            GraphPythonDependencies.CustomNodePythonDependencyMap.Clear();
 
-                if (!Models.DynamoModel.IsTestMode
-                    && PythonDependencies.CurrentWorkspaceHasIronPythonDependency())
-                {
-                    LogIronPythonNotification();
-                    DisplayIronPythonDialog();
-                }
-            }
 
-                CurrentWorkspace.Nodes
-                    .Where(x => x is PythonNodeBase)
-                    .ToList()
-                    .ForEach(x => SubscribeToPythonNodeEvents(x as PythonNodeBase));
+            CurrentWorkspace.Nodes
+                .Where(x => x is PythonNodeBase)
+                .ToList()
+                .ForEach(x => SubscribeToPythonNodeEvents(x as PythonNodeBase));
         }
 
         private void SubscribeToDynamoEvents()

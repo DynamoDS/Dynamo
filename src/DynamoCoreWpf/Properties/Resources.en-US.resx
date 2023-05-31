@@ -2209,10 +2209,6 @@ Uninstall the following packages: {0}?</value>
     <value>Show CodeBlockNode Line Numbers</value>
     <comment>Preferences | Visual Settings | Display Settings | Show CodeBlockNode Line Numbers</comment>
   </data>
-  <data name="PreferencesViewIsIronPythonDialogDisabled" xml:space="preserve">
-    <value>Hide IronPython alerts</value>
-    <comment>Preferences | Features | Python | Hide IronPython Alerts</comment>
-  </data>
   <data name="MessageFailedToDownloadPackageVersion" xml:space="preserve">
     <value>Failed to download version {0} of package with id: {1}.  Please try again and report the package if you continue to have problems.</value>
     <comment>Message box content. {0} = 1.2.3, {1} = 57d576e8f615e7725800001d</comment>
