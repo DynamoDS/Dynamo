@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -62,7 +62,6 @@ namespace Dynamo.PythonMigration
 
         private void ToggleIronPythonDialog(object sender, RoutedEventArgs e)
         {
-            this.ViewModel.DynamoViewModel.IsIronPythonDialogDisabled = this.DisableIronPythonDialogCheck.IsChecked.Value;
         }
 
         private void OnCustomNodeClick(object sender, RoutedEventArgs e)

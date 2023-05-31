@@ -29,7 +29,6 @@ namespace Dynamo.PythonMigration
         private Dispatcher Dispatcher { get; set; }
 
         internal Dictionary<Guid, NotificationMessage> NotificationTracker = new Dictionary<Guid, NotificationMessage>();
-        internal Dictionary<Guid, IronPythonInfoDialog> DialogTracker = new Dictionary<Guid, IronPythonInfoDialog>();
 
         /// <summary>
         /// Extension GUID
@@ -68,29 +67,6 @@ namespace Dynamo.PythonMigration
             Dispatcher = Dispatcher.CurrentDispatcher;
 
             SubscribeToDynamoEvents();
-        }
-
-        private void DisplayIronPythonDialog()
-        {
-            // we only want to create the dialog if the global setting is not disabled and once per Dynamo session, for each graph/custom node
-            if (DynamoViewModel.IsIronPythonDialogDisabled || DialogTracker.ContainsKey(CurrentWorkspace.Guid)) return;
-            if (CurrentWorkspace is CustomNodeWorkspaceModel && DialogTracker.ContainsKey((CurrentWorkspace as CustomNodeWorkspaceModel).CustomNodeId))
-                return;
-
-            var dialog = new IronPythonInfoDialog(this)
-            {
-                Owner = LoadedParams.DynamoWindow
-            };
-
-            Dispatcher.BeginInvoke(new Action(() =>
-            {
-                dialog.Show();
-            }), DispatcherPriority.Background);
-
-            DialogTracker[CurrentWorkspace.Guid] = dialog;
-            if (CurrentWorkspace is CustomNodeWorkspaceModel){
-                DialogTracker[(CurrentWorkspace as CustomNodeWorkspaceModel).CustomNodeId] = dialog;
-            }
         }
 
         private void LogIronPythonNotification()
@@ -166,21 +142,6 @@ namespace Dynamo.PythonMigration
                 return;
 
             UnSubscribePythonNodeEvents(pythonNode);
-        }
-
-        private bool IsIronPythonDialogOpen()
-        {
-            var view = LoadedParams.DynamoWindow.OwnedWindows
-               .Cast<Window>()
-               .Where(x => x.GetType() == typeof(IronPythonInfoDialog))
-               .Select(x => x as IronPythonInfoDialog);
-
-            if (view.Any())
-            {
-                return true;
-            }
-
-            return false;
         }
 
         private void OnCurrentWorkspaceChanged(IWorkspaceModel workspace)
