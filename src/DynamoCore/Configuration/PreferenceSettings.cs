@@ -537,6 +537,12 @@ namespace Dynamo.Configuration
         public bool OpenFileInManualExecutionMode { get; set; }
 
         /// <summary>
+        /// This defines if user wants to see the Iron Python Extension Dialog box on every new session.
+        /// </summary>
+        [Obsolete("This property is deprecated and will be removed in a future version of Dynamo")]
+        public bool IsIronPythonDialogDisabled { get; set; }
+
+        /// <summary>
         /// This defines if user wants to see the whitespaces and tabs in python script editor.
         /// </summary>
         public bool ShowTabsAndSpacesInScriptEditor { get; set; }
@@ -823,6 +829,7 @@ namespace Dynamo.Configuration
             CustomPackageFolders = new List<string>();
 
             PythonTemplateFilePath = "";
+            IsIronPythonDialogDisabled = false;
             ShowTabsAndSpacesInScriptEditor = false;
             EnableNodeAutoComplete = true;
             HideNodesBelowSpecificConfidenceLevel = false;

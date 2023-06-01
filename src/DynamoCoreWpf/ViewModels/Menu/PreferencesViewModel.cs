@@ -805,6 +805,23 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Controls the IsChecked property in the "Hide IronPython alerts" toggle button
+        /// </summary>
+        [Obsolete("This property is deprecated and will be removed in a future version of Dynamo")]
+        public bool HideIronPythonAlertsIsChecked
+        {
+            get
+            {
+                return preferenceSettings.IsIronPythonDialogDisabled;
+            }
+            set
+            {
+                preferenceSettings.IsIronPythonDialogDisabled = value;
+                RaisePropertyChanged(nameof(HideIronPythonAlertsIsChecked));
+            }
+        }
+
+        /// <summary>
         /// Controls the IsChecked property in the "Show Whitespace in Python editor" toggle button
         /// </summary>
         public bool ShowWhitespaceIsChecked
