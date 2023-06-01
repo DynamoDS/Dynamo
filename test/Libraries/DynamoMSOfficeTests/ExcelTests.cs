@@ -1367,9 +1367,7 @@ namespace Dynamo.Tests
 #endif
     [TestFixture]
     public class CSVTests : UnitTestBase
-    {
-#if NET6_0_OR_GREATER 
-#endif
+    { 
         [Test]
         [Category("UnitTests")]
         public static void ImportCSV_PathTest()
