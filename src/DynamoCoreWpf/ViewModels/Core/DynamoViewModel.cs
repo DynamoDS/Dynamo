@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -42,6 +43,8 @@ using Dynamo.Wpf.ViewModels.Core.Converters;
 using Dynamo.Wpf.ViewModels.FileTrust;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoUtilities;
+using ICSharpCode.AvalonEdit;
+using PythonNodeModels;
 using ISelectable = Dynamo.Selection.ISelectable;
 using WpfResources = Dynamo.Wpf.Properties.Resources;
 
@@ -63,23 +66,39 @@ namespace Dynamo.ViewModels
 
         // Can the user run the graph
         private bool CanRunGraph => HomeSpace.RunSettings.RunEnabled && !HomeSpace.GraphRunInProgress;
-
         private ObservableCollection<DefaultWatch3DViewModel> watch3DViewModels = new ObservableCollection<DefaultWatch3DViewModel>();
+        private ObservableCollection<TabItem> sideBarTabItems = new ObservableCollection<TabItem>();
 
         /// <summary>
-        /// An observable collection of workspace view models which tracks the model
+        /// An observable collection of workspace view models which tracks the model.
         /// </summary>
         private ObservableCollection<WorkspaceViewModel> workspaces = new ObservableCollection<WorkspaceViewModel>();
 
         /// <summary>
-        /// Set of node window id's that are currently docked in right side sidebar
+        /// Set of node window id's that are currently docked in right side sidebar.
         /// </summary>
-        internal HashSet<string> CurrentDockedWindows { get; set; } = new HashSet<string>();
+        internal HashSet<string> DockedNodeWindows { get; set; } = new HashSet<string>();
 
         /// <summary>
         ///  Node window's state, either DockRight or FloatingWindow.
         /// </summary>
         internal Dictionary<string, ViewExtensionDisplayMode> NodeWindowsState { get; set; } = new Dictionary<string, ViewExtensionDisplayMode>();
+
+        /// <summary>
+        /// Collection of Right SideBar tab items: view extensions and docked windows.
+        /// </summary>
+        public ObservableCollection<TabItem> SideBarTabItems
+        {
+            get
+            {
+                return sideBarTabItems;
+            }
+            set
+            {
+                sideBarTabItems = value;
+                RaisePropertyChanged(nameof(SideBarTabItems));
+            }
+        }
 
         public ObservableCollection<WorkspaceViewModel> Workspaces
         {
@@ -1468,6 +1487,61 @@ namespace Dynamo.ViewModels
             {
                 RecentFiles.RemoveRange(maxNumRecentFiles, RecentFiles.Count - maxNumRecentFiles);
             }
+        }
+
+        // Get the nodemodel if a node is present in any open workspace.
+        internal NodeModel GetDockedWindowNodeModel(string tabId)
+        {
+            var workspaces = Model.Workspaces;
+            NodeModel nodeModel = null;
+
+            foreach (WorkspaceModel workspace in workspaces)
+            {
+                nodeModel = workspace.Nodes.FirstOrDefault(x => x.GUID.ToString() == tabId);
+                if (nodeModel != null)
+                {
+                    return nodeModel;
+                }
+            }
+            return nodeModel;
+        }
+
+        /// <summary>
+        /// Closes any docked python script windows if there are no unsaved changes.
+        /// Show warning message on the script editor if it has unsaved changes.
+        /// </summary>
+        /// <param name="nodes">Nodes in the workspace</param>
+        internal bool CanCloseDockedNodeWindows(ObservableCollection<NodeViewModel> nodes)
+        {
+            foreach (var node in nodes)
+            {
+                var id = node.NodeModel.GUID.ToString();
+                if (DockedNodeWindows.Contains(id))
+                {
+                    var tabItem = SideBarTabItems.OfType<TabItem>().SingleOrDefault(n => n.Uid.ToString() == id);
+
+                    if (tabItem != null)
+                    {
+                        NodeModel nodeModel = GetDockedWindowNodeModel(tabItem.Uid);
+
+                        if (nodeModel is PythonNode pythonNode)
+                        {
+                            var editor = (tabItem.Content as Grid).ChildOfType<TextEditor>();
+                            if (editor != null && editor.IsModified)
+                            {
+                                pythonNode.OnWarnUserScript();
+                                tabItem.Focus();
+                                return false;
+                            }
+                            pythonNode.Dispose();
+                        }
+
+                        SideBarTabItems.Remove(tabItem);
+                        DockedNodeWindows.Remove(id);
+                    }
+                }
+            }
+            return true;
         }
 
         /// <summary>

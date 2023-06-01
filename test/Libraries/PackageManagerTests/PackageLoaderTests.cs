@@ -1085,7 +1085,7 @@ namespace Dynamo.PackageManager.Tests
             var defaultDirectory = pathManager.DefaultPackagesDirectory;
 
             // Assert
-            Assert.IsNotNullOrEmpty(builtinpackageLocation);
+            Assert.That(builtinpackageLocation,Is.Not.Null.Or.Empty);
             Assert.IsTrue(string.Equals(builtinpackageLocation, directory, StringComparison.OrdinalIgnoreCase));
             Assert.AreNotEqual(defaultDirectory, directory);
         }

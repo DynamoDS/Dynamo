@@ -1,5 +1,6 @@
 using Dynamo.Properties;
 using Dynamo.Utilities;
+using Lucene.Net.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,6 +50,16 @@ namespace Dynamo.Configuration
         /// </summary>
         [Obsolete("This property is no longer used. Remove in Dynamo 3.0")]
         public static readonly double MaxWatchNodeHeight = 310.0;
+
+        /// <summary>
+        /// Specify the Lucene.Net compatibility version
+        /// </summary>
+        public static LuceneVersion LuceneNetVersion = LuceneVersion.LUCENE_48;
+
+        /// <summary>
+        /// Fields to be indexed by Lucene Search
+        /// </summary>
+        public static string[] IndexFields = { "Name", "FullCategoryName", "Description", "SearchKeywords", "InputParameters", "OutputParameters", "DocName", "Documentation", "PackageName", "PackageVersion" };
 
         #endregion
 

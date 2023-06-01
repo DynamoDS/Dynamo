@@ -43,10 +43,10 @@
         <Key word="local" />
         <Key word="static" />
         <Key word="this" />
-      </KeyWords>
-      <KeyWords name="ClassStatement" color="#F2A9F2">
-        <Key word="class" />
         <Key word="extends" />
+      </KeyWords>
+      <KeyWords name="ClassStatement" color="#6AC0E7">
+        <Key word="class" />
       </KeyWords>
       <KeyWords name="ExceptionHandlingStatements" color="#F2A9F2">
         <Key word="throw" />

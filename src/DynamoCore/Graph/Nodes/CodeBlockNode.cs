@@ -95,6 +95,18 @@ namespace Dynamo.Graph.Nodes
 
         #region Public Methods
 
+
+        /// <summary>
+        /// This is the default constructor only used for search indexing purposes (if doesn't exist then the DynamoModel.AddNodeTypeToSearch() method is crashing due that is expecting a default constructor)
+        /// </summary>
+        public CodeBlockNodeModel()
+        {
+            ArgumentLacing = LacingStrategy.Disabled;
+            this.ElementResolver = new ElementResolver();
+
+            ProcessCodeDirect(ProcessCode);
+        }
+
         /// <summary>
         ///     Initilizes a new instance of the <see cref="CodeBlockNodeModel"/> class
         /// </summary>

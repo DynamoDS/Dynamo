@@ -5,19 +5,17 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-#if NETFRAMEWORK
 using Microsoft.Office.Interop.Excel;
-#endif
 using DynamoServices;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Graph.Nodes;
 using ProtoCore.DSASM;
 using Dynamo.Models;
 using System.Collections.Generic;
+using Range = Microsoft.Office.Interop.Excel.Range;
 
 namespace DSOffice
 {
-#if NETFRAMEWORK
     internal class ExcelCloseEventArgs : EventArgs
     {
         public ExcelCloseEventArgs(bool saveWorkbooks = true)
@@ -64,7 +62,11 @@ namespace DSOffice
 
             try
             {
+#if NET5_0_OR_GREATER
+                excel = (Microsoft.Office.Interop.Excel.Application)CompatibilityMarshal.GetActiveObject("Excel.Application");
+#else
                 excel = (Microsoft.Office.Interop.Excel.Application)Marshal.GetActiveObject("Excel.Application");
+#endif
             }
             catch (COMException e)
             {
@@ -706,7 +708,7 @@ namespace DSOffice
         }
 
     }
-#endif
+
     /// <summary>
     ///     Methods for Import/Export category.
     /// </summary>
@@ -809,7 +811,7 @@ namespace DSOffice
             if (transpose) return CSVdatalist;
             else return DSCore.List.Transpose(CSVdatalist);
         }
-#if NETFRAMEWORK
+
 
         /// <summary>
         ///     Read data from a Microsoft Excel spreadsheet. Data is read by row and
@@ -873,7 +875,7 @@ namespace DSOffice
         {
             return Excel.WriteData(filePath, sheetName, startRow, startColumn, data, overWrite, writeAsString);
         }
-#endif
+
         /// <summary>
         /// Read data from a Microsoft Excel spreadsheet by using the Open XML standard.
         /// Data is read by row and returned in a series of lists by row.
