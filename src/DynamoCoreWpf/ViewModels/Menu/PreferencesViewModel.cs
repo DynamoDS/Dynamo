@@ -1031,9 +1031,13 @@ namespace Dynamo.ViewModels
                 {
                     return host.Equals("Dynamo Revit");
                 }
-                else
+                else if(this.dynamoViewModel.Model?.HostName != null)
                 {
                     return this.dynamoViewModel.Model.HostName.Equals("Dynamo Revit");
+                }
+                else
+                {
+                    return false;
                 }
             }
         }
