@@ -91,7 +91,7 @@ namespace Dynamo.Tests
             var openpath = Path.Combine(TestDirectory, @"core\math\Add.dyn");
             var hostName = "DynamoFormIt";
             var runner = new DynamoCLI.CommandLineRunner(this.CurrentDynamoModel);
-            string commandstring = $"-o {openpath} -t {hostName}";
+            string commandstring = $"-o {openpath} --HostName {hostName}";
 
             runner.Run(CommandstringToArgs(commandstring));
             Assert.AreEqual(this.CurrentDynamoModel.HostAnalyticsInfo.HostName, "DynamoFormIt");
