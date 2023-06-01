@@ -854,6 +854,7 @@ namespace Dynamo.Configuration
             IsBackgroundGridVisible = true;
             GraphicScaleUnit = Configurations.SupportedUnits.FirstOrDefault().Key.ToString();
             GridScaleFactor = (float)Configurations.SupportedUnits.FirstOrDefault().Value;
+            UseHostScaleUnits = true;
             PackageDirectoriesToUninstall = new List<string>();
             NumberFormat = "f3";
             UseHardwareAcceleration = true;
