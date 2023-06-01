@@ -18,8 +18,10 @@
         WindowStyle="None"
         Closed="WindowClosed"
         mc:Ignorable="d"
-        Height="480"
-        Width="720"
+        Width="1040"
+        Height="750"
+        MinWidth="820"
+        MinHeight="540"
         ResizeMode="NoResize">
     <Window.Resources>
         <ResourceDictionary>
@@ -44,7 +46,7 @@
           Background="{StaticResource PreferencesWindowBackgroundColor}">
         <!--The Window is divided basically in three rows, TitleBar, Content, and ButtonsBottomSection-->
         <Grid.RowDefinitions>
-            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="55"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
 
@@ -63,9 +65,9 @@
                        Text="Package Manager (placeholder)"
                        Foreground="{StaticResource PreferencesWindowFontColor}"
                        Grid.Column="0"
-                       Margin="25,10,0,0"
+                       Margin="14,16,0,0"
                        TextAlignment="Left"
-                       FontSize="17"
+                       FontSize="18"
                        FontFamily="Helvetica"
                        HorizontalAlignment="Left"
                        Width="459" />
@@ -78,7 +80,7 @@
                         Click="CloseButton_Click"
                         VerticalAlignment="Center"
                         KeyboardNavigation.IsTabStop="False"
-                        Margin="10,12,20,8" />
+                        Margin="10,20,20,8" />
             </StackPanel>
         </Grid>
 
@@ -131,9 +133,11 @@
                               Margin="1"
                               HorizontalAlignment="Stretch">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
+
+                            <local:PackageManagerPublishControl x:Name="packageManagerPublish"
+                                                                DataContext="{Binding Path=PubPkgVM, ElementName=PackageManagerWindow}" />
                         </Grid>
                     </TabItem>
 

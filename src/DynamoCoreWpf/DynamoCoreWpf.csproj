@@ -428,6 +428,7 @@
       <DependentUpon>SurveyPopupWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Input\ParameterEditor.cs" />
+    <Compile Include="Views\Menu\Controls\PackageManagerPublishControl.xaml.cs" />
     <Compile Include="Views\Menu\Controls\PackageManagerSearchControl.xaml.cs" />
     <Compile Include="Views\Menu\PackageManagerView.xaml.cs" />
     <Compile Include="Views\Menu\TrustedPathView.xaml.cs" />
@@ -448,6 +449,9 @@
     </Compile>
     <Compile Include="Views\Menu\Controls\PackageManagerSearchControl.xaml.cs">
         <DependentUpon>PackageManagerSearchControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Menu\Controls\PackageManagerPublishControl.xaml.cs">
+        <DependentUpon>PackageManagerPublishControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Preview\CameraExtensions.cs" />
     <Compile Include="Views\Preview\PreviewCompactView.xaml.cs">
@@ -632,6 +636,10 @@
         <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Menu\Controls\PackageManagerSearchControl.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Menu\Controls\PackageManagerPublishControl.xaml">
         <Generator>MSBuild:Compile</Generator>
         <SubType>Designer</SubType>
     </Page>

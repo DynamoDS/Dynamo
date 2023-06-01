@@ -4066,6 +4066,7 @@
 
     <Style x:Key="PackageManagerTab" TargetType="{x:Type TabItem}">
         <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="FontSize" Value="15" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TabItem}">
@@ -4079,10 +4080,12 @@
                             CornerRadius="6">
                         <StackPanel HorizontalAlignment="Stretch"
                                     VerticalAlignment="Stretch"
-                                    Orientation="Horizontal">
+                                    Orientation="Horizontal"
+                                    Margin="0 5 0 0">
                             <Grid Name="TabPanel"
                                   Width="165"
-                                  Height="30">
+                                  Height="30"
+                                  Margin="5">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="5" />
                                     <ColumnDefinition Width="*" />

@@ -24,17 +24,23 @@ namespace Dynamo.Wpf.Views
     {
         private DynamoViewModel dynamoViewModel;
         public PackageManagerSearchViewModel PkgSearchVM { get; set; }
+        public PublishPackageViewModel PubPkgVM { get; set; }
 
         public PackageManagerView(DynamoView dynamoView, DynamoViewModel dynamoViewModel, PackageManagerSearchViewModel pm)
         {
             this.dynamoViewModel = dynamoViewModel;
             this.PkgSearchVM = pm;
 
+            if(PubPkgVM == null)
+            {
+                PubPkgVM = new PublishPackageViewModel(dynamoViewModel);
+            }
+
             InitializeComponent();
 
             PkgSearchVM.RegisterTransientHandlers();
             PkgSearchVM.RequestShowFileDialog += OnRequestShowFileDialog;
-                
+
             Dynamo.Logging.Analytics.TrackEvent(
                 Actions.Open,
                 Categories.PackageManager);
@@ -152,6 +158,7 @@ namespace Dynamo.Wpf.Views
 
         private void WindowClosed(object sender, EventArgs e)
         {
+            this.packageManagerPublish.Dispose();
             PkgSearchVM.RequestShowFileDialog -= OnRequestShowFileDialog;
         }
     }

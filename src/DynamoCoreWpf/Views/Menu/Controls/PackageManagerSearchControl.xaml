@@ -50,7 +50,7 @@
                     <Setter Property="FontSize"
                             Value="10" />
                     <Setter Property="Foreground"
-                            Value="#C7C7C7" />
+                            Value="#C7C7C7" />  
                     <Setter Property="VerticalAlignment"
                             Value="Center" />
                     <Style.Triggers>
