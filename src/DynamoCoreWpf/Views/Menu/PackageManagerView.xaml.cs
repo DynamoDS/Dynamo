@@ -29,13 +29,12 @@ namespace Dynamo.Wpf.Views
         {
             this.dynamoViewModel = dynamoViewModel;
             this.PkgSearchVM = pm;
-            this.DataContext = PkgSearchVM;
 
             InitializeComponent();
 
             PkgSearchVM.RegisterTransientHandlers();
             PkgSearchVM.RequestShowFileDialog += OnRequestShowFileDialog;
-
+                
             Dynamo.Logging.Analytics.TrackEvent(
                 Actions.Open,
                 Categories.PackageManager);
@@ -76,19 +75,6 @@ namespace Dynamo.Wpf.Views
             }
         }
 
-
-        /// <summary>
-        /// Executes a command that opens the package details view extension.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ViewDetailsButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            if (!(sender is Button button)) return;
-            if (!(button.DataContext is PackageManagerSearchElementViewModel packageManagerSearchElementViewModel)) return;
-
-            PkgSearchVM.ViewPackageDetailsCommand.Execute(packageManagerSearchElementViewModel.Model);
-        }
 
         /// <summary>
         /// Call this method to optionally bring up terms of use dialog. User 
