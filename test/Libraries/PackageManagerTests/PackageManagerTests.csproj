@@ -21,13 +21,6 @@
     </ItemGroup>
   
     <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-  <ItemGroup>
-    <PackageReference Include="Greg" Version="2.4.0.4766">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-      <PackageReference Include="Moq" Version="4.18.4" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NUnit" Version="2.6.3" />
     <PackageReference Include="NUnitTestAdapter" Version="2.3.0" ExcludeAssets="all" />
     <Reference Include="System" />
