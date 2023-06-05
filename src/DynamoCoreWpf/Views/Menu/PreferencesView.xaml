@@ -733,22 +733,8 @@
                                     <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
                                         <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="0">
-                                            <ToggleButton Name="IronPythonAlertsToggle"
-                                                            Width="{StaticResource ToggleButtonWidth}"
-                                                            Height="{StaticResource ToggleButtonHeight}"
-                                                            VerticalAlignment="Center"
-                                                            IsChecked="{Binding Path=HideIronPythonAlertsIsChecked}"
-                                                            Style="{StaticResource EllipseToggleButton1}"/>
-                                            <Label Content="{x:Static p:Resources.PreferencesViewIsIronPythonDialogDisabled}" 
-                                                    Margin="10,0,0,0"
-                                                    VerticalAlignment="Center"
-                                                    Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                        </StackPanel>
-
-                                        <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="1">
                                             <ToggleButton Name="ShowWhitespaceToggle"
                                                             Width="{StaticResource ToggleButtonWidth}"
                                                             Height="{StaticResource ToggleButtonHeight}"

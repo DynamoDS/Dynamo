@@ -34,7 +34,7 @@
     <files>
         <file src="DynamoApplications.dll" target="lib\net48" />
         <file src="DynamoCore.dll" target="lib\net48" />
-        <file src="DynamoCore.xml" target="build\net48" />
+        <file src="DynamoCore.xml" target="lib\net48" />
         <file src="DynamoInstallDetective.dll" target="lib\net48" />
         <file src="DynamoShapeManager.dll" target="lib\net48" />
         <file src="DynamoUtilities.dll" target="lib\net48" />
