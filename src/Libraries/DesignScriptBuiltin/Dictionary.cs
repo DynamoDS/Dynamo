@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using Autodesk.DesignScript.Runtime;
+using DynamoServices;
 
 namespace DesignScript
 {
@@ -20,21 +20,20 @@ namespace DesignScript
                 }
 
                 /// <summary>
-                /// This code has been copied from String.GetHashCode() for .NET framework, which uses a deterministic hashing algorithm.
-                /// More specifically, this is the String.GetLegacyNonRandomizedHashCode() function found here:
-                /// https://referencesource.microsoft.com/mscorlib/R/42c2b7ffc7c3111f.html
+                /// This code has been copied from String.GetHashCode() for .NET framework 4.8, which uses a
+                /// deterministic hashing algorithm. More specifically, this is the String.GetLegacyNonRandomizedHashCode()
+                /// function found here: https://referencesource.microsoft.com/mscorlib/R/42c2b7ffc7c3111f.html
                 /// </summary>
                 /// <param name="obj"></param>
                 /// <returns></returns>
                 public int GetHashCode(string obj)
                 {
-                    // Custom hash code generation logic here
                     unsafe
                     {
                         fixed (char* src = obj)
                         {
-                            Contract.Assert(src[obj.Length] == '\0', "src[this.Length] == '\\0'");
-                            Contract.Assert(((int)src) % 4 == 0, "Managed string should start at 4 bytes boundary");
+                            Validity.Assert(src[obj.Length] == '\0', "src[this.Length] == '\\0'");
+                            Validity.Assert(((int)src) % 4 == 0, "Managed string should start at 4 bytes boundary");
 
 
                             int hash1 = 5381;
@@ -59,12 +58,10 @@ namespace DesignScript
             }
 
             private readonly ImmutableDictionary<string, object> D;
-            private readonly CustomKeyComparer comparer;
 
             private Dictionary(ImmutableDictionary<string, object> dict)
             {
-                comparer = new CustomKeyComparer();
-                D = dict.WithComparers(comparer);
+                D = dict.WithComparers(new CustomKeyComparer());
             }
 
             /// <summary>
