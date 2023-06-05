@@ -803,10 +803,11 @@ namespace Dynamo.ViewModels
                 }
             }
         }
-        
+
         /// <summary>
         /// Controls the IsChecked property in the "Hide IronPython alerts" toggle button
         /// </summary>
+        [Obsolete("This property is deprecated and will be removed in a future version of Dynamo")]
         public bool HideIronPythonAlertsIsChecked
         {
             get
@@ -1498,9 +1499,6 @@ namespace Dynamo.ViewModels
                     goto default;
                 case nameof(SelectedPythonEngine):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewDefaultPythonEngine), System.Globalization.CultureInfo.InvariantCulture);
-                    goto default;
-                case nameof(HideIronPythonAlertsIsChecked):
-                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewIsIronPythonDialogDisabled), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(ShowWhitespaceIsChecked):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewShowWhitespaceInPythonEditor), System.Globalization.CultureInfo.InvariantCulture);
