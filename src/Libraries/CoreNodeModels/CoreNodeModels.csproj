@@ -26,17 +26,11 @@
       <!--Exclude copying the runtime dlls because we will handle it in the BinaryCompatibilityOps target -->
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
-	  <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
     <PackageReference Include="CoreCLR-NCalc" Version="2.2.92" />
   </ItemGroup>
   <ItemGroup>
-  <PackageReference Include="ncalc" Version="1.3.8">
-    <GeneratePathProperty>true</GeneratePathProperty>
-    <!--Exclude copying the runtime dlls because we will handle it in the BinaryCompatibilityOps target -->
-    <ExcludeAssets>runtime</ExcludeAssets>
-  </PackageReference>
 	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 	<Reference Include="PresentationCore" />
 	<Reference Include="PresentationFramework" />
