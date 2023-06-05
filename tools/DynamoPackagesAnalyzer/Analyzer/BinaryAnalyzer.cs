@@ -5,12 +5,12 @@ using DynamoAnalyzer.Models.UpgradeAssistant;
 namespace DynamoAnalyzer.Analyzer
 {
     /// <summary>
-    /// Implementation of the binary analyzer using the analyzebinaries of the upgrade-assistant tool
+    /// Implementation of the binary analyzer using the analyzebinaries feature of the upgrade-assistant tool
     /// </summary>
-    public class BinaryAnalyzer : IAnalyze
+    internal class BinaryAnalyzer : IAnalyze
     {
-        private readonly FileInfo _file;
-        private readonly AnalyzedPackage _package;
+        private readonly FileInfo file;
+        private readonly AnalyzedPackage package;
         private readonly string workspace;
 
         /// <summary>
@@ -20,7 +20,7 @@ namespace DynamoAnalyzer.Analyzer
         {
             get
             {
-                return _file?.Name;
+                return file?.Name;
             }
         }
 
@@ -31,10 +31,10 @@ namespace DynamoAnalyzer.Analyzer
         {
             get
             {
-                if (_file != null)
+                if (file != null)
                 {
-                    string workdir = System.IO.Path.Combine(AnalyzeEnvironment.GetWorkspace().FullName, System.IO.Path.GetFileNameWithoutExtension(_package.ArchiveName));
-                    return _file.FullName.Replace(workdir + "\\", "").Replace(_file.Name, "");
+                    string workdir = System.IO.Path.Combine(WorkspaceHelper.GetWorkspace().FullName, System.IO.Path.GetFileNameWithoutExtension(package.ArchiveName));
+                    return file.FullName.Replace(workdir + "\\", "").Replace(file.Name, "");
                 }
                 return null;
             }
@@ -49,8 +49,8 @@ namespace DynamoAnalyzer.Analyzer
         /// <exception cref="InvalidOperationException"></exception>
         public BinaryAnalyzer(FileInfo file, AnalyzedPackage package, string workspace)
         {
-            _file = file;
-            _package = package;
+            this.file = file;
+            this.package = package;
             if (string.IsNullOrEmpty(workspace))
             {
                 throw new InvalidOperationException($"{nameof(workspace)} can't be null");
@@ -64,7 +64,7 @@ namespace DynamoAnalyzer.Analyzer
         /// <returns></returns>
         public async Task<AnalyzedPackage> Process()
         {
-            AnalyzedPackage dllAnalysis = _package.Copy();
+            AnalyzedPackage dllAnalysis = package.Copy();
             dllAnalysis.ArtifactName = Name;
             dllAnalysis.ArtifactPath = Path;
 
@@ -72,7 +72,7 @@ namespace DynamoAnalyzer.Analyzer
             {
                 await ProcessHelper.StartAnalyzeProcess(workspace, GetArgs());
                 FileInfo sarifFile = new FileInfo(System.IO.Path.Combine(workspace, ConfigHelper.GetConfiguration()["SarifFileName"]));
-                Sarif result = await SarifHelper.ReadSarif(sarifFile);
+                Sarif result = await JsonHelper.Read<Sarif>(sarifFile);
                 Result[] res = result.Runs.SelectMany(f => f.Results).ToArray();
                 dllAnalysis.RequirePort = res.Any();
 
@@ -100,10 +100,15 @@ namespace DynamoAnalyzer.Analyzer
                 "analyzebinaries",
                 "-p Windows",
                 "-t LTS",
-                _file.FullName,
+                $"\"{file.FullName}\"",
             };
 
             return args;
+        }
+
+        public Task<AnalyzedPackage> GetAnalyzedPackage()
+        {
+            return Task.FromResult(package);
         }
     }
 }

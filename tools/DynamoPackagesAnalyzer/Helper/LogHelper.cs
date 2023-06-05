@@ -3,7 +3,7 @@ namespace DynamoAnalyzer.Helper
     /// <summary>
     /// Provides methods to write information to the console 
     /// </summary>
-    public static class LogHelper
+    internal static class LogHelper
     {
         /// <summary>
         /// Writes a message to the console

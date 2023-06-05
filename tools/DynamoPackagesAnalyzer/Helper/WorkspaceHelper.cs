@@ -1,18 +1,16 @@
-using DynamoAnalyzer.Helper;
-
-namespace DynamoAnalyzer
+namespace DynamoAnalyzer.Helper
 {
     /// <summary>
-    /// Common dependencies used during the analysis
+    /// Provides methods to handle the workspace
     /// </summary>
-    internal static class AnalyzeEnvironment
+    internal static class WorkspaceHelper
     {
-        private static DirectoryInfo _workspace;
+        private static DirectoryInfo workspace;
 
         public static DirectoryInfo GetWorkspace()
         {
             string ws = string.IsNullOrEmpty(ConfigHelper.GetConfiguration()["Workspace"]) ? Path.Combine(Path.GetTempPath(), "DynamoDS") : ConfigHelper.GetConfiguration()["Workspace"];
-            return _workspace ??= new DirectoryInfo(ws);
+            return workspace ??= new DirectoryInfo(ws);
         }
     }
 }

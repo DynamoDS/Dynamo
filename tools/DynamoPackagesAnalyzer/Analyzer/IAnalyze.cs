@@ -5,9 +5,11 @@ namespace DynamoAnalyzer.Analyzer
     /// <summary>
     /// Allows to process a package
     /// </summary>
-    public interface IAnalyze
+    internal interface IAnalyze
     {
         string Name { get; }
         Task<AnalyzedPackage> Process();
+
+        Task<AnalyzedPackage> GetAnalyzedPackage();
     }
 }

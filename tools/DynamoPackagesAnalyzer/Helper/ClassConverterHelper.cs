@@ -1,0 +1,35 @@
+using DynamoAnalyzer.Models;
+using DynamoAnalyzer.Models.DirectorySource;
+using DynamoAnalyzer.Models.Greg;
+
+namespace DynamoPackagesAnalyzer.Helper
+{
+    internal static class ClassConverterHelper
+    {
+        public static AnalyzedPackage ToAnalyzedPackage(PkgJson json)
+        {
+            return new AnalyzedPackage()
+            {
+                Name = json.Name,
+                Version = json.Version,
+            };
+        }
+
+        public static AnalyzedPackage ToAnalyzedPackage(PackageHeader package)
+        {
+            var version = package.versions.LastOrDefault();
+            var mantainer = package.maintainers.FirstOrDefault();
+
+            return new AnalyzedPackage()
+            {
+                ArchiveName = version.url,
+                HasSource = !string.IsNullOrEmpty(package.repository_url),
+                Id = package._id,
+                Name = package.name,
+                UserId = mantainer._id,
+                UserName = mantainer.username,
+                Version = version.version,
+            };
+        }
+    }
+}

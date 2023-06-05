@@ -122,7 +122,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeometryColorTests", "..\test\Libraries\GeometryColorTests\GeometryColorTests.csproj", "{F8D2E3E5-4505-4463-9367-2EB2629D7DCD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PackageManagerTests", "..\test\Libraries\PackageManagerTests\PackageManagerTests.csproj", "{2A70F3B5-7AEA-42FE-8DD5-8427C28D0025}"
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoAnalyzer", "DynamoAnalyzer\DynamoAnalyzer.csproj", "{ED4A6828-F72E-44DE-96E0-5F7E23DC6B10}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -792,22 +791,6 @@ Global
 		{2A70F3B5-7AEA-42FE-8DD5-8427C28D0025}.Release|NET60_Windows.Build.0 = Release|NET60_Windows
 		{2A70F3B5-7AEA-42FE-8DD5-8427C28D0025}.Release|x64.ActiveCfg = Release|x64
 		{2A70F3B5-7AEA-42FE-8DD5-8427C28D0025}.Release|x64.Build.0 = Release|x64
-		{ED4A6828-F72E-44DE-96E0-5F7E23DC6B10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ED4A6828-F72E-44DE-96E0-5F7E23DC6B10}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ED4A6828-F72E-44DE-96E0-5F7E23DC6B10}.Debug|NET60_Linux.ActiveCfg = Debug|Any CPU
-		{ED4A6828-F72E-44DE-96E0-5F7E23DC6B10}.Debug|NET60_Linux.Build.0 = Debug|Any CPU
-		{ED4A6828-F72E-44DE-96E0-5F7E23DC6B10}.Debug|NET60_Windows.ActiveCfg = Debug|Any CPU
-		{ED4A6828-F72E-44DE-96E0-5F7E23DC6B10}.Debug|NET60_Windows.Build.0 = Debug|Any CPU
-		{ED4A6828-F72E-44DE-96E0-5F7E23DC6B10}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{ED4A6828-F72E-44DE-96E0-5F7E23DC6B10}.Debug|x64.Build.0 = Debug|Any CPU
-		{ED4A6828-F72E-44DE-96E0-5F7E23DC6B10}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ED4A6828-F72E-44DE-96E0-5F7E23DC6B10}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ED4A6828-F72E-44DE-96E0-5F7E23DC6B10}.Release|NET60_Linux.ActiveCfg = Release|Any CPU
-		{ED4A6828-F72E-44DE-96E0-5F7E23DC6B10}.Release|NET60_Linux.Build.0 = Release|Any CPU
-		{ED4A6828-F72E-44DE-96E0-5F7E23DC6B10}.Release|NET60_Windows.ActiveCfg = Release|Any CPU
-		{ED4A6828-F72E-44DE-96E0-5F7E23DC6B10}.Release|NET60_Windows.Build.0 = Release|Any CPU
-		{ED4A6828-F72E-44DE-96E0-5F7E23DC6B10}.Release|x64.ActiveCfg = Release|Any CPU
-		{ED4A6828-F72E-44DE-96E0-5F7E23DC6B10}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

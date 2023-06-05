@@ -10,7 +10,7 @@ namespace DynamoAnalyzer.Helper
     /// <summary>
     /// Provides methods to work with csv files
     /// </summary>
-    public static class CsvHandler
+    internal static class CsvHandler
     {
         private static CsvConfiguration csvConfiguration = new CsvConfiguration(CultureInfo.InvariantCulture)
         {
@@ -25,7 +25,7 @@ namespace DynamoAnalyzer.Helper
         /// <returns></returns>
         public static async Task<string> WritePackagesCsv(List<AnalyzedPackage> packages, DateTime date)
         {
-            FileInfo file = new FileInfo(Path.Combine(AnalyzeEnvironment.GetWorkspace().FullName, $"results[{date:yyyy-MM-dd_HH-mm-ss}].csv"));
+            FileInfo file = new FileInfo(Path.Combine(WorkspaceHelper.GetWorkspace().FullName, $"results[{date:yyyy-MM-dd_HH-mm-ss}].csv"));
 
             using (var writer = new StreamWriter(file.FullName))
             using (var csv = new CsvWriter(writer, csvConfiguration))
@@ -45,7 +45,7 @@ namespace DynamoAnalyzer.Helper
         /// <returns></returns>
         public static async Task<string> WriteDuplicatedCsv(IEnumerable<DuplicatedPackage> packages, DateTime date)
         {
-            FileInfo file = new FileInfo(Path.Combine(AnalyzeEnvironment.GetWorkspace().FullName, $"duplicated[{date:yyyy_MM_dd_HH_mm_ss}].csv"));
+            FileInfo file = new FileInfo(Path.Combine(WorkspaceHelper.GetWorkspace().FullName, $"duplicated[{date:yyyy_MM_dd_HH_mm_ss}].csv"));
 
             using (var writer = new StreamWriter(file.FullName))
             using (var csv = new CsvWriter(writer, csvConfiguration))
@@ -65,7 +65,7 @@ namespace DynamoAnalyzer.Helper
     {
         public DuplicatedPackageMap()
         {
-            Map(m => m.ArtifactName).Name(nameof(DuplicatedPackage.ArtifactName));
+            Map(m => m.ArtifactName).Name(nameof(DuplicatedPackage.ArtifactName)).TypeConverter<StringConverter>();
             Map(m => m.Count).Name(nameof(DuplicatedPackage.Count));
             Map(m => m.Packages).TypeConverter<ArrayConverter>();
         }
@@ -80,7 +80,7 @@ namespace DynamoAnalyzer.Helper
         {
             Map(m => m.Index).Name(nameof(AnalyzedPackage.Index));
             Map(m => m.Id).Name(nameof(AnalyzedPackage.Id));
-            Map(m => m.Name).Name(nameof(AnalyzedPackage.Name));
+            Map(m => m.Name).Name(nameof(AnalyzedPackage.Name)).TypeConverter<StringConverter>();
             Map(m => m.Version).Name(nameof(AnalyzedPackage.Version));
 
             Map(m => m.UserId).Name(nameof(AnalyzedPackage.UserId));
@@ -106,46 +106,66 @@ namespace DynamoAnalyzer.Helper
     {
         public override string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
         {
-            if (value.GetType().Name.Equals("String[]"))
+            switch (value)
             {
-                return JsonConvert.SerializeObject(value).Replace(",", "&").Replace("\"", "'");
+                case string[] data:
+                    return JsonConvert.SerializeObject(data).Replace(",", "&").Replace("\"", "'");
+                default:
+                    return "";
             }
-            return "";
         }
     }
 
     /// <summary>
-    /// Converts an string array to it's string representation
+    /// Converts an string array to it's string representation and truncates the lenght of the array to 5 values due Microsft Excel truncates cells with very long text and breaks the columns
     /// </summary>
     public class ResultArrayConverter : DefaultTypeConverter
     {
         public override string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
         {
-            if (value.GetType().Name.Equals("String[]"))
+            switch (value)
             {
-                string[] values = (string[])value;
-                string[] valuesToWrite = new string[6];
-                if (values.Length > 5)
-                {
-                    for (int i = 0; i < 5; i++)
+                case string[] data:
+                    string[] valuesToWrite = new string[6];
+                    if (data.Length > 5)
                     {
-                        valuesToWrite[i] = values[i].Trim();
+                        for (int i = 0; i < 5; i++)
+                        {
+                            valuesToWrite[i] = data[i].Trim();
+                        }
+
+                        int difference = data.Length - valuesToWrite.Length;
+                        if (difference > 0)
+                        {
+                            valuesToWrite[5] = $"+ {difference} replacements required";
+                        }
+                    }
+                    else
+                    {
+                        valuesToWrite = data;
                     }
 
-                    int difference = values.Length - valuesToWrite.Length;
-                    if (difference > 0)
-                    {
-                        valuesToWrite[5] = $"+ {values.Length - valuesToWrite.Length} replacements required";
-                    }
-                }
-                else
-                {
-                    valuesToWrite = values;
-                }
-
-                return JsonConvert.SerializeObject(valuesToWrite.Where(f => !string.IsNullOrEmpty(f))).Replace(",", "&").Replace("\"", "'");
+                    return JsonConvert.SerializeObject(valuesToWrite.Where(f => !string.IsNullOrEmpty(f))).Replace(",", "&").Replace("\"", "'");
+                default:
+                    return "";
             }
-            return "";
+        }
+    }
+
+    /// <summary>
+    /// Converts problematic characters that could break the csv file columns
+    /// </summary>
+    public class StringConverter : DefaultTypeConverter
+    {
+        public override string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
+        {
+            switch (value)
+            {
+                case string text:
+                    return text.Replace(",", "&");
+                default:
+                    return "";
+            }
         }
     }
 }
