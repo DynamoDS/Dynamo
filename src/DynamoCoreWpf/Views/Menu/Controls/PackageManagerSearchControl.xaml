@@ -209,59 +209,16 @@
                 </Button>
 
                 <!--  Search Bar  -->
-                <Grid Name="searchBarGrid"
-                      DockPanel.Dock="Left">
-                    <TextBox Name="searchTextBox"
-                             Padding="15,11,5,10"
-                             Background="#353535"
-                             BorderThickness="0"
-                             CaretBrush="White"
-                             FontFamily="{StaticResource ArtifaktElementRegular}"
-                             FontSize="14px"
-                             Foreground="#F5F5F5"
-                             KeyboardNavigation.TabIndex="0"
-                             Text="{Binding Path=SearchText, Mode=TwoWay}"
-                             TextChanged="SearchTextBox_TextChanged"
-                             Visibility="{Binding ShowSearchText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <local:SearchBoxControl x:Name="SearchBox"
+                                        DockPanel.Dock="Left"
+                                        Margin="10 5 20 5"
+                                        />
 
-                    <!--  A watermark that appears when the user hasn't entered a search query  -->
-                    <TextBlock Name="searchTextBoxWatermark"
-                               Padding="17,11,5,10"
-                               Background="Transparent"
-                               FontFamily="{StaticResource ArtifaktElementRegular}"
-                               FontSize="14px"
-                               Foreground="#F5F5F5"
-                               IsHitTestVisible="False"
-                               Opacity="0.5"
-                               Text="{Binding SearchBoxPrompt}"
-                               Visibility="{Binding Path=SearchText, Converter={StaticResource NonEmptyStringToCollapsedConverter}}" />
-
-                    <!--  'X' button to reset search query text  -->
-                    <Button Name="clearSearchTextBox"
-                            Margin="10"
-                            HorizontalAlignment="Right"
-                            Command="{Binding ClearSearchTextBoxCommand}"
-                            Cursor="Hand"
-                            Visibility="{Binding Path=SearchText, Converter={StaticResource EmptyStringToCollapsedConverter}}">
-                        <Button.Template>
-                            <ControlTemplate>
-                                <Ellipse Name="nodeIcon"
-                                         Width="16"
-                                         Height="16">
-                                    <Ellipse.Fill>
-                                        <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Circle close.png"
-                                                    Stretch="UniformToFill" />
-                                    </Ellipse.Fill>
-                                </Ellipse>
-                            </ControlTemplate>
-                        </Button.Template>
-                    </Button>
-                </Grid>
             </DockPanel>
         </Border>
 
-        
-        
+
+
         <ListBox Name="searchResultsListBox"
                  Grid.Row="1"
                  Background="{StaticResource PackageManagerTabBackgroundColor}"
@@ -281,7 +238,7 @@
                     <Setter Property="FontSize"
                             Value="10" />
                     <Setter Property="Foreground"
-                            Value="#C7C7C7" />  
+                            Value="#C7C7C7" />
                     <Setter Property="VerticalAlignment"
                             Value="Center" />
                     <Style.Triggers>

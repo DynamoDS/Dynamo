@@ -65,10 +65,7 @@ namespace Dynamo.Wpf.Views
             OnShowContextMenuFromLeftClicked(sender, e);
         }
 
-        private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            (this.DataContext as PackageManagerSearchViewModel).SearchAndUpdateResults(this.searchTextBox.Text);
-        }
+      
 
         /// <summary>
         /// Executes a command that opens the package details view extension.

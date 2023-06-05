@@ -52,6 +52,10 @@
     <None Remove="Views\Core\CustomColorPicker.xaml" />
     <None Remove="Views\Core\GeometryScalingPopup.xaml" />
     <None Remove="UI\Images\question-hover-blue-16px.png" />
+    <None Remove="Views\Menu\Controls\ControlColorsAndBrushes.xaml" />
+    <None Remove="Views\Menu\Controls\PackageManagerPublishControl.xaml" />
+    <None Remove="Views\Menu\Controls\PackageManagerSearchControl.xaml" />
+    <None Remove="Views\Menu\Controls\SearchBoxControl.xaml" />
     <None Remove="Views\SplashScreen\WebApp\splashScreenBackground.png" />
   </ItemGroup>
   <ItemGroup>
@@ -430,6 +434,7 @@
     <Compile Include="Views\Input\ParameterEditor.cs" />
     <Compile Include="Views\Menu\Controls\PackageManagerPublishControl.xaml.cs" />
     <Compile Include="Views\Menu\Controls\PackageManagerSearchControl.xaml.cs" />
+    <Compile Include="Views\Menu\Controls\SearchBoxControl.xaml.cs" />
     <Compile Include="Views\Menu\PackageManagerView.xaml.cs" />
     <Compile Include="Views\Menu\TrustedPathView.xaml.cs" />
     <Compile Include="Views\Output\OutputEditor.cs" />
@@ -452,6 +457,9 @@
     </Compile>
     <Compile Include="Views\Menu\Controls\PackageManagerPublishControl.xaml.cs">
         <DependentUpon>PackageManagerPublishControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Menu\Controls\SearchBoxControl.xaml.cs">
+        <DependentUpon>SearchBoxControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Preview\CameraExtensions.cs" />
     <Compile Include="Views\Preview\PreviewCompactView.xaml.cs">
@@ -620,6 +628,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Core\ConnectorPinView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Menu\Controls\ControlColorsAndBrushes.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Menu\Controls\SearchBoxControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
