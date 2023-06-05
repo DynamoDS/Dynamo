@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -32,6 +33,41 @@ namespace Dynamo.Wpf.Views
         private void InitializeContext(object sender, RoutedEventArgs e)
         {
             PkgSearchVM = this.DataContext as PackageManagerSearchViewModel;
+        }
+
+
+        private void OnShowFilterContextMenuFromLeftClicked(object sender, RoutedEventArgs e)
+        {
+            var button = (System.Windows.Controls.Button)sender;
+            button.ContextMenu.DataContext = button.DataContext;
+            button.ContextMenu.PlacementTarget = button;
+            button.ContextMenu.Placement = PlacementMode.Bottom;
+            button.ContextMenu.IsOpen = true;
+        }
+
+        private void OnFilterButtonClicked(object sender, RoutedEventArgs e)
+        {
+            OnShowFilterContextMenuFromLeftClicked(sender, e);
+        }
+
+
+        private void OnShowContextMenuFromLeftClicked(object sender, RoutedEventArgs e)
+        {
+            var button = (System.Windows.Controls.Button)sender;
+            button.ContextMenu.DataContext = button.DataContext;
+            button.ContextMenu.PlacementTarget = button;
+            button.ContextMenu.Placement = PlacementMode.Bottom;
+            button.ContextMenu.IsOpen = true;
+        }
+
+        private void OnSortButtonClicked(object sender, RoutedEventArgs e)
+        {
+            OnShowContextMenuFromLeftClicked(sender, e);
+        }
+
+        private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            (this.DataContext as PackageManagerSearchViewModel).SearchAndUpdateResults(this.searchTextBox.Text);
         }
 
         /// <summary>

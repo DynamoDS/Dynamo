@@ -126,7 +126,7 @@
 
 
                     <!--Publish Packages Tab-->
-                    <TabItem Header="Publish a Packages"
+                    <TabItem Header="Publish a Package"
                              Style="{StaticResource PackageManagerTab}">
                         <!--This Grid contains the search tab-->
                         <Grid x:Name="PublishPackagesTab"
