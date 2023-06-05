@@ -116,7 +116,9 @@ namespace Dynamo.Applications
         {
             public static CommandLineArguments Parse(string[] args)
             {
-                var parser = new Parser(options => { options.IgnoreUnknownArguments = true; options.HelpWriter = Console.Error; });
+                var parser = new Parser(options => { options.IgnoreUnknownArguments = true; options.HelpWriter = Console.Error;
+                    options.CaseSensitive = false;
+                });
                 return parser.ParseArguments<CMDLineOptions>(args).MapResult((cmdArgs) => {
                     if (!string.IsNullOrEmpty(cmdArgs.Verbose) && string.IsNullOrEmpty(cmdArgs.OpenFilePath))
                     {
