@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using Autodesk.DesignScript.Runtime;
@@ -11,17 +12,59 @@ namespace DesignScript
     {
         public class Dictionary
         {
-            private readonly ImmutableDictionary<string, object> D;
+            private class CustomKeyComparer : IEqualityComparer<string>
+            {
+                public bool Equals(string x, string y)
+                {
+                    return string.Equals(x, y);
+                }
 
-            /// <summary>
-            /// Use backingDict to read from D.
-            /// </summary>
-            private readonly Dictionary<string, object> backingDict;
+                /// <summary>
+                /// This code has been copied from String.GetHashCode() for .NET framework, which uses a deterministic hashing algorithm.
+                /// More specifically, this is the String.GetLegacyNonRandomizedHashCode() function found here:
+                /// https://referencesource.microsoft.com/mscorlib/R/42c2b7ffc7c3111f.html
+                /// </summary>
+                /// <param name="obj"></param>
+                /// <returns></returns>
+                public int GetHashCode(string obj)
+                {
+                    // Custom hash code generation logic here
+                    unsafe
+                    {
+                        fixed (char* src = obj)
+                        {
+                            Contract.Assert(src[obj.Length] == '\0', "src[this.Length] == '\\0'");
+                            Contract.Assert(((int)src) % 4 == 0, "Managed string should start at 4 bytes boundary");
+
+
+                            int hash1 = 5381;
+                            int hash2 = hash1;
+
+                            int c;
+                            char* s = src;
+                            while ((c = s[0]) != 0)
+                            {
+                                hash1 = ((hash1 << 5) + hash1) ^ c;
+                                c = s[1];
+                                if (c == 0)
+                                    break;
+                                hash2 = ((hash2 << 5) + hash2) ^ c;
+                                s += 2;
+                            }
+
+                            return hash1 + (hash2 * 1566083941);
+                        }
+                    }
+                }
+            }
+
+            private readonly ImmutableDictionary<string, object> D;
+            private readonly CustomKeyComparer comparer;
 
             private Dictionary(ImmutableDictionary<string, object> dict)
             {
-                D = dict;
-                backingDict = D.ToDictionary(pair =>  pair.Key, pair => pair.Value);
+                comparer = new CustomKeyComparer();
+                D = dict.WithComparers(comparer);
             }
 
             /// <summary>
@@ -50,8 +93,8 @@ namespace DesignScript
             {
                 return new Dictionary<string, object>
                 {
-                    {"keys", backingDict.Keys},
-                    {"values", backingDict.Values}
+                    {"keys", D.Keys},
+                    {"values", D.Values}
                 };
             }
 
@@ -59,7 +102,7 @@ namespace DesignScript
             ///     Produces the keys in a Dictionary.
             /// </summary>
             /// <returns name="keys">Keys of the Dictionary</returns>
-            public IEnumerable<string> Keys => backingDict.Keys;
+            public IEnumerable<string> Keys => D.Keys;
 
             /// <summary>
             ///     Produces the values in a Dictionary.
@@ -68,7 +111,7 @@ namespace DesignScript
             public IEnumerable<object> Values
             {
                 [return: ArbitraryDimensionArrayImport]
-                get { return backingDict.Values; }
+                get => D.Values;
             }
 
             /// <summary>
@@ -122,7 +165,7 @@ namespace DesignScript
             {
                 var result = new StringBuilder();
                 result.Append("{");
-                foreach (var key in backingDict.Keys)
+                foreach (var key in D.Keys)
                 {
                     result.Append($"{key}:{D[key]},");
                 }
