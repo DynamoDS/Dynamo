@@ -424,7 +424,7 @@ namespace Dynamo.Views
             {
                 using (var stm = System.IO.File.Create(path))
                 {
-                    // Encode as PNG format 
+                    // Encode as PNG format
                     var pngEncoder = new PngBitmapEncoder();
                     pngEncoder.Frames.Add(BitmapFrame.Create(workSpaceRender));
                     pngEncoder.Save(stm);

@@ -226,7 +226,7 @@ namespace Dynamo.Controls
 
             this.HideOrShowRightSideBar();
 
-            this.dynamoViewModel.RequestPaste += OnRequestPaste;            
+            this.dynamoViewModel.RequestPaste += OnRequestPaste;
             this.dynamoViewModel.RequestReturnFocusToView += OnRequestReturnFocusToView;
             this.dynamoViewModel.Model.WorkspaceSaving += OnWorkspaceSaving;
             this.dynamoViewModel.Model.WorkspaceOpened += OnWorkspaceOpened;
@@ -1939,7 +1939,7 @@ namespace Dynamo.Controls
             this.dynamoViewModel.RequestPaste -= OnRequestPaste;
             this.dynamoViewModel.RequestReturnFocusToView -= OnRequestReturnFocusToView;
             this.dynamoViewModel.Model.WorkspaceSaving -= OnWorkspaceSaving;
-            this.dynamoViewModel.Model.WorkspaceOpened -= OnWorkspaceOpened;            
+            this.dynamoViewModel.Model.WorkspaceOpened -= OnWorkspaceOpened;
             DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved -= CheckTestFlags;
 
             this.dynamoViewModel.RequestEnableShortcutBarItems -= DynamoViewModel_RequestEnableShortcutBarItems;
