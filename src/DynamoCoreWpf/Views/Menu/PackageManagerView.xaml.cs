@@ -14,6 +14,7 @@ using System.Windows.Controls;
 using Dynamo.UI;
 using Dynamo.Wpf.Utilities;
 using DynamoUtilities;
+using System.Collections.ObjectModel;
 
 namespace Dynamo.Wpf.Views
 {
@@ -23,11 +24,26 @@ namespace Dynamo.Wpf.Views
     public partial class PackageManagerView : Window
     {
         private DynamoViewModel dynamoViewModel;
+        private InstalledPackagesViewModel installedPackagesViewModel;
+
         public PackageManagerSearchViewModel PkgSearchVM { get; set; }
         public PublishPackageViewModel PubPkgVM { get; set; }
 
+        /// <summary>
+        /// Returns all installed packages
+        /// </summary>
+        public ObservableCollection<PackageViewModel> LocalPackages => installedPackagesViewModel.LocalPackages;
+
+        /// <summary>
+        /// Returns all available filters
+        /// </summary>
+        public ObservableCollection<PackageFilter> Filters => installedPackagesViewModel.Filters;
+
+
         public PackageManagerView(DynamoView dynamoView, DynamoViewModel dynamoViewModel, PackageManagerSearchViewModel pm)
         {
+            this.DataContext = this;
+
             this.dynamoViewModel = dynamoViewModel;
             this.PkgSearchVM = pm;
 
@@ -36,6 +52,8 @@ namespace Dynamo.Wpf.Views
                 PubPkgVM = new PublishPackageViewModel(dynamoViewModel);
             }
 
+            InitializeInstalledPackages();
+                
             InitializeComponent();
 
             PkgSearchVM.RegisterTransientHandlers();
@@ -48,9 +66,9 @@ namespace Dynamo.Wpf.Views
             dynamoView.EnableEnvironment(false);
         }
 
-
         private void OnRequestShowFileDialog(object sender, PackagePathEventArgs e)
         {
+            // TODO: this should not work, teh datacontext of this is not set 
             string initialPath = (this.DataContext as PackageManagerSearchViewModel)
                 .PackageManagerClientViewModel.DynamoViewModel.Model.PathManager.DefaultPackagesDirectory;
 
@@ -78,6 +96,15 @@ namespace Dynamo.Wpf.Views
             {
                 string errorMessage = string.Format(Wpf.Properties.Resources.PackageFolderNotAccessible, initialPath);
                 MessageBoxService.Show(errorMessage, Wpf.Properties.Resources.UnableToAccessPackageDirectory, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void InitializeInstalledPackages()
+        {
+            if (this.dynamoViewModel.PackageManagerClientViewModel != null)
+            {
+                installedPackagesViewModel = new InstalledPackagesViewModel(dynamoViewModel, dynamoViewModel.PackageManagerClientViewModel.PackageManagerExtension.PackageLoader);
+                installedPackagesViewModel?.PopulateFilters();
             }
         }
 

@@ -18,9 +18,9 @@
         WindowStyle="None"
         Closed="WindowClosed"
         mc:Ignorable="d"
-        Width="1040"
-        Height="750"
-        MinWidth="820"
+        Width="1076"
+        Height="718"
+        MinWidth="810"
         MinHeight="540"
         ResizeMode="NoResize">
     <Window.Resources>
@@ -150,8 +150,11 @@
                               HorizontalAlignment="Stretch">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
+
+                            <wpfControls:InstalledPackagesControl x:Name="installedPackages"
+                                                                  DataContext="{Binding}" />
+
                         </Grid>
                     </TabItem>
 
