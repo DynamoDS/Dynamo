@@ -4,11 +4,12 @@ https://github.com/dotnet/upgrade-assistant#experimental-features
 This tool has three operation modes:
 
 1. zipfile
-This mode expects and arrays of packages zip archives, to be analyzed one by one
+This mode expects an array of zip archives to be analyzed one by one
 
 Flags explanation:
 --files: used to receive the files to process
--l: whether to lookup for package details at dynamopackages.com
+-l: when this flag is present, the packages list is downloaded from dynamopacakges.com, and using the name property from pkg.json,
+    the process tries to resolve the complete package information matching the name with the packages from the downloaded list
 
 Example:
 DynamoPackagesAnalyzer.exe zipfile --files "some\path\package1.zip" "some\path\package2.zip" -l
@@ -19,7 +20,8 @@ DynamoPackagesAnalyzer.exe zipfile --files "some\path\package1.zip" "some\path\p
 This mode expects a path where the package zip archives are located, to be analyzed one by one
 
 Flags Explanation:
--l: whether to lookup for package details at dynamopackages.com
+-l: when this flag is present, the packages list is downloaded from dynamopacakges.com, and using the name property from pkg.json,
+    the process tries to resolve the complete package information matching the name with the packages from the downloaded list
 
 Example:
 DynamoPackagesAnalyzer.exe directory "some\path\" -l
@@ -50,11 +52,11 @@ The properties Name and Result in results[yyyy-MM-dd_HH-mm-ss].csv file, replace
 appsettings.json:
 MaxDegreeOfParallelism: (default: 4) Defines the number of threads to analyze the packages list in any mode
 
-DynamoPackagesURL: The URL to get the packages list and download packages
+DynamoPackagesURL: The URL to list and download packages from
 
 SarifFileName: The upgrade-assistant result file name
 
 Workspace: (default: %temp%\DynamoDS) when null, the default value is used, it can be any directory with read and write permissions, this workspace is used to download
  the packages and unzip them as part pof the analysis.
 
-ProcessTimeOut: (default: 2) Defines the time to wait for a upgrade-assistant instace to end in case of the instace not being able to finish by itself.
+ProcessTimeOut: (default: 2) Defines the time to wait in minutes for a upgrade-assistant instace to end in case of the instace not being able to finish by itself.
