@@ -60,7 +60,6 @@ namespace Dynamo.Tests.Configuration
             // Assert defaults
             Assert.AreEqual(settings.GetIsBackgroundPreviewActive("MyBackgroundPreview"), true);
             Assert.AreEqual(settings.ShowCodeBlockLineNumber, true);
-            Assert.AreEqual(settings.IsIronPythonDialogDisabled, false);
             Assert.AreEqual(settings.ShowTabsAndSpacesInScriptEditor, false);
             Assert.AreEqual(settings.EnableNodeAutoComplete, true);
             Assert.AreEqual(settings.EnableNotificationCenter, true);
@@ -80,7 +79,6 @@ namespace Dynamo.Tests.Configuration
             // Assert deserialized values are same when saved with defaults
             Assert.AreEqual(settings.GetIsBackgroundPreviewActive("MyBackgroundPreview"), true);
             Assert.AreEqual(settings.ShowCodeBlockLineNumber, true);
-            Assert.AreEqual(settings.IsIronPythonDialogDisabled, false);
             Assert.AreEqual(settings.ShowTabsAndSpacesInScriptEditor, false);
             Assert.AreEqual(settings.EnableNodeAutoComplete, true);
             Assert.AreEqual(settings.EnableNotificationCenter, true);
@@ -96,7 +94,6 @@ namespace Dynamo.Tests.Configuration
             // Change setting values
             settings.SetIsBackgroundPreviewActive("MyBackgroundPreview", false);
             settings.ShowCodeBlockLineNumber = false;
-            settings.IsIronPythonDialogDisabled = true;
             settings.ShowTabsAndSpacesInScriptEditor = true;
             settings.DefaultPythonEngine = "CP3";
             settings.MaxNumRecentFiles = 24;
@@ -149,7 +146,6 @@ namespace Dynamo.Tests.Configuration
             // Assert deserialized values are same as last changed
             Assert.AreEqual(settings.GetIsBackgroundPreviewActive("MyBackgroundPreview"), false);
             Assert.AreEqual(settings.ShowCodeBlockLineNumber, false);
-            Assert.AreEqual(settings.IsIronPythonDialogDisabled, true);
             Assert.AreEqual(settings.ShowTabsAndSpacesInScriptEditor, true);
             Assert.AreEqual(settings.DefaultPythonEngine, "CP3");
             Assert.AreEqual(settings.MaxNumRecentFiles, 24);

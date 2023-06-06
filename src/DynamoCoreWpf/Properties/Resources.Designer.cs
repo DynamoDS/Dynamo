@@ -8,8 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Dynamo.Wpf.Properties
-{        
+namespace Dynamo.Wpf.Properties {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -2908,7 +2910,7 @@ namespace Dynamo.Wpf.Properties
                 return ResourceManager.GetString("FilePathConverterNoFileSelected", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Trust this file’s location in the future..
         /// </summary>
@@ -3494,7 +3496,7 @@ namespace Dynamo.Wpf.Properties
                 return ResourceManager.GetString("HideNodesBelowSpecificConfidenceLevel", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Confidence level appears next to each recommended node and represents estimated probability that the node is a good choice. When toggled on, this setting hides recommended nodes that don’t meet the specified confidence level. You can click the Low Confidence header to show the nodes..
         /// </summary>
@@ -4016,9 +4018,9 @@ namespace Dynamo.Wpf.Properties
                 return ResourceManager.GetString("LibraryViewTitle", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to Drag to adjust Library zoom scale between 25% and 300%. You can also adjust this in Library by pressing “Ctrl” and scrolling the mouse wheel..
+        ///   Looks up a localized string similar to Drag to adjust Library zoom scale between 25% and 300%. You can also adjust this in Library by pressing “Ctrl” and scrolling the mouse wheel..
         /// </summary>
         public static string LibraryZoomScaleTooltipText {
             get {
@@ -5059,7 +5061,7 @@ namespace Dynamo.Wpf.Properties
                 return ResourceManager.GetString("OnboardingGuideConnectNodesTitle", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Let’s run the graph and see the results of the adjustments you made. Click Run..
         /// </summary>
@@ -5162,7 +5164,7 @@ namespace Dynamo.Wpf.Properties
                 return ResourceManager.GetString("OnboardingSuccessTitle", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to This is the workspace, where you’ll develop visual programs and preview the results. \n\nEach visual program is powered by a **graph** . Graphs can process data, create geometry, and more. In this guide, we’ll work with a sample graph..
         /// </summary>
@@ -5930,7 +5932,7 @@ namespace Dynamo.Wpf.Properties
                 return ResourceManager.GetString("PackageSearchViewFilterByButton", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to ⇓ Install.
         /// </summary>
@@ -6119,7 +6121,7 @@ namespace Dynamo.Wpf.Properties
                 return ResourceManager.GetString("PackagesGuideExitTitle", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Packages provide additional functions that you can use in Dynamo. \n\nTo find a package or see what’s available, \n**Click Packages &gt; Search for Packages**..
         /// </summary>
@@ -6633,6 +6635,42 @@ namespace Dynamo.Wpf.Properties
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Graphic Elements Scale.
+        /// </summary>
+        public static string PreferencesGrahicHelpersScale {
+            get {
+                return ResourceManager.GetString("PreferencesGrahicHelpersScale", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select a scale for the background graphic helpers (grids, axes)..
+        /// </summary>
+        public static string PreferencesGrahicHelpersScaleTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesGrahicHelpersScaleTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Imperial.
+        /// </summary>
+        public static string PreferencesHostGenericScaleImperialUnits {
+            get {
+                return ResourceManager.GetString("PreferencesHostGenericScaleImperialUnits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Metric.
+        /// </summary>
+        public static string PreferencesHostGenericScaleMetricUnits {
+            get {
+                return ResourceManager.GetString("PreferencesHostGenericScaleMetricUnits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Preferences must be closed before you proceed. All changes saved automatically..
         /// </summary>
         public static string PreferencesMustBeClosedMessage {
@@ -6764,6 +6802,24 @@ namespace Dynamo.Wpf.Properties
         public static string PreferencesSettingUpdateBackupLocationTooltip {
             get {
                 return ResourceManager.GetString("PreferencesSettingUpdateBackupLocationTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use Revit to scale background graphic helpers.
+        /// </summary>
+        public static string PreferencesUseHostScaleUnits {
+            get {
+                return ResourceManager.GetString("PreferencesUseHostScaleUnits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When toggled on, the current Revit document units will be used to scale the background graphic helpers (grids, axes). Otherwise, the Graphic Elements Scale drop-down will determine scale..
+        /// </summary>
+        public static string PreferencesUseHostScaleUnitsToolTip {
+            get {
+                return ResourceManager.GetString("PreferencesUseHostScaleUnitsToolTip", resourceCulture);
             }
         }
         
@@ -6948,15 +7004,6 @@ namespace Dynamo.Wpf.Properties
         public static string PreferencesViewGeneralTab {
             get {
                 return ResourceManager.GetString("PreferencesViewGeneralTab", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hide IronPython alerts.
-        /// </summary>
-        public static string PreferencesViewIsIronPythonDialogDisabled {
-            get {
-                return ResourceManager.GetString("PreferencesViewIsIronPythonDialogDisabled", resourceCulture);
             }
         }
         
@@ -7301,7 +7348,7 @@ namespace Dynamo.Wpf.Properties
                 return ResourceManager.GetString("PreferencesWindowShowEdgesTooltip", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to When toggled on, a preview of the node’s output will be displayed when hovering over the bottom of a node..
         /// </summary>

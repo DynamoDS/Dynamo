@@ -47,6 +47,7 @@ namespace Dynamo.ViewModels
             ExitCommand = new DelegateCommand(Exit, CanExit);
             ToggleFullscreenWatchShowingCommand = new DelegateCommand(ToggleFullscreenWatchShowing, CanToggleFullscreenWatchShowing);
             ToggleBackgroundGridVisibilityCommand = new DelegateCommand(ToggleBackgroundGridVisibility, CanToggleBackgroundGridVisibility);
+            UpdateGraphicHelpersScaleCommand = new DelegateCommand(UpdateGraphicHelpersScale, CanUpdateGraphicHelpersScale);
             AlignSelectedCommand = new DelegateCommand(AlignSelected, CanAlignSelected); ;
             UndoCommand = new DelegateCommand(Undo, CanUndo);
             RedoCommand = new DelegateCommand(Redo, CanRedo);
@@ -136,6 +137,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand PostUIActivationCommand { get; set; }
         public DelegateCommand ToggleFullscreenWatchShowingCommand { get; set; }
         public DelegateCommand ToggleBackgroundGridVisibilityCommand { get; set; }
+        public DelegateCommand UpdateGraphicHelpersScaleCommand { get; set; }
         public DelegateCommand SelectAllCommand { get; set; }
         public DelegateCommand SaveImageCommand { get; set; }
         public DelegateCommand Save3DImageCommand { get; set; }

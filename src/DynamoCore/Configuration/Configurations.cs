@@ -404,6 +404,41 @@ namespace Dynamo.Configuration
             }
         }
 
+        /// <summary>
+        /// Host units, used to scale background grid graphic element
+        /// </summary>
+        internal enum Units
+        {
+            Millimeters,
+            Centimeters,
+            Meters,
+            Kilometers,
+            Feet,
+            Inches,
+            Miles
+        }
+
+        /// <summary>
+        /// Supported Host units and their conversion to dynamo units
+        /// Used in graphic helpers scaling (grid, axes)
+        /// </summary>
+        internal static Dictionary<Units, double> SupportedUnits
+        {
+            get
+            {
+                return new Dictionary<Units, double>
+                {
+                    { Units.Millimeters, 1 },
+                    { Units.Centimeters, 10 },
+                    { Units.Meters, 1000 },
+                    { Units.Kilometers, 100000 },
+                    { Units.Feet, 1 },
+                    { Units.Inches, 10 },
+                    { Units.Miles, 1000 },
+                };
+            }
+        }
+
         #endregion
     }
 }

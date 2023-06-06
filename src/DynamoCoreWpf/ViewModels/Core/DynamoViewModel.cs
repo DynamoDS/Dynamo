@@ -599,23 +599,6 @@ namespace Dynamo.ViewModels
 
         public bool HideReportOptions { get; internal set; }
 
-        /// <summary>
-        /// Indicates if whether the Iron Python dialog box should be displayed before each new session.
-        /// </summary>
-        public bool IsIronPythonDialogDisabled
-        {
-            get
-            {
-                return model.PreferenceSettings.IsIronPythonDialogDisabled;
-            }
-            set
-            {
-                model.PreferenceSettings.IsIronPythonDialogDisabled = value;
-                RaisePropertyChanged(nameof(IsIronPythonDialogDisabled));
-            }
-        }
-
-
         private DynamoPythonScriptEditorTextOptions editTextOptions = new DynamoPythonScriptEditorTextOptions();
         /// <summary>
         /// Gets/Sets the text editor options for python script editor.
@@ -2540,7 +2523,24 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Updates grapic helpers (grid) inside the background preview VM
+        /// </summary>
+        /// <param name="parameter"></param>
+        public void UpdateGraphicHelpersScale(object parameter)
+        {
+            if (BackgroundPreviewViewModel == null) return;
+
+            BackgroundPreviewViewModel.GridScale = PreferenceSettings.GridScaleFactor;
+            BackgroundPreviewViewModel.UpdateHelpers();
+        }
+
         internal bool CanToggleBackgroundGridVisibility(object parameter)
+        {
+            return true;
+        }
+
+        internal bool CanUpdateGraphicHelpersScale(object parameter)
         {
             return true;
         }
