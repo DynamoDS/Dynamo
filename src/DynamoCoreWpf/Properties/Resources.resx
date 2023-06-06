@@ -3612,4 +3612,10 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="LibraryLoadFailureMessageSuffix" xml:space="preserve">
     <value>See the console log for the details of the import failure.</value>
   </data>
+  <data name="CantExportWorkspaceAsImageEmptyMessage" xml:space="preserve">
+    <value>The Workspace cannot be exported as image due to it's empty.</value>
+  </data>
+  <data name="CantExportWorkspaceAsImageNotValidMessage" xml:space="preserve">
+    <value>The Workspace cannot be exported as image due to it contains nodes far away from each other.</value>
+  </data>
 </root>

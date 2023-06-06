@@ -2767,7 +2767,7 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        public void ShowSaveImageDialogAndSaveResult(object parameter)
+        public void ShowSaveImageDialogAndSave(object parameter)
         {
             FileDialog _fileDialog = null;
 
@@ -2821,7 +2821,12 @@ namespace Dynamo.ViewModels
             }
         }
 
-        internal bool CanShowSaveImageDialogAndSaveResult(object parameter)
+        public void ValidateWorkSpaceBeforeToExportAsImage(object parameter)
+        {
+            OnRequestExportWorkSpaceAsImage(parameter);       
+        }
+
+        internal bool CanValidateWorkSpaceBeforeToExportAsImage(object parameter)
         {
             return true;
         }

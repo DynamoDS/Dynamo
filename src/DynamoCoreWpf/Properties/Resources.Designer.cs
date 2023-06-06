@@ -10,8 +10,8 @@
 
 namespace Dynamo.Wpf.Properties
 {
-
-
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -336,6 +336,24 @@ namespace Dynamo.Wpf.Properties
         public static string CannotSubmitPackage {
             get {
                 return ResourceManager.GetString("CannotSubmitPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Workspace cannot be exported as image due to it&apos;s empty..
+        /// </summary>
+        public static string CantExportWorkspaceAsImageEmptyMessage {
+            get {
+                return ResourceManager.GetString("CantExportWorkspaceAsImageEmptyMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Workspace cannot be exported as image due to it contains nodes far away from each other..
+        /// </summary>
+        public static string CantExportWorkspaceAsImageNotValidMessage {
+            get {
+                return ResourceManager.GetString("CantExportWorkspaceAsImageNotValidMessage", resourceCulture);
             }
         }
         
