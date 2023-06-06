@@ -418,7 +418,10 @@ namespace Dynamo.Views
             if (workSpaceRender == null) return result;
 
             result = ExportImageResult.IsValidAsImage;
-            if (validating) path = this.ViewModel.FileName.Replace(".dyn", ".png");
+            if (validating)
+            {
+                path = $"{ViewModel.DynamoViewModel.PreferencesViewModel.BackupLocation}\\{System.DateTime.Now.Ticks.ToString()}.png";
+            }            
 
             try
             {
@@ -438,7 +441,7 @@ namespace Dynamo.Views
             {
                 result = ExportImageResult.NotValidAsImage;
             }
-
+            // The current way of validate if a Workspace is ok for exporting as image is trying to create it in a temporal place, whatever the result we need to remove it.
             if (validating && System.IO.File.Exists(path))
             {
                 System.IO.File.Delete(path);
