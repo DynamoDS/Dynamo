@@ -1,4 +1,4 @@
-namespace DynamoAnalyzer.Helper
+namespace DynamoPackagesAnalyzer.Helper
 {
     /// <summary>
     /// Provides methods to write information to the console 

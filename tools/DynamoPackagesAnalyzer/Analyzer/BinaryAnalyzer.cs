@@ -1,8 +1,8 @@
-using DynamoAnalyzer.Helper;
-using DynamoAnalyzer.Models;
-using DynamoAnalyzer.Models.UpgradeAssistant;
+using DynamoPackagesAnalyzer.Helper;
+using DynamoPackagesAnalyzer.Models;
+using DynamoPackagesAnalyzer.Models.UpgradeAssistant;
 
-namespace DynamoAnalyzer.Analyzer
+namespace DynamoPackagesAnalyzer.Analyzer
 {
     /// <summary>
     /// Implementation of the binary analyzer using the analyzebinaries feature of the upgrade-assistant tool
@@ -59,10 +59,10 @@ namespace DynamoAnalyzer.Analyzer
         }
 
         /// <summary>
-        /// Start the upgrade-assistant tool
+        /// Starts the upgrade-assistant tool with the dll defined in <see cref="file"/>
         /// </summary>
         /// <returns></returns>
-        public async Task<AnalyzedPackage> Process()
+        public async Task<AnalyzedPackage> StartAnalysis()
         {
             AnalyzedPackage dllAnalysis = package.Copy();
             dllAnalysis.ArtifactName = Name;
@@ -76,6 +76,7 @@ namespace DynamoAnalyzer.Analyzer
                 Result[] res = result.Runs.SelectMany(f => f.Results).ToArray();
                 dllAnalysis.RequirePort = res.Any();
 
+                //If the dll has a different assembly name, this line can get that name reported by upgrade-assistant
                 List<string> f_res = new List<string>(res.SelectMany(f => f.Locations.Select(g => g.PhysicalLocation.ArtifactLocation.URI.Replace("file:///", "").Replace(workspace.Replace("\\", "/"), ""))).Distinct());
                 f_res.AddRange(res.Select(f => f.Message.Text.Replace("\"", "'")));
 
@@ -91,21 +92,25 @@ namespace DynamoAnalyzer.Analyzer
         }
 
         /// <summary>
-        /// The arguments required by the analyzebinaries tool
+        /// The arguments required by analyzebinaries feature of the Microsoft's upgrade-assistant tool 
         /// </summary>
         /// <returns></returns>
         private string[] GetArgs()
         {
             string[] args = new string[] {
-                "analyzebinaries",
-                "-p Windows",
-                "-t LTS",
-                $"\"{file.FullName}\"",
+                "analyzebinaries",//Experimental fecture to analyze binaries
+                "-p Windows",//Target platform Windows | Linux
+                "-t LTS",//Latest Long Term Support framework (net6)
+                $"\"{file.FullName}\"",//Path to the binary file
             };
 
             return args;
         }
 
+        /// <summary>
+        /// Returns the package information of the file being analyzed
+        /// </summary>
+        /// <returns></returns>
         public Task<AnalyzedPackage> GetAnalyzedPackage()
         {
             return Task.FromResult(package);

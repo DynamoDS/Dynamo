@@ -2,10 +2,10 @@ using System.Globalization;
 using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
-using DynamoAnalyzer.Models;
+using DynamoPackagesAnalyzer.Models;
 using Newtonsoft.Json;
 
-namespace DynamoAnalyzer.Helper
+namespace DynamoPackagesAnalyzer.Helper
 {
     /// <summary>
     /// Provides methods to work with csv files
@@ -67,7 +67,7 @@ namespace DynamoAnalyzer.Helper
         {
             Map(m => m.ArtifactName).Name(nameof(DuplicatedPackage.ArtifactName)).TypeConverter<StringConverter>();
             Map(m => m.Count).Name(nameof(DuplicatedPackage.Count));
-            Map(m => m.Packages).TypeConverter<ArrayConverter>();
+            Map(m => m.PackageNames).TypeConverter<ArrayConverter>();
         }
     }
 

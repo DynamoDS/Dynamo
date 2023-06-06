@@ -1,4 +1,4 @@
-namespace DynamoAnalyzer.Models.Greg
+namespace DynamoPackagesAnalyzer.Models.Greg
 {
     /// <summary>
     /// Greg Client dto

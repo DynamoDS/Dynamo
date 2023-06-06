@@ -1,15 +1,14 @@
 using System.Collections.Concurrent;
 using System.Web;
-using DynamoAnalyzer.Helper;
-using DynamoAnalyzer.Models;
-using DynamoAnalyzer.Models.CommandLine;
-using DynamoAnalyzer.Models.Greg;
 using DynamoPackagesAnalyzer.Helper;
+using DynamoPackagesAnalyzer.Models;
+using DynamoPackagesAnalyzer.Models.CommandLine;
+using DynamoPackagesAnalyzer.Models.Greg;
 using Microsoft.Extensions.Configuration;
 using RestSharp;
 using RestSharp.Serializers.NewtonsoftJson;
 
-namespace DynamoAnalyzer.PackageSource
+namespace DynamoPackagesAnalyzer.PackageSource
 {
     /// <summary>
     /// Provides methods to analyze packages at dynamopackages.com
@@ -103,7 +102,7 @@ namespace DynamoAnalyzer.PackageSource
         /// Starts the analysis process downloading and processing all of the dynamo packages at dynamopackages.com
         /// </summary>
         /// <returns></returns>
-        public async Task<List<AnalyzedPackage>> Run()
+        public async Task<List<AnalyzedPackage>> RunAnalysis()
         {
             PackageHeader[] list = await GetPackages();
 
@@ -121,7 +120,7 @@ namespace DynamoAnalyzer.PackageSource
                         {
                             Files = new string[] { file.FullName },
                         }, packageHeader);
-                        dllAnalysisResult.AddRange(await zipArchiveSource.Run());
+                        dllAnalysisResult.AddRange(await zipArchiveSource.RunAnalysis());
                     }
                     catch (Exception ex)
                     {

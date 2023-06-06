@@ -1,7 +1,7 @@
 using CommandLine;
 using CommandLine.Text;
 
-namespace DynamoAnalyzer.Models.CommandLine
+namespace DynamoPackagesAnalyzer.Models.CommandLine
 {
     /// <summary>
     /// Command line arguments for zipfile mode

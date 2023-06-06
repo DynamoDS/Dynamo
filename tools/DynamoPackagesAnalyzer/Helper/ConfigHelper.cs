@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Configuration;
 
-namespace DynamoAnalyzer.Helper
+namespace DynamoPackagesAnalyzer.Helper
 {
     /// <summary>
     /// Provides methods to handle appsettings.json

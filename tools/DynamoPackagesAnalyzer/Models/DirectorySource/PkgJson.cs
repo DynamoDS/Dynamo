@@ -1,4 +1,4 @@
-namespace DynamoAnalyzer.Models.DirectorySource
+namespace DynamoPackagesAnalyzer.Models.DirectorySource
 {
     /// <summary>
     /// represents the pkg.json file in a package

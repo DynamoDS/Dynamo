@@ -1,6 +1,6 @@
 using CommandLine;
 
-namespace DynamoAnalyzer.Models.CommandLine
+namespace DynamoPackagesAnalyzer.Models.CommandLine
 {
     /// <summary>
     /// Command line arguments for dynamopackages mode

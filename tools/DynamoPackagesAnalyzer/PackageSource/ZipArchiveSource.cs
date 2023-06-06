@@ -1,13 +1,12 @@
 using System.Collections.Concurrent;
-using DynamoAnalyzer.Helper;
-using DynamoAnalyzer.Models;
-using DynamoAnalyzer.Models.CommandLine;
-using DynamoAnalyzer.Models.Greg;
 using DynamoPackagesAnalyzer.Helper;
+using DynamoPackagesAnalyzer.Models;
+using DynamoPackagesAnalyzer.Models.CommandLine;
+using DynamoPackagesAnalyzer.Models.Greg;
 using Microsoft.Extensions.Configuration;
-using static DynamoAnalyzer.Helper.LogHelper;
+using static DynamoPackagesAnalyzer.Helper.LogHelper;
 
-namespace DynamoAnalyzer.PackageSource
+namespace DynamoPackagesAnalyzer.PackageSource
 {
     /// <summary>
     /// Provides method to analize package zip archives 
@@ -40,10 +39,10 @@ namespace DynamoAnalyzer.PackageSource
         }
 
         /// <summary>
-        /// Starts the analysis process
+        /// Starts the analysis process on the zip files provided
         /// </summary>
         /// <returns></returns>
-        public async Task<List<AnalyzedPackage>> Run()
+        public async Task<List<AnalyzedPackage>> RunAnalysis()
         {
             ConcurrentBag<AnalyzedPackage> packages = new ConcurrentBag<AnalyzedPackage>();
 
@@ -90,7 +89,7 @@ namespace DynamoAnalyzer.PackageSource
                     ArchiveName = item.Name,
                     LookupDetails = options.LookupDetails
                 }, packageHeader);
-                result = await d.Run();
+                result = await d.RunAnalysis();
                 unzipped.Delete(true);
                 Log(item.Name, "Delete Unzip folder");
             }

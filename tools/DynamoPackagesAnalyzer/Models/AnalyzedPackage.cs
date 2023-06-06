@@ -1,7 +1,7 @@
-namespace DynamoAnalyzer.Models
+namespace DynamoPackagesAnalyzer.Models
 {
     /// <summary>
-    /// Represents a package which has been processed
+    /// Represents a dynamo package which has been processed and it's result can be written to the csv file using <see cref="Helper.CsvHandler.WritePackagesCsv(List{AnalyzedPackage}, DateTime)"/>
     /// </summary>
     public class AnalyzedPackage
     {

@@ -1,13 +1,13 @@
-namespace DynamoAnalyzer.Models
+namespace DynamoPackagesAnalyzer.Models
 {
     /// <summary>
-    /// Represents a duplicated DLL and the numbers of times that other packages references a DLL with the same name
+    /// Represents a duplicated DLL and the numbers of times that other packages references a DLL with the same name, and can be written to a csv file using <see cref="Helper.CsvHandler.WriteDuplicatedCsv(IEnumerable{DuplicatedPackage}, DateTime)"/>
     /// </summary>
     public class DuplicatedPackage
     {
         public string ArtifactName { get; set; }
         public int Count { get; set; }
-        public string[] Packages { get; set; }
+        public string[] PackageNames { get; set; }
 
         public DuplicatedPackage()
         {
@@ -18,7 +18,7 @@ namespace DynamoAnalyzer.Models
         {
             ArtifactName = articfactName;
             Count = count;
-            Packages = packages ?? Array.Empty<string>();
+            PackageNames = packages ?? Array.Empty<string>();
         }
     }
 }

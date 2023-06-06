@@ -1,6 +1,6 @@
-using DynamoAnalyzer.Models;
-using DynamoAnalyzer.Models.DirectorySource;
-using DynamoAnalyzer.Models.Greg;
+using DynamoPackagesAnalyzer.Models;
+using DynamoPackagesAnalyzer.Models.DirectorySource;
+using DynamoPackagesAnalyzer.Models.Greg;
 
 namespace DynamoPackagesAnalyzer.Helper
 {

@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace DynamoAnalyzer.Models.UpgradeAssistant
+namespace DynamoPackagesAnalyzer.Models.UpgradeAssistant
 {
     /// <summary>
     /// DTO used in the sarif file

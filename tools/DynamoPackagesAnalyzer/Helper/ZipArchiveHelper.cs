@@ -1,6 +1,6 @@
 using System.IO.Compression;
 
-namespace DynamoAnalyzer.Helper
+namespace DynamoPackagesAnalyzer.Helper
 {
     /// <summary>
     /// Provides methods to extract zip archives

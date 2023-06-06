@@ -1,7 +1,7 @@
 using System.Text;
 using Newtonsoft.Json;
 
-namespace DynamoAnalyzer.Helper
+namespace DynamoPackagesAnalyzer.Helper
 {
     /// <summary>
     /// Provides methods to handle json files

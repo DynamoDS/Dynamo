@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace DynamoAnalyzer.Helper
+namespace DynamoPackagesAnalyzer.Helper
 {
     /// <summary>
     /// Provides methods to start new processes

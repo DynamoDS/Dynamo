@@ -1,6 +1,6 @@
-using DynamoAnalyzer.Models;
+using DynamoPackagesAnalyzer.Models;
 
-namespace DynamoAnalyzer.Analyzer
+namespace DynamoPackagesAnalyzer.Analyzer
 {
     /// <summary>
     /// Allows to process a package
@@ -8,7 +8,7 @@ namespace DynamoAnalyzer.Analyzer
     internal interface IAnalyze
     {
         string Name { get; }
-        Task<AnalyzedPackage> Process();
+        Task<AnalyzedPackage> StartAnalysis();
 
         Task<AnalyzedPackage> GetAnalyzedPackage();
     }

@@ -1,9 +1,9 @@
 using System.Collections.Concurrent;
 using CommandLine;
-using DynamoAnalyzer.Helper;
-using DynamoAnalyzer.Models;
-using DynamoAnalyzer.Models.CommandLine;
-using DynamoAnalyzer.PackageSource;
+using DynamoPackagesAnalyzer.Helper;
+using DynamoPackagesAnalyzer.Models;
+using DynamoPackagesAnalyzer.Models.CommandLine;
+using DynamoPackagesAnalyzer.PackageSource;
 
 internal class Program
 {
@@ -17,13 +17,13 @@ internal class Program
                   switch (obj)
                   {
                       case DirectoryOptions c:
-                          processed.AddRange(await new DirectorySource(c).Run());
+                          processed.AddRange(await new DirectorySource(c).RunAnalysis());
                           break;
                       case DynamoPackagesOptions o:
-                          processed.AddRange(await new DynamoPackagesSource(o).Run());
+                          processed.AddRange(await new DynamoPackagesSource(o).RunAnalysis());
                           break;
                       case ZipArchiveOptions z:
-                          processed.AddRange(await new ZipArchiveSource(z).Run());
+                          processed.AddRange(await new ZipArchiveSource(z).RunAnalysis());
                           break;
                   }
               });

@@ -1,16 +1,15 @@
 using System.Collections.Concurrent;
 using System.Web;
-using DynamoAnalyzer.Analyzer;
-using DynamoAnalyzer.Helper;
-using DynamoAnalyzer.Models;
-using DynamoAnalyzer.Models.CommandLine;
-using DynamoAnalyzer.Models.DirectorySource;
-using DynamoAnalyzer.Models.Greg;
+using DynamoPackagesAnalyzer.Analyzer;
 using DynamoPackagesAnalyzer.Helper;
+using DynamoPackagesAnalyzer.Models;
+using DynamoPackagesAnalyzer.Models.CommandLine;
+using DynamoPackagesAnalyzer.Models.DirectorySource;
+using DynamoPackagesAnalyzer.Models.Greg;
 using Microsoft.Extensions.Configuration;
-using static DynamoAnalyzer.Helper.LogHelper;
+using static DynamoPackagesAnalyzer.Helper.LogHelper;
 
-namespace DynamoAnalyzer.PackageSource
+namespace DynamoPackagesAnalyzer.PackageSource
 {
     /// <summary>
     /// provides methods to analyze package directories 
@@ -37,10 +36,10 @@ namespace DynamoAnalyzer.PackageSource
         }
 
         /// <summary>
-        /// Starts the analysis process verifying the <see cref="DirectoryOptions.HasZipArchives"/> and process the folder accordingly
+        /// Starts the analysis process verifying the <see cref="DirectoryOptions.HasZipArchives"/> flag and processing the folder accordingly
         /// </summary>
         /// <returns></returns>
-        public async Task<List<AnalyzedPackage>> Run()
+        public async Task<List<AnalyzedPackage>> RunAnalysis()
         {
             if (options.HasZipArchives)
             {
@@ -69,7 +68,7 @@ namespace DynamoAnalyzer.PackageSource
                 LookupDetails = options.LookupDetails
             });
 
-            return await zipArchiveSource.Run();
+            return await zipArchiveSource.RunAnalysis();
         }
 
         /// <summary>
@@ -141,14 +140,14 @@ namespace DynamoAnalyzer.PackageSource
                         new ParallelOptions { MaxDegreeOfParallelism = int.Parse(configuration["MaxDegreeOfParallelism"]) },
                         async (package, cancellationToken) =>
                         {
-                            dllAnalysisResult.Add(await Process(package));
+                            dllAnalysisResult.Add(await ProcessDLL(package));
                         }
                     );
                     break;
                 default:
                     foreach (IAnalyze package in packagesToAnalyze)
                     {
-                        dllAnalysisResult.Add(await Process(package));
+                        dllAnalysisResult.Add(await ProcessDLL(package));
                     }
                     break;
             }
@@ -157,15 +156,15 @@ namespace DynamoAnalyzer.PackageSource
         }
 
         /// <summary>
-        /// 
+        /// Triggers the binary analysis on the previously <see cref="BinaryAnalyzer"/> instance, this method helps to run the analysis in a multithreaded way
         /// </summary>
         /// <param name="package"></param>
         /// <returns></returns>
-        private async Task<AnalyzedPackage> Process(IAnalyze package)
+        private async Task<AnalyzedPackage> ProcessDLL(IAnalyze package)
         {
             AnalyzedPackage analyzedPackage = await package.GetAnalyzedPackage();
             Log(analyzedPackage.Name, $"{package.Name} analysis start");
-            analyzedPackage = await package.Process();
+            analyzedPackage = await package.StartAnalysis();
             Log(analyzedPackage.Name, analyzedPackage.HasAnalysisError ? $"{package.Name} analysis failed" : $"{package.Name} analysis end");
             return analyzedPackage;
         }
