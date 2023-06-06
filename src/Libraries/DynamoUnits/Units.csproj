@@ -10,6 +10,30 @@
     <AssemblyName>DynamoUnits</AssemblyName>
     <DocumentationFile>$(OutputPath)\DynamoUnits.xml</DocumentationFile>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>MSB3539,CS1591</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <NoWarn>MSB3539,CS1591</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <NoWarn>MSB3539,CS1591</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <NoWarn>MSB3539,CS1591</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|NET60_Windows'">
+    <NoWarn>MSB3539,CS1591</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|NET60_Windows'">
+    <NoWarn>MSB3539,CS1591</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|NET60_Linux'">
+    <NoWarn>MSB3539,CS1591</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|NET60_Linux'">
+    <NoWarn>MSB3539,CS1591</NoWarn>
+  </PropertyGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'net48' ">
     <Reference Include="System.Configuration" />
   </ItemGroup>
@@ -73,7 +97,7 @@
     <When Condition=" '$(VisualStudioVersion)'=='11.0' " />
     <When Condition=" '$(VisualStudioVersion)'=='11.0' " />
   </Choose>
-  <Target Name="CopyFiles" BeforeTargets="Build" >
+  <Target Name="CopyFiles" BeforeTargets="Build">
     <Copy SourceFiles="$(ProjectDir)DynamoUnits_DynamoCustomization.xml" DestinationFolder="$(OutputPath)" />
   </Target>
   <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" '$(OS)' != 'Unix' ">
