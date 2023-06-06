@@ -2908,9 +2908,9 @@ namespace Dynamo.Wpf.Properties
                 return ResourceManager.GetString("FilePathConverterNoFileSelected", resourceCulture);
             }
         }
-        
+
         /// <summary>
-        ///   Looks up a localized string similar to Trust this fileâ€™s location in the future..
+        ///   Looks up a localized string similar to Trust this file’s location in the future..
         /// </summary>
         public static string FileTrustWarningCheckBoxText {
             get {
@@ -3494,9 +3494,9 @@ namespace Dynamo.Wpf.Properties
                 return ResourceManager.GetString("HideNodesBelowSpecificConfidenceLevel", resourceCulture);
             }
         }
-        
+
         /// <summary>
-        ///   Looks up a localized string similar to Confidence level appears next to each recommended node and represents estimated probability that the node is a good choice. When toggled on, this setting hides recommended nodes that donâ€™t meet the specified confidence level. You can click the Low Confidence header to show the nodes..
+        ///   Looks up a localized string similar to Confidence level appears next to each recommended node and represents estimated probability that the node is a good choice. When toggled on, this setting hides recommended nodes that don’t meet the specified confidence level. You can click the Low Confidence header to show the nodes..
         /// </summary>
         public static string HideNodesBelowSpecificConfidenceLevelInfo {
             get {
@@ -4016,9 +4016,9 @@ namespace Dynamo.Wpf.Properties
                 return ResourceManager.GetString("LibraryViewTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
-        ///   Looks up a localized string similar to Drag to adjust Library zoom scale between 25% and 300%. You can also adjust this in Library by pressing â€œCtrlâ€ and scrolling the mouse wheel..
+        ///   Looks up a localized string similar to Drag to adjust Library zoom scale between 25% and 300%. You can also adjust this in Library by pressing “Ctrl” and scrolling the mouse wheel..
         /// </summary>
         public static string LibraryZoomScaleTooltipText {
             get {
@@ -5059,9 +5059,9 @@ namespace Dynamo.Wpf.Properties
                 return ResourceManager.GetString("OnboardingGuideConnectNodesTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
-        ///   Looks up a localized string similar to Letâ€™s run the graph and see the results of the adjustments you made. Click Run..
+        ///   Looks up a localized string similar to Let’s run the graph and see the results of the adjustments you made. Click Run..
         /// </summary>
         public static string OnboardingGuideRunGraphText {
             get {
@@ -5162,9 +5162,9 @@ namespace Dynamo.Wpf.Properties
                 return ResourceManager.GetString("OnboardingSuccessTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
-        ///   Looks up a localized string similar to This is the workspace, where youâ€™ll develop visual programs and preview the results. \n\nEach visual program is powered by a **graph** . Graphs can process data, create geometry, and more. In this guide, weâ€™ll work with a sample graph..
+        ///   Looks up a localized string similar to This is the workspace, where you’ll develop visual programs and preview the results. \n\nEach visual program is powered by a **graph** . Graphs can process data, create geometry, and more. In this guide, we’ll work with a sample graph..
         /// </summary>
         public static string OnboardingWorkspaceText {
             get {
@@ -5930,9 +5930,9 @@ namespace Dynamo.Wpf.Properties
                 return ResourceManager.GetString("PackageSearchViewFilterByButton", resourceCulture);
             }
         }
-        
+
         /// <summary>
-        ///   Looks up a localized string similar to â‡“ Install.
+        ///   Looks up a localized string similar to ⇓ Install.
         /// </summary>
         public static string PackageSearchViewInstallButton {
             get {
@@ -6119,9 +6119,9 @@ namespace Dynamo.Wpf.Properties
                 return ResourceManager.GetString("PackagesGuideExitTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
-        ///   Looks up a localized string similar to Packages provide additional functions that you can use in Dynamo. \n\nTo find a package or see whatâ€™s available, \n**Click Packages &gt; Search for Packages**..
+        ///   Looks up a localized string similar to Packages provide additional functions that you can use in Dynamo. \n\nTo find a package or see what’s available, \n**Click Packages &gt; Search for Packages**..
         /// </summary>
         public static string PackagesGuideFindPackageText {
             get {
@@ -7301,9 +7301,9 @@ namespace Dynamo.Wpf.Properties
                 return ResourceManager.GetString("PreferencesWindowShowEdgesTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
-        ///   Looks up a localized string similar to When toggled on, a preview of the nodeâ€™s output will be displayed when hovering over the bottom of a node..
+        ///   Looks up a localized string similar to When toggled on, a preview of the node’s output will be displayed when hovering over the bottom of a node..
         /// </summary>
         public static string PreferencesWindowShowPreviewBubblesTooltip {
             get {
