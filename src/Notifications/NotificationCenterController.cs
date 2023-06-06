@@ -37,7 +37,10 @@ namespace Dynamo.Notifications
         {
             onMarkAllAsRead(ids);
         }
-
+        /// <summary>
+        /// This function will be triggered in NotificationCenter side passing the current height it has so we can update popup height in Dynamo
+        /// </summary>
+        /// <param name="height"></param>
         public void UpdateNotificationWindowSize(int height)
         {
             onNotificationPopupUpdated(height);
