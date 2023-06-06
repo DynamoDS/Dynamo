@@ -2921,6 +2921,12 @@ Delete the following packages: {2}?
     <value>Show Preview Bubbles</value>
     <comment>Preferences | Visual Settings | Display Settings | Show Preview Bubbles</comment>
   </data>
+  <data name="PreferencesUseHostScaleUnits" xml:space="preserve">
+    <value>Use Revit to scale background graphic helpers</value>
+  </data>
+  <data name="PreferencesUseHostScaleUnitsToolTip" xml:space="preserve">
+    <value>When toggled on, the current Revit document units will be used to scale the background graphic helpers (grids, axes). Otherwise, the Graphic Elements Scale drop-down will determine scale.</value>
+  </data>
   <data name="PackagesGuide" xml:space="preserve">
     <value>_Packages</value>
   </data>
@@ -3605,7 +3611,19 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="CustomColorsPopupTitle" xml:space="preserve">
     <value>Custom</value>
   </data>
+  <data name="PreferencesGrahicHelpersScale" xml:space="preserve">
+    <value>Graphic Elements Scale</value>
+  </data>
+  <data name="PreferencesGrahicHelpersScaleTooltip" xml:space="preserve">
+    <value>Select a scale for the background graphic helpers (grids, axes).</value>
+  </data>
   <data name="LibraryLoadFailureMessageSuffix" xml:space="preserve">
     <value>See the console log for the details of the import failure.</value>
+  </data>
+  <data name="PreferencesHostGenericScaleImperialUnits" xml:space="preserve">
+    <value>Imperial</value>
+  </data>
+  <data name="PreferencesHostGenericScaleMetricUnits" xml:space="preserve">
+    <value>Metric</value>
   </data>
 </root>

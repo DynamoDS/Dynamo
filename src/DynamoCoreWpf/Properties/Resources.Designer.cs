@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Dynamo.Wpf.Properties
-{
-
-
+namespace Dynamo.Wpf.Properties {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -6617,6 +6617,42 @@ namespace Dynamo.Wpf.Properties
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Graphic Elements Scale.
+        /// </summary>
+        public static string PreferencesGrahicHelpersScale {
+            get {
+                return ResourceManager.GetString("PreferencesGrahicHelpersScale", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select a scale for the background graphic helpers (grids, axes)..
+        /// </summary>
+        public static string PreferencesGrahicHelpersScaleTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesGrahicHelpersScaleTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Imperial.
+        /// </summary>
+        public static string PreferencesHostGenericScaleImperialUnits {
+            get {
+                return ResourceManager.GetString("PreferencesHostGenericScaleImperialUnits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Metric.
+        /// </summary>
+        public static string PreferencesHostGenericScaleMetricUnits {
+            get {
+                return ResourceManager.GetString("PreferencesHostGenericScaleMetricUnits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Preferences must be closed before you proceed. All changes saved automatically..
         /// </summary>
         public static string PreferencesMustBeClosedMessage {
@@ -6748,6 +6784,24 @@ namespace Dynamo.Wpf.Properties
         public static string PreferencesSettingUpdateBackupLocationTooltip {
             get {
                 return ResourceManager.GetString("PreferencesSettingUpdateBackupLocationTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use Revit to scale background graphic helpers.
+        /// </summary>
+        public static string PreferencesUseHostScaleUnits {
+            get {
+                return ResourceManager.GetString("PreferencesUseHostScaleUnits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When toggled on, the current Revit document units will be used to scale the background graphic helpers (grids, axes). Otherwise, the Graphic Elements Scale drop-down will determine scale..
+        /// </summary>
+        public static string PreferencesUseHostScaleUnitsToolTip {
+            get {
+                return ResourceManager.GetString("PreferencesUseHostScaleUnitsToolTip", resourceCulture);
             }
         }
         
