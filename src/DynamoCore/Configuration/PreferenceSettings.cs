@@ -587,6 +587,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// This defines if user wants to see the Iron Python Extension Dialog box on every new session.
         /// </summary>
+        [Obsolete("This property is deprecated and will be removed in a future version of Dynamo")]
         public bool IsIronPythonDialogDisabled { get; set; }
 
         /// <summary>

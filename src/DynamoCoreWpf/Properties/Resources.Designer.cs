@@ -6990,15 +6990,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hide IronPython alerts.
-        /// </summary>
-        public static string PreferencesViewIsIronPythonDialogDisabled {
-            get {
-                return ResourceManager.GetString("PreferencesViewIsIronPythonDialogDisabled", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Language.
         /// </summary>
         public static string PreferencesViewLanguageLabel {

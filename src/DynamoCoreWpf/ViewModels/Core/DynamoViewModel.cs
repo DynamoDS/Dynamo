@@ -599,23 +599,6 @@ namespace Dynamo.ViewModels
 
         public bool HideReportOptions { get; internal set; }
 
-        /// <summary>
-        /// Indicates if whether the Iron Python dialog box should be displayed before each new session.
-        /// </summary>
-        public bool IsIronPythonDialogDisabled
-        {
-            get
-            {
-                return model.PreferenceSettings.IsIronPythonDialogDisabled;
-            }
-            set
-            {
-                model.PreferenceSettings.IsIronPythonDialogDisabled = value;
-                RaisePropertyChanged(nameof(IsIronPythonDialogDisabled));
-            }
-        }
-
-
         private DynamoPythonScriptEditorTextOptions editTextOptions = new DynamoPythonScriptEditorTextOptions();
         /// <summary>
         /// Gets/Sets the text editor options for python script editor.
