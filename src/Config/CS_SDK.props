@@ -19,7 +19,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <TestProjectDefaults Condition="$(MSBuildProjectDirectory.Contains('test'))">true</TestProjectDefaults>
     <TestProjectDefaults Condition=" '$(TestProjectDefaults)' == '' ">false</TestProjectDefaults>
-    <NoWarn>MSB3539</NoWarn><!--The value of the property "BaseIntermediateOutputPath" was modified after it was used by MSBuild-->
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618</NoWarn><!--The value of the property "BaseIntermediateOutputPath" was modified after it was used by MSBuild-->
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
