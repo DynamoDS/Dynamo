@@ -13,7 +13,10 @@
   </PropertyGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
 	  <PackageReference Include="NUnit" Version="2.6.3" />
-    <PackageReference Include="NUnitTestAdapter" Version="2.3.0" ExcludeAssets="all" /> 
+    <PackageReference Include="NUnitTestAdapter" Version="2.3.0" ExcludeAssets="all" />
+      <Reference Include="PresentationCore" />
+      <Reference Include="System" />
+      <Reference Include="System.Core" />
   </ItemGroup>
     <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' "> 
         <PackageReference Include="NUnit" Version="3.13.3" ExcludeAssets="none" />
@@ -21,9 +24,6 @@
     </ItemGroup>
   <ItemGroup>
       <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" ExcludeAssets="none" />
-      <Reference Include="PresentationCore" />
-      <Reference Include="System" />
-      <Reference Include="System.Core" />
     <ProjectReference Include="..\..\..\src\DynamoCoreWpf\DynamoCoreWpf.csproj" Condition=" '$(TargetFramework)' == 'net48' ">
       <Project>{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}</Project>
       <Name>DynamoCoreWpf</Name>
