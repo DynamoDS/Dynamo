@@ -5,6 +5,10 @@ using System.Linq;
 using Autodesk.DesignScript.Runtime;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Drawing;
+using System.IO;
+using System.Drawing.Imaging;
+using System.Collections;
 
 namespace DSCore
 {
@@ -136,6 +140,39 @@ namespace DSCore
 
                         break;
 
+
+                    case "dynamo.graphics:color-1.0.0":
+
+                        return Color.ByARGB(
+                        (int)jObject["A"],
+                        (int)jObject["R"],
+                        (int)jObject["G"],
+                        (int)jObject["B"]);
+
+                    case "dynamo.graphics:png-1.0.0":
+
+                        jObject.TryGetValue(ImageFormat.Png.ToString(), out var value);
+
+                        if (value != null)
+                        {
+                            var stream = Convert.FromBase64String(value.ToString());
+
+                            Bitmap bitmap;
+                            using (var ms = new MemoryStream(stream))
+                                bitmap = new Bitmap(Bitmap.FromStream(ms));
+
+                            return bitmap;
+                        }
+
+                        return null;
+
+                    case "dynamo.data:location-1.0.0":
+
+                        return DynamoUnits.Location.ByLatitudeAndLongitude(
+                        (double)jObject["Latitude"],
+                        (double)jObject["Longitude"],
+                        (string)jObject["Name"]);
+
                     default:
                         return null;
                 }
@@ -165,6 +202,9 @@ namespace DSCore
                 {
                     new DictConverter(),
                     new DesignScriptGeometryConverter()
+                    new ColorConveter(),
+                    new LocationConverter(),
+                    new ImageConverter()
                 });
         }
 
@@ -300,6 +340,92 @@ namespace DSCore
             }
         }
 
+        private class ColorConveter : JsonConverter
+        {
+            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+            {
+                var jobject = JObject.FromObject(value);
+                jobject.Add("$typeid", "dynamo.graphics:color-1.0.0");
+
+                jobject.WriteTo(writer);
+            }
+
+            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+            {
+                throw new NotImplementedException("Unnecessary because CanRead is false. The type will skip the converter.");
+            }
+
+            public override bool CanRead
+            {
+                get { return false; }
+            }
+
+            public override bool CanConvert(Type objectType)
+            {
+                return typeof(DSCore.Color) == objectType;
+            }
+        }
+
+        private class LocationConverter : JsonConverter
+        {
+            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+            {
+                var jobject = JObject.FromObject(value);
+                jobject.Add("$typeid", "dynamo.data:location-1.0.0");
+
+                jobject.WriteTo(writer);
+            }
+
+            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+            {
+                throw new NotImplementedException("Unnecessary because CanRead is false. The type will skip the converter.");
+            }
+
+            public override bool CanRead
+            {
+                get { return false; }
+            }
+
+            public override bool CanConvert(Type objectType)
+            {
+                return typeof(DynamoUnits.Location) == objectType;
+            }
+        }
+
+        private class ImageConverter : JsonConverter
+        {
+            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+            {
+                var image = value as Bitmap;
+
+                string serializedValue;
+                var stream = new MemoryStream();
+                image?.Save(stream, ImageFormat.Png);
+                serializedValue = Convert.ToBase64String(stream.ToArray());
+
+                writer.WriteStartObject();
+                writer.WritePropertyName("$typeid");
+                writer.WriteValue("dynamo.graphics:png-1.0.0");
+                writer.WritePropertyName(ImageFormat.Png.ToString());
+                writer.WriteValue(serializedValue);
+                writer.WriteEndObject();
+            }
+
+            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+            {
+                throw new NotImplementedException("Unnecessary because CanRead is false. The type will skip the converter.");
+            }
+
+            public override bool CanRead
+            {
+                get { return false; }
+            }
+
+            public override bool CanConvert(Type objectType)
+            {
+                return typeof(Bitmap).IsAssignableFrom(objectType);
+            }
+        }
 
         #endregion
     }
