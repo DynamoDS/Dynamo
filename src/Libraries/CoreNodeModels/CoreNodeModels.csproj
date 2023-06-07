@@ -26,19 +26,15 @@
       <!--Exclude copying the runtime dlls because we will handle it in the BinaryCompatibilityOps target -->
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
+      <Reference Include="System.Web" />
+      <Reference Include="System.Windows" />
+      <Reference Include="System.Xaml" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
     <PackageReference Include="CoreCLR-NCalc" Version="2.2.92" />
   </ItemGroup>
   <ItemGroup>
 	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-	<Reference Include="PresentationCore" />
-	<Reference Include="PresentationFramework" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Windows" />
-    <Reference Include="System.Windows.Presentation" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="WindowsBase" />
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
