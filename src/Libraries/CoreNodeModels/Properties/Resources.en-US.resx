@@ -641,4 +641,13 @@ Default value: {0}</value>
   <data name="TooltipTextQuery" xml:space="preserve">
     <value>Nodes that query data</value>
   </data>
+  <data name="RememberDescription" xml:space="preserve">
+    <value>Store data passing through this node to the Dynamo file. Return the stored data if the input is null.</value>
+  </data>
+  <data name="RememberInputToolTip" xml:space="preserve">
+    <value>Data to sample and store in the file.</value>
+  </data>
+  <data name="RememberOuputToolTip" xml:space="preserve">
+    <value>Data</value>
+  </data>
 </root>
