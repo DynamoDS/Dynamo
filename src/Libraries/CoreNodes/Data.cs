@@ -201,7 +201,7 @@ namespace DSCore
                 new JsonConverter[]
                 {
                     new DictConverter(),
-                    new DesignScriptGeometryConverter()
+                    new DesignScriptGeometryConverter(),
                     new ColorConveter(),
                     new LocationConverter(),
                     new ImageConverter()
@@ -425,6 +425,70 @@ namespace DSCore
             {
                 return typeof(Bitmap).IsAssignableFrom(objectType);
             }
+        }
+
+        #endregion
+
+        #region Remember node functions
+
+        /// <summary>
+        /// Helper function to determine if object can be cached or if it is null, "null" string, or empty list.  
+        /// </summary>
+        /// <param name="inputObject">Object to check</param>
+        /// <returns></returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public static bool CanObjectBeCached(object inputObject)
+        {
+            if (inputObject == null
+                || (inputObject is string inputString && inputString == "null")
+                || (inputObject is ArrayList inputArray && inputArray.Count == 0))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Function to handle caching for the Data.Remember node
+        /// </summary>
+        /// <param name="inputObject">Object to cache</param>
+        /// <param name = "cachedJson" >Optional existing cache json</param >
+        /// <returns></returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public static Dictionary<string, object> Remember([ArbitraryDimensionArrayImport] object inputObject, string cachedJson)
+        {
+            //Handle the case where the node has no inputs or the input value is null
+            if (!CanObjectBeCached(inputObject))
+            {
+                //If a previous cache exists, de-serialize and return
+                if (cachedJson != "")
+                {
+                    var cachedObject = ParseJSON(cachedJson);
+
+                    return new Dictionary<string, object>
+                    {
+                        { ">", cachedObject },
+                        { "Cache", cachedJson }
+                    };
+                }
+
+                //Else pass through the empty inputs and cacheJson
+                return new Dictionary<string, object>
+                {
+                    { ">", inputObject },
+                    { "Cache", cachedJson }
+                };
+            }
+
+            //Try to serialize the inputs and return
+            var newCachedJson = StringifyJSON(inputObject);
+
+            return new Dictionary<string, object>
+            {
+                { ">", inputObject },
+                { "Cache", newCachedJson }
+            };
         }
 
         #endregion
