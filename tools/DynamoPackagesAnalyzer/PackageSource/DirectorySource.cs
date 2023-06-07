@@ -109,7 +109,7 @@ namespace DynamoPackagesAnalyzer.PackageSource
         /// <returns></returns>
         private async Task<List<AnalyzedPackage>> ProcessAsDirectoryAsync()
         {
-            List<IAnalyze> packagesToAnalyze = new List<IAnalyze>();
+            List<BinaryAnalyzer> packagesToAnalyze = new List<BinaryAnalyzer>();
             ConcurrentBag<AnalyzedPackage> dllAnalysisResult = new ConcurrentBag<AnalyzedPackage>();
 
             AnalyzedPackage analyzedPackage = await GetAnalyzedPackage();
@@ -145,7 +145,7 @@ namespace DynamoPackagesAnalyzer.PackageSource
                     );
                     break;
                 default:
-                    foreach (IAnalyze package in packagesToAnalyze)
+                    foreach (BinaryAnalyzer package in packagesToAnalyze)
                     {
                         dllAnalysisResult.Add(await ProcessDLL(package));
                     }
@@ -160,7 +160,7 @@ namespace DynamoPackagesAnalyzer.PackageSource
         /// </summary>
         /// <param name="package"></param>
         /// <returns></returns>
-        private async Task<AnalyzedPackage> ProcessDLL(IAnalyze package)
+        private async Task<AnalyzedPackage> ProcessDLL(BinaryAnalyzer package)
         {
             AnalyzedPackage analyzedPackage = await package.GetAnalyzedPackage();
             Log(analyzedPackage.Name, $"{package.Name} analysis start");

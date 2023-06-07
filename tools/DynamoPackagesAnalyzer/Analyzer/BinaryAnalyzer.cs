@@ -7,7 +7,7 @@ namespace DynamoPackagesAnalyzer.Analyzer
     /// <summary>
     /// Implementation of the binary analyzer using the analyzebinaries feature of the upgrade-assistant tool
     /// </summary>
-    internal class BinaryAnalyzer : IAnalyze
+    internal class BinaryAnalyzer
     {
         private readonly FileInfo file;
         private readonly AnalyzedPackage package;
