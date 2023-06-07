@@ -10,10 +10,14 @@
     <AssemblyName>DSOffice</AssemblyName>
     <DocumentationFile>$(OutputPath)\$(UICulture)\DSOffice.xml</DocumentationFile>
   </PropertyGroup>
-    <ItemGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
         <PackageReference Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1001">
             <ExcludeAssets>runtime</ExcludeAssets>
         </PackageReference>
+    </ItemGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+        <PackageReference Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1001" />
+        <PackageReference Include="MicrosoftOfficeCore" Version="15.0.0" />
     </ItemGroup>
   <ItemGroup>
 	<PackageReference Include="DocumentFormat.OpenXml" Version="2.12.3" CopyXML="true" />
