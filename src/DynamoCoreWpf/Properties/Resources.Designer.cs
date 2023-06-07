@@ -340,7 +340,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The Workspace cannot be exported as image due to it&apos;s empty..
+        ///   Looks up a localized string similar to The workspace cannot be exported as an image because it is empty..
         /// </summary>
         public static string CantExportWorkspaceAsImageEmptyMessage {
             get {
@@ -349,7 +349,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The Workspace cannot be exported as image due to it contains nodes far away from each other..
+        ///   Looks up a localized string similar to The workspace cannot be exported as an image because it contains nodes that are too far away from each other..
         /// </summary>
         public static string CantExportWorkspaceAsImageNotValidMessage {
             get {

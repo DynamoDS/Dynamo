@@ -3640,10 +3640,10 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
     <value>Metric</value>
   </data>
   <data name="CantExportWorkspaceAsImageEmptyMessage" xml:space="preserve">
-    <value>The Workspace cannot be exported as image due to it's empty.</value>
+    <value>The workspace cannot be exported as an image because it is empty.</value>
   </data>
   <data name="CantExportWorkspaceAsImageNotValidMessage" xml:space="preserve">
-    <value>The Workspace cannot be exported as image due to it contains nodes far away from each other.</value>
+    <value>The workspace cannot be exported as an image because it contains nodes that are too far away from each other.</value>
   </data>
 </root>
 
