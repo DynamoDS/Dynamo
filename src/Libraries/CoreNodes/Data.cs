@@ -1,4 +1,5 @@
-﻿using System;
+using Autodesk.DesignScript.Geometry;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Runtime;
@@ -10,7 +11,7 @@ namespace DSCore
     public static class Data
     {
         /// <summary>
-        ///     Parse converts an arbitrary JSON string to a value. It is the opposite of JSON.Stringify.
+        /// Parse converts an arbitrary JSON string to a value. It is the opposite of JSON.Stringify.
         /// </summary>
         /// <param name="json">A JSON string</param>
         /// <returns name="result">The result type depends on the content of the input string. The result type can be a primitive value (e.g. string, boolean, double), a List, or a Dictionary.</returns>
@@ -19,18 +20,31 @@ namespace DSCore
             return ToNative(JToken.Parse(json));
         }
 
+        /// <summary>
+        /// Parse implementation for converting JToken types to native .NET objects.
+        /// </summary>
+        /// <param name="token">JToken to parse to N</param>
+        /// <returns></returns>
         private static object ToNative(JToken token)
         {
             switch (token.Type)
             {
                 case JTokenType.Object:
                     var obj = token as JObject;
+
+                    var dynObj = DynamoJObjectToNative(obj);
+                    if(dynObj != null)
+                    {
+                        return dynObj;
+                    }
+     
                     var dict = new Dictionary<string, object>();
                     foreach (var kv in obj)
                     {
                         dict[kv.Key] = ToNative(kv.Value);
                     }
                     return dict;
+
                 case JTokenType.Array:
                     var arr = token as JArray;
                     return arr.Select(ToNative);
@@ -52,15 +66,110 @@ namespace DSCore
         }
 
         /// <summary>
+        /// Parse implementation for converting JObject types to specific Dynamo objects (ie Geometry, Color, Images, etc) 
+        /// </summary>
+        /// <param name="jObject"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        private static object DynamoJObjectToNative(JObject jObject)
+        {
+            if (jObject.ContainsKey("$typeid"))
+            {
+                var typeid = jObject["$typeid"].ToString();
+
+                switch (typeid)
+                {
+                    case "autodesk.design:geometry.point-1.0.0":
+                    case string geoId when geoId.Contains("autodesk.geometry"):
+                        return Geometry.FromJson(jObject.ToString());
+
+                    case "autodesk.math:vector3d-1.0.0":
+                        return Vector.FromJson(jObject.ToString());
+
+                    case "autodesk.math:matrix44d-1.0.0":
+                        return CoordinateSystem.FromJson(jObject.ToString());
+
+                    case "autodesk.geometry:boundingbox3d-1.0.0":
+                        return BoundingBox.FromJson(jObject.ToString());
+
+                    case "dynamo.geometry:sab-1.0.0":
+
+                        jObject.TryGetValue("sab", out var sabValue);
+                        var storedStream = Convert.FromBase64String(sabValue.ToString());
+                        Geometry[] storedGeo = Geometry.DeserializeFromSAB(storedStream);
+
+                        // Try to rebuild polycurves / polysurfaces
+                        if (storedGeo.Length > 1)
+                        {
+                            try
+                            {
+                                if (storedGeo[0] is Curve)
+                                {
+                                    var crvs = new List<Curve>();
+                                    foreach (var crv in storedGeo)
+                                    {
+                                        crvs.Add((Curve)crv);
+                                    }
+
+                                    return PolyCurve.ByJoinedCurves(crvs, 0.001, false, 0);
+                                }
+                                else if (storedGeo[0] is Surface)
+                                {
+                                    var srfs = new List<Surface>();
+                                    foreach (var srf in storedGeo)
+                                    {
+                                        srfs.Add((Surface)srf);
+                                    }
+
+                                    return PolySurface.ByJoinedSurfaces(srfs);
+                                }
+                            }
+                            catch (Exception)
+                            {
+                                throw new Exception("Unsupported Type");
+                            }
+                        }
+                        else
+                        {
+                            return storedGeo[0];
+                        }
+
+                        break;
+
+                    default:
+                        return null;
+                }
+            }
+
+            if (jObject.ContainsKey("typeid"))
+            {
+                var typeid = jObject["typeid"].ToString();
+                if (typeid == "autodesk.soliddef:model-1.0.0")
+                {
+                    return Geometry.FromSolidDef(jObject.ToString());
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
         ///     Stringify converts an arbitrary value or a list of arbitrary values to JSON. Replication can be used to apply the operation over a list, producing a list of JSON strings.
         /// </summary>
         /// <param name="values">A List of values</param>
         /// <returns name="json">A JSON string where primitive types (e.g. double, int, boolean), Lists, and Dictionary's will be turned into the associated JSON type.</returns>
         public static string StringifyJSON([ArbitraryDimensionArrayImport] object values)
         {
-            return JsonConvert.SerializeObject(values, new DictConverter());
+            return JsonConvert.SerializeObject(values,
+                new JsonConverter[]
+                {
+                    new DictConverter(),
+                    new DesignScriptGeometryConverter()
+                });
         }
 
+
+        #region Converters
         /// <summary>
         /// Ensures DesignScript.Builtin.Dictionary's, which deliberately don't implement IDictionary, are transformed into JSON objects.
         /// </summary>
@@ -103,5 +212,95 @@ namespace DSCore
             }
         }
 
+        private class DesignScriptGeometryConverter : JsonConverter
+        {
+            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+            {
+                string serializedValue;
+
+                if (value is Mesh mItem)
+                {
+                    throw new NotSupportedException();
+                }
+
+                // Check if value is a Geometry
+                if (value is Geometry geometryItem)
+                {
+                    var jsonString = geometryItem.ToJson();
+
+                    if (jsonString != null)
+                    {
+                        writer.WriteRawValue(jsonString);
+                        return;
+                    }
+
+                    //Todo Determine if this lives in LibG
+                    List<Geometry> geometries = new List<Geometry> { geometryItem };
+
+                    var stream = Geometry.SerializeAsSAB(geometries);
+                    serializedValue = Convert.ToBase64String(stream.ToArray());
+
+                    var typeObject = value.GetType();
+
+                    writer.WriteStartObject();
+                    writer.WritePropertyName("$typeid");
+                    writer.WriteValue("dynamo.geometry:sab-1.0.0");
+                    writer.WritePropertyName("sab");
+                    writer.WriteValue(serializedValue);
+                    writer.WriteEndObject();
+                    return;
+                }
+
+                if (value is Vector vectorItem)
+                {
+                    var jsonString = vectorItem.ToJson();
+
+                    writer.WriteRawValue(jsonString);
+
+                    return;
+                }
+
+                if (value is BoundingBox bbItem)
+                {
+                    var jsonString = bbItem.ToJson();
+
+                    //Check if null?
+                    writer.WriteRawValue(jsonString);
+
+                    return;
+                }
+
+                if (value is CoordinateSystem csItem)
+                {
+                    var jsonString = csItem.ToJson();
+
+                    //Check if null?
+                    writer.WriteRawValue(jsonString);
+
+                    return;
+                }
+
+                //Do we through or fail with null?
+                throw new NotSupportedException();
+            }
+
+            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+            {
+                throw new NotImplementedException("Unnecessary because CanRead is false. The type will skip the converter.");
+            }
+
+            public override bool CanRead
+            {
+                get { return false; }
+            }
+
+            public override bool CanConvert(Type objectType)
+            {
+                return typeof(DesignScriptEntity).IsAssignableFrom(objectType) && !typeof(Mesh).IsAssignableFrom(objectType) && !typeof(IndexGroup).IsAssignableFrom(objectType);
+            }
+        }
+
+
+        #endregion
     }
 }
