@@ -13,7 +13,7 @@
     <AssemblyOriginatorKeyFile>ProtoCore.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-    <NoWarn>CS3008, CS3003</NoWarn>
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DynamoUtilities\DynamoUtilities.csproj" />

@@ -12,28 +12,28 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <NoWarn>MSB3539,CS1591</NoWarn>
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <NoWarn>MSB3539,CS1591</NoWarn>
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <NoWarn>MSB3539,CS1591</NoWarn>
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <NoWarn>MSB3539,CS1591</NoWarn>
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|NET60_Windows'">
-    <NoWarn>MSB3539,CS1591</NoWarn>
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|NET60_Windows'">
-    <NoWarn>MSB3539,CS1591</NoWarn>
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|NET60_Linux'">
-    <NoWarn>MSB3539,CS1591</NoWarn>
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|NET60_Linux'">
-    <NoWarn>MSB3539,CS1591</NoWarn>
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618</NoWarn>
   </PropertyGroup>
   <ItemGroup Label="System.Collections.Immutable@portable-net45+win8+wp8+wpa81" Condition=" '$(TargetFramework)' == 'net48' ">
     <PackageReference Include="System.Collections.Immutable" Version="5.0.0">

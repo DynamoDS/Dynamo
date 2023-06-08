@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -13,28 +13,28 @@
     <DocumentationFile>$(OutputPath)\$(UICulture)\DSCoreNodes.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <NoWarn>MSB3539,CS1591</NoWarn>
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <NoWarn>MSB3539,CS1591</NoWarn>
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <NoWarn>MSB3539,CS1591</NoWarn>
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <NoWarn>MSB3539,CS1591</NoWarn>
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|NET60_Windows'">
-    <NoWarn>MSB3539,CS1591</NoWarn>
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|NET60_Windows'">
-    <NoWarn>MSB3539,CS1591</NoWarn>
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|NET60_Linux'">
-    <NoWarn>MSB3539,CS1591</NoWarn>
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|NET60_Linux'">
-    <NoWarn>MSB3539,CS1591</NoWarn>
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="GeometryColor.cs" />
