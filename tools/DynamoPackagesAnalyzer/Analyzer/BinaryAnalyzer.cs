@@ -16,7 +16,7 @@ namespace DynamoPackagesAnalyzer.Analyzer
         /// <summary>
         /// Name of the file being analyzed
         /// </summary>
-        public string Name
+        internal string Name
         {
             get
             {
@@ -27,7 +27,7 @@ namespace DynamoPackagesAnalyzer.Analyzer
         /// <summary>
         /// The path of the DLL currently being analyzed
         /// </summary>
-        public string Path
+        internal string Path
         {
             get
             {
@@ -47,7 +47,7 @@ namespace DynamoPackagesAnalyzer.Analyzer
         /// <param name="package"></param>
         /// <param name="workspace"></param>
         /// <exception cref="InvalidOperationException"></exception>
-        public BinaryAnalyzer(FileInfo file, AnalyzedPackage package, string workspace)
+        internal BinaryAnalyzer(FileInfo file, AnalyzedPackage package, string workspace)
         {
             this.file = file;
             this.package = package;
@@ -62,7 +62,7 @@ namespace DynamoPackagesAnalyzer.Analyzer
         /// Starts the upgrade-assistant tool with the dll defined in <see cref="file"/>
         /// </summary>
         /// <returns></returns>
-        public async Task<AnalyzedPackage> StartAnalysis()
+        internal async Task<AnalyzedPackage> StartAnalysis()
         {
             AnalyzedPackage dllAnalysis = package.Copy();
             dllAnalysis.ArtifactName = Name;
@@ -98,7 +98,7 @@ namespace DynamoPackagesAnalyzer.Analyzer
         private string[] GetArgs()
         {
             string[] args = new string[] {
-                "analyzebinaries",//Experimental fecture to analyze binaries
+                "analyzebinaries",//Experimental feature to analyze binaries
                 "-p Windows",//Target platform Windows | Linux
                 "-t LTS",//Latest Long Term Support framework (net6)
                 $"\"{file.FullName}\"",//Path to the binary file
@@ -111,7 +111,7 @@ namespace DynamoPackagesAnalyzer.Analyzer
         /// Returns the package information of the file being analyzed
         /// </summary>
         /// <returns></returns>
-        public Task<AnalyzedPackage> GetAnalyzedPackage()
+        internal Task<AnalyzedPackage> GetAnalyzedPackage()
         {
             return Task.FromResult(package);
         }

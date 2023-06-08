@@ -10,7 +10,7 @@ namespace System.IO
         /// </summary>
         /// <param name="directoryInfo"></param>
         /// <param name="recursive"></param>
-        public static void TryDelete(this DirectoryInfo directoryInfo, bool recursive = false)
+        internal static void TryDelete(this DirectoryInfo directoryInfo, bool recursive = false)
         {
             try
             {

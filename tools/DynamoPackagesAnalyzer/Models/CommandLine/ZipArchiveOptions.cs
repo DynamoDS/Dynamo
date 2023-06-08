@@ -10,16 +10,16 @@ namespace DynamoPackagesAnalyzer.Models.CommandLine
     internal class ZipArchiveOptions
     {
         [Option('f', "files", Required = true, HelpText = "The files to be processed")]
-        public IEnumerable<string> Files { get; set; }
+        internal IEnumerable<string> Files { get; set; }
 
         [Option('t', "multithread", Default = true, HelpText = "Defines whether to use multithread execution")]
-        public bool MultiThread { get; set; }
+        internal bool MultiThread { get; set; }
 
         [Option('l', "lookupdetails", Default = true, HelpText = "Whether to try lookup for package details at dynamopackages.com")]
-        public bool LookupDetails { get; set; }
+        internal bool LookupDetails { get; set; }
 
         [Usage(ApplicationAlias = "DynamoAnalyzer")]
-        public static IEnumerable<Example> Examples
+        internal static IEnumerable<Example> Examples
         {
             get
             {

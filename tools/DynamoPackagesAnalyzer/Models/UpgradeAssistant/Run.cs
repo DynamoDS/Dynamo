@@ -3,10 +3,10 @@ namespace DynamoPackagesAnalyzer.Models.UpgradeAssistant
     /// <summary>
     /// DTO used in the sarif file
     /// </summary>
-    public class Run
+    internal class Run
     {
-        public Tool Tool { get; set; }
-        public Result[] Results { get; set; }
-        public string ColumnKind { get; set; }
+        internal Tool Tool { get; set; }
+        internal Result[] Results { get; set; }
+        internal string ColumnKind { get; set; }
     }
 }

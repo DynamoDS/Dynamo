@@ -6,7 +6,7 @@ namespace DynamoPackagesAnalyzer.Helper
 {
     internal static class ClassConverterHelper
     {
-        public static AnalyzedPackage ToAnalyzedPackage(PkgJson json)
+        internal static AnalyzedPackage ToAnalyzedPackage(PkgJson json)
         {
             return new AnalyzedPackage()
             {
@@ -15,7 +15,7 @@ namespace DynamoPackagesAnalyzer.Helper
             };
         }
 
-        public static AnalyzedPackage ToAnalyzedPackage(PackageHeaderCustom package)
+        internal static AnalyzedPackage ToAnalyzedPackage(PackageHeaderCustom package)
         {
             var version = package.versions.LastOrDefault();
             var mantainer = package.maintainers.FirstOrDefault();

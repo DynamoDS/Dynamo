@@ -3,11 +3,11 @@ namespace DynamoPackagesAnalyzer.Models.UpgradeAssistant
     /// <summary>
     /// DTO used in the sarif file
     /// </summary>
-    public class Result
+    internal class Result
     {
-        public string RuleId { get; set; }
-        public string Level { get; set; }
-        public Message Message { get; set; }
-        public Location[] Locations { get; set; }
+        internal string RuleId { get; set; }
+        internal string Level { get; set; }
+        internal Message Message { get; set; }
+        internal Location[] Locations { get; set; }
     }
 }

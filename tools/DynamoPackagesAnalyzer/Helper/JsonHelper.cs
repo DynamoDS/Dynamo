@@ -14,7 +14,7 @@ namespace DynamoPackagesAnalyzer.Helper
         /// <typeparam name="T"></typeparam>
         /// <param name="file"></param>
         /// <returns></returns>
-        public static async Task<T> Read<T>(FileInfo file)
+        internal static async Task<T> Read<T>(FileInfo file)
         {
             file.Refresh();
             FileStream fs = null;

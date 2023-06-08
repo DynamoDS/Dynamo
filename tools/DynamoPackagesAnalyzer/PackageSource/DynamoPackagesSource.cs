@@ -22,7 +22,7 @@ namespace DynamoPackagesAnalyzer.PackageSource
         private static PackageHeaderCustom[] packages;
         private static readonly Mutex getPackagesMutex = new Mutex(false, "");
 
-        public DynamoPackagesSource(DynamoPackagesOptions option)
+        internal DynamoPackagesSource(DynamoPackagesOptions option)
         {
             options = option;
             configuration = ConfigHelper.GetConfiguration();
@@ -32,7 +32,7 @@ namespace DynamoPackagesAnalyzer.PackageSource
         /// Returns all the packages from dynamopackages.com except banned and deprecated
         /// </summary>
         /// <returns></returns>
-        public static Task<PackageHeaderCustom[]> GetPackages()
+        internal static Task<PackageHeaderCustom[]> GetPackages()
         {
             getPackagesMutex.WaitOne();
             if (packages == null)
@@ -72,7 +72,7 @@ namespace DynamoPackagesAnalyzer.PackageSource
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static async Task<PackageHeaderCustom> FindPackage(string name)
+        internal static async Task<PackageHeaderCustom> FindPackage(string name)
         {
             PackageHeaderCustom[] packages = await GetPackages();
             return packages.FirstOrDefault(f => f.name.Equals(name));
@@ -103,7 +103,7 @@ namespace DynamoPackagesAnalyzer.PackageSource
         /// Starts the analysis process downloading and processing all of the dynamo packages at dynamopackages.com
         /// </summary>
         /// <returns></returns>
-        public async Task<List<AnalyzedPackage>> RunAnalysis()
+        internal async Task<List<AnalyzedPackage>> RunAnalysis()
         {
             PackageHeaderCustom[] list = await GetPackages();
 

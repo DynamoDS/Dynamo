@@ -10,19 +10,19 @@ namespace DynamoPackagesAnalyzer.Models.CommandLine
     internal class DirectoryOptions
     {
         [Value(0, MetaName = "Directory", HelpText = "A local directory to the packages", Required = true)]
-        public string Path { get; set; }
+        internal string Path { get; set; }
 
         [Option('z', "ziparchives", Default = true, HelpText = "Defines whether analyze the zipped files in the given directory or to analyze an unzipped package directory")]
-        public bool HasZipArchives { get; set; }
+        internal bool HasZipArchives { get; set; }
 
         [Option('t', "multithread", Default = true, HelpText = "Defines whether to use multithread execution")]
-        public bool MultiThread { get; set; }
+        internal bool MultiThread { get; set; }
 
         [Option('l', "lookupdetails", Default = true, HelpText = "Whether to try lookup for package details at dynamopackages.com")]
-        public bool LookupDetails { get; set; }
+        internal bool LookupDetails { get; set; }
 
         [Usage(ApplicationAlias = "DynamoAnalyzer")]
-        public static IEnumerable<Example> Examples
+        internal static IEnumerable<Example> Examples
         {
             get
             {
@@ -31,6 +31,6 @@ namespace DynamoPackagesAnalyzer.Models.CommandLine
             }
         }
 
-        public string ArchiveName { get; set; }
+        internal string ArchiveName { get; set; }
     }
 }

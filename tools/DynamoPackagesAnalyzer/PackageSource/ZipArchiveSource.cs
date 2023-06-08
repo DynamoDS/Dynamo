@@ -19,7 +19,7 @@ namespace DynamoPackagesAnalyzer.PackageSource
         private readonly IConfigurationRoot configuration;
         private PackageHeaderCustom packageHeader;
 
-        public ZipArchiveSource(ZipArchiveOptions options, PackageHeaderCustom packageHeader = null, DirectoryInfo workspace = null)
+        internal ZipArchiveSource(ZipArchiveOptions options, PackageHeaderCustom packageHeader = null, DirectoryInfo workspace = null)
         {
             this.options = options;
             files = options.Files.Select(f => new FileInfo(f)).ToArray();
@@ -42,7 +42,7 @@ namespace DynamoPackagesAnalyzer.PackageSource
         /// Starts the analysis process on the zip files provided
         /// </summary>
         /// <returns></returns>
-        public async Task<List<AnalyzedPackage>> RunAnalysis()
+        internal async Task<List<AnalyzedPackage>> RunAnalysis()
         {
             ConcurrentBag<AnalyzedPackage> packages = new ConcurrentBag<AnalyzedPackage>();
 

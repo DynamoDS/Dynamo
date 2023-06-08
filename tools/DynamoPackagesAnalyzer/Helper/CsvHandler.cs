@@ -23,7 +23,7 @@ namespace DynamoPackagesAnalyzer.Helper
         /// <param name="packages"></param>
         /// <param name="date"></param>
         /// <returns></returns>
-        public static async Task<string> WritePackagesCsv(List<AnalyzedPackage> packages, DateTime date)
+        internal static async Task<string> WritePackagesCsv(List<AnalyzedPackage> packages, DateTime date)
         {
             FileInfo file = new FileInfo(Path.Combine(WorkspaceHelper.GetWorkspace().FullName, $"results[{date:yyyy-MM-dd_HH-mm-ss}].csv"));
 
@@ -43,7 +43,7 @@ namespace DynamoPackagesAnalyzer.Helper
         /// <param name="packages"></param>
         /// <param name="date"></param>
         /// <returns></returns>
-        public static async Task<string> WriteDuplicatedCsv(IEnumerable<DuplicatedPackage> packages, DateTime date)
+        internal static async Task<string> WriteDuplicatedCsv(IEnumerable<DuplicatedPackage> packages, DateTime date)
         {
             FileInfo file = new FileInfo(Path.Combine(WorkspaceHelper.GetWorkspace().FullName, $"duplicated[{date:yyyy_MM_dd_HH_mm_ss}].csv"));
 
@@ -61,9 +61,9 @@ namespace DynamoPackagesAnalyzer.Helper
     /// <summary>
     /// Defines the properties to be written to a file
     /// </summary>
-    public class DuplicatedPackageMap : ClassMap<DuplicatedPackage>
+    internal class DuplicatedPackageMap : ClassMap<DuplicatedPackage>
     {
-        public DuplicatedPackageMap()
+        internal DuplicatedPackageMap()
         {
             Map(m => m.ArtifactName).Name(nameof(DuplicatedPackage.ArtifactName)).TypeConverter<StringConverter>();
             Map(m => m.Count).Name(nameof(DuplicatedPackage.Count));
@@ -74,9 +74,9 @@ namespace DynamoPackagesAnalyzer.Helper
     /// <summary>
     /// Defines the properties to be written to a file
     /// </summary>
-    public class AnalyzedPackageMap : ClassMap<AnalyzedPackage>
+    internal class AnalyzedPackageMap : ClassMap<AnalyzedPackage>
     {
-        public AnalyzedPackageMap()
+        internal AnalyzedPackageMap()
         {
             Map(m => m.Index).Name(nameof(AnalyzedPackage.Index));
             Map(m => m.Id).Name(nameof(AnalyzedPackage.Id));
@@ -102,7 +102,7 @@ namespace DynamoPackagesAnalyzer.Helper
     /// <summary>
     /// Converts an string array to it's string representation
     /// </summary>
-    public class ArrayConverter : DefaultTypeConverter
+    internal class ArrayConverter : DefaultTypeConverter
     {
         public override string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
         {
@@ -119,7 +119,7 @@ namespace DynamoPackagesAnalyzer.Helper
     /// <summary>
     /// Converts an string array to it's string representation and truncates the lenght of the array to 5 values due Microsft Excel truncates cells with very long text and breaks the columns
     /// </summary>
-    public class ResultArrayConverter : DefaultTypeConverter
+    internal class ResultArrayConverter : DefaultTypeConverter
     {
         public override string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
         {
@@ -155,7 +155,7 @@ namespace DynamoPackagesAnalyzer.Helper
     /// <summary>
     /// Converts problematic characters that could break the csv file columns
     /// </summary>
-    public class StringConverter : DefaultTypeConverter
+    internal class StringConverter : DefaultTypeConverter
     {
         public override string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
         {

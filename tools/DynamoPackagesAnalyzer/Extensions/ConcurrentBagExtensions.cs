@@ -11,7 +11,7 @@ namespace System.Collections.Concurrent
         /// <typeparam name="T"></typeparam>
         /// <param name="bag"></param>
         /// <param name="data"></param>
-        public static void AddRange<T>(this ConcurrentBag<T> bag, ICollection<T> data)
+        internal static void AddRange<T>(this ConcurrentBag<T> bag, ICollection<T> data)
         {
             foreach (T item in data)
             {

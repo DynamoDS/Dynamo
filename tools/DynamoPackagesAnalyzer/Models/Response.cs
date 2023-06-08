@@ -6,12 +6,12 @@ namespace DynamoPackagesAnalyzer.Models
     /// <typeparam name="T"></typeparam>
     internal class Response<T>
     {
-        public double Timestamp;
-        public bool Success { get; set; }
-        public string Message { get; set; }
-        public T Content { get; set; }
+        internal double Timestamp;
+        internal bool Success { get; set; }
+        internal string Message { get; set; }
+        internal T Content { get; set; }
 
-        public Response()
+        internal Response()
         {
             Timestamp = 0;
         }

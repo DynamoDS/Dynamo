@@ -10,7 +10,7 @@ namespace DynamoPackagesAnalyzer.Helper
         /// <summary>
         /// Allows to start a new instance of the upgrade-assistant
         /// </summary>
-        public static async Task<string> StartAnalyzeProcess(string workingDir, params string[] args)
+        internal static async Task<string> StartAnalyzeProcess(string workingDir, params string[] args)
         {
             Process proc = new Process();
             bool procWasKilled = false;

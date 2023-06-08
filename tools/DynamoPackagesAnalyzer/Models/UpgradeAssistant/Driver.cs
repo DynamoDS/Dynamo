@@ -3,12 +3,11 @@ namespace DynamoPackagesAnalyzer.Models.UpgradeAssistant
     /// <summary>
     /// DTO used in the sarif file
     /// </summary>
-    public class Driver
+    internal class Driver
     {
-        public string Name { get; set; }
-        public string SemanticVersion { get; set; }
-        public string InformationUri { get; set; }
-        public Rule[] Rules { get; set; }
-
+        internal string Name { get; set; }
+        internal string SemanticVersion { get; set; }
+        internal string InformationUri { get; set; }
+        internal Rule[] Rules { get; set; }
     }
 }

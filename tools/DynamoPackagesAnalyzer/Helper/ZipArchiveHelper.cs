@@ -14,7 +14,7 @@ namespace DynamoPackagesAnalyzer.Helper
         /// <param name="output"></param>
         /// <returns></returns>
         /// <exception cref="IOException"></exception>
-        public static DirectoryInfo Unzip(FileInfo file, DirectoryInfo output = null)
+        internal static DirectoryInfo Unzip(FileInfo file, DirectoryInfo output = null)
         {
             output ??= new DirectoryInfo(Path.Combine(file.Directory.FullName, Path.GetFileNameWithoutExtension(file.Name)));
 

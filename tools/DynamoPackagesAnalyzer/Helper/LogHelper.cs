@@ -10,7 +10,7 @@ namespace DynamoPackagesAnalyzer.Helper
         /// </summary>
         /// <param name="package"></param>
         /// <param name="message"></param>
-        public static void Log(string package, string message)
+        internal static void Log(string package, string message)
         {
             Console.WriteLine($"[{DateTime.Now:yyyy/MM/dd HH:mm:ss}] Package: {package} -> {message}");
         }

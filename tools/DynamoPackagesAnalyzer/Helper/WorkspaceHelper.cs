@@ -5,9 +5,9 @@ namespace DynamoPackagesAnalyzer.Helper
     /// </summary>
     internal static class WorkspaceHelper
     {
-        private static DirectoryInfo workspace;
+        internal static DirectoryInfo workspace;
 
-        public static DirectoryInfo GetWorkspace()
+        internal static DirectoryInfo GetWorkspace()
         {
             var ws = string.IsNullOrEmpty(ConfigHelper.GetConfiguration()["Workspace"]) ? Path.Combine(Path.GetTempPath(), "DynamoDS") : ConfigHelper.GetConfiguration()["Workspace"];
             return workspace ??= new DirectoryInfo(ws);

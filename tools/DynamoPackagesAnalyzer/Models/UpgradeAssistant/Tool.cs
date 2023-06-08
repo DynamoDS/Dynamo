@@ -3,8 +3,8 @@ namespace DynamoPackagesAnalyzer.Models.UpgradeAssistant
     /// <summary>
     /// DTO used in the sarif file
     /// </summary>
-    public class Tool
+    internal class Tool
     {
-        public Driver Driver { get; set; }
+        internal Driver Driver { get; set; }
     }
 }

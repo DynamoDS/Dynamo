@@ -10,6 +10,6 @@ namespace DynamoPackagesAnalyzer.Models.Greg
         /// <summary>
         /// Used to order the dlls when saving to CSV
         /// </summary>
-        public int Index { get; set; }
+        internal int Index { get; set; }
     }
 }

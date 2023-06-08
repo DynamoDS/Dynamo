@@ -21,7 +21,7 @@ namespace DynamoPackagesAnalyzer.PackageSource
         private readonly IConfigurationRoot configuration;
         private readonly PackageHeaderCustom packageHeader;
 
-        public DirectorySource(DirectoryOptions options, PackageHeaderCustom packageHeader = null)
+        internal DirectorySource(DirectoryOptions options, PackageHeaderCustom packageHeader = null)
         {
             this.options = options;
 
@@ -39,7 +39,7 @@ namespace DynamoPackagesAnalyzer.PackageSource
         /// Starts the analysis process verifying the <see cref="DirectoryOptions.HasZipArchives"/> flag and processing the folder accordingly
         /// </summary>
         /// <returns></returns>
-        public async Task<List<AnalyzedPackage>> RunAnalysis()
+        internal async Task<List<AnalyzedPackage>> RunAnalysis()
         {
             if (options.HasZipArchives)
             {
@@ -174,7 +174,7 @@ namespace DynamoPackagesAnalyzer.PackageSource
         /// </summary>
         /// <returns></returns>
         /// <exception cref="FileNotFoundException"></exception>
-        public async Task<PkgJson> GetPkgJson()
+        internal async Task<PkgJson> GetPkgJson()
         {
             FileInfo file = new FileInfo(Path.Combine(workspace.FullName, "pkg.json"));
             if (!file.Exists)
@@ -192,7 +192,7 @@ namespace DynamoPackagesAnalyzer.PackageSource
         /// </summary>
         /// <param name="package"></param>
         /// <returns></returns>
-        public static async Task<FileInfo[]> GetDlls(DirectoryInfo package)
+        internal static async Task<FileInfo[]> GetDlls(DirectoryInfo package)
         {
             DirectoryInfo binDirectory = new DirectoryInfo(Path.Combine(package.FullName, "bin"));
             if (binDirectory.Exists)
@@ -209,21 +209,21 @@ namespace DynamoPackagesAnalyzer.PackageSource
         }
 
         /// <summary>
-        /// List all the DLL in the provided directory an it's subdirectories
+        /// List all the Zip files in the provided directory an it's subdirectories
         /// </summary>
-        /// <param name="package"></param>
+        /// <param name="base_path"></param>
         /// <returns></returns>
-        public static async Task<FileInfo[]> GetZipFiles(DirectoryInfo base_path)
+        internal static async Task<FileInfo[]> GetZipFiles(DirectoryInfo base_path)
         {
             if (base_path.Exists)
             {
-                FileInfo[] dlls = Array.Empty<FileInfo>();
+                FileInfo[] zipFiles = Array.Empty<FileInfo>();
 
                 await Task.Run(() =>
                 {
-                    dlls = Directory.GetFiles(base_path.FullName, "*.zip", new EnumerationOptions() { RecurseSubdirectories = true }).Select(f => new FileInfo(f)).ToArray();
+                    zipFiles = Directory.GetFiles(base_path.FullName, "*.zip", new EnumerationOptions() { RecurseSubdirectories = true }).Select(f => new FileInfo(f)).ToArray();
                 });
-                return dlls;
+                return zipFiles;
             }
             return Array.Empty<FileInfo>();
         }

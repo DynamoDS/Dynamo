@@ -3,32 +3,32 @@ namespace DynamoPackagesAnalyzer.Models
     /// <summary>
     /// Represents a dynamo package which has been processed and it's result can be written to the csv file using <see cref="Helper.CsvHandler.WritePackagesCsv(List{AnalyzedPackage}, DateTime)"/>
     /// </summary>
-    public class AnalyzedPackage
+    internal class AnalyzedPackage
     {
-        public int Index { get; set; }
-        public string Id { get; set; }
-        public string UserId { get; set; }
-        public string UserName { get; set; }
-        public string Name { get; set; }
-        public string ArtifactPath { get; set; }
-        public string ArtifactName { get; set; }
-        public string ArchiveName { get; set; }
-        public string Version { get; set; }
-        public bool HasBinaries { get; set; }
-        public bool HasSource { get; set; }
-        public bool RequirePort { get; set; }
-        public bool HasAnalysisError { get; set; }
-        public string[] Result { get; set; }
-        public FileInfo[] DLLs { get; set; }
-        public DirectoryInfo Source { get; set; }
+        internal int Index { get; set; }
+        internal string Id { get; set; }
+        internal string UserId { get; set; }
+        internal string UserName { get; set; }
+        internal string Name { get; set; }
+        internal string ArtifactPath { get; set; }
+        internal string ArtifactName { get; set; }
+        internal string ArchiveName { get; set; }
+        internal string Version { get; set; }
+        internal bool HasBinaries { get; set; }
+        internal bool HasSource { get; set; }
+        internal bool RequirePort { get; set; }
+        internal bool HasAnalysisError { get; set; }
+        internal string[] Result { get; set; }
+        internal FileInfo[] DLLs { get; set; }
+        internal DirectoryInfo Source { get; set; }
 
-        public AnalyzedPackage()
+        internal AnalyzedPackage()
         {
             DLLs = Array.Empty<FileInfo>();
             Result = Array.Empty<string>();
         }
 
-        public AnalyzedPackage Copy()
+        internal AnalyzedPackage Copy()
         {
             return new AnalyzedPackage
             {

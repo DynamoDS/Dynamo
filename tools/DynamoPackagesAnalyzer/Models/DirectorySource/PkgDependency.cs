@@ -5,7 +5,7 @@ namespace DynamoPackagesAnalyzer.Models.DirectorySource
     /// </summary>
     internal class PkgDependency
     {
-        public string name { get; set; }
-        public string version { get; set; }
+        internal string name { get; set; }
+        internal string version { get; set; }
     }
 }

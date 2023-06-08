@@ -3,8 +3,8 @@ namespace DynamoPackagesAnalyzer.Models.UpgradeAssistant
     /// <summary>
     /// DTO used in the sarif file
     /// </summary>
-    public class ArtifactLocation
+    internal class ArtifactLocation
     {
-        public string URI { get; set; }
+        internal string URI { get; set; }
     }
 }
