@@ -19,9 +19,9 @@ namespace DynamoPackagesAnalyzer.PackageSource
         private readonly DirectoryOptions options;
         private readonly DirectoryInfo workspace;
         private readonly IConfigurationRoot configuration;
-        private readonly PackageHeader packageHeader;
+        private readonly PackageHeaderCustom packageHeader;
 
-        public DirectorySource(DirectoryOptions options, PackageHeader packageHeader = null)
+        public DirectorySource(DirectoryOptions options, PackageHeaderCustom packageHeader = null)
         {
             this.options = options;
 
@@ -89,7 +89,7 @@ namespace DynamoPackagesAnalyzer.PackageSource
                 switch (options.LookupDetails)
                 {
                     case true:
-                        PackageHeader packageHeader = await DynamoPackagesSource.FindPackage(pkgJson.Name);
+                        PackageHeaderCustom packageHeader = await DynamoPackagesSource.FindPackage(pkgJson.Name);
                         analyzedPackage = packageHeader != null ? ClassConverterHelper.ToAnalyzedPackage(packageHeader) : ClassConverterHelper.ToAnalyzedPackage(pkgJson);
                         break;
                     default:

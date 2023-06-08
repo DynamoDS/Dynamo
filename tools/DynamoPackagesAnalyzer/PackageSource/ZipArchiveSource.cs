@@ -17,9 +17,9 @@ namespace DynamoPackagesAnalyzer.PackageSource
         private readonly FileInfo[] files;
         private readonly DirectoryInfo workspace;
         private readonly IConfigurationRoot configuration;
-        private PackageHeader packageHeader;
+        private PackageHeaderCustom packageHeader;
 
-        public ZipArchiveSource(ZipArchiveOptions options, PackageHeader packageHeader = null, DirectoryInfo workspace = null)
+        public ZipArchiveSource(ZipArchiveOptions options, PackageHeaderCustom packageHeader = null, DirectoryInfo workspace = null)
         {
             this.options = options;
             files = options.Files.Select(f => new FileInfo(f)).ToArray();

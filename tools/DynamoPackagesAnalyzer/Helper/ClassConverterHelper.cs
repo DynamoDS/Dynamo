@@ -15,7 +15,7 @@ namespace DynamoPackagesAnalyzer.Helper
             };
         }
 
-        public static AnalyzedPackage ToAnalyzedPackage(PackageHeader package)
+        public static AnalyzedPackage ToAnalyzedPackage(PackageHeaderCustom package)
         {
             var version = package.versions.LastOrDefault();
             var mantainer = package.maintainers.FirstOrDefault();
@@ -29,6 +29,7 @@ namespace DynamoPackagesAnalyzer.Helper
                 UserId = mantainer._id,
                 UserName = mantainer.username,
                 Version = version.version,
+                Index = package.Index
             };
         }
     }

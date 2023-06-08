@@ -4,6 +4,7 @@ using DynamoPackagesAnalyzer.Helper;
 using DynamoPackagesAnalyzer.Models;
 using DynamoPackagesAnalyzer.Models.CommandLine;
 using DynamoPackagesAnalyzer.Models.Greg;
+using Greg.Responses;
 using Microsoft.Extensions.Configuration;
 using RestSharp;
 using RestSharp.Serializers.NewtonsoftJson;
@@ -16,9 +17,9 @@ namespace DynamoPackagesAnalyzer.PackageSource
     internal class DynamoPackagesSource
     {
         private readonly DynamoPackagesOptions options;
-        private static readonly RestClient restClient = new RestClient(ConfigHelper.GetConfiguration()["DynamoPackagesURL"], configureSerialization: s => s.UseNewtonsoftJson());
+        private static readonly IRestClient restClient = new RestClient(ConfigHelper.GetConfiguration()["DynamoPackagesURL"]).UseNewtonsoftJson();
         private readonly IConfigurationRoot configuration;
-        private static PackageHeader[] packages;
+        private static PackageHeaderCustom[] packages;
         private static readonly Mutex getPackagesMutex = new Mutex(false, "");
 
         public DynamoPackagesSource(DynamoPackagesOptions option)
@@ -31,21 +32,21 @@ namespace DynamoPackagesAnalyzer.PackageSource
         /// Returns all the packages from dynamopackages.com except banned and deprecated
         /// </summary>
         /// <returns></returns>
-        public static Task<PackageHeader[]> GetPackages()
+        public static Task<PackageHeaderCustom[]> GetPackages()
         {
             getPackagesMutex.WaitOne();
             if (packages == null)
             {
                 LogHelper.Log("Download DynamoPackages", "start");
-                RestRequest request = new RestRequest("packages/dynamo", Method.Get);
-                RestResponse<Response<PackageHeader[]>> response = restClient.Execute<Response<PackageHeader[]>>(request);
+                RestRequest request = new RestRequest("packages/dynamo", Method.GET);
+                IRestResponse<Response<PackageHeaderCustom[]>> response = restClient.Execute<Response<PackageHeaderCustom[]>>(request);
                 ValidateResponse(response);
-                PackageHeader[] packages = response.Data.Content.Where(f => !f.deprecated && !f.banned).ToArray();
+                PackageHeaderCustom[] packages = response.Data.Content.Where(f => !f.deprecated && !f.banned).ToArray();
 
                 //method used in Dynamo\src\DynamoPackages\PackageManagerClient.cs:L97 to filter packages with wrong version numbers
                 for (int i = 0; i < packages.Length; i++)
                 {
-                    PackageHeader package = packages[i];
+                    PackageHeaderCustom package = packages[i];
                     bool packageHasWrongVersion = package.versions.Any(v => v.url == null);
 
                     if (packageHasWrongVersion)
@@ -71,9 +72,9 @@ namespace DynamoPackagesAnalyzer.PackageSource
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static async Task<PackageHeader> FindPackage(string name)
+        public static async Task<PackageHeaderCustom> FindPackage(string name)
         {
-            PackageHeader[] packages = await GetPackages();
+            PackageHeaderCustom[] packages = await GetPackages();
             return packages.FirstOrDefault(f => f.name.Equals(name));
         }
 
@@ -82,11 +83,11 @@ namespace DynamoPackagesAnalyzer.PackageSource
         /// </summary>
         /// <param name="package"></param>
         /// <returns></returns>
-        private async Task<FileInfo> DownloadPackage(PackageHeader package)
+        private async Task<FileInfo> DownloadPackage(PackageHeaderCustom package)
         {
             PackageVersion version = GetLastVersion(package);
-            RestRequest request = new RestRequest($"download/{package._id}/{version.name}", Method.Get);
-            RestResponse<Response> response = await restClient.ExecuteAsync<Response>(request);
+            RestRequest request = new RestRequest($"download/{package._id}/{version.name}", Method.GET);
+            IRestResponse<Models.Response> response = await restClient.ExecuteAsync<Models.Response>(request);
             ValidateResponse(response);
 
             string output = Path.Combine(WorkspaceHelper.GetWorkspace().FullName, Path.GetFileName(response.ResponseUri.AbsolutePath));
@@ -104,11 +105,11 @@ namespace DynamoPackagesAnalyzer.PackageSource
         /// <returns></returns>
         public async Task<List<AnalyzedPackage>> RunAnalysis()
         {
-            PackageHeader[] list = await GetPackages();
+            PackageHeaderCustom[] list = await GetPackages();
 
             ConcurrentBag<AnalyzedPackage> dllAnalysisResult = new ConcurrentBag<AnalyzedPackage>();
 
-            await Parallel.ForEachAsync(list,
+            await Parallel.ForEachAsync(list.Take(50),
                 new ParallelOptions { MaxDegreeOfParallelism = int.Parse(configuration["MaxDegreeOfParallelism"]) },
                 async (packageHeader, cancellationToken) =>
                 {
@@ -144,7 +145,7 @@ namespace DynamoPackagesAnalyzer.PackageSource
         /// </summary>
         /// <param name="packageHeader"></param>
         /// <returns></returns>
-        private PackageVersion GetLastVersion(PackageHeader packageHeader)
+        private PackageVersion GetLastVersion(PackageHeaderCustom packageHeader)
         {
             return packageHeader.versions.Last();
         }
@@ -155,7 +156,7 @@ namespace DynamoPackagesAnalyzer.PackageSource
         /// <param name="response"></param>
         /// <exception cref="InvalidOperationException"></exception>
         //private static void ValidateResponse<T>(RestResponse<Response<T>> response)
-        private static void ValidateResponse(RestResponse<Response> response)
+        private static void ValidateResponse(IRestResponse<Models.Response> response)
         {
             if (response.StatusCode != System.Net.HttpStatusCode.OK)
             {
@@ -169,7 +170,7 @@ namespace DynamoPackagesAnalyzer.PackageSource
         /// <param name="response"></param>
         /// <exception cref="InvalidOperationException"></exception>
         //private static void ValidateResponse<T>(RestResponse<Response<T>> response)
-        private static void ValidateResponse<T>(RestResponse<Response<T>> response)
+        private static void ValidateResponse<T>(IRestResponse<Response<T>> response)
         {
             if (response.StatusCode != System.Net.HttpStatusCode.OK)
             {
