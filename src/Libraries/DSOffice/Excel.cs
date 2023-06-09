@@ -510,10 +510,12 @@ namespace DSOffice
             {
                 // if there is only one worksheet, we need to add one more
                 // before we can delete the first one
+                App.DisplayAlerts = false;
                 ws = (Worksheet) wb.Add();
                 wSheet.ws.Delete();
                 ws.Name = sheetName;
                 wb.Save();
+                App.DisplayAlerts = true;
 
             }
             else
