@@ -83,7 +83,9 @@ namespace DSCore
 
                 switch (typeid)
                 {
-                    case "autodesk.design:geometry.point-1.0.0":
+                    case "autodesk.math:point3d-1.0.0":
+                    case "dynamo.geometry:sab-1.0.0":
+                    case "dynamo.goemetry:tsm-1.0.0":
                     case string geoId when geoId.Contains("autodesk.geometry"):
                         return Geometry.FromJson(jObject.ToString());
 
@@ -96,53 +98,10 @@ namespace DSCore
                     case "autodesk.geometry:boundingbox3d-1.0.0":
                         return BoundingBox.FromJson(jObject.ToString());
 
-                    case "dynamo.geometry:sab-1.0.0":
-
-                        jObject.TryGetValue("sab", out var sabValue);
-                        var storedStream = Convert.FromBase64String(sabValue.ToString());
-                        Geometry[] storedGeo = Geometry.DeserializeFromSAB(storedStream);
-
-                        // Try to rebuild polycurves / polysurfaces
-                        if (storedGeo.Length > 1)
-                        {
-                            try
-                            {
-                                if (storedGeo[0] is Curve)
-                                {
-                                    var crvs = new List<Curve>();
-                                    foreach (var crv in storedGeo)
-                                    {
-                                        crvs.Add((Curve)crv);
-                                    }
-
-                                    return PolyCurve.ByJoinedCurves(crvs, 0.001, false, 0);
-                                }
-                                else if (storedGeo[0] is Surface)
-                                {
-                                    var srfs = new List<Surface>();
-                                    foreach (var srf in storedGeo)
-                                    {
-                                        srfs.Add((Surface)srf);
-                                    }
-
-                                    return PolySurface.ByJoinedSurfaces(srfs);
-                                }
-                            }
-                            catch (Exception)
-                            {
-                                throw new Exception("Unsupported Type");
-                            }
-                        }
-                        else
-                        {
-                            return storedGeo[0];
-                        }
-
-                        break;
-
+                    case "dynamo.goemetry:mesh-1.0.0":
+                        return Mesh.FromJson(jObject.ToString());
 
                     case "dynamo.graphics:color-1.0.0":
-
                         return Color.ByARGB(
                         (int)jObject["A"],
                         (int)jObject["R"],
@@ -150,7 +109,6 @@ namespace DSCore
                         (int)jObject["B"]);
 
                     case "dynamo.graphics:png-1.0.0":
-
                         jObject.TryGetValue(ImageFormat.Png.ToString(), out var value);
 
                         if (value != null)
@@ -167,7 +125,6 @@ namespace DSCore
                         return null;
 
                     case "dynamo.data:location-1.0.0":
-
                         return DynamoUnits.Location.ByLatitudeAndLongitude(
                         (double)jObject["Latitude"],
                         (double)jObject["Longitude"],
@@ -258,11 +215,6 @@ namespace DSCore
             {
                 string serializedValue;
 
-                if (value is Mesh mItem)
-                {
-                    throw new NotSupportedException();
-                }
-
                 // Check if value is a Geometry
                 if (value is Geometry geometryItem)
                 {
@@ -273,22 +225,6 @@ namespace DSCore
                         writer.WriteRawValue(jsonString);
                         return;
                     }
-
-                    //Todo Determine if this lives in LibG
-                    List<Geometry> geometries = new List<Geometry> { geometryItem };
-
-                    var stream = Geometry.SerializeAsSAB(geometries);
-                    serializedValue = Convert.ToBase64String(stream.ToArray());
-
-                    var typeObject = value.GetType();
-
-                    writer.WriteStartObject();
-                    writer.WritePropertyName("$typeid");
-                    writer.WriteValue("dynamo.geometry:sab-1.0.0");
-                    writer.WritePropertyName("sab");
-                    writer.WriteValue(serializedValue);
-                    writer.WriteEndObject();
-                    return;
                 }
 
                 if (value is Vector vectorItem)
@@ -313,6 +249,16 @@ namespace DSCore
                 if (value is CoordinateSystem csItem)
                 {
                     var jsonString = csItem.ToJson();
+
+                    //Check if null?
+                    writer.WriteRawValue(jsonString);
+
+                    return;
+                }
+
+                if (value is Mesh mItem)
+                {
+                    var jsonString = mItem.ToJson();
 
                     //Check if null?
                     writer.WriteRawValue(jsonString);
