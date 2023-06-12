@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Dynamo.Wpf.Views
+namespace Dynamo.PackageManager.UI
 {
     /// <summary>
     /// Interaction logic for PackageManagerSearchControl.xaml

@@ -52,10 +52,10 @@
     <None Remove="Views\Core\CustomColorPicker.xaml" />
     <None Remove="Views\Core\GeometryScalingPopup.xaml" />
     <None Remove="UI\Images\question-hover-blue-16px.png" />
-    <None Remove="Views\Menu\Controls\ControlColorsAndBrushes.xaml" />
-    <None Remove="Views\Menu\Controls\PackageManagerPublishControl.xaml" />
-    <None Remove="Views\Menu\Controls\PackageManagerSearchControl.xaml" />
-    <None Remove="Views\Menu\Controls\SearchBoxControl.xaml" />
+    <None Remove="Views\PackageManager\Controls\ControlColorsAndBrushes.xaml" />
+    <None Remove="Views\PackageManager\Controls\PackageManagerPublishControl.xaml" />
+    <None Remove="Views\PackageManager\Controls\PackageManagerSearchControl.xaml" />
+    <None Remove="Views\PackageManager\Controls\SearchBoxControl.xaml" />
     <None Remove="Views\SplashScreen\WebApp\splashScreenBackground.png" />
   </ItemGroup>
   <ItemGroup>
@@ -432,10 +432,10 @@
       <DependentUpon>SurveyPopupWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Input\ParameterEditor.cs" />
-    <Compile Include="Views\Menu\Controls\PackageManagerPublishControl.xaml.cs" />
-    <Compile Include="Views\Menu\Controls\PackageManagerSearchControl.xaml.cs" />
-    <Compile Include="Views\Menu\Controls\SearchBoxControl.xaml.cs" />
-    <Compile Include="Views\Menu\PackageManagerView.xaml.cs" />
+    <Compile Include="Views\PackageManager\Controls\PackageManagerPublishControl.xaml.cs" />
+    <Compile Include="Views\PackageManager\Controls\PackageManagerSearchControl.xaml.cs" />
+    <Compile Include="Views\PackageManager\Controls\SearchBoxControl.xaml.cs" />
+    <Compile Include="Views\PackageManager\PackageManagerView.xaml.cs" />
     <Compile Include="Views\Menu\TrustedPathView.xaml.cs" />
     <Compile Include="Views\Output\OutputEditor.cs" />
     <Compile Include="Views\PackageManager\PackagePathView.xaml.cs">
@@ -448,18 +448,6 @@
     <Compile Include="ViewModels\Watch3D\DynamoEffectsManager.cs" />
     <Compile Include="Views\Menu\PreferencesView.xaml.cs">
       <DependentUpon>PreferencesView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Menu\PackageManagerView.xaml.cs">
-        <DependentUpon>PackageManagerView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Menu\Controls\PackageManagerSearchControl.xaml.cs">
-        <DependentUpon>PackageManagerSearchControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Menu\Controls\PackageManagerPublishControl.xaml.cs">
-        <DependentUpon>PackageManagerPublishControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Menu\Controls\SearchBoxControl.xaml.cs">
-        <DependentUpon>SearchBoxControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Preview\CameraExtensions.cs" />
     <Compile Include="Views\Preview\PreviewCompactView.xaml.cs">
@@ -631,11 +619,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Menu\Controls\ControlColorsAndBrushes.xaml">
+    <Page Include="Views\PackageManager\Controls\ControlColorsAndBrushes.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Menu\Controls\SearchBoxControl.xaml">
+    <Page Include="Views\PackageManager\Controls\SearchBoxControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -647,15 +635,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Menu\PackageManagerView.xaml">
+    <Page Include="Views\PackageManager\PackageManagerView.xaml">
         <Generator>MSBuild:Compile</Generator>
         <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Menu\Controls\PackageManagerSearchControl.xaml">
+    <Page Include="Views\PackageManager\Controls\PackageManagerSearchControl.xaml">
         <Generator>MSBuild:Compile</Generator>
         <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Menu\Controls\PackageManagerPublishControl.xaml">
+    <Page Include="Views\PackageManager\Controls\PackageManagerPublishControl.xaml">
         <Generator>MSBuild:Compile</Generator>
         <SubType>Designer</SubType>
     </Page>

@@ -10,7 +10,7 @@ using DynamoUtilities;
 using System.Diagnostics;
 using Dynamo.Logging;
 
-namespace Dynamo.Wpf.Views
+namespace Dynamo.PackageManager.UI
 {
     /// <summary>
     /// Interaction logic for PackageManagerPublishControl.xaml

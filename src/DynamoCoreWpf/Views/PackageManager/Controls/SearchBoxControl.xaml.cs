@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 
-namespace Dynamo.Wpf.Views
+namespace Dynamo.PackageManager.UI
 {
     /// <summary>
     /// Interaction logic for SearchBoxControl.xaml

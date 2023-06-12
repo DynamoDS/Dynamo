@@ -16,7 +16,7 @@ using Dynamo.Wpf.Utilities;
 using DynamoUtilities;
 using System.Collections.ObjectModel;
 
-namespace Dynamo.Wpf.Views
+namespace Dynamo.PackageManager.UI
 {
     /// <summary>
     /// Interaction logic for PackageManagerView.xaml
