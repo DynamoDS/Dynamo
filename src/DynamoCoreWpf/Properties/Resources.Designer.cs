@@ -340,6 +340,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The workspace cannot be exported as an image because it is empty..
+        /// </summary>
+        public static string CantExportWorkspaceAsImageEmptyMessage {
+            get {
+                return ResourceManager.GetString("CantExportWorkspaceAsImageEmptyMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The workspace cannot be exported as an image because it contains nodes that are too far away from each other..
+        /// </summary>
+        public static string CantExportWorkspaceAsImageNotValidMessage {
+            get {
+                return ResourceManager.GetString("CantExportWorkspaceAsImageNotValidMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to To ensure accurate geometry rendering and calculation, select the range of geometry sizes that you will be working on:.
         /// </summary>
         public static string ChangeScaleFactorPromptCaptionText {
