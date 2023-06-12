@@ -247,25 +247,6 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private string searchBoxText;
-        /// <summary>
-        ///     SearchBoxText property
-        /// </summary>
-        public string SearchBoxText
-        {
-            get { return SearchBoxText; }
-            set
-            {
-                searchBoxText = value;
-                RaisePropertyChanged(nameof(SearchBoxText));
-
-                if(string.IsNullOrEmpty(value))
-                {
-                    SearchAndUpdateResults(value);
-                }
-            }
-        }
-
         /// <summary>
         ///     SelectedIndex property
         /// </summary>
