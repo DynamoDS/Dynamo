@@ -23,17 +23,19 @@ namespace Dynamo.PackageManager.UI
     /// </summary>
     public partial class PackageManagerView : Window
     {
-        public PackageManagerViewModel packageManagerViewModel { get; set; }
+        /// <summary>
+        /// The main View Model containing all other view models for each control
+        /// </summary>
+        public PackageManagerViewModel PackageManagerViewModel { get; set; }
 
         public PackageManagerView(DynamoView dynamoView, PackageManagerViewModel packageManagerViewModel)
         {
             this.DataContext = this;
-
-            this.packageManagerViewModel = packageManagerViewModel;
+            this.PackageManagerViewModel = packageManagerViewModel;
 
             InitializeComponent();
 
-            packageManagerViewModel.PkgSearchVM.RequestShowFileDialog += OnRequestShowFileDialog;
+            packageManagerViewModel.PackageSearchViewModel.RequestShowFileDialog += OnRequestShowFileDialog;
 
             Dynamo.Logging.Analytics.TrackEvent(
                 Actions.Open,
@@ -44,8 +46,7 @@ namespace Dynamo.PackageManager.UI
 
         private void OnRequestShowFileDialog(object sender, PackagePathEventArgs e)
         {
-            // TODO: this should not work, teh datacontext of this is not set 
-            string initialPath = this.packageManagerViewModel.PkgSearchVM
+            string initialPath = this.PackageManagerViewModel.PackageSearchViewModel
                 .PackageManagerClientViewModel.DynamoViewModel.Model.PathManager.DefaultPackagesDirectory;
 
             e.Cancel = true;
@@ -102,19 +103,7 @@ namespace Dynamo.PackageManager.UI
         /// <param name="e"></param>
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            //managePackageCommandEvent?.Dispose();
             Analytics.TrackEvent(Actions.Close, Categories.PackageManager);
-            //viewModel.PackagePathsViewModel.SaveSettingCommand.Execute(null);
-            //viewModel.TrustedPathsViewModel?.SaveSettingCommand?.Execute(null);
-            //dynViewModel.ShowHideFileTrustWarningIfCurrentWorkspaceTrusted();
-
-            //viewModel.CommitPackagePathsForInstall();
-            //PackagePathView.Dispose();
-            //TrustedPathView.Dispose();
-            //Dispose();
-
-            //dynViewModel.PreferencesViewModel.TrustedPathsViewModel.PropertyChanged -= TrustedPathsViewModel_PropertyChanged;
-            //dynViewModel.CheckCustomGroupStylesChanges(originalCustomGroupStyles);
             (this.Owner as DynamoView).EnableEnvironment(true);
 
             Close();
@@ -126,7 +115,7 @@ namespace Dynamo.PackageManager.UI
         private void WindowClosed(object sender, EventArgs e)
         {
             this.packageManagerPublish.Dispose();
-            this.packageManagerViewModel.PkgSearchVM.RequestShowFileDialog -= OnRequestShowFileDialog;
+            this.PackageManagerViewModel.PackageSearchViewModel.RequestShowFileDialog -= OnRequestShowFileDialog;
         }
     }
 }

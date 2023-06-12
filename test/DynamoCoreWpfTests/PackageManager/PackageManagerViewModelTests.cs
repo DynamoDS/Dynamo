@@ -1,35 +1,18 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Windows;
 using Dynamo.PackageManager;
-using Dynamo.PackageManager.UI;
 using Dynamo.Tests;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using Dynamo.Wpf.Utilities;
 using Greg;
-using Greg.Requests;
-using Greg.Responses;
 using Moq;
 using NUnit.Framework;
 using SystemTestServices;
-using Dynamo.Wpf.Views;
-using Dynamo.Core;
-using Dynamo.Extensions;
-using System.Reflection;
-using System.Threading.Tasks;
-using Dynamo.UI.Prompts;
-using System.Windows.Controls.Primitives;
-using System.Linq.Expressions;
-using System.Xml.Linq;
 
 namespace DynamoCoreWpfTests.PackageManager
 {
     internal class PackageManagerViewModelTests : SystemTestBase
     {
+        /// <summary>
+        /// Assures all separate view models and fields are loaded when initializing the PackageManagerViewModel
+        /// </summary>
         [Test]
         public void PackageManagerLoadAllViewModelsTests()
         {
@@ -45,7 +28,7 @@ namespace DynamoCoreWpfTests.PackageManager
             var filters = packageManagerViewModel.Filters;
             var localPackages = packageManagerViewModel.LocalPackages;
             var preferenceViewModel = packageManagerViewModel.PreferencesViewModel;
-            var publishPackageViewModel = packageManagerViewModel.PubPkgVM;
+            var publishPackageViewModel = packageManagerViewModel.PublishPackageViewModel;
 
             Assert.IsNotNull(filters);
             Assert.IsNotNull(localPackages);

@@ -1,12 +1,6 @@
-using Dynamo.UI;
 using Dynamo.ViewModels;
-using Dynamo.Wpf.UI.GuidedTour;
-using Dynamo.Wpf.Utilities;
-using DynamoUtilities;
-using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 using System.Collections.ObjectModel;
-using System.Windows;
 
 namespace Dynamo.PackageManager
 {
@@ -15,9 +9,20 @@ namespace Dynamo.PackageManager
         private DynamoViewModel dynamoViewModel;
         private InstalledPackagesViewModel installedPackagesViewModel;
 
+        /// <summary>
+        /// PreferenceViewModel containing the PackageManager paths and installed packages
+        /// </summary>
         public PreferencesViewModel PreferencesViewModel { get; set; }
-        public PackageManagerSearchViewModel PkgSearchVM { get; set; }
-        public PublishPackageViewModel PubPkgVM { get; set; }
+
+        /// <summary>
+        /// PackageManagerSearchViewModel functionality to load Dynamo packages
+        /// </summary>
+        public PackageManagerSearchViewModel PackageSearchViewModel { get; set; }
+
+        /// <summary>
+        /// PublishPackageViewModel containing information about all the published packages
+        /// </summary>
+        public PublishPackageViewModel PublishPackageViewModel { get; set; }
 
         /// <summary>
         /// Returns all installed packages
@@ -32,14 +37,14 @@ namespace Dynamo.PackageManager
         public PackageManagerViewModel(DynamoViewModel dynamoViewModel, PackageManagerSearchViewModel PkgSearchVM)
         {
             this.dynamoViewModel = dynamoViewModel;            
-            this.PkgSearchVM = PkgSearchVM;            
+            this.PackageSearchViewModel = PkgSearchVM;            
 
             this.PreferencesViewModel = dynamoViewModel.PreferencesViewModel;
             var pathmanager = PreferencesViewModel.PackagePathsViewModel;
 
-            if (PubPkgVM == null)
+            if (PublishPackageViewModel == null)
             {
-                PubPkgVM = new PublishPackageViewModel(dynamoViewModel);
+                PublishPackageViewModel = new PublishPackageViewModel(dynamoViewModel);
             }
 
             InitializeInstalledPackages();

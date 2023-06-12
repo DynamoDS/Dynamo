@@ -7,9 +7,6 @@
         xmlns:controls="clr-namespace:Dynamo.Controls"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
         xmlns:ui="clr-namespace:Dynamo.UI"
-        xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
-        xmlns:sys="clr-namespace:System;assembly=mscorlib"
-        xmlns:fa="http://schemas.fontawesome.io/icons/"
         xmlns:wpfControls="clr-namespace:Dynamo.Wpf.Controls"
         xmlns:local="clr-namespace:Dynamo.PackageManager.UI"
         WindowStartupLocation="CenterOwner"
@@ -159,7 +156,7 @@
                                     </Grid.RowDefinitions>
 
                                     <local:PackageManagerSearchControl x:Name="packageManagerSearch"
-                                                                       DataContext="{Binding Path=packageManagerViewModel.PkgSearchVM, ElementName=PackageManagerWindow}" />
+                                                                       DataContext="{Binding Path=PackageManagerViewModel.PackageSearchViewModel, ElementName=PackageManagerWindow}" />
 
                                 </Grid>
                             </Border>
@@ -179,7 +176,7 @@
                                     </Grid.RowDefinitions>
 
                                     <local:PackageManagerPublishControl x:Name="packageManagerPublish"
-                                                                        DataContext="{Binding Path=packageManagerViewModel.PubPkgVM, ElementName=PackageManagerWindow}" />
+                                                                        DataContext="{Binding Path=PackageManagerViewModel.PublishPackageViewModel, ElementName=PackageManagerWindow}" />
                                 </Grid>
                             </Border>
                         </TabItem>
@@ -198,12 +195,12 @@
                                     </Grid.RowDefinitions>
 
                                     <wpfControls:InstalledPackagesControl x:Name="installedPackages"
-                                                                          DataContext="{Binding packageManagerViewModel }" />
+                                                                          DataContext="{Binding PackageManagerViewModel }" />
 
                                 </Grid>
                             </Border>
                         </TabItem>
-
+    
                         <TabItem Header="My Packages"
                                  Style="{StaticResource PackageManagerTab}">
                             <!--My Packages Tab-->
@@ -230,7 +227,7 @@
                                 <Grid x:Name="PackageSettingsTab"
                                       Margin="1"
                                       HorizontalAlignment="Stretch"
-                                      DataContext="{Binding Path=packageManagerViewModel.PreferencesViewModel, ElementName=PackageManagerWindow}">
+                                      DataContext="{Binding Path=PackageManagerViewModel.PreferencesViewModel, ElementName=PackageManagerWindow}">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />
