@@ -23,44 +23,17 @@ namespace Dynamo.PackageManager.UI
     /// </summary>
     public partial class PackageManagerView : Window
     {
-        private DynamoViewModel dynamoViewModel;
-        private InstalledPackagesViewModel installedPackagesViewModel;
+        public PackageManagerViewModel packageManagerViewModel { get; set; }
 
-        public PreferencesViewModel PreferencesViewModel { get; set; }
-        public PackageManagerSearchViewModel PkgSearchVM { get; set; }
-        public PublishPackageViewModel PubPkgVM { get; set; }
-
-        /// <summary>
-        /// Returns all installed packages
-        /// </summary>
-        public ObservableCollection<PackageViewModel> LocalPackages => installedPackagesViewModel.LocalPackages;
-
-        /// <summary>
-        /// Returns all available filters
-        /// </summary>
-        public ObservableCollection<PackageFilter> Filters => installedPackagesViewModel.Filters;
-
-
-        public PackageManagerView(DynamoView dynamoView, DynamoViewModel dynamoViewModel, PackageManagerSearchViewModel pm)
+        public PackageManagerView(DynamoView dynamoView, PackageManagerViewModel packageManagerViewModel)
         {
             this.DataContext = this;
 
-            this.dynamoViewModel = dynamoViewModel;
-            this.PkgSearchVM = pm;
-            this.PreferencesViewModel = dynamoViewModel.PreferencesViewModel;
-            var pathmanager = PreferencesViewModel.PackagePathsViewModel;
+            this.packageManagerViewModel = packageManagerViewModel;
 
-            if(PubPkgVM == null)
-            {
-                PubPkgVM = new PublishPackageViewModel(dynamoViewModel);
-            }
-
-            InitializeInstalledPackages();
-                
             InitializeComponent();
 
-            PkgSearchVM.RegisterTransientHandlers();
-            PkgSearchVM.RequestShowFileDialog += OnRequestShowFileDialog;
+            packageManagerViewModel.PkgSearchVM.RequestShowFileDialog += OnRequestShowFileDialog;
 
             Dynamo.Logging.Analytics.TrackEvent(
                 Actions.Open,
@@ -72,7 +45,7 @@ namespace Dynamo.PackageManager.UI
         private void OnRequestShowFileDialog(object sender, PackagePathEventArgs e)
         {
             // TODO: this should not work, teh datacontext of this is not set 
-            string initialPath = (this.DataContext as PackageManagerSearchViewModel)
+            string initialPath = this.packageManagerViewModel.PkgSearchVM
                 .PackageManagerClientViewModel.DynamoViewModel.Model.PathManager.DefaultPackagesDirectory;
 
             e.Cancel = true;
@@ -100,42 +73,6 @@ namespace Dynamo.PackageManager.UI
                 string errorMessage = string.Format(Wpf.Properties.Resources.PackageFolderNotAccessible, initialPath);
                 MessageBoxService.Show(errorMessage, Wpf.Properties.Resources.UnableToAccessPackageDirectory, MessageBoxButton.OK, MessageBoxImage.Error);
             }
-        }
-
-        private void InitializeInstalledPackages()
-        {
-            if (this.dynamoViewModel.PackageManagerClientViewModel != null)
-            {
-                installedPackagesViewModel = new InstalledPackagesViewModel(dynamoViewModel, dynamoViewModel.PackageManagerClientViewModel.PackageManagerExtension.PackageLoader);
-                installedPackagesViewModel?.PopulateFilters();
-            }
-        }
-
-
-        /// <summary>
-        /// Call this method to optionally bring up terms of use dialog. User 
-        /// needs to accept terms of use before any packages can be downloaded 
-        /// from package manager.
-        /// </summary>
-        /// <returns>Returns true if the terms of use for downloading a package 
-        /// is accepted by the user, or false otherwise. If this method returns 
-        /// false, then download of package should be terminated.</returns>
-        /// 
-        private bool DisplayTermsOfUseForAcceptance()
-        {
-            var prefSettings = dynamoViewModel.Model.PreferenceSettings;
-            if (prefSettings.PackageDownloadTouAccepted)
-                return true; // User accepts the terms of use.
-
-            Window packageManParent = null;
-            //If any Guide is being executed then the ShowTermsOfUse Window WON'T be modal otherwise will be modal (as in the normal behavior)
-            if (dynamoViewModel.MainGuideManager != null && GuideFlowEvents.IsAnyGuideActive)
-                packageManParent = PackageManagerWindow;
-            var acceptedTermsOfUse = TermsOfUseHelper.ShowTermsOfUseDialog(false, null, packageManParent);
-            prefSettings.PackageDownloadTouAccepted = acceptedTermsOfUse;
-
-            // User may or may not accept the terms.
-            return prefSettings.PackageDownloadTouAccepted;
         }
 
         #region ui tools
@@ -189,7 +126,7 @@ namespace Dynamo.PackageManager.UI
         private void WindowClosed(object sender, EventArgs e)
         {
             this.packageManagerPublish.Dispose();
-            PkgSearchVM.RequestShowFileDialog -= OnRequestShowFileDialog;
+            this.packageManagerViewModel.PkgSearchVM.RequestShowFileDialog -= OnRequestShowFileDialog;
         }
     }
 }

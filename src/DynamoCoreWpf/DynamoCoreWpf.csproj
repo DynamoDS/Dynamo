@@ -364,6 +364,7 @@
     <Compile Include="ViewModels\Menu\TrustedPathViewModel.cs" />
     <Compile Include="ViewModels\Menu\PreferencesViewModel.cs" />
     <Compile Include="ViewModels\PackageManager\IPackageInstaller.cs" />
+    <Compile Include="ViewModels\PackageManager\PackageManagerViewModel.cs" />
     <Compile Include="ViewModels\PackageManager\PackagePathViewModel.cs" />
     <Compile Include="ViewModels\Preview\CompactBubbleViewModel.cs" />
     <Compile Include="ViewModels\Preview\ConnectorAnchorViewModel.cs" />

@@ -1408,7 +1408,8 @@ namespace Dynamo.Controls
 
         private PackageManagerSearchView _searchPkgsView;
         private PackageManagerSearchViewModel _pkgSearchVM;
-        
+        private PackageManagerViewModel _pkgVM;
+
         private void DynamoViewModelRequestShowPackageManagerSearch(object s, EventArgs e)
         {
             if (!DisplayTermsOfUseForAcceptance())
@@ -2160,9 +2161,14 @@ namespace Dynamo.Controls
                 _pkgSearchVM = new PackageManagerSearchViewModel(dynamoViewModel.PackageManagerClientViewModel);
             }
 
+            if (_pkgVM == null)
+            {
+                _pkgVM = new PackageManagerViewModel(dynamoViewModel, _pkgSearchVM);
+            }
+
             if (packageManagerWindow == null)
             {
-                packageManagerWindow = new PackageManagerView(this, dynamoViewModel, _pkgSearchVM)
+                packageManagerWindow = new PackageManagerView(this, _pkgVM)
                 {
                     Owner = this,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner

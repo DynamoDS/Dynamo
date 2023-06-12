@@ -159,7 +159,7 @@
                                     </Grid.RowDefinitions>
 
                                     <local:PackageManagerSearchControl x:Name="packageManagerSearch"
-                                                                       DataContext="{Binding Path=PkgSearchVM, ElementName=PackageManagerWindow}" />
+                                                                       DataContext="{Binding Path=packageManagerViewModel.PkgSearchVM, ElementName=PackageManagerWindow}" />
 
                                 </Grid>
                             </Border>
@@ -179,7 +179,7 @@
                                     </Grid.RowDefinitions>
 
                                     <local:PackageManagerPublishControl x:Name="packageManagerPublish"
-                                                                        DataContext="{Binding Path=PubPkgVM, ElementName=PackageManagerWindow}" />
+                                                                        DataContext="{Binding Path=packageManagerViewModel.PubPkgVM, ElementName=PackageManagerWindow}" />
                                 </Grid>
                             </Border>
                         </TabItem>
@@ -198,7 +198,7 @@
                                     </Grid.RowDefinitions>
 
                                     <wpfControls:InstalledPackagesControl x:Name="installedPackages"
-                                                                          DataContext="{Binding}" />
+                                                                          DataContext="{Binding packageManagerViewModel }" />
 
                                 </Grid>
                             </Border>
@@ -230,7 +230,7 @@
                                 <Grid x:Name="PackageSettingsTab"
                                       Margin="1"
                                       HorizontalAlignment="Stretch"
-                                      DataContext="{Binding Path=PreferencesViewModel, ElementName=PackageManagerWindow}">
+                                      DataContext="{Binding Path=packageManagerViewModel.PreferencesViewModel, ElementName=PackageManagerWindow}">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />
