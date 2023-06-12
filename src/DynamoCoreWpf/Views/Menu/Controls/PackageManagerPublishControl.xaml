@@ -461,7 +461,7 @@
     </UserControl.Resources>
 
     <Border Name="mainBorder"
-            BorderThickness="1 1 0 0"
+            BorderThickness="0"
             BorderBrush="#7E7E7E">
 
         <Grid Name="mainGrid">
@@ -484,7 +484,7 @@
                 <Border Grid.Column="0"
                         Grid.ColumnSpan="3"
                         BorderBrush="#7E7E7E"
-                        BorderThickness="0,1,0,1"
+                        BorderThickness="0,0,0,1"
                         Focusable="False" />
 
                 <!--  Left: Details  -->

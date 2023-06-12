@@ -26,6 +26,7 @@ namespace Dynamo.Wpf.Views
         private DynamoViewModel dynamoViewModel;
         private InstalledPackagesViewModel installedPackagesViewModel;
 
+        public PreferencesViewModel PreferencesViewModel { get; set; }
         public PackageManagerSearchViewModel PkgSearchVM { get; set; }
         public PublishPackageViewModel PubPkgVM { get; set; }
 
@@ -46,6 +47,8 @@ namespace Dynamo.Wpf.Views
 
             this.dynamoViewModel = dynamoViewModel;
             this.PkgSearchVM = pm;
+            this.PreferencesViewModel = dynamoViewModel.PreferencesViewModel;
+            var pathmanager = PreferencesViewModel.PackagePathsViewModel;
 
             if(PubPkgVM == null)
             {
