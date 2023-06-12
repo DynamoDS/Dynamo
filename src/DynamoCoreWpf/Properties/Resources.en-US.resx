@@ -3639,5 +3639,11 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="PreferencesHostGenericScaleMetricUnits" xml:space="preserve">
     <value>Metric</value>
   </data>
+  <data name="CantExportWorkspaceAsImageEmptyMessage" xml:space="preserve">
+    <value>The workspace cannot be exported as an image because it is empty.</value>
+  </data>
+  <data name="CantExportWorkspaceAsImageNotValidMessage" xml:space="preserve">
+    <value>The workspace cannot be exported as an image because it contains nodes that are too far away from each other.</value>
+  </data>
 </root>
 
