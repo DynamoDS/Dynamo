@@ -284,9 +284,9 @@ namespace DynamoUtilities
         public static String GetScreenCaptureNameFromPath(String filePath)
         {
             FileInfo fileInfo = new FileInfo(filePath);
-            String timeStamp = string.Format("{0:yyyy-MM-dd_hh-mm-ss}", DateTime.Now);
-            String snapshotName = fileInfo.Name.Replace(fileInfo.Extension, "_") + timeStamp;
-            return snapshotName;
+            //String timeStamp = string.Format("{0:yyyy-MM-dd_hh-mm-ss}", DateTime.Now);
+            //String snapshotName = fileInfo.Name.Replace(fileInfo.Extension, "_") + timeStamp;
+            return fileInfo.Name.Replace(fileInfo.Extension, string.Empty); ;
         }
 
         /// <summary>
