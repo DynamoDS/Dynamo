@@ -83,6 +83,12 @@ namespace DSCore
 
                 switch (typeid)
                 {
+                    case "autodesk.geometry:boundingbox3d-1.0.0":
+                        return BoundingBox.FromJson(jObject.ToString());
+
+                    case "dynamo.goemetry:mesh-1.0.0":
+                        return Mesh.FromJson(jObject.ToString());
+
                     case "autodesk.math:point3d-1.0.0":
                     case "dynamo.geometry:sab-1.0.0":
                     case "dynamo.goemetry:tsm-1.0.0":
@@ -94,12 +100,6 @@ namespace DSCore
 
                     case "autodesk.math:matrix44d-1.0.0":
                         return CoordinateSystem.FromJson(jObject.ToString());
-
-                    case "autodesk.geometry:boundingbox3d-1.0.0":
-                        return BoundingBox.FromJson(jObject.ToString());
-
-                    case "dynamo.goemetry:mesh-1.0.0":
-                        return Mesh.FromJson(jObject.ToString());
 
                     case "dynamo.graphics:color-1.0.0":
                         return Color.ByARGB(
@@ -215,58 +215,31 @@ namespace DSCore
             {
                 string serializedValue;
 
-                // Check if value is a Geometry
-                if (value is Geometry geometryItem)
+                switch(value)
                 {
-                    var jsonString = geometryItem.ToJson();
+                    case Geometry item:
+                        var geoString = item.ToJson();
 
-                    if (jsonString != null)
-                    {
-                        writer.WriteRawValue(jsonString);
+                        if (!string.IsNullOrEmpty(geoString))
+                        {
+                            writer.WriteRawValue(geoString);
+                            return;
+                        }
+                        break;
+                    case BoundingBox item:
+                        writer.WriteRawValue(item.ToJson());
                         return;
-                    }
+                    case CoordinateSystem item:
+                        writer.WriteRawValue(item.ToJson());
+                        return;
+                    case Mesh item:
+                        writer.WriteRawValue(item.ToJson());
+                        return;
+                    case Vector item:
+                        writer.WriteRawValue(item.ToJson());
+                        return;
                 }
 
-                if (value is Vector vectorItem)
-                {
-                    var jsonString = vectorItem.ToJson();
-
-                    writer.WriteRawValue(jsonString);
-
-                    return;
-                }
-
-                if (value is BoundingBox bbItem)
-                {
-                    var jsonString = bbItem.ToJson();
-
-                    //Check if null?
-                    writer.WriteRawValue(jsonString);
-
-                    return;
-                }
-
-                if (value is CoordinateSystem csItem)
-                {
-                    var jsonString = csItem.ToJson();
-
-                    //Check if null?
-                    writer.WriteRawValue(jsonString);
-
-                    return;
-                }
-
-                if (value is Mesh mItem)
-                {
-                    var jsonString = mItem.ToJson();
-
-                    //Check if null?
-                    writer.WriteRawValue(jsonString);
-
-                    return;
-                }
-
-                //Do we through or fail with null?
                 throw new NotSupportedException();
             }
 
