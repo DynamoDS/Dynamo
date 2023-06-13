@@ -208,7 +208,7 @@ namespace Dynamo.UI.Views
             StaticSplashScreenReady -= OnStaticScreenReady;
             Close();
             dynamoView.Show();
-            dynamoView.Activate();
+            dynamoView.Activate();            
         }
 
         /// <summary>
@@ -225,7 +225,7 @@ namespace Dynamo.UI.Views
             // If user is launching Dynamo for the first time or chose to always show splash screen, display it. Otherwise, display Dynamo view directly.
             if (viewModel.PreferenceSettings.IsFirstRun || viewModel.PreferenceSettings.EnableStaticSplashScreen)
             {
-                SetSignInStatus(authManager.IsLoggedIn());
+                SetSignInStatus(authManager.IsLoggedInSingle());
                 SetLoadingDone();
             }
             else

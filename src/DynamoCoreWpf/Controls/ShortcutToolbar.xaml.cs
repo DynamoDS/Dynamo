@@ -53,7 +53,7 @@ namespace Dynamo.UI.Controls
             var shortcutToolbar = new ShortcutToolbarViewModel(dynamoViewModel);
             DataContext = shortcutToolbar;
             authManager = dynamoViewModel.Model.AuthenticationManager;
-            if (authManager.IsLoggedIn())
+            if (authManager.IsLoggedInSingle())
             {
                 authManager.LoginStateChanged += SignOutHandler;
             }

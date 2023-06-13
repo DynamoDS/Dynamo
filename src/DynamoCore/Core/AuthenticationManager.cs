@@ -9,8 +9,9 @@ namespace Dynamo.Core
     ///     It is used for oxygen authentication.
     /// </summary>
     public class AuthenticationManager
-    {
+    {        
         private readonly IAuthProvider authProvider;
+        static LoginState? singleState = null;
 
         /// <summary>
         ///     Occurs when login state is changed
@@ -33,9 +34,29 @@ namespace Dynamo.Core
             get { return HasAuthProvider ? authProvider.LoginState : LoginState.LoggedOut; }
         }
 
-        internal bool IsLoggedIn()
+        /// <summary>
+        /// This Property will return the value only by checking only once time to the real time LoginState in order to be used in the Initialization flow. Others features require direct calls to the LoginState due to are on demand.
+        /// </summary>
+        public LoginState? LoginStateSingle
         {
+            get
+            {
+                if (singleState == null)
+                {
+                    singleState = LoginState;
+                }
+                return singleState;
+            }
+        }
+
+        internal bool IsLoggedIn()
+        {            
             return HasAuthProvider && authProvider.LoginState == LoginState.LoggedIn ? true : false;
+        }
+
+        internal bool IsLoggedInSingle()
+        {
+            return HasAuthProvider && LoginStateSingle == LoginState.LoggedIn ? true : false;
         }
 
         /// <summary>
