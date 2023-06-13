@@ -208,7 +208,7 @@ namespace Dynamo.UI.Views
             StaticSplashScreenReady -= OnStaticScreenReady;
             Close();
             dynamoView.Show();
-            dynamoView.Activate();            
+            dynamoView.Activate();
         }
 
         /// <summary>

@@ -9,7 +9,7 @@ namespace Dynamo.Core
     ///     It is used for oxygen authentication.
     /// </summary>
     public class AuthenticationManager
-    {        
+    {
         private readonly IAuthProvider authProvider;
         static LoginState? singleState = null;
 
@@ -35,7 +35,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        /// This Property will return the value only by checking only once time to the real time LoginState in order to be used in the Initialization flow. Others features require direct calls to the LoginState due to are on demand.
+        /// This Property will return the value by checking only once time to the real time LoginState in order to be used in the Initialization flow. Others features require direct calls to the LoginState due to are on demand.
         /// </summary>
         public LoginState? LoginStateSingle
         {
