@@ -3273,25 +3273,22 @@ namespace Dynamo.Models
         private Document InitializeIndexDocument()
         {
             if (IsTestMode) return null;
-            //TODO: all this harcoded string values should be moved to a different class.
-            var fullCategory = new TextField("FullCategoryName", "", Field.Store.YES);
-            var name = new TextField("Name", "", Field.Store.YES);
-            var description = new TextField("Description", "", Field.Store.YES);
-            var keywords = new TextField("SearchKeywords", "", Field.Store.YES);
-            var inp = new TextField("InputParameters", "", Field.Store.YES);
-            var outp = new TextField("OutputParameters", "", Field.Store.YES);
 
-            var docName = new StringField("DocName", "", Field.Store.YES);
-            var fullDoc = new TextField("Documentation", "", Field.Store.YES);
-
-            var pkgName = new TextField("PackageName", "", Field.Store.YES);
-            var pkgVer = new TextField("PackageVersion", "", Field.Store.YES);
+            var name = new TextField(nameof(Configurations.IndexFieldsEnum.Name), string.Empty, Field.Store.YES);
+            var fullCategory = new TextField(nameof(Configurations.IndexFieldsEnum.FullCategoryName), string.Empty, Field.Store.YES);
+            var description = new TextField(nameof(Configurations.IndexFieldsEnum.Description), string.Empty, Field.Store.YES);
+            var keywords = new TextField(nameof(Configurations.IndexFieldsEnum.SearchKeywords), string.Empty, Field.Store.YES);
+            var docName = new StringField(nameof(Configurations.IndexFieldsEnum.DocName), string.Empty, Field.Store.YES);
+            var fullDoc = new TextField(nameof(Configurations.IndexFieldsEnum.Documentation), string.Empty, Field.Store.YES);
 
             var d = new Document()
             {
-                fullCategory, name, description, keywords, inp,outp,
-                fullDoc, docName,
-                pkgName, pkgVer
+                fullCategory,
+                name,
+                description,
+                keywords,
+                fullDoc,
+                docName
             };
             return d;
         }
@@ -3306,12 +3303,10 @@ namespace Dynamo.Models
             if (IsTestMode) return;
             if (addedFields == null) return;
 
-            SetDocumentFieldValue(doc, "FullCategoryName", node.FullCategoryName);
-            SetDocumentFieldValue(doc, "Name", node.Name);
-            SetDocumentFieldValue(doc, "Description", node.Description);
-            SetDocumentFieldValue(doc, "InputParameters", string.Join(" ", node.InputParameters.Select(t => $"{t.Item1}:{t.Item2}")));
-            SetDocumentFieldValue(doc, "OutputParameters", node.OutputParameters.Aggregate((x, y) => x + " " + y));
-            if (node.SearchKeywords.Count > 0) SetDocumentFieldValue(doc, "SearchKeywords", node.SearchKeywords.Aggregate((x, y) => x + " " + y), true, true);
+            SetDocumentFieldValue(doc, nameof(Configurations.IndexFieldsEnum.FullCategoryName), node.FullCategoryName);
+            SetDocumentFieldValue(doc, nameof(Configurations.IndexFieldsEnum.Name), node.Name);
+            SetDocumentFieldValue(doc, nameof(Configurations.IndexFieldsEnum.Description), node.Description);
+            if (node.SearchKeywords.Count > 0) SetDocumentFieldValue(doc, nameof(Configurations.IndexFieldsEnum.SearchKeywords), node.SearchKeywords.Aggregate((x, y) => x + " " + y), true, true);
 
             writer?.AddDocument(doc);
         }
