@@ -959,20 +959,15 @@ namespace Dynamo.ViewModels
                 Document resultDoc = Model.Searcher.Doc(topDocs.ScoreDocs[i].Doc);
 
                 // TODO: use consts in static class for the Lucene field names
-                string name = resultDoc.Get("Name");
+                string name = resultDoc.Get(nameof(Configurations.IndexFieldsEnum.Name));
 
-                string docName = resultDoc.Get("DocName");
-                string cat = resultDoc.Get("FullCategoryName");
-                string fulldesc = resultDoc.Get("Documentation");
-                string pkgName = resultDoc.Get("PackageName");
+                string docName = resultDoc.Get(nameof(Configurations.IndexFieldsEnum.DocName));
+                string cat = resultDoc.Get(nameof(Configurations.IndexFieldsEnum.FullCategoryName));
+                string fulldesc = resultDoc.Get(nameof(Configurations.IndexFieldsEnum.Description));
 
                 if (!string.IsNullOrEmpty(docName))
                 {
                     //code for setting up documentation info
-                }
-                else if (!string.IsNullOrEmpty(pkgName))
-                {
-                    //code for setting up package info
                 }
                 else
                 {
@@ -1018,13 +1013,25 @@ namespace Dynamo.ViewModels
                 }
 
                 var wildcardQuery = new WildcardQuery(new Term(f, searchTerm));
-                if (f.Equals("Name")) { wildcardQuery.Boost = 10; }
-                else { wildcardQuery.Boost = 6; }
+                if (f.Equals(nameof(Configurations.IndexFieldsEnum.Name)))
+                {
+                    wildcardQuery.Boost = 10;
+                }
+                else
+                {
+                    wildcardQuery.Boost = 6;
+                }
                 booleanQuery.Add(wildcardQuery, Occur.SHOULD);
 
-                wildcardQuery = new WildcardQuery(new Term(f, searchTerm + "*"));
-                if (f.Equals("Name")) { wildcardQuery.Boost = 7; }
-                else { wildcardQuery.Boost = 4; }
+                wildcardQuery = new WildcardQuery(new Term(f, "*" + searchTerm + "*"));
+                if (f.Equals(nameof(Configurations.IndexFieldsEnum.Name)))
+                {
+                    wildcardQuery.Boost = 7;
+                }
+                else
+                {
+                    wildcardQuery.Boost = 4;
+                }
                 booleanQuery.Add(wildcardQuery, Occur.SHOULD);
 
                 if (searchTerm.Contains(' ') || searchTerm.Contains('.'))
@@ -1036,9 +1043,16 @@ namespace Dynamo.ViewModels
                             fuzzyQuery = new FuzzyQuery(new Term(f, s), fuzzyLogicRange);
                             booleanQuery.Add(fuzzyQuery, Occur.SHOULD);
                         }
-                        wildcardQuery = new WildcardQuery(new Term(f, s + "*"));
-                        if (f.Equals("Name")) { wildcardQuery.Boost = 5; }
-                        else { wildcardQuery.Boost = 2; }
+                        wildcardQuery = new WildcardQuery(new Term(f, "*" + s + "*"));
+
+                        if (f.Equals(nameof(Configurations.IndexFieldsEnum.Name)))
+                        {
+                            wildcardQuery.Boost = 5;
+                        }
+                        else
+                        {
+                            wildcardQuery.Boost = 2;
+                        }
                         booleanQuery.Add(wildcardQuery, Occur.SHOULD);
                     }
                 }
