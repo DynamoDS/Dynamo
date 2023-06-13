@@ -11,7 +11,7 @@ namespace Dynamo.Core
     public class AuthenticationManager
     {
         private readonly IAuthProvider authProvider;
-        static LoginState? singleState = null;
+        private static LoginState? singleState = null;
 
         /// <summary>
         ///     Occurs when login state is changed
@@ -54,6 +54,10 @@ namespace Dynamo.Core
             return HasAuthProvider && authProvider.LoginState == LoginState.LoggedIn ? true : false;
         }
 
+        /// <summary>
+        /// This Property will return the value by checking the LoginStateSingle property (which load its value only once time) used only in the initialization flow
+        /// </summary>
+        /// <returns></returns>
         internal bool IsLoggedInSingle()
         {
             return HasAuthProvider && LoginStateSingle == LoginState.LoggedIn ? true : false;
