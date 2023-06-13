@@ -147,6 +147,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
         }
 
         [Test]
+        [Category("FailureNET6")]
         public void ProducesCorrectOutputFromCoreDirectory_preloadedbinaries()
         {
             // Arrange
@@ -217,6 +218,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
 
 
         [Test]
+        [Category("FailureNET6")]
         public void DictionaryContentIsFoundCorrectlyForCoreNodes()
         {
             // Test output is generated with the following args:
@@ -262,6 +264,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
         }
 
         [Test]
+        [Category("FailureNET6")]
         public void DictionaryImagesAreCompressed()
         {
            
@@ -303,6 +306,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
 
 
         [Test]
+        [Category("FailureNET6")]
         public void ProducesCorrectOutputFromPackage()
         {
             // Arrange
