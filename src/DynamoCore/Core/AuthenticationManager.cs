@@ -55,7 +55,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        /// This Property will return the value by checking the LoginStateSingle property (which load its value only once time) used only in the initialization flow
+        /// This function will return the value by checking the LoginStateSingle property (which load its value only once time) used only in the initialization flow
         /// </summary>
         /// <returns></returns>
         internal bool IsLoggedInSingle()
