@@ -50,11 +50,11 @@ namespace DynamoPerformanceTests
 
             // Command line options
             var opts = new OptionSet() {
-                { "g=|graphs=", "Path to Directory containing test graphs. Defaults to 'Dynamo/tools/Performance/DynamoPerformanceTests/graphs/'", v => { testDirectory = v; } },
-                { "b=|base=", "Path to Directory containing performance results files to use as comparison base. Defaults to 'BenchmarkDotNet.Artifacts/results/'", v => { baseResultsPath = v; }},
-                { "n=|new=", "Path to Directory containing new performance results files to compare against the baseline", v => { newResultsPath = v; }},
-                { "s=|save=", "Location to save comparison csv", v => { saveComparisonPath = v; }},
-                { "h|help",  "show this message and return", v => showHelp = v != null },
+                { "g=|graphs=", ()=>"Path to Directory containing test graphs. Defaults to 'Dynamo/tools/Performance/DynamoPerformanceTests/graphs/'", v => { testDirectory = v; } },
+                { "b=|base=", ()=>"Path to Directory containing performance results files to use as comparison base. Defaults to 'BenchmarkDotNet.Artifacts/results/'", v => { baseResultsPath = v; }},
+                { "n=|new=", ()=>"Path to Directory containing new performance results files to compare against the baseline", v => { newResultsPath = v; }},
+                { "s=|save=", ()=>"Location to save comparison csv", v => { saveComparisonPath = v; }},
+                { "h|help",  ()=>"show this message and return", v => showHelp = v != null },
             };
             opts.Parse(args);
 
