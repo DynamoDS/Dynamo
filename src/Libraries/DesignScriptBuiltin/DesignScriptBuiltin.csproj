@@ -9,6 +9,7 @@
     <RootNamespace>Builtin</RootNamespace>
     <AssemblyName>DesignScriptBuiltin</AssemblyName>
     <DocumentationFile>$(OutputPath)\$(UICulture)\DesignScriptBuiltin.xml</DocumentationFile>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup Label="System.Collections.Immutable@portable-net45+win8+wp8+wpa81" Condition=" '$(TargetFramework)' == 'net48' ">
     <PackageReference Include="System.Collections.Immutable" Version="5.0.0">

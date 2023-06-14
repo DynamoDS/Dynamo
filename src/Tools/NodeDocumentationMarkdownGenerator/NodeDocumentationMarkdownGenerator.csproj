@@ -7,7 +7,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>NodeDocumentationMarkdownGenerator</RootNamespace>
     <AssemblyName>NodeDocumentationMarkdownGenerator</AssemblyName>
-	  <OutputPath>bin\$(Configuration)\</OutputPath>
+	<OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
   </PropertyGroup>
     <ItemGroup>

@@ -2523,7 +2523,24 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Updates grapic helpers (grid) inside the background preview VM
+        /// </summary>
+        /// <param name="parameter"></param>
+        public void UpdateGraphicHelpersScale(object parameter)
+        {
+            if (BackgroundPreviewViewModel == null) return;
+
+            BackgroundPreviewViewModel.GridScale = PreferenceSettings.GridScaleFactor;
+            BackgroundPreviewViewModel.UpdateHelpers();
+        }
+
         internal bool CanToggleBackgroundGridVisibility(object parameter)
+        {
+            return true;
+        }
+
+        internal bool CanUpdateGraphicHelpersScale(object parameter)
         {
             return true;
         }
@@ -2750,7 +2767,7 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        public void ShowSaveImageDialogAndSaveResult(object parameter)
+        public void ShowSaveImageDialogAndSave(object parameter)
         {
             FileDialog _fileDialog = null;
 
@@ -2804,7 +2821,12 @@ namespace Dynamo.ViewModels
             }
         }
 
-        internal bool CanShowSaveImageDialogAndSaveResult(object parameter)
+        public void ValidateWorkSpaceBeforeToExportAsImage(object parameter)
+        {
+            OnRequestExportWorkSpaceAsImage(parameter);       
+        }
+
+        internal bool CanValidateWorkSpaceBeforeToExportAsImage(object parameter)
         {
             return true;
         }

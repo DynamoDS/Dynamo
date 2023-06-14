@@ -17,6 +17,7 @@ using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels.Core.Converters;
 using DynamoUtilities;
 using ViewModels.Core;
+using static Dynamo.Configuration.Configurations;
 using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.ViewModels
@@ -44,10 +45,12 @@ namespace Dynamo.ViewModels
         private string selectedPackagePathForInstall;
 
         private string selectedLanguage;
+        private string selectedUnits;
         private string selectedNumberFormat;
         private string selectedPythonEngine;
 
         private ObservableCollection<string> languagesList;
+        private ObservableCollection<string> unitList;
         private ObservableCollection<string> packagePathsForInstall;
         private ObservableCollection<string> fontSizeList;
         private ObservableCollection<int> groupStyleFontSizeList;
@@ -171,6 +174,38 @@ namespace Dynamo.ViewModels
                     {
                         preferenceSettings.Locale = locale;
                         dynamoViewModel.MainGuideManager?.CreateRealTimeInfoWindow(Res.PreferencesViewLanguageSwitchHelp, true);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Contains the currently selected scaling unit used for grahic helpers (grids, axes)
+        /// </summary>
+        public string SelectedUnits
+        {
+            get
+            {
+                return selectedUnits;
+            }
+            set
+            {
+                if (selectedUnits != value)
+                {
+                    selectedUnits = value;
+                    RaisePropertyChanged(nameof(SelectedUnits));
+
+                    if (UseHostScaleUnits) return;
+
+                    var result = Enum.TryParse(selectedUnits, out Configurations.Units currentUnit);
+                    if (!result) return;
+
+                    if (Configurations.SupportedUnits.TryGetValue(currentUnit, out double units))
+                    {
+                        // Update preferences setting and update the grapic helpers
+                        preferenceSettings.GraphicScaleUnit = value;
+                        preferenceSettings.GridScaleFactor = (float)units;
+                        dynamoViewModel.UpdateGraphicHelpersScaleCommand.Execute(null);
                     }
                 }
             }
@@ -356,6 +391,22 @@ namespace Dynamo.ViewModels
             {
                 languagesList = value;
                 RaisePropertyChanged(nameof(LanguagesList));
+            }
+        }
+
+        /// <summary>
+        /// Supported units in Host (Revit), used in scaling of grapic helpers (grid, axes)
+        /// </summary>
+        public ObservableCollection<string> UnitList
+        {
+            get
+            {
+                return unitList;
+            }
+            set
+            {
+                unitList = value;
+                RaisePropertyChanged(nameof(UnitList));
             }
         }
 
@@ -695,6 +746,88 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Indicates if Host units should be used for graphic helpers for Dynamo Revit
+        /// Also toggles between Host and Dynamo units 
+        /// </summary>
+        public bool UseHostScaleUnits
+        {
+            get
+            {
+                return preferenceSettings.UseHostScaleUnits;
+            }
+            set
+            {
+                preferenceSettings.UseHostScaleUnits = value;
+                RaisePropertyChanged(nameof(EnableManualScaleOverrides));
+                RaisePropertyChanged(nameof(UseHostScaleUnits));
+                RaisePropertyChanged(nameof(HostGenericScaleUnits));
+
+                var hostUnits = preferenceSettings.CurrentHostUnits;
+                var result = Enum.TryParse(preferenceSettings.GraphicScaleUnit, out Configurations.Units dynamoUnits);
+                if (!result) return;
+
+                var unitsToUse = value ? GetTransformedHostUnits(hostUnits) : dynamoUnits;
+
+                if (Configurations.SupportedUnits.TryGetValue(unitsToUse, out double units))
+                {
+                    preferenceSettings.GridScaleFactor = (float)units;
+                    dynamoViewModel.UpdateGraphicHelpersScaleCommand.Execute(null);
+                }
+            }
+        }
+
+        // Perform unit reverse conversion to create a uniform grid for any Host units
+        internal Configurations.Units GetTransformedHostUnits(Configurations.Units hostUnits)
+        {
+            if(hostUnits == Configurations.Units.Millimeters)
+            {
+                return Configurations.Units.Meters;
+            }
+            else if(hostUnits == Configurations.Units.Centimeters)
+            {
+                return Configurations.Units.Centimeters;
+            }
+            else if (hostUnits == Configurations.Units.Meters)
+            {
+                return Configurations.Units.Millimeters;
+            }
+            else
+            {
+                return hostUnits;
+            }
+        }
+
+        public string HostGenericScaleUnits
+        {
+            get
+            {
+                if (preferenceSettings.CurrentHostUnits == Configurations.Units.Feet
+                    || preferenceSettings.CurrentHostUnits == Configurations.Units.Inches
+                    || preferenceSettings.CurrentHostUnits == Configurations.Units.Miles)
+                {
+                    return Res.PreferencesHostGenericScaleImperialUnits;
+                }
+                else
+                {
+                    return Res.PreferencesHostGenericScaleMetricUnits;
+                }
+            }
+        }
+
+        /// <summary>
+        /// If not in DynamoRevit, then enable this option
+        /// Else, control via the Revit-specific toggle
+        /// </summary>
+        public bool EnableManualScaleOverrides
+        {
+            get
+            {
+                if (!IsDynamoRevit) return true;
+                return !UseHostScaleUnits;
+            }
+        }
+
+        /// <summary>
         /// Indicates if line numbers should be displayed on code block nodes.
         /// </summary>
         public bool ShowCodeBlockLineNumber
@@ -881,6 +1014,32 @@ namespace Dynamo.ViewModels
             get
             {
                 return preferenceSettings.HideAutocompleteMethodOptions;
+            }
+        }
+
+        /// <summary>
+        /// Returns if the current session is Dynamo Revit
+        /// </summary>
+        public bool IsDynamoRevit
+        {
+            get
+            {
+                // HostAnalyticsInfo is not set when this is invoked??
+                //return this.dynamoViewModel.Model.HostAnalyticsInfo.HostName.Equals("Dynamo Revit");
+                var host = this.dynamoViewModel.Model.HostAnalyticsInfo.HostName;
+
+                if (host != null)
+                {
+                    return host.Equals("Dynamo Revit");
+                }
+                else if(this.dynamoViewModel.Model?.HostName != null)
+                {
+                    return this.dynamoViewModel.Model.HostName.Equals("Dynamo Revit");
+                }
+                else
+                {
+                    return false;
+                }
             }
         }
 
@@ -1163,6 +1322,7 @@ namespace Dynamo.ViewModels
         public PreferencesViewModel(DynamoViewModel dynamoViewModel)
         {
             this.preferenceSettings = dynamoViewModel.PreferenceSettings;
+            this.preferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
             this.pythonScriptEditorTextOptions = dynamoViewModel.PythonScriptEditorTextOptions;
             this.dynamoViewModel = dynamoViewModel;
 
@@ -1184,6 +1344,10 @@ namespace Dynamo.ViewModels
             // Fill language list using supported locale dictionary keys in current thread locale
             LanguagesList = Configurations.SupportedLocaleDic.Keys.ToObservableCollection();
             SelectedLanguage = Configurations.SupportedLocaleDic.FirstOrDefault(x => x.Value == preferenceSettings.Locale).Key;
+
+            // Chose the scaling unit, if option is allowed by user
+            UnitList = Configurations.SupportedUnits.Keys.Select(x => x.ToString()).ToObservableCollection();
+            SelectedUnits = Configurations.SupportedUnits.FirstOrDefault(x => x.Key.ToString() == preferenceSettings.GraphicScaleUnit).Key.ToString();
 
             GroupStyleFontSizeList = preferenceSettings.PredefinedGroupStyleFontSizes;
 
@@ -1246,6 +1410,18 @@ namespace Dynamo.ViewModels
 
             PropertyChanged += Model_PropertyChanged;
             InitializeCommands();
+        }
+
+        private void PreferenceSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            var property = e.PropertyName;
+            if (property.Equals(nameof(preferenceSettings.CurrentHostUnits)))
+            {
+                // Forces update to host units
+                // The host (revit) units are set after the DynamoViewModel has been initialized and the grid scaled up or down
+                // The units are set inside the preferenceSettings, so we are listening for when this happens to set the scale
+                UseHostScaleUnits = UseHostScaleUnits;
+            }
         }
 
         public event EventHandler<PythonTemplatePathEventArgs> RequestShowFileDialog;
@@ -1360,6 +1536,7 @@ namespace Dynamo.ViewModels
         internal virtual void UnsubscribeAllEvents()
         {
             PropertyChanged -= Model_PropertyChanged;
+            this.preferenceSettings.PropertyChanged -= PreferenceSettings_PropertyChanged;
             PythonEngineManager.Instance.AvailableEngines.CollectionChanged -= PythonEnginesChanged;
         }
 
