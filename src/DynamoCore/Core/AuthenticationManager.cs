@@ -11,7 +11,7 @@ namespace Dynamo.Core
     public class AuthenticationManager
     {
         private readonly IAuthProvider authProvider;
-        private static LoginState? singleState = null;
+        private static LoginState loginStateInitial;
 
         /// <summary>
         ///     Occurs when login state is changed
@@ -35,18 +35,11 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        /// This Property will return the value by checking only once time to the real time LoginState in order to be used in the Initialization flow. Others features require direct calls to the LoginState due to are on demand.
+        /// This Property will return the initial LoginState assigned in the constructor in order to be used in the Initialization flow. Others features require direct calls to the LoginState due to are on demand.
         /// </summary>
-        public LoginState? LoginStateSingle
+        public LoginState LoginStateInitial
         {
-            get
-            {
-                if (singleState == null)
-                {
-                    singleState = LoginState;
-                }
-                return singleState;
-            }
+            get { return loginStateInitial; }
         }
 
         internal bool IsLoggedIn()
@@ -58,9 +51,9 @@ namespace Dynamo.Core
         /// This function will return the value by checking the LoginStateSingle property (which load its value only once time) used only in the initialization flow
         /// </summary>
         /// <returns></returns>
-        internal bool IsLoggedInSingle()
+        internal bool IsLoggedInInitial()
         {
-            return HasAuthProvider && LoginStateSingle == LoginState.LoggedIn ? true : false;
+            return HasAuthProvider && LoginStateInitial == LoginState.LoggedIn ? true : false;
         }
 
         /// <summary>
@@ -91,6 +84,7 @@ namespace Dynamo.Core
             // session.  Hence, we do not subscribe to this event.
             if (this.authProvider != null)
             {
+                loginStateInitial = LoginState;
                 this.authProvider.LoginStateChanged += OnLoginStateChanged;
             }
         }
@@ -127,7 +121,7 @@ namespace Dynamo.Core
         {
             if (LoginStateChanged != null)
             {
-                singleState = status;
+                loginStateInitial = status;
                 LoginStateChanged(status);
             }
         }

@@ -45,7 +45,7 @@ namespace Dynamo.Wpf.ViewModels.Core
         {
             get
             {
-                return authManager.LoginStateSingle.ToString();
+                return authManager.LoginStateInitial.ToString();
             }
         }
         /// <summary>
