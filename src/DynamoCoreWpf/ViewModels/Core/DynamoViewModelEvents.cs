@@ -150,6 +150,15 @@ namespace Dynamo.ViewModels
             }
         }
 
+        internal event Action <object> RequestExportWorkSpaceAsImage;
+        private void OnRequestExportWorkSpaceAsImage(object parameter)
+        {
+            if (RequestExportWorkSpaceAsImage != null)
+            {
+                RequestExportWorkSpaceAsImage(parameter);
+            }
+        }
+
         internal event Action RequestReturnFocusToView;
         internal void OnRequestReturnFocusToView()
         {

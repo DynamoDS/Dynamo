@@ -2209,10 +2209,6 @@ Uninstall the following packages: {0}?</value>
     <value>Show CodeBlockNode Line Numbers</value>
     <comment>Preferences | Visual Settings | Display Settings | Show CodeBlockNode Line Numbers</comment>
   </data>
-  <data name="PreferencesViewIsIronPythonDialogDisabled" xml:space="preserve">
-    <value>Hide IronPython alerts</value>
-    <comment>Preferences | Features | Python | Hide IronPython Alerts</comment>
-  </data>
   <data name="MessageFailedToDownloadPackageVersion" xml:space="preserve">
     <value>Failed to download version {0} of package with id: {1}.  Please try again and report the package if you continue to have problems.</value>
     <comment>Message box content. {0} = 1.2.3, {1} = 57d576e8f615e7725800001d</comment>
@@ -2762,6 +2758,12 @@ If the toggle is off custom packages that are not already loaded will load once 
   <data name="PreferencesViewShowPreviewBubbles" xml:space="preserve">
     <value>Show Preview Bubbles</value>
     <comment>Preferences | Visual Settings | Display Settings | Show Preview Bubbles</comment>
+  </data>
+  <data name="PreferencesUseHostScaleUnits" xml:space="preserve">
+    <value>Use Revit to scale background graphic helpers</value>
+  </data>
+  <data name="PreferencesUseHostScaleUnitsToolTip" xml:space="preserve">
+    <value>When toggled on, the current Host document units will be used to scale the background graphic helpers (grids, axes). Otherwise, the Graphic Elements Scale drop-down will determine scale.</value>
   </data>
   <data name="PublishPackageVersionMajorWatermark" xml:space="preserve">
     <value>0</value>
@@ -3622,7 +3624,26 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="CustomColorsPopupTitle" xml:space="preserve">
     <value>Custom</value>
   </data>
+  <data name="PreferencesGrahicHelpersScale" xml:space="preserve">
+    <value>Graphic Elements Scale</value>
+  </data>
+  <data name="PreferencesGrahicHelpersScaleTooltip" xml:space="preserve">
+    <value>Select a scale for the background graphic helpers (grids, axes).</value>
+  </data>    
   <data name="LibraryLoadFailureMessageSuffix" xml:space="preserve">
     <value>See the console log for the details of the import failure.</value>
   </data>
+  <data name="PreferencesHostGenericScaleImperialUnits" xml:space="preserve">
+    <value>Imperial</value>
+  </data>
+  <data name="PreferencesHostGenericScaleMetricUnits" xml:space="preserve">
+    <value>Metric</value>
+  </data>
+  <data name="CantExportWorkspaceAsImageEmptyMessage" xml:space="preserve">
+    <value>The workspace cannot be exported as an image because it is empty.</value>
+  </data>
+  <data name="CantExportWorkspaceAsImageNotValidMessage" xml:space="preserve">
+    <value>The workspace cannot be exported as an image because it contains nodes that are too far away from each other.</value>
+  </data>
 </root>
+
