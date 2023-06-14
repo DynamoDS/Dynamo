@@ -1416,6 +1416,9 @@ namespace Dynamo.Controls
                 return; // Terms of use not accepted.
 
             var cmd = Analytics.TrackCommandEvent("SearchPackage");
+
+            // The package search view model is shared and can be shared by resources at the moment
+            // If it hasn't been initialized yet, we do that here
             if (_pkgSearchVM == null)
             {
                 _pkgSearchVM = new PackageManagerSearchViewModel(dynamoViewModel.PackageManagerClientViewModel);
