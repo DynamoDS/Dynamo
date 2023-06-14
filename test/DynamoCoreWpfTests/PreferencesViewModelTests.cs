@@ -1,4 +1,4 @@
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using Dynamo.Tests;
 using NUnit.Framework;
@@ -110,31 +110,6 @@ namespace DynamoCoreWpfTests
             //assert model set method works
             ViewModel.PreferenceSettings.SetTrustWarningsDisabled(true);
             Assert.True(ViewModel.PreferenceSettings.DisableTrustWarnings);
-        }
-
-        [Test]
-        public void TestGetTransformedHostUnits()
-        {
-            Assert.AreEqual(ViewModel.PreferencesViewModel.GetTransformedHostUnits(Dynamo.Configuration.Configurations.Units.Millimeters),
-                Dynamo.Configuration.Configurations.Units.Meters);
-
-            Assert.AreEqual(ViewModel.PreferencesViewModel.GetTransformedHostUnits(Dynamo.Configuration.Configurations.Units.Centimeters),
-                Dynamo.Configuration.Configurations.Units.Centimeters);
-
-            Assert.AreEqual(ViewModel.PreferencesViewModel.GetTransformedHostUnits(Dynamo.Configuration.Configurations.Units.Meters),
-                Dynamo.Configuration.Configurations.Units.Millimeters);
-
-            Assert.AreEqual(ViewModel.PreferencesViewModel.GetTransformedHostUnits(Dynamo.Configuration.Configurations.Units.Kilometers),
-                Dynamo.Configuration.Configurations.Units.Kilometers);
-
-            Assert.AreEqual(ViewModel.PreferencesViewModel.GetTransformedHostUnits(Dynamo.Configuration.Configurations.Units.Feet),
-                Dynamo.Configuration.Configurations.Units.Feet);
-
-            Assert.AreEqual(ViewModel.PreferencesViewModel.GetTransformedHostUnits(Dynamo.Configuration.Configurations.Units.Inches),
-                Dynamo.Configuration.Configurations.Units.Inches);
-
-            Assert.AreEqual(ViewModel.PreferencesViewModel.GetTransformedHostUnits(Dynamo.Configuration.Configurations.Units.Miles),
-                Dynamo.Configuration.Configurations.Units.Miles);
         }
     }
 }

@@ -150,7 +150,7 @@ namespace DynamoCoreWpfTests
             tabControl.SelectedItem = preferencesTab;
 
             //Finds the Group Styles section and open it 
-            var listExpanders = WpfUtilities.ChildrenOfType<Expander>(preferencesTab.Content as ScrollViewer);
+            var listExpanders = WpfUtilities.ChildrenOfType<Expander>(preferencesTab.Content as Grid);
             var tabExpander = (from expander in listExpanders
                                 where expander.Header.ToString().Equals(expanderName)
                                 select expander).FirstOrDefault();

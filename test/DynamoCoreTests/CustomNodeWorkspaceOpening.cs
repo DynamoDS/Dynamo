@@ -1,11 +1,7 @@
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
-using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
-using Dynamo.Models;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -113,52 +109,6 @@ namespace Dynamo.Tests
             var res = CurrentDynamoModel.SearchModel.Search("Sequence2");
             Assert.AreEqual("Sequence2", res.First().Name);
             Assert.AreEqual("Misc", res.First().FullCategoryName);
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void TestOnWorkspaceAdded()
-        {
-            //Arrange
-            // Open/Run XML test graph
-            string openPath = Path.Combine(TestDirectory, @"core\Angle.dyn");
-            RunModel(openPath);
-            int InitialNodesCount = CurrentDynamoModel.CurrentWorkspace.Nodes.Count();
-
-            // Convert a DSFunction node Line.ByPointDirectionLength to custom node.
-            var workspace = CurrentDynamoModel.CurrentWorkspace;
-            var node = workspace.Nodes.OfType<DSFunction>().First();
-
-            List<NodeModel> selectionSet = new List<NodeModel>() { node };
-            var customWorkspace = CurrentDynamoModel.CustomNodeManager.Collapse(
-                selectionSet.AsEnumerable(),
-                Enumerable.Empty<Dynamo.Graph.Notes.NoteModel>(),
-                CurrentDynamoModel.CurrentWorkspace,
-                true,
-                new FunctionNamePromptEventArgs
-                {
-                    Category = "Testing",
-                    Description = "",
-                    Name = "__AnalyticsServiceTest__",
-                    Success = true
-                }) as CustomNodeWorkspaceModel;
-
-            //Act
-            //This will execute the custom workspace assigment and trigger the added workspace assigment event
-            CurrentDynamoModel.OpenCustomNodeWorkspace(customWorkspace.CustomNodeId);
-
-            //This will add a new custom node to the workspace
-            var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
-            var ws = CurrentDynamoModel.CustomNodeManager.CreateCustomNode("someNode", "someCategory", "");
-            var csid = (ws as CustomNodeWorkspaceModel).CustomNodeId;
-            var customNode = CurrentDynamoModel.CustomNodeManager.CreateCustomNodeInstance(csid);
-
-            CurrentDynamoModel.AddNodeToCurrentWorkspace(customNode, false);
-            CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(addNode, false);
-
-            //Assert
-            //At the begining the CurrentWorkspace.Nodes has 4 nodes but two new nodes were added, then verify we have 5 nodes.
-            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Nodes.Count(), InitialNodesCount + 2);
         }
     }
 

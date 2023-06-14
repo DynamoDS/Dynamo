@@ -7,7 +7,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
-using CommandLine;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Scheduler;
@@ -16,9 +15,15 @@ using DynamoApplications.Properties;
 using DynamoShapeManager;
 using DynamoUtilities;
 using Microsoft.Win32;
+#if NET6_0_OR_GREATER
+using CommandLine;
+#else
+using NDesk.Options;
+#endif
 
 namespace Dynamo.Applications
 {
+#if NET6_0_OR_GREATER
     internal class CMDLineOptions
     {
         [Option('l', "Locale", Required = false, HelpText = "Running Dynamo under a different locale setting.")]
@@ -33,12 +38,12 @@ namespace Dynamo.Applications
         [Option('x', "ConvertFile", Required = false, HelpText = "When used in combination with the 'O' flag, opens a .dyn file from the specified path and converts it to .json." +
             "File will have the .json extension and be located in the same directory as the original file.")]
         public bool ConvertFile { get; set; }
-        [Option('g', "Geometry", Required = false, HelpText = "Instruct Dynamo to output geometry from all evaluations to a json file at this path.")]
+        [Option( "Geometry", Required = false, HelpText = "Instruct Dynamo to output geometry from all evaluations to a json file at this path.")]
         public string GeometryFilePath { get; set; } = String.Empty;
         [Option('i', "Import", Required = false, HelpText = "Instruct Dynamo to import an assembly as a node library.This argument should be a filepath to a single.dll" +
             " - if you wish to import multiple dlls - list the dlls separated by a space: -i 'assembly1.dll' 'assembly2.dll'")]
         public IEnumerable<String> ImportedPaths { get; set; } = new List<string>();
-        [Option("GeometryPath", Required = false, HelpText = "relative or absolute path to a directory containing ASM. When supplied, instead of searching the hard disk for ASM, it will be loaded directly from this path.")]
+        [Option('g', "GeometryPath", Required = false, HelpText = "relative or absolute path to a directory containing ASM. When supplied, instead of searching the hard disk for ASM, it will be loaded directly from this path.")]
         public string ASMPath { get; set; } = String.Empty;
         [Option('k', "KeepAlive", Required = false, HelpText = "Keepalive mode, leave the Dynamo process running until a loaded extension shuts it down.")]
         public bool KeepAlive { get; set; }
@@ -52,15 +57,16 @@ namespace Dynamo.Applications
         public string HostName { get; set; } = String.Empty;
         [Option("DisableAnalytics", Required = false, HelpText = "Disables analytics in Dynamo for the process liftime.")]
         public bool DisableAnalytics { get; set; }
-        [Option('p', "ParentId", Required = false, HelpText = "Identify Dynamo host analytics parent id.")]
+        [Option("ParentId", Required = false, HelpText = "Identify Dynamo host analytics parent id.")]
         public string ParentId { get; set; } = String.Empty;
-        [Option('s', "SessionId", Required = false, HelpText = "Identify Dynamo host analytics session id.")]
+        [Option("SessionId", Required = false, HelpText = "Identify Dynamo host analytics session id.")]
         public string SessionId { get; set; } = String.Empty;
         [Option("CERLocation", Required = false, HelpText = "Specify the crash error report tool location on disk.")]
         public string CERLocation { get; set; } = String.Empty;
         [Option("ServiceMode", Required = false, HelpText = "Specify the service mode startup.")]
         public bool ServiceMode { get; set; }
     }
+#endif
 
     public class StartupUtils
     {
@@ -116,9 +122,8 @@ namespace Dynamo.Applications
         {
             public static CommandLineArguments Parse(string[] args)
             {
-                var parser = new Parser(options => { options.IgnoreUnknownArguments = true; options.HelpWriter = Console.Error;
-                    options.CaseSensitive = false;
-                });
+#if NET6_0_OR_GREATER
+                var parser = new Parser(options => options.IgnoreUnknownArguments = true);
                 return parser.ParseArguments<CMDLineOptions>(args).MapResult((cmdArgs) => {
                     if (!string.IsNullOrEmpty(cmdArgs.Verbose) && string.IsNullOrEmpty(cmdArgs.OpenFilePath))
                     {
@@ -145,8 +150,124 @@ namespace Dynamo.Applications
                         ServiceMode = cmdArgs.ServiceMode
                     };
                 }, errs => new CommandLineArguments());
+#else
+                // Running Dynamo sandbox with a command file:
+                // DynamoSandbox.exe /c "C:\file path\file.xml"
+                // 
+                var commandFilePath = string.Empty;
+
+                // Running Dynamo under a different locale setting:
+                // DynamoSandbox.exe /l "ja-JP"
+                //
+                var locale = string.Empty;
+
+                // Open Dynamo headless and open file at path
+                // DynamoSandbox.exe /o "C:\file path\graph.dyn"
+                //
+                var openfilepath = string.Empty;
+
+                // print the resulting values of all nodes to the console 
+                // DynamoSandbox.exe /o "C:\file path\graph.dyn" /v "C:\someoutputfilepath.xml"
+                //
+                var verbose = string.Empty;
+
+                var convertFile = false;
+
+                // Generate geometry json file
+                var geometryFilePath = string.Empty;
+
+                // dll paths we'll import before running a graph 
+                var importPaths = new List<string>();
+
+                // Local ASM binaries path
+                var asmPath = string.Empty;
+
+                // Allow loaded extensions to control the process lifetime
+                // and issue commands until the extension calls model.Shutdown().
+                bool keepAlive = false;
+                bool showHelp = false;
+                bool noConsole = false;
+                bool serviceMode = false;
+                string userDataFolder = string.Empty;
+                string commonDataFolder = string.Empty;
+
+                // Disables all analytics (Google and ADP)
+                bool disableAnalytics = false;
+
+                // CrashReport tool location
+                string cerLocation = string.Empty;
+
+                // Allow Dynamo launcher to identify Dynamo variation for log purpose like analytics, e.g. Dynamo Revit
+                var hostname = string.Empty;
+
+                // Allow Dynamo out of process launcher to identify host analytics info
+                var parentId = string.Empty;
+                var sessionId = string.Empty;
+
+                var optionsSet = new OptionSet().Add("o=|O=", "OpenFilePath, Instruct Dynamo to open headless and run a dyn file at this path", o => openfilepath = o)
+                .Add("c=|C=", "CommandFilePath, Instruct Dynamo to open a commandfile and run the commands it contains at this path," +
+                "this option is only supported when run from DynamoSandbox", c => commandFilePath = c)
+                .Add("l=|L=", "Running Dynamo under a different locale setting", l => locale = l)
+                .Add("v=|V=", "Verbose, Instruct Dynamo to output all evalautions it performs to an xml file at this path", v => verbose = v)
+                .Add("x|X", "When used in combination with the 'O' flag, opens a .dyn file from the specified path and converts it to .json." +
+                "File will have the .json extension and be located in the same directory as the original file.", x => convertFile = x != null)
+                .Add("h|H|help", "Get some help", h => showHelp = h != null)
+                .Add("g=|G=|geometry", "Geometry, Instruct Dynamo to output geometry from all evaluations to a json file at this path", g => geometryFilePath = g)
+                .Add("i=|I=|import", "Import, Instruct Dynamo to import an assembly as a node library. This argument should be a filepath to a single .dll" +
+                " - if you wish to import multiple dlls - use this flag multiple times: -i 'assembly1.dll' -i 'assembly2.dll' ", i => importPaths.Add(i))
+                .Add("gp=|GP=|geometrypath=|GeometryPath=", "relative or absolute path to a directory containing ASM. When supplied, instead of searching the hard disk for ASM, it will be loaded directly from this path.", gp => asmPath = gp)
+                .Add("k|K|keepalive", "Keepalive mode, leave the Dynamo process running until a loaded extension shuts it down.", k => keepAlive = k != null)
+                .Add("nc|NC|noconsole", "Don't rely on the console window to interact with CLI in Keepalive mode", nc => noConsole = nc != null)
+                .Add("ud=|UD=|userdata", "Specify user data folder to be used by PathResolver with CLI", ud => userDataFolder = ud)
+                .Add("cd=|CD=|commondata", "Specify common data folder to be used by PathResolver with CLI", cd => commonDataFolder = cd)
+                .Add("hn=|HN=|hostname", "Identify Dynamo variation associated with host", hn => hostname = hn)
+                .Add("si=|SI=|sessionId", "Identify Dynamo host analytics session id", si => sessionId = si)
+                .Add("pi=|PI=|parentId", "Identify Dynamo host analytics parent id", pi => parentId = pi)
+                .Add("da|DA|disableAnalytics|DisableAnalytics", "Disables analytics in Dynamo for the process liftime", da => disableAnalytics = da != null)
+                .Add("cr=|CR=|cerLocation", "Specify the crash error report tool location on disk ", cr => cerLocation = cr)
+                .Add("s|S|service mode", "Service mode, bypasses certain Dynamo launch steps for maximum startup performance", s => serviceMode = s != null);
+                optionsSet.Parse(args);
+
+                if (showHelp)
+                {
+                    ShowHelp(optionsSet);
+                }
+
+                //check for incompatabile parameters
+                if (!string.IsNullOrEmpty(verbose) && string.IsNullOrEmpty(openfilepath))
+                {
+                    Console.WriteLine("you must supply a file to open if you want to save an evaluation output ");
+                }
+                return new CommandLineArguments
+                {
+                    Locale = locale,
+                    CommandFilePath = commandFilePath,
+                    OpenFilePath = openfilepath,
+                    Verbose = verbose,
+                    ConvertFile = convertFile,
+                    GeometryFilePath = geometryFilePath,
+                    ImportedPaths = importPaths,
+                    ASMPath = asmPath,
+                    KeepAlive = keepAlive,
+                    NoConsole = noConsole,
+                    UserDataFolder = userDataFolder,
+                    CommonDataFolder = commonDataFolder,
+                    DisableAnalytics = disableAnalytics,
+                    AnalyticsInfo = new HostAnalyticsInfo() { HostName = hostname, ParentId = parentId, SessionId = sessionId },
+                    CERLocation = cerLocation,
+                    ServiceMode = serviceMode
+                };
+#endif
             }
 
+#if NET6_0_OR_GREATER
+#else
+            private static void ShowHelp(OptionSet opSet)
+            {
+                Console.WriteLine("options:");
+                opSet.WriteOptionDescriptions(Console.Out);
+            }
+#endif
             public string Locale { get; set; }
             public string CommandFilePath { get; set; }
             public string OpenFilePath { get; set; }

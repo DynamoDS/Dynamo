@@ -637,11 +637,7 @@ namespace PythonNodeModelsWpf
                 {
                     var dynamoView = Owner as DynamoView;
                     TabItem tabItem = dynamoViewModel.SideBarTabItems.OfType<TabItem>().SingleOrDefault(n => n.Uid.ToString() == NodeModel.GUID.ToString());
-                    if (tabItem != null)
-                    {
-                        dynamoView.CloseRightSideBarTab(tabItem);
-                        dynamoViewModel.DockedNodeWindows.Remove(tabItem.Uid);
-                    }
+                    dynamoView.CloseRightSideBarTab(tabItem);
                 }
             }
             catch (Exception ex)

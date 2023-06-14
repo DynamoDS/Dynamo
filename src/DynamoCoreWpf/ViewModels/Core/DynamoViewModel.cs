@@ -599,6 +599,23 @@ namespace Dynamo.ViewModels
 
         public bool HideReportOptions { get; internal set; }
 
+        /// <summary>
+        /// Indicates if whether the Iron Python dialog box should be displayed before each new session.
+        /// </summary>
+        public bool IsIronPythonDialogDisabled
+        {
+            get
+            {
+                return model.PreferenceSettings.IsIronPythonDialogDisabled;
+            }
+            set
+            {
+                model.PreferenceSettings.IsIronPythonDialogDisabled = value;
+                RaisePropertyChanged(nameof(IsIronPythonDialogDisabled));
+            }
+        }
+
+
         private DynamoPythonScriptEditorTextOptions editTextOptions = new DynamoPythonScriptEditorTextOptions();
         /// <summary>
         /// Gets/Sets the text editor options for python script editor.
@@ -1502,26 +1519,22 @@ namespace Dynamo.ViewModels
                 if (DockedNodeWindows.Contains(id))
                 {
                     var tabItem = SideBarTabItems.OfType<TabItem>().SingleOrDefault(n => n.Uid.ToString() == id);
+                    NodeModel nodeModel = GetDockedWindowNodeModel(tabItem.Uid);
 
-                    if (tabItem != null)
+                    if (nodeModel is PythonNode pythonNode)
                     {
-                        NodeModel nodeModel = GetDockedWindowNodeModel(tabItem.Uid);
-
-                        if (nodeModel is PythonNode pythonNode)
+                        var editor = (tabItem.Content as Grid).ChildOfType<TextEditor>();
+                        if (editor != null && editor.IsModified)
                         {
-                            var editor = (tabItem.Content as Grid).ChildOfType<TextEditor>();
-                            if (editor != null && editor.IsModified)
-                            {
-                                pythonNode.OnWarnUserScript();
-                                tabItem.Focus();
-                                return false;
-                            }
-                            pythonNode.Dispose();
+                            pythonNode.OnWarnUserScript();
+                            tabItem.Focus();
+                            return false;
                         }
-
-                        SideBarTabItems.Remove(tabItem);
-                        DockedNodeWindows.Remove(id);
+                        pythonNode.Dispose();
                     }
+
+                    SideBarTabItems.Remove(tabItem);
+                    DockedNodeWindows.Remove(id);
                 }
             }
             return true;
@@ -2533,24 +2546,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        /// <summary>
-        /// Updates grapic helpers (grid) inside the background preview VM
-        /// </summary>
-        /// <param name="parameter"></param>
-        public void UpdateGraphicHelpersScale(object parameter)
-        {
-            if (BackgroundPreviewViewModel == null) return;
-
-            BackgroundPreviewViewModel.GridScale = PreferenceSettings.GridScaleFactor;
-            BackgroundPreviewViewModel.UpdateHelpers();
-        }
-
         internal bool CanToggleBackgroundGridVisibility(object parameter)
-        {
-            return true;
-        }
-
-        internal bool CanUpdateGraphicHelpersScale(object parameter)
         {
             return true;
         }
@@ -2777,7 +2773,7 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        public void ShowSaveImageDialogAndSave(object parameter)
+        public void ShowSaveImageDialogAndSaveResult(object parameter)
         {
             FileDialog _fileDialog = null;
 
@@ -2831,12 +2827,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public void ValidateWorkSpaceBeforeToExportAsImage(object parameter)
-        {
-            OnRequestExportWorkSpaceAsImage(parameter);       
-        }
-
-        internal bool CanValidateWorkSpaceBeforeToExportAsImage(object parameter)
+        internal bool CanShowSaveImageDialogAndSaveResult(object parameter)
         {
             return true;
         }

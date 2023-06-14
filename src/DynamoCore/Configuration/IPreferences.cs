@@ -41,11 +41,6 @@ namespace Dynamo.Interfaces
         bool IsBackgroundGridVisible { get; set; }
 
         /// <summary>
-        /// Sets the scale of the background grid element. Default is 1.0.
-        /// </summary>
-        float GridScaleFactor { get; set; }
-
-        /// <summary>
         /// Indicates whether background preview is active or not.
         /// </summary>
         [Obsolete("Property will be deprecated in Dynamo 3.0, please use BackgroundPreviews")]

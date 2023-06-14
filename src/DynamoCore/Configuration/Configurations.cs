@@ -1,6 +1,5 @@
 using Dynamo.Properties;
 using Dynamo.Utilities;
-using Lucene.Net.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,53 +49,6 @@ namespace Dynamo.Configuration
         /// </summary>
         [Obsolete("This property is no longer used. Remove in Dynamo 3.0")]
         public static readonly double MaxWatchNodeHeight = 310.0;
-
-        /// <summary>
-        /// Specify the Lucene.Net compatibility version
-        /// </summary>
-        public static LuceneVersion LuceneNetVersion = LuceneVersion.LUCENE_48;
-
-
-        /// <summary>
-        /// This represent the fields that will be indexed when initializing Lucene Search
-        /// </summary>
-        public enum IndexFieldsEnum
-        {
-            /// <summary>
-            /// Name - The name of the node
-            /// </summary>
-            Name,
-            /// <summary>
-            /// FullCategoryName - The category of the node
-            /// </summary>
-            FullCategoryName,
-            /// <summary>
-            /// Description - The description of the node
-            /// </summary>
-            Description,
-            /// <summary>
-            /// SearchKeywords - Several keywords that will be used when searching any word (this values are coming from xml files like BuiltIn.xml, DesignScriptBuiltin.xml or ProtoGeometry.xml)
-            /// </summary>
-            SearchKeywords,
-            /// <summary>
-            /// DocName - Name of the Document
-            /// </summary>
-            DocName,
-            /// <summary>
-            /// Documentation - Documentation of the node
-            /// </summary>
-            Documentation
-        }
-
-        /// <summary>
-        /// Fields to be indexed by Lucene Search
-        /// </summary>
-        public static string[] IndexFields = { nameof(IndexFieldsEnum.Name),
-                                               nameof(IndexFieldsEnum.FullCategoryName),
-                                               nameof(IndexFieldsEnum.Description),
-                                               nameof(IndexFieldsEnum.SearchKeywords),
-                                               nameof(IndexFieldsEnum.DocName),
-                                               nameof(IndexFieldsEnum.Documentation)};
 
         #endregion
 
@@ -438,41 +390,6 @@ namespace Dynamo.Configuration
                 // This is done so that Preferences Panel could display the languages selections using the current locale
                 return Properties.Resources.DynamoLanguages_noxlate.Split(',').
                     Zip(SupportedLocaleList, (k, v) => (k, v)).ToDictionary(x => x.k, x => x.v);
-            }
-        }
-
-        /// <summary>
-        /// Host units, used to scale background grid graphic element
-        /// </summary>
-        internal enum Units
-        {
-            Millimeters,
-            Centimeters,
-            Meters,
-            Kilometers,
-            Feet,
-            Inches,
-            Miles
-        }
-
-        /// <summary>
-        /// Supported Host units and their conversion to dynamo units
-        /// Used in graphic helpers scaling (grid, axes)
-        /// </summary>
-        internal static Dictionary<Units, double> SupportedUnits
-        {
-            get
-            {
-                return new Dictionary<Units, double>
-                {
-                    { Units.Millimeters, 1 },
-                    { Units.Centimeters, 10 },
-                    { Units.Meters, 1000 },
-                    { Units.Kilometers, 100000 },
-                    { Units.Feet, 1 },
-                    { Units.Inches, 10 },
-                    { Units.Miles, 1000 },
-                };
             }
         }
 

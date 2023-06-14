@@ -16,7 +16,6 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
 using Newtonsoft.Json;
 using Microsoft.Web.WebView2.Wpf;
-using Dynamo.Utilities;
 
 namespace Dynamo.Notifications
 {
@@ -25,25 +24,15 @@ namespace Dynamo.Notifications
     public class ScriptObject
     {
         Action<object[]> onMarkAllAsRead;
-        Action<int> onNotificationPopupUpdated;
 
-        internal ScriptObject(Action<object []> onMarkAllAsRead, Action<int> onNotificationPopupUpdated)
+        internal ScriptObject(Action<object []> onMarkAllAsRead)
         {
             this.onMarkAllAsRead = onMarkAllAsRead;
-            this.onNotificationPopupUpdated = onNotificationPopupUpdated;
         }
 
         public void SetNoficationsAsRead(object[] ids)
         {
             onMarkAllAsRead(ids);
-        }
-        /// <summary>
-        /// This function will be triggered in NotificationCenter side passing the current height it has so we can update popup height in Dynamo
-        /// </summary>
-        /// <param name="height"></param>
-        public void UpdateNotificationWindowSize(int height)
-        {
-            onNotificationPopupUpdated(height);
         }
     }
 
@@ -66,7 +55,6 @@ namespace Dynamo.Notifications
         private readonly DynamoLogger logger;
         private string jsonStringFile;
         private NotificationsModel notificationsModel;
-        private const int PopupMaxHeigth = 598;
 
         internal NotificationCenterController(DynamoView view, DynamoLogger dynLogger)
         {
@@ -137,7 +125,7 @@ namespace Dynamo.Notifications
                 };
             }               
             notificationUIPopup.webView.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;
-            notificationUIPopup.webView.EnsureCoreWebView2Async();        
+            notificationUIPopup.webView.EnsureCoreWebView2Async();
         }
 
         private void WebView_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
@@ -206,16 +194,6 @@ namespace Dynamo.Notifications
             shortcutToolbarViewModel.NotificationsNumber = 0;
         }
 
-        internal void OnNotificationPopupUpdated(int height)
-        {
-            var notificationsViewModel = notificationUIPopup.DataContext as NotificationsUIViewModel;
-            if(notificationsViewModel != null && height > 0 && height < PopupMaxHeigth)
-            {
-                notificationsViewModel.PopupRectangleHeight = height;
-            }
-            notificationUIPopup.UpdatePopupSize();
-        }
-
         // Handler for new Webview2 tab window request
         private void WebView_NewWindowRequested(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NewWindowRequestedEventArgs e)
         {
@@ -245,13 +223,13 @@ namespace Dynamo.Notifications
             {
                 // More initialization options
                 // Context menu disabled
-                notificationUIPopup.webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = true;
+                notificationUIPopup.webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
                 // Opening hyper-links using default system browser instead of WebView2 tab window
                 notificationUIPopup.webView.CoreWebView2.NewWindowRequested += WebView_NewWindowRequested;
                 notificationUIPopup.webView.CoreWebView2.NavigateToString(htmlString);
                 // Hosts an object that will expose the properties and methods to be called from the javascript side
                 notificationUIPopup.webView.CoreWebView2.AddHostObjectToScript("scriptObject", 
-                    new ScriptObject(OnMarkAllAsRead, OnNotificationPopupUpdated));
+                    new ScriptObject(OnMarkAllAsRead));
 
                 notificationUIPopup.webView.CoreWebView2.Settings.IsZoomControlEnabled = false;
             }

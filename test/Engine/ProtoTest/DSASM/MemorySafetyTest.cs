@@ -6,7 +6,6 @@ namespace ProtoTest.DSASM
     class MemorySafetyTest : ProtoTestBase
     {
         [Test]
-        [Category("FailureNET6")]
         public void TestMemoryAllocation()
         {
             string code = @"

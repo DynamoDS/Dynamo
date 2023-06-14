@@ -22,7 +22,6 @@
     <NoWarn>MSB3539</NoWarn><!--The value of the property "BaseIntermediateOutputPath" was modified after it was used by MSBuild-->
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
     <DebugSymbols>true</DebugSymbols>
-    <SelfContained>false</SelfContained>
   </PropertyGroup>
     <PropertyGroup>
     <DebugType Condition="$(Platform.Contains('NET60')) ">portable</DebugType>

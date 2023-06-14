@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Dynamo;
 using NUnit.Framework;
 
@@ -21,11 +21,11 @@ namespace DisplayTests
         {
             RunModel(@"core\library\DisplayReturn.dyn");
             var preview1 = GetPreviewValueInString("dc46358c-d71e-4764-9113-c7bc0dae8909");
-            Assert.That(preview1, Is.Not.Null.And.Not.Empty);
-            Assert.True(preview1.Contains("Sphere"));
+            Assert.IsNotNullOrEmpty(preview1);
+            Assert.IsTrue(preview1.Contains("Sphere"));
 
             var preview2 = GetPreviewValueInString("79bc4023-4f01-4b11-823e-75e615ad534c");
-            Assert.That(preview1, Is.Not.Null.And.Not.Empty);
+            Assert.IsNotNullOrEmpty(preview2);
             Assert.IsTrue(preview2.Contains("Point"));
         }
     }

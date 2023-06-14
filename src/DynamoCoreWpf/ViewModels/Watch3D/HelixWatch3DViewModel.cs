@@ -411,22 +411,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 SetGridVisibility();
             }
         }
-
-
-        /// <summary>
-        /// Sets the scale of the Grid helper
-        /// </summary>
-        public override float GridScale
-        {
-            get { return gridScale; }
-            set
-            {
-                if (gridScale == value) return;
-
-                base.GridScale = value;
-            }
-        }
-
+        
         /// <summary>
         /// Identifies if the Graph yields any rendered, visible or hidden, geometry
         /// Any graph would always render at least 3 elements:
@@ -515,8 +500,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         public bool SupportDeferredRender { get; private set; }
 
         #endregion
-
-        #region public methods
 
         /// <summary>
         /// Attempt to create a HelixWatch3DViewModel. If one cannot be created,
@@ -1080,51 +1063,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             return true;
         }
 
-        /// <summary>
-        /// Updates background graphic helpers
-        /// </summary>
-        public override void UpdateHelpers()
-        {
-            DrawGrid();
-            UpdateGrid();
-            UpdateAxes();
-            UpdateSceneItems();
-            OnRequestViewRefresh();
-        }
-
-        private void UpdateGrid()
-        {
-            // Recreate the Grid element
-            gridModel3D = new DynamoLineGeometryModel3D
-            {
-                Geometry = Grid,
-                Transform = SceneTransform,
-                Color = Colors.White,
-                Thickness = 0.3,
-                IsHitTestVisible = false,
-                Name = DefaultGridName
-            };
-            // Update the dictionary value of the singleton
-            Element3DDictionary[DefaultGridName] = gridModel3D;
-        }
-
-        private void UpdateAxes()
-        {
-            var axesModel3D = new DynamoLineGeometryModel3D
-            {
-                Geometry = Axes,
-                Transform = SceneTransform,
-                Color = Colors.White,
-                Thickness = 0.3,
-                IsHitTestVisible = false,
-                Name = DefaultAxesName
-            };
-
-            Element3DDictionary[DefaultAxesName] = axesModel3D;
-        }
-
-        #endregion
-
         #region internal methods
 
         internal void ComputeFrameUpdate()
@@ -1463,13 +1401,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var indices = new IntCollection();
             var colors = new Color4Collection();
 
-            var scale = GridScale;
-
             for (var i = 0; i < 10; i += 1)
             {
                 for (var j = 0; j < 10; j += 1)
                 {
-                    DrawGridPatch(positions, indices, colors, -50 + i * 10, -50 + j * 10, scale);
+                    DrawGridPatch(positions, indices, colors, -50 + i * 10, -50 + j * 10);
                 }
             }
 
@@ -1485,21 +1421,21 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Draw the coordinate axes
             axesPositions.Add(new Vector3());
             axesIndices.Add(axesPositions.Count - 1);
-            axesPositions.Add(new Vector3(50 * scale, 0, 0));
+            axesPositions.Add(new Vector3(50, 0, 0));
             axesIndices.Add(axesPositions.Count - 1);
             axesColors.Add(Color.Red);
             axesColors.Add(Color.Red);
 
             axesPositions.Add(new Vector3());
             axesIndices.Add(axesPositions.Count - 1);
-            axesPositions.Add(new Vector3(0, 5 * scale, 0));
+            axesPositions.Add(new Vector3(0, 5, 0));
             axesIndices.Add(axesPositions.Count - 1);
             axesColors.Add(Color.Blue);
             axesColors.Add(Color.Blue);
 
             axesPositions.Add(new Vector3());
             axesIndices.Add(axesPositions.Count - 1);
-            axesPositions.Add(new Vector3(0, 0, -50 * scale));
+            axesPositions.Add(new Vector3(0, 0, -50));
             axesIndices.Add(axesPositions.Count - 1);
             axesColors.Add(Color.Green);
             axesColors.Add(Color.Green);
@@ -1520,7 +1456,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
 
         private static void DrawGridPatch(
-            Vector3Collection positions, IntCollection indices, Color4Collection colors, int startX, int startY, float scale)
+            Vector3Collection positions, IntCollection indices, Color4Collection colors, int startX, int startY)
         {
             var c1 = (System.Windows.Media.Color)ColorConverter.ConvertFromString("#c5d1d8");
             c1.Clamp();
@@ -1536,10 +1472,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 if (x == 0 && startY < 0) continue;
 
-                var v = new Vector3(x * scale, -.001f, startY * scale);
+                var v = new Vector3(x, -.001f, startY);
                 positions.Add(v);
                 indices.Add(positions.Count - 1);
-                positions.Add(new Vector3(x * scale, -.001f, (startY + size) * scale));
+                positions.Add(new Vector3(x, -.001f, startY + size));
                 indices.Add(positions.Count - 1);
 
                 if (x % 5 == 0)
@@ -1558,9 +1494,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 if (y == 0 && startX >= 0) continue;
 
-                positions.Add(new Vector3(startX * scale, -.001f, y * scale));
+                positions.Add(new Vector3(startX, -.001f, y));
                 indices.Add(positions.Count - 1);
-                positions.Add(new Vector3((startX + size) * scale, -.001f, y * scale));
+                positions.Add(new Vector3(startX + size, -.001f, y));
                 indices.Add(positions.Count - 1);
 
                 if (y % 5 == 0)

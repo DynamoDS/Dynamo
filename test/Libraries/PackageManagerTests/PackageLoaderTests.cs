@@ -1085,7 +1085,7 @@ namespace Dynamo.PackageManager.Tests
             var defaultDirectory = pathManager.DefaultPackagesDirectory;
 
             // Assert
-            Assert.That(builtinpackageLocation,Is.Not.Null.Or.Empty);
+            Assert.IsNotNullOrEmpty(builtinpackageLocation);
             Assert.IsTrue(string.Equals(builtinpackageLocation, directory, StringComparison.OrdinalIgnoreCase));
             Assert.AreNotEqual(defaultDirectory, directory);
         }
@@ -1332,7 +1332,6 @@ namespace Dynamo.PackageManager.Tests
         }
 
         [Test]
-        [Category("FailureNET6")]
         public void LocalizedPackageLocalizedCorrectly()
         {
             var esculture = CultureInfo.CreateSpecificCulture("es-ES");

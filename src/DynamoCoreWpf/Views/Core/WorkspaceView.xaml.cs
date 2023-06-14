@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.ExceptionServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -314,114 +313,85 @@ namespace Dynamo.Views
             return new Rect(topLeft, bottomRight);
         }
 
-        private RenderTargetBitmap GetRender()
+        internal void SaveWorkspaceAsImage(string path)
         {
-            RenderTargetBitmap rtb;
-            try
+            var initialized = false;
+            var bounds = new Rect();
+
+            double minX = 0.0, minY = 0.0;
+            var dragCanvas = WpfUtilities.ChildOfType<DragCanvas>(this);
+            var childrenCount = VisualTreeHelper.GetChildrenCount(dragCanvas);
+            for (int index = 0; index < childrenCount; ++index)
             {
-                var initialized = false;
-                var bounds = new Rect();
+                ContentPresenter contentPresenter = VisualTreeHelper.GetChild(dragCanvas, index) as ContentPresenter;
+                if (contentPresenter.Children().Count() < 1) continue;
+                
+                var firstChild = VisualTreeHelper.GetChild(contentPresenter, 0);
 
-                double minX = 0.0, minY = 0.0;
-                var dragCanvas = WpfUtilities.ChildOfType<DragCanvas>(this);
-                var childrenCount = VisualTreeHelper.GetChildrenCount(dragCanvas);
-                for (int index = 0; index < childrenCount; ++index)
+                switch (firstChild.GetType().Name)
                 {
-                    ContentPresenter contentPresenter = VisualTreeHelper.GetChild(dragCanvas, index) as ContentPresenter;
-                    if (contentPresenter.Children().Count() < 1) continue;
+                    case "NodeView":
+                    case "NoteView":
+                    case "AnnotationView":
+                        break;
 
-                    var firstChild = VisualTreeHelper.GetChild(contentPresenter, 0);
-
-                    switch (firstChild.GetType().Name)
-                    {
-                        case "NodeView":
-                        case "NoteView":
-                        case "AnnotationView":
-                            break;
-
-                        // Until we completely removed InfoBubbleView (or fixed its broken 
-                        // size calculation), we will not be including it in our size 
-                        // calculation here. This means that the info bubble, if any, will 
-                        // still go beyond the boundaries of the final PNG file. I would 
-                        // prefer not to add this hack here as it introduces multiple issues 
-                        // (including NaN for Grid inside the view and the fix would be too 
-                        // ugly to type in). Suffice to say that InfoBubbleView is not 
-                        // included in the size calculation for screen capture (work-around 
-                        // should be obvious).
-                        // 
-                        // case "InfoBubbleView":
-                        //     child = WpfUtilities.ChildOfType<Grid>(child);
-                        //     break;
-
-                        // We do not take anything other than those above 
-                        // into consideration when the canvas size is measured.
-                        default:
-                            continue;
-                    }
-
-                    // Determine the smallest corner of all given visual elements on the 
-                    // graph. This smallest top-left corner value will be useful in making 
-                    // the offset later on.
+                    // Until we completely removed InfoBubbleView (or fixed its broken 
+                    // size calculation), we will not be including it in our size 
+                    // calculation here. This means that the info bubble, if any, will 
+                    // still go beyond the boundaries of the final PNG file. I would 
+                    // prefer not to add this hack here as it introduces multiple issues 
+                    // (including NaN for Grid inside the view and the fix would be too 
+                    // ugly to type in). Suffice to say that InfoBubbleView is not 
+                    // included in the size calculation for screen capture (work-around 
+                    // should be obvious).
                     // 
-                    var childBounds = VisualTreeHelper.GetDescendantBounds(contentPresenter as Visual);
-                    minX = childBounds.X < minX ? childBounds.X : minX;
-                    minY = childBounds.Y < minY ? childBounds.Y : minY;
-                    childBounds.X = (double)(contentPresenter as Visual).GetValue(Canvas.LeftProperty);
-                    childBounds.Y = (double)(contentPresenter as Visual).GetValue(Canvas.TopProperty);
+                    // case "InfoBubbleView":
+                    //     child = WpfUtilities.ChildOfType<Grid>(child);
+                    //     break;
 
-                    if (initialized)
-                    {
-                        bounds.Union(childBounds);
-                    }
-                    else
-                    {
-                        initialized = true;
-                        bounds = childBounds;
-                    }
+                    // We do not take anything other than those above 
+                    // into consideration when the canvas size is measured.
+                    default:
+                        continue;
                 }
 
-                // Nothing found in the canvas, bail out.
-                if (!initialized) return null;
+                // Determine the smallest corner of all given visual elements on the 
+                // graph. This smallest top-left corner value will be useful in making 
+                // the offset later on.
+                // 
+                var childBounds = VisualTreeHelper.GetDescendantBounds(contentPresenter as Visual);
+                minX = childBounds.X < minX ? childBounds.X : minX;
+                minY = childBounds.Y < minY ? childBounds.Y : minY;
+                childBounds.X = (double)(contentPresenter as Visual).GetValue(Canvas.LeftProperty);
+                childBounds.Y = (double)(contentPresenter as Visual).GetValue(Canvas.TopProperty);
 
-                // Add padding to the edge and make them multiples of two (pad 10px on each side).
-                bounds.Width = 20 + ((((int)Math.Ceiling(bounds.Width)) + 1) & ~0x01);
-                bounds.Height = 20 + ((((int)Math.Ceiling(bounds.Height)) + 1) & ~0x01);
-
-                var currentTransformGroup = WorkspaceElements.RenderTransform as TransformGroup;
-                WorkspaceElements.RenderTransform = new TranslateTransform(10.0 - bounds.X - minX, 10.0 - bounds.Y - minY);
-                WorkspaceElements.UpdateLayout();
-
-                rtb = new RenderTargetBitmap(((int)bounds.Width),
-                    ((int)bounds.Height), 96, 96, PixelFormats.Default);
-
-                rtb.Render(WorkspaceElements);
-                WorkspaceElements.RenderTransform = currentTransformGroup;
+                if (initialized)
+                {
+                    bounds.Union(childBounds);
+                }
+                else
+                {
+                    initialized = true;
+                    bounds = childBounds;
+                }
             }
-            catch (Exception)
-            {
-                throw;
-            }
-            return rtb;
-        }
 
-        /// <summary>
-        /// Function to validate if the Workspace is valid for export as image / save it as image
-        /// </summary>
-        /// <param name="validating"></param>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        [HandleProcessCorruptedStateExceptions]
-        internal ExportImageResult IsWorkSpaceRenderValidAsImage(bool validating, string path = null)
-        {
-            ExportImageResult result = ExportImageResult.EmptyDrawing;
-            RenderTargetBitmap workSpaceRender = GetRender();
-            if (workSpaceRender == null) return result;
+            // Nothing found in the canvas, bail out.
+            if (!initialized) return;
 
-            result = ExportImageResult.IsValidAsImage;
-            if (validating)
-            {
-                path = $"{ViewModel.DynamoViewModel.PreferencesViewModel.BackupLocation}\\{System.DateTime.Now.Ticks.ToString()}.png";
-            }            
+            // Add padding to the edge and make them multiples of two (pad 10px on each side).
+            bounds.Width = 20 + ((((int)Math.Ceiling(bounds.Width)) + 1) & ~0x01);
+            bounds.Height = 20 + ((((int)Math.Ceiling(bounds.Height)) + 1) & ~0x01);
+
+            var currentTransformGroup = WorkspaceElements.RenderTransform as TransformGroup;
+            WorkspaceElements.RenderTransform = new TranslateTransform(10.0 - bounds.X - minX, 10.0 - bounds.Y - minY);
+            WorkspaceElements.UpdateLayout();
+
+            var rtb = new RenderTargetBitmap(((int)bounds.Width),
+                ((int)bounds.Height), 96, 96, PixelFormats.Default);
+
+            rtb.Render(WorkspaceElements);
+            WorkspaceElements.RenderTransform = currentTransformGroup;
 
             try
             {
@@ -429,32 +399,13 @@ namespace Dynamo.Views
                 {
                     // Encode as PNG format
                     var pngEncoder = new PngBitmapEncoder();
-                    pngEncoder.Frames.Add(BitmapFrame.Create(workSpaceRender));
+                    pngEncoder.Frames.Add(BitmapFrame.Create(rtb));
                     pngEncoder.Save(stm);
                 }
             }
-            catch (AccessViolationException)
-            {
-                result = ExportImageResult.NotValidAsImage;
-            }
             catch (Exception)
             {
-                result = ExportImageResult.NotValidAsImage;
             }
-            // The current way of validate if a Workspace is ok for exporting as image is trying to create it in a temporal place, whatever the result we need to remove it.
-            if (validating && System.IO.File.Exists(path))
-            {
-                System.IO.File.Delete(path);
-            }
-
-            return result;
-        }
-
-        internal enum ExportImageResult
-        {
-            EmptyDrawing,
-            IsValidAsImage,
-            NotValidAsImage
         }
 
         void OnSelectionCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

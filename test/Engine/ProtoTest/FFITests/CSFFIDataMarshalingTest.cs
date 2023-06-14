@@ -61,7 +61,6 @@ namespace ProtoFFITests
         }
 
         [Test]
-        [Category("FailureNET6")]
         public void TestDecimals()
         {
             String code =

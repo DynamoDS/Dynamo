@@ -9,8 +9,11 @@
     <RootNamespace>DynamoApplications</RootNamespace>
     <AssemblyName>DynamoApplications</AssemblyName>
   </PropertyGroup>
-  <ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
     <PackageReference Include="CommandLineParser" Version="2.8.0" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
+    <PackageReference Include="NDesk.Options" Version="0.2.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">

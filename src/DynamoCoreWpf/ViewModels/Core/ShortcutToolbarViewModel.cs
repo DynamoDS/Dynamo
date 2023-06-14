@@ -9,7 +9,7 @@ namespace Dynamo.Wpf.ViewModels.Core
         /// <summary>
         /// Exports an image from the user's 3D background or workpace
         /// </summary>
-        public DelegateCommand ValidateWorkSpaceBeforeToExportAsImageCommand { get; set; }
+        public DelegateCommand ShowSaveImageDialogAndSaveResultCommand { get; set; }
 
         public DelegateCommand SignOutCommand { get; set; }
         private AuthenticationManager authManager;
@@ -20,7 +20,7 @@ namespace Dynamo.Wpf.ViewModels.Core
         {
             NotificationsNumber = 0;
             authManager = dynamoViewModel.Model.AuthenticationManager;
-            ValidateWorkSpaceBeforeToExportAsImageCommand = new DelegateCommand(dynamoViewModel.ValidateWorkSpaceBeforeToExportAsImage);
+            ShowSaveImageDialogAndSaveResultCommand = new DelegateCommand(dynamoViewModel.ShowSaveImageDialogAndSaveResult);
             SignOutCommand = new DelegateCommand(authManager.ToggleLoginState);
             authManager.LoginStateChanged += (o) => { RaisePropertyChanged(nameof(LoginState)); };
         }

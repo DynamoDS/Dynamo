@@ -25,7 +25,7 @@ namespace Dynamo.WorkspaceDependency
     public partial class WorkspaceDependencyView : UserControl, IDisposable
     {
 
-        internal WorkspaceModel currentWorkspace;
+        private WorkspaceModel currentWorkspace;
 
         /// <summary>
         /// The hyper link where Dynamo user will be forwarded to for submitting comments.
@@ -33,10 +33,18 @@ namespace Dynamo.WorkspaceDependency
         private readonly string FeedbackLink = "https://forum.dynamobim.com/t/call-for-feedback-on-dynamo-graph-package-dependency-display/37229";
         private readonly string customNodeExtension = ".dyf";
 
-        internal ViewLoadedParams loadedParams;
+        private ViewLoadedParams loadedParams;
         private WorkspaceDependencyViewExtension dependencyViewExtension;
 
         private IPackageInstaller packageInstaller;
+
+        /// <summary>
+        /// Internal cache of the data displayed in data grid, useful in unit testing.
+        /// You are not expected to modify this but rather inspection.
+        /// </summary>
+        internal IEnumerable<PackageDependencyRow> dataRows;
+        internal IEnumerable<DependencyRow> localDefinitionDataRows;
+        internal IEnumerable<DependencyRow> externalFilesDataRows;
 
         private Boolean hasDependencyIssue = false;
 
@@ -92,7 +100,7 @@ namespace Dynamo.WorkspaceDependency
                 {
                     currentWorkspace.PropertyChanged -= OnWorkspacePropertyChanged;
                 }
-                dependencyViewExtension.DependencyRegen(obj as WorkspaceModel, true);
+                DependencyRegen(obj as WorkspaceModel, true);
                 // Update current workspace
                 currentWorkspace = obj as WorkspaceModel;
                 currentWorkspace.Saved += TriggerDependencyRegen;
@@ -109,14 +117,124 @@ namespace Dynamo.WorkspaceDependency
             PackageDependencyTable.ItemsSource = null;
             if (obj is WorkspaceModel)
             {
-                dependencyViewExtension.DependencyRegen(obj as WorkspaceModel);
+                DependencyRegen(obj as WorkspaceModel);
             }
         }
 
         private void OnWorkspacePropertyChanged(object sender, PropertyChangedEventArgs args)
         {
             if (args.PropertyName == nameof(currentWorkspace.NodeLibraryDependencies) || args.PropertyName == nameof(currentWorkspace.NodeLocalDefinitions) || args.PropertyName == nameof(currentWorkspace.ExternalFiles))
-                dependencyViewExtension.DependencyRegen(currentWorkspace);
+                DependencyRegen(currentWorkspace);
+        }
+
+        /// <summary>
+        /// Regenerate dependency table
+        /// </summary>
+        /// <param name="ws">workspace model</param>
+        /// <param name="forceCompute">flag indicating if the workspace references should be computed</param>
+        internal void DependencyRegen(WorkspaceModel ws, bool forceCompute = false)
+        {
+            RestartBanner.Visibility = Visibility.Hidden;
+            ws.ForceComputeWorkspaceReferences = forceCompute;
+
+            var packageDependencies = ws.NodeLibraryDependencies?.Where(d => d is PackageDependencyInfo).ToList();
+            var localDefinitions = ws.NodeLocalDefinitions?.Where(d => d is DependencyInfo).ToList();
+            var externalFiles = ws.ExternalFiles?.Where(d => d is DependencyInfo).ToList();
+
+            foreach (DependencyInfo info in localDefinitions)
+            {
+                try
+                {
+                    if (info.ReferenceType == ReferenceType.DYFFile)
+                    {
+                        // Try to get the Custom node information if possible.
+                        string customNodeName = info.Name.Replace(customNodeExtension, "");
+                        dependencyViewExtension.DependencyView.CustomNodeManager.TryGetNodeInfo(customNodeName, out CustomNodeInfo customNodeInfo);
+
+                        if (customNodeInfo != null)
+                        {
+                            info.Path = customNodeInfo.Path;
+                        }
+                    }
+                    info.Size = PathHelper.GetFileSize(info.Path);
+                }
+                catch (Exception ex)
+                {
+                    dependencyViewExtension.OnMessageLogged(LogMessage.Info(string.Format(Properties.Resources.DependencyViewExtensionErrorTemplate, ex.ToString())));
+                }
+
+                HasDependencyIssue = string.IsNullOrEmpty(info.Path);
+            }
+
+            foreach (DependencyInfo info in externalFiles)
+            {
+                HasDependencyIssue = string.IsNullOrEmpty(info.Path);
+            }
+
+            var pythonPackageDependencies = ws.OnRequestPackageDependencies();
+            if (pythonPackageDependencies != null)
+                packageDependencies.AddRange(pythonPackageDependencies);
+
+            if (packageDependencies.Any(d => d.State != PackageDependencyState.Loaded))
+            {
+                HasDependencyIssue = true;
+            }
+
+            if (packageDependencies.Any())
+            {
+                Boolean hasPackageMarkedForUninstall = false;
+                // If package is set to uninstall state, update the package info
+                foreach (var package in dependencyViewExtension.pmExtension.PackageLoader.LocalPackages.Where(x => 
+                x.LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForDeletion || x.LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForUnload))
+                {
+                    try
+                    {
+                        (packageDependencies.FirstOrDefault(x => x.Name == package.Name) as PackageDependencyInfo).State =
+                        PackageDependencyState.RequiresRestart;
+                        hasPackageMarkedForUninstall = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        dependencyViewExtension.OnMessageLogged(LogMessage.Info(string.Format(Properties.Resources.DependencyViewExtensionErrorTemplate, $"failure to set package uninstall state |{ ex.ToString()}")));
+                    }
+                }
+
+                RestartBanner.Visibility = hasPackageMarkedForUninstall ? Visibility.Visible: Visibility.Hidden;
+            }
+
+            var pmExtension = dependencyViewExtension.pmExtension;
+            if (pmExtension != null)
+            {
+                foreach (PackageDependencyInfo packageDependencyInfo in packageDependencies)
+                {
+                    try
+                    {
+                        var targetInfo = pmExtension.PackageLoader.LocalPackages.Where(x => x.Name == packageDependencyInfo.Name).FirstOrDefault();
+                        if (targetInfo != null)
+                        {
+                            packageDependencyInfo.Path = targetInfo.RootDirectory;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        dependencyViewExtension.OnMessageLogged(LogMessage.Info(string.Format(Properties.Resources.DependencyViewExtensionErrorTemplate, ex.ToString())));
+                    }
+                }
+            }
+
+            dataRows = packageDependencies.Select(d => new PackageDependencyRow(d as PackageDependencyInfo));
+            localDefinitionDataRows = localDefinitions.Select(d => new DependencyRow(d as DependencyInfo));
+            externalFilesDataRows = externalFiles.Select(d => new DependencyRow(d as DependencyInfo));
+
+            Packages.IsExpanded = dataRows.Count() > 0;
+            LocalDefinitions.IsExpanded = localDefinitionDataRows.Count() > 0;
+            ExternalFiles.IsExpanded = externalFilesDataRows.Count() > 0;
+
+            ws.ForceComputeWorkspaceReferences = false;
+
+            PackageDependencyTable.ItemsSource = dataRows;
+            LocalDefinitionsTable.ItemsSource = localDefinitionDataRows;
+            ExternalFilesTable.ItemsSource = externalFilesDataRows;
         }
 
         /// <summary>
@@ -124,7 +242,7 @@ namespace Dynamo.WorkspaceDependency
         /// </summary>
         internal void TriggerDependencyRegen()
         {
-            dependencyViewExtension.DependencyRegen(currentWorkspace);
+            DependencyRegen(currentWorkspace);
         }
 
         /// <summary>
@@ -132,7 +250,7 @@ namespace Dynamo.WorkspaceDependency
         /// </summary>
         internal void ForceTriggerDependencyRegen()
         {
-            dependencyViewExtension.DependencyRegen(currentWorkspace, true);
+            DependencyRegen(currentWorkspace, true);
         }
 
         /// <summary>
@@ -152,6 +270,7 @@ namespace Dynamo.WorkspaceDependency
             loadedParams = p;
             packageInstaller = p.PackageInstaller;
             dependencyViewExtension = viewExtension;
+            DependencyRegen(currentWorkspace);
             HomeWorkspaceModel.WorkspaceClosed += this.CloseExtensionTab;
         }
 
@@ -230,7 +349,7 @@ namespace Dynamo.WorkspaceDependency
                     info.Path = targetInfo.RootDirectory;
                     // Mark the current workspace dirty for save
                     currentWorkspace.HasUnsavedChanges = true;
-                    dependencyViewExtension.DependencyRegen(currentWorkspace);
+                    DependencyRegen(currentWorkspace);
                 }
             }
         }
@@ -249,16 +368,19 @@ namespace Dynamo.WorkspaceDependency
             PackageDependencyTable.ItemsSource = null;
             LocalDefinitionsTable.ItemsSource = null;
             ExternalFilesTable.ItemsSource = null;
+            dataRows = null;
+            localDefinitionDataRows = null;
+            externalFilesDataRows = null;
         }
 
         private void Refresh_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            dependencyViewExtension.DependencyRegen(currentWorkspace);
+            DependencyRegen(currentWorkspace);
         }
 
         private void ForceRefresh_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            dependencyViewExtension.DependencyRegen(currentWorkspace, true);
+            DependencyRegen(currentWorkspace, true);
         }
     }
 

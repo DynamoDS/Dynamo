@@ -244,7 +244,7 @@
 
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.ShortcutExportWorkspace}"
-                                  Command="{Binding ValidateWorkSpaceBeforeToExportAsImageCommand}"
+                                  Command="{Binding ShowSaveImageDialogAndSaveResultCommand}"
                                   Name="saveImage">
                             <MenuItem.ToolTip>
                                 <ToolTip Content="{x:Static p:Resources.DynamoViewToolbarExportButtonTooltip}" Style="{StaticResource GenericToolTipLight}"/>
@@ -253,7 +253,7 @@
 
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.ShortcutExportBackground3DPreview}"
-                                  Command="{Binding ValidateWorkSpaceBeforeToExportAsImageCommand}"
+                                  Command="{Binding ShowSaveImageDialogAndSaveResultCommand}"
                                   CommandParameter="{x:Static p:Resources.ScreenShotFrom3DParameter}"
                                   Name="save3DImage">
                             <MenuItem.ToolTip>
