@@ -1,4 +1,5 @@
 using Dynamo.PackageManager;
+using HelixToolkit.Wpf.SharpDX;
 using System;
 using System.Globalization;
 using System.Windows;
@@ -129,6 +130,25 @@ namespace Dynamo.PackageManager.UI
                 return !boolValue ? Visibility.Visible : Visibility.Collapsed;
 
             return boolValue ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Converts null or empty string to Visibility Collapsed 
+    /// </summary>
+    public class EmptyStringToCollapsedConverter : IValueConverter
+    {
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var boolValue = value is string s && !string.IsNullOrEmpty(s);
+
+            return boolValue ? Visibility.Collapsed : Visibility.Visible;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
