@@ -127,6 +127,7 @@ namespace Dynamo.Core
         {
             if (LoginStateChanged != null)
             {
+                singleState = status;
                 LoginStateChanged(status);
             }
         }
