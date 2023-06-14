@@ -51,6 +51,8 @@ namespace Dynamo.Configuration
         private string lastUpdateDownloadPath;
         private int maxNumRecentFiles;
         private bool isBackgroundGridVisible;
+        private float gridScaleFactor;
+        private Configurations.Units currentHostUnits;
         private double defaultScaleFactor;
         private bool disableTrustWarnings = false;
         private bool isNotificationCenterEnabled;
@@ -141,6 +143,11 @@ namespace Dynamo.Configuration
         public string Locale { get; set; }
 
         /// <summary>
+        /// Contains the currently selected unit used for scaling the graphic helpers (grids, axes)
+        /// </summary>
+        public string GraphicScaleUnit { get; set; }
+
+        /// <summary>
         /// The height of the console display.
         /// </summary>
         public int ConsoleHeight { get; set; }
@@ -149,6 +156,11 @@ namespace Dynamo.Configuration
         /// Indicates if preview bubbles should be displayed on nodes.
         /// </summary>
         public bool ShowPreviewBubbles { get; set; }
+
+        /// <summary>
+        /// Indicates if Host units should be used for graphic helpers for Dynamo Revit
+        /// </summary>
+        public bool UseHostScaleUnits { get; set; }
 
         /// <summary>
         /// Indicates if code block node line numbers should  be displayed.
@@ -237,6 +249,42 @@ namespace Dynamo.Configuration
                 isBackgroundGridVisible = value;
 
                 RaisePropertyChanged(nameof(IsBackgroundGridVisible));
+            }
+        }
+
+        /// <summary>
+        /// Sets the background grid element scale
+        /// </summary>
+        public float GridScaleFactor
+        {
+            get
+            {
+                return gridScaleFactor;
+            }
+            set
+            {
+                if (value == gridScaleFactor) return;
+                gridScaleFactor = value;
+
+                RaisePropertyChanged(nameof(GridScaleFactor));
+            }
+        }
+
+        /// <summary>
+        /// The current Host document units. Will be updated the first time Dynamo is started
+        /// </summary>
+        internal Configurations.Units CurrentHostUnits
+        {
+            get
+            {
+                return currentHostUnits;
+            }
+            set
+            {
+                if (value == currentHostUnits) return;
+                currentHostUnits = value;
+
+                RaisePropertyChanged(nameof(CurrentHostUnits));
             }
         }
 
@@ -539,6 +587,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// This defines if user wants to see the Iron Python Extension Dialog box on every new session.
         /// </summary>
+        [Obsolete("This property is deprecated and will be removed in a future version of Dynamo")]
         public bool IsIronPythonDialogDisabled { get; set; }
 
         /// <summary>
@@ -804,6 +853,9 @@ namespace Dynamo.Configuration
             ShowConnectorToolTip = true;
             ConnectorType = ConnectorType.BEZIER;
             IsBackgroundGridVisible = true;
+            GraphicScaleUnit = Configurations.SupportedUnits.FirstOrDefault().Key.ToString();
+            GridScaleFactor = (float)Configurations.SupportedUnits.FirstOrDefault().Value;
+            UseHostScaleUnits = true;
             PackageDirectoriesToUninstall = new List<string>();
             NumberFormat = "f3";
             UseHardwareAcceleration = true;

@@ -50,5 +50,15 @@ namespace Dynamo.Notifications.View
                 positionMethod.Invoke(this, null);
             }
         }
+
+        internal void UpdatePopupSize()
+        {
+            BackgroundRectangle.Rect = new Rect(notificationsUIViewModel.PopupBordersOffSet,
+                                                notificationsUIViewModel.PopupBordersOffSet,
+                                                notificationsUIViewModel.PopupRectangleWidth,
+                                                notificationsUIViewModel.PopupRectangleHeight);
+
+            this.Height = notificationsUIViewModel.PopupRectangleHeight + notificationsUIViewModel.PopupBordersOffSet + 10;
+        }
     }
 }

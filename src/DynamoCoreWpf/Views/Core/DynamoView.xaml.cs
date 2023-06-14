@@ -232,6 +232,8 @@ namespace Dynamo.Controls
             this.dynamoViewModel.Model.WorkspaceSaving += OnWorkspaceSaving;
             this.dynamoViewModel.Model.WorkspaceOpened += OnWorkspaceOpened;
             this.dynamoViewModel.RequestEnableShortcutBarItems += DynamoViewModel_RequestEnableShortcutBarItems;
+            this.dynamoViewModel.RequestExportWorkSpaceAsImage += OnRequestExportWorkSpaceAsImage;
+
             FocusableGrid.InputBindings.Clear();
 
             if (fileTrustWarningPopup == null)
@@ -241,6 +243,25 @@ namespace Dynamo.Controls
             if (!DynamoModel.IsTestMode && Application.Current != null)
             {
                 Application.Current.MainWindow = this;
+            }
+        }
+
+        private void OnRequestExportWorkSpaceAsImage(object parameter)
+        {
+            var workspace = this.ChildOfType<WorkspaceView>();
+            WorkspaceView.ExportImageResult isCurrentWorkSpaceValidForImage = workspace.IsWorkSpaceRenderValidAsImage(true);
+
+            if (isCurrentWorkSpaceValidForImage== WorkspaceView.ExportImageResult.IsValidAsImage)
+            {
+                dynamoViewModel.ShowSaveImageDialogAndSave(parameter);
+            }
+            else if (isCurrentWorkSpaceValidForImage == WorkspaceView.ExportImageResult.EmptyDrawing)
+            {
+                dynamoViewModel.MainGuideManager?.CreateRealTimeInfoWindow(Res.CantExportWorkspaceAsImageEmptyMessage, true);
+            }
+            else if (isCurrentWorkSpaceValidForImage == WorkspaceView.ExportImageResult.NotValidAsImage)
+            {
+                dynamoViewModel.MainGuideManager?.CreateRealTimeInfoWindow(Res.CantExportWorkspaceAsImageNotValidMessage, true);
             }
         }
 
@@ -1528,7 +1549,7 @@ namespace Dynamo.Controls
         private void DynamoViewModelRequestSaveImage(object sender, ImageSaveEventArgs e)
         {
             var workspace = this.ChildOfType<WorkspaceView>();
-            workspace.SaveWorkspaceAsImage(e.Path);
+            workspace.IsWorkSpaceRenderValidAsImage(false, e.Path);
         }
 
         private void DynamoViewModelRequestSave3DImage(object sender, ImageSaveEventArgs e)
@@ -1928,6 +1949,7 @@ namespace Dynamo.Controls
             DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved -= CheckTestFlags;
 
             this.dynamoViewModel.RequestEnableShortcutBarItems -= DynamoViewModel_RequestEnableShortcutBarItems;
+            this.dynamoViewModel.RequestExportWorkSpaceAsImage -= OnRequestExportWorkSpaceAsImage;
 
             this.Dispose();
             sharedViewExtensionLoadedParams?.Dispose();
