@@ -18,7 +18,13 @@ namespace NodeDocumentationMarkdownGeneratorTests
         private static readonly string DynamoCoreDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
         private static readonly string DynamoCoreNodesDir = Path.Combine(DynamoCoreDir, "Nodes");
         private static string DynamoRepoRoot = new DirectoryInfo(DynamoCoreDir).Parent.Parent.Parent.FullName;
-        private static readonly string NodeGeneratorToolBuildPath = Path.Combine(DynamoRepoRoot, "src","tools", "NodeDocumentationMarkdownGenerator","bin");
+        private static readonly string NodeGeneratorToolBuildPath = Path.Combine(DynamoRepoRoot, "src","tools", "NodeDocumentationMarkdownGenerator","bin",
+#if NET48
+    "AnyCPU"
+#else
+    "NET60_Windows"
+#endif
+            );
         private static readonly string toolsTestFilesDirectory = Path.GetFullPath(Path.Combine(DynamoRepoRoot, "test","Tools", "docGeneratorTestFiles"));
         private static readonly string testLayoutSpecPath = Path.Combine(toolsTestFilesDirectory, "testlayoutspec.json");
         private static readonly string mockedDictionaryRoot = Path.Combine(toolsTestFilesDirectory, "sampledictionarycontent");
