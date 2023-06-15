@@ -5,7 +5,9 @@
   <LibraryWidth>300</LibraryWidth>
   <Locale>zh-CN</Locale>
   <ConsoleHeight>123</ConsoleHeight>
+  <GraphicScaleUnit>Feet</GraphicScaleUnit>
   <ShowPreviewBubbles>false</ShowPreviewBubbles>
+  <UseHostScaleUnits>false</UseHostScaleUnits>
   <ShowCodeBlockLineNumber>false</ShowCodeBlockLineNumber>
   <ShowConnector>false</ShowConnector>
   <ShowConnectorToolTip>false</ShowConnectorToolTip>
@@ -18,6 +20,7 @@
       <IsActive>false</IsActive>
     </BackgroundPreviewActiveState>
   </BackgroundPreviews>
+  <GridScaleFactor>10</GridScaleFactor>
   <IsBackgroundGridVisible>false</IsBackgroundGridVisible>
   <DefaultScaleFactor>-2</DefaultScaleFactor>
   <RenderPrecision>8</RenderPrecision>
