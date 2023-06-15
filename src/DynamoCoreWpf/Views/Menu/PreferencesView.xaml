@@ -21,7 +21,10 @@
         mc:Ignorable="d" 
         Height="480" 
         Width="665"
-        ResizeMode="NoResize">
+        ResizeMode="NoResize"
+        BorderThickness="0"
+        AllowsTransparency="True"
+        Background="Transparent">
 
     <!--Using the Styles from the SharedResourcesDictionary located in DynamoCoreWpf/UI/Themes/DynamoModern.xaml-->
     <Window.Resources>
@@ -133,8 +136,13 @@
     </Window.Resources>
 
     <!--This is the main row of the Preference Window-->
-    <Grid x:Name="mainGrid"
-    	  Background="{StaticResource PreferencesWindowBackgroundColor}">
+    <Border x:Name="mainBorder"
+            BorderBrush="{StaticResource WorkspaceBackgroundHomeBrush}"
+            BorderThickness="2"
+            CornerRadius="4"
+            Background="{StaticResource PreferencesWindowBackgroundColor}">
+        <Grid x:Name="mainGrid"
+    	  Background="Transparent">
         <Grid.Resources>
             <sys:Double x:Key="ToggleButtonWidth">40</sys:Double>
             <sys:Double x:Key="ToggleButtonHeight">20</sys:Double>
@@ -1906,4 +1914,5 @@
             </Grid>
         </Grid>
     </Grid>
+    </Border>
 </Window>
