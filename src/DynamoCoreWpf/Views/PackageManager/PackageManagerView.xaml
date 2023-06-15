@@ -170,7 +170,8 @@
                                 <!--This Grid contains the Publish Packages tab-->
                                 <Grid x:Name="PublishPackagesTab"
                                       Margin="1"
-                                      HorizontalAlignment="Stretch">
+                                      HorizontalAlignment="Stretch"
+                                      VerticalAlignment="Stretch">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*" />
                                     </Grid.RowDefinitions>
@@ -189,13 +190,16 @@
                                 <!--This Grid contains the Installed Packages tab-->
                                 <Grid x:Name="InstalledPackagesTab"
                                       Margin="1"
-                                      HorizontalAlignment="Stretch">
+                                      HorizontalAlignment="Stretch"
+                                      VerticalAlignment="Stretch">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
 
                                     <wpfControls:InstalledPackagesControl x:Name="installedPackages"
-                                                                          DataContext="{Binding PackageManagerViewModel }" />
+                                                                          DataContext="{Binding PackageManagerViewModel }"
+                                                                          VerticalAlignment="Stretch"
+                                                                          Height="650"/>
 
                                 </Grid>
                             </Border>
@@ -227,6 +231,7 @@
                                 <Grid x:Name="PackageSettingsTab"
                                       Margin="1"
                                       HorizontalAlignment="Stretch"
+                                      VerticalAlignment="Stretch"
                                       DataContext="{Binding Path=PackageManagerViewModel.PreferencesViewModel, ElementName=PackageManagerWindow}">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />

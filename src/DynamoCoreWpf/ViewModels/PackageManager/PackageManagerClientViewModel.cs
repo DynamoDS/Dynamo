@@ -201,7 +201,7 @@ namespace Dynamo.ViewModels
         #region Properties/Fields
 
         private readonly string QUARANTINED = "quarantined";
-        public PackageManagerSearchView Owner { get; set; }
+        public Window Owner { get; set; }
 
         ObservableCollection<PackageUploadHandle> _uploads = new ObservableCollection<PackageUploadHandle>();
         public ObservableCollection<PackageUploadHandle> Uploads
