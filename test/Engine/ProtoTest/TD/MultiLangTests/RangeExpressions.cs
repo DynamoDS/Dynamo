@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
@@ -2021,7 +2021,7 @@ i = [Imperative]
         }
 
         [Test]
-        [Category("RegressionTests")]
+        [Category("RegressionTests"), Category("FailureNET6")]
         public void TestRangeExpressionOverLimit01()
         {
             string src = @"x = 1..200000000;";
@@ -2039,7 +2039,7 @@ i = [Imperative]
         }
 
         [Test]
-        [Category("RegressionTests")]
+        [Category("RegressionTests"), Category("FailureNET6")]
         public void TestRangeExpressionOverLimit03()
         {
             string src = @"x = 1..10..#200000000;";
