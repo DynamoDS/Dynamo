@@ -22,19 +22,20 @@ jobs:
       run: |
         cat pr/NR
         echo "PRNumber=`cat pr/NR`" >> "$GITHUB_OUTPUT"
+        echo "WFNumber=`cat pr/WR`" >> "$GITHUB_OUTPUT"
         echo "Diff1=`cat pr/Diff1`" >> "$GITHUB_OUTPUT"
         echo "Diff2=`cat pr/Diff2`" >> "$GITHUB_OUTPUT"
         echo "TIMESTAMP=`date +%Y-%m-%d-%H:%M:%S`" >> "$GITHUB_OUTPUT"
   outputs:
     PRNumber: ${{ steps.extract.outputs.PRNumber }}
+    WFNumber: ${{ steps.extract.outputs.WFNumber }}
     Diff1: ${{ steps.extract.outputs.Diff1 }}
     Diff2: ${{ steps.extract.outputs.Diff2 }}
     TIMESTAMP: ${{ steps.extract.outputs.TIMESTAMP }}
- diff-cache-cleanup:
+ diff-cache-cleanup-pr:
     runs-on: ubuntu-latest
     needs: [fetch-PR-Data]
-    if: >
-      github.event.workflow_run.event == 'pull_request'
+    if: github.event.workflow_run.event == 'pull_request'
     steps:
       - name: Cleanup Caches
         run: |
@@ -58,10 +59,35 @@ jobs:
           done
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+ diff-cache-cleanup-push:
+    runs-on: ubuntu-latest
+    needs: [fetch-PR-Data]
+    if: github.event.workflow_run.event == 'push'
+    steps:
+      - name: Cleanup Caches
+        run: |
+          gh extension install actions/gh-actions-cache
+          
+          WNNUM=${{ needs.fetch-PR-Data.outputs.WFNumber }}
+          echo $WNNUM
+          ## Setting this to not fail the workflow while deleting cache keys. 
+          set +e
+          echo "Deleting caches..."
+          echo "Deleting: $WNNUM-cache-net60Win-current"
+          gh actions-cache delete $WNNUM-cache-net60Win-current --confirm
+          echo "Deleting: $WNNUM-cache-current"
+          gh actions-cache delete $WNNUM-cache-current --confirm
+          echo "Deleting: $WNNUM-cache-master"
+          gh actions-cache delete $WNNUM-cache-net60Win-master --confirm
+          echo "Deleting: $WNNUM-cache-net60Win-master"
+          gh actions-cache delete $WNNUM-cache-master --confirm
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
  comments-pr-workflow:
     runs-on: ubuntu-latest
     needs: [fetch-PR-Data]
-    if: ${{ (github.event.workflow_run.event == 'pull_request') && (needs.fetch-PR-Data.outputs.Diff1 != '') }}
+    if: github.event.workflow_run.event == 'pull_request'
     steps:
       - name: Download PR Data
         uses: dawidd6/action-download-artifact@v2
