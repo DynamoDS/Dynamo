@@ -86,10 +86,11 @@ namespace Dynamo.PackageManager.UI
         {
             RequestLoadLayoutSpecs(packageManager.PackageLoader.LocalPackages);
             var packagesToCheck = packageManager?.PackageLoader.LocalPackages;
-            if (packagesToCheck != null)
+            if(packagesToCheck != null)
             {
                 RaisePackageHostNotifications(packagesToCheck);
             }
+
         }
 
         public void Shutdown()
