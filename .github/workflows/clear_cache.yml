@@ -1,5 +1,5 @@
 # Clean up caches created by BinDiff job
-name: Dynamo-CacheCleanup
+name: Dynamo-PostBinDiffProcess
 on:
   workflow_run:
     workflows: [Dynamo-BinDiff]
@@ -59,8 +59,9 @@ jobs:
  comments-workflow-test:
     runs-on: ubuntu-latest
     needs: [fetch-PR-Data]
-    if: >
-      github.event.workflow_run.event == 'pull_request'
+    if: |
+      (github.event.workflow_run.event == 'pull_request') &&
+      ${{ (needs.fetch-PR-Data.outputs.Diff1 != '') }}
     steps:
       - name: Download PR Data
         uses: dawidd6/action-download-artifact@v2
@@ -79,21 +80,35 @@ jobs:
           body-includes: Files Added/Deleted
           direction: last
       - name: Create comment
-        if: steps.fc.outputs.comment-id == ''
+        if: |
+          steps.fc.outputs.comment-id == '' &&
+          (needs.fetch-PR-Data.outputs.Diff1 != '' || needs.fetch-PR-Data.outputs.Diff2 != '')
         uses: peter-evans/create-or-update-comment@v3
         with:
           issue-number: ${{ needs.fetch-PR-Data.outputs.PRNumber }}
           body: |
             ${{ needs.fetch-PR-Data.outputs.Diff1 }}
             ${{ needs.fetch-PR-Data.outputs.Diff2 }}
-          reactions: rocket
+          reactions: eyes
       - name: Update comment
-        if: steps.fc.outputs.comment-id != ''
+        if: |
+          steps.fc.outputs.comment-id != '' &&
+          (needs.fetch-PR-Data.outputs.Diff1 != '' || needs.fetch-PR-Data.outputs.Diff2 != '')
         uses: peter-evans/create-or-update-comment@v3
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}
+          edit-mode: replace
           body: |
             ${{ needs.fetch-PR-Data.outputs.Diff1 }}
             ${{ needs.fetch-PR-Data.outputs.Diff2 }}
-          reactions: hooray
+      - name: Update comment resolved
+        if: |
+          steps.fc.outputs.comment-id != '' &&
+          (needs.fetch-PR-Data.outputs.Diff1 == '' && needs.fetch-PR-Data.outputs.Diff2 == '')
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          body: "Bin-Diff Issue Resolved."
+          reactions-edit-mode: replace
+          reactions: +1
           

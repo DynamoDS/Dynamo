@@ -2,12 +2,6 @@
 name: Dynamo-BinDiff
 on: [push,pull_request]
 jobs:
- test-env:
-    runs-on: windows-latest
-    steps:
-      - name: testing vars
-        run: |
-          echo "TestVar=test var" >> $Env:GITHUB_OUTPUT
  build-current:
   runs-on: windows-latest
   steps:
