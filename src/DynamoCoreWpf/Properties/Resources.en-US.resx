@@ -3629,7 +3629,7 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   </data>
   <data name="PreferencesGrahicHelpersScaleTooltip" xml:space="preserve">
     <value>Select a scale for the background graphic helpers (grids, axes).</value>
-  </data>    
+  </data>
   <data name="LibraryLoadFailureMessageSuffix" xml:space="preserve">
     <value>See the console log for the details of the import failure.</value>
   </data>
@@ -3645,5 +3645,10 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="CantExportWorkspaceAsImageNotValidMessage" xml:space="preserve">
     <value>The workspace cannot be exported as an image because it contains nodes that are too far away from each other.</value>
   </data>
+  <data name="PreferencesViewSettingIncludeTimestampExportPath" xml:space="preserve">
+    <value>Include Timestamp in Export Path</value>
+  </data>
+  <data name="PreferencesViewIncludeTimestampExportPathTooltip" xml:space="preserve">
+    <value>This setting controls if the export image path from workspace or background geometry would include timestamp.</value>
+  </data>
 </root>
-
