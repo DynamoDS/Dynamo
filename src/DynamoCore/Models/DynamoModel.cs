@@ -909,7 +909,6 @@ namespace Dynamo.Models
             UpdateManager.Log += UpdateManager_Log;
             if (!IsTestMode && !IsHeadless)
             {
-                // ALIAS does needs a total network traffic blackout.
                 DefaultUpdateManager.CheckForProductUpdate(UpdateManager);
             }
 
