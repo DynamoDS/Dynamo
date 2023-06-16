@@ -230,7 +230,7 @@ namespace Dynamo.Scheduler
                 var previousMeshVertexCount = package.MeshVertexCount;
 
                 //Todo Plane tessellation needs to be handled here vs in LibG currently
-                bool instancingEnabled = DynamoModel.FeatureFlags?.CheckFeatureFlag<bool>("graphics-primitive-instancing", false) ?? false;
+                bool instancingEnabled = DynamoModel.FeatureFlags.CheckFeatureFlag<bool>("graphics-primitive-instancing", false);
                 if (graphicItem is Plane plane)
                 {
                     CreatePlaneTessellation(package, plane);
