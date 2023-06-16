@@ -115,6 +115,21 @@ namespace Dynamo.Configuration
         public bool IsAnalyticsReportingApproved { get; set; }
 
         /// <summary>
+        /// This defines if the user export file path would include timestamp
+        /// </summary>
+        public bool IsTimeStampIncludedInExportFilePath
+        {
+            get
+            {
+                return isTimeStampIncludedInExportFilePath;
+            }
+            set
+            {
+                isTimeStampIncludedInExportFilePath = value;
+            }
+        }
+
+        /// <summary>
         /// Indicates whether ADP analytics reporting is approved or not.
         /// Note that the getter will communicate to a analytics server which might be slow.
         /// This API should only be used in UI scenarios (not in performance sensitive areas)
@@ -666,21 +681,6 @@ namespace Dynamo.Configuration
             set
             {
                 isStaticSplashScreenEnabled = value;
-            }
-        }
-
-        /// <summary>
-        /// This defines if the user export file path would include timestamp
-        /// </summary>
-        public bool IsTimeStampIncludedInExportFilePath
-        {
-            get
-            {
-                return isTimeStampIncludedInExportFilePath;
-            }
-            set
-            {
-                isTimeStampIncludedInExportFilePath = value;
             }
         }
 
