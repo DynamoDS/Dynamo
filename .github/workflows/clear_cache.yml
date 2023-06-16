@@ -56,12 +56,10 @@ jobs:
           done
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
- comments-workflow-test:
+ comments-pr-workflow:
     runs-on: ubuntu-latest
     needs: [fetch-PR-Data]
-    if: |
-      (github.event.workflow_run.event == 'pull_request') &&
-      ${{ (needs.fetch-PR-Data.outputs.Diff1 != '') }}
+    if: ${{ (github.event.workflow_run.event == 'pull_request') && (needs.fetch-PR-Data.outputs.Diff1 != '') }}
     steps:
       - name: Download PR Data
         uses: dawidd6/action-download-artifact@v2
@@ -89,7 +87,6 @@ jobs:
           body: |
             ${{ needs.fetch-PR-Data.outputs.Diff1 }}
             ${{ needs.fetch-PR-Data.outputs.Diff2 }}
-          reactions: eyes
       - name: Update comment
         if: |
           steps.fc.outputs.comment-id != '' &&
