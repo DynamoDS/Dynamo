@@ -411,6 +411,10 @@ namespace Dynamo.Applications
                 IsServiceMode = isServiceMode,
                 Preferences = PreferenceSettings.Instance
             };
+            config.AuthProvider = CLImode ? null : new Core.IDSDKManager();
+            config.UpdateManager = CLImode ? null : InitializeUpdateManager();
+            config.StartInTestMode = CLImode;
+            config.PathResolver = CLImode ? new CLIPathResolver(preloaderLocation, userDataFolder, commonDataFolder) as IPathResolver : new SandboxPathResolver(preloaderLocation) as IPathResolver;
 
             var model = DynamoModel.Start(config);
             return model;
