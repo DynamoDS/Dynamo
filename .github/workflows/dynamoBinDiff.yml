@@ -85,7 +85,7 @@ jobs:
           echo "***Running the binary diff job between the current branch and the master branch!***"
           cd "$Env:GITHUB_WORKSPACE\Dynamo\.github\scripts"
           .\bin_diff.ps1 $Env:GITHUB_WORKSPACE\master_Dynamo\bin\AnyCPU\Debug,$Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Debug -src ${{ github.job }}
-          echo "Diff1=`cat result.txt`" >> "$GITHUB_OUTPUT"
+          echo "Diff1=`cat result.txt`" >> $GITHUB_OUTPUT
   outputs:
     Diff1: ${{ steps.Diff1.outputs.Diff1 }}
  build-dotnet-windows-current:
@@ -177,7 +177,7 @@ jobs:
           echo "***Running the binary diff job between the current branch and the master branch of NET60-Windows Config!***"
           cd "$Env:GITHUB_WORKSPACE\net60_Win_Dynamo\.github\scripts"
           .\bin_diff.ps1 $Env:GITHUB_WORKSPACE\master_net60_Win_Dynamo\bin\NET60_Windows\Release,$Env:GITHUB_WORKSPACE\net60_Win_Dynamo\bin\NET60_Windows\Release -src ${{ github.job }}
-          echo "Diff2=`cat result.txt`" >> "$GITHUB_OUTPUT"
+          echo "Diff2=`cat result.txt`" >> $GITHUB_OUTPUT
   outputs:
     Diff2: ${{ steps.Diff2.outputs.Diff2 }}
  save-PR-Data:
