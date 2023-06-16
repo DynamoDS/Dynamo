@@ -368,6 +368,22 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Controls the IsChecked property in the selecting to include timestamp for export path section
+        /// </summary>
+        public bool IsTimeStampIncludedInExportFilePath
+        {
+            get
+            {
+                return preferenceSettings.IsTimeStampIncludedInExportFilePath;
+            }
+            set
+            {
+                preferenceSettings.IsTimeStampIncludedInExportFilePath = value;
+                RaisePropertyChanged(nameof(IsTimeStampIncludedInExportFilePath));
+            }
+        }
+
+        /// <summary>
         /// Controls the Enabled property in the Show Run Preview toogle button
         /// </summary>
         public bool RunPreviewEnabled
