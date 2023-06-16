@@ -21,6 +21,9 @@ param (
   [string]$DiffBuildSource
 )
 
+### GLOBAL VARIABLES ###
+$global:storeResult=$null;
+
 ### FUNCTION DEFINITIONS ###
 
 # SETS WORKING DIRECTORY FOR .NET #
@@ -169,7 +172,7 @@ function GetFilesWithHash {
 }
 
 function Format-Color([hashtable] $Colors = @{}, [switch] $SimpleMatch) {
-	$lines = ($input | Out-String) -replace "`r", "" -split "`n"
+  $lines = ($input | Out-String) -replace "`r", "" -split "`n"
   $addedCount = 0
   $deletedCount = 0
 	foreach($line in $lines) {
@@ -191,16 +194,20 @@ function Format-Color([hashtable] $Colors = @{}, [switch] $SimpleMatch) {
 			Write-Host $line
 		}
 	}
-    if($addedCount -gt 0 -or $deletedCount -gt 0){
-        $msg=''
-        if($addedCount -gt 0) {$msg+="$addedCount new file(s) have been added"}
-        if($addedCount -gt 0 -and $deletedCount -gt 0){$msg+=' and '}
-        if($deletedCount -gt 0) {$msg+="$deletedCount file(s) have been deleted!"}
+  $annotation=$null
+  if($addedCount -gt 0 -or $deletedCount -gt 0){
+      $msg=''
+      if($addedCount -gt 0) {$msg+="$addedCount new file(s) have been added"}
+      if($addedCount -gt 0 -and $deletedCount -gt 0){$msg+=' and '}
+      if($deletedCount -gt 0) {$msg+="$deletedCount file(s) have been deleted!"}
 
-        Write-Host "::warning title=($DiffBuildSource) Files Added/Deleted::$msg"
-    } else{
-        Write-Host "::notice title=($DiffBuildSource) No New Files Added/Deleted::The job has detected that no new files were added or deleted."
-    }
+      $msg="Files Added/Deleted::$msg"
+      $annotation=$msg
+      Write-Host "::warning title=($DiffBuildSource) $msg"
+  } else{
+      Write-Host "::notice title=($DiffBuildSource) No New Files Added/Deleted::The job has detected that no new files were added or deleted."
+  }
+  $global:storeResult=$annotation
 }
 
 filter UpdatedOnlyFilter{
@@ -269,6 +276,9 @@ $RightPath  = RequirePath path/to/right $Compare[1] container
 $Diff       = DiffDirectories $LeftPath $RightPath
 $LeftDiff   = $Diff | where {$_.SideIndicator -eq "<="} | select RelativePath,Hash
 $RightDiff   = $Diff | where {$_.SideIndicator -eq "=>"} | select RelativePath,Hash
+
+"$global:storeResult" > result.txt
+
 if($ExportSummary) {
   $ExportSummary = ResolvePath path/to/summary/dir $ExportSummary
   MakeDirP $ExportSummary
