@@ -58,6 +58,7 @@ namespace Dynamo.Configuration
         private bool isNotificationCenterEnabled;
         private bool isEnablePersistExtensionsEnabled;
         private bool isStaticSplashScreenEnabled;
+        private bool isTimeStampIncludedInExportFilePath;
         private bool isCreatedFromValidFile = true;
         private string backupLocation;
 
@@ -669,6 +670,21 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
+        /// This defines if the user export file path would include timestamp
+        /// </summary>
+        public bool IsTimeStampIncludedInExportFilePath
+        {
+            get
+            {
+                return isTimeStampIncludedInExportFilePath;
+            }
+            set
+            {
+                isTimeStampIncludedInExportFilePath = value;
+            }
+        }
+
+        /// <summary>
         /// Engine used by default for new Python script and string nodes. If not empty, this takes precedence over any system settings.
         /// </summary>
         public string DefaultPythonEngine
@@ -889,6 +905,7 @@ namespace Dynamo.Configuration
             HideAutocompleteMethodOptions = false;
             EnableNotificationCenter = true;
             isStaticSplashScreenEnabled = true;
+            isTimeStampIncludedInExportFilePath = true;
             DefaultPythonEngine = string.Empty;
             ViewExtensionSettings = new List<ViewExtensionSettings>();
             GroupStyleItemsList = new List<GroupStyleItem>();

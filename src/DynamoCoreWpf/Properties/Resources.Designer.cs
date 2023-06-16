@@ -7008,6 +7008,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This setting controls if the export image path from workspace or background geometry would include timestamp..
+        /// </summary>
+        public static string PreferencesViewIncludeTimestampExportPathTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesViewIncludeTimestampExportPathTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Language.
         /// </summary>
         public static string PreferencesViewLanguageLabel {
@@ -7121,6 +7130,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewSelectedPackagePathForDownload {
             get {
                 return ResourceManager.GetString("PreferencesViewSelectedPackagePathForDownload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Include TImestamp in Export Path.
+        /// </summary>
+        public static string PreferencesViewSettingIncludeTimestampExportPath {
+            get {
+                return ResourceManager.GetString("PreferencesViewSettingIncludeTimestampExportPath", resourceCulture);
             }
         }
         
