@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -14,7 +12,6 @@ using Dynamo.Engine;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Interfaces;
-using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
@@ -937,48 +934,49 @@ namespace Dynamo.ViewModels
         /// <param name="useLucene"> Temporary flag that will be used for searching using Lucene.NET </param>
         internal IEnumerable<NodeSearchElementViewModel> Search(string search, bool useLucene)
         {
-            string searchTerm = search.Trim();
-            var candidates = new List<NodeSearchElementViewModel>();
-
-            string[] fnames = Configurations.IndexFields;
-
-            var parser = new MultiFieldQueryParser(Configurations.LuceneNetVersion, fnames, Model.Analyzer)
+            if (useLucene)
             {
-                AllowLeadingWildcard = true,
-                DefaultOperator = Operator.OR,
-                FuzzyMinSim = 0.5f
-            };
-
-            Query query = parser.Parse(CreateSearchQuery(fnames, searchTerm));
-
-            //indicate we want the first 50 results
-            TopDocs topDocs = Model.Searcher.Search(query, n: 50);
-            for (int i = 0; i < topDocs.ScoreDocs.Length; i++)
-            {
-                //read back a doc from results
-                Document resultDoc = Model.Searcher.Doc(topDocs.ScoreDocs[i].Doc);
-
-                // TODO: use consts in static class for the Lucene field names
-                string name = resultDoc.Get(nameof(Configurations.IndexFieldsEnum.Name));
-
-                string docName = resultDoc.Get(nameof(Configurations.IndexFieldsEnum.DocName));
-                string cat = resultDoc.Get(nameof(Configurations.IndexFieldsEnum.FullCategoryName));
-                string fulldesc = resultDoc.Get(nameof(Configurations.IndexFieldsEnum.Description));
-
-                if (!string.IsNullOrEmpty(docName))
+                string searchTerm = search.Trim();
+                var candidates = new List<NodeSearchElementViewModel>();
+                var parser = new MultiFieldQueryParser(LuceneConfig.LuceneNetVersion, LuceneConfig.IndexFields, Model.Analyzer)
                 {
-                    //code for setting up documentation info
-                }
-                else
+                    AllowLeadingWildcard = true,
+                    DefaultOperator = LuceneConfig.DefaultOperator,
+                    FuzzyMinSim = LuceneConfig.MinimumSimilarity
+                };
+
+                Query query = parser.Parse(CreateSearchQuery(LuceneConfig.IndexFields, searchTerm));
+                TopDocs topDocs = Model.Searcher.Search(query, n: LuceneConfig.DefaultResultsCount);
+
+                for (int i = 0; i < topDocs.ScoreDocs.Length; i++)
                 {
-                    var foundNode = FindViewModelForNodeNameAndCategory(name, cat);
-                    if (foundNode != null)
+                    //read back a doc from results
+                    Document resultDoc = Model.Searcher.Doc(topDocs.ScoreDocs[i].Doc);
+
+                    string name = resultDoc.Get(nameof(LuceneConfig.IndexFieldsEnum.Name));
+                    string docName = resultDoc.Get(nameof(LuceneConfig.IndexFieldsEnum.DocName));
+                    string cat = resultDoc.Get(nameof(LuceneConfig.IndexFieldsEnum.FullCategoryName));
+                    string fulldesc = resultDoc.Get(nameof(LuceneConfig.IndexFieldsEnum.Description));
+
+                    if (!string.IsNullOrEmpty(docName))
                     {
-                        candidates.Add(foundNode);
+                        //code for setting up documentation info
+                    }
+                    else
+                    {
+                        var foundNode = FindViewModelForNodeNameAndCategory(name, cat);
+                        if (foundNode != null)
+                        {
+                            candidates.Add(foundNode);
+                        }
                     }
                 }
+                return candidates;
             }
-            return candidates;
+            else
+            {
+                return Search(search);
+            }
         }
 
         /// <summary>
@@ -991,7 +989,7 @@ namespace Dynamo.ViewModels
         /// Then, the same fuzzy logic will be applied to each part of the search term.
         /// </summary>
         /// <param name="fields">All fields to be searched in.</param>
-        /// <param name="searchTerm">Search key to be searched for.</param>
+        /// <param name="searchKey">Search key to be searched for.</param>
         /// <returns></returns>
         private string CreateSearchQuery(string[] fields, string searchKey)
         {
@@ -1013,7 +1011,7 @@ namespace Dynamo.ViewModels
                 }
 
                 var wildcardQuery = new WildcardQuery(new Term(f, searchTerm));
-                if (f.Equals(nameof(Configurations.IndexFieldsEnum.Name)))
+                if (f.Equals(nameof(LuceneConfig.IndexFieldsEnum.Name)))
                 {
                     wildcardQuery.Boost = 10;
                 }
@@ -1024,7 +1022,7 @@ namespace Dynamo.ViewModels
                 booleanQuery.Add(wildcardQuery, Occur.SHOULD);
 
                 wildcardQuery = new WildcardQuery(new Term(f, "*" + searchTerm + "*"));
-                if (f.Equals(nameof(Configurations.IndexFieldsEnum.Name)))
+                if (f.Equals(nameof(LuceneConfig.IndexFieldsEnum.Name)))
                 {
                     wildcardQuery.Boost = 7;
                 }
@@ -1045,7 +1043,7 @@ namespace Dynamo.ViewModels
                         }
                         wildcardQuery = new WildcardQuery(new Term(f, "*" + s + "*"));
 
-                        if (f.Equals(nameof(Configurations.IndexFieldsEnum.Name)))
+                        if (f.Equals(nameof(LuceneConfig.IndexFieldsEnum.Name)))
                         {
                             wildcardQuery.Boost = 5;
                         }
