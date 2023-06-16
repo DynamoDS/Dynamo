@@ -1348,6 +1348,9 @@ namespace Dynamo.Controls
         {
             if (!DynamoModel.IsTestMode)
             {
+                if (DynamoModel.FeatureFlags == null)
+                    return;
+                    
                 //feature flag test.
                 if (DynamoModel.FeatureFlags?.CheckFeatureFlag<bool>("EasterEggIcon1", false) == true)
                 {
