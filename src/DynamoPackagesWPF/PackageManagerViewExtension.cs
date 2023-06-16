@@ -142,10 +142,10 @@ namespace Dynamo.PackageManager.UI
             {
                 //check that the package does not target another host, if it does raise a warning.
                 var pkgVersion = new PackageVersion() { host_dependencies = pkg.HostDependencies };
-                var containsPackagesThatTargetOtherHosts = packageManager.CheckIfPackagesTargetOtherHosts(new List<PackageVersion>() { pkgVersion });
+                //var containsPackagesThatTargetOtherHosts = packageManager.CheckIfPackagesTargetOtherHosts(new List<PackageVersion>() { pkgVersion });
 
                 // if any do, notify user of the potential conflict with notification.
-                if (containsPackagesThatTargetOtherHosts)
+                if (false)
                 {
                     notificationLogged?.Invoke(
                         new NotificationMessage(Name,

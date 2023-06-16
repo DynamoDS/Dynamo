@@ -909,7 +909,7 @@ namespace Dynamo.Models
             UpdateManager.Log += UpdateManager_Log;
             if (!IsTestMode && !IsHeadless)
             {
-                DefaultUpdateManager.CheckForProductUpdate(UpdateManager);
+                //DefaultUpdateManager.CheckForProductUpdate(UpdateManager);
             }
 
             Logger.Log(string.Format("Dynamo -- Build {0}",
