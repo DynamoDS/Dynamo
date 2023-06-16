@@ -24,10 +24,12 @@ jobs:
         echo "PRNumber=`cat pr/NR`" >> "$GITHUB_OUTPUT"
         echo "Diff1=`cat pr/Diff1`" >> "$GITHUB_OUTPUT"
         echo "Diff2=`cat pr/Diff2`" >> "$GITHUB_OUTPUT"
+        echo "TIMESTAMP=`date +%Y-%m-%d-%H:%M:%S`" >> "$GITHUB_OUTPUT"
   outputs:
     PRNumber: ${{ steps.extract.outputs.PRNumber }}
     Diff1: ${{ steps.extract.outputs.Diff1 }}
     Diff2: ${{ steps.extract.outputs.Diff2 }}
+    TIMESTAMP: ${{ steps.extract.outputs.TIMESTAMP }}
  diff-cache-cleanup:
     runs-on: ubuntu-latest
     needs: [fetch-PR-Data]
@@ -98,6 +100,7 @@ jobs:
           body: |
             ${{ needs.fetch-PR-Data.outputs.Diff1 }}
             ${{ needs.fetch-PR-Data.outputs.Diff2 }}
+            Updated: ${{ needs.fetch-PR-Data.outputs.TIMESTAMP }}
       - name: Update comment resolved
         if: |
           steps.fc.outputs.comment-id != '' &&
@@ -105,6 +108,6 @@ jobs:
         uses: peter-evans/create-or-update-comment@v3
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}
-          body: "Bin-Diff Issue Resolved."
+          body: ":white_check_mark: **Bin-Diff Issue Resolved.**"
           reactions-edit-mode: replace
           reactions: +1
