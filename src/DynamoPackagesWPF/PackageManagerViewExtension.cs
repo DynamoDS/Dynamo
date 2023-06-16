@@ -85,12 +85,15 @@ namespace Dynamo.PackageManager.UI
         public void Loaded(ViewLoadedParams viewLoadedParams)
         {
             RequestLoadLayoutSpecs(packageManager.PackageLoader.LocalPackages);
+            /* 
+            // ALIAS does needs a total network traffic blackout.
+            // Since there is no way to switch this on/off, we will just skip it for now.
             var packagesToCheck = packageManager?.PackageLoader.LocalPackages;
-            if(packagesToCheck != null)
+            if (packagesToCheck != null)
             {
                 RaisePackageHostNotifications(packagesToCheck);
             }
-
+            */
         }
 
         public void Shutdown()
@@ -142,10 +145,10 @@ namespace Dynamo.PackageManager.UI
             {
                 //check that the package does not target another host, if it does raise a warning.
                 var pkgVersion = new PackageVersion() { host_dependencies = pkg.HostDependencies };
-                //var containsPackagesThatTargetOtherHosts = packageManager.CheckIfPackagesTargetOtherHosts(new List<PackageVersion>() { pkgVersion });
+                var containsPackagesThatTargetOtherHosts = packageManager.CheckIfPackagesTargetOtherHosts(new List<PackageVersion>() { pkgVersion });
 
                 // if any do, notify user of the potential conflict with notification.
-                if (false)
+                if (containsPackagesThatTargetOtherHosts)
                 {
                     notificationLogged?.Invoke(
                         new NotificationMessage(Name,
