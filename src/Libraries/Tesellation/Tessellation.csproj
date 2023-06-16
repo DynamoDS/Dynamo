@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -54,6 +54,7 @@
   </ItemGroup>
   <Target Name="CopyFiles" BeforeTargets="Build">
     <Copy SourceFiles="$(ProjectDir)Tessellation_DynamoCustomization.xml" DestinationFolder="$(OutputPath)" />
+    <Copy SourceFiles="$(ProjectDir)XMLFile1.xml" DestinationFolder="$(OutputPath)" />
   </Target>
   <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" '$(OS)' != 'Unix' ">
     <!-- Get assembly -->
