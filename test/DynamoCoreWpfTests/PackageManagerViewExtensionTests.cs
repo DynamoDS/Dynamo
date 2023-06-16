@@ -239,7 +239,8 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(Path.Combine(BuiltinPackagesTestDir,"SignedPackage2","extra","layoutspecs.json"), packageManagerViewExtension.RequestedLayoutSpecPaths.FirstOrDefault());
         }
 
-        [Test]
+        // Fails because we are now forcefully disabling host checking because of ALIAS issues. 
+        [Test, Category("Failure")]
         public void PackageManagerViewExtesion_SendsNotificationForPackagesThatTargetDifferentHost_AtExtensionLoad()
         {
             var count = 0;
@@ -271,7 +272,9 @@ namespace DynamoCoreWpfTests
                 count = count + 1;
             }
         }
-        [Test]
+
+        // Fails because we are now forcefully disabling host checking because of ALIAS issues.
+        [Test, Category("Failure")]
         public void PackageManagerViewExtesion_SendsNotificationForPackagesThatTargetDifferentHost_AtLatePackageLoad()
         {
             var count = 0;
