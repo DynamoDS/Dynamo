@@ -377,7 +377,10 @@ namespace Dynamo.Applications
                 HostAnalyticsInfo = info,
                 CLIMode = CLImode
             };
-            config.AuthProvider = CLImode ? null : new Core.IDSDKManager();
+
+            // ALIAS does needs a total network traffic blackout.
+            config.AuthProvider = null;
+
             config.UpdateManager = CLImode ? null : InitializeUpdateManager();
             config.StartInTestMode = CLImode;
             config.PathResolver = CLImode ? new CLIPathResolver(preloaderLocation, userDataFolder, commonDataFolder) as IPathResolver : new SandboxPathResolver(preloaderLocation) as IPathResolver;
