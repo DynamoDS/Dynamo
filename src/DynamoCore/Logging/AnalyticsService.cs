@@ -84,12 +84,6 @@ namespace Dynamo.Logging
 
         internal static bool IsADPAvailable()
         {
-            if (Analytics.DisableAnalytics ||
-                adpAnalyticsUI == null)
-            {
-                return false;
-            }
-
             return adpAnalyticsUI.IsProviderAvailable();
         }
 
