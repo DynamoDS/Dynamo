@@ -22,7 +22,7 @@ jobs:
       run: |
         cat pr/NR
         echo "PRNumber=`cat pr/NR`" >> "$GITHUB_OUTPUT"
-        echo "WFNumber=`cat pr/WR`" >> "$GITHUB_OUTPUT"
+        echo "WFNumber=`cat pr/WN`" >> "$GITHUB_OUTPUT"
         echo "Diff1=`cat pr/Diff1`" >> "$GITHUB_OUTPUT"
         echo "Diff2=`cat pr/Diff2`" >> "$GITHUB_OUTPUT"
         echo "TIMESTAMP=`date +%Y-%m-%d-%H:%M:%S`" >> "$GITHUB_OUTPUT"
