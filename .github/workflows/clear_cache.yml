@@ -126,7 +126,7 @@ jobs:
           body: |
             ${{ needs.fetch-PR-Data.outputs.Diff1 }}
             ${{ needs.fetch-PR-Data.outputs.Diff2 }}
-            Updated: ${{ needs.fetch-PR-Data.outputs.TIMESTAMP }}
+            "(Updated: ${{ needs.fetch-PR-Data.outputs.TIMESTAMP }})"
       - name: Update comment resolved
         if: |
           steps.fc.outputs.comment-id != '' &&
@@ -134,6 +134,9 @@ jobs:
         uses: peter-evans/create-or-update-comment@v3
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}
-          body: ":white_check_mark: **Bin-Diff Issue Resolved.**"
+          body: |
+
+            ":white_check_mark: **Bin-Diff Issue Resolved.**"
+            "(Updated: ${{ needs.fetch-PR-Data.outputs.TIMESTAMP }})"
           reactions-edit-mode: replace
-          reactions: +1
+          reactions: '+1'
