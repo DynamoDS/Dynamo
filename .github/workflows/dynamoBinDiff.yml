@@ -80,10 +80,14 @@ jobs:
         path: ${{ github.workspace }}\master_Dynamo\bin\AnyCPU\Debug
         key: ${{ github.run_id }}-${{ github.run_attempt }}-cache-master
     - name: Run Binary Diff Job
+      id: Diff1
       run: |
           echo "***Running the binary diff job between the current branch and the master branch!***"
           cd "$Env:GITHUB_WORKSPACE\Dynamo\.github\scripts"
           .\bin_diff.ps1 $Env:GITHUB_WORKSPACE\master_Dynamo\bin\AnyCPU\Debug,$Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Debug -src ${{ github.job }}
+          echo "Diff1=$(cat ./result.txt)" >> $Env:GITHUB_OUTPUT
+  outputs:
+    Diff1: ${{ steps.Diff1.outputs.Diff1 }}
  build-dotnet-windows-current:
   runs-on: windows-latest
   steps:
@@ -168,18 +172,25 @@ jobs:
         path: ${{ github.workspace }}\master_net60_Win_Dynamo\bin\NET60_Windows\Release
         key: ${{ github.run_id }}-${{ github.run_attempt }}-cache-net60Win-master
     - name: Run Binary Diff Job
+      id: Diff2
       run: |
           echo "***Running the binary diff job between the current branch and the master branch of NET60-Windows Config!***"
           cd "$Env:GITHUB_WORKSPACE\net60_Win_Dynamo\.github\scripts"
           .\bin_diff.ps1 $Env:GITHUB_WORKSPACE\master_net60_Win_Dynamo\bin\NET60_Windows\Release,$Env:GITHUB_WORKSPACE\net60_Win_Dynamo\bin\NET60_Windows\Release -src ${{ github.job }}
- save-PR-number:
+          echo "Diff2=$(cat ./result.txt)" >> $Env:GITHUB_OUTPUT
+  outputs:
+    Diff2: ${{ steps.Diff2.outputs.Diff2 }}
+ save-PR-Data:
   needs: [run-bin-diff-net60-windows, run-bin-diff]
   runs-on: ubuntu-latest
   steps:
-    - name: Save PR Number
+    - name: Save PR Data
       run: |
         mkdir -p ./pr
         echo ${{ github.event.number }} > ./pr/NR
+        echo ${{ github.run_id }}-${{ github.run_attempt }} > ./pr/WN
+        echo "${{ needs.run-bin-diff.outputs.Diff1 }}" > ./pr/Diff1
+        echo "${{ needs.run-bin-diff-net60-windows.outputs.Diff2 }}" > ./pr/Diff2
     - uses: actions/upload-artifact@v3
       with:
         name: pr
