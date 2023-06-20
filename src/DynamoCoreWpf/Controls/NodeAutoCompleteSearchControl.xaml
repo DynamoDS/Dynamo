@@ -71,7 +71,7 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Text="自动完成"
+                        <TextBlock Text="{x:Static resx:Resources.Autocomplete}"
                                        TextWrapping="Wrap"
                                        Padding="4"
                                        Margin="0,5,0,5"
