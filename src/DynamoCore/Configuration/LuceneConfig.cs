@@ -18,9 +18,31 @@ namespace Dynamo.Configuration
         /// </summary>
         internal static Operator DefaultOperator = Operator.OR;
 
+        /// <summary>
+        /// MinimumSimilarity value
+        /// </summary>
         internal static float MinimumSimilarity = 0.5f;
 
+        /// <summary>
+        /// Minimal edits for typo check in FuzzyQuery
+        /// </summary>
+        internal static int MinEdits = 1;
+
+        /// <summary>
+        /// Maximal edits for typo check in FuzzyQuery, value larger than 3 is not proper according to
+        /// https://blog.mikemccandless.com/2011/03/lucenes-fuzzyquery-is-100-times-faster.html
+        /// </summary>
+        internal static int MaxEdits = 2;
+
+        /// <summary>
+        /// Default max results count in Dynamo to display
+        /// </summary>
         internal static int DefaultResultsCount = 50;
+
+        /// <summary>
+        /// Search name matching weight
+        /// </summary>
+        internal static int SearchNameWeight = 10;
 
         /// <summary>
         /// This represent the fields that will be indexed when initializing Lucene Search

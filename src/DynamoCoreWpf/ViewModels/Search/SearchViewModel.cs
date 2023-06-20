@@ -950,13 +950,12 @@ namespace Dynamo.ViewModels
 
                 for (int i = 0; i < topDocs.ScoreDocs.Length; i++)
                 {
-                    //read back a doc from results
+                    // read back a Lucene doc from results
                     Document resultDoc = Model.Searcher.Doc(topDocs.ScoreDocs[i].Doc);
 
                     string name = resultDoc.Get(nameof(LuceneConfig.IndexFieldsEnum.Name));
                     string docName = resultDoc.Get(nameof(LuceneConfig.IndexFieldsEnum.DocName));
                     string cat = resultDoc.Get(nameof(LuceneConfig.IndexFieldsEnum.FullCategoryName));
-                    string fulldesc = resultDoc.Get(nameof(LuceneConfig.IndexFieldsEnum.Description));
 
                     if (!string.IsNullOrEmpty(docName))
                     {
@@ -989,16 +988,21 @@ namespace Dynamo.ViewModels
         /// Then, the same fuzzy logic will be applied to each part of the search term.
         /// </summary>
         /// <param name="fields">All fields to be searched in.</param>
-        /// <param name="searchKey">Search key to be searched for.</param>
+        /// <param name="SearchTerm">Search key to be searched for.</param>
         /// <returns></returns>
-        private string CreateSearchQuery(string[] fields, string searchKey)
+        private string CreateSearchQuery(string[] fields, string SearchTerm)
         {
             int fuzzyLogicThreshold = 4;
-            int fuzzyLogicRange = 2;
+            int fuzzyLogicRange = LuceneConfig.MinEdits;
+            // Use a larger max edit value when search term is longer 
+            if (SearchTerm.Length > 5)
+            {
+                fuzzyLogicRange = LuceneConfig.MaxEdits;
+            }
 
             var fnames = fields;
             var booleanQuery = new BooleanQuery();
-            string searchTerm = QueryParser.Escape(searchKey);
+            string searchTerm = QueryParser.Escape(SearchTerm);
 
             foreach (string f in fnames)
             {
@@ -1007,13 +1011,12 @@ namespace Dynamo.ViewModels
                 {
                     fuzzyQuery = new FuzzyQuery(new Term(f, searchTerm), fuzzyLogicRange);
                     booleanQuery.Add(fuzzyQuery, Occur.SHOULD);
-
                 }
 
                 var wildcardQuery = new WildcardQuery(new Term(f, searchTerm));
                 if (f.Equals(nameof(LuceneConfig.IndexFieldsEnum.Name)))
                 {
-                    wildcardQuery.Boost = 10;
+                    wildcardQuery.Boost = LuceneConfig.SearchNameWeight;
                 }
                 else
                 {
