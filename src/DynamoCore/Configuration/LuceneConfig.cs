@@ -24,15 +24,25 @@ namespace Dynamo.Configuration
         internal static float MinimumSimilarity = 0.5f;
 
         /// <summary>
+        /// Minimal length of the search term that the fuzzy search to take effect
+        /// </summary>
+        internal static int FuzzySearchMinimalTermLength = 4;
+
+        /// <summary>
         /// Minimal edits for typo check in FuzzyQuery
         /// </summary>
-        internal static int MinEdits = 1;
+        internal static int FuzzySearchMinEdits = 1;
+
+        /// <summary>
+        /// Minimal length of the search term that the fuzzy search max edits limit to take effect
+        /// </summary>
+        internal static int FuzzySearchMaxEditsThreshold = 6;
 
         /// <summary>
         /// Maximal edits for typo check in FuzzyQuery, value larger than 3 is not proper according to
         /// https://blog.mikemccandless.com/2011/03/lucenes-fuzzyquery-is-100-times-faster.html
         /// </summary>
-        internal static int MaxEdits = 2;
+        internal static int FuzzySearchMaxEdits = 2;
 
         /// <summary>
         /// Default max results count in Dynamo to display
@@ -43,6 +53,26 @@ namespace Dynamo.Configuration
         /// Search name matching weight
         /// </summary>
         internal static int SearchNameWeight = 10;
+
+        /// <summary>
+        /// Wildcards search name matching weight
+        /// </summary>
+        internal static int WildcardsSearchNameWeight = 7;
+
+        /// <summary>
+        /// Search non-name meta fields matching weight
+        /// </summary>
+        internal static int SearchMetaFieldsWeight = 6;
+
+        /// <summary>
+        /// Wildcards search non-name meta fields matching weight
+        /// </summary>
+        internal static int WildcardsSearchMetaFieldsWeight = 4;
+
+        /// <summary>
+        /// Fuzzy search matching weight
+        /// </summary>
+        internal static int FuzzySearchWeight = 2;
 
         /// <summary>
         /// This represent the fields that will be indexed when initializing Lucene Search

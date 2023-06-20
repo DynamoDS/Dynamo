@@ -984,7 +984,7 @@ namespace Dynamo.ViewModels
         /// Then, complete search term appearing in other metadata,
         /// Then, a part of the search term(if containing multiple words) appearing in Name of the node
         /// Then, a part of the search term appearing in other metadata of the node.
-        /// Then priority will be given based on fuzzy logic- that is if the complete search term may have been misspelled for upto 2 characters.
+        /// Then priority will be given based on fuzzy logic- that is if the complete search term may have been misspelled for upto 2(max edits) characters.
         /// Then, the same fuzzy logic will be applied to each part of the search term.
         /// </summary>
         /// <param name="fields">All fields to be searched in.</param>
@@ -992,24 +992,22 @@ namespace Dynamo.ViewModels
         /// <returns></returns>
         private string CreateSearchQuery(string[] fields, string SearchTerm)
         {
-            int fuzzyLogicThreshold = 4;
-            int fuzzyLogicRange = LuceneConfig.MinEdits;
+            int fuzzyLogicMaxEdits = LuceneConfig.FuzzySearchMinEdits;
             // Use a larger max edit value when search term is longer 
-            if (SearchTerm.Length > 5)
+            if (SearchTerm.Length > LuceneConfig.FuzzySearchMaxEditsThreshold)
             {
-                fuzzyLogicRange = LuceneConfig.MaxEdits;
+                fuzzyLogicMaxEdits = LuceneConfig.FuzzySearchMaxEdits;
             }
 
-            var fnames = fields;
             var booleanQuery = new BooleanQuery();
             string searchTerm = QueryParser.Escape(SearchTerm);
 
-            foreach (string f in fnames)
+            foreach (string f in fields)
             {
                 FuzzyQuery fuzzyQuery;
-                if (searchTerm.Length > fuzzyLogicThreshold)
+                if (searchTerm.Length > LuceneConfig.FuzzySearchMinimalTermLength)
                 {
-                    fuzzyQuery = new FuzzyQuery(new Term(f, searchTerm), fuzzyLogicRange);
+                    fuzzyQuery = new FuzzyQuery(new Term(f, searchTerm), fuzzyLogicMaxEdits);
                     booleanQuery.Add(fuzzyQuery, Occur.SHOULD);
                 }
 
@@ -1020,18 +1018,18 @@ namespace Dynamo.ViewModels
                 }
                 else
                 {
-                    wildcardQuery.Boost = 6;
+                    wildcardQuery.Boost = LuceneConfig.SearchMetaFieldsWeight;
                 }
                 booleanQuery.Add(wildcardQuery, Occur.SHOULD);
 
                 wildcardQuery = new WildcardQuery(new Term(f, "*" + searchTerm + "*"));
                 if (f.Equals(nameof(LuceneConfig.IndexFieldsEnum.Name)))
                 {
-                    wildcardQuery.Boost = 7;
+                    wildcardQuery.Boost = LuceneConfig.WildcardsSearchNameWeight;
                 }
                 else
                 {
-                    wildcardQuery.Boost = 4;
+                    wildcardQuery.Boost = LuceneConfig.WildcardsSearchMetaFieldsWeight;
                 }
                 booleanQuery.Add(wildcardQuery, Occur.SHOULD);
 
@@ -1039,9 +1037,9 @@ namespace Dynamo.ViewModels
                 {
                     foreach (string s in searchTerm.Split(' ', '.'))
                     {
-                        if (s.Length > fuzzyLogicThreshold)
+                        if (s.Length > LuceneConfig.FuzzySearchMinimalTermLength)
                         {
-                            fuzzyQuery = new FuzzyQuery(new Term(f, s), fuzzyLogicRange);
+                            fuzzyQuery = new FuzzyQuery(new Term(f, s), LuceneConfig.FuzzySearchMinEdits);
                             booleanQuery.Add(fuzzyQuery, Occur.SHOULD);
                         }
                         wildcardQuery = new WildcardQuery(new Term(f, "*" + s + "*"));
@@ -1052,7 +1050,7 @@ namespace Dynamo.ViewModels
                         }
                         else
                         {
-                            wildcardQuery.Boost = 2;
+                            wildcardQuery.Boost = LuceneConfig.FuzzySearchWeight;
                         }
                         booleanQuery.Add(wildcardQuery, Occur.SHOULD);
                     }
