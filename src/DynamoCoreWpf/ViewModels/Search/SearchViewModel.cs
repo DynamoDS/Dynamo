@@ -993,7 +993,7 @@ namespace Dynamo.ViewModels
         private string CreateSearchQuery(string[] fields, string SearchTerm)
         {
             int fuzzyLogicMaxEdits = LuceneConfig.FuzzySearchMinEdits;
-            // Use a larger max edit value when search term is longer 
+            // Use a larger max edit value - more tolerant with typo when search term is longer than threshold
             if (SearchTerm.Length > LuceneConfig.FuzzySearchMaxEditsThreshold)
             {
                 fuzzyLogicMaxEdits = LuceneConfig.FuzzySearchMaxEdits;
