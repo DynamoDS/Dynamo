@@ -20,6 +20,11 @@
     </PropertyGroup> 
  
     <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
+  <PropertyGroup>
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
+  </PropertyGroup>
+
+  <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
       <!--This command gets the latest build from the splash screen-->
       <Exec Command="npm pack @dynamods/splash-screen@latest" />
   </Target>

@@ -340,6 +340,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The workspace cannot be exported as an image because it is empty..
+        /// </summary>
+        public static string CantExportWorkspaceAsImageEmptyMessage {
+            get {
+                return ResourceManager.GetString("CantExportWorkspaceAsImageEmptyMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The workspace cannot be exported as an image because it contains nodes that are too far away from each other..
+        /// </summary>
+        public static string CantExportWorkspaceAsImageNotValidMessage {
+            get {
+                return ResourceManager.GetString("CantExportWorkspaceAsImageNotValidMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to To ensure accurate geometry rendering and calculation, select the range of geometry sizes that you will be working on:.
         /// </summary>
         public static string ChangeScaleFactorPromptCaptionText {
@@ -6990,6 +7008,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This setting controls if the export image path from workspace or background geometry would include timestamp..
+        /// </summary>
+        public static string PreferencesViewIncludeTimestampExportPathTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesViewIncludeTimestampExportPathTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Language.
         /// </summary>
         public static string PreferencesViewLanguageLabel {
@@ -7103,6 +7130,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewSelectedPackagePathForDownload {
             get {
                 return ResourceManager.GetString("PreferencesViewSelectedPackagePathForDownload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Include Timestamp in Export Path.
+        /// </summary>
+        public static string PreferencesViewSettingIncludeTimestampExportPath {
+            get {
+                return ResourceManager.GetString("PreferencesViewSettingIncludeTimestampExportPath", resourceCulture);
             }
         }
         

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -9,6 +9,9 @@
     <RootNamespace>DynamoUnits</RootNamespace>
     <AssemblyName>DynamoUnits</AssemblyName>
     <DocumentationFile>$(OutputPath)\DynamoUnits.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
   </PropertyGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'net48' ">
     <Reference Include="System.Configuration" />
@@ -73,7 +76,7 @@
     <When Condition=" '$(VisualStudioVersion)'=='11.0' " />
     <When Condition=" '$(VisualStudioVersion)'=='11.0' " />
   </Choose>
-  <Target Name="CopyFiles" BeforeTargets="Build" >
+  <Target Name="CopyFiles" BeforeTargets="Build">
     <Copy SourceFiles="$(ProjectDir)DynamoUnits_DynamoCustomization.xml" DestinationFolder="$(OutputPath)" />
   </Target>
   <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" '$(OS)' != 'Unix' ">

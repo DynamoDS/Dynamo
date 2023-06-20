@@ -2767,7 +2767,7 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        public void ShowSaveImageDialogAndSaveResult(object parameter)
+        public void ShowSaveImageDialogAndSave(object parameter)
         {
             FileDialog _fileDialog = null;
 
@@ -2786,7 +2786,7 @@ namespace Dynamo.ViewModels
             if (!string.IsNullOrEmpty(model.CurrentWorkspace.FileName))
             {
                 var fi = new FileInfo(model.CurrentWorkspace.FileName);
-                var snapshotName = PathHelper.GetScreenCaptureNameFromPath(fi.FullName);
+                var snapshotName = PathHelper.GetScreenCaptureNameFromPath(fi.FullName, preferencesViewModel.IsTimeStampIncludedInExportFilePath);
                 _fileDialog.InitialDirectory = fi.DirectoryName;
                 _fileDialog.FileName = snapshotName;
             }
@@ -2821,7 +2821,12 @@ namespace Dynamo.ViewModels
             }
         }
 
-        internal bool CanShowSaveImageDialogAndSaveResult(object parameter)
+        public void ValidateWorkSpaceBeforeToExportAsImage(object parameter)
+        {
+            OnRequestExportWorkSpaceAsImage(parameter);       
+        }
+
+        internal bool CanValidateWorkSpaceBeforeToExportAsImage(object parameter)
         {
             return true;
         }
