@@ -202,7 +202,7 @@ function Format-Color([hashtable] $Colors = @{}, [switch] $SimpleMatch) {
       if($deletedCount -gt 0) {$msg+="$deletedCount file(s) have been deleted!"}
 
       $msg="Files Added/Deleted::$msg"
-      $annotation=$msg
+      $annotation=":warning: **[$DiffBuildSource]** - $msg"
       Write-Host "::warning title=($DiffBuildSource) $msg"
   } else{
       Write-Host "::notice title=($DiffBuildSource) No New Files Added/Deleted::The job has detected that no new files were added or deleted."
