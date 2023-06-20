@@ -64,54 +64,57 @@
                 </Grid.ColumnDefinitions>
                 <Border Background="{StaticResource DarkMidGreyBrush}"
                         CornerRadius="8,8,0,0">
-                    <Grid>
-                        <StackPanel Name="AutoCompletionHeader"
-                                    Width="Auto"
-                                    HorizontalAlignment="Left"
-                                    Orientation="Horizontal">
-                            <TextBlock Text="{x:Static resx:Resources.Autocomplete}"
+                    <Grid Name="HeaderContent">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="自动完成"
                                        TextWrapping="Wrap"
                                        Padding="4"
-                                       Margin="80,5,0,5"
+                                       Margin="0,5,0,5"
                                        Foreground="{StaticResource AutocompletionWindowFontColor}"
                                        Background="Transparent"
+                                       HorizontalAlignment="Center"
                                        VerticalAlignment="Top"
-                                       FontSize="14">
-                            </TextBlock>
-                            <Image Name="NodeAutoCompleteInfoIcon"
+                                       FontSize="14"
+                                       Grid.Column="1">
+                        </TextBlock>
+                        <Image Name="NodeAutoCompleteInfoIcon"
                                    Width="14"
                                    Height="14"
                                    MouseDown="OnMoreInfoClicked"
-                                   Margin="50,5,0,5"
+                                   Margin="0,5,35,5"
                                    HorizontalAlignment="Right"
                                    VerticalAlignment="Center"
-                                   Style="{StaticResource ToggleInfoStyle}">
-
-                            </Image>
-                            <Image Width="14"
+                                   Style="{StaticResource ToggleInfoStyle}"
+                                   Grid.Column="2" />
+                        <Image Width="14"
                                    Height="14"
-                                   Margin="10,5,10,5"
+                                   Margin="0,5,10,5"
                                    MouseDown="CloseAutocompletionWindow"
                                    HorizontalAlignment="Right"
-                                   VerticalAlignment="Center">
-                                <Image.Style>
-                                    <Style TargetType="{x:Type Image}">
-                                        <Style.Triggers>
-                                            <Trigger Property="IsMouseOver"
+                                   VerticalAlignment="Center"
+                                   Grid.Column="2">
+                            <Image.Style>
+                                <Style TargetType="{x:Type Image}">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver"
                                                      Value="False">
-                                                <Setter Property="Source"
+                                            <Setter Property="Source"
                                                         Value="/DynamoCoreWpf;component/UI/Images/TitleBarButtons/close-darktheme-default-16px.png" />
-                                            </Trigger>
-                                            <Trigger Property="IsMouseOver"
+                                        </Trigger>
+                                        <Trigger Property="IsMouseOver"
                                                      Value="True">
-                                                <Setter Property="Source"
+                                            <Setter Property="Source"
                                                         Value="/DynamoCoreWpf;component/UI/Images/TitleBarButtons/close-darktheme-hover-16px.png" />
-                                            </Trigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Image.Style>
-                            </Image>
-                        </StackPanel>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
                     </Grid>
                 </Border>
             </Grid>
