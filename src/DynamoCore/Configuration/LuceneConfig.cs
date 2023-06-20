@@ -36,7 +36,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Minimal length of the search term that the fuzzy search max edits limit to take effect
         /// </summary>
-        internal static int FuzzySearchMaxEditsThreshold = 6;
+        internal static int FuzzySearchMaxEditsThreshold = 7;
 
         /// <summary>
         /// Maximal edits for typo check in FuzzyQuery, value larger than 3 is not proper according to
