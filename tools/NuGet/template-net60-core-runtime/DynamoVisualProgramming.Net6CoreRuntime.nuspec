@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+    <metadata>
+        <id>DynamoVisualProgramming.Net6CoreRuntime</id>
+        <version>$Version$</version>
+        <authors>Autodesk</authors>
+        <owners>Autodesk</owners>
+        <license type="expression">Apache-2.0</license>
+        <projectUrl>https://github.com/DynamoDS/Dynamo</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Assemblies required to start a DynamoModel and execute DesignScript code bundled along with their dependencies.
+            Built targeting Windows Net6. </description>
+        <copyright>Copyright Autodesk 2023</copyright>
+ <dependencies>
+            <group targetFramework="net6.0">
+            </group>
+        </dependencies>
+    </metadata>
+    <files>
+        <!--we expect that the base path is bin\NET60_Linux\Release\-->
+        <file src="..\..\NET60_Windows\Release\**" target="lib\net6.0\windows\" />
+    </files>
+</package>
