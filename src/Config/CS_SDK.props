@@ -19,7 +19,14 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <TestProjectDefaults Condition="$(MSBuildProjectDirectory.Contains('test'))">true</TestProjectDefaults>
     <TestProjectDefaults Condition=" '$(TestProjectDefaults)' == '' ">false</TestProjectDefaults>
-    <NoWarn>MSB3539</NoWarn><!--The value of the property "BaseIntermediateOutputPath" was modified after it was used by MSBuild-->
+    <!--MSB3539: The value of the property "BaseIntermediateOutputPath" was modified after it was used by MSBuild-->
+    <!--CS1591: Missing XML comment for publicly visible type or member 'Type_or_Member'-->
+    <!--NUnit2005: Consider using Assert.That(actual, Is.EqualTo(expected)) instead of Assert.AreEqual(expected, actual)-->
+    <!--NUnit2007: The actual value should not be a constant-->
+    <!--CS0618: The 'member' is obsolete: 'text'-->
+    <!--CS0612: The 'member' is obsolete-->
+    <!--CS0672: Member 'member1' overrides obsolete member 'member2. Add the Obsolete attribute to 'member1'-->
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
     <DebugSymbols>true</DebugSymbols>
     <SelfContained>false</SelfContained>
