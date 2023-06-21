@@ -7134,7 +7134,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Include Timestamp in Image Export File Name.
+        ///   Looks up a localized string similar to Include Timestamp in Export Image Path.
         /// </summary>
         public static string PreferencesViewSettingIncludeTimestampExportPath {
             get {
