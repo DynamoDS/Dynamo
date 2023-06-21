@@ -3649,6 +3649,6 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
     <value>Include Timestamp in Export Image Path</value>
   </data>
   <data name="PreferencesViewIncludeTimestampExportPathTooltip" xml:space="preserve">
-    <value>This setting controls if the export image path from workspace or background geometry would include timestamp.</value>
+    <value>When toggled on, file names of exported images include date and time of export.</value>
   </data>
 </root>
