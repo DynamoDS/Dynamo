@@ -7008,7 +7008,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This setting controls if the export image path from workspace or background geometry would include timestamp..
+        ///   Looks up a localized string similar to When toggled on, file names of exported images include date and time of export..
         /// </summary>
         public static string PreferencesViewIncludeTimestampExportPathTooltip {
             get {
@@ -7134,7 +7134,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Include Timestamp in Export Image Path.
+        ///   Looks up a localized string similar to Include Timestamp in Image Export File Name.
         /// </summary>
         public static string PreferencesViewSettingIncludeTimestampExportPath {
             get {
