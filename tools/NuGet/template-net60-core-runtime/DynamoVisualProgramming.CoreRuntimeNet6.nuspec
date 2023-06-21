@@ -18,6 +18,6 @@
     </metadata>
     <files>
         <!--we expect that the base path is bin\NET60_Windows\Release\-->
-        <file src="..\..\NET60_Windows\Release\**" target="lib\net6.0\windows\" />
+        <file src="NET60_Windows\Release\**" target="lib\net6.0\windows\" />
     </files>
 </package>
