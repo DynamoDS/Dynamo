@@ -3633,7 +3633,7 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
     <value>The workspace cannot be exported as an image because it contains nodes that are too far away from each other.</value>
   </data>
   <data name="PreferencesViewSettingIncludeTimestampExportPath" xml:space="preserve">
-    <value>Include Timestamp in Export Path</value>
+    <value>Include Timestamp in Export Image Path</value>
   </data>
   <data name="PreferencesViewIncludeTimestampExportPathTooltip" xml:space="preserve">
     <value>This setting controls if the export image path from workspace or background geometry would include timestamp.</value>

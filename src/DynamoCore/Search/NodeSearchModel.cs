@@ -251,30 +251,30 @@ namespace Dynamo.Search
             switch (language)
             {
                 case "en-US":
-                    return new StandardAnalyzer(Configurations.LuceneNetVersion);
+                    return new StandardAnalyzer(LuceneConfig.LuceneNetVersion);
                 case "cs-CZ":
-                    return new CzechAnalyzer(Configurations.LuceneNetVersion);
+                    return new CzechAnalyzer(LuceneConfig.LuceneNetVersion);
                 case "de-DE":
-                    return new GermanAnalyzer(Configurations.LuceneNetVersion);
+                    return new GermanAnalyzer(LuceneConfig.LuceneNetVersion);
                 case "es-ES":
-                    return new SpanishAnalyzer(Configurations.LuceneNetVersion);
+                    return new SpanishAnalyzer(LuceneConfig.LuceneNetVersion);
                 case "fr-FR":
-                    return new FrenchAnalyzer(Configurations.LuceneNetVersion);
+                    return new FrenchAnalyzer(LuceneConfig.LuceneNetVersion);
                 case "it-IT":
-                    return new ItalianAnalyzer(Configurations.LuceneNetVersion);
+                    return new ItalianAnalyzer(LuceneConfig.LuceneNetVersion);
                 case "ja-JP":
                 case "ko-KR":
                 case "zh-CN":
                 case "zh-TW":
-                    return new CJKAnalyzer(Configurations.LuceneNetVersion);
+                    return new CJKAnalyzer(LuceneConfig.LuceneNetVersion);
                 case "pl-PL":
-                    return new StandardAnalyzer(Configurations.LuceneNetVersion);
+                    return new StandardAnalyzer(LuceneConfig.LuceneNetVersion);
                 case "pt-BR":
-                    return new BrazilianAnalyzer(Configurations.LuceneNetVersion);
+                    return new BrazilianAnalyzer(LuceneConfig.LuceneNetVersion);
                 case "ru-RU":
-                    return new RussianAnalyzer(Configurations.LuceneNetVersion);
+                    return new RussianAnalyzer(LuceneConfig.LuceneNetVersion);
                 default:
-                    return new StandardAnalyzer(Configurations.LuceneNetVersion);
+                    return new StandardAnalyzer(LuceneConfig.LuceneNetVersion);
             }
         }
     }

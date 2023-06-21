@@ -616,7 +616,7 @@ namespace Dynamo.Models
         internal static readonly string BuiltInPackagesToken = @"%BuiltInPackages%";
         [Obsolete("Only used for migration to the new for this directory - BuiltInPackages - do not use for other purposes")]
         // Token representing the standard library directory
-        internal static readonly string StandardLibraryToken = @"%StandardLibrary%";        
+        internal static readonly string StandardLibraryToken = @"%StandardLibrary%";
 
 
         private void InitializeLuceneConfig()
@@ -638,7 +638,7 @@ namespace Dynamo.Models
             if (!IsTestMode)
             {
                 // Create an index writer
-                IndexWriterConfig indexConfig = new IndexWriterConfig(Configurations.LuceneNetVersion, SearchModel.Analyzer)
+                IndexWriterConfig indexConfig = new IndexWriterConfig(LuceneConfig.LuceneNetVersion, SearchModel.Analyzer)
                 {
                     OpenMode = OpenMode.CREATE
                 };
@@ -3273,12 +3273,12 @@ namespace Dynamo.Models
         {
             if (IsTestMode) return null;
 
-            var name = new TextField(nameof(Configurations.IndexFieldsEnum.Name), string.Empty, Field.Store.YES);
-            var fullCategory = new TextField(nameof(Configurations.IndexFieldsEnum.FullCategoryName), string.Empty, Field.Store.YES);
-            var description = new TextField(nameof(Configurations.IndexFieldsEnum.Description), string.Empty, Field.Store.YES);
-            var keywords = new TextField(nameof(Configurations.IndexFieldsEnum.SearchKeywords), string.Empty, Field.Store.YES);
-            var docName = new StringField(nameof(Configurations.IndexFieldsEnum.DocName), string.Empty, Field.Store.YES);
-            var fullDoc = new TextField(nameof(Configurations.IndexFieldsEnum.Documentation), string.Empty, Field.Store.YES);
+            var name = new TextField(nameof(LuceneConfig.IndexFieldsEnum.Name), string.Empty, Field.Store.YES);
+            var fullCategory = new TextField(nameof(LuceneConfig.IndexFieldsEnum.FullCategoryName), string.Empty, Field.Store.YES);
+            var description = new TextField(nameof(LuceneConfig.IndexFieldsEnum.Description), string.Empty, Field.Store.YES);
+            var keywords = new TextField(nameof(LuceneConfig.IndexFieldsEnum.SearchKeywords), string.Empty, Field.Store.YES);
+            var docName = new StringField(nameof(LuceneConfig.IndexFieldsEnum.DocName), string.Empty, Field.Store.YES);
+            var fullDoc = new TextField(nameof(LuceneConfig.IndexFieldsEnum.Documentation), string.Empty, Field.Store.YES);
 
             var d = new Document()
             {
@@ -3302,10 +3302,10 @@ namespace Dynamo.Models
             if (IsTestMode) return;
             if (addedFields == null) return;
 
-            SetDocumentFieldValue(doc, nameof(Configurations.IndexFieldsEnum.FullCategoryName), node.FullCategoryName);
-            SetDocumentFieldValue(doc, nameof(Configurations.IndexFieldsEnum.Name), node.Name);
-            SetDocumentFieldValue(doc, nameof(Configurations.IndexFieldsEnum.Description), node.Description);
-            if (node.SearchKeywords.Count > 0) SetDocumentFieldValue(doc, nameof(Configurations.IndexFieldsEnum.SearchKeywords), node.SearchKeywords.Aggregate((x, y) => x + " " + y), true, true);
+            SetDocumentFieldValue(doc, nameof(LuceneConfig.IndexFieldsEnum.FullCategoryName), node.FullCategoryName);
+            SetDocumentFieldValue(doc, nameof(LuceneConfig.IndexFieldsEnum.Name), node.Name);
+            SetDocumentFieldValue(doc, nameof(LuceneConfig.IndexFieldsEnum.Description), node.Description);
+            if (node.SearchKeywords.Count > 0) SetDocumentFieldValue(doc, nameof(LuceneConfig.IndexFieldsEnum.SearchKeywords), node.SearchKeywords.Aggregate((x, y) => x + " " + y), true, true);
 
             writer?.AddDocument(doc);
         }
@@ -3327,7 +3327,7 @@ namespace Dynamo.Models
             }
             if (isLast)
             {
-                List<string> diff = Configurations.IndexFields.Except(addedFields).ToList();
+                List<string> diff = LuceneConfig.IndexFields.Except(addedFields).ToList();
                 foreach (var d in diff)
                 {
                     SetDocumentFieldValue(doc, d, "");
