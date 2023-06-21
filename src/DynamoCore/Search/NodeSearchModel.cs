@@ -9,6 +9,15 @@ using DynamoUtilities;
 using Dynamo.Logging;
 using Lucene.Net.Search;
 using Lucene.Net.Analysis;
+using Lucene.Net.Analysis.Br;
+using Lucene.Net.Analysis.Cjk;
+using Lucene.Net.Analysis.Cz;
+using Lucene.Net.Analysis.De;
+using Lucene.Net.Analysis.Es;
+using Lucene.Net.Analysis.Fr;
+using Lucene.Net.Analysis.It;
+using Lucene.Net.Analysis.Ru;
+using Lucene.Net.Analysis.Standard;
 
 namespace Dynamo.Search
 {
@@ -231,6 +240,42 @@ namespace Dynamo.Search
             }
 
             return category.Substring(0, index);
+        }
+
+        /// <summary>
+        /// It creates an Analyzer to be used in the Indexing based on the user preference language
+        /// </summary>
+        /// <returns></returns>
+        internal Analyzer CreateAnalyzerByLanguage(string language)
+        {
+            switch (language)
+            {
+                case "en-US":
+                    return new StandardAnalyzer(Configurations.LuceneNetVersion);
+                case "cs-CZ":
+                    return new CzechAnalyzer(Configurations.LuceneNetVersion);
+                case "de-DE":
+                    return new GermanAnalyzer(Configurations.LuceneNetVersion);
+                case "es-ES":
+                    return new SpanishAnalyzer(Configurations.LuceneNetVersion);
+                case "fr-FR":
+                    return new FrenchAnalyzer(Configurations.LuceneNetVersion);
+                case "it-IT":
+                    return new ItalianAnalyzer(Configurations.LuceneNetVersion);
+                case "ja-JP":
+                case "ko-KR":
+                case "zh-CN":
+                case "zh-TW":
+                    return new CJKAnalyzer(Configurations.LuceneNetVersion);
+                case "pl-PL":
+                    return new StandardAnalyzer(Configurations.LuceneNetVersion);
+                case "pt-BR":
+                    return new BrazilianAnalyzer(Configurations.LuceneNetVersion);
+                case "ru-RU":
+                    return new RussianAnalyzer(Configurations.LuceneNetVersion);
+                default:
+                    return new StandardAnalyzer(Configurations.LuceneNetVersion);
+            }
         }
     }
 }

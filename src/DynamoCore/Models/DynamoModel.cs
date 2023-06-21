@@ -39,7 +39,6 @@ using Dynamo.Updates;
 using Dynamo.Utilities;
 using DynamoServices;
 using Greg;
-using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.Search;
@@ -617,7 +616,7 @@ namespace Dynamo.Models
         internal static readonly string BuiltInPackagesToken = @"%BuiltInPackages%";
         [Obsolete("Only used for migration to the new for this directory - BuiltInPackages - do not use for other purposes")]
         // Token representing the standard library directory
-        internal static readonly string StandardLibraryToken = @"%StandardLibrary%";
+        internal static readonly string StandardLibraryToken = @"%StandardLibrary%";        
 
 
         private void InitializeLuceneConfig()
@@ -632,7 +631,7 @@ namespace Dynamo.Models
             indexDir = Lucene.Net.Store.FSDirectory.Open(indexPath);
 
             // Create an analyzer to process the text
-            SearchModel.Analyzer = new StandardAnalyzer(Configurations.LuceneNetVersion);
+            SearchModel.Analyzer = SearchModel.CreateAnalyzerByLanguage(PreferenceSettings.Locale);
 
             // When running parallel tests several are trying to write in the AppData folder then the job
             // is failing and in a wrong state so we prevent to initialize Lucene index writer during test mode.
