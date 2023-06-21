@@ -2202,6 +2202,8 @@ namespace Dynamo.Controls
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
 
+                dynamoViewModel.Owner = packageManagerWindow;
+
                 packageManagerWindow.Closed += (sender, args) => { packageManagerWindow = null; cmd.Dispose(); };
                 packageManagerWindow.Show();
 

@@ -288,6 +288,18 @@ namespace Dynamo.PackageManager
         /// </value>
         public ObservableCollection<PackageManagerSearchElementViewModel> SearchResults { get; internal set; }
 
+        public ObservableCollection<PackageManagerSearchElementViewModel> SearchMyResults
+        {
+            get
+            {   
+                if (PackageManagerClientViewModel.LoginState != Greg.AuthProviders.LoginState.LoggedIn) return null;
+                //return SearchResults.Where(x => x.Model.Maintainers == PackageManagerClientViewModel.Username) as ObservableCollection<PackageManagerSearchElementViewModel>;
+                var foundPackages = SearchResults.Where(x => x.Model.Maintainers.Equals("luke.johnson"));
+                var collection = new ObservableCollection<PackageManagerSearchElementViewModel> ( foundPackages );
+                return collection;                
+            }
+        }
+
         /// <summary>
         ///     MaxNumSearchResults property
         /// </summary>
@@ -353,6 +365,10 @@ namespace Dynamo.PackageManager
                 RaisePropertyChanged(nameof(this.SearchState));
                 RaisePropertyChanged(nameof(this.SearchBoxPrompt));
                 RaisePropertyChanged(nameof(this.ShowSearchText));
+                if(value == PackageSearchState.Results)
+                {
+                    RaisePropertyChanged(nameof(this.SearchMyResults));
+                }
             }
         }
 
