@@ -151,6 +151,26 @@ namespace Dynamo.Controls
         }
     }
 
+
+    /// <summary>
+    /// Returns Visibility.Visible if the collection is empty, otherwise returns Visibility.Collapsed.
+    /// </summary>
+    public class EmptyListToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (!(value is ICollection collection)) return Visibility.Collapsed;
+
+            return collection.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+
     /// <summary>
     /// Controls the visibility of tooltip that displays python dependency in Package manager for each package version
     /// </summary>

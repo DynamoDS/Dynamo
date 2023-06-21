@@ -118,5 +118,11 @@ namespace Dynamo.PackageManager.UI
             this.packageManagerPublish.Dispose();
             this.PackageManagerViewModel.PackageSearchViewModel.RequestShowFileDialog -= OnRequestShowFileDialog;
         }
+
+        private void SearchForPackagesButton_Click(object sender, RoutedEventArgs e)
+        {
+            var tabControl = this.projectManagerTabControl;
+            tabControl.SelectedIndex = 0;
+        }
     }
 }

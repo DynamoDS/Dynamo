@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Dynamo.Wpf.Controls.InstalledPackagesControl"
+<UserControl x:Class="Dynamo.Wpf.Controls.InstalledPackagesControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -17,7 +17,7 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
-            <controls:SumConverter x:Key="SumConverter"/>
+            <controls:SumConverter x:Key="SumConverter" />
             <Style TargetType="{x:Type MenuItem}" x:Key="MenuItemCollapseStyle">
                 <Style.Triggers>
                     <Trigger Property="IsEnabled" Value="False">
@@ -33,6 +33,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
+        
         <ItemsControl Name="Filters"
                       Grid.Column="0" Grid.Row="0"
                       ItemsSource="{Binding Path=Filters}" 
@@ -68,6 +69,7 @@
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
+        
         <ScrollViewer Grid.Row="1"  
             VerticalScrollBarVisibility="Auto" 
             Background="{StaticResource PreferencesWindowBackgroundColor}">
@@ -361,6 +363,7 @@
 
             </ItemsControl>
         </ScrollViewer>
+
     </Grid>
 
 </UserControl>
