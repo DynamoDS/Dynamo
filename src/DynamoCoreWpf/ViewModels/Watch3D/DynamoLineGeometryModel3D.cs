@@ -44,13 +44,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 #if NET6_0_OR_GREATER
         protected override IRenderTechnique OnCreateRenderTechnique(IEffectsManager effectsManager)
         {
-            return effectsManager[DynamoEffectsManager.DynamoMeshShaderName];
+            return effectsManager[DynamoEffectsManager.DynamoLineShaderName];
         }
 
 #elif NETFRAMEWORK
         protected override IRenderTechnique OnCreateRenderTechnique(IRenderHost host)
         {
-            return host.EffectsManager[DynamoEffectsManager.DynamoMeshShaderName];
+            return host.EffectsManager[DynamoEffectsManager.DynamoLineShaderName];
         }
 #endif
     }
