@@ -107,7 +107,12 @@ namespace Dynamo.Configuration
             /// <summary>
             /// Documentation - Documentation of the node
             /// </summary>
-            Documentation
+            Documentation,
+
+            /// <summary>
+            /// Hosts - Package hosts
+            /// </summary>
+            Hosts
         }
 
         /// <summary>
@@ -119,5 +124,14 @@ namespace Dynamo.Configuration
                                                nameof(IndexFieldsEnum.SearchKeywords),
                                                nameof(IndexFieldsEnum.DocName),
                                                nameof(IndexFieldsEnum.Documentation)};
+
+
+        /// <summary>
+        /// Package Fields to be indexed by Lucene Search
+        /// </summary>
+        public static string[] PackageIndexFields = { nameof(IndexFieldsEnum.Name),
+                                                      nameof(IndexFieldsEnum.Description),
+                                                      nameof(IndexFieldsEnum.SearchKeywords),
+                                                      nameof(IndexFieldsEnum.Hosts)};
     }
 }

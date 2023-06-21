@@ -3,18 +3,27 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using Dynamo.Configuration;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
+using Dynamo.Models;
 using Dynamo.PackageManager.ViewModels;
 using Dynamo.Search;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Utilities;
 using Greg.Responses;
+using Lucene.Net.Analysis;
+using Lucene.Net.Analysis.Standard;
+using Lucene.Net.Documents;
+using Lucene.Net.Index;
+using Lucene.Net.QueryParsers.Classic;
+using Lucene.Net.Search;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 
@@ -42,7 +51,7 @@ namespace Dynamo.PackageManager
             Name,
             Downloads,
             Votes,
-            Maintainers,
+            Maintainers,    
             LastUpdate,
             Search
         };
@@ -135,6 +144,16 @@ namespace Dynamo.PackageManager
         }
 
         #region Properties & Fields
+        internal List<string> addedFields;
+        internal DirectoryReader dirReader;
+        internal Lucene.Net.Store.Directory indexDir;
+        internal IndexWriter writer;
+
+        // Holds the instance for the IndexSearcher
+        internal IndexSearcher Searcher;
+
+        // Used for creating the StandardAnalyzer
+        internal Analyzer Analyzer;
 
         // The results of the last synchronization with the package manager server
         public List<PackageManagerSearchElement> LastSync { get; set; }
@@ -438,12 +457,120 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
+        /// Initialize Lucene config file writer.
+        /// </summary>
+        private void InitializeLuceneConfig()
+        {
+            addedFields = new List<string>();
+
+            var dynamoModel = PackageManagerClientViewModel.DynamoViewModel.Model;
+
+            DirectoryInfo webBrowserUserDataFolder;
+            var userDataDir = new DirectoryInfo(dynamoModel.PathManager.UserDataDirectory);
+            webBrowserUserDataFolder = userDataDir.Exists ? userDataDir : null;
+
+            string indexPath = Path.Combine(webBrowserUserDataFolder.FullName, "Index", "Packages");
+            indexDir = Lucene.Net.Store.FSDirectory.Open(indexPath);
+
+            // Create an analyzer to process the text
+            Analyzer = new StandardAnalyzer(LuceneConfig.LuceneNetVersion);
+
+            // Initialize Lucene index writer, unless in test mode.
+            if (!DynamoModel.IsTestMode)
+            {
+                // Create an index writer
+                IndexWriterConfig indexConfig = new IndexWriterConfig(LuceneConfig.LuceneNetVersion, Analyzer)
+                {
+                    OpenMode = OpenMode.CREATE
+                };
+                writer = new IndexWriter(indexDir, indexConfig);
+            }
+        }
+
+        /// <summary>
+        /// Initialize Lucene index document object for reuse
+        /// </summary>
+        /// <returns></returns>
+        private Document InitializeIndexDocument()
+        {
+            if (DynamoModel.IsTestMode) return null;
+
+            var name = new TextField(nameof(LuceneConfig.IndexFieldsEnum.Name), string.Empty, Field.Store.YES);
+            var description = new TextField(nameof(LuceneConfig.IndexFieldsEnum.Description), string.Empty, Field.Store.YES);
+            var keywords = new TextField(nameof(LuceneConfig.IndexFieldsEnum.SearchKeywords), string.Empty, Field.Store.YES);
+            var hosts = new TextField(nameof(LuceneConfig.IndexFieldsEnum.Hosts), string.Empty, Field.Store.YES);
+
+            var d = new Document()
+            {
+               name, description, keywords, hosts
+            };
+            return d;
+        }
+
+        /// <summary>
+        /// Add package information to Lucene index
+        /// </summary>
+        /// <param name="package">package info that will be indexed</param>
+        /// <param name="doc">Lucene document in which the package info will be indexed</param>
+        private void AddPackageToSearchIndex(PackageManagerSearchElement package, Document doc)
+        {
+            if (DynamoModel.IsTestMode) return;
+            if (addedFields == null) return;
+
+            SetDocumentFieldValue(doc, nameof(LuceneConfig.IndexFieldsEnum.Name), package.Name);
+            SetDocumentFieldValue(doc, nameof(LuceneConfig.IndexFieldsEnum.Description), package.Description);
+
+            if (package.Keywords.Count() > 0)
+            {
+                SetDocumentFieldValue(doc, nameof(LuceneConfig.IndexFieldsEnum.SearchKeywords), package.Keywords);
+            }
+
+            if (package.Hosts != null && string.IsNullOrEmpty(package.Hosts.ToString()))
+            {
+                SetDocumentFieldValue(doc, nameof(LuceneConfig.IndexFieldsEnum.Hosts), package.Hosts.ToString(), true, true);
+            }
+
+            writer?.AddDocument(doc);
+        }
+
+        /// <summary>
+        /// The SetDocumentFieldValue method should be optimized later
+        /// </summary>
+        /// <param name="doc">Lucene document in which the package info is stored</param>
+        /// <param name="field">Package field that is being updated in the document</param>
+        /// <param name="value">Package field value</param>
+        /// <param name="isTextField">This is used when the value need to be tokenized(broken down into pieces), whereas StringTextFields are tokenized.</param>
+        /// <param name="isLast">This is used for the last value set in the document, and it will fetch all the other field not set for the document and add them with an empty string.</param>
+        private void SetDocumentFieldValue(Document doc, string field, string value, bool isTextField = true, bool isLast = false)
+        {
+            addedFields.Add(field);
+            if (isTextField && !field.Equals("DocName"))
+            {
+                ((TextField)doc.GetField(field)).SetStringValue(value); 
+            }
+            else
+            {
+                ((StringField)doc.GetField(field)).SetStringValue(value);
+            }
+            if (isLast)
+            {
+                List<string> diff = LuceneConfig.PackageIndexFields.Except(addedFields).ToList();
+                foreach (var d in diff)
+                {
+                    SetDocumentFieldValue(doc, d, "");
+                }
+                addedFields.Clear();
+            }
+        }
+
+        /// <summary>
         ///     The class constructor.
         /// </summary>
         public PackageManagerSearchViewModel(PackageManagerClientViewModel client) : this()
         {
             PackageManagerClientViewModel = client;
             HostFilter = InitializeHostFilter();
+            InitializeLuceneConfig();
         }
         
         /// <summary>
@@ -722,6 +849,8 @@ namespace Dynamo.PackageManager
             this.ClearSearchResults();
             this.SearchState = PackageSearchState.Syncing;
 
+            var iDoc = InitializeIndexDocument();
+
             Task<IEnumerable<PackageManagerSearchElementViewModel>>.Factory.StartNew(RefreshAndSearch).ContinueWith((t) =>
             {
                 lock (SearchResults)
@@ -729,9 +858,24 @@ namespace Dynamo.PackageManager
                     ClearSearchResults();
                     foreach (var result in t.Result)
                     {
+                        if (result.Model != null)
+                        {
+                            AddPackageToSearchIndex(result.Model, iDoc);
+                        }   
                         this.AddToSearchResults(result);
                     }
                     this.SearchState = HasNoResults ? PackageSearchState.NoResults : PackageSearchState.Results;
+
+                    if (!DynamoModel.IsTestMode)
+                    {
+                        dirReader = writer?.GetReader(applyAllDeletes: true);
+                        Searcher = new IndexSearcher(dirReader);
+
+                        writer?.Commit();
+                        writer?.Dispose();
+                        indexDir?.Dispose();
+                        writer = null;
+                    }
                 }
                 RefreshInfectedPackages();
             }
@@ -879,9 +1023,19 @@ namespace Dynamo.PackageManager
             // if last sync isn't populated, we can't search
             if (LastSync == null) return;
 
+            IEnumerable<PackageManagerSearchElementViewModel> results;
             this.SearchText = query;
 
-            var results = Search(query);
+            // If the search query is empty, just call regular search API
+            // If the search query is not empty, then call Lucene search API
+            if (string.IsNullOrEmpty(query))
+            {
+                results = Search(query);
+            }
+            else
+            {
+                results = Search(query, true);
+            }
 
             this.ClearSearchResults();
 
@@ -1003,6 +1157,159 @@ namespace Dynamo.PackageManager
                 x.RequestShowFileDialog += OnRequestShowFileDialog;
 
             return list;
+        }
+
+        /// <summary>
+        /// Performs a search using the given string as query, but does not update
+        /// the SearchResults object.
+        /// </summary>
+        /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
+        /// <param name="searchText"> The search query </param>
+        ///  /// <param name="useLucene"> Temporary flag that will be used for searching using Lucene.NET </param>
+        internal IEnumerable<PackageManagerSearchElementViewModel> Search(string searchText, bool useLucene)
+        {
+            if (useLucene)
+            {
+                string searchTerm = searchText.Trim();
+                var packages = new List<PackageManagerSearchElementViewModel>();
+
+                string[] fnames = LuceneConfig.PackageIndexFields;
+
+                var parser = new MultiFieldQueryParser(LuceneConfig.LuceneNetVersion, fnames, Analyzer)
+                {
+                    AllowLeadingWildcard = true,
+                    DefaultOperator = LuceneConfig.DefaultOperator,
+                    FuzzyMinSim = LuceneConfig.MinimumSimilarity
+                };
+
+                Query query = parser.Parse(CreateSearchQuery(fnames, searchTerm));
+
+                //indicate we want the first 50 results
+                TopDocs topDocs = Searcher.Search(query, n: LuceneConfig.DefaultResultsCount);
+                for (int i = 0; i < topDocs.ScoreDocs.Length; i++)
+                {
+                    //read back a doc from results
+                    Document resultDoc = Searcher.Doc(topDocs.ScoreDocs[i].Doc);
+
+                    // Get the view model of the package element and add it to the results.
+                    string name = resultDoc.Get(nameof(LuceneConfig.IndexFieldsEnum.Name));
+
+                    var foundPackage = GetViewModelForPackageSearchElement(name);
+                    if (foundPackage != null)
+                    {
+                        packages.Add(foundPackage);
+                    }
+                }
+                return packages;
+            }
+            else
+            {
+                return Search(searchText);
+            }
+        }
+
+        /// <summary>
+        /// To get view model for a package based on its name.
+        /// </summary>s
+        /// <param name="packageName">Name of the package</param>
+        /// <returns></returns>
+        private PackageManagerSearchElementViewModel GetViewModelForPackageSearchElement(string packageName)
+        {
+            var result = PackageManagerClientViewModel.CachedPackageList.Where(e => {
+                if (e.Name.Equals(packageName))
+                {
+                    return true;
+                }
+                return false;
+            });
+
+            if (!result.Any())
+            {
+                return null;
+            }
+
+            return new PackageManagerSearchElementViewModel(result.ElementAt(0), false);
+        }
+
+        /// <summary>
+        /// Creates a search query with adjusted priority, fuzzy logic and wildcards.
+        /// Complete Search term appearing in Name of the package will be given highest priority.
+        /// Then, complete search term appearing in other metadata,
+        /// Then, a part of the search term(if containing multiple words) appearing in Name of the package
+        /// Then, a part of the search term appearing in other metadata of the package.
+        /// Then priority will be given based on fuzzy logic- that is if the complete search term may have been misspelled for upto 2(max edits) characters.
+        /// Then, the same fuzzy logic will be applied to each part of the search term.
+        /// </summary>
+        /// <param name="fields">All fields to be searched in.</param>
+        /// <param name="SearchTerm">Search key to be searched for.</param>
+        /// <returns></returns>
+        private string CreateSearchQuery(string[] fields, string SearchTerm)
+        {
+            int fuzzyLogicMaxEdits = LuceneConfig.FuzzySearchMinEdits;
+            // Use a larger max edit value - more tolerant with typo when search term is longer than threshold
+            if (SearchTerm.Length > LuceneConfig.FuzzySearchMaxEditsThreshold)
+            {
+                fuzzyLogicMaxEdits = LuceneConfig.FuzzySearchMaxEdits;
+            }
+
+            var booleanQuery = new BooleanQuery();
+            string searchTerm = QueryParser.Escape(SearchTerm);
+
+            foreach (string f in fields)
+            {
+                FuzzyQuery fuzzyQuery;
+                if (searchTerm.Length > LuceneConfig.FuzzySearchMinimalTermLength)
+                {
+                    fuzzyQuery = new FuzzyQuery(new Term(f, searchTerm), fuzzyLogicMaxEdits);
+                    booleanQuery.Add(fuzzyQuery, Occur.SHOULD);
+                }
+
+                var wildcardQuery = new WildcardQuery(new Term(f, searchTerm));
+                if (f.Equals(nameof(LuceneConfig.IndexFieldsEnum.Name)))
+                {
+                    wildcardQuery.Boost = LuceneConfig.SearchNameWeight;
+                }
+                else
+                {
+                    wildcardQuery.Boost = LuceneConfig.SearchMetaFieldsWeight;
+                }
+                booleanQuery.Add(wildcardQuery, Occur.SHOULD);
+
+                wildcardQuery = new WildcardQuery(new Term(f, "*" + searchTerm + "*"));
+                if (f.Equals(nameof(LuceneConfig.IndexFieldsEnum.Name)))
+                {
+                    wildcardQuery.Boost = LuceneConfig.WildcardsSearchNameWeight;
+                }
+                else
+                {
+                    wildcardQuery.Boost = LuceneConfig.WildcardsSearchMetaFieldsWeight;
+                }
+                booleanQuery.Add(wildcardQuery, Occur.SHOULD);
+
+                if (searchTerm.Contains(' ') || searchTerm.Contains('.'))
+                {
+                    foreach (string s in searchTerm.Split(' ', '.'))
+                    {
+                        if (s.Length > LuceneConfig.FuzzySearchMinimalTermLength)
+                        {
+                            fuzzyQuery = new FuzzyQuery(new Term(f, s), LuceneConfig.FuzzySearchMinEdits);
+                            booleanQuery.Add(fuzzyQuery, Occur.SHOULD);
+                        }
+                        wildcardQuery = new WildcardQuery(new Term(f, "*" + s + "*"));
+
+                        if (f.Equals(nameof(LuceneConfig.IndexFieldsEnum.Name)))
+                        {
+                            wildcardQuery.Boost = 5;
+                        }
+                        else
+                        {
+                            wildcardQuery.Boost = LuceneConfig.FuzzySearchWeight;
+                        }
+                        booleanQuery.Add(wildcardQuery, Occur.SHOULD);
+                    }
+                }
+            }
+            return booleanQuery.ToString();
         }
 
         /// <summary>
