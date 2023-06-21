@@ -17,6 +17,7 @@ using Lucene.Net.Analysis.Es;
 using Lucene.Net.Analysis.Fr;
 using Lucene.Net.Analysis.It;
 using Lucene.Net.Analysis.Ru;
+using Lucene.Net.Analysis.En;
 using Lucene.Net.Analysis.Standard;
 
 namespace Dynamo.Search
@@ -251,7 +252,7 @@ namespace Dynamo.Search
             switch (language)
             {
                 case "en-US":
-                    return new StandardAnalyzer(LuceneConfig.LuceneNetVersion);
+                    return new EnglishAnalyzer(LuceneConfig.LuceneNetVersion);
                 case "cs-CZ":
                     return new CzechAnalyzer(LuceneConfig.LuceneNetVersion);
                 case "de-DE":
