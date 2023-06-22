@@ -39,7 +39,6 @@ using Dynamo.Updates;
 using Dynamo.Utilities;
 using DynamoServices;
 using Greg;
-using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.Search;
@@ -632,7 +631,7 @@ namespace Dynamo.Models
             indexDir = Lucene.Net.Store.FSDirectory.Open(indexPath);
 
             // Create an analyzer to process the text
-            SearchModel.Analyzer = new StandardAnalyzer(LuceneConfig.LuceneNetVersion);
+            SearchModel.Analyzer = SearchModel.CreateAnalyzerByLanguage(PreferenceSettings.Locale);
 
             // When running parallel tests several are trying to write in the AppData folder then the job
             // is failing and in a wrong state so we prevent to initialize Lucene index writer during test mode.
