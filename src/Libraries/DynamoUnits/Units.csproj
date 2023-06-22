@@ -20,9 +20,12 @@
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
     <PackageReference Include="System.Resources.Extensions" Version="5.0.0" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="ForgeUnits.NET" Version="4.0.3" />
-	<PackageReference Include="ForgeUnits.Schemas" Version="1.0.0" GeneratePathProperty="true" />
+  <ItemGroup Label="Common dependencies">
+    <PackageReference Include="ForgeUnits.NET" Version="4.0.3" GeneratePathProperty="true">
+        <!-- Exclude build resources (ForgeUnits.NET.targets) beacause we copy it manually in a custom Target -->
+        <ExcludeAssets>build</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="ForgeUnits.Schemas" Version="1.0.0" GeneratePathProperty="true" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="DynamoUnits_DynamoCustomization.xml" />
@@ -89,5 +92,7 @@
       <UnitSchemas Include="$(PkgForgeUnits_Schemas)\Content\unit\**\*.*" />
     </ItemGroup>
     <Copy SourceFiles="@(UnitSchemas)" DestinationFolder="$(OutDir)unit\%(RecursiveDir)" />
+    <!-- Copy native dll manually because using the ForgeUnits.NET.targets copies it in the nodes subfolder (because of transitive dependencies) -->
+    <Copy Condition="'$(TargetFramework)' == 'net48' " SourceFiles="$(PkgForgeUnits_NET)\runtimes\win10-x64\native\ForgeUnits.dll" DestinationFolder="$(OutDir)" />
   </Target>
 </Project>
