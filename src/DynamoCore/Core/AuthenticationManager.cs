@@ -11,6 +11,7 @@ namespace Dynamo.Core
     public class AuthenticationManager
     {
         private readonly IAuthProvider authProvider;
+        private static LoginState loginStateInitial;
 
         /// <summary>
         ///     Occurs when login state is changed
@@ -33,9 +34,26 @@ namespace Dynamo.Core
             get { return HasAuthProvider ? authProvider.LoginState : LoginState.LoggedOut; }
         }
 
-        internal bool IsLoggedIn()
+        /// <summary>
+        /// This Property will return the initial LoginState assigned in the constructor in order to be used in the Initialization flow. Others features require direct calls to the LoginState due to are on demand.
+        /// </summary>
+        public LoginState LoginStateInitial
         {
+            get { return loginStateInitial; }
+        }
+
+        internal bool IsLoggedIn()
+        {            
             return HasAuthProvider && authProvider.LoginState == LoginState.LoggedIn ? true : false;
+        }
+
+        /// <summary>
+        /// This function will return the value by checking the LoginStateSingle property (which load its value only once time) used only in the initialization flow
+        /// </summary>
+        /// <returns></returns>
+        internal bool IsLoggedInInitial()
+        {
+            return HasAuthProvider && LoginStateInitial == LoginState.LoggedIn ? true : false;
         }
 
         /// <summary>
@@ -66,6 +84,7 @@ namespace Dynamo.Core
             // session.  Hence, we do not subscribe to this event.
             if (this.authProvider != null)
             {
+                loginStateInitial = LoginState;
                 this.authProvider.LoginStateChanged += OnLoginStateChanged;
             }
         }
@@ -102,6 +121,7 @@ namespace Dynamo.Core
         {
             if (LoginStateChanged != null)
             {
+                loginStateInitial = status;
                 LoginStateChanged(status);
             }
         }

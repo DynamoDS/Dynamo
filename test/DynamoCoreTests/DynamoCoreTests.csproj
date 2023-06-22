@@ -11,6 +11,9 @@
     <RootNamespace>Dynamo.Tests</RootNamespace>
     <AssemblyName>DynamoCoreTests</AssemblyName>
   </PropertyGroup>
+  <PropertyGroup>
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Remove="AstBuilderTest.cs" />
     <Compile Remove="Saving.cs" />
@@ -40,7 +43,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Greg" Version="2.4.0.4766">
+    <PackageReference Include="Greg" Version="2.5.0.5076">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

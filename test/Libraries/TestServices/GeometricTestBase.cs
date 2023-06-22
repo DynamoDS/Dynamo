@@ -1,17 +1,15 @@
+using Autodesk.DesignScript.Geometry;
+using Autodesk.DesignScript.Interfaces;
+using DynamoShapeManager;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using Autodesk.DesignScript.Geometry;
-using Autodesk.DesignScript.Interfaces;
-
-using DynamoShapeManager;
 
 
 namespace TestServices
 {
-#if NETFRAMEWORK
-using NUnit.Framework;
 
     public class GeometricTestBase
     {
@@ -57,7 +55,6 @@ using NUnit.Framework;
             return new TestSessionConfiguration();
         }
     }
-#endif
     /// <summary>
     /// This is a temporary session class which is only used for nodes that are using Geometries.
     /// When ProtoGeometry is loaded, the static instance GeometryFactory will be constructed which

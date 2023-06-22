@@ -13,10 +13,10 @@
     <LibGOsToken>windows</LibGOsToken>
     <LibGOsToken Condition="$(Platform.Contains('Linux'))">linux</LibGOsToken>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(ExecutionEngine)' != 'FScheme' ">
-    <DefineConstants>$(DefineConstants);USE_DSENGINE</DefineConstants>
+  <PropertyGroup>
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
   </PropertyGroup>
-  <ItemGroup>
+    <ItemGroup>
     <Compile Remove="Graph\ConnectorPinModel.cs" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
@@ -31,11 +31,14 @@
   <ItemGroup Label="Common dependencies">
     <PackageReference Include="Autodesk.IDSDK" Version="1.1.6" />
     <PackageReference Include="DynamoVisualProgramming.Analytics" Version="3.0.1.740" />
-    <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.665" GeneratePathProperty="true" />
-    <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.18.0.665" GeneratePathProperty="true" />
-    <PackageReference Include="Greg" Version="2.4.0.4766" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.1400" GeneratePathProperty="true" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.18.0.1400" GeneratePathProperty="true" />
+    <PackageReference Include="Greg" Version="2.5.0.5076" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" CopyXML="true" />
 	  <PackageReference Include="RestSharp" Version="106.12.0" CopyXML="true" />
+	<PackageReference Include="Lucene.Net" Version="4.8.0-beta00016" />
+    <PackageReference Include="Lucene.Net.Analysis.Common" Version="4.8.0-beta00016" />
+    <PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00016" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\GraphLayout\GraphLayout.csproj">

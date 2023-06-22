@@ -1329,8 +1329,14 @@ namespace Dynamo.ViewModels
             }
             else
             {
-                if (!Model.HasUnsavedChanges || DynamoViewModel.AskUserToSaveWorkspaceOrCancel(Model))
-                    DynamoViewModel.Model.RemoveWorkspace(Model);
+                // Close the custom workspace only if all docked node windows are saved and can be closed.
+                if (DynamoViewModel.CanCloseDockedNodeWindows(Nodes))
+                {
+                    if (!Model.HasUnsavedChanges || DynamoViewModel.AskUserToSaveWorkspaceOrCancel(Model))
+                    {
+                        DynamoViewModel.Model.RemoveWorkspace(Model);
+                    }
+                }
             }
         }
 
