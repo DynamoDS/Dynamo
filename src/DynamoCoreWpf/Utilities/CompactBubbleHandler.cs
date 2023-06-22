@@ -1,6 +1,5 @@
 using System;
-using System.Linq;
-using System.Threading;
+using System.Linq; 
 using Dynamo.Extensions;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;

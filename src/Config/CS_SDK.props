@@ -55,6 +55,11 @@
   <PropertyGroup Condition="$(Platform.Contains('Linux'))" >
     <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(UILib)' == 'true' AND $(Platform.Contains('NET60'))">
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
   <PropertyGroup>
     <BaseIntermediateOutputPath>int\$(TargetFramework)\</BaseIntermediateOutputPath>
     <IntermediateOutputPath>obj\$(TargetFramework)\</IntermediateOutputPath>
