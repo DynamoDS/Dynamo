@@ -2269,10 +2269,13 @@ namespace Dynamo.Models
 
             CurrentWorkspace.UpdateWithExtraWorkspaceViewInfo(viewInfo, offsetX, offsetY);
 
-            List<NoteModel> insertedNotes = GetInsertedNotes(viewInfo.Annotations);
+            if(viewInfo != null)
+            {
+                List<NoteModel> insertedNotes = GetInsertedNotes(viewInfo.Annotations);
+                DynamoSelection.Instance.Selection.AddRange(insertedNotes);
+            }           
 
-            DynamoSelection.Instance.Selection.AddRange(nodes);
-            DynamoSelection.Instance.Selection.AddRange(insertedNotes);
+            DynamoSelection.Instance.Selection.AddRange(nodes); 
             
             currentWorkspace.HasUnsavedChanges = true;
         }
@@ -3735,6 +3738,8 @@ namespace Dynamo.Models
 
         private bool NotesAlreadyLoaded(IEnumerable<ExtraAnnotationViewInfo> notes)
         {
+            if (notes == null) return false;
+
             foreach (var note in notes)
             {
                 if (currentWorkspace.Notes.Any(n => n.GUID.ToString() == note.Id))
@@ -3743,7 +3748,7 @@ namespace Dynamo.Models
                     return true;
                 }
             }
-            // If no nodes exist with the same GUID, then we are good to go
+            // If no notes exist with the same GUID, then we are good to go
             return false;
         }
         #endregion
