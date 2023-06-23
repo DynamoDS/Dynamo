@@ -75,6 +75,16 @@ namespace Dynamo.Configuration
         internal static int FuzzySearchWeight = 2;
 
         /// <summary>
+        /// Directory where Nodes info are indexed
+        /// </summary>
+        internal static string NodesIndexingDirectory = "Nodes";
+
+        /// <summary>
+        /// Directory where packages info are indexed
+        /// </summary>
+        internal static string PackagesIndexingDirectory = "Packages";
+
+        /// <summary>
         /// This represent the fields that will be indexed when initializing Lucene Search
         /// </summary>
         public enum IndexFieldsEnum

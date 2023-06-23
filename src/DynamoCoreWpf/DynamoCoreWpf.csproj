@@ -521,6 +521,7 @@
     <Compile Include="ViewModels\PackageManager\PackageManagerSearchElementViewModel.cs" />
     <Compile Include="ViewModels\PackageManager\PackageManagerSearchViewModel.cs" />
     <Compile Include="ViewModels\PackageManager\PackageViewModel.cs" />
+	<Compile Include="ViewModels\Lucene\LuceneSearchViewModel.cs" />
     <Compile Include="ViewModels\Core\PortViewModel.cs" />
     <Compile Include="ViewModels\PackageManager\PublishPackageViewModel.cs" />
     <Compile Include="ViewModels\Search\SearchViewModel.cs" />

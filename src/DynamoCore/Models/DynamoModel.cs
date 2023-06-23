@@ -628,7 +628,7 @@ namespace Dynamo.Models
             var userDataDir = new DirectoryInfo(pathManager.UserDataDirectory);
             webBrowserUserDataFolder = userDataDir.Exists ? userDataDir : null;
 
-            string indexPath = Path.Combine(webBrowserUserDataFolder.FullName, "Index", "Nodes");
+            string indexPath = Path.Combine(webBrowserUserDataFolder.FullName, "Index", LuceneConfig.NodesIndexingDirectory);
             indexDir = Lucene.Net.Store.FSDirectory.Open(indexPath);
 
             // Create an analyzer to process the text
