@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Xml;
 using LaunchDarkly.Sdk;
+using Microsoft.Extensions.Configuration;
 
 namespace DynamoFeatureFlags
 {
@@ -137,16 +137,10 @@ namespace DynamoFeatureFlags
         {
             try
             {
-                var doc = new XmlDocument();
-                doc.Load(configFilePath);
-                if (doc != null)
-                {
-                    XmlNode node = doc.SelectSingleNode("//appSettings");
-
-                    XmlElement value = (XmlElement)node.SelectSingleNode(string.Format("//add[@key='{0}']", key));
-                    return value.Attributes["value"].Value;
-                }
-                return null;
+                IConfigurationRoot config = new ConfigurationBuilder()
+                    .AddJsonFile(System.IO.Path.Combine(new System.IO.FileInfo(configFilePath).DirectoryName, "appsettings.json"), false, true)
+                    .Build();
+                return config[key];
             }
             catch (Exception ex)
             {
