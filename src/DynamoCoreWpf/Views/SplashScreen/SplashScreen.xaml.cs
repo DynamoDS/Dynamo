@@ -143,18 +143,10 @@ namespace Dynamo.UI.Views
             if (webView != null)
             {
                 webView.NavigationCompleted -= WebView_NavigationCompleted;
+                webView.Focus();
+                System.Windows.Forms.SendKeys.SendWait("{TAB}");
             }
-            OnRequestDynamicSplashScreen();
-
-            this.webView.Focus();            
-            System.Windows.Forms.SendKeys.SendWait("{TAB}");
-            webView.KeyDown += WebView_KeyDown;
-        }
-
-        private void WebView_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
-        {
-            if (e.Key == Key.Escape)
-                CloseWindow();
+            OnRequestDynamicSplashScreen();           
         }
         /// <summary>
         /// Request to close SplashScreen.
@@ -233,7 +225,7 @@ namespace Dynamo.UI.Views
             // If user is launching Dynamo for the first time or chose to always show splash screen, display it. Otherwise, display Dynamo view directly.
             if (viewModel.PreferenceSettings.IsFirstRun || viewModel.PreferenceSettings.EnableStaticSplashScreen)
             {
-                SetSignInStatus(authManager.IsLoggedIn());
+                SetSignInStatus(authManager.IsLoggedInInitial());
                 SetLoadingDone();
             }
             else
@@ -482,7 +474,6 @@ namespace Dynamo.UI.Views
             base.OnClosed(e);
 
             DynamoModel.RequestUpdateLoadBarStatus -= DynamoModel_RequestUpdateLoadBarStatus;
-            webView.KeyDown -= WebView_KeyDown;
             webView.Dispose();
             webView = null;
 

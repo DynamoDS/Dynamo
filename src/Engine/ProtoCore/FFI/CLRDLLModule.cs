@@ -315,6 +315,11 @@ namespace ProtoFFI
             classnode.ClassAttributes = cattrs;
             SetTypeAttributes(type, cattrs);
 
+            //register a dispose method on the generated class
+            bool hasDisposeMethod = false;
+            AssociativeNode node = ParseAndRegisterFunctionPointer(true, ref hasDisposeMethod, mDisposeMethod);
+            classnode.Procedures.Add(node);
+
             return classnode;
         }
 

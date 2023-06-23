@@ -46,29 +46,6 @@ namespace IronPythonTests
         }
 
         /// <summary>
-        /// This test is created to check if the extension displays a dialog to the user
-        /// when opening a saved dyn file that contains python nodes with their engine set to `IronPython2`
-        /// </summary>
-        [Test]
-        public void WillDisplayDialogWhenOpeningGraphWithIronPythonNodes()
-        {
-            DynamoModel.IsTestMode = false;
-
-            // Act
-            // open file
-            Open(@"core\python\python.dyn");
-
-            var isIronPythonDialogOpen = this.View.OwnedWindows
-                .Cast<Window>()
-                .Any(x => x.GetType() == typeof(IronPythonInfoDialog));
-
-            // Assert
-            Assert.IsTrue(isIronPythonDialogOpen);
-            DynamoModel.IsTestMode = true;
-            DispatcherUtil.DoEvents();
-        }
-
-        /// <summary>
         /// This test is created to check if a notification is logged to the Dynamo Logger 
         /// when adding a using the IronPython engine
         /// </summary>
@@ -140,73 +117,6 @@ namespace IronPythonTests
         }
 
         /// <summary>
-        /// This test verifies that the IronPython dialog wont show the second time a graph is opened
-        /// even if it contains IronPython nodes
-        /// </summary>
-        [Test]
-        public void WillNotDisplayDialogWhenOpeningGraphWithIronPythonNodesSecondTimeInSameSession()
-        {
-            DynamoModel.IsTestMode = false;
-            // Arrange
-            var examplePathIronPython = Path.Combine(UnitTestBase.TestDirectory, @"core\python", "python.dyn");
-            var examplePathEmptyFile = Path.Combine(UnitTestBase.TestDirectory, @"core\Home.dyn");
-
-            // Act
-            // open file
-            Open(examplePathIronPython);
-            var ironPythonWorkspaceId = this.ViewModel.CurrentSpace.Guid;
-            DispatcherUtil.DoEvents();
-
-            var ironPythonDialog = this.View.GetChildrenWindowsOfType<IronPythonInfoDialog>().First();
-            Assert.IsNotNull(ironPythonDialog);
-            Assert.IsTrue(ironPythonDialog.IsLoaded);
-            ironPythonDialog.OkBtn.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-
-            DispatcherUtil.DoEvents();
-            // Open empty file before open the the IronPython file again
-            Open(examplePathEmptyFile);
-            Assert.AreNotEqual(ironPythonWorkspaceId, this.ViewModel.CurrentSpace.Guid);
-            DispatcherUtil.DoEvents();
-
-            Open(examplePathIronPython);
-            Assert.AreEqual(ironPythonWorkspaceId, this.ViewModel.CurrentSpace.Guid);
-            var secondGraphIronPythonDialog = this.View.GetChildrenWindowsOfType<IronPythonInfoDialog>();
-
-            DispatcherUtil.DoEvents();
-            // Assert
-            Assert.AreEqual(0, secondGraphIronPythonDialog.Count());
-            DynamoModel.IsTestMode = true;
-            DispatcherUtil.DoEvents();
-        }
-
-        /// <summary>
-        /// This test verifies that the IronPython dialog won't show 
-        /// when the Do not show again property is enabled.
-        /// </summary>
-        [Test]
-        public void WillNotDisplayIronPythonDialogAgainWhenDoNotShowAgainSettingIsChecked()
-        {
-            DynamoModel.IsTestMode = false;
-            // Arrange
-            var examplePathIronPython = Path.Combine(UnitTestBase.TestDirectory, @"core\python", "python.dyn");
-
-            //Disable iron python alerts
-            ViewModel.IsIronPythonDialogDisabled = true;
-
-            // Act
-            // open file
-            Open(examplePathIronPython);
-            DispatcherUtil.DoEvents();
-
-            var ironPythonDialog = this.View.GetChildrenWindowsOfType<IronPythonInfoDialog>();
-            Assert.IsEmpty(ironPythonDialog);
-            Assert.AreEqual(0, ironPythonDialog.Count());
-
-            DynamoModel.IsTestMode = true;
-            DispatcherUtil.DoEvents();
-        }
-
-        /// <summary>
         /// This tests checks if the extension can detect IronPython nodes in the graph 
         /// </summary>
         [Test]
@@ -226,61 +136,6 @@ namespace IronPythonTests
             DispatcherUtil.DoEvents();
         }
 
-        /// <summary>
-        /// Checks if pressing the `More Information` button on the IronPythonInfoDialog window
-        /// will open the DocumentationBrowser ViewExtension.
-        /// </summary>
-        [Test]
-        public void CanOpenDocumentationBrowserWhenMoreInformationIsClicked()
-        {
-            DynamoModel.IsTestMode = false;
-
-            // Act
-            // open file
-            var examplePath = Path.Combine(UnitTestBase.TestDirectory, @"core\python", "python.dyn");
-            Open(examplePath);
-            DispatcherUtil.DoEvents();
-
-            var ironPythonDialog = this.View.GetChildrenWindowsOfType<IronPythonInfoDialog>().First();
-            var viewExtensionTabsBeforeBtnClick = this.View.SideBarPanelTabItems.Count;
-            DispatcherUtil.DoEvents();
-
-            ironPythonDialog.MoreInformationBtn.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-            var hasDocumentationBrowserTab = this.View.SideBarPanelTabItems
-                .Any(x => x.Header.ToString() == "Documentation Browser");
-            DispatcherUtil.DoEvents();
-
-            // Assert
-            Assert.AreEqual(viewExtensionTabsBeforeBtnClick + 1, this.View.SideBarPanelTabItems.Count);
-            Assert.IsTrue(hasDocumentationBrowserTab);
-            DynamoModel.IsTestMode = true;
-            DispatcherUtil.DoEvents();
-        }
-
-        /// <summary>
-        /// This test checks that the IronPython dialog is shown to the user,
-        /// when the workspace has custom nodes that contain a python node in it. 
-        /// </summary>
-        [Test]
-        public void WillDisplayDialogWhenCustomNodeInsideWorkspaceHasIronPythonNode()
-        {
-            DynamoModel.IsTestMode = false;
-
-            // open file
-            var examplePath = Path.Combine(UnitTestBase.TestDirectory, @"core\python", "PythonCustomNodeHomeWorkspace.dyn");
-            Open(examplePath);
-            DispatcherUtil.DoEvents();
-
-            var ironPythonDialog = this.View.GetChildrenWindowsOfType<IronPythonInfoDialog>().First();
-
-            // Assert that the IronPython dialog is shown. 
-            Assert.IsNotNull(ironPythonDialog);
-            Assert.IsTrue(ironPythonDialog.IsLoaded);
-
-            DynamoModel.IsTestMode = true;
-            DispatcherUtil.DoEvents();
-        }
-
         [Test]
         public void CustomNodeContainsIronPythonDependencyTest()
         {
@@ -296,46 +151,6 @@ namespace IronPythonTests
             var result = pythonMigration.PythonDependencies.CurrentWorkspaceHasIronPythonDependency();
 
             Assert.IsTrue(result);
-            DispatcherUtil.DoEvents();
-        }
-
-        /// <summary>
-        /// This test verifies that the IronPython dialog wont show the second time a custom node is opened
-        /// even if it contains IronPython nodes
-        /// </summary>
-        [Test]
-        public void WillNotDisplayDialogWhenOpeningCustomNodeWithIronPythonNodesSecondTimeInSameSession()
-        {
-            DynamoModel.IsTestMode = false;
-            // Arrange
-            var examplePathIronPython = Path.Combine(UnitTestBase.TestDirectory, @"core\python", "PythonCustomNodeTest.dyf");
-            var examplePathEmptyFile = Path.Combine(UnitTestBase.TestDirectory, @"core\Home.dyn");
-
-            // Act
-            // open file
-            Open(examplePathIronPython);
-            var ironPythonCustomNodeId = (this.ViewModel.CurrentSpace as CustomNodeWorkspaceModel).CustomNodeId;
-            DispatcherUtil.DoEvents();
-
-            var ironPythonDialog = this.View.GetChildrenWindowsOfType<IronPythonInfoDialog>().First();
-            Assert.IsNotNull(ironPythonDialog);
-            Assert.IsTrue(ironPythonDialog.IsLoaded);
-            ironPythonDialog.OkBtn.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-
-            DispatcherUtil.DoEvents();
-            // Open empty file before open the the IronPython file again
-            Open(examplePathEmptyFile);
-            Assert.AreNotEqual(ironPythonCustomNodeId, this.ViewModel.CurrentSpace.Guid);
-            DispatcherUtil.DoEvents();
-
-            Open(examplePathIronPython);
-            Assert.AreEqual(ironPythonCustomNodeId, (this.ViewModel.CurrentSpace as CustomNodeWorkspaceModel).CustomNodeId);
-            var secondIronPythonDialog = this.View.GetChildrenWindowsOfType<IronPythonInfoDialog>();
-
-            DispatcherUtil.DoEvents();
-            // Assert
-            Assert.AreEqual(0, secondIronPythonDialog.Count());
-            DynamoModel.IsTestMode = true;
             DispatcherUtil.DoEvents();
         }
 

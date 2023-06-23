@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Dynamo.Wpf.Properties
-{
-
-
+namespace Dynamo.Wpf.Properties {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -336,6 +336,24 @@ namespace Dynamo.Wpf.Properties
         public static string CannotSubmitPackage {
             get {
                 return ResourceManager.GetString("CannotSubmitPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The workspace cannot be exported as an image because it is empty..
+        /// </summary>
+        public static string CantExportWorkspaceAsImageEmptyMessage {
+            get {
+                return ResourceManager.GetString("CantExportWorkspaceAsImageEmptyMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The workspace cannot be exported as an image because it contains nodes that are too far away from each other..
+        /// </summary>
+        public static string CantExportWorkspaceAsImageNotValidMessage {
+            get {
+                return ResourceManager.GetString("CantExportWorkspaceAsImageNotValidMessage", resourceCulture);
             }
         }
         
@@ -6617,6 +6635,42 @@ namespace Dynamo.Wpf.Properties
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Graphic Elements Scale.
+        /// </summary>
+        public static string PreferencesGrahicHelpersScale {
+            get {
+                return ResourceManager.GetString("PreferencesGrahicHelpersScale", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select a scale for the background graphic helpers (grids, axes)..
+        /// </summary>
+        public static string PreferencesGrahicHelpersScaleTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesGrahicHelpersScaleTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Imperial.
+        /// </summary>
+        public static string PreferencesHostGenericScaleImperialUnits {
+            get {
+                return ResourceManager.GetString("PreferencesHostGenericScaleImperialUnits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Metric.
+        /// </summary>
+        public static string PreferencesHostGenericScaleMetricUnits {
+            get {
+                return ResourceManager.GetString("PreferencesHostGenericScaleMetricUnits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Preferences must be closed before you proceed. All changes saved automatically..
         /// </summary>
         public static string PreferencesMustBeClosedMessage {
@@ -6748,6 +6802,24 @@ namespace Dynamo.Wpf.Properties
         public static string PreferencesSettingUpdateBackupLocationTooltip {
             get {
                 return ResourceManager.GetString("PreferencesSettingUpdateBackupLocationTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use Revit to scale background graphic helpers.
+        /// </summary>
+        public static string PreferencesUseHostScaleUnits {
+            get {
+                return ResourceManager.GetString("PreferencesUseHostScaleUnits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When toggled on, the current Revit document units will be used to scale the background graphic helpers (grids, axes). Otherwise, the Graphic Elements Scale drop-down will determine scale..
+        /// </summary>
+        public static string PreferencesUseHostScaleUnitsToolTip {
+            get {
+                return ResourceManager.GetString("PreferencesUseHostScaleUnitsToolTip", resourceCulture);
             }
         }
         
@@ -6936,11 +7008,11 @@ namespace Dynamo.Wpf.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hide IronPython alerts.
+        ///   Looks up a localized string similar to When toggled on, file names of exported images include date and time of export..
         /// </summary>
-        public static string PreferencesViewIsIronPythonDialogDisabled {
+        public static string PreferencesViewIncludeTimestampExportPathTooltip {
             get {
-                return ResourceManager.GetString("PreferencesViewIsIronPythonDialogDisabled", resourceCulture);
+                return ResourceManager.GetString("PreferencesViewIncludeTimestampExportPathTooltip", resourceCulture);
             }
         }
         
@@ -7058,6 +7130,15 @@ namespace Dynamo.Wpf.Properties
         public static string PreferencesViewSelectedPackagePathForDownload {
             get {
                 return ResourceManager.GetString("PreferencesViewSelectedPackagePathForDownload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Include Timestamp in Export Image Path.
+        /// </summary>
+        public static string PreferencesViewSettingIncludeTimestampExportPath {
+            get {
+                return ResourceManager.GetString("PreferencesViewSettingIncludeTimestampExportPath", resourceCulture);
             }
         }
         
@@ -8407,7 +8488,7 @@ namespace Dynamo.Wpf.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SideBar Panel.
+        ///   Looks up a localized string similar to Sidebar.
         /// </summary>
         public static string SideBarPanelViewTitle {
             get {

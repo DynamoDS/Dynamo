@@ -1,8 +1,8 @@
-using Dynamo.Properties;
-using Dynamo.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Dynamo.Properties;
+using Dynamo.Utilities;
 
 namespace Dynamo.Configuration
 {
@@ -390,6 +390,41 @@ namespace Dynamo.Configuration
                 // This is done so that Preferences Panel could display the languages selections using the current locale
                 return Properties.Resources.DynamoLanguages_noxlate.Split(',').
                     Zip(SupportedLocaleList, (k, v) => (k, v)).ToDictionary(x => x.k, x => x.v);
+            }
+        }
+
+        /// <summary>
+        /// Host units, used to scale background grid graphic element
+        /// </summary>
+        internal enum Units
+        {
+            Millimeters,
+            Centimeters,
+            Meters,
+            Kilometers,
+            Feet,
+            Inches,
+            Miles
+        }
+
+        /// <summary>
+        /// Supported Host units and their conversion to dynamo units
+        /// Used in graphic helpers scaling (grid, axes)
+        /// </summary>
+        internal static Dictionary<Units, double> SupportedUnits
+        {
+            get
+            {
+                return new Dictionary<Units, double>
+                {
+                    { Units.Millimeters, 1 },
+                    { Units.Centimeters, 10 },
+                    { Units.Meters, 1000 },
+                    { Units.Kilometers, 100000 },
+                    { Units.Feet, 1 },
+                    { Units.Inches, 10 },
+                    { Units.Miles, 1000 },
+                };
             }
         }
 

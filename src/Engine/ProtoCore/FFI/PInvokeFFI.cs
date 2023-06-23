@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,8 +27,8 @@ namespace ProtoFFI
             Name = name;
             AssemblyName = new AssemblyName();
             AssemblyName.Name = name;
-            AssemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(
-                    AssemblyName, AssemblyBuilderAccess.Run);
+            AssemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(AssemblyName,
+                AssemblyBuilderAccess.Run);
             ModuleBuilder = AssemblyBuilder.DefineDynamicModule(AssemblyName.Name);
         }
 

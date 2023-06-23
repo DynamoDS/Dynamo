@@ -68,12 +68,12 @@ namespace DynamoCoreWpfTests
             // Open
             LoadExtension(viewExtension);
 
-            Assert.AreEqual(1, View.SideBarPanelTabItems.Count);
+            Assert.AreEqual(1, ViewModel.SideBarTabItems.Count);
 
             // Close
             Utility.DispatcherUtil.DoEvents();
-            View.OnCloseRightSidePanelTab(WpfUtilities.ChildrenOfType<Button>(View.SideBarPanelTabItems.FirstOrDefault()).FirstOrDefault(), null);
-            Assert.AreEqual(0, View.SideBarPanelTabItems.Count);
+            View.OnCloseRightSideBarTab(WpfUtilities.ChildrenOfType<Button>(ViewModel.SideBarTabItems.FirstOrDefault()).FirstOrDefault(), null);
+            Assert.AreEqual(0, ViewModel.SideBarTabItems.Count);
         }
 
         /// <summary>
@@ -228,7 +228,7 @@ namespace DynamoCoreWpfTests
             LoadExtension(viewExtension);
 
             //confirm that extension was opened
-            Assert.AreEqual(1, View.SideBarPanelTabItems.Count);
+            Assert.AreEqual(1, ViewModel.SideBarTabItems.Count);
 
             //Restart Dynamo
             Exit();
@@ -237,8 +237,8 @@ namespace DynamoCoreWpfTests
             Utility.DispatcherUtil.DoEvents();
 
             //confirm that extension is reopened after restart
-            Assert.AreEqual(1, View.SideBarPanelTabItems.Count);
-            Assert.IsNotNull(View.SideBarPanelTabItems.FirstOrDefault(x => x.Tag as GraphNodeManagerViewExtension != null));
+            Assert.AreEqual(1, ViewModel.SideBarTabItems.Count);
+            Assert.IsNotNull(ViewModel.SideBarTabItems.FirstOrDefault(x => x.Tag as GraphNodeManagerViewExtension != null));
         }
 
         /// <summary>
@@ -265,7 +265,7 @@ namespace DynamoCoreWpfTests
             loadedParams.CloseExtensioninInSideBar(viewExtension);
 
             //confirm that extension was closed
-            Assert.AreEqual(0, View.SideBarPanelTabItems.Count);
+            Assert.AreEqual(0, ViewModel.SideBarTabItems.Count);
 
             //Restart Dynamo
             Exit();
@@ -274,8 +274,8 @@ namespace DynamoCoreWpfTests
             Utility.DispatcherUtil.DoEvents();
 
             //confirm that extension is still closed after restart
-            Assert.AreEqual(0, View.SideBarPanelTabItems.Count);
-            Assert.IsNull(View.SideBarPanelTabItems.FirstOrDefault(x => x.Tag as GraphNodeManagerViewExtension != null));
+            Assert.AreEqual(0, ViewModel.SideBarTabItems.Count);
+            Assert.IsNull(ViewModel.SideBarTabItems.FirstOrDefault(x => x.Tag as GraphNodeManagerViewExtension != null));
         }
 
         /// <summary>
@@ -298,7 +298,7 @@ namespace DynamoCoreWpfTests
             LoadExtension(viewExtension);
 
             //confirm that extension was opened
-            Assert.AreEqual(1, View.SideBarPanelTabItems.Count);
+            Assert.AreEqual(1, ViewModel.SideBarTabItems.Count);
 
             //Restart Dynamo
             Exit();
@@ -307,8 +307,8 @@ namespace DynamoCoreWpfTests
             Utility.DispatcherUtil.DoEvents();
 
             //confirm that extension is still closed after restart
-            Assert.AreEqual(0, View.SideBarPanelTabItems.Count);
-            Assert.IsNull(View.SideBarPanelTabItems.FirstOrDefault(x => x.Tag as GraphNodeManagerViewExtension != null));
+            Assert.AreEqual(0, ViewModel.SideBarTabItems.Count);
+            Assert.IsNull(ViewModel.SideBarTabItems.FirstOrDefault(x => x.Tag as GraphNodeManagerViewExtension != null));
         }
         #endregion
 

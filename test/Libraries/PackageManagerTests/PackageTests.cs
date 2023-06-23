@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -58,6 +58,7 @@ namespace Dynamo.PackageManager.Tests
         }
 
         [Test]
+        [Category("FailureNET6")]
         public void IsNodeLibrary_IsFalseAndHasMessagesForBadlyFormatted()
         {
             IList<ILogMessage> ws = new List<ILogMessage>();

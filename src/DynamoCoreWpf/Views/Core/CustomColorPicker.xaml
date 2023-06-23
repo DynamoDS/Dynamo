@@ -11,7 +11,7 @@
     xmlns:viewmodel="clr-namespace:Dynamo.ViewModels"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     x:Name="PART_ColorPickerPalettePopup"
-    Width="520"
+    Width="Auto"
     Height="Auto"
     VerticalAlignment="Bottom"
     d:DesignHeight="550"
@@ -137,9 +137,6 @@
                 <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="MaxHeight" Value="300" />
 
-                <!--  ConverterParameter is margin/Padding from Popup  -->
-
-                <Setter Property="Width" Value="{Binding Width, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Popup}}, Converter={StaticResource AdditionConverter}, ConverterParameter=-18}" />
                 <Setter Property="ItemsPanel">
                     <Setter.Value>
                         <ItemsPanelTemplate>
@@ -327,8 +324,8 @@
                         </Grid>
                         <Grid Grid.Row="1">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="420"/>
-                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="420" />
+                                <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
@@ -345,18 +342,18 @@
                                 <Canvas
                                     x:Name="PART_ColorShadingCanvas"
                                     Width="420"
-                                    Height="200"
+                                    MinHeight="120"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top">
                                     <Rectangle
                                         x:Name="ColorShadingRectangle"
                                         Width="{Binding ElementName=PART_ColorShadingCanvas, Path=Width}"
-                                        Height="{Binding ElementName=PART_ColorShadingCanvas, Path=Height}"
+                                        MinHeight="120"
                                         Fill="{Binding SelectedColor, ElementName=PART_SpectrumSlider, Converter={StaticResource ColorToSolidColorBrushConverter}}" />
                                     <Rectangle
                                         x:Name="WhiteGradient"
                                         Width="{Binding ElementName=PART_ColorShadingCanvas, Path=Width}"
-                                        Height="{Binding ElementName=PART_ColorShadingCanvas, Path=Height}">
+                                        MinHeight="120">
                                         <Rectangle.Fill>
                                             <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
                                                 <GradientStop Offset="0" Color="#ffffffff" />
@@ -367,7 +364,7 @@
                                     <Rectangle
                                         x:Name="BlackGradient"
                                         Width="{Binding ElementName=PART_ColorShadingCanvas, Path=Width}"
-                                        Height="{Binding ElementName=PART_ColorShadingCanvas, Path=Height}">
+                                        MinHeight="120">
                                         <Rectangle.Fill>
                                             <LinearGradientBrush StartPoint="0,1" EndPoint="0, 0">
                                                 <GradientStop Offset="0" Color="#ff000000" />
@@ -425,9 +422,10 @@
 
                             <!--  Contains the right side vertical Colors Slider  -->
                             <Border
+                                Grid.Row="0"
                                 Grid.RowSpan="2"
                                 Grid.Column="1"
-                                Margin="7,-8,0,0"
+                                Margin="7,-8,10,0"
                                 ClipToBounds="False">
                                 <xctk:ColorSpectrumSlider x:Name="PART_SpectrumSlider" VerticalAlignment="Stretch" />
                             </Border>
@@ -638,155 +636,117 @@
                     Color="LightGray" />
             </Border.Effect>
 
-            <!--  This Grid will in charge of showing the normal color selection controls or the custom colors controls  -->
-            <Grid>
-                <!--  Normal Colors Window  -->
-                <Grid
-                    x:Name="gridNormalColorSelection"
-                    Margin="21,10,20,10"
-                    HorizontalAlignment="Left"
-                    Background="Transparent"
-                    Visibility="{Binding Path=IsCustomColorSelectionEnabled, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <!--  This Grid will in charge of showing the normal color selection controls or the custom colors controls  -->
+                <Grid>
 
-                    <!--  Title  -->
-                    <Grid Grid.Row="0">
-                        <Grid x:Name="titleCustomColorsGrid">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="20*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock
-                                Margin="0"
-                                FontFamily="{StaticResource ArtifaktElementRegular}"
-                                FontSize="20"
-                                FontWeight="Bold"
-                                Foreground="Black"
-                                Text="{x:Static p:Resources.CustomColorPickerTitle}"/>
-                            <Button
-                                Name="NormalColorsCloseButton"
-                                Grid.Column="1"
-                                Width="12.8"
-                                Height="12.8"
-                                Click="NormalColorsCloseButton_Click"
-                                FontFamily="{StaticResource ArtifaktElementRegular}"
-                                Style="{StaticResource PopupCloseButtonStyle}" />
-                        </Grid>
+                    <!--  Normal Colors Window  -->
+                    <Grid
+                        x:Name="gridNormalColorSelection"
+                        Margin="21,10,20,10"
+                        HorizontalAlignment="Left"
+                        Background="Transparent"
+                        Visibility="{Binding Path=IsCustomColorSelectionEnabled, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
 
-                    </Grid>
-
-                    <!--  Basic Colors  -->
-                    <Grid Grid.Row="1">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
-                            <TextBlock
-                                Grid.Row="0"
-                                Margin="0,10,0,0"
-                                Padding="2"
-                                Background="Transparent"
-                                FontSize="14"
-                                FontFamily="{StaticResource ArtifaktElementRegular}"
-                                Foreground="Black"
-                                Text="{x:Static p:Resources.CustomColorPickerBasicColors}" />
-
-                            <ListBox
-                                x:Name="PART_AvailableColors"
-                                Grid.Row="1"
-                                Margin="0,5,0,5"
-                                ItemsSource="{Binding BasicColors}"
-                                SelectionChanged="PART_BasicColors_SelectionChanged"
-                                Style="{StaticResource ColorListStyle}" />
+                        <!--  Title  -->
+                        <Grid Grid.Row="0">
+                            <Grid x:Name="titleCustomColorsGrid">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="20*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    Margin="0"
+                                    FontFamily="{StaticResource ArtifaktElementRegular}"
+                                    FontSize="20"
+                                    FontWeight="Bold"
+                                    Foreground="Black"
+                                    Text="{x:Static p:Resources.CustomColorPickerTitle}" />
+                                <Button
+                                    Name="NormalColorsCloseButton"
+                                    Grid.Column="1"
+                                    Width="12.8"
+                                    Height="12.8"
+                                    Click="NormalColorsCloseButton_Click"
+                                    FontFamily="{StaticResource ArtifaktElementRegular}"
+                                    Style="{StaticResource PopupCloseButtonStyle}" />
+                            </Grid>
 
                         </Grid>
-                    </Grid>
 
-                    <!--  Custom Colors  -->
-                    <Grid Grid.Row="2">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <TextBlock
-                                Grid.Row="0"
-                                Margin="0,10,0,-9"
-                                Padding="2"
-                                Background="Transparent"
-                                FontFamily="{StaticResource ArtifaktElementRegular}"
-                                FontSize="14"
-                                Foreground="Black"
-                                Text="{x:Static p:Resources.CustomColorPickerCustomColors}" />
-
-                            <ListBox
-                                x:Name="PART_CustomColors"
-                                Grid.Row="1"
-                                Margin="0,5,0,5"
-                                ItemsSource="{Binding CustomColors}"
-                                SelectionChanged="PART_CustomColors_SelectionChanged"
-                                Style="{StaticResource ColorListStyle}" />
+                        <!--  Basic Colors  -->
+                        <Grid Grid.Row="1">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Margin="0,10,0,0"
+                                    Padding="2"
+                                    Background="Transparent"
+                                    FontFamily="{StaticResource ArtifaktElementRegular}"
+                                    FontSize="14"
+                                    Foreground="Black"
+                                    Text="{x:Static p:Resources.CustomColorPickerBasicColors}" />
+                                <ListBox
+                                    x:Name="PART_AvailableColors"
+                                    Grid.Row="1"
+                                    MinWidth="485"
+                                    Margin="0,5,0,5"
+                                    ItemsSource="{Binding BasicColors}"
+                                    SelectionChanged="PART_BasicColors_SelectionChanged"
+                                    Style="{StaticResource ColorListStyle}" />
+                            </Grid>
                         </Grid>
-                    </Grid>
 
-                    <!--  Define Colors  -->
-                    <Grid Grid.Row="3">
-                        <Button
-                            x:Name="DefineColorBtn"
-                            MaxWidth="200"
-                            Margin="3,0,0,0"
-                            Padding="10"
-                            HorizontalAlignment="Left"
-                            Click="DefineColorBtn_Click"
-                            Content="{x:Static p:Resources.CustomColorPickerCustomColorBtn}">
-                            <Button.Style>
-                                <Style BasedOn="{StaticResource SolidButtonStyle}" TargetType="{x:Type Button}">
-                                    <Setter Property="IsEnabled" Value="True" />
-                                </Style>
-                            </Button.Style>
-                        </Button>
-                    </Grid>
+                        <!--  Custom Colors  -->
+                        <Grid Grid.Row="2">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Margin="0,10,0,-9"
+                                    Padding="2"
+                                    Background="Transparent"
+                                    FontFamily="{StaticResource ArtifaktElementRegular}"
+                                    FontSize="14"
+                                    Foreground="Black"
+                                    Text="{x:Static p:Resources.CustomColorPickerCustomColors}" />
 
-                    <!--  Separator  -->
-                    <Grid Grid.Row="4">
-                        <Separator Margin="5,5,0,5" Background="#dbdbd2" />
-                    </Grid>
+                                <ListBox
+                                    x:Name="PART_CustomColors"
+                                    Grid.Row="1"
+                                    MinWidth="485"
+                                    Margin="0,5,0,5"
+                                    ItemsSource="{Binding CustomColors}"
+                                    SelectionChanged="PART_CustomColors_SelectionChanged"
+                                    Style="{StaticResource ColorListStyle}" />
+                            </Grid>
+                        </Grid>
 
-                    <!--  Buttons  -->
-                    <Grid Grid.Row="5" HorizontalAlignment="Right">
-                        <Grid Margin="10,7,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
+                        <!--  Define Colors  -->
+                        <Grid Grid.Row="3">
                             <Button
-                                x:Name="NormalColorsCancelBtn"
-                                Grid.Column="0"
-                                Padding="10,5,10,5"
-                                Click="NormalColorsCancelBtn_Click"
-                                Content="{x:Static p:Resources.CustomColorPickerCancelBtn}"
-                                FontFamily="{StaticResource ArtifaktElementRegular}">
-                                <Button.Style>
-                                    <Style BasedOn="{StaticResource OutlinedButtonStyleInverted}" TargetType="{x:Type Button}">
-                                        <Setter Property="IsEnabled" Value="True" />
-                                    </Style>
-                                </Button.Style>
-                            </Button>
-                            <Button
-                                x:Name="NormalColorsApplyBtn"
-                                Grid.Column="1"
-                                Padding="10,5,10,5"
-                                Click="NormalColorsApplyBtn_Click"
-                                Content="{x:Static p:Resources.CustomColorPickerApplyBtn}"
-                                FontFamily="{StaticResource ArtifaktElementRegular}">
+                                x:Name="DefineColorBtn"
+                                MaxWidth="200"
+                                Margin="3,0,0,0"
+                                Padding="10"
+                                HorizontalAlignment="Left"
+                                Click="DefineColorBtn_Click"
+                                Content="{x:Static p:Resources.CustomColorPickerCustomColorBtn}">
                                 <Button.Style>
                                     <Style BasedOn="{StaticResource SolidButtonStyle}" TargetType="{x:Type Button}">
                                         <Setter Property="IsEnabled" Value="True" />
@@ -794,22 +754,64 @@
                                 </Button.Style>
                             </Button>
                         </Grid>
+
+                        <!--  Separator  -->
+                        <Grid Grid.Row="4">
+                            <Separator Margin="5,5,0,5" Background="#dbdbd2" />
+                        </Grid>
+
+                        <!--  Buttons  -->
+                        <Grid Grid.Row="5" HorizontalAlignment="Right">
+                            <Grid Margin="10,7,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Button
+                                    x:Name="NormalColorsCancelBtn"
+                                    Grid.Column="0"
+                                    Padding="10,5,10,5"
+                                    Click="NormalColorsCancelBtn_Click"
+                                    Content="{x:Static p:Resources.CustomColorPickerCancelBtn}"
+                                    FontFamily="{StaticResource ArtifaktElementRegular}">
+                                    <Button.Style>
+                                        <Style BasedOn="{StaticResource OutlinedButtonStyleInverted}" TargetType="{x:Type Button}">
+                                            <Setter Property="IsEnabled" Value="True" />
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                                <Button
+                                    x:Name="NormalColorsApplyBtn"
+                                    Grid.Column="1"
+                                    Padding="10,5,10,5"
+                                    Click="NormalColorsApplyBtn_Click"
+                                    Content="{x:Static p:Resources.CustomColorPickerApplyBtn}"
+                                    FontFamily="{StaticResource ArtifaktElementRegular}">
+                                    <Button.Style>
+                                        <Style BasedOn="{StaticResource SolidButtonStyle}" TargetType="{x:Type Button}">
+                                            <Setter Property="IsEnabled" Value="True" />
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+
+                    <!--  Custom Colors Window  -->
+                    <Grid
+                        x:Name="gridCustomColorSelection"
+                        Background="Transparent"
+                        Visibility="{Binding Path=IsCustomColorSelectionEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <xctk:ColorCanvas
+                            x:Name="colorCanvasControl"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            DataContext="{StaticResource CustomColorPickerViewModel}"
+                            Foreground="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}}"
+                            UsingAlphaChannel="{Binding UsingAlphaChannel, RelativeSource={RelativeSource TemplatedParent}}" />
                     </Grid>
                 </Grid>
-                <!--  Custom Colors Window  -->
-                <Grid
-                    x:Name="gridCustomColorSelection"
-                    Background="Transparent"
-                    Visibility="{Binding Path=IsCustomColorSelectionEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <xctk:ColorCanvas
-                        x:Name="colorCanvasControl"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        DataContext="{StaticResource CustomColorPickerViewModel}"
-                        Foreground="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}}"
-                        UsingAlphaChannel="{Binding UsingAlphaChannel, RelativeSource={RelativeSource TemplatedParent}}" />
-                </Grid>
-            </Grid>
+            </ScrollViewer>
         </Border>
     </Border>
 </Popup>
