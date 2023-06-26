@@ -7,11 +7,9 @@
     </ResourceDictionary.MergedDictionaries>
 
     <!-- Colors -->
-    <Color x:Key="MidGrayColor">#999999</Color>
     <Color x:Key="BorderColor">#555</Color>
 
     <!--  Brushes  -->
-    <SolidColorBrush x:Key="MidGrayBrush" Color="{StaticResource MidGrayColor}" />
     <SolidColorBrush x:Key="BorderColorBrush" Color="{StaticResource BorderColor}" />
 
     <!-- DataGrid style -->
