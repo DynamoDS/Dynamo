@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Reflection;
 using System.Xml;
-using System.IO;
 using NodeDocumentationUtility;
 
 namespace XmlDocumentationsUtility
@@ -33,7 +26,7 @@ namespace XmlDocumentationsUtility
 
             if (methodParameterStartingIndex != -1)
                 memberElement = memberElement.Substring(0, methodParameterStartingIndex);
-            
+
             return memberElement;
         }
 
@@ -43,14 +36,14 @@ namespace XmlDocumentationsUtility
         /// </summary>
         /// <param name="memberElement"></param>
         /// <returns></returns>
-        internal static Tuple<string,string> GetTypeAndMemberName(string memberElement)
+        internal static Tuple<string, string> GetTypeAndMemberName(string memberElement)
         {
             int typeNameStartingIndex = 0;
             typeNameStartingIndex = memberElement.LastIndexOf('.');
             string typeName = memberElement.Substring(0, typeNameStartingIndex);
             string memberName = memberElement.Substring(typeNameStartingIndex + 1);
-           
-            return Tuple.Create(typeName,memberName);
+
+            return Tuple.Create(typeName, memberName);
         }
 
         /// <summary>
@@ -66,35 +59,35 @@ namespace XmlDocumentationsUtility
             string memberElement = GetMemberElement(elementName);
             var typeMember = GetTypeAndMemberName(memberElement);
 
-            switch(typeId)
+            switch (typeId)
             {
-                case 'F' :
-                    memberData.type = Type.Field;                    
+                case 'F':
+                    memberData.type = Type.Field;
                     memberData.TypeName = typeMember.Item1;
                     memberData.MemberName = typeMember.Item2;
                     break;
 
-                case 'M' :
-                    memberData.type = Type.Method;        
+                case 'M':
+                    memberData.type = Type.Method;
                     memberData.TypeName = typeMember.Item1;
                     memberData.MemberName = typeMember.Item2;
                     break;
-                case 'P' :
-                    memberData.type = Type.Property;        
+                case 'P':
+                    memberData.type = Type.Property;
                     memberData.TypeName = typeMember.Item1;
                     memberData.MemberName = typeMember.Item2;
                     break;
-                case 'T' :
+                case 'T':
                     memberData.type = Type.Type;
                     memberData.TypeName = memberElement;
                     memberData.MemberName = "";
                     break;
-                default :
+                default:
                     break;
             }
             return memberData;
         }
-        
+
         /// <summary>
         /// recursively search for xml files inside en-US folder
         /// to remove hidden nodes inside xml.
@@ -108,7 +101,7 @@ namespace XmlDocumentationsUtility
             {
                 DirectoryInfo dirInfo = new DirectoryInfo(directory);
 
-                if(dirInfo.Name == "en-US")
+                if (dirInfo.Name == "en-US")
                 {
                     string[] xmlFiles = Directory.GetFiles(directory, "*.xml");
 
@@ -126,10 +119,10 @@ namespace XmlDocumentationsUtility
                         {
                             zeroTouchModule = new ZeroTouchModule(path);
                         }
-                        catch(System.Exception e)
+                        catch (System.Exception e)
                         {
                             Console.WriteLine("Cannot load the ZeroTouchModule dll\n"
-                                             +"Only Properties.Resources will be removed for this xml documentation\n"
+                                             + "Only Properties.Resources will be removed for this xml documentation\n"
                                              + e.Message);
                         }
                         RemoveDocumentationForHiddenNodes(Path.GetFullPath(xmlPath), zeroTouchModule);
@@ -150,14 +143,14 @@ namespace XmlDocumentationsUtility
                 string rootDir = Path.GetFullPath(args[0]);
                 DirectoryInfo dirInfo = new DirectoryInfo(rootDir);
 
-                if(dirInfo.Exists)
+                if (dirInfo.Exists)
                     RecursiveCultureXmlSearch(rootDir);
             }
             catch (Exception e)
             {
                 Console.WriteLine("The process failed: {0}", e.ToString());
             }
-            
+
         }
 
         /// <summary>
@@ -168,10 +161,10 @@ namespace XmlDocumentationsUtility
         /// </summary>
         /// <param name="xmlPath"></param>
         /// <param name="zeroTouchModule"></param>
-        internal static void RemoveDocumentationForHiddenNodes(string xmlPath,ZeroTouchModule zeroTouchModule)
+        internal static void RemoveDocumentationForHiddenNodes(string xmlPath, ZeroTouchModule zeroTouchModule)
         {
             XmlDocument xml = new XmlDocument();
-            xml.Load(xmlPath);        
+            xml.Load(xmlPath);
             XmlNodeList elemList = xml.GetElementsByTagName("member");
             MemberData memberData;
 
@@ -229,6 +222,6 @@ namespace XmlDocumentationsUtility
                 File.Delete(xmlPath);
         }
 
-   }
-    
+    }
+
 }
