@@ -1,7 +1,4 @@
-﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Autodesk.DesignScript.Runtime;
 using DSCPython.Encoders;
@@ -152,7 +149,8 @@ namespace DSCPython
 
         private static PyScope globalScope;
         private static DynamoLogger dynamoLogger;
-        internal static DynamoLogger DynamoLogger {
+        internal static DynamoLogger DynamoLogger
+        {
             get
             { // Session is null when running unit tests.
                 if (ExecutionEvents.ActiveSession != null)
@@ -193,8 +191,8 @@ namespace DSCPython
                 DynamoLogger?.Log("attempting reload of cpython3 modules", LogLevel.Console);
                 using (Py.GIL())
                 {
-                //the following is inspired by:
-                //https://github.com/ipython/ipython/blob/master/IPython/extensions/autoreload.py
+                    //the following is inspired by:
+                    //https://github.com/ipython/ipython/blob/master/IPython/extensions/autoreload.py
                     var global = PyScopeManager.Global.Get(CPythonEvaluator.globalScopeName);
                     global?.Exec(@"import sys
 import importlib
@@ -268,58 +266,58 @@ for modname,mod in sys.modules.copy().items():
             {
                 PythonEngine.Initialize();
                 PythonEngine.BeginAllowThreads();
-                
+
             }
-                using (Py.GIL())
+            using (Py.GIL())
+            {
+                if (globalScope == null)
                 {
-                    if (globalScope == null)
+                    globalScope = CreateGlobalScope();
+                }
+
+                using (PyScope scope = Py.CreateScope())
+                {
+                    // Reset the 'sys.path' value to the default python paths on node evaluation. 
+                    var pythonNodeSetupCode = "import sys" + Environment.NewLine + "sys.path = sys.path[0:3]";
+                    scope.Exec(pythonNodeSetupCode);
+
+                    ProcessAdditionalBindings(scope, bindingNames, bindingValues);
+
+                    int amt = Math.Min(bindingNames.Count, bindingValues.Count);
+
+                    for (int i = 0; i < amt; i++)
                     {
-                        globalScope = CreateGlobalScope();
+                        scope.Set((string)bindingNames[i], InputMarshaler.Marshal(bindingValues[i]).ToPython());
                     }
 
-                    using (PyScope scope = Py.CreateScope())
+                    try
                     {
-                        // Reset the 'sys.path' value to the default python paths on node evaluation. 
-                        var pythonNodeSetupCode = "import sys" + Environment.NewLine + "sys.path = sys.path[0:3]";
-                        scope.Exec(pythonNodeSetupCode);
+                        OnEvaluationBegin(scope, code, bindingValues);
+                        scope.Exec(code);
+                        var result = scope.Contains("OUT") ? scope.Get("OUT") : null;
 
-                        ProcessAdditionalBindings(scope, bindingNames, bindingValues);
-
-                        int amt = Math.Min(bindingNames.Count, bindingValues.Count);
-
-                        for (int i = 0; i < amt; i++)
+                        return OutputMarshaler.Marshal(result);
+                    }
+                    catch (Exception e)
+                    {
+                        evaluationSuccess = false;
+                        var traceBack = GetTraceBack(e);
+                        if (!string.IsNullOrEmpty(traceBack))
                         {
-                            scope.Set((string)bindingNames[i], InputMarshaler.Marshal(bindingValues[i]).ToPython());
+                            // Throw a new error including trace back info added to the message
+                            throw new InvalidOperationException($"{e.Message} {traceBack}", e);
                         }
-
-                        try
+                        else
                         {
-                            OnEvaluationBegin(scope, code, bindingValues);
-                            scope.Exec(code);
-                            var result = scope.Contains("OUT") ? scope.Get("OUT") : null;
-
-                            return OutputMarshaler.Marshal(result);
+                            throw e;
                         }
-                        catch (Exception e)
-                        {
-                            evaluationSuccess = false;
-                            var traceBack = GetTraceBack(e);
-                            if (!string.IsNullOrEmpty(traceBack))
-                            {
-                                // Throw a new error including trace back info added to the message
-                                throw new InvalidOperationException($"{e.Message} {traceBack}", e);
-                            }
-                            else
-                            {
-                                throw e;
-                            }
-                        }
-                        finally
-                        {
-                            OnEvaluationEnd(evaluationSuccess, scope, code, bindingValues);
-                        }
+                    }
+                    finally
+                    {
+                        OnEvaluationEnd(evaluationSuccess, scope, code, bindingValues);
                     }
                 }
+            }
         }
 
         public static object EvaluatePythonScript(
@@ -685,14 +683,15 @@ sys.stdout = DynamoStdOut({0})
                                             IList bindingValues)
         {
             // Call deprecated events until they are completely removed.
-            EvaluationEnd?.Invoke(isSuccessful ? 
-                EvaluationState.Success : 
+            EvaluationEnd?.Invoke(isSuccessful ?
+                EvaluationState.Success :
                 EvaluationState.Failed, scope, code, bindingValues);
 
             if (EvaluationFinished != null)
             {
-                EvaluationFinished(isSuccessful ? Dynamo.PythonServices.EvaluationState.Success : Dynamo.PythonServices.EvaluationState.Failed, 
-                    code, bindingValues, (n) => {
+                EvaluationFinished(isSuccessful ? Dynamo.PythonServices.EvaluationState.Success : Dynamo.PythonServices.EvaluationState.Failed,
+                    code, bindingValues, (n) =>
+                    {
                         return OutputMarshaler.Marshal(scope.Get(n));
                     });
                 Analytics.TrackEvent(
