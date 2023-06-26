@@ -1,9 +1,5 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Text;
 using Autodesk.DesignScript.Interfaces;
 using NUnit.Framework;
@@ -33,11 +29,11 @@ namespace ProtoTestFx.TD
         private static string mErrorMessage = "";
         bool testImport;
         bool testDebug;
-        bool dumpDS=false;
+        bool dumpDS = false;
         bool cfgImport = Convert.ToBoolean(Environment.GetEnvironmentVariable("Import"));
         bool cfgDebug = Convert.ToBoolean(Environment.GetEnvironmentVariable("Debug"));
         bool executeInDebugMode = true;
- 
+
         public TestFrameWork()
         {
             runner = new ProtoScriptRunner();
@@ -86,7 +82,7 @@ namespace ProtoTestFx.TD
             {
                 Verify(pair.Key, pair.Value);
             }
-            
+
             if (executeInDebugMode)
             {
                 RunDebugWatch(code);
@@ -170,7 +166,7 @@ namespace ProtoTestFx.TD
             RunScriptSource(code);
             Assert.IsTrue(testRuntimeCore.RuntimeStatus.Warnings.Any(w => w.ID == warningID));
         }
-    
+
         /// <summary>
         /// Builds a KeyValuePair to be used by the Verify method when verifying the value of a variable
         /// </summary>
@@ -268,12 +264,12 @@ namespace ProtoTestFx.TD
             mErrorMessage = string.Empty;
             if (cfgImport)
             {
-                
-                 testImport = cfgImport;
+
+                testImport = cfgImport;
             }
             else
             {
-                 testImport = false;
+                testImport = false;
             }
 
             if (cfgDebug)
@@ -283,9 +279,9 @@ namespace ProtoTestFx.TD
             else
             {
                 testDebug = false;
-                
+
             }
-        
+
             return testCore;
         }
 
@@ -293,7 +289,7 @@ namespace ProtoTestFx.TD
         /// Build a Core with default options and contains no function or class entries
         /// </summary>
         /// <returns></returns>
-        
+
         public ProtoCore.Core CreateTestCore()
         {
             ProtoCore.Core core = new ProtoCore.Core(new ProtoCore.Options());
@@ -306,40 +302,40 @@ namespace ProtoTestFx.TD
             return core;
         }
 
-       
+
         public ExecutionMirror RunScriptFile(string directory, string filename)
         {
             string currentFile = filename;
             string errorString = "";
             if (testImport)
             {
-                    currentFile = Path.GetFileName(filename);
-                    string fileToRun = Path.GetFileNameWithoutExtension(currentFile) + "_Import.ds";
-                    string importCode = string.Format("import(\"{0}\");", currentFile);
-                    directory = Path.Combine(directory, filename);
-                    directory = Path.GetDirectoryName(directory) + @"\" ;
-                    createDSFile(fileToRun, directory, importCode);
-                    errorString = "tested as import file";
-                    
+                currentFile = Path.GetFileName(filename);
+                string fileToRun = Path.GetFileNameWithoutExtension(currentFile) + "_Import.ds";
+                string importCode = string.Format("import(\"{0}\");", currentFile);
+                directory = Path.Combine(directory, filename);
+                directory = Path.GetDirectoryName(directory) + @"\";
+                createDSFile(fileToRun, directory, importCode);
+                errorString = "tested as import file";
+
             }
             else if (testDebug)
             {
-                    Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
-                    string fname = Path.Combine(directory, filename);
-                    TextReader file = new StreamReader(fname);
-                    WatchTestFx.GeneratePrintStatements(file, ref map);
-                    file = new StreamReader(fname);
-                    String src = file.ReadToEnd();
-                    file.Close();
+                Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
+                string fname = Path.Combine(directory, filename);
+                TextReader file = new StreamReader(fname);
+                WatchTestFx.GeneratePrintStatements(file, ref map);
+                file = new StreamReader(fname);
+                String src = file.ReadToEnd();
+                file.Close();
 
-                    WatchTestFx fx = new WatchTestFx();
-                    testCore = fx.TestCore;
-                  
-                    fx.CompareRunAndWatchResults(Path.GetFullPath(filename), src, map);
-                    testMirror = fx.Mirror;
+                WatchTestFx fx = new WatchTestFx();
+                testCore = fx.TestCore;
 
-                    return testMirror;
-                       
+                fx.CompareRunAndWatchResults(Path.GetFullPath(filename), src, map);
+                testMirror = fx.Mirror;
+
+                return testMirror;
+
             }
 
             string dsFullPathName = directory + currentFile;
@@ -356,7 +352,7 @@ namespace ProtoTestFx.TD
         public ExecutionMirror RunScript(string pathname, string errorstring = "", string includePath = "")
         {
             SetupTestCore();
-            Console.WriteLine( errorstring);
+            Console.WriteLine(errorstring);
             if (!String.IsNullOrEmpty(includePath))
             {
                 if (System.IO.Directory.Exists(includePath))
@@ -401,22 +397,22 @@ namespace ProtoTestFx.TD
             {
                 Guid g;
                 g = Guid.NewGuid();
-                
+
                 StackTrace trace = new StackTrace();
                 int caller = 2;
-                
+
                 string tempPath = System.IO.Path.GetTempPath();
                 string import = @"testImport\";
                 string importDir = Path.Combine(tempPath, import);
-                
+
                 if (!Directory.Exists(importDir))
                 {
                     System.IO.Directory.CreateDirectory(importDir);
                 }
 
-                
-                string importFileName = (g.ToString()+".ds");
-                createDSFile(importFileName,importDir,sourceCode);
+
+                string importFileName = (g.ToString() + ".ds");
+                createDSFile(importFileName, importDir, sourceCode);
 
                 return testMirror = RunScriptFile(importDir, importFileName);
 
@@ -443,7 +439,7 @@ namespace ProtoTestFx.TD
                 testCore = fx.TestCore;
                 fx.CompareRunAndWatchResults("", sourceCode, map);
                 testMirror = fx.Mirror;
-                
+
                 return testMirror;
             }
 
@@ -461,8 +457,8 @@ namespace ProtoTestFx.TD
             }
             testRuntimeCore = runner.Execute(sourceCode, testCore);
             testMirror = testRuntimeCore.Mirror;
-                
-            if (dumpDS )
+
+            if (dumpDS)
             {
 
                 String fileName = TestContext.CurrentContext.Test.Name + ".ds";
@@ -510,22 +506,22 @@ namespace ProtoTestFx.TD
         public ExecutionMirror VerifyRunScriptSource(string sourceCode, string errorstring = "", string importPath = null)
         {
             Assert.DoesNotThrow(() => testMirror = RunScriptSource(sourceCode, errorstring, importPath), errorstring);
-                return testMirror;
+            return testMirror;
         }
-        public void createDSFile(string fileName,string path, string code )
+        public void createDSFile(string fileName, string path, string code)
         {
-                  string fullPath = Path.Combine(path,fileName);
-                  if (File.Exists(fullPath))
-                  {
-                      File.Delete(fullPath);
-                  }
-                  FileStream files = new System.IO.FileStream(fullPath, System.IO.FileMode.Append, System.IO.FileAccess.Write);
-            
-                  System.IO.StreamWriter sw = new System.IO.StreamWriter(files);
-                  
-                  sw.WriteLine(code);
-                  sw.Close();
-                  files.Close();
+            string fullPath = Path.Combine(path, fileName);
+            if (File.Exists(fullPath))
+            {
+                File.Delete(fullPath);
+            }
+            FileStream files = new System.IO.FileStream(fullPath, System.IO.FileMode.Append, System.IO.FileAccess.Write);
+
+            System.IO.StreamWriter sw = new System.IO.StreamWriter(files);
+
+            sw.WriteLine(code);
+            sw.Close();
+            files.Close();
         }
 
         private static string BuildIndicesString(List<int> indices)
@@ -533,25 +529,25 @@ namespace ProtoTestFx.TD
             StringBuilder builder = new StringBuilder("");
             foreach (var index in indices)
             {
-                builder.Append("[" + index.ToString() + "]"); 
+                builder.Append("[" + index.ToString() + "]");
             }
             return builder.ToString();
         }
 
-        private static void VerifyPodType<T>(T expectedValue, Obj dsObject, string dsVariable, List<int>indices)
+        private static void VerifyPodType<T>(T expectedValue, Obj dsObject, string dsVariable, List<int> indices)
         {
             try
             {
                 T realValue = (T)Convert.ChangeType(dsObject.Payload, typeof(T));
                 if (!expectedValue.Equals(realValue))
                 {
-                    Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual value is {3}. \n{4}", dsVariable, 
+                    Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual value is {3}. \n{4}", dsVariable,
                         BuildIndicesString(indices), expectedValue, realValue, mErrorMessage));
                 }
             }
             catch (System.InvalidCastException)
             {
-                Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual value can't be converted to {3}. \n{4}", dsVariable, 
+                Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual value can't be converted to {3}. \n{4}", dsVariable,
                     BuildIndicesString(indices), expectedValue, typeof(T), mErrorMessage));
             }
         }
@@ -563,7 +559,7 @@ namespace ProtoTestFx.TD
             {
                 if (!dsObject.DsasmValue.IsNull)
                 {
-                    Assert.Fail(String.Format("\t{0}{1} is expected to be null, but it isn't.\n{2}", dsVariable, 
+                    Assert.Fail(String.Format("\t{0}{1} is expected to be null, but it isn't.\n{2}", dsVariable,
                         TestFrameWork.BuildIndicesString(indices), TestFrameWork.mErrorMessage));
                 }
                 return;
@@ -573,14 +569,14 @@ namespace ProtoTestFx.TD
             if (dsObject.DsasmValue.IsNull && expectedObject != null)
             {
                 Assert.Fail(String.Format("\tThe value of {0} was null, but wasn't expected to be.\n{1}", dsVariable, mErrorMessage));
-                
+
             }
             else if (expectedObject is Int32 || expectedObject is Int64)
             {
                 Int64 expectedValue = Convert.ToInt64(expectedObject);
                 if (!(dsObject.Payload is long))
                 {
-                    Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual value is not an integer. \n{2}", dsVariable, 
+                    Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual value is not an integer. \n{2}", dsVariable,
                         BuildIndicesString(indices), expectedValue, mErrorMessage));
                 }
                 else
@@ -593,7 +589,7 @@ namespace ProtoTestFx.TD
                 Double expectedValue = Convert.ToDouble(expectedObject);
                 if (!(dsObject.Payload is Double))
                 {
-                    Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual value is not a double. \n{3}", dsVariable, 
+                    Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual value is not a double. \n{3}", dsVariable,
                         BuildIndicesString(indices), expectedValue, mErrorMessage));
                 }
                 else
@@ -604,13 +600,13 @@ namespace ProtoTestFx.TD
 
                         if (!MathUtils.Equals(expectedValue, dsValue))
                         {
-                            Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual value is {3}. \n{4}", dsVariable, 
+                            Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual value is {3}. \n{4}", dsVariable,
                                 BuildIndicesString(indices), expectedValue, dsValue, mErrorMessage));
                         }
                     }
                     catch (System.InvalidCastException)
                     {
-                        Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual value can't be converted to Double. \n{3}", dsVariable, 
+                        Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual value can't be converted to Double. \n{3}", dsVariable,
                             BuildIndicesString(indices), expectedValue, mErrorMessage));
                     }
                 }
@@ -620,7 +616,7 @@ namespace ProtoTestFx.TD
                 Boolean expectedValue = Convert.ToBoolean(expectedObject);
                 if (!(dsObject.Payload is Boolean))
                 {
-                    Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual type is not bool. \n{3}", dsVariable, 
+                    Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual type is not bool. \n{3}", dsVariable,
                         BuildIndicesString(indices), expectedValue, mErrorMessage));
                 }
                 else
@@ -641,17 +637,17 @@ namespace ProtoTestFx.TD
                     try
                     {
                         Int64 utf8Encoding = Convert.ToInt64(dsObject.Payload);
-                        Char dsValue = Convert.ToChar(utf8Encoding); 
+                        Char dsValue = Convert.ToChar(utf8Encoding);
 
                         if (!expectedObject.Equals(dsValue))
                         {
-                            Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual value is {3}. \n{4}", dsVariable, 
+                            Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual value is {3}. \n{4}", dsVariable,
                                 BuildIndicesString(indices), expectedValue, dsValue, mErrorMessage));
                         }
                     }
                     catch (System.InvalidCastException)
                     {
-                        Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual value can't be converted to Char. \n{3}", dsVariable, 
+                        Assert.Fail(String.Format("\t{0}{1} is expected to be {2}, but its actual value can't be converted to Char. \n{3}", dsVariable,
                             BuildIndicesString(indices), expectedValue, mErrorMessage));
                     }
                 }
@@ -661,12 +657,12 @@ namespace ProtoTestFx.TD
                 string stringValue = dsObject.Payload as string;
                 if (stringValue == null)
                 {
-                    Assert.Fail(String.Format("\t{0}{1} is expected to be a string, but its actual value is not a string\n{2}", dsVariable, 
+                    Assert.Fail(String.Format("\t{0}{1} is expected to be a string, but its actual value is not a string\n{2}", dsVariable,
                         BuildIndicesString(indices), mErrorMessage));
                 }
                 else if (!expectedObject.Equals(stringValue))
                 {
-                    Assert.Fail(String.Format("\t{0}{1} is expected to be a string \"{2}\", but its actual value is \"{3}\".\n{4}", dsVariable, 
+                    Assert.Fail(String.Format("\t{0}{1} is expected to be a string \"{2}\", but its actual value is \"{3}\".\n{4}", dsVariable,
                         BuildIndicesString(indices), expectedObject, stringValue, mErrorMessage));
                 }
             }
@@ -677,7 +673,7 @@ namespace ProtoTestFx.TD
                 ProtoCore.DSASM.Mirror.DsasmArray dsArray = dsObject.Payload as ProtoCore.DSASM.Mirror.DsasmArray;
                 if (dsArray == null)
                 {
-                    Assert.Fail(String.Format("{0}{1} is expected to be an array, but its actual value isn't an array.\n{2}", dsVariable, 
+                    Assert.Fail(String.Format("{0}{1} is expected to be an array, but its actual value isn't an array.\n{2}", dsVariable,
                         BuildIndicesString(indices), mErrorMessage));
                 }
                 foreach (var item in collection)
@@ -713,7 +709,7 @@ namespace ProtoTestFx.TD
             int classIndex = testCore.ClassTable.IndexOf(className);
             if (classIndex == ProtoCore.DSASM.Constants.kInvalidIndex)
             {
-                if(doAssert)
+                if (doAssert)
                     Assert.Fail(string.Format("\tFailed to find type \"{0}\" \n{1}", className, mErrorMessage));
                 return;
             }
@@ -721,10 +717,10 @@ namespace ProtoTestFx.TD
             ProtoCore.DSASM.ClassNode thisClass = testCore.ClassTable.ClassNodes[classIndex];
             if (!thisClass.ProcTable.Procedures.Exists(memberFunc => String.Compare(memberFunc.Name, methodName) == 0))
             {
-                if(doAssert)
-                    Assert.Fail(string.Format("\tMethod \"{0}.{1}\" doesn't exist \n{2}", className, methodName, mErrorMessage)); 
+                if (doAssert)
+                    Assert.Fail(string.Format("\tMethod \"{0}.{1}\" doesn't exist \n{2}", className, methodName, mErrorMessage));
             }
-            else if(!doAssert)
+            else if (!doAssert)
                 Assert.Fail(string.Format("\tMethod \"{0}.{1}\" does exist \n{2}", className, methodName, mErrorMessage));
         }
 
@@ -804,7 +800,7 @@ namespace ProtoTestFx.TD
 
             string expression = string.Format("{0}.{1}", dsVariable, propertyName);
             Assert.IsTrue(null != propBag && propBag.TryGetValue(propertyName, out dsObj), string.Format("Property \"{0}\" not found.\n{1}", expression, mErrorMessage));
-            
+
             var indices = new List<int>();
 
             VerifyInternal(expectedValue, dsObj, expression, indices);
@@ -857,7 +853,7 @@ namespace ProtoTestFx.TD
         {
             RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testRuntimeCore);
             MirrorData data = mirror.GetData();
-            Assert.IsTrue( Double.IsInfinity(Convert.ToDouble(data.Data)));
+            Assert.IsTrue(Double.IsInfinity(Convert.ToDouble(data.Data)));
         }
 
         public static void AssertNan(string dsVariable, int startBlock = 0)

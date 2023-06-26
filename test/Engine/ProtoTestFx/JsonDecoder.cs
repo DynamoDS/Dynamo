@@ -1,5 +1,3 @@
-﻿using System.Collections.Generic;
-using System.IO;
 using Newtonsoft.Json;
 using ProtoCore.Utils;
 
@@ -89,7 +87,7 @@ namespace ProtoTestFx
         private static object GetValue(JsonTextReader reader)
         {
             JsonToken type = reader.TokenType;
-            if(IsPrimitiveType(type))
+            if (IsPrimitiveType(type))
             {
                 return GetPrimitiveValue(reader);
             }
@@ -123,7 +121,7 @@ namespace ProtoTestFx
             List<object> array = new List<object>();
 
             // Move to the first element
-            reader.Read(); 
+            reader.Read();
             JsonToken token = reader.TokenType;
 
             while (token != JsonToken.EndArray)

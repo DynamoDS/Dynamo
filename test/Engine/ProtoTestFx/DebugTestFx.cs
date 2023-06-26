@@ -1,4 +1,3 @@
-using System;
 using NUnit.Framework;
 using ProtoCore;
 using ProtoCore.DSASM;
@@ -76,7 +75,7 @@ namespace ProtoTestFx
             return core;
         }
 
-        internal  static ProtoCore.Core DebugRunnerRunOnly(string code, out RuntimeCore runtimeCore)
+        internal static ProtoCore.Core DebugRunnerRunOnly(string code, out RuntimeCore runtimeCore)
         {
             ProtoCore.Core core;
             DebugRunner fsr;
@@ -115,7 +114,7 @@ namespace ProtoTestFx
             ProtoCore.Core core;
             DebugRunner fsr;
 
-             // Specify some of the requirements of IDE.
+            // Specify some of the requirements of IDE.
             var options = new ProtoCore.Options();
             options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
             options.GCTempVarsOnDebug = false;
@@ -137,7 +136,7 @@ namespace ProtoTestFx
 
             fsr.PreStart(code);
             DebugRunner.VMState vms = null;
- 
+
             while (!fsr.isEnded)
                 vms = fsr.StepOver();
 

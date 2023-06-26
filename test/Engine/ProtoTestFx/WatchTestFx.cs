@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
 using ProtoCore;
@@ -133,7 +130,7 @@ namespace ProtoTestFx
                 propSV = svData;
             }
 
-            
+
             if (instruction.debug != null)
             {
                 int lineNo = instruction.debug.Location.StartInclusive.LineNo;
@@ -232,7 +229,7 @@ namespace ProtoTestFx
         }
 
         private ProtoCore.Core core;
-        public ProtoCore.Core TestCore 
+        public ProtoCore.Core TestCore
         {
             get
             {
@@ -330,10 +327,10 @@ namespace ProtoTestFx
                 Assert.Ignore("Ignored due to Exception from run: " + e.ToString());
             }
 
-            DebugRunnerStepIn(includePath, code, map, watchNestedMode, defectID);            
+            DebugRunnerStepIn(includePath, code, map, watchNestedMode, defectID);
         }
 
-        
+
 
         internal void TestRunnerRunOnly(string includePath, string code, Dictionary<int, List<string>> map /*, string executionLogFilePath*/)
         {
@@ -364,14 +361,14 @@ namespace ProtoTestFx
             // that prints stackvalues at every assignment statement
             // by overriding the POP_handler instruction - pratapa
 
-//            core.ExecutiveProvider = new InjectionExecutiveProvider();
+            //            core.ExecutiveProvider = new InjectionExecutiveProvider();
 
             core.BuildStatus.MessageHandler = fs;
             core.Compilers.Add(ProtoCore.Language.Associative, new ProtoAssociative.Compiler(core));
             core.Compilers.Add(ProtoCore.Language.Imperative, new ProtoImperative.Compiler(core));
 
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
-            
+
             //Run
             RuntimeCore runtimeCore = fsr.Execute(code, core);
             Mirror = runtimeCore.Mirror;
@@ -380,18 +377,18 @@ namespace ProtoTestFx
             runtimeCore.Cleanup();
         }
 
-        internal static void DebugRunnerStepIn(string includePath, string code, /*string logFile*/Dictionary<int, List<string>> map, 
+        internal static void DebugRunnerStepIn(string includePath, string code, /*string logFile*/Dictionary<int, List<string>> map,
             bool watchNestedMode = false, string defectID = "")
         {
             //Internal setup
             ProtoCore.Core core;
             DebugRunner fsr;
-            
+
             // Specify some of the requirements of IDE.
             var options = new ProtoCore.Options();
             options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
             options.GCTempVarsOnDebug = false;
-            
+
             // Cyclic dependency threshold is lowered from the default (2000)
             // as this causes the test framework to be painfully slow
             options.kDynamicCycleThreshold = 5;
@@ -403,8 +400,8 @@ namespace ProtoTestFx
                 includePath = Path.GetDirectoryName(includePath);
                 options.IncludeDirectories.Add(includePath);
             }
-            
-            
+
+
             core = new ProtoCore.Core(options);
 
 
@@ -414,7 +411,7 @@ namespace ProtoTestFx
             fsr = new DebugRunner(core);
 
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
-            
+
             //Run
             fsr.PreStart(code);
 
@@ -444,7 +441,7 @@ namespace ProtoTestFx
                     if (opCode == ProtoCore.DSASM.OpCode.POP)
                     {
                         //isPrevBreakAtPop = true;
-                        lineAtPrevBreak = vms.ExecutionCursor.StartInclusive.LineNo;                       
+                        lineAtPrevBreak = vms.ExecutionCursor.StartInclusive.LineNo;
                     }
                 }
 
@@ -562,7 +559,7 @@ namespace ProtoTestFx
                 return;
 
             List<string> expressions = map[lineAtPrevBreak];
-            foreach(string exp in expressions)
+            foreach (string exp in expressions)
             {
                 // Get line no.
                 // Get lhs symbol name
@@ -580,13 +577,13 @@ namespace ProtoTestFx
                     {
                         lhsName = m.Groups[1].Value;
                     }
-                }                            
+                }
                 if (lhsName.Equals(symbolName))
                 {
                     ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                     ProtoCore.DSASM.Mirror.ExecutionMirror mirror = watchRunner.Execute(exp);
                     Obj obj = mirror.GetWatchValue();
-                    
+
                     if (!watchNestedMode)
                     {
                         // Cheat by peeking into heap etc. to dump output string
@@ -598,12 +595,12 @@ namespace ProtoTestFx
                             return;
 
                         List<string> values = InjectionExecutive.ExpressionMap[expr];
-                        
+
                         if (!values.Contains(result))
                         {
                             Assert.Fail(string.Format("\tThe value of expression \"{0}\" doesn't match in run mode and in watch.\nTracked by Defect: {1}", exp, defectID));
                             return;
-                        }                        
+                        }
                     }
                     else
                     {
