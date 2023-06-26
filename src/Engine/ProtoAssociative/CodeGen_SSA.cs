@@ -1,4 +1,4 @@
-﻿using ProtoCore.AST.AssociativeAST;
+using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
 using System.Collections.Generic;
