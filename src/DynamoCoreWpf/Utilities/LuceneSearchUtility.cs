@@ -5,13 +5,13 @@ using Lucene.Net.Index;
 using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
 
-namespace Dynamo.ViewModels
+namespace Dynamo.Utilities
 {
-    internal class LuceneSearchViewModel
+    internal class LuceneSearchUtility
     {
         internal DynamoModel dynamoModel;
 
-        internal LuceneSearchViewModel(DynamoModel model)
+        internal LuceneSearchUtility(DynamoModel model)
         {
             dynamoModel = model;
         }

@@ -269,6 +269,7 @@
     <Compile Include="Utilities\MessageBoxUtilities.cs" />
     <Compile Include="Utilities\NodeContextMenuBuilder.cs" />
     <Compile Include="Utilities\OnceDisposable.cs" />
+    <Compile Include="Utilities\LuceneSearchUtility.cs" />
     <Compile Include="TestInfrastructure\ConnectorMutator.cs" />
     <Compile Include="TestInfrastructure\MutationTestAttribute.cs" />
     <Compile Include="Utilities\DelegateCommand.cs" />
@@ -521,7 +522,6 @@
     <Compile Include="ViewModels\PackageManager\PackageManagerSearchElementViewModel.cs" />
     <Compile Include="ViewModels\PackageManager\PackageManagerSearchViewModel.cs" />
     <Compile Include="ViewModels\PackageManager\PackageViewModel.cs" />
-	<Compile Include="ViewModels\Lucene\LuceneSearchViewModel.cs" />
     <Compile Include="ViewModels\Core\PortViewModel.cs" />
     <Compile Include="ViewModels\PackageManager\PublishPackageViewModel.cs" />
     <Compile Include="ViewModels\Search\SearchViewModel.cs" />

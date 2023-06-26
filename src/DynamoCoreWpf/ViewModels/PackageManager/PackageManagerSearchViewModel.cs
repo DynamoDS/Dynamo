@@ -14,6 +14,7 @@ using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.PackageManager.ViewModels;
 using Dynamo.Search;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Utilities;
@@ -156,7 +157,7 @@ namespace Dynamo.PackageManager
         internal Analyzer Analyzer;
 
         // Lucene search view model.
-        internal LuceneSearchViewModel LuceneSearchViewModel { get; set; }
+        internal LuceneSearchUtility LuceneSearchUtility { get; set; }
 
         // The results of the last synchronization with the package manager server
         public List<PackageManagerSearchElement> LastSync { get; set; }
@@ -573,7 +574,7 @@ namespace Dynamo.PackageManager
         {
             PackageManagerClientViewModel = client;
             HostFilter = InitializeHostFilter();
-            LuceneSearchViewModel = new LuceneSearchViewModel(PackageManagerClientViewModel.DynamoViewModel.Model);
+            LuceneSearchUtility = new LuceneSearchUtility(PackageManagerClientViewModel.DynamoViewModel.Model);
             InitializeLuceneConfig();
         }
         
@@ -1186,7 +1187,7 @@ namespace Dynamo.PackageManager
                     FuzzyMinSim = LuceneConfig.MinimumSimilarity
                 };
 
-                Query query = parser.Parse(LuceneSearchViewModel.CreateSearchQuery(fnames, searchTerm));
+                Query query = parser.Parse(LuceneSearchUtility.CreateSearchQuery(fnames, searchTerm));
 
                 //indicate we want the first 50 results
                 TopDocs topDocs = Searcher.Search(query, n: LuceneConfig.DefaultResultsCount);

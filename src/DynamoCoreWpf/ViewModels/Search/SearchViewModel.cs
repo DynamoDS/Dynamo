@@ -350,7 +350,7 @@ namespace Dynamo.ViewModels
         internal readonly DynamoViewModel dynamoViewModel;
 
         // Lucene search view model.
-        internal LuceneSearchViewModel LuceneSearchViewModel { get; set; }
+        internal LuceneSearchUtility LuceneSearchUtility { get; set; }
 
         /// <summary>
         /// Class name, that has been clicked in library search view.
@@ -372,7 +372,7 @@ namespace Dynamo.ViewModels
             iconServices = new IconServices(pathManager);
 
             InitializeCore();
-            LuceneSearchViewModel = new LuceneSearchViewModel(dynamoViewModel.Model);
+            LuceneSearchUtility = new LuceneSearchUtility(dynamoViewModel.Model);
         }
 
         // Just for tests. Please refer to LibraryTests.cs
@@ -948,7 +948,7 @@ namespace Dynamo.ViewModels
                     FuzzyMinSim = LuceneConfig.MinimumSimilarity
                 };
 
-                Query query = parser.Parse(LuceneSearchViewModel.CreateSearchQuery(LuceneConfig.IndexFields, searchTerm));
+                Query query = parser.Parse(LuceneSearchUtility.CreateSearchQuery(LuceneConfig.IndexFields, searchTerm));
                 TopDocs topDocs = Model.Searcher.Search(query, n: LuceneConfig.DefaultResultsCount);
 
                 for (int i = 0; i < topDocs.ScoreDocs.Length; i++)
