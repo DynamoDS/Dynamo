@@ -1,44 +1,43 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <ImportGroup Label="PropertySheets">
-    <Import Project="$(SolutionDir)Config/CS_SDK.props" />
-  </ImportGroup>
-  <PropertyGroup>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{672BF8EC-1116-49F6-B253-DFCE5CF7D4C9}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ProtoTestConsoleRunner</RootNamespace>
-    <AssemblyName>ProtoTestConsoleRunner</AssemblyName>
-  </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject>ProtoTestConsoleRunner.Program</StartupObject>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="7.0.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Engine\ProtoAssociative\ProtoAssociative.csproj">
-      <Project>{7318D5E5-9D15-4ABE-8A51-92F58D4F0B85}</Project>
-      <Name>ProtoAssociative</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\src\Engine\ProtoCore\ProtoCore.csproj">
-      <Project>{7A9E0314-966F-4584-BAA3-7339CBB849D1}</Project>
-      <Name>ProtoCore</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\src\Engine\ProtoImperative\ProtoImperative.csproj">
-      <Project>{0D3D43DC-BD7E-46F0-93F7-1C6A6CC79948}</Project>
-      <Name>ProtoImperative</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\src\Engine\ProtoScript\ProtoScript.csproj">
-      <Project>{A4794476-7D0E-41C0-AD83-4AB929C0A46C}</Project>
-      <Name>ProtoScript</Name>
-    </ProjectReference>
-  </ItemGroup>
+    <ImportGroup Label="PropertySheets">
+        <Import Project="$(SolutionDir)Config/CS_SDK.props" />
+    </ImportGroup>
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+    <PropertyGroup>
+        <ProductVersion>8.0.30703</ProductVersion>
+        <SchemaVersion>2.0</SchemaVersion>
+        <ProjectGuid>{672BF8EC-1116-49F6-B253-DFCE5CF7D4C9}</ProjectGuid>
+        <OutputType>Exe</OutputType>
+        <AppDesignerFolder>Properties</AppDesignerFolder>
+        <RootNamespace>ProtoTestConsoleRunner</RootNamespace>
+        <AssemblyName>ProtoTestConsoleRunner</AssemblyName>
+    </PropertyGroup>
+    <PropertyGroup>
+        <StartupObject>ProtoTestConsoleRunner.Program</StartupObject>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="7.0.0" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\src\Engine\ProtoAssociative\ProtoAssociative.csproj">
+            <Project>{7318D5E5-9D15-4ABE-8A51-92F58D4F0B85}</Project>
+            <Name>ProtoAssociative</Name>
+        </ProjectReference>
+        <ProjectReference Include="..\..\..\src\Engine\ProtoCore\ProtoCore.csproj">
+            <Project>{7A9E0314-966F-4584-BAA3-7339CBB849D1}</Project>
+            <Name>ProtoCore</Name>
+        </ProjectReference>
+        <ProjectReference Include="..\..\..\src\Engine\ProtoImperative\ProtoImperative.csproj">
+            <Project>{0D3D43DC-BD7E-46F0-93F7-1C6A6CC79948}</Project>
+            <Name>ProtoImperative</Name>
+        </ProjectReference>
+        <ProjectReference Include="..\..\..\src\Engine\ProtoScript\ProtoScript.csproj">
+            <Project>{A4794476-7D0E-41C0-AD83-4AB929C0A46C}</Project>
+            <Name>ProtoScript</Name>
+        </ProjectReference>
+    </ItemGroup>
 </Project>
