@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO;
-using System.Linq;
 using System.Xml;
 using System.Xml.Serialization;
 using Autodesk.DesignScript.Runtime;
@@ -55,7 +51,7 @@ namespace PythonNodeModels
                     engineVersion == PythonEngineVersion.Unspecified)
                 {
                     //if this is a valid dynamically loaded engine, return unknown, and serialize the name.
-                    if (PythonEngineManager.Instance.AvailableEngines.Any(x=>x.Name == engine))
+                    if (PythonEngineManager.Instance.AvailableEngines.Any(x => x.Name == engine))
                     {
                         return PythonEngineVersion.Unknown;
                     }
@@ -322,8 +318,8 @@ namespace PythonNodeModels
         /// </summary>
         /// <param name="newCode">The new migrated code</param>
         internal void MigrateCode(string newCode)
-        {        
-            var e = new PythonCodeMigrationEventArgs(Script, newCode); 
+        {
+            var e = new PythonCodeMigrationEventArgs(Script, newCode);
             Script = newCode;
             OnCodeMigrated(e);
         }
