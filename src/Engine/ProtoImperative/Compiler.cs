@@ -3,11 +3,11 @@ using ProtoCore.Utils;
 namespace ProtoImperative
 {
     public class Compiler : ProtoCore.Compiler
-	{
+    {
         public Compiler(ProtoCore.Core core)
             : base(core)
-		{
-		}
+        {
+        }
 
         public override bool Compile(out int blockId, ProtoCore.DSASM.CodeBlock parentBlock, ProtoCore.LanguageCodeBlock langBlock, ProtoCore.CompileTime.Context callContext, ProtoCore.DebugServices.EventSink sink, ProtoCore.AST.Node codeBlockNode, ProtoCore.AssociativeGraph.GraphNode graphNode = null)
         {

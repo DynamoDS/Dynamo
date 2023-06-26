@@ -65,9 +65,9 @@ namespace ProtoImperative
         /// <param name="inferedType"></param>
         /// <param name="subPass"></param>
         private void EmitCodeBlock(
-            List<ImperativeNode> codeBlock, 
-            ref ProtoCore.Type inferedType, 
-            bool isBooleanOp = false, 
+            List<ImperativeNode> codeBlock,
+            ref ProtoCore.Type inferedType,
+            bool isBooleanOp = false,
             ProtoCore.AssociativeGraph.GraphNode graphNode = null)
         {
             foreach (ImperativeNode bodyNode in codeBlock)
@@ -98,8 +98,8 @@ namespace ProtoImperative
                 ProtoCore.Language.Imperative,
                 core.CodeBlockIndex,
                 new ProtoCore.DSASM.SymbolTable("imperative lang block", core.RuntimeTableIndex),
-                new ProtoCore.DSASM.ProcedureTable(core.RuntimeTableIndex), 
-                false, 
+                new ProtoCore.DSASM.ProcedureTable(core.RuntimeTableIndex),
+                false,
                 core);
 
             ++core.CodeBlockIndex;
@@ -145,7 +145,7 @@ namespace ProtoImperative
         private SymbolNode Allocate(string ident, int funcIndex, ProtoCore.Type datatype, CodeBlock cb = null)
         {
             if (core.ClassTable.IndexOf(ident) != ProtoCore.DSASM.Constants.kInvalidIndex)
-                buildStatus.LogSemanticError(String.Format(Resources.ClassNameAsVariableError,ident));
+                buildStatus.LogSemanticError(String.Format(Resources.ClassNameAsVariableError, ident));
 
             SymbolNode symbolnode = new SymbolNode(
                  ident,
@@ -159,7 +159,7 @@ namespace ProtoImperative
                  ProtoCore.CompilerDefinitions.AccessModifier.Public,
                  false,
                  cb == null ? codeBlock.codeBlockId : cb.codeBlockId);
-           
+
             if (isEmittingImportNode)
                 symbolnode.ExternLib = core.CurrentDSFileName;
 
@@ -183,7 +183,7 @@ namespace ProtoImperative
             }
             else
             {
-                symbolindex = cb != null ? cb.symbolTable.Append(symbolnode) : codeBlock.symbolTable.Append(symbolnode);                
+                symbolindex = cb != null ? cb.symbolTable.Append(symbolnode) : codeBlock.symbolTable.Append(symbolnode);
             }
 
             symbolnode.symbolTableIndex = symbolindex;
@@ -223,8 +223,8 @@ namespace ProtoImperative
             //AppendInstruction(instr, line, col);
             updatePcDictionary(line, col);
         }
-		
-		protected override void EmitRetcn(int blockId = Constants.kInvalidIndex, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
+
+        protected override void EmitRetcn(int blockId = Constants.kInvalidIndex, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
             int endline = ProtoCore.DSASM.Constants.kInvalidIndex, int endcol = ProtoCore.DSASM.Constants.kInvalidIndex)
         {
             Instruction instr = new Instruction();
@@ -256,8 +256,8 @@ namespace ProtoImperative
             //AppendInstruction(instr);
         }
 
-        public override ProtoCore.DSASM.ProcedureNode TraverseFunctionCall(ProtoCore.AST.Node node, ProtoCore.AST.Node parentNode, int lefttype, int depth, ref ProtoCore.Type inferedType, 
-            ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.CompilerDefinitions.SubCompilePass subPass = ProtoCore.CompilerDefinitions.SubCompilePass.None, 
+        public override ProtoCore.DSASM.ProcedureNode TraverseFunctionCall(ProtoCore.AST.Node node, ProtoCore.AST.Node parentNode, int lefttype, int depth, ref ProtoCore.Type inferedType,
+            ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.CompilerDefinitions.SubCompilePass subPass = ProtoCore.CompilerDefinitions.SubCompilePass.None,
             ProtoCore.AST.Node bnode = null)
         {
             if (!IsParsingGlobal())
@@ -466,7 +466,7 @@ namespace ProtoImperative
                     EmitInstrConsole(ProtoCore.DSASM.kw.callr, procNode.Name);
 
                     DebugProperties.BreakpointOptions oldOptions = core.DebuggerProperties.breakOptions;
-                    if(procNode.Name.StartsWith(Constants.kSetterPrefix))
+                    if (procNode.Name.StartsWith(Constants.kSetterPrefix))
                     {
                         EmitCall(procNode.ID, blockId, type, parentNode.line, parentNode.col, parentNode.endLine, parentNode.endCol);
                     }
@@ -523,9 +523,9 @@ namespace ProtoImperative
                     DynamicFunction dynFunc = null;
                     if (procName == Constants.kFunctionPointerCall && depth == 0)
                     {
-                        if (!core.DynamicFunctionTable.TryGetFunction(procName, 
-                                                                      arglist.Count, 
-                                                                      lefttype, 
+                        if (!core.DynamicFunctionTable.TryGetFunction(procName,
+                                                                      arglist.Count,
+                                                                      lefttype,
                                                                       out dynFunc))
                         {
                             dynFunc = core.DynamicFunctionTable.AddNewFunction(procName, arglist.Count, lefttype);
@@ -535,9 +535,9 @@ namespace ProtoImperative
                     }
                     else
                     {
-                        if (!core.DynamicFunctionTable.TryGetFunction(procName, 
-                                                                      arglist.Count, 
-                                                                      lefttype, 
+                        if (!core.DynamicFunctionTable.TryGetFunction(procName,
+                                                                      arglist.Count,
+                                                                      lefttype,
                                                                       out dynFunc))
                         {
                             dynFunc = core.DynamicFunctionTable.AddNewFunction(procName, arglist.Count, lefttype);
@@ -781,7 +781,7 @@ namespace ProtoImperative
             else
             {
                 type = symbolnode.datatype;
-                
+
                 if (core.Options.AssociativeToImperativePropagation)
                 {
                     // Comment Jun: If this symbol belongs to an outer block, then append it to this language blocks dependent
@@ -881,7 +881,7 @@ namespace ProtoImperative
                             {
                                 SymbolNode dependentSymbol = depentNode.updateNodeRefList[0].nodeList[0].symbol;
                                 int symbolBlockId = dependentSymbol.codeBlockId;
-                                if (core.CompleteCodeBlockDict.TryGetValue(symbolBlockId, out CodeBlock symbolBlock) && 
+                                if (core.CompleteCodeBlockDict.TryGetValue(symbolBlockId, out CodeBlock symbolBlock) &&
                                     !symbolBlock.IsMyAncestorBlock(codeBlock.codeBlockId))
                                 {
                                     propogateUpdateGraphNode.PushDependent(depentNode);
@@ -923,7 +923,7 @@ namespace ProtoImperative
                 fnode.ArrayDimensions = null;
             }
 
-            if(bnode == null)
+            if (bnode == null)
                 EmitSetExpressionUID(core.ExpressionUID++);
         }
 
@@ -995,7 +995,7 @@ namespace ProtoImperative
                 // Set the new codeblock as the current codeblock
                 ProtoCore.DSASM.CodeBlock localCodeBlock = null;
 
-            
+
                 localCodeBlock = new ProtoCore.DSASM.CodeBlock(
                     context.guid,
                     ProtoCore.DSASM.CodeBlockType.Construct,
@@ -1220,7 +1220,7 @@ namespace ProtoImperative
 
                 int bp = (int)ProtoCore.DSASM.Constants.kInvalidIndex;
                 int L1 = (int)ProtoCore.DSASM.Constants.kInvalidIndex;
-                
+
                 WhileStmtNode whileNode = node as WhileStmtNode;
                 MakeSymbolsLocalInImperativeBlock(whileNode.Body);
 
@@ -1270,7 +1270,7 @@ namespace ProtoImperative
                     codeBlock = localCodeBlock;
                     backpatchMap.EntryTable[localCodeBlock.codeBlockId] = entry;
                     backpatchMap.BreakTable[localCodeBlock.codeBlockId] = new BackpatchTable();
-                    
+
                     EmitPushBlockID(localCodeBlock.codeBlockId);
                     EmitCodeBlock(whileNode.Body, ref inferedType, isBooleanOp, graphNode);
 
@@ -1293,7 +1293,7 @@ namespace ProtoImperative
 
         private void MakeSymbolsLocalInIfBlock(IfStmtNode ifNode)
         {
-            if(ifNode == null) return;
+            if (ifNode == null) return;
 
             MakeSymbolsLocalInImperativeBlock(ifNode.IfBody);
             MakeSymbolsLocalInImperativeBlock(ifNode.ElseBody);
@@ -1317,19 +1317,19 @@ namespace ProtoImperative
                     var whileNode = stmt as WhileStmtNode;
                     MakeSymbolsLocalInImperativeBlock(whileNode.Body);
                 }
-                else if(stmt is ForLoopNode)
+                else if (stmt is ForLoopNode)
                 {
                     var forNode = stmt as ForLoopNode;
                     MakeSymbolsLocalInImperativeBlock(forNode.Body);
                 }
-                else if(stmt is IfStmtNode)
+                else if (stmt is IfStmtNode)
                 {
                     var ifNode = stmt as IfStmtNode;
                     MakeSymbolsLocalInIfBlock(ifNode);
                 }
 
                 var bNode = stmt as BinaryExpressionNode;
-                if(bNode == null || bNode.Optr != Operator.assign) continue;
+                if (bNode == null || bNode.Optr != Operator.assign) continue;
 
                 var lNode = bNode.LeftNode as IdentifierNode;
                 if (lNode == null) continue;
@@ -1338,7 +1338,7 @@ namespace ProtoImperative
                 bool isAccessible;
                 bool isAllocated = VerifyAllocation(lNode.Value, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
                 if (!isAllocated) continue;
-                
+
                 // Find outer associative block.
                 var cb = codeBlock;
                 while (cb.parent.language != Language.Associative)
@@ -1350,7 +1350,7 @@ namespace ProtoImperative
 
                 Validity.Assert(cb.language == Language.Imperative);
 
-                
+
                 var symbolCopy = Allocate(lNode.Value, globalProcIndex, symbolnode.datatype, cb);
                 symbolCopy.datatype.rank = symbolnode.datatype.rank;
 
@@ -1366,7 +1366,7 @@ namespace ProtoImperative
             }
         }
 
-        private void EmitBinaryExpressionNode(ImperativeNode node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, 
+        private void EmitBinaryExpressionNode(ImperativeNode node, ref ProtoCore.Type inferedType, bool isBooleanOp = false,
             ProtoCore.AssociativeGraph.GraphNode graphNode = null, BinaryExpressionNode parentNode = null)
         {
             if (!IsParsingGlobal())
@@ -1421,8 +1421,8 @@ namespace ProtoImperative
                     bool isAccessible;
                     bool isLocalDeclaration = t.IsLocal;
                     SymbolNode symbolnode;
-                    var isAllocated = isLocalDeclaration ? 
-                        VerifyAllocationInScope(t.Value, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible) : 
+                    var isAllocated = isLocalDeclaration ?
+                        VerifyAllocationInScope(t.Value, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible) :
                         VerifyAllocation(t.Value, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
 
                     // Symbols allocated in outer scope are read-only - do not allow setter calls
@@ -1451,7 +1451,7 @@ namespace ProtoImperative
                     type.UID = globalClassIndex;
                     ProtoCore.AssociativeGraph.UpdateNodeRef leftNodeRef = new ProtoCore.AssociativeGraph.UpdateNodeRef();
                     DFSGetSymbolList(lnode, ref type, leftNodeRef);
-                    
+
                     // Get the first identifier symbol runtime index as it is required for the pushdep
                     var symbolList = new List<SymbolNode>();
                     symbolList.Add(leftNodeRef.nodeList[0].symbol);
@@ -1552,7 +1552,7 @@ namespace ProtoImperative
                     bool isLocalDeclaration = t.IsLocal;
                     SymbolNode symbolnode;
                     var isAllocated = isLocalDeclaration
-                        ? VerifyAllocationInScope(t.Value, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible) 
+                        ? VerifyAllocationInScope(t.Value, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible)
                         : VerifyAllocation(t.Value, globalClassIndex, globalProcIndex, out symbolnode, out isAccessible);
 
                     if (!string.IsNullOrEmpty(t.ArrayName) && symbolnode != null)
@@ -1560,7 +1560,7 @@ namespace ProtoImperative
                         // if it's forloop, verify allocation with its original arrayname
                         symbolnode.forArrayName = t.ArrayName;
                     }
-                   
+
                     int runtimeIndex = (!isAllocated) ? codeBlock.symbolTable.RuntimeIndex : symbolnode.runtimeTableIndex;
 
                     // Comment Jun: Add modifeid properties into the updatedProperties list of the current function
@@ -1631,7 +1631,7 @@ namespace ProtoImperative
                                     localVarInMemFunc = true;
                                 }
                             }
-                            bool isMemberVar = Constants.kGlobalScope == 
+                            bool isMemberVar = Constants.kGlobalScope ==
                                 core.ClassTable.ClassNodes[globalClassIndex].Symbols.symbolList[n].functionIndex
                                 && core.ClassTable.ClassNodes[globalClassIndex].Symbols.symbolList[n].name == t.Name
                                 && !localVarInMemFunc;
@@ -1704,7 +1704,7 @@ namespace ProtoImperative
                     {
                         // if a symbol is already allocated in parent (associative) scope and is being assigned to (lhs)
                         // in the current imperative scope, not within a while, for, or if-else statement
-                        if (isAllocated && 
+                        if (isAllocated &&
                             codeBlock.symbolTable.RuntimeIndex != symbolnode.runtimeTableIndex
                             && codeBlock.symbolTable.ScopeName != GetConstructBlockName("while")
                             && codeBlock.symbolTable.ScopeName != GetConstructBlockName("if")
@@ -1942,7 +1942,7 @@ namespace ProtoImperative
                     LeftNode = arrayExpr,
                     RightNode = forNode.Expression
                 };
-                
+
                 NodeUtils.UpdateBinaryExpressionLocation(arrayexprAssignment);
 
                 switch (forNode.Expression.GetType().ToString())
@@ -2012,7 +2012,7 @@ namespace ProtoImperative
                 StackValue opDest = StackValue.BuildVarIndex(symbolIndex);
                 EmitInstrConsole(kw.pop, keyIdent);
                 EmitPop(opDest, (symbol == null) ? globalClassIndex : symbol.classScope, symbol.runtimeTableIndex);
-                
+
                 // key == null ?
                 BinaryExpressionNode condition = new BinaryExpressionNode
                 {
@@ -2220,14 +2220,14 @@ namespace ProtoImperative
 
             var rangeExprFunc = nodeBuilder.BuildFunctionCall(
                 Constants.kFunctionRangeExpression,
-                new List<ImperativeNode> 
-                { 
-                    range.From, 
-                    range.To, 
+                new List<ImperativeNode>
+                {
+                    range.From,
+                    range.To,
                     range.Step ?? new NullNode(),
-                    op, 
+                    op,
                     new BooleanNode(range.Step != null),
-                    new BooleanNode(range.HasRangeAmountOperator) 
+                    new BooleanNode(range.HasRangeAmountOperator)
                 });
 
             NodeUtils.CopyNodeLocation(rangeExprFunc, range);
@@ -2261,7 +2261,7 @@ namespace ProtoImperative
             {
                 if (localProcedure != null)
                 {
-                    core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.FunctionAbnormalExit, ProtoCore.Properties.Resources.kInvalidBreakForFunction , core.CurrentDSFileName, node.line, node.col);
+                    core.BuildStatus.LogWarning(ProtoCore.BuildData.WarningID.FunctionAbnormalExit, ProtoCore.Properties.Resources.kInvalidBreakForFunction, core.CurrentDSFileName, node.line, node.col);
                     EmitReturnNull();
                 }
             }
@@ -2319,7 +2319,7 @@ namespace ProtoImperative
                 // A.B.ClassName.Property
                 int ci = Constants.kInvalidIndex;
                 var isFuncCall = leftNode.RightNode is FunctionCallNode;
-                if(!isFuncCall)
+                if (!isFuncCall)
                 {
                     var className = CoreUtils.GetIdentifierStringUntilFirstParenthesis(leftNode);
                     ci = core.ClassTable.IndexOf(className);
@@ -2408,7 +2408,7 @@ namespace ProtoImperative
                     leftMostIdentList.LeftNode = thisIdentList;
                 }
             }
-            
+
             // If this identifier list appears on the left hand side of an 
             // assignment statement, we need to emit setter for the last propery
             // on this identifier list. Two cases: the last (right-most) property
@@ -2497,7 +2497,7 @@ namespace ProtoImperative
                     isCollapsed = true;
                 }
             }
-        }     
+        }
 
         private void EmitPushDepData(List<ProtoCore.DSASM.SymbolNode> symbolList)
         {
@@ -2520,7 +2520,7 @@ namespace ProtoImperative
             instr.op3 = StackValue.BuildClassIndex(classScope);
 
             ++pc;
-            
+
             codeBlock.instrStream.instrList.Add(instr);
 
             // TODO: Figure out why using AppendInstruction fails for adding these instructions to ExpressionInterpreter
@@ -2536,7 +2536,7 @@ namespace ProtoImperative
             instr.op1 = StackValue.BuildInt(exprId);
 
             ++pc;
-            
+
             codeBlock.instrStream.instrList.Add(instr);
 
             // TODO: Figure out why using AppendInstruction fails for adding these instructions to ExpressionInterpreter
@@ -2580,16 +2580,16 @@ namespace ProtoImperative
 
             EmitIdentifierListNode(node, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.SubCompilePass.None, parentNode);
 
-            if(parentNode == null)
+            if (parentNode == null)
                 EmitSetExpressionUID(core.ExpressionUID++);
         }
 
         protected override void DfsTraverse(
-            ProtoCore.AST.Node pNode, 
-            ref ProtoCore.Type inferedType, 
-            bool isBooleanOp = false, 
-            ProtoCore.AssociativeGraph.GraphNode graphNode = null, 
-            ProtoCore.CompilerDefinitions.SubCompilePass subPass = ProtoCore.CompilerDefinitions.SubCompilePass.None, 
+            ProtoCore.AST.Node pNode,
+            ref ProtoCore.Type inferedType,
+            bool isBooleanOp = false,
+            ProtoCore.AssociativeGraph.GraphNode graphNode = null,
+            ProtoCore.CompilerDefinitions.SubCompilePass subPass = ProtoCore.CompilerDefinitions.SubCompilePass.None,
             ProtoCore.AST.Node parentNode = null)
         {
             ImperativeNode node = pNode as ImperativeNode;
@@ -2664,7 +2664,7 @@ namespace ProtoImperative
                     break;
             }
 
-            int blockId = codeBlock.codeBlockId; 
+            int blockId = codeBlock.codeBlockId;
         }
     }
 
@@ -2676,7 +2676,7 @@ namespace ProtoImperative
         {
             core = protocore;
         }
-        
+
         public ImperativeNode BuildTempVariable()
         {
             return Parser.BuildImperativeIdentifier(core.GenerateTempVar());
