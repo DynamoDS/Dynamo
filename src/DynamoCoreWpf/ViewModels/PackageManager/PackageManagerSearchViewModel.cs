@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using Autodesk.DesignScript.Geometry;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.PackageManager.ViewModels;
@@ -135,6 +136,8 @@ namespace Dynamo.PackageManager
         }
 
         #region Properties & Fields
+
+        private ObservableCollection<PackageManagerSearchElementViewModel> searchMyResults;
 
         // The results of the last synchronization with the package manager server
         public List<PackageManagerSearchElement> LastSync { get; set; }
@@ -275,15 +278,21 @@ namespace Dynamo.PackageManager
         /// </value>
         public ObservableCollection<PackageManagerSearchElementViewModel> SearchResults { get; internal set; }
 
+        /// <summary>
+        /// Returns a new filtered collection of packages based on the current user
+        /// </summary>
         public ObservableCollection<PackageManagerSearchElementViewModel> SearchMyResults
         {
+            set
+            {
+                if (value == searchMyResults) return;
+                
+                searchMyResults = value;
+                RaisePropertyChanged(nameof(SearchMyResults));                
+            }
             get
-            {   
-                if (PackageManagerClientViewModel.LoginState != Greg.AuthProviders.LoginState.LoggedIn) return null;
-                //return SearchResults.Where(x => x.Model.Maintainers == PackageManagerClientViewModel.Username) as ObservableCollection<PackageManagerSearchElementViewModel>;
-                var foundPackages = SearchResults.Where(x => x.Model.Maintainers.Equals("luke.johnson"));
-                var collection = new ObservableCollection<PackageManagerSearchElementViewModel> ( foundPackages );
-                return collection;                
+            {
+                return searchMyResults;
             }
         }
 
@@ -352,10 +361,6 @@ namespace Dynamo.PackageManager
                 RaisePropertyChanged(nameof(this.SearchState));
                 RaisePropertyChanged(nameof(this.SearchBoxPrompt));
                 RaisePropertyChanged(nameof(this.ShowSearchText));
-                if(value == PackageSearchState.Results)
-                {
-                    RaisePropertyChanged(nameof(this.SearchMyResults));
-                }
             }
         }
 
@@ -461,7 +466,43 @@ namespace Dynamo.PackageManager
             PackageManagerClientViewModel = client;
             HostFilter = InitializeHostFilter();
         }
-        
+
+        /// <summary>
+        /// Populates SearchMyResults collection containing all packages by current user
+        /// </summary>
+        private void PopulateMyPackages()
+        {
+            List<PackageManagerSearchElement> packageManagerSearchElements;
+            List<PackageManagerSearchElementViewModel> myPackages = new List<PackageManagerSearchElementViewModel>();
+
+            // Checking if there are any cached values.
+            if (PackageManagerClientViewModel.CachedPackageList != null &&
+                PackageManagerClientViewModel.CachedPackageList.Count > 0)
+            {
+                packageManagerSearchElements = PackageManagerClientViewModel.CachedPackageList;
+            }
+            // If the cache is null or empty, we must call ListAll and wait for the results.
+            else
+            {
+                packageManagerSearchElements = PackageManagerClientViewModel.ListAll();
+            }
+
+            if (PackageManagerClientViewModel.LoginState != Greg.AuthProviders.LoginState.LoggedIn || !packageManagerSearchElements.Any()) return;
+
+
+            // Check if any of the maintainers corresponds to the current logged in username
+            foreach (var pkg in packageManagerSearchElements)
+            {
+                var maintainers = pkg.Maintainers.Split(new string[] { ", " }, StringSplitOptions.None);
+                if (maintainers.Any(x => x.Equals(PackageManagerClientViewModel.Username)))
+                {
+                    myPackages.Add(new PackageManagerSearchElementViewModel(pkg, false));
+                }
+            }
+
+            SearchMyResults = new ObservableCollection<PackageManagerSearchElementViewModel>(myPackages);
+        }
+
         /// <summary>
         /// Sort the default package results in the view based on the sorting key and sorting direction.
         /// </summary>
@@ -730,6 +771,7 @@ namespace Dynamo.PackageManager
         public IEnumerable<PackageManagerSearchElementViewModel> RefreshAndSearch()
         {
             Refresh();
+            PopulateMyPackages();   // adding 
             return Search(SearchText);
         }
 

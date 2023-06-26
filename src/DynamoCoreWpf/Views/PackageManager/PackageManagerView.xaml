@@ -75,7 +75,7 @@
     <!--The main grid of the Package Manager window-->
     <Border x:Name="mainBorder"
             BorderBrush="{StaticResource WorkspaceBackgroundHomeBrush}"
-            BorderThickness="2"
+            BorderThickness="1"
             CornerRadius="4"
             Background="{StaticResource PreferencesWindowBackgroundColor}">
 
@@ -251,7 +251,9 @@
                                     <local:PackageManagerPackagesControl x:Name="packageManagerMyPackages"
                                                                        DataContext="{Binding Path=PackageManagerViewModel.PackageSearchViewModel, ElementName=PackageManagerWindow}"
                                                                        SearchItems="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.SearchMyResults, ElementName=PackageManagerWindow}"/>
-                                </Grid>
+
+                                    
+                                 </Grid>
                             </Border>
                         </TabItem>
 
