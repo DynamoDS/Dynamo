@@ -36,7 +36,7 @@ namespace Dynamo.PackageManager.UI
             InitializeComponent();
 
             packageManagerViewModel.PackageSearchViewModel.RequestShowFileDialog += OnRequestShowFileDialog;
-            packageManagerViewModel.PackageSearchViewModel.PackageManagerClientViewModel.Owner = this;
+            packageManagerViewModel.PackageSearchViewModel.PackageManagerClientViewModel.ViewModelOwner = this;
 
             Dynamo.Logging.Analytics.TrackEvent(
                 Actions.Open,
