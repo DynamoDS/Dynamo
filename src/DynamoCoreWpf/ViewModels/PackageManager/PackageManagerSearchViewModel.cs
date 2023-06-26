@@ -846,7 +846,7 @@ namespace Dynamo.PackageManager
         public IEnumerable<PackageManagerSearchElementViewModel> RefreshAndSearch()
         {
             Refresh();
-            return Search(SearchText);
+            return GetAllPackages();
         }
 
         public void RefreshAndSearchAsync()
@@ -1035,7 +1035,7 @@ namespace Dynamo.PackageManager
             // If the search query is not empty, then call Lucene search API
             if (string.IsNullOrEmpty(query))
             {
-                results = Search(query);
+                results = GetAllPackages();
             }
             else
             {
@@ -1119,12 +1119,45 @@ namespace Dynamo.PackageManager
             return filteredList;
         }
 
+        /// <summary>   
+        ///     Get all the package results in the package manager.
+        /// </summary>
+        /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
+        internal IEnumerable<PackageManagerSearchElementViewModel> GetAllPackages()
+        {
+            if (LastSync == null) return new List<PackageManagerSearchElementViewModel>();
+
+            List<PackageManagerSearchElementViewModel> list = null;
+
+            var isEnabledForInstall = !(Preferences as IDisablePackageLoadingPreferences).DisableCustomPackageLocations;
+
+            // Don't show deprecated packages
+            list = Filter(LastSync.Where(x => !x.IsDeprecated)
+                                  .Select(x => new PackageManagerSearchElementViewModel(x,
+                                                   PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider,
+                                                   CanInstallPackage(x.Name), isEnabledForInstall)))
+                                  .ToList();
+
+            Sort(list, this.SortingKey);
+
+            if (SortingDirection == PackageSortingDirection.Descending)
+            {
+                list.Reverse();
+            }
+
+            foreach (var x in list)
+                x.RequestShowFileDialog += OnRequestShowFileDialog;
+
+            return list;
+        }
+
         /// <summary>
         ///     Performs a search using the given string as query, but does not update
         ///     the SearchResults object.
         /// </summary>
         /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
         /// <param name="query"> The search query </param>
+        [Obsolete("This method will be removed in future Dynamo versions - please use Search method with Lucene flag.")]
         internal IEnumerable<PackageManagerSearchElementViewModel> Search(string query)
         {
             if (LastSync == null) return new List<PackageManagerSearchElementViewModel>();
@@ -1209,7 +1242,7 @@ namespace Dynamo.PackageManager
             }
             else
             {
-                return Search(searchText);
+                return GetAllPackages();
             }
         }
 
