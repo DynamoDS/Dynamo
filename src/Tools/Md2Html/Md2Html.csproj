@@ -10,15 +10,17 @@
         <SharedOutputPath>$(OutputPath)\Md2Html\</SharedOutputPath>
         <OutputPath>bin\AnyCPU\$(Configuration)\</OutputPath>
     </PropertyGroup>
-    <ItemGroup>
-        <Reference Include="System" />
-        <Reference Include="System.Core" />
-        <Reference Include="System.Xml.Linq" />
-        <Reference Include="System.Data.DataSetExtensions" />
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net48'">
         <Reference Include="Microsoft.CSharp" />
         <Reference Include="System.Data" />
         <Reference Include="System.Net.Http" />
         <Reference Include="System.Xml" />
+    </ItemGroup>
+    <ItemGroup>
+        <Reference Include="System" />
+        <Reference Include="System.Core" />
+        <Reference Include="System.Xml.Linq" />
+        <Reference Include="System.Data.DataSetExtensions" />        
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="CommandLineParser">
