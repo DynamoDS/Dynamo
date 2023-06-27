@@ -36,6 +36,7 @@
             <controls:InverseBoolToEnablingConverter  x:Key="InverseBoolToEnablingConverter " />
             <controls:ListHasMoreThanNItemsToVisibilityConverter x:Key="ListHasMoreThanNItemsToVisibilityConverter" />
             <controls:EmptyListToVisibilityConverter x:Key="EmptyListToVisibilityConverter" />
+            <controls:PackageSearchStateToVisibilityConverter x:Key="PackageSearchStateToVisibilityConverter" />
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
             <Style x:Key="PkgMngListBoxStyle" TargetType="ListBox">
@@ -158,7 +159,8 @@
                                     </Grid.RowDefinitions>
 
                                     <local:PackageManagerSearchControl x:Name="packageManagerSearch"
-                                                                       DataContext="{Binding Path=PackageManagerViewModel.PackageSearchViewModel, ElementName=PackageManagerWindow}" />
+                                                                       DataContext="{Binding Path=PackageManagerViewModel.PackageSearchViewModel, ElementName=PackageManagerWindow}"
+                                                                       />
 
                                 </Grid>
                             </Border>
@@ -249,11 +251,19 @@
                                     </Grid.RowDefinitions>
 
                                     <local:PackageManagerPackagesControl x:Name="packageManagerMyPackages"
-                                                                       DataContext="{Binding Path=PackageManagerViewModel.PackageSearchViewModel, ElementName=PackageManagerWindow}"
-                                                                       SearchItems="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.SearchMyResults, ElementName=PackageManagerWindow}"/>
+                                                                         DataContext="{Binding Path=PackageManagerViewModel.PackageSearchViewModel, ElementName=PackageManagerWindow}"
+                                                                         SearchItems="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.SearchMyResults, ElementName=PackageManagerWindow}"
+                                                                         Visibility="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.SearchState,
+                                                                                            ElementName=PackageManagerWindow, 
+                                                                                            Converter={StaticResource PackageSearchStateToVisibilityConverter}}" />
 
-                                    
-                                 </Grid>
+                                    <local:PackageManagerPackageAnimationControl x:Name="loadingScreen"
+                                                                         Visibility="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.SearchState,
+                                                                                            ElementName=PackageManagerWindow, 
+                                                                                            Converter={StaticResource PackageSearchStateToVisibilityConverter},
+                                                                                            ConverterParameter=false}" />
+
+                                </Grid>
                             </Border>
                         </TabItem>
 
@@ -267,7 +277,7 @@
                                       Margin="1"
                                       HorizontalAlignment="Stretch"
                                       VerticalAlignment="Stretch"
-                                      DataContext="{Binding Path=PackageManagerViewModel.PreferencesViewModel, ElementName=PackageManagerWindow}">
+                                      DataContext="{Binding  Path=PackageManagerViewModel.PreferencesViewModel, ElementName=PackageManagerWindow}">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />

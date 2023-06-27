@@ -53,7 +53,9 @@
     <None Remove="Views\Core\CustomColorPicker.xaml" />
     <None Remove="Views\Core\GeometryScalingPopup.xaml" />
     <None Remove="UI\Images\question-hover-blue-16px.png" />
-    <None Remove="Views\PackageManager\Controls\ControlColorsAndBrushes.xaml" />
+    <None Remove="Views\PackageManager\Controls\ControlColorsAndBrushes.xaml" />      
+    <None Remove="Views\PackageManager\Controls\LoadingAnimationStripeControl.xaml" />
+    <None Remove="Views\PackageManager\Controls\PackageManagePackageAnimationControl.xaml" />
     <None Remove="Views\PackageManager\Controls\PackageManagerPublishControl.xaml" />
     <None Remove="Views\PackageManager\Controls\PackageManagerPackagesControl.xaml" />
     <None Remove="Views\PackageManager\Controls\PackageManagerSearchControl.xaml" />
@@ -435,6 +437,8 @@
       <DependentUpon>SurveyPopupWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Input\ParameterEditor.cs" />
+    <Compile Include="Views\PackageManager\Controls\LoadingAnimationStripeControl.xaml.cs" />
+    <Compile Include="Views\PackageManager\Controls\PackageManagePackageAnimationControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\PackageManagerPackagesControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\PackageManagerPublishControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\PackageManagerSearchControl.xaml.cs" />
@@ -624,6 +628,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\PackageManager\Controls\ControlColorsAndBrushes.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PackageManager\Controls\LoadingAnimationStripeControl.xaml">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PackageManager\Controls\PackageManagePackageAnimationControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
