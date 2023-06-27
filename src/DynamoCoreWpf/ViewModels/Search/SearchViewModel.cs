@@ -350,7 +350,7 @@ namespace Dynamo.ViewModels
         internal readonly DynamoViewModel dynamoViewModel;
 
         // Lucene search utility to perform indexing operations.
-        internal LuceneSearchUtility LuceneSearchUtility { get; set; }
+        internal LuceneSearchUtility LuceneSearchUtility { get; }
 
         /// <summary>
         /// Class name, that has been clicked in library search view.
