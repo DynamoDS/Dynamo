@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -19,10 +18,7 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Utilities;
 using Greg.Responses;
-using Lucene.Net.Analysis;
-using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
-using Lucene.Net.Index;
 using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
 using Microsoft.Practices.Prism.Commands;
@@ -145,17 +141,6 @@ namespace Dynamo.PackageManager
         }
 
         #region Properties & Fields
-        internal List<string> addedFields;
-        internal DirectoryReader dirReader;
-        internal Lucene.Net.Store.Directory indexDir;
-        internal IndexWriter writer;
-
-        // Holds the instance for the IndexSearcher
-        internal IndexSearcher Searcher;
-
-        // Used for creating the StandardAnalyzer
-        internal Analyzer Analyzer;
-
         // Lucene search view model.
         internal LuceneSearchUtility LuceneSearchUtility { get; set; }
 
@@ -461,57 +446,6 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// Initialize Lucene config file writer.
-        /// </summary>
-        private void InitializeLuceneConfig()
-        {
-            addedFields = new List<string>();
-
-            var dynamoModel = PackageManagerClientViewModel.DynamoViewModel.Model;
-
-            DirectoryInfo webBrowserUserDataFolder;
-            var userDataDir = new DirectoryInfo(dynamoModel.PathManager.UserDataDirectory);
-            webBrowserUserDataFolder = userDataDir.Exists ? userDataDir : null;
-
-            string indexPath = Path.Combine(webBrowserUserDataFolder.FullName, "Index", LuceneConfig.PackagesIndexingDirectory);
-            indexDir = Lucene.Net.Store.FSDirectory.Open(indexPath);
-
-            // Create an analyzer to process the text
-            Analyzer = new StandardAnalyzer(LuceneConfig.LuceneNetVersion);
-
-            // Initialize Lucene index writer, unless in test mode.
-            if (!DynamoModel.IsTestMode)
-            {
-                // Create an index writer
-                IndexWriterConfig indexConfig = new IndexWriterConfig(LuceneConfig.LuceneNetVersion, Analyzer)
-                {
-                    OpenMode = OpenMode.CREATE
-                };
-                writer = new IndexWriter(indexDir, indexConfig);
-            }
-        }
-
-        /// <summary>
-        /// Initialize Lucene index document object for reuse
-        /// </summary>
-        /// <returns></returns>
-        private Document InitializeIndexDocument()
-        {
-            if (DynamoModel.IsTestMode) return null;
-
-            var name = new TextField(nameof(LuceneConfig.IndexFieldsEnum.Name), string.Empty, Field.Store.YES);
-            var description = new TextField(nameof(LuceneConfig.IndexFieldsEnum.Description), string.Empty, Field.Store.YES);
-            var keywords = new TextField(nameof(LuceneConfig.IndexFieldsEnum.SearchKeywords), string.Empty, Field.Store.YES);
-            var hosts = new TextField(nameof(LuceneConfig.IndexFieldsEnum.Hosts), string.Empty, Field.Store.YES);
-
-            var d = new Document()
-            {
-               name, description, keywords, hosts
-            };
-            return d;
-        }
-
-        /// <summary>
         /// Add package information to Lucene index
         /// </summary>
         /// <param name="package">package info that will be indexed</param>
@@ -519,52 +453,22 @@ namespace Dynamo.PackageManager
         private void AddPackageToSearchIndex(PackageManagerSearchElement package, Document doc)
         {
             if (DynamoModel.IsTestMode) return;
-            if (addedFields == null) return;
+            if (LuceneSearchUtility.addedFields == null) return;
 
-            SetDocumentFieldValue(doc, nameof(LuceneConfig.IndexFieldsEnum.Name), package.Name);
-            SetDocumentFieldValue(doc, nameof(LuceneConfig.IndexFieldsEnum.Description), package.Description);
+            LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.IndexFieldsEnum.Name), package.Name);
+            LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.IndexFieldsEnum.Description), package.Description);
 
             if (package.Keywords.Count() > 0)
             {
-                SetDocumentFieldValue(doc, nameof(LuceneConfig.IndexFieldsEnum.SearchKeywords), package.Keywords);
+                LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.IndexFieldsEnum.SearchKeywords), package.Keywords);
             }
 
             if (package.Hosts != null && string.IsNullOrEmpty(package.Hosts.ToString()))
             {
-                SetDocumentFieldValue(doc, nameof(LuceneConfig.IndexFieldsEnum.Hosts), package.Hosts.ToString(), true, true);
+                LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.IndexFieldsEnum.Hosts), package.Hosts.ToString(), true, true);
             }
 
-            writer?.AddDocument(doc);
-        }
-
-        /// <summary>
-        /// The SetDocumentFieldValue method should be optimized later
-        /// </summary>
-        /// <param name="doc">Lucene document in which the package info is stored</param>
-        /// <param name="field">Package field that is being updated in the document</param>
-        /// <param name="value">Package field value</param>
-        /// <param name="isTextField">This is used when the value need to be tokenized(broken down into pieces), whereas StringTextFields are tokenized.</param>
-        /// <param name="isLast">This is used for the last value set in the document, and it will fetch all the other field not set for the document and add them with an empty string.</param>
-        private void SetDocumentFieldValue(Document doc, string field, string value, bool isTextField = true, bool isLast = false)
-        {
-            addedFields.Add(field);
-            if (isTextField && !field.Equals("DocName"))
-            {
-                ((TextField)doc.GetField(field)).SetStringValue(value); 
-            }
-            else
-            {
-                ((StringField)doc.GetField(field)).SetStringValue(value);
-            }
-            if (isLast)
-            {
-                List<string> diff = LuceneConfig.PackageIndexFields.Except(addedFields).ToList();
-                foreach (var d in diff)
-                {
-                    SetDocumentFieldValue(doc, d, "");
-                }
-                addedFields.Clear();
-            }
+            LuceneSearchUtility.writer?.AddDocument(doc);
         }
 
         /// <summary>
@@ -575,7 +479,7 @@ namespace Dynamo.PackageManager
             PackageManagerClientViewModel = client;
             HostFilter = InitializeHostFilter();
             LuceneSearchUtility = new LuceneSearchUtility(PackageManagerClientViewModel.DynamoViewModel.Model);
-            InitializeLuceneConfig();
+            LuceneSearchUtility.InitializeLuceneConfig(LuceneConfig.PackagesIndexingDirectory);
         }
         
         /// <summary>
@@ -854,7 +758,7 @@ namespace Dynamo.PackageManager
             this.ClearSearchResults();
             this.SearchState = PackageSearchState.Syncing;
 
-            var iDoc = InitializeIndexDocument();
+            var iDoc = LuceneSearchUtility.InitializeIndexDocumentForPackages();
 
             Task<IEnumerable<PackageManagerSearchElementViewModel>>.Factory.StartNew(RefreshAndSearch).ContinueWith((t) =>
             {
@@ -873,13 +777,13 @@ namespace Dynamo.PackageManager
 
                     if (!DynamoModel.IsTestMode)
                     {
-                        dirReader = writer?.GetReader(applyAllDeletes: true);
-                        Searcher = new IndexSearcher(dirReader);
+                        LuceneSearchUtility.dirReader = LuceneSearchUtility.writer?.GetReader(applyAllDeletes: true);
+                        LuceneSearchUtility.Searcher = new IndexSearcher(LuceneSearchUtility.dirReader);
 
-                        writer?.Commit();
-                        writer?.Dispose();
-                        indexDir?.Dispose();
-                        writer = null;
+                        LuceneSearchUtility.writer?.Commit();
+                        LuceneSearchUtility.writer?.Dispose();
+                        LuceneSearchUtility.indexDir?.Dispose();
+                        LuceneSearchUtility.writer = null;
                     }
                 }
                 RefreshInfectedPackages();
@@ -1211,23 +1115,21 @@ namespace Dynamo.PackageManager
                 string searchTerm = searchText.Trim();
                 var packages = new List<PackageManagerSearchElementViewModel>();
 
-                string[] fnames = LuceneConfig.PackageIndexFields;
-
-                var parser = new MultiFieldQueryParser(LuceneConfig.LuceneNetVersion, fnames, Analyzer)
+                var parser = new MultiFieldQueryParser(LuceneConfig.LuceneNetVersion, LuceneConfig.PackageIndexFields, LuceneSearchUtility.Analyzer)
                 {
                     AllowLeadingWildcard = true,
                     DefaultOperator = LuceneConfig.DefaultOperator,
                     FuzzyMinSim = LuceneConfig.MinimumSimilarity
                 };
 
-                Query query = parser.Parse(LuceneSearchUtility.CreateSearchQuery(fnames, searchTerm));
+                Query query = parser.Parse(LuceneSearchUtility.CreateSearchQuery(LuceneConfig.PackageIndexFields, searchTerm));
 
                 //indicate we want the first 50 results
-                TopDocs topDocs = Searcher.Search(query, n: LuceneConfig.DefaultResultsCount);
+                TopDocs topDocs = LuceneSearchUtility.Searcher.Search(query, n: LuceneConfig.DefaultResultsCount);
                 for (int i = 0; i < topDocs.ScoreDocs.Length; i++)
                 {
                     //read back a doc from results
-                    Document resultDoc = Searcher.Doc(topDocs.ScoreDocs[i].Doc);
+                    Document resultDoc = LuceneSearchUtility.Searcher.Doc(topDocs.ScoreDocs[i].Doc);
 
                     // Get the view model of the package element and add it to the results.
                     string name = resultDoc.Get(nameof(LuceneConfig.IndexFieldsEnum.Name));

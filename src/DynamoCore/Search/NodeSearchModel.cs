@@ -4,11 +4,9 @@ using System.Linq;
 using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
+using Dynamo.Logging;
 using Dynamo.Search.SearchElements;
 using DynamoUtilities;
-using Dynamo.Logging;
-using Lucene.Net.Search;
-using Lucene.Net.Analysis;
 
 namespace Dynamo.Search
 {
@@ -17,13 +15,6 @@ namespace Dynamo.Search
     /// </summary>
     public class NodeSearchModel : SearchLibrary<NodeSearchElement, NodeModel>
     {
-
-        // Holds the instance for the IndexSearcher
-        internal IndexSearcher Searcher;
-
-        // Used in DynamoModel for creating the StandardAnalyzer
-        internal Analyzer Analyzer;
-
         /// <summary>
         ///     Construct a NodeSearchModel object
         /// </summary>

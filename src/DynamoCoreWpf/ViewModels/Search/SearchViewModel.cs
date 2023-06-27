@@ -372,7 +372,7 @@ namespace Dynamo.ViewModels
             iconServices = new IconServices(pathManager);
 
             InitializeCore();
-            LuceneSearchUtility = new LuceneSearchUtility(dynamoViewModel.Model);
+            LuceneSearchUtility = dynamoViewModel.Model.LuceneSearchUtility;
         }
 
         // Just for tests. Please refer to LibraryTests.cs
@@ -941,20 +941,20 @@ namespace Dynamo.ViewModels
             {
                 string searchTerm = search.Trim();
                 var candidates = new List<NodeSearchElementViewModel>();
-                var parser = new MultiFieldQueryParser(LuceneConfig.LuceneNetVersion, LuceneConfig.IndexFields, Model.Analyzer)
+                var parser = new MultiFieldQueryParser(LuceneConfig.LuceneNetVersion, LuceneConfig.NodeIndexFields, LuceneSearchUtility.Analyzer)
                 {
                     AllowLeadingWildcard = true,
                     DefaultOperator = LuceneConfig.DefaultOperator,
                     FuzzyMinSim = LuceneConfig.MinimumSimilarity
                 };
 
-                Query query = parser.Parse(LuceneSearchUtility.CreateSearchQuery(LuceneConfig.IndexFields, searchTerm));
-                TopDocs topDocs = Model.Searcher.Search(query, n: LuceneConfig.DefaultResultsCount);
+                Query query = parser.Parse(LuceneSearchUtility.CreateSearchQuery(LuceneConfig.NodeIndexFields, searchTerm));
+                TopDocs topDocs = LuceneSearchUtility.Searcher.Search(query, n: LuceneConfig.DefaultResultsCount);
 
                 for (int i = 0; i < topDocs.ScoreDocs.Length; i++)
                 {
                     // read back a Lucene doc from results
-                    Document resultDoc = Model.Searcher.Doc(topDocs.ScoreDocs[i].Doc);
+                    Document resultDoc = LuceneSearchUtility.Searcher.Doc(topDocs.ScoreDocs[i].Doc);
 
                     string name = resultDoc.Get(nameof(LuceneConfig.IndexFieldsEnum.Name));
                     string docName = resultDoc.Get(nameof(LuceneConfig.IndexFieldsEnum.DocName));

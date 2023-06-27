@@ -75,6 +75,11 @@ namespace Dynamo.Configuration
         internal static int FuzzySearchWeight = 2;
 
         /// <summary>
+        /// Parent directory where information is indexed.
+        /// </summary>
+        internal static string Index = "Index";
+
+        /// <summary>
         /// Directory where Nodes info are indexed
         /// </summary>
         internal static string NodesIndexingDirectory = "Nodes";
@@ -126,14 +131,14 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
-        /// Fields to be indexed by Lucene Search
+        /// Nodes Fields to be indexed by Lucene Search
         /// </summary>
-        public static string[] IndexFields = { nameof(IndexFieldsEnum.Name),
-                                               nameof(IndexFieldsEnum.FullCategoryName),
-                                               nameof(IndexFieldsEnum.Description),
-                                               nameof(IndexFieldsEnum.SearchKeywords),
-                                               nameof(IndexFieldsEnum.DocName),
-                                               nameof(IndexFieldsEnum.Documentation)};
+        public static string[] NodeIndexFields = { nameof(IndexFieldsEnum.Name),
+                                                   nameof(IndexFieldsEnum.FullCategoryName),
+                                                   nameof(IndexFieldsEnum.Description),
+                                                   nameof(IndexFieldsEnum.SearchKeywords),
+                                                   nameof(IndexFieldsEnum.DocName),
+                                                   nameof(IndexFieldsEnum.Documentation)};
 
 
         /// <summary>
