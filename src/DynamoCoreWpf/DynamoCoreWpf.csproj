@@ -150,9 +150,9 @@
 	<PackageReference Include="SharpDX.Direct3D9" Version="4.2.0" />
 	<PackageReference Include="SharpDX.DXGI" Version="4.2.0" />
 	<PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
-    <Reference Include="Dynamo.Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Dynamo.Microsoft.Xaml.Behaviors, Version=1.1.39.4761, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\Microsoft.Xaml.Behaviors\Dynamo.Microsoft.Xaml.Behaviors.dll</HintPath>
+      <HintPath>..\..\extern\Microsoft.Xaml.Behaviors\$(TargetFramework)\Dynamo.Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
