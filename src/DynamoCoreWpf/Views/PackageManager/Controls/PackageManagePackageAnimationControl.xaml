@@ -40,6 +40,8 @@
                 <Style TargetType="ListBoxItem">
                     <Setter Property="Padding"
                             Value="0" />
+                    <Setter Property="Margin"
+                            Value="0" />
                     <Setter Property="HorizontalContentAlignment"
                             Value="Stretch" />
                     <Setter Property="BorderThickness"
@@ -51,64 +53,54 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid Name="resultItemTemplate"
-                          VerticalAlignment="Center">
+                          VerticalAlignment="Center"
+                          Margin="0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="40px" />
+                            <RowDefinition Height="20px" />
                             <RowDefinition Height="Auto" />
-                            <RowDefinition Height="35px" />
                         </Grid.RowDefinitions>
 
                         <!--  Top Row  -->
                         <DockPanel Name="resultTopRow"
                                    Grid.Row="0"
-                                   Margin="15,15,5,0"
+                                   Margin="15,10,22,0"
                                    LastChildFill="False">
 
                             <!--  View Details Button  -->
                             <local:LoadingAnimationStripeControl  x:Name="viewDetailsRectangle"
-                                                                  Width="100"
-                                                                  Height="25"
+                                                                  Width="70"
+                                                                  Height="15"
+                                                                  Margin="20 0 0 0"
                                                                   DockPanel.Dock="Right" />
                             <!--  Install Button  -->
                             <local:LoadingAnimationStripeControl  x:Name="installRectangle"
-                                                                  Width="100"
-                                                                  Height="25"
+                                                                  Width="70"
+                                                                  Height="15"
                                                                   DockPanel.Dock="Right" />
 
                             <!--  Contains Package Name and New Label  -->
                             <Grid Margin="0,0,0,0"
                                   DockPanel.Dock="Left">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
 
                                 <local:LoadingAnimationStripeControl  x:Name="packageNameRectangle"
                                                                       Grid.Column="0"
                                                                       VerticalAlignment="Center"
-                                                                      Width="100"
-                                                                      Height="25" />
-
-                                <local:LoadingAnimationStripeControl  x:Name="newPackageRectangle"
-                                                                      Grid.Column="1"
-                                                                      VerticalAlignment="Center"
-                                                                      Width="100"
-                                                                      Height="18"
-                                                                      Margin="7,-3,7,0"
-                                                                      HorizontalAlignment="Right" />
+                                                                      Width="250"
+                                                                      Height="15" />
                             </Grid>                            
                         </DockPanel>
 
                         <!--  Middle Row  -->
                         <DockPanel Name="requirementsRow"
                                    Grid.Row="1"
-                                   Margin="15,0,0,0"
+                                   Margin="15,0,22,8"
                                    VerticalAlignment="Center"
                                    LastChildFill="False">
 
                             <local:LoadingAnimationStripeControl  x:Name="requirementsRectangle"
-                                                                  Width="9"
-                                                                  Height="9"
+                                                                  Width="150"
+                                                                  Height="8"
                                                                   Margin="0,0,0,1"
                                                                   VerticalAlignment="Center"
                                                                   DockPanel.Dock="Left" />
@@ -117,63 +109,38 @@
                         <!--  Bottom Row  -->
                         <DockPanel Name="resultBottomRow"
                                    Grid.Row="2"
-                                   Margin="15,0,5,15"
-                                   VerticalAlignment="Bottom"
-                                   LastChildFill="True">
+                                   Margin="15,5,22,15"
+                                   VerticalAlignment="Bottom">
 
-                            <local:LoadingAnimationStripeControl  x:Name="dateRectangle"
-                                                                  Grid.Column="0"
-                                                                  Margin="5,0"
-                                                                  Width="100"
-                                                                  Height="25"
-                                                                  VerticalAlignment="Center" />
-
-                            <local:LoadingAnimationStripeControl  Width="10"
-                                                                  Height="10"
-                                                                  Margin="5,0,0,2"
+                            <local:LoadingAnimationStripeControl  Width="48"
+                                                                  Height="8"
+                                                                  Margin="22,0,0,2"
                                                                   VerticalAlignment="Center"
                                                                   DockPanel.Dock="Right" />
 
-                            <local:LoadingAnimationStripeControl  x:Name="noDownloadsRectangle"
-                                                                  Margin="5,0"
-                                                                  DockPanel.Dock="Right" />
-
-                            <local:LoadingAnimationStripeControl  Width="10"
-                                                                  Height="10"
-                                                                  Margin="5,0,0,2"
+                            <local:LoadingAnimationStripeControl  Width="48"
+                                                                  Height="8"
+                                                                  Margin="22,0,0,2"
                                                                   VerticalAlignment="Center"
                                                                   DockPanel.Dock="Right" />
 
-                            <local:LoadingAnimationStripeControl  x:Name="noFavoritesRectangle"
-                                                                  Margin="5,0"
-                                                                  DockPanel.Dock="Right" />
-
-                            <local:LoadingAnimationStripeControl  Width="10"
-                                                                  Height="10"
-                                                                  Margin="5,0,0,2"
+                            <local:LoadingAnimationStripeControl  Width="48"
+                                                                  Height="8"
+                                                                  Margin="22,0,0,2"
                                                                   VerticalAlignment="Center"
                                                                   DockPanel.Dock="Right" />
 
-                            <local:LoadingAnimationStripeControl  x:Name="versionRectangle"
-                                                                  Margin="5,0"
-                                                                  DockPanel.Dock="Right" />
-
-                            <local:LoadingAnimationStripeControl  Width="10"
-                                                                  Height="10"
-                                                                  Margin="5,0,0,2"
+                            <local:LoadingAnimationStripeControl  Width="48"
+                                                                  Height="8"
+                                                                  Margin="22,0,0,2"
                                                                   VerticalAlignment="Center"
                                                                   DockPanel.Dock="Right" />
 
-                            <local:LoadingAnimationStripeControl  Width="10"
-                                                                  Height="10"
+                            <local:LoadingAnimationStripeControl  Width="70"
+                                                                  Height="8"
                                                                   Margin="0,0,0,2"
-                                                                  VerticalAlignment="Center"
-                                                                  DockPanel.Dock="Left" />
-
-                            <local:LoadingAnimationStripeControl  x:Name="vauthorNameRectangle"
-                                                                  Margin="5,0"
-                                                                  DockPanel.Dock="Left" />
-
+                                                                  DockPanel.Dock="Left"
+                                                                  HorizontalAlignment="Left"/>
 
                         </DockPanel>
 
