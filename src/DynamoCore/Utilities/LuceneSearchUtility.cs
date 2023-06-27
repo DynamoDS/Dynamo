@@ -119,7 +119,7 @@ namespace Dynamo.Utilities
         /// <param name="field">Field that is being updated in the document</param>
         /// <param name="value">Field value</param>
         /// <param name="isTextField">This is used when the value need to be tokenized(broken down into pieces), whereas StringTextFields are tokenized.</param>
-        /// <param name="isLast">This is used for the last value set in the document. It will fetch all the other field not set for the document and add them with an empty string.</param>
+        /// <param name="isLast">This is used for the last value set in the document. It will fetch all the fields not set in the document and add them with an empty string.</param>
         internal void SetDocumentFieldValue(Document doc, string field, string value, bool isTextField = true, bool isLast = false)
         {
             string[] indexedFields = null;
