@@ -521,32 +521,23 @@ namespace Dynamo.PackageManager
         /// </summary>
         private void PopulateMyPackages()
         {
+            // First, clear already existing results to prevent stacking 
+            if (SearchMyResults != null) return;
+            // We should have already populated the CachedPackageList by this step
+            if (PackageManagerClientViewModel.CachedPackageList == null ||
+                !PackageManagerClientViewModel.CachedPackageList.Any()) return;
+            // We need the user to be logged in, otherwise there is no point in runnig this routine
+            if (PackageManagerClientViewModel.LoginState != Greg.AuthProviders.LoginState.LoggedIn) return;
+
             List<PackageManagerSearchElement> packageManagerSearchElements;
             List<PackageManagerSearchElementViewModel> myPackages = new List<PackageManagerSearchElementViewModel>();
 
-            // Checking if there are any cached values.
-            if (PackageManagerClientViewModel.CachedPackageList != null &&
-                PackageManagerClientViewModel.CachedPackageList.Count > 0)
-            {
-                packageManagerSearchElements = PackageManagerClientViewModel.CachedPackageList;
-            }
-            // If the cache is null or empty, we must call ListAll and wait for the results.
-            else
-            {
-                packageManagerSearchElements = PackageManagerClientViewModel.ListAll();
-            }
-
-            if (PackageManagerClientViewModel.LoginState != Greg.AuthProviders.LoginState.LoggedIn || !packageManagerSearchElements.Any()) return;
-
-
             // Check if any of the maintainers corresponds to the current logged in username
-            foreach (var pkg in packageManagerSearchElements)
+            var name = PackageManagerClientViewModel.Username;
+            var pkgs = PackageManagerClientViewModel.CachedPackageList.Where(x => x.Maintainers != null && x.Maintainers.Contains(name)).ToList();
+            foreach(var pkg in pkgs)
             {
-                var maintainers = pkg.Maintainers.Split(new string[] { ", " }, StringSplitOptions.None);
-                if (maintainers.Any(x => x.Equals(PackageManagerClientViewModel.Username)))
-                {
-                    myPackages.Add(new PackageManagerSearchElementViewModel(pkg, false));
-                }
+                myPackages.Add(new PackageManagerSearchElementViewModel(pkg, false));
             }
     
             SearchMyResults = new ObservableCollection<PackageManagerSearchElementViewModel>(myPackages);
@@ -811,6 +802,8 @@ namespace Dynamo.PackageManager
                 SearchDictionary.Add(pkg, pkg.Maintainers);
                 SearchDictionary.Add(pkg, pkg.Keywords);
             }
+
+            PopulateMyPackages();   // adding 
         }
 
         /// <summary>
