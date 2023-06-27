@@ -349,7 +349,7 @@ namespace Dynamo.ViewModels
         public NodeSearchModel Model { get; private set; }
         internal readonly DynamoViewModel dynamoViewModel;
 
-        // Lucene search view model.
+        // Lucene search utility to perform indexing operations.
         internal LuceneSearchUtility LuceneSearchUtility { get; set; }
 
         /// <summary>

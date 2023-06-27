@@ -141,7 +141,7 @@ namespace Dynamo.PackageManager
         }
 
         #region Properties & Fields
-        // Lucene search view model.
+        // Lucene search utility to perform indexing operations.
         internal LuceneSearchUtility LuceneSearchUtility { get; set; }
 
         // The results of the last synchronization with the package manager server
