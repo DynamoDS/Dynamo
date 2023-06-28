@@ -179,7 +179,7 @@
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" GeneratePathProperty="true" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Dynamo.Microsoft.Xaml.Behaviors">
+    <Reference Include="Dynamo.Microsoft.Xaml.Behaviors, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\extern\Microsoft.Xaml.Behaviors\$(TargetFramework)\Dynamo.Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.Prism">
