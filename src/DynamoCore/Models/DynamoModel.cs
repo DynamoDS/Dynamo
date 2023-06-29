@@ -1359,12 +1359,8 @@ namespace Dynamo.Models
                 PreferenceSettings.MessageLogged -= LogMessage;
             }
 
-            if (!IsTestMode)
-            {
-                //The writer have to be disposed at DynamoModel level due that we could index package-nodes as new packages are installed
-                LuceneSearchUtility.writer?.Dispose();
-                LuceneSearchUtility.writer = null;
-            }
+            //The writer have to be disposed at DynamoModel level due that we could index package-nodes as new packages are installed
+            LuceneSearchUtility.DisposeWriter();
 
             // Lucene disposals (just if LuceneNET was initialized)
             LuceneSearchUtility.indexDir?.Dispose();
@@ -1431,11 +1427,7 @@ namespace Dynamo.Models
                     AddNodeTypeToSearchIndex(searchElement, iDoc);
                 }
 
-                if (!IsTestMode)
-                {
-                    //Commit the packages node info indexed
-                    LuceneSearchUtility.writer?.Commit();
-                }
+                LuceneSearchUtility.CommitWriterChanges();
 
                 Action<CustomNodeInfo> infoUpdatedHandler = null;
                 infoUpdatedHandler = newInfo =>
@@ -1633,10 +1625,7 @@ namespace Dynamo.Models
             // When running parallel tests several are trying to write in the AppData folder then the job
             // is failing and in a wrong state so we prevent to initialize Lucene index writer during test mode.
             // Without the index files on disk, the dirReader cant be initialized correctly. So does the searcher.
-            if (!IsTestMode)
-            {
-                LuceneSearchUtility.writer?.Commit();
-            }
+            LuceneSearchUtility.CommitWriterChanges();
         }
 
         /// <summary>
