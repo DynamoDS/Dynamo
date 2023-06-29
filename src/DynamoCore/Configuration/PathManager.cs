@@ -97,10 +97,10 @@ namespace Dynamo.Core
 
         private IEnumerable<string> RootDirectories
         {
-            get 
-            { 
-                return Preferences != null ? 
-                    Preferences.CustomPackageFolders.Select(path => path == DynamoModel.BuiltInPackagesToken ? BuiltinPackagesDirectory : path) 
+            get
+            {
+                return Preferences != null ?
+                    Preferences.CustomPackageFolders.Select(path => path == DynamoModel.BuiltInPackagesToken ? BuiltinPackagesDirectory : path)
                     : rootDirectories;
             }
         }
@@ -166,13 +166,13 @@ namespace Dynamo.Core
 
         public string DefaultUserDefinitions
         {
-            get 
+            get
             {
                 if (Preferences is PreferenceSettings preferences)
                 {
                     return TransformPath(preferences.SelectedPackagePathForInstall, DefinitionsDirectoryName);
                 }
-                return TransformPath(RootDirectories.First(), DefinitionsDirectoryName); 
+                return TransformPath(RootDirectories.First(), DefinitionsDirectoryName);
             }
         }
 
@@ -284,7 +284,7 @@ namespace Dynamo.Core
                 if (!Directory.Exists(path))
                 {
                     throw new Exception(String.Format(Resources.DirectoryNotFound, path));
-                }                 
+                }
                 additionalResolutionPaths.Add(path);
             }
         }
@@ -345,6 +345,36 @@ namespace Dynamo.Core
         #endregion
 
         #region Public Class Operational Methods
+
+        /// <summary>
+        /// Specific constructor to get the preferenceFilePath
+        /// </summary>
+        internal PathManager()
+        {
+            var dynamoCorePath = Assembly.GetExecutingAssembly().Location;
+            var corePath = Path.GetDirectoryName(dynamoCorePath);
+            var assemblyPath = Path.Combine(corePath, "DynamoCore.dll");
+
+            if (!PathHelper.IsValidPath(assemblyPath))
+            {
+                throw new Exception("Dynamo's core path could not be found. " +
+                    "If you are running Dynamo from a test, try specifying the " +
+                    "Dynamo core location in the DynamoBasePath variable in " +
+                    "TestServices.dll.config.");
+            }
+
+            // If both major/minor versions are zero, get from assembly.
+            if (majorFileVersion == 0 && (minorFileVersion == 0))
+            {
+                var v = FileVersionInfo.GetVersionInfo(assemblyPath);
+                majorFileVersion = v.FileMajorPart;
+                minorFileVersion = v.FileMinorPart;
+            }
+
+            // Current user specific directories.
+            var userDataDir = GetUserDataFolder();
+            preferenceFilePath = Path.Combine(userDataDir, PreferenceSettingsFileName);
+        }
 
         /// <summary>
         /// Constructs an instance of PathManager object.

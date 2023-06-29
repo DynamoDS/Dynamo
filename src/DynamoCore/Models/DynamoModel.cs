@@ -647,6 +647,23 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// Light constructor only for get the Preference and apply the locale
+        /// </summary>
+        public DynamoModel()
+        {
+            var preferenceFilePath = new PathManager().PreferenceFilePath;
+            
+            IPreferences preferences = CreateOrLoadPreferences(null, preferenceFilePath);
+            if (preferences is PreferenceSettings settings)
+            {
+                PreferenceSettings = settings;
+                // Setting the new locale for Dynamo after Preferences loaded
+                Thread.CurrentThread.CurrentUICulture = new CultureInfo(PreferenceSettings.Locale);
+                Thread.CurrentThread.CurrentCulture = new CultureInfo(PreferenceSettings.Locale);
+                OnDetectLanguage();
+            }
+        }
+        /// <summary>
         /// Default constructor for DynamoModel
         /// </summary>
         /// <param name="config">Start configuration</param>
@@ -1727,7 +1744,7 @@ namespace Dynamo.Models
             }
         }
 
-        private IPreferences CreateOrLoadPreferences(IPreferences preferences)
+        private IPreferences CreateOrLoadPreferences(IPreferences preferences, string explicitPreferencePath = "")
         {
             if (preferences != null) // If there is preference settings provided...
                 return preferences;
@@ -1746,8 +1763,11 @@ namespace Dynamo.Models
             // is not set, then fall back to the file path specified in PathManager.
             //
             var xmlFilePath = PreferenceSettings.DynamoTestPath;
-            if (string.IsNullOrEmpty(xmlFilePath))
+            if (string.IsNullOrEmpty(xmlFilePath) && pathManager != null)
                 xmlFilePath = pathManager.PreferenceFilePath;
+
+            if (!string.IsNullOrEmpty(explicitPreferencePath))
+                xmlFilePath = explicitPreferencePath;
 
             if (File.Exists(xmlFilePath))
             {
