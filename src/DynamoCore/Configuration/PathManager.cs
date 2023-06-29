@@ -97,10 +97,10 @@ namespace Dynamo.Core
 
         private IEnumerable<string> RootDirectories
         {
-            get
-            {
-                return Preferences != null ?
-                    Preferences.CustomPackageFolders.Select(path => path == DynamoModel.BuiltInPackagesToken ? BuiltinPackagesDirectory : path)
+            get 
+            { 
+                return Preferences != null ? 
+                    Preferences.CustomPackageFolders.Select(path => path == DynamoModel.BuiltInPackagesToken ? BuiltinPackagesDirectory : path) 
                     : rootDirectories;
             }
         }
