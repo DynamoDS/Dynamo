@@ -11,6 +11,9 @@
     <OutputPath>$(OutputPath)\nodes\</OutputPath>
     <DocumentationFile>$(OutputPath)\CoreNodeModelsWpf.XML</DocumentationFile>
   </PropertyGroup>
+  <PropertyGroup>
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
+  </PropertyGroup>
   <ItemDefinitionGroup>
     <ReferenceCopyLocalPaths>
       <!--Copy all assembly references to the OutputPath parent dir (/nodes/../) -->
@@ -147,13 +150,13 @@
   <Target Name="BinaryCompatibilityOps" BeforeTargets="Build">
     <Copy SourceFiles="$(PkgExtended_Wpf_Toolkit)\lib\net40\Xceed.Wpf.Toolkit.dll" DestinationFolder="$(OutputPath)" />
   </Target>
-    <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" '$(OS)' != 'Unix' ">
-        <!-- Get assembly -->
-        <GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
-            <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
-        </GetAssemblyIdentity>
-        <!-- Generate customization dll -->
-        <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)CoreNodeModelsWpfImages.resx" OutputResources="$(ProjectDir)CoreNodeModelsWpfImages.resources" References="$(SystemDrawingDllPath)" />
-        <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)CoreNodeModelsWpfImages.resources" OutputAssembly="$(OutDir)CoreNodeModelsWpf.customization.dll" Version="%(AssemblyInfo.Version)" />
-    </Target>
+  <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" '$(OS)' != 'Unix' ">
+    <!-- Get assembly -->
+    <GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
+    <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
+    </GetAssemblyIdentity>
+    <!-- Generate customization dll -->
+    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)CoreNodeModelsWpfImages.resx" OutputResources="$(ProjectDir)CoreNodeModelsWpfImages.resources" References="$(SystemDrawingDllPath)" />
+    <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)CoreNodeModelsWpfImages.resources" OutputAssembly="$(OutDir)CoreNodeModelsWpf.customization.dll" Version="%(AssemblyInfo.Version)" />
+  </Target>
 </Project>

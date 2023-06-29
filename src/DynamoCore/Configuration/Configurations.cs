@@ -1,9 +1,8 @@
-using Dynamo.Properties;
-using Dynamo.Utilities;
-using Lucene.Net.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Dynamo.Properties;
+using Dynamo.Utilities;
 
 namespace Dynamo.Configuration
 {
@@ -50,53 +49,6 @@ namespace Dynamo.Configuration
         /// </summary>
         [Obsolete("This property is no longer used. Remove in Dynamo 3.0")]
         public static readonly double MaxWatchNodeHeight = 310.0;
-
-        /// <summary>
-        /// Specify the Lucene.Net compatibility version
-        /// </summary>
-        public static LuceneVersion LuceneNetVersion = LuceneVersion.LUCENE_48;
-
-
-        /// <summary>
-        /// This represent the fields that will be indexed when initializing Lucene Search
-        /// </summary>
-        public enum IndexFieldsEnum
-        {
-            /// <summary>
-            /// Name - The name of the node
-            /// </summary>
-            Name,
-            /// <summary>
-            /// FullCategoryName - The category of the node
-            /// </summary>
-            FullCategoryName,
-            /// <summary>
-            /// Description - The description of the node
-            /// </summary>
-            Description,
-            /// <summary>
-            /// SearchKeywords - Several keywords that will be used when searching any word (this values are coming from xml files like BuiltIn.xml, DesignScriptBuiltin.xml or ProtoGeometry.xml)
-            /// </summary>
-            SearchKeywords,
-            /// <summary>
-            /// DocName - Name of the Document
-            /// </summary>
-            DocName,
-            /// <summary>
-            /// Documentation - Documentation of the node
-            /// </summary>
-            Documentation
-        }
-
-        /// <summary>
-        /// Fields to be indexed by Lucene Search
-        /// </summary>
-        public static string[] IndexFields = { nameof(IndexFieldsEnum.Name),
-                                               nameof(IndexFieldsEnum.FullCategoryName),
-                                               nameof(IndexFieldsEnum.Description),
-                                               nameof(IndexFieldsEnum.SearchKeywords),
-                                               nameof(IndexFieldsEnum.DocName),
-                                               nameof(IndexFieldsEnum.Documentation)};
 
         #endregion
 

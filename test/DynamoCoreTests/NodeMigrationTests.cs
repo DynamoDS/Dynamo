@@ -107,7 +107,7 @@ namespace Dynamo.Tests
             TestMigration("TestMigration_Core_Watch.dyn");
         }
 
-        [Test, Category("FailureNET6")]
+        [Test]
         public void TestMigration_Excel()
         {
             TestMigration("TestMigration_Excel.dyn");
@@ -137,7 +137,7 @@ namespace Dynamo.Tests
             TestMigration("TestMigration_DSCore_Math.dyn");
         }
 
-        [Test,Category("FailureNET6")]
+        [Test]
         public void TestMigration_InputOutput_Excel()
         {
             TestMigration("TestMigration_InputOutput_Excel.dyn");
@@ -2154,7 +2154,7 @@ namespace Dynamo.Tests
                 "caef9f81-c9a6-47aa-92c9-dc3b8fd6f7d7").Script);
         }
 
-        [Test,Category("FailureNET6")]
+        [Test]
         public void LibraryTestExcelRead()
         {
             OpenModel(GetDynPath("LibraryTestExcelRead.dyn"));

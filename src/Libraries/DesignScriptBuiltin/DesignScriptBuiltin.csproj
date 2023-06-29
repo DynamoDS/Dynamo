@@ -11,6 +11,9 @@
     <DocumentationFile>$(OutputPath)\$(UICulture)\DesignScriptBuiltin.xml</DocumentationFile>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+  <PropertyGroup>
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
+  </PropertyGroup>
   <ItemGroup Label="System.Collections.Immutable@portable-net45+win8+wp8+wpa81" Condition=" '$(TargetFramework)' == 'net48' ">
     <PackageReference Include="System.Collections.Immutable" Version="5.0.0">
       <GeneratePathProperty>true</GeneratePathProperty>

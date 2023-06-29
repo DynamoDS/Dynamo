@@ -499,7 +499,7 @@ namespace Dynamo.ViewModels
         {
             InfectedPackageList = new List<PackageManagerSearchElement>();
             var latestPkgs = Model.GetUsersLatestPackages();
-            if (latestPkgs != null && latestPkgs.maintains.Count > 0)
+            if (latestPkgs != null && latestPkgs.maintains?.Count > 0)
             {
                 foreach (var infectedVer in latestPkgs.maintains)
                 {
