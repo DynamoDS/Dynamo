@@ -166,13 +166,13 @@ namespace Dynamo.Core
 
         public string DefaultUserDefinitions
         {
-            get
+            get 
             {
                 if (Preferences is PreferenceSettings preferences)
                 {
                     return TransformPath(preferences.SelectedPackagePathForInstall, DefinitionsDirectoryName);
                 }
-                return TransformPath(RootDirectories.First(), DefinitionsDirectoryName);
+                return TransformPath(RootDirectories.First(), DefinitionsDirectoryName); 
             }
         }
 
@@ -284,7 +284,7 @@ namespace Dynamo.Core
                 if (!Directory.Exists(path))
                 {
                     throw new Exception(String.Format(Resources.DirectoryNotFound, path));
-                }
+                }                 
                 additionalResolutionPaths.Add(path);
             }
         }
