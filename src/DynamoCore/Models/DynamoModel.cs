@@ -1757,7 +1757,7 @@ namespace Dynamo.Models
             // is not set, then fall back to the file path specified in PathManager.
             //
             var xmlFilePath = PreferenceSettings.DynamoTestPath;
-            if (string.IsNullOrEmpty(xmlFilePath) && pathManager != null)
+            if (string.IsNullOrEmpty(xmlFilePath))
                 xmlFilePath = pathManager.PreferenceFilePath;
 
             if (File.Exists(xmlFilePath))
