@@ -248,7 +248,7 @@ namespace Dynamo.Utilities
         {
             if (!DynamoModel.IsTestMode)
             {
-                //Commit the packages node info indexed
+                //Commit the info indexed
                 writer?.Commit();
             }
         }
