@@ -281,7 +281,7 @@ namespace Dynamo.UI.Views
             webView.CoreWebView2.Settings.IsZoomControlEnabled = false;
 
             var assembly = Assembly.GetExecutingAssembly();
-           
+
             using (Stream stream = assembly.GetManifestResourceStream(htmlEmbeddedFile))
             using (StreamReader reader = new StreamReader(stream))
             {
@@ -301,6 +301,7 @@ namespace Dynamo.UI.Views
                 jsonString = jsonString.Replace("#base64BackgroundImage", $"data:image/{imageFileExtension};base64,{resourceBase64}");
             }
 
+            jsonString = jsonString.Replace("Welcome to Dynamo!", "");
             htmlString = htmlString.Replace("mainJs", jsonString);
 
             webView.NavigateToString(htmlString);
