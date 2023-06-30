@@ -145,6 +145,7 @@
       <LocalizedResources Include="$(SolutionDir)..\extern\Localized\**\*.*" />
       <LegacyBinariesToBinFolder Include="$(SolutionDir)..\extern\legacy_remove_me\bin\*" />
       <LegacyBinariesToNodesFolder Include="$(SolutionDir)..\extern\legacy_remove_me\nodes\*" />
+      <LegacyBinariesToBinResourcesFolder Include="$(SolutionDir)..\extern\legacy_remove_me\bin\en-US\*" />
     </ItemGroup>
     <Copy SourceFiles="$(SolutionDir)..\README.md" DestinationFiles="$(OutputPath)README.txt" />
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\License.rtf" DestinationFolder="$(OutputPath)" />
@@ -173,6 +174,7 @@
     <!--Enable these if/when we need to keep old binaries for patch installer compatability-->
     <Copy SourceFiles="@(LegacyBinariesToBinFolder)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(LegacyBinariesToNodesFolder)" DestinationFolder="$(OutputPath)\nodes\" />
+     <Copy SourceFiles="@(LegacyBinariesToBinResourcesFolder)" DestinationFolder="$(OutputPath)\en-US\" />
     <Copy SourceFiles="$(SolutionDir)Config\upiconfig.xml" DestinationFolder="$(OutputPath)" /> 
   </Target>
   <Target Name="AfterBuildOps" AfterTargets="ResolveSateliteResDeps">
