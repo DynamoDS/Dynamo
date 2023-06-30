@@ -136,7 +136,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoSandbox", "DynamoSandbox\DynamoSandbox.csproj", "{0EFABBF0-2B81-4423-B8E2-6111FBE69B79}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssemblyRenamerCLI", "Tools\AssemblyRenamerCLI\AssemblyRenamerCLI.csproj", "{F382C3F8-C55C-4350-800A-3D13A94F8E13}"
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XmlDocumentationsUtility", "Tools\XmlDocumentationsUtility\XmlDocumentationsUtility.csproj", "{4CAB9005-0001-4B03-BBA0-57070ED105F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -331,14 +330,6 @@ Global
 		{F382C3F8-C55C-4350-800A-3D13A94F8E13}.Debug|NET60_Windows.ActiveCfg = Debug|NET60_Windows
 		{F382C3F8-C55C-4350-800A-3D13A94F8E13}.Debug|NET60_Windows.Build.0 = Debug|NET60_Windows
 		{F382C3F8-C55C-4350-800A-3D13A94F8E13}.Release|NET60_Windows.ActiveCfg = Release|NET60_Windows
-		{4CAB9005-0001-4B03-BBA0-57070ED105F1}.Debug|NET60_Linux.ActiveCfg = Debug|NET60_Linux
-		{4CAB9005-0001-4B03-BBA0-57070ED105F1}.Debug|NET60_Linux.Build.0 = Debug|NET60_Linux
-		{4CAB9005-0001-4B03-BBA0-57070ED105F1}.Debug|NET60_Windows.ActiveCfg = Debug|NET60_Windows
-		{4CAB9005-0001-4B03-BBA0-57070ED105F1}.Debug|NET60_Windows.Build.0 = Debug|NET60_Windows
-		{4CAB9005-0001-4B03-BBA0-57070ED105F1}.Release|NET60_Linux.ActiveCfg = Release|NET60_Linux
-		{4CAB9005-0001-4B03-BBA0-57070ED105F1}.Release|NET60_Linux.Build.0 = Release|NET60_Linux
-		{4CAB9005-0001-4B03-BBA0-57070ED105F1}.Release|NET60_Windows.ActiveCfg = Release|NET60_Windows
-		{4CAB9005-0001-4B03-BBA0-57070ED105F1}.Release|NET60_Windows.Build.0 = Release|NET60_Windows
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -385,7 +376,6 @@ Global
 		{4C2AEACC-617D-4B90-ADCD-FE294A43A68F} = {2C6A6573-28B0-4239-BD33-6AECCD25106C}
 		{0DD3E4ED-66AA-47FC-9EB9-2A0E6A0EA01B} = {D114C59C-CF66-4CC2-980F-9301FB4EA4E1}
 		{F382C3F8-C55C-4350-800A-3D13A94F8E13} = {D114C59C-CF66-4CC2-980F-9301FB4EA4E1}
-		{4CAB9005-0001-4B03-BBA0-57070ED105F1} = {D114C59C-CF66-4CC2-980F-9301FB4EA4E1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89CB19C6-BF0A-4E6A-BFDA-79D143EAB59D}
