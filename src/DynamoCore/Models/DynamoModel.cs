@@ -647,21 +647,15 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Light constructor only for get the Preference and apply the locale
+        /// Apply the locale based on the user preference
         /// </summary>
-        public DynamoModel()
+        public static void ApplyLocaleAndNotify()
         {
             var preferenceFilePath = new PathManager().PreferenceFilePath;
-            
-            IPreferences preferences = CreateOrLoadPreferences(null, preferenceFilePath);
-            if (preferences is PreferenceSettings settings)
-            {
-                PreferenceSettings = settings;
-                // Setting the new locale for Dynamo after Preferences loaded
-                Thread.CurrentThread.CurrentUICulture = new CultureInfo(PreferenceSettings.Locale);
-                Thread.CurrentThread.CurrentCulture = new CultureInfo(PreferenceSettings.Locale);
-                OnDetectLanguage();
-            }
+            var preferences = PreferenceSettings.Load(preferenceFilePath);
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo(preferences.Locale);
+            Thread.CurrentThread.CurrentCulture = new CultureInfo(preferences.Locale);
+            OnDetectLanguage();
         }
         /// <summary>
         /// Default constructor for DynamoModel
@@ -1744,7 +1738,7 @@ namespace Dynamo.Models
             }
         }
 
-        private IPreferences CreateOrLoadPreferences(IPreferences preferences, string explicitPreferencePath = "")
+        private IPreferences CreateOrLoadPreferences(IPreferences preferences)
         {
             if (preferences != null) // If there is preference settings provided...
                 return preferences;
@@ -1765,9 +1759,6 @@ namespace Dynamo.Models
             var xmlFilePath = PreferenceSettings.DynamoTestPath;
             if (string.IsNullOrEmpty(xmlFilePath) && pathManager != null)
                 xmlFilePath = pathManager.PreferenceFilePath;
-
-            if (!string.IsNullOrEmpty(explicitPreferencePath))
-                xmlFilePath = explicitPreferencePath;
 
             if (File.Exists(xmlFilePath))
             {
