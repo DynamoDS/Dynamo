@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -572,6 +572,7 @@ namespace Dynamo.Updates
     /// <summary>
     /// This class provides services for product update management.
     /// </summary>
+    [Obsolete("UpdateManager will be deprecated in a future Dynamo version.")]
     internal sealed class UpdateManager : NotificationObject, IUpdateManager
     {
         #region Private Class Data Members
@@ -580,6 +581,8 @@ namespace Dynamo.Updates
         private static BinaryVersion productVersion;
         private IAppVersionInfo updateInfo;
         private const string OLD_DAILY_INSTALL_NAME_BASE = "DynamoDailyInstall";
+        // TODO: InstallUpdate tool has been removed. 
+        // Remove UpdateManager and and code that's dependent on it: https://jira.autodesk.com/browse/DYN-6035
         private const string INSTALLUPDATE_EXE = "InstallUpdate.exe";
         private string updateFileLocation;
         private int currentDownloadProgress = -1;
