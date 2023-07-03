@@ -1626,6 +1626,7 @@ namespace Dynamo.Models
             // is failing and in a wrong state so we prevent to initialize Lucene index writer during test mode.
             // Without the index files on disk, the dirReader cant be initialized correctly. So does the searcher.
             LuceneSearchUtility.CommitWriterChanges();
+            LuceneSearchUtility.DisposeWriter();
         }
 
         /// <summary>
