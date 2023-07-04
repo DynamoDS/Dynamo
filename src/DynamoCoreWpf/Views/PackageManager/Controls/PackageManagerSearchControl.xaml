@@ -61,12 +61,21 @@
                     </Button.ToolTip>
                     <Button.Template>
                         <ControlTemplate>
-                            <Rectangle Width="16"
-                                       Height="16">
-                                <Rectangle.Fill>
-                                    <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/sort.png" />
-                                </Rectangle.Fill>
-                            </Rectangle>
+                            <Grid>
+                                <local:LoadingAnimationStripeControl  Width="16"
+                                                                      Height="16"
+                                                                      VerticalAlignment="Center"
+                                                                      Visibility="{Binding Path=InitialResultsLoaded, UpdateSourceTrigger=PropertyChanged,
+                                                            Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}" />
+                                <Rectangle Width="16"
+                                           Height="16"
+                                           Visibility="{Binding Path=InitialResultsLoaded, UpdateSourceTrigger=PropertyChanged,
+                                                                  Converter={StaticResource BoolToVisibilityCollapsedConverter}}">
+                                    <Rectangle.Fill>
+                                        <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/sort.png" />
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                            </Grid>
                         </ControlTemplate>
                     </Button.Template>
 
@@ -175,12 +184,21 @@
                     </Button.ToolTip>
                     <Button.Template>
                         <ControlTemplate>
-                            <Rectangle Width="16"
-                                       Height="16">
-                                <Rectangle.Fill>
-                                    <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Filter.png" />
-                                </Rectangle.Fill>
-                            </Rectangle>
+                            <Grid>
+                                <local:LoadingAnimationStripeControl  Width="16"
+                                                                      Height="16"
+                                                                      VerticalAlignment="Center"
+                                                                      Visibility="{Binding Path=InitialResultsLoaded, UpdateSourceTrigger=PropertyChanged,
+                                                            Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}" />
+                                <Rectangle Width="16"
+                                           Height="16"
+                                           Visibility="{Binding Path=InitialResultsLoaded, UpdateSourceTrigger=PropertyChanged,
+                                                                  Converter={StaticResource BoolToVisibilityCollapsedConverter}}">
+                                    <Rectangle.Fill>
+                                        <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Filter.png" />
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                            </Grid>
                         </ControlTemplate>
                     </Button.Template>
 
