@@ -28,7 +28,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid>
+    <Grid KeyboardNavigation.IsTabStop="False">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -36,8 +36,9 @@
         
         <ItemsControl Name="Filters"
                       Grid.Column="0" Grid.Row="0"
-                      ItemsSource="{Binding Path=Filters}" 
+                      ItemsSource="{Binding Path=Filters}"
                       Background="Transparent"
+                      KeyboardNavigation.IsTabStop="False"
                       Padding="0,5,0,5">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -70,9 +71,10 @@
             </ItemsControl.ItemTemplate>
         </ItemsControl>
         
-        <ScrollViewer Grid.Row="1"  
-            VerticalScrollBarVisibility="Auto" 
-            Background="{StaticResource PreferencesWindowBackgroundColor}">
+        <ScrollViewer Grid.Row="1"
+                      VerticalScrollBarVisibility="Auto"
+                      KeyboardNavigation.IsTabStop="False"
+                      Background="{StaticResource PreferencesWindowBackgroundColor}">
             <ScrollViewer.Height>
                 <MultiBinding Converter="{StaticResource SumConverter}">
                     <Binding Path="ActualHeight"
@@ -85,11 +87,12 @@
                 </MultiBinding>
             </ScrollViewer.Height>
             <ItemsControl Name="SearchResultsListBox"
-                              ItemsSource="{Binding Path=LocalPackages}"
-                              HorizontalContentAlignment="Stretch"
-                              VirtualizingPanel.ScrollUnit="Pixel"
-                              BorderThickness="0"
-                              Padding="0">
+                          ItemsSource="{Binding Path=LocalPackages}"
+                          HorizontalContentAlignment="Stretch"
+                          VirtualizingPanel.ScrollUnit="Pixel"
+                          KeyboardNavigation.IsTabStop="False"
+                          BorderThickness="0"
+                          Padding="0">
 
                 <ItemsControl.ItemTemplate>
 

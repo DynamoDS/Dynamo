@@ -116,13 +116,22 @@ namespace Dynamo.PackageManager.UI
         private void WindowClosed(object sender, EventArgs e)
         {
             this.packageManagerPublish.Dispose();
+            this.PackageManagerViewModel.PackageSearchViewModel.InitialResultsLoaded = false;   // reset the loading screen settings
             this.PackageManagerViewModel.PackageSearchViewModel.RequestShowFileDialog -= OnRequestShowFileDialog;
         }
 
         private void SearchForPackagesButton_Click(object sender, RoutedEventArgs e)
         {
             var tabControl = this.projectManagerTabControl;
+            // Search for Packages tab
             tabControl.SelectedIndex = 0;
+        }
+
+        private void PublishPackageButton_Click(object sender, RoutedEventArgs e)
+        {
+            var tabControl = this.projectManagerTabControl;
+            // Publish a Package tab
+            tabControl.SelectedIndex = 1;
         }
     }
 }

@@ -54,7 +54,8 @@
                         BorderThickness="0"
                         Click="OnSortButtonClicked"
                         Cursor="Hand"
-                        DockPanel.Dock="Right">
+                        DockPanel.Dock="Right"
+                        IsEnabled="{Binding Path=InitialResultsLoaded, UpdateSourceTrigger=PropertyChanged}">
                     <Button.ToolTip>
                         <ToolTip Content="{x:Static p:Resources.PackageSortToolTip}"
                                  Style="{StaticResource GenericToolTipLight}" />
@@ -66,11 +67,11 @@
                                                                       Height="16"
                                                                       VerticalAlignment="Center"
                                                                       Visibility="{Binding Path=InitialResultsLoaded, UpdateSourceTrigger=PropertyChanged,
-                                                            Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}" />
+                                                                                           Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}" />
                                 <Rectangle Width="16"
                                            Height="16"
                                            Visibility="{Binding Path=InitialResultsLoaded, UpdateSourceTrigger=PropertyChanged,
-                                                                  Converter={StaticResource BoolToVisibilityCollapsedConverter}}">
+                                                                Converter={StaticResource BoolToVisibilityCollapsedConverter}}">
                                     <Rectangle.Fill>
                                         <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/sort.png" />
                                     </Rectangle.Fill>
@@ -177,7 +178,8 @@
                         BorderThickness="0"
                         Click="OnFilterButtonClicked"
                         Cursor="Hand"
-                        DockPanel.Dock="Right">
+                        DockPanel.Dock="Right"
+                        IsEnabled="{Binding Path=InitialResultsLoaded, UpdateSourceTrigger=PropertyChanged}">
                     <Button.ToolTip>
                         <ToolTip Content="{x:Static p:Resources.PackageHostDependencyFilter}"
                                  Style="{StaticResource GenericToolTipLight}" />
@@ -189,11 +191,11 @@
                                                                       Height="16"
                                                                       VerticalAlignment="Center"
                                                                       Visibility="{Binding Path=InitialResultsLoaded, UpdateSourceTrigger=PropertyChanged,
-                                                            Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}" />
+                                                                                           Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}" />
                                 <Rectangle Width="16"
                                            Height="16"
                                            Visibility="{Binding Path=InitialResultsLoaded, UpdateSourceTrigger=PropertyChanged,
-                                                                  Converter={StaticResource BoolToVisibilityCollapsedConverter}}">
+                                                                Converter={StaticResource BoolToVisibilityCollapsedConverter}}">
                                     <Rectangle.Fill>
                                         <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Filter.png" />
                                     </Rectangle.Fill>

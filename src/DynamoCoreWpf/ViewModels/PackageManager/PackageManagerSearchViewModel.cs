@@ -496,11 +496,16 @@ namespace Dynamo.PackageManager
             // We should have already populated the CachedPackageList by this step
             if (PackageManagerClientViewModel.CachedPackageList == null ||
                 !PackageManagerClientViewModel.CachedPackageList.Any()) return;
-            // We need the user to be logged in, otherwise there is no point in runnig this routine
-            if (PackageManagerClientViewModel.LoginState != Greg.AuthProviders.LoginState.LoggedIn) return;
 
             List<PackageManagerSearchElement> packageManagerSearchElements;
             List<PackageManagerSearchElementViewModel> myPackages = new List<PackageManagerSearchElementViewModel>();
+
+            // We need the user to be logged in, otherwise there is no point in runnig this routine
+            if (PackageManagerClientViewModel.LoginState != Greg.AuthProviders.LoginState.LoggedIn)
+            {
+                SearchMyResults = new ObservableCollection<PackageManagerSearchElementViewModel>(myPackages);   
+                return;
+            }
 
             // Check if any of the maintainers corresponds to the current logged in username
             var name = PackageManagerClientViewModel.Username;
