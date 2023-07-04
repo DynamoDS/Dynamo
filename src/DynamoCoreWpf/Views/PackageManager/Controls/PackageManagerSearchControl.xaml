@@ -22,6 +22,8 @@
             <controls:DependencyListToStringConverter x:Key="DependencyListToStringConverter" />
             <controls:ListHasMoreThanNItemsToVisibilityConverter x:Key="ListHasMoreThanNItemsToVisibilityConverter" />
             <controls:PackageSearchStateToVisibilityConverter x:Key="PackageSearchStateToVisibilityConverter" />
+            <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
+            <controls:InverseBooleanToVisibilityCollapsedConverter x:Key="InverseBooleanToVisibilityCollapsedConverter" />
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
@@ -220,15 +222,14 @@
 
         <local:PackageManagerPackageAnimationControl x:Name="loadingScreen"
                                                      Grid.Row="1"
-                                                     Visibility="{Binding Path=SearchState, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay,
-                                                            Converter={StaticResource PackageSearchStateToVisibilityConverter},
-                                                            ConverterParameter=false}" />
+                                                     Visibility="{Binding Path=InitialResultsLoaded, UpdateSourceTrigger=PropertyChanged,
+                                                            Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}" />
         
         <local:PackageManagerPackagesControl x:Name="packageManagerSearchPackages"
                                              Grid.Row="1"
                                              SearchItems="{Binding Path=SearchResults}"
-                                             Visibility="{Binding Path=SearchState, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay,
-                                                                  Converter={StaticResource PackageSearchStateToVisibilityConverter}}" />
+                                             Visibility="{Binding Path=InitialResultsLoaded, UpdateSourceTrigger=PropertyChanged,
+                                                                  Converter={StaticResource BoolToVisibilityCollapsedConverter}}" />
 
 
     </Grid>

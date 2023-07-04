@@ -1525,6 +1525,29 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(Dynamo.Wpf.Properties.Resources.PackageSearchViewSearchTextBox, searchViewModel.SearchBoxPrompt);
         }
 
+
+        [Test]
+        public void PackageInitialResultsLoaded()
+        {
+            // Arrange
+            PackageManagerSearchViewModel searchViewModel = new PackageManagerSearchViewModel();
+
+            // Assert
+            Assert.AreEqual(false, searchViewModel.InitialResultsLoaded);
+
+            // Act
+            searchViewModel.SearchState = PackageManagerSearchViewModel.PackageSearchState.Results;
+
+            // Assert
+            Assert.AreEqual(true, searchViewModel.InitialResultsLoaded);
+
+            // Act
+            searchViewModel.SearchState = PackageManagerSearchViewModel.PackageSearchState.Searching;
+
+            // Assert
+            Assert.AreEqual(true, searchViewModel.InitialResultsLoaded);
+        }
+
         [Test]
         public void PackageManagerCrashTestOnDownloadingInvalidPackage()
         {

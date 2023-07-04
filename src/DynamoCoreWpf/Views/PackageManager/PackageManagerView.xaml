@@ -38,6 +38,8 @@
             <controls:EmptyListToVisibilityConverter x:Key="EmptyListToVisibilityConverter" />
             <controls:PackageSearchStateToVisibilityConverter x:Key="PackageSearchStateToVisibilityConverter" />
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibili  tyCollapsedConverter" />
+            <controls:InverseBooleanToVisibilityCollapsedConverter x:Key="InverseBooleanToVisibilityCollapsedConverter" />
 
             <Style x:Key="PkgMngListBoxStyle" TargetType="ListBox">
                 <Setter Property="Width" Value="Auto" />
@@ -253,15 +255,14 @@
                                     <local:PackageManagerPackagesControl x:Name="packageManagerMyPackages"
                                                                          DataContext="{Binding Path=PackageManagerViewModel.PackageSearchViewModel, ElementName=PackageManagerWindow}"
                                                                          SearchItems="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.SearchMyResults, ElementName=PackageManagerWindow}"
-                                                                         Visibility="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.SearchState,
+                                                                         Visibility="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.InitialResultsLoaded,
                                                                                             ElementName=PackageManagerWindow, 
-                                                                                            Converter={StaticResource PackageSearchStateToVisibilityConverter}}" />
+                                                                                            Converter={StaticResource BoolToVisibilityCollapsedConverter}}" />
 
                                     <local:PackageManagerPackageAnimationControl x:Name="loadingScreen"
-                                                                         Visibility="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.SearchState,
+                                                                                 Visibility="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.InitialResultsLoaded,
                                                                                             ElementName=PackageManagerWindow, 
-                                                                                            Converter={StaticResource PackageSearchStateToVisibilityConverter},
-                                                                                            ConverterParameter=false}" />
+                                                                                            Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}" />
 
                                 </Grid>
                             </Border>

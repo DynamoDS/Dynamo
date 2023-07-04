@@ -361,6 +361,25 @@ namespace Dynamo.PackageManager
                 RaisePropertyChanged(nameof(this.SearchState));
                 RaisePropertyChanged(nameof(this.SearchBoxPrompt));
                 RaisePropertyChanged(nameof(this.ShowSearchText));
+
+                if(value == PackageSearchState.Results && !this.InitialResultsLoaded)
+                {
+                    this.InitialResultsLoaded = true;
+                }
+            }
+        }
+
+        private bool _initialResultsLoaded = false;
+        /// <summary>
+        /// Will only be set to true once after the initial search has been finished.
+        /// </summary>
+        public bool InitialResultsLoaded
+        {
+            get { return _initialResultsLoaded; }
+            set
+            {
+                _initialResultsLoaded = value;
+                RaisePropertyChanged(nameof(InitialResultsLoaded));
             }
         }
 
