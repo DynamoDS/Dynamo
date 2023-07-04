@@ -33,13 +33,13 @@
             <controls:BinaryRadioButtonCheckedConverter x:Key="BinaryRadioButtonCheckedConverter" />
             <controls:ExpandersBindingConverter x:Key="ExpandersBindingConverter" />
             <controls:InverseBoolToVisibilityConverter  x:Key="InverseBoolToVisibilityConverter " />
+            <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
+            <controls:InverseBooleanToVisibilityCollapsedConverter x:Key="InverseBooleanToVisibilityCollapsedConverter" />
             <controls:InverseBoolToEnablingConverter  x:Key="InverseBoolToEnablingConverter " />
             <controls:ListHasMoreThanNItemsToVisibilityConverter x:Key="ListHasMoreThanNItemsToVisibilityConverter" />
             <controls:EmptyListToVisibilityConverter x:Key="EmptyListToVisibilityConverter" />
             <controls:PackageSearchStateToVisibilityConverter x:Key="PackageSearchStateToVisibilityConverter" />
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-            <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibili  tyCollapsedConverter" />
-            <controls:InverseBooleanToVisibilityCollapsedConverter x:Key="InverseBooleanToVisibilityCollapsedConverter" />
 
             <Style x:Key="PkgMngListBoxStyle" TargetType="ListBox">
                 <Setter Property="Width" Value="Auto" />
@@ -252,21 +252,24 @@
                                         <RowDefinition Height="*" />
                                     </Grid.RowDefinitions>
 
+                                    <local:PackageManagerPackageAnimationControl x:Name="loadingScreen"
+                                                                                 Visibility="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.InitialResultsLoaded,
+                                                                                            ElementName=PackageManagerWindow, 
+                                                                                            Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter},
+                                                                                            UpdateSourceTrigger=PropertyChanged}" />
+                                    
                                     <local:PackageManagerPackagesControl x:Name="packageManagerMyPackages"
                                                                          DataContext="{Binding Path=PackageManagerViewModel.PackageSearchViewModel, ElementName=PackageManagerWindow}"
                                                                          SearchItems="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.SearchMyResults, ElementName=PackageManagerWindow}"
                                                                          Visibility="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.InitialResultsLoaded,
                                                                                             ElementName=PackageManagerWindow, 
-                                                                                            Converter={StaticResource BoolToVisibilityCollapsedConverter}}" />
+                                                                                            Converter={StaticResource BoolToVisibilityCollapsedConverter},
+                                                                                            UpdateSourceTrigger=PropertyChanged}" />
 
-                                    <local:PackageManagerPackageAnimationControl x:Name="loadingScreen"
-                                                                                 Visibility="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.InitialResultsLoaded,
-                                                                                            ElementName=PackageManagerWindow, 
-                                                                                            Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}" />
 
                                 </Grid>
                             </Border>
-                        </TabItem>
+                        </TabItem>  
 
                         <TabItem Header="Package Settings"
                                  Style="{StaticResource PackageManagerTab}">
