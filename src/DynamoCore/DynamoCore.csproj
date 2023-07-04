@@ -23,14 +23,15 @@
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" GeneratePathProperty="true" ExcludeAssets="runtime" />
+    <PackageReference Include="DynamoVisualProgramming.Analytics" Version="4.0.0.1432" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">         
     <Reference Include="System.Configuration" />
     <Reference Include="Microsoft.CSharp" />
+    <PackageReference Include="DynamoVisualProgramming.Analytics" Version="3.0.1.740" />
   </ItemGroup>
   <ItemGroup Label="Common dependencies">
     <PackageReference Include="Autodesk.IDSDK" Version="1.1.6" />
-    <PackageReference Include="DynamoVisualProgramming.Analytics" Version="4.0.0.1432" />
     <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.1400" GeneratePathProperty="true" />
     <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.18.0.1400" GeneratePathProperty="true" />
     <PackageReference Include="Greg" Version="2.5.0.5076" />
