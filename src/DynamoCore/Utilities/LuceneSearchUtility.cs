@@ -9,6 +9,7 @@ using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
+using Lucene.Net.Store;
 
 namespace Dynamo.Utilities
 {
@@ -58,7 +59,15 @@ namespace Dynamo.Utilities
                 {
                     OpenMode = OpenMode.CREATE
                 };
-                writer = new IndexWriter(indexDir, indexConfig);
+                try
+                {
+                    writer = new IndexWriter(indexDir, indexConfig);
+                }
+                catch(LockObtainFailedException ex)
+                {
+                    DisposeWriter();
+                    dynamoModel.Logger.LogError($"LuceneNET LockObtainFailedException {ex}");
+                }
             }
         }
 
