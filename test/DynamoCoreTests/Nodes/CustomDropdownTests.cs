@@ -5,11 +5,10 @@ using System.Linq;
 
 using CoreNodeModels;
 using CoreNodeModels.Input;
-
+using Dynamo.Graph.Nodes;
 using Dynamo.PackageManager;
 
 using NUnit.Framework;
-
 
 namespace Dynamo.Tests.Nodes
 {
@@ -26,8 +25,7 @@ namespace Dynamo.Tests.Nodes
             base.GetLibrariesToPreload(libraries);
         }
 
-        [Test]
-        public void OpenJsonDYNWithCorrectMenuItems()
+        private void LoadSamplesPackage()
         {
             // Define package loading reference path
             string dir = TestDirectory;
@@ -40,12 +38,22 @@ namespace Dynamo.Tests.Nodes
             loader.LoadPackages(new List<Package> { pkg });
             // Assert expected package was loaded
             Assert.AreEqual(pkg.Name, "Dynamo Samples");
+        }
 
+        private void RunDropdownGraph()
+        {
             // Run the graph with correct info serialized, node should deserialize to correct selection
             string path = Path.Combine(TestDirectory, "pkgs", "Dynamo Samples", "extra", "CustomDropdownMenuNodeSample.dyn");
             RunModel(path);
+        }
 
-            Graph.Nodes.NodeModel node = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault();
+        [Test]
+        public void OpenJsonDYNWithCorrectMenuItems()
+        {
+            LoadSamplesPackage();
+            RunDropdownGraph();
+
+            NodeModel node = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault();
 
             object itemsAsObject = node.GetType().GetProperty(nameof(DSDropDownBase.Items), typeof(ObservableCollection<DynamoDropDownItem>)).GetValue(node);
             Assert.NotNull(itemsAsObject);
@@ -58,28 +66,32 @@ namespace Dynamo.Tests.Nodes
         [Test]
         public void OpenJsonDYNWithCorrectSelectedItem()
         {
-            // Define package loading reference path
-            string dir = TestDirectory;
-            string pkgDir = Path.Combine(dir, "pkgs\\Dynamo Samples");
-            PackageManagerExtension pkgMan = CurrentDynamoModel.GetPackageManagerExtension();
-            PackageLoader loader = pkgMan.PackageLoader;
-            Package pkg = loader.ScanPackageDirectory(pkgDir);
+            LoadSamplesPackage();
+            RunDropdownGraph();
 
-            // Load the sample package
-            loader.LoadPackages(new List<Package> { pkg });
-            // Assert expected package was loaded
-            Assert.AreEqual(pkg.Name, "Dynamo Samples");
-
-            // Run the graph with correct info serialized, node should deserialize to correct selection
-            string path = Path.Combine(TestDirectory, "pkgs", "Dynamo Samples", "extra", "CustomDropdownMenuNodeSample.dyn");
-            RunModel(path);
-
-            Graph.Nodes.NodeModel node = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault();
+            NodeModel node = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault();
 
             object selectedItemAsObject = node.GetType().GetProperty(nameof(CustomSelection.SelectedString)).GetValue(node);
             Assert.NotNull(selectedItemAsObject);
             string selectedItem = (string)selectedItemAsObject;
             Assert.AreEqual("Two", selectedItem);
+        }
+
+        [Test]
+        public void UpdateDropdownValue()
+        {
+            LoadSamplesPackage();
+            RunDropdownGraph();
+
+            NodeModel dropdownNode = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault();
+            CurrentDynamoModel.CurrentWorkspace.UpdateModelValue(new[] { dropdownNode.GUID }, "Value", "2");
+
+            RunCurrentModel();
+
+            NodeModel watchNode = CurrentDynamoModel.CurrentWorkspace.Nodes.Skip(1).FirstOrDefault();
+            Assert.NotNull(watchNode);
+            string watchValue = watchNode.CachedValue.StringData;
+            Assert.AreEqual("3", watchValue);
         }
     }
 }
