@@ -582,7 +582,7 @@ namespace Dynamo.Updates
         private IAppVersionInfo updateInfo;
         private const string OLD_DAILY_INSTALL_NAME_BASE = "DynamoDailyInstall";
         // TODO: InstallUpdate tool has been removed. 
-        // Remove UpdateManager and and code that's dependent on it: https://jira.autodesk.com/browse/DYN-5873
+        // Remove UpdateManager and code that's dependent on it: https://jira.autodesk.com/browse/DYN-5873
         private const string INSTALLUPDATE_EXE = "InstallUpdate.exe";
         private string updateFileLocation;
         private int currentDownloadProgress = -1;
