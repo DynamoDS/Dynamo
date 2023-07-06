@@ -4,6 +4,9 @@ using System.Linq;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Visualization;
 using HelixToolkit.Wpf.SharpDX;
+#if NET5_0_OR_GREATER
+using HelixToolkit.SharpDX.Core;
+#endif
 using SharpDX;
 using ITransformable = Autodesk.DesignScript.Interfaces.ITransformable;
 

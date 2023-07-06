@@ -11,11 +11,18 @@
     <AssemblyName>WpfVisualizationTests</AssemblyName>
     <TestProjectDefaults>true</TestProjectDefaults>
   </PropertyGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0-windows' ">
+        <PackageReference Include="HelixToolkit" Version="2.24.0" />
+        <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
+        <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
+    </ItemGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
+        <PackageReference Include="HelixToolkit" Version="2.24.0" />
+        <PackageReference Include="HelixToolkit.Wpf" Version="2.24.0" />
+        <PackageReference Include="HelixToolkit.Wpf.SharpDX" Version="2.24.0" />
+    </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Cyotek.Drawing.BitmapFont" Version="2.0.0" />
-    <PackageReference Include="HelixToolkit" Version="2.17.0" />
-    <PackageReference Include="HelixToolkit.Wpf" Version="2.17.0" />
-    <PackageReference Include="HelixToolkit.Wpf.SharpDX" Version="2.17.0" />
+    <PackageReference Include="Cyotek.Drawing.BitmapFont" Version="2.0.0" /> 
     <PackageReference Include="Moq" Version="4.18.4" />
     <PackageReference Include="NUnit" Version="2.6.3" />
     <PackageReference Include="SharpDX" Version="4.2.0" />

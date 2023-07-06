@@ -31,18 +31,32 @@ using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Rendering;
 using DynamoUtilities;
 using HelixToolkit.Wpf.SharpDX;
+#if NET5_0_OR_GREATER 
+using HelixToolkit.SharpDX.Core;
+using HelixToolkit.SharpDX.Core.Shaders;
+#else
 using HelixToolkit.Wpf.SharpDX.Shaders;
+#endif
+using System;
 using HelixToolkit.Wpf.SharpDX.Utilities;
 using Newtonsoft.Json;
 using SharpDX;
 using Color = SharpDX.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
-using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
 using Matrix = SharpDX.Matrix;
+#if NET5_0_OR_GREATER
+using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
+using MeshBuilder = HelixToolkit.SharpDX.Core.MeshBuilder;
+using MeshGeometry3D = HelixToolkit.SharpDX.Core.MeshGeometry3D;
+using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
+using TextInfo = HelixToolkit.SharpDX.Core.TextInfo;
+#else
+using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
 using MeshBuilder = HelixToolkit.Wpf.SharpDX.MeshBuilder;
 using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
 using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
 using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
+#endif  
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
@@ -209,10 +223,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private readonly Dictionary<string, List<Tuple<string, Vector3>>> labelPlaces
             = new Dictionary<string, List<Tuple<string, Vector3>>>();
 
+#if NET48
         // This makes sure the NVidia graphics card is used for rendering when available. In the absence of this
         // there are found to be issues with Helix crashing when the app is used with external monitors. 
         // See: https://github.com/helix-toolkit/helix-toolkit/wiki/Tips-on-performance-optimization-(WPF.SharpDX-and-UWP)#2-laptops-with-nvidia-optimus-dual-graphics-cardhelixtoolkitsharpdx-only
         private static NVOptimusEnabler nvEnabler = new NVOptimusEnabler();
+#endif
 
 #if DEBUG
         private readonly Stopwatch renderTimer = new Stopwatch();

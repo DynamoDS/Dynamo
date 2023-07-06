@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
@@ -9,6 +9,9 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Visualization;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using HelixToolkit.Wpf.SharpDX;
+#if NET5_0_OR_GREATER
+using HelixToolkit.SharpDX.Core;
+#endif
 using SharpDX;
 using Point = System.Windows.Point;
 
