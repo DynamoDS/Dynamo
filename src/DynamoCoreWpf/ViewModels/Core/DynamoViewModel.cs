@@ -2786,7 +2786,7 @@ namespace Dynamo.ViewModels
             if (!string.IsNullOrEmpty(model.CurrentWorkspace.FileName))
             {
                 var fi = new FileInfo(model.CurrentWorkspace.FileName);
-                var snapshotName = PathHelper.GetScreenCaptureNameFromPath(fi.FullName);
+                var snapshotName = PathHelper.GetScreenCaptureNameFromPath(fi.FullName, preferencesViewModel.IsTimeStampIncludedInExportFilePath);
                 _fileDialog.InitialDirectory = fi.DirectoryName;
                 _fileDialog.FileName = snapshotName;
             }

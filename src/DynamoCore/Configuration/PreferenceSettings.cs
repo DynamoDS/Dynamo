@@ -58,6 +58,7 @@ namespace Dynamo.Configuration
         private bool isNotificationCenterEnabled;
         private bool isEnablePersistExtensionsEnabled;
         private bool isStaticSplashScreenEnabled;
+        private bool isTimeStampIncludedInExportFilePath;
         private bool isCreatedFromValidFile = true;
         private string backupLocation;
 
@@ -112,6 +113,21 @@ namespace Dynamo.Configuration
         /// Indicates whether Google analytics reporting is approved or not.
         /// </summary>
         public bool IsAnalyticsReportingApproved { get; set; }
+
+        /// <summary>
+        /// This defines if the user export file path would include timestamp
+        /// </summary>
+        public bool IsTimeStampIncludedInExportFilePath
+        {
+            get
+            {
+                return isTimeStampIncludedInExportFilePath;
+            }
+            set
+            {
+                isTimeStampIncludedInExportFilePath = value;
+            }
+        }
 
         /// <summary>
         /// Indicates whether ADP analytics reporting is approved or not.
@@ -889,6 +905,7 @@ namespace Dynamo.Configuration
             HideAutocompleteMethodOptions = false;
             EnableNotificationCenter = true;
             isStaticSplashScreenEnabled = true;
+            isTimeStampIncludedInExportFilePath = true;
             DefaultPythonEngine = string.Empty;
             ViewExtensionSettings = new List<ViewExtensionSettings>();
             GroupStyleItemsList = new List<GroupStyleItem>();

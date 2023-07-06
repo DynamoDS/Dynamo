@@ -106,6 +106,7 @@ namespace CoreNodeModels
                     selectedString = GetSelectedStringFromItem(Items.ElementAt(value));
                 }
 
+                OnNodeModified();
                 RaisePropertyChanged("SelectedIndex");
                 RaisePropertyChanged("SelectedString");
             }

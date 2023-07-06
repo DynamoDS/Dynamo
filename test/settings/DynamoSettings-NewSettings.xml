@@ -67,6 +67,7 @@
   <HideAutocompleteMethodOptions>true</HideAutocompleteMethodOptions>
   <EnableNotificationCenter>false</EnableNotificationCenter>
   <EnableStaticSplashScreen>false</EnableStaticSplashScreen>
+  <IsTimeStampIncludedInExportFilePath>false</IsTimeStampIncludedInExportFilePath>
   <EnablePersistExtensions>true</EnablePersistExtensions>
   <DefaultPythonEngine/>
   <SelectedPackagePathForInstall>C:\Users\user\AppData\Roaming\Dynamo\Dynamo Core\2.16</SelectedPackagePathForInstall>
