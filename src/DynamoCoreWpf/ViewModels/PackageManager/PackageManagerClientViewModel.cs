@@ -23,7 +23,7 @@ using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Utilities;
 using Greg.AuthProviders;
 using Greg.Responses;
-using Microsoft.Practices.Prism.Commands;
+using Prism.Commands;
 
 namespace Dynamo.ViewModels
 {

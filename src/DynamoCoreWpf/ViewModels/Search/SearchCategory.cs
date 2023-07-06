@@ -2,7 +2,7 @@
 
 using Dynamo.UI.Commands;
 
-using Microsoft.Practices.Prism.ViewModel;
+using Dynamo.Core;
 
 namespace Dynamo.Wpf.ViewModels
 {

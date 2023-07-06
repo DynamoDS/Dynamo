@@ -54,10 +54,7 @@
 	<ItemGroup>
 		<PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
 		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" />
-		<Reference Include="Microsoft.Practices.Prism">
-			<HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-			<Private>False</Private>
-		</Reference>
+        <PackageReference Include="Prism.Core" Version="8.1.97" />
 		<Reference Include="PresentationCore" />
 		<Reference Include="PresentationFramework" />
 		<Reference Include="System.Xaml" />
