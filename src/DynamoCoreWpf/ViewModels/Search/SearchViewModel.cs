@@ -965,6 +965,7 @@ namespace Dynamo.ViewModels
                     string name = resultDoc.Get(nameof(LuceneConfig.IndexFieldsEnum.Name));
                     string docName = resultDoc.Get(nameof(LuceneConfig.IndexFieldsEnum.DocName));
                     string cat = resultDoc.Get(nameof(LuceneConfig.IndexFieldsEnum.FullCategoryName));
+                    string parameters = resultDoc.Get(nameof(LuceneConfig.IndexFieldsEnum.Parameters));
 
                     if (!string.IsNullOrEmpty(docName))
                     {
@@ -972,7 +973,7 @@ namespace Dynamo.ViewModels
                     }
                     else
                     {
-                        var foundNode = FindViewModelForNodeNameAndCategory(name, cat);
+                        var foundNode = FindViewModelForNodeNameAndCategory(name, cat, parameters);
                         if (foundNode != null)
                         {
                             candidates.Add(foundNode);
@@ -992,13 +993,17 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="nodeName">Name of the node</param>
         /// <param name="nodeCategory">Full Category of the node</param>
+        /// <param name="parameters">Node input parameters</param>
         /// <returns></returns>
-        private NodeSearchElementViewModel FindViewModelForNodeNameAndCategory(string nodeName, string nodeCategory)
+        private NodeSearchElementViewModel FindViewModelForNodeNameAndCategory(string nodeName, string nodeCategory, string parameters)
         {
             var result = Model.SearchEntries.Where(e => {
                 if (e.Name.Equals(nodeName) && e.FullCategoryName.Equals(nodeCategory))
                 {
-                    return true;
+                    if (e.Parameters == null)
+                        return string.IsNullOrEmpty(parameters);
+                    else
+                        return e.Parameters.Equals(parameters);
                 }
                 return false;
             });

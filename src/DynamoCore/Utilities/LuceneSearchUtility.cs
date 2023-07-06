@@ -85,6 +85,7 @@ namespace Dynamo.Utilities
             var keywords = new TextField(nameof(LuceneConfig.IndexFieldsEnum.SearchKeywords), string.Empty, Field.Store.YES);
             var docName = new StringField(nameof(LuceneConfig.IndexFieldsEnum.DocName), string.Empty, Field.Store.YES);
             var fullDoc = new TextField(nameof(LuceneConfig.IndexFieldsEnum.Documentation), string.Empty, Field.Store.YES);
+            var parameters = new TextField(nameof(LuceneConfig.IndexFieldsEnum.Parameters), string.Empty, Field.Store.YES);
 
             var d = new Document()
             {
@@ -93,7 +94,8 @@ namespace Dynamo.Utilities
                 description,
                 keywords,
                 fullDoc,
-                docName
+                docName,
+                parameters
             };
             return d;
         }

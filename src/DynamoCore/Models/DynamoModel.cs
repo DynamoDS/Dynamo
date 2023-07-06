@@ -3257,6 +3257,7 @@ namespace Dynamo.Models
             LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.IndexFieldsEnum.Name), node.Name);
             LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.IndexFieldsEnum.Description), node.Description);
             if (node.SearchKeywords.Count > 0) LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.IndexFieldsEnum.SearchKeywords), node.SearchKeywords.Aggregate((x, y) => x + " " + y), true, true);
+            LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.IndexFieldsEnum.Parameters), node.Parameters?? string.Empty);
 
             LuceneSearchUtility.writer?.AddDocument(doc);
         }

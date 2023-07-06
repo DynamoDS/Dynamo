@@ -127,7 +127,12 @@ namespace Dynamo.Configuration
             /// <summary>
             /// Hosts - Package hosts
             /// </summary>
-            Hosts
+            Hosts,
+
+            /// <summary>
+            /// Parameters that are received (there are nodes with same name and category but different parameters)
+            /// </summary>
+            Parameters
         }
 
         /// <summary>
@@ -138,7 +143,8 @@ namespace Dynamo.Configuration
                                                    nameof(IndexFieldsEnum.Description),
                                                    nameof(IndexFieldsEnum.SearchKeywords),
                                                    nameof(IndexFieldsEnum.DocName),
-                                                   nameof(IndexFieldsEnum.Documentation)};
+                                                   nameof(IndexFieldsEnum.Documentation),
+                                                   nameof(IndexFieldsEnum.Parameters)};
 
 
         /// <summary>
