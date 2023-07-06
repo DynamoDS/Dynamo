@@ -9,6 +9,7 @@ using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
+using Lucene.Net.Store;
 
 namespace Dynamo.Utilities
 {
@@ -58,7 +59,15 @@ namespace Dynamo.Utilities
                 {
                     OpenMode = OpenMode.CREATE
                 };
-                writer = new IndexWriter(indexDir, indexConfig);
+                try
+                {
+                    writer = new IndexWriter(indexDir, indexConfig);
+                }
+                catch(LockObtainFailedException ex)
+                {
+                    DisposeWriter();
+                    dynamoModel.Logger.LogError($"LuceneNET LockObtainFailedException {ex}");
+                }
             }
         }
 
@@ -232,6 +241,25 @@ namespace Dynamo.Utilities
                 }
             }
             return booleanQuery.ToString();
+        }
+
+        internal void DisposeWriter()
+        {
+            //We need to check if we are not running Dynamo tests because otherwise parallel test start to fail when trying to write in the same Lucene directory location
+            if (!DynamoModel.IsTestMode)
+            {
+                writer?.Dispose();
+                writer = null;
+            }
+        }
+
+        internal void CommitWriterChanges()
+        {
+            if (!DynamoModel.IsTestMode)
+            {
+                //Commit the info indexed
+                writer?.Commit();
+            }
         }
     }
 }

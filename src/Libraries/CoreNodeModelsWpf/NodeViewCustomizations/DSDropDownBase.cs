@@ -38,11 +38,6 @@ namespace CoreNodeModelsWpf.Nodes
             System.Windows.Controls.Grid.SetRow(combo, 0);
 
             combo.DropDownOpened += combo_DropDownOpened;
-            combo.SelectionChanged += delegate
-            {
-                if (combo.SelectedIndex != -1)
-                    model.OnNodeModified();
-            };
 
             combo.DataContext = model;
 
