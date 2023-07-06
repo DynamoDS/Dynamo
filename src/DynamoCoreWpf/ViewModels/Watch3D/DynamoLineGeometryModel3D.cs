@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
 using HelixToolkit.Wpf.SharpDX.Model.Scene;
@@ -41,9 +41,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             return new DynamoPointLineRenderCore();
         }
 
-        protected override IRenderTechnique OnCreateRenderTechnique(IEffectsManager effectsManager)
+        protected override IRenderTechnique OnCreateRenderTechnique(IRenderHost host)
         {
-            return effectsManager[DynamoEffectsManager.DynamoLineShaderName];
+            return host.EffectsManager[DynamoEffectsManager.DynamoLineShaderName];
         }
     }
 }
