@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -1550,6 +1550,41 @@ namespace DynamoCoreWpfTests
             preferencesWindow.Show();
 
             AssertWindowOwnedByDynamoView<PreferencesView>();
+        }
+
+
+
+        #endregion
+
+        #region PackageManagerView
+
+        [Test]
+        public void CanOpenPackageManagerAndWindowIsOwned()
+        {
+            ViewModel.OnRequestPackageManagerDialog(null, null);
+            Thread.Sleep(500);
+
+            AssertWindowOwnedByDynamoView<PackageManagerView>();
+        }
+
+        [Test]
+        public void CannotCreateDuplicatePackageManagerDialogs()
+        {
+            for (var i = 0; i < 10; i++)
+            {
+                ViewModel.OnRequestPackageManagerDialog(null, null);
+            }
+
+            AssertWindowOwnedByDynamoView<PackageManagerView>();
+        }
+
+        [Test]
+        public void PackageManagerClosesWithDynamo()
+        {
+            ViewModel.OnRequestPackageManagerDialog(null, null);
+
+            AssertWindowOwnedByDynamoView<PackageManagerView>();
+            AssertWindowClosedWithDynamoView<PackageManagerView>();
         }
 
         #endregion
