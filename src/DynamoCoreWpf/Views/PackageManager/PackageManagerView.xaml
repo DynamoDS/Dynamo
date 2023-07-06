@@ -154,15 +154,48 @@
                                 <Grid x:Name="SearchPackagesTab"
                                       Margin="0"
                                       HorizontalAlignment="Stretch"
-                                      VerticalAlignment="Stretch"
-                                      Background="{StaticResource PackageManagerTabBackgroundColor}">
+                                      VerticalAlignment="Stretch">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*" />
                                     </Grid.RowDefinitions>
 
                                     <local:PackageManagerSearchControl x:Name="packageManagerSearch"
+                                                                       Background="{StaticResource PackageManagerTabBackgroundColor}"
                                                                        DataContext="{Binding Path=PackageManagerViewModel.PackageSearchViewModel, ElementName=PackageManagerWindow}"
-                                                                       />
+                                                                       Visibility="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.TimedOut,
+                                                                                            ElementName=PackageManagerWindow, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}"/>
+                                    <!--Timed out screen-->
+                                    <StackPanel Orientation="Vertical"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Center"
+                                                Margin="0 0 0 186"
+                                                Visibility="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.TimedOut,
+                                                                                            ElementName=PackageManagerWindow, Converter={StaticResource BoolToVisibilityCollapsedConverter}}">
+                                    <Image HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Width="266px"
+                                               Height="Auto"
+                                               Margin="0 0 0 50"
+                                               Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/PackageManager/loading-timed-out.png"></Image>
+                                        <TextBlock Style="{StaticResource LabelStyle}"
+                                                   FontSize="18px"
+                                                   HorizontalAlignment="Center"
+                                                   Text="Package loading times out" />
+                                        <TextBlock Style="{StaticResource SubLabelStyle}"
+                                                   FontSize="13px"
+                                                   HorizontalAlignment="Center"
+                                                   Text="" />
+                                        <Button Content="Try again"
+                                                Margin="0"
+                                                Background="#0696D7"
+                                                Foreground="White"
+                                                BorderBrush="#0696D7"
+                                                Width="Auto"
+                                                HorizontalAlignment="Center"
+                                                Padding="5"
+                                                Click="SearchForPackagesButton_Click"
+                                                Style="{StaticResource CtaButtonStyle}" />
+                                    </StackPanel>
 
                                 </Grid>
                             </Border>

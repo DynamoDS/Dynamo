@@ -5,8 +5,10 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Input;
+using Autodesk.Analytics.Events;
 using Autodesk.DesignScript.Geometry;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
@@ -793,6 +795,10 @@ namespace Dynamo.PackageManager
 
         public void RefreshAndSearchAsync()
         {
+            // new
+            StartTimer();
+            // new
+
             this.ClearSearchResults();
             this.SearchState = PackageSearchState.Syncing;
 
@@ -811,6 +817,44 @@ namespace Dynamo.PackageManager
             }
             , TaskScheduler.FromCurrentSynchronizationContext()); // run continuation in ui thread
         }
+
+        #region Time Out
+
+        // maximum loading time for packages
+        // if exceeded will trigger `timed out` event and failure screen
+        private const int MAX_LOAD_TIME = 5000;
+        private bool _timedOut;
+        /// <summary>
+        /// Will trigger timed out event
+        /// </summary>
+        public bool TimedOut
+        {
+            get { return _timedOut; }
+            set {
+                _timedOut = value;
+                RaisePropertyChanged(nameof(TimedOut));
+            }
+        }
+
+        private void StartTimer()
+        {
+            var aTimer = new System.Timers.Timer();
+            aTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
+            aTimer.Interval = MAX_LOAD_TIME;
+            aTimer.Enabled = true;
+        }
+
+        private void OnTimedEvent(object sender, ElapsedEventArgs e)
+        {
+            if(this.SearchState != PackageSearchState.Results)
+            {
+                TimedOut = true;
+            }
+            var aTimer = (System.Timers.Timer)sender;
+            aTimer.Dispose();
+        }
+
+        #endregion
 
         internal void RefreshInfectedPackages()
         {
