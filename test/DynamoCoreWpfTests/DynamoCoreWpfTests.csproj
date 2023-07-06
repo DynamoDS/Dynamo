@@ -22,9 +22,9 @@
 	    <PrivateAssets>all</PrivateAssets>
 	    <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	  </PackageReference>
-	  <PackageReference Include="HelixToolkit" Version="2.17.0" />
-	  <PackageReference Include="HelixToolkit.Wpf" Version="2.17.0" />
-	  <PackageReference Include="HelixToolkit.Wpf.SharpDX" Version="2.17.0" />
+	  <PackageReference Include="HelixToolkit" Version="2.24.0" />
+	  <PackageReference Include="HelixToolkit.Wpf" Version="2.24.0" />
+	  <PackageReference Include="HelixToolkit.Wpf.SharpDX" Version="2.24.0" />
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 	  <PackageReference Include="NUnit" Version="2.6.3" />
 	  <PackageReference Include="RestSharp" Version="106.12.0" />
