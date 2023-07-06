@@ -39,9 +39,6 @@
         <PackageReference Include="System.ComponentModel.Composition" Version="7.0.0" />
         <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
         <PackageReference Include="System.Management" Version="7.0.1" />
-        <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.421302">
-            <PrivateAssets>all</PrivateAssets>
-        </PackageReference>
     </ItemGroup>
 
     <PropertyGroup>
