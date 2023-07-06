@@ -130,7 +130,7 @@ namespace Dynamo.Configuration
             Hosts,
 
             /// <summary>
-            /// Parameters that are received (there are nodes with same name and category but different parameters)
+            /// Node Input Parameters as string (there are nodes with same name and category but different parameters)
             /// </summary>
             Parameters
         }
