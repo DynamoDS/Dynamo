@@ -1000,8 +1000,11 @@ namespace Dynamo.ViewModels
             var result = Model.SearchEntries.Where(e => {
                 if (e.Name.Equals(nodeName) && e.FullCategoryName.Equals(nodeCategory))
                 {
+                    //When the node info was indexed if Parameters was null we added an empty space (null cannot be indexed)
+                    //Then in this case when searching if e.Parameters is null we need to check against empty space
                     if (e.Parameters == null)
                         return string.IsNullOrEmpty(parameters);
+                    //Parameters contain a value so we need to compare against the value indexed
                     else
                         return e.Parameters.Equals(parameters);
                 }
