@@ -9,6 +9,7 @@
     <RootNamespace>UnitsUI</RootNamespace>
     <AssemblyName>UnitsUI</AssemblyName>
     <OutputPath>$(OutputPath)\nodes\</OutputPath>
+      <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemDefinitionGroup>
 	<ReferenceCopyLocalPaths>

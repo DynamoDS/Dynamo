@@ -15,6 +15,7 @@
             2) GeometryColor.dll
             3) DSCoreNodes.dll
             4) CoreNodeModels.dll
+            5) Watch3DNodeModels.dll
         </description>
         <copyright>Copyright Autodesk 2023</copyright>
         <dependencies>
@@ -36,16 +37,20 @@
         <file src="GeometryColor.xml" target="lib\net48" />
         <file src="DSCoreNodes.dll" target="lib\net48" />
         <file src="DSCoreNodes.xml" target="lib\net48" />
-        <file src="CoreNodeModels.dll" target="lib\net48" />
-        <file src="CoreNodeModels.xml" target="lib\net48" />
+        <file src="nodes\CoreNodeModels.dll" target="lib\net48" />
+        <file src="nodes\CoreNodeModels.xml" target="lib\net48" />
+        <file src="nodes\Watch3DNodeModels.dll" target="lib\net48" />
+        <file src="nodes\Watch3DNodeModels.xml" target="lib\net48" />
         <file src="..\..\NET60_Windows\Release\Analysis.dll" target="lib\net6.0" />
         <file src="..\..\NET60_Windows\Release\Analysis.xml" target="lib\net6.0" />
         <file src="..\..\NET60_Windows\Release\GeometryColor.dll" target="lib\net6.0" />
         <file src="..\..\NET60_Windows\Release\GeometryColor.xml" target="lib\net6.0" />
         <file src="..\..\NET60_Windows\Release\DSCoreNodes.dll" target="lib\net6.0" />
         <file src="..\..\NET60_Windows\Release\DSCoreNodes.xml" target="lib\net6.0" />
-        <file src="..\..\NET60_Windows\Release\CoreNodeModels.dll" target="lib\net6.0" />
-        <file src="..\..\NET60_Windows\Release\CoreNodeModels.xml" target="lib\net6.0" />
+        <file src="..\..\NET60_Windows\Release\nodes\CoreNodeModels.dll" target="lib\net6.0" />
+        <file src="..\..\NET60_Windows\Release\nodes\CoreNodeModels.xml" target="lib\net6.0" />
+        <file src="..\..\NET60_Windows\Release\nodes\Watch3DNodeModels.dll" target="lib\net6.0" />
+        <file src="..\..\NET60_Windows\Release\nodes\Watch3DNodeModels.xml" target="lib\net6.0" />
         <file src="..\..\..\doc\distrib\Images\logo_square_32x32.png" target="content\images\logo.png" />
     </files>
 </package>
