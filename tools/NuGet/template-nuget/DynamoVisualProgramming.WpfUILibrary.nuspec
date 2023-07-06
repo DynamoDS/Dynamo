@@ -16,21 +16,28 @@
         <summary>This package contains all that is required to get up and running building nodes for the Dynamo Visual Programming language with custom UI in WPF.</summary>
         <copyright>Copyright Autodesk 2020</copyright>
         <frameworkAssemblies>
-            <frameworkAssembly assemblyName="System.Xaml"/>
-            <frameworkAssembly assemblyName="WindowsBase"/>
-            <frameworkAssembly assemblyName="PresentationCore"/>
-            <frameworkAssembly assemblyName="PresentationFramework"/>
+            <frameworkAssembly assemblyName="System.Xaml" targetFramework="net48"/>
+            <frameworkAssembly assemblyName="WindowsBase" targetFramework="net48"/>
+            <frameworkAssembly assemblyName="PresentationCore" targetFramework="net48"/>
+            <frameworkAssembly assemblyName="PresentationFramework" targetFramework="net48"/>
         </frameworkAssemblies>
         <dependencies>
             <group targetFramework=".NETFramework4.8">
                 <dependency id="DynamoVisualProgramming.Core" version="$Version$"/>
+                <dependency id="DynamoVisualProgramming.DynamoCoreNodes" version="$Version$"/>
+            </group>
+            <group targetFramework="net6.0">
+                <dependency id="DynamoVisualProgramming.Core" version="$Version$"/>
+                <dependency id="DynamoVisualProgramming.DynamoCoreNodes" version="$Version$"/>
             </group>
         </dependencies>
     </metadata>
+    <!--for now we assume that that the working directory root is dynamo/bin/AnyCPU/Release-->
     <files>
         <file src="DynamoCoreWpf.dll" target="lib\net48" />
-        <file src="nodes\CoreNodeModels.dll" target="lib\net48" />
         <file src="nodes\CoreNodeModelsWpf.dll" target="lib\net48" />
+        <file src="..\..\NET60_Windows\Release\DynamoCoreWpf.dll" target="lib\net6.0" />
+        <!-- not yet migrated <file src="..\..\NET60_Windows\Release\nodes\CoreNodeModelsWpf.dll" target="lib\net6.0" />-->
         <file src="..\..\..\doc\distrib\Images\logo_square_32x32.png" target="content\images\logo.png" />
     </files>
 </package>
