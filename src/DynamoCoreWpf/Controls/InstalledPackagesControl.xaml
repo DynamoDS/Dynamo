@@ -5,6 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+             xmlns:controls="clr-namespace:Dynamo.Controls"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 
@@ -15,6 +17,7 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
+            <controls:SumConverter x:Key="SumConverter"/>
             <Style TargetType="{x:Type MenuItem}" x:Key="MenuItemCollapseStyle">
                 <Style.Triggers>
                     <Trigger Property="IsEnabled" Value="False">
@@ -67,8 +70,18 @@
         </ItemsControl>
         <ScrollViewer Grid.Row="1"  
             VerticalScrollBarVisibility="Auto" 
-            Background="{StaticResource PreferencesWindowBackgroundColor}" 
-            MaxHeight="246">
+            Background="{StaticResource PreferencesWindowBackgroundColor}">
+            <ScrollViewer.Height>
+                <MultiBinding Converter="{StaticResource SumConverter}">
+                    <Binding Path="ActualHeight"
+                             RelativeSource="{RelativeSource  Mode=FindAncestor, AncestorType=UserControl}" />
+                    <Binding>
+                        <Binding.Source>
+                            <sys:Double>-40.0</sys:Double>
+                        </Binding.Source>
+                    </Binding>
+                </MultiBinding>
+            </ScrollViewer.Height>
             <ItemsControl Name="SearchResultsListBox"
                               ItemsSource="{Binding Path=LocalPackages}"
                               HorizontalContentAlignment="Stretch"
