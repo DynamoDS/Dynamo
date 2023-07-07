@@ -1,5 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <ImportGroup Label="PropertySheets">
+    <PropertyGroup>
+        <UILib>true</UILib>
+    </PropertyGroup>
+    <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
   <PropertyGroup>
@@ -9,6 +12,8 @@
     <RootNamespace>UnitsUI</RootNamespace>
     <AssemblyName>UnitsUI</AssemblyName>
     <OutputPath>$(OutputPath)\nodes\</OutputPath>
+      <GenerateDocumentationFile>true</GenerateDocumentationFile>
+      <EnableDefaultPageItems>false</EnableDefaultPageItems>
   </PropertyGroup>
   <ItemDefinitionGroup>
 	<ReferenceCopyLocalPaths>
@@ -16,13 +21,15 @@
 		<DestinationSubDirectory>..\</DestinationSubDirectory>
 	</ReferenceCopyLocalPaths>
   </ItemDefinitionGroup>
-  <ItemGroup>
-	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="WindowsBase" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    </ItemGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
+        <Reference Include="PresentationCore" />
+        <Reference Include="PresentationFramework" />
+        <Reference Include="System.Xaml" />
+        <Reference Include="WindowsBase" />
+    </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DynamoCoreWpf\DynamoCoreWpf.csproj">
       <Project>{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}</Project>
@@ -93,17 +100,13 @@
       <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <Target Name="GenerateFiles"  AfterTargets="Build" Condition=" '$(OS)' != 'Unix' ">
-    <!-- Get System.Drawing.dll -->
-    <GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=$(ResourceGeneration_FrameworkVersion)">
-      <Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
-    </GetReferenceAssemblyPaths>
-    <!-- Get assembly -->
+  <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" '$(OS)' != 'Unix' ">
+      <!-- Get assembly -->
     <GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
       <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
     </GetAssemblyIdentity>
     <!-- Generate customization dll -->
-    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)UnitsUIImages.resx" OutputResources="$(ProjectDir)UnitsUIImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)UnitsUIImages.resx" OutputResources="$(ProjectDir)UnitsUIImages.resources" References="$(SystemDrawingDllPath)" />
     <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)UnitsUIImages.resources" OutputAssembly="$(OutDir)UnitsUI.customization.dll" Version="%(AssemblyInfo.Version)" />
   </Target>
 </Project>
