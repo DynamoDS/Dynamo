@@ -148,6 +148,7 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoManipulation", "DynamoManipulation\DynamoManipulation.csproj", "{33F88E8C-CC3C-4237-8AA9-CC891EFCABFA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SystemTestServices", "..\test\Libraries\SystemTestServices\SystemTestServices.csproj", "{89563CD0-509B-40A5-8728-9D3EC6FE8410}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Watch3DNodeModelsWpf", "Libraries\Watch3DNodeModelsWpf\Watch3DNodeModelsWpf.csproj", "{B9E338CA-6677-4772-B01D-1FCEABCDAAAB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -366,6 +367,10 @@ Global
 		{89563CD0-509B-40A5-8728-9D3EC6FE8410}.Debug|NET60_Windows.Build.0 = Debug|NET60_Windows
 		{89563CD0-509B-40A5-8728-9D3EC6FE8410}.Release|NET60_Windows.ActiveCfg = Release|NET60_Windows
 		{89563CD0-509B-40A5-8728-9D3EC6FE8410}.Release|NET60_Windows.Build.0 = Release|NET60_Windows
+		{B9E338CA-6677-4772-B01D-1FCEABCDAAAB}.Debug|NET60_Windows.ActiveCfg = Debug|NET60_Windows
+		{B9E338CA-6677-4772-B01D-1FCEABCDAAAB}.Debug|NET60_Windows.Build.0 = Debug|NET60_Windows
+		{B9E338CA-6677-4772-B01D-1FCEABCDAAAB}.Release|NET60_Windows.ActiveCfg = Release|NET60_Windows
+		{B9E338CA-6677-4772-B01D-1FCEABCDAAAB}.Release|NET60_Windows.Build.0 = Release|NET60_Windows
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -417,6 +422,7 @@ Global
 		{09F48994-BB2F-4A26-8CCD-469FE3F7F904} = {88D45B00-E564-41DB-B57C-9509646CAA49}
 		{33F88E8C-CC3C-4237-8AA9-CC891EFCABFA} = {88D45B00-E564-41DB-B57C-9509646CAA49}
 		{89563CD0-509B-40A5-8728-9D3EC6FE8410} = {4CA0BC62-DCB3-456B-80D6-348247640BAB}
+		{B9E338CA-6677-4772-B01D-1FCEABCDAAAB} = {FA7BE306-A3B0-45FA-9D87-0C69E6932C13}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89CB19C6-BF0A-4E6A-BFDA-79D143EAB59D}
