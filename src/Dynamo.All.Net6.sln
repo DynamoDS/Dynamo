@@ -139,6 +139,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssemblyRenamerCLI", "Tools
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkspaceDependencyViewExtension", "WorkspaceDependencyViewExtension\WorkspaceDependencyViewExtension.csproj", "{5E76AAB3-6302-473E-9655-081B53FB1419}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoWPFCLI", "DynamoWPFCLI\DynamoWPFCLI.csproj", "{F7FD9395-35D5-474D-8AD1-9904817E70D3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|NET60_Windows = Debug|NET60_Windows
@@ -336,6 +338,10 @@ Global
 		{5E76AAB3-6302-473E-9655-081B53FB1419}.Debug|NET60_Windows.Build.0 = Debug|NET60_Windows
 		{5E76AAB3-6302-473E-9655-081B53FB1419}.Release|NET60_Windows.ActiveCfg = Release|NET60_Windows
 		{5E76AAB3-6302-473E-9655-081B53FB1419}.Release|NET60_Windows.Build.0 = Release|NET60_Windows
+		{F7FD9395-35D5-474D-8AD1-9904817E70D3}.Debug|NET60_Windows.ActiveCfg = Debug|NET60_Windows
+		{F7FD9395-35D5-474D-8AD1-9904817E70D3}.Debug|NET60_Windows.Build.0 = Debug|NET60_Windows
+		{F7FD9395-35D5-474D-8AD1-9904817E70D3}.Release|NET60_Windows.ActiveCfg = Release|NET60_Windows
+		{F7FD9395-35D5-474D-8AD1-9904817E70D3}.Release|NET60_Windows.Build.0 = Release|NET60_Windows
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

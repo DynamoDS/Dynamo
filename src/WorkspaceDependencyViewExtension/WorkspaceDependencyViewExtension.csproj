@@ -11,7 +11,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dynamo.WorkspaceDependency</RootNamespace>
     <AssemblyName>WorkspaceDependencyViewExtension</AssemblyName>
-      <EnableDefaultPageItems>false</EnableDefaultPageItems>
+    <EnableDefaultPageItems>false</EnableDefaultPageItems>
   </PropertyGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
     <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
