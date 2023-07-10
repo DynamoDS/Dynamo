@@ -11,6 +11,7 @@ using Dynamo.Wpf.ViewModels.Watch3D;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+using ProtoCore.AST.ImperativeAST;
 
 namespace Dynamo.Tests
 {
@@ -222,8 +223,13 @@ namespace Dynamo.Tests
         //
         // DynamoWPFCLI Tests
         //
+
+#if NET6_0_OR_GREATER
         [Test]
         [Apartment(ApartmentState.STA)]
+#else
+        [Test, RequiresSTA]
+#endif
         public void CanOpenAndRunDynamoModelWithWPFCommandLineRunner()
         {
             string openpath = Path.Combine(TestDirectory, @"core\math\Add.dyn");
@@ -246,8 +252,12 @@ namespace Dynamo.Tests
             AssertPreviewValue("4c5889ac-7b91-4fb5-aaad-a2128b533279", 4.0);
         }
 
+#if NET6_0_OR_GREATER
         [Test]
         [Apartment(ApartmentState.STA)]
+#else
+        [Test, RequiresSTA]
+#endif
         public void CanOpenAndRunFileWihtListsCorrectlyToOutputFileFromDynamoWPFCLIexe()
         {
             string openpath = Path.Combine(TestDirectory, @"core\commandline\simplelists.dyn");
@@ -264,8 +274,12 @@ namespace Dynamo.Tests
                 output);
         }
 
+#if NET6_0_OR_GREATER
         [Test]
         [Apartment(ApartmentState.STA)]
+#else
+        [Test, RequiresSTA]
+#endif
         public void CanOpenAndRunFileWithDictionaryCorrectlyToOutputFileFromDynamoWPFCLIexe()
         {
             string openpath = Path.Combine(TestDirectory, @"core\commandline\simpleDict.dyn");
@@ -288,8 +302,12 @@ namespace Dynamo.Tests
                 }, output);
         }
 
+#if NET6_0_OR_GREATER
         [Test]
         [Apartment(ApartmentState.STA)]
+#else
+        [Test, RequiresSTA]
+#endif
         public void CanOpenAndRunFileWithCustomNodeAndOutputGeometryFromDynamoWPFCLIexe()
         {
             string openpath = Path.Combine(TestDirectory, @"core\commandline\GeometryTest.dyn");
