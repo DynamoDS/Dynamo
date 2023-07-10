@@ -26,8 +26,7 @@ namespace WpfVisualizationTests
         {
             get
             {
-                return (Watch3DView)View.background_grid.Children().
-                    FirstOrDefault(c => c is Watch3DView);
+                return (Watch3DView)View.background_grid.Children().FirstOrDefault(c => c is Watch3DView);
             }
         }
 
