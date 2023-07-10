@@ -165,6 +165,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkflowTests", "..\test\Li
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommandLineTests", "..\test\Libraries\CommandLineTests\CommandLineTests.csproj", "{3E84B41E-F229-4BF7-8A0F-3D65BA2D00D1}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestUINodes", "..\test\TestUINodes\TestUINodes.csproj", "{ED1EA294-1BA1-45D6-A669-ECD2E24E21A9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitsUI", "Libraries\UnitsUI\UnitsUI.csproj", "{C67A7E80-73E6-4BBF-9D3F-DCD86CE306BE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|NET60_Windows = Debug|NET60_Windows
@@ -410,6 +414,14 @@ Global
 		{3E84B41E-F229-4BF7-8A0F-3D65BA2D00D1}.Debug|NET60_Windows.Build.0 = Debug|NET60_Windows
 		{3E84B41E-F229-4BF7-8A0F-3D65BA2D00D1}.Release|NET60_Windows.ActiveCfg = Release|NET60_Windows
 		{3E84B41E-F229-4BF7-8A0F-3D65BA2D00D1}.Release|NET60_Windows.Build.0 = Release|NET60_Windows
+		{ED1EA294-1BA1-45D6-A669-ECD2E24E21A9}.Debug|NET60_Windows.ActiveCfg = Debug|NET60_Windows
+		{ED1EA294-1BA1-45D6-A669-ECD2E24E21A9}.Debug|NET60_Windows.Build.0 = Debug|NET60_Windows
+		{ED1EA294-1BA1-45D6-A669-ECD2E24E21A9}.Release|NET60_Windows.ActiveCfg = Release|NET60_Windows
+		{ED1EA294-1BA1-45D6-A669-ECD2E24E21A9}.Release|NET60_Windows.Build.0 = Release|NET60_Windows
+		{C67A7E80-73E6-4BBF-9D3F-DCD86CE306BE}.Debug|NET60_Windows.ActiveCfg = Debug|NET60_Windows
+		{C67A7E80-73E6-4BBF-9D3F-DCD86CE306BE}.Debug|NET60_Windows.Build.0 = Debug|NET60_Windows
+		{C67A7E80-73E6-4BBF-9D3F-DCD86CE306BE}.Release|NET60_Windows.ActiveCfg = Release|NET60_Windows
+		{C67A7E80-73E6-4BBF-9D3F-DCD86CE306BE}.Release|NET60_Windows.Build.0 = Release|NET60_Windows
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -469,6 +481,8 @@ Global
 		{F0AF3C6E-0E59-4511-A057-79970EA9DC34} = {4CA0BC62-DCB3-456B-80D6-348247640BAB}
 		{CEA31792-BA09-431B-8ECE-E2F0354B2150} = {4CA0BC62-DCB3-456B-80D6-348247640BAB}
 		{3E84B41E-F229-4BF7-8A0F-3D65BA2D00D1} = {4CA0BC62-DCB3-456B-80D6-348247640BAB}
+		{ED1EA294-1BA1-45D6-A669-ECD2E24E21A9} = {5B9B5B6B-0BA7-4606-B8E5-70C958346D57}
+		{C67A7E80-73E6-4BBF-9D3F-DCD86CE306BE} = {FA7BE306-A3B0-45FA-9D87-0C69E6932C13}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89CB19C6-BF0A-4E6A-BFDA-79D143EAB59D}
