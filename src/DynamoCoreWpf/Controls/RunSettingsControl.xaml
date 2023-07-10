@@ -33,68 +33,6 @@
             </ObjectDataProvider>
 
             <viewModels:RunPeriodConverter x:Key="RunPeriodConverter" />
-            <Style x:Key="RunButtonStyle"
-                   TargetType="{x:Type Button}">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate>
-                            <Border x:Name="container"
-                                    Background="Transparent"
-                                    BorderBrush="#FF23A597"
-                                    CornerRadius="2"
-                                    BorderThickness="1">
-                                <Grid x:Name="inner"
-                                      Background="#FF23A597">
-                                    <TextBlock x:Name="text"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               FontSize="14px"
-                                               Foreground="#FFFFFF"
-                                               Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
-                                </Grid>
-                            </Border>
-
-                            <ControlTemplate.Triggers>
-
-                                <Trigger Property="Button.IsMouseOver"
-                                         Value="true">
-                                    <Setter TargetName="container"
-                                            Property="BorderBrush"
-                                            Value="#26808080" />
-                                    <Setter TargetName="container"
-                                            Property="BorderThickness"
-                                            Value="2" />
-                                </Trigger>
-
-                                <Trigger Property="Button.IsPressed"
-                                         Value="true">
-                                    <Setter TargetName="container"
-                                            Property="BorderBrush"
-                                            Value="#40808080" />
-                                    <Setter TargetName="container"
-                                            Property="BorderThickness"
-                                            Value="4" />
-                                </Trigger>
-
-                                <Trigger Property="Button.IsEnabled"
-                                         Value="false">
-                                    <Setter TargetName="inner"
-                                            Property="Background"
-                                            Value="#218d81" />
-                                    <Setter TargetName="text"
-                                            Property="Foreground"
-                                            Value="#bebebe" />
-                                    <Setter TargetName="container"
-                                            Property="BorderBrush"
-                                            Value="#218d81" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
         </ResourceDictionary>
     </UserControl.Resources>
 
