@@ -6,7 +6,7 @@ using System.Windows.Media.Imaging;
 using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
-using Microsoft.Practices.Prism.ViewModel;
+using Dynamo.Core;
 using Greg.AuthProviders;
 using System.Linq;
 using System.Windows;

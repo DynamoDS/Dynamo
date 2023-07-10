@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Threading;
 using Dynamo.Applications;
 using Dynamo.Models;
@@ -13,6 +14,9 @@ namespace DynamoWPFCLI
     {
         private static EventWaitHandle suspendEvent = new AutoResetEvent(false);
 
+#if NET6_0_OR_GREATER
+        [SupportedOSPlatform("Windows")]
+#endif
         [STAThread]
         internal static void Main(string[] args)
         {
