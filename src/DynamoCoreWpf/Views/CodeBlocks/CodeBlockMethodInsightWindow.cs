@@ -6,7 +6,7 @@ using System.ComponentModel;
 using Dynamo.Engine.CodeCompletion;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Editing;
-using Microsoft.Practices.Prism.ViewModel;
+using Dynamo.Core;
 
 namespace Dynamo.UI
 {

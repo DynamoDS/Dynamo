@@ -55,6 +55,15 @@
 		<EmbeddedResource Include="Packages\NotificationCenter\build\index.bundle.js" />
 		<EmbeddedResource Include="Packages\NotificationCenter\build\index.html" />
 	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
+		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" />
+        <PackageReference Include="Prism.Core" Version="8.1.97" />
+		<Reference Include="PresentationCore" />
+		<Reference Include="PresentationFramework" />
+		<Reference Include="System.Xaml" />
+		<Reference Include="WindowsBase" />
+	</ItemGroup>
     <ItemGroup>
         <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
         <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" />

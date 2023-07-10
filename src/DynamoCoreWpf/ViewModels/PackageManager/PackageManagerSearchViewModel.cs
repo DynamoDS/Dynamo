@@ -21,8 +21,8 @@ using Greg.Responses;
 using Lucene.Net.Documents;
 using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
-using Microsoft.Practices.Prism.Commands;
-using Microsoft.Practices.Prism.ViewModel;
+using Dynamo.Core;
+using Prism.Commands;
 
 namespace Dynamo.PackageManager
 {
