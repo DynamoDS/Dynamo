@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -15,7 +15,7 @@ using Dynamo.GraphNodeManager.Properties;
 using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using Microsoft.Practices.Prism.Commands;
+using Prism.Commands;
 using DelegateCommand = Dynamo.UI.Commands.DelegateCommand;
 using GridNodeViewModel = Dynamo.GraphNodeManager.ViewModels.GridNodeViewModel;
 using Newtonsoft.Json;

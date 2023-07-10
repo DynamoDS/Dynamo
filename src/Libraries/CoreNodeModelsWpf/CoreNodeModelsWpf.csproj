@@ -25,6 +25,8 @@
     </ReferenceCopyLocalPaths>
   </ItemDefinitionGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
+  <ItemGroup>
+    <PackageReference Include="Prism.Core" Version="8.1.97" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
