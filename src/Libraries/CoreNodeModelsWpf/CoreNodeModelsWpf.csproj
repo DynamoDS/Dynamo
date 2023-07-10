@@ -24,7 +24,6 @@
       <DestinationSubDirectory>..\</DestinationSubDirectory>
     </ReferenceCopyLocalPaths>
   </ItemDefinitionGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
   <ItemGroup>
     <PackageReference Include="Prism.Core" Version="8.1.97" />
     <Reference Include="PresentationCore" />
@@ -49,10 +48,6 @@
       <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.103" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Practices.Prism">
-        <HintPath>..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-        <Private>False</Private>
-    </Reference>
     <PackageReference Include="LiveCharts" Version="0.9.7" />
     <PackageReference Include="LiveCharts.Wpf" Version="0.9.7" />
     <ProjectReference Include="..\..\DynamoCoreWpf\DynamoCoreWpf.csproj">
