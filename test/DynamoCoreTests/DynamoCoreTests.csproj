@@ -21,7 +21,7 @@
     <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
         <PackageReference Include="NUnit" Version="2.6.3" ExcludeAssets="none" GeneratePathProperty="true" />
         <PackageReference Include="NUnitTestAdapter" Version="2.3.0" ExcludeAssets="all" /> 
-        <PackageReference Include="DynamoVisualProgramming.Analytics" Version="3.0.1.740">
+        <PackageReference Include="DynamoVisualProgramming.Analytics" Version="4.0.0.1432">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
