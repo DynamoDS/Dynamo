@@ -237,7 +237,7 @@
                                 Style="{StaticResource RestoreButtonDarkStyle}" />
 
                         <Button Name="UndockButton"
-                                Click="OnDockButtonClicked"
+                                Click="OnDockButtonClicked" 
                                 Margin="0 0 20 0"
                                 DockPanel.Dock="Right"
                                 Style="{StaticResource DockButtonDarkStyle}" >
@@ -402,7 +402,7 @@
                                            FontFamily="{StaticResource SourceCodePro}"
                                            FontSize="10pt"
                                            ShowLineNumbers="True"
-                                           Background="{StaticResource ExtensionBackgroundColor}"
+                                           Background="{StaticResource TextEditorBrush}"
                                            Foreground="{StaticResource AutocompletionWindowFontColor}"
                                            Padding="5"
                                            HorizontalScrollBarVisibility="Disabled"
