@@ -962,10 +962,10 @@ namespace Dynamo.ViewModels
                     // read back a Lucene doc from results
                     Document resultDoc = LuceneSearchUtility.Searcher.Doc(topDocs.ScoreDocs[i].Doc);
 
-                    string name = resultDoc.Get(nameof(LuceneConfig.IndexFieldsEnum.Name));
-                    string docName = resultDoc.Get(nameof(LuceneConfig.IndexFieldsEnum.DocName));
-                    string cat = resultDoc.Get(nameof(LuceneConfig.IndexFieldsEnum.FullCategoryName));
-                    string parameters = resultDoc.Get(nameof(LuceneConfig.IndexFieldsEnum.Parameters));
+                    string name = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.Name));
+                    string docName = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.DocName));
+                    string cat = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName));
+                    string parameters = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.Parameters));
 
                     if (!string.IsNullOrEmpty(docName))
                     {

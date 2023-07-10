@@ -79,13 +79,13 @@ namespace Dynamo.Utilities
         {
             if (DynamoModel.IsTestMode) return null;
 
-            var name = new TextField(nameof(LuceneConfig.IndexFieldsEnum.Name), string.Empty, Field.Store.YES);
-            var fullCategory = new TextField(nameof(LuceneConfig.IndexFieldsEnum.FullCategoryName), string.Empty, Field.Store.YES);
-            var description = new TextField(nameof(LuceneConfig.IndexFieldsEnum.Description), string.Empty, Field.Store.YES);
-            var keywords = new TextField(nameof(LuceneConfig.IndexFieldsEnum.SearchKeywords), string.Empty, Field.Store.YES);
-            var docName = new StringField(nameof(LuceneConfig.IndexFieldsEnum.DocName), string.Empty, Field.Store.YES);
-            var fullDoc = new TextField(nameof(LuceneConfig.IndexFieldsEnum.Documentation), string.Empty, Field.Store.YES);
-            var parameters = new TextField(nameof(LuceneConfig.IndexFieldsEnum.Parameters), string.Empty, Field.Store.YES);
+            var name = new TextField(nameof(LuceneConfig.NodeFieldsEnum.Name), string.Empty, Field.Store.YES);
+            var fullCategory = new TextField(nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName), string.Empty, Field.Store.YES);
+            var description = new TextField(nameof(LuceneConfig.NodeFieldsEnum.Description), string.Empty, Field.Store.YES);
+            var keywords = new TextField(nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords), string.Empty, Field.Store.YES);
+            var docName = new StringField(nameof(LuceneConfig.NodeFieldsEnum.DocName), string.Empty, Field.Store.YES);
+            var fullDoc = new TextField(nameof(LuceneConfig.NodeFieldsEnum.Documentation), string.Empty, Field.Store.YES);
+            var parameters = new TextField(nameof(LuceneConfig.NodeFieldsEnum.Parameters), string.Empty, Field.Store.YES);
 
             var d = new Document()
             {
@@ -108,10 +108,10 @@ namespace Dynamo.Utilities
         {
             if (DynamoModel.IsTestMode) return null;
 
-            var name = new TextField(nameof(LuceneConfig.IndexFieldsEnum.Name), string.Empty, Field.Store.YES);
-            var description = new TextField(nameof(LuceneConfig.IndexFieldsEnum.Description), string.Empty, Field.Store.YES);
-            var keywords = new TextField(nameof(LuceneConfig.IndexFieldsEnum.SearchKeywords), string.Empty, Field.Store.YES);
-            var hosts = new TextField(nameof(LuceneConfig.IndexFieldsEnum.Hosts), string.Empty, Field.Store.YES);
+            var name = new TextField(nameof(LuceneConfig.NodeFieldsEnum.Name), string.Empty, Field.Store.YES);
+            var description = new TextField(nameof(LuceneConfig.NodeFieldsEnum.Description), string.Empty, Field.Store.YES);
+            var keywords = new TextField(nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords), string.Empty, Field.Store.YES);
+            var hosts = new TextField(nameof(LuceneConfig.NodeFieldsEnum.Hosts), string.Empty, Field.Store.YES);
 
             var d = new Document()
             {
@@ -198,7 +198,7 @@ namespace Dynamo.Utilities
                 }
 
                 var wildcardQuery = new WildcardQuery(new Term(f, searchTerm));
-                if (f.Equals(nameof(LuceneConfig.IndexFieldsEnum.Name)))
+                if (f.Equals(nameof(LuceneConfig.NodeFieldsEnum.Name)))
                 {
                     wildcardQuery.Boost = LuceneConfig.SearchNameWeight;
                 }
@@ -209,7 +209,7 @@ namespace Dynamo.Utilities
                 booleanQuery.Add(wildcardQuery, Occur.SHOULD);
 
                 wildcardQuery = new WildcardQuery(new Term(f, "*" + searchTerm + "*"));
-                if (f.Equals(nameof(LuceneConfig.IndexFieldsEnum.Name)))
+                if (f.Equals(nameof(LuceneConfig.NodeFieldsEnum.Name)))
                 {
                     wildcardQuery.Boost = LuceneConfig.WildcardsSearchNameWeight;
                 }
@@ -230,7 +230,7 @@ namespace Dynamo.Utilities
                         }
                         wildcardQuery = new WildcardQuery(new Term(f, "*" + s + "*"));
 
-                        if (f.Equals(nameof(LuceneConfig.IndexFieldsEnum.Name)))
+                        if (f.Equals(nameof(LuceneConfig.NodeFieldsEnum.Name)))
                         {
                             wildcardQuery.Boost = 5;
                         }
