@@ -122,8 +122,7 @@
     </ItemGroup>
     <ItemGroup Condition=" '$(TargetFramework)' == 'net48' "> 
         <Reference Include="System.Configuration" />
-        <Reference Include="PresentationCore" />
-        
+        <Reference Include="PresentationCore" /> 
         <PackageReference Include="HelixToolkit.Wpf" Version="2.24.0" />
         <PackageReference Include="HelixToolkit.Wpf.SharpDX" Version="2.24.0" />
         <Reference Include="PresentationFramework" />
@@ -165,8 +164,7 @@
     </Reference> 
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-    </Reference>
-    </Reference>
+    </Reference> 
     <PackageReference Include="Prism.Core" Version="8.1.97" />
 	<PackageReference Include="Extended.Wpf.Toolkit" version="3.0.0">
 	  <GeneratePathProperty>true</GeneratePathProperty>
