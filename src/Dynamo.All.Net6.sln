@@ -169,6 +169,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestUINodes", "..\test\Test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitsUI", "Libraries\UnitsUI\UnitsUI.csproj", "{C67A7E80-73E6-4BBF-9D3F-DCD86CE306BE}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreNodesTests", "..\test\Libraries\CoreNodesTests\CoreNodesTests.csproj", "{09EC17AF-24D2-4542-A913-0C27AE345C18}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|NET60_Windows = Debug|NET60_Windows
@@ -422,6 +424,10 @@ Global
 		{C67A7E80-73E6-4BBF-9D3F-DCD86CE306BE}.Debug|NET60_Windows.Build.0 = Debug|NET60_Windows
 		{C67A7E80-73E6-4BBF-9D3F-DCD86CE306BE}.Release|NET60_Windows.ActiveCfg = Release|NET60_Windows
 		{C67A7E80-73E6-4BBF-9D3F-DCD86CE306BE}.Release|NET60_Windows.Build.0 = Release|NET60_Windows
+		{09EC17AF-24D2-4542-A913-0C27AE345C18}.Debug|NET60_Windows.ActiveCfg = Debug|NET60_Windows
+		{09EC17AF-24D2-4542-A913-0C27AE345C18}.Debug|NET60_Windows.Build.0 = Debug|NET60_Windows
+		{09EC17AF-24D2-4542-A913-0C27AE345C18}.Release|NET60_Windows.ActiveCfg = Release|NET60_Windows
+		{09EC17AF-24D2-4542-A913-0C27AE345C18}.Release|NET60_Windows.Build.0 = Release|NET60_Windows
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -483,6 +489,7 @@ Global
 		{3E84B41E-F229-4BF7-8A0F-3D65BA2D00D1} = {4CA0BC62-DCB3-456B-80D6-348247640BAB}
 		{ED1EA294-1BA1-45D6-A669-ECD2E24E21A9} = {5B9B5B6B-0BA7-4606-B8E5-70C958346D57}
 		{C67A7E80-73E6-4BBF-9D3F-DCD86CE306BE} = {FA7BE306-A3B0-45FA-9D87-0C69E6932C13}
+		{09EC17AF-24D2-4542-A913-0C27AE345C18} = {4CA0BC62-DCB3-456B-80D6-348247640BAB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89CB19C6-BF0A-4E6A-BFDA-79D143EAB59D}
