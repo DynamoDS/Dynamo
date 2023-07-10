@@ -112,18 +112,32 @@
     <None Remove="Views\Menu\TrustedPathView.xaml" />
     <None Remove="Views\GuidedTour\HtmlPages\Resources\ConnectTheNode.gif" />
   </ItemGroup>
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0-windows' ">
-        <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
+    <ItemGroup>
         <PackageReference Include="HelixToolkit" Version="2.24.0" />
+    </ItemGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0-windows' ">
+        <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" /> 
         <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
         <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
     </ItemGroup>
     <ItemGroup Condition=" '$(TargetFramework)' == 'net48' "> 
         <Reference Include="System.Configuration" />
         <Reference Include="PresentationCore" />
-        <PackageReference Include="HelixToolkit" Version="2.24.0" />
+        
         <PackageReference Include="HelixToolkit.Wpf" Version="2.24.0" />
         <PackageReference Include="HelixToolkit.Wpf.SharpDX" Version="2.24.0" />
+        <Reference Include="PresentationFramework" />
+        <Reference Include="System" />
+        <Reference Include="System.Core" />
+        <Reference Include="System.Data" />
+        <Reference Include="System.Drawing" />
+        <Reference Include="System.Runtime.Serialization" />
+        <Reference Include="System.Web" />
+        <Reference Include="System.Windows.Forms" />
+        <Reference Include="System.Xaml" />
+        <Reference Include="Microsoft.CSharp" />
+        <Reference Include="System.Xml" />
+        <Reference Include="WindowsBase" />
     </ItemGroup>
   <ItemGroup> 
     <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.1400" />
@@ -148,19 +162,7 @@
     <Reference Include="Dynamo.Microsoft.Xaml.Behaviors, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\Microsoft.Xaml.Behaviors\$(TargetFramework)\Dynamo.Microsoft.Xaml.Behaviors.dll</HintPath>
-    </Reference>
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
+    </Reference> 
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
     </Reference>
