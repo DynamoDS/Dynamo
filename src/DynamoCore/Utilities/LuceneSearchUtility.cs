@@ -22,6 +22,15 @@ namespace Dynamo.Utilities
         internal IndexWriter writer;
         internal string directory;
 
+        public enum LuceneStorage
+        {
+            //Lucene Storage will be located in RAM and all the info indexed will be lost when Dynamo app is closed
+            RAM,
+
+            //Lucene Storage will be located in the local File System and the files will remain in ...AppData\Roaming\Dynamo\Dynamo Core\2.19\Index folder
+            FILE_SYSTEM
+        }
+
         // Used for creating the StandardAnalyzer
         internal Analyzer Analyzer;
 
@@ -36,7 +45,7 @@ namespace Dynamo.Utilities
         /// <summary>
         /// Initialize Lucene config file writer.
         /// </summary>
-        internal void InitializeLuceneConfig(string dirName)
+        internal void InitializeLuceneConfig(string dirName, LuceneStorage storageType = LuceneStorage.FILE_SYSTEM)
         {
             addedFields = new List<string>();
 
@@ -46,7 +55,13 @@ namespace Dynamo.Utilities
 
             directory = dirName;
             string indexPath = Path.Combine(webBrowserUserDataFolder.FullName, LuceneConfig.Index, dirName);
-            indexDir = Lucene.Net.Store.FSDirectory.Open(indexPath);
+
+            if(storageType == LuceneStorage.RAM)
+            {
+                indexDir = new RAMDirectory();
+            }
+            else
+                indexDir = FSDirectory.Open(indexPath);
 
             // Create an analyzer to process the text
             Analyzer = new StandardAnalyzer(LuceneConfig.LuceneNetVersion);

@@ -925,8 +925,10 @@ namespace Dynamo.ViewModels
         /// <param name="subset">Subset of nodes that should be used for the search instead of the complete set of nodes. This is a list of NodeSearchElement types</param>   
         internal IEnumerable<NodeSearchElementViewModel> Search(string search, IEnumerable<NodeSearchElement> subset = null)
         {
-            var foundNodes = Model.Search(search, 0, subset);
-            return foundNodes.Select(MakeNodeSearchElementVM);
+            //Search executed using Lucene.NET
+            var foundNodes = Search(search, true);
+            var foundNodesModels = foundNodes.Select(x => x.Model).Distinct();
+            return foundNodesModels.Select(MakeNodeSearchElementVM);
         }
 
         /// <summary>
