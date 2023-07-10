@@ -11,6 +11,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dynamo.PackageDetails</RootNamespace>
     <AssemblyName>PackageDetailsViewExtension</AssemblyName>
+    <EnableDefaultPageItems>false</EnableDefaultPageItems>
   </PropertyGroup>
   <ItemGroup>
 	<PackageReference Include="Greg" Version="2.5.0.5076" />
