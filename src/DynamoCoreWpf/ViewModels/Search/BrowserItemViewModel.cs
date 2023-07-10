@@ -11,8 +11,8 @@ using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
-using Microsoft.Practices.Prism.Commands;
-using Microsoft.Practices.Prism.ViewModel;
+using Prism.Commands;
+using Dynamo.Core;
 
 namespace Dynamo.Wpf.ViewModels
 {

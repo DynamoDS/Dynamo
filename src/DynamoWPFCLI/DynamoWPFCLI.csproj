@@ -13,6 +13,7 @@
     <AssemblyName>DynamoWPFCLI</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="WindowsBase" />
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
     </Reference>

@@ -183,10 +183,6 @@
     <Reference Include="Dynamo.Microsoft.Xaml.Behaviors, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\extern\Microsoft.Xaml.Behaviors\$(TargetFramework)\Dynamo.Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Practices.Prism">
-      <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
     <Reference Include="PresentationFramework" />
 	<Reference Include="PresentationCore" />
     <Reference Include="System" />

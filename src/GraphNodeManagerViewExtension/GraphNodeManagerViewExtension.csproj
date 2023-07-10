@@ -15,10 +15,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
-    <Reference Include="Microsoft.Practices.Prism">
-      <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
+    <PackageReference Include="Prism.Core" Version="8.1.97" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System.Windows.Forms" />

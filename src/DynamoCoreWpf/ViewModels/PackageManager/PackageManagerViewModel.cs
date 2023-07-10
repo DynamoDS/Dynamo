@@ -1,5 +1,5 @@
 using Dynamo.ViewModels;
-using Microsoft.Practices.Prism.ViewModel;
+using Dynamo.Core;
 using System.Collections.ObjectModel;
 
 namespace Dynamo.PackageManager
