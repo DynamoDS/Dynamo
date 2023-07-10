@@ -61,6 +61,15 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Accept.
+        /// </summary>
+        public static string AcceptButton {
+            get {
+                return ResourceManager.GetString("AcceptButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Accept the current code changes..
         /// </summary>
         public static string AcceptButtonTooltip {
@@ -315,11 +324,29 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string RejectButton {
+            get {
+                return ResourceManager.GetString("RejectButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Reject the current code changes..
         /// </summary>
         public static string RejectButtonTooltip {
             get {
                 return ResourceManager.GetString("RejectButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Switch View.
+        /// </summary>
+        public static string SwitchViewButton {
+            get {
+                return ResourceManager.GetString("SwitchViewButton", resourceCulture);
             }
         }
         

@@ -166,6 +166,8 @@
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
     </Reference>
+    </Reference>
+    <PackageReference Include="Prism.Core" Version="8.1.97" />
 	<PackageReference Include="Extended.Wpf.Toolkit" version="3.0.0">
 	  <GeneratePathProperty>true</GeneratePathProperty>
     <!--Exclude copying the dll because we will handle it in the BinaryCompatibilityOps target -->
