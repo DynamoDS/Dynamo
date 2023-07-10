@@ -156,7 +156,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationTests", "..\test\System\IntegrationTests\IntegrationTests.csproj", "{1254D922-643B-4F0B-82BD-E9E02399B040}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeometryUIWpf", "Libraries\GeometryUIWpf\GeometryUIWpf.csproj", "{C068DE76-0651-4F6C-8807-B90EF749D104}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreNodeModelsWpf", "Libraries\CoreNodeModelsWpf\CoreNodeModelsWpf.csproj", "{F5932F7D-8E34-4787-80B8-E7F9D996EDFF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataBridgeTests", "..\test\Libraries\DataBridgeTests\DataBridgeTests.csproj", "{F0AF3C6E-0E59-4511-A057-79970EA9DC34}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -391,6 +394,10 @@ Global
 		{F5932F7D-8E34-4787-80B8-E7F9D996EDFF}.Debug|NET60_Windows.Build.0 = Debug|NET60_Windows
 		{F5932F7D-8E34-4787-80B8-E7F9D996EDFF}.Release|NET60_Windows.ActiveCfg = Release|NET60_Windows
 		{F5932F7D-8E34-4787-80B8-E7F9D996EDFF}.Release|NET60_Windows.Build.0 = Release|NET60_Windows
+		{F0AF3C6E-0E59-4511-A057-79970EA9DC34}.Debug|NET60_Windows.ActiveCfg = Debug|NET60_Windows
+		{F0AF3C6E-0E59-4511-A057-79970EA9DC34}.Debug|NET60_Windows.Build.0 = Debug|NET60_Windows
+		{F0AF3C6E-0E59-4511-A057-79970EA9DC34}.Release|NET60_Windows.ActiveCfg = Release|NET60_Windows
+		{F0AF3C6E-0E59-4511-A057-79970EA9DC34}.Release|NET60_Windows.Build.0 = Release|NET60_Windows
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -447,6 +454,7 @@ Global
 		{1254D922-643B-4F0B-82BD-E9E02399B040} = {F0BFEE09-CE03-42F6-9DF1-DED4D86C2A73}
 		{C068DE76-0651-4F6C-8807-B90EF749D104} = {FA7BE306-A3B0-45FA-9D87-0C69E6932C13}
 		{F5932F7D-8E34-4787-80B8-E7F9D996EDFF} = {FA7BE306-A3B0-45FA-9D87-0C69E6932C13}
+		{F0AF3C6E-0E59-4511-A057-79970EA9DC34} = {4CA0BC62-DCB3-456B-80D6-348247640BAB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89CB19C6-BF0A-4E6A-BFDA-79D143EAB59D}
