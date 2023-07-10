@@ -103,7 +103,6 @@
       <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
     </GetAssemblyIdentity>
     <!-- Generate customization dll -->
-      <SystemDrawingDllPath Condition=" '$(TargetFramework)' == 'net48' ">$(FrameworkAssembliesPath)System.Drawing.dll</SystemDrawingDllPath>
     <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)UnitsUIImages.resx" OutputResources="$(ProjectDir)UnitsUIImages.resources" References="$(SystemDrawingDllPath)" />
     <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)UnitsUIImages.resources" OutputAssembly="$(OutDir)UnitsUI.customization.dll" Version="%(AssemblyInfo.Version)" />
   </Target>
