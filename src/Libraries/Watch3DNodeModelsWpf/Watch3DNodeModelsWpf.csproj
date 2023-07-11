@@ -33,6 +33,8 @@
 	<PackageReference Include="SharpDX.Direct3D9" Version="4.2.0" CopyPDB="true" />
 	<PackageReference Include="SharpDX.DXGI" Version="4.2.0" CopyPDB="true" />
 	<PackageReference Include="SharpDX.Mathematics" Version="4.2.0" CopyPDB="true" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System.Drawing" />
