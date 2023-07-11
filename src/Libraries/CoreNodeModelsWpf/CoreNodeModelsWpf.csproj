@@ -46,8 +46,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="LiveCharts" Version="0.9.7" />
-    <PackageReference Include="LiveCharts.Wpf" Version="0.9.7" />
     <ProjectReference Include="..\..\DynamoCoreWpf\DynamoCoreWpf.csproj">
         <Project>{51bb6014-43f7-4f31-b8d3-e3c37ebedaf4}</Project>
         <Name>DynamoCoreWpf</Name>
