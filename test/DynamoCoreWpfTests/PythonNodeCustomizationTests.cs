@@ -14,7 +14,6 @@ using Dynamo.Tests;
 using Dynamo.Utilities;
 using DynamoCoreWpfTests.Utility;
 using ICSharpCode.AvalonEdit.Document;
-using ICSharpCode.AvalonEdit;
 using NUnit.Framework;
 using PythonNodeModels;
 using PythonNodeModelsWpf;
