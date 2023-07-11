@@ -6,7 +6,7 @@ using System.Windows.Input;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels;
 using Greg.Responses;
-using Microsoft.Practices.Prism.Commands;
+using Prism.Commands;
 
 namespace Dynamo.PackageManager.ViewModels
 {

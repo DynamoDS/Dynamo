@@ -21,8 +21,8 @@ using Greg.Responses;
 using Lucene.Net.Documents;
 using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
-using Microsoft.Practices.Prism.Commands;
-using Microsoft.Practices.Prism.ViewModel;
+using Dynamo.Core;
+using Prism.Commands;
 
 namespace Dynamo.PackageManager
 {
@@ -455,17 +455,17 @@ namespace Dynamo.PackageManager
             if (DynamoModel.IsTestMode) return;
             if (LuceneSearchUtility.addedFields == null) return;
 
-            LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.IndexFieldsEnum.Name), package.Name);
-            LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.IndexFieldsEnum.Description), package.Description);
+            LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), package.Name);
+            LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Description), package.Description);
 
             if (package.Keywords.Count() > 0)
             {
-                LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.IndexFieldsEnum.SearchKeywords), package.Keywords);
+                LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords), package.Keywords);
             }
 
             if (package.Hosts != null && string.IsNullOrEmpty(package.Hosts.ToString()))
             {
-                LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.IndexFieldsEnum.Hosts), package.Hosts.ToString(), true, true);
+                LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Hosts), package.Hosts.ToString(), true, true);
             }
 
             LuceneSearchUtility.writer?.AddDocument(doc);
@@ -1132,7 +1132,7 @@ namespace Dynamo.PackageManager
                     Document resultDoc = LuceneSearchUtility.Searcher.Doc(topDocs.ScoreDocs[i].Doc);
 
                     // Get the view model of the package element and add it to the results.
-                    string name = resultDoc.Get(nameof(LuceneConfig.IndexFieldsEnum.Name));
+                    string name = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.Name));
 
                     var foundPackage = GetViewModelForPackageSearchElement(name);
                     if (foundPackage != null)

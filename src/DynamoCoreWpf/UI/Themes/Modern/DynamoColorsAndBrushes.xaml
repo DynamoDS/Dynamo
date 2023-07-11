@@ -198,6 +198,9 @@
     <!--  TextBlock ToolTip color -->
     <SolidColorBrush x:Key="TextBlockToolTipDescriptionColor" Color="{StaticResource DarkerGrey}" />
 
+    <!--  TextEditor brush color -->
+    <SolidColorBrush x:Key="TextEditorBrush" Color="#353535" />
+    
     <!--  Custom ToolTip border color  -->
     <SolidColorBrush x:Key="CustomToolTipBorderColor" Color="#808080" />
 </ResourceDictionary>
