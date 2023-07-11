@@ -48,7 +48,7 @@ namespace Dynamo.Core
         internal IPathResolver PathResolver { get; set; }
     }
 
-    class PathManager : IPathManager
+    public class PathManager : IPathManager
     {
         #region Class Private Data Members
 
@@ -345,36 +345,6 @@ namespace Dynamo.Core
         #endregion
 
         #region Public Class Operational Methods
-
-        /// <summary>
-        /// Specific constructor to get the preferenceFilePath
-        /// </summary>
-        internal PathManager()
-        {
-            var dynamoCorePath = Assembly.GetExecutingAssembly().Location;
-            var corePath = Path.GetDirectoryName(dynamoCorePath);
-            var assemblyPath = Path.Combine(corePath, "DynamoCore.dll");
-
-            if (!PathHelper.IsValidPath(assemblyPath))
-            {
-                throw new Exception("Dynamo's core path could not be found. " +
-                    "If you are running Dynamo from a test, try specifying the " +
-                    "Dynamo core location in the DynamoBasePath variable in " +
-                    "TestServices.dll.config.");
-            }
-
-            // If both major/minor versions are zero, get from assembly.
-            if (majorFileVersion == 0 && (minorFileVersion == 0))
-            {
-                var v = FileVersionInfo.GetVersionInfo(assemblyPath);
-                majorFileVersion = v.FileMajorPart;
-                minorFileVersion = v.FileMinorPart;
-            }
-
-            // Current user specific directories.
-            var userDataDir = GetUserDataFolder();
-            preferenceFilePath = Path.Combine(userDataDir, PreferenceSettingsFileName);
-        }
 
         /// <summary>
         /// Constructs an instance of PathManager object.

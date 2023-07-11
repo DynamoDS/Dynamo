@@ -521,6 +521,7 @@ namespace Dynamo.Models
             /// No update checks or analytics collection should be done.
             /// </summary>
             bool IsHeadless { get; set; }
+            IPathManager PathManager { get; set; }
         }
 
         /// <summary>
@@ -587,6 +588,8 @@ namespace Dynamo.Models
             /// CLIMode indicates if we are running in DynamoCLI or DynamoWPFCLI mode.
             /// </summary>
             public bool CLIMode { get; set; }
+
+            public IPathManager PathManager  { get; set; }   
         }
 
         /// <summary>
@@ -647,17 +650,6 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Apply the locale based on the user preference
-        /// </summary>
-        public static void ApplyLocaleAndNotify()
-        {
-            var preferenceFilePath = new PathManager().PreferenceFilePath;
-            var preferences = PreferenceSettings.Load(preferenceFilePath);
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo(preferences.Locale);
-            Thread.CurrentThread.CurrentCulture = new CultureInfo(preferences.Locale);
-            OnDetectLanguage();
-        }
-        /// <summary>
         /// Default constructor for DynamoModel
         /// </summary>
         /// <param name="config">Start configuration</param>
@@ -679,12 +671,21 @@ namespace Dynamo.Models
 
             ClipBoard = new ObservableCollection<ModelBase>();
 
-            pathManager = new PathManager(new PathManagerParams
+            #region [ Dealing with the PathManager]
+            if (config.PathManager != null)
             {
-                CorePath = config.DynamoCorePath,
-                HostPath = config.DynamoHostPath,
-                PathResolver = config.PathResolver
-            });
+                pathManager = (PathManager)config.PathManager;
+            }
+            else if (config.PathResolver != null)
+            {
+                pathManager = new PathManager(new PathManagerParams
+                {
+                    CorePath = config.DynamoCorePath,
+                    HostPath = config.DynamoHostPath,
+                    PathResolver = config.PathResolver
+                });
+            }
+            #endregion
 
             // Ensure we have all directories in place.
             var exceptions = new List<Exception>();
@@ -718,16 +719,31 @@ namespace Dynamo.Models
 
             OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenInitPreferencesSettings, 30));
 
-            IPreferences preferences = CreateOrLoadPreferences(config.Preferences);
-            if (preferences is PreferenceSettings settings)
+
+            #region [ Dealing with the Preferences ]
+            if (config.Preferences != null)
             {
-                PreferenceSettings = settings;
-                // Setting the new locale for Dynamo after Preferences loaded
-                Thread.CurrentThread.CurrentUICulture = new CultureInfo(PreferenceSettings.Locale);
-                Thread.CurrentThread.CurrentCulture = new CultureInfo(PreferenceSettings.Locale);
-                PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
-                PreferenceSettings.MessageLogged += LogMessage;
+                if (config.Preferences is PreferenceSettings settings)
+                {
+                    PreferenceSettings = settings;
+                    PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
+                    PreferenceSettings.MessageLogged += LogMessage;
+                }
             }
+            else
+            {
+                IPreferences preferences = CreateOrLoadPreferences(config.Preferences,IsServiceMode, pathManager.PreferenceFilePath);
+                if (preferences is PreferenceSettings settings)
+                {
+                    PreferenceSettings = settings;
+                    // Setting the new locale for Dynamo after Preferences loaded
+                    Thread.CurrentThread.CurrentUICulture = new CultureInfo(PreferenceSettings.Locale);
+                    Thread.CurrentThread.CurrentCulture = new CultureInfo(PreferenceSettings.Locale);
+                    PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
+                    PreferenceSettings.MessageLogged += LogMessage;
+                }
+            }
+            #endregion            
 
             if (config is DefaultStartConfiguration defaultStartConfiguration)
             {
@@ -1738,13 +1754,13 @@ namespace Dynamo.Models
             }
         }
 
-        private IPreferences CreateOrLoadPreferences(IPreferences preferences)
+        public static IPreferences CreateOrLoadPreferences(IPreferences preferences, bool isServiceMode, string preferenceFilePath)
         {
             if (preferences != null) // If there is preference settings provided...
                 return preferences;
 
             //Skip file handling and trust location in service mode.
-            if (IsServiceMode)
+            if (isServiceMode)
             {
                 var setting = new PreferenceSettings();
                 setting.SetTrustWarningsDisabled(true);
@@ -1758,7 +1774,7 @@ namespace Dynamo.Models
             //
             var xmlFilePath = PreferenceSettings.DynamoTestPath;
             if (string.IsNullOrEmpty(xmlFilePath))
-                xmlFilePath = pathManager.PreferenceFilePath;
+                xmlFilePath = preferenceFilePath;
 
             if (File.Exists(xmlFilePath))
             {

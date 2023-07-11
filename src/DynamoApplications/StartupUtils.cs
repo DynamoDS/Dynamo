@@ -8,6 +8,8 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using CommandLine;
+using Dynamo.Configuration;
+using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Scheduler;
@@ -273,11 +275,21 @@ namespace Dynamo.Applications
         /// <returns></returns>
         public static DynamoModel MakeModel(bool CLImode, string asmPath = "", HostAnalyticsInfo info = new HostAnalyticsInfo())
         {
-            DynamoModel.ApplyLocaleAndNotify();
+            var pathManagerAndPreference = CreatePathManagerAndPreference();            
+            DynamoModel.OnDetectLanguage();
+
             // Preload ASM and display corresponding message on splash screen
             DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenPreLoadingAsm, 10));
             var isASMloaded = PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
-            var model = StartDynamoWithDefaultConfig(CLImode, string.Empty, string.Empty, geometryFactoryPath, preloaderLocation, info);
+            var model = StartDynamoWithDefaultConfig(CLImode,
+                string.Empty,
+                string.Empty,
+                geometryFactoryPath,
+                preloaderLocation,
+                info,
+                false,
+                pathManagerAndPreference.Item1,
+                pathManagerAndPreference.Item2);
             model.IsASMLoaded = isASMloaded;
             return model;
         }
@@ -361,13 +373,42 @@ namespace Dynamo.Applications
             }
         }
 
+        /// <summary>
+        /// Create a unique instance of a PathManager and PreferenceSettings to apply the locale language and reuse them as part of the DynamoModel ctor
+        /// </summary>
+        /// <returns></returns>
+        private static Tuple<PathManager, PreferenceSettings> CreatePathManagerAndPreference()
+        {
+            IPathResolver pathResolver = CreateIPathResolver(false, "", "", "");
+            PathManager pathManager = new PathManager(new PathManagerParams
+            {
+                CorePath = string.Empty,
+                HostPath = string.Empty,
+                PathResolver = pathResolver
+            });
+
+            PreferenceSettings preferenceSettings = (PreferenceSettings)DynamoModel.CreateOrLoadPreferences(null, false, pathManager.PreferenceFilePath);
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo(preferenceSettings.Locale);
+            Thread.CurrentThread.CurrentCulture = new CultureInfo(preferenceSettings.Locale);
+            return new Tuple<PathManager, PreferenceSettings>(pathManager, preferenceSettings);
+        }
+
+        private static IPathResolver CreateIPathResolver(bool CLImode,string preloaderLocation,string userDataFolder, string commonDataFolder)
+        {
+            IPathResolver pathResolver = CLImode ? new CLIPathResolver(preloaderLocation, userDataFolder, commonDataFolder) as IPathResolver : new SandboxPathResolver(preloaderLocation) as IPathResolver;
+            return pathResolver;
+        }
+
         private static DynamoModel StartDynamoWithDefaultConfig(bool CLImode,
             string userDataFolder,
             string commonDataFolder,
             string geometryFactoryPath,
             string preloaderLocation,
             HostAnalyticsInfo info = new HostAnalyticsInfo(),
-            bool isServiceMode = false)
+            bool isServiceMode = false,
+            PathManager pathManager = null,
+            PreferenceSettings preferences = null
+            )
         {
             var config = new DynamoModel.DefaultStartConfiguration
             {
@@ -378,8 +419,10 @@ namespace Dynamo.Applications
                 AuthProvider = CLImode ? null : new Core.IDSDKManager(),
                 UpdateManager = CLImode ? null : OSHelper.IsWindows() ? InitializeUpdateManager() : null,
                 StartInTestMode = CLImode,
-                PathResolver = CLImode ? new CLIPathResolver(preloaderLocation, userDataFolder, commonDataFolder) as IPathResolver : new SandboxPathResolver(preloaderLocation) as IPathResolver,
-                IsServiceMode = isServiceMode
+                PathResolver = pathManager == null ? CreateIPathResolver(CLImode, preloaderLocation, userDataFolder, commonDataFolder) : null,
+                IsServiceMode = isServiceMode,
+                PathManager = pathManager,
+                Preferences = preferences
             };
 
             var model = DynamoModel.Start(config);
