@@ -10,18 +10,26 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Media.Imaging;
-using Dynamo.Graph.Nodes.ZeroTouch;
+using Dynamo.Controls;
 using Dynamo.Selection;
+using Dynamo.Utilities;
 using DynamoCoreWpfTests.Utility;
 using HelixToolkit.Wpf.SharpDX;
 using NUnit.Framework;
 
 namespace WpfVisualizationTests
 {
-
     [TestFixture]
-    public class HelixImageComparisonTests : HelixWatch3DViewModelTests
+    public class HelixImageComparisonTests : VisualizationTest
     {
+        protected Watch3DView BackgroundPreview
+        {
+            get
+            {
+                return (Watch3DView)View.background_grid.Children().FirstOrDefault(c => c is Watch3DView);
+            }
+        }
+
         #region utilities
 
         /// <summary>
