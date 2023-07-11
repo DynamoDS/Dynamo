@@ -22,6 +22,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.1400" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System.Xaml" />
