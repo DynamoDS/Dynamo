@@ -16,15 +16,17 @@
     <ItemGroup>
         <PackageReference Include="DiffPlex" Version="1.6.3" CopyMetaData="true" />
         <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
+        <Reference Include="Python.Runtime, Version=2.5.2.4265, Culture=neutral, processorArchitecture=MSIL">
+            <SpecificVersion>False</SpecificVersion>
+            <HintPath>..\..\extern\Python\Python.Runtime.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+    </ItemGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
         <Reference Include="PresentationCore">
             <Private>False</Private>
         </Reference>
         <Reference Include="PresentationFramework">
-            <Private>False</Private>
-        </Reference>
-        <Reference Include="Python.Runtime, Version=2.5.2.4265, Culture=neutral, processorArchitecture=MSIL">
-            <SpecificVersion>False</SpecificVersion>
-            <HintPath>..\..\extern\Python\Python.Runtime.dll</HintPath>
             <Private>False</Private>
         </Reference>
         <Reference Include="System.Windows.Forms">

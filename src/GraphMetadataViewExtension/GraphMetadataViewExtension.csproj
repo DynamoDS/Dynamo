@@ -13,7 +13,7 @@
     <AssemblyName>GraphMetadataViewExtension</AssemblyName>
       <EnableDefaultPageItems>false</EnableDefaultPageItems>
   </PropertyGroup>
-  <ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System.Xaml" />
