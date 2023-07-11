@@ -962,9 +962,10 @@ namespace Dynamo.ViewModels
                     // read back a Lucene doc from results
                     Document resultDoc = LuceneSearchUtility.Searcher.Doc(topDocs.ScoreDocs[i].Doc);
 
-                    string name = resultDoc.Get(nameof(LuceneConfig.IndexFieldsEnum.Name));
-                    string docName = resultDoc.Get(nameof(LuceneConfig.IndexFieldsEnum.DocName));
-                    string cat = resultDoc.Get(nameof(LuceneConfig.IndexFieldsEnum.FullCategoryName));
+                    string name = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.Name));
+                    string docName = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.DocName));
+                    string cat = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName));
+                    string parameters = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.Parameters));
 
                     if (!string.IsNullOrEmpty(docName))
                     {
@@ -972,7 +973,7 @@ namespace Dynamo.ViewModels
                     }
                     else
                     {
-                        var foundNode = FindViewModelForNodeNameAndCategory(name, cat);
+                        var foundNode = FindViewModelForNodeNameAndCategory(name, cat, parameters);
                         if (foundNode != null)
                         {
                             candidates.Add(foundNode);
@@ -992,13 +993,20 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="nodeName">Name of the node</param>
         /// <param name="nodeCategory">Full Category of the node</param>
+        /// <param name="parameters">Node input parameters</param>
         /// <returns></returns>
-        private NodeSearchElementViewModel FindViewModelForNodeNameAndCategory(string nodeName, string nodeCategory)
+        private NodeSearchElementViewModel FindViewModelForNodeNameAndCategory(string nodeName, string nodeCategory, string parameters)
         {
             var result = Model.SearchEntries.Where(e => {
                 if (e.Name.Equals(nodeName) && e.FullCategoryName.Equals(nodeCategory))
                 {
-                    return true;
+                    //When the node info was indexed if Parameters was null we added an empty space (null cannot be indexed)
+                    //Then in this case when searching if e.Parameters is null we need to check against empty space
+                    if (e.Parameters == null)
+                        return string.IsNullOrEmpty(parameters);
+                    //Parameters contain a value so we need to compare against the value indexed
+                    else
+                        return e.Parameters.Equals(parameters);
                 }
                 return false;
             });
