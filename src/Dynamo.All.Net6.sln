@@ -156,6 +156,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "System", "System", "{F0BFEE
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationTests", "..\test\System\IntegrationTests\IntegrationTests.csproj", "{1254D922-643B-4F0B-82BD-E9E02399B040}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PythonNodeModelsWpf", "Libraries\PythonNodeModelsWpf\PythonNodeModelsWpf.csproj", "{01DE9B06-0BCB-4D8A-862E-E8170F5D6B4F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoServicesTests", "..\test\Libraries\NodeServicesTest\DynamoServicesTests.csproj", "{3E4278F7-60EC-491C-8094-B525C36A51A7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|NET60_Windows = Debug|NET60_Windows
@@ -385,6 +389,14 @@ Global
 		{1254D922-643B-4F0B-82BD-E9E02399B040}.Debug|NET60_Windows.Build.0 = Debug|NET60_Windows
 		{1254D922-643B-4F0B-82BD-E9E02399B040}.Release|NET60_Windows.ActiveCfg = Release|NET60_Windows
 		{1254D922-643B-4F0B-82BD-E9E02399B040}.Release|NET60_Windows.Build.0 = Release|NET60_Windows
+		{01DE9B06-0BCB-4D8A-862E-E8170F5D6B4F}.Debug|NET60_Windows.ActiveCfg = Debug|NET60_Windows
+		{01DE9B06-0BCB-4D8A-862E-E8170F5D6B4F}.Debug|NET60_Windows.Build.0 = Debug|NET60_Windows
+		{01DE9B06-0BCB-4D8A-862E-E8170F5D6B4F}.Release|NET60_Windows.ActiveCfg = Release|NET60_Windows
+		{01DE9B06-0BCB-4D8A-862E-E8170F5D6B4F}.Release|NET60_Windows.Build.0 = Release|NET60_Windows
+		{3E4278F7-60EC-491C-8094-B525C36A51A7}.Debug|NET60_Windows.ActiveCfg = Debug|NET60_Windows
+		{3E4278F7-60EC-491C-8094-B525C36A51A7}.Debug|NET60_Windows.Build.0 = Debug|NET60_Windows
+		{3E4278F7-60EC-491C-8094-B525C36A51A7}.Release|NET60_Windows.ActiveCfg = Release|NET60_Windows
+		{3E4278F7-60EC-491C-8094-B525C36A51A7}.Release|NET60_Windows.Build.0 = Release|NET60_Windows
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -440,6 +452,8 @@ Global
 		{B9E338CA-6677-4772-B01D-1FCEABCDAAAB} = {FA7BE306-A3B0-45FA-9D87-0C69E6932C13}
 		{F0BFEE09-CE03-42F6-9DF1-DED4D86C2A73} = {5B9B5B6B-0BA7-4606-B8E5-70C958346D57}
 		{1254D922-643B-4F0B-82BD-E9E02399B040} = {F0BFEE09-CE03-42F6-9DF1-DED4D86C2A73}
+		{01DE9B06-0BCB-4D8A-862E-E8170F5D6B4F} = {FA7BE306-A3B0-45FA-9D87-0C69E6932C13}
+		{3E4278F7-60EC-491C-8094-B525C36A51A7} = {4CA0BC62-DCB3-456B-80D6-348247640BAB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89CB19C6-BF0A-4E6A-BFDA-79D143EAB59D}
