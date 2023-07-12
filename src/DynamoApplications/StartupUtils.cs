@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using CommandLine;
+using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Scheduler;
 using Dynamo.Updates;
@@ -370,8 +371,7 @@ namespace Dynamo.Applications
             string geometryFactoryPath,
             string preloaderLocation,
             HostAnalyticsInfo info = new HostAnalyticsInfo(),
-            bool isServiceMode = false
-            )
+            bool isServiceMode = false)
         {
             var config = new DynamoModel.DefaultStartConfiguration
             {
