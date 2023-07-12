@@ -92,7 +92,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// This represent the fields that will be indexed when initializing Lucene Search
         /// </summary>
-        public enum IndexFieldsEnum
+        public enum NodeFieldsEnum
         {
             /// <summary>
             /// Name - The name of the node
@@ -127,26 +127,32 @@ namespace Dynamo.Configuration
             /// <summary>
             /// Hosts - Package hosts
             /// </summary>
-            Hosts
+            Hosts,
+
+            /// <summary>
+            /// Node Input Parameters as string (there are nodes with same name and category but different parameters)
+            /// </summary>
+            Parameters
         }
 
         /// <summary>
         /// Nodes Fields to be indexed by Lucene Search
         /// </summary>
-        public static string[] NodeIndexFields = { nameof(IndexFieldsEnum.Name),
-                                                   nameof(IndexFieldsEnum.FullCategoryName),
-                                                   nameof(IndexFieldsEnum.Description),
-                                                   nameof(IndexFieldsEnum.SearchKeywords),
-                                                   nameof(IndexFieldsEnum.DocName),
-                                                   nameof(IndexFieldsEnum.Documentation)};
+        public static string[] NodeIndexFields = { nameof(NodeFieldsEnum.Name),
+                                                   nameof(NodeFieldsEnum.FullCategoryName),
+                                                   nameof(NodeFieldsEnum.Description),
+                                                   nameof(NodeFieldsEnum.SearchKeywords),
+                                                   nameof(NodeFieldsEnum.DocName),
+                                                   nameof(NodeFieldsEnum.Documentation),
+                                                   nameof(NodeFieldsEnum.Parameters)};
 
 
         /// <summary>
         /// Package Fields to be indexed by Lucene Search
         /// </summary>
-        public static string[] PackageIndexFields = { nameof(IndexFieldsEnum.Name),
-                                                      nameof(IndexFieldsEnum.Description),
-                                                      nameof(IndexFieldsEnum.SearchKeywords),
-                                                      nameof(IndexFieldsEnum.Hosts)};
+        public static string[] PackageIndexFields = { nameof(NodeFieldsEnum.Name),
+                                                      nameof(NodeFieldsEnum.Description),
+                                                      nameof(NodeFieldsEnum.SearchKeywords),
+                                                      nameof(NodeFieldsEnum.Hosts)};
     }
 }

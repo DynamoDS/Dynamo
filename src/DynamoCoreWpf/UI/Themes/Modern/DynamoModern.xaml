@@ -2934,6 +2934,7 @@
     <SolidColorBrush x:Key="TabItemUnSelected" Color="DarkGray" />
     <SolidColorBrush x:Key="SecondaryGray" Color="#707070" />
     <SolidColorBrush x:Key="SemiTransparent" Color="#80000000" />
+    <SolidColorBrush x:Key="PackageManagerTabBackgroundColor" Color="#2A2A2A" />
 
     <!--  Usual button color for the Preferences Window  -->
     <Color x:Key="PreferencesToogleCheckedColor"
@@ -4032,6 +4033,59 @@
                             <Grid Name="TabPanel"
                                   Width="165"
                                   Height="30">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="5" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Label x:Name="SelectedItem" Grid.Column="0" />
+                                <ContentPresenter x:Name="ContentSection"
+                                                  Grid.Column="1"
+                                                  Margin="5,0,0,0"
+                                                  HorizontalAlignment="Stretch"
+                                                  VerticalAlignment="Center"
+                                                  ContentSource="Header" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="SelectedItem" Property="Background" Value="{StaticResource PreferencesWindowTabSelectedColor}" />
+                            <Setter Property="Foreground" Value="{StaticResource PreferencesWindowFontColor}" />
+                            <Setter Property="FontWeight" Value="Bold" />
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="False">
+                            <Setter TargetName="SelectedItem" Property="Background" Value="{StaticResource PreferencesWindowBackgroundColor}" />
+                            <Setter Property="Foreground" Value="{StaticResource TabItemUnSelected}" />
+                            <Setter Property="FontWeight" Value="Regular" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="PackageManagerTab" TargetType="{x:Type TabItem}">
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TabItem}">
+                    <Border Name="TabBorder"
+                            Margin="0"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            BorderThickness="0"
+                            CornerRadius="6">
+                        <StackPanel HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    Orientation="Horizontal"
+                                    Margin="0 5 0 0">
+                            <Grid Name="TabPanel"
+                                  Width="165"
+                                  Height="30"
+                                  Margin="5">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="5" />
                                     <ColumnDefinition Width="*" />
@@ -5730,5 +5784,67 @@
                 <Setter Property="Template" Value="{StaticResource Slider}" />
             </Trigger>
         </Style.Triggers>
+    </Style>
+
+    <Style x:Key="RunButtonStyle"
+                   TargetType="{x:Type Button}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Border x:Name="container"
+                                    Background="Transparent"
+                                    BorderBrush="#FF23A597"
+                                    CornerRadius="2"
+                                    BorderThickness="1">
+                        <Grid x:Name="inner"
+                                      Background="#FF23A597">
+                            <TextBlock x:Name="text"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               FontSize="14px"
+                                               Foreground="#FFFFFF"
+                                               Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
+                        </Grid>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+
+                        <Trigger Property="Button.IsMouseOver"
+                                         Value="true">
+                            <Setter TargetName="container"
+                                            Property="BorderBrush"
+                                            Value="#26808080" />
+                            <Setter TargetName="container"
+                                            Property="BorderThickness"
+                                            Value="2" />
+                        </Trigger>
+
+                        <Trigger Property="Button.IsPressed"
+                                         Value="true">
+                            <Setter TargetName="container"
+                                            Property="BorderBrush"
+                                            Value="#40808080" />
+                            <Setter TargetName="container"
+                                            Property="BorderThickness"
+                                            Value="4" />
+                        </Trigger>
+
+                        <Trigger Property="Button.IsEnabled"
+                                         Value="false">
+                            <Setter TargetName="inner"
+                                            Property="Background"
+                                            Value="#218d81" />
+                            <Setter TargetName="text"
+                                            Property="Foreground"
+                                            Value="#bebebe" />
+                            <Setter TargetName="container"
+                                            Property="BorderBrush"
+                                            Value="#218d81" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 </ResourceDictionary>
