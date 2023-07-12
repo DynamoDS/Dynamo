@@ -94,7 +94,7 @@
       <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <Target Name="GenerateFiles" AfterTargets="Build">
+  <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps">
     <!-- Get ProtoGeometry -->
     <GetAssemblyIdentity AssemblyFiles="$(OutDir)..\ProtoGeometry.dll">
       <Output TaskParameter="Assemblies" ItemName="ProtoGeometryInfo" />

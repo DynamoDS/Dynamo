@@ -11,7 +11,6 @@ using Dynamo.Wpf.ViewModels.Watch3D;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
-using ProtoCore.AST.ImperativeAST;
 
 namespace Dynamo.Tests
 {
