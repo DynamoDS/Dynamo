@@ -7,7 +7,7 @@ using System.Text;
 using Dynamo.Wpf.Properties;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
-using Microsoft.Practices.Prism.ViewModel;
+using Dynamo.Core;
 using Dynamo.Configuration;
 using CoreNodeModels;
 

@@ -1,7 +1,8 @@
-﻿using Dynamo.Logging;
-using Dynamo.PythonMigration.MigrationAssistant;
 using System;
 using System.Windows;
+using System.Windows.Input;
+using Dynamo.Logging;
+using Dynamo.PythonMigration.MigrationAssistant;
 
 namespace Dynamo.PythonMigration.Controls
 {
@@ -17,7 +18,7 @@ namespace Dynamo.PythonMigration.Controls
         private int scriptEditorWindowDefaultWidth = 600;
         private int differAdditionalWidthPerPanel = 20;
 
-        internal BaseDiffViewer(PythonMigrationAssistantViewModel viewModel)
+        internal BaseDiffViewer(PythonMigrationAssistantViewModel viewModel) : base()
         {
             ViewModel = viewModel;
             DataContext = viewModel;
@@ -70,6 +71,60 @@ namespace Dynamo.PythonMigration.Controls
                 Dynamo.Logging.Categories.PythonOperations,
                 "Reject",
                 Convert.ToInt32(ViewModel.CurrentViewModel.HasChanges));
+        }
+
+        // Handles Close button 'X' 
+        private void CloseButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void MinimizeButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
+
+        private void MaximizeButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            if ((sender as System.Windows.Controls.Button).Name.Equals("MaximizeButton"))
+            {
+                WindowState = WindowState.Maximized;
+                ToggleButtons(true);
+            }
+            else
+            {
+                WindowState = WindowState.Normal;
+                ToggleButtons(false);
+            }
+        }
+
+        /// <summary>
+        /// Toggles between the Maximize and Normalize buttons on the window
+        /// </summary>
+        /// <param name="toggle"></param>
+        private void ToggleButtons(bool toggle)
+        {
+            if (toggle)
+            {
+                MaximizeButton.Visibility = Visibility.Collapsed;
+                NormalizeButton.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                MaximizeButton.Visibility = Visibility.Visible;
+                NormalizeButton.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        /// <summary>
+        /// Lets the user drag this window around with their left mouse button.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void UIElement_OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton != MouseButton.Left) return;
+            DragMove();
         }
     }
 }

@@ -4,7 +4,6 @@ using System.Windows.Data;
 using System.Windows.Media;
 using FontAwesome5;
 using FontAwesome5.Extensions;
-using Microsoft.Practices.Prism;
 
 namespace Dynamo.Notifications
 {

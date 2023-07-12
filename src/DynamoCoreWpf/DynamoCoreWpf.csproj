@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <UILib>true</UILib>
-    </PropertyGroup>
+  <PropertyGroup>
+    <UILib>true</UILib>
+  </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -14,7 +14,7 @@
     <DocumentationFile>$(OutputPath)\DynamoCoreWpf.XML</DocumentationFile>
     <EnableDefaultCompileItems>False</EnableDefaultCompileItems>
     <EnableDefaultEmbeddedResourceItems>False</EnableDefaultEmbeddedResourceItems>
-      <EnableDefaultPageItems>false</EnableDefaultPageItems>
+    <EnableDefaultPageItems>false</EnableDefaultPageItems>
     <PreferredToolArchitecture>x64</PreferredToolArchitecture> 
   </PropertyGroup> 
   <PropertyGroup>
@@ -113,7 +113,7 @@
     <None Remove="Views\GuidedTour\HtmlPages\Resources\ConnectTheNode.gif" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0-windows' ">
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" /> 
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net48' "> 
     <Reference Include="System.Configuration" />
@@ -135,6 +135,7 @@
     <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.1400" />
     <PackageReference Include="AvalonEdit" Version="4.3.1.9430" CopyXML="true" />
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
+    <PackageReference Include="AvalonEdit" Version="6.3.0.90" CopyXML="true" />
     <PackageReference Include="Greg" Version="2.5.0.5076" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" />
 	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
@@ -158,14 +159,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\Microsoft.Xaml.Behaviors\$(TargetFramework)\Dynamo.Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Practices.Prism">
-      <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-    </Reference>
-	<PackageReference Include="Extended.Wpf.Toolkit" version="3.0.0">
-	  <GeneratePathProperty>true</GeneratePathProperty>
-    <!--Exclude copying the dll because we will handle it in the BinaryCompatibilityOps target -->
-    <ExcludeAssets>runtime</ExcludeAssets>
-	</PackageReference> 
+    <PackageReference Include="Prism.Core" Version="8.1.97" />
+    <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.103" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\InstalledPackagesControl.xaml.cs">
