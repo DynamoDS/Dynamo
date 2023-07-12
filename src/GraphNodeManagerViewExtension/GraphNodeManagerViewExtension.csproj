@@ -15,10 +15,6 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
-    <Reference Include="Microsoft.Practices.Prism">
-      <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <PackageReference Include="Prism.Core" Version="8.1.97" />
   </ItemGroup>
   <ItemGroup>
