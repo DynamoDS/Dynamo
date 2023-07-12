@@ -93,13 +93,12 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-FontAwesome v.4.7.0:
-https://www.nuget.org/packages/FontAwesome/4.7.0
-https://github.com/FortAwesome/Font-Awesome/blob/6.x/LICENSE.txt
+FontAwesome v.5.15.4:
+https://github.com/FortAwesome/Font-Awesome/blob/5.x/LICENSE.txt
 CC BY 4.0 License (https://creativecommons.org/licenses/by/4.0/)
-Copyright (c) 2023 Fonticons, Inc. (https://fontawesome.com)
+Copyright (c) 2022 Fonticons, Inc. (https://fontawesome.com)
 
-The Font Awesome Free download is licensed under a Creative Commons Attribution 4.0 International License and applies to all icons packaged as SVG and JS file types.
+In the Font Awesome Free download, the CC BY 4.0 license applies to all icons packaged as SVG and JS file types.
 
 Cyotek.Drawing.BitmapFont v.1.3.4:
 https://github.com/cyotek/Cyotek.Drawing.BitmapFont
