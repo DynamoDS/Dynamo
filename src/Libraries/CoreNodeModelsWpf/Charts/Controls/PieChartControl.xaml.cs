@@ -5,7 +5,6 @@ using LiveCharts;
 using LiveCharts.Wpf;
 using System.ComponentModel;
 using System.Windows;
-using System.Web.ModelBinding;
 using System.Collections.Generic;
 using System.Linq;
 
