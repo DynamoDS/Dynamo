@@ -37,7 +37,7 @@
   </ItemGroup>
   <ItemGroup>
 	<PackageReference Include="AvalonEdit" Version="4.3.1.9430" />
-	<PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
+	<PackageReference Include="FontAwesome5" Version="2.1.11" />
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
       <Private>False</Private>

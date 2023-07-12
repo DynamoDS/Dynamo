@@ -1,10 +1,10 @@
-﻿<Window x:Class="Dynamo.PythonMigration.Controls.BaseDiffViewer"
+<Window x:Class="Dynamo.PythonMigration.Controls.BaseDiffViewer"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:p="clr-namespace:Dynamo.PythonMigration.Properties"
-        xmlns:fa="http://schemas.fontawesome.io/icons/"
+        xmlns:fa="http://schemas.fontawesome.com/icons/"
         xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
         xmlns:viewModels="clr-namespace:Dynamo.PythonMigration.Differ"
         xmlns:local="clr-namespace:Dynamo.PythonMigration.Controls"
@@ -143,7 +143,7 @@
                     </Button.ToolTip>
                     <Button.Resources>
                         <fa:ImageAwesome x:Key="Shape"
-                                         Icon="Exchange"
+                                         Icon="Solid_ExchangeAlt"
                                          Foreground="#bbbbbb"
                                          Height="17"
                                          Margin="13,0,13,0" />
@@ -163,7 +163,7 @@
                     </Button.ToolTip>
                     <Button.Resources>
                         <fa:ImageAwesome x:Key="Shape"
-                                         Icon="Check"
+                                         Icon="Solid_Check"
                                          Foreground="#bbbbbb"
                                          Height="17"
                                          Margin="13,0,13,0" />
@@ -178,7 +178,7 @@
                     </Button.ToolTip>
                     <Button.Resources>
                         <fa:ImageAwesome x:Key="Shape"
-                                         Icon="Close"
+                                         Icon="Solid_WindowClose"
                                          Foreground="#bbbbbb"
                                          Height="17"
                                          Margin="13,0,13,0" />

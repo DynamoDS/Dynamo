@@ -11,7 +11,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="DiffPlex" Version="1.6.3" CopyMetaData="true" />
-	  <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
+	  <PackageReference Include="FontAwesome5" Version="2.1.11" />
     <Reference Include="PresentationCore">
       <Private>False</Private>
     </Reference>
