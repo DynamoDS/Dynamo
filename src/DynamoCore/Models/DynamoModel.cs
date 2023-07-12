@@ -3253,10 +3253,11 @@ namespace Dynamo.Models
             if (IsTestMode) return;
             if (LuceneSearchUtility.addedFields == null) return;
 
-            LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.IndexFieldsEnum.FullCategoryName), node.FullCategoryName);
-            LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.IndexFieldsEnum.Name), node.Name);
-            LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.IndexFieldsEnum.Description), node.Description);
-            if (node.SearchKeywords.Count > 0) LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.IndexFieldsEnum.SearchKeywords), node.SearchKeywords.Aggregate((x, y) => x + " " + y), true, true);
+            LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName), node.FullCategoryName);
+            LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), node.Name);
+            LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Description), node.Description);
+            if (node.SearchKeywords.Count > 0) LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords), node.SearchKeywords.Aggregate((x, y) => x + " " + y), true, true);
+            LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Parameters), node.Parameters?? string.Empty);
 
             LuceneSearchUtility.writer?.AddDocument(doc);
         }
