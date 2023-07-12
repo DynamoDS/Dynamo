@@ -588,8 +588,7 @@ namespace Dynamo.Models
             /// CLIMode indicates if we are running in DynamoCLI or DynamoWPFCLI mode.
             /// </summary>
             public bool CLIMode { get; set; }
-
-            public IPathManager PathManager  { get; set; }   
+            public IPathManager PathManager { get; set; }
         }
 
         /// <summary>
@@ -671,21 +670,7 @@ namespace Dynamo.Models
 
             ClipBoard = new ObservableCollection<ModelBase>();
 
-            #region [ Dealing with the PathManager]
-            if (config.PathManager != null)
-            {
-                pathManager = (PathManager)config.PathManager;
-            }
-            else if (config.PathResolver != null)
-            {
-                pathManager = new PathManager(new PathManagerParams
-                {
-                    CorePath = config.DynamoCorePath,
-                    HostPath = config.DynamoHostPath,
-                    PathResolver = config.PathResolver
-                });
-            }
-            #endregion
+            pathManager = (PathManager)config.PathManager;
 
             // Ensure we have all directories in place.
             var exceptions = new List<Exception>();
@@ -719,31 +704,12 @@ namespace Dynamo.Models
 
             OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenInitPreferencesSettings, 30));
 
-
-            #region [ Dealing with the Preferences ]
-            if (config.Preferences != null)
+            if (config.Preferences is PreferenceSettings settings)
             {
-                if (config.Preferences is PreferenceSettings settings)
-                {
-                    PreferenceSettings = settings;
-                    PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
-                    PreferenceSettings.MessageLogged += LogMessage;
-                }
+                PreferenceSettings = settings;
+                PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
+                PreferenceSettings.MessageLogged += LogMessage;
             }
-            else
-            {
-                IPreferences preferences = CreateOrLoadPreferences(config.Preferences,IsServiceMode, pathManager.PreferenceFilePath);
-                if (preferences is PreferenceSettings settings)
-                {
-                    PreferenceSettings = settings;
-                    // Setting the new locale for Dynamo after Preferences loaded
-                    Thread.CurrentThread.CurrentUICulture = new CultureInfo(PreferenceSettings.Locale);
-                    Thread.CurrentThread.CurrentCulture = new CultureInfo(PreferenceSettings.Locale);
-                    PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
-                    PreferenceSettings.MessageLogged += LogMessage;
-                }
-            }
-            #endregion            
 
             if (config is DefaultStartConfiguration defaultStartConfiguration)
             {
