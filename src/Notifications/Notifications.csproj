@@ -59,8 +59,6 @@
 		<PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
 		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" />
         <PackageReference Include="Prism.Core" Version="8.1.97" />
-        <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
-        <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" />
 	</ItemGroup>
     <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
         <Reference Include="PresentationCore" />
