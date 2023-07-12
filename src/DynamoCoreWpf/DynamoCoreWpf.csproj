@@ -133,7 +133,6 @@
   </ItemGroup>
   <ItemGroup> 
     <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.1400" />
-    <PackageReference Include="AvalonEdit" Version="4.3.1.9430" CopyXML="true" />
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" CopyXML="true" />
     <PackageReference Include="Greg" Version="2.5.0.5076" />
