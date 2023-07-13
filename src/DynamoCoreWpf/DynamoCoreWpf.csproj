@@ -1524,7 +1524,7 @@
       <Project>{87550b2b-6cb8-461e-8965-dfafe3aafb5c}</Project>
       <Name>CoreNodes</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Libraries\DynamoUnits\Units.csproj">
+    <ProjectReference Include="..\Libraries\DynamoUnits\UnitsCore.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>Units</Name>
     </ProjectReference>

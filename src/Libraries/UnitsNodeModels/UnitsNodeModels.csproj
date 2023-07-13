@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
+    <ImportGroup Label="PropertySheets">
+        <Import Project="$(SolutionDir)Config\CS_SDK.props" />
+    </ImportGroup>
+    <PropertyGroup>
+        <OutputType>Library</OutputType>
+        <AppDesignerFolder>Properties</AppDesignerFolder>
+        <RootNamespace>UnitsUI</RootNamespace>
+        <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    </PropertyGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
+        <Private>False</Private>
+      </ProjectReference>
+      <ProjectReference Include="..\..\Engine\ProtoCore\ProtoCore.csproj">
+        <Private>False</Private>
+      </ProjectReference>
+      <ProjectReference Include="..\CoreNodeModels\CoreNodeModels.csproj">
+        <Private>False</Private>
+      </ProjectReference>
+      <ProjectReference Include="..\DynamoUnits\UnitsCore.csproj">
+        <Private>False</Private>
+      </ProjectReference>
+    </ItemGroup>
+    <ItemGroup>
+      <Compile Update="Properties\Resources.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>Resources.resx</DependentUpon>
+      </Compile>
+    </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Update="Properties\Resources.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+    </ItemGroup>
+
+</Project>

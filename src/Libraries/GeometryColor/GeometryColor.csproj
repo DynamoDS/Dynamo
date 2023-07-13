@@ -36,7 +36,7 @@
       <Name>CoreNodes</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\DynamoUnits\Units.csproj">
+    <ProjectReference Include="..\DynamoUnits\UnitsCore.csproj">
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

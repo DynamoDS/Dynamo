@@ -53,9 +53,12 @@
       <Name>CoreNodes</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\DynamoUnits\Units.csproj">
+    <ProjectReference Include="..\DynamoUnits\UnitsCore.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>Units</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\UnitsNodeModels\UnitsNodeModels.csproj">
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\VMDataBridge\VMDataBridge.csproj">

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DynamoUnits.Properties {
+namespace UnitsUI.Properties {
     using System;
     
     
@@ -22,7 +22,7 @@ namespace DynamoUnits.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class Resources {
+    internal class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,10 +36,10 @@ namespace DynamoUnits.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("DynamoUnits.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("UnitsUI.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -51,7 +51,7 @@ namespace DynamoUnits.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture {
+        internal static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace DynamoUnits.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Enter an area..
         /// </summary>
-        public static string AreaFromStringDescription {
+        internal static string AreaFromStringDescription {
             get {
                 return ResourceManager.GetString("AreaFromStringDescription", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace DynamoUnits.Properties {
         /// <summary>
         ///   Looks up a localized string similar to The area. Stored internally as decimal meters squared..
         /// </summary>
-        public static string AreaFromStringPortDataAreaToolTip {
+        internal static string AreaFromStringPortDataAreaToolTip {
             get {
                 return ResourceManager.GetString("AreaFromStringPortDataAreaToolTip", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace DynamoUnits.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Imperial;Metric;Area;Project;units.
         /// </summary>
-        public static string AreaFromStringSearchTags {
+        internal static string AreaFromStringSearchTags {
             get {
                 return ResourceManager.GetString("AreaFromStringSearchTags", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace DynamoUnits.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Converts a value between selected unit systems.
         /// </summary>
-        public static string ConvertUnitsDescription {
+        internal static string ConvertUnitsDescription {
             get {
                 return ResourceManager.GetString("ConvertUnitsDescription", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace DynamoUnits.Properties {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        public static string ConvertUnitsSearchTags {
+        internal static string ConvertUnitsSearchTags {
             get {
                 return ResourceManager.GetString("ConvertUnitsSearchTags", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace DynamoUnits.Properties {
         /// <summary>
         ///   Looks up a localized string similar to A value to convert.
         /// </summary>
-        public static string CovertUnitInputTooltip {
+        internal static string CovertUnitInputTooltip {
             get {
                 return ResourceManager.GetString("CovertUnitInputTooltip", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace DynamoUnits.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Converted value.
         /// </summary>
-        public static string CovertUnitOutputTooltip {
+        internal static string CovertUnitOutputTooltip {
             get {
                 return ResourceManager.GetString("CovertUnitOutputTooltip", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace DynamoUnits.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Edit....
         /// </summary>
-        public static string EditHeader {
+        internal static string EditHeader {
             get {
                 return ResourceManager.GetString("EditHeader", resourceCulture);
             }
@@ -135,7 +135,7 @@ namespace DynamoUnits.Properties {
         /// <summary>
         ///   Looks up a localized string similar to is obsolete, please use the Parse Unit Input node..
         /// </summary>
-        public static string LegthFromStringObsoleteMessage {
+        internal static string LegthFromStringObsoleteMessage {
             get {
                 return ResourceManager.GetString("LegthFromStringObsoleteMessage", resourceCulture);
             }
@@ -144,7 +144,7 @@ namespace DynamoUnits.Properties {
         /// <summary>
         ///   Looks up a localized string similar to A length defined as feet and inches is turned into a number representation in feet..
         /// </summary>
-        public static string LengthFromStringDescription {
+        internal static string LengthFromStringDescription {
             get {
                 return ResourceManager.GetString("LengthFromStringDescription", resourceCulture);
             }
@@ -153,7 +153,7 @@ namespace DynamoUnits.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Number representation in feet.
         /// </summary>
-        public static string LengthFromStringPortDataLengthToolTip {
+        internal static string LengthFromStringPortDataLengthToolTip {
             get {
                 return ResourceManager.GetString("LengthFromStringPortDataLengthToolTip", resourceCulture);
             }
@@ -162,7 +162,7 @@ namespace DynamoUnits.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Imperial;Metric;Length;Project;units.
         /// </summary>
-        public static string LengthFromStringSearchTags {
+        internal static string LengthFromStringSearchTags {
             get {
                 return ResourceManager.GetString("LengthFromStringSearchTags", resourceCulture);
             }
@@ -171,7 +171,7 @@ namespace DynamoUnits.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Converts an input string with unit values into the equivalent value of the expression.
         /// </summary>
-        public static string ParseUnitInputDescription {
+        internal static string ParseUnitInputDescription {
             get {
                 return ResourceManager.GetString("ParseUnitInputDescription", resourceCulture);
             }
@@ -180,7 +180,7 @@ namespace DynamoUnits.Properties {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        public static string ParseUnitInputSearchTags {
+        internal static string ParseUnitInputSearchTags {
             get {
                 return ResourceManager.GetString("ParseUnitInputSearchTags", resourceCulture);
             }
@@ -189,7 +189,7 @@ namespace DynamoUnits.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Selected Unit.
         /// </summary>
-        public static string ParseUnitInputUnitTooltip {
+        internal static string ParseUnitInputUnitTooltip {
             get {
                 return ResourceManager.GetString("ParseUnitInputUnitTooltip", resourceCulture);
             }
@@ -198,7 +198,7 @@ namespace DynamoUnits.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Converted value of expresion.
         /// </summary>
-        public static string ParseUnitInputValueTooltip {
+        internal static string ParseUnitInputValueTooltip {
             get {
                 return ResourceManager.GetString("ParseUnitInputValueTooltip", resourceCulture);
             }
@@ -207,7 +207,7 @@ namespace DynamoUnits.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Select a Quantity type.
         /// </summary>
-        public static string QuantitiesUIDescription {
+        internal static string QuantitiesUIDescription {
             get {
                 return ResourceManager.GetString("QuantitiesUIDescription", resourceCulture);
             }
@@ -216,7 +216,7 @@ namespace DynamoUnits.Properties {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        public static string QuantitiesUISearchTags {
+        internal static string QuantitiesUISearchTags {
             get {
                 return ResourceManager.GetString("QuantitiesUISearchTags", resourceCulture);
             }
@@ -225,7 +225,7 @@ namespace DynamoUnits.Properties {
         /// <summary>
         ///   Looks up a localized string similar to There was an issue loading Unit Schemas from the specified path:.
         /// </summary>
-        public static string SchemaLoadWarning {
+        internal static string SchemaLoadWarning {
             get {
                 return ResourceManager.GetString("SchemaLoadWarning", resourceCulture);
             }
@@ -234,7 +234,7 @@ namespace DynamoUnits.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Select a Symbol type.
         /// </summary>
-        public static string SymbolsUIDescription {
+        internal static string SymbolsUIDescription {
             get {
                 return ResourceManager.GetString("SymbolsUIDescription", resourceCulture);
             }
@@ -243,7 +243,7 @@ namespace DynamoUnits.Properties {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        public static string SymbolsUISearchTags {
+        internal static string SymbolsUISearchTags {
             get {
                 return ResourceManager.GetString("SymbolsUISearchTags", resourceCulture);
             }
@@ -252,7 +252,7 @@ namespace DynamoUnits.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Select a Unit type.
         /// </summary>
-        public static string UnitsUIDescription {
+        internal static string UnitsUIDescription {
             get {
                 return ResourceManager.GetString("UnitsUIDescription", resourceCulture);
             }
@@ -261,7 +261,7 @@ namespace DynamoUnits.Properties {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        public static string UnitsUISearchTags {
+        internal static string UnitsUISearchTags {
             get {
                 return ResourceManager.GetString("UnitsUISearchTags", resourceCulture);
             }
@@ -270,7 +270,7 @@ namespace DynamoUnits.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Select a unit of measurement..
         /// </summary>
-        public static string UnitTypesDescription {
+        internal static string UnitTypesDescription {
             get {
                 return ResourceManager.GetString("UnitTypesDescription", resourceCulture);
             }
@@ -279,7 +279,7 @@ namespace DynamoUnits.Properties {
         /// <summary>
         ///   Looks up a localized string similar to is obsolete, please use the Units dropdown node..
         /// </summary>
-        public static string UnitTypesObsoleteMessage {
+        internal static string UnitTypesObsoleteMessage {
             get {
                 return ResourceManager.GetString("UnitTypesObsoleteMessage", resourceCulture);
             }
@@ -288,7 +288,7 @@ namespace DynamoUnits.Properties {
         /// <summary>
         ///   Looks up a localized string similar to units;unittypes;.
         /// </summary>
-        public static string UnitTypesSearchTags {
+        internal static string UnitTypesSearchTags {
             get {
                 return ResourceManager.GetString("UnitTypesSearchTags", resourceCulture);
             }
@@ -297,7 +297,7 @@ namespace DynamoUnits.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Enter a volume..
         /// </summary>
-        public static string VolumeFromStringDescription {
+        internal static string VolumeFromStringDescription {
             get {
                 return ResourceManager.GetString("VolumeFromStringDescription", resourceCulture);
             }
@@ -306,7 +306,7 @@ namespace DynamoUnits.Properties {
         /// <summary>
         ///   Looks up a localized string similar to The volume. Stored internally as decimal meters cubed..
         /// </summary>
-        public static string VolumeFromStringPortDataVolumeToolTip {
+        internal static string VolumeFromStringPortDataVolumeToolTip {
             get {
                 return ResourceManager.GetString("VolumeFromStringPortDataVolumeToolTip", resourceCulture);
             }
@@ -315,7 +315,7 @@ namespace DynamoUnits.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Imperial;Metric;volume;Project;units.
         /// </summary>
-        public static string VolumeFromStringSearchTags {
+        internal static string VolumeFromStringSearchTags {
             get {
                 return ResourceManager.GetString("VolumeFromStringSearchTags", resourceCulture);
             }

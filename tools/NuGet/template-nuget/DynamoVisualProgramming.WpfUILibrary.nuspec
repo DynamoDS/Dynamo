@@ -9,8 +9,11 @@
         <projectUrl>https://github.com/DynamoDS/Dynamo</projectUrl>
         <icon>content\images\logo.png</icon>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <description>Build node libraries for Dynamo with custom UI in WPF. It contains the following files:
-        1) DynamoCoreWpf.dll </description>
+        <description>
+            Build node libraries for Dynamo with custom UI in WPF. It contains the following files:
+            1) DynamoCoreWpf.dll
+            2) CoreNodeModelsWpf.dll
+        </description>
         <summary>This package contains all that is required to get up and running building nodes for the Dynamo Visual Programming language with custom UI in WPF.</summary>
         <copyright>Copyright Autodesk 2023</copyright>
         <frameworkAssemblies>
@@ -23,19 +26,22 @@
             <group targetFramework=".NETFramework4.8">
                 <dependency id="DynamoVisualProgramming.Core" version="$Version$"/>
                 <dependency id="DynamoVisualProgramming.DynamoCoreNodes" version="$Version$"/>
-                <dependency id="DynamoVisualProgramming.DynamoCoreNodesWPF" version="$Version$"/>
             </group>
             <group targetFramework="net6.0">
                 <dependency id="DynamoVisualProgramming.Core" version="$Version$"/>
                 <dependency id="DynamoVisualProgramming.DynamoCoreNodes" version="$Version$"/>
-                <dependency id="DynamoVisualProgramming.DynamoCoreNodesWPF" version="$Version$"/>
             </group>
         </dependencies>
     </metadata>
     <!--for now we assume that that the working directory root is dynamo/bin/AnyCPU/Release-->
     <files>
         <file src="DynamoCoreWpf.dll" target="lib\net48" />
+        <file src="nodes\CoreNodeModelsWpf.dll" target="lib\net48" />
+        <file src="nodes\CoreNodeModelsWpf.xml" target="lib\net48" />
+
         <file src="..\..\NET60_Windows\Release\DynamoCoreWpf.dll" target="lib\net6.0" />
+        <file src="..\..\NET60_Windows\Release\nodes\CoreNodeModelsWpf.dll" target="lib\net6.0" />
+        <file src="..\..\NET60_Windows\Release\nodes\CoreNodeModelsWpf.xml" target="lib\net6.0" />
         <file src="..\..\..\doc\distrib\Images\logo_square_32x32.png" target="content\images\logo.png" />
     </files>
 </package>

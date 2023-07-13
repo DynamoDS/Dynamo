@@ -11,13 +11,13 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Migration;
 using DynamoUnits;
 using ProtoCore.AST.AssociativeAST;
-using DynamoUnits.Properties;
 using Newtonsoft.Json;
 using AstFactory = ProtoCore.AST.AssociativeAST.AstFactory;
 using DoubleNode = ProtoCore.AST.AssociativeAST.DoubleNode;
 using Dynamo.Utilities;
 using Utilities = DynamoUnits.Utilities;
 using UnitsUI.Converters;
+using UnitsUI.Properties;
 
 namespace UnitsUI
 {

@@ -33,7 +33,7 @@ namespace UnitsUI
             //main context window
             var editWindowItem = new MenuItem()
             {
-                Header = DynamoUnits.Properties.Resources.EditHeader,
+                Header = Properties.Resources.EditHeader,
                 IsCheckable = false,
                 Tag = nodeView.ViewModel.DynamoViewModel
             };

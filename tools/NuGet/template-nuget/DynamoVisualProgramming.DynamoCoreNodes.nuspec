@@ -10,12 +10,13 @@
         <icon>content\images\logo.png</icon>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>
-            Build core nodes for Dynamo. It contains the following files:
+            Reference the core node types for Dynamo. It contains the following files:
             1) Analysis.dll
             2) GeometryColor.dll
             3) DSCoreNodes.dll
             4) CoreNodeModels.dll
             5) Watch3DNodeModels.dll
+            6) UnitNodeModels.dll
         </description>
         <copyright>Copyright Autodesk 2023</copyright>
         <dependencies>
@@ -41,6 +42,8 @@
         <file src="nodes\CoreNodeModels.xml" target="lib\net48" />
         <file src="nodes\Watch3DNodeModels.dll" target="lib\net48" />
         <file src="nodes\Watch3DNodeModels.xml" target="lib\net48" />
+        <file src="nodes\UnitNodeModels.dll" target="lib\net48" />
+        <file src="nodes\UnitNodeModels.xml" target="lib\net48" />
         <file src="..\..\NET60_Windows\Release\Analysis.dll" target="lib\net6.0" />
         <file src="..\..\NET60_Windows\Release\Analysis.xml" target="lib\net6.0" />
         <file src="..\..\NET60_Windows\Release\GeometryColor.dll" target="lib\net6.0" />
@@ -51,6 +54,8 @@
         <file src="..\..\NET60_Windows\Release\nodes\CoreNodeModels.xml" target="lib\net6.0" />
         <file src="..\..\NET60_Windows\Release\nodes\Watch3DNodeModels.dll" target="lib\net6.0" />
         <file src="..\..\NET60_Windows\Release\nodes\Watch3DNodeModels.xml" target="lib\net6.0" />
+        <file src="..\..\NET60_Windows\Release\nodes\UnitNodeModels.dll" target="lib\net6.0" />
+        <file src="..\..\NET60_Windows\Release\nodes\UnitNodeModels.xml" target="lib\net6.0" />
         <file src="..\..\..\doc\distrib\Images\logo_square_32x32.png" target="content\images\logo.png" />
     </files>
 </package>
