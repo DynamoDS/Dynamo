@@ -1,4 +1,4 @@
-﻿using Dynamo.Configuration;
+using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Nodes;
@@ -33,7 +33,7 @@ namespace UnitsUI
             //main context window
             var editWindowItem = new MenuItem()
             {
-                Header = Properties.Resources.EditHeader,
+                Header = DynamoUnits.Properties.Resources.EditHeader,
                 IsCheckable = false,
                 Tag = nodeView.ViewModel.DynamoViewModel
             };

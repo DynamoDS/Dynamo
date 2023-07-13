@@ -31,11 +31,13 @@
     <Content Include="DynamoUnits_DynamoCustomization.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Engine\ProtoCore\ProtoCore.csproj" />
-    <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj" />
-    <ProjectReference Include="..\..\NodeServices\DynamoServices.csproj">
-      <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
-      <Name>DynamoServices</Name>
+    <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Engine\ProtoCore\ProtoCore.csproj">
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\CoreNodeModels\CoreNodeModels.csproj">
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

@@ -11,5 +11,14 @@ using UnitsUI;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("e36f6491-0c13-40c7-afd7-10deb7a57524")]
-
+//move nodemodels to Units.dll
 [assembly: TypeForwardedTo(typeof(MeasurementInputBase))]
+[assembly: TypeForwardedTo(typeof(LengthFromString))]
+[assembly: TypeForwardedTo(typeof(AreaFromString))]
+[assembly: TypeForwardedTo(typeof(VolumeFromString))]
+[assembly: TypeForwardedTo(typeof(UnitTypes))]
+[assembly: TypeForwardedTo(typeof(UnitInput))]
+[assembly: TypeForwardedTo(typeof(DynamoUnitConvert))]
+[assembly: TypeForwardedTo(typeof(Units))]
+[assembly: TypeForwardedTo(typeof(Quantities))]
+[assembly: TypeForwardedTo(typeof(Symbols))]
