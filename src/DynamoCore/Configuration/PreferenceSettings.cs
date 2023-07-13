@@ -344,6 +344,7 @@ namespace Dynamo.Configuration
         /// </summary>
         public int RenderPrecision { get; set; }
 
+        /// <summary>
         /// Indicates whether surface and solid edges will
         /// be rendered.
         /// </summary>

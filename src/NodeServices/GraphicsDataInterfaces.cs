@@ -382,16 +382,16 @@ namespace Autodesk.DesignScript.Interfaces
         /// <summary>
         /// Set an instance reference for a specific range of mesh vertices
         /// </summary>
-        /// <param name="startIndex">The index associated with the first vertex in MeshVertices we want to associate with the instance matrices
-        /// <param name="endIndex">The index associated with the last vertex in MeshVertices we want to associate with the instance matrices
+        /// <param name="startIndex">The index associated with the first vertex in MeshVertices we want to associate with the instance matrices></param>
+        /// <param name="endIndex">The index associated with the last vertex in MeshVertices we want to associate with the instance matrices></param>
         /// <param name="id">A unique id associated with this tessellation geometry for instancing</param>
         void AddInstanceGuidForMeshVertexRange(int startIndex, int endIndex, Guid id);
 
         /// <summary>
         /// Set an instance reference for a specific range of line vertices
         /// </summary>
-        /// <param name="startIndex">The index associated with the first vertex in LineVertices we want to associate with the instance matrices
-        /// <param name="endIndex">The index associated with the last vertex in LineVertices we want to associate with the instance matrices
+        /// <param name="startIndex">The index associated with the first vertex in LineVertices we want to associate with the instance matrices></param>
+        /// <param name="endIndex">The index associated with the last vertex in LineVertices we want to associate with the instance matrices></param>
         /// <param name="id">A unique id associated with this tessellation geometry for instancing</param>
         void AddInstanceGuidForLineVertexRange(int startIndex, int endIndex, Guid id);
 

@@ -644,6 +644,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
         /// <summary>
         /// This function will highlight a Window element (the element can be located in DynamoView or another Window or can be a MenuItem
+        /// </summary>
         /// <param name="bVisible">Indicates if the highlight should be applied or removed</param>
         internal void HighlightWindowElement(bool bVisible)
         {

@@ -3259,6 +3259,7 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
     /// Converter is used in WatchTree.xaml
     /// It converts the value of the padding required by each list level label to the required thickness (padding from the left)
     /// It then supplies the required thickness to the margin property for each label
@@ -3537,7 +3538,7 @@ namespace Dynamo.Controls
     }
 
     /// <summary>
-    /// Converts an ICollection<AnnotationViewModel> to a string
+    /// Converts an ICollection&lt;AnnotationViewModel&gt; to a string
     /// that displays how many AnnotationViewModels there is in the
     /// Collection.
     /// </summary>

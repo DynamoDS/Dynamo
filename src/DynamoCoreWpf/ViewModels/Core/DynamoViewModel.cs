@@ -1626,12 +1626,12 @@ namespace Dynamo.ViewModels
 
         /// <summary>
         /// Open a definition or workspace.
-        /// </summary>
-        /// <param name="parameters"></param>
         /// For most cases, parameters variable refers to the Json content file to open
         /// However, when this command is used in OpenFileDialog, the variable is
-        /// a Tuple<string, bool> instead. The boolean flag is used to override the
+        /// a Tuple{string,bool} instead. The boolean flag is used to override the
         /// RunSetting of the workspace.
+        /// </summary>
+        /// <param name="parameters"></param>
         private void OpenFromJson(object parameters)
         {
             // try catch for exceptions thrown while opening files, say from a future version, 
@@ -1686,12 +1686,12 @@ namespace Dynamo.ViewModels
 
         /// <summary>
         /// Open a definition or workspace.
-        /// </summary>
-        /// <param name="parameters"></param>
         /// For most cases, parameters variable refers to the file path to open
         /// However, when this command is used in OpenFileDialog, the variable is
-        /// a Tuple<string, bool> instead. The boolean flag is used to override the
+        /// a Tuple{string, bool} instead. The boolean flag is used to override the
         /// RunSetting of the workspace.
+        /// </summary>
+        /// <param name="parameters"></param>
         private void Open(object parameters)
         {
             // try catch for exceptions thrown while opening files, say from a future version, 
@@ -1770,12 +1770,12 @@ namespace Dynamo.ViewModels
 
         /// <summary>
         /// Insert a definition or a custom node.
-        /// </summary>
-        /// <param name="parameters"></param>
         /// For most cases, parameters variable refers to the file path to open
         /// However, when this command is used in InsertFileDialog, the variable is
-        /// a Tuple<string, bool> instead. The boolean flag is used to override the
+        /// a Tuple&lt;string, bool&gt; instead. The boolean flag is used to override the
         /// RunSetting of the workspace.
+        /// </summary>
+        /// <param name="parameters"></param>
         private void Insert(object parameters)
         {
             // try catch for exceptions thrown while opening files, say from a future version, 

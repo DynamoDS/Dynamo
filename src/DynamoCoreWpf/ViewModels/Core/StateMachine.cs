@@ -966,7 +966,7 @@ namespace Dynamo.ViewModels
             }
 
             /// <summary>
-            /// Handles the drag & drop for Notes over Nodes
+            /// Handles the drag &amp; drop for Notes over Nodes
             /// </summary>
             /// <param name="mouseCursor">The current location of the mouse cursor</param>
             /// <returns></returns>

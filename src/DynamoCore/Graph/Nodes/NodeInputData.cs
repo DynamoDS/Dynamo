@@ -81,6 +81,7 @@ namespace Dynamo.Graph.Nodes
                 else { type = value; }
             }
         }
+        /// <summary>
         /// The type of input this node is.
         /// </summary>
         public NodeInputTypes Type2 { get; set; }

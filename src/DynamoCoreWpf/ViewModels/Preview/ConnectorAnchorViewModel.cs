@@ -35,7 +35,7 @@ namespace Dynamo.ViewModels
         private Dispatcher Dispatcher { get; set; }
 
         /// <summary>
-        /// The size of the Watch Icon (x & y dimensions).
+        /// The size of the Watch Icon (x &amp; y dimensions).
         /// </summary>
         public double MarkerSize { get; set; } = 30;
         public double AnchorSize { get; set; } = 15;
