@@ -13,6 +13,7 @@
         <copyright>Copyright Autodesk 2020</copyright>
     </metadata>
     <files>
+        <!--These files are referenced from the bin directory since they are not harvested for the installer-->
         <file src="..\..\..\bin\AnyCPU\Release\samples\**" target="Samples" />
         <file src="..\..\..\doc\distrib\Images\logo_square_32x32.png" target="content\images\logo.png" />
     </files>
