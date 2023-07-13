@@ -15,6 +15,12 @@
       <GenerateDocumentationFile>true</GenerateDocumentationFile>
       <EnableDefaultPageItems>false</EnableDefaultPageItems>
   </PropertyGroup>
+    <ItemDefinitionGroup>
+        <ReferenceCopyLocalPaths>
+            <!--Copy all assembly references to the OutputPath parent dir (/nodes/../) -->
+            <DestinationSubDirectory>..\</DestinationSubDirectory>
+        </ReferenceCopyLocalPaths>
+    </ItemDefinitionGroup>
   <ItemDefinitionGroup>
 	<ReferenceCopyLocalPaths>
 		<!--Copy all assembly references to the OutputPath parent dir (/nodes/../) -->

@@ -9,6 +9,12 @@
         <GenerateDocumentationFile>True</GenerateDocumentationFile>
         <OutputPath>$(OutputPath)\nodes\</OutputPath>
     </PropertyGroup>
+    <ItemDefinitionGroup>
+        <ReferenceCopyLocalPaths>
+            <!--Copy all assembly references to the OutputPath parent dir (/nodes/../) -->
+            <DestinationSubDirectory>..\</DestinationSubDirectory>
+        </ReferenceCopyLocalPaths>
+    </ItemDefinitionGroup>
     <ItemGroup>
       <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
         <Private>False</Private>

@@ -2,10 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Xml;
 using CoreNodeModels;
-using DSCore;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Migration;
@@ -14,10 +12,11 @@ using ProtoCore.AST.AssociativeAST;
 using Newtonsoft.Json;
 using AstFactory = ProtoCore.AST.AssociativeAST.AstFactory;
 using DoubleNode = ProtoCore.AST.AssociativeAST.DoubleNode;
-using Dynamo.Utilities;
 using Utilities = DynamoUnits.Utilities;
 using UnitsUI.Converters;
 using UnitsUI.Properties;
+using DSCore;
+using Dynamo.Utilities;
 
 namespace UnitsUI
 {
