@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -39,15 +39,15 @@ namespace Dynamo.UI.Controls
         /// Construct a ShortcutToolbar.
         /// </summary>
         /// <param name="updateManager"></param>
-        public ShortcutToolbar(IUpdateManager updateManager)
+        public ShortcutToolbar(DynamoViewModel dynamoViewModel)
         {
             shortcutBarItems = new ObservableCollection<ShortcutBarItem>();
             shortcutBarRightSideItems = new ObservableCollection<ShortcutBarItem>();    
 
             InitializeComponent();
-            UpdateControl.DataContext = updateManager;
+            UpdateControl.DataContext = dynamoViewModel.Model.UpdateManager;            
 
-            var shortcutToolbar = new ShortcutToolbarViewModel();
+            var shortcutToolbar = new ShortcutToolbarViewModel(dynamoViewModel);
             DataContext = shortcutToolbar;
         }
 
