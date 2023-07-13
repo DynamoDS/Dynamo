@@ -799,10 +799,10 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
-        [JsonConverter(typeof(DescriptionConverter))]
         /// <summary>
         ///     Description of this Node.
         /// </summary>
+        [JsonConverter(typeof(DescriptionConverter))]
         [JsonProperty(Order = 7)]
         public string Description
         {

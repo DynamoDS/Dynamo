@@ -579,14 +579,14 @@ namespace Dynamo.ViewModels
         {
             bool isCollectionofFiveorMore = false;
 
-            ///if model is null or enginecontroller is disposed, return
+            //if model is null or enginecontroller is disposed, return
             if (model is null ||
                 model.Start is null ||
                 model.Start.Owner is null||
                 workspaceViewModel.DynamoViewModel.EngineController.IsDisposed == true)
             { return; }
 
-            ///if it is possible to get the last value of the model.Start.Owner
+            //if it is possible to get the last value of the model.Start.Owner
             try
             {
                 var portValue = model.Start.Owner.GetValue(model.Start.Index, workspaceViewModel.DynamoViewModel.EngineController);
@@ -604,7 +604,7 @@ namespace Dynamo.ViewModels
                 {
                     if (isCollection && portValue.GetElements().Count() > 5)
                     {
-                        ///only sets 'is a collection' to true if the collection meets a size of 5
+                        // only sets 'is a collection' to true if the collection meets a size of 5
                         isCollectionofFiveorMore = true;
                         for (int i = 0; i < 5; i++)
                         {
@@ -1553,7 +1553,7 @@ namespace Dynamo.ViewModels
                 dotTop = CurvePoint3.Y - EndDotSize / 2;
                 dotLeft = CurvePoint3.X - EndDotSize / 2;
 
-                ///Add chain of points including start/end
+                // Add chain of points including start/end
                 Point[] points = new Point[ConnectorPinViewCollection.Count];
                 int count = 0;
                 foreach (var wirePin in ConnectorPinViewCollection)

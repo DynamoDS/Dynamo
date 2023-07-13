@@ -2389,7 +2389,7 @@ namespace Dynamo.Graph.Workspaces
             //            ensure that any contained notes are contained properly
             LoadNotesFromAnnotations(workspaceViewInfo.Annotations);
 
-            ///This function loads ConnectorPins to the corresponding connector models.
+            // This function loads ConnectorPins to the corresponding connector models.
             LoadConnectorPins(workspaceViewInfo.ConnectorPins);
 
             // This function loads annotations from the Annotations array in the JSON format
@@ -2434,7 +2434,7 @@ namespace Dynamo.Graph.Workspaces
             //            ensure that any contained notes are contained properly
             LoadNotesFromAnnotations(workspaceViewInfo.Annotations, offsetX, offsetY);
 
-            ///This function loads ConnectorPins to the corresponding connector models.
+            // This function loads ConnectorPins to the corresponding connector models.
             LoadConnectorPins(workspaceViewInfo.ConnectorPins, offsetX, offsetY);
 
             // This function loads annotations from the Annotations array in the JSON format

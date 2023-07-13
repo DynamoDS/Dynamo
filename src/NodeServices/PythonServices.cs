@@ -44,17 +44,17 @@ namespace Dynamo.PythonServices.EventHandlers
 
 namespace Dynamo.PythonServices
 {
-    [SupressImportIntoVM]
     /// <summary>
     /// Enum of possible python evaluation states.
     /// </summary>
+    [SupressImportIntoVM]
     public enum EvaluationState { Success, Failed }
 
-    [SupressImportIntoVM]
-    [IsVisibleInDynamoLibrary(false)]
     /// <summary>
     /// This abstract class is intended to act as a base class for different python engines
     /// </summary>
+    [SupressImportIntoVM]
+    [IsVisibleInDynamoLibrary(false)]
     public abstract class PythonEngine
     {
         /// <summary>

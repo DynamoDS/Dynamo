@@ -85,10 +85,10 @@ namespace CoreNodeModelsWpf.Charts
         }
 
 
-        [JsonConstructor]
         /// <summary>
         /// Instantiate a new NodeModel instance.
         /// </summary>
+        [JsonConstructor]
         public PieChartNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             PortConnected += PieChartNodeModel_PortConnected;

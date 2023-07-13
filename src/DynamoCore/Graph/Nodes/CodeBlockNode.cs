@@ -272,9 +272,9 @@ namespace Dynamo.Graph.Nodes
 
                 var inportConnections = new OrderedDictionary();
                 var outportConnections = new OrderedDictionary();
-                ///ConnectorPins corresponding to inports
+                // ConnectorPins corresponding to inports
                 var inportPins = new OrderedDictionary();
-                ///ConnectorPins corresponding to outports
+                // ConnectorPins corresponding to outports
                 var outportPins = new OrderedDictionary();
 
                 // disable node modification events while mutating the code
@@ -385,9 +385,9 @@ namespace Dynamo.Graph.Nodes
 
             var inportConnections = new OrderedDictionary();
             var outportConnections = new OrderedDictionary();
-            ///ConnectorPins corresponding to inports
+            // ConnectorPins corresponding to inports
             var inportPins = new OrderedDictionary();
-            ///ConnectorPins corresponding to outports
+            // ConnectorPins corresponding to outports
             var outportPins = new OrderedDictionary();
 
             //before the refactor here: https://github.com/DynamoDS/Dynamo/pull/7301
@@ -1217,9 +1217,9 @@ namespace Dynamo.Graph.Nodes
                 unusedConnections.RemoveAt(0);
             }
 
-            ///All connectorPins corresponding to INports
+            // All connectorPins corresponding to INports
             List<List<ConnectorPinModel>> inportPinsList = inportPins.Values.Cast<List<ConnectorPinModel>>().ToList();
-            ///All connectorPins corresponding to OUTports
+            // All connectorPins corresponding to OUTports
             List<List<ConnectorPinModel>> outportPinsList = outportPins.Values.Cast<List<ConnectorPinModel>>().ToList();
 
             AddConnectorPinsToConnectors(inportPinsList);
