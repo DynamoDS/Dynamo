@@ -15,5 +15,5 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("UnitsNodeModels")]
 
 
-//move DynamoUnits.Display to DynamoCore.dll
+//move DynamoUnits.Display to DynamoServices.dll
 [assembly: TypeForwardedTo(typeof(DynamoUnits.Display))]

@@ -16,6 +16,10 @@
   <ItemGroup Condition="'$(TargetFramework)' == 'net48' ">
     <Reference Include="System.Configuration" />
   </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net6.0' ">
+        <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
+        <PackageReference Include="System.Resources.Extensions" Version="5.0.0" />
+    </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ForgeUnits.NET" Version="4.0.3" GeneratePathProperty="true">
         <ExcludeAssets>build</ExcludeAssets>
@@ -26,10 +30,7 @@
     <Content Include="DynamoUnits_DynamoCustomization.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Engine\ProtoCore\ProtoCore.csproj">
+    <ProjectReference Include="..\..\NodeServices\DynamoServices.csproj">
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
