@@ -855,7 +855,7 @@ namespace Dynamo.Configuration
         /// Initializes a new instance of the <see cref="PreferenceSettings"/> class.
         /// </summary>
         public PreferenceSettings()
-        {           
+        {
             RecentFiles = new List<string>();
             WindowH = 768;
             WindowW = 1024;

@@ -275,7 +275,7 @@ namespace Dynamo.Applications
         /// <returns></returns>
         public static DynamoModel MakeModel(bool CLImode, string asmPath = "", HostAnalyticsInfo info = new HostAnalyticsInfo())
         {
-            IPathResolver pathResolver = CreateIPathResolver(false, "", "", "");            
+            IPathResolver pathResolver = CreateIPathResolver(false, string.Empty, string.Empty, string.Empty);            
             PathManager.Instance.AssignIPathResolver(pathResolver);
 
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(PreferenceSettings.Instance.Locale);
