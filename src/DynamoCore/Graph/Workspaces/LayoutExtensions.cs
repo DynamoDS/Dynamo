@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Graph.Annotations;
@@ -20,6 +20,8 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         /// <param name="workspace">Workspace on which graph layout will be performed.</param>
         /// <param name="reuseUndoRedoGroup">If true, skip initializing new undo action group.</param>
+        /// <param name="isNodeAutoComplete"></param>
+        /// <param name="originalNodeGUID"></param>
         internal static List<GraphLayout.Graph> DoGraphAutoLayout(this WorkspaceModel workspace, bool reuseUndoRedoGroup = false, bool isNodeAutoComplete = false, Guid? originalNodeGUID = null)
         {
             if (workspace.Nodes.Count() < 2) return null;
@@ -251,6 +253,8 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         /// <param name="combinedGraph"></param>
         /// <param name="connector"></param>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
         private static void AddConnectorEdgesIncludingPinEdges(GraphLayout.Graph combinedGraph, ConnectorModel connector, Guid? start = null, Guid? end = null)
         {
             ///Bail if there are no connectorPins

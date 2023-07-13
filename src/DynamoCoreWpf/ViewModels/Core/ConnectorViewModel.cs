@@ -904,7 +904,10 @@ namespace Dynamo.ViewModels
         /// Helper function ssed for placing (re-placing) connector
         /// pins when a WatchNode is placed in the center of a connector.
         /// </summary>
+        /// <param name="connectors"></param>
+        /// <param name="connectorWireIndex"></param>
         /// <param name="point"></param>
+        /// <param name="createdModels"></param>
         public void PinConnectorPlacementFromWatchNode(ConnectorModel[] connectors, int connectorWireIndex, Point point, List<ModelBase> createdModels)
         {
             var selectedConnector = connectors[connectorWireIndex];
@@ -1429,7 +1432,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Recalculate the connector's points given the end point
         /// </summary>
-        /// <param name="p2">The position of the end point</param>
+        /// <param name="parameter">The position of the end point</param>
         public void Redraw(object parameter)
         {
             var p2 = new Point();

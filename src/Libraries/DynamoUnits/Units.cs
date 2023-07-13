@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -1833,7 +1833,7 @@ namespace DynamoUnits
         /// <summary>
         /// Convert from decimal feet to feet and fractional inches
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="decimalFeet"></param>
         /// <returns></returns>
         public static string ToFeetAndFractionalInches(double decimalFeet)
         {

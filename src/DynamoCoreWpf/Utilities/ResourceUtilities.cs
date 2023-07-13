@@ -349,6 +349,7 @@ namespace Dynamo.Utilities
         /// the culture name before the file extension. Example: NoContent.html => NoContent.de-DE.html
         /// </summary>
         /// <param name="name">Resource name</param>
+        /// <param name="culture"></param>
         /// <returns>Resource name with the culture name appended before the extension</returns>
         internal static string GetResourceNameWithCultureName(string name, CultureInfo culture)
         {
@@ -382,6 +383,7 @@ namespace Dynamo.Utilities
         /// with the UI culture is found, it returns the provided main/invariant assembly.
         /// </summary>
         /// <param name="assembly">The main assembly</param>
+        /// <param name="name"></param>
         /// <returns>The resource assembly</returns>
         private static Assembly GetResourceAssembly(Assembly assembly, string name)
         {

@@ -632,6 +632,9 @@ namespace Dynamo.Wpf.Rendering
         /// Add a label position to the render package.
         /// </summary>
         /// <param name="label">Text to be displayed in the label</param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
         public void AddLabel(string label, double x, double y, double z)
         {
             LabelPlaces.Add(new Tuple<string, Vector3>(label, Vector3ForYUp(x, y, z)));
@@ -911,6 +914,7 @@ namespace Dynamo.Wpf.Rendering
         /// <param name="m42"></param>
         /// <param name="m43"></param>
         /// <param name="m44"></param>
+        /// <param name="id"></param>
         public void AddInstanceMatrix(float m11, float m12, float m13, float m14,
             float m21, float m22, float m23, float m24,
             float m31, float m32, float m33, float m34,
@@ -946,6 +950,7 @@ namespace Dynamo.Wpf.Rendering
         /// the second row to the Y axis of the CS, the third row to the Z axis of the CS, and the last row to the CS origin, where W = 1. 
         /// </summary>
         /// <param name="matrix"></param>
+        /// <param name="id"></param>
         public void AddInstanceMatrix(float[] matrix, Guid id)
         {
             if (!ContainsTessellationId(id))

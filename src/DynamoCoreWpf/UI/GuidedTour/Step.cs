@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -499,6 +499,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         /// <param name="uiAutomationData">UIAutomation info read from a json file</param>
         /// <param name="enableUIAutomation">Enable/Disable the automation action for a specific UIElement</param>
+        /// <param name="currentFlow"></param>
         private void ExecuteUIAutomationStep(StepUIAutomation uiAutomationData, bool enableUIAutomation, Guide.GuideFlow currentFlow)
         {
             var popupBorderName = "SubmenuBorder";

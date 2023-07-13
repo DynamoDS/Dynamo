@@ -1575,6 +1575,7 @@ namespace Dynamo.Graph.Workspaces
         /// This method does not raise a NodesModified event. (LC notes this is clearly not true)
         /// </summary>
         /// <param name="model">The node which is being removed from the worksapce.</param>
+        /// <param name="dispose"></param>
         internal void RemoveAndDisposeNode(NodeModel model, bool dispose = true)
         {
             lock (nodes)

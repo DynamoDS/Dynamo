@@ -2978,7 +2978,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// This extension method is to correct for the Helix toolkit's GeometryModel3D.Bounds
         /// property which does not update correctly as new geometry is added to the GeometryModel3D.
         /// </summary>
-        /// <param name="pointGeom">A <see cref="GeometryModel3D"/> object.</param>
+        /// <param name="geom">A <see cref="GeometryModel3D"/> object.</param>
+        /// <param name="defaultBoundsSize"></param>
         /// <returns>A <see cref="BoundingBox"/> object encapsulating the geometry.</returns>
         internal static BoundingBox Bounds(this GeometryModel3D geom, float defaultBoundsSize = 5.0f)
         {

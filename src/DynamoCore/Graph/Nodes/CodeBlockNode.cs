@@ -1013,6 +1013,8 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         /// <param name="inportConnections">A list of connections that will be destroyed</param>
         /// <param name="outportConnections"></param>
+        /// <param name="inportPins"></param>
+        /// <param name="outportPins"></param>
         private void SaveAndDeleteConnectors(IDictionary inportConnections, IDictionary outportConnections, IDictionary inportPins, IDictionary outportPins)
         {
             //----------------------------Inputs---------------------------------
@@ -1070,6 +1072,8 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         /// <param name="inportConnections"></param>
         /// <param name="outportConnections"> List of the connections that were killed</param>
+        /// <param name="inportPins"></param>
+        /// <param name="outportPins"></param>
         /// <param name="context">context this operation is being performed in</param>
         private void LoadAndCreateConnectors(OrderedDictionary inportConnections, OrderedDictionary outportConnections,
             OrderedDictionary inportPins, OrderedDictionary outportPins, SaveContext context)

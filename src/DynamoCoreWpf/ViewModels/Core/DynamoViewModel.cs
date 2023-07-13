@@ -1564,7 +1564,7 @@ namespace Dynamo.ViewModels
         /// Attempts to open a file using the Json content passed to OpenFromJsonCommand, but wraps
         /// the call with a check to make sure no unsaved changes to the HomeWorkspace are lost.
         /// </summary>
-        /// <param name="openFromJsonCommand"> <see cref="DynamoModel.OpenFileFromJsonCommand"/> </param>
+        /// <param name="openCommand"> <see cref="DynamoModel.OpenFileFromJsonCommand"/> </param>
         private void OpenFromJsonIfSaved(object openCommand)
         {
             filePath = string.Empty;
@@ -2714,6 +2714,7 @@ namespace Dynamo.ViewModels
         /// Requests a message box asking the user to save the workspace and allows saving.
         /// </summary>
         /// <param name="workspace">The workspace for which to show the dialog</param>
+        /// <param name="allowCancel"></param>
         /// <returns>False if the user cancels, otherwise true</returns>
         public bool AskUserToSaveWorkspaceOrCancel(WorkspaceModel workspace, bool allowCancel = true)
         {

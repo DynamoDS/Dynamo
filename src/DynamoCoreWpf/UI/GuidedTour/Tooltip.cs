@@ -1,4 +1,4 @@
-﻿using System.Windows;
+using System.Windows;
 using System.Windows.Media;
 using Dynamo.Wpf.ViewModels.GuidedTour;
 using Dynamo.Wpf.Views.GuidedTour;
@@ -26,6 +26,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="width">Tooltip width</param>
         /// <param name="height">Tooltip height</param>
         /// <param name="direction">The pointer direction of the tooltip</param>
+        /// <param name="verticalTooltipOffset"></param>
         public Tooltip(HostControlInfo host, double width, double height, PointerDirection direction, double verticalTooltipOffset)
             :base(host, width, height)
         {
