@@ -1,13 +1,18 @@
-﻿using System.IO;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using Dynamo.Events;
 using NUnit.Framework;
 using SystemTestServices;
 
 namespace DynamoServicesTests
 {
+#if NET6_0_OR_GREATER
+    [TestFixture, Apartment(ApartmentState.MTA)]
+#else
     [TestFixture, RequiresSTA]
+#endif
     class WorkspaceEventTests : SystemTestBase
     {
         protected override void SetupCore()
