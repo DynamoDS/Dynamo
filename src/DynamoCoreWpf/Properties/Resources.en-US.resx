@@ -3651,4 +3651,12 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="PreferencesViewIncludeTimestampExportPathTooltip" xml:space="preserve">
     <value>When toggled on, file names of exported images include date and time of export.</value>
   </data>
+  <data name="Md2HtmlCantCommunicateError" xml:space="preserve">
+    <value>&lt;p&gt;&lt;b&gt;Internal error, please report: Can't communicate with {0}.&lt;/b&gt;&lt;/p&gt;</value>
+    <comment>Internal error, please report:  Can't comminicate with C:\Dynamo\Md2Html.exe</comment>
+  </data>
+  <data name="Md2HtmlCantStartError" xml:space="preserve">
+    <value>&lt;p&gt;&lt;b&gt;Internal error, please report: Can't start {0}.&lt;/b&gt;&lt;/p&gt;</value>
+    <comment>Internal error, please report:  Can't start C:\Dynamo\Md2Html.exe</comment>
+  </data>
 </root>

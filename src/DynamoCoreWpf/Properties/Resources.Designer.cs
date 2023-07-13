@@ -39,7 +39,7 @@ namespace Dynamo.Wpf.Properties {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Dynamo.Wpf.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -4061,6 +4061,24 @@ namespace Dynamo.Wpf.Properties {
         public static string Manual {
             get {
                 return ResourceManager.GetString("Manual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;p&gt;&lt;b&gt;Internal error, please report: Can&apos;t communicate with {0}.&lt;/b&gt;&lt;/p&gt;.
+        /// </summary>
+        public static string Md2HtmlCantCommunicateError {
+            get {
+                return ResourceManager.GetString("Md2HtmlCantCommunicateError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;p&gt;&lt;b&gt;Internal error, please report: Can&apos;t start {0}.&lt;/b&gt;&lt;/p&gt;.
+        /// </summary>
+        public static string Md2HtmlCantStartError {
+            get {
+                return ResourceManager.GetString("Md2HtmlCantStartError", resourceCulture);
             }
         }
         

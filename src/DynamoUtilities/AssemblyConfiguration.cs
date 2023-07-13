@@ -1,4 +1,4 @@
-﻿using System.Configuration;
+using System.Configuration;
 
 namespace Dynamo.Utilities
 {
@@ -13,7 +13,7 @@ namespace Dynamo.Utilities
 
         public static AssemblyConfiguration Instance
         {
-            get { return instance ?? new AssemblyConfiguration(); }
+            get { return instance ??= new AssemblyConfiguration(); }
         }
 
         private AssemblyConfiguration()
