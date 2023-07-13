@@ -7,6 +7,7 @@
         <AppDesignerFolder>Properties</AppDesignerFolder>
         <RootNamespace>UnitsUI</RootNamespace>
         <GenerateDocumentationFile>True</GenerateDocumentationFile>
+        <OutputPath>$(OutputPath)\nodes\</OutputPath>
     </PropertyGroup>
     <ItemGroup>
       <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
@@ -35,5 +36,13 @@
         <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       </EmbeddedResource>
     </ItemGroup>
-
+    <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" '$(OS)' != 'Unix' ">
+        <!-- Get assembly -->
+        <GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
+            <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
+        </GetAssemblyIdentity>
+        <!-- Generate customization dll -->
+        <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)UnitsUIImages.resx" OutputResources="$(ProjectDir)UnitsNodeModelsImages.resources" References="$(SystemDrawingDllPath)" />
+        <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)UnitsNodeModelsImages.resources" OutputAssembly="$(OutDir)UnitsNodeModels.customization.dll" Version="%(AssemblyInfo.Version)" />
+    </Target>
 </Project>
