@@ -47,6 +47,12 @@ namespace Dynamo.Configuration
     /// </summary>
     public class PreferenceSettings : NotificationObject, IPreferences, IRenderPrecisionPreference, IDisablePackageLoadingPreferences, ILogSource, IHideAutocompleteMethodOptions
     {
+        internal readonly static Lazy<PreferenceSettings>
+            lazy = new Lazy<PreferenceSettings>
+            (() => PreferenceSettings.Load(PathManager.Instance.PreferenceFilePath));
+         
+        public static PreferenceSettings Instance { get { return lazy.Value; } }
+
         private string numberFormat;
         private string lastUpdateDownloadPath;
         private int maxNumRecentFiles;
@@ -849,7 +855,7 @@ namespace Dynamo.Configuration
         /// Initializes a new instance of the <see cref="PreferenceSettings"/> class.
         /// </summary>
         public PreferenceSettings()
-        {
+        {           
             RecentFiles = new List<string>();
             WindowH = 768;
             WindowW = 1024;

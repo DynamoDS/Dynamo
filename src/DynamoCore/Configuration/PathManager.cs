@@ -48,8 +48,15 @@ namespace Dynamo.Core
         internal IPathResolver PathResolver { get; set; }
     }
 
-    public class PathManager : IPathManager
+    public sealed class PathManager : IPathManager
     {
+        internal static Lazy<PathManager>
+         lazy =
+         new Lazy<PathManager>
+         (() => new PathManager(new PathManagerParams()));
+
+        public static PathManager Instance { get { return lazy.Value; } }
+
         #region Class Private Data Members
 
         public const string PackagesDirectoryName = "packages";
@@ -70,7 +77,7 @@ namespace Dynamo.Core
         private readonly int majorFileVersion;
         private readonly int minorFileVersion;
         private readonly string dynamoCoreDir;
-        private readonly string hostApplicationDirectory;
+        private string hostApplicationDirectory;
         private readonly string userDataDir;
         private readonly string commonDataDir;
 
@@ -86,10 +93,10 @@ namespace Dynamo.Core
         private readonly List<string> rootDirectories;
         private readonly HashSet<string> nodeDirectories;
         private readonly HashSet<string> additionalResolutionPaths;
-        private readonly HashSet<string> preloadedLibraries;
+        private HashSet<string> preloadedLibraries;
         private readonly HashSet<string> extensionsDirectories;
         private readonly HashSet<string> viewExtensionsDirectories;
-        private readonly IPathResolver pathResolver;
+        private IPathResolver pathResolver;
 
         #endregion
 
@@ -345,6 +352,14 @@ namespace Dynamo.Core
         #endregion
 
         #region Public Class Operational Methods
+
+        internal void AssignIPathResolver(IPathResolver resolver)
+        {
+            hostApplicationDirectory = string.Empty;
+            pathResolver = resolver;
+            preloadedLibraries = new HashSet<string>();
+            LoadPathsFromResolver();
+        }
 
         /// <summary>
         /// Constructs an instance of PathManager object.

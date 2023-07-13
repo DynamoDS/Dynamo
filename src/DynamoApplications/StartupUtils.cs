@@ -8,11 +8,12 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using CommandLine;
+using Dynamo.Configuration;
+using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Scheduler;
 using Dynamo.Updates;
-using DynamoApplications;
 using DynamoApplications.Properties;
 using DynamoShapeManager;
 using DynamoUtilities;
@@ -274,8 +275,11 @@ namespace Dynamo.Applications
         /// <returns></returns>
         public static DynamoModel MakeModel(bool CLImode, string asmPath = "", HostAnalyticsInfo info = new HostAnalyticsInfo())
         {
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo(PathManagerPreference.Instance.Preferences.Locale);
-            Thread.CurrentThread.CurrentCulture = new CultureInfo(PathManagerPreference.Instance.Preferences.Locale);
+            IPathResolver pathResolver = CreateIPathResolver(false, "", "", "");            
+            PathManager.Instance.AssignIPathResolver(pathResolver);
+
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo(PreferenceSettings.Instance.Locale);
+            Thread.CurrentThread.CurrentCulture = new CultureInfo(PreferenceSettings.Instance.Locale);
             DynamoModel.OnDetectLanguage();
 
             // Preload ASM and display corresponding message on splash screen
@@ -284,6 +288,12 @@ namespace Dynamo.Applications
             var model = StartDynamoWithDefaultConfig(CLImode, string.Empty, string.Empty, geometryFactoryPath, preloaderLocation, info);
             model.IsASMLoaded = isASMloaded;
             return model;
+        }
+
+        public static IPathResolver CreateIPathResolver(bool CLImode, string preloaderLocation, string userDataFolder, string commonDataFolder)
+        {
+            IPathResolver pathResolver = CLImode ? new CLIPathResolver(preloaderLocation, userDataFolder, commonDataFolder) as IPathResolver : new SandboxPathResolver(preloaderLocation) as IPathResolver;
+            return pathResolver;
         }
 
         /// <summary>
@@ -382,10 +392,10 @@ namespace Dynamo.Applications
                 AuthProvider = CLImode ? null : new Core.IDSDKManager(),
                 UpdateManager = CLImode ? null : OSHelper.IsWindows() ? InitializeUpdateManager() : null,
                 StartInTestMode = CLImode,
-                PathResolver = PathManagerPreference.Instance.CreateIPathResolver(CLImode, preloaderLocation, userDataFolder, commonDataFolder),
+                PathResolver = CreateIPathResolver(CLImode, preloaderLocation, userDataFolder, commonDataFolder),
                 IsServiceMode = isServiceMode,
-                PathManager = PathManagerPreference.Instance.PathManager,
-                Preferences = PathManagerPreference.Instance.Preferences
+                PathManager = PathManager.Instance,
+                Preferences = PreferenceSettings.Instance
             };
 
             var model = DynamoModel.Start(config);
