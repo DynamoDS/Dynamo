@@ -84,13 +84,11 @@ namespace Dynamo.PythonServices
         /// <summary>
         /// Add an event handler before the Python evaluation begins
         /// </summary>
-        /// <param name="callback"></param>
         public abstract event EvaluationStartedEventHandler EvaluationStarted;
 
         /// <summary>
         /// Add an event handler after the Python evaluation has finished
         /// </summary>
-        /// <param name="callback"></param>
         public abstract event EvaluationFinishedEventHandler EvaluationFinished;
 
         /// <summary>
@@ -1021,7 +1019,6 @@ namespace Dynamo.PythonServices
         /// the given regex
         /// </summary>
         /// <param name="code">The code to search</param>
-        /// <param name="valueRegex">Your regex to match the type</param>
         /// <returns>A dictionary of name to assignment line pairs</returns>
         internal Dictionary<string, Tuple<string, int, Type>> FindAllVariables(string code)
         {

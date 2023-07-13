@@ -634,7 +634,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// Calculate the Popup.PlacementTarget dynamically if is the case and highlight the sub MenuItem if the information was provided
         /// </summary>
-        /// <param name="bVisible">When the Step is shown this variable will be false when is hidden(due to passing to the next Step) it will be false</param>
         internal void CalculateTargetHost()
         {
             if (HostPopupInfo.DynamicHostWindow == true)
