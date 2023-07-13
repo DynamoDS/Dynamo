@@ -1,4 +1,4 @@
-﻿using CommandLine;
+using CommandLine;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -48,7 +48,7 @@ namespace DynamoFeatureFlags
                     SendAllFlags();
 
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     // Exit process
                 }

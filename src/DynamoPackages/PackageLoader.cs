@@ -574,9 +574,9 @@ namespace Dynamo.PackageManager
                     
                 }
             }
-            catch (UnauthorizedAccessException ex) { }
-            catch (IOException ex) { }
-            catch (ArgumentException ex) { }
+            catch (UnauthorizedAccessException) { }
+            catch (IOException) { }
+            catch (ArgumentException) { }
         }
 
         public Package ScanPackageDirectory(string directory)

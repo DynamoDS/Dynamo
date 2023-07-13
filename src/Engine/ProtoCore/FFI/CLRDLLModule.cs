@@ -55,7 +55,6 @@ namespace ProtoFFI
                 {
                     mtype = new CLRModuleType(type);
                     //Now check that a type with same name is not imported.
-                    Type otherType;
                     if (mTypeNames.TryGetValue(mtype.FullName, out CLRModuleType otherMType))
                     {
                         if (otherMType.CLRType.IsEquivalentTo(type))

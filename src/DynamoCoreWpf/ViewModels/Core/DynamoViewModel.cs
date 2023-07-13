@@ -1887,7 +1887,7 @@ namespace Dynamo.ViewModels
                 Model.CurrentWorkspace.UpdateWithExtraWorkspaceViewInfo(viewInfo);
                 Model.OnWorkspaceOpening(viewInfo);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 this.ShowStartPage = false; // Hide start page if there's one.
                 return;

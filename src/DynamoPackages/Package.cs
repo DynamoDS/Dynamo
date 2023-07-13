@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -470,7 +470,7 @@ namespace Dynamo.PackageManager
                         return true;
                     }
                 }
-                catch (Exception _)
+                catch (Exception)
                 {
                     if (messages != null)
                     {
