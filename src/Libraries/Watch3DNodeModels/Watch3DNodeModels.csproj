@@ -9,6 +9,7 @@
     <RootNamespace>Watch3DNodeModels</RootNamespace>
     <AssemblyName>Watch3DNodeModels</AssemblyName>
     <OutputPath>$(OutputPath)\nodes\</OutputPath>
+      <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemDefinitionGroup>
 	<ReferenceCopyLocalPaths>
