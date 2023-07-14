@@ -20,8 +20,11 @@
   </ItemGroup>
     <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
         <PackageReference Include="NUnit" Version="2.6.3" ExcludeAssets="none" GeneratePathProperty="true" />
-        <PackageReference Include="NUnitTestAdapter" Version="2.3.0" ExcludeAssets="all" />
-       
+        <PackageReference Include="NUnitTestAdapter" Version="2.3.0" ExcludeAssets="all" /> 
+        <PackageReference Include="DynamoVisualProgramming.Analytics" Version="4.0.0.1432">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <Reference Include="System.Configuration" />
         <Reference Include="Microsoft.CSharp" />
         <ProjectReference Include="..\..\src\DynamoCrypto\DynamoCrypto.csproj">
@@ -37,12 +40,12 @@
         <PackageReference Include="coverlet.collector" Version="3.1.2" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" ExcludeAssets="none" />
         <PackageReference Include="JunitXml.TestLogger" Version="3.0.124" />
+        <PackageReference Include="DynamoVisualProgramming.Analytics" Version="4.0.0.1432">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
     <ItemGroup>
-    <PackageReference Include="DynamoVisualProgramming.Analytics" Version="3.0.1.740">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="Greg" Version="2.5.0.5076">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
