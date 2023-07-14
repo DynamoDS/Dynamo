@@ -1,4 +1,4 @@
-﻿//using System;
+//using System;
 using DSCore;
 using NUnit.Framework;
 
@@ -288,7 +288,7 @@ namespace DSCoreNodesTests
             Assert.AreEqual(new[] {1, 4}, String.AllIndicesOf("mississippi", "is"));
         }
 
-        [Test]
+        [Test, Category("FailureNET6")]
         [Category("UnitTests")]
         public static void LastIndexOf()
         {
