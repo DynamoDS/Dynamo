@@ -394,7 +394,6 @@ namespace Dynamo.Applications
                 StartInTestMode = CLImode,
                 PathResolver = CreateIPathResolver(CLImode, preloaderLocation, userDataFolder, commonDataFolder),
                 IsServiceMode = isServiceMode,
-                PathManager = PathManager.Instance,
                 Preferences = PreferenceSettings.Instance
             };
 

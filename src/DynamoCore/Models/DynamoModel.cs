@@ -521,7 +521,6 @@ namespace Dynamo.Models
             /// No update checks or analytics collection should be done.
             /// </summary>
             bool IsHeadless { get; set; }
-            IPathManager PathManager { get; set; }
         }
 
         /// <summary>
@@ -588,7 +587,6 @@ namespace Dynamo.Models
             /// CLIMode indicates if we are running in DynamoCLI or DynamoWPFCLI mode.
             /// </summary>
             public bool CLIMode { get; set; }
-            public IPathManager PathManager { get; set; }
         }
 
         /// <summary>
@@ -670,7 +668,7 @@ namespace Dynamo.Models
 
             ClipBoard = new ObservableCollection<ModelBase>();
 
-            pathManager = (PathManager)config.PathManager;
+            pathManager = Core.PathManager.Instance;
 
             // Ensure we have all directories in place.
             var exceptions = new List<Exception>();
