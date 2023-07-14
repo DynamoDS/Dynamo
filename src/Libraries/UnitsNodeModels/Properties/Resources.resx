@@ -144,7 +144,7 @@
     <value>Edit...</value>
   </data>
   <data name="LegthFromStringObsoleteMessage" xml:space="preserve">
-    <value>is obsolete, please use the Pasrse Unit Input node.</value>
+    <value>is obsolete, please use the Parse Unit Input node.</value>
   </data>
   <data name="LengthFromStringDescription" xml:space="preserve">
     <value>A length defined as feet and inches is turned into a number representation in feet.</value>
@@ -176,7 +176,7 @@
     <value />
   </data>
   <data name="SchemaLoadWarning" xml:space="preserve">
-    <value>There was an issue loading Unit Schemas from the specified path: </value>
+    <value>There was an issue loading Unit Schemas from the specified path:</value>
   </data>
   <data name="SymbolsUIDescription" xml:space="preserve">
     <value>Select a Symbol type</value>

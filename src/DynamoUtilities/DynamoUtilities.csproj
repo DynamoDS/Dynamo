@@ -10,6 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DynamoUtilities</RootNamespace>
     <AssemblyName>DynamoUtilities</AssemblyName>
+      <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup Label="Common Dependencies">
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />

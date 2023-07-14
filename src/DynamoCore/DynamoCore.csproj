@@ -30,7 +30,6 @@
   </ItemGroup>
   <ItemGroup Label="Common dependencies">
     <PackageReference Include="Autodesk.IDSDK" Version="1.1.6" />
-    <PackageReference Include="DynamoVisualProgramming.Analytics" Version="3.0.1.740" />
     <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.1400" GeneratePathProperty="true" />
     <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.18.0.1400" GeneratePathProperty="true" />
     <PackageReference Include="Greg" Version="2.5.0.5076" />
@@ -39,6 +38,7 @@
 	<PackageReference Include="Lucene.Net" Version="4.8.0-beta00016" />
     <PackageReference Include="Lucene.Net.Analysis.Common" Version="4.8.0-beta00016" />
     <PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00016" />
+    <PackageReference Include="DynamoVisualProgramming.Analytics" Version="4.0.0.1432" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\GraphLayout\GraphLayout.csproj">
@@ -69,10 +69,6 @@
     <ProjectReference Include="..\Libraries\DesignScriptBuiltin\DesignScriptBuiltin.csproj">
       <Project>{c0d6dee5-5532-4345-9c66-4c00d7fdb8be}</Project>
       <Name>DesignScriptBuiltin</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Libraries\DynamoUnits\Units.csproj">
-      <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
-      <Name>Units</Name>
     </ProjectReference>
     <ProjectReference Include="..\Libraries\VMDataBridge\VMDataBridge.csproj">
       <Project>{ccb6e56b-2da1-4eba-a1f9-e8510e129d12}</Project>
@@ -174,9 +170,9 @@
     <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\BuiltIn.xml" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\BuiltIn.Migrations.xml" DestinationFolder="$(OutputPath)" />
     <!--Enable these if/when we need to keep old binaries for patch installer compatability-->
-    <Copy SourceFiles="@(LegacyBinariesToBinFolder)" DestinationFolder="$(OutputPath)" Condition=" '$(TargetFramework)' == 'net48' "/>
-    <Copy SourceFiles="@(LegacyBinariesToNodesFolder)" DestinationFolder="$(OutputPath)\nodes\" Condition=" '$(TargetFramework)' == 'net48' "/>
-     <Copy SourceFiles="@(LegacyBinariesToBinResourcesFolder)" DestinationFolder="$(OutputPath)\en-US\" Condition=" '$(TargetFramework)' == 'net48' "/>
+    <Copy SourceFiles="@(LegacyBinariesToBinFolder)" DestinationFolder="$(OutputPath)" Condition=" '$(TargetFramework)' == 'net48' " />
+    <Copy SourceFiles="@(LegacyBinariesToNodesFolder)" DestinationFolder="$(OutputPath)\nodes\" Condition=" '$(TargetFramework)' == 'net48' " />
+     <Copy SourceFiles="@(LegacyBinariesToBinResourcesFolder)" DestinationFolder="$(OutputPath)\en-US\" Condition=" '$(TargetFramework)' == 'net48' " />
     <Copy SourceFiles="$(SolutionDir)Config\upiconfig.xml" DestinationFolder="$(OutputPath)" /> 
   </Target>
   <Target Name="AfterBuildOps" AfterTargets="ResolveSateliteResDeps">
