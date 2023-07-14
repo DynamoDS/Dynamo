@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Dynamo.Linting.Interfaces;
 
@@ -46,6 +46,11 @@ namespace Dynamo.Linting.Rules
             if (obj is null) return false;
 
             return Equals(obj as GraphRuleEvaluationResult);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 }

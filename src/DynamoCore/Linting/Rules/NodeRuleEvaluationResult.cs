@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -49,6 +49,11 @@ namespace Dynamo.Linting.Rules
             if (obj is null) return false;
 
             return Equals(obj as NodeRuleEvaluationResult);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 }

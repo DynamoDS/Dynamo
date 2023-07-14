@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Dynamo.Utilities
@@ -402,6 +402,16 @@ namespace Dynamo.Utilities
             public bool Equals(_None<T> other)
             {
                 return this == other;
+            }
+
+            public override bool Equals(object obj)
+            {
+                return Equals(obj as _None<T>);
+            }
+
+            public override int GetHashCode()
+            {
+                return base.GetHashCode();
             }
         }
     }

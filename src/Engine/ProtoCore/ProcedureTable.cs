@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ProtoCore.AssociativeGraph;
@@ -239,6 +239,11 @@ namespace ProtoCore.DSASM
                    ClassID == rhs.ClassID && 
                    LocalCount == rhs.LocalCount && 
                    Name.Equals(rhs.Name);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 

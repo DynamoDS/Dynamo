@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Runtime;
@@ -83,6 +83,11 @@ namespace FFITarget
         public void Dispose()
         {
             //Don't do anything
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 

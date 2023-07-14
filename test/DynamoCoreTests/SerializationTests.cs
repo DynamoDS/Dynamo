@@ -575,6 +575,11 @@ namespace Dynamo.Tests
                     other.UsingDefaultValue == this.UsingDefaultValue &&
                     other.Description == this.Description;
             }
+
+            public override int GetHashCode()
+            {
+                return base.GetHashCode();
+            }
         }
     }
 #endregion

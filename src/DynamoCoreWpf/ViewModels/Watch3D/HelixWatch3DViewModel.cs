@@ -131,7 +131,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             return false;
         }
 
-
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 
     /// <summary>

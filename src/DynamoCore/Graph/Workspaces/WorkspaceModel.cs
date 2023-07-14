@@ -157,6 +157,11 @@ namespace Dynamo.Graph.Workspaces
             //this.Height == other.Height &&
             //this.TextBlockHeight == other.TextBlockHeight;
         }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 
     /// <summary>

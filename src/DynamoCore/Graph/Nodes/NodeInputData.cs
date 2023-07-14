@@ -184,6 +184,11 @@ namespace Dynamo.Graph.Nodes
                 //check if the value is the same or if the value is a number check is it similar
                 ((this.Value == converted.Value) || valNumberComparison || this.Value.ToString() == converted.Value.ToString());
         }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 
 }

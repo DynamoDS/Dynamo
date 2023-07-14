@@ -1,4 +1,4 @@
-﻿namespace ProtoCore.CodeModel
+namespace ProtoCore.CodeModel
 {
     public struct CodePoint
     {
@@ -23,6 +23,11 @@
         {
             return !(lhs == rhs);
         }
+
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
+        }
     }
 
     public struct CodeRange
@@ -44,6 +49,11 @@
         public static bool operator !=(CodeRange lhs, CodeRange rhs)
         {
             return !(lhs == rhs);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
         }
     }
 }

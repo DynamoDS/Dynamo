@@ -1,4 +1,4 @@
-﻿using ProtoCore.Properties;
+using ProtoCore.Properties;
 using ProtoCore.Runtime;
 
 namespace ProtoCore.DSASM
@@ -93,6 +93,11 @@ namespace ProtoCore.DSASM
                 return true;
 
             return Value.Equals(otherString.Value);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 }

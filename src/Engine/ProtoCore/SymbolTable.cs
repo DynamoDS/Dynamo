@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ProtoCore.DSASM
@@ -83,6 +83,11 @@ namespace ProtoCore.DSASM
                    functionIndex == rhs.functionIndex && 
                    classScope == rhs.classScope && 
                    codeBlockId == rhs.codeBlockId;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 
