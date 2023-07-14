@@ -30,7 +30,6 @@
   </ItemGroup>
   <ItemGroup Label="Common dependencies">
     <PackageReference Include="Autodesk.IDSDK" Version="1.1.6" />
-    <PackageReference Include="DynamoVisualProgramming.Analytics" Version="3.0.1.740" />
     <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.1400" GeneratePathProperty="true" />
     <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.18.0.1400" GeneratePathProperty="true" />
     <PackageReference Include="Greg" Version="2.5.0.5076" />
@@ -39,6 +38,7 @@
 	<PackageReference Include="Lucene.Net" Version="4.8.0-beta00016" />
     <PackageReference Include="Lucene.Net.Analysis.Common" Version="4.8.0-beta00016" />
     <PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00016" />
+    <PackageReference Include="DynamoVisualProgramming.Analytics" Version="4.0.0.1432" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\GraphLayout\GraphLayout.csproj">
