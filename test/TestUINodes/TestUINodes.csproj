@@ -42,12 +42,7 @@
       <Private>False</Private>
       <IncludeAssets>none</IncludeAssets>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\DynamoCore\DynamoCore.csproj">
-      <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
-      <Private>False</Private>
-      <Name>DynamoCore</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Libraries\CoreNodes\CoreNodes.csproj">
+      <ProjectReference Include="..\..\src\Libraries\CoreNodes\CoreNodes.csproj">
       <Private>False</Private>
       <IncludeAssets>none</IncludeAssets>
     </ProjectReference>
