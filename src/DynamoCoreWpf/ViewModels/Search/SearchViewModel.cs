@@ -927,7 +927,7 @@ namespace Dynamo.ViewModels
         {
             //Search executed using Lucene.NET
             var foundNodes = Search(search, true);
-            var foundNodesModels = foundNodes.Select(x => x.Model).Distinct();
+            var foundNodesModels = foundNodes.Select(x => x.Model);
             return foundNodesModels.Select(MakeNodeSearchElementVM);
         }
 

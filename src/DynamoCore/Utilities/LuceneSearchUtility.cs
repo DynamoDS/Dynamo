@@ -61,7 +61,10 @@ namespace Dynamo.Utilities
                 indexDir = new RAMDirectory();
             }
             else
+            {
                 indexDir = FSDirectory.Open(indexPath);
+            }
+                
 
             // Create an analyzer to process the text
             Analyzer = new StandardAnalyzer(LuceneConfig.LuceneNetVersion);
