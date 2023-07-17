@@ -18,6 +18,9 @@ using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
 using Greg;
+using Lucene.Net.Documents;
+using Lucene.Net.QueryParsers.Classic;
+using Lucene.Net.Search;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
@@ -38,6 +41,9 @@ namespace Dynamo.ViewModels
         private bool displayAutocompleteMLStaticPage;
         private bool displayLowConfidence;
         private const string nodeAutocompleteMLEndpoint = "MLNodeAutocomplete";
+
+        // Lucene search utility to perform indexing operations just for NodeAutocomplete.
+        internal LuceneSearchUtility LuceneSearchUtilityNodeAutocomplete { get; set; }
 
         /// <summary>
         /// The Node AutoComplete ML service version, this could be empty if user has not used ML way
@@ -602,6 +608,61 @@ namespace Dynamo.ViewModels
             return null;
         }
 
+
+        /// <summary>
+        ///     Performs a search using the given string as query and subset, if provided.
+        /// </summary>
+        /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
+        /// <param name="search"> The search query </param>
+        /// <param name="useLucene"> Temporary flag that will be used for searching using Lucene.NET </param>
+        internal IEnumerable<NodeSearchElementViewModel> SearchNodeAutocomplete(string search, bool useLucene)
+        {
+            if (useLucene)
+            {
+                //The DirectoryReader and IndexSearcher have to be assigned after commiting indexing changes and before executing the Searcher.Search() method, otherwise new indexed info won't be reflected
+                LuceneSearchUtilityNodeAutocomplete.dirReader = LuceneSearchUtilityNodeAutocomplete.writer?.GetReader(applyAllDeletes: true);
+                if (LuceneSearchUtilityNodeAutocomplete.dirReader == null) return null;
+
+                LuceneSearchUtilityNodeAutocomplete.Searcher = new IndexSearcher(LuceneSearchUtilityNodeAutocomplete.dirReader);
+
+                string searchTerm = search.Trim();
+                var candidates = new List<NodeSearchElementViewModel>();
+                var parser = new MultiFieldQueryParser(LuceneConfig.LuceneNetVersion, LuceneConfig.NodeIndexFields, LuceneSearchUtilityNodeAutocomplete.Analyzer)
+                {
+                    AllowLeadingWildcard = true,
+                    DefaultOperator = LuceneConfig.DefaultOperator,
+                    FuzzyMinSim = LuceneConfig.MinimumSimilarity
+                };
+
+                Query query = parser.Parse(LuceneSearchUtilityNodeAutocomplete.CreateSearchQuery(LuceneConfig.NodeIndexFields, searchTerm));
+                TopDocs topDocs = LuceneSearchUtilityNodeAutocomplete.Searcher.Search(query, n: LuceneConfig.DefaultResultsCount);
+
+                for (int i = 0; i < topDocs.ScoreDocs.Length; i++)
+                {
+                    // read back a Lucene doc from results
+                    Document resultDoc = LuceneSearchUtilityNodeAutocomplete.Searcher.Doc(topDocs.ScoreDocs[i].Doc);
+
+                    string name = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.Name));
+                    string docName = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.DocName));
+                    string cat = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName));
+                    string parameters = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.Parameters));
+
+
+                    var foundNode = FindViewModelForNodeNameAndCategory(name, cat, parameters);
+                    if (foundNode != null)
+                    {
+                        candidates.Add(foundNode);
+                    }
+                }
+
+                return candidates;
+            }
+            else
+            {
+                return Search(search);
+            }
+        }
+
         /// <summary>
         /// Filters the matching node search elements based on user input in the search field. 
         /// </summary>
@@ -617,9 +678,25 @@ namespace Dynamo.ViewModels
                 }
                 else
                 {
-                    // Providing the saved search results to limit the scope of the query search.
-                    // Then add back the ML info on filterted nodes as the Search function accepts elements of type NodeSearchElement
-                    var foundNodes = Search(input, searchElementsCache.Select(x => x.Model));
+                    LuceneSearchUtilityNodeAutocomplete = new LuceneSearchUtility(dynamoViewModel.Model);
+
+                    //The dirName parameter doesn't matter because we are using RAMDirectory indexing and no files are created
+                    LuceneSearchUtilityNodeAutocomplete.InitializeLuceneConfig(string.Empty, LuceneSearchUtility.LuceneStorage.RAM);
+
+                    //Memory indexing process for Node Autocomplete (indexing just the nodes returned by the NodeAutocomplete service so we limit the scope of the query search)
+                    foreach (var node in searchElementsCache.Select(x => x.Model))
+                    {
+                        var doc = LuceneSearchUtility.InitializeIndexDocumentForNodes();
+                        AddNodeTypeToSearchIndex(node, doc);
+                    }
+
+                    //Write the Lucene documents to memory
+                    LuceneSearchUtilityNodeAutocomplete.CommitWriterChanges();
+
+                    var luceneResults = SearchNodeAutocomplete(input, true);
+                    var foundNodesModels = luceneResults.Select(x => x.Model).Distinct();
+                    var foundNodes = foundNodesModels.Select(MakeNodeSearchElementVM);
+
                     var filteredSearchElements = new List<NodeSearchElementViewModel>();
 
                     foreach (var node in foundNodes)
@@ -635,8 +712,28 @@ namespace Dynamo.ViewModels
                         }
                     }
                     FilteredResults = new List<NodeSearchElementViewModel>(filteredSearchElements).OrderBy(x => x.Name).ThenBy(x => x.Description);
+
+                    LuceneSearchUtilityNodeAutocomplete.DisposeWriter();
                 }
             }
+        }
+
+        /// <summary>
+        /// Add node information to Lucene index
+        /// </summary>
+        /// <param name="node">node info that will be indexed</param>
+        /// <param name="doc">Lucene document in which the node info will be indexed</param>
+        private void AddNodeTypeToSearchIndex(NodeSearchElement node, Document doc)
+        {
+            if (LuceneSearchUtilityNodeAutocomplete.addedFields == null) return;
+
+            LuceneSearchUtilityNodeAutocomplete.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName), node.FullCategoryName);
+            LuceneSearchUtilityNodeAutocomplete.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), node.Name);
+            LuceneSearchUtilityNodeAutocomplete.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Description), node.Description);
+            if (node.SearchKeywords.Count > 0) LuceneSearchUtilityNodeAutocomplete.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords), node.SearchKeywords.Aggregate((x, y) => x + " " + y), true, true);
+            LuceneSearchUtilityNodeAutocomplete.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Parameters), node.Parameters ?? string.Empty);
+
+            LuceneSearchUtilityNodeAutocomplete.writer?.AddDocument(doc);
         }
 
         /// <summary>

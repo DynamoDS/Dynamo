@@ -49,12 +49,12 @@ namespace Dynamo.Utilities
         {
             addedFields = new List<string>();
 
-            DirectoryInfo webBrowserUserDataFolder;
+            DirectoryInfo luceneUserDataFolder;
             var userDataDir = new DirectoryInfo(dynamoModel.PathManager.UserDataDirectory);
-            webBrowserUserDataFolder = userDataDir.Exists ? userDataDir : null;
+            luceneUserDataFolder = userDataDir.Exists ? userDataDir : null;
 
             directory = dirName;
-            string indexPath = Path.Combine(webBrowserUserDataFolder.FullName, LuceneConfig.Index, dirName);
+            string indexPath = Path.Combine(luceneUserDataFolder.FullName, LuceneConfig.Index, dirName);
 
             if(storageType == LuceneStorage.RAM)
             {
@@ -168,7 +168,7 @@ namespace Dynamo.Utilities
                 ((StringField)doc.GetField(field)).SetStringValue(value);
             }
 
-            if (isLast && indexedFields.Any())
+            if (isLast && indexedFields != null && indexedFields.Any())
             {
                 List<string> diff = indexedFields.Except(addedFields).ToList();
                 foreach (var d in diff)
