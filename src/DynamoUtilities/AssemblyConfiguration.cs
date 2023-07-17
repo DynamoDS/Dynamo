@@ -13,7 +13,14 @@ namespace Dynamo.Utilities
 
         public static AssemblyConfiguration Instance
         {
-            get { return instance ??= new AssemblyConfiguration(); }
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new AssemblyConfiguration();
+                }
+                return instance;
+            }
         }
 
         private AssemblyConfiguration()
