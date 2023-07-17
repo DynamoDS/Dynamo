@@ -1677,7 +1677,7 @@ namespace Dynamo.ViewModels
                 }
                 else
                 {
-                    throw (e);
+                    throw;
                 }
                 return;
             }
@@ -1761,7 +1761,7 @@ namespace Dynamo.ViewModels
                 }
                 else
                 {
-                    throw (e);
+                    throw;
                 }
                 return;
             }
@@ -1843,7 +1843,7 @@ namespace Dynamo.ViewModels
                 }
                 else
                 {
-                    throw (e);
+                    throw;
                 }
                 return;
             }

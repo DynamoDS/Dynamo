@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -222,7 +222,7 @@ namespace ProtoCore.Utils
 
                 if (!(ex is ProtoCore.BuildHaltException))
                 {
-                    throw ex;
+                    throw;
                 }
             }
 

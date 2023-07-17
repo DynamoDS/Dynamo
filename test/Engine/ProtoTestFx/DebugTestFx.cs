@@ -231,7 +231,7 @@ namespace ProtoTestFx
                         }
                         else
                         {
-                            throw ex;
+                            throw;
                         }
                     }
 

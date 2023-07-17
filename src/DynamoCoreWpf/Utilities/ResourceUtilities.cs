@@ -611,7 +611,7 @@ namespace Dynamo.Utilities
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw;
             }
         }
 

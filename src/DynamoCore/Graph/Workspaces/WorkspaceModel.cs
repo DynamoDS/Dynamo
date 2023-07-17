@@ -1510,7 +1510,7 @@ namespace Dynamo.Graph.Workspaces
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-                throw (ex);
+                throw;
             }
         }
 

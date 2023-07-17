@@ -122,7 +122,7 @@ namespace DSCore.IO
             }
             catch (System.Exception ex)
             {
-                throw ex;
+                throw;
             }
             return true;
             

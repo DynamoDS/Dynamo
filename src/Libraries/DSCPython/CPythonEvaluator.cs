@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -311,7 +311,7 @@ for modname,mod in sys.modules.copy().items():
                             }
                             else
                             {
-                                throw e;
+                                throw;
                             }
                         }
                         finally
