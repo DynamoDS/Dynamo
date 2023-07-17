@@ -1381,7 +1381,7 @@ namespace ProtoFFI
     /// </summary>
     public class ReferenceEqualityComparer: IEqualityComparer<object>
     {
-        public bool Equals(object x, object y)
+        bool IEqualityComparer<object>.Equals(object x, object y)
         {
             return object.ReferenceEquals(x, y);
         }

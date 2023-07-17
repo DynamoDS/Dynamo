@@ -15,7 +15,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         double PointerDownWidth = 20;
         double PointerDownHeight = 10;
         double PointerTooltipOverlap = 5;
-        double PointerVerticalOffset;
+        new double PointerVerticalOffset;
         double PointerHorizontalOffset;
         enum SHADOW_DIRECTION { LEFT = 180, RIGHT = 0, BOTTOM = 270, TOP = 90};
 
