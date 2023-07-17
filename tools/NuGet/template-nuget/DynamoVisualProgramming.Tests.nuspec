@@ -34,6 +34,7 @@
         <file src="..\..\..\bin\NET60_Windows\Release\SystemTestServices.dll" target="lib\net6.0" />
         <file src="..\..\..\bin\NET60_Windows\Release\TestServices.dll" target="lib\net6.0" />
         -->
+
         <file src="..\..\..\doc\distrib\Images\logo_square_32x32.png" target="content\images\logo.png" />
     </files>
 </package>
