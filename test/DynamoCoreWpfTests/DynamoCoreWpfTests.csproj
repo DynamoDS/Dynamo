@@ -35,8 +35,10 @@
 	  <PackageReference Include="SharpDX.Direct3D9" Version="4.2.0" />
 	  <PackageReference Include="SharpDX.DXGI" Version="4.2.0" />
 	  <PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
-    <PackageReference Include="NUnitTestAdapter" Version="2.3.0" ExcludeAssets="all" />
+      <PackageReference Include="NUnitTestAdapter" Version="2.3.0" ExcludeAssets="all" />
       <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -48,6 +50,10 @@
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
+    <Reference Include="Microsoft.Practices.Prism">
+        <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
+        <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\DocumentationBrowserViewExtension\DocumentationBrowserViewExtension.csproj">
