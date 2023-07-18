@@ -14,7 +14,6 @@
   </PropertyGroup>
   <!--net6.0 net8.0 etc-->
   <ItemGroup>
-    <PackageReference Include="Prism.Core" Version="8.1.97" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' != 'net48' ">
@@ -30,6 +29,10 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xaml" />
     <Reference Include="WindowsBase">
+        <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Prism">
+        <HintPath>..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
         <Private>False</Private>
     </Reference>
   </ItemGroup>

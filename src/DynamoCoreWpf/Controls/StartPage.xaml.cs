@@ -14,7 +14,11 @@ using Dynamo.Logging;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
-using Dynamo.Core;
+#if NETFRAMEWORK
+using NotificationObject = Microsoft.Practices.Prism.ViewModel.NotificationObject;
+#else
+using NotificationObject = Dynamo.Core.NotificationObject;
+#endif
 
 namespace Dynamo.UI.Controls
 {
