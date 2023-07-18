@@ -846,7 +846,7 @@ namespace Dynamo.PackageManager
 
         private void OnTimedEvent(object sender, ElapsedEventArgs e)
         {
-            if(this.SearchState != PackageSearchState.Results)
+            if(this.SearchState != PackageSearchState.Results) // remove second condition
             {
                 TimedOut = true;
             }

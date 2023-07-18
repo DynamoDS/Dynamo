@@ -1,5 +1,7 @@
 using System.Linq;
+using System.Windows.Controls;
 using Dynamo.PackageManager;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 
@@ -54,6 +56,20 @@ namespace Dynamo.PackageDetails
             
             if (PackageDetailsView == null) PackageDetailsView = new PackageDetailsView();
             PackageDetailsView.DataContext = PackageDetailsViewModel;
+
+            // new
+            if(packageManagerSearchElement.UIParent != null)
+            {
+                var column = packageManagerSearchElement.UIParent as ColumnDefinition;
+                if (column == null) return;
+
+                var grid = column.Parent as Grid;
+
+                Grid.SetColumn(PackageDetailsView, 2);
+                grid.Children.Add(PackageDetailsView);
+                return;
+            }
+            // new
 
             ViewLoadedParamsReference?.AddToExtensionsSideBar(this, PackageDetailsView);
         }

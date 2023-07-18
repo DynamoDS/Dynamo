@@ -158,6 +158,13 @@
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*" />
                                     </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="2" />
+                                        <ColumnDefinition Width="0"
+                                                          MinWidth="1"
+                                                          x:Name="packageDetailsGrid"/>
+                                    </Grid.ColumnDefinitions>
 
                                     <local:PackageManagerSearchControl x:Name="packageManagerSearch"
                                                                        Background="{StaticResource PackageManagerTabBackgroundColor}"
@@ -197,6 +204,12 @@
                                                 Style="{StaticResource CtaButtonStyle}" />
                                     </StackPanel>
 
+                                    <GridSplitter Grid.Column="1"
+                                                  Grid.RowSpan="2"
+                                                  VerticalAlignment="Stretch"
+                                                  HorizontalAlignment="Center"
+                                                  Background="{StaticResource PackageManagerTabBackgroundColor}"    
+                                                  Width="2" />
                                 </Grid>
                             </Border>
                         </TabItem>

@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
+using System.Windows;
 
 namespace Dynamo.Search
 {
@@ -23,6 +24,8 @@ namespace Dynamo.Search
         ///     Returns browser item representing category which this element belongs to
         /// </summary>
         public BrowserItem Parent { get; set; }
+
+        public object UIParent { get; set; }
 
         /// <summary>
         ///     Returns previous parent item 

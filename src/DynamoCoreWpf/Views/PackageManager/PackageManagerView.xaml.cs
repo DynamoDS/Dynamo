@@ -43,6 +43,9 @@ namespace Dynamo.PackageManager.UI
                 Categories.PackageManager);
 
             dynamoView.EnableEnvironment(false);
+
+            this.packageManagerSearch.UIParent = this.packageDetailsGrid;
+            this.packageManagerMyPackages.UIParent = this.packageDetailsGrid;
         }
 
         private void OnRequestShowFileDialog(object sender, PackagePathEventArgs e)

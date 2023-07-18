@@ -24,6 +24,7 @@ namespace Dynamo.PackageManager.UI
     public partial class PackageManagerPackagesControl : UserControl
     {
         public PackageManagerSearchViewModel PkgSearchVM { get; set; }
+        public ColumnDefinition UIParent { get; set; }
 
         #region Properties
 
@@ -103,6 +104,12 @@ namespace Dynamo.PackageManager.UI
         {
             if (!(sender is Button button)) return;
             if (!(button.DataContext is PackageManagerSearchElementViewModel packageManagerSearchElementViewModel)) return;
+
+            // new
+            packageManagerSearchElementViewModel.Model.UIParent = UIParent;
+            //UIParent.Width = GridLength.Auto;
+            UIParent.Width = new GridLength(1, GridUnitType.Star);
+            // new
 
             PkgSearchVM.ViewPackageDetailsCommand.Execute(packageManagerSearchElementViewModel.Model);
         }
