@@ -267,7 +267,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Reports whether the node this InfoBubble is inside a collapsed group.
         /// </summary>
-        public bool IsCollapsed
+        public override bool IsCollapsed
         {
             get => isCollapsed;
             set
