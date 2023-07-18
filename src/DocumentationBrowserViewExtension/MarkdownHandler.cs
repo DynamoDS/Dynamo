@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using Dynamo.Utilities;
+using Dynamo.Wpf.Utilities;
 
 namespace Dynamo.DocumentationBrowser
 {
