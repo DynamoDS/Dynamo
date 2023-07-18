@@ -1,24 +1,22 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Xml;
-using DSCore;
 using CoreNodeModels;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Migration;
 using DynamoUnits;
 using ProtoCore.AST.AssociativeAST;
-using UnitsUI.Properties;
 using Newtonsoft.Json;
 using AstFactory = ProtoCore.AST.AssociativeAST.AstFactory;
 using DoubleNode = ProtoCore.AST.AssociativeAST.DoubleNode;
-using Dynamo.Utilities;
-using UnitsUI.Converters;
 using Utilities = DynamoUnits.Utilities;
-using Dynamo.Controls;
+using UnitsUI.Converters;
+using UnitsUI.Properties;
+using DSCore;
+using Dynamo.Utilities;
 
 namespace UnitsUI
 {
@@ -102,39 +100,57 @@ namespace UnitsUI
 
             if (name == nameof(Value))
             {
-                var converter = new MeasureConverter();
+                var converter = new InternalMeasureConverter();
                 this.Value = ((double)converter.ConvertBack(value, typeof(double), Measure, null));
                 return true; // UpdateValueCore handled.
             }
 
             return base.UpdateValueCore(updateValueParams);
         }
+        //stick this here until we get rid of all these obsolete types
+        //since the actual MeasureConverter depends on WPF.
+        private class InternalMeasureConverter
+        {
+            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                return parameter.ToString();
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                var measure = (SIUnit)parameter;
+                measure.SetValueFromString(value.ToString());
+                return measure.Value;
+            }
+        }
+
+
 
     }
 
     [NodeName("Number From Feet and Inches")]
     [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
-    [NodeDescription("LengthFromStringDescription", typeof(UnitsUI.Properties.Resources))]
-    [NodeSearchTags("LengthFromStringSearchTags", typeof(UnitsUI.Properties.Resources))]
+    [NodeDescription("LengthFromStringDescription", typeof(Resources))]
+    [NodeSearchTags("LengthFromStringSearchTags", typeof(Resources))]
     [OutPortTypes("number")]
     [IsDesignScriptCompatible]
     [NodeDeprecated]
     public class LengthFromString : MeasurementInputBase
     {
         [JsonConstructor]
-        private LengthFromString(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts)
+        private LengthFromString(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             Measure = Length.FromDouble(0.0, LengthUnit.FractionalFoot);
-            Warning("Number From Feet and Inches " + Properties.Resources.LegthFromStringObsoleteMessage, true);
+            Warning("Number From Feet and Inches " + Resources.LegthFromStringObsoleteMessage, true);
         }
 
-        public LengthFromString():base()
+        public LengthFromString() : base()
         {
             Measure = Length.FromDouble(0.0, LengthUnit.FractionalFoot);
 
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("double", Resources.LengthFromStringPortDataLengthToolTip)));
             RegisterAllPorts();
-            Warning("Number From Feet and Inches " + Properties.Resources.LegthFromStringObsoleteMessage, true);
+            Warning("Number From Feet and Inches " + Resources.LegthFromStringObsoleteMessage, true);
         }
 
         [NodeMigration(version: "0.6.2")]
@@ -177,14 +193,14 @@ namespace UnitsUI
 
     [NodeName("Area From String")]
     [NodeCategory("Units.Area.Create")]
-    [NodeDescription("AreaFromStringDescription", typeof(UnitsUI.Properties.Resources))]
-    [NodeSearchTags("AreaFromStringSearchTags", typeof(UnitsUI.Properties.Resources))]
+    [NodeDescription("AreaFromStringDescription", typeof(Resources))]
+    [NodeSearchTags("AreaFromStringSearchTags", typeof(Resources))]
     [IsDesignScriptCompatible]
     [NodeDeprecated]
     public class AreaFromString : MeasurementInputBase
     {
         [JsonConstructor]
-        private AreaFromString(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts)
+        private AreaFromString(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             Measure = Area.FromDouble(0.0, AreaUnit.SquareMeter);
             Warning("AreaFromString is obsolete.", true);
@@ -206,18 +222,18 @@ namespace UnitsUI
         }
     }
 
-  
+
 
     [NodeName("Volume From String")]
     [NodeCategory("Units.Volume.Create")]
-    [NodeDescription("VolumeFromStringDescription", typeof(UnitsUI.Properties.Resources))]
-    [NodeSearchTags("VolumeFromStringSearchTags", typeof(UnitsUI.Properties.Resources))]
+    [NodeDescription("VolumeFromStringDescription", typeof(Resources))]
+    [NodeSearchTags("VolumeFromStringSearchTags", typeof(Resources))]
     [IsDesignScriptCompatible]
     [NodeDeprecated]
     public class VolumeFromString : MeasurementInputBase
     {
         [JsonConstructor]
-        private VolumeFromString(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts)
+        private VolumeFromString(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             Measure = Volume.FromDouble(0.0, VolumeUnit.CubicMeter);
             Warning("VolumeFromString is obsolete.", true);
@@ -241,8 +257,8 @@ namespace UnitsUI
 
     [NodeName("Unit Types")]
     [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
-    [NodeDescription("UnitTypesDescription", typeof(UnitsUI.Properties.Resources))]
-    [NodeSearchTags("UnitTypesSearchTags", typeof(UnitsUI.Properties.Resources))]
+    [NodeDescription("UnitTypesDescription", typeof(Resources))]
+    [NodeSearchTags("UnitTypesSearchTags", typeof(Resources))]
     [OutPortTypes("type")]
     [IsDesignScriptCompatible]
     [NodeDeprecated]
@@ -250,13 +266,13 @@ namespace UnitsUI
     {
         public UnitTypes() : base()
         {
-            Warning("Unit Types " + Properties.Resources.UnitTypesObsoleteMessage, true);
+            Warning("Unit Types " + Resources.UnitTypesObsoleteMessage, true);
         }
 
         [JsonConstructor]
         private UnitTypes(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
-            Warning("Unit Types " + Properties.Resources.UnitTypesObsoleteMessage, true);
+            Warning("Unit Types " + Resources.UnitTypesObsoleteMessage, true);
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -272,15 +288,15 @@ namespace UnitsUI
                 var assemblyName = AstFactory.BuildStringNode("DynamoUnits");
                 node = AstFactory.BuildFunctionCall(new Func<string, string, object>(Types.FindTypeByNameInAssembly), new List<AssociativeNode>() { typeName, assemblyName });
             }
-           
+
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
         }
     }
 
     [NodeName("Parse Unit Input")]
     [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
-    [NodeDescription("ParseUnitInputDescription", typeof(UnitsUI.Properties.Resources))]
-    [NodeSearchTags("ParseUnitInputSearchTags", typeof(UnitsUI.Properties.Resources))]
+    [NodeDescription("ParseUnitInputDescription", typeof(Resources))]
+    [NodeSearchTags("ParseUnitInputSearchTags", typeof(Resources))]
     [IsDesignScriptCompatible]
     public class UnitInput : CoreNodeModels.Input.String
     {
@@ -326,7 +342,7 @@ namespace UnitsUI
             catch
             {
                 //continue with empty node and warning 
-                Warning(Properties.Resources.SchemaLoadWarning + Utilities.SchemaDirectory, true);
+                Warning(Resources.SchemaLoadWarning + Utilities.SchemaDirectory, true);
             }
 
             ShouldDisplayPreviewCore = true;
@@ -346,7 +362,7 @@ namespace UnitsUI
             catch
             {
                 //continue with empty node and warning 
-                Warning(Properties.Resources.SchemaLoadWarning + Utilities.SchemaDirectory, true);
+                Warning(Resources.SchemaLoadWarning + Utilities.SchemaDirectory, true);
             }
 
             Value = "";
@@ -355,7 +371,7 @@ namespace UnitsUI
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            if(string.IsNullOrEmpty(Value) || SelectedUnit is null)
+            if (string.IsNullOrEmpty(Value) || SelectedUnit is null)
                 return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()) };
 
             var expression = AstFactory.BuildStringNode(Value);
@@ -363,13 +379,13 @@ namespace UnitsUI
             var unitID =
                 AstFactory.BuildStringNode(SelectedUnit?.TypeId);
 
-           var node = AstFactory.BuildFunctionCall(
-                new Func<string, string, double>(DynamoUnits.Utilities.ParseExpressionByUnitId),
-                new List<AssociativeNode> { unitID, expression });
+            var node = AstFactory.BuildFunctionCall(
+                 new Func<string, string, double>(DynamoUnits.Utilities.ParseExpressionByUnitId),
+                 new List<AssociativeNode> { unitID, expression });
 
-           var node2 = AstFactory.BuildFunctionCall(
-               new Func<string, DynamoUnits.Unit>(DynamoUnits.Unit.ByTypeID),
-               new List<AssociativeNode> { unitID });
+            var node2 = AstFactory.BuildFunctionCall(
+                new Func<string, DynamoUnits.Unit>(DynamoUnits.Unit.ByTypeID),
+                new List<AssociativeNode> { unitID });
 
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node), AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(1), node2) };
         }
@@ -423,8 +439,8 @@ namespace UnitsUI
 
     [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
     [NodeName("Convert By Units")]
-    [NodeDescription("ConvertUnitsDescription", typeof(UnitsUI.Properties.Resources))]
-    [NodeSearchTags("ConvertUnitsSearchTags", typeof(UnitsUI.Properties.Resources))]
+    [NodeDescription("ConvertUnitsDescription", typeof(Resources))]
+    [NodeSearchTags("ConvertUnitsSearchTags", typeof(Resources))]
     [OutPortTypes("number")]
     [IsDesignScriptCompatible]
     public class DynamoUnitConvert : NodeModel
@@ -543,7 +559,7 @@ namespace UnitsUI
             catch
             {
                 //continue with empty node and warning 
-                Warning(Properties.Resources.SchemaLoadWarning + Utilities.SchemaDirectory, true);
+                Warning(Resources.SchemaLoadWarning + Utilities.SchemaDirectory, true);
             }
 
             AssociativeNode defaultNode = new DoubleNode(0.0);
@@ -562,7 +578,7 @@ namespace UnitsUI
             catch
             {
                 //continue with empty node and warning 
-                Warning(Properties.Resources.SchemaLoadWarning + Utilities.SchemaDirectory, true);
+                Warning(Resources.SchemaLoadWarning + Utilities.SchemaDirectory, true);
             }
 
             AssociativeNode defaultNode = new DoubleNode(0.0);
@@ -578,7 +594,7 @@ namespace UnitsUI
         {
             if (null == inputAstNodes || inputAstNodes.Count == 0 || inputAstNodes[0] is ProtoCore.AST.AssociativeAST.NullNode || SelectedToConversion is null || SelectedFromConversion is null)
                 return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()) };
-            
+
             var conversionToNode =
                 AstFactory.BuildStringNode(SelectedToConversion?.TypeId);
 
@@ -604,8 +620,8 @@ namespace UnitsUI
 
     [NodeName("Units")]
     [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
-    [NodeDescription("UnitsUIDescription", typeof(UnitsUI.Properties.Resources))]
-    [NodeSearchTags("UnitsUISearchTags", typeof(UnitsUI.Properties.Resources))]
+    [NodeDescription("UnitsUIDescription", typeof(Resources))]
+    [NodeSearchTags("UnitsUISearchTags", typeof(Resources))]
     [OutPortTypes("Unit")]
     [IsDesignScriptCompatible]
     public class Units : DSDropDownBase
@@ -648,7 +664,7 @@ namespace UnitsUI
             }
             catch
             {
-                Warning(Properties.Resources.SchemaLoadWarning + Utilities.SchemaDirectory, true);
+                Warning(Resources.SchemaLoadWarning + Utilities.SchemaDirectory, true);
             }
 
             if (units == null)
@@ -667,8 +683,8 @@ namespace UnitsUI
 
     [NodeName("Quantities")]
     [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
-    [NodeDescription("QuantitiesUIDescription", typeof(UnitsUI.Properties.Resources))]
-    [NodeSearchTags("QuantitiesUISearchTags", typeof(UnitsUI.Properties.Resources))]
+    [NodeDescription("QuantitiesUIDescription", typeof(Resources))]
+    [NodeSearchTags("QuantitiesUISearchTags", typeof(Resources))]
     [OutPortTypes("Quantity")]
     [IsDesignScriptCompatible]
     public class Quantities : DSDropDownBase
@@ -711,7 +727,7 @@ namespace UnitsUI
             }
             catch
             {
-                Warning(Properties.Resources.SchemaLoadWarning + Utilities.SchemaDirectory, true);
+                Warning(Resources.SchemaLoadWarning + Utilities.SchemaDirectory, true);
             }
 
             if (quantities == null)
@@ -721,7 +737,7 @@ namespace UnitsUI
 
             foreach (var quantity in quantities)
             {
-                
+
                 Items.Add(new DynamoDropDownItem(quantity.Name, quantity.TypeId));
             }
 
@@ -731,8 +747,8 @@ namespace UnitsUI
 
     [NodeName("Symbols")]
     [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
-    [NodeDescription("SymbolsUIDescription", typeof(UnitsUI.Properties.Resources))]
-    [NodeSearchTags("SymbolsUISearchTags", typeof(UnitsUI.Properties.Resources))]
+    [NodeDescription("SymbolsUIDescription", typeof(Resources))]
+    [NodeSearchTags("SymbolsUISearchTags", typeof(Resources))]
     [OutPortTypes("Symbol")]
     [IsDesignScriptCompatible]
     public class Symbols : DSDropDownBase
@@ -775,7 +791,7 @@ namespace UnitsUI
             }
             catch
             {
-                Warning(Properties.Resources.SchemaLoadWarning + Utilities.SchemaDirectory, true);
+                Warning(Resources.SchemaLoadWarning + Utilities.SchemaDirectory, true);
             }
 
             if (symbols == null)
