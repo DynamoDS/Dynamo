@@ -172,14 +172,27 @@ namespace Dynamo.DocumentationBrowser
                 {
                     sb.AppendLine("<br>");
                     sb.AppendLine($"<strong>{"Message"}</strong>");
-                    sb.AppendLine($"<p>{GetNthRowFromStringSplit(e.NodeInfos.ElementAt(i).Message, 0)}</p>");
 
-                    var help = e.NodeInfos.ElementAt(i).Message.Split(new string[] {". "}, StringSplitOptions.None);
-                    var html = help[1].Split(new string[] {"href="}, StringSplitOptions.None)[1];
-                    var helpHtml =
-                        DocumentationBrowserUtils.GetContentFromEmbeddedResource($"{RESOURCE_PREFIX + html}");
+                    var message = e.NodeInfos.ElementAt(i).Message;
 
-                    sb.AppendLine(helpHtml);
+                    if (message.Contains("href="))
+                    {
+                        sb.AppendLine($"<p>{GetNthRowFromStringSplit(e.NodeInfos.ElementAt(i).Message, 0)}</p>");
+
+                        var help = e.NodeInfos.ElementAt(i).Message.Split(new string[] {". "}, StringSplitOptions.None);
+                        var html = help[1].Split(new string[] {"href="}, StringSplitOptions.None)[1];
+                        var helpHtml =
+                            DocumentationBrowserUtils.GetContentFromEmbeddedResource($"{RESOURCE_PREFIX + html}");
+
+                        sb.AppendLine(helpHtml);
+                    }
+                    else
+                    {
+                        foreach(var line in message.Split(new string[] { "\r\n" }, StringSplitOptions.None))
+                        {
+                            sb.AppendLine($"<p>{line}</p>");
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
