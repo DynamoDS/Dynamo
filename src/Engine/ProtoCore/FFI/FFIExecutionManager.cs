@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Autodesk.DesignScript.Interfaces;
 using ProtoCore;
@@ -36,6 +37,16 @@ namespace ProtoFFI
             {
                 try
                 {
+                    //if the assembly is named system.private.xyz -
+                    //then we can't load it, and it's very likely
+                    //already loaded, just return it.
+                    if (name.ToLower().Contains("system.private"))
+                    {
+                        //TODO cache to a map.
+                        return AppDomain.CurrentDomain.GetAssemblies()
+                        .Where(x => x.Location==name)
+                        .FirstOrDefault();
+                    }
                     return Assembly.LoadFrom(name);
                 }
                 catch(System.IO.FileLoadException e)
