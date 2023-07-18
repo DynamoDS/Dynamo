@@ -36,6 +36,9 @@
       <Name>CoreNodes</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\DynamoUnits\UnitsCore.csproj">
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="GeometryColor_DynamoCustomization.xml">

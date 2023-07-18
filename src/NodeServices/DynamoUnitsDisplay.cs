@@ -1,12 +1,15 @@
-﻿using System;
+using System;
 using System.Linq;
 using Autodesk.DesignScript.Runtime;
 
 namespace DynamoUnits
 {
+    //TODO see obsolete note below - lets get rid of this - seems to overlap with PreferenceSettings.NumberFormat and ProtoCore.PrecisionFormat.
+
     /// <summary>
     /// Data used to set display and formatting preferences for Dynamo UI
     /// </summary>
+    [Obsolete("This type will be removed in Dynamo 3.0, please use PreferenceSettings.NumberFormat instead. ")]
     [IsVisibleInDynamoLibrary(false)]
     public class Display
     {
