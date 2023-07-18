@@ -694,7 +694,7 @@ namespace Dynamo.ViewModels
                     LuceneSearchUtilityNodeAutocomplete.CommitWriterChanges();
 
                     var luceneResults = SearchNodeAutocomplete(input, true);
-                    var foundNodesModels = luceneResults.Select(x => x.Model).Distinct();
+                    var foundNodesModels = luceneResults.Select(x => x.Model);
                     var foundNodes = foundNodesModels.Select(MakeNodeSearchElementVM);
 
                     var filteredSearchElements = new List<NodeSearchElementViewModel>();
