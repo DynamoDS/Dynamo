@@ -609,7 +609,7 @@ namespace Dynamo.Utilities
                 webBrowserComponent.CoreWebView2.Settings.IsZoomControlEnabled = false;
                 webBrowserComponent.CoreWebView2.Settings.IsPinchZoomEnabled = false;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

@@ -120,7 +120,7 @@ namespace DSCore.IO
                     throw new FileNotFoundException(Properties.Resources.InvalidDestinationPathErrorMessage, destinationPath);
                 }
             }
-            catch (System.Exception ex)
+            catch (Exception)
             {
                 throw;
             }
