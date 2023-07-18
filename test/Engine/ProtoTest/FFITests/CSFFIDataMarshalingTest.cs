@@ -95,7 +95,6 @@ namespace ProtoFFITests
             ExecuteAndVerify(code, data);
         }
         [Test]
-        [Category("FailureNET6")]
         public void TestDateTime()
         {
             String code =
