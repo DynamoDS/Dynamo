@@ -113,7 +113,7 @@
                     Modifiers="Control"
                     Command="{Binding Path=DataContext.ShowOpenDialogAndOpenResultCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="I"
-                    Modifiers="Control"
+                    Modifiers="Control+Shift"
                     Command="{Binding Path=DataContext.ShowInsertDialogAndInsertResultCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="H"
                     Modifiers="Control"
@@ -344,11 +344,11 @@
                         <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuInsert}"
                                   Command="{Binding ShowInsertDialogAndInsertResultCommand}"
                                   Name="insertButton"
-                                  InputGestureText="Ctrl + I">
+                                  InputGestureText="Ctrl + Shift + I">
                         </MenuItem>
                         <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuRecentFiles}"
                                   ItemsSource="{Binding RecentFiles}">
-                            <MenuItem.ItemContainerStyle>
+                            <MenuItem.ItemContainerStyle>   
                                 <Style TargetType="MenuItem">
                                     <Setter Property="Header"
                                             Value="{Binding Converter={StaticResource FilePathDisplayConverter}}" />
@@ -382,11 +382,11 @@
                                   Tag="NoDownArrow"
                                   IsEnabled="False">
                             <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuExportAsImage}"
-                                      Command="{Binding ShowSaveImageDialogAndSaveResultCommand}"
+                                      Command="{Binding ValidateSaveImageResultCommand}"
                                       Name="saveImage">
                             </MenuItem>
                             <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuExport3DAsImage}"
-                                      Command="{Binding ShowSaveImageDialogAndSaveResultCommand}"
+                                      Command="{Binding ValidateSaveImageResultCommand}"
                                       CommandParameter="{x:Static p:Resources.ScreenShotFrom3DParameter}"
                                       Name="save3DImage">
                             </MenuItem>
@@ -621,6 +621,9 @@
                         <MenuItem Header="{x:Static p:Resources.DynamoViewPackageMenuPublishWorkspace}"
                                   Command="{Binding Path=DataContext.PublishCurrentWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                                   Name="publishCurrent" />
+                        <MenuItem Header="New Package Manager Placeholder"
+                                  Command="{Binding Path=DataContext.ShowPackageManagerCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
+                                  Name="showPM" />
                     </MenuItem>
 
                     <MenuItem Header="{x:Static p:Resources.DynamoViewHelpMenu}"
@@ -1556,7 +1559,7 @@
               Grid.Row="2"
               Grid.Column="4"
               Grid.RowSpan="2">
-            <TabControl Name="tabDynamic" Background="#353535" BorderThickness="0" ItemsSource="{Binding}">
+            <TabControl Name="tabDynamic" Background="#353535" BorderThickness="0" ItemsSource="{Binding SideBarTabItems, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
                 <TabControl.Resources>
                     <!--Styling for the close button in the tab-->
                     <Style TargetType="{x:Type Button}"
@@ -1594,11 +1597,11 @@
                             <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Header}"
                                        FontFamily="{StaticResource ArtifaktElementBold}"
                                        FontSize="12"
-                                       Margin="5,5,0,0"
+                                       Margin="5,7,0,0"
                                        HorizontalAlignment="Stretch"/>
                             
                             <!--Button to close a particular tab-->
-                            <Button Name="CloseButton" Style="{StaticResource CloseButtonStyle}" DockPanel.Dock="Right" Click="OnCloseRightSidePanelTab"
+                            <Button Name="CloseButton" Style="{StaticResource CloseButtonStyle}" DockPanel.Dock="Right" Click="OnCloseRightSideBarTab"
                                     Margin="5,5,5,0" Uid="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Uid}">
                                 <Image Width="18" Height="18" HorizontalAlignment="Right" VerticalAlignment="Center">
                                     <Image.Style>
@@ -1618,7 +1621,7 @@
                                 </Image>
                             </Button>
                             <!-- Undock -->
-                            <Button Name="UndockButton" Style="{StaticResource CloseButtonStyle}" DockPanel.Dock="Right" Click="OnUndockRightSidePanelTab"
+                            <Button Name="UndockButton" Style="{StaticResource CloseButtonStyle}" DockPanel.Dock="Right" Click="OnUndockRightSideBarTab"
                                     Margin="8,5,0,0" Uid="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Uid}">
                                 <Image Width="18" Height="18" HorizontalAlignment="Right" VerticalAlignment="Center">
                                     <Image.Style>

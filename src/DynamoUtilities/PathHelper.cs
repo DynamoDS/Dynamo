@@ -276,17 +276,39 @@ namespace DynamoUtilities
             return false;
         }
 
-        /// <summary>
         /// This is a utility method for generating a default name to the snapshot image. 
         /// </summary>
         /// <param name="filePath">File path</param>
         /// <returns>Returns a default name(along with the timestamp) for the workspace image</returns>
+        [Obsolete("This function will be removed in future version of Dynamo - please use the version with more parameters")]
         public static String GetScreenCaptureNameFromPath(String filePath)
         {
             FileInfo fileInfo = new FileInfo(filePath);
             String timeStamp = string.Format("{0:yyyy-MM-dd_hh-mm-ss}", DateTime.Now);
             String snapshotName = fileInfo.Name.Replace(fileInfo.Extension, "_") + timeStamp;
             return snapshotName;
+        }
+
+        /// <summary>
+        /// This is a utility method for generating a default name to the snapshot image. 
+        /// </summary>
+        /// <param name="filePath">File path</param>
+        /// <param name="isTimeStampIncluded">Is timestamp included in file path</param>
+        /// <returns>Returns a default name(along with the timestamp) for the workspace image</returns>
+        public static String GetScreenCaptureNameFromPath(String filePath, bool isTimeStampIncluded)
+        {
+            FileInfo fileInfo = new FileInfo(filePath);
+            if (isTimeStampIncluded)
+            {
+                String timeStamp = string.Format("{0:yyyy-MM-dd_hh-mm-ss}", DateTime.Now);
+                String snapshotName = fileInfo.Name.Replace(fileInfo.Extension, "_") + timeStamp;
+                return snapshotName;
+            }
+            else
+            {
+                return fileInfo.Name.Replace(fileInfo.Extension, string.Empty);
+            }
+
         }
 
         /// <summary>

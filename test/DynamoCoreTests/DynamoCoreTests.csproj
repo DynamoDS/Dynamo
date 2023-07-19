@@ -11,14 +11,20 @@
     <RootNamespace>Dynamo.Tests</RootNamespace>
     <AssemblyName>DynamoCoreTests</AssemblyName>
   </PropertyGroup>
+  <PropertyGroup>
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Remove="AstBuilderTest.cs" />
     <Compile Remove="Saving.cs" />
   </ItemGroup>
     <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
         <PackageReference Include="NUnit" Version="2.6.3" ExcludeAssets="none" GeneratePathProperty="true" />
-        <PackageReference Include="NUnitTestAdapter" Version="2.3.0" ExcludeAssets="all" />
-       
+        <PackageReference Include="NUnitTestAdapter" Version="2.3.0" ExcludeAssets="all" /> 
+        <PackageReference Include="DynamoVisualProgramming.Analytics" Version="4.0.0.1432">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <Reference Include="System.Configuration" />
         <Reference Include="Microsoft.CSharp" />
         <ProjectReference Include="..\..\src\DynamoCrypto\DynamoCrypto.csproj">
@@ -34,13 +40,13 @@
         <PackageReference Include="coverlet.collector" Version="3.1.2" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" ExcludeAssets="none" />
         <PackageReference Include="JunitXml.TestLogger" Version="3.0.124" />
+        <PackageReference Include="DynamoVisualProgramming.Analytics" Version="4.0.0.1432">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
     <ItemGroup>
-    <PackageReference Include="DynamoVisualProgramming.Analytics" Version="3.0.1.740">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Greg" Version="2.4.0.4766">
+    <PackageReference Include="Greg" Version="2.5.0.5076">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -103,7 +109,7 @@
       <Project>{9b4fdc96-e2f9-4b8f-894a-4294405d50e7}</Project>
       <Name>DSOffice</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Libraries\DynamoUnits\Units.csproj">
+    <ProjectReference Include="..\..\src\Libraries\DynamoUnits\UnitsCore.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>Units</Name>
       <Private>False</Private>

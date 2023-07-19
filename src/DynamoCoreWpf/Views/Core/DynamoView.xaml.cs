@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -78,17 +77,13 @@ namespace Dynamo.Controls
         private readonly LoginService loginService;
         private ShortcutToolbar shortcutBar;
         private PreferencesView preferencesWindow;
+        private PackageManagerView packageManagerWindow;
         private bool loaded = false;
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
         // called on the view model and the process is not cancelled
         private bool isPSSCalledOnViewModelNoCancel = false;
         private readonly DispatcherTimer _workspaceResizeTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 500), IsEnabled = false };
         private ViewLoadedParams sharedViewExtensionLoadedParams;
-
-        /// <summary>
-        /// Collection of right side-bar panel tab items, view extensions and docked windows.
-        /// </summary>
-        internal ObservableCollection<TabItem> SideBarPanelTabItems { set; get; } = new ObservableCollection<TabItem>();
 
         /// <summary>
         /// Extensions currently displayed as windows.
@@ -228,7 +223,7 @@ namespace Dynamo.Controls
              };
 
             // Add an event handler to check if the collection is modified.   
-            SideBarPanelTabItems.CollectionChanged += this.OnCollectionChanged;
+            dynamoViewModel.SideBarTabItems.CollectionChanged += this.OnCollectionChanged;
 
             this.HideOrShowRightSideBar();
 
@@ -237,6 +232,8 @@ namespace Dynamo.Controls
             this.dynamoViewModel.Model.WorkspaceSaving += OnWorkspaceSaving;
             this.dynamoViewModel.Model.WorkspaceOpened += OnWorkspaceOpened;
             this.dynamoViewModel.RequestEnableShortcutBarItems += DynamoViewModel_RequestEnableShortcutBarItems;
+            this.dynamoViewModel.RequestExportWorkSpaceAsImage += OnRequestExportWorkSpaceAsImage;
+
             FocusableGrid.InputBindings.Clear();
 
             if (fileTrustWarningPopup == null)
@@ -246,6 +243,25 @@ namespace Dynamo.Controls
             if (!DynamoModel.IsTestMode && Application.Current != null)
             {
                 Application.Current.MainWindow = this;
+            }
+        }
+
+        private void OnRequestExportWorkSpaceAsImage(object parameter)
+        {
+            var workspace = this.ChildOfType<WorkspaceView>();
+            WorkspaceView.ExportImageResult isCurrentWorkSpaceValidForImage = workspace.IsWorkSpaceRenderValidAsImage(true);
+
+            if (isCurrentWorkSpaceValidForImage== WorkspaceView.ExportImageResult.IsValidAsImage)
+            {
+                dynamoViewModel.ShowSaveImageDialogAndSave(parameter);
+            }
+            else if (isCurrentWorkSpaceValidForImage == WorkspaceView.ExportImageResult.EmptyDrawing)
+            {
+                dynamoViewModel.MainGuideManager?.CreateRealTimeInfoWindow(Res.CantExportWorkspaceAsImageEmptyMessage, true);
+            }
+            else if (isCurrentWorkSpaceValidForImage == WorkspaceView.ExportImageResult.NotValidAsImage)
+            {
+                dynamoViewModel.MainGuideManager?.CreateRealTimeInfoWindow(Res.CantExportWorkspaceAsImageNotValidMessage, true);
             }
         }
 
@@ -447,8 +463,6 @@ namespace Dynamo.Controls
 
         private TabItem AddExtensionTab(IViewExtension viewExtension, UIElement content)
         {
-            tabDynamic.DataContext = null;
-
             // creates a new tab item
             var tab = new TabItem();
             tab.Header = viewExtension.Name;
@@ -467,9 +481,8 @@ namespace Dynamo.Controls
             tab.Content = content;
 
             //Insert the tab at the end
-            SideBarPanelTabItems.Insert(SideBarPanelTabItems.Count, tab);
+            dynamoViewModel.SideBarTabItems.Insert(dynamoViewModel.SideBarTabItems.Count, tab);
 
-            tabDynamic.DataContext = SideBarPanelTabItems;
             tabDynamic.SelectedItem = tab;
 
             return tab;
@@ -478,20 +491,18 @@ namespace Dynamo.Controls
         /// <summary>
         /// Dock the window to right side bar panel.
         /// </summary>
-        /// <param name="window">the window which needs to be docked</param>
-        /// <param name="nodeModel">nodemodel if it is a node window</param>
-        /// <param name="hideUIElement">Any UI element to hide after docking it in the right side panel(like the toolbar).</param>
+        /// <param name="window">The window that needs to be docked</param>
+        /// <param name="nodeModel">NodeModel, if it is a node window</param>
+        /// <param name="hideUIElement">Any UI element to hide after docking it in the right sidebar(like the toolbar).</param>
         /// <returns></returns>
         internal TabItem DockWindowInSideBar(Window window, NodeModel nodeModel = null, UIElement hideUIElement = null)
         {
-            var tabItem = SideBarPanelTabItems.OfType<TabItem>().SingleOrDefault(tabtem => tabtem.Uid.ToString() == window.Uid);
+            var tabItem = dynamoViewModel.SideBarTabItems.OfType<TabItem>().SingleOrDefault(tabtem => tabtem.Uid.ToString() == window.Uid);
             if (tabItem != null)
             {
                 tabDynamic.SelectedItem = tabItem;
                 return tabItem;
             }
-
-            tabDynamic.DataContext = null;
 
             if (hideUIElement != null)
             {
@@ -518,14 +529,13 @@ namespace Dynamo.Controls
             tab.Content = content;
 
             //Insert the tab at the end
-            SideBarPanelTabItems.Insert(SideBarPanelTabItems.Count, tab);
+            dynamoViewModel.SideBarTabItems.Insert(dynamoViewModel.SideBarTabItems.Count, tab);
 
-            tabDynamic.DataContext = SideBarPanelTabItems;
             tabDynamic.SelectedItem = tab;
 
             if (nodeModel != null)
             {
-                dynamoViewModel.CurrentDockedWindows.Add(window.Uid);
+                dynamoViewModel.DockedNodeWindows.Add(window.Uid);
                 dynamoViewModel.NodeWindowsState[window.Uid] = ViewExtensionDisplayMode.DockRight;
             }
 
@@ -540,14 +550,14 @@ namespace Dynamo.Controls
         internal void CloseExtensionControl(IViewExtension viewExtension)
         {
             string tabName = viewExtension.Name;
-            TabItem tabitem = SideBarPanelTabItems.OfType<TabItem>().SingleOrDefault(n => n.Header.ToString() == tabName);
+            TabItem tabitem = dynamoViewModel.SideBarTabItems.OfType<TabItem>().SingleOrDefault(n => n.Header.ToString() == tabName);
 
             if (viewExtension is ViewExtensionBase viewExtensionBase)
             {
                 viewExtensionBase.Closed();
             }
 
-            CloseRightSidePanelTab(tabitem);
+            CloseRightSideBarTab(tabitem);
             CloseExtensionWindow(tabName);
         }
  
@@ -557,19 +567,19 @@ namespace Dynamo.Controls
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        internal void OnCloseRightSidePanelTab(object sender, RoutedEventArgs e)
+        internal void OnCloseRightSideBarTab(object sender, RoutedEventArgs e)
         {
             try
             {
                 string tabId = (sender as Button).Uid.ToString();
-                TabItem tabitem = SideBarPanelTabItems.OfType<TabItem>().SingleOrDefault(n => n.Uid.ToString() == tabId);
+                TabItem tabitem = dynamoViewModel.SideBarTabItems.OfType<TabItem>().SingleOrDefault(n => n.Uid.ToString() == tabId);
 
                 if (tabitem.Tag is ViewExtensionBase viewExtensionBase)
                 {
                     viewExtensionBase.Closed();
                 }
 
-                NodeModel nodeModel = dynamoViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID.ToString() == tabitem.Uid.ToString());
+                NodeModel nodeModel = dynamoViewModel.GetDockedWindowNodeModel(tabitem.Uid);
 
                 if (nodeModel is PythonNode pythonNode)
                 {
@@ -582,11 +592,11 @@ namespace Dynamo.Controls
                     }
                 }
 
-                CloseRightSidePanelTab(tabitem);
+                CloseRightSideBarTab(tabitem);
 
-                if (dynamoViewModel.CurrentDockedWindows.Contains(tabitem.Uid))
+                if (dynamoViewModel.DockedNodeWindows.Contains(tabitem.Uid))
                 {
-                    dynamoViewModel.CurrentDockedWindows.Remove(tabitem.Uid);
+                    dynamoViewModel.DockedNodeWindows.Remove(tabitem.Uid);
                 }
             }
             catch (Exception ex)
@@ -601,28 +611,26 @@ namespace Dynamo.Controls
         /// Close right side-bar panel tab by extension tab item
         /// </summary>
         /// <param name="tabitem">target tab item</param>
-        internal void CloseRightSidePanelTab(TabItem tabitem)
+        internal void CloseRightSideBarTab(TabItem tabitem)
         {
             TabItem tabToBeRemoved = tabitem;
 
             // get the selected tab
             TabItem selectedTab = tabDynamic.SelectedItem as TabItem;
 
-            if (tabToBeRemoved != null && SideBarPanelTabItems.Count > 0)
+            if (tabToBeRemoved != null && dynamoViewModel.SideBarTabItems.Count > 0)
             {
-                // clear tab control binding and bind to the new tab-list. 
-                tabDynamic.DataContext = null;
-                SideBarPanelTabItems.Remove(tabToBeRemoved);
+                // Remove the tab from the binding collection SideBarTabItems 
+                dynamoViewModel.SideBarTabItems.Remove(tabToBeRemoved);
                 // Disconnect content from tab to allow it to be moved.
                 tabToBeRemoved.Content = null;
-                tabDynamic.DataContext = SideBarPanelTabItems;
 
                 // Highlight previously selected tab. if that is removed then Highlight the first tab
                 if (selectedTab.Equals(tabToBeRemoved))
                 {
-                    if (SideBarPanelTabItems.Count > 0)
+                    if (dynamoViewModel.SideBarTabItems.Count > 0)
                     {
-                        selectedTab = SideBarPanelTabItems[0];
+                        selectedTab = dynamoViewModel.SideBarTabItems[0];
                     }
                 }
                 tabDynamic.SelectedItem = selectedTab;
@@ -641,26 +649,23 @@ namespace Dynamo.Controls
             }
         }
 
-        internal void OnUndockRightSidePanelTab(object sender, RoutedEventArgs e)
+        internal void OnUndockRightSideBarTab(object sender, RoutedEventArgs e)
         {
             try
             {
                 var tabId = (sender as Button).Uid.ToString();
-                var tabItem = SideBarPanelTabItems.OfType<TabItem>().SingleOrDefault(tab => tab.Uid.ToString() == tabId);
+                var tabItem = dynamoViewModel.SideBarTabItems.OfType<TabItem>().SingleOrDefault(tab => tab.Uid.ToString() == tabId);
                 var tabName = tabItem.Header.ToString();
 
                 // If docked window is a node window, undock the window and call the action on the node. 
-                if (dynamoViewModel.CurrentDockedWindows.Contains(tabItem.Uid))
+                if (dynamoViewModel.DockedNodeWindows.Contains(tabItem.Uid))
                 {
                     UndockWindow(tabItem);
-                    Logging.Analytics.TrackEvent(
-                                   Actions.Undock,
-                                   Categories.PythonOperations, tabName);
                 }
                 else// if it an extension, undock the extension and update settings.
                 {
                     UndockExtension(tabItem);
-                    Logging.Analytics.TrackEvent(
+                    Analytics.TrackEvent(
                                    Actions.Undock,
                                    Categories.ViewExtensionOperations, tabName);
                 }
@@ -680,9 +685,9 @@ namespace Dynamo.Controls
         /// <param name="name">Name of the extension</param>
         internal void UndockExtension(string name)
         {
-            var tabItem = SideBarPanelTabItems.OfType<TabItem>().SingleOrDefault(tab => tab.Header.ToString() == name);
+            var tabItem = dynamoViewModel.SideBarTabItems.OfType<TabItem>().SingleOrDefault(tab => tab.Header.ToString() == name);
             var content = tabItem.Content as UIElement;
-            CloseRightSidePanelTab(tabItem);
+            CloseRightSideBarTab(tabItem);
             var extension = tabItem.Tag as IViewExtension;
             var settings = this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Find(s => s.UniqueId == extension.UniqueId);
             AddExtensionWindow(extension, content, settings?.WindowSettings);
@@ -699,7 +704,7 @@ namespace Dynamo.Controls
         internal void UndockExtension(TabItem tabItem)
         {
             var content = tabItem.Content as UIElement;
-            CloseRightSidePanelTab(tabItem);
+            CloseRightSideBarTab(tabItem);
             var extension = tabItem.Tag as IViewExtension;
             var settings = this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Find(s => s.UniqueId == extension.UniqueId);
             AddExtensionWindow(extension, content, settings?.WindowSettings);
@@ -715,7 +720,7 @@ namespace Dynamo.Controls
         /// <param name="tabItem">Tab item to be undocked</param>
         internal void UndockWindow(TabItem tabItem)
         {
-            NodeModel nodeModel = dynamoViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID.ToString() == tabItem.Uid.ToString());
+            NodeModel nodeModel = dynamoViewModel.GetDockedWindowNodeModel(tabItem.Uid);
 
             dynamoViewModel.NodeWindowsState[tabItem.Uid] = ViewExtensionDisplayMode.FloatingWindow;
 
@@ -724,20 +729,23 @@ namespace Dynamo.Controls
             {
                 var pythonNode = nodeModel as PythonNode;
                 Window window = tabItem.Tag as Window;
-                var textEditor = window.FindName("editText") as ICSharpCode.AvalonEdit.TextEditor;
+                var textEditor = window.FindName("editText") as TextEditor;
 
                 if (textEditor.IsModified)
                 {
                     pythonNode.OnNodeEdited(textEditor.Text);
                 }
                 else {
-
                     pythonNode.OnNodeEdited(null);
                 }
+
+                Analytics.TrackEvent(
+                               Actions.Undock,
+                               Categories.PythonOperations, tabItem.Header.ToString());
             }
 
-            CloseRightSidePanelTab(tabItem);
-            dynamoViewModel.CurrentDockedWindows.Remove(tabItem.Uid);
+            CloseRightSideBarTab(tabItem);
+            dynamoViewModel.DockedNodeWindows.Remove(tabItem.Uid);
         }
 
         /// <summary>
@@ -803,7 +811,7 @@ namespace Dynamo.Controls
 
         private TabItem FindExtensionTab(IViewExtension viewExtension)
         {
-            foreach (var tabItem in SideBarPanelTabItems)
+            foreach (var tabItem in dynamoViewModel.SideBarTabItems)
             {
                 if (tabItem.Tag is IViewExtension extension && extension.GetType().Equals(viewExtension.GetType()))
                 {
@@ -1214,6 +1222,7 @@ namespace Dynamo.Controls
 
             dynamoViewModel.RequestPackagePublishDialog += DynamoViewModelRequestRequestPackageManagerPublish;
             dynamoViewModel.RequestPackageManagerSearchDialog += DynamoViewModelRequestShowPackageManagerSearch;
+            dynamoViewModel.RequestPackageManagerDialog += DynamoViewModelRequestShowPackageManager;
 
             #endregion
 
@@ -1420,13 +1429,17 @@ namespace Dynamo.Controls
 
         private PackageManagerSearchView _searchPkgsView;
         private PackageManagerSearchViewModel _pkgSearchVM;
-        
+        private PackageManagerViewModel _pkgVM;
+
         private void DynamoViewModelRequestShowPackageManagerSearch(object s, EventArgs e)
         {
             if (!DisplayTermsOfUseForAcceptance())
                 return; // Terms of use not accepted.
 
             var cmd = Analytics.TrackCommandEvent("SearchPackage");
+
+            // The package search view model is shared and can be shared by resources at the moment
+            // If it hasn't been initialized yet, we do that here
             if (_pkgSearchVM == null)
             {
                 _pkgSearchVM = new PackageManagerSearchViewModel(dynamoViewModel.PackageManagerClientViewModel);
@@ -1536,7 +1549,7 @@ namespace Dynamo.Controls
         private void DynamoViewModelRequestSaveImage(object sender, ImageSaveEventArgs e)
         {
             var workspace = this.ChildOfType<WorkspaceView>();
-            workspace.SaveWorkspaceAsImage(e.Path);
+            workspace.IsWorkSpaceRenderValidAsImage(false, e.Path);
         }
 
         private void DynamoViewModelRequestSave3DImage(object sender, ImageSaveEventArgs e)
@@ -1813,7 +1826,7 @@ namespace Dynamo.Controls
                 SaveExtensionOpenState(window);
             }
             //for any new extensions that are opened for the first time
-            foreach (var tab in SideBarPanelTabItems)
+            foreach (var tab in dynamoViewModel.SideBarTabItems)
             {
                 SaveExtensionOpenState(tab);
             }
@@ -1821,7 +1834,7 @@ namespace Dynamo.Controls
             var settings = dynamoViewModel.PreferenceSettings.ViewExtensionSettings;
             foreach (var setting in settings)
             {
-                if (!SideBarPanelTabItems.Any(e => e.Uid == setting.UniqueId) && !ExtensionWindows.Values.Any(e => e.Uid == setting.UniqueId))
+                if (!dynamoViewModel.SideBarTabItems.Any(e => e.Uid == setting.UniqueId) && !ExtensionWindows.Values.Any(e => e.Uid == setting.UniqueId))
                 {
                     setting.IsOpen = false;
                 }
@@ -1936,6 +1949,7 @@ namespace Dynamo.Controls
             DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved -= CheckTestFlags;
 
             this.dynamoViewModel.RequestEnableShortcutBarItems -= DynamoViewModel_RequestEnableShortcutBarItems;
+            this.dynamoViewModel.RequestExportWorkSpaceAsImage -= OnRequestExportWorkSpaceAsImage;
 
             this.Dispose();
             sharedViewExtensionLoadedParams?.Dispose();
@@ -2159,6 +2173,40 @@ namespace Dynamo.Controls
             dynamoViewModel.OnPreferencesWindowChanged(preferencesWindow);
             preferencesWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             preferencesWindow.Show();
+        }
+
+        private void DynamoViewModelRequestShowPackageManager(object s, EventArgs e)
+        {
+            if (!DisplayTermsOfUseForAcceptance())
+                return; // Terms of use not accepted.
+
+            var cmd = Analytics.TrackCommandEvent("PackageManager");
+            if (_pkgSearchVM == null)
+            {
+                _pkgSearchVM = new PackageManagerSearchViewModel(dynamoViewModel.PackageManagerClientViewModel);
+            }
+
+            if (_pkgVM == null)
+            {
+                _pkgVM = new PackageManagerViewModel(dynamoViewModel, _pkgSearchVM);
+            }
+
+            if (packageManagerWindow == null)
+            {
+                packageManagerWindow = new PackageManagerView(this, _pkgVM)
+                {
+                    Owner = this,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                };
+
+                packageManagerWindow.Closed += (sender, args) => { packageManagerWindow = null; cmd.Dispose(); };
+                packageManagerWindow.Show();
+
+                if (packageManagerWindow.IsLoaded && IsLoaded) packageManagerWindow.Owner = this;
+            }
+
+            packageManagerWindow.Focus();
+            _pkgSearchVM.RefreshAndSearchAsync();
         }
 
         internal void EnableEnvironment(bool isEnabled)
@@ -2466,7 +2514,7 @@ namespace Dynamo.Controls
         // Show the extensions right side bar when there is atleast one extension
         private void HideOrShowRightSideBar()
         {
-            if (SideBarPanelTabItems.Count == 0)
+            if (dynamoViewModel.SideBarTabItems.Count == 0)
             {
                 if (RightExtensionsViewColumn.Width.Value != 0)
                 {
@@ -2813,7 +2861,7 @@ namespace Dynamo.Controls
             }
 
             // Removing the tab items list handler
-            SideBarPanelTabItems.CollectionChanged -= this.OnCollectionChanged;
+            dynamoViewModel.SideBarTabItems.CollectionChanged -= this.OnCollectionChanged;
 
             if (fileTrustWarningPopup != null)
                 fileTrustWarningPopup.CleanPopup();

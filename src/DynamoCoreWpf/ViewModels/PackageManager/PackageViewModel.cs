@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -6,15 +6,19 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using Dynamo.Configuration;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Utilities;
+#if NETFRAMEWORK
+using NotificationObject = Microsoft.Practices.Prism.ViewModel.NotificationObject;
 using Microsoft.Practices.Prism.Commands;
-using Microsoft.Practices.Prism.ViewModel;
+#else
+using NotificationObject = Dynamo.Core.NotificationObject;
+using Prism.Commands;
+#endif
 
 namespace Dynamo.ViewModels
 {

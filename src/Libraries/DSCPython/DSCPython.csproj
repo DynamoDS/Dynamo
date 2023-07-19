@@ -9,24 +9,13 @@
     <RootNamespace>DSCPython</RootNamespace>
     <AssemblyName>DSCPython</AssemblyName>
   </PropertyGroup>
+  <PropertyGroup>
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
+  </PropertyGroup>
   <ItemGroup>
     
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
-    <Reference Include="Python.Included, Version=2.5.2.7426, Culture=neutral, processorArchitecture=MSIL">
-        <SpecificVersion>False</SpecificVersion>
-        <HintPath>..\..\..\extern\Python\CPython_netstd20\Python.Included.dll</HintPath>
-    </Reference>
-      <Reference Include="Python.Included.SciPy, Version=2.5.2.7426, Culture=neutral, processorArchitecture=MSIL">
-          <SpecificVersion>False</SpecificVersion>
-          <HintPath>..\..\..\extern\Python\CPython_netstd20\Python.Included.SciPy.dll</HintPath>
-      </Reference>
-    <Reference Include="Python.Runtime, Version=2.5.2.7426, Culture=neutral, processorArchitecture=MSIL">
-        <SpecificVersion>False</SpecificVersion>
-        <HintPath>..\..\..\extern\Python\CPython_netstd20\Python.Runtime.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
+  <ItemGroup>
       <Reference Include="Python.Included, Version=2.5.2.7426, Culture=neutral, processorArchitecture=MSIL">
         <SpecificVersion>False</SpecificVersion>
         <HintPath>..\..\..\extern\Python\Python.Included.dll</HintPath>

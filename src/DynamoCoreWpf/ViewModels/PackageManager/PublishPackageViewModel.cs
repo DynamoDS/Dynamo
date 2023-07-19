@@ -20,11 +20,16 @@ using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Utilities;
 using DynamoUtilities;
 using Greg.Requests;
-using Microsoft.Practices.Prism.Commands;
 using PythonNodeModels;
 using Double = System.Double;
-using NotificationObject = Microsoft.Practices.Prism.ViewModel.NotificationObject;
 using String = System.String;
+#if NETFRAMEWORK
+using NotificationObject = Microsoft.Practices.Prism.ViewModel.NotificationObject;
+using Microsoft.Practices.Prism.Commands;
+#else
+using NotificationObject = Dynamo.Core.NotificationObject;
+using Prism.Commands;
+#endif
 
 namespace Dynamo.PackageManager
 {

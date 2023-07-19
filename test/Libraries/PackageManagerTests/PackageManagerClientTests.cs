@@ -136,7 +136,7 @@ namespace Dynamo.PackageManager.Tests
             Assert.AreEqual(result.version, version);
         }
 
-        [Test, ExpectedException(typeof(ApplicationException), ExpectedMessage = "The package does not exist")]
+        [Test]
         public void FailureOnGetPackageVersionHeaderByPackageId()
         {
             var mockGreg = new Mock<IGregClient>();
@@ -148,7 +148,11 @@ namespace Dynamo.PackageManager.Tests
                 });
 
             var client = new PackageManagerClient(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
-            client.GetPackageVersionHeader(new PackageInfo(string.Empty, new Version()));
+            var e = Assert.Throws<ApplicationException>(() =>
+            {
+                client.GetPackageVersionHeader(new PackageInfo(string.Empty, new Version()));
+            });
+            Assert.AreEqual("The package does not exist", e.Message);
         }
 
         [Test]
@@ -171,7 +175,7 @@ namespace Dynamo.PackageManager.Tests
             Assert.AreEqual(result.version, version);
         }
 
-        [Test, ExpectedException(typeof(ApplicationException), ExpectedMessage = "The package does not exist")]
+        [Test]
         public void FailureOnGetPackageVersionHeaderByPackageName()
         {
             var mockGreg = new Mock<IGregClient>();
@@ -183,7 +187,12 @@ namespace Dynamo.PackageManager.Tests
                 });
 
             var client = new PackageManagerClient(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
-            client.GetPackageVersionHeader(string.Empty, string.Empty);
+            var e = Assert.Throws<ApplicationException>(() =>
+            {
+                client.GetPackageVersionHeader(string.Empty, string.Empty);
+            });
+            Assert.AreEqual("The package does not exist",e.Message);
+
         }
 
         #endregion

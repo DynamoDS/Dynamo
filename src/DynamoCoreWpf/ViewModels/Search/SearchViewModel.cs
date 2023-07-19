@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -14,7 +12,6 @@ using Dynamo.Engine;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Interfaces;
-using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
@@ -22,6 +19,9 @@ using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Services;
 using Dynamo.Wpf.ViewModels;
+using Lucene.Net.Documents;
+using Lucene.Net.QueryParsers.Classic;
+using Lucene.Net.Search;
 
 namespace Dynamo.ViewModels
 {
@@ -349,6 +349,9 @@ namespace Dynamo.ViewModels
         public NodeSearchModel Model { get; private set; }
         internal readonly DynamoViewModel dynamoViewModel;
 
+        // Lucene search utility to perform indexing operations.
+        internal LuceneSearchUtility LuceneSearchUtility { get; }
+
         /// <summary>
         /// Class name, that has been clicked in library search view.
         /// </summary>
@@ -369,6 +372,7 @@ namespace Dynamo.ViewModels
             iconServices = new IconServices(pathManager);
 
             InitializeCore();
+            LuceneSearchUtility = dynamoViewModel.Model.LuceneSearchUtility;
         }
 
         // Just for tests. Please refer to LibraryTests.cs
@@ -870,7 +874,8 @@ namespace Dynamo.ViewModels
             if (string.IsNullOrEmpty(query))
                 return;
 
-            var foundNodes = Search(query);
+            //Passing the second parameter as true will search using Lucene.NET
+            var foundNodes = DynamoModel.IsTestMode? Search(query) : Search(query, true);
             searchResults = new List<NodeSearchElementViewModel>(foundNodes);
 
             FilteredResults = searchResults;
@@ -917,11 +922,101 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
         /// <param name="search"> The search query </param>
-        /// <param name="subset">Subset of nodes that should be used for the search instead of the complete set of nodes. This is a list of NodeSearchElement types</param>
+        /// <param name="subset">Subset of nodes that should be used for the search instead of the complete set of nodes. This is a list of NodeSearchElement types</param>   
         internal IEnumerable<NodeSearchElementViewModel> Search(string search, IEnumerable<NodeSearchElement> subset = null)
         {
             var foundNodes = Model.Search(search, 0, subset);
             return foundNodes.Select(MakeNodeSearchElementVM);
+        }
+
+        /// <summary>
+        ///     Performs a search using the given string as query and subset, if provided.
+        /// </summary>
+        /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
+        /// <param name="search"> The search query </param>
+        /// <param name="useLucene"> Temporary flag that will be used for searching using Lucene.NET </param>
+        internal IEnumerable<NodeSearchElementViewModel> Search(string search, bool useLucene)
+        {
+            if (useLucene)
+            {
+                //The DirectoryReader and IndexSearcher have to be assigned after commiting indexing changes and before executing the Searcher.Search() method, otherwise new indexed info won't be reflected
+                LuceneSearchUtility.dirReader = LuceneSearchUtility.writer?.GetReader(applyAllDeletes: true);
+                if (LuceneSearchUtility.dirReader == null) return null;
+
+                LuceneSearchUtility.Searcher = new IndexSearcher(LuceneSearchUtility.dirReader);
+
+                string searchTerm = search.Trim();
+                var candidates = new List<NodeSearchElementViewModel>();
+                var parser = new MultiFieldQueryParser(LuceneConfig.LuceneNetVersion, LuceneConfig.NodeIndexFields, LuceneSearchUtility.Analyzer)
+                {
+                    AllowLeadingWildcard = true,
+                    DefaultOperator = LuceneConfig.DefaultOperator,
+                    FuzzyMinSim = LuceneConfig.MinimumSimilarity
+                };
+
+                Query query = parser.Parse(LuceneSearchUtility.CreateSearchQuery(LuceneConfig.NodeIndexFields, searchTerm));
+                TopDocs topDocs = LuceneSearchUtility.Searcher.Search(query, n: LuceneConfig.DefaultResultsCount);
+
+                for (int i = 0; i < topDocs.ScoreDocs.Length; i++)
+                {
+                    // read back a Lucene doc from results
+                    Document resultDoc = LuceneSearchUtility.Searcher.Doc(topDocs.ScoreDocs[i].Doc);
+
+                    string name = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.Name));
+                    string docName = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.DocName));
+                    string cat = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName));
+                    string parameters = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.Parameters));
+
+                    if (!string.IsNullOrEmpty(docName))
+                    {
+                        //code for setting up documentation info
+                    }
+                    else
+                    {
+                        var foundNode = FindViewModelForNodeNameAndCategory(name, cat, parameters);
+                        if (foundNode != null)
+                        {
+                            candidates.Add(foundNode);
+                        }
+                    }
+                }
+                return candidates;
+            }
+            else
+            {
+                return Search(search);
+            }
+        }
+
+        /// <summary>
+        /// To get view model for a node based on its name and category
+        /// </summary>
+        /// <param name="nodeName">Name of the node</param>
+        /// <param name="nodeCategory">Full Category of the node</param>
+        /// <param name="parameters">Node input parameters</param>
+        /// <returns></returns>
+        private NodeSearchElementViewModel FindViewModelForNodeNameAndCategory(string nodeName, string nodeCategory, string parameters)
+        {
+            var result = Model.SearchEntries.Where(e => {
+                if (e.Name.Equals(nodeName) && e.FullCategoryName.Equals(nodeCategory))
+                {
+                    //When the node info was indexed if Parameters was null we added an empty space (null cannot be indexed)
+                    //Then in this case when searching if e.Parameters is null we need to check against empty space
+                    if (e.Parameters == null)
+                        return string.IsNullOrEmpty(parameters);
+                    //Parameters contain a value so we need to compare against the value indexed
+                    else
+                        return e.Parameters.Equals(parameters);
+                }
+                return false;
+            });
+
+            if (!result.Any())
+            {
+                return null;
+            }
+
+            return MakeNodeSearchElementVM(result.ElementAt(0));
         }
 
         private static IEnumerable<NodeSearchElementViewModel> GetVisibleSearchResults(NodeCategoryViewModel category)

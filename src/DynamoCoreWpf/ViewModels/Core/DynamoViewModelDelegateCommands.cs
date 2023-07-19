@@ -1,7 +1,11 @@
 using System;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Wpf.ViewModels;
+#if NETFRAMEWORK
 using Microsoft.Practices.Prism.Commands;
+#else
+using Prism.Commands;
+#endif
 using DelegateCommand = Dynamo.UI.Commands.DelegateCommand;
 
 namespace Dynamo.ViewModels
@@ -23,7 +27,7 @@ namespace Dynamo.ViewModels
             ShowSaveDialogIfNeededAndSaveResultCommand = new DelegateCommand(ShowSaveDialogIfNeededAndSaveResult, CanShowSaveDialogIfNeededAndSaveResultCommand);
             SaveImageCommand = new DelegateCommand(SaveImage, CanSaveImage);
             Save3DImageCommand = new DelegateCommand(Save3DImage, CanSaveImage);
-            ShowSaveImageDialogAndSaveResultCommand = new DelegateCommand(ShowSaveImageDialogAndSaveResult, CanShowSaveImageDialogAndSaveResult);
+            ValidateWorkSpaceBeforeToExportAsImageCommand = new DelegateCommand(ValidateWorkSpaceBeforeToExportAsImage, CanValidateWorkSpaceBeforeToExportAsImage);
             WriteToLogCmd = new DelegateCommand(o => model.Logger.Log(o.ToString()), CanWriteToLog);
             PostUiActivationCommand = new DelegateCommand(model.PostUIActivation);
             AddNoteCommand = new DelegateCommand(AddNote, CanAddNote);
@@ -47,6 +51,7 @@ namespace Dynamo.ViewModels
             ExitCommand = new DelegateCommand(Exit, CanExit);
             ToggleFullscreenWatchShowingCommand = new DelegateCommand(ToggleFullscreenWatchShowing, CanToggleFullscreenWatchShowing);
             ToggleBackgroundGridVisibilityCommand = new DelegateCommand(ToggleBackgroundGridVisibility, CanToggleBackgroundGridVisibility);
+            UpdateGraphicHelpersScaleCommand = new DelegateCommand(UpdateGraphicHelpersScale, CanUpdateGraphicHelpersScale);
             AlignSelectedCommand = new DelegateCommand(AlignSelected, CanAlignSelected); ;
             UndoCommand = new DelegateCommand(Undo, CanUndo);
             RedoCommand = new DelegateCommand(Redo, CanRedo);
@@ -65,6 +70,7 @@ namespace Dynamo.ViewModels
             DisplayInteractiveGuideCommand = new DelegateCommand(DisplayStartPage, CanDisplayInteractiveGuide);
             GettingStartedGuideCommand = new DelegateCommand(StartGettingStartedGuide, CanStartGettingStartedGuide);
             ShowPackageManagerSearchCommand = new DelegateCommand(ShowPackageManagerSearch, CanShowPackageManagerSearch);
+            ShowPackageManagerCommand = new DelegateCommand(ShowPackageManager, CanShowPackageManager);
             ShowInstalledPackagesCommand = new DelegateCommand(o => { }, o => true);
             ManagePackagePathsCommand = new DelegateCommand(o => { }, o => true);
 
@@ -136,10 +142,11 @@ namespace Dynamo.ViewModels
         public DelegateCommand PostUIActivationCommand { get; set; }
         public DelegateCommand ToggleFullscreenWatchShowingCommand { get; set; }
         public DelegateCommand ToggleBackgroundGridVisibilityCommand { get; set; }
+        public DelegateCommand UpdateGraphicHelpersScaleCommand { get; set; }
         public DelegateCommand SelectAllCommand { get; set; }
         public DelegateCommand SaveImageCommand { get; set; }
         public DelegateCommand Save3DImageCommand { get; set; }
-        public DelegateCommand ShowSaveImageDialogAndSaveResultCommand { get; set; }
+        public DelegateCommand ValidateWorkSpaceBeforeToExportAsImageCommand { get; set; }
         public DelegateCommand ToggleConsoleShowingCommand { get; set; }
         public DelegateCommand ShowPackageManagerCommand { get; set; }
         public DelegateCommand ForceRunExpressionCommand { get; set; }

@@ -3747,23 +3747,19 @@ namespace Dynamo.Controls
     }
 
 
-
-    /// <summary>
-    /// Returns true if one OR the other inputs are true
-    /// </summary>
-    public class BooleanOrMultiValueVisibilityConverter : IMultiValueConverter
+    public class SumConverter : IMultiValueConverter
     {
-        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        /// <summary>
+        /// Calculates and returns the sum of the values provided
+        /// </summary>
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            bool a = (bool)values[0];
-            bool b = (bool)values[1];
-
-            return a || b ? Visibility.Visible : Visibility.Collapsed;
+            return values.Cast<double>().Sum();
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            return null;
         }
     }
 }

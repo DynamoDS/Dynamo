@@ -39,6 +39,8 @@ using Dynamo.Updates;
 using Dynamo.Utilities;
 using DynamoServices;
 using Greg;
+using Lucene.Net.Documents;
+using Lucene.Net.Search;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ProtoCore;
@@ -130,11 +132,15 @@ namespace Dynamo.Models
         private Timer backupFilesTimer;
         private Dictionary<Guid, string> backupFilesDict = new Dictionary<Guid, string>();
         internal readonly Stopwatch stopwatch = Stopwatch.StartNew();
+
         /// <summary>
         /// Indicating if ASM is loaded correctly, defaulting to true because integrators most likely have code for ASM preloading
         /// During sandbox initializing, Dynamo checks specifically if ASM loading was correct
         /// </summary>
         internal bool IsASMLoaded = true;
+
+        // Lucene search utility to perform indexing operations.
+        internal LuceneSearchUtility LuceneSearchUtility { get; set; }
 
         #endregion
 
@@ -921,6 +927,10 @@ namespace Dynamo.Models
             LibraryServices.LibraryLoaded += LibraryLoaded;
 
             CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager, LibraryServices);
+
+            LuceneSearchUtility = new LuceneSearchUtility(this);
+            LuceneSearchUtility.InitializeLuceneConfig(LuceneConfig.NodesIndexingDirectory);
+
             InitializeCustomNodeManager();
 
             ResetEngineInternal();
@@ -1349,6 +1359,13 @@ namespace Dynamo.Models
                 PreferenceSettings.MessageLogged -= LogMessage;
             }
 
+            //The writer have to be disposed at DynamoModel level due that we could index package-nodes as new packages are installed
+            LuceneSearchUtility.DisposeWriter();
+
+            // Lucene disposals (just if LuceneNET was initialized)
+            LuceneSearchUtility.indexDir?.Dispose();
+            LuceneSearchUtility.dirReader?.Dispose();
+
 #if DEBUG
             CurrentWorkspace.NodeAdded -= CrashOnDemand.CurrentWorkspace_NodeAdded;
 #endif
@@ -1402,6 +1419,16 @@ namespace Dynamo.Models
                 customNodeSearchRegistry.Add(info.FunctionId);
                 var searchElement = new CustomNodeSearchElement(CustomNodeManager, info);
                 SearchModel.Add(searchElement);
+
+                //Indexing node packages installed using PackageManagerSearch
+                var iDoc = LuceneSearchUtility.InitializeIndexDocumentForNodes();
+                if (searchElement != null)
+                {
+                    AddNodeTypeToSearchIndex(searchElement, iDoc);
+                }
+
+                LuceneSearchUtility.CommitWriterChanges();
+
                 Action<CustomNodeInfo> infoUpdatedHandler = null;
                 infoUpdatedHandler = newInfo =>
                 {
@@ -1431,6 +1458,8 @@ namespace Dynamo.Models
 
         private void InitializeIncludedNodes()
         {
+            var iDoc = LuceneSearchUtility.InitializeIndexDocumentForNodes();
+
             var customNodeData = new TypeLoadData(typeof(Function));
             NodeFactory.AddLoader(new CustomNodeLoader(CustomNodeManager, IsTestMode));
             NodeFactory.AddAlsoKnownAs(customNodeData.Type, customNodeData.AlsoKnownAs);
@@ -1484,6 +1513,28 @@ namespace Dynamo.Models
 
             SearchModel?.Add(symbolSearchElement);
             SearchModel?.Add(outputSearchElement);
+
+            //Adding this nodes are breaking the tests (due that we have two input and two output nodes):
+            //WhenHomeWorkspaceIsFocusedInputAndOutputNodesAreMissingFromSearch
+            //WhenStartingDynamoInputAndOutputNodesAreNolongerMissingFromSearch
+            // New index process from Lucene, adding missing nodes: Code Block, Input and Output
+            //var ele = AddNodeTypeToSearch(outputData);      
+            //if (ele != null)
+            //{
+            //    AddNodeTypeToSearchIndex(ele, iDoc);
+            //}
+
+            //ele = AddNodeTypeToSearch(symbolData);
+            //if (ele != null)
+            //{
+            //    AddNodeTypeToSearchIndex(ele, iDoc);
+            //}
+
+            var ele = AddNodeTypeToSearch(cbnData);
+            if (ele != null)
+            {
+                AddNodeTypeToSearchIndex(ele, iDoc);
+            }         
         }
 
         internal static bool IsDisabledPath(string packagesDirectory, IPreferences preferences)
@@ -1569,6 +1620,12 @@ namespace Dynamo.Models
             }
 
             CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.CommonDefinitions, IsTestMode);
+
+            // Initialize searcher, if the applyAllDeletes is true all buffered deletes on documents will be applied (made visible) in the returned reader
+            // When running parallel tests several are trying to write in the AppData folder then the job
+            // is failing and in a wrong state so we prevent to initialize Lucene index writer during test mode.
+            // Without the index files on disk, the dirReader cant be initialized correctly. So does the searcher.
+            LuceneSearchUtility.CommitWriterChanges();
         }
 
         /// <summary>
@@ -1620,6 +1677,7 @@ namespace Dynamo.Models
 
         private void LoadNodeModels(List<TypeLoadData> nodes, bool isPackageMember)
         {
+            var iDoc = LuceneSearchUtility.InitializeIndexDocumentForNodes();
             foreach (var type in nodes)
             {
                 // Protect ourselves from exceptions thrown by malformed third party nodes.
@@ -1628,7 +1686,14 @@ namespace Dynamo.Models
                     NodeFactory.AddTypeFactoryAndLoader(type.Type);
                     NodeFactory.AddAlsoKnownAs(type.Type, type.AlsoKnownAs);
                     type.IsPackageMember = isPackageMember;
-                    AddNodeTypeToSearch(type);
+                    // Legacy index process to search dictionary
+                    var ele = AddNodeTypeToSearch(type);
+                    // New index process from Lucene
+                    // TODO: get search element some other way
+                    if (ele != null)
+                    {
+                        AddNodeTypeToSearchIndex(ele, iDoc);
+                    }
                 }
                 catch (Exception e)
                 {
@@ -2178,10 +2243,13 @@ namespace Dynamo.Models
 
             CurrentWorkspace.UpdateWithExtraWorkspaceViewInfo(viewInfo, offsetX, offsetY);
 
-            List<NoteModel> insertedNotes = GetInsertedNotes(viewInfo.Annotations);
+            if(viewInfo != null)
+            {
+                List<NoteModel> insertedNotes = GetInsertedNotes(viewInfo.Annotations);
+                DynamoSelection.Instance.Selection.AddRange(insertedNotes);
+            }           
 
-            DynamoSelection.Instance.Selection.AddRange(nodes);
-            DynamoSelection.Instance.Selection.AddRange(insertedNotes);
+            DynamoSelection.Instance.Selection.AddRange(nodes); 
             
             currentWorkspace.HasUnsavedChanges = true;
         }
@@ -3163,15 +3231,35 @@ namespace Dynamo.Models
         }
 #endif
 
-        private void AddNodeTypeToSearch(TypeLoadData typeLoadData)
+        private NodeModelSearchElement AddNodeTypeToSearch(TypeLoadData typeLoadData)
         {
             if (!typeLoadData.IsDSCompatible || typeLoadData.IsDeprecated || typeLoadData.IsHidden
                 || typeLoadData.IsMetaNode)
             {
-                return;
+                return null;
             }
+            var node = new NodeModelSearchElement(typeLoadData);
+            SearchModel?.Add(node);
+            return node;
+        }
 
-            SearchModel?.Add(new NodeModelSearchElement(typeLoadData));
+        /// <summary>
+        /// Add node information to Lucene index
+        /// </summary>
+        /// <param name="node">node info that will be indexed</param>
+        /// <param name="doc">Lucene document in which the node info will be indexed</param>
+        private void AddNodeTypeToSearchIndex(NodeSearchElement node, Document doc)
+        {
+            if (IsTestMode) return;
+            if (LuceneSearchUtility.addedFields == null) return;
+
+            LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName), node.FullCategoryName);
+            LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), node.Name);
+            LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Description), node.Description);
+            if (node.SearchKeywords.Count > 0) LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords), node.SearchKeywords.Aggregate((x, y) => x + " " + y), true, true);
+            LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Parameters), node.Parameters?? string.Empty);
+
+            LuceneSearchUtility.writer?.AddDocument(doc);
         }
 
         /// <summary>
@@ -3202,23 +3290,26 @@ namespace Dynamo.Models
 
         internal void AddZeroTouchNodesToSearch(IEnumerable<FunctionGroup> functionGroups)
         {
+            var iDoc = LuceneSearchUtility.InitializeIndexDocumentForNodes();
             foreach (var funcGroup in functionGroups)
-                AddZeroTouchNodeToSearch(funcGroup);
+                AddZeroTouchNodeToSearch(funcGroup, iDoc);
         }
 
-        private void AddZeroTouchNodeToSearch(FunctionGroup funcGroup)
+        private void AddZeroTouchNodeToSearch(FunctionGroup funcGroup, Document iDoc)
         {
             foreach (var functionDescriptor in funcGroup.Functions)
             {
-                AddZeroTouchNodeToSearch(functionDescriptor);
+                AddZeroTouchNodeToSearch(functionDescriptor, iDoc);
             }
         }
 
-        private void AddZeroTouchNodeToSearch(FunctionDescriptor functionDescriptor)
+        private void AddZeroTouchNodeToSearch(FunctionDescriptor functionDescriptor, Document iDoc)
         {
             if (functionDescriptor.IsVisibleInLibrary)
             {
-                SearchModel?.Add(new ZeroTouchSearchElement(functionDescriptor));
+                var ele = new ZeroTouchSearchElement(functionDescriptor);
+                SearchModel?.Add(ele);
+                AddNodeTypeToSearchIndex(ele, iDoc);
             }
         }
 
@@ -3569,6 +3660,8 @@ namespace Dynamo.Models
 
         private bool NotesAlreadyLoaded(IEnumerable<ExtraAnnotationViewInfo> notes)
         {
+            if (notes == null) return false;
+
             foreach (var note in notes)
             {
                 if (currentWorkspace.Notes.Any(n => n.GUID.ToString() == note.Id))
@@ -3577,7 +3670,7 @@ namespace Dynamo.Models
                     return true;
                 }
             }
-            // If no nodes exist with the same GUID, then we are good to go
+            // If no notes exist with the same GUID, then we are good to go
             return false;
         }
         #endregion

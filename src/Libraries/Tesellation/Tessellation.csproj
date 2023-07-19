@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -10,10 +10,13 @@
     <AssemblyName>Tessellation</AssemblyName>
     <DocumentationFile>$(OutputPath)\$(UICulture)\Tessellation.XML</DocumentationFile>
   </PropertyGroup>
+  <PropertyGroup>
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
+  </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.665"/>
-    <PackageReference Include="MIConvexHull" version="1.1.17.0411" CopyPDB="true" />
-	<PackageReference Include="StarMath" version="2.0.14.1114" CopyPDB="true" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.1400" />
+    <PackageReference Include="MIConvexHull" version="1.1.17.411" CopyPDB="true" />
+	<PackageReference Include="StarMath" version="2.0.17.1019" CopyPDB="true" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
     <PackageReference Include="System.Resources.Extensions" Version="5.0.0" />

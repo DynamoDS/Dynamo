@@ -8,7 +8,6 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DynamoCLI</RootNamespace>
     <AssemblyName>DynamoCLI</AssemblyName>
-    <SelfContained>false</SelfContained>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <UseVSHostingProcess>true</UseVSHostingProcess>

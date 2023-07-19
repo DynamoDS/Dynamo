@@ -1,4 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <UILib>true</UILib>
+  </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config/CS_SDK.props" />
   </ImportGroup>
@@ -9,21 +12,28 @@
     <RootNamespace>SystemTestServices</RootNamespace>
     <AssemblyName>SystemTestServices</AssemblyName>
   </PropertyGroup>
+  <!--net6.0 net8.0 etc-->
   <ItemGroup>
-    <Reference Include="Microsoft.Practices.Prism">
-      <HintPath>..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-	  <PackageReference Include="NUnit" Version="2.6.3" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' != 'net48' ">
+    <PackageReference Include="NUnit" Version="3.13.3" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
+    <PackageReference Include="NUnit" Version="2.6.3" />
     <PackageReference Include="NUnitTestAdapter" Version="2.3.0" ExcludeAssets="all" />
-      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xaml" />
     <Reference Include="WindowsBase">
-      <Private>False</Private>
+        <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Prism">
+        <HintPath>..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
+        <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
