@@ -276,6 +276,13 @@
                                         <Run Text="{x:Static p:Resources.NodeTooltipOriginalName}" />
                                         <Run Text="{Binding Path=OriginalName, Mode=OneWay}" />
                                     </TextBlock>
+                                    <TextBlock FontFamily="{StaticResource ArtifaktElementRegular}"
+                                               FontWeight="Light"
+                                               TextWrapping="Wrap"
+                                               Visibility="{Binding IsCustomFunction, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                        <Run Text="{x:Static p:Resources.NodeTooltipPackage}" />
+                                        <Run Text="{Binding Path=PackageName, Mode=OneWay}" />
+                                    </TextBlock>
                                     <TextBlock Text="&#x0a;" />
                                     <TextBlock FontFamily="{StaticResource ArtifaktElementRegular}"
                                                FontWeight="Medium"
@@ -759,14 +766,10 @@
 
         </Canvas>
         <Canvas Grid.Row="3" Canvas.ZIndex="51" 
-                HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Visibility="{Binding IsCustomFunction, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
             <Polygon Points="0,-15 15,0 0,0" Fill="#E3E3E3"/>
-            <Canvas.Visibility>
-                <MultiBinding Converter="{StaticResource BooleanOrMultiValueVisibilityConverter}">
-                    <Binding Path="IsCustomFunction"/>
-                    <Binding Path="IsPythonNode"/>
-                </MultiBinding>
-            </Canvas.Visibility>
         </Canvas>
     </Grid>
 </UserControl>

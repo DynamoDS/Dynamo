@@ -241,6 +241,17 @@ namespace Dynamo.ViewModels
             get { return nodeLogic.GetOriginalName(); }
         }
 
+        /// <summary>
+        /// Returns the Package name of the node, if it comes from a package
+        /// </summary>
+        public string PackageName
+        {
+            get
+            {
+                var packageInfo = DynamoViewModel.Model.CurrentWorkspace.GetNodePackage(nodeLogic);
+                return nodeLogic.GetPackageName(packageInfo);
+            }
+        }
 
         /// <summary>
         /// If a node has been renamed. Notice this boolean will be disabled
@@ -287,14 +298,6 @@ namespace Dynamo.ViewModels
         {
             get { return nodeLogic.IsCustomFunction ? true : false; }
         }
-
-
-        [JsonIgnore]
-        public bool IsPythonNode
-        {
-            get { return nodeLogic is PythonNodeModels.PythonNode ? true : false; }
-        }
-
 
         /// <summary>
         /// Element's left position is two-way bound to this value
