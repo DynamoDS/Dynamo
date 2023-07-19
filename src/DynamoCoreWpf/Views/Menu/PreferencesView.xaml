@@ -21,7 +21,10 @@
         mc:Ignorable="d" 
         Height="480" 
         Width="665"
-        ResizeMode="NoResize">
+        ResizeMode="NoResize"
+        BorderThickness="0"
+        AllowsTransparency="True"
+        Background="Transparent">
 
     <!--Using the Styles from the SharedResourcesDictionary located in DynamoCoreWpf/UI/Themes/DynamoModern.xaml-->
     <Window.Resources>
@@ -42,7 +45,7 @@
             <!--This Template will be used for the controls generated in the Styles list when a new Style is saved-->
             <DataTemplate x:Key="styleViewItemTemplate">
                  <Border Background="{StaticResource PreferencesWindowBackgroundColor}" Padding="0,0,0,10" Margin="0,0,0,5"
-                        BorderThickness="1" BorderBrush="#FF97A0A5" Width="210">
+                        BorderThickness="1" BorderBrush="#FF97A0A5" Width="205">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto" />
@@ -133,8 +136,13 @@
     </Window.Resources>
 
     <!--This is the main row of the Preference Window-->
-    <Grid x:Name="mainGrid"
-    	  Background="{StaticResource PreferencesWindowBackgroundColor}">
+    <Border x:Name="mainBorder"
+            BorderBrush="{StaticResource WorkspaceBackgroundHomeBrush}"
+            BorderThickness="2"
+            CornerRadius="4"
+            Background="{StaticResource PreferencesWindowBackgroundColor}">
+        <Grid x:Name="mainGrid"
+    	  Background="Transparent">
         <Grid.Resources>
             <sys:Double x:Key="ToggleButtonWidth">40</sys:Double>
             <sys:Double x:Key="ToggleButtonHeight">20</sys:Double>
@@ -208,6 +216,7 @@
                               Margin="4 0 0 0"
                               HorizontalAlignment="Left">
                                 <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
@@ -358,8 +367,43 @@
                                     </Grid>
                                 </Grid>
 
-                                <!--This Grid contains Expanders for Run, Default Geometry Scaling and Backup settings-->
+                                <!--This Grid contains controls for selecting to include timestamp for export path -->
                                 <Grid Grid.Row="4"
+                                  Margin="14,0,0,20">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <ToggleButton Width="{StaticResource ToggleButtonWidth}"
+                                                  Height="{StaticResource ToggleButtonHeight}"
+                                                  VerticalAlignment="Center"
+                                                  Margin="2,0,0,0"
+                                                  Grid.Column="0" 
+                                                  IsEnabled="True"
+                                                  IsChecked="{Binding Path=IsTimeStampIncludedInExportFilePath}"
+                                                  Style="{StaticResource EllipseToggleButton1}"/>
+                                        <Label Grid.Column="1"
+                                           Content="{x:Static p:Resources.PreferencesViewSettingIncludeTimestampExportPath}"
+                                           Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                        <Image Name="IncludeTimestampExportPathIcon"
+                                               Grid.Column="2"
+                                               Width="14"
+                                               Height="14"
+                                               Margin="10,0,0,0"
+                                               HorizontalAlignment="Left"
+                                               VerticalAlignment="Center"
+                                               Style="{StaticResource QuestionIcon}">
+                                            <Image.ToolTip>
+                                                    <ToolTip Content="{x:Static p:Resources.PreferencesViewIncludeTimestampExportPathTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                            </Image.ToolTip>
+                                        </Image>
+                                    </Grid>
+                                </Grid>
+
+                                <!--This Grid contains Expanders for Run, Default Geometry Scaling and Backup settings-->
+                                <Grid Grid.Row="5"
                                   Margin="-3,0,1,20">
                                     <Grid HorizontalAlignment="Stretch">
                                         <Grid.RowDefinitions>
@@ -1899,4 +1943,5 @@
             </Grid>
         </Grid>
     </Grid>
+    </Border>
 </Window>

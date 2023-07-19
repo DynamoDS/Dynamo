@@ -376,7 +376,8 @@
                                       Margin="1"
                                       HorizontalAlignment="Stretch"
                                       VerticalAlignment="Stretch"
-                                      DataContext="{Binding  Path=PackageManagerViewModel.PreferencesViewModel, ElementName=PackageManagerWindow}">
+                                      DataContext="{Binding Path=PackageManagerViewModel.PreferencesViewModel, ElementName=PackageManagerWindow}">
+
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />

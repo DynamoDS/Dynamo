@@ -6,7 +6,11 @@ using System.Windows.Media.Imaging;
 using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
-using Microsoft.Practices.Prism.ViewModel;
+#if NETFRAMEWORK
+using NotificationObject = Microsoft.Practices.Prism.ViewModel.NotificationObject;
+#else
+using NotificationObject = Dynamo.Core.NotificationObject;
+#endif
 using Greg.AuthProviders;
 using System.Linq;
 using System.Windows;
@@ -53,7 +57,7 @@ namespace Dynamo.UI.Controls
             var shortcutToolbar = new ShortcutToolbarViewModel(dynamoViewModel);
             DataContext = shortcutToolbar;
             authManager = dynamoViewModel.Model.AuthenticationManager;
-            if (authManager.IsLoggedIn())
+            if (authManager.IsLoggedInInitial())
             {
                 authManager.LoginStateChanged += SignOutHandler;
             }

@@ -46,6 +46,7 @@ namespace Dynamo.PackageManager.UI
 
             this.packageManagerSearch.UIParent = this.packageDetailsGrid;
             this.packageManagerMyPackages.UIParent = this.packageDetailsGrid;
+
         }
 
         private void OnRequestShowFileDialog(object sender, PackagePathEventArgs e)
@@ -119,6 +120,7 @@ namespace Dynamo.PackageManager.UI
         private void WindowClosed(object sender, EventArgs e)
         {
             this.packageManagerPublish.Dispose();
+            
             this.PackageManagerViewModel.PackageSearchViewModel.InitialResultsLoaded = false;   // reset the loading screen settings
             this.PackageManagerViewModel.PackageSearchViewModel.RequestShowFileDialog -= OnRequestShowFileDialog;
         }

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -11,6 +11,9 @@
     <RootNamespace>DSCore</RootNamespace>
     <AssemblyName>DSCoreNodes</AssemblyName>
     <DocumentationFile>$(OutputPath)\$(UICulture)\DSCoreNodes.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="GeometryColor.cs" />
@@ -27,7 +30,7 @@
     <PackageReference Include="CoreCLR-NCalc" Version="2.2.92" />
   </ItemGroup>
   <ItemGroup Label="Common dependencies">
-    <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.1400"/>
+    <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.1400" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
@@ -47,11 +50,6 @@
     <ProjectReference Include="..\DesignScriptBuiltin\DesignScriptBuiltin.csproj">
       <Project>{c0d6dee5-5532-4345-9c66-4c00d7fdb8be}</Project>
       <Name>DesignScriptBuiltin</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DynamoUnits\Units.csproj">
-      <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
-      <Name>Units</Name>
-      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -91,7 +89,7 @@
   <Target Name="CopyFiles" BeforeTargets="ResolveSateliteResDeps">
     <Copy SourceFiles="$(ProjectDir)DSCoreNodes_DynamoCustomization.xml" DestinationFolder="$(OutputPath)" />
   </Target>
-  <Target Name="GenerateFiles" AfterTargets="Build" Condition=" '$(OS)' != 'Unix' ">
+  <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" '$(OS)' != 'Unix' ">
     <!-- Get assembly -->
     <GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
       <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />

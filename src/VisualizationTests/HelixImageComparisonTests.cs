@@ -10,18 +10,26 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Media.Imaging;
-using Dynamo.Graph.Nodes.ZeroTouch;
+using Dynamo.Controls;
 using Dynamo.Selection;
+using Dynamo.Utilities;
 using DynamoCoreWpfTests.Utility;
 using HelixToolkit.Wpf.SharpDX;
 using NUnit.Framework;
 
 namespace WpfVisualizationTests
 {
-
     [TestFixture]
-    public class HelixImageComparisonTests : HelixWatch3DViewModelTests
+    public class HelixImageComparisonTests : VisualizationTest
     {
+        protected Watch3DView BackgroundPreview
+        {
+            get
+            {
+                return (Watch3DView)View.background_grid.Children().FirstOrDefault(c => c is Watch3DView);
+            }
+        }
+
         #region utilities
 
         /// <summary>
@@ -42,6 +50,7 @@ namespace WpfVisualizationTests
             view.RenderHost.Resize((int)w, (int)h);
             return rtb;
         }
+
         private static void UpdateTestData(string pathToUpdate, BitmapSource imageFileSource)
         {
             SaveBitMapSourceAsPNG(pathToUpdate, imageFileSource);
@@ -226,6 +235,7 @@ namespace WpfVisualizationTests
             node3.IsFrozen = true;
             RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
+
         [Test]
         public void SelectedSolidsOverlapping1()
         {
@@ -246,6 +256,7 @@ namespace WpfVisualizationTests
             DynamoSelection.Instance.Selection.Add(node1);
             RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
+
         [Test]
         public void SelectedSolidsOverlapping3()
         {
@@ -256,17 +267,19 @@ namespace WpfVisualizationTests
             DynamoSelection.Instance.Selection.Add(node1);
             RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
+
         [Test]
         public void SelectedSolidsOverlappingIsolated1()
         {
             OpenVisualizationTest(@"imageComparison\twooverlappedspheres.dyn");
             View.BackgroundPreview.ViewModel.IsolationMode = true;
-            RunCurrentModel();            
+            RunCurrentModel();
             var node1 = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("sphere1")).FirstOrDefault();
             DynamoSelection.Instance.ClearSelection();
             DynamoSelection.Instance.Selection.Add(node1);
             RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
+
         [Test]
         public void SelectedSolidsOverlappingIsolated2()
         {
@@ -278,6 +291,7 @@ namespace WpfVisualizationTests
             DynamoSelection.Instance.Selection.Add(node1);
             RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
+
         [Test]
         public void ZFightTsplines_Selected()
         {
@@ -307,6 +321,7 @@ namespace WpfVisualizationTests
             RunCurrentModel();
             RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
+
         [Test]
         public void RenderLineInstances()
         {
@@ -316,6 +331,7 @@ namespace WpfVisualizationTests
             RunCurrentModel();
             RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
+
         [Test]
         public void RenderMeshInstancingAndITransformable()
         {
@@ -325,6 +341,7 @@ namespace WpfVisualizationTests
             RunCurrentModel();
             RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
+
         [Test]
         public void RenderMeshInstances_noInstanceData()
         {
@@ -334,10 +351,11 @@ namespace WpfVisualizationTests
             RunCurrentModel();
             RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
+
         [Test]
         public void RenderInstancingWithEdges()
         {
-            // Regression test for DYN-5329: 
+            // Regression test for DYN-5329:
             // Rendering instances and multiple texture maps fails when edges are on.
 
             OpenVisualizationTest("MultipleTextureMaps.dyn");
@@ -443,18 +461,6 @@ namespace WpfVisualizationTests
             RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
 
-        [Test]
-        [Category("Failure")]
-        public void CurvesZFightOnTsplines_Selected()
-        {
-            OpenVisualizationTest(@"imageComparison\tsplineTest_fast.dyn");
-            RunCurrentModel();
-            var node1 = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("curves_select")).FirstOrDefault();
-            DynamoSelection.Instance.ClearSelection();
-            DynamoSelection.Instance.Selection.Add(node1);
-            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
-        }
-
         #endregion
 
         #region surfaces
@@ -463,22 +469,6 @@ namespace WpfVisualizationTests
         {
             OpenVisualizationTest(@"imageComparison\wavysurface.dyn");
             RunCurrentModel();
-            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
-        }
-        #endregion
-
-        #region SpecialRenderPackages
-        [Test]
-        public void DirectManipulator()
-        {
-            var pointOriginNode =
-            new DSFunction(Model.LibraryServices.GetFunctionDescriptor("Point.ByCoordinates@double,double,double"));
-
-            var command = new Dynamo.Models.DynamoModel.CreateNodeCommand(pointOriginNode, 0, 0, true, false);
-            Model.ExecuteCommand(command);
-            View.BackgroundPreview.ViewModel.NavigationKeyIsDown = true;
-            RunCurrentModel();
-            DynamoSelection.Instance.Selection.Add(pointOriginNode);
             RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
 

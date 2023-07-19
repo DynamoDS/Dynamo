@@ -37,7 +37,6 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        
         <!--  Contains the search bar, sort and filter buttons  -->
         <Border Name="searchBar"
                 Grid.Row="0"

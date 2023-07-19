@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -6,7 +6,11 @@ using System.ComponentModel;
 using Dynamo.Engine.CodeCompletion;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Editing;
-using Microsoft.Practices.Prism.ViewModel;
+#if NETFRAMEWORK
+using NotificationObject = Microsoft.Practices.Prism.ViewModel.NotificationObject;
+#else
+using NotificationObject = Dynamo.Core.NotificationObject;
+#endif
 
 namespace Dynamo.UI
 {

@@ -4,11 +4,20 @@ using System.Linq;
 using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
+using Dynamo.Logging;
 using Dynamo.Search.SearchElements;
 using DynamoUtilities;
-using Dynamo.Logging;
-using Lucene.Net.Search;
 using Lucene.Net.Analysis;
+using Lucene.Net.Analysis.Br;
+using Lucene.Net.Analysis.Cjk;
+using Lucene.Net.Analysis.Cz;
+using Lucene.Net.Analysis.De;
+using Lucene.Net.Analysis.En;
+using Lucene.Net.Analysis.Es;
+using Lucene.Net.Analysis.Fr;
+using Lucene.Net.Analysis.It;
+using Lucene.Net.Analysis.Ru;
+using Lucene.Net.Analysis.Standard;
 
 namespace Dynamo.Search
 {
@@ -17,13 +26,6 @@ namespace Dynamo.Search
     /// </summary>
     public class NodeSearchModel : SearchLibrary<NodeSearchElement, NodeModel>
     {
-
-        // Holds the instance for the IndexSearcher
-        internal IndexSearcher Searcher;
-
-        // Used in DynamoModel for creating the StandardAnalyzer
-        internal Analyzer Analyzer;
-
         /// <summary>
         ///     Construct a NodeSearchModel object
         /// </summary>
@@ -231,6 +233,42 @@ namespace Dynamo.Search
             }
 
             return category.Substring(0, index);
+        }
+
+        /// <summary>
+        /// It creates an Analyzer to be used in the Indexing based on the user preference language
+        /// </summary>
+        /// <returns></returns>
+        internal Analyzer CreateAnalyzerByLanguage(string language)
+        {
+            switch (language)
+            {
+                case "en-US":
+                    return new EnglishAnalyzer(LuceneConfig.LuceneNetVersion);
+                case "cs-CZ":
+                    return new CzechAnalyzer(LuceneConfig.LuceneNetVersion);
+                case "de-DE":
+                    return new GermanAnalyzer(LuceneConfig.LuceneNetVersion);
+                case "es-ES":
+                    return new SpanishAnalyzer(LuceneConfig.LuceneNetVersion);
+                case "fr-FR":
+                    return new FrenchAnalyzer(LuceneConfig.LuceneNetVersion);
+                case "it-IT":
+                    return new ItalianAnalyzer(LuceneConfig.LuceneNetVersion);
+                case "ja-JP":
+                case "ko-KR":
+                case "zh-CN":
+                case "zh-TW":
+                    return new CJKAnalyzer(LuceneConfig.LuceneNetVersion);
+                case "pl-PL":
+                    return new StandardAnalyzer(LuceneConfig.LuceneNetVersion);
+                case "pt-BR":
+                    return new BrazilianAnalyzer(LuceneConfig.LuceneNetVersion);
+                case "ru-RU":
+                    return new RussianAnalyzer(LuceneConfig.LuceneNetVersion);
+                default:
+                    return new StandardAnalyzer(LuceneConfig.LuceneNetVersion);
+            }
         }
     }
 }

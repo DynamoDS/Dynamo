@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -14,7 +12,6 @@ using Dynamo.Engine;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Interfaces;
-using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
@@ -23,7 +20,6 @@ using Dynamo.Utilities;
 using Dynamo.Wpf.Services;
 using Dynamo.Wpf.ViewModels;
 using Lucene.Net.Documents;
-using Lucene.Net.Index;
 using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
 
@@ -353,6 +349,9 @@ namespace Dynamo.ViewModels
         public NodeSearchModel Model { get; private set; }
         internal readonly DynamoViewModel dynamoViewModel;
 
+        // Lucene search utility to perform indexing operations.
+        internal LuceneSearchUtility LuceneSearchUtility { get; }
+
         /// <summary>
         /// Class name, that has been clicked in library search view.
         /// </summary>
@@ -373,6 +372,7 @@ namespace Dynamo.ViewModels
             iconServices = new IconServices(pathManager);
 
             InitializeCore();
+            LuceneSearchUtility = dynamoViewModel.Model.LuceneSearchUtility;
         }
 
         // Just for tests. Please refer to LibraryTests.cs
@@ -937,127 +937,55 @@ namespace Dynamo.ViewModels
         /// <param name="useLucene"> Temporary flag that will be used for searching using Lucene.NET </param>
         internal IEnumerable<NodeSearchElementViewModel> Search(string search, bool useLucene)
         {
-            string searchTerm = search.Trim();
-            var candidates = new List<NodeSearchElementViewModel>();
-
-            string[] fnames = Configurations.IndexFields;
-
-            var parser = new MultiFieldQueryParser(Configurations.LuceneNetVersion, fnames, Model.Analyzer)
+            if (useLucene)
             {
-                AllowLeadingWildcard = true,
-                DefaultOperator = Operator.OR,
-                FuzzyMinSim = 0.5f
-            };
+                //The DirectoryReader and IndexSearcher have to be assigned after commiting indexing changes and before executing the Searcher.Search() method, otherwise new indexed info won't be reflected
+                LuceneSearchUtility.dirReader = LuceneSearchUtility.writer?.GetReader(applyAllDeletes: true);
+                if (LuceneSearchUtility.dirReader == null) return null;
 
-            Query query = parser.Parse(CreateSearchQuery(fnames, searchTerm));
+                LuceneSearchUtility.Searcher = new IndexSearcher(LuceneSearchUtility.dirReader);
 
-            //indicate we want the first 50 results
-            TopDocs topDocs = Model.Searcher.Search(query, n: 50);
-            for (int i = 0; i < topDocs.ScoreDocs.Length; i++)
-            {
-                //read back a doc from results
-                Document resultDoc = Model.Searcher.Doc(topDocs.ScoreDocs[i].Doc);
-
-                // TODO: use consts in static class for the Lucene field names
-                string name = resultDoc.Get(nameof(Configurations.IndexFieldsEnum.Name));
-
-                string docName = resultDoc.Get(nameof(Configurations.IndexFieldsEnum.DocName));
-                string cat = resultDoc.Get(nameof(Configurations.IndexFieldsEnum.FullCategoryName));
-                string fulldesc = resultDoc.Get(nameof(Configurations.IndexFieldsEnum.Description));
-
-                if (!string.IsNullOrEmpty(docName))
+                string searchTerm = search.Trim();
+                var candidates = new List<NodeSearchElementViewModel>();
+                var parser = new MultiFieldQueryParser(LuceneConfig.LuceneNetVersion, LuceneConfig.NodeIndexFields, LuceneSearchUtility.Analyzer)
                 {
-                    //code for setting up documentation info
-                }
-                else
+                    AllowLeadingWildcard = true,
+                    DefaultOperator = LuceneConfig.DefaultOperator,
+                    FuzzyMinSim = LuceneConfig.MinimumSimilarity
+                };
+
+                Query query = parser.Parse(LuceneSearchUtility.CreateSearchQuery(LuceneConfig.NodeIndexFields, searchTerm));
+                TopDocs topDocs = LuceneSearchUtility.Searcher.Search(query, n: LuceneConfig.DefaultResultsCount);
+
+                for (int i = 0; i < topDocs.ScoreDocs.Length; i++)
                 {
-                    var foundNode = FindViewModelForNodeNameAndCategory(name, cat);
-                    if (foundNode != null)
+                    // read back a Lucene doc from results
+                    Document resultDoc = LuceneSearchUtility.Searcher.Doc(topDocs.ScoreDocs[i].Doc);
+
+                    string name = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.Name));
+                    string docName = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.DocName));
+                    string cat = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName));
+                    string parameters = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.Parameters));
+
+                    if (!string.IsNullOrEmpty(docName))
                     {
-                        candidates.Add(foundNode);
+                        //code for setting up documentation info
+                    }
+                    else
+                    {
+                        var foundNode = FindViewModelForNodeNameAndCategory(name, cat, parameters);
+                        if (foundNode != null)
+                        {
+                            candidates.Add(foundNode);
+                        }
                     }
                 }
+                return candidates;
             }
-            return candidates;
-        }
-
-        /// <summary>
-        /// Creates a search query with adjusted priority, fuzzy logic and wildcards.
-        /// Complete Search term appearing in Name of the node will be given highest priority.
-        /// Then, complete search term appearing in other metadata,
-        /// Then, a part of the search term(if containing multiple words) appearing in Name of the node
-        /// Then, a part of the search term appearing in other metadata of the node.
-        /// Then priority will be given based on fuzzy logic- that is if the complete search term may have been misspelled for upto 2 characters.
-        /// Then, the same fuzzy logic will be applied to each part of the search term.
-        /// </summary>
-        /// <param name="fields">All fields to be searched in.</param>
-        /// <param name="searchTerm">Search key to be searched for.</param>
-        /// <returns></returns>
-        private string CreateSearchQuery(string[] fields, string searchKey)
-        {
-            int fuzzyLogicThreshold = 4;
-            int fuzzyLogicRange = 2;
-
-            var fnames = fields;
-            var booleanQuery = new BooleanQuery();
-            string searchTerm = QueryParser.Escape(searchKey);
-
-            foreach (string f in fnames)
+            else
             {
-                FuzzyQuery fuzzyQuery;
-                if (searchTerm.Length > fuzzyLogicThreshold)
-                {
-                    fuzzyQuery = new FuzzyQuery(new Term(f, searchTerm), fuzzyLogicRange);
-                    booleanQuery.Add(fuzzyQuery, Occur.SHOULD);
-
-                }
-
-                var wildcardQuery = new WildcardQuery(new Term(f, searchTerm));
-                if (f.Equals(nameof(Configurations.IndexFieldsEnum.Name)))
-                {
-                    wildcardQuery.Boost = 10;
-                }
-                else
-                {
-                    wildcardQuery.Boost = 6;
-                }
-                booleanQuery.Add(wildcardQuery, Occur.SHOULD);
-
-                wildcardQuery = new WildcardQuery(new Term(f, "*" + searchTerm + "*"));
-                if (f.Equals(nameof(Configurations.IndexFieldsEnum.Name)))
-                {
-                    wildcardQuery.Boost = 7;
-                }
-                else
-                {
-                    wildcardQuery.Boost = 4;
-                }
-                booleanQuery.Add(wildcardQuery, Occur.SHOULD);
-
-                if (searchTerm.Contains(' ') || searchTerm.Contains('.'))
-                {
-                    foreach (string s in searchTerm.Split(' ', '.'))
-                    {
-                        if (s.Length > fuzzyLogicThreshold)
-                        {
-                            fuzzyQuery = new FuzzyQuery(new Term(f, s), fuzzyLogicRange);
-                            booleanQuery.Add(fuzzyQuery, Occur.SHOULD);
-                        }
-                        wildcardQuery = new WildcardQuery(new Term(f, "*" + s + "*"));
-
-                        if (f.Equals(nameof(Configurations.IndexFieldsEnum.Name)))
-                        {
-                            wildcardQuery.Boost = 5;
-                        }
-                        else
-                        {
-                            wildcardQuery.Boost = 2;
-                        }
-                        booleanQuery.Add(wildcardQuery, Occur.SHOULD);
-                    }
-                }
+                return Search(search);
             }
-            return booleanQuery.ToString();
         }
 
         /// <summary>
@@ -1065,13 +993,20 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="nodeName">Name of the node</param>
         /// <param name="nodeCategory">Full Category of the node</param>
+        /// <param name="parameters">Node input parameters</param>
         /// <returns></returns>
-        private NodeSearchElementViewModel FindViewModelForNodeNameAndCategory(string nodeName, string nodeCategory)
+        private NodeSearchElementViewModel FindViewModelForNodeNameAndCategory(string nodeName, string nodeCategory, string parameters)
         {
             var result = Model.SearchEntries.Where(e => {
                 if (e.Name.Equals(nodeName) && e.FullCategoryName.Equals(nodeCategory))
                 {
-                    return true;
+                    //When the node info was indexed if Parameters was null we added an empty space (null cannot be indexed)
+                    //Then in this case when searching if e.Parameters is null we need to check against empty space
+                    if (e.Parameters == null)
+                        return string.IsNullOrEmpty(parameters);
+                    //Parameters contain a value so we need to compare against the value indexed
+                    else
+                        return e.Parameters.Equals(parameters);
                 }
                 return false;
             });
