@@ -2682,7 +2682,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>Node and Package File Locations</value>
   </data>
   <data name="PreferencesPackageManagerSettingsTab" xml:space="preserve">
-    <value>Package Manager</value>
+    <value>Package Settings</value>
   </data>
   <data name="PackagePathAddPathButtonName" xml:space="preserve">
     <value>Add Path</value>

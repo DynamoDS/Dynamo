@@ -1629,33 +1629,35 @@
                     <TabItem Header="{x:Static p:Resources.PreferencesPackageManagerSettingsTab}"
                              Style="{StaticResource LeftTab}">
                         <!--This Grid contains the package manager settings tab-->
-                        <Grid x:Name="PackageManagerTab" 
+                        <Grid x:Name="PackageSettingsTab" 
                               Margin="1"
                               HorizontalAlignment="Stretch">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
 
                             <!--This Grid row contains the Node and Package Paths section-->
                             <Expander x:Name="PackagePathsExpander"
-                                        Grid.Row="0"
-                                        Style="{StaticResource MenuExpanderStyle}" 
-                                        IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=PackagePathsExpander}"
-                                        Header="{x:Static p:Resources.PackagePathsExpanderName}">
+                                      Grid.Row="0"
+                                      Style="{StaticResource MenuExpanderStyle}"
+                                      IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=PackagePathsExpander}"
+                                      Header="{x:Static p:Resources.PackagePathsExpanderName}">
                                 <Grid>
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
-                                    <StackPanel Orientation="Vertical" Margin="0,6,0,0" Grid.Row="0">
-                                        <Label  Content="{x:Static p:Resources.PreferencesViewPackageDownloadDirectory}" 
+                                    <StackPanel Orientation="Vertical"
+                                                Margin="0,6,0,0"
+                                                Grid.Row="0">
+                                        <Label  Content="{x:Static p:Resources.PreferencesViewPackageDownloadDirectory}"
                                                 Padding="5,5,5,5"
                                                 FontSize="13"
                                                 Foreground="{StaticResource PreferencesWindowFontColor}">
                                             <Label.ToolTip>
-                                                <ToolTip Content="{x:Static p:Resources.PreferencesPackageDownloadDirectoryTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                                <ToolTip Content="{x:Static p:Resources.PreferencesPackageDownloadDirectoryTooltip}"
+                                                         Style="{StaticResource GenericToolTipLight}" />
                                             </Label.ToolTip>
                                         </Label>
                                         <ComboBox Grid.Row="1"
@@ -1667,26 +1669,29 @@
                                                   SelectedItem="{Binding Path=SelectedPackagePathForInstall}"
                                                   Style="{StaticResource NoBordersComboBoxStyle}">
                                             <ComboBox.ToolTip>
-                                                <ToolTip Content="{Binding Path=SelectedPackagePathForInstall}" Style="{StaticResource GenericToolTipLight}"/>
+                                                <ToolTip Content="{Binding Path=SelectedPackagePathForInstall}"
+                                                         Style="{StaticResource GenericToolTipLight}" />
                                             </ComboBox.ToolTip>
                                         </ComboBox>
-                                        <ScrollViewer Height="200" VerticalScrollBarVisibility="Auto">
-                                            <packagemanager:PackagePathView x:Name="PackagePathView" DataContext="{Binding PackagePathsViewModel}"/>
+                                        <ScrollViewer Height="200"
+                                                      VerticalScrollBarVisibility="Auto">
+                                            <packagemanager:PackagePathView x:Name="PackagePathView"
+                                                                            DataContext="{Binding PackagePathsViewModel}" />
                                         </ScrollViewer>
                                     </StackPanel>
-                                    <StackPanel Orientation="Horizontal" 
-                                                Margin="0,0,0,0" 
+                                    <StackPanel Orientation="Horizontal"
+                                                Margin="0,0,0,0"
                                                 Grid.Row="1">
                                         <ToggleButton Name="DisableBuiltInPackagesToggle"
-                                                              Width="{StaticResource ToggleButtonWidth}"
-                                                              Height="{StaticResource ToggleButtonHeight}"
-                                                              VerticalAlignment="Center"
-                                                              IsChecked="{Binding Path=DisableBuiltInPackages}"
-                                                              Style="{StaticResource EllipseToggleButton1}"/>
-                                        <Label Content="{x:Static p:Resources.PreferencesViewDisableBuiltInPackages}" 
-                                                                VerticalAlignment="Center"
-                                                                Margin="10,0,0,0"
-                                                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                                      Width="{StaticResource ToggleButtonWidth}"
+                                                      Height="{StaticResource ToggleButtonHeight}"
+                                                      VerticalAlignment="Center"
+                                                      IsChecked="{Binding Path=DisableBuiltInPackages}"
+                                                      Style="{StaticResource EllipseToggleButton1}" />
+                                        <Label Content="{x:Static p:Resources.PreferencesViewDisableBuiltInPackages}"
+                                               VerticalAlignment="Center"
+                                               Margin="10,0,0,0"
+                                               Foreground="{StaticResource PreferencesWindowFontColor}" />
                                         <Image Name="DisableBuiltInPackageToggleInfoIcon"
                                                Width="16"
                                                Height="16"
@@ -1694,24 +1699,25 @@
                                                VerticalAlignment="Center"
                                                Style="{StaticResource QuestionIcon}">
                                             <Image.ToolTip>
-                                                <ToolTip Content="{x:Static p:Resources.DisableBuiltInPackageToggleInfo}" Style="{StaticResource GenericToolTipLight}"/>
+                                                <ToolTip Content="{x:Static p:Resources.DisableBuiltInPackageToggleInfo}"
+                                                         Style="{StaticResource GenericToolTipLight}" />
                                             </Image.ToolTip>
                                         </Image>
 
                                     </StackPanel>
-                                    <StackPanel Orientation="Horizontal" 
-                                                Margin="0,12,0,0" 
+                                    <StackPanel Orientation="Horizontal"
+                                                Margin="0,12,0,0"
                                                 Grid.Row="2">
                                         <ToggleButton Name="DisableCustomPackagesToggle"
-                                                                  Width="{StaticResource ToggleButtonWidth}"
-                                                                  Height="{StaticResource ToggleButtonHeight}"
-                                                                  VerticalAlignment="Center"
-                                                                  IsChecked="{Binding Path=DisableCustomPackages}"
-                                                                  Style="{StaticResource EllipseToggleButton1}"/>
-                                        <Label Content="{x:Static p:Resources.PreferencesViewDisableCustomPackages}" 
-                                                           VerticalAlignment="Center"
-                                                           Margin="10,0,0,0"
-                                                           Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                                      Width="{StaticResource ToggleButtonWidth}"
+                                                      Height="{StaticResource ToggleButtonHeight}"
+                                                      VerticalAlignment="Center"
+                                                      IsChecked="{Binding Path=DisableCustomPackages}"
+                                                      Style="{StaticResource EllipseToggleButton1}" />
+                                        <Label Content="{x:Static p:Resources.PreferencesViewDisableCustomPackages}"
+                                               VerticalAlignment="Center"
+                                               Margin="10,0,0,0"
+                                               Foreground="{StaticResource PreferencesWindowFontColor}" />
                                         <Image Name="DisableCustomPackageToggleInfoIcon"
                                                Width="16"
                                                Height="16"
@@ -1719,25 +1725,12 @@
                                                VerticalAlignment="Center"
                                                Style="{StaticResource QuestionIcon}">
                                             <Image.ToolTip>
-                                                <ToolTip Content="{x:Static p:Resources.DisableCustomPackageToggleInfo}" Style="{StaticResource GenericToolTipLight}"/>
+                                                <ToolTip Content="{x:Static p:Resources.DisableCustomPackageToggleInfo}"
+                                                         Style="{StaticResource GenericToolTipLight}" />
                                             </Image.ToolTip>
                                         </Image>
                                     </StackPanel>
                                 </Grid>
-                            </Expander>
-
-                            <!--This Grid row contains the Installed Packages section-->
-                            <Expander x:Name="InstalledPackagesExpander"
-                                      Expanded="InstalledPackagesExpander_OnExpanded"
-                                      Collapsed="InstalledPackagesExpander_OnCollapsed"
-                                      Style="{StaticResource MenuExpanderStyle}" 
-                                      IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=InstalledPackagesExpander}"
-                                      Grid.Row="1"
-                                      Header="{x:Static p:Resources.InstalledPackageViewTitle}">
-                                <StackPanel
-                                    Orientation="Vertical" Margin="0,6,0,0">
-                                    <wpfControls:InstalledPackagesControl Height="300"/>
-                                </StackPanel>
                             </Expander>
                         </Grid>
                     </TabItem>
