@@ -21,6 +21,7 @@ namespace Dynamo.Utilities
         internal Lucene.Net.Store.Directory indexDir;
         internal IndexWriter writer;
         internal string directory;
+        internal LuceneStorage currentStorageType;
 
         public enum LuceneStorage
         {
@@ -56,7 +57,9 @@ namespace Dynamo.Utilities
             directory = dirName;
             string indexPath = Path.Combine(luceneUserDataFolder.FullName, LuceneConfig.Index, dirName);
 
-            if(storageType == LuceneStorage.RAM)
+            currentStorageType = storageType;
+
+            if (storageType == LuceneStorage.RAM)
             {
                 indexDir = new RAMDirectory();
             }
@@ -70,7 +73,7 @@ namespace Dynamo.Utilities
             Analyzer = new StandardAnalyzer(LuceneConfig.LuceneNetVersion);
 
             // Initialize Lucene index writer, unless in test mode.
-            if (!DynamoModel.IsTestMode)
+            if (!DynamoModel.IsTestMode || currentStorageType == LuceneStorage.RAM)
             {
                 // Create an index writer
                 IndexWriterConfig indexConfig = new IndexWriterConfig(LuceneConfig.LuceneNetVersion, Analyzer)
@@ -95,7 +98,7 @@ namespace Dynamo.Utilities
         /// <returns></returns>
         internal Document InitializeIndexDocumentForNodes()
         {
-            if (DynamoModel.IsTestMode) return null;
+            if (DynamoModel.IsTestMode && currentStorageType == LuceneStorage.FILE_SYSTEM) return null;
 
             var name = new TextField(nameof(LuceneConfig.NodeFieldsEnum.Name), string.Empty, Field.Store.YES);
             var fullCategory = new TextField(nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName), string.Empty, Field.Store.YES);
@@ -266,7 +269,7 @@ namespace Dynamo.Utilities
         internal void DisposeWriter()
         {
             //We need to check if we are not running Dynamo tests because otherwise parallel test start to fail when trying to write in the same Lucene directory location
-            if (!DynamoModel.IsTestMode)
+            if (!DynamoModel.IsTestMode || currentStorageType == LuceneStorage.RAM)
             {
                 writer?.Dispose();
                 writer = null;
@@ -275,7 +278,7 @@ namespace Dynamo.Utilities
 
         internal void CommitWriterChanges()
         {
-            if (!DynamoModel.IsTestMode)
+            if (!DynamoModel.IsTestMode || currentStorageType == LuceneStorage.RAM)
             {
                 //Commit the info indexed
                 writer?.Commit();
