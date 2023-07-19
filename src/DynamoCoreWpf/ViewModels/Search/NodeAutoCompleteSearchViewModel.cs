@@ -165,7 +165,7 @@ namespace Dynamo.ViewModels
             var queries = new List<string>(){"String", "Number Slider", "Integer Slider", "Number", "Boolean", "Watch", "Watch 3D", "Python Script"};
             foreach (var query in queries)
             {
-                var foundNode = Search(query, true).FirstOrDefault();
+                var foundNode = Search(query).FirstOrDefault();
                 if(foundNode != null)
                 {
                     candidates.Add(foundNode);
@@ -692,7 +692,7 @@ namespace Dynamo.ViewModels
 
                     //Write the Lucene documents to memory
                     LuceneSearchUtilityNodeAutocomplete.CommitWriterChanges();
-
+                        
                     var luceneResults = SearchNodeAutocomplete(input, true);
                     var foundNodesModels = luceneResults.Select(x => x.Model);
                     var foundNodes = foundNodesModels.Select(MakeNodeSearchElementVM);
