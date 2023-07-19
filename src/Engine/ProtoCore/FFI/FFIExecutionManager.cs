@@ -42,11 +42,9 @@ namespace ProtoFFI
                     //already loaded, just return it.
                     if (name.ToLower().Contains("system.private"))
                     {
-                        //TODO cache to a map.
-                        return AppDomain.CurrentDomain.GetAssemblies()
-                        .Where(x => x.Location==name)
-                        .FirstOrDefault();
+                        return Assembly.Load(System.IO.Path.GetFileNameWithoutExtension(name));
                     }
+
                     return Assembly.LoadFrom(name);
                 }
                 catch(System.IO.FileLoadException e)
