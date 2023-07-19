@@ -60,6 +60,5 @@
 		System.Numerics.Vectors.dll ^
 		System.Runtime.CompilerServices.Unsafe.dll ^
 		System.Text.Encoding.CodePages.dll " />
-        <Copy SourceFiles="$(OutputPath)Md2Html.exe" DestinationFolder="$(SharedOutputPath)" />
     </Target>
 </Project>
