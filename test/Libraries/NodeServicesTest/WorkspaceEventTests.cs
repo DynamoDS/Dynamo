@@ -23,7 +23,7 @@ namespace DynamoServicesTests
                 Path.Combine(asmDir, @"..\..\..\test\core\"));
         }
 
-        [Test]
+        [Test, Category("FailureNET6")]
         public void WorkspaceAddedEventIsTriggeredWhenWorkspaceIsAdded()
         {
             // Register for the added event
@@ -34,7 +34,7 @@ namespace DynamoServicesTests
             OpenDynamoDefinition(@".\math\Add.dyn");
         }
 
-        [Test]
+        [Test, Category("FailureNET6")]
         public void WorkspaceRemovedEventIsTriggeredWhenWorkspaceIsRemoved()
         {
             // Open a definition

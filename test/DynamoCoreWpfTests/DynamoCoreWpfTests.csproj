@@ -15,7 +15,7 @@
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-	  <PackageReference Include="AvalonEdit" Version="6.3.0.90"/>
+	  <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
       <PackageReference Include="Moq" Version="4.18.4" />
 	  <PackageReference Include="Cyotek.Drawing.BitmapFont" Version="2.0.0" />
 	  <PackageReference Include="Greg" Version="2.5.0.5076">
@@ -35,8 +35,10 @@
 	  <PackageReference Include="SharpDX.Direct3D9" Version="4.2.0" />
 	  <PackageReference Include="SharpDX.DXGI" Version="4.2.0" />
 	  <PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
-    <PackageReference Include="NUnitTestAdapter" Version="2.3.0" ExcludeAssets="all" />
+      <PackageReference Include="NUnitTestAdapter" Version="2.3.0" ExcludeAssets="all" />
       <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -48,6 +50,10 @@
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
+    <Reference Include="Microsoft.Practices.Prism">
+        <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
+        <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\DocumentationBrowserViewExtension\DocumentationBrowserViewExtension.csproj">
@@ -124,11 +130,9 @@
       <Name>DynamoConVersions</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Libraries\DynamoUnits\Units.csproj">
-      <Project>{6E0A079E-85F1-45A1-AD5B-9855E4344809}</Project>
-      <Name>Units</Name>
-      <Private>False</Private>
-    </ProjectReference>
+      <ProjectReference Include="..\..\src\Libraries\DynamoUnits\UnitsCore.csproj">
+        <Private>False</Private>
+      </ProjectReference>
     <ProjectReference Include="..\..\src\Libraries\PythonNodeModelsWpf\PythonNodeModelsWpf.csproj">
       <Project>{01DE9B06-0BCB-4D8A-862E-E8170F5D6B4F}</Project>
       <Name>PythonNodeModelsWpf</Name>

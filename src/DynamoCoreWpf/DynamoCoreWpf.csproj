@@ -112,9 +112,6 @@
     <None Remove="Views\Menu\TrustedPathView.xaml" />
     <None Remove="Views\GuidedTour\HtmlPages\Resources\ConnectTheNode.gif" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0-windows' ">
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-  </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net48' "> 
     <Reference Include="System.Configuration" />
     <Reference Include="PresentationCore" />
@@ -154,11 +151,13 @@
 	<PackageReference Include="SharpDX.Direct3D9" Version="4.2.0" />
 	<PackageReference Include="SharpDX.DXGI" Version="4.2.0" />
 	<PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
-    <Reference Include="Dynamo.Microsoft.Xaml.Behaviors, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Dynamo.Microsoft.Xaml.Behaviors">
       <HintPath>..\..\extern\Microsoft.Xaml.Behaviors\$(TargetFramework)\Dynamo.Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference>
-    <PackageReference Include="Prism.Core" Version="8.1.97" />
+    <PackageReference Include="Prism.Core" Version="8.1.97" Condition=" '$(TargetFramework)' != 'net48' "/>
+    <Reference Include="Microsoft.Practices.Prism" Condition=" '$(TargetFramework)' == 'net48' ">
+        <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
+    </Reference>
     <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.103" />
   </ItemGroup>
   <ItemGroup>
@@ -1524,7 +1523,7 @@
       <Project>{87550b2b-6cb8-461e-8965-dfafe3aafb5c}</Project>
       <Name>CoreNodes</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Libraries\DynamoUnits\Units.csproj">
+    <ProjectReference Include="..\Libraries\DynamoUnits\UnitsCore.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>Units</Name>
     </ProjectReference>

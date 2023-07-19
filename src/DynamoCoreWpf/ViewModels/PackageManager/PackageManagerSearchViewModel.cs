@@ -21,8 +21,13 @@ using Greg.Responses;
 using Lucene.Net.Documents;
 using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
-using Dynamo.Core;
+#if NETFRAMEWORK
+using Microsoft.Practices.Prism.Commands;
+using NotificationObject = Microsoft.Practices.Prism.ViewModel.NotificationObject;
+#else
 using Prism.Commands;
+using NotificationObject = Dynamo.Core.NotificationObject;
+#endif
 
 namespace Dynamo.PackageManager
 {
