@@ -4,7 +4,7 @@
     DefaultTargets="Build">
 <PropertyGroup>
     <Solution>Dynamo.All.sln</Solution>
-    <SolutionNET6>Dynamo.All.Net6.sln</Solution>
+    <SolutionNET6>Dynamo.All.Net6.sln</SolutionNET6>
     <NuGetPath>$(MSBuildProjectDirectory)\..\tools\Nuget\NuGet.exe</NuGetPath>
  </PropertyGroup>
 	
