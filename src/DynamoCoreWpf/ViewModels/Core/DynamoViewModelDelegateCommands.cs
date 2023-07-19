@@ -70,7 +70,6 @@ namespace Dynamo.ViewModels
             DisplayInteractiveGuideCommand = new DelegateCommand(DisplayStartPage, CanDisplayInteractiveGuide);
             GettingStartedGuideCommand = new DelegateCommand(StartGettingStartedGuide, CanStartGettingStartedGuide);
             ShowPackageManagerSearchCommand = new DelegateCommand(ShowPackageManagerSearch, CanShowPackageManagerSearch);
-            ShowPackageManagerCommand = new DelegateCommand(ShowPackageManager, CanShowPackageManager);
             ShowInstalledPackagesCommand = new DelegateCommand(o => { }, o => true);
             ManagePackagePathsCommand = new DelegateCommand(o => { }, o => true);
 

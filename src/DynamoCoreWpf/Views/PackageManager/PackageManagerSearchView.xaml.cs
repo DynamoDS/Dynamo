@@ -1,4 +1,4 @@
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
@@ -28,7 +28,7 @@ namespace Dynamo.PackageManager.UI
         {
             ViewModel = pm;
             this.DataContext = ViewModel;
-            pm.PackageManagerClientViewModel.ViewModelOwner = this;
+            pm.PackageManagerClientViewModel.Owner = this;
             InitializeComponent();
             ViewModel.RegisterTransientHandlers();
             ViewModel.RequestShowFileDialog += OnRequestShowFileDialog;

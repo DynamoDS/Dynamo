@@ -48,11 +48,6 @@ namespace Dynamo.Logging
         Preferences,
 
         /// <summary>
-        /// Events Category related to the Package Manager
-        /// </summary>
-        PackageManager,
-
-        /// <summary>
         /// Events Category related to Dynamo upgrade
         /// </summary>
         Upgrade,

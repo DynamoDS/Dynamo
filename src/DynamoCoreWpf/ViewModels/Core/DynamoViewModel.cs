@@ -2214,17 +2214,7 @@ namespace Dynamo.ViewModels
             OnRequestPackageManagerSearchDialog(this, EventArgs.Empty);
         }
 
-        internal void ShowPackageManager(object parameters)
-        {
-            OnRequestPackageManagerDialog(this, EventArgs.Empty);
-        }
-
         internal bool CanShowPackageManagerSearch(object parameters)
-        {
-            return !model.IsServiceMode;
-        }
-
-        internal bool CanShowPackageManager(object parameters)
         {
             return !model.IsServiceMode;
         }

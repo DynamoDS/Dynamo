@@ -1780,7 +1780,7 @@
                                       Header="{x:Static p:Resources.InstalledPackageViewTitle}">
                                 <StackPanel
                                     Orientation="Vertical" Margin="0,6,0,0">
-                                    <wpfControls:InstalledPackagesControl Height="300"/>
+                                    <wpfControls:InstalledPackagesControl Height="Auto"/>
                                 </StackPanel>
                             </Expander>
                         </Grid>

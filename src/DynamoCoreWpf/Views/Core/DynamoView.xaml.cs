@@ -77,7 +77,6 @@ namespace Dynamo.Controls
         private readonly LoginService loginService;
         private ShortcutToolbar shortcutBar;
         private PreferencesView preferencesWindow;
-        private PackageManagerView packageManagerWindow;
         private bool loaded = false;
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
         // called on the view model and the process is not cancelled
@@ -1222,7 +1221,6 @@ namespace Dynamo.Controls
 
             dynamoViewModel.RequestPackagePublishDialog += DynamoViewModelRequestRequestPackageManagerPublish;
             dynamoViewModel.RequestPackageManagerSearchDialog += DynamoViewModelRequestShowPackageManagerSearch;
-            dynamoViewModel.RequestPackageManagerDialog += DynamoViewModelRequestShowPackageManager;
 
             #endregion
 
@@ -1429,17 +1427,13 @@ namespace Dynamo.Controls
 
         private PackageManagerSearchView _searchPkgsView;
         private PackageManagerSearchViewModel _pkgSearchVM;
-        private PackageManagerViewModel _pkgVM;
-
+        
         private void DynamoViewModelRequestShowPackageManagerSearch(object s, EventArgs e)
         {
             if (!DisplayTermsOfUseForAcceptance())
                 return; // Terms of use not accepted.
 
             var cmd = Analytics.TrackCommandEvent("SearchPackage");
-
-            // The package search view model is shared and can be shared by resources at the moment
-            // If it hasn't been initialized yet, we do that here
             if (_pkgSearchVM == null)
             {
                 _pkgSearchVM = new PackageManagerSearchViewModel(dynamoViewModel.PackageManagerClientViewModel);
@@ -2173,40 +2167,6 @@ namespace Dynamo.Controls
             dynamoViewModel.OnPreferencesWindowChanged(preferencesWindow);
             preferencesWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             preferencesWindow.Show();
-        }
-
-        private void DynamoViewModelRequestShowPackageManager(object s, EventArgs e)
-        {
-            if (!DisplayTermsOfUseForAcceptance())
-                return; // Terms of use not accepted.
-
-            var cmd = Analytics.TrackCommandEvent("PackageManager");
-            if (_pkgSearchVM == null)
-            {
-                _pkgSearchVM = new PackageManagerSearchViewModel(dynamoViewModel.PackageManagerClientViewModel);
-            }
-
-            if (_pkgVM == null)
-            {
-                _pkgVM = new PackageManagerViewModel(dynamoViewModel, _pkgSearchVM);
-            }
-
-            if (packageManagerWindow == null)
-            {
-                packageManagerWindow = new PackageManagerView(this, _pkgVM)
-                {
-                    Owner = this,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                };
-
-                packageManagerWindow.Closed += (sender, args) => { packageManagerWindow = null; cmd.Dispose(); };
-                packageManagerWindow.Show();
-
-                if (packageManagerWindow.IsLoaded && IsLoaded) packageManagerWindow.Owner = this;
-            }
-
-            packageManagerWindow.Focus();
-            _pkgSearchVM.RefreshAndSearchAsync();
         }
 
         internal void EnableEnvironment(bool isEnabled)

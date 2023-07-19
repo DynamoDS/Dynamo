@@ -32,18 +32,6 @@ namespace Dynamo.ViewModels
                 RequestPackageManagerSearchDialog(this, e);
             }
         }
-
-
-        public event EventHandler RequestPackageManagerDialog;
-        public virtual void OnRequestPackageManagerDialog(Object sender, EventArgs e)
-        {
-            if (RequestPackageManagerDialog != null)
-            {
-                RequestPackageManagerDialog(this, e);
-            }
-        }
-
-
         [Obsolete("This event will be removed, do not use. It does nothing.")]
         public event EventHandler RequestPackagePathsDialog;
         [Obsolete("This method will be removed do not use. It does nothing.")]
