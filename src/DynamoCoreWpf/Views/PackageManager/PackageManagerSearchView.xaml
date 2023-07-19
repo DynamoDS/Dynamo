@@ -815,12 +815,11 @@
                 </ListBox.ItemTemplate>
             </ListBox>
         </Border>
-        
         <!--  Download bar: A stacking list of (up to 3) most-recently downloaded packages. Appears when the user installs a package.  -->
         <ListBox
             Name="DownloadsListBox"
             Grid.Row="3"
-            Margin="0,5,0,0"
+            Margin="0,5,0,10"
             Background="Transparent"
             BorderThickness="0"
             IsHitTestVisible="True"
@@ -1013,7 +1012,7 @@
         <ListBox
             Name="InfectedListBox"
             Grid.Row="4"
-            Margin="0,5,0,0"
+            Margin="0,5,0,10"
             Background="Transparent"
             BorderThickness="0"
             IsHitTestVisible="True"
