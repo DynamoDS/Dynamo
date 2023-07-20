@@ -48,7 +48,7 @@ namespace Dynamo.Core
         internal IPathResolver PathResolver { get; set; }
     }
 
-    public sealed class PathManager : IPathManager
+    public class PathManager : IPathManager
     {
         internal static Lazy<PathManager>
          lazy =
