@@ -290,7 +290,15 @@ namespace Dynamo.Applications
             return model;
         }
 
-        public static IPathResolver CreateIPathResolver(bool CLImode, string preloaderLocation, string userDataFolder, string commonDataFolder)
+        /// <summary>
+        /// It returns an IPathResolver based on the mode and some locations
+        /// </summary>
+        /// <param name="CLImode">CLI mode starts the model in test mode and uses a seperate path resolver.</param>
+        /// <param name="preloaderLocation">Path to be used by PathResolver for preLoaderLocation</param>
+        /// <param name="userDataFolder">Path to be used by PathResolver for UserDataFolder</param>
+        /// <param name="commonDataFolder">Path to be used by PathResolver for CommonDataFolder</param>
+        /// <returns></returns>
+        private static IPathResolver CreateIPathResolver(bool CLImode, string preloaderLocation, string userDataFolder, string commonDataFolder)
         {
             IPathResolver pathResolver = CLImode ? new CLIPathResolver(preloaderLocation, userDataFolder, commonDataFolder) as IPathResolver : new SandboxPathResolver(preloaderLocation) as IPathResolver;
             return pathResolver;
