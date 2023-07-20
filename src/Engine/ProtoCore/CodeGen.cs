@@ -137,7 +137,7 @@ namespace ProtoCore
         /// Generates unique identifier for the callsite associated with the graphnode
         /// </summary>
         /// <param name="graphNode"></param>
-        /// <param name="procNode"></param>
+        /// <param name="procName"></param>
         protected void GenerateCallsiteIdentifierForGraphNode(AssociativeGraph.GraphNode graphNode, string procName)
         {
             // This instance count in which the function appears lexically in the current guid

@@ -45,7 +45,8 @@ namespace Dynamo.PackageManager
         /// </summary>
         /// <param name="package">The package to be formed</param>
         /// <param name="packagesDirectory">The parent directory for the parent directory</param>
-        /// <param name="files">The collection of files to be moved</param>
+        /// <param name="contentFiles">The collection of files to be moved</param>
+        /// <param name="markdownFiles"></param>
         /// <returns></returns>
         public IDirectoryInfo BuildDirectory(Package package, string packagesDirectory, IEnumerable<string> contentFiles, IEnumerable<string> markdownFiles)
         {

@@ -193,6 +193,7 @@ namespace ProtoCore.Utils
         /// </summary>
         /// <param name="code"></param>
         /// <param name="core"></param>
+        /// <param name="codeBlock"></param>
         /// <param name="blockId"></param>
         /// <returns></returns>
         public static ProtoCore.BuildStatus PreCompile(string code, Core core, CodeBlockNode codeBlock, out int blockId)

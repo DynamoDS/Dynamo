@@ -606,8 +606,8 @@ namespace ProtoCore
         /// Logs the warning where the usage of a symbol (symbolName) cannot be 
         /// resolved because it collides with multiple symbols(collidingSymbolNames) 
         /// </summary>
-        /// <param name="symbolUsage"></param>
-        /// <param name="duplicateSymbolNames"></param>
+        /// <param name="symbolName"></param>
+        /// <param name="collidingSymbolNames"></param>
         public void LogSymbolConflictWarning(string symbolName, string[] collidingSymbolNames)
         {
             string message = string.Format(Resources.kMultipleSymbolFoundFromName, symbolName, "");

@@ -758,7 +758,7 @@ namespace ProtoFFI
         /// </summary>
         /// <param name="clrType">System.Type to which DS object needs to be 
         /// marshaled.</param>
-        /// <param name="dsType">DS Object type, that needs to be marshaled.
+        /// <param name="value">DS Object type, that needs to be marshaled.
         /// </param>
         /// <returns>FFIObjectMarshler or null</returns>
         private FFIObjectMarshaler GetMarshalerForCLRType(Type clrType, StackValue value)
@@ -1330,7 +1330,7 @@ namespace ProtoFFI
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="core">Core object for marshler.</param>
+        /// <param name="runtimeCore">Core object for marshler.</param>
         private CLRObjectMarshaler(ProtoCore.RuntimeCore runtimeCore)
         {
             runtimeCore.Dispose += core_Dispose;
