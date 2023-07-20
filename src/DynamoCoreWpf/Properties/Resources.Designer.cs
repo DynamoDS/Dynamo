@@ -4193,6 +4193,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Loading the packages is taking longer than expected. What would you like to do?.
+        /// </summary>
+        public static string MessageExcessiveLoadTime {
+            get {
+                return ResourceManager.GetString("MessageExcessiveLoadTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Still loading.
+        /// </summary>
+        public static string MessageExcessiveLoadTimeTitle {
+            get {
+                return ResourceManager.GetString("MessageExcessiveLoadTimeTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to add file: {0}.
         /// </summary>
         public static string MessageFailedToAddFile {

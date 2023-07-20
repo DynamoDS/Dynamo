@@ -121,8 +121,7 @@ namespace Dynamo.PackageManager.UI
         {
             this.packageManagerPublish.Dispose();
             
-            this.PackageManagerViewModel.PackageSearchViewModel.InitialResultsLoaded = false;   // reset the loading screen settings
-            this.PackageManagerViewModel.PackageSearchViewModel.RequestShowFileDialog -= OnRequestShowFileDialog;
+            this.PackageManagerViewModel.PackageSearchViewModel.Close();
         }
 
         private void SearchForPackagesButton_Click(object sender, RoutedEventArgs e)

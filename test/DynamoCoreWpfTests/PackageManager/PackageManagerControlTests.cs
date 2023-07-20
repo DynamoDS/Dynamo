@@ -13,6 +13,8 @@ using Dynamo.PackageManager;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using DynamoCoreWpfTests.Utility;
+using DSCore;
+using System.Threading.Tasks;
 
 namespace DynamoCoreWpfTests.PackageManager
 {
@@ -35,6 +37,7 @@ namespace DynamoCoreWpfTests.PackageManager
             var searchTextBox = searchBoxControl.SearchTextBox;
             var searchClearButton = searchBoxControl.SearchClearButton;
 
+            // Assert
             Assert.IsNullOrEmpty(searchTextBox.Text);
             Assert.AreEqual(searchClearButton.Visibility, System.Windows.Visibility.Collapsed);
 
@@ -48,5 +51,31 @@ namespace DynamoCoreWpfTests.PackageManager
 
             Assert.IsNullOrEmpty(searchTextBox.Text);
         }
+
+        [Test]
+        public async void PackageManagerSearchViewTimedOutScreenTest()
+        {
+            // Setup
+            var mockGreg = new Mock<IGregClient>();
+            var clientmock = new Mock<Dynamo.PackageManager.PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var pmCVM = new Mock<PackageManagerClientViewModel>(ViewModel, clientmock.Object) { CallBase = true };
+            var packageManagerSearchViewModel = new PackageManagerSearchViewModel(pmCVM.Object);
+            packageManagerSearchViewModel.RegisterTransientHandlers();
+
+            var waitTime = 100;
+
+            // Arrange
+            packageManagerSearchViewModel.MAX_LOAD_TIME = waitTime;  
+            packageManagerSearchViewModel.RefreshAndSearchAsync();
+
+            // Assert
+            Assert.IsFalse(packageManagerSearchViewModel._isTimingOut);
+
+            DispatcherUtil.DoEvents();
+            await Task.Delay(waitTime);
+
+            Assert.IsTrue(packageManagerSearchViewModel._isTimingOut);
+        }
     }
+
 }

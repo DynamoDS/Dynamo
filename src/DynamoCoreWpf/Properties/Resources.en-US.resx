@@ -1270,6 +1270,12 @@ Would you like to save your changes?</value>
 
 You can always redownload the package.</value>
   </data>
+  <data name="MessageExcessiveLoadTime" xml:space="preserve">
+    <value>Loading the packages is taking longer than expected. What would you like to do?</value>
+  </data>
+  <data name="MessageExcessiveLoadTimeTitle" xml:space="preserve">
+    <value>Still loading</value>
+  </data>
   <data name="MessageCustomNodeNameExist" xml:space="preserve">
     <value>A built-in node with the given name already exists.</value>
   </data>

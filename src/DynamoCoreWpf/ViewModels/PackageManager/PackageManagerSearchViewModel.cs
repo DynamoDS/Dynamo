@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
@@ -45,7 +46,8 @@ namespace Dynamo.PackageManager
             Syncing,
             Searching,
             NoResults,
-            Results
+            Results,
+            Retry
         };
 
         /// <summary>
@@ -836,9 +838,7 @@ namespace Dynamo.PackageManager
 
         public void RefreshAndSearchAsync()
         {
-            // new
-            StartTimer();
-            // new
+            StartTimer();   // Times out according to MAX_LOAD_TIME
 
             this.ClearSearchResults();
             this.SearchState = PackageSearchState.Syncing;
@@ -855,6 +855,23 @@ namespace Dynamo.PackageManager
                         if (result.Model != null)
                         {
                             AddPackageToSearchIndex(result.Model, iDoc);
+
+                            if (_isTimingOut)
+                            {
+                                _isTimingOut = false;
+
+                                var res = PauseSearchPackages();
+                                if (res == false)
+                                {
+                                    StopSearchPackages();
+                                    return;
+                                }
+                                else if(res == true)
+                                {
+                                    ReloadSearchPackages();
+                                    return;
+                                }
+                            }
                         }   
                         this.AddToSearchResults(result);
                     }
@@ -876,12 +893,50 @@ namespace Dynamo.PackageManager
             , TaskScheduler.FromCurrentSynchronizationContext()); // run continuation in ui thread
         }
 
+        // UI prompt when the process has timed out
+        private bool? PauseSearchPackages()
+        {
+            var res = MessageBoxService.Show(PackageManagerClientViewModel.ViewModelOwner,
+                                    Resources.MessageExcessiveLoadTime,
+                                    Resources.MessageNeedToRestartAfterDeleteTitle,
+                                    MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
+
+            // Stop the loading and show the timed-out screen
+            if (res == MessageBoxResult.No)
+            {
+                return false;
+            }
+
+            // Restart the loading process
+            else if (res == MessageBoxResult.Yes)
+            {
+                return true;
+            }
+
+            return null;
+        }
+
+        // Stop the search process
+        private void StopSearchPackages()
+        {
+            TimedOut = true;
+            this.ClearSearchResults();
+            this.SearchState = PackageSearchState.NoResults;
+        }
+
+        // Restart the search process
+        private void ReloadSearchPackages()
+        {
+            RefreshAndSearchAsync();
+        }
+
         #region Time Out
 
         // maximum loading time for packages
         // if exceeded will trigger `timed out` event and failure screen
-        private const int MAX_LOAD_TIME = 5000;
+        internal int MAX_LOAD_TIME = 5000;
         private bool _timedOut;
+        internal bool _isTimingOut = false;
         /// <summary>
         /// Will trigger timed out event
         /// </summary>
@@ -899,17 +954,22 @@ namespace Dynamo.PackageManager
             var aTimer = new System.Timers.Timer();
             aTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
             aTimer.Interval = MAX_LOAD_TIME;
+            aTimer.AutoReset = false;
             aTimer.Enabled = true;
         }
 
         private void OnTimedEvent(object sender, ElapsedEventArgs e)
         {
-            if(this.SearchState != PackageSearchState.Results) // remove second condition
-            {
-                TimedOut = true;
-            }
             var aTimer = (System.Timers.Timer)sender;
             aTimer.Dispose();
+
+            // If we have managed to get all the results
+            // Simply dispose of the timer
+            // Otherwise act 
+            if (this.SearchState != PackageSearchState.Results)
+            {
+                _isTimingOut = true;
+            }
         }
 
         #endregion
@@ -1380,6 +1440,16 @@ namespace Dynamo.PackageManager
             {
                 RequestDisableTextSearch(null, null);
             }
+        }
+
+        /// <summary>
+        /// Clear after closing down
+        /// </summary>
+        internal void Close()
+        {
+            TimedOut = false;   // reset the timedout screen 
+            InitialResultsLoaded = false;   // reset the loading screen settings
+            RequestShowFileDialog -= OnRequestShowFileDialog;
         }
     }
 }
