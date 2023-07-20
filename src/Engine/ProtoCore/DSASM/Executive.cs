@@ -133,7 +133,6 @@ namespace ProtoCore.DSASM
         /// </summary>
         /// <param name="exeblock"></param>
         /// <param name="entry"></param>
-        /// <param name="context"></param>
         /// <param name="stackFrame"></param>
         /// <param name="locals"></param>
         /// <param name="exec"></param>
@@ -1705,8 +1704,6 @@ namespace ProtoCore.DSASM
         /// <summary>
         /// Pops Debug stackframe, performs coercion and GC and pops stackframe if there's a break inside the function
         /// </summary>
-        /// <param name="exeblock"></param>
-        /// <param name="instructions"></param>
         /// <returns></returns>
         bool RestoreDebugPropsOnReturnFromBuiltIns()
         {

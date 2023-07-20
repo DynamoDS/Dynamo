@@ -11,7 +11,7 @@ namespace ProtoCore.Lang.Replication
     {
         /// <summary>
         /// Calculate partial replication instruciton based on replication guide level.
-        /// For example, for foo(xs<1><2><3>, ys<1><1><2>, zs<1><1><3>), the guides
+        /// For example, for foo(xs&lt;1&gt;&lt;2&gt;&lt;3&gt;, ys&lt;1&gt;&lt;1&gt;&lt;2&gt;, zs&lt;1&gt;&lt;1&gt;&lt;3&gt;), the guides
         /// are:
         /// 
         ///     level |  0  |  1  |  2  |

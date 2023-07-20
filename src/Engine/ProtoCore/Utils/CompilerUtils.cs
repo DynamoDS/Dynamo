@@ -262,7 +262,6 @@ namespace ProtoCore.Utils
             return status.ErrorCount == 0;
         }
 
-        [Obsolete("This method is deprecated and will be removed in Dynamo 3.0")]
         /// <summary>
         /// Pre-compiles DS code in code block node, 
         /// checks for syntax, converts non-assignments to assignments,
@@ -273,6 +272,7 @@ namespace ProtoCore.Utils
         /// <param name="parseParams"> container for compilation related parameters </param>
         /// <param name="priorNames"></param>
         /// <returns> true if code compilation succeeds, false otherwise </returns>
+        [Obsolete("This method is deprecated and will be removed in Dynamo 3.0")]
         public static bool PreCompileCodeBlock(Core core, ref ParseParam parseParams, IDictionary<string, string> priorNames = null)
         {
             return PreCompileCodeBlock(core, parseParams, priorNames);

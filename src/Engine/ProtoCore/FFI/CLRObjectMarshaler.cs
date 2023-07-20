@@ -1313,8 +1313,6 @@ namespace ProtoFFI
         /// 
         /// </summary>
         /// <param name="dsObject"></param>
-        /// <param name="context"></param>
-        /// <param name="dsi"></param>
         /// <param name="type"></param>
         /// <returns></returns>
         private object CreateCLRObject(StackValue dsObject, Type type)

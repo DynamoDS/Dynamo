@@ -341,7 +341,6 @@ namespace ProtoCore.DSASM
         /// Exceptions: ProtoCore.Exceptions.RunOutOfMemoryException
         /// </summary>
         /// <param name="values">Array elements whose indices are integer</param>
-        /// <param name="dict">Array elements whose indices are not integer</param>
         /// <returns></returns>
         public StackValue AllocateArray(StackValue[] values)
         {

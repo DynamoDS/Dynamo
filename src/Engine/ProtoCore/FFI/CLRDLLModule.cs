@@ -941,7 +941,7 @@ namespace ProtoFFI
 
     /// <summary>
     /// Implements DLLModule for CLR types and FFI. This class supports .NET
-    /// module import to DesignScript and provides FFIFunctionPointer &
+    /// module import to DesignScript and provides FFIFunctionPointer &amp;
     /// FFIObjectMarshler.
     /// </summary>
     public class CLRDLLModule : DLLModule

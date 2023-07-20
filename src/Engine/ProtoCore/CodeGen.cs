@@ -926,7 +926,6 @@ namespace ProtoCore
         /// <param name="name"></param>
         /// <param name="classScope"></param>
         /// <param name="functionScope"></param>
-        /// <param name="symbolTable"></param>
         /// <param name="symbol"></param>
         /// <param name="isAccessible"></param>
         /// <returns></returns>

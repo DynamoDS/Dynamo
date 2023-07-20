@@ -437,7 +437,7 @@ namespace Dynamo.Applications
         /// If this happens Dynamo will most likely crash. We should alert the user they
         /// have an incompatible addin/package installed.. this is only called if the host calls or
         /// subscribes to it during AppDomain.AssemblyLoad event.
-        /// 
+        /// </summary>
         private static List<Exception> GetVersionMismatchedReferencesInAppDomain(Assembly assembly, String[] assemblyNamesToIgnore)
         {
             // Get all assemblies that are currently loaded into the appdomain.

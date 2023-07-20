@@ -276,6 +276,7 @@ namespace DynamoUtilities
             return false;
         }
 
+        /// <summary>
         /// This is a utility method for generating a default name to the snapshot image. 
         /// </summary>
         /// <param name="filePath">File path</param>

@@ -561,7 +561,6 @@ namespace Dynamo.PackageManager
         /// Marks any given package for unload.
         /// The package will not be marked for deletion.
         /// </summary>
-        /// <param name="prefs"></param>
         internal void MarkForUnload()
         {
             LoadState.SetScheduledForUnload();
@@ -573,7 +572,6 @@ namespace Dynamo.PackageManager
         /// Package will no longer be unloaded.
         /// Package load state will remain unaffected.
         /// </summary>
-        /// <param name="prefs"></param>
         internal void UnmarkForUnload()
         {
             LoadState.ResetScheduledState();

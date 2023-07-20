@@ -872,7 +872,7 @@ namespace ProtoCore.AssociativeGraph
 
         /// <summary>
         /// Children nodes are nodes that will be marked dirty if this graphnode is executed
-        ///     a = 1 <- the child of this graphnode is 'b = a'
+        ///     a = 1 &lt;- the child of this graphnode is 'b = a'
         ///     b = a 
         /// </summary>
         public List<GraphNode> ChildrenNodes { get; set; }
@@ -880,7 +880,7 @@ namespace ProtoCore.AssociativeGraph
         /// <summary>
         /// Parent nodes are the nodes that this graphnode is dependent on
         ///     a = 1
-        ///     b = a <- the parent of this graphnode is 'a = 1'
+        ///     b = a &lt;- the parent of this graphnode is 'a = 1'
         /// </summary>
         public List<GraphNode> ParentNodes { get; set; }
 
