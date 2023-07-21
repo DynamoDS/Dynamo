@@ -33,7 +33,7 @@ namespace Dynamo.Notifications
             this.onNotificationPopupUpdated = onNotificationPopupUpdated;
         }
 
-        public void SetNoficationsAsRead(object[] ids)
+        public void SetNotificationsAsRead(object[] ids)
         {
             onMarkAllAsRead(ids);
         }

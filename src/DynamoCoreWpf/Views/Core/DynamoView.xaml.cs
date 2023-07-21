@@ -1444,6 +1444,10 @@ namespace Dynamo.Controls
             {
                 _pkgSearchVM = new PackageManagerSearchViewModel(dynamoViewModel.PackageManagerClientViewModel);
             }
+            else
+            {
+                _pkgSearchVM.InitializeLuceneForPackageManager();
+            }
 
             if (_searchPkgsView == null)
             {
