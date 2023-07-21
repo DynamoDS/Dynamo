@@ -127,10 +127,10 @@
   </Target>
   <Target Name="ResolveSateliteResDeps" AfterTargets="Build" Condition=" '$(OS)' != 'Unix' ">
     <PropertyGroup>
-        <OutputExtension Condition=" '$(OutputType)' == 'Library' ">dll</OutputExtension>
-        <OutputExtension Condition=" '$(OutputType)' != 'Library' ">exe</OutputExtension>
+        <OutputExtension>dll</OutputExtension>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(TargetFramework)' == 'net48' ">
+    <OutputExtension Condition=" '$(OutputType)' != 'Library' ">exe</OutputExtension>
       <!--This is used to set the framework version for icon resource dll generation (lookup of system.drawing.dll)-->
       <ResourceGeneration_FrameworkVersion>v4.8</ResourceGeneration_FrameworkVersion>
     </PropertyGroup>
