@@ -78,7 +78,7 @@
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
   </ItemGroup>
-  <ItemDefinitionGroup Condition=" '$(TargetFramework)' == 'net48' ">
+  <ItemDefinitionGroup>
     <ProjectReference>
       <Private>false</Private>
     </ProjectReference>
@@ -125,18 +125,22 @@
     <Copy SourceFiles="@(DLLContent)" DestinationFolder="$(OutDir)$(PackagesOutputSubdirectory)$(Local_CopyToSubdirectory)" Condition="Exists('%(FullPath)')" />
   </Target>
   <Target Name="ResolveSateliteResDeps" AfterTargets="Build" Condition=" '$(OS)' != 'Unix' ">
-    <!-- Get System.Drawing.dll -->
     <PropertyGroup Condition=" '$(TargetFramework)' == 'net48' ">
       <!--This is used to set the framework version for icon resource dll generation (lookup of system.drawing.dll)-->
       <ResourceGeneration_FrameworkVersion>v4.8</ResourceGeneration_FrameworkVersion>
     </PropertyGroup>
+    <!-- Get assembly -->
+    <GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
+      <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
+    </GetAssemblyIdentity>
     <GetReferenceAssemblyPaths Condition=" '$(TargetFramework)' == 'net48' " TargetFrameworkMoniker=".NETFramework, Version=$(ResourceGeneration_FrameworkVersion)">
       <Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
     </GetReferenceAssemblyPaths>
     <PropertyGroup>
+      <!--Remove these properties (SystemDrawingDllPath) and all references to it from all csproj files when we get rid of net48-->
       <SystemDrawingDllPath Condition=" '$(TargetFramework)' == 'net48' ">$(FrameworkAssembliesPath)System.Drawing.dll</SystemDrawingDllPath>
-      <!--Requires a reference to "System.Drawing.Common" Version="7.0.0" -->
-      <SystemDrawingDllPath Condition=" '$(TargetFramework)' == 'net60' ">$(PkgSystem_Drawing_Common)\lib\net6.0\System.Drawing.Common.dll</SystemDrawingDllPath>
+      <!--SystemDrawingDllPath is left empty for net6 because resources will auto resolve to the system.drawing package dll -->
+      <SystemDrawingDllPath Condition=" '$(TargetFramework)' == 'net60' "></SystemDrawingDllPath>
     </PropertyGroup>
   </Target>
 </Project>
