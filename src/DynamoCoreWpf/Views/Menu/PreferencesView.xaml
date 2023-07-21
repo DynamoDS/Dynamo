@@ -1678,6 +1678,7 @@
                               HorizontalAlignment="Stretch">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
 
                             <!--This Grid row contains the Node and Package Paths section-->
@@ -1776,7 +1777,30 @@
                                     </StackPanel>
                                 </Grid>
                             </Expander>
-                        </Grid>
+                            
+                            <!--This Grid row contains the Installed Packages section-->
+                            <Expander x:Name="InstalledPackagesExpander"
+                                        Expanded="InstalledPackagesExpander_OnExpanded"
+                                        Collapsed="InstalledPackagesExpander_OnCollapsed"
+                                        Style="{StaticResource MenuExpanderStyle}"
+                                        IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=InstalledPackagesExpander}"
+                                        Grid.Row="1"
+                                        Header="{x:Static p:Resources.InstalledPackageViewTitle}">
+                                <StackPanel Orientation="Vertical"
+                                            Margin="0,6,0,0">
+                                    <TextBlock>
+                                        <Run Text="{x:Static p:Resources.InstalledPackagePartialTextMessage}"
+                                             FontWeight="Regular"/>                                        
+                                        <Hyperlink Click="OnInstalledPackagesHyperlinkClicked"
+                                                   Foreground="{StaticResource TextBlockLinkForegroundColor}">
+                                            <TextBlock Name="PackageManagerLink"
+                                                       Text="{x:Static p:Resources.InstalledPackagePartialHyperlinkMessage}" />
+                                        </Hyperlink>
+                                        <Run>.</Run>        
+                                    </TextBlock>    
+                                </StackPanel>
+                            </Expander>
+                            </Grid>
                     </TabItem>
                     
                     <!--Security Settings Tab-->

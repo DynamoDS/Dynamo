@@ -1217,6 +1217,12 @@ Don't worry, you'll have the option to save your work.</value>
   <data name="InstalledPackageViewTitle" xml:space="preserve">
     <value>Installed Packages</value>
   </data>
+  <data name="InstalledPackagePartialTextMessage" xml:space="preserve">
+    <value>View your installed packages in the </value>
+  </data>
+  <data name="InstalledPackagePartialHyperlinkMessage" xml:space="preserve">
+    <value>Package Manager</value>
+  </data>
   <data name="LacingCrossProductToolTip" xml:space="preserve">
     <value>For two lists [a,b,c][1,2,3] returns [a1,a2,a3][b1,b2,b3][c1,c2,c3].</value>
   </data>
@@ -1264,6 +1270,21 @@ Don't worry, you'll have the option to save your work.</value>
   <data name="PackageManagerPackageNew" xml:space="preserve">
     <value>New</value>
     <comment>Displays next to the package name in the Package Search window if the package has been added in the last 30 days.</comment>
+  </data>
+  <data name="PackageManagerSearchTab" xml:space="preserve">
+    <value>Search for Packages</value>
+  </data>
+  <data name="PackageManagerPublishTab" xml:space="preserve">
+    <value>Publish a Package</value>
+  </data>
+  <data name="PackageManagerInstalledPackagesTab" xml:space="preserve">
+    <value>Installed Packages</value>
+  </data>
+  <data name="PackageManagerMyPackagesTab" xml:space="preserve">
+    <value>My Packages</value>
+  </data>
+  <data name="PackageManagerPackageSettingsTab" xml:space="preserve">
+    <value>Package Settings</value>
   </data>
   <data name="PackageDetailsDescription" xml:space="preserve">
     <value>DESCRIPTION</value>

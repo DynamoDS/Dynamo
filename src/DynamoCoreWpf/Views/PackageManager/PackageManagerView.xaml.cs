@@ -1,23 +1,29 @@
 using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using Dynamo.Controls;
 using Dynamo.Logging;
-using Dynamo.PackageManager.UI;
-using Dynamo.PackageManager;
 using Dynamo.ViewModels;
-using Dynamo.Wpf.Views.PackageManager;
-using static Dynamo.ViewModels.SearchViewModel;
-using Dynamo.Wpf.UI.GuidedTour;
-using Dynamo.PackageManager.ViewModels;
 using System.Windows.Controls;
 using Dynamo.UI;
 using Dynamo.Wpf.Utilities;
 using DynamoUtilities;
-using System.Collections.ObjectModel;
 
 namespace Dynamo.PackageManager.UI
 {
+    public class OpenPackageManagerEventArgs : EventArgs
+    {
+        private string tab;
+
+        public string Tab { get { return tab; } }
+
+        public OpenPackageManagerEventArgs(string _Tab)
+        {
+            tab = _Tab;
+        }
+    }
+
     /// <summary>
     /// Interaction logic for PackageManagerView.xaml
     /// </summary>
@@ -27,6 +33,7 @@ namespace Dynamo.PackageManager.UI
         /// The main View Model containing all other view models for each control
         /// </summary>
         public PackageManagerViewModel PackageManagerViewModel { get; set; }
+        private DynamoView dynamoView;
 
         public PackageManagerView(DynamoView dynamoView, PackageManagerViewModel packageManagerViewModel)
         {
@@ -42,6 +49,7 @@ namespace Dynamo.PackageManager.UI
                 Actions.Open,
                 Categories.PackageManager);
 
+            this.dynamoView = dynamoView;
             dynamoView.EnableEnvironment(false);
 
             this.packageManagerSearch.UIParent = this.packageDetailsGrid;
@@ -119,23 +127,51 @@ namespace Dynamo.PackageManager.UI
 
         private void WindowClosed(object sender, EventArgs e)
         {
-            this.packageManagerPublish.Dispose();
-            
+            this.packageManagerPublish.Dispose();            
             this.PackageManagerViewModel.PackageSearchViewModel.Close();
         }
 
         private void SearchForPackagesButton_Click(object sender, RoutedEventArgs e)
         {
-            var tabControl = this.projectManagerTabControl;
             // Search for Packages tab
-            tabControl.SelectedIndex = 0;
+            Navigate(Dynamo.Wpf.Properties.Resources.PackageManagerSearchTab);
         }
 
         private void PublishPackageButton_Click(object sender, RoutedEventArgs e)
         {
-            var tabControl = this.projectManagerTabControl;
             // Publish a Package tab
-            tabControl.SelectedIndex = 1;
+            Navigate(Dynamo.Wpf.Properties.Resources.PackageManagerPublishTab);
         }
+
+        /// <summary>
+        ///  Navigatest to the selected tab
+        /// </summary>
+        /// <param name="tabName">Tab name to navigate to</param>
+        internal void Navigate(string tabName)
+        {
+            var tabControl = this.projectManagerTabControl;
+
+            var preferencesTab = (from TabItem tabItem in tabControl.Items
+                                  where tabItem.Header.ToString().Equals(tabName)
+                                  select tabItem).FirstOrDefault();
+            if (preferencesTab == null) return;
+            tabControl.SelectedItem = preferencesTab;
+        }
+
+        private void NavigateToPreferencesPanel()
+        {
+            var tabName = Dynamo.Wpf.Properties.Resources.PreferencesPackageManagerSettingsTab;
+            var expanderName = Dynamo.Wpf.Properties.Resources.PackagePathsExpanderName;
+            PreferencesPanelUtilities.OpenPreferencesPanel(dynamoView, WindowStartupLocation.CenterOwner, tabName, expanderName);
+        }
+
+        private void OnPackageManagerSettingsHyperlinkClicked(object sender, RoutedEventArgs e)
+        {
+            this.WindowClosed(this.CloseButton, e);
+            this.Close();
+
+            NavigateToPreferencesPanel();
+        }
+
     }
 }

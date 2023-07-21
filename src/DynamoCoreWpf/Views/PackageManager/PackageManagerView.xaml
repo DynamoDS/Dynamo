@@ -144,7 +144,7 @@
                                 BorderThickness="0"
                                 Background="{StaticResource PreferencesWindowBackgroundColor}">
 
-                        <TabItem Header="Search for Packages"
+                        <TabItem Header="{x:Static p:Resources.PackageManagerSearchTab}"
                                  Style="{StaticResource PackageManagerTab}">
                             <!--Search Packages Tab-->
                             <Border BorderBrush="{StaticResource BorderBrushWithOpacity}"
@@ -214,7 +214,7 @@
                             </Border>
                         </TabItem>
 
-                        <TabItem Header="Publish a Package"
+                        <TabItem Header="{x:Static p:Resources.PackageManagerPublishTab}"
                                  Style="{StaticResource PackageManagerTab}">
                             <!--Publish Packages Tab-->
                             <Border BorderBrush="{StaticResource BorderBrushWithOpacity}"
@@ -234,7 +234,7 @@
                             </Border>
                         </TabItem>
 
-                        <TabItem Header="Installed Packages"
+                        <TabItem Header="{x:Static p:Resources.PackageManagerInstalledPackagesTab}"
                                  Style="{StaticResource PackageManagerTab}">
                             <!--Installed Packages Tab-->
                             <Border BorderBrush="{StaticResource BorderBrushWithOpacity}"
@@ -290,8 +290,8 @@
                                 </Grid>
                             </Border>
                         </TabItem>
-    
-                        <TabItem Header="My Packages"
+
+                        <TabItem Header="{x:Static p:Resources.PackageManagerMyPackagesTab}"
                                  Style="{StaticResource PackageManagerTab}">
                             <!--My Packages Tab-->
                             <Border BorderBrush="{StaticResource BorderBrushWithOpacity}"
@@ -364,9 +364,9 @@
 
                                 </Grid>
                             </Border>
-                        </TabItem>  
+                        </TabItem>
 
-                        <TabItem Header="Package Settings"
+                        <TabItem Header="{x:Static p:Resources.PackageManagerPackageSettingsTab}"
                                  Style="{StaticResource PackageManagerTab}">
                             <!--Package Settings Tab-->
                             <Border BorderBrush="{StaticResource BorderBrushWithOpacity}"
@@ -386,11 +386,18 @@
                                                 Grid.Row="0"
                                                 Margin="15 6"
                                                 HorizontalAlignment="Stretch">
-                                        <Label Content="Edit your package settings in Preferences."
-                                               FontFamily="{StaticResource ArtifaktElementRegular}"
-                                               Foreground="{StaticResource PreferencesWindowFontColor}"
-                                               FontSize="13"
-                                               Margin="0 0 0 20" />
+                                        <TextBlock FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                   Foreground="{StaticResource PreferencesWindowFontColor}"
+                                                   FontSize="13"
+                                                   Margin="0 5 0 20">
+                                            <Run Text="Edit your package settings in" />
+                                            <Hyperlink Click="OnPackageManagerSettingsHyperlinkClicked"
+                                                       Foreground="{StaticResource TextBlockLinkForegroundColor}">
+                                                <TextBlock Name="PackageManagerLink"
+                                                           Text="Preferences" />
+                                            </Hyperlink>
+                                            <Run>.</Run>
+                                        </TextBlock>
                                         <Label Content="{x:Static p:Resources.PreferencesViewPackageDownloadDirectory}"
                                                Padding="5,5,5,5"
                                                FontSize="13"

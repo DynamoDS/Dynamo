@@ -485,7 +485,7 @@
 
                     </Grid>
                 </DataTemplate>
-            </ListBox.ItemTemplate>
+            </ListBox.ItemTemplate> 
         </ListBox>
 
     </Grid>

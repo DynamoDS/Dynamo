@@ -822,7 +822,7 @@ namespace Dynamo.PackageManager
                 SearchDictionary.Add(pkg, pkg.Maintainers);
                 SearchDictionary.Add(pkg, pkg.Keywords);
             }
-
+                
             PopulateMyPackages();   // adding 
         }
 
@@ -852,27 +852,28 @@ namespace Dynamo.PackageManager
                     ClearSearchResults();
                     foreach (var result in t.Result)
                     {
-                        if (result.Model != null)
-                        {
-                            AddPackageToSearchIndex(result.Model, iDoc);
-
-                            if (_isTimingOut)
+                            if (result.Model != null)
                             {
-                                _isTimingOut = false;
+                                AddPackageToSearchIndex(result.Model, iDoc);
 
-                                var res = PauseSearchPackages();
-                                if (res == false)
+                                if (_isTimingOut)
                                 {
-                                    StopSearchPackages();
-                                    return;
-                                }
-                                else if(res == true)
-                                {
-                                    ReloadSearchPackages();
-                                    return;
+                                    _isTimingOut = false;
+
+                                    var res = PauseSearchPackages(); // Prompt line
+                                    if (res == false)
+                                    {
+                                        StopSearchPackages();
+                                        return;
+                                    }
+                                    else if(res == true)
+                                    {
+                                        ReloadSearchPackages();
+                                        return;
+                                    }
                                 }
                             }
-                        }   
+
                         this.AddToSearchResults(result);
                     }
                     this.SearchState = HasNoResults ? PackageSearchState.NoResults : PackageSearchState.Results;

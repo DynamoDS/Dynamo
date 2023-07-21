@@ -1179,6 +1179,12 @@ Failed to publish file(s):
   <data name="InstalledPackageViewTitle" xml:space="preserve">
     <value>Installed Packages</value>
   </data>
+  <data name="InstalledPackagePartialTextMessage" xml:space="preserve">
+    <value>View your installed packages in the </value>
+  </data>
+  <data name="InstalledPackagePartialHyperlinkMessage" xml:space="preserve">
+    <value>Package Manager</value>
+  </data>
   <data name="InstallMessageCaption" xml:space="preserve">
     <value>Install Dynamo</value>
   </data>
@@ -2879,6 +2885,21 @@ This package will be unloaded after the next Dynamo restart.</value>
   <data name="PackageManagerPackageNew" xml:space="preserve">
     <value>New</value>
     <comment>Displays next to the package name in the Package Search window if the package has been added in the last 30 days.</comment>
+  </data>
+  <data name="PackageManagerSearchTab" xml:space="preserve">
+    <value>Search for Packages</value>
+  </data>
+  <data name="PackageManagerPublishTab" xml:space="preserve">
+    <value>Publish a Package</value>
+  </data>
+  <data name="PackageManagerInstalledPackagesTab" xml:space="preserve">
+    <value>Installed Packages</value>
+  </data>
+  <data name="PackageManagerMyPackagesTab" xml:space="preserve">
+    <value>My Packages</value>
+  </data>
+  <data name="PackageManagerPackageSettingsTab" xml:space="preserve">
+    <value>My Packages</value>
   </data>
   <data name="PackageDetailsDescription" xml:space="preserve">
     <value>DESCRIPTION</value>

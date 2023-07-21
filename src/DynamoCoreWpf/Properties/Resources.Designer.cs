@@ -3696,6 +3696,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Package Manager.
+        /// </summary>
+        public static string InstalledPackagePartialHyperlinkMessage {
+            get {
+                return ResourceManager.GetString("InstalledPackagePartialHyperlinkMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View your installed packages in the .
+        /// </summary>
+        public static string InstalledPackagePartialTextMessage {
+            get {
+                return ResourceManager.GetString("InstalledPackagePartialTextMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Additional Files.
         /// </summary>
         public static string InstalledPackageViewAdditionalFileLabel {
@@ -5556,6 +5574,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Installed Packages.
+        /// </summary>
+        public static string PackageManagerInstalledPackagesTab {
+            get {
+                return ResourceManager.GetString("PackageManagerInstalledPackagesTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to My Packages.
+        /// </summary>
+        public static string PackageManagerMyPackagesTab {
+            get {
+                return ResourceManager.GetString("PackageManagerMyPackagesTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Deprecated.
         /// </summary>
         public static string PackageManagerPackageDeprecated {
@@ -5574,11 +5610,38 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Package Settings.
+        /// </summary>
+        public static string PackageManagerPackageSettingsTab {
+            get {
+                return ResourceManager.GetString("PackageManagerPackageSettingsTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Updated.
         /// </summary>
         public static string PackageManagerPackageUpdated {
             get {
                 return ResourceManager.GetString("PackageManagerPackageUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish a Package.
+        /// </summary>
+        public static string PackageManagerPublishTab {
+            get {
+                return ResourceManager.GetString("PackageManagerPublishTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search for Packages.
+        /// </summary>
+        public static string PackageManagerSearchTab {
+            get {
+                return ResourceManager.GetString("PackageManagerSearchTab", resourceCulture);
             }
         }
         

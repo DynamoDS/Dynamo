@@ -806,7 +806,7 @@
                                VerticalAlignment="Center"
                                FontFamily="{StaticResource ArtifaktElementBold}"
                                FontSize="14px"
-                               Foreground="#6DD2FF"
+                               Foreground="{StaticResource TextBlockLinkForegroundColor}"
                                Text="{TemplateBinding Content}" />
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">

@@ -2175,7 +2175,7 @@ namespace Dynamo.Controls
             preferencesWindow.Show();
         }
 
-        private void DynamoViewModelRequestShowPackageManager(object s, EventArgs e)
+        private void DynamoViewModelRequestShowPackageManager(object sender, EventArgs e)
         {
             if (!DisplayTermsOfUseForAcceptance())
                 return; // Terms of use not accepted.
@@ -2201,13 +2201,18 @@ namespace Dynamo.Controls
 
                 dynamoViewModel.Owner = packageManagerWindow;
 
-                packageManagerWindow.Closed += (sender, args) => { packageManagerWindow = null; cmd.Dispose(); };
+                packageManagerWindow.Closed += (s, args) => { packageManagerWindow = null; cmd.Dispose(); };
                 packageManagerWindow.Show();
 
                 if (packageManagerWindow.IsLoaded && IsLoaded) packageManagerWindow.Owner = this;
             }
 
             packageManagerWindow.Focus();
+            if(e is OpenPackageManagerEventArgs)
+            {
+                packageManagerWindow.Navigate((e as OpenPackageManagerEventArgs).Tab);
+            }
+
             _pkgSearchVM.RefreshAndSearchAsync();
         }
 
