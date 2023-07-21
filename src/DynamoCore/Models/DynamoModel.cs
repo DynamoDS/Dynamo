@@ -1718,38 +1718,6 @@ namespace Dynamo.Models
             }
         }
 
-        public static IPreferences CreateOrLoadPreferences(IPreferences preferences, bool isServiceMode, string preferenceFilePath)
-        {
-            if (preferences != null) // If there is preference settings provided...
-                return preferences;
-
-            //Skip file handling and trust location in service mode.
-            if (isServiceMode)
-            {
-                var setting = new PreferenceSettings();
-                setting.SetTrustWarningsDisabled(true);
-                return setting;
-            }
-
-            // Is order for test cases not to interfere with the regular preference
-            // settings xml file, a test case usually specify a temporary xml file
-            // path from where preference settings are to be loaded. If that value
-            // is not set, then fall back to the file path specified in PathManager.
-            //
-            var xmlFilePath = PreferenceSettings.DynamoTestPath;
-            if (string.IsNullOrEmpty(xmlFilePath))
-                xmlFilePath = preferenceFilePath;
-
-            if (File.Exists(xmlFilePath))
-            {
-                // If the specified xml file path exists, load it.
-                return PreferenceSettings.Load(xmlFilePath);
-            }
-
-            // Otherwise make a default preference settings object.
-            return new PreferenceSettings();
-        }
-
         private void InitializePreferences()
         {
             if (PreferenceSettings != null)
