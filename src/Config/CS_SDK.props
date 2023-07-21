@@ -16,6 +16,7 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
     <UICulture>en-US</UICulture>
+    <OutputType Condition=" '$(OutputType)' == '' ">Library</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <TestProjectDefaults Condition="$(MSBuildProjectDirectory.Contains('test'))">true</TestProjectDefaults>
     <TestProjectDefaults Condition=" '$(TestProjectDefaults)' == '' ">false</TestProjectDefaults>
