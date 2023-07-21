@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -197,7 +197,8 @@ namespace DynamoCoreWpfTests
                     StartInTestMode = true,
                     PathResolver = pathResolver,
                     GeometryFactoryPath = geometryFactoryPath,
-                    ProcessMode = TaskProcessMode.Synchronous
+                    ProcessMode = TaskProcessMode.Synchronous,
+                    Preferences = PreferenceSettings.Instance
                 });
 
             // Create the DynamoViewModel to control the view
