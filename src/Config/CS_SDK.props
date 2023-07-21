@@ -125,12 +125,16 @@
     <Copy SourceFiles="@(DLLContent)" DestinationFolder="$(OutDir)$(PackagesOutputSubdirectory)$(Local_CopyToSubdirectory)" Condition="Exists('%(FullPath)')" />
   </Target>
   <Target Name="ResolveSateliteResDeps" AfterTargets="Build" Condition=" '$(OS)' != 'Unix' ">
+    <PropertyGroup>
+        <OutputExtension Condition=" '$(OutputType)' == 'Library' ">dll</OutputExtension>
+        <OutputExtension Condition=" '$(OutputType)' != 'Library' ">exe</OutputExtension>
+    </PropertyGroup>
     <PropertyGroup Condition=" '$(TargetFramework)' == 'net48' ">
       <!--This is used to set the framework version for icon resource dll generation (lookup of system.drawing.dll)-->
       <ResourceGeneration_FrameworkVersion>v4.8</ResourceGeneration_FrameworkVersion>
     </PropertyGroup>
     <!-- Get assembly -->
-    <GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
+    <GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).$(OutputExtension)">
       <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
     </GetAssemblyIdentity>
     <GetReferenceAssemblyPaths Condition=" '$(TargetFramework)' == 'net48' " TargetFrameworkMoniker=".NETFramework, Version=$(ResourceGeneration_FrameworkVersion)">
