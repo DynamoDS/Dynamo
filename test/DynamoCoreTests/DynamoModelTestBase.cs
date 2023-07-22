@@ -71,7 +71,7 @@ namespace Dynamo
             base.Cleanup();
         }
 
-        protected virtual void StartDynamo(IPreferences settings = null)//ACA ARMADAR
+        protected virtual void StartDynamo(IPreferences settings = null)
         {
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
             preloader = new Preloader(Path.GetDirectoryName(assemblyPath));

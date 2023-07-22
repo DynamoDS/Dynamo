@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -101,7 +101,8 @@ namespace DynamoCoreWpfTests
                 PathResolver = pathResolver,
                 StartInTestMode = true,
                 GeometryFactoryPath = preloader.GeometryFactoryPath,
-                ProcessMode = TaskProcessMode.Synchronous
+                ProcessMode = TaskProcessMode.Synchronous,
+                Preferences = PreferenceSettings.Instance
             };
         }
 
