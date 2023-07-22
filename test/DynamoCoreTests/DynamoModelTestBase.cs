@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
@@ -44,7 +45,7 @@ namespace Dynamo
 
             // Store a copy of the PathManager.BuiltinPackagesDirectory so that we can reset it after each DynamoModelTest
             originalBuiltinPackagesDirectory = originalBuiltinPackagesDirectory ?? PathManager.BuiltinPackagesDirectory;
-            StartDynamo(dynamoSettings);
+            StartDynamo(PreferenceSettings.Instance);
         }
 
         public override void Cleanup()
@@ -70,7 +71,7 @@ namespace Dynamo
             base.Cleanup();
         }
 
-        protected virtual void StartDynamo(IPreferences settings = null)
+        protected virtual void StartDynamo(IPreferences settings = null)//ACA ARMADAR
         {
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
             preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
