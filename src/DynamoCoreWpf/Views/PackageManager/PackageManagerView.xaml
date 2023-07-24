@@ -154,9 +154,11 @@
                                 <Grid x:Name="SearchPackagesTab"
                                       Margin="0"
                                       HorizontalAlignment="Stretch"
-                                      VerticalAlignment="Stretch">
+                                      VerticalAlignment="Stretch"
+                                      Background="{StaticResource PackageManagerTabBackgroundColor}">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*" />
+                                        <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
@@ -168,48 +170,77 @@
 
                                     <local:PackageManagerSearchControl x:Name="packageManagerSearch"
                                                                        Background="{StaticResource PackageManagerTabBackgroundColor}"
-                                                                       DataContext="{Binding Path=PackageManagerViewModel.PackageSearchViewModel, ElementName=PackageManagerWindow}"
-                                                                       Visibility="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.TimedOut,
-                                                                                            ElementName=PackageManagerWindow, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}"/>
-                                    <!--Timed out screen-->
-                                    <StackPanel Orientation="Vertical"
-                                                VerticalAlignment="Center"
-                                                HorizontalAlignment="Center"
-                                                Margin="0 0 0 186"
-                                                Visibility="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.TimedOut,
+                                                                       DataContext="{Binding Path=PackageManagerViewModel.PackageSearchViewModel, ElementName=PackageManagerWindow}" />
+    
+                                    <!--  Loading taking longer warning bar  -->
+                                    <Grid Grid.Row="1"
+                                          Grid.ColumnSpan="2"
+                                          x:Name="loadingWarningBar"
+                                          Margin="4 0 3 0"
+                                          Visibility="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.TimedOut,
                                                                                             ElementName=PackageManagerWindow, Converter={StaticResource BoolToVisibilityCollapsedConverter}}">
-                                    <Image HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               Width="266px"
-                                               Height="Auto"
-                                               Margin="0 0 0 50"
-                                               Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/PackageManager/loading-timed-out.png"></Image>
-                                        <TextBlock Style="{StaticResource LabelStyle}"
-                                                   FontSize="18px"
-                                                   HorizontalAlignment="Center"
-                                                   Text="Package loading times out" />
-                                        <TextBlock Style="{StaticResource SubLabelStyle}"
-                                                   FontSize="13px"
-                                                   HorizontalAlignment="Center"
-                                                   Text="" />
-                                        <Button Content="Try again"
-                                                Margin="0"
-                                                Background="#0696D7"
-                                                Foreground="White"
-                                                BorderBrush="#0696D7"
-                                                Width="Auto"
-                                                HorizontalAlignment="Center"
-                                                Padding="5"
-                                                Click="SearchForPackagesButton_Click"
-                                                Style="{StaticResource CtaButtonStyle}" />
-                                    </StackPanel>
+                                        <!--  Contains all of the warning bar message  -->
+                                        <Border Name="mainBody"
+                                                Padding="15,10"
+                                                Background="#4e4e4e"   
+                                                CornerRadius="3">
+                                            <Grid Height="40">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <!--  Download Icon  -->
+                                                <Image Name="loadWarningIcon"
+                                                       Grid.Column="0"
+                                                       Width="18"
+                                                       Height="18"
+                                                       VerticalAlignment="Center"
+                                                       Source="/DynamoCoreWpf;component/UI/Images/alert_2.png"
+                                                       Visibility="Visible" />
+
+                                                <!--  Warning Message  -->
+                                                <TextBlock Name="warning"
+                                                           Grid.Column="1"
+                                                           Margin="10,0,0,0"
+                                                           VerticalAlignment="Center"
+                                                           Foreground="#f5f5f5"
+                                                           FontWeight="Normal"
+                                                           FontSize="13"
+                                                           Text="Loading the packages is taking longer than expected. Please wait, or restart the Package Manager."
+                                                           TextTrimming="CharacterEllipsis" />
+
+                                                <Button Name="closeToastButton"
+                                                        Grid.Row="0"
+                                                        Grid.RowSpan="2"
+                                                        Grid.Column="3"
+                                                        Width="16"
+                                                        Height="16"
+                                                        Margin="10,0,0,0"
+                                                        Background="{StaticResource PrimaryCharcoal300Brush}"
+                                                        BorderThickness="0"
+                                                        Click="CloseToastButton_OnClick"
+                                                        DockPanel.Dock="Right"
+                                                        Style="{StaticResource CloseButtonStyle}" />
+                                            </Grid>
+                                        </Border>
+
+                                        <!--  The download status flag, which changes colour to reflect the downloadState  -->
+                                        <Border Name="loadingStatusFlag"
+                                                Width="3"
+                                                HorizontalAlignment="Left"
+                                                Background="{StaticResource YellowOrange500Brush}"
+                                                CornerRadius="3,0,0,3" />
+                                    </Grid>
 
                                     <GridSplitter Grid.Column="1"
                                                   Grid.RowSpan="2"
                                                   VerticalAlignment="Stretch"
                                                   HorizontalAlignment="Center"
                                                   Background="{StaticResource PackageManagerTabBackgroundColor}"    
-                                                  Width="2" />
+                                                  Width="2"
+                                                  Visibility="Collapsed"/>
                                 </Grid>
                             </Border>
                         </TabItem>

@@ -852,31 +852,15 @@ namespace Dynamo.PackageManager
                     ClearSearchResults();
                     foreach (var result in t.Result)
                     {
-                            if (result.Model != null)
-                            {
-                                AddPackageToSearchIndex(result.Model, iDoc);
-
-                                if (_isTimingOut)
-                                {
-                                    _isTimingOut = false;
-
-                                    var res = PauseSearchPackages(); // Prompt line
-                                    if (res == false)
-                                    {
-                                        StopSearchPackages();
-                                        return;
-                                    }
-                                    else if(res == true)
-                                    {
-                                        ReloadSearchPackages();
-                                        return;
-                                    }
-                                }
-                            }
+                        if (result.Model != null)
+                        {
+                            AddPackageToSearchIndex(result.Model, iDoc);
+                        }
 
                         this.AddToSearchResults(result);
                     }
                     this.SearchState = HasNoResults ? PackageSearchState.NoResults : PackageSearchState.Results;
+                    TimedOut = false;
 
                     if (!DynamoModel.IsTestMode)
                     {
@@ -888,56 +872,19 @@ namespace Dynamo.PackageManager
                         LuceneSearchUtility.indexDir?.Dispose();
                         LuceneSearchUtility.writer = null;
                     }
+
                 }
                 RefreshInfectedPackages();
             }
             , TaskScheduler.FromCurrentSynchronizationContext()); // run continuation in ui thread
         }
 
-        // UI prompt when the process has timed out
-        private bool? PauseSearchPackages()
-        {
-            var res = MessageBoxService.Show(PackageManagerClientViewModel.ViewModelOwner,
-                                    Resources.MessageExcessiveLoadTime,
-                                    Resources.MessageNeedToRestartAfterDeleteTitle,
-                                    MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
-
-            // Stop the loading and show the timed-out screen
-            if (res == MessageBoxResult.No)
-            {
-                return false;
-            }
-
-            // Restart the loading process
-            else if (res == MessageBoxResult.Yes)
-            {
-                return true;
-            }
-
-            return null;
-        }
-
-        // Stop the search process
-        private void StopSearchPackages()
-        {
-            TimedOut = true;
-            this.ClearSearchResults();
-            this.SearchState = PackageSearchState.NoResults;
-        }
-
-        // Restart the search process
-        private void ReloadSearchPackages()
-        {
-            RefreshAndSearchAsync();
-        }
-
         #region Time Out
 
         // maximum loading time for packages
         // if exceeded will trigger `timed out` event and failure screen
-        internal int MAX_LOAD_TIME = 5000;
+        internal int MAX_LOAD_TIME = 1000;
         private bool _timedOut;
-        internal bool _isTimingOut = false;
         /// <summary>
         /// Will trigger timed out event
         /// </summary>
@@ -959,7 +906,7 @@ namespace Dynamo.PackageManager
             aTimer.Enabled = true;
         }
 
-        private void OnTimedEvent(object sender, ElapsedEventArgs e)
+        private void OnTimedEvent(object sender, ElapsedEventArgs e)    
         {
             var aTimer = (System.Timers.Timer)sender;
             aTimer.Dispose();
@@ -969,7 +916,7 @@ namespace Dynamo.PackageManager
             // Otherwise act 
             if (this.SearchState != PackageSearchState.Results)
             {
-                _isTimingOut = true;
+                TimedOut = true;
             }
         }
 

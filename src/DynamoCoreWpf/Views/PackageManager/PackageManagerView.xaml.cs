@@ -173,5 +173,9 @@ namespace Dynamo.PackageManager.UI
             NavigateToPreferencesPanel();
         }
 
+        private void CloseToastButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            this.loadingWarningBar.Visibility = Visibility.Collapsed;
+        }
     }
 }

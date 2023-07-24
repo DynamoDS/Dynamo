@@ -15,13 +15,6 @@
              d:DataContext="{d:DesignInstance ViewModels:PackageManagerSearchElementViewModel, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
         <ResourceDictionary>
-            <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter" />
-            <controls:DateToVisibilityCollapsedConverter x:Key="DateToVisibilityCollapsedConverter" />
-            <controls:DateToPackageLabelConverter x:Key="DateToPackageLabelCollapsedConverter" />
-            <controls:PrettyDateConverter x:Key="PrettyDateConverter" />
-            <controls:DependencyListToStringConverter x:Key="DependencyListToStringConverter" />
-            <controls:ListHasMoreThanNItemsToVisibilityConverter x:Key="ListHasMoreThanNItemsToVisibilityConverter" />
-            <controls:PackageSearchStateToVisibilityConverter x:Key="PackageSearchStateToVisibilityConverter" />
             <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
             <controls:InverseBooleanToVisibilityCollapsedConverter x:Key="InverseBooleanToVisibilityCollapsedConverter" />
             <ResourceDictionary.MergedDictionaries>
@@ -249,7 +242,7 @@
                                              SearchItems="{Binding Path=SearchResults}"
                                              Visibility="{Binding Path=InitialResultsLoaded, UpdateSourceTrigger=PropertyChanged,
                                                                   Converter={StaticResource BoolToVisibilityCollapsedConverter}}" />
-
+    
 
     </Grid>
 </UserControl>

@@ -60,7 +60,7 @@ namespace DynamoCoreWpfTests.PackageManager
             var clientmock = new Mock<Dynamo.PackageManager.PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
             var pmCVM = new Mock<PackageManagerClientViewModel>(ViewModel, clientmock.Object) { CallBase = true };
             var packageManagerSearchViewModel = new PackageManagerSearchViewModel(pmCVM.Object);
-            packageManagerSearchViewModel.RegisterTransientHandlers();
+            packageManagerSearchViewModel.RegisterTransientHandlers();  
 
             var waitTime = 100;
 
@@ -69,12 +69,12 @@ namespace DynamoCoreWpfTests.PackageManager
             packageManagerSearchViewModel.RefreshAndSearchAsync();
 
             // Assert
-            Assert.IsFalse(packageManagerSearchViewModel._isTimingOut);
+            Assert.IsFalse(packageManagerSearchViewModel.TimedOut);
 
             DispatcherUtil.DoEvents();
             await Task.Delay(waitTime);
 
-            Assert.IsTrue(packageManagerSearchViewModel._isTimingOut);
+            Assert.IsTrue(packageManagerSearchViewModel.TimedOut);
         }
     }
 
