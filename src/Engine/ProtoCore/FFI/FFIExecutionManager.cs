@@ -37,10 +37,11 @@ namespace ProtoFFI
             {
                 try
                 {
-                    //if the assembly is named system.private.xyz -
+                    //if the assembly is named system.private.corelib -
                     //then we can't load it, and it's very likely
                     //already loaded, just return it.
-                    if (name.ToLower().Contains("system.private"))
+                    //https://github.com/dotnet/runtime/issues/89215
+                    if (name.ToLower().Contains("system.private.corelib"))
                     {
                         return Assembly.Load(System.IO.Path.GetFileNameWithoutExtension(name));
                     }
