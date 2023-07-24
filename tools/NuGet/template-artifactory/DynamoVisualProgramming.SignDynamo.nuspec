@@ -19,7 +19,7 @@
         <!--These assemblies are referenced from the bin directory since they are not harvested for the installer-->
         <file src="..\..\..\src\Tools\SignDynamo\bin\Release\Dynamo.cer" target="lib\net48" />
         <file src="..\..\..\src\Tools\SignDynamo\bin\Release\DynamoCrypto.dll" target="lib\net48" />
-        <file src="..\..\..\src\Tools\SignDynamo\bin\Release\NDesk.Options.dll" target="lib\net48" />
+        <file src="..\..\..\src\Tools\SignDynamo\bin\Release\CommandLine.dll" target="lib\net48" />
         <file src="..\..\..\src\Tools\SignDynamo\bin\Release\SignDynamo.exe" target="lib\net48" />
         <file src="..\..\..\doc\distrib\Images\logo_square_32x32.png" target="content\images\logo.png" />
     </files>
