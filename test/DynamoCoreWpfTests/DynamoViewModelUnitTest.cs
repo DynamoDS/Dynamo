@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Dynamo.Configuration;
 using Dynamo.Models;
 using Dynamo.Scheduler;
 using Dynamo.Selection;
@@ -123,7 +124,8 @@ namespace Dynamo.Tests
                     PathResolver = pathResolver,
                     StartInTestMode = true,
                     GeometryFactoryPath = preloader.GeometryFactoryPath,
-                    ProcessMode = TaskProcessMode.Synchronous
+                    ProcessMode = TaskProcessMode.Synchronous,
+                    Preferences = PreferenceSettings.Instance
                 });
 
             var watch3DViewParams = new Watch3DViewModelStartupParams(model);
