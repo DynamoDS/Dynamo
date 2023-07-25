@@ -359,7 +359,7 @@ namespace Dynamo.Core
         #region Public Class Operational Methods
 
         /// <summary>
-        /// Assign an IPathResolver on demand like the Ctor.
+        /// Assigns an IPathResolver on demand with the same behavior as the Ctor.
         /// </summary>
         /// <param name="resolver"></param>
         internal void AssignIPathResolver(IPathResolver resolver)

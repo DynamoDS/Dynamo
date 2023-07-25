@@ -595,7 +595,7 @@ namespace Dynamo.Models
         /// <returns>The instance of <see cref="DynamoModel"/></returns>
         public static DynamoModel Start()
         {
-            return Start(new DefaultStartConfiguration() { ProcessMode = TaskProcessMode.Asynchronous });
+            return Start(new DefaultStartConfiguration() { ProcessMode = TaskProcessMode.Asynchronous, Preferences = PreferenceSettings.Instance });
         }
 
         /// <summary>
