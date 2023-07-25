@@ -1354,40 +1354,53 @@ namespace Dynamo.ViewModels
 
             ResetColorGlyphs();
 
+            if (this.NodeModel == null) return result;
 
             if (this.NodeModel.IsCustomFunction)
             {
                 result = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeCustomColor"];
-                ImgGlyphOneSource = packageGlyph;
+                if(result != null)
+                {
+                    ImgGlyphOneSource = packageGlyph;
+                }
             }
             if (!this.IsVisible)
             {
                 result = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodePreviewColor"];
-                ImgGlyphOneSource = previewGlyph; 
+                if (result != null)
+                {
+                    ImgGlyphOneSource = previewGlyph;
+                } 
             }
             if (this.IsFrozen)
             {
-                result = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeFrozenOverlayColor"]; 
-                if (ImgGlyphOneSource == null)
+                result = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeFrozenOverlayColor"];
+                if (result != null)
                 {
-                    ImgGlyphOneSource = frozenGlyph;
-                }
-                else
-                {
-                    ImgGlyphOneSource = frozenGlyph;
-                    ImgGlyphTwoSource = previewGlyph;
+                    if (ImgGlyphOneSource == null)
+                    {
+                        ImgGlyphOneSource = frozenGlyph;
+                    }
+                    else
+                    {
+                        ImgGlyphOneSource = frozenGlyph;
+                        ImgGlyphTwoSource = previewGlyph;
+                    }
                 }
             }
             if (NodeModel.State == ElementState.Info)
             {
                 result = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeInfoColor"];
-                if (ImgGlyphTwoSource == null)
+                if (result != null)
                 {
-                    ImgGlyphTwoSource = infoGlyph;
-                }
-                else
-                {
-                    ImgGlyphThreeSource = infoGlyph;
+                    if (ImgGlyphTwoSource == null)
+                    {
+                        ImgGlyphTwoSource = infoGlyph;
+                    }
+                    else
+                    {
+                        ImgGlyphThreeSource = infoGlyph;
+                    }
                 }
             }
 
