@@ -1053,7 +1053,7 @@ namespace Dynamo.ViewModels
         {
             if (Uri.IsWellFormedUriString(Model.BaseUrl, UriKind.Absolute))
             {
-                var sInfo = new ProcessStartInfo("explorer.exe", new Uri(Model.BaseUrl).AbsoluteUri);
+                var sInfo = new ProcessStartInfo("explorer.exe", new Uri(Model.BaseUrl).AbsoluteUri) { UseShellExecute = true };
                 Process.Start(sInfo);
             }
         }

@@ -133,7 +133,7 @@ namespace DynamoSandbox
                     MessageBoxButton.OKCancel,
                     MessageBoxImage.Error))
             {
-                Process.Start("http://dynamobim.org/download/");
+                Process.Start(new ProcessStartInfo("http://dynamobim.org/download/") { UseShellExecute = true });
             }
         }
     }

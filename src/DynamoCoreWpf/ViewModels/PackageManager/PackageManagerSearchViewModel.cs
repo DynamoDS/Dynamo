@@ -540,7 +540,15 @@ namespace Dynamo.PackageManager
         {
             PackageManagerClientViewModel = client;
             HostFilter = InitializeHostFilter();
-            LuceneSearchUtility = new LuceneSearchUtility(PackageManagerClientViewModel.DynamoViewModel.Model);
+            InitializeLuceneForPackageManager();
+        }
+
+        internal void InitializeLuceneForPackageManager()
+        {
+            if(LuceneSearchUtility == null)
+            {
+                LuceneSearchUtility = new LuceneSearchUtility(PackageManagerClientViewModel.DynamoViewModel.Model);
+            }          
             LuceneSearchUtility.InitializeLuceneConfig(LuceneConfig.PackagesIndexingDirectory);
         }
 
@@ -575,7 +583,6 @@ namespace Dynamo.PackageManager
 
             SearchMyResults = new ObservableCollection<PackageManagerSearchElementViewModel>(myPackages);
         }
-
         /// <summary>
         /// Sort the default package results in the view based on the sorting key and sorting direction.
         /// </summary>
