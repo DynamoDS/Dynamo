@@ -281,6 +281,11 @@ namespace Dynamo.Core
             get { return minorFileVersion; }
         }
 
+        public bool HasPathResolver
+        {
+            get { return pathResolver != null; }
+        }
+
         public void AddResolutionPath(string path)
         {
             if (string.IsNullOrEmpty(path))
@@ -353,6 +358,10 @@ namespace Dynamo.Core
 
         #region Public Class Operational Methods
 
+        /// <summary>
+        /// Assign an IPathResolver on demand like the Ctor.
+        /// </summary>
+        /// <param name="resolver"></param>
         internal void AssignIPathResolver(IPathResolver resolver)
         {
             hostApplicationDirectory = string.Empty;

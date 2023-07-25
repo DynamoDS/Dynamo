@@ -669,6 +669,10 @@ namespace Dynamo.Models
             ClipBoard = new ObservableCollection<ModelBase>();
 
             pathManager = Core.PathManager.Instance;
+            if (!Core.PathManager.Instance.HasPathResolver)
+            {
+                Core.PathManager.Instance.AssignIPathResolver(config.PathResolver);
+            }            
 
             // Ensure we have all directories in place.
             var exceptions = new List<Exception>();
