@@ -434,6 +434,10 @@
     <value>_Search for a Package...</value>
     <comment>Package menu | Search for a package</comment>
   </data>
+  <data name="DynamoViewPackageMenuPackageManager" xml:space="preserve">
+    <value>_Package Manager...</value>
+    <comment>Package menu | Launches the Package Manager</comment>
+  </data>
   <data name="DynamoViewRunAutomaticallyOption" xml:space="preserve">
     <value>Run Automatically</value>
     <comment>Run automatically option</comment>

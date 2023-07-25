@@ -700,6 +700,10 @@ Don't worry, you'll have the option to save your work.</value>
     <value>_Search for a Package...</value>
     <comment>Package menu | Search for a package</comment>
   </data>
+  <data name="DynamoViewPackageMenuPackageManager" xml:space="preserve">
+    <value>_Package Manager...</value>
+    <comment>Package menu | Launches the Package Manager</comment>
+  </data>
   <data name="DynamoViewRunAutomaticallyOption" xml:space="preserve">
     <value>Run Automatically</value>
     <comment>Run automatically option</comment>
