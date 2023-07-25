@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows;
@@ -66,7 +67,7 @@ namespace Dynamo.WorkspaceDependency
         {
             try
             {
-                System.Diagnostics.Process.Start(FeedbackLink);
+                System.Diagnostics.Process.Start(new ProcessStartInfo(FeedbackLink) { UseShellExecute = true });
             }
             catch (Exception ex)
             {

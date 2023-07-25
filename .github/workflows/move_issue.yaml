@@ -23,10 +23,11 @@ jobs:
       #Adds a comment to the issue before moving it
       - name: Add comment
         if: (github.event.label.name == matrix.label)
-        uses: ben-z/actions-comment-on-issue@1.0.2
+        uses: peter-evans/create-or-update-comment@v3
         with:
-          message: ${{ env.bot_comment }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{github.event.issue.number}}
+          body: ${{ env.bot_comment }}
+          token: ${{ secrets.DYNAMOBOTTOKEN }}
 
       #Move the issue depending on its labels
       - name: (Label ${{ matrix.label }}) Move to ${{ matrix.repoName }}

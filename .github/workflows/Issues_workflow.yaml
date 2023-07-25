@@ -27,9 +27,11 @@ jobs:
           replace-with: '-'
           flags: g    
       - name: Check Information
+        env:
+          ISSUE_TITLE_PARSED: ${{steps.remove_quotations.outputs.replaced}}
         id: check-info
         run: |
-          echo "content_analysis_response=$(pwsh .\\.github\\scripts\\title_analyzer.ps1 "${{ steps.remove_quotations.outputs.replaced }}" )" >> $GITHUB_ENV
+          echo "content_analysis_response=$(pwsh .\\.github\\scripts\\title_analyzer.ps1 "${{ env.ISSUE_TITLE_PARSED }}" )" >> $GITHUB_ENV
       - name: Label issue
         if: env.content_analysis_response != 'Valid'
         #Uses DYNAMOBOTTOKEN to allow interaction between repos
@@ -99,9 +101,11 @@ jobs:
 
       #Checks for missing information inside the issue content
       - name: Check Information
+        env:
+          ISSUE_TITLE_PARSED: ${{steps.remove_quotations.outputs.replaced}}
         id: check-info
         run: |
-          echo "analysis_response=$(pwsh .\\.github\\scripts\\issue_analyzer.ps1 "${{ env.template }}" "${{ steps.remove_quotations.outputs.replaced }}" "${{ env.acceptable_missing_info }}" )" >> $GITHUB_ENV
+          echo "analysis_response=$(pwsh .\\.github\\scripts\\issue_analyzer.ps1 "${{ env.template }}" "${{ env.ISSUE_TITLE_PARSED }}" "${{ env.acceptable_missing_info }}" )" >> $GITHUB_ENV
       
       #Closes the issue if the analysis response is "Empty"
       - name: Close issue
