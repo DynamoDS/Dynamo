@@ -1,7 +1,5 @@
-using Dynamo.Controls;
 using Dynamo.ViewModels;
-using Microsoft.Practices.Prism.ViewModel;
-using Dynamo.ViewModels;
+
 #if NETFRAMEWORK
 using NotificationObject = Microsoft.Practices.Prism.ViewModel.NotificationObject;
 #else
