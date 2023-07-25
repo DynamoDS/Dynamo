@@ -243,6 +243,13 @@ namespace Dynamo.Applications
         /// <returns></returns>
         public static DynamoModel MakeCLIModel(string asmPath, string userDataFolder, string commonDataFolder, HostAnalyticsInfo info = new HostAnalyticsInfo(), bool isServiceMode = false)
         {
+            IPathResolver pathResolver = CreateIPathResolver(false, string.Empty, string.Empty, string.Empty);
+            PathManager.Instance.AssignIPathResolver(pathResolver);
+
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo(PreferenceSettings.Instance.Locale);
+            Thread.CurrentThread.CurrentCulture = new CultureInfo(PreferenceSettings.Instance.Locale);
+            DynamoModel.OnDetectLanguage();
+
             // Preload ASM and display corresponding message on splash screen
             DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenPreLoadingAsm, 10));
             var isASMloaded = PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
