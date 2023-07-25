@@ -4,13 +4,10 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Input;
-using Autodesk.Analytics.Events;
-using Autodesk.DesignScript.Geometry;
 using Dynamo.Configuration;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
@@ -469,6 +466,22 @@ namespace Dynamo.PackageManager
         public IPreferences Preferences
         {
             get { return PackageManagerClientViewModel.DynamoViewModel.PreferenceSettings; }
+        }
+
+
+
+        private bool isDetailPackagesExtensionOpened;
+        public bool IsDetailPackagesExtensionOpened
+        {
+            get { return isDetailPackagesExtensionOpened; }
+            set
+            {
+                if (isDetailPackagesExtensionOpened != value)
+                {
+                    isDetailPackagesExtensionOpened = value;
+                    RaisePropertyChanged(nameof(IsDetailPackagesExtensionOpened));
+                }
+            }
         }
 
         #endregion Properties & Fields

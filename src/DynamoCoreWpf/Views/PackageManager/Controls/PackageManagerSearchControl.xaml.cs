@@ -22,7 +22,6 @@ namespace Dynamo.PackageManager.UI
     public partial class PackageManagerSearchControl : UserControl
     {
         public PackageManagerSearchViewModel PkgSearchVM { get; set; }
-        public ColumnDefinition UIParent { get; set; }
 
         public PackageManagerSearchControl()
         {
@@ -34,7 +33,6 @@ namespace Dynamo.PackageManager.UI
         private void InitializeContext(object sender, RoutedEventArgs e)
         {
             PkgSearchVM = this.DataContext as PackageManagerSearchViewModel;
-            this.packageManagerSearchPackages.UIParent = this.UIParent;
         }
 
 
@@ -65,9 +63,7 @@ namespace Dynamo.PackageManager.UI
         private void OnSortButtonClicked(object sender, RoutedEventArgs e)
         {
             OnShowContextMenuFromLeftClicked(sender, e);
-        }
-
-      
+        }      
 
         /// <summary>
         /// Executes a command that opens the package details view extension.

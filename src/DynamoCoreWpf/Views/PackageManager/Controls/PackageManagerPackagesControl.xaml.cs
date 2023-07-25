@@ -1,5 +1,7 @@
+using Dynamo.Controls;
 using Dynamo.PackageManager.ViewModels;
 using Dynamo.UI.Controls;
+using Dynamo.Utilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -24,7 +26,6 @@ namespace Dynamo.PackageManager.UI
     public partial class PackageManagerPackagesControl : UserControl
     {
         public PackageManagerSearchViewModel PkgSearchVM { get; set; }
-        public ColumnDefinition UIParent { get; set; }
 
         #region Properties
 
@@ -87,13 +88,10 @@ namespace Dynamo.PackageManager.UI
             this.Loaded += InitializeContext;
         }
 
-
         private void InitializeContext(object sender, RoutedEventArgs e)
         {
             PkgSearchVM = this.DataContext as PackageManagerSearchViewModel;
         }
-
-
 
         /// <summary>
         /// Executes a command that opens the package details view extension.
@@ -101,16 +99,39 @@ namespace Dynamo.PackageManager.UI
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void ViewDetailsButton_OnClick(object sender, RoutedEventArgs e)
-        {
+        {   
             if (!(sender is Button button)) return;
             if (!(button.DataContext is PackageManagerSearchElementViewModel packageManagerSearchElementViewModel)) return;
 
             // new
-            packageManagerSearchElementViewModel.Model.UIParent = UIParent;
-            //UIParent.Width = GridLength.Auto;
-            UIParent.Width = new GridLength(1, GridUnitType.Star);
+            var name = this.Name;
+            if (name.Equals(Dynamo.Wpf.Properties.Resources.PackageManagerSearchPackagesControlName))
+            {
+                var parent = WpfUtilities.FindUpVisualTree<PackageManagerSearchControl>(this) as PackageManagerSearchControl;
+                if (parent == null) return;
+
+                packageManagerSearchElementViewModel.Model.UIParent = parent.packageDetailsGrid;
+                if(parent.packageDetailsGrid.Width.Value <= 1.0)
+                {
+                    var width = (parent.packageDetailsGrid.Parent as Grid).ActualWidth * 0.5;
+                    parent.packageDetailsGrid.Width = new GridLength(width, GridUnitType.Pixel);
+                }
+            }
+            else if (name.Equals(Dynamo.Wpf.Properties.Resources.PackageManagerMyPackagesControlName))
+            {
+                var parent = WpfUtilities.FindUpVisualTree<PackageManagerView>(this) as PackageManagerView;
+                if (parent == null) return;
+
+                packageManagerSearchElementViewModel.Model.UIParent = parent.packageDetailsGrid;
+                if (parent.packageDetailsGrid.Width.Value <= 1.0)
+                {
+                    var width = (parent.packageDetailsGrid.Parent as Grid).ActualWidth * 0.5;
+                    parent.packageDetailsGrid.Width = new GridLength(width, GridUnitType.Pixel);
+                }
+            }
             // new
 
+            PkgSearchVM.IsDetailPackagesExtensionOpened = true;
             PkgSearchVM.ViewPackageDetailsCommand.Execute(packageManagerSearchElementViewModel.Model);
         }
     }

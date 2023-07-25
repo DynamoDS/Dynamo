@@ -51,10 +51,6 @@ namespace Dynamo.PackageManager.UI
 
             this.dynamoView = dynamoView;
             dynamoView.EnableEnvironment(false);
-
-            this.packageManagerSearch.UIParent = this.packageDetailsGrid;
-            this.packageManagerMyPackages.UIParent = this.packageDetailsGrid;
-
         }
 
         private void OnRequestShowFileDialog(object sender, PackagePathEventArgs e)
@@ -175,7 +171,8 @@ namespace Dynamo.PackageManager.UI
 
         private void CloseToastButton_OnClick(object sender, RoutedEventArgs e)
         {
-            this.loadingWarningBar.Visibility = Visibility.Collapsed;
+            this.loadingSearchWarningBar.Visibility = Visibility.Collapsed;
+            this.loadingMyPackagesWarningBar.Visibility = Visibility.Collapsed;
         }
     }
 }

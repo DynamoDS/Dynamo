@@ -161,7 +161,7 @@
     <Reference Include="Dynamo.Microsoft.Xaml.Behaviors">
       <HintPath>..\..\extern\Microsoft.Xaml.Behaviors\$(TargetFramework)\Dynamo.Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference>
-    <PackageReference Include="Prism.Core" Version="8.1.97" Condition=" '$(TargetFramework)' != 'net48' "/>
+    <PackageReference Include="Prism.Core" Version="8.1.97" Condition=" '$(TargetFramework)' != 'net48' " />
     <Reference Include="Microsoft.Practices.Prism" Condition=" '$(TargetFramework)' == 'net48' ">
         <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
     </Reference>
@@ -936,7 +936,6 @@
     <Resource Include="UI\Images\NodeStates\hidden-64px.png" />
     <Resource Include="UI\Images\NodeStates\info-64px.png" />
     <Resource Include="UI\Images\PackageManager\empty-state-first-use-light-gray.png" />
-    <Resource Include="UI\Images\PackageManager\loading-timed-out.png" />
     <Resource Include="UI\Images\question-hover-blue-16px.png" />
     <Resource Include="UI\Images\TitleBarButtons\close-darktheme-default-16px.png" />
     <Resource Include="UI\Images\TitleBarButtons\close-lighttheme-default-16px.png" />

@@ -1271,6 +1271,12 @@ Don't worry, you'll have the option to save your work.</value>
     <value>New</value>
     <comment>Displays next to the package name in the Package Search window if the package has been added in the last 30 days.</comment>
   </data>
+  <data name="PackageManagerSearchPackagesControlName" xml:space="preserve">
+    <value>packageManagerSearchPackages</value>
+  </data>
+  <data name="PackageManagerMyPackagesControlName" xml:space="preserve">
+    <value>packageManagerMyPackages</value>
+  </data>
   <data name="PackageManagerSearchTab" xml:space="preserve">
     <value>Search for Packages</value>
   </data>

@@ -160,13 +160,6 @@
                                         <RowDefinition Height="*" />
                                         <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="2" />
-                                        <ColumnDefinition Width="0"
-                                                          MinWidth="1"
-                                                          x:Name="packageDetailsGrid"/>
-                                    </Grid.ColumnDefinitions>
 
                                     <local:PackageManagerSearchControl x:Name="packageManagerSearch"
                                                                        Background="{StaticResource PackageManagerTabBackgroundColor}"
@@ -174,14 +167,12 @@
     
                                     <!--  Loading taking longer warning bar  -->
                                     <Grid Grid.Row="1"
-                                          Grid.ColumnSpan="2"
-                                          x:Name="loadingWarningBar"
+                                          x:Name="loadingSearchWarningBar"
                                           Margin="4 0 3 0"
                                           Visibility="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.TimedOut,
                                                                                             ElementName=PackageManagerWindow, Converter={StaticResource BoolToVisibilityCollapsedConverter}}">
                                         <!--  Contains all of the warning bar message  -->
-                                        <Border Name="mainBody"
-                                                Padding="15,10"
+                                        <Border Padding="15,10"
                                                 Background="#4e4e4e"   
                                                 CornerRadius="3">
                                             <Grid Height="40">
@@ -191,9 +182,8 @@
                                                     <ColumnDefinition Width="Auto" />
                                                     <ColumnDefinition Width="Auto" />
                                                 </Grid.ColumnDefinitions>
-                                                <!--  Download Icon  -->
-                                                <Image Name="loadWarningIcon"
-                                                       Grid.Column="0"
+                                                <!--  Alert Icon  -->
+                                                <Image Grid.Column="0"
                                                        Width="18"
                                                        Height="18"
                                                        VerticalAlignment="Center"
@@ -201,8 +191,7 @@
                                                        Visibility="Visible" />
 
                                                 <!--  Warning Message  -->
-                                                <TextBlock Name="warning"
-                                                           Grid.Column="1"
+                                                <TextBlock Grid.Column="1"
                                                            Margin="10,0,0,0"
                                                            VerticalAlignment="Center"
                                                            Foreground="#f5f5f5"
@@ -211,8 +200,7 @@
                                                            Text="Loading the packages is taking longer than expected. Please wait, or restart the Package Manager."
                                                            TextTrimming="CharacterEllipsis" />
 
-                                                <Button Name="closeToastButton"
-                                                        Grid.Row="0"
+                                                <Button Grid.Row="0"
                                                         Grid.RowSpan="2"
                                                         Grid.Column="3"
                                                         Width="16"
@@ -227,20 +215,11 @@
                                         </Border>
 
                                         <!--  The download status flag, which changes colour to reflect the downloadState  -->
-                                        <Border Name="loadingStatusFlag"
-                                                Width="3"
+                                        <Border Width="3"
                                                 HorizontalAlignment="Left"
                                                 Background="{StaticResource YellowOrange500Brush}"
                                                 CornerRadius="3,0,0,3" />
                                     </Grid>
-
-                                    <GridSplitter Grid.Column="1"
-                                                  Grid.RowSpan="2"
-                                                  VerticalAlignment="Stretch"
-                                                  HorizontalAlignment="Center"
-                                                  Background="{StaticResource PackageManagerTabBackgroundColor}"    
-                                                  Width="2"
-                                                  Visibility="Collapsed"/>
                                 </Grid>
                             </Border>
                         </TabItem>
@@ -333,7 +312,8 @@
                                       HorizontalAlignment="Stretch"
                                       VerticalAlignment="Stretch">
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="*" />    
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
                                     
                                    <!--Loading screen-->
@@ -347,7 +327,15 @@
                                     <Grid Visibility="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.SearchMyResults,
                                                                UpdateSourceTrigger=PropertyChanged,
                                                                ElementName=PackageManagerWindow,
-                                                               Converter={StaticResource ListHasMoreThanNItemsToVisibilityConverter}}">
+                                                               Converter={StaticResource ListHasMoreThanNItemsToVisibilityConverter}}"
+                                          x:Name="myPackagesGrid">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="2" />
+                                            <ColumnDefinition Width="0"
+                                                              MinWidth="1"
+                                                              x:Name="packageDetailsGrid" />
+                                        </Grid.ColumnDefinitions>
                                         <!--My Packages control-->
                                         <local:PackageManagerPackagesControl x:Name="packageManagerMyPackages"
                                                                              DataContext="{Binding Path=PackageManagerViewModel.PackageSearchViewModel, ElementName=PackageManagerWindow}"
@@ -357,6 +345,17 @@
                                                                                                 Converter={StaticResource BoolToVisibilityCollapsedConverter},
                                                                                                 UpdateSourceTrigger=PropertyChanged}" />
 
+                                        <GridSplitter Grid.Column="1"
+                                                      Grid.Row="1"
+                                                      Grid.RowSpan="1"
+                                                      VerticalAlignment="Stretch"
+                                                      HorizontalAlignment="Center"
+                                                      Background="{StaticResource PackageManagerTabBackgroundColor}"
+                                                      Width="3"
+                                                      Visibility="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.IsDetailPackagesExtensionOpened,
+                                                               UpdateSourceTrigger=PropertyChanged,
+                                                               ElementName=PackageManagerWindow,
+                                                               Converter={StaticResource BoolToVisibilityCollapsedConverter}}" />
                                     </Grid>
 
                                     <!--Empty list screen-->
@@ -392,6 +391,64 @@
                                                 Click="PublishPackageButton_Click"
                                                 Style="{StaticResource CtaButtonStyle}" />
                                     </StackPanel>
+
+                                    <!--  Loading taking longer warning bar  -->
+                                    <Grid Grid.Row="1"
+                                          x:Name="loadingMyPackagesWarningBar"
+                                          Margin="4 0 3 0"
+                                          Visibility="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.TimedOut,
+                                                                                            ElementName=PackageManagerWindow, Converter={StaticResource BoolToVisibilityCollapsedConverter}}">
+                                        <!--  Contains all of the warning bar message  -->
+                                        <Border Padding="15,10"
+                                                Background="#4e4e4e"
+                                                CornerRadius="3">
+                                            <Grid Height="40">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <!--  Alert Icon  -->
+                                                <Image Grid.Column="0"
+                                                       Width="18"
+                                                       Height="18"
+                                                       VerticalAlignment="Center"
+                                                       Source="/DynamoCoreWpf;component/UI/Images/alert_2.png"
+                                                       Visibility="Visible" />
+
+                                                <!--  Warning Message  -->
+                                                <TextBlock Name="warning"
+                                                           Grid.Column="1"
+                                                           Margin="10,0,0,0"
+                                                           VerticalAlignment="Center"
+                                                           Foreground="#f5f5f5"
+                                                           FontWeight="Normal"
+                                                           FontSize="13"
+                                                           Text="Loading the packages is taking longer than expected. Please wait, or restart the Package Manager."
+                                                           TextTrimming="CharacterEllipsis" />
+
+                                                <Button Name="closeToastButton"
+                                                        Grid.Row="0"
+                                                        Grid.RowSpan="2"
+                                                        Grid.Column="3"
+                                                        Width="16"
+                                                        Height="16"
+                                                        Margin="10,0,0,0"
+                                                        Background="{StaticResource PrimaryCharcoal300Brush}"
+                                                        BorderThickness="0"
+                                                        Click="CloseToastButton_OnClick"
+                                                        DockPanel.Dock="Right"
+                                                        Style="{StaticResource CloseButtonStyle}" />
+                                            </Grid>
+                                        </Border>
+
+                                        <!--  The download status flag, which changes colour to reflect the downloadState  -->
+                                        <Border Width="3"
+                                                HorizontalAlignment="Left"
+                                                Background="{StaticResource YellowOrange500Brush}"
+                                                CornerRadius="3,0,0,3" />
+                                    </Grid>
 
                                 </Grid>
                             </Border>
