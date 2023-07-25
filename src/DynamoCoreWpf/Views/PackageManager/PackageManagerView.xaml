@@ -27,18 +27,10 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
-            <controls:BrushColorToStringConverter x:Key="BrushColorToStringConverter" />
-            <controls:StringToBrushColorConverter x:Key="StringToBrushColorConverter" />
-            <controls:RadioButtonCheckedConverter x:Key="RadioButtonCheckedConverter" />
-            <controls:BinaryRadioButtonCheckedConverter x:Key="BinaryRadioButtonCheckedConverter" />
-            <controls:ExpandersBindingConverter x:Key="ExpandersBindingConverter" />
-            <controls:InverseBoolToVisibilityConverter  x:Key="InverseBoolToVisibilityConverter " />
             <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
             <controls:InverseBooleanToVisibilityCollapsedConverter x:Key="InverseBooleanToVisibilityCollapsedConverter" />
-            <controls:InverseBoolToEnablingConverter  x:Key="InverseBoolToEnablingConverter " />
             <controls:ListHasMoreThanNItemsToVisibilityConverter x:Key="ListHasMoreThanNItemsToVisibilityConverter" />
             <controls:EmptyListToVisibilityConverter x:Key="EmptyListToVisibilityConverter" />
-            <controls:PackageSearchStateToVisibilityConverter x:Key="PackageSearchStateToVisibilityConverter" />
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
             <Style x:Key="PkgMngListBoxStyle" TargetType="ListBox">
@@ -102,7 +94,7 @@
                     <ColumnDefinition Width="46" />
                 </Grid.ColumnDefinitions>
                 <TextBlock x:Name="HeaderTitle"
-                           Text="Package Manager (placeholder)"
+                           Text="{x:Static p:Resources.PackageManagerTitle}"
                            Foreground="{StaticResource PreferencesWindowFontColor}"
                            Grid.Column="0"
                            Margin="14,16,0,0"
@@ -197,7 +189,7 @@
                                                            Foreground="#f5f5f5"
                                                            FontWeight="Normal"
                                                            FontSize="13"
-                                                           Text="Loading the packages is taking longer than expected. Please wait, or restart the Package Manager."
+                                                           Text="{x:Static p:Resources.PackageManagerLoadingTimedOutWarningMessage}"
                                                            TextTrimming="CharacterEllipsis" />
 
                                                 <Button Grid.Row="0"
@@ -280,12 +272,12 @@
                                         <TextBlock Style="{StaticResource LabelStyle}"
                                                    FontSize="18px"
                                                    HorizontalAlignment="Center"
-                                                   Text="You don’t have any installed packages yet." />
+                                                   Text="{x:Static p:Resources.PackagerManageNoInstalledPackagesMessage}" />
                                         <TextBlock Style="{StaticResource SubLabelStyle}"
                                                    FontSize="13px"
                                                    HorizontalAlignment="Center"
-                                                   Text="Once you install a package, you can find it here." />
-                                        <Button Content="Search for Packages"
+                                                   Text="{x:Static p:Resources.PackageManagerNoInstalledPackagesSubMessage}" />
+                                        <Button Content="{x:Static p:Resources.PackageManagerSearchPackagesButton}"
                                                 Margin="0 25"
                                                 Background="#0696D7"
                                                 Foreground="White"
@@ -375,12 +367,12 @@
                                                Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/PackageManager/empty-state-first-use-light-gray.png"></Image>
                                         <TextBlock Style="{StaticResource LabelStyle}"
                                                    FontSize="18px"
-                                                   Text="You haven’t published any packages yet." />
+                                                   Text="{x:Static p:Resources.PackagerManageNoPublishedPackagesMessage}" />
                                         <TextBlock Style="{StaticResource SubLabelStyle}"
                                                    FontSize="13px"
                                                    HorizontalAlignment="Center"
-                                                   Text="Once you publish a package, you can find it here." />
-                                        <Button Content="Pubilsh a Package"
+                                                   Text="{x:Static p:Resources.PackagerManageNoPublishedPackagesSubMessage}" />
+                                        <Button Content="{x:Static p:Resources.PackageManagerPublishPackageButton}"
                                                 Margin="0 25"
                                                 Background="#0696D7"
                                                 Foreground="White"
@@ -425,7 +417,7 @@
                                                            Foreground="#f5f5f5"
                                                            FontWeight="Normal"
                                                            FontSize="13"
-                                                           Text="Loading the packages is taking longer than expected. Please wait, or restart the Package Manager."
+                                                           Text="{x:Static p:Resources.PackageManagerLoadingTimedOutWarningMessage}"
                                                            TextTrimming="CharacterEllipsis" />
 
                                                 <Button Name="closeToastButton"
@@ -478,11 +470,11 @@
                                                    Foreground="{StaticResource PreferencesWindowFontColor}"
                                                    FontSize="13"
                                                    Margin="0 5 0 20">
-                                            <Run Text="Edit your package settings in" />
+                                            <Run Text="{x:Static p:Resources.PackageManagerSettingsRunPrefix}" />
                                             <Hyperlink Click="OnPackageManagerSettingsHyperlinkClicked"
                                                        Foreground="{StaticResource TextBlockLinkForegroundColor}">
                                                 <TextBlock Name="PackageManagerLink"
-                                                           Text="Preferences" />
+                                                           Text="{x:Static p:Resources.PackageManagerSettingsHyperlink}" />
                                             </Hyperlink>
                                             <Run>.</Run>
                                         </TextBlock>

@@ -5583,6 +5583,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Loading the packages is taking longer than expected. Please wait, or restart the Package Manager..
+        /// </summary>
+        public static string PackageManagerLoadingTimedOutWarningMessage {
+            get {
+                return ResourceManager.GetString("PackageManagerLoadingTimedOutWarningMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to packageManagerMyPackages.
         /// </summary>
         public static string PackageManagerMyPackagesControlName {
@@ -5597,6 +5606,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageManagerMyPackagesTab {
             get {
                 return ResourceManager.GetString("PackageManagerMyPackagesTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Once you install a package, you can find it here..
+        /// </summary>
+        public static string PackageManagerNoInstalledPackagesSubMessage {
+            get {
+                return ResourceManager.GetString("PackageManagerNoInstalledPackagesSubMessage", resourceCulture);
             }
         }
         
@@ -5639,9 +5657,27 @@ namespace Dynamo.Wpf.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Publish a Package.
         /// </summary>
+        public static string PackageManagerPublishPackageButton {
+            get {
+                return ResourceManager.GetString("PackageManagerPublishPackageButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish a Package.
+        /// </summary>
         public static string PackageManagerPublishTab {
             get {
                 return ResourceManager.GetString("PackageManagerPublishTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search for Packages.
+        /// </summary>
+        public static string PackageManagerSearchPackagesButton {
+            get {
+                return ResourceManager.GetString("PackageManagerSearchPackagesButton", resourceCulture);
             }
         }
         
@@ -5660,6 +5696,33 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageManagerSearchTab {
             get {
                 return ResourceManager.GetString("PackageManagerSearchTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preferences.
+        /// </summary>
+        public static string PackageManagerSettingsHyperlink {
+            get {
+                return ResourceManager.GetString("PackageManagerSettingsHyperlink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit your package settings in .
+        /// </summary>
+        public static string PackageManagerSettingsRunPrefix {
+            get {
+                return ResourceManager.GetString("PackageManagerSettingsRunPrefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package Manager.
+        /// </summary>
+        public static string PackageManagerTitle {
+            get {
+                return ResourceManager.GetString("PackageManagerTitle", resourceCulture);
             }
         }
         
@@ -5849,6 +5912,33 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageRepositoryLabel {
             get {
                 return ResourceManager.GetString("PackageRepositoryLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You don’t have any installed packages yet..
+        /// </summary>
+        public static string PackagerManageNoInstalledPackagesMessage {
+            get {
+                return ResourceManager.GetString("PackagerManageNoInstalledPackagesMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You haven’t published any packages yet..
+        /// </summary>
+        public static string PackagerManageNoPublishedPackagesMessage {
+            get {
+                return ResourceManager.GetString("PackagerManageNoPublishedPackagesMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Once you publish a package, you can find it here..
+        /// </summary>
+        public static string PackagerManageNoPublishedPackagesSubMessage {
+            get {
+                return ResourceManager.GetString("PackagerManageNoPublishedPackagesSubMessage", resourceCulture);
             }
         }
         

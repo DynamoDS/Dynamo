@@ -1292,6 +1292,36 @@ Don't worry, you'll have the option to save your work.</value>
   <data name="PackageManagerPackageSettingsTab" xml:space="preserve">
     <value>Package Settings</value>
   </data>
+ <data name="PackageManagerTitle" xml:space="preserve">
+    <value>Package Manager</value>
+  </data>
+  <data name="PackageManagerLoadingTimedOutWarningMessage" xml:space="preserve">
+    <value>Loading the packages is taking longer than expected. Please wait, or restart the Package Manager.</value>
+  </data>
+  <data name="PackagerManageNoInstalledPackagesMessage" xml:space="preserve">
+    <value>You don’t have any installed packages yet.</value>
+  </data>
+ <data name="PackageManagerNoInstalledPackagesSubMessage" xml:space="preserve">
+    <value>Once you install a package, you can find it here.</value>
+  </data>
+  <data name="PackageManagerSearchPackagesButton" xml:space="preserve">
+    <value>Search for Packages</value>
+  </data>
+  <data name="PackagerManageNoPublishedPackagesMessage" xml:space="preserve">
+    <value>You haven’t published any packages yet.</value>
+  </data>
+  <data name="PackagerManageNoPublishedPackagesSubMessage" xml:space="preserve">
+    <value>Once you publish a package, you can find it here.</value>
+  </data>
+  <data name="PackageManagerPublishPackageButton" xml:space="preserve">
+    <value>Publish a Package</value>
+  </data>
+  <data name="PackageManagerSettingsRunPrefix" xml:space="preserve">
+    <value>Edit your package settings in </value>
+  </data>
+  <data name="PackageManagerSettingsHyperlink" xml:space="preserve">
+    <value>Preferences</value>
+  </data>
   <data name="PackageDetailsDescription" xml:space="preserve">
     <value>DESCRIPTION</value>
     <comment>Header in the PackageDetailsViewExtension.</comment>
