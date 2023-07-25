@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -491,7 +492,7 @@ namespace Dynamo.Wpf.Views
 
                     File.Copy(dynViewModel.Model.PathManager.PreferenceFilePath, selectedPathFile);
                     string argument = "/select, \"" + selectedPathFile + "\"";
-                    System.Diagnostics.Process.Start("explorer.exe", argument);
+                    System.Diagnostics.Process.Start(new ProcessStartInfo("explorer.exe", argument) { UseShellExecute = true });
                     Analytics.TrackEvent(Actions.Export, Categories.Preferences);
                 }
                 catch (Exception ex)

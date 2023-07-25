@@ -118,7 +118,7 @@ namespace Dynamo.PackageManager.ViewModels
         {
             if (Uri.IsWellFormedUriString(url, UriKind.Absolute))
             {
-                var sInfo = new ProcessStartInfo("explorer.exe", new Uri(url).AbsoluteUri);
+                var sInfo = new ProcessStartInfo("explorer.exe", new Uri(url).AbsoluteUri) { UseShellExecute = true };
                 Process.Start(sInfo);
             }
         }

@@ -89,7 +89,7 @@ namespace Dynamo.DocumentationBrowser
                 // in either of these two cases, cancel the navigation 
                 // and redirect it to a new process that starts the default OS browser
                 e.Cancel = true;
-                Process.Start(new ProcessStartInfo(e.Uri));
+                Process.Start(new ProcessStartInfo(e.Uri) { UseShellExecute = true });
             }
         }
 

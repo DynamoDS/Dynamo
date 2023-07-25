@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using Dynamo.Models;
 
 namespace Dynamo.ViewModels
@@ -29,7 +30,7 @@ namespace Dynamo.ViewModels
                 if (string.IsNullOrEmpty(xmlFilePath) == false)
                 {
                     if (System.IO.File.Exists(xmlFilePath))
-                        System.Diagnostics.Process.Start(xmlFilePath);
+                        System.Diagnostics.Process.Start(new ProcessStartInfo(xmlFilePath) { UseShellExecute = true });
                 }
             }
         }

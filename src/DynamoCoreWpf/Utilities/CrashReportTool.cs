@@ -256,7 +256,7 @@ namespace Dynamo.Wpf.Utilities
 
                     var cerArgs = $"/UPITOKEN \"{upiConfigFilePath}\" /DMP \"{miniDumpFilePath}\" /APPXML \"{appConfig}\" {dynConfig} {extras} /USEEXCEPTIONTRACE";
                     
-                    Process.Start(new ProcessStartInfo(cerToolPath, cerArgs)).WaitForExit();
+                    Process.Start(new ProcessStartInfo(cerToolPath, cerArgs) { UseShellExecute = true }).WaitForExit();
                     return true;
                 }
             }

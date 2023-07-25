@@ -427,7 +427,7 @@ namespace Dynamo.UI.Controls
 
         private void HandleExternalUrl(StartPageListItem item)
         {
-            System.Diagnostics.Process.Start(item.ContextData);
+            System.Diagnostics.Process.Start(new ProcessStartInfo(item.ContextData) { UseShellExecute = true });
         }
 
         #endregion
@@ -516,14 +516,15 @@ namespace Dynamo.UI.Controls
         private void ShowSamplesInFolder(object sender, MouseButtonEventArgs e)
         {
             var startPageViewModel = this.DataContext as StartPageViewModel;
-            Process.Start("explorer.exe", "/select," 
-                + startPageViewModel.SampleFolderPath);
+            Process.Start(new ProcessStartInfo("explorer.exe", "/select," 
+                + startPageViewModel.SampleFolderPath)
+                { UseShellExecute = true });
         }
 
         private void ShowBackupFilesInFolder(object sender, MouseButtonEventArgs e)
         {
             var startPageViewModel = this.DataContext as StartPageViewModel;
-            Process.Start("explorer.exe", dynamoViewModel.Model.PathManager.BackupDirectory);
+            Process.Start(new ProcessStartInfo("explorer.exe", dynamoViewModel.Model.PathManager.BackupDirectory) { UseShellExecute = true });
         }
 
         private void StartPage_OnDrop(object sender, DragEventArgs e)
