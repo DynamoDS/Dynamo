@@ -800,7 +800,8 @@ namespace DynamoCoreWpfTests
                     StartInTestMode = startInTestMode,
                     ProcessMode = startInTestMode 
                         ? TaskProcessMode.Synchronous 
-                        : TaskProcessMode.Asynchronous
+                        : TaskProcessMode.Asynchronous,
+                    Preferences= PreferenceSettings.Instance
                 });
 
             ViewModel = DynamoViewModel.Start(
