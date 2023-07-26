@@ -4,15 +4,19 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading;
 using Microsoft.Diagnostics.Runtime;
 using NUnit.Framework;
+using System.Runtime.Versioning;
 
 namespace Dynamo.Tests.Loggings
 {
     public class DynamoAnalyticsDisableTest
     {
-        [Test,Category("FailureNET6")]//TODO this test requires finding ASM using the registry, will not run on linux.
+        [Test]
+        //[Platform("win")]//nunit attribute
+        //TODO this test requires finding ASM using the registry, will not run on linux.
         public void DisableAnalytics()
         {
             var versions = new List<Version>(){
@@ -28,8 +32,14 @@ namespace Dynamo.Tests.Loggings
             var locatedPath = string.Empty;
             var coreDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             Process dynamoCLI = null;
-
-            DynamoShapeManager.Utilities.GetInstalledAsmVersion2(versions, ref locatedPath, coreDirectory);
+            if(RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                DynamoShapeManager.Utilities.SearchForASMInLibGFallback(versions, ref locatedPath, coreDirectory, out _);
+            }
+            else
+            {
+                DynamoShapeManager.Utilities.GetInstalledAsmVersion2(versions, ref locatedPath, coreDirectory);
+            }
             try
             {
                 Assert.DoesNotThrow(() =>
