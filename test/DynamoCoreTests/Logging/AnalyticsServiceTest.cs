@@ -15,8 +15,7 @@ namespace Dynamo.Tests.Loggings
     public class DynamoAnalyticsDisableTest
     {
         [Test]
-        //[Platform("win")]//nunit attribute
-        //TODO this test requires finding ASM using the registry, will not run on linux.
+        [Platform("win")]//nunit attribute for now only run on windows until we know it's useful on linux.
         public void DisableAnalytics()
         {
             var versions = new List<Version>(){
@@ -32,7 +31,10 @@ namespace Dynamo.Tests.Loggings
             var locatedPath = string.Empty;
             var coreDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             Process dynamoCLI = null;
-            if(RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            //TODO an approach we could take to get this running on linux.
+            //unclear if this needs to be compiled with an ifdef or runtime is ok.
+            //related to https://jira.autodesk.com/browse/DYN-5705
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
                 DynamoShapeManager.Utilities.SearchForASMInLibGFallback(versions, ref locatedPath, coreDirectory, out _);
             }
