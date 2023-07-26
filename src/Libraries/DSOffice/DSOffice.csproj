@@ -19,7 +19,7 @@
     </PackageReference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' AND '$(OS)' != 'Unix' ">
     <PackageReference Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1001" GeneratePathProperty="true">
         <ExcludeAssets>all</ExcludeAssets>
     </PackageReference>
