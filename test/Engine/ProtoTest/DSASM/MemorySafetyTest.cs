@@ -6,12 +6,11 @@ namespace ProtoTest.DSASM
     class MemorySafetyTest : ProtoTestBase
     {
         [Test]
-        [Category("FailureNET6")]
         public void TestMemoryAllocation()
         {
             string code = @"
 x = [];
-x[1000000000] = 21;
+x[2147483646] = 21;
 ";
             thisTest.RunAndVerifyRuntimeWarning(code, ProtoCore.Runtime.WarningID.RunOutOfMemory);
         }
