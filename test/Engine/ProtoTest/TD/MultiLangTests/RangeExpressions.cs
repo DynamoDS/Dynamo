@@ -2021,10 +2021,10 @@ i = [Imperative]
         }
 
         [Test]
-        [Category("RegressionTests"), Category("FailureNET6")]
+        [Category("RegressionTests")]
         public void TestRangeExpressionOverLimit01()
         {
-            string src = @"x = 1..200000000;";
+            string src = @"x = 1..2147483646;";
             thisTest.RunScriptSource(src);
             thisTest.VerifyRuntimeWarningCount(1);
         }
@@ -2039,10 +2039,10 @@ i = [Imperative]
         }
 
         [Test]
-        [Category("RegressionTests"), Category("FailureNET6")]
+        [Category("RegressionTests")]
         public void TestRangeExpressionOverLimit03()
         {
-            string src = @"x = 1..10..#200000000;";
+            string src = @"x = 1..10..#2147483646;";
             thisTest.RunScriptSource(src);
             thisTest.VerifyRuntimeWarningCount(1);
         }
