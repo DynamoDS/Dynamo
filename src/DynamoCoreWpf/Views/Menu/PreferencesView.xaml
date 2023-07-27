@@ -1717,7 +1717,13 @@
                                                 <ToolTip Content="{Binding Path=SelectedPackagePathForInstall}"
                                                          Style="{StaticResource GenericToolTipLight}" />
                                             </ComboBox.ToolTip>
-                                        </ComboBox>
+                                            <ComboBox.InputBindings>
+                                                <KeyBinding Key="C"
+                                                            Modifiers="Ctrl"
+                                                            Command="{Binding CopyToClipboardCommand}"
+                                                            CommandParameter="{Binding SelectedItem, ElementName=PackageDownloadDirectoryComboBox}"/>
+                                            </ComboBox.InputBindings>
+                                            </ComboBox>
                                         <ScrollViewer Height="200"
                                                       VerticalScrollBarVisibility="Auto">
                                             <packagemanager:PackagePathView x:Name="PackagePathView"

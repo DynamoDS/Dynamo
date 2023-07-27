@@ -901,9 +901,9 @@ namespace Dynamo.PackageManager
 
         #region Time Out
 
-        // maximum loading time for packages
+        // maximum loading time for packages - 30 seconds
         // if exceeded will trigger `timed out` event and failure screen
-        internal int MAX_LOAD_TIME = 1000;
+        internal int MAX_LOAD_TIME = 30 * 1000;
         private bool _timedOut;
         /// <summary>
         /// Will trigger timed out event
