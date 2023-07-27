@@ -15,8 +15,11 @@
             <group targetFramework=".NETFramework4.8" />
         </dependencies>
     </metadata>
+    <!--for now we assume that that the working directory root is dynamo/bin/AnyCPU/Release-->
     <files>
         <file src="**" target="lib\net48" />
+        <!--NET60 binaries, the path may change after we stop building NET48 solution-->
+        <file src="..\..\..\bin\NET60_Windows\Release\**" target="lib\net6.0" />
         <file src="..\..\..\doc\distrib\Images\logo_square_32x32.png" target="content\images\logo.png" />
     </files>
 </package>
