@@ -402,9 +402,11 @@ namespace Dynamo.Tests.Configuration
                                   First Property with the same value {firstPropertyWithSameValue} |
                                   Property with the different value { checkDifference.DifferentPropertyValues.FirstOrDefault()} | ";
             var p1 = Path.GetTempFileName();
-            newSettings.Save(p1);
+            defaultSettings.Save(p1);
+            Console.WriteLine("def settings");
             Console.WriteLine(File.ReadAllText(p1));
             var p2 = Path.GetTempFileName();
+            Console.WriteLine("new settings");
             newSettings.Save(p2);
             Console.WriteLine(File.ReadAllText(p2));
             // checking if the new Setting are completely different from the Default
