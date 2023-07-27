@@ -394,8 +394,19 @@ namespace Dynamo.Tests.Configuration
             string firstPropertyWithSameValue = checkDifference.Properties.Except(checkDifference.DifferentPropertyValues).ToList().FirstOrDefault();
             string defSettNumberFormat = defaultSettings.NumberFormat;
             string newSettNumberFormat = newSettings.NumberFormat;
-            string failMessage = $"The file {newSettingslFilePath} exist: {newSettingsExist.ToString()} | DiffProps: {diffProps.ToString()} | TotProps: {totProps.ToString()} | Default Sett NumberFormat: {defSettNumberFormat} | New Sett NumberFormat: {newSettNumberFormat} | First Property with the same value {firstPropertyWithSameValue}";
-
+            string failMessage = @$"The file {newSettingslFilePath} exist: {newSettingsExist.ToString()} |
+                                  DiffProps: {diffProps.ToString()} | 
+                                  TotProps: {totProps.ToString()} | 
+                                  Default Sett NumberFormat: {defSettNumberFormat} |
+                                  New Sett NumberFormat: {newSettNumberFormat} | 
+                                  First Property with the same value {firstPropertyWithSameValue} |
+                                  Property with the different value { checkDifference.DifferentPropertyValues.FirstOrDefault()} | ";
+            var p1 = Path.GetTempFileName();
+            newSettings.Save(p1);
+            Console.WriteLine(File.ReadAllText(p1));
+            var p2 = Path.GetTempFileName();
+            newSettings.Save(p2);
+            Console.WriteLine(File.ReadAllText(p2));
             // checking if the new Setting are completely different from the Default
             Assert.IsTrue(checkDifference.DifferentPropertyValues.Count == checkDifference.Properties.Count, failMessage);
 
