@@ -394,7 +394,7 @@ namespace Dynamo.Tests.Configuration
             string firstPropertyWithSameValue = checkDifference.Properties.Except(checkDifference.DifferentPropertyValues).ToList().FirstOrDefault();
             string defSettNumberFormat = defaultSettings.NumberFormat;
             string newSettNumberFormat = newSettings.NumberFormat;
-            string failMessage = @$"The file {newSettingslFilePath} exist: {newSettingsExist.ToString()} |
+            string failMessage = $@"The file {newSettingslFilePath} exist: {newSettingsExist.ToString()} |
                                   DiffProps: {diffProps.ToString()} | 
                                   TotProps: {totProps.ToString()} | 
                                   Default Sett NumberFormat: {defSettNumberFormat} |
