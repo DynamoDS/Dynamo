@@ -138,6 +138,7 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssemblyRenamerCLI", "Tools\AssemblyRenamerCLI\AssemblyRenamerCLI.csproj", "{F382C3F8-C55C-4350-800A-3D13A94F8E13}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Md2Html", "Tools\Md2Html\Md2Html.csproj", "{0893F745-CB1A-427A-8E87-CA927273039A}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitsUI", "Libraries\UnitsUI\UnitsUI.csproj", "{C67A7E80-73E6-4BBF-9D3F-DCD86CE306BE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryViewExtensionWebView2", "LibraryViewExtensionWebView2\LibraryViewExtensionWebView2.csproj", "{43A01382-85CC-41E5-A414-F27D51EE9D24}"
@@ -323,7 +324,6 @@ Global
 		{9B4FDC96-E2F9-4B8F-894A-4294405D50E7}.Debug|NET60_Windows.ActiveCfg = Debug|NET60_Windows
 		{9B4FDC96-E2F9-4B8F-894A-4294405D50E7}.Debug|NET60_Windows.Build.0 = Debug|NET60_Windows
 		{9B4FDC96-E2F9-4B8F-894A-4294405D50E7}.Release|NET60_Windows.ActiveCfg = Release|NET60_Windows
-		{9B4FDC96-E2F9-4B8F-894A-4294405D50E7}.Release|NET60_Windows.Build.0 = Release|NET60_Windows
 		{472084ED-1067-4B2C-8737-3839A6143EB2}.Debug|NET60_Windows.ActiveCfg = Debug|NET60_Windows
 		{472084ED-1067-4B2C-8737-3839A6143EB2}.Debug|NET60_Windows.Build.0 = Debug|NET60_Windows
 		{472084ED-1067-4B2C-8737-3839A6143EB2}.Release|NET60_Windows.ActiveCfg = Release|NET60_Windows
