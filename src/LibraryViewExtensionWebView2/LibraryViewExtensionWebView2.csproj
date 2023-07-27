@@ -1,5 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <UILib>true</UILib>
+  </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -9,9 +11,8 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dynamo.LibraryViewExtensionWebView2</RootNamespace>
     <AssemblyName>LibraryViewExtensionWebView2</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
+      <Deterministic>true</Deterministic>
+    <EnableDefaultPageItems>false</EnableDefaultPageItems>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Library_ViewExtensionDefinition.xml" />
@@ -179,16 +180,22 @@
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" GeneratePathProperty="true" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Dynamo.Microsoft.Xaml.Behaviors, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Dynamo.Microsoft.Xaml.Behaviors">
       <HintPath>..\..\extern\Microsoft.Xaml.Behaviors\$(TargetFramework)\Dynamo.Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
     <Reference Include="PresentationFramework" />
-	<Reference Include="PresentationCore" />
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
-	<Reference Include="System.Xaml" />
-	<Reference Include="WindowsBase" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="Microsoft.Practices.Prism">
+        <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
+        <Private>false</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\LibraryView.xaml">
@@ -201,7 +208,6 @@
   <ItemGroup>
     <ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuildOps" AfterTargets="Build">
     <ItemGroup>
       <ExtensionDefinition Include="Library_ViewExtensionDefinition.xml" />

@@ -9,6 +9,7 @@
     <RootNamespace>Watch3DNodeModels</RootNamespace>
     <AssemblyName>Watch3DNodeModels</AssemblyName>
     <OutputPath>$(OutputPath)\nodes\</OutputPath>
+      <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemDefinitionGroup>
 	<ReferenceCopyLocalPaths>
@@ -64,10 +65,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" '$(OS)' != 'Unix' ">
-    <!-- Get assembly -->
-    <GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
-      <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
-    </GetAssemblyIdentity>
     <!-- Generate customization dll -->
     <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)Watch3DNodeModelsImages.resx" OutputResources="$(ProjectDir)Watch3DNodeModelsImages.resources" References="$(SystemDrawingDllPath)" />
     <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)Watch3DNodeModelsImages.resources" OutputAssembly="$(OutDir)Watch3DNodeModels.customization.dll" Version="%(AssemblyInfo.Version)" />

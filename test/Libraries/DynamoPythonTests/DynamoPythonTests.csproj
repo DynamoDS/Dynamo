@@ -23,10 +23,16 @@
       <HintPath>..\..\..\extern\Python\Python.Runtime.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Numerics" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
+      <Reference Include="System" />
+      <Reference Include="System.Core" />
+      <Reference Include="Microsoft.CSharp" />
+      <Reference Include="System.Numerics" />
+      <Reference Include="Microsoft.Practices.Prism">
+          <HintPath>..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
+          <Private>False</Private>
+      </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\DynamoCoreWpf\DynamoCoreWpf.csproj">
