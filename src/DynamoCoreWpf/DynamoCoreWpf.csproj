@@ -182,9 +182,7 @@
     </Reference> 
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-    </Reference> 
-    <PackageReference Include="Prism.Core" Version="8.1.97" />
-    </Reference>
+    </Reference>  
     <PackageReference Include="Prism.Core" Version="8.1.97" Condition=" '$(TargetFramework)' != 'net48' "/>
     <Reference Include="Microsoft.Practices.Prism" Condition=" '$(TargetFramework)' == 'net48' ">
         <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
