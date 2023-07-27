@@ -43,18 +43,16 @@ using Newtonsoft.Json;
 using SharpDX;
 using Color = SharpDX.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
+using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
+using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
 using Matrix = SharpDX.Matrix;
 #if NET5_0_OR_GREATER
-using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
 using MeshBuilder = HelixToolkit.SharpDX.Core.MeshBuilder;
 using MeshGeometry3D = HelixToolkit.SharpDX.Core.MeshGeometry3D;
-using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
 using TextInfo = HelixToolkit.SharpDX.Core.TextInfo;
 #else
-using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
 using MeshBuilder = HelixToolkit.Wpf.SharpDX.MeshBuilder;
-using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
-using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
+using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D; 
 using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
 #endif  
 

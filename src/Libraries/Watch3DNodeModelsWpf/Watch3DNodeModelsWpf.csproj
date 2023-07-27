@@ -21,13 +21,14 @@
 		  <DestinationSubDirectory>..\</DestinationSubDirectory>
 	  </ReferenceCopyLocalPaths>
   </ItemDefinitionGroup>
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0-windows' "> 
+    <ItemGroup>
         <PackageReference Include="HelixToolkit" Version="2.24.0" />
+    </ItemGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0-windows' ">  
         <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
         <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
     </ItemGroup>
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net48' "> 
-        <PackageReference Include="HelixToolkit" Version="2.24.0" />
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">  
         <PackageReference Include="HelixToolkit.Wpf" Version="2.24.0" />
         <PackageReference Include="HelixToolkit.Wpf.SharpDX" Version="2.24.0" />
         <Reference Include="PresentationCore" />
