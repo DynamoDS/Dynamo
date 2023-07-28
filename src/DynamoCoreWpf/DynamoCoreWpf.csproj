@@ -132,6 +132,7 @@
     <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.1400" />
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" CopyXML="true" />
     <PackageReference Include="Greg" Version="2.5.0.5076" />
+    <PackageReference Include="LiveChartsCore.SkiaSharpView.WPF" Version="2.0.0-beta.855" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" />
 	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 	<PackageReference Include="RestSharp" Version="106.12.0" />
@@ -154,7 +155,7 @@
     <Reference Include="Dynamo.Microsoft.Xaml.Behaviors">
       <HintPath>..\..\extern\Microsoft.Xaml.Behaviors\$(TargetFramework)\Dynamo.Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference>
-    <PackageReference Include="Prism.Core" Version="8.1.97" Condition=" '$(TargetFramework)' != 'net48' "/>
+    <PackageReference Include="Prism.Core" Version="8.1.97" Condition=" '$(TargetFramework)' != 'net48' " />
     <Reference Include="Microsoft.Practices.Prism" Condition=" '$(TargetFramework)' == 'net48' ">
         <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
     </Reference>
