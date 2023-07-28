@@ -21,9 +21,6 @@
     </ReferenceCopyLocalPaths>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Compile Remove="Formula.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <None Remove="CoreNodeModelsImages.resources" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">

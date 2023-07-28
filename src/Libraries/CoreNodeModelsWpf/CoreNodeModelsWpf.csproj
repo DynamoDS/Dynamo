@@ -94,9 +94,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="NodeViewCustomizations\Formula.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <None Remove="Charts\Controls\BarChartControl.xaml" />
     <None Remove="Charts\Controls\BasicLineChartControl.xaml" />
     <None Remove="Charts\Controls\HeatSeriesControl.xaml" />
