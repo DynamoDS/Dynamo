@@ -30,7 +30,7 @@ namespace IntegrationTests
                 {
                     // we use a new process to avoid checking against previously loaded
                     // asm modules in the nunit-agent process.
-                    dynamoSandbox = System.Diagnostics.Process.Start(Path.Combine(coreDirectory, "DynamoSandbox.exe"), $"-gp \"{locatedPath}\"");
+                    dynamoSandbox = System.Diagnostics.Process.Start(new ProcessStartInfo(Path.Combine(coreDirectory, "DynamoSandbox.exe"), $"-gp \"{locatedPath}\""){ UseShellExecute = true });
                     dynamoSandbox.WaitForInputIdle();
 
                     var firstASMmodulePath = string.Empty;

@@ -394,7 +394,7 @@ namespace Dynamo.ViewModels
             // Check for the existance of RootDirectory
             if (Directory.Exists(Model.RootDirectory))
             {
-                Process.Start(Model.RootDirectory);
+                Process.Start(new ProcessStartInfo(Model.RootDirectory) { UseShellExecute = true });
                 Analytics.TrackEvent(Actions.Open, Categories.PackageManagerOperations, $"{Model?.Name}");
             }
             else
