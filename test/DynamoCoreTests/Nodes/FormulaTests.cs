@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using CoreNodeModels;
 using NUnit.Framework;
@@ -20,10 +20,10 @@ namespace Dynamo.Tests
             string path = Path.Combine(TestDirectory, "core", "formula", "formula-if.dyn");
             RunModel(path);
 
-            var node = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<Formula>();
+            var node = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("a9a9e7fa-abda-4f0b-8a9e-d7f8070b6b99");
             Assert.AreEqual(3, node.InPorts.Count);
             
-            AssertPreviewValue(node.GUID.ToString(), 2);
+            AssertPreviewValue("a9a9e7fa-abda-4f0b-8a9e-d7f8070b6b99", 2);
         }
     }
 }

@@ -24,11 +24,14 @@ using Dynamo.Logging;
 using Dynamo.Properties;
 using Dynamo.Scheduler;
 using Dynamo.Utilities;
+using DynamoServices;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using ProtoCore;
+using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Namespace;
+using ProtoCore.Utils;
 using Type = System.Type;
 
 namespace Dynamo.Graph.Workspaces
@@ -44,37 +47,6 @@ namespace Dynamo.Graph.Workspaces
         private LibraryServices libraryServices;
         private NodeFactory nodeFactory;
         private bool isTestMode;
-
-        #region Regex expressions for Formula to CodeBlock node code migration
-
-        // conditional statement
-        // TODO: Fix regex to handle comma separator within parantheses, e.g. if(5 > pow(4,3), 1, 2)
-        private const string ifCond = @"^(\s*if\s*)\(\s*(.*?)\s*,\s*(.*?)\s*,\s*(.*?)\s*\)$";
-        private static readonly Regex ifRgx = new Regex(ifCond, RegexOptions.IgnoreCase);
-
-        private const string pow = @"^(\s*pow\s*)\(\s*(.*)\s*,\s*(.*)\s*\)$";
-        private static readonly Regex powRgx = new Regex(pow, RegexOptions.IgnoreCase);
-
-        // functions (log, exp, sqrt, abs)
-        private const string func = @"^(\s*log10\s*|\s*exp\s*|\s*sqrt\s*|\s*abs\s*)\(\s*(.*)\s*\)$";
-        private static readonly Regex funcRgx = new Regex(func, RegexOptions.IgnoreCase);
-
-        private const string sinCosTan = @"^(\s*sin\s*|\s*cos\s*|\s*tan\s*)\(\s*(.*)\s*\)$";
-        private static readonly Regex sinCosTanRgx = new Regex(sinCosTan, RegexOptions.IgnoreCase);
-
-        private const string aSinCosTan = @"^(\s*asin\s*|\s*acos\s*|\s*atan\s*)\(\s*(.*)\s*\)$";
-        private static readonly Regex aSinCosTanRgx = new Regex(aSinCosTan, RegexOptions.IgnoreCase);
-
-        private static readonly Regex piRgx = new Regex("pi", RegexOptions.IgnoreCase);
-
-        // binary operators
-        // TODO: Add support for <=, >= operators
-        private static readonly Regex binOpRgx = new Regex(@"^(.*)([\<\>\+\-\*\/^%]|&&|\|\||==|!=)(.*)$");
-
-        // unary operator
-        private static readonly Regex unOpRgx = new Regex(@"^\s*!\s*(.*)$");
-
-        #endregion
 
         public ElementResolver ElementResolver { get; set; }
         // Map of all loaded assemblies including LoadFrom context assemblies
@@ -111,76 +83,7 @@ namespace Dynamo.Graph.Workspaces
             return codeBlockNode;
         }
 
-        private string ConvertFormulaToDS(string formula)
-        {
-            var match = ifRgx.Match(formula);
-            if(match.Success)
-            {
-                var cond = match.Groups[2];
-                var condExp = ConvertFormulaToDS(cond.Value);
-                var tru = match.Groups[3];
-                var truExp = ConvertFormulaToDS(tru.Value);
-                var fls = match.Groups[4];
-                var flsExp = ConvertFormulaToDS(fls.Value);
-
-                return $"{condExp} ? {truExp} : {flsExp}";
-            }
-            TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
-            match = binOpRgx.Match(formula);
-            if (match.Success)
-            {
-                var exp1 = ConvertFormulaToDS(match.Groups[1].Value);
-                var exp2 = ConvertFormulaToDS(match.Groups[3].Value);
-
-                return $"{exp1} {match.Groups[2].Value} {exp2}";
-            }
-            match = unOpRgx.Match(formula);
-            if (match.Success)
-            {
-                var exp = ConvertFormulaToDS(match.Groups[1].Value);
-                return $"!{exp}";
-            }
-            match = funcRgx.Match(formula);
-            if(match.Success)
-            {
-                // Format function name to title case to match Math node names.
-                var fn = textInfo.ToTitleCase(match.Groups[1].Value);
-                var exp = ConvertFormulaToDS(match.Groups[2].Value);
-
-                return $"DSCore.Math.{fn}({exp})";
-            }
-            match = powRgx.Match(formula);
-            if(match.Success)
-            {
-                var exp1 = ConvertFormulaToDS(match.Groups[1].Value);
-                var exp2 = ConvertFormulaToDS(match.Groups[2].Value);
-
-                return $"DSCore.Math.Pow({exp1}, {exp2})";
-            }
-            match = sinCosTanRgx.Match(formula);
-            if(match.Success)
-            {
-                var fn = textInfo.ToTitleCase(match.Groups[1].Value);
-                var exp = ConvertFormulaToDS(match.Groups[2].Value);
-
-                return $"DSCore.Math.{fn}(DSCore.Math.RadiansToDegrees({exp}))";
-            }
-            match = aSinCosTanRgx.Match(formula);
-            if(match.Success)
-            {
-                var fn = textInfo.ToTitleCase(match.Groups[1].Value);
-                var exp = ConvertFormulaToDS(match.Groups[2].Value);
-
-                return $"DSCore.Math.DegreesToRadians(DSCore.Math.{fn}({exp}))";
-            }
-            match = piRgx.Match(formula);
-            if(match.Success)
-            {
-                return "DSCore.Math.PI";
-            }
-            
-            return formula;
-        }
+        
 
         [Obsolete("This constructor will be removed in Dynamo 3.0, please use new NodeReadConverter constructor with additional parameters to support node migration.")]
         public NodeReadConverter(CustomNodeManager manager, LibraryServices libraryServices, bool isTestMode = false)
@@ -247,7 +150,7 @@ namespace Dynamo.Graph.Workspaces
             {
                type = Type.GetType(obj["$type"].Value<string>());
                typeName = obj["$type"].Value<string>().Split(',').FirstOrDefault();
-
+                
                 if (typeName.Equals("Dynamo.Graph.Nodes.ZeroTouch.DSFunction"))
                 {
                     // If it is a zero touch node, then get the whole function name including the namespace.
@@ -301,7 +204,7 @@ namespace Dynamo.Graph.Workspaces
 
             // If the id is not a guid, makes a guid based on the id of the node
             var guid = GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());
-
+            
             var replication = obj["Replication"].Value<string>();
            
             var inPorts = obj["Inputs"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
@@ -312,10 +215,29 @@ namespace Dynamo.Graph.Workspaces
 
             bool remapPorts = true;
 
-            // If type is still null at this point return a dummy node
             if (type == null)
             {
-                node = CreateDummyNode(obj, typeName, assemblyName, functionName, inPorts, outPorts);
+                if (typeName == "CoreNodeModels.Formula")
+                {
+                    var code = obj["Formula"].Value<string>();
+                    var formulaConverter = new MigrateFormulaToDS();
+                    var convertedCode = formulaConverter.ConvertFormulaToDS(code);
+
+                    node = DeserializeAsCBN(convertedCode + ";", obj, guid);
+                    if (code == convertedCode)
+                    {
+                        (node as CodeBlockNodeModel).Warning(Resources.FormulaDSConversionFailure);
+                    }
+                    else
+                    {
+                        (node as CodeBlockNodeModel).Warning(Resources.FormulaMigrated);
+                    }
+                }
+                else
+                {
+                    // If type is still null at this point return a dummy node
+                    node = CreateDummyNode(obj, typeName, assemblyName, functionName, inPorts, outPorts);
+                }
             }
             // Attempt to create a valid node using the type
             else if (type == typeof(Function))
@@ -370,13 +292,6 @@ namespace Dynamo.Graph.Workspaces
             {
                 var functionId = Guid.Parse(obj["FunctionSignature"].Value<string>());
                 node = manager.CreateCustomNodeInstance(functionId);
-            }
-            else if (type.ToString() == "CoreNodeModels.Formula")
-            {
-                var code = obj["Formula"].Value<string>();
-                code = ConvertFormulaToDS(code) + ";";
-                
-                node = DeserializeAsCBN(code, obj, guid);
             }
             else
             {

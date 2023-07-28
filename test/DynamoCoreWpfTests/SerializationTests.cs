@@ -264,36 +264,36 @@ namespace DynamoCoreWpfTests
         }
 
 
-        [Test]
-        [Category("UnitTests")]
-        public void TestFormula()
-        {
-            var formulaNode = new Formula { FormulaString = "x+y", X = 400 };
+        //[Test]
+        //[Category("UnitTests")]
+        //public void TestFormula()
+        //{
+        //    var formulaNode = new Formula { FormulaString = "x+y", X = 400 };
 
-            //To check if base Serialization method is being called
+        //    //To check if base Serialization method is being called
 
-            //Assert initial values
-            Assert.AreEqual(400, formulaNode.X);
-            Assert.AreEqual("x+y", formulaNode.FormulaString);
-            Assert.AreEqual(2, formulaNode.InPorts.Count);
+        //    //Assert initial values
+        //    Assert.AreEqual(400, formulaNode.X);
+        //    Assert.AreEqual("x+y", formulaNode.FormulaString);
+        //    Assert.AreEqual(2, formulaNode.InPorts.Count);
 
-            //Serialize node and then change values
-            XmlDocument xmlDoc = new XmlDocument();
-            XmlElement serializedEl = formulaNode.Serialize(xmlDoc, SaveContext.Undo);
-            formulaNode.X = 250;
-            formulaNode.FormulaString = "x+y+z";
+        //    //Serialize node and then change values
+        //    XmlDocument xmlDoc = new XmlDocument();
+        //    XmlElement serializedEl = formulaNode.Serialize(xmlDoc, SaveContext.Undo);
+        //    formulaNode.X = 250;
+        //    formulaNode.FormulaString = "x+y+z";
 
-            //Assert new changes
-            Assert.AreEqual(250, formulaNode.X);
-            Assert.AreEqual(3, formulaNode.InPorts.Count);
-            Assert.AreEqual("x+y+z", formulaNode.FormulaString);
+        //    //Assert new changes
+        //    Assert.AreEqual(250, formulaNode.X);
+        //    Assert.AreEqual(3, formulaNode.InPorts.Count);
+        //    Assert.AreEqual("x+y+z", formulaNode.FormulaString);
 
-            //Deserialize and aasert old values
-            formulaNode.Deserialize(serializedEl, SaveContext.Undo);
-            Assert.AreEqual(400, formulaNode.X);
-            Assert.AreEqual("x+y", formulaNode.FormulaString);
-            Assert.AreEqual(2, formulaNode.InPorts.Count);
-        }
+        //    //Deserialize and aasert old values
+        //    formulaNode.Deserialize(serializedEl, SaveContext.Undo);
+        //    Assert.AreEqual(400, formulaNode.X);
+        //    Assert.AreEqual("x+y", formulaNode.FormulaString);
+        //    Assert.AreEqual(2, formulaNode.InPorts.Count);
+        //}
 
         [Test]
         public void TestFunctionNode()
