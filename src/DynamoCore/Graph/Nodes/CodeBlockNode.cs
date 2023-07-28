@@ -661,9 +661,9 @@ namespace Dynamo.Graph.Nodes
         internal void Warning(string p)
         {
             State = ElementState.MigratedFormula;
-            if (!Infos.Any(x => x.Message.Equals(p) && x.State == ElementState.MigratedFormula))
+            if (!Infos.Any(x => x.Message.Equals(p)))
             {
-                var texts = p.Split(new[] { "\n" }, StringSplitOptions.None);
+                var texts = p.Split(new[] { System.Environment.NewLine }, StringSplitOptions.None);
                 var infoList = new List<Info>();
                 foreach (var text in texts)
                 {

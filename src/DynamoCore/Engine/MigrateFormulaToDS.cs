@@ -12,6 +12,12 @@ namespace Dynamo.Engine
     internal class MigrateFormulaToDS : AstReplacer
     {
         private static readonly TextInfo textInfo = CultureInfo.InvariantCulture.TextInfo;
+
+        /// <summary>
+        /// Regex to match "if(<condition>, <true>, <false>)" pattern in Formula node and extract the parts of the
+        /// "if" statement to construct the corresponding conditional AST in DS. This is because the DS parser does not
+        /// recognize this "if" syntax.
+        /// </summary>
         private const string ifCond = @"(if\s*)\(\s*(.*?)\s*\)$";
         private static readonly Regex ifRgx = new Regex(ifCond, RegexOptions.IgnoreCase);
 
