@@ -7,16 +7,27 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using Dynamo.Configuration;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
+using Dynamo.Models;
 using Dynamo.PackageManager.ViewModels;
 using Dynamo.Search;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Utilities;
 using Greg.Responses;
+using Lucene.Net.Documents;
+using Lucene.Net.QueryParsers.Classic;
+using Lucene.Net.Search;
+#if NETFRAMEWORK
 using Microsoft.Practices.Prism.Commands;
-using Microsoft.Practices.Prism.ViewModel;
+using NotificationObject = Microsoft.Practices.Prism.ViewModel.NotificationObject;
+#else
+using Prism.Commands;
+using NotificationObject = Dynamo.Core.NotificationObject;
+#endif
 
 namespace Dynamo.PackageManager
 {
@@ -42,7 +53,7 @@ namespace Dynamo.PackageManager
             Name,
             Downloads,
             Votes,
-            Maintainers,
+            Maintainers,    
             LastUpdate,
             Search
         };
@@ -135,6 +146,8 @@ namespace Dynamo.PackageManager
         }
 
         #region Properties & Fields
+        // Lucene search utility to perform indexing operations.
+        internal LuceneSearchUtility LuceneSearchUtility { get; set; }
 
         // The results of the last synchronization with the package manager server
         public List<PackageManagerSearchElement> LastSync { get; set; }
@@ -438,14 +451,50 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
+        /// Add package information to Lucene index
+        /// </summary>
+        /// <param name="package">package info that will be indexed</param>
+        /// <param name="doc">Lucene document in which the package info will be indexed</param>
+        private void AddPackageToSearchIndex(PackageManagerSearchElement package, Document doc)
+        {
+            if (DynamoModel.IsTestMode) return;
+            if (LuceneSearchUtility.addedFields == null) return;
+
+            LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), package.Name);
+            LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Description), package.Description);
+
+            if (package.Keywords.Count() > 0)
+            {
+                LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords), package.Keywords);
+            }
+
+            if (package.Hosts != null && string.IsNullOrEmpty(package.Hosts.ToString()))
+            {
+                LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Hosts), package.Hosts.ToString(), true, true);
+            }
+
+            LuceneSearchUtility.writer?.AddDocument(doc);
+        }
+
+        /// <summary>
         ///     The class constructor.
         /// </summary>
         public PackageManagerSearchViewModel(PackageManagerClientViewModel client) : this()
         {
             PackageManagerClientViewModel = client;
             HostFilter = InitializeHostFilter();
+            InitializeLuceneForPackageManager();
         }
-        
+
+        internal void InitializeLuceneForPackageManager()
+        {
+            if(LuceneSearchUtility == null)
+            {
+                LuceneSearchUtility = new LuceneSearchUtility(PackageManagerClientViewModel.DynamoViewModel.Model);
+            }          
+            LuceneSearchUtility.InitializeLuceneConfig(LuceneConfig.PackagesIndexingDirectory);
+        }
+
         /// <summary>
         /// Sort the default package results in the view based on the sorting key and sorting direction.
         /// </summary>
@@ -714,13 +763,15 @@ namespace Dynamo.PackageManager
         public IEnumerable<PackageManagerSearchElementViewModel> RefreshAndSearch()
         {
             Refresh();
-            return Search(SearchText);
+            return GetAllPackages();
         }
 
         public void RefreshAndSearchAsync()
         {
             this.ClearSearchResults();
             this.SearchState = PackageSearchState.Syncing;
+
+            var iDoc = LuceneSearchUtility.InitializeIndexDocumentForPackages();
 
             Task<IEnumerable<PackageManagerSearchElementViewModel>>.Factory.StartNew(RefreshAndSearch).ContinueWith((t) =>
             {
@@ -729,9 +780,24 @@ namespace Dynamo.PackageManager
                     ClearSearchResults();
                     foreach (var result in t.Result)
                     {
+                        if (result.Model != null)
+                        {
+                            AddPackageToSearchIndex(result.Model, iDoc);
+                        }   
                         this.AddToSearchResults(result);
                     }
                     this.SearchState = HasNoResults ? PackageSearchState.NoResults : PackageSearchState.Results;
+
+                    if (!DynamoModel.IsTestMode)
+                    {
+                        LuceneSearchUtility.dirReader = LuceneSearchUtility.writer?.GetReader(applyAllDeletes: true);
+                        LuceneSearchUtility.Searcher = new IndexSearcher(LuceneSearchUtility.dirReader);
+
+                        LuceneSearchUtility.writer?.Commit();
+                        LuceneSearchUtility.writer?.Dispose();
+                        LuceneSearchUtility.indexDir?.Dispose();
+                        LuceneSearchUtility.writer = null;
+                    }
                 }
                 RefreshInfectedPackages();
             }
@@ -879,9 +945,19 @@ namespace Dynamo.PackageManager
             // if last sync isn't populated, we can't search
             if (LastSync == null) return;
 
+            IEnumerable<PackageManagerSearchElementViewModel> results;
             this.SearchText = query;
 
-            var results = Search(query);
+            // If the search query is empty, just call regular search API
+            // If the search query is not empty, then call Lucene search API
+            if (string.IsNullOrEmpty(query))
+            {
+                results = GetAllPackages();
+            }
+            else
+            {
+                results = Search(query, true);
+            }
 
             this.ClearSearchResults();
 
@@ -960,12 +1036,45 @@ namespace Dynamo.PackageManager
             return filteredList;
         }
 
+        /// <summary>   
+        ///     Get all the package results in the package manager.
+        /// </summary>
+        /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
+        internal IEnumerable<PackageManagerSearchElementViewModel> GetAllPackages()
+        {
+            if (LastSync == null) return new List<PackageManagerSearchElementViewModel>();
+
+            List<PackageManagerSearchElementViewModel> list = null;
+
+            var isEnabledForInstall = !(Preferences as IDisablePackageLoadingPreferences).DisableCustomPackageLocations;
+
+            // Don't show deprecated packages
+            list = Filter(LastSync.Where(x => !x.IsDeprecated)
+                                  .Select(x => new PackageManagerSearchElementViewModel(x,
+                                                   PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider,
+                                                   CanInstallPackage(x.Name), isEnabledForInstall)))
+                                  .ToList();
+
+            Sort(list, this.SortingKey);
+
+            if (SortingDirection == PackageSortingDirection.Descending)
+            {
+                list.Reverse();
+            }
+
+            foreach (var x in list)
+                x.RequestShowFileDialog += OnRequestShowFileDialog;
+
+            return list;
+        }
+
         /// <summary>
         ///     Performs a search using the given string as query, but does not update
         ///     the SearchResults object.
         /// </summary>
         /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
         /// <param name="query"> The search query </param>
+        [Obsolete("This method will be removed in future Dynamo versions - please use Search method with Lucene flag.")]
         internal IEnumerable<PackageManagerSearchElementViewModel> Search(string query)
         {
             if (LastSync == null) return new List<PackageManagerSearchElementViewModel>();
@@ -1003,6 +1112,76 @@ namespace Dynamo.PackageManager
                 x.RequestShowFileDialog += OnRequestShowFileDialog;
 
             return list;
+        }
+
+        /// <summary>
+        /// Performs a search using the given string as query, but does not update
+        /// the SearchResults object.
+        /// </summary>
+        /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
+        /// <param name="searchText"> The search query </param>
+        ///  /// <param name="useLucene"> Temporary flag that will be used for searching using Lucene.NET </param>
+        internal IEnumerable<PackageManagerSearchElementViewModel> Search(string searchText, bool useLucene)
+        {
+            if (useLucene)
+            {
+                string searchTerm = searchText.Trim();
+                var packages = new List<PackageManagerSearchElementViewModel>();
+
+                var parser = new MultiFieldQueryParser(LuceneConfig.LuceneNetVersion, LuceneConfig.PackageIndexFields, LuceneSearchUtility.Analyzer)
+                {
+                    AllowLeadingWildcard = true,
+                    DefaultOperator = LuceneConfig.DefaultOperator,
+                    FuzzyMinSim = LuceneConfig.MinimumSimilarity
+                };
+
+                Query query = parser.Parse(LuceneSearchUtility.CreateSearchQuery(LuceneConfig.PackageIndexFields, searchTerm));
+
+                //indicate we want the first 50 results
+                TopDocs topDocs = LuceneSearchUtility.Searcher.Search(query, n: LuceneConfig.DefaultResultsCount);
+                for (int i = 0; i < topDocs.ScoreDocs.Length; i++)
+                {
+                    //read back a doc from results
+                    Document resultDoc = LuceneSearchUtility.Searcher.Doc(topDocs.ScoreDocs[i].Doc);
+
+                    // Get the view model of the package element and add it to the results.
+                    string name = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.Name));
+
+                    var foundPackage = GetViewModelForPackageSearchElement(name);
+                    if (foundPackage != null)
+                    {
+                        packages.Add(foundPackage);
+                    }
+                }
+                return packages;
+            }
+            else
+            {
+                return GetAllPackages();
+            }
+        }
+
+        /// <summary>
+        /// To get view model for a package based on its name.
+        /// </summary>s
+        /// <param name="packageName">Name of the package</param>
+        /// <returns></returns>
+        private PackageManagerSearchElementViewModel GetViewModelForPackageSearchElement(string packageName)
+        {
+            var result = PackageManagerClientViewModel.CachedPackageList.Where(e => {
+                if (e.Name.Equals(packageName))
+                {
+                    return true;
+                }
+                return false;
+            });
+
+            if (!result.Any())
+            {
+                return null;
+            }
+
+            return new PackageManagerSearchElementViewModel(result.ElementAt(0), false);
         }
 
         /// <summary>

@@ -75,9 +75,24 @@ namespace Dynamo.Configuration
         internal static int FuzzySearchWeight = 2;
 
         /// <summary>
+        /// Parent directory where information is indexed.
+        /// </summary>
+        internal static string Index = "Index";
+
+        /// <summary>
+        /// Directory where Nodes info are indexed
+        /// </summary>
+        internal static string NodesIndexingDirectory = "Nodes";
+
+        /// <summary>
+        /// Directory where packages info are indexed
+        /// </summary>
+        internal static string PackagesIndexingDirectory = "Packages";
+
+        /// <summary>
         /// This represent the fields that will be indexed when initializing Lucene Search
         /// </summary>
-        public enum IndexFieldsEnum
+        public enum NodeFieldsEnum
         {
             /// <summary>
             /// Name - The name of the node
@@ -107,17 +122,37 @@ namespace Dynamo.Configuration
             /// <summary>
             /// Documentation - Documentation of the node
             /// </summary>
-            Documentation
+            Documentation,
+
+            /// <summary>
+            /// Hosts - Package hosts
+            /// </summary>
+            Hosts,
+
+            /// <summary>
+            /// Node Input Parameters as string (there are nodes with same name and category but different parameters)
+            /// </summary>
+            Parameters
         }
 
         /// <summary>
-        /// Fields to be indexed by Lucene Search
+        /// Nodes Fields to be indexed by Lucene Search
         /// </summary>
-        public static string[] IndexFields = { nameof(IndexFieldsEnum.Name),
-                                               nameof(IndexFieldsEnum.FullCategoryName),
-                                               nameof(IndexFieldsEnum.Description),
-                                               nameof(IndexFieldsEnum.SearchKeywords),
-                                               nameof(IndexFieldsEnum.DocName),
-                                               nameof(IndexFieldsEnum.Documentation)};
+        public static string[] NodeIndexFields = { nameof(NodeFieldsEnum.Name),
+                                                   nameof(NodeFieldsEnum.FullCategoryName),
+                                                   nameof(NodeFieldsEnum.Description),
+                                                   nameof(NodeFieldsEnum.SearchKeywords),
+                                                   nameof(NodeFieldsEnum.DocName),
+                                                   nameof(NodeFieldsEnum.Documentation),
+                                                   nameof(NodeFieldsEnum.Parameters)};
+
+
+        /// <summary>
+        /// Package Fields to be indexed by Lucene Search
+        /// </summary>
+        public static string[] PackageIndexFields = { nameof(NodeFieldsEnum.Name),
+                                                      nameof(NodeFieldsEnum.Description),
+                                                      nameof(NodeFieldsEnum.SearchKeywords),
+                                                      nameof(NodeFieldsEnum.Hosts)};
     }
 }

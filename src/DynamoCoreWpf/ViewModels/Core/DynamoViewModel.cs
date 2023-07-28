@@ -1045,7 +1045,7 @@ namespace Dynamo.ViewModels
             // launching the process using explorer.exe will format the URL incorrectly
             // and Github will not recognise the query parameters in the URL
             // so launch with default operating system web browser
-            Process.Start(new ProcessStartInfo(urlWithParameters));
+            Process.Start(new ProcessStartInfo(urlWithParameters) { UseShellExecute = true });
         }
 
         public static void ReportABug()
@@ -1055,7 +1055,7 @@ namespace Dynamo.ViewModels
 
         internal static void DownloadDynamo()
         {
-            Process.Start(new ProcessStartInfo("explorer.exe", Configurations.DynamoDownloadLink));
+            Process.Start(new ProcessStartInfo("explorer.exe", Configurations.DynamoDownloadLink) { UseShellExecute = true });
         }
 
         private void Disable3DPreview()
@@ -2214,7 +2214,17 @@ namespace Dynamo.ViewModels
             OnRequestPackageManagerSearchDialog(this, EventArgs.Empty);
         }
 
+        internal void ShowPackageManager(object parameters)
+        {
+            OnRequestPackageManagerDialog(this, EventArgs.Empty);
+        }
+
         internal bool CanShowPackageManagerSearch(object parameters)
+        {
+            return !model.IsServiceMode;
+        }
+
+        internal bool CanShowPackageManager(object parameters)
         {
             return !model.IsServiceMode;
         }
@@ -2911,7 +2921,7 @@ namespace Dynamo.ViewModels
 
         public void GoToWiki(object parameter)
         {
-            Process.Start(new ProcessStartInfo("explorer.exe", Configurations.DynamoWikiLink));
+            Process.Start(new ProcessStartInfo("explorer.exe", Configurations.DynamoWikiLink) { UseShellExecute = true });
         }
 
         internal bool CanGoToWiki(object parameter)
@@ -2921,7 +2931,7 @@ namespace Dynamo.ViewModels
 
         public void GoToSourceCode(object parameter)
         {
-            Process.Start(new ProcessStartInfo("explorer.exe", Configurations.GitHubDynamoLink));
+            Process.Start(new ProcessStartInfo("explorer.exe", Configurations.GitHubDynamoLink) { UseShellExecute = true });
         }
 
         internal bool CanGoToSourceCode(object parameter)
@@ -2931,7 +2941,7 @@ namespace Dynamo.ViewModels
 
         public void GoToDictionary(object parameter)
         {
-            Process.Start(new ProcessStartInfo("explorer.exe", Configurations.DynamoDictionary));
+            Process.Start(new ProcessStartInfo("explorer.exe", Configurations.DynamoDictionary) { UseShellExecute = true });
         }
 
         internal bool CanGoToDictionary(object parameter)

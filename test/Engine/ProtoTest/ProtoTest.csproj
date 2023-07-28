@@ -36,6 +36,7 @@
           <Reference Include="System.Xml" />
           <Reference Include="EmbeddedInterop" Condition=" '$(TargetFramework)' == 'net48'">
               <Private>False</Private>
+              <HintPath>..\..\test_support_projects\EmbeddedInterop.dll</HintPath>
           </Reference>
       </ItemGroup>
     <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">

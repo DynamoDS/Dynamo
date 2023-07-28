@@ -14,7 +14,11 @@ using Dynamo.Logging;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
-using Microsoft.Practices.Prism.ViewModel;
+#if NETFRAMEWORK
+using NotificationObject = Microsoft.Practices.Prism.ViewModel.NotificationObject;
+#else
+using NotificationObject = Dynamo.Core.NotificationObject;
+#endif
 
 namespace Dynamo.UI.Controls
 {
@@ -368,25 +372,32 @@ namespace Dynamo.UI.Controls
             files.Clear();
             foreach (var filePath in filePaths)
             {
-                var extension = Path.GetExtension(filePath).ToUpper();
-                // If not extension specified and code reach here, this means this is still a valid file 
-                // only without file type. Otherwise, simply take extension substring skipping the 'dot'.
-                var subScript = extension.IndexOf(".") == 0 ? extension.Substring(1) : "";
-                var caption = Path.GetFileNameWithoutExtension(filePath);
-
-                files.Add(new StartPageListItem(caption)
+                try
                 {
-                    ContextData = filePath,
-                    ToolTip = filePath,
-                    SubScript = subScript,
-                    ClickAction = StartPageListItem.Action.FilePath
-                });
+                    var extension = Path.GetExtension(filePath).ToUpper();
+                    // If not extension specified and code reach here, this means this is still a valid file 
+                    // only without file type. Otherwise, simply take extension substring skipping the 'dot'.
+                    var subScript = extension.IndexOf(".") == 0 ? extension.Substring(1) : "";
+                    var caption = Path.GetFileNameWithoutExtension(filePath);
+
+                    files.Add(new StartPageListItem(caption)
+                    {
+                        ContextData = filePath,
+                        ToolTip = filePath,
+                        SubScript = subScript,
+                        ClickAction = StartPageListItem.Action.FilePath
+                    });
+                }
+                catch (ArgumentException ex)
+                {
+                    DynamoViewModel.Model.Logger.Log("File path is not valid: " + ex.StackTrace);
+                }
             }
         }
 
         private void HandleRegularCommand(StartPageListItem item)
         {
-            var dvm = this.DynamoViewModel;
+            var dvm = this.DynamoViewModel; 
 
             switch (item.ContextData)
             {
@@ -416,7 +427,7 @@ namespace Dynamo.UI.Controls
 
         private void HandleExternalUrl(StartPageListItem item)
         {
-            System.Diagnostics.Process.Start(item.ContextData);
+            System.Diagnostics.Process.Start(new ProcessStartInfo(item.ContextData) { UseShellExecute = true });
         }
 
         #endregion
@@ -505,14 +516,15 @@ namespace Dynamo.UI.Controls
         private void ShowSamplesInFolder(object sender, MouseButtonEventArgs e)
         {
             var startPageViewModel = this.DataContext as StartPageViewModel;
-            Process.Start("explorer.exe", "/select," 
-                + startPageViewModel.SampleFolderPath);
+            Process.Start(new ProcessStartInfo("explorer.exe", "/select," 
+                + startPageViewModel.SampleFolderPath)
+                { UseShellExecute = true });
         }
 
         private void ShowBackupFilesInFolder(object sender, MouseButtonEventArgs e)
         {
             var startPageViewModel = this.DataContext as StartPageViewModel;
-            Process.Start("explorer.exe", dynamoViewModel.Model.PathManager.BackupDirectory);
+            Process.Start(new ProcessStartInfo("explorer.exe", dynamoViewModel.Model.PathManager.BackupDirectory) { UseShellExecute = true });
         }
 
         private void StartPage_OnDrop(object sender, DragEventArgs e)

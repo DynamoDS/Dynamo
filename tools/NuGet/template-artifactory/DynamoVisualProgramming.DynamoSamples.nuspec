@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+    <metadata>
+        <id>DynamoVisualProgramming.DynamoSamples</id>
+        <version>$Version$</version>
+        <authors>Autodesk</authors>
+        <owners>Autodesk</owners>
+        <license type="expression">Apache-2.0</license>
+        <projectUrl>https://github.com/DynamoDS/Dynamo</projectUrl>
+        <icon>content\images\logo.png</icon>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>This package bundles all localized Sample files from the Dynamo bin Release folder.</description>
+        <copyright>Copyright Autodesk 2023</copyright>
+    </metadata>
+    <!--These files are referenced from the bin directory since they are not harvested for the installer-->
+    <files>
+        <file src="..\..\..\bin\AnyCPU\Release\samples\**" target="Samples" />
+        <file src="..\..\..\doc\distrib\Images\logo_square_32x32.png" target="content\images\logo.png" />
+    </files>
+</package>

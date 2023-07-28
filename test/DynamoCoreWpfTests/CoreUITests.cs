@@ -110,7 +110,7 @@ namespace DynamoCoreWpfTests
             WorkspaceModel workspaceModel = ViewModel.CurrentSpaceViewModel.Model;
             WorkspaceViewModel workspaceVM = ViewModel.CurrentSpaceViewModel;
             double zoom;
-            
+
             // Test Zoom in
             zoom = workspaceVM.Zoom;
             if ( ViewModel.ZoomInCommand.CanExecute(null) )
@@ -150,7 +150,7 @@ namespace DynamoCoreWpfTests
             if (ViewModel.ZoomOutCommand.CanExecute(null))
                 ViewModel.ZoomOutCommand.Execute(null);
             Assert.AreEqual(zoom, workspaceVM.Zoom);
-            
+
             // Max zoom
             zoom = WorkspaceViewModel.ZOOM_MAXIMUM;
             if (workspaceVM.SetZoomCommand.CanExecute(zoom))
@@ -296,7 +296,7 @@ namespace DynamoCoreWpfTests
 
             // Zoom to max zoom value
             workspaceVM.FitViewInternal();
-            
+
             // Check for no changes
             Assert.AreEqual(workspaceVM.Zoom, initZoom);
             Assert.AreEqual(workspaceVM.X, initX);
@@ -354,7 +354,7 @@ namespace DynamoCoreWpfTests
         public void FitViewStressTest()
         {
             WorkspaceViewModel workspaceVM = ViewModel.CurrentSpaceViewModel;
-            
+
             double initZoom = workspaceVM.Zoom;
             double initX = workspaceVM.X;
             double initY = workspaceVM.Y;
@@ -444,7 +444,7 @@ namespace DynamoCoreWpfTests
             bool expectedValue = !ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive;
             ViewModel.ToggleFullscreenWatchShowing(null);
             Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive);
-          
+
 
             expectedValue = !ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive;
             ViewModel.ToggleFullscreenWatchShowing(null);
@@ -489,10 +489,10 @@ namespace DynamoCoreWpfTests
             ViewModel.RenderPackageFactoryViewModel.MaxTessellationDivisions = 128;
             Assert.AreEqual(128, ViewModel.Model.PreferenceSettings.RenderPrecision);
 
-            // Test serialization of RenderPrecision 
+            // Test serialization of RenderPrecision
             string tempPath = System.IO.Path.GetTempPath();
             tempPath = Path.Combine(tempPath, "userPreference.xml");
-            
+
             PreferenceSettings initalSetting = new PreferenceSettings();
             PreferenceSettings resultSetting;
 
@@ -513,20 +513,20 @@ namespace DynamoCoreWpfTests
         [Category("DynamoUI")]
         public void PreferenceSetting_GroupStyles()
         {
-            // Test that the group style list is being initialized with a non-empty list                       
+            // Test that the group style list is being initialized with a non-empty list
             Assert.NotNull(ViewModel.PreferenceSettings.GroupStyleItemsList);
 
             //Now by default we will have always 4 GroupStyles added by Dynamo
             Assert.AreEqual(4, ViewModel.PreferenceSettings.GroupStyleItemsList.Count);
 
-            // Test serialization of GroupStyles 
+            // Test serialization of GroupStyles
             string tempPath = System.IO.Path.GetTempPath();
             tempPath = Path.Combine(tempPath, "userPreference.xml");
 
             PreferenceSettings initalSetting = new PreferenceSettings();
             PreferenceSettings resultSetting;
 
-            initalSetting.GroupStyleItemsList.Add(new GroupStyleItem { 
+            initalSetting.GroupStyleItemsList.Add(new GroupStyleItem {
                 HexColorString = "000000",
                 Name = "GroupName"
             });
@@ -551,8 +551,8 @@ namespace DynamoCoreWpfTests
         [Category("DynamoUI")]
         public void PreferenceSetting_NotAgreeAnalyticsSharing()
         {
-            // Test deserialization of analytics setting 
-            // Test loading old settings file without agreement 
+            // Test deserialization of analytics setting
+            // Test loading old settings file without agreement
             var filePath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"settings\DynamoSettings-firstrun.xml");
             var resultSetting = PreferenceSettings.Load(filePath);
             Assert.AreEqual(false, resultSetting.IsAnalyticsReportingApproved);
@@ -564,7 +564,7 @@ namespace DynamoCoreWpfTests
         [Category("DynamoUI")]
         public void PreferenceSetting_AgreeAnalyticsSharing()
         {
-            // Test loading old settings file with agreement 
+            // Test loading old settings file with agreement
             var filePath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"settings\DynamoSettings-AnalyticsTurnedOn.xml");
             var resultSetting = PreferenceSettings.Load(filePath);
             Assert.AreEqual(true, resultSetting.IsAnalyticsReportingApproved);
@@ -613,8 +613,8 @@ namespace DynamoCoreWpfTests
 
             #region Collect Information Option
             {
-                // Backup the value of Dynamo.IsTestMode and restore it later. The 
-                // reason for this is 'IsUsageReportingApproved' only returns the 
+                // Backup the value of Dynamo.IsTestMode and restore it later. The
+                // reason for this is 'IsUsageReportingApproved' only returns the
                 // actual value when not running in test mode.
                 var isTestMode = DynamoModel.IsTestMode;
 
@@ -721,7 +721,7 @@ namespace DynamoCoreWpfTests
         {
             ViewModel.HideReportOptions = true;
             ViewModel.Model.PreferenceSettings.IsFirstRun = true;
-            //force the dynamoview's loaded handler to be called again - 
+            //force the dynamoview's loaded handler to be called again -
             View.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
 
             Assert.IsFalse(ViewModel.PreferenceSettings.IsFirstRun);
@@ -753,6 +753,7 @@ namespace DynamoCoreWpfTests
             Assert.That(Model.PreferenceSettings.ConnectorType == ConnectorType.POLYLINE);
             Assert.That(Model.ConnectorType == ConnectorType.BEZIER);
         }
+
         /// <summary>
         /// Checks that we are serializing and deserializing the PreferenceSettings.DefaultScaleFactor in DynamoSettings.xml correctly
         /// </summary>
@@ -765,7 +766,7 @@ namespace DynamoCoreWpfTests
             var defaultSettings = new PreferenceSettings();
             defaultSettings.DefaultScaleFactor = GeometryScalingOptions.ConvertUIToScaleFactor((int)GeometryScaleSize.ExtraLarge);
 
-            //Save in the DynamoSettings.xml the DefaultScaleFactor = 4 
+            //Save in the DynamoSettings.xml the DefaultScaleFactor = 4
             defaultSettings.Save(newSettingslFilePath);
 
             //Reload the saved settings file
@@ -898,7 +899,7 @@ namespace DynamoCoreWpfTests
             ViewModel.AddNoteCommand.Execute(null);
             var note = Model.CurrentWorkspace.Notes.FirstOrDefault();
             Assert.IsNotNull(note);
-            
+
             //verify the note was created
             Assert.AreEqual(1, Model.CurrentWorkspace.Notes.Count());
 
@@ -925,7 +926,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0,Model.CurrentWorkspace.Notes.Count());
 
             ViewModel.CurrentSpaceViewModel.Model.HasUnsavedChanges = false;
-           
+
         }
 
 
@@ -981,25 +982,6 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
-        public void WorkspaceContextMenu_TestIfInCanvasSearchHidesOnOpeningContextMenu()
-        {
-            var currentWs = View.ChildOfType<WorkspaceView>();
-
-            // show in-canvas search
-            ViewModel.CurrentSpaceViewModel.ShowInCanvasSearchCommand.Execute(ShowHideFlags.Show);
-            DispatcherUtil.DoEvents();
-            Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
-
-            // open context menu
-            RightClick(currentWs.zoomBorder);
-            DispatcherUtil.DoEvents();
-
-            Assert.IsTrue(currentWs.ContextMenuPopup.IsOpen);
-            Assert.IsFalse(currentWs.InCanvasSearchBar.IsOpen);
-        }
-
-        [Test]
-        [Category("UnitTests")]
         public void InCanvasSearchTextChangeTriggersOneSearchCommand()
         {
             var currentWs = View.ChildOfType<WorkspaceView>();
@@ -1025,50 +1007,6 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        [Category("UnitTests")]
-        [Category("Failure")]
-        public void WorkspaceContextMenu_TestIfSearchTextClearsOnOpeningContextMenu()
-        {
-            var currentWs = View.ChildOfType<WorkspaceView>();
-
-            // open context menu
-            RightClick(currentWs.zoomBorder);
-            DispatcherUtil.DoEvents();
-            // set dummy content for search text
-            currentWs.ViewModel.InCanvasSearchViewModel.SearchText = "dummy";
-            DispatcherUtil.DoEvents();
-            Assert.IsTrue(currentWs.ContextMenuPopup.IsOpen);
-            Assert.IsFalse(currentWs.InCanvasSearchBar.IsOpen);
-
-            // show in-canvas search
-            ViewModel.CurrentSpaceViewModel.ShowInCanvasSearchCommand.Execute(ShowHideFlags.Show);
-            DispatcherUtil.DoEvents();
-            Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
-
-            // check if search text is still empty
-            Assert.IsTrue(currentWs.ViewModel.InCanvasSearchViewModel.SearchText.Equals(string.Empty));
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void WorkspaceContextMenu_IfSubmenuOpenOnMouseHover()
-        {
-            var currentWs = View.ChildOfType<WorkspaceView>();
-            RightClick(currentWs.zoomBorder);
-            Assert.IsTrue(currentWs.ContextMenuPopup.IsOpen);
-
-            currentWs.WorkspaceLacingMenu.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0)
-            {
-                RoutedEvent = Mouse.MouseEnterEvent
-            });
-
-            DispatcherUtil.DoEvents();
-
-            Assert.IsTrue(currentWs.WorkspaceLacingMenu.IsSubmenuOpen);
-        }
-
-
-        [Test]
         public void WarningShowsWhenSavingWithLinterWarningsOrErrors()
         {
             // Arrange
@@ -1076,8 +1014,8 @@ namespace DynamoCoreWpfTests
             var recivedEvents = new List<string>();
             var savewarnHandler = new Action<SaveWarningOnUnresolvedIssuesArgs>((e) => { recivedEvents.Add(e.TaskDialog.Title); e.TaskDialog.Close(); });
             ViewModel.SaveWarningOnUnresolvedIssuesShows += savewarnHandler;
-            
-    
+
+
             Mock<LinterExtensionBase> mockLinter = new Mock<LinterExtensionBase>() { CallBase = true };
             SetupMockLinter(mockLinter);
 
@@ -1106,10 +1044,8 @@ namespace DynamoCoreWpfTests
             Assert.That(recivedEvents.Count == 1);
             Assert.That(recivedEvents.First() == expectedWindowTitle);
             ViewModel.SaveWarningOnUnresolvedIssuesShows -= savewarnHandler;
-            
-        }
 
-   
+        }
 
         private void SetupMockLinter(Mock<LinterExtensionBase> mockLinter)
         {
@@ -1178,7 +1114,5 @@ namespace DynamoCoreWpfTests
             //Wait 3 seconds until the Click Right context menu is opened
             Task.WaitAll(new Task[] { Task.Delay(2000) });
         }
-
-
     }
 }

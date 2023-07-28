@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
@@ -8,7 +8,7 @@ using Dynamo.Controls;
 using Dynamo.Logging;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
-using Microsoft.Practices.Prism;
+using Dynamo.Utilities;
 
 namespace Dynamo.Notifications
 {
