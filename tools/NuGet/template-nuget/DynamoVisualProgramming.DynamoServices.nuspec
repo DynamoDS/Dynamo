@@ -11,8 +11,9 @@
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>DynamoServices library for Dynamo. It contains the following files: 
         1) DynamoServices.dll</description>
-        <summary>This package contains DynamoServices assembly that defines interfaces and attribute for Dynamo Zero Touch libraries.</summary>
-        <copyright>Copyright Autodesk 2020</copyright>
+        <summary>This package contains DynamoServices assembly that defines interfaces and attributes for Dynamo Zero Touch libraries.
+        It also contains useful static events and event data for monitoring workspace and execution changes.</summary>
+        <copyright>Copyright Autodesk 2023</copyright>
         <dependencies>
             <group targetFramework="netstandard2.0" />
         </dependencies>

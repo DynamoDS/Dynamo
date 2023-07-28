@@ -1444,6 +1444,10 @@ namespace Dynamo.Controls
             {
                 _pkgSearchVM = new PackageManagerSearchViewModel(dynamoViewModel.PackageManagerClientViewModel);
             }
+            else
+            {
+                _pkgSearchVM.InitializeLuceneForPackageManager();
+            }
 
             if (_searchPkgsView == null)
             {
@@ -2155,7 +2159,7 @@ namespace Dynamo.Controls
         private static void OnShowInFolder(object sender, RoutedEventArgs e)
         {
             var folderPath = (string)((MenuItem)sender).Tag;
-            Process.Start("explorer.exe", "/select," + folderPath);
+            Process.Start(new ProcessStartInfo("explorer.exe", "/select," + folderPath) { UseShellExecute = true });
         }
 #endif
 

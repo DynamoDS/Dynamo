@@ -124,7 +124,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                             Hyperlink link = new Hyperlink(run3);
                             link.IsEnabled = true;
                             link.NavigateUri = new Uri(linkURL);
-                            link.RequestNavigate += (sender, args) => Process.Start(args.Uri.ToString());
+                            link.RequestNavigate += (sender, args) => Process.Start(new ProcessStartInfo(args.Uri.ToString()) { UseShellExecute = true });
                             para.Inlines.Add(link);
                             bHyperlinkActive = false;
                         }

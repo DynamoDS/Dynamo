@@ -995,7 +995,7 @@ namespace Dynamo.ViewModels
         /// <param name="nodeCategory">Full Category of the node</param>
         /// <param name="parameters">Node input parameters</param>
         /// <returns></returns>
-        private NodeSearchElementViewModel FindViewModelForNodeNameAndCategory(string nodeName, string nodeCategory, string parameters)
+        internal NodeSearchElementViewModel FindViewModelForNodeNameAndCategory(string nodeName, string nodeCategory, string parameters)
         {
             var result = Model.SearchEntries.Where(e => {
                 if (e.Name.Equals(nodeName) && e.FullCategoryName.Equals(nodeCategory))
@@ -1034,7 +1034,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private NodeSearchElementViewModel MakeNodeSearchElementVM(NodeSearchElement entry)
+        internal NodeSearchElementViewModel MakeNodeSearchElementVM(NodeSearchElement entry)
         {
             var element = entry as CustomNodeSearchElement;
             var elementVM = element != null

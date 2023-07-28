@@ -169,7 +169,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
                 RecursiveScan = true,
                 OutputFolderPath = tempDirectory.FullName,
                 Filter = preloadedLibraryPaths.Concat(new string[] 
-                {CORENODEMODELS_DLL_NAME,"GeometryUI.dll","PythonNodeModels.dll","Watch3dNodeModels.dll","UnitsUI.dll","" }),
+                {CORENODEMODELS_DLL_NAME,"GeometryUI.dll","PythonNodeModels.dll","Watch3dNodeModels.dll","UnitsNodeModels.dll","" }),
                 ReferencePaths = new List<string>()
             };
 

@@ -33,7 +33,7 @@ namespace Dynamo.Notifications
             this.onNotificationPopupUpdated = onNotificationPopupUpdated;
         }
 
-        public void SetNoficationsAsRead(object[] ids)
+        public void SetNotificationsAsRead(object[] ids)
         {
             onMarkAllAsRead(ids);
         }
@@ -219,7 +219,7 @@ namespace Dynamo.Notifications
         // Handler for new Webview2 tab window request
         private void WebView_NewWindowRequested(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NewWindowRequestedEventArgs e)
         {
-            Process.Start(e.Uri);
+            Process.Start(new ProcessStartInfo(e.Uri) { UseShellExecute = true });
             e.Handled = true;
         }
 
