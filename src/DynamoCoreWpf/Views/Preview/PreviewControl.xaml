@@ -9,7 +9,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:ui="clr-namespace:Dynamo.UI"
-             xmlns:fa="http://schemas.fontawesome.com/icons/"
+             xmlns:fa="clr-namespace:FontAwesome5;assembly=FontAwesome5.Net"
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              mc:Ignorable="d"  Canvas.Top="-20"

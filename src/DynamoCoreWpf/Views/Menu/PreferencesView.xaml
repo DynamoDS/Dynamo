@@ -11,7 +11,7 @@
         xmlns:ui="clr-namespace:Dynamo.UI"
         xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
-        xmlns:fa="http://schemas.fontawesome.com/icons/" 
+        xmlns:fa="clr-namespace:FontAwesome5;assembly=FontAwesome5.Net" 
         xmlns:packagemanager="clr-namespace:Dynamo.Wpf.Views.PackageManager"
         xmlns:trustedpaths="clr-namespace:Dynamo.Wpf.Views"
         xmlns:wpfControls="clr-namespace:Dynamo.Wpf.Controls"

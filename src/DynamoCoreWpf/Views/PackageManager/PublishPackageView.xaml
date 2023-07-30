@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
         xmlns:ui="clr-namespace:Dynamo.UI" 
-        xmlns:fa="http://schemas.fontawesome.com/icons/"
+        xmlns:fa="clr-namespace:FontAwesome5;assembly=FontAwesome5.Net"
         xmlns:packagemanager="clr-namespace:Dynamo.PackageManager"
         d:DataContext="{d:DesignInstance Type=packagemanager:PublishPackageViewModel}"
         Name="PublishInfoControl"

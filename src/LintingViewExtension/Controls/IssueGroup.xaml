@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:Dynamo.LintingViewExtension.Controls"
              xmlns:converter="clr-namespace:Dynamo.LintingViewExtension.Converters"
              xmlns:severity="clr-namespace:Dynamo.Linting.Interfaces;assembly=DynamoCore"
-             xmlns:fa="http://schemas.fontawesome.com/icons/"
+             xmlns:fa="clr-namespace:FontAwesome5;assembly=FontAwesome5.Net"
              mc:Ignorable="d"
              d:DesignHeight="450"
              d:DesignWidth="800">
