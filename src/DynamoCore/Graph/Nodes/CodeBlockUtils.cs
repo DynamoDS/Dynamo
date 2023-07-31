@@ -66,6 +66,8 @@ namespace Dynamo.Graph.Nodes
         /// <param name="statements">A list of Statement objects whose defined 
         /// variables are to be retrieved. This list can be empty but it cannot 
         /// be null.</param>
+        /// <returns>Returns a list of lists of variables defined by the given 
+        /// set of Statement objects.</returns>
         internal static List<List<string>> GetStatementVariables(
             IEnumerable<Statement> statements)
         {
