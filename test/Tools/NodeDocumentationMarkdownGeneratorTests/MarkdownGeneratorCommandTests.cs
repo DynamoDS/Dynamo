@@ -314,7 +314,6 @@ namespace NodeDocumentationMarkdownGeneratorTests
 
 
         [Test]
-        [Category("FailureNET6")]
         public void ProducesCorrectOutputFromPackage()
         {
             // Arrange
