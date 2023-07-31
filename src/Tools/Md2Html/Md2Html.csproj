@@ -41,7 +41,8 @@
     <Target Name="Publish net6" Condition=" '$(TargetFramework)' == 'net6.0' And '$([MSBuild]::IsOSPlatform(`Windows`))' == 'True' " AfterTargets="Build">
         <CallTarget Targets="Publish" />
         <Exec Command="if not exist $(SharedOutputPath) mkdir $(SharedOutputPath)"/>
-        <Copy SourceFiles="$(OutputPath)win10-x64\publish\Md2Html.exe" DestinationFolder="$(SharedOutputPath)" />
+        <Copy Condition=" '$(RuntimeIdentifier)' == 'win10-x64' " SourceFiles="$(OutputPath)$(RuntimeIdentifier)\publish\Md2Html.exe" DestinationFolder="$(SharedOutputPath)" />
+        <Copy Condition=" '$(RuntimeIdentifier)' == 'linux-x64' " SourceFiles="$(OutputPath)$(RuntimeIdentifier)\publish\Md2Html" DestinationFolder="$(SharedOutputPath)" />
     </Target>
     <Target Name="AfterBuildOps" AfterTargets="Build" Condition=" '$(TargetFramework)' == 'net48' And '$([MSBuild]::IsOSPlatform(`Windows`))' == 'True'">
         <Exec Command="if not exist $(SharedOutputPath) mkdir $(SharedOutputPath)"/>
