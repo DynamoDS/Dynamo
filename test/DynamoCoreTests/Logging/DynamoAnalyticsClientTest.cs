@@ -29,7 +29,8 @@ namespace Dynamo.Tests.Loggings
                 PathResolver = pathResolver,
                 StartInTestMode = false,
                 GeometryFactoryPath = preloader.GeometryFactoryPath,
-                ProcessMode = TaskProcessMode.Synchronous
+                ProcessMode = TaskProcessMode.Synchronous,
+                Preferences = settings
             };
         }
 
