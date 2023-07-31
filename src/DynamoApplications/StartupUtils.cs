@@ -243,7 +243,7 @@ namespace Dynamo.Applications
         /// <returns></returns>
         public static DynamoModel MakeCLIModel(string asmPath, string userDataFolder, string commonDataFolder, HostAnalyticsInfo info = new HostAnalyticsInfo(), bool isServiceMode = false)
         {
-            IPathResolver pathResolver = CreateIPathResolver(false, string.Empty, string.Empty, string.Empty);
+            IPathResolver pathResolver = CreatePathResolver(false, string.Empty, string.Empty, string.Empty);
             PathManager.Instance.AssignIPathResolver(pathResolver);
 
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(PreferenceSettings.Instance.Locale);
@@ -282,7 +282,7 @@ namespace Dynamo.Applications
         /// <returns></returns>
         public static DynamoModel MakeModel(bool CLImode, string asmPath = "", HostAnalyticsInfo info = new HostAnalyticsInfo())
         {
-            IPathResolver pathResolver = CreateIPathResolver(false, string.Empty, string.Empty, string.Empty);            
+            IPathResolver pathResolver = CreatePathResolver(false, string.Empty, string.Empty, string.Empty);            
             PathManager.Instance.AssignIPathResolver(pathResolver);
 
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(PreferenceSettings.Instance.Locale);
@@ -305,7 +305,7 @@ namespace Dynamo.Applications
         /// <param name="userDataFolder">Path to be used by PathResolver for UserDataFolder</param>
         /// <param name="commonDataFolder">Path to be used by PathResolver for CommonDataFolder</param>
         /// <returns></returns>
-        private static IPathResolver CreateIPathResolver(bool CLImode, string preloaderLocation, string userDataFolder, string commonDataFolder)
+        private static IPathResolver CreatePathResolver(bool CLImode, string preloaderLocation, string userDataFolder, string commonDataFolder)
         {
             IPathResolver pathResolver = CLImode ? new CLIPathResolver(preloaderLocation, userDataFolder, commonDataFolder) as IPathResolver : new SandboxPathResolver(preloaderLocation) as IPathResolver;
             return pathResolver;
@@ -407,7 +407,7 @@ namespace Dynamo.Applications
                 AuthProvider = CLImode ? null : new Core.IDSDKManager(),
                 UpdateManager = CLImode ? null : OSHelper.IsWindows() ? InitializeUpdateManager() : null,
                 StartInTestMode = CLImode,
-                PathResolver = CreateIPathResolver(CLImode, preloaderLocation, userDataFolder, commonDataFolder),
+                PathResolver = CreatePathResolver(CLImode, preloaderLocation, userDataFolder, commonDataFolder),
                 IsServiceMode = isServiceMode,
                 Preferences = PreferenceSettings.Instance
             };

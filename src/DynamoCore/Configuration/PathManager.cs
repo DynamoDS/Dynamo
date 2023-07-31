@@ -364,8 +364,7 @@ namespace Dynamo.Core
         /// <param name="resolver"></param>
         internal void AssignIPathResolver(IPathResolver resolver)
         {
-            pathResolver = resolver;
-            preloadedLibraries = new HashSet<string>();
+            pathResolver = resolver;            
             LoadPathsFromResolver();
         }
 
