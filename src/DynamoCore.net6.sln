@@ -43,7 +43,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoUtilities", "DynamoUt
 		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Units", "Libraries\DynamoUnits\Units.csproj", "{6E0A079E-85F1-45A1-AD5B-9855E4344809}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitsCore", "Libraries\DynamoUnits\UnitsCore.csproj", "{6E0A079E-85F1-45A1-AD5B-9855E4344809}"
 	ProjectSection(ProjectDependencies) = postProject
 		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
 	EndProjectSection
@@ -120,6 +120,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeometryColorTests", "..\test\Libraries\GeometryColorTests\GeometryColorTests.csproj", "{F8D2E3E5-4505-4463-9367-2EB2629D7DCD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PackageManagerTests", "..\test\Libraries\PackageManagerTests\PackageManagerTests.csproj", "{2A70F3B5-7AEA-42FE-8DD5-8427C28D0025}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitsNodeModels", "Libraries\UnitsNodeModels\UnitsNodeModels.csproj", "{61169E56-DED9-464F-B800-AE31AEC1F750}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -449,6 +451,14 @@ Global
 		{2A70F3B5-7AEA-42FE-8DD5-8427C28D0025}.Release|NET60_Linux.Build.0 = Release|NET60_Linux
 		{2A70F3B5-7AEA-42FE-8DD5-8427C28D0025}.Release|NET60_Windows.ActiveCfg = Release|NET60_Windows
 		{2A70F3B5-7AEA-42FE-8DD5-8427C28D0025}.Release|NET60_Windows.Build.0 = Release|NET60_Windows
+		{61169E56-DED9-464F-B800-AE31AEC1F750}.Debug|NET60_Linux.ActiveCfg = Debug|NET60_Linux
+		{61169E56-DED9-464F-B800-AE31AEC1F750}.Debug|NET60_Linux.Build.0 = Debug|NET60_Linux
+		{61169E56-DED9-464F-B800-AE31AEC1F750}.Debug|NET60_Windows.ActiveCfg = Debug|NET60_Windows
+		{61169E56-DED9-464F-B800-AE31AEC1F750}.Debug|NET60_Windows.Build.0 = Debug|NET60_Windows
+		{61169E56-DED9-464F-B800-AE31AEC1F750}.Release|NET60_Linux.ActiveCfg = Release|NET60_Linux
+		{61169E56-DED9-464F-B800-AE31AEC1F750}.Release|NET60_Linux.Build.0 = Release|NET60_Linux
+		{61169E56-DED9-464F-B800-AE31AEC1F750}.Release|NET60_Windows.ActiveCfg = Release|NET60_Windows
+		{61169E56-DED9-464F-B800-AE31AEC1F750}.Release|NET60_Windows.Build.0 = Release|NET60_Windows
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -490,6 +500,7 @@ Global
 		{AB735028-22B0-4083-9CC5-805C582818EA} = {9CE88661-B9BD-4587-962A-AE0648B34EDA}
 		{F8D2E3E5-4505-4463-9367-2EB2629D7DCD} = {9CE88661-B9BD-4587-962A-AE0648B34EDA}
 		{2A70F3B5-7AEA-42FE-8DD5-8427C28D0025} = {9CE88661-B9BD-4587-962A-AE0648B34EDA}
+		{61169E56-DED9-464F-B800-AE31AEC1F750} = {FA7BE306-A3B0-45FA-9D87-0C69E6932C13}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89CB19C6-BF0A-4E6A-BFDA-79D143EAB59D}
