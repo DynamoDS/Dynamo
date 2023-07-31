@@ -220,11 +220,11 @@ namespace Dynamo.Graph.Workspaces
                     node = DeserializeAsCBN(convertedCode + ";", obj, guid);
                     if (code == convertedCode)
                     {
-                        (node as CodeBlockNodeModel).Warning(Resources.FormulaDSConversionFailure);
+                        (node as CodeBlockNodeModel).FormulaMigrationWarning(Resources.FormulaDSConversionFailure);
                     }
                     else
                     {
-                        (node as CodeBlockNodeModel).Warning(Resources.FormulaMigrated);
+                        (node as CodeBlockNodeModel).FormulaMigrationWarning(Resources.FormulaMigrated);
                     }
                 }
                 else

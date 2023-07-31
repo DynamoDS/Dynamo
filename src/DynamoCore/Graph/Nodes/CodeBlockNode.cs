@@ -658,12 +658,12 @@ namespace Dynamo.Graph.Nodes
             OnNodeModified();
         }
 
-        internal void Warning(string p)
+        internal void FormulaMigrationWarning(string p)
         {
             State = ElementState.MigratedFormula;
             if (!Infos.Any(x => x.Message.Equals(p)))
             {
-                var texts = p.Split(new[] { System.Environment.NewLine }, StringSplitOptions.None);
+                var texts = p.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
                 var infoList = new List<Info>();
                 foreach (var text in texts)
                 {
