@@ -33,14 +33,7 @@ namespace Dynamo.Engine
                 var cond = match.Groups[2].Value;
                 var expArray = $"[{cond}];";
 
-                try
-                {
-                    cbn = ParserUtils.Parse(expArray);
-                }
-                catch
-                {
-                    return formula;
-                }
+                cbn = ParserUtils.Parse(expArray);
                 var asts = MigrateFormulaToCodeBlockNode(cbn.Body).ToList();
                 var exprList = (asts[0] as BinaryExpressionNode).RightNode as ExprListNode;
                 var condAst = exprList.Exprs[0];

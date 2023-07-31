@@ -215,15 +215,21 @@ namespace Dynamo.Graph.Workspaces
                 {
                     var code = obj["Formula"].Value<string>();
                     var formulaConverter = new MigrateFormulaToDS();
-                    var convertedCode = formulaConverter.ConvertFormulaToDS(code);
-
-                    node = DeserializeAsCBN(convertedCode + ";", obj, guid);
-                    if (code == convertedCode)
+                    string convertedCode = string.Empty;
+                    bool conversionFailed = false;
+                    try
                     {
-                        (node as CodeBlockNodeModel).FormulaMigrationWarning(Resources.FormulaDSConversionFailure);
+                        convertedCode = formulaConverter.ConvertFormulaToDS(code);
                     }
-                    else
+                    catch(BuildHaltException)
                     {
+                        node = DeserializeAsCBN(code + ";", obj, guid);
+                        (node as CodeBlockNodeModel).FormulaMigrationWarning(Resources.FormulaDSConversionFailure);
+                        conversionFailed = true;
+                    }
+                    if(!conversionFailed)
+                    {
+                        node = DeserializeAsCBN(convertedCode + ";", obj, guid);
                         (node as CodeBlockNodeModel).FormulaMigrationWarning(Resources.FormulaMigrated);
                     }
                 }
@@ -249,7 +255,6 @@ namespace Dynamo.Graph.Workspaces
                 if (isUnresolved)
                   function.UpdatePortsForUnresolved(inPorts, outPorts);
             }
-
             else if (type == typeof(CodeBlockNodeModel))
             {
                 var code = obj["Code"].Value<string>();
