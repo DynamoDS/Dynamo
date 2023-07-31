@@ -88,7 +88,8 @@ namespace Dynamo.Engine
                 node = AstFactory.BuildFunctionCall(
                     "DSCore.Math", "DegreesToRadians", new List<AssociativeNode> { node }) as FunctionCallNode;
             }
-            else if(funcName == "Exp" || funcName == "Log10" || funcName == "Pow" || funcName == "Sqrt" || funcName == "Abs")
+            else if(funcName == "Exp" || funcName == "Log10" || funcName == "Pow" || funcName == "Sqrt" || funcName == "Abs"
+                || funcName == "Floor" || funcName == "Ceiling" || funcName == "Round")
             {
                 funcName = $"DSCore.Math.{funcName}";
                 node.Function.Name = funcName;
