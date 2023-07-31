@@ -35,7 +35,7 @@ namespace Dynamo.Tests.Loggings
                 Assert.DoesNotThrow(() =>
                 {
 
-                    dynamoCLI = Process.Start(Path.Combine(coreDirectory, "DynamoCLI.exe"), $"--GeometryPath \"{locatedPath}\" -k --DisableAnalytics -o \"{openPath}\" ");
+                    dynamoCLI = Process.Start(new ProcessStartInfo(Path.Combine(coreDirectory, "DynamoCLI.exe"), $"--GeometryPath \"{locatedPath}\" -k --DisableAnalytics -o \"{openPath}\" ") { UseShellExecute = true });
 
                     Thread.Sleep(5000);// Wait 5 seconds to open the dyn
                     Assert.IsFalse(dynamoCLI.HasExited);

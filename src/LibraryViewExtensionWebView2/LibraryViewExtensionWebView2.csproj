@@ -180,7 +180,7 @@
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" GeneratePathProperty="true" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Dynamo.Microsoft.Xaml.Behaviors, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Dynamo.Microsoft.Xaml.Behaviors">
       <HintPath>..\..\extern\Microsoft.Xaml.Behaviors\$(TargetFramework)\Dynamo.Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference>
   </ItemGroup>
@@ -192,6 +192,10 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xaml" />
     <Reference Include="WindowsBase" />
+    <Reference Include="Microsoft.Practices.Prism">
+        <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
+        <Private>false</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\LibraryView.xaml">

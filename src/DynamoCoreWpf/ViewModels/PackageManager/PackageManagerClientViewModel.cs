@@ -23,7 +23,11 @@ using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Utilities;
 using Greg.AuthProviders;
 using Greg.Responses;
+#if NETFRAMEWORK
+using Microsoft.Practices.Prism.Commands;
+#else
 using Prism.Commands;
+#endif
 
 namespace Dynamo.ViewModels
 {
@@ -1049,7 +1053,7 @@ namespace Dynamo.ViewModels
         {
             if (Uri.IsWellFormedUriString(Model.BaseUrl, UriKind.Absolute))
             {
-                var sInfo = new ProcessStartInfo("explorer.exe", new Uri(Model.BaseUrl).AbsoluteUri);
+                var sInfo = new ProcessStartInfo("explorer.exe", new Uri(Model.BaseUrl).AbsoluteUri) { UseShellExecute = true };
                 Process.Start(sInfo);
             }
         }

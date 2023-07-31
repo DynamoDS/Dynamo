@@ -21,8 +21,13 @@ using Greg.Responses;
 using Lucene.Net.Documents;
 using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
-using Dynamo.Core;
+#if NETFRAMEWORK
+using Microsoft.Practices.Prism.Commands;
+using NotificationObject = Microsoft.Practices.Prism.ViewModel.NotificationObject;
+#else
 using Prism.Commands;
+using NotificationObject = Dynamo.Core.NotificationObject;
+#endif
 
 namespace Dynamo.PackageManager
 {
@@ -478,10 +483,18 @@ namespace Dynamo.PackageManager
         {
             PackageManagerClientViewModel = client;
             HostFilter = InitializeHostFilter();
-            LuceneSearchUtility = new LuceneSearchUtility(PackageManagerClientViewModel.DynamoViewModel.Model);
+            InitializeLuceneForPackageManager();
+        }
+
+        internal void InitializeLuceneForPackageManager()
+        {
+            if(LuceneSearchUtility == null)
+            {
+                LuceneSearchUtility = new LuceneSearchUtility(PackageManagerClientViewModel.DynamoViewModel.Model);
+            }          
             LuceneSearchUtility.InitializeLuceneConfig(LuceneConfig.PackagesIndexingDirectory);
         }
-        
+
         /// <summary>
         /// Sort the default package results in the view based on the sorting key and sorting direction.
         /// </summary>
