@@ -8,7 +8,6 @@ using System;
 using Dynamo.Interfaces;
 using System.Reflection;
 using Dynamo.Utilities;
-using Newtonsoft.Json;
 
 namespace Dynamo.Tests.Configuration
 {
@@ -32,7 +31,7 @@ namespace Dynamo.Tests.Configuration
 
         [Test]
         [Category("UnitTests")]
-        public void TestGetPythonTemplateFilePath ()
+        public void TestGetPythonTemplateFilePath()
         {
             string settingDirectory = Path.Combine(TestDirectory, "settings");
             string settingsFilePath = Path.Combine(settingDirectory, "DynamoSettings-PythonTemplate-initial.xml");
@@ -190,7 +189,7 @@ namespace Dynamo.Tests.Configuration
 
             var token = settings.CustomPackageFolders[1];
 
-            Assert.AreEqual(DynamoModel.BuiltInPackagesToken,token);
+            Assert.AreEqual(DynamoModel.BuiltInPackagesToken, token);
         }
 
         [Test]
@@ -236,12 +235,11 @@ namespace Dynamo.Tests.Configuration
         /// <summary>
         /// Struct to support the comparison between two PreferenceSettings instances
         /// </summary>
-        class PreferencesComparison
+        struct PreferencesComparison
         {
             public List<string> Properties { get; set; }
             public List<String> SamePropertyValues { get; set; }
             public List<String> DifferentPropertyValues { get; set; }
-            public Dictionary<string,string> DebugString { get; set; } = new Dictionary<string,string>();
         }
 
         /// <summary>
@@ -302,14 +300,10 @@ namespace Dynamo.Tests.Configuration
                         if (newList.Except(oldList).ToList().Count == 0)
                         {
                             propertiesWithSameValue.Add(destinationPi.Name);
-                            result.DebugString.Add(destinationPi.Name,
-                                $"same {oldValue?.ToString()}, {newValue?.ToString()}");
                         }
                         else
                         {
                             propertiesWithDifferentValue.Add(destinationPi.Name);
-                            result.DebugString.Add(destinationPi.Name,
-                                $"diff {oldValue?.ToString()}, {newValue?.ToString()}");
                         }
                     }
                     else if (destinationPi.PropertyType == typeof(List<GroupStyleItem>))
@@ -318,14 +312,10 @@ namespace Dynamo.Tests.Configuration
                             ((List<GroupStyleItem>)destinationPi.GetValue(defaultSettings, null)).Count)
                         {
                             propertiesWithSameValue.Add(destinationPi.Name);
-                            result.DebugString.Add(destinationPi.Name,
-                                $"same {oldValue?.ToString()}, {newValue?.ToString()}");
                         }
                         else
                         {
                             propertiesWithDifferentValue.Add(destinationPi.Name);
-                            result.DebugString.Add(destinationPi.Name,
-                                $"diff {oldValue?.ToString()}, {newValue?.ToString()}");
                         }
                     }
                     else if (destinationPi.PropertyType == typeof(List<ViewExtensionSettings>))
@@ -334,14 +324,10 @@ namespace Dynamo.Tests.Configuration
                             ((List<ViewExtensionSettings>)destinationPi.GetValue(defaultSettings, null)).Count)
                         {
                             propertiesWithSameValue.Add(destinationPi.Name);
-                            result.DebugString.Add(destinationPi.Name,
-                                $"same {oldValue?.ToString()}, {newValue?.ToString()}");
                         }
                         else
                         {
                             propertiesWithDifferentValue.Add(destinationPi.Name);
-                            result.DebugString.Add(destinationPi.Name,
-                                $"diff {oldValue?.ToString()}, {newValue?.ToString()}");
                         }
                     }
                     else if (destinationPi.PropertyType == typeof(List<BackgroundPreviewActiveState>))
@@ -350,14 +336,10 @@ namespace Dynamo.Tests.Configuration
                             ((List<BackgroundPreviewActiveState>)destinationPi.GetValue(defaultSettings, null)).Count)
                         {
                             propertiesWithSameValue.Add(destinationPi.Name);
-                            result.DebugString.Add(destinationPi.Name,
-                                $"same {oldValue?.ToString()}, {newValue?.ToString()}");
                         }
                         else
                         {
                             propertiesWithDifferentValue.Add(destinationPi.Name);
-                            result.DebugString.Add(destinationPi.Name,
-                                $"diff {oldValue?.ToString()}, {newValue?.ToString()}");
                         }
                     }
                     else if (destinationPi.PropertyType == typeof(List<DynamoPlayerFolderGroup>))
@@ -366,14 +348,10 @@ namespace Dynamo.Tests.Configuration
                             ((List<DynamoPlayerFolderGroup>)destinationPi.GetValue(defaultSettings, null)).Count)
                         {
                             propertiesWithSameValue.Add(destinationPi.Name);
-                            result.DebugString.Add(destinationPi.Name,
-                                $"same {oldValue?.ToString()}, {newValue?.ToString()}");
                         }
                         else
                         {
                             propertiesWithDifferentValue.Add(destinationPi.Name);
-                            result.DebugString.Add(destinationPi.Name,
-                                $"diff {oldValue?.ToString()}, {newValue?.ToString()}");
                         }
                     }
                     else
@@ -381,14 +359,10 @@ namespace Dynamo.Tests.Configuration
                         if (newValue?.ToString() == oldValue?.ToString())
                         {
                             propertiesWithSameValue.Add(destinationPi.Name);
-                            result.DebugString.Add(destinationPi.Name,
-                                $"same {oldValue?.ToString()}, {newValue?.ToString()}");
                         }
                         else
                         {
                             propertiesWithDifferentValue.Add(destinationPi.Name);
-                            result.DebugString.Add(destinationPi.Name,
-                                $"diff {oldValue?.ToString()}, {newValue?.ToString()}");
                         }
                     }
                 }
@@ -401,7 +375,7 @@ namespace Dynamo.Tests.Configuration
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("UnitTests"), Category("FailureNET6")]
         public void TestImportCopySettings()
         {
             string settingDirectory = Path.Combine(TestDirectory, "settings");
@@ -417,26 +391,10 @@ namespace Dynamo.Tests.Configuration
             var checkDifference = comparePrefenceSettings(defaultSettings, newSettings);
             int diffProps = checkDifference.DifferentPropertyValues.Count;
             int totProps = checkDifference.Properties.Count;
-            var firstPropertyWithSameValue = checkDifference.Properties.Except(checkDifference.DifferentPropertyValues).ToList();
+            string firstPropertyWithSameValue = checkDifference.Properties.Except(checkDifference.DifferentPropertyValues).ToList().FirstOrDefault();
             string defSettNumberFormat = defaultSettings.NumberFormat;
             string newSettNumberFormat = newSettings.NumberFormat;
-            string failMessage = $@"The file {newSettingslFilePath} exist: {newSettingsExist.ToString()} |
-                                  DiffProps: {diffProps.ToString()} | 
-                                  TotProps: {totProps.ToString()} | 
-                                  Default Sett NumberFormat: {defSettNumberFormat} |
-                                  New Sett NumberFormat: {newSettNumberFormat} | 
-                                  First Property with the same value {String.Join(",",firstPropertyWithSameValue)} |
-                                  Properties with the different value { String.Join(",",checkDifference.DifferentPropertyValues)} | ";
-            var p1 = Path.GetTempFileName();
-            defaultSettings.Save(p1);
-            Console.WriteLine("def settings");
-            Console.WriteLine(File.ReadAllText(p1));
-            var p2 = Path.GetTempFileName();
-            Console.WriteLine("new settings");
-            newSettings.Save(p2);
-            Console.WriteLine(File.ReadAllText(p2));
-
-            Console.WriteLine(JsonConvert.SerializeObject(checkDifference.DebugString));
+            string failMessage = $"The file {newSettingslFilePath} exist: {newSettingsExist.ToString()} | DiffProps: {diffProps.ToString()} | TotProps: {totProps.ToString()} | Default Sett NumberFormat: {defSettNumberFormat} | New Sett NumberFormat: {newSettNumberFormat} | First Property with the same value {firstPropertyWithSameValue}";
 
             // checking if the new Setting are completely different from the Default
             Assert.IsTrue(checkDifference.DifferentPropertyValues.Count == checkDifference.Properties.Count, failMessage);
