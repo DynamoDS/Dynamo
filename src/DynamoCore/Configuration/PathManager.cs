@@ -77,7 +77,7 @@ namespace Dynamo.Core
         private readonly int majorFileVersion;
         private readonly int minorFileVersion;
         private readonly string dynamoCoreDir;
-        private string hostApplicationDirectory;
+        private readonly string hostApplicationDirectory;
         private readonly string userDataDir;
         private readonly string commonDataDir;
 
@@ -93,7 +93,7 @@ namespace Dynamo.Core
         private readonly List<string> rootDirectories;
         private readonly HashSet<string> nodeDirectories;
         private readonly HashSet<string> additionalResolutionPaths;
-        private HashSet<string> preloadedLibraries;
+        private readonly HashSet<string> preloadedLibraries;
         private readonly HashSet<string> extensionsDirectories;
         private readonly HashSet<string> viewExtensionsDirectories;
         private IPathResolver pathResolver;
@@ -281,6 +281,9 @@ namespace Dynamo.Core
             get { return minorFileVersion; }
         }
 
+        /// <summary>
+        /// This function indicates if there is an already assigned Path Resolver , otherwise it will take from the ctor config
+        /// </summary>
         public bool HasPathResolver
         {
             get { return pathResolver != null; }
