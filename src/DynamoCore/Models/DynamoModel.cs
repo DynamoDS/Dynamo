@@ -40,7 +40,6 @@ using Dynamo.Utilities;
 using DynamoServices;
 using Greg;
 using Lucene.Net.Documents;
-using Lucene.Net.Search;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ProtoCore;
@@ -928,8 +927,16 @@ namespace Dynamo.Models
 
             CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager, LibraryServices);
 
-            LuceneSearchUtility = new LuceneSearchUtility(this);
-            LuceneSearchUtility.InitializeLuceneConfig(LuceneConfig.NodesIndexingDirectory);
+            if (IsTestMode)
+            {
+                LuceneSearchUtility = new LuceneSearchUtility(this);
+                LuceneSearchUtility.InitializeLuceneConfig(string.Empty, LuceneSearchUtility.LuceneStorage.RAM);
+            }
+            else
+            {
+                LuceneSearchUtility = new LuceneSearchUtility(this);
+                LuceneSearchUtility.InitializeLuceneConfig(LuceneConfig.NodesIndexingDirectory);
+            }
 
             InitializeCustomNodeManager();
 
@@ -1518,19 +1525,19 @@ namespace Dynamo.Models
             //WhenHomeWorkspaceIsFocusedInputAndOutputNodesAreMissingFromSearch
             //WhenStartingDynamoInputAndOutputNodesAreNolongerMissingFromSearch
             // New index process from Lucene, adding missing nodes: Code Block, Input and Output
-            //var ele = AddNodeTypeToSearch(outputData);      
-            //if (ele != null)
-            //{
-            //    AddNodeTypeToSearchIndex(ele, iDoc);
-            //}
+            var ele = AddNodeTypeToSearch(outputData);      
+            if (ele != null)
+            {
+                AddNodeTypeToSearchIndex(ele, iDoc);
+            }
 
-            //ele = AddNodeTypeToSearch(symbolData);
-            //if (ele != null)
-            //{
-            //    AddNodeTypeToSearchIndex(ele, iDoc);
-            //}
+            ele = AddNodeTypeToSearch(symbolData);
+            if (ele != null)
+            {
+                AddNodeTypeToSearchIndex(ele, iDoc);
+            }
 
-            var ele = AddNodeTypeToSearch(cbnData);
+            ele = AddNodeTypeToSearch(cbnData);
             if (ele != null)
             {
                 AddNodeTypeToSearchIndex(ele, iDoc);
@@ -1569,8 +1576,8 @@ namespace Dynamo.Models
 
             // Import Zero Touch libs
             var functionGroups = LibraryServices.GetAllFunctionGroups();
-            if (!IsTestMode)
-                AddZeroTouchNodesToSearch(functionGroups);
+
+            AddZeroTouchNodesToSearch(functionGroups);
 #if DEBUG_LIBRARY
             DumpLibrarySnapshot(functionGroups);
 #endif
@@ -3248,9 +3255,9 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="node">node info that will be indexed</param>
         /// <param name="doc">Lucene document in which the node info will be indexed</param>
-        private void AddNodeTypeToSearchIndex(NodeSearchElement node, Document doc)
+        internal void AddNodeTypeToSearchIndex(NodeSearchElement node, Document doc)
         {
-            if (IsTestMode) return;
+            //if (IsTestMode) return;
             if (LuceneSearchUtility.addedFields == null) return;
 
             LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName), node.FullCategoryName);

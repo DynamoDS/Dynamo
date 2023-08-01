@@ -1048,7 +1048,7 @@ namespace Dynamo.Tests
             ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.SearchAndUpdateResults("Constant2");
             Assert.AreEqual(originalNumElements + 1, ViewModel.Model.SearchModel.NumElements);
 
-            Assert.AreEqual(2, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.Count());
+            Assert.AreEqual(2, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.OfType<CustomNodeSearchElementViewModel>().Count());
 
             var res1 = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.ElementAt(0);
             var res2 = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.ElementAt(1);
@@ -1060,7 +1060,7 @@ namespace Dynamo.Tests
             var node2 = res2.Model as CustomNodeSearchElement;
 
             Assert.IsTrue((node1.ID == oldId && node2.ID == newId) ||
-                          (node1.ID == newId && node2.ID == oldId));
+                          (node1.ID == newId && node2.ID == oldId));    
 
         }
 
@@ -1123,7 +1123,7 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(TestDirectory, @"core\custom_node_saving", "Constant2.dyf");
             ViewModel.OpenCommand.Execute(examplePath);
 
-            var oldId = (model.CurrentWorkspace as CustomNodeWorkspaceModel).CustomNodeDefinition.FunctionId;
+            var oldId = (model.CurrentWorkspace as CustomNodeWorkspaceModel).CustomNodeDefinition.FunctionId;   
 
             CustomNodeWorkspaceModel nodeWorkspace;
             Assert.IsTrue(model.CustomNodeManager.TryGetFunctionWorkspace(oldId, true, out nodeWorkspace));
