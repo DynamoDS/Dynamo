@@ -95,7 +95,7 @@ namespace Dynamo.Logging
         public virtual IAnalyticsSession Session { get; private set; }
 
         /// <summary>
-        /// Return if Analytics Client is allowed to send any analytics information (Google, ADP etc.)
+        /// Return if Analytics Client is allowed to send any analytics information
         /// </summary>
         public bool ReportingAnalytics
         {
