@@ -7,7 +7,7 @@
         WindowStyle="None"
         MinWidth="530"
         MaxWidth="650"
-        Height="605"
+        Height="350"
         ResizeMode="NoResize"
         ShowInTaskbar="False"
         AllowsTransparency="True"
@@ -159,7 +159,7 @@
                 <Rectangle Style="{StaticResource DividerRectangleStyle}" Grid.Row="0" Grid.ColumnSpan="2" Margin="-15 0"/>
 
                 <Border Background="#E6E6E6"
-                        Grid.Row="2"
+                        Grid.Row="1"
                         Grid.Column="0"
                         Grid.ColumnSpan="2" 
                         Margin="0 0 3 0" 
@@ -182,7 +182,7 @@
                 </Border>
 
                 <StackPanel Orientation="Vertical" 
-                            Grid.Row="3"
+                            Grid.Row="2"
                             Grid.Column="0"
                             Grid.ColumnSpan="2">
 
@@ -207,7 +207,7 @@
 
                 </StackPanel>
                 <!--Configure ADP Consent-->
-                <Button Grid.Row="4"
+                <Button Grid.Row="3"
                         Grid.Column="0"
                         x:Name="configure_adp_button"
                         Background="White"
@@ -222,7 +222,7 @@
                         Click="configure_adp_button_Click" />
 
                 <!--Learn More Button-->
-                <TextBlock Grid.Row="5"
+                <TextBlock Grid.Row="4"
                            Grid.Column="0"
                            Margin="0 0 0 2"
                            VerticalAlignment="Bottom"
