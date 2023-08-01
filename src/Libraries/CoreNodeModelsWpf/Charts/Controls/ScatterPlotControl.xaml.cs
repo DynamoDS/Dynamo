@@ -26,7 +26,13 @@ namespace CoreNodeModelsWpf.Charts.Controls
         private SolidColorPaint AxisColor { get; set; }
         private SolidColorPaint AxisSeparatorColor { get; set; }
 
+        /// <summary>
+        /// Used to get or set the X-axis of the chart
+        /// </summary>
         public Axis[] XAxes { get; set; }
+        /// <summary>
+        /// Used to get or set the Y-axis of the chart
+        /// </summary>
         public Axis[] YAxes { get; set; }
 
         private void OnPropertyChanged(string propertyName)
@@ -180,8 +186,8 @@ namespace CoreNodeModelsWpf.Charts.Controls
 
         private void SetAxes()
         {
-            AxisColor = new(ChartStyle.AXIS_COLOR) { StrokeThickness = ChartStyle.AXIS_STROKE_THICKNESS, SKTypeface = SKTypeface.FromFamilyName(ChartStyle.AXIS_FONT_FAMILY) };
-            AxisSeparatorColor = new(ChartStyle.AXIS_SEPARATOR_COLOR) { StrokeThickness = ChartStyle.AXIS_STROKE_THICKNESS };
+            AxisColor = new SolidColorPaint(ChartStyle.AXIS_COLOR) { StrokeThickness = ChartStyle.AXIS_STROKE_THICKNESS, SKTypeface = SKTypeface.FromFamilyName(ChartStyle.AXIS_FONT_FAMILY) };
+            AxisSeparatorColor = new SolidColorPaint(ChartStyle.AXIS_SEPARATOR_COLOR) { StrokeThickness = ChartStyle.AXIS_STROKE_THICKNESS };
 
             XAxes = new Axis[]
             {

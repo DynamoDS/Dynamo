@@ -67,8 +67,6 @@ namespace CoreNodeModelsWpf.Charts
         {
             PortUpdated?.Invoke(this, args);
         }
-
-        internal List<SolidColorPaint> ColorCache { get; set; }
         #endregion
 
         #region Constructors

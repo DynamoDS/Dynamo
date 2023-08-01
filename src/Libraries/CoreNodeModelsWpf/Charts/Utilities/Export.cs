@@ -23,37 +23,43 @@ namespace CoreNodeModelsWpf.Charts.Utilities
         {
             if (control == null && gcontrol == null) return;
 
-            int img_width = 500;
-            int img_height = 500;
+            int img_width = control == null ? (int)gcontrol.ActualWidth : (int)control.ActualWidth;
+            int img_height = control == null ? (int)gcontrol.ActualHeight : (int)control.ActualHeight;
             InMemorySkiaSharpChart skChart;
-
-            switch (control)
+            try
             {
-                case CartesianChart cartesianChart:
-                    skChart = new SKCartesianChart(cartesianChart) { Width = img_width, Height = img_height, };
-                    break;
-                case PieChart pieChart:
-                    skChart = new SKPieChart(pieChart) { Width = img_width, Height = img_height, };
-                    break;
-                default:
-                    skChart = new SKGeoMap(gcontrol) { Width = img_width, Height = img_height, };
-                    break;
+                switch (control)
+                {
+                    case CartesianChart cartesianChart:
+                        skChart = new SKCartesianChart(cartesianChart) { Width = img_width, Height = img_height, };
+                        break;
+                    case PieChart pieChart:
+                        skChart = new SKPieChart(pieChart) { Width = img_width, Height = img_height, };
+                        break;
+                    default:
+                        skChart = new SKGeoMap(gcontrol) { Width = img_width, Height = img_height, };
+                        break;
+                }
+
+                SaveFileDialog dialog = new SaveFileDialog();
+                dialog.FileName = "NodeModelChart"; // Default file name
+                dialog.DefaultExt = ".png"; // Default file extension
+                dialog.Filter = "Image files (*.png) | *.png"; // Filter files by extension
+
+                // Show save file dialog box
+                bool? result = dialog.ShowDialog();
+
+                // Process save file dialog box results
+                if (result == true)
+                {
+                    // Save document
+                    string filename = dialog.FileName;
+                    skChart.SaveImage(filename, SkiaSharp.SKEncodedImageFormat.Png);
+                }
             }
-
-            SaveFileDialog dialog = new SaveFileDialog();
-            dialog.FileName = "NodeModelChart"; // Default file name
-            dialog.DefaultExt = ".png"; // Default file extension
-            dialog.Filter = "Image files (*.png) | *.png"; // Filter files by extension
-
-            // Show save file dialog box
-            bool? result = dialog.ShowDialog();
-
-            // Process save file dialog box results
-            if (result == true)
-            {                
-                // Save document
-                string filename = dialog.FileName;
-                skChart.SaveImage(filename, SkiaSharp.SKEncodedImageFormat.Png);
+            catch (Exception ex)
+            {
+                Console.WriteLine("Chart Image Export Error:" + ex.Message);
             }
         }
     }
