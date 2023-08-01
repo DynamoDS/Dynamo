@@ -444,7 +444,7 @@ namespace DynamoCoreWpfTests
             var workSpaceJobject = JObject.Parse(ViewModel.CurrentSpaceViewModel.ToJson());
             JObject nodeViewModelJobject = JObject.Parse(workSpaceJobject["NodeViews"][0].ToString());
 
-            Assert.AreEqual(8, nodeViewModelJobject.Properties().Count(), "The number of Serialized properties is not the expected");
+            Assert.AreEqual(9, nodeViewModelJobject.Properties().Count(), "The number of Serialized properties is not the expected");
 
             bool explicitOrder =
                 nodeViewModelJobject.Properties().ElementAt(0).Name == GetJsonPropertydName<NodeViewModel>(nameof(NodeViewModel.Id)) &&
@@ -454,7 +454,8 @@ namespace DynamoCoreWpfTests
                 nodeViewModelJobject.Properties().ElementAt(4).Name == GetJsonPropertydName<NodeViewModel>(nameof(NodeViewModel.IsFrozenExplicitly)) &&
                 nodeViewModelJobject.Properties().ElementAt(5).Name == GetJsonPropertydName<NodeViewModel>(nameof(NodeViewModel.IsVisible)) &&
                 nodeViewModelJobject.Properties().ElementAt(6).Name == GetJsonPropertydName<NodeViewModel>(nameof(NodeViewModel.X)) &&
-                nodeViewModelJobject.Properties().ElementAt(7).Name == GetJsonPropertydName<NodeViewModel>(nameof(NodeViewModel.Y));
+                nodeViewModelJobject.Properties().ElementAt(7).Name == GetJsonPropertydName<NodeViewModel>(nameof(NodeViewModel.Y)) &&
+                nodeViewModelJobject.Properties().ElementAt(8).Name == GetJsonPropertydName<NodeViewModel>(nameof(NodeViewModel.PackageName));
 
             Assert.IsTrue(explicitOrder, "The order of the properties is not the expected");
         }
