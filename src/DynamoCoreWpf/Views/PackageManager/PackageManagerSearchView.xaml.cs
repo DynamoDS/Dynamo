@@ -60,7 +60,12 @@ namespace Dynamo.PackageManager.UI
 
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            (this.DataContext as PackageManagerSearchViewModel).SearchAndUpdateResults(this.searchTextBox.Text);
+            string searchTerm = this.searchTextBox.Text;
+            if (string.IsNullOrEmpty(searchTextBox.Text))
+            {
+                searchTerm = null;
+            }
+            (this.DataContext as PackageManagerSearchViewModel).SearchAndUpdateResults(searchTerm);
         }
 
         /// <summary>
