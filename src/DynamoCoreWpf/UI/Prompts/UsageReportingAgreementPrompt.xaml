@@ -7,7 +7,7 @@
         WindowStyle="None"
         MinWidth="530"
         MaxWidth="650"
-        Height="350"
+        Height="310"
         ResizeMode="NoResize"
         ShowInTaskbar="False"
         AllowsTransparency="True"
@@ -162,7 +162,7 @@
                         Grid.Row="1"
                         Grid.Column="0"
                         Grid.ColumnSpan="2" 
-                        Margin="0 0 3 0" 
+                        Margin="0 15 3 0" 
                         Padding="0">
                     <ScrollViewer 
                               Padding="0"
@@ -215,25 +215,14 @@
                         Foreground="#3C3C3C"
                         Style="{StaticResource CtaButtonStyle}"
                         VerticalAlignment="Bottom"
-                        Margin="-4 0 0 0"
+                        Margin="-4 10 0 0"
                         Width="auto"
                         HorizontalAlignment="Left"
                         Content="{x:Static p:Resources.ConfigureADPButtonText}"
                         Click="configure_adp_button_Click" />
 
-                <!--Learn More Button-->
-                <TextBlock Grid.Row="4"
-                           Grid.Column="0"
-                           Margin="0 0 0 2"
-                           VerticalAlignment="Bottom"
-                           HorizontalAlignment="Stretch">
-                    <Hyperlink Click="OnLearnMoreClick" Foreground="#4790cd">
-                        <TextBlock Name="LearnMore" Text="{x:Static p:Resources.LearnMore}" />
-                    </Hyperlink>
-                </TextBlock>
-
                 <!--Continue Button-->
-                <Button Grid.Row="5"
+                <Button Grid.Row="3"
                         Grid.Column="1"
                         x:Name="okButton"
                         BorderBrush="#0696D7"

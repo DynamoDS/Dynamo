@@ -61,14 +61,6 @@ namespace Dynamo.UI.Prompts
             Close();
         }
 
-        private void OnLearnMoreClick(object sender, RoutedEventArgs e)
-        {
-            var aboutBox = viewModel.BrandingResourceProvider.CreateAboutBox(viewModel);
-            aboutBox.Owner = this;
-            aboutBox.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            aboutBox.ShowDialog();
-        }
-
         protected override void OnClosed(System.EventArgs e)
         {
             base.OnClosed(e);
