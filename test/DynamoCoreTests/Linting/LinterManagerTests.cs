@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Dynamo.Configuration;
 using Dynamo.Extensions;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
@@ -44,7 +45,8 @@ namespace Dynamo.Tests.Linting
                 {
                     StartInTestMode = true,
                     Extensions = new List<IExtension> { mockExtension.Object },
-                    ProcessMode = TaskProcessMode.Synchronous
+                    ProcessMode = TaskProcessMode.Synchronous,
+                    Preferences = PreferenceSettings.Instance
                 });
         }
 

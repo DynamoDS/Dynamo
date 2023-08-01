@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Dynamo.Configuration;
 using Dynamo.Extensions;
 using Dynamo.Logging;
 using Dynamo.Models;
@@ -36,7 +37,8 @@ namespace Dynamo.Tests
                 {
                     StartInTestMode = true,
                     Extensions = new List<IExtension> { extMock.Object },
-                    ProcessMode = TaskProcessMode.Synchronous
+                    ProcessMode = TaskProcessMode.Synchronous,
+                    Preferences = PreferenceSettings.Instance
                 });
             model.ExtensionManager.ExtensionAdded += OnExtensionAdded;
             model.ExtensionManager.ExtensionRemoved += OnExtensionRemoved;
