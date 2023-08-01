@@ -107,20 +107,6 @@ namespace Dynamo.Logging
         }
 
         /// <summary>
-        /// Return if Google Analytics Client is allowed to send analytics info
-        /// </summary>
-        private bool ReportingGoogleAnalytics
-        {
-            get
-            {
-                return preferences != null
-                    && Service.IsInitialized
-                    && !Analytics.DisableAnalytics
-                    && preferences.IsAnalyticsReportingApproved;
-            }
-        }
-
-        /// <summary>
         /// Return if Analytics Client is allowed to send instrumentation info
         /// </summary>
         public bool ReportingUsage

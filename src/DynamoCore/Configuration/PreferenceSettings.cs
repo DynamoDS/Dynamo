@@ -112,6 +112,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Indicates whether Google analytics reporting is approved or not.
         /// </summary>
+        [Obsolete("Property will be deprecated in Dynamo 3.0")]
         public bool IsAnalyticsReportingApproved { get; set; }
 
         /// <summary>
@@ -344,6 +345,7 @@ namespace Dynamo.Configuration
         /// </summary>
         public int RenderPrecision { get; set; }
 
+        /// <summary>
         /// Indicates whether surface and solid edges will
         /// be rendered.
         /// </summary>

@@ -1917,9 +1917,6 @@ Do you want to install the latest Dynamo update?</value>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
   </data>
-  <data name="ConsentFormGoogleAnalyticsCheckBoxContent" xml:space="preserve">
-    <value>I agree to contribute to the Google Analytics program.</value>
-  </data>
   <data name="ConsentFormADPAnalyticsCheckBoxContent" xml:space="preserve">
     <value>I agree to data collection in desktop products for Autodesk analytics programs.</value>
   </data>
