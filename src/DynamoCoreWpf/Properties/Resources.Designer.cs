@@ -4946,6 +4946,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Package: .
+        /// </summary>
+        public static string NodeTooltipPackage {
+            get {
+                return ResourceManager.GetString("NodeTooltipPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Renamed from {0}.
         /// </summary>
         public static string NodeTooltipRenamed {
