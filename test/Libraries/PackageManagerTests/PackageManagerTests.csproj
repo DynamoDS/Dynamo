@@ -1,5 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <ImportGroup Label="PropertySheets">
+    <PropertyGroup>
+      <UILib>true</UILib>
+    </PropertyGroup>
+    <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config/CS_SDK.props" />
   </ImportGroup>
   <PropertyGroup>

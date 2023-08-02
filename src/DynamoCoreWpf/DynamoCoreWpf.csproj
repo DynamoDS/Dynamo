@@ -55,6 +55,7 @@
     <None Remove="Packages\SplashScreen\build\index.bundle.js" />
     <None Remove="Packages\SplashScreen\build\index.html" />
     <None Remove="UI\Images\Canvas\canvas-button-geometry-scaling.png" />
+    <None Remove="UI\Images\NodeStates\package-64px.png" />
     <None Remove="UI\Prompts\PortPropertiesEditPrompt.xaml" />
     <None Remove="Views\Core\CustomColorPicker.xaml" />
     <None Remove="Views\Core\GeometryScalingPopup.xaml" />
@@ -913,6 +914,7 @@
     <Resource Include="UI\Images\NodeStates\frozen-64px.png" />
     <Resource Include="UI\Images\NodeStates\hidden-64px.png" />
     <Resource Include="UI\Images\NodeStates\info-64px.png" />
+    <Resource Include="UI\Images\NodeStates\package-64px.png" />
     <Resource Include="UI\Images\question-hover-blue-16px.png" />
     <Resource Include="UI\Images\TitleBarButtons\close-darktheme-default-16px.png" />
     <Resource Include="UI\Images\TitleBarButtons\close-lighttheme-default-16px.png" />
