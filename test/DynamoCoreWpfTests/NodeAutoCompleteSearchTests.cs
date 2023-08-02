@@ -163,7 +163,7 @@ namespace DynamoCoreWpfTests
             // Set the suggestion to ObjectType
             searchViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
 
-            // Results will be nodes that take worksheet.
+            // Results will be nodes that accept Line as parameter.
             searchViewModel.PopulateAutoCompleteCandidates();
             Assert.AreEqual(44, searchViewModel.FilteredResults.Count());
         }
