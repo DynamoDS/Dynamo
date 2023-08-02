@@ -141,9 +141,9 @@ namespace DynamoCoreWpfTests
             // Set the suggestion to ObjectType
             searchViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
 
-            // The initial list will fill the FilteredResults with a few options - all basic input types
+            // Results will be nodes that take color or color[] etc as params.
             searchViewModel.PopulateAutoCompleteCandidates();
-            Assert.AreEqual(7, searchViewModel.FilteredResults.Count());
+            Assert.AreEqual(10, searchViewModel.FilteredResults.Count());
         }
 
         [Test]
@@ -282,7 +282,7 @@ namespace DynamoCoreWpfTests
             var searchViewModel = ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel;
             searchViewModel.PortViewModel = outPorts[0];
             var suggestions = searchViewModel.GetMatchingSearchElements();
-            Assert.AreEqual(29, suggestions.Count());
+            Assert.AreEqual(44, suggestions.Count());
         }
 
         [Test]
