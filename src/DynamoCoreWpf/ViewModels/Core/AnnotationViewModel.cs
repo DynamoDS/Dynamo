@@ -1246,9 +1246,10 @@ namespace Dynamo.ViewModels
 
             using (NestedGroupsGeometries.DeferCollectionReset())
             {
-                foreach (var key in removedFromGroup)
+                //running the loop backwards to avoid random key removal from dictionary
+                for (int i = removedFromGroup.Count() - 1; i >= 0; i--)
                 {
-                    RemoveKeyFromCutGeometryDictionary(key);
+                    RemoveKeyFromCutGeometryDictionary(removedFromGroup.ElementAt(i));
                 }
 
                 var addedToGroup = allGroupedGroups
