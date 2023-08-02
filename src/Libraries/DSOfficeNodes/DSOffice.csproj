@@ -1,0 +1,60 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(SolutionDir)Config\CS_SDK.props" />
+  </ImportGroup>
+  <PropertyGroup>
+    <ProjectGuid>{6CC1E399-B5A5-4FA2-A98C-5D8B2BA280A1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DSOffice</RootNamespace>
+    <AssemblyName>DSOffice</AssemblyName>
+    <EnableDefaultCompileItems>False</EnableDefaultCompileItems>
+  </PropertyGroup>
+  <PropertyGroup>
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="DSOffice.Migrations.xml">
+        <SubType>Designer</SubType>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="DSOffice_DynamoCustomization.xml">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CSVNodes.cs" />
+    <Compile Include="Excel.cs" Condition=" '$(RuntimeIdentifier)' == 'win10-x64' " />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="DSOffice.Migrations.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="DSOffice_DynamoCustomization.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
+        <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
+        <Name>DynamoCore</Name>
+        <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\DSOfficeUtilities\DSOfficeUtilities.csproj" Condition=" '$(RuntimeIdentifier)' == 'win10-x64' " />
+    <ProjectReference Include="..\..\NodeServices\DynamoServices.csproj">
+        <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
+        <Name>DynamoServices</Name>
+        <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\CoreNodes\CoreNodes.csproj">
+        <Project>{87550b2b-6cb8-461e-8965-dfafe3aafb5c}</Project>
+        <Name>CoreNodes</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" '$(OS)' != 'Unix' ">
+    <!-- Generate customization dll -->
+    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)DSOfficeImages.resx" OutputResources="$(ProjectDir)DSOfficeImages.resources" References="$(SystemDrawingDllPath)" />
+    <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)DSOfficeImages.resources" OutputAssembly="$(OutDir)DSOffice.customization.dll" Version="%(AssemblyInfo.Version)" />
+  </Target>
+</Project>
