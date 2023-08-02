@@ -273,5 +273,17 @@ import (EnumReferencingClass from ""FFITarget.dll"");
             thisTest.RunScriptSource(code);
             thisTest.Verify("val", "Friday is the best");
         }
+
+        [Test]
+        public void Test_FFI_ImportMissingTypeParameter()
+        {
+            var val = 30;
+            string code = $@"
+        import (MissingClass from ""FFITarget.dll"");
+        x = MissingClass.MissingMethod({val});";
+
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("x", val);
+        }
     }
 }
