@@ -211,33 +211,8 @@ namespace Dynamo.Graph.Workspaces
 
             if (type == null)
             {
-                if (typeName == "CoreNodeModels.Formula")
-                {
-                    var code = obj["Formula"].Value<string>();
-                    var formulaConverter = new MigrateFormulaToDS();
-                    string convertedCode = string.Empty;
-                    bool conversionFailed = false;
-                    try
-                    {
-                        convertedCode = formulaConverter.ConvertFormulaToDS(code);
-                    }
-                    catch(BuildHaltException)
-                    {
-                        node = DeserializeAsCBN(code + ";", obj, guid);
-                        (node as CodeBlockNodeModel).FormulaMigrationWarning(Resources.FormulaDSConversionFailure);
-                        conversionFailed = true;
-                    }
-                    if(!conversionFailed)
-                    {
-                        node = DeserializeAsCBN(convertedCode + ";", obj, guid);
-                        (node as CodeBlockNodeModel).FormulaMigrationWarning(Resources.FormulaMigrated);
-                    }
-                }
-                else
-                {
-                    // If type is still null at this point return a dummy node
-                    node = CreateDummyNode(obj, typeName, assemblyName, functionName, inPorts, outPorts);
-                }
+                // If type is still null at this point return a dummy node
+                node = CreateDummyNode(obj, typeName, assemblyName, functionName, inPorts, outPorts);
             }
             // Attempt to create a valid node using the type
             else if (type == typeof(Function))
@@ -291,6 +266,28 @@ namespace Dynamo.Graph.Workspaces
             {
                 var functionId = Guid.Parse(obj["FunctionSignature"].Value<string>());
                 node = manager.CreateCustomNodeInstance(functionId);
+            }
+            else if (type.ToString() == "CoreNodeModels.Formula")
+            {
+                var code = obj["Formula"].Value<string>();
+                var formulaConverter = new MigrateFormulaToDS();
+                string convertedCode = string.Empty;
+                bool conversionFailed = false;
+                try
+                {
+                    convertedCode = formulaConverter.ConvertFormulaToDS(code);
+                }
+                catch (BuildHaltException)
+                {
+                    node = DeserializeAsCBN(code + ";", obj, guid);
+                    (node as CodeBlockNodeModel).FormulaMigrationWarning(Resources.FormulaDSConversionFailure);
+                    conversionFailed = true;
+                }
+                if (!conversionFailed)
+                {
+                    node = DeserializeAsCBN(convertedCode + ";", obj, guid);
+                    (node as CodeBlockNodeModel).FormulaMigrationWarning(Resources.FormulaMigrated);
+                }
             }
             else
             {
