@@ -154,13 +154,13 @@ namespace CoreNodeModelsWpf.Charts.Controls
                 model = this.model;
             }
 
-            var colors = BuildColors(model);
-
             if (model.XLabels != null && model.XLabels.Any()
              && model.YLabels != null && model.YLabels.Any()
              && model.Values != null && model.Values.Any()
              && model.Colors != null && model.Colors.Any())
             {
+                var colors = BuildColors(model);
+
                 for (var i = 0; i < model.XLabels.Count; i++)
                 {
                     for (var j = 0; j < model.YLabels.Count; j++)
