@@ -7,7 +7,7 @@ namespace Dynamo.Tests
     [TestFixture]
     internal class AstBuildFailTest : DynamoModelTestBase
     {
-        [Test,Category("FailureNET6")]//this currently fails because the node is in TestUINodes.dll.
+        [Test]
         public void TestAstBuildException()
         {
             // This dyn file contains a node which will throw an exception 

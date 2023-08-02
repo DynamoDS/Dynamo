@@ -10,7 +10,7 @@
         <icon>content\images\logo.png</icon>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>This package bundles executables to generate sig file for Dynamo installers.</description>
-        <copyright>Copyright Autodesk 2020</copyright>
+        <copyright>Copyright Autodesk 2023</copyright>
         <dependencies>
             <group targetFramework=".NETFramework4.8" />
         </dependencies>
