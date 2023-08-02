@@ -660,7 +660,7 @@ namespace Dynamo.Models
                 // Log all exceptions as part of directories check.
                 foreach (var exception in exceptions)
                 {
-                    Logger.Log(exception); 
+                    Logger.Log(exception);
                 }
             }
 
@@ -927,14 +927,14 @@ namespace Dynamo.Models
 
             CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager, LibraryServices);
 
+            LuceneSearchUtility = new LuceneSearchUtility(this);
+
             if (IsTestMode)
             {
-                LuceneSearchUtility = new LuceneSearchUtility(this);
                 LuceneSearchUtility.InitializeLuceneConfig(string.Empty, LuceneSearchUtility.LuceneStorage.RAM);
             }
             else
             {
-                LuceneSearchUtility = new LuceneSearchUtility(this);
                 LuceneSearchUtility.InitializeLuceneConfig(LuceneConfig.NodesIndexingDirectory);
             }
 
@@ -992,7 +992,7 @@ namespace Dynamo.Models
                                     {
                                         loadedLinter.InitializeBase(this.LinterManager);
                                     }
-                                    
+
                                     (loadedExtension as IExtension).Startup(startupParams);
                                 }
                             }
@@ -1406,12 +1406,12 @@ namespace Dynamo.Models
 
                 var elements = SearchModel.SearchEntries.OfType<CustomNodeSearchElement>().
                                 Where(x =>
-                                        {
-                                            // Search for common paths and get rid of empty paths.
-                                            // It can be empty just in case it's just created node.
-                                            return String.Compare(x.Path, info.Path, StringComparison.OrdinalIgnoreCase) == 0 &&
-                                                !String.IsNullOrEmpty(x.Path);
-                                        }).ToList();
+                                {
+                                    // Search for common paths and get rid of empty paths.
+                                    // It can be empty just in case it's just created node.
+                                    return String.Compare(x.Path, info.Path, StringComparison.OrdinalIgnoreCase) == 0 &&
+                                        !String.IsNullOrEmpty(x.Path);
+                                }).ToList();
 
                 if (elements.Any())
                 {
@@ -1541,7 +1541,7 @@ namespace Dynamo.Models
             if (ele != null)
             {
                 AddNodeTypeToSearchIndex(ele, iDoc);
-            }         
+            }
         }
 
         internal static bool IsDisabledPath(string packagesDirectory, IPreferences preferences)
@@ -1576,8 +1576,8 @@ namespace Dynamo.Models
 
             // Import Zero Touch libs
             var functionGroups = LibraryServices.GetAllFunctionGroups();
-
-            AddZeroTouchNodesToSearch(functionGroups);
+            if (!IsTestMode)
+                AddZeroTouchNodesToSearch(functionGroups);
 #if DEBUG_LIBRARY
             DumpLibrarySnapshot(functionGroups);
 #endif
@@ -1599,7 +1599,7 @@ namespace Dynamo.Models
                 {
                     continue;
                 }
-                
+
                 // NOTE: extension will only be null if path is null
                 string extension = null;
                 try
@@ -1645,19 +1645,20 @@ namespace Dynamo.Models
         /// </param>
         internal void LoadNodeLibrary(Assembly assem, bool suppressZeroTouchLibraryLoad = true)
         {
-           // don't import assembly if its marked node lib and contains any nodemodels and any nodecustomizations
-           // as a consequence we won't import any ZT nodes from assemblies that contain customziations and are marked node libraries.
-           // We'll only apply the customizations and import NodeModels which are present.
-           // I think this is consistent with the current behavior - IE today - if a nodeModel exists in an assembly, the rest of the assembly 
-           // is not imported as ZT - the same will be true if the assembly contains a NodeViewCustomization.
+            // don't import assembly if its marked node lib and contains any nodemodels and any nodecustomizations
+            // as a consequence we won't import any ZT nodes from assemblies that contain customziations and are marked node libraries.
+            // We'll only apply the customizations and import NodeModels which are present.
+            // I think this is consistent with the current behavior - IE today - if a nodeModel exists in an assembly, the rest of the assembly 
+            // is not imported as ZT - the same will be true if the assembly contains a NodeViewCustomization.
 
             bool hasNodeModelOrNodeViewTypes;
             try
             {
                 hasNodeModelOrNodeViewTypes = NodeModelAssemblyLoader.ContainsNodeModelSubType(assem)
                 || (NodeModelAssemblyLoader.ContainsNodeViewCustomizationType(assem));
-            } 
-            catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 throw new Exceptions.LibraryLoadFailedException(assem.Location, ex.Message);
             }
 
@@ -2101,7 +2102,7 @@ namespace Dynamo.Models
                         if (OpenJsonFile(filePath, fileContents, dynamoPreferences, forceManualExecutionMode, out ws))
                         {
                             ExtraWorkspaceViewInfo viewInfo = ExtraWorkspaceViewInfoFromJson(fileContents);
-                            
+
                             InsertWorkspace(ws, viewInfo);
                         }
                     }
@@ -2114,7 +2115,7 @@ namespace Dynamo.Models
                 throw e;
             }
         }
-        
+
         /// <summary>
         /// Opens a Dynamo workspace from a path to an Xml file on disk.
         /// </summary>
@@ -2250,17 +2251,17 @@ namespace Dynamo.Models
 
             CurrentWorkspace.UpdateWithExtraWorkspaceViewInfo(viewInfo, offsetX, offsetY);
 
-            if(viewInfo != null)
+            if (viewInfo != null)
             {
                 List<NoteModel> insertedNotes = GetInsertedNotes(viewInfo.Annotations);
                 DynamoSelection.Instance.Selection.AddRange(insertedNotes);
-            }           
+            }
 
-            DynamoSelection.Instance.Selection.AddRange(nodes); 
-            
+            DynamoSelection.Instance.Selection.AddRange(nodes);
+
             currentWorkspace.HasUnsavedChanges = true;
         }
-        
+
         private void SetPeriodicEvaluation(WorkspaceModel ws)
         {
             // TODO: #4258
@@ -2292,7 +2293,7 @@ namespace Dynamo.Models
             if (!string.IsNullOrEmpty(filePath))
             {
                 CustomNodeManager.AddUninitializedCustomNodesInPath(Path.GetDirectoryName(filePath), IsTestMode);
-            }            
+            }
 
             var currentHomeSpace = Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
             currentHomeSpace.UndefineCBNFunctionDefinitions();
@@ -2600,7 +2601,7 @@ namespace Dynamo.Models
                     //If there is only one model, then deleting that model should delete the group. In that case, do not record
                     //the group for modification. Until we have one model in a group, group should be recorded for modification
                     //otherwise, undo operation cannot get the group back.
-                    if (annotation.Nodes.Count() > 1 && 
+                    if (annotation.Nodes.Count() > 1 &&
                         annotation.Nodes.Where(x => x.GUID == model.GUID).Any())
                     {
                         CurrentWorkspace.RecordGroupModelBeforeUngroup(annotation);
@@ -3064,7 +3065,7 @@ namespace Dynamo.Models
                 //so adding the group after nodes / notes are added to workspace.
                 //select only those nodes that are part of a group.
                 var newAnnotations = new List<AnnotationModel>();
-                foreach (var annotation in annotations.OrderByDescending(a => a.HasNestedGroups)) 
+                foreach (var annotation in annotations.OrderByDescending(a => a.HasNestedGroups))
                 {
                     if (modelLookup.ContainsKey(annotation.GUID))
                     {
@@ -3257,14 +3258,13 @@ namespace Dynamo.Models
         /// <param name="doc">Lucene document in which the node info will be indexed</param>
         internal void AddNodeTypeToSearchIndex(NodeSearchElement node, Document doc)
         {
-            //if (IsTestMode) return;
             if (LuceneSearchUtility.addedFields == null) return;
 
             LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName), node.FullCategoryName);
             LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), node.Name);
             LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Description), node.Description);
             if (node.SearchKeywords.Count > 0) LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords), node.SearchKeywords.Aggregate((x, y) => x + " " + y), true, true);
-            LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Parameters), node.Parameters?? string.Empty);
+            LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Parameters), node.Parameters ?? string.Empty);
 
             LuceneSearchUtility.writer?.AddDocument(doc);
         }
@@ -3523,13 +3523,13 @@ namespace Dynamo.Models
                 {
                     continue;  // prevent loading the same node twice
                 }
-                
+
                 currentWorkspace.AddAndRegisterNode(node, false);
             }
             RecordUndoModels(currentWorkspace, nodes.Cast<ModelBase>().ToList());
         }
 
-        
+
         private void InsertConnectors(IEnumerable<ConnectorModel> connectors)
         {
             List<ConnectorModel> newConnectors = new List<ConnectorModel>();
