@@ -364,7 +364,7 @@ namespace DSCore
         /// <param name="parameters">Variable names</param>
         /// <param name="arguments">Variable bindings</param>
         /// <returns name="result">type: var[]..[] (result of the formula calculation)</returns>
-        [Obsolete("EvaluateFormula has been deprecated in Dynamo 2.19. If using this node in a graph, please write the corresponding DesignScript code for the formula to execute it in a Code Block node.")]
+        [Obsolete("EvaluateFormula has been deprecated in Dynamo 3.0. If using this node in a graph, please write the corresponding DesignScript code for the formula to execute it in a Code Block node.")]
         public static object EvaluateFormula(string formulaString, string[] parameters, object[] arguments)
         {
             return null;
