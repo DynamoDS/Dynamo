@@ -632,6 +632,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
                 browser.ZoomFactorChanged -= Browser_ZoomFactorChanged;
                 dynamoViewModel.PreferencesWindowChanged-= DynamoViewModel_PreferencesWindowChanged;
                 dynamoWindow = null;
+                browser.KeyDown -= Browser_KeyDown;
             }
             if (this.browser != null)
             {
