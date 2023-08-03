@@ -1,6 +1,8 @@
 using System.Linq;
 using Dynamo.Engine;
+using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.NodeLoaders;
 using Dynamo.Migration;
 using ProtoCore;
 
@@ -38,13 +40,12 @@ namespace CoreNodeModels
             catch (BuildHaltException)
             {
                 newNode.Attributes["CodeText"].Value = formula;
-                //(node as CodeBlockNodeModel).FormulaMigrationWarning(Resources.FormulaDSConversionFailure);
+
                 conversionFailed = true;
             }
             if (!conversionFailed)
             {
                 newNode.Attributes["CodeText"].Value = convertedCode;
-                //(node as CodeBlockNodeModel).FormulaMigrationWarning(Resources.FormulaMigrated);
             }
             migrationData.AppendNode(newNode);
             return migrationData;
