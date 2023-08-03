@@ -167,6 +167,26 @@ namespace DynamoCoreWpfTests
             searchViewModel.PopulateAutoCompleteCandidates();
             Assert.AreEqual(44, searchViewModel.FilteredResults.Count());
         }
+        [Test]
+        public void NodeSuggestions_CanAutoCompleteOnCustomNodesOutPort_WithWhiteSpaceStartingPortName()
+        {
+            var outputNode = new Dynamo.Graph.Nodes.CustomNodes.Output();
+            outputNode.Symbol = "   Line Nonsense";
+            var cnm = new Dynamo.Graph.Nodes.CustomNodes.Function(
+                new CustomNodeDefinition(Guid.NewGuid(), "mock", new List<NodeModel>() { outputNode })
+                , "mock", "mock", "mock");
+            var cnvm = new NodeViewModel(ViewModel.CurrentSpaceViewModel, cnm);
+
+            var searchViewModel = ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel;
+            searchViewModel.PortViewModel = cnvm.OutPorts.First();
+
+            // Set the suggestion to ObjectType
+            searchViewModel.dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
+
+            // Results will be nodes that accept Line as parameter.
+            searchViewModel.PopulateAutoCompleteCandidates();
+            Assert.AreEqual(44, searchViewModel.FilteredResults.Count());
+        }
 
         [Test]
         public void NodeSuggestions_InputPortZeroTouchNode_AreCorrect()

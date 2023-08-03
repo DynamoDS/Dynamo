@@ -18,6 +18,7 @@ using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
 using Greg;
+using J2N.Text;
 using Lucene.Net.Documents;
 using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
@@ -761,9 +762,9 @@ namespace Dynamo.ViewModels
             {
                 portType = PortViewModel.PortModel.GetOutPortType();
                 //if the custom node output name contains spaces, try using the first word.
-                if (PortViewModel.PortModel.Owner is Graph.Nodes.CustomNodes.Function && portType.Contains(" "))
+                if (PortViewModel.PortModel.Owner is Graph.Nodes.CustomNodes.Function && portType.Any(char.IsWhiteSpace))
                 {
-                    portType = portType.Split(new string[]{" "},StringSplitOptions.None).FirstOrDefault();
+                    portType = string.Concat(portType.TrimStart().TakeWhile(char.IsLetterOrDigit));
                 }
             }
 
