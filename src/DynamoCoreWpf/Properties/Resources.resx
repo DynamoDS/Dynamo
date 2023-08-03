@@ -2442,6 +2442,9 @@ Uninstall the following packages: {0}?</value>
   <data name="NodeTooltipOriginalName" xml:space="preserve">
     <value>Original node name: </value>
   </data>
+  <data name="NodeTooltipPackage" xml:space="preserve">
+    <value>Package: </value>
+  </data>
   <data name="RenderingMemoryOutageDescription" xml:space="preserve">
     <value>Please check if you intended to render this amount of geometry, and consider turning off the preview of other nodes within your graph, lowering the amount of Geometry you wish to render, or turning down the render precision.</value>
   </data>
