@@ -121,7 +121,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PackageManagerTests", "..\t
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitsNodeModels", "Libraries\UnitsNodeModels\UnitsNodeModels.csproj", "{61169E56-DED9-464F-B800-AE31AEC1F750}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSOffice", "Libraries\DSOfficeNodes\DSOffice.csproj", "{6CC1E399-B5A5-4FA2-A98C-5D8B2BA280A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSOffice", "Libraries\DSOffice\DSOffice.csproj", "{6CC1E399-B5A5-4FA2-A98C-5D8B2BA280A1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSOfficeUtilities", "Libraries\DSOfficeUtilities\DSOfficeUtilities.csproj", "{9B4FDC96-E2F9-4B8F-894A-4294405D50E7}"
 EndProject
