@@ -64,7 +64,7 @@ namespace Dynamo.Tests
             TestMigration("TestMigration_Core_Functions.dyn");
         }
 
-        [Test,Category("FailureNET6")]
+        [Test]
         public void TestMigration_Core_Input()
         {
             TestMigration("TestMigration_Core_Input.dyn");
