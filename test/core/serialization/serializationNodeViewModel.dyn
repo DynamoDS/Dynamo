@@ -10,8 +10,8 @@
   "Outputs": [],
   "Nodes": [
     {
-      "Id": "62536c5a788843c285bd2ffdce10290f",
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "62536c5a788843c285bd2ffdce10290f",
       "NodeType": "CodeBlockNode",
       "Inputs": [],
       "Outputs": [
@@ -25,19 +25,19 @@
           "KeepListStructure": false
         }
       ],
-      "Code": "1+1;",
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly"
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "1+1;"
     },
     {
-      "Id": "993ed0e4eeb3492f8e301c3a9edf64f9",
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "993ed0e4eeb3492f8e301c3a9edf64f9",
       "NodeType": "CodeBlockNode",
       "Inputs": [],
       "Outputs": [],
-      "Code": "",
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly"
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": ""
     }
   ],
   "Connectors": [],
@@ -66,7 +66,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.18.0.2986",
+      "Version": "2.19.0.4737",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
