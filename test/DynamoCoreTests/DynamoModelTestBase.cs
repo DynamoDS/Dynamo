@@ -45,7 +45,7 @@ namespace Dynamo
 
             // Store a copy of the PathManager.BuiltinPackagesDirectory so that we can reset it after each DynamoModelTest
             originalBuiltinPackagesDirectory = originalBuiltinPackagesDirectory ?? PathManager.BuiltinPackagesDirectory;
-            StartDynamo(dynamoSettings == null ? PreferenceSettings.Instance : dynamoSettings);
+            StartDynamo(dynamoSettings);
         }
 
         public override void Cleanup()
