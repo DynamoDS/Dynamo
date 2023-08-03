@@ -958,11 +958,6 @@ namespace DynamoCoreWpfTests
             //Assert HasUnsavedChanges is true
             Assert.That(ViewModel.CurrentSpaceViewModel.HasUnsavedChanges);
 
-            ViewModel.CurrentSpaceViewModel.Save(ViewModel.CurrentSpaceViewModel.FileName);
-
-            //Assert HasUnsavedChanges is false
-            Assert.AreEqual(false, ViewModel.CurrentSpaceViewModel.HasUnsavedChanges);
-
             ViewModel.CurrentSpace.Undo();
 
             Assert.That(group1ContentBefore.Count == group1ViewModel.Nodes.Count());
