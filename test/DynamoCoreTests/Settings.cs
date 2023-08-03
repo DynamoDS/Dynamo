@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -91,7 +91,8 @@ namespace Dynamo.Tests
 
             var config = new DynamoModel.DefaultStartConfiguration()
             {
-                PythonTemplatePath = templatePath
+                PythonTemplatePath = templatePath,
+                Preferences = PreferenceSettings.Instance
             };
 
             var model = DynamoModel.Start(config);
@@ -106,7 +107,8 @@ namespace Dynamo.Tests
 
             var config = new DynamoModel.DefaultStartConfiguration()
             {
-                PythonTemplatePath = templatePath
+                PythonTemplatePath = templatePath,
+                Preferences = PreferenceSettings.Instance
             };
 
             var model = DynamoModel.Start(config);
