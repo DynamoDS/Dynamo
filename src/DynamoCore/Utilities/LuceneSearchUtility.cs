@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -75,19 +76,23 @@ namespace Dynamo.Utilities
             // Initialize Lucene index writer, unless in test mode or we are using RAMDirectory for indexing info. 
             if (!DynamoModel.IsTestMode || currentStorageType == LuceneStorage.RAM)
             {
-                // Create an index writer
-                IndexWriterConfig indexConfig = new IndexWriterConfig(LuceneConfig.LuceneNetVersion, Analyzer)
-                {
-                    OpenMode = OpenMode.CREATE
-                };
                 try
                 {
+                    // Create an index writer
+                    IndexWriterConfig indexConfig = new IndexWriterConfig(LuceneConfig.LuceneNetVersion, Analyzer)
+                    {
+                        OpenMode = OpenMode.CREATE
+                    };
+
                     writer = new IndexWriter(indexDir, indexConfig);
                 }
-                catch(LockObtainFailedException ex)
+                catch (LockObtainFailedException ex)
                 {
                     DisposeWriter();
                     dynamoModel.Logger.LogError($"LuceneNET LockObtainFailedException {ex}");
+                }
+                catch (Exception ex) {
+                    dynamoModel.Logger.LogError($"LuceneNET Exception {ex}");
                 }
             }
         }
