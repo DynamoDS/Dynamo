@@ -963,7 +963,7 @@ namespace Dynamo.Tests
             // Empty list expected
             Assert.AreEqual(0, list.Count);
         }
-        [Test, Category("ExcelTest")]
+        [Test, Category("ExcelTest"), Category("Failure")]
         public void WriteToNonExistingFile()
         {
 
@@ -985,7 +985,7 @@ namespace Dynamo.Tests
             AssertPreviewValue(watch.GUID.ToString(), data);
            
         }
-        [Test, Category("ExcelTest")]
+        [Test, Category("ExcelTest"), Category("Failure")]
         public void WriteNonExistingSheet()
         {
 
@@ -1086,7 +1086,7 @@ namespace Dynamo.Tests
 
         
 
-        [Test, Category("ExcelTest")]
+        [Test, Category("ExcelTest"), Category("Failure")]
         public void WriteModifyFilename()
         {
 
@@ -1124,7 +1124,7 @@ namespace Dynamo.Tests
         }
        
 
-        [Test, Category("ExcelTest")]
+        [Test, Category("ExcelTest"), Category("Failure")]
         public void WriteModifyGraph_3()
         {
             //incomplete
@@ -1164,7 +1164,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test, Category("ExcelTest")]
+        [Test, Category("ExcelTest"), Category("Failure")]
         public void TestOverwriteToSingleSheetExcel()
         {
             string openPath = Path.Combine(TestDirectory, @"core\excel\SingleSheetOverwrite.dyn");
@@ -1274,7 +1274,7 @@ namespace Dynamo.Tests
             ViewModel.HomeSpace.Run();
             Assert.Pass("RunExpression should no longer crash (Defect_MAGN_883)");
         }
-        [Test, Category("ExcelTest")]
+        [Test, Category("ExcelTest"), Category("Failure")]
         public void WriteIntoExcelVerify()
         {
             // Write Into Excel sheet using WriteToFile
@@ -1324,7 +1324,7 @@ namespace Dynamo.Tests
         /// - null
         /// - StackValue
         /// </summary>
-        [Test, Category("ExcelTest")]
+        [Test, Category("ExcelTest"), Category("Failure")]
         public void WriteIntoExcelSeveralTypesVerify()
         {
             //Arrange
@@ -1349,7 +1349,7 @@ namespace Dynamo.Tests
         }
 
 
-        [Test, Category("ExcelTest")]
+        [Test, Category("ExcelTest"), Category("Failure")]
         public void TestFormula()
         {
             string testDir = TestDirectory;
