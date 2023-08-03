@@ -381,11 +381,6 @@
             return JSON.stringify(locationInfo);
         }
 
-        //scroll down until the bottom of the page so the AddOns always be visible
-        function scrollToBottom() {
-            document.getElementsByClassName("LibraryItemContainer")[0].scroll(0, document.body.scrollHeight)
-        }
-
         //This method will be executed when the WebBrowser change its size, so we can update the Popup vertical location that is over the library
         function bodyResizeEvent() {
              window.chrome.webview.postMessage(JSON.stringify({ "func": "ResizedEvent", "data": "" }));
