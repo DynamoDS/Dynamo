@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -4817,7 +4817,6 @@ namespace DynamoCoreWpfTests
                 {
                     AssertPreviewValue("93d9bb4d-4da0-422e-add0-3b6d71cee598", 3);//minus node
                     AssertPreviewValue("9b00f9cf-9590-468f-9579-89e76a0d1ab5", 3);//cbn node
-                    AssertPreviewValue("013c4b13-2b50-4385-adb2-39861ca5fa1d", 3);//formula node
                 }
                 else if (commandTag == "SecondRun")
                 {
@@ -4825,7 +4824,6 @@ namespace DynamoCoreWpfTests
                 }
                 else if (commandTag == "ThirdRun")
                 {
-                    AssertPreviewValue("fc7308e1-546b-4f60-8342-d607692db435", 1);//formula node
                     AssertPreviewValue("3507e4b6-209f-46d1-9ebd-cf9b66088c65", 1);//remainder node
                     AssertPreviewValue("37592d1c-992e-4101-8bad-f1f4c031634c", 1);//cbn node
                 }
@@ -4837,12 +4835,10 @@ namespace DynamoCoreWpfTests
                 {
                     AssertPreviewValue("389b90e5-83ea-4f38-966a-fbce6d5cb550", false);// <= node
                     AssertPreviewValue("fd2c046b-5b3a-46e1-972c-b4deabb7d72f", false);//cbn node
-                    AssertPreviewValue("d9cc11a5-58a0-43c3-939b-30e5e238e37d", false);//formula node         
                 }
                 else if (commandTag == "SixthRun")
                 {
                     AssertPreviewValue("194b2c6c-226d-42a0-acab-db55c5cc74ea", false); //== node
-                    AssertPreviewValue("48c497fb-376e-473b-b31c-f7865b7c2229", false);//formula node
                     AssertPreviewValue("23ee05b2-1e02-4537-83f0-1ac8a65bc87a", false);//cbn 
                 }
                 else if (commandTag == "SeventhRun")

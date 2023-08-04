@@ -741,7 +741,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Formula node has been deprecated. It has been automatically migrated to a CodeBlock node..
+        ///   Looks up a localized string similar to Formula node has been deprecated. It has been automatically migrated to a CodeBlock node. Note that results may vary after the migration depending on lacing options selected on the original Formula node. Appropriate replication guides might need to be applied to the CodeBlock node script..
         /// </summary>
         public static string FormulaMigrated {
             get {

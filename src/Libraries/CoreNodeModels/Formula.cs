@@ -32,6 +32,7 @@ namespace CoreNodeModels
             bool conversionFailed = false;
 
             var newNode = MigrationManager.CreateCodeBlockNodeFrom(node);
+            newNode.SetAttribute("guid", node.Attributes["guid"].Value);
             try
             {
                 var formulaConverter = new MigrateFormulaToDS();
