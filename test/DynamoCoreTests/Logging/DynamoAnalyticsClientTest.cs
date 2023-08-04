@@ -27,10 +27,9 @@ namespace Dynamo.Tests.Loggings
             return new DynamoModel.DefaultStartConfiguration()
             {
                 PathResolver = pathResolver,
-                StartInTestMode = false,
+                StartInTestMode = true,
                 GeometryFactoryPath = preloader.GeometryFactoryPath,
-                ProcessMode = TaskProcessMode.Synchronous,
-                Preferences = settings
+                ProcessMode = TaskProcessMode.Synchronous                
             };
         }
 

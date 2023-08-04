@@ -38,7 +38,6 @@ namespace Dynamo.Tests.Extensions
                     StartInTestMode = true,
                     Extensions = new List<IExtension> { extMock.Object },
                     ProcessMode = TaskProcessMode.Synchronous,
-                    Preferences = PreferenceSettings.Instance
                 });
             //Setting this flag to true will enable to execute a specific section in the ExecuteCommand() method
             model.DebugSettings.VerboseLogging = true;
