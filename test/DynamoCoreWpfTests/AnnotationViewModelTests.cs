@@ -915,8 +915,18 @@ namespace DynamoCoreWpfTests
 
             OpenModel(@"core\annotationViewModelTests\groupsTestFile.dyn");
 
-            var group1ViewModel = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x=>x.AnnotationText == group1Name);
-            var group2ViewModel = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x=>x.AnnotationText == group2Name);
+            //Create 3rd group
+            var dummyNode = new DummyNode();
+            var command = new DynamoModel.CreateNodeCommand(dummyNode, 0, 0, true, false);
+            ViewModel.Model.ExecuteCommand(command);
+
+            ViewModel.ExecuteCommand(
+                new DynamoModel.SelectModelCommand(dummyNode.GUID, Keyboard.Modifiers.AsDynamoType()));
+            ViewModel.AddAnnotationCommand.Execute(null);
+
+            var group1ViewModel = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x => x.AnnotationText == group1Name);
+            var group2ViewModel = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x => x.AnnotationText == group2Name);
+            var group3ViewModel = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x => x.AnnotationText != group2Name && x.AnnotationText != group1Name);
 
             var group1ContentBefore = group1ViewModel.Nodes.ToList();
 
@@ -925,7 +935,8 @@ namespace DynamoCoreWpfTests
             var modelGuids = new List<Guid>
             {
                 group1ViewModel.AnnotationModel.GUID,
-                group2ViewModel.AnnotationModel.GUID
+                group2ViewModel.AnnotationModel.GUID,
+                group3ViewModel.AnnotationModel.GUID
             };
 
             ViewModel.ExecuteCommand(
@@ -933,27 +944,25 @@ namespace DynamoCoreWpfTests
 
             Assert.That(
                 DynamoSelection.Instance.Selection.Contains(group1ViewModel.AnnotationModel) &&
-                DynamoSelection.Instance.Selection.Contains(group2ViewModel.AnnotationModel)
-                );
-
-            //Assert HasUnsavedChanges is false
-            Assert.AreEqual(false, ViewModel.CurrentSpaceViewModel.HasUnsavedChanges);
+                DynamoSelection.Instance.Selection.Contains(group2ViewModel.AnnotationModel) &&
+                DynamoSelection.Instance.Selection.Contains(group3ViewModel.AnnotationModel)
+            );
 
             group1ViewModel.AddGroupToGroupCommand.Execute(null);
 
             // Assert
             Assert.That(group1ContentBefore.Count != group1ViewModel.Nodes.Count());
             Assert.That(group1ViewModel.Nodes.Contains(group2ViewModel.AnnotationModel));
+            Assert.That(group1ViewModel.Nodes.Contains(group3ViewModel.AnnotationModel));
 
             //Assert HasUnsavedChanges is true
-            Assert.AreEqual(true, ViewModel.CurrentSpaceViewModel.HasUnsavedChanges);
-
-            ViewModel.CurrentSpaceViewModel.Save(ViewModel.CurrentSpaceViewModel.FileName);
-
-            //Assert HasUnsavedChanges is false
-            Assert.AreEqual(false, ViewModel.CurrentSpaceViewModel.HasUnsavedChanges);
+            Assert.That(ViewModel.CurrentSpaceViewModel.HasUnsavedChanges);
 
             ViewModel.CurrentSpace.Undo();
+
+            Assert.That(group1ContentBefore.Count == group1ViewModel.Nodes.Count());
+            Assert.That(!group1ViewModel.Nodes.Contains(group2ViewModel.AnnotationModel));
+            Assert.That(!group1ViewModel.Nodes.Contains(group3ViewModel.AnnotationModel));
 
             //Assert HasUnsavedChanges is true
             Assert.AreEqual(true, ViewModel.CurrentSpaceViewModel.HasUnsavedChanges);
