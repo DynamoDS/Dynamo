@@ -23,23 +23,9 @@
   </ItemDefinitionGroup>
     <ItemGroup>
         <PackageReference Include="HelixToolkit" Version="2.24.0" />
-    </ItemGroup>
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0-windows' ">  
         <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
         <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
-    </ItemGroup>
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">  
-        <PackageReference Include="HelixToolkit.Wpf" Version="2.24.0" />
-        <PackageReference Include="HelixToolkit.Wpf.SharpDX" Version="2.24.0" />
-        <Reference Include="PresentationCore" />
-        <Reference Include="PresentationFramework" />
-        <Reference Include="System.Drawing" />
-        <Reference Include="System.Windows.Forms" />
-        <Reference Include="System.Xaml" />
-        <Reference Include="WindowsBase" />
-    </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Cyotek.Drawing.BitmapFont" Version="2.0.0" CopyMetaData="true" />
+        <PackageReference Include="Cyotek.Drawing.BitmapFont" Version="2.0.0" CopyMetaData="true" />
 	  <PackageReference Include="SharpDX" Version="4.2.0" CopyPDB="true" />
 	  <PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0" CopyPDB="true" />
 	  <PackageReference Include="SharpDX.Direct2D1" Version="4.2.0" CopyPDB="true" />
@@ -48,19 +34,7 @@
 	  <PackageReference Include="SharpDX.DXGI" Version="4.2.0" CopyPDB="true" />
 	  <PackageReference Include="SharpDX.Mathematics" Version="4.2.0" CopyPDB="true" />  
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="WindowsBase" />
-    <Reference Include="Microsoft.Practices.Prism">
-        <HintPath>..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-        <Private>False</Private>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
+    <ItemGroup>
       <ProjectReference Include="..\..\DynamoCoreWpf\DynamoCoreWpf.csproj">
           <Project>{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}</Project>
           <Name>DynamoCoreWpf</Name>

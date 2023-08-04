@@ -9,9 +9,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Visualization;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using HelixToolkit.Wpf.SharpDX;
-#if NET5_0_OR_GREATER
 using HelixToolkit.SharpDX.Core;
-#endif
 using SharpDX;
 using Point = System.Windows.Point;
 

@@ -31,14 +31,8 @@ using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Rendering;
 using DynamoUtilities;
 using HelixToolkit.Wpf.SharpDX;
-#if NET5_0_OR_GREATER 
 using HelixToolkit.SharpDX.Core;
 using HelixToolkit.SharpDX.Core.Shaders;
-#else
-using HelixToolkit.Wpf.SharpDX.Shaders;
-#endif
-using System;
-using HelixToolkit.Wpf.SharpDX.Utilities;
 using Newtonsoft.Json;
 using SharpDX;
 using Color = SharpDX.Color;
@@ -46,15 +40,10 @@ using ColorConverter = System.Windows.Media.ColorConverter;
 using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
 using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
 using Matrix = SharpDX.Matrix;
-#if NET5_0_OR_GREATER
 using MeshBuilder = HelixToolkit.SharpDX.Core.MeshBuilder;
 using MeshGeometry3D = HelixToolkit.SharpDX.Core.MeshGeometry3D;
 using TextInfo = HelixToolkit.SharpDX.Core.TextInfo;
-#else
-using MeshBuilder = HelixToolkit.Wpf.SharpDX.MeshBuilder;
-using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D; 
-using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
-#endif  
+
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
@@ -221,12 +210,41 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private readonly Dictionary<string, List<Tuple<string, Vector3>>> labelPlaces
             = new Dictionary<string, List<Tuple<string, Vector3>>>();
 
-#if NET48
+        //this code is grabbed from the helix source
+        //https://github.com/helix-toolkit/helix-toolkit/blob/develop/Source/HelixToolkit.SharpDX.Shared/Utilities/NVOptimusEnabler.cs#L15
+        //as of 2.24.0 this class is not compiled in their netcore targets.
+        /// <summary>
+        /// Enable dedicated graphics card for rendering. https://stackoverflow.com/questions/17270429/forcing-hardware-accelerated-rendering
+        /// </summary>
+        internal sealed class DYNNVOptimusEnabler
+        {
+            static DYNNVOptimusEnabler()
+            {
+                try
+                {
+
+                    if (Environment.Is64BitProcess)
+                        NativeMethods.LoadNvApi64();
+                    else
+                        NativeMethods.LoadNvApi32();
+                }
+                catch { } // will always fail since 'fake' entry point doesn't exists
+            }
+        };
+
+        internal static class NativeMethods
+        {
+            [System.Runtime.InteropServices.DllImport("nvapi64.dll", EntryPoint = "fake")]
+            internal static extern int LoadNvApi64();
+
+            [System.Runtime.InteropServices.DllImport("nvapi.dll", EntryPoint = "fake")]
+            internal static extern int LoadNvApi32();
+        }
+
         // This makes sure the NVidia graphics card is used for rendering when available. In the absence of this
         // there are found to be issues with Helix crashing when the app is used with external monitors. 
         // See: https://github.com/helix-toolkit/helix-toolkit/wiki/Tips-on-performance-optimization-(WPF.SharpDX-and-UWP)#2-laptops-with-nvidia-optimus-dual-graphics-cardhelixtoolkitsharpdx-only
-        private static NVOptimusEnabler nvEnabler = new NVOptimusEnabler();
-#endif
+        private static DYNNVOptimusEnabler nvEnabler = new DYNNVOptimusEnabler();
 
 #if DEBUG
         private readonly Stopwatch renderTimer = new Stopwatch();

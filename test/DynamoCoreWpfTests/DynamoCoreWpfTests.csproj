@@ -14,15 +14,10 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0-windows' ">
+    <ItemGroup>
         <PackageReference Include="HelixToolkit" Version="2.24.0" />
         <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
         <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
-    </ItemGroup>
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-        <PackageReference Include="HelixToolkit" Version="2.24.0" />
-        <PackageReference Include="HelixToolkit.Wpf" Version="2.24.0" />
-        <PackageReference Include="HelixToolkit.Wpf.SharpDX" Version="2.24.0" />
     </ItemGroup>
   <ItemGroup>
 	  <PackageReference Include="AvalonEdit" Version="6.3.0.90" />

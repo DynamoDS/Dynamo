@@ -1,10 +1,5 @@
-#if NET5_0_OR_GREATER
 using HelixToolkit.SharpDX.Core;
 using HelixToolkit.SharpDX.Core.Shaders;
-#else
-using HelixToolkit.Wpf.SharpDX;
-using HelixToolkit.Wpf.SharpDX.Shaders;
-#endif
 using System;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
