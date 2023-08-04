@@ -7,8 +7,8 @@
         xmlns:ui="clr-namespace:Dynamo.UI"            
         xmlns:controls="clr-namespace:Dynamo.Controls"
         xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
-       xmlns:fa="http://schemas.fontawesome.io/icons/"
-        mc:Ignorable="d"
+       xmlns:fa="clr-namespace:FontAwesome5;assembly=FontAwesome5.Net"
+       mc:Ignorable="d"
         PopupAnimation="Fade"
         AllowsTransparency="True"
        StaysOpen="False"
@@ -45,7 +45,7 @@
                                                  Foreground="{Binding ScaleSize, Converter={StaticResource ScaleSizeBackgroundConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.Small}}"
                                                  VerticalAlignment="Center" 
                                                  HorizontalAlignment="Center" 
-                                                 Icon="Check"/>
+                                                 Icon="Solid_Check"/>
                                 <TextBlock x:Name="RadioSmallDesc"
                                            Margin="10,5,0,0"
                                            VerticalAlignment="Center" 
@@ -71,7 +71,7 @@
                                                  Margin="10,0,0,0"
                                                  VerticalAlignment="Center" 
                                                  HorizontalAlignment="Center" 
-                                                 Icon="Check"/>
+                                                 Icon="Solid_Check"/>
                                 <TextBlock  x:Name="RadioMediumDesc"
                                             Margin="10,0,0,0"
                                             HorizontalAlignment="Center"
@@ -96,7 +96,7 @@
                                                  Foreground="{Binding ScaleSize, Converter={StaticResource ScaleSizeBackgroundConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.Large}}"
                                                  VerticalAlignment="Center" 
                                                  HorizontalAlignment="Center"  
-                                                 Icon="Check"/>
+                                                 Icon="Solid_Check"/>
                                 <TextBlock  x:Name="RadioLargeDesc"
                                             Margin="10,0,0,0"
                                             VerticalAlignment="Center" 
@@ -121,7 +121,7 @@
                                                 Foreground="{Binding ScaleSize, Converter={StaticResource ScaleSizeBackgroundConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.ExtraLarge}}"
                                                 VerticalAlignment="Center" 
                                                 HorizontalAlignment="Center" 
-                                                Icon="Check"/>
+                                                Icon="Solid_Check"/>
 
                                 <TextBlock  x:Name="RadioExtraLargeDesc"
                                             Width="Auto"

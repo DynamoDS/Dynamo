@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -6,10 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using Dynamo.Linting.Interfaces;
+using FontAwesome5;
 
 namespace Dynamo.LintingViewExtension.Converters
 {
-    [ValueConversion(typeof(SeverityCodesEnum), typeof(FontAwesome.WPF.FontAwesomeIcon))]
+    [ValueConversion(typeof(SeverityCodesEnum), typeof(EFontAwesomeIcon))]
     internal class SeverityCodeToIconConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -20,9 +21,9 @@ namespace Dynamo.LintingViewExtension.Converters
             switch (severityCode)
             {
                 case SeverityCodesEnum.Warning:
-                    return FontAwesome.WPF.FontAwesomeIcon.ExclamationTriangle;
+                    return EFontAwesomeIcon.Solid_ExclamationTriangle;
                 case SeverityCodesEnum.Error:
-                    return FontAwesome.WPF.FontAwesomeIcon.TimesCircle;
+                    return EFontAwesomeIcon.Solid_TimesCircle;
                 default:
                     return null;
             }
