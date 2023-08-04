@@ -67,8 +67,8 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyFileVersion("<#= this.MajorVersion #>.<#= this.MinorVersion #>.<#= this.BuildNumber #>.<#= this.RevisionNumber #>")]
 <#+
-int MajorVersion = 3;
-int MinorVersion = 0;
+int MajorVersion = 2;
+int MinorVersion = 19;
 int BuildNumber = 0;
 // The datetime baseline we choose using this algorithm will affect build number and all nuget packages uploaded
 // Please only change when major or minor version got incremented

@@ -7,7 +7,7 @@ on:
 jobs:
   analyze:
     name: Analyze
-    runs-on: windows-latest
+    runs-on: windows-2019
     permissions:
       actions: read
       contents: read
@@ -26,10 +26,7 @@ jobs:
       with:
         path: Dynamo
         repository: DynamoDS/Dynamo
-    - name: Setup dotnet
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: '6.0.x'    
+        
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v2
@@ -45,13 +42,16 @@ jobs:
     
     # ℹ️ Command-line programs to run using the OS shell.
     # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
-    - name: Install dependencies for windows runtime
-      run: dotnet restore $Env:GITHUB_WORKSPACE\Dynamo\src\Dynamo.All.sln -p:Platform=NET60_Windows --runtime=win10-x64
-    - name: Build Dynamo with MSBuild for Windows
+    - name: Setup Nuget.exe to use on VM
+      uses: nuget/setup-nuget@v1
+    - name: Nuget Restore in Dynamo solution
+      run: nuget restore $Env:GITHUB_WORKSPACE\Dynamo\src\Dynamo.All.sln
+    - name: Build Dynamo with MSBuild
       run: |
         echo "***Continue with the build, Good luck developer!***"
-        cd "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\"
-           .\MSBuild.exe $Env:GITHUB_WORKSPACE\Dynamo\src\Dynamo.All.sln /p:Configuration=Release  /p:Platform=NET60_Windows
+        .\MSBuild.exe $Env:GITHUB_WORKSPACE\Dynamo\src\Dynamo.All.sln /p:UseSharedCompilation=false
+      working-directory: C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\
+      
     - name: Navigate back to Dynamo directory
       run: |
         cd $Env:GITHUB_WORKSPACE\Dynamo

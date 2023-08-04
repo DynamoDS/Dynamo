@@ -15,11 +15,11 @@ jobs:
       run: echo "::remove-matcher owner=csc::"
 
     - name: Install dependencies for linux runtime
-      run: dotnet restore ${{ github.workspace }}/Dynamo/src/DynamoCore.sln -p:Platform=NET60_Linux --runtime=linux-x64
+      run: dotnet restore ${{ github.workspace }}/Dynamo/src/DynamoCore.net6.sln -p:Platform=NET60_Linux --runtime=linux-x64
     - name: Build Dynamo with MSBuild for Linux
       run: |
         echo "***Continue with the build, Good luck developer!***"
-        dotnet build ${{ github.workspace }}/Dynamo/src/DynamoCore.sln -c Release /p:Platform=NET60_Linux
+        dotnet build ${{ github.workspace }}/Dynamo/src/DynamoCore.net6.sln -c Release /p:Platform=NET60_Linux
     - name: Navigate to Dynamo Linux Folder
       run: |
         cd "${{ github.workspace }}/Dynamo/bin/NET60_Linux/Release"

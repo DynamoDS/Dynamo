@@ -18,12 +18,12 @@ jobs:
       run: echo "::remove-matcher owner=csc::"
 
     - name: Install dependencies for windows runtime
-      run: dotnet restore $Env:GITHUB_WORKSPACE\Dynamo\src\Dynamo.All.sln -p:Platform=NET60_Windows --runtime=win10-x64
+      run: dotnet restore $Env:GITHUB_WORKSPACE\Dynamo\src\Dynamo.All.Net6.sln -p:Platform=NET60_Windows --runtime=win10-x64
     - name: Build Dynamo with MSBuild for Windows
       run: |
         echo "***Continue with the build, Good luck developer!***"
         cd "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\"
-           .\MSBuild.exe $Env:GITHUB_WORKSPACE\Dynamo\src\Dynamo.All.sln /p:Configuration=Release  /p:Platform=NET60_Windows
+           .\MSBuild.exe $Env:GITHUB_WORKSPACE\Dynamo\src\Dynamo.All.Net6.sln /p:Configuration=Release  /p:Platform=NET60_Windows
     # look for Dynamo
     - name: Navigate to Dynamo Windows Folder
       run: |
