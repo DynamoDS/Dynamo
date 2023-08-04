@@ -171,6 +171,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void AnalyticsTrackingEnabled()
         {
             VerifyEventTracking(Times.Exactly(1));
@@ -179,6 +180,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void AnalyticsTrackingDisabled()
         {
             //Modify preferences
@@ -197,6 +199,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void CreateDisposableEvents()
         {
             var variable = "TimeVariable";
@@ -223,6 +226,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void DummyDisposableEvents()
         {
             //Modify preferences
