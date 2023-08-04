@@ -25,7 +25,7 @@ namespace Dynamo.ViewModels
         private AnnotationModel annotationModel;
         private IEnumerable<PortModel> originalInPorts;
         private IEnumerable<PortModel> originalOutPorts;
-        private Dictionary<Guid, int> GroupIdToCutGeometryIndex = new Dictionary<Guid, int>();
+        private Dictionary<Guid, Geometry> GroupIdToCutGeometry = new Dictionary<Guid, Geometry>();
         // vertical offset accounts for the port margins
         private const int verticalOffset = 20;
         private const int portVerticalMidPoint = 17;
@@ -249,7 +249,7 @@ namespace Dynamo.ViewModels
                 OutPorts.Clear();
                 if (value)
                 {
-                    this.ShowGroupContents();       
+                    this.ShowGroupContents();
                 }
                 else
                 {
@@ -916,7 +916,7 @@ namespace Dynamo.ViewModels
                 .SelectMany(x => x.Nodes.OfType<NodeModel>())
                 .Concat(this.Nodes.OfType<NodeModel>());
 
-            foreach (var connector in allNodes.SelectMany(x=>x.AllConnectors))
+            foreach (var connector in allNodes.SelectMany(x => x.AllConnectors))
             {
                 var connectorViewModel = WorkspaceViewModel
                     .Connectors
@@ -944,7 +944,7 @@ namespace Dynamo.ViewModels
                 if (viewModel is AnnotationViewModel annotationViewModel)
                 {
                     // Update connectors and ports if the nested group is not collapsed
-                    if(annotationViewModel.Nodes.Any() && !annotationViewModel.IsCollapsed)
+                    if (annotationViewModel.Nodes.Any() && !annotationViewModel.IsCollapsed)
                     {
                         UpdateConnectorsAndPortsOnShowContents(annotationViewModel.Nodes);
                     }
@@ -1166,7 +1166,7 @@ namespace Dynamo.ViewModels
         private void HandleNodesCollectionChanges()
         {
             var allGroupedGroups = Nodes.OfType<AnnotationModel>();
-            var removedFromGroup = GroupIdToCutGeometryIndex.Keys
+            var removedFromGroup = GroupIdToCutGeometry.Keys
                 .ToList()
                 .Except(allGroupedGroups.Select(x => x.GUID));
 
@@ -1179,7 +1179,7 @@ namespace Dynamo.ViewModels
 
                 var addedToGroup = allGroupedGroups
                     .Select(x => x.GUID)
-                    .Except(GroupIdToCutGeometryIndex.Keys.ToList());
+                    .Except(GroupIdToCutGeometry.Keys.ToList());
 
                 foreach (var key in addedToGroup)
                 {
@@ -1196,14 +1196,14 @@ namespace Dynamo.ViewModels
 
         private void RemoveKeyFromCutGeometryDictionary(Guid groupGuid)
         {
-            if (GroupIdToCutGeometryIndex is null ||
-                !GroupIdToCutGeometryIndex.ContainsKey(groupGuid))
+            if (GroupIdToCutGeometry is null ||
+                !GroupIdToCutGeometry.ContainsKey(groupGuid))
             {
                 return;
             }
 
-            NestedGroupsGeometries.RemoveAt(GroupIdToCutGeometryIndex[groupGuid]);
-            GroupIdToCutGeometryIndex.Remove(groupGuid);
+            NestedGroupsGeometries.Remove(GroupIdToCutGeometry[groupGuid]);
+            GroupIdToCutGeometry.Remove(groupGuid);
 
             var groupViewModel = this.WorkspaceViewModel.Annotations
                 .Where(x => x.AnnotationModel.GUID == groupGuid)
@@ -1218,11 +1218,12 @@ namespace Dynamo.ViewModels
         private void AddToCutGeometryDictionary(AnnotationViewModel annotationViewModel)
         {
             var key = annotationViewModel.AnnotationModel.GUID;
-            if (GroupIdToCutGeometryIndex.ContainsKey(key)) return;
+            if (GroupIdToCutGeometry.ContainsKey(key)) return;
 
             int nextPos = NestedGroupsGeometries.Count;
-            NestedGroupsGeometries.Insert(nextPos, CreateRectangleGeometry(annotationViewModel));
-            GroupIdToCutGeometryIndex[key] = nextPos;
+            var geo = CreateRectangleGeometry(annotationViewModel);
+            NestedGroupsGeometries.Insert(nextPos, geo);
+            GroupIdToCutGeometry[key] = geo;
 
             annotationViewModel.PropertyChanged += GroupViewModel_PropertyChanged;
         }
@@ -1256,16 +1257,19 @@ namespace Dynamo.ViewModels
         private void UpdateGroupCutGeometry(AnnotationViewModel annotationViewModel)
         {
             var key = annotationViewModel.AnnotationModel.GUID;
-            if (GroupIdToCutGeometryIndex == null ||
-                !GroupIdToCutGeometryIndex.ContainsKey(key))
+            if (GroupIdToCutGeometry == null ||
+                !GroupIdToCutGeometry.ContainsKey(key))
             {
                 return;
             }
-            var index = GroupIdToCutGeometryIndex[key];
-            if (index >= 0 &&
-                index < NestedGroupsGeometries.Count)
+            var geo = GroupIdToCutGeometry[key];
+            if (geo != null)
             {
-                NestedGroupsGeometries[index] = CreateRectangleGeometry(annotationViewModel);
+                int index = NestedGroupsGeometries.IndexOf(geo);
+                if (index >= 0 && index < NestedGroupsGeometries.Count)
+                {
+                    NestedGroupsGeometries[index] = CreateRectangleGeometry(annotationViewModel);
+                }
             }
         }
 
