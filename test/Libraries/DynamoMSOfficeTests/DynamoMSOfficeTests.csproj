@@ -19,16 +19,16 @@
       <Reference Include="System.Core" />
       <ProjectReference Include="..\..\..\src\Libraries\DSOffice\DSOffice.csproj">
           <Project>{9b4fdc96-e2f9-4b8f-894a-4294405d50e7}</Project>
-          <Name>DSOfficeNodes</Name>
+          <Name>DSOffice</Name>
           <Private>False</Private>
       </ProjectReference>
   </ItemGroup>
     <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' "> 
         <PackageReference Include="NUnit" Version="3.13.3" ExcludeAssets="none" />
         <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
-        <ProjectReference Include="..\..\..\src\Libraries\DSOfficeNodes\DSOffice.csproj">
+        <ProjectReference Include="..\..\..\src\Libraries\DSOffice\DSOffice.csproj">
             <Project>{9b4fdc96-e2f9-4b8f-894a-4294405d50e7}</Project>
-            <Name>DSOfficeNodes</Name>
+            <Name>DSOffice</Name>
             <Private>False</Private>
         </ProjectReference>
     </ItemGroup>
