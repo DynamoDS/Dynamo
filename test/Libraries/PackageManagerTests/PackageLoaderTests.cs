@@ -1332,7 +1332,6 @@ namespace Dynamo.PackageManager.Tests
         }
 
         [Test]
-        [Category("FailureNET6")]
         public void LocalizedPackageLocalizedCorrectly()
         {
             var esculture = CultureInfo.CreateSpecificCulture("es-ES");
