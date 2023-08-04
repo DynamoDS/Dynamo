@@ -31,7 +31,6 @@ namespace GeometryTests
         }
 
         [Test]
-        [Category("FailureNET6")]
         public void SATAndSABUnitImportNodeModelNodesWork_PartialApplication_Replication()
         {
             OpenModel(Path.Combine("core", "GeometryTestFiles", "sat_import_with_units.dyn"));
