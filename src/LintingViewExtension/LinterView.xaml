@@ -1,11 +1,11 @@
-﻿<UserControl x:Class="Dynamo.LintingViewExtension.LinterView"
+<UserControl x:Class="Dynamo.LintingViewExtension.LinterView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Dynamo.LintingViewExtension"
              xmlns:converter="clr-namespace:Dynamo.LintingViewExtension.Converters"
-             xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:fa="clr-namespace:FontAwesome5;assembly=FontAwesome5.Net"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
              xmlns:props="clr-namespace:Dynamo.LintingViewExtension.Properties"
              mc:Ignorable="d"
@@ -68,7 +68,7 @@
                                    Grid.ColumnSpan="2" />
 
                         <fa:ImageAwesome x:Name="sign" 
-                                         Icon="ChevronDown"
+                                         Icon="Solid_ChevronDown"
                                          Width="13"
                                          Foreground="#808080"
                                          Margin="5,0,0,0"
@@ -174,7 +174,7 @@
                     <Button.ToolTip>
                         <ToolTip Content="{x:Static props:Resources.GraphTypeHelpTooltip}" Style="{StaticResource GenericToolTipLight}"/>
                     </Button.ToolTip>
-                    <fa:ImageAwesome Icon="InfoCircle"
+                    <fa:ImageAwesome Icon="Solid_InfoCircle"
                                      Foreground="#808080"
                                      Width="20"
                                      Height="20" />

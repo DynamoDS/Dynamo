@@ -863,8 +863,7 @@ namespace ProtoFFI
                         }
                         else
                         {
-                            rhs = AstFactory.BuildPrimitiveNodeFromObject(defaultValue);
-
+                            rhs = AstFactory.BuildPrimitiveNodeFromObjectAndType(defaultValue, parameter.ParameterType);
                         }
                         paramNode.NameNode = AstFactory.BuildBinaryExpression(lhs, rhs, ProtoCore.DSASM.Operator.assign);
                     }
