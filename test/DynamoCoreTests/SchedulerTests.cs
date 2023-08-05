@@ -1155,8 +1155,7 @@ namespace Dynamo.Tests
                     SchedulerThread = schedulerThread,
                     PathResolver = pathResolver,
                     GeometryFactoryPath = preloader.GeometryFactoryPath,
-                    ProcessMode = TaskProcessMode.Asynchronous,
-                    Preferences = PreferenceSettings.Instance
+                    ProcessMode = TaskProcessMode.Asynchronous
                 });
         }
 

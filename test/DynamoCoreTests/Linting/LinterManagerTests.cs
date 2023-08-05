@@ -44,7 +44,7 @@ namespace Dynamo.Tests.Linting
                 {
                     StartInTestMode = true,
                     Extensions = new List<IExtension> { mockExtension.Object },
-                    ProcessMode = TaskProcessMode.Synchronous                    
+                    ProcessMode = TaskProcessMode.Synchronous
                 });
         }
 
