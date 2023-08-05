@@ -197,8 +197,7 @@ namespace DynamoCoreWpfTests
                     StartInTestMode = true,
                     PathResolver = pathResolver,
                     GeometryFactoryPath = geometryFactoryPath,
-                    ProcessMode = TaskProcessMode.Synchronous,
-                    Preferences = PreferenceSettings.Instance
+                    ProcessMode = TaskProcessMode.Synchronous
                 });
 
             // Create the DynamoViewModel to control the view

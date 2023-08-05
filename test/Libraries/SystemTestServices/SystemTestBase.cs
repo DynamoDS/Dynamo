@@ -198,8 +198,7 @@ namespace SystemTestServices
                     PathResolver = pathResolver,
                     GeometryFactoryPath = preloader.GeometryFactoryPath,
                     UpdateManager = this.UpdateManager,
-                    ProcessMode = TaskProcessMode.Synchronous,
-                    Preferences = PreferenceSettings.Instance
+                    ProcessMode = TaskProcessMode.Synchronous
                 });
 
             ViewModel = DynamoViewModel.Start(
