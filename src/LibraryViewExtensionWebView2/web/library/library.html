@@ -390,6 +390,17 @@
         function bodyResizeEvent() {
              window.chrome.webview.postMessage(JSON.stringify({ "func": "ResizedEvent", "data": "" }));
         }
+
+        function dispatchEvent() {
+
+            const kbEvent = new KeyboardEvent('keydown', {
+                bubbles: true,
+                cancelable: true,
+                key: 'Delete',
+             });
+
+            document.dispatchEvent(kbEvent);
+        }
     </script>
 
 </body>

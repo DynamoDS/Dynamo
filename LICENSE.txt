@@ -1,4 +1,4 @@
-@DYNAMO v.2.19.0 © 2023 Autodesk, Inc.  All rights reserved.
+@DYNAMO v.3.0.0 © 2023 Autodesk, Inc.  All rights reserved.
 Dynamo License
 
 Those portions created by Ian are provided with the following copyright:
@@ -73,17 +73,24 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-Fontawesome v.4.7.0.37774:
-https://www.nuget.org/packages/FontAwesome.WPF/
-https://github.com/charri/Font-Awesome-WPF/blob/master/LICENSE
-The MIT License (MIT)
-Copyright (c) 2014-2016 charri
+FontAwesome5 v.2.1.11:
+https://www.nuget.org/packages/FontAwesome5/
+https://github.com/MartinTopfstedt/FontAwesome5/blob/master/LICENSE
+MIT License
+Copyright (c) 2018 MartinTopfstedt
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+FontAwesome v.5.15.4:
+https://github.com/FortAwesome/Font-Awesome/blob/5.x/LICENSE.txt
+CC BY 4.0 License (https://creativecommons.org/licenses/by/4.0/)
+Copyright (c) 2022 Fonticons, Inc. (https://fontawesome.com)
+
+In the Font Awesome Free download, the CC BY 4.0 license applies to all icons packaged as SVG and JS file types.
 
 Cyotek.Drawing.BitmapFont v.1.3.4:
 https://github.com/cyotek/Cyotek.Drawing.BitmapFont
@@ -299,14 +306,6 @@ Copyright © Autodesk, Inc.
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 
 
-CSharpAnalytics v.1.2.1:
-https://github.com/AttackPattern/CSharpAnalytics
-http://www.apache.org/licenses/LICENSE-2.0
-© 2012-2015 Attack Pattern LLC
-
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
-
-
 Ncalc v.1.3.8.0:
 http://ncalc.codeplex.com/
 © 2011 Sebastien Ros
@@ -349,17 +348,6 @@ DiffPlex.wpf v.1.1.1:
 © 2020 mmanela
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
-
-FontAwesome v.4.0.7:
-https://www.nuget.org/packages/FontAwesome.WPF/
-https://github.com/charri/Font-Awesome-WPF/blob/master/LICENSE
-Copyright (c) 2014-2016 charri
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 AngleSharp v.0.14.0: Copyright (c) 2013 - 2019 AngleSharp
 AngleSharp.CSS v.0.14.2: Copyright © 2013-2020 AngleSharp

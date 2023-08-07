@@ -112,7 +112,8 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Indicates whether Google analytics reporting is approved or not.
         /// </summary>
-        public bool IsAnalyticsReportingApproved { get; set; }
+        [Obsolete("Property will be deprecated in Dynamo 3.0")]
+        public bool IsAnalyticsReportingApproved { get { return false; } set { } }
 
         /// <summary>
         /// This defines if the user export file path would include timestamp

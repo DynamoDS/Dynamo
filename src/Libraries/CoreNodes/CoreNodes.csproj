@@ -20,10 +20,6 @@
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
     <Reference Include="Microsoft.CSharp" />
-    <PackageReference Include="ncalc" Version="1.3.8">
-      <!--Exclude copying the runtime dlls because we need to keep binary compatibility with Revit for now -->
-      <ExcludeAssets>runtime</ExcludeAssets>
-    </PackageReference>
     <Reference Include="PresentationCore" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">

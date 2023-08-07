@@ -25,6 +25,7 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels;
 using DynamoUnits;
+using FontAwesome5;
 using Color = System.Windows.Media.Color;
 using FlowDirection = System.Windows.FlowDirection;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
@@ -1332,8 +1333,8 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if ((bool)value)
-                return nameof(FontAwesome.WPF.FontAwesomeIcon.BellOutline);
-            return nameof(FontAwesome.WPF.FontAwesomeIcon.BellSlashOutline);
+                return nameof(EFontAwesomeIcon.Solid_Bell);
+            return nameof(EFontAwesomeIcon.Solid_BellSlash);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

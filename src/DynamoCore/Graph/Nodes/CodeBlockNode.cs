@@ -658,6 +658,21 @@ namespace Dynamo.Graph.Nodes
             OnNodeModified();
         }
 
+        internal void FormulaMigrationWarning(string p)
+        {
+            State = ElementState.MigratedFormula;
+            if (!Infos.Any(x => x.Message.Equals(p)))
+            {
+                var texts = p.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+                var infoList = new List<Info>();
+                foreach (var text in texts)
+                {
+                    infoList.Add(new Info(text, State));
+                }
+                Infos.AddRange(infoList);
+            }
+        }
+
         /// <summary>
         /// Undefine a function definition in a code block node if it has any.
         /// </summary>

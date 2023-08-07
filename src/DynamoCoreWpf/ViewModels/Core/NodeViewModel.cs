@@ -244,7 +244,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Returns the Package name of the node, if it comes from a package
         /// </summary>
-        [JsonProperty(Order = 9)]
+        [JsonIgnore]
         public string PackageName
         {
             get
