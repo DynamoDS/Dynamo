@@ -33,7 +33,7 @@
         </ProjectReference>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
     </ItemGroup>
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+    <ItemGroup Condition=" '$(TargetFramework)' != 'net48' ">
         <PackageReference Include="NUnit" Version="3.13.3" ExcludeAssets="none" />
         <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
         <PackageReference Include="NUnit.Analyzers" Version="3.3.0" />
@@ -173,7 +173,7 @@
           <Copy SourceFiles="$(PkgMoq)\lib\netstandard2.0\Moq.xml" DestinationFolder="$(OutputPath)" />
           <Copy SourceFiles="$(PkgNUnit)\lib\nunit.framework.xml" DestinationFolder="$(OutputPath)" />
   </Target>
-    <Target Name="MoveSomeTestDepsOutOfBin_net60" AfterTargets="Build" Condition=" '$(TargetFramework)' == 'net6.0' ">
+    <Target Name="MoveSomeTestDepsOutOfBin_net60" AfterTargets="Build" Condition=" '$(TargetFramework)' != 'net48' ">
         <Message Importance="High" Text="copying test dependencies to test dependencies folder" />
         <CallTarget Targets="CopyDisableADPTestDeps"></CallTarget>
         <!--moq + deps-->
