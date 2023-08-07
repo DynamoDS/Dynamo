@@ -1,11 +1,11 @@
-﻿<UserControl x:Class="Dynamo.UI.Controls.ClassInformationView"
+<UserControl x:Class="Dynamo.UI.Controls.ClassInformationView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
-             xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:fa="http://schemas.fontawesome.com/icons/"
              xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              mc:Ignorable="d"
@@ -109,7 +109,7 @@
                     <ToolTip Content="{x:Static p:Resources.CreateMember}" Style="{StaticResource GenericToolTipLight}"/>
                 </Grid.ToolTip>
                 <Rectangle Fill="Transparent" />
-                <fa:ImageAwesome Icon="plus"
+                <fa:ImageAwesome Icon="Solid_Plus"
                                  Foreground="{StaticResource CreateMembersColor}"
                                  VerticalAlignment="Top"
                                  HorizontalAlignment="Center" />
@@ -145,7 +145,7 @@
                         <ToolTip Content="{x:Static p:Resources.ActionMember}" Style="{StaticResource GenericToolTipLight}"/>
                     </Grid.ToolTip>
                     <Rectangle Fill="Transparent" />
-                    <fa:ImageAwesome Icon="LightningBolt"
+                    <fa:ImageAwesome Icon="Solid_Bolt"
                                      Foreground="{StaticResource ActionMembersColor}"
                                      VerticalAlignment="Top"
                                      HorizontalAlignment="Center" />
@@ -187,7 +187,7 @@
                         <ToolTip Content="{x:Static p:Resources.QueryMember}" Style="{StaticResource GenericToolTipLight}"/>
                     </Grid.ToolTip>
                     <Rectangle Fill="Transparent" />
-                    <fa:ImageAwesome Icon="Question"
+                    <fa:ImageAwesome Icon="Solid_Question"
                                      Foreground="{StaticResource QueryMembersColor}"
                                      VerticalAlignment="Top"
                                      HorizontalAlignment="Center" />
