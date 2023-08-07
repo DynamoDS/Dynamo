@@ -43,11 +43,11 @@ namespace Dynamo.Search.SearchElements
         /// Higher = closer to the top of search results </value>
         public abstract double Weight { get; set; }
 
-        public new virtual void Execute()
+        internal override void Execute()
         {
             this.OnExecuted();
         }
-
+ 
         /// <summary>
         /// Delegate is used in Executed event.
         /// </summary>
