@@ -52,6 +52,23 @@ namespace ProtoCore
             public int AstID;
             public string Filename;
         }
+
+        public enum InfoID
+        {
+            Default
+        }
+
+        public struct InfoEntry
+        {
+            public Runtime.InfoID ID;
+            public string Message;
+            public int Line;
+            public int Column;
+            public int ExpressionID;
+            public Guid GraphNodeGuid;
+            public int AstID;
+            public string Filename;
+        }
     }
 
     public class RuntimeStatus
@@ -59,6 +76,7 @@ namespace ProtoCore
         private readonly DynamoLock rwl = new DynamoLock();
         private ProtoCore.RuntimeCore runtimeCore;
         private List<Runtime.WarningEntry> warnings;
+        private List<Runtime.InfoEntry> infos;
 
         public IOutputStream MessageHandler
         {
@@ -79,6 +97,17 @@ namespace ProtoCore
                 using (rwl.CreateReadLock())
                 {
                     return warnings.ToList();
+                }
+            }
+        }
+
+        public List<Runtime.InfoEntry> Infos
+        {
+            get
+            {
+                using (rwl.CreateReadLock())
+                {
+                    return infos.ToList();
                 }
             }
         }
@@ -196,9 +225,79 @@ namespace ProtoCore
             }
         }
 
+        public void LogInfo(Runtime.InfoID ID, string message, string filename, int line, int col)
+        {
+            filename = filename ?? string.Empty;
+
+            if (!runtimeCore.Options.IsDeltaExecution && (string.IsNullOrEmpty(filename) ||
+                line == Constants.kInvalidIndex ||
+                col == Constants.kInvalidIndex))
+            {
+                AuditCodeLocation(ref filename, ref line, ref col);
+            }
+
+            var warningMsg = string.Format(Resources.kConsoleWarningMessage,
+                                           message, filename, line, col);
+
+#if DEBUG
+            if (runtimeCore.Options.Verbose)
+            {
+                System.Console.WriteLine(warningMsg);
+            }
+#endif
+
+            if (WebMessageHandler != null)
+            {
+                var outputMessage = new OutputMessage(warningMsg);
+                WebMessageHandler.Write(outputMessage);
+            }
+
+            if (MessageHandler != null)
+            {
+                var outputMessage = new OutputMessage(OutputMessage.MessageType.Info,
+                                                      message.Trim(), filename, line, col);
+                MessageHandler.Write(outputMessage);
+            }
+
+            AssociativeGraph.GraphNode executingGraphNode = null;
+            var executive = runtimeCore.CurrentExecutive.CurrentDSASMExec;
+            if (executive != null)
+            {
+                executingGraphNode = executive.Properties.executingGraphNode;
+                // In delta execution mode, it means the warning is from some
+                // internal graph node. 
+                if (executingGraphNode != null && executingGraphNode.guid.Equals(System.Guid.Empty))
+                {
+                    executingGraphNode = runtimeCore.DSExecutable.ExecutingGraphnode;
+                }
+            }
+
+            var entry = new Runtime.InfoEntry
+            {
+                ID = ID,
+                Message = message,
+                Column = col,
+                Line = line,
+                ExpressionID = runtimeCore.RuntimeExpressionUID,
+                GraphNodeGuid = executingGraphNode == null ? Guid.Empty : executingGraphNode.guid,
+                AstID = executingGraphNode == null ? Constants.kInvalidIndex : executingGraphNode.OriginalAstID,
+                Filename = filename
+            };
+
+            using (rwl.CreateWriteLock())
+            {
+                infos.Add(entry);
+            }
+        }
+
         public void LogWarning(Runtime.WarningID ID, string message)
         {
             LogWarning(ID, message, string.Empty, Constants.kInvalidIndex, Constants.kInvalidIndex);
+        }
+
+        public void LogInfo(Runtime.InfoID ID, string message)
+        {
+            LogInfo(ID, message, string.Empty, Constants.kInvalidIndex, Constants.kInvalidIndex);
         }
 
         private void AuditCodeLocation(ref string filePath, ref int line, ref int column)

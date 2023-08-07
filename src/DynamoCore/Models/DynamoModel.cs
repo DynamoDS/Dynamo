@@ -1006,6 +1006,7 @@ namespace Dynamo.Models
 #endif
 
             LogWarningMessageEvents.LogWarningMessage += LogWarningMessage;
+            LogInfoMessageEvents.LogInfoMessage += LogInfoMessage;
 
             StartBackupFilesTimer();
 
@@ -1371,6 +1372,7 @@ namespace Dynamo.Models
 #endif
 
             LogWarningMessageEvents.LogWarningMessage -= LogWarningMessage;
+            LogInfoMessageEvents.LogInfoMessage -= LogInfoMessage;
             foreach (var ws in _workspaces)
             {
                 ws.Dispose();
@@ -1790,6 +1792,16 @@ namespace Dynamo.Models
         {
             Validity.Assert(EngineController.LiveRunnerRuntimeCore != null);
             EngineController.LiveRunnerRuntimeCore.RuntimeStatus.LogWarning(WarningID.Default, args.message);
+        }
+
+        /// <summary>
+        /// This info message is displayed on the node associated with the FFI dll
+        /// </summary>
+        /// <param name="args"></param>
+        private void LogInfoMessage(LogInfoMessageEventArgs args)
+        {
+            Validity.Assert(EngineController.LiveRunnerRuntimeCore != null);
+            EngineController.LiveRunnerRuntimeCore.RuntimeStatus.LogInfo(InfoID.Default, args.message);
         }
 
         #endregion
