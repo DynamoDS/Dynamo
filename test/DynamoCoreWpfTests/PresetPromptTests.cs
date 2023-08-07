@@ -1,9 +1,9 @@
-﻿using Dynamo.Nodes;
+using Dynamo.Nodes;
 using NUnit.Framework;
 
 namespace DynamoCoreWpfTests
 {
-    [TestFixture,Ignore]
+    [TestFixture,Ignore("Deprecated Feature")]
     public class PresetPromptTests
     {
         [Test]

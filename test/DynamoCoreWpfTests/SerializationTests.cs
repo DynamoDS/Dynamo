@@ -8,7 +8,6 @@ using CoreNodeModels.Input;
 using Dynamo.Engine;
 using Dynamo.Events;
 using Dynamo.Graph;
-using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
@@ -762,8 +761,10 @@ namespace DynamoCoreWpfTests
             var token = JToken.Parse(viewModel.CurrentSpaceViewModel.ToJson());
             jo.Add("View", token);
 
-            Assert.IsNotNullOrEmpty(jsonModel);
-            Assert.IsNotNullOrEmpty(jo.ToString());
+            Assert.IsNotNull(jsonModel);
+            Assert.IsNotNull(jo.ToString());
+            Assert.IsNotEmpty(jo.ToString());
+            Assert.IsNotEmpty(jsonModel);
 
             var tempPath = Path.GetTempPath();
             var jsonFolder = Path.Combine(tempPath, jsonFolderName);
@@ -798,7 +799,7 @@ namespace DynamoCoreWpfTests
 
             json = serializationTestUtils.replaceModelIdsWithNonGuids(json, model.CurrentWorkspace ,modelsGuidToIdMap);
 
-            Assert.IsNotNullOrEmpty(json);
+            Assert.IsFalse(string.IsNullOrEmpty(json));
 
             // Call structured copy function for CoGS testing, see QNTM-2973
             // Only called for CoreWPFTests nonGuids
@@ -906,7 +907,7 @@ namespace DynamoCoreWpfTests
             }
         }
 
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void FixtureSetup()
         {
             ExecutionEvents.GraphPostExecution += ExecutionEvents_GraphPostExecution;
@@ -945,7 +946,7 @@ namespace DynamoCoreWpfTests
             }
         }
 
-        [TestFixtureTearDown]
+        [OneTimeTearDown]
         public void TearDown()
         {
             ExecutionEvents.GraphPostExecution -= ExecutionEvents_GraphPostExecution;
