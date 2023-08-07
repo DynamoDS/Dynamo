@@ -95,7 +95,7 @@ namespace Dynamo.Logging
         public virtual IAnalyticsSession Session { get; private set; }
 
         /// <summary>
-        /// Return if Analytics Client is allowed to send any analytics information (Google, ADP etc.)
+        /// Return if Analytics Client is allowed to send any analytics information
         /// </summary>
         public bool ReportingAnalytics
         {
@@ -103,20 +103,6 @@ namespace Dynamo.Logging
             {
                 return !Analytics.DisableAnalytics &&
                     Service.IsInitialized;
-            }
-        }
-
-        /// <summary>
-        /// Return if Google Analytics Client is allowed to send analytics info
-        /// </summary>
-        private bool ReportingGoogleAnalytics
-        {
-            get
-            {
-                return preferences != null
-                    && Service.IsInitialized
-                    && !Analytics.DisableAnalytics
-                    && preferences.IsAnalyticsReportingApproved;
             }
         }
 

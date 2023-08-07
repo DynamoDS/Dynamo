@@ -13,8 +13,10 @@
     <AssemblyName>WorkspaceDependencyViewExtension</AssemblyName>
     <EnableDefaultPageItems>false</EnableDefaultPageItems>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="FontAwesome5" Version="2.1.11" />
+  </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-    <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System.Drawing" />

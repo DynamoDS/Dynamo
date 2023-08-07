@@ -192,7 +192,7 @@ namespace Dynamo.Tests
             dynamoSettings.IsAnalyticsReportingApproved = true;
             dynamoSettings.IsUsageReportingApproved = true;
 
-            //1 startup + 1 analytics optin status event (google analytics)
+            //1 startup + 1 analytics optin status event
             trackerMoq.Verify(t => t.Track(It.IsAny<AnalyticsEvent>(), factoryMoq.Object), Times.Exactly(2));
         }
 

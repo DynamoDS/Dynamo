@@ -5,7 +5,7 @@
                     xmlns:controls="clr-namespace:Dynamo.Views;assembly=DynamoCoreWpf"
                     xmlns:nodes="clr-namespace:Dynamo.Nodes;assembly=DynamoCoreWpf"
                     xmlns:dynui="clr-namespace:Dynamo.UI.Controls;assembly=DynamoCoreWpf"
-                    xmlns:fa="clr-namespace:FontAwesome.WPF;assembly=FontAwesome.WPF"
+                    xmlns:fa="http://schemas.fontawesome.com/icons/"
                     xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
                     xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
                     xmlns:system="clr-namespace:System;assembly=mscorlib"
