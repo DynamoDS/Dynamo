@@ -403,11 +403,6 @@ namespace Dynamo.Utilities
             {
                 return this == other;
             }
-
-            public override bool Equals(object obj)
-            {
-                return Equals(obj as _None<T>);
-            }
         }
     }
 }

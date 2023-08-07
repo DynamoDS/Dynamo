@@ -47,10 +47,5 @@ namespace Dynamo.Linting.Rules
 
             return Equals(obj as GraphRuleEvaluationResult);
         }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
     }
 }
