@@ -2,7 +2,7 @@
   "Uuid": "6aecda57-7679-4afb-aa02-05a75cc3433e",
   "IsCustomNode": true,
   "Category": "Misc",
-  "Description": "",
+  "Description": "test node",
   "Name": "Sequence2",
   "ElementResolver": {
     "ResolutionMap": {}
@@ -12,8 +12,8 @@
   "Nodes": [
     {
       "ConcreteType": "CoreNodeModels.Range, CoreNodeModels",
-      "NodeType": "ExtensionNode",
       "Id": "5399c352d22945f18c5973c55cd3574e",
+      "NodeType": "ExtensionNode",
       "Inputs": [
         {
           "Id": "e00a6c94b25148d1abdfc428831e3861",
@@ -55,18 +55,19 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a sequence of numbers or letters in the specified range."
+      "Description": "Creates a sequence of numbers or letters in the given range"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore",
-      "NodeType": "InputNode",
       "Parameter": {
         "Name": "start",
         "TypeName": "var",
         "TypeRank": -1,
-        "DefaultValue": null
+        "DefaultValue": null,
+        "Description": ""
       },
       "Id": "c1e4f3cc6d4048c483ceaee56d646c98",
+      "NodeType": "InputNode",
       "Inputs": [],
       "Outputs": [
         {
@@ -84,14 +85,15 @@
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore",
-      "NodeType": "InputNode",
       "Parameter": {
         "Name": "end",
         "TypeName": "var",
         "TypeRank": -1,
-        "DefaultValue": null
+        "DefaultValue": null,
+        "Description": ""
       },
       "Id": "f5906773647143a0b1fcce12f61d461d",
+      "NodeType": "InputNode",
       "Inputs": [],
       "Outputs": [
         {
@@ -109,14 +111,15 @@
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore",
-      "NodeType": "InputNode",
       "Parameter": {
         "Name": "step",
         "TypeName": "var",
         "TypeRank": -1,
-        "DefaultValue": null
+        "DefaultValue": null,
+        "Description": ""
       },
       "Id": "8f47fb7e43c7415f87ef5d564bb68191",
+      "NodeType": "InputNode",
       "Inputs": [],
       "Outputs": [
         {
@@ -133,15 +136,14 @@
       "Description": "A function parameter, use with custom nodes.\r\n\r\nYou can specify the type and default value for parameter. E.g.,\r\n\r\ninput : var[]..[]\r\nvalue : bool = false"
     },
     {
-      "ConcreteType": "CoreNodeModels.Formula, CoreNodeModels",
-      "Formula": "x-1",
-      "NodeType": "FormulaNode",
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
       "Id": "dab29ca0f01346c0b2a33bcb5c7745c2",
+      "NodeType": "CodeBlockNode",
       "Inputs": [
         {
           "Id": "f5214325101149388056914b4b09b2d9",
           "Name": "x",
-          "Description": "variable",
+          "Description": "x",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -152,7 +154,7 @@
         {
           "Id": "48b0eeec709242b4a61dac3cc13b7bfe",
           "Name": "",
-          "Description": "Result of math computation",
+          "Description": "temp_proc_var_",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -160,14 +162,15 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Evaluates mathematical formulas. Uses NCalc: http://ncalc.codeplex.com/"
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "temp_proc_var_ = x - 1;"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Output, DynamoCore",
-      "NodeType": "OutputNode",
       "ElementResolver": null,
       "Symbol": "",
       "Id": "28a960447dee4da299f970c2f350e622",
+      "NodeType": "OutputNode",
       "Inputs": [
         {
           "Id": "78807c4ba8034576b07e12e6e9b2c885",
@@ -188,42 +191,48 @@
     {
       "Start": "b84f6a3271064f5781b3c42596c66b8e",
       "End": "78807c4ba8034576b07e12e6e9b2c885",
-      "Id": "3f2deabd1dff48d8a3ff291a1122ea21"
+      "Id": "3f2deabd1dff48d8a3ff291a1122ea21",
+      "IsHidden": "False"
     },
     {
       "Start": "2e578dd7cd6543719ffb5833e941f02b",
       "End": "e00a6c94b25148d1abdfc428831e3861",
-      "Id": "805ce74a9f1945748e336753f440c70e"
+      "Id": "805ce74a9f1945748e336753f440c70e",
+      "IsHidden": "False"
     },
     {
       "Start": "842bcc23f4c94cbd880a416e9e539dd0",
       "End": "f5214325101149388056914b4b09b2d9",
-      "Id": "54c7eb9e13834a2abc5bb5455de0b5a2"
+      "Id": "54c7eb9e13834a2abc5bb5455de0b5a2",
+      "IsHidden": "False"
     },
     {
       "Start": "431ddbd96d184d0e907115428abef2a2",
       "End": "b48f9a1d015b46ee97e44eab6741d028",
-      "Id": "462d335a0fd3484f95ad88c9f56eb018"
+      "Id": "462d335a0fd3484f95ad88c9f56eb018",
+      "IsHidden": "False"
     },
     {
       "Start": "48b0eeec709242b4a61dac3cc13b7bfe",
       "End": "de086a19e8754a07b31ba4980ecee5b8",
-      "Id": "90b11ea0846b4ef6860386a3ef50264d"
+      "Id": "90b11ea0846b4ef6860386a3ef50264d",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
-  "Bindings": [],
+  "NodeLibraryDependencies": [],
+  "Author": "None provided",
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": false,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.0.0.4397",
+      "Version": "3.0.0.5795",
       "RunType": "Manual",
       "RunPeriod": "1000"
     },
     "Camera": {
-      "Name": "Background Preview",
+      "Name": "Default Camera",
       "EyeX": -17.0,
       "EyeY": 24.0,
       "EyeZ": 50.0,
@@ -234,71 +243,72 @@
       "UpY": 1.0,
       "UpZ": 0.0
     },
+    "ConnectorPins": [],
     "NodeViews": [
       {
-        "ShowGeometry": true,
-        "Name": "Range",
         "Id": "5399c352d22945f18c5973c55cd3574e",
+        "Name": "Range",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 323.383122001953,
-        "Y": 208.824760256458
+        "ShowGeometry": true,
+        "X": 0.0,
+        "Y": 0.0
       },
       {
-        "ShowGeometry": true,
-        "Name": "Input",
         "Id": "c1e4f3cc6d4048c483ceaee56d646c98",
+        "Name": "Input",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
+        "ShowGeometry": true,
         "X": 0.0,
-        "Y": 154.577959398747
+        "Y": 0.0
       },
       {
-        "ShowGeometry": true,
-        "Name": "Input",
         "Id": "f5906773647143a0b1fcce12f61d461d",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 0.0,
-        "Y": 230.871432466577
-      },
-      {
-        "ShowGeometry": true,
         "Name": "Input",
-        "Id": "8f47fb7e43c7415f87ef5d564bb68191",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
+        "ShowGeometry": true,
         "X": 0.0,
-        "Y": 311.641216267404
+        "Y": 0.0
       },
       {
+        "Id": "8f47fb7e43c7415f87ef5d564bb68191",
+        "Name": "Input",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
         "ShowGeometry": true,
-        "Name": "Formula",
+        "X": 0.0,
+        "Y": 0.0
+      },
+      {
         "Id": "dab29ca0f01346c0b2a33bcb5c7745c2",
+        "Name": "Formula",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 113.533651647406,
-        "Y": 228.546463130036
+        "ShowGeometry": true,
+        "X": 0.0,
+        "Y": 0.0
       },
       {
-        "ShowGeometry": true,
-        "Name": "Output",
         "Id": "28a960447dee4da299f970c2f350e622",
+        "Name": "Output",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 490.991600088771,
-        "Y": 207.689005153314
+        "ShowGeometry": true,
+        "X": 0.0,
+        "Y": 0.0
       }
     ],
     "Annotations": [],
-    "X": 124.0,
-    "Y": -2.0,
+    "X": 0.0,
+    "Y": 0.0,
     "Zoom": 1.0
   }
 }
