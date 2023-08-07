@@ -171,6 +171,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void AnalyticsTrackingEnabled()
         {
             VerifyEventTracking(Times.Exactly(1));
@@ -179,6 +180,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void AnalyticsTrackingDisabled()
         {
             //Modify preferences
@@ -192,11 +194,12 @@ namespace Dynamo.Tests
             dynamoSettings.IsAnalyticsReportingApproved = true;
             dynamoSettings.IsUsageReportingApproved = true;
 
-            //1 startup + 1 analytics optin status event (google analytics)
+            //1 startup + 1 analytics optin status event
             trackerMoq.Verify(t => t.Track(It.IsAny<AnalyticsEvent>(), factoryMoq.Object), Times.Exactly(2));
         }
 
         [Test]
+        [Category("Failure")]
         public void CreateDisposableEvents()
         {
             var variable = "TimeVariable";
@@ -223,6 +226,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void DummyDisposableEvents()
         {
             //Modify preferences

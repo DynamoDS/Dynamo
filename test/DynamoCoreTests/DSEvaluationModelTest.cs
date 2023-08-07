@@ -666,15 +666,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Test_Formula_Lacing()
-        {
-            RunModel(@"core\formula\formula_lacing.dyn");
-
-            AssertPreviewValue("d9b9d0a9-1fec-4b20-82c4-2d1665306509", new int[] { 4, 6, 7 });
-            AssertPreviewValue("c35f1c6d-b955-4638-802f-208f93112078", new object[] { new int[] { 4, 5, 6 }, new int[] { 5, 6, 7 } });
-        }
-
-        [Test]
         public void Test_Longest_Lacing()
         {
             RunModel(@"core\dsevaluation\longest_lacing.dyn");

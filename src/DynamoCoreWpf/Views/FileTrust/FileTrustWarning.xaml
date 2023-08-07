@@ -1,4 +1,4 @@
-﻿<Popup x:Class="Dynamo.Wpf.Views.FileTrust.FileTrustWarning"
+<Popup x:Class="Dynamo.Wpf.Views.FileTrust.FileTrustWarning"
        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -7,7 +7,7 @@
        xmlns:ui="clr-namespace:Dynamo.UI"
        xmlns:controls="clr-namespace:Dynamo.Controls"
        xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf" 
-       xmlns:fa="http://schemas.fontawesome.io/icons/" 
+       xmlns:fa="clr-namespace:FontAwesome5;assembly=FontAwesome5.Net"
        mc:Ignorable="d" 
        AllowsTransparency="True"
        Opacity="0.5"
@@ -111,7 +111,7 @@
                                                 Foreground="#FAA21B"
                                                 VerticalAlignment="Bottom" 
                                                 HorizontalAlignment="Left" 
-                                                Icon="ExclamationTriangle"/>
+                                                Icon="Solid_ExclamationTriangle"/>
                             </Label.Content>
                         </Label>
                         <Label x:Name="TitleLabel"
@@ -137,7 +137,7 @@
                                                  Height="15" 
                                                  VerticalAlignment="Bottom" 
                                                  HorizontalAlignment="Left" 
-                                                 Icon="QuestionCircle"                                               
+                                                 Icon="Solid_QuestionCircle"                                               
                                                  Foreground="#808080"/>
                             </Label.Content>
                         </Label>
@@ -184,7 +184,7 @@
                                                  Height="15" 
                                                  VerticalAlignment="Bottom" 
                                                  HorizontalAlignment="Left" 
-                                                 Icon="QuestionCircle"                                               
+                                                 Icon="Solid_QuestionCircle"                                               
                                                  Foreground="#808080"/>
                             </Label.Content>
                         </Label>
