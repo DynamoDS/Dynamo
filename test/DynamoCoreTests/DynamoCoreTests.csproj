@@ -52,12 +52,13 @@
     </PackageReference>
 
 
-<!--moq and deps - copied to test_dependencies folder-->
-        <PackageReference Include="Moq" Version="4.18.4" GeneratePathProperty="true" />
-        <PackageReference Include="Castle.Core" Version=" 5.1.1" GeneratePathProperty="true" />
-        <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" GeneratePathProperty="true" Condition=" '$(TargetFramework)' == 'net48' " />
+    <!--moq and deps - copied to test_dependencies folder-->
+    <PackageReference Include="Moq" Version="4.18.4" GeneratePathProperty="true" />
+    <PackageReference Include="Castle.Core" Version=" 5.1.1" GeneratePathProperty="true" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" GeneratePathProperty="true" Condition=" '$(TargetFramework)' == 'net48' " />
 
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="JUnitTestLogger" Version="1.1.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="RestSharp" Version="106.12.0" />
     <PackageReference Include="Microsoft.Diagnostics.Runtime" Version="2.0.226801" GeneratePathProperty="true" />
     <PackageReference Include="System.Collections.Immutable" Version="5.0.0" GeneratePathProperty="true" />
