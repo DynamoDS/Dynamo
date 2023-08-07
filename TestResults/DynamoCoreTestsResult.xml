@@ -1,0 +1,6 @@
+<testsuites>
+  <testsuite name="DynamoCoreTests.dll" tests="1" skipped="0" failures="0" errors="0" time="1.969751" timestamp="2023-08-07T15:32:36" hostname="BOSR90Y8QS0" id="0" package="DynamoCoreTests.dll">
+    <properties />
+    <testcase classname="Dynamo.Tests.DSLibraryTest" name="TestPreLoadedLibrary" time="1.9697510" />
+  </testsuite>
+</testsuites>

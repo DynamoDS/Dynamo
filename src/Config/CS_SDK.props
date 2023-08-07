@@ -58,7 +58,7 @@
     <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
     <DefineConstants>$(DefineConstants);_LINUX</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(UILib)' == 'true' AND $(Platform.Contains('NET60'))">
+  <PropertyGroup Condition="('$(UILib)' == 'true' OR '$(TestProjectDefaults)' == 'true') AND $(Platform.Contains('NET60'))">
     <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
