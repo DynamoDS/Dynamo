@@ -761,10 +761,8 @@ namespace DynamoCoreWpfTests
             var token = JToken.Parse(viewModel.CurrentSpaceViewModel.ToJson());
             jo.Add("View", token);
 
-            Assert.IsNotNull(jsonModel);
-            Assert.IsNotNull(jo.ToString());
-            Assert.IsNotEmpty(jo.ToString());
-            Assert.IsNotEmpty(jsonModel);
+            Assert.IsFalse(string.IsNullOrEmpty(jsonModel));
+            Assert.IsFalse(string.IsNullOrEmpty(jo.ToString()));
 
             var tempPath = Path.GetTempPath();
             var jsonFolder = Path.Combine(tempPath, jsonFolderName);
