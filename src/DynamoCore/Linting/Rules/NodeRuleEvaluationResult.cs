@@ -50,10 +50,5 @@ namespace Dynamo.Linting.Rules
 
             return Equals(obj as NodeRuleEvaluationResult);
         }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
     }
 }

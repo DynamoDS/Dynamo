@@ -84,11 +84,6 @@ namespace ProtoCore.DSASM
                    classScope == rhs.classScope && 
                    codeBlockId == rhs.codeBlockId;
         }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
     }
 
     public class SymbolTable

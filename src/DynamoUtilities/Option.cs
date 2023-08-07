@@ -408,11 +408,6 @@ namespace Dynamo.Utilities
             {
                 return Equals(obj as _None<T>);
             }
-
-            public override int GetHashCode()
-            {
-                return base.GetHashCode();
-            }
         }
     }
 }

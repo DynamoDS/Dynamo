@@ -1634,11 +1634,6 @@ namespace ProtoCore.AssociativeGraph
 
             return false;
         }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
     }
 
 
@@ -1730,11 +1725,6 @@ namespace ProtoCore.AssociativeGraph
                 }
             }
             return true;
-        }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
         }
     }
 }

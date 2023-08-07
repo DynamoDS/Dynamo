@@ -23,11 +23,6 @@ namespace ProtoCore.CodeModel
         {
             return !(lhs == rhs);
         }
-
-        public override bool Equals(object obj)
-        {
-            return base.Equals(obj);
-        }
     }
 
     public struct CodeRange
@@ -49,11 +44,6 @@ namespace ProtoCore.CodeModel
         public static bool operator !=(CodeRange lhs, CodeRange rhs)
         {
             return !(lhs == rhs);
-        }
-
-        public override bool Equals(object obj)
-        {
-            return base.Equals(obj);
         }
     }
 }

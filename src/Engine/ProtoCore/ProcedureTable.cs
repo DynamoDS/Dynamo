@@ -240,11 +240,6 @@ namespace ProtoCore.DSASM
                    LocalCount == rhs.LocalCount && 
                    Name.Equals(rhs.Name);
         }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
     }
 
     public class ProcedureTable

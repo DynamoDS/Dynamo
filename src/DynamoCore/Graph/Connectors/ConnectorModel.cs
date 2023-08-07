@@ -294,15 +294,5 @@ namespace Dynamo.Graph.Connectors
             var handler = Deleted;
             if (handler != null) handler();
         }
-
-        public override bool Equals(object obj)
-        {
-            return base.Equals(obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();   
-        }
     }
 }

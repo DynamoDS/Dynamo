@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ProtoCore.CodeModel
 {
@@ -20,16 +20,6 @@ namespace ProtoCore.CodeModel
         public static bool operator !=(CodeFile lhs, CodeFile rhs)
         {
             return !(lhs == rhs);
-        }
-
-        public override bool Equals(object obj)
-        {
-            return base.Equals(obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
         }
     }
 }

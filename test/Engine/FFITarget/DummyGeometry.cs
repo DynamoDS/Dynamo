@@ -84,11 +84,6 @@ namespace FFITarget
         {
             //Don't do anything
         }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
     }
 
     public class UnknownPoint : DummyPoint

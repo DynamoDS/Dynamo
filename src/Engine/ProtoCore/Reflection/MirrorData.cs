@@ -322,11 +322,6 @@ namespace ProtoCore
 
                 return StackUtils.CompareStackValues(this.svData, data.svData, this.runtimeCore, data.runtimeCore);
             }
-
-            public override int GetHashCode()
-            {
-                return base.GetHashCode();
-            }
         }
     }
 }

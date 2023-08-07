@@ -94,10 +94,5 @@ namespace ProtoCore.DSASM
 
             return Value.Equals(otherString.Value);
         }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
     }
 }
