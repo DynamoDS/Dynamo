@@ -1,10 +1,10 @@
-﻿<UserControl x:Class="Dynamo.GraphMetadata.Controls.CustomPropertyControl"
+<UserControl x:Class="Dynamo.GraphMetadata.Controls.CustomPropertyControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Dynamo.GraphMetadata.Controls"
-             xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:fa="clr-namespace:FontAwesome5;assembly=FontAwesome5.Net"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="200">
@@ -48,7 +48,7 @@
                     Command="{Binding EditPropertyNameCmd}">
                 <Button.Template>
                     <ControlTemplate>
-                        <fa:ImageAwesome Icon="Pencil"
+                        <fa:ImageAwesome Icon="Solid_PencilAlt"
                                             Height="16px"
                                             Grid.Column="1"
                                             Foreground="{StaticResource FilterIconColor}" />

@@ -18,12 +18,12 @@ jobs:
       run: echo "::remove-matcher owner=csc::"
 
     - name: Install dependencies for windows runtime
-      run: dotnet restore $Env:GITHUB_WORKSPACE\Dynamo\src\DynamoCore.net6.sln -p:Platform=NET60_Windows --runtime=win10-x64
+      run: dotnet restore $Env:GITHUB_WORKSPACE\Dynamo\src\DynamoCore.sln -p:Platform=NET60_Windows --runtime=win10-x64
     - name: Build Dynamo with MSBuild for Windows
       run: |
         echo "***Continue with the build, Good luck developer!***"
         cd "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\"
-           .\MSBuild.exe $Env:GITHUB_WORKSPACE\Dynamo\src\DynamoCore.net6.sln /p:Configuration=Release  /p:Platform=NET60_Windows
+           .\MSBuild.exe $Env:GITHUB_WORKSPACE\Dynamo\src\DynamoCore.sln /p:Configuration=Release  /p:Platform=NET60_Windows
     # look for Dynamo
     - name: Navigate to Dynamo Windows Folder
       run: |
@@ -31,12 +31,12 @@ jobs:
         echo "***Locating DynamoCLI for Windows!***"
         test ".\DynamoCLI.exe" && echo "DynamoCLI exists!"
     - name: Install dependencies for linux runtime
-      run: dotnet restore $Env:GITHUB_WORKSPACE\Dynamo\src\DynamoCore.net6.sln -p:Platform=NET60_Linux --runtime=linux-x64
+      run: dotnet restore $Env:GITHUB_WORKSPACE\Dynamo\src\DynamoCore.sln -p:Platform=NET60_Linux --runtime=linux-x64
     - name: Build Dynamo with MSBuild for Linux
       run: |
         echo "***Continue with the build, Good luck developer!***"
         cd "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\"
-           .\MSBuild.exe $Env:GITHUB_WORKSPACE\Dynamo\src\DynamoCore.net6.sln /p:Configuration=Release /p:Platform=NET60_Linux
+           .\MSBuild.exe $Env:GITHUB_WORKSPACE\Dynamo\src\DynamoCore.sln /p:Configuration=Release /p:Platform=NET60_Linux
     - name: Navigate to Dynamo Linux Folder
       run: |
         cd "$Env:GITHUB_WORKSPACE\Dynamo\bin\NET60_Linux\Release"

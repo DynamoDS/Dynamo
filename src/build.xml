@@ -3,13 +3,13 @@
     ToolsVersion="15.0"
     DefaultTargets="Build">
 <PropertyGroup>
-    <Solution>Dynamo.All.sln</Solution>
+    <SolutionNET6>Dynamo.All.sln</SolutionNET6>
     <NuGetPath>$(MSBuildProjectDirectory)\..\tools\Nuget\NuGet.exe</NuGetPath>
  </PropertyGroup>
 	
 <ItemGroup>
-    <ProjectToBuild Include="$(Solution)" >
-        <Properties>Configuration=Release;Platform=Any CPU</Properties>
+    <ProjectToBuild Include="$(SolutionNET6)" >
+        <Properties>Configuration=Release;Platform=NET60_Windows</Properties>
     </ProjectToBuild>
 </ItemGroup>
 
@@ -19,7 +19,7 @@
 
 <Target Name="RestorePackages">
   <Exec Condition="!Exists($(NuGetPath))" Command="powershell.exe -ExecutionPolicy ByPass -Command Invoke-WebRequest -Uri https://dist.nuget.org/win-x86-commandline/latest/nuget.exe -OutFile $(NuGetPath)" />
-  <Exec Command="$(NuGetPath) restore $(Solution)"/>
+  <Exec Command="dotnet restore $(SolutionNET6) -p:Platform=NET60_Windows --runtime=win10-x64"/>
 </Target>
 
 </Project>

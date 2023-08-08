@@ -40,7 +40,12 @@
     <None Remove="Resources\zoom-out_hover.png" />
   </ItemGroup>
   <ItemGroup>
+	<PackageReference Include="FontAwesome5" Version="2.1.11" />
 	<PackageReference Include="AvalonEdit" Version="6.3.0.90" />
+    <Reference Include="Microsoft.Practices.Prism">
+      <HintPath>..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
 	<PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)'=='net48' ">

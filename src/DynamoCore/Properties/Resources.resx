@@ -905,4 +905,10 @@ This package likely contains an assembly that is blocked. You will need to load 
   <data name="DynamoLanguages_noxlate" xml:space="preserve">
     <value>English,Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文</value>
   </data>
+  <data name="FormulaDSConversionFailure" xml:space="preserve">
+    <value>Formula failed to convert to DesignScript code. Please edit the formula manually to use it in a CodeBlock node.</value>
+  </data>
+  <data name="FormulaMigrated" xml:space="preserve">
+    <value>Formula node has been deprecated. It has been automatically migrated to a CodeBlock node. Note that results may vary after the migration depending on lacing options selected on the original Formula node. Appropriate replication guides might need to be applied to the CodeBlock node script.</value>
+  </data>
 </root>
