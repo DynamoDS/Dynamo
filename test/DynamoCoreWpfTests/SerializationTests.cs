@@ -263,38 +263,6 @@ namespace DynamoCoreWpfTests
 
         }
 
-
-        [Test]
-        [Category("UnitTests")]
-        public void TestFormula()
-        {
-            var formulaNode = new Formula { FormulaString = "x+y", X = 400 };
-
-            //To check if base Serialization method is being called
-
-            //Assert initial values
-            Assert.AreEqual(400, formulaNode.X);
-            Assert.AreEqual("x+y", formulaNode.FormulaString);
-            Assert.AreEqual(2, formulaNode.InPorts.Count);
-
-            //Serialize node and then change values
-            XmlDocument xmlDoc = new XmlDocument();
-            XmlElement serializedEl = formulaNode.Serialize(xmlDoc, SaveContext.Undo);
-            formulaNode.X = 250;
-            formulaNode.FormulaString = "x+y+z";
-
-            //Assert new changes
-            Assert.AreEqual(250, formulaNode.X);
-            Assert.AreEqual(3, formulaNode.InPorts.Count);
-            Assert.AreEqual("x+y+z", formulaNode.FormulaString);
-
-            //Deserialize and aasert old values
-            formulaNode.Deserialize(serializedEl, SaveContext.Undo);
-            Assert.AreEqual(400, formulaNode.X);
-            Assert.AreEqual("x+y", formulaNode.FormulaString);
-            Assert.AreEqual(2, formulaNode.InPorts.Count);
-        }
-
         [Test]
         public void TestFunctionNode()
         {
@@ -444,7 +412,7 @@ namespace DynamoCoreWpfTests
             var workSpaceJobject = JObject.Parse(ViewModel.CurrentSpaceViewModel.ToJson());
             JObject nodeViewModelJobject = JObject.Parse(workSpaceJobject["NodeViews"][0].ToString());
 
-            Assert.AreEqual(9, nodeViewModelJobject.Properties().Count(), "The number of Serialized properties is not the expected");
+            Assert.AreEqual(8, nodeViewModelJobject.Properties().Count(), "The number of Serialized properties is not the expected");
 
             bool explicitOrder =
                 nodeViewModelJobject.Properties().ElementAt(0).Name == GetJsonPropertydName<NodeViewModel>(nameof(NodeViewModel.Id)) &&
@@ -454,8 +422,7 @@ namespace DynamoCoreWpfTests
                 nodeViewModelJobject.Properties().ElementAt(4).Name == GetJsonPropertydName<NodeViewModel>(nameof(NodeViewModel.IsFrozenExplicitly)) &&
                 nodeViewModelJobject.Properties().ElementAt(5).Name == GetJsonPropertydName<NodeViewModel>(nameof(NodeViewModel.IsVisible)) &&
                 nodeViewModelJobject.Properties().ElementAt(6).Name == GetJsonPropertydName<NodeViewModel>(nameof(NodeViewModel.X)) &&
-                nodeViewModelJobject.Properties().ElementAt(7).Name == GetJsonPropertydName<NodeViewModel>(nameof(NodeViewModel.Y)) &&
-                nodeViewModelJobject.Properties().ElementAt(8).Name == GetJsonPropertydName<NodeViewModel>(nameof(NodeViewModel.PackageName));
+                nodeViewModelJobject.Properties().ElementAt(7).Name == GetJsonPropertydName<NodeViewModel>(nameof(NodeViewModel.Y));
 
             Assert.IsTrue(explicitOrder, "The order of the properties is not the expected");
         }

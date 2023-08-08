@@ -24,11 +24,6 @@
     <None Remove="CoreNodeModelsImages.resources" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-    <PackageReference Include="ncalc" Version="1.3.8">
-      <GeneratePathProperty>true</GeneratePathProperty>
-      <!--Exclude copying the runtime dlls because we will handle it in the BinaryCompatibilityOps target -->
-      <ExcludeAssets>runtime</ExcludeAssets>
-    </PackageReference>
       <Reference Include="System.Web" />
       <Reference Include="System.Windows" />
       <Reference Include="System.Xaml" />
@@ -96,9 +91,6 @@
       <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <Target Name="BinaryCompatibilityOps" BeforeTargets="Build" Condition=" '$(TargetFramework)' == 'net48' ">
-    <Copy SourceFiles="$(PkgNCalc)\lib\NCalc.dll" DestinationFolder="$(OutputPath)" />
-  </Target>
   <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" '$(OS)' != 'Unix' ">
     <!-- Generate customization dll -->
     <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)CoreNodeModelsImages.resx" OutputResources="$(ProjectDir)CoreNodeModelsImages.resources" References="$(SystemDrawingDllPath)" />

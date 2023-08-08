@@ -88,8 +88,7 @@
         "Excluded": false,
         "ShowGeometry": true,
         "X": 179.8,
-        "Y": 160.39999999999992,
-        "PackageName": ""
+        "Y": 160.39999999999992
       },
       {
         "Id": "6cbd0760736f4235a03b38fb359e9957",
@@ -99,8 +98,7 @@
         "Excluded": false,
         "ShowGeometry": true,
         "X": 76.8,
-        "Y": 162.4,
-        "PackageName": ""
+        "Y": 162.4
       }
     ],
     "Annotations": [],

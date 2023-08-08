@@ -1,6 +1,6 @@
 <dww:ModelessChildWindow x:Class="PythonNodeModelsWpf.ScriptEditorWindow"
                          xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                         xmlns:fa="http://schemas.fontawesome.io/icons/"
+                         xmlns:fa="http://schemas.fontawesome.com/icons/"
                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                          xmlns:ui1="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
                          xmlns:dww="clr-namespace:Dynamo.Wpf.Windows;assembly=DynamoCoreWpf"

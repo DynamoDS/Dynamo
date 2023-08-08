@@ -49,25 +49,68 @@ namespace Dynamo.Configuration
         /// </summary>
         internal static int DefaultResultsCount = 50;
 
+
+        #region Field Weights
         /// <summary>
         /// Search name matching weight
         /// </summary>
         internal static int SearchNameWeight = 10;
 
         /// <summary>
+        /// Search Category matching weight
+        /// </summary>
+        internal static int SearchCategoryWeight = 9;
+
+        /// <summary>
+        /// Search Description matching weight
+        /// </summary>
+        internal static int SearchDescriptionWeight = 6;
+
+        /// <summary>
+        /// Search tags matching weight
+        /// </summary>
+        internal static int SearchTagsWeight = 6;
+
+        /// <summary>
+        /// other fields search matching weight
+        /// </summary>
+        internal static int SearchMetaFieldsWeight = 6;
+
+        #endregion
+
+
+        #region Wildcards Field Weights
+        /// <summary>
         /// Wildcards search name matching weight
         /// </summary>
         internal static int WildcardsSearchNameWeight = 7;
 
         /// <summary>
-        /// Search non-name meta fields matching weight
+        /// Wildcards search Category matching weight
         /// </summary>
-        internal static int SearchMetaFieldsWeight = 6;
+        internal static int WildcardsSearchCategoryWeight = 6;
 
         /// <summary>
-        /// Wildcards search non-name meta fields matching weight
+        /// Wildcards search Description matching weight
+        /// </summary>
+        internal static int WildcardsSearchDescriptionWeight = 4;
+
+        /// <summary>
+        /// Wildcards search tags matching weight
+        /// </summary>
+        internal static int WildcardsSearchTagsWeight = 4;
+
+        /// <summary>
+        /// other wildcards fields search matching weight
         /// </summary>
         internal static int WildcardsSearchMetaFieldsWeight = 4;
+
+        /// <summary>
+        /// Wildcards search name matching weight
+        /// </summary>
+        internal static int WildcardsSearchNameParsedWeight = 5;
+
+        #endregion
 
         /// <summary>
         /// Fuzzy search matching weight

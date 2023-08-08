@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Visualization;
+using HelixToolkit.SharpDX.Core;
 using HelixToolkit.Wpf.SharpDX;
 using SharpDX;
 using ITransformable = Autodesk.DesignScript.Interfaces.ITransformable;

@@ -3,33 +3,34 @@
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
   <PropertyGroup>
-    <ProjectGuid>{9B4FDC96-E2F9-4B8F-894A-4294405D50E7}</ProjectGuid>
+    <ProjectGuid>{6CC1E399-B5A5-4FA2-A98C-5D8B2BA280A1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DSOffice</RootNamespace>
     <AssemblyName>DSOffice</AssemblyName>
-    <DocumentationFile>$(OutputPath)\$(UICulture)\DSOffice.xml</DocumentationFile>
+    <EnableDefaultCompileItems>False</EnableDefaultCompileItems>
   </PropertyGroup>
   <PropertyGroup>
     <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
   </PropertyGroup>
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-        <PackageReference Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1001">
-            <ExcludeAssets>runtime</ExcludeAssets>
-        </PackageReference>
-        <Reference Include="WindowsBase" />
-    </ItemGroup>
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
-        <PackageReference Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1001" />
-        <PackageReference Include="MicrosoftOfficeCore" Version="15.0.0" />
-    </ItemGroup>
-  <ItemGroup Label ="Common deps">
-	<PackageReference Include="DocumentFormat.OpenXml" Version="2.12.3" CopyXML="true" />
+  <ItemGroup>
+    <Content Include="DSOffice.Migrations.xml">
+        <SubType>Designer</SubType>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="DSOffice_DynamoCustomization.xml">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CSVNodes.cs" />
+    <Compile Include="Excel.cs" Condition=" '$(RuntimeIdentifier)' == 'win10-x64' " />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="DSOffice.Migrations.xml">
-      <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="DSOffice_DynamoCustomization.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -37,50 +38,21 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
-      <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
-      <Name>DynamoCore</Name>
-      <Private>False</Private>
+        <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
+        <Name>DynamoCore</Name>
+        <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\Engine\ProtoCore\ProtoCore.csproj">
-      <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
-      <Name>ProtoCore</Name>
-      <Private>False</Private>
-    </ProjectReference>
+    <ProjectReference Include="..\DSOfficeUtilities\DSOfficeUtilities.csproj" Condition=" '$(RuntimeIdentifier)' == 'win10-x64' " />
     <ProjectReference Include="..\..\NodeServices\DynamoServices.csproj">
-      <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
-      <Name>DynamoServices</Name>
-      <Private>False</Private>
+        <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
+        <Name>DynamoServices</Name>
+        <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\CoreNodes\CoreNodes.csproj">
-      <Project>{87550b2b-6cb8-461e-8965-dfafe3aafb5c}</Project>
-      <Name>CoreNodes</Name>
+        <Project>{87550b2b-6cb8-461e-8965-dfafe3aafb5c}</Project>
+        <Name>CoreNodes</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Properties\Resources.en-US.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.en-US.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Properties\Resources.en-US.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-  <Target Name="CopyFiles" BeforeTargets="Build">
-    <Copy SourceFiles="$(ProjectDir)DSOffice_DynamoCustomization.xml" DestinationFiles="$(OutDir)DSOffice_DynamoCustomization.xml" />
-  </Target>
   <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" '$(OS)' != 'Unix' ">
     <!-- Generate customization dll -->
     <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)DSOfficeImages.resx" OutputResources="$(ProjectDir)DSOfficeImages.resources" References="$(SystemDrawingDllPath)" />
