@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using Dynamo.Graph.Nodes;
 using NUnit.Framework;
 
@@ -21,7 +22,7 @@ namespace DynamoCoreWpfTests
             return Path.Combine(directory.Parent.Parent.Parent.FullName, "test");
         }
 
-        [Test, RequiresSTA]
+        [Test, Apartment(ApartmentState.STA)]
         public void RegressMagn7917()
         {
             RunCommandsFromFile("RegressMagn7917.xml", (commandTag) =>
