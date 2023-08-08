@@ -130,7 +130,7 @@ namespace DynamoCoreWpfTests
         }
 
         // TODO, QNTM-1100: Re-enable this test once the strategy for WorkspaceInfo has been decided on
-        [Test, Ignore]
+        [Test, Ignore("Test can be re-enabled once a decision on Run settings has been made.")]
         public void RunSettingsControllerSavesAndLoads()
         {
             var homeSpace = GetHomeSpace();
