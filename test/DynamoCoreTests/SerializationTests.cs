@@ -945,7 +945,7 @@ namespace Dynamo.Tests
         /// </summary>
         /// <param name="filePath">The path to a .dyn file. This parameter is supplied
         /// by the test framework.</param>
-        [Test, TestCaseSource("FindWorkspaces"), Category("JsonTestExclude")]
+        [Test, TestCaseSource(nameof(FindWorkspaces)), Category("JsonTestExclude")]
         public void SerializationTest(string filePath)
         {
             modelsGuidToIdMap.Clear();
@@ -962,7 +962,7 @@ namespace Dynamo.Tests
         /// </summary>
         /// <param name="filePath">The path to a .dyn file. This parameter is supplied
         /// by the test framework.</param>
-        [Test, TestCaseSource("FindWorkspaces"), Category("JsonTestExclude")]
+        [Test, TestCaseSource(nameof(FindWorkspaces)), Category("JsonTestExclude")]
         public void SerializationInDifferentCultureTest(string filePath)
         {
             var frCulture = CultureInfo.CreateSpecificCulture("fr-FR");
@@ -993,7 +993,7 @@ namespace Dynamo.Tests
         /// </summary>
         /// <param name="filePath">The path to a .dyn file. This parameter is supplied
         /// by the test framework.</param>
-        [Test, TestCaseSource("FindWorkspaces"), Category("JsonTestExclude")]
+        [Test, TestCaseSource(nameof(FindWorkspaces)), Category("JsonTestExclude")]
         public void SerializationNonGuidIdsTest(string filePath)
         {
             modelsGuidToIdMap.Clear();

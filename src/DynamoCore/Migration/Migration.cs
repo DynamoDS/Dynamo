@@ -1,4 +1,4 @@
-﻿using Dynamo.Configuration;
+using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.NodeLoaders;
 using Dynamo.Graph.Workspaces;
@@ -612,6 +612,7 @@ namespace Dynamo.Migration
         /// function.</param>
         /// <param name="name">The name to display on the node.</param>
         /// <param name="signature">The signature of the function.</param>
+        /// <param name="inputcount"></param>
         /// <returns>Returns the XmlElement that represents a DSVarArgFunction node 
         /// with its basic function information with default attributes.</returns>
         public static XmlElement CreateVarArgFunctionNode(XmlDocument document, XmlElement oldNode,
