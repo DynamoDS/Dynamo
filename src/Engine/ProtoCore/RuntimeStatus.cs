@@ -112,6 +112,17 @@ namespace ProtoCore
             }
         }
 
+        internal int InfosCount
+        {
+            get
+            {
+                using (rwl.CreateReadLock())
+                {
+                    return infos.Count;
+                }
+            }
+        }
+
         public int WarningCount
         {
             get
@@ -128,6 +139,7 @@ namespace ProtoCore
             using (rwl.CreateWriteLock())
             {
                 warnings.RemoveAll(w => w.ExpressionID == expressionID);
+                infos.RemoveAll(w => w.ExpressionID == expressionID);
             }
         }
 
@@ -136,6 +148,7 @@ namespace ProtoCore
             using (rwl.CreateWriteLock())
             {
                 warnings.RemoveAll(w => w.GraphNodeGuid.Equals(guid));
+                infos.RemoveAll(w => w.GraphNodeGuid.Equals(guid));
             }
         }
 
@@ -144,6 +157,7 @@ namespace ProtoCore
             using (rwl.CreateWriteLock())
             {
                 warnings.RemoveAll(w => w.AstID.Equals(astID));
+                infos.RemoveAll(w => w.AstID.Equals(astID));
             }
         }
 
@@ -152,6 +166,7 @@ namespace ProtoCore
                              System.IO.TextWriter writer = null)
         {
             warnings = new List<Runtime.WarningEntry>();
+            infos = new List<Runtime.InfoEntry>();
             this.runtimeCore = runtimeCore;
 
             if (writer != null)
