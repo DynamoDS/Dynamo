@@ -868,17 +868,17 @@ namespace DynamoCoreWpfTests
         }
 
         #region Helpers
-        private string[] htmlResources()
+        private static string[] htmlResources()
         {
             return getContentFiles(@"*.html");
         }
 
-        private string[] mdResources()
+        private static string[] mdResources()
         {
             return getContentFiles(@"*.md");
         }
 
-        private string[] getContentFiles(string wildcard)
+        private static string[] getContentFiles(string wildcard)
         {
             var directory = new DirectoryInfo(ExecutingDirectory);
             var docsDirectory = Path.Combine(directory.Parent.Parent.Parent.FullName, @"src\DocumentationBrowserViewExtension\Docs");
