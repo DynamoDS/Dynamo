@@ -1505,16 +1505,18 @@ namespace Dynamo.Graph.Workspaces
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-                throw;
+#pragma warning disable CA2200 // Rethrow to preserve stack details
+                throw ex;
+#pragma warning restore CA2200 // Rethrow to preserve stack details
             }
         }
 
-        /// <summary>
-        ///     Adds a node to this workspace.
-        /// </summary>
-        /// <param name="node">The node which is being added to the workspace.</param>
-        /// <param name="centered">Indicates if the node should be placed at the center of workspace.</param>
-        internal void AddAndRegisterNode(NodeModel node, bool centered = false)
+            /// <summary>
+            ///     Adds a node to this workspace.
+            /// </summary>
+            /// <param name="node">The node which is being added to the workspace.</param>
+            /// <param name="centered">Indicates if the node should be placed at the center of workspace.</param>
+            internal void AddAndRegisterNode(NodeModel node, bool centered = false)
         {
             if (nodes.Contains(node))
                 return;

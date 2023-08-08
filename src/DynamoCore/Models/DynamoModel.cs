@@ -2072,7 +2072,9 @@ namespace Dynamo.Models
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                throw;
+#pragma warning disable CA2200 // Rethrow to preserve stack details
+                throw e;
+#pragma warning restore CA2200 // Rethrow to preserve stack details
             }
         }
 
@@ -2104,7 +2106,9 @@ namespace Dynamo.Models
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                throw;
+#pragma warning disable CA2200 // Rethrow to preserve stack details
+                throw e;
+#pragma warning restore CA2200 // Rethrow to preserve stack details
             }
         }
 
