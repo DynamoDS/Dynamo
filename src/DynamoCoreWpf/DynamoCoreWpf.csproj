@@ -140,10 +140,6 @@
 	<PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
     <Reference Include="Dynamo.Microsoft.Xaml.Behaviors">
       <HintPath>..\..\extern\Microsoft.Xaml.Behaviors\$(TargetFramework)\Dynamo.Microsoft.Xaml.Behaviors.dll</HintPath>
-    </Reference>
-    <PackageReference Include="Prism.Core" Version="8.1.97" Condition=" '$(TargetFramework)' != 'net48' " />
-    <Reference Include="Microsoft.Practices.Prism" Condition=" '$(TargetFramework)' == 'net48' ">
-        <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
     </Reference> 
   
     <PackageReference Include="Prism.Core" Version="8.1.97"/>
