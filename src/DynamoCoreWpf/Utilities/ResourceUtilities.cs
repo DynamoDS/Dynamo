@@ -609,9 +609,11 @@ namespace Dynamo.Utilities
                 webBrowserComponent.CoreWebView2.Settings.IsZoomControlEnabled = false;
                 webBrowserComponent.CoreWebView2.Settings.IsPinchZoomEnabled = false;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+#pragma warning disable CA2200 // Rethrow to preserve stack details
+                throw ex;
+#pragma warning restore CA2200 // Rethrow to preserve stack details
             }
         }
 
