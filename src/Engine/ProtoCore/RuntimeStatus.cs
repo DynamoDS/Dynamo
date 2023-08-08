@@ -53,21 +53,21 @@ namespace ProtoCore
             public string Filename;
         }
 
-        public enum InfoID
+        internal enum InfoID
         {
             Default
         }
 
         public struct InfoEntry
         {
-            public Runtime.InfoID ID;
-            public string Message;
-            public int Line;
-            public int Column;
-            public int ExpressionID;
-            public Guid GraphNodeGuid;
-            public int AstID;
-            public string Filename;
+            internal Runtime.InfoID ID;
+            internal string Message;
+            internal int Line;
+            internal int Column;
+            internal int ExpressionID;
+            internal Guid GraphNodeGuid;
+            internal int AstID;
+            internal string Filename;
         }
     }
 
@@ -101,7 +101,7 @@ namespace ProtoCore
             }
         }
 
-        public List<Runtime.InfoEntry> Infos
+        internal List<Runtime.InfoEntry> Infos
         {
             get
             {
@@ -225,7 +225,7 @@ namespace ProtoCore
             }
         }
 
-        public void LogInfo(Runtime.InfoID ID, string message, string filename, int line, int col)
+        internal void LogInfo(Runtime.InfoID ID, string message, string filename, int line, int col)
         {
             filename = filename ?? string.Empty;
 
@@ -295,7 +295,7 @@ namespace ProtoCore
             LogWarning(ID, message, string.Empty, Constants.kInvalidIndex, Constants.kInvalidIndex);
         }
 
-        public void LogInfo(Runtime.InfoID ID, string message)
+        internal void LogInfo(Runtime.InfoID ID, string message)
         {
             LogInfo(ID, message, string.Empty, Constants.kInvalidIndex, Constants.kInvalidIndex);
         }
