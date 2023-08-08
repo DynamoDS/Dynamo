@@ -242,7 +242,7 @@ namespace ProtoCore
 
         internal void LogInfo(Runtime.InfoID ID, string message, string filename, int line, int col)
         {
-            filename = filename ?? string.Empty;
+            filename ??= string.Empty;
 
             if (!runtimeCore.Options.IsDeltaExecution && (string.IsNullOrEmpty(filename) ||
                 line == Constants.kInvalidIndex ||
@@ -251,19 +251,19 @@ namespace ProtoCore
                 AuditCodeLocation(ref filename, ref line, ref col);
             }
 
-            var warningMsg = string.Format(Resources.kConsoleWarningMessage,
+            var infoMsg = string.Format(Resources.kConsoleWarningMessage,
                                            message, filename, line, col);
 
 #if DEBUG
             if (runtimeCore.Options.Verbose)
             {
-                System.Console.WriteLine(warningMsg);
+                Console.WriteLine(infoMsg);
             }
 #endif
 
             if (WebMessageHandler != null)
             {
-                var outputMessage = new OutputMessage(warningMsg);
+                var outputMessage = new OutputMessage(infoMsg);
                 WebMessageHandler.Write(outputMessage);
             }
 
@@ -287,7 +287,7 @@ namespace ProtoCore
                 }
             }
 
-            var entry = new Runtime.InfoEntry
+            var entry = new InfoEntry
             {
                 ID = ID,
                 Message = message,
