@@ -103,8 +103,8 @@ namespace CoreNodeModels
                         AstFactory.BuildFunctionObject(
                             new IdentifierListNode
                             {
-                                LeftNode = AstFactory.BuildIdentifier("DataBridge"),
-                                RightNode = AstFactory.BuildIdentifier("BridgeData")
+                                LeftNode = AstFactory.BuildIdentifier(nameof(DataBridge)),
+                                RightNode = AstFactory.BuildIdentifier(nameof(DataBridge.BridgeData))
                             },
                             2,
                             new[] { 0 },

@@ -114,6 +114,10 @@ namespace Dynamo.Graph.Nodes
         /// <param name="resultAst">Result accumulator: add all new output AST to this list.</param>
         protected virtual void AssignIdentifiersForFunctionCall(NodeModel model, AssociativeNode rhs, List<AssociativeNode> resultAst)
         {
+            var dummyIdentifier = AstFactory.BuildIdentifier(model.AstIdentifierBase + "_dummy");
+            var bridgeDataAst = VMDataBridge.DataBridge.GenerateBridgeDataAst(model.GUID.ToString(),
+                dummyIdentifier);
+            resultAst.Add(AstFactory.BuildAssignment(dummyIdentifier, bridgeDataAst));
             resultAst.Add(AstFactory.BuildAssignment(model.AstIdentifierForPreview, rhs));
 
             var keys = Definition.ReturnKeys ?? Enumerable.Empty<string>();

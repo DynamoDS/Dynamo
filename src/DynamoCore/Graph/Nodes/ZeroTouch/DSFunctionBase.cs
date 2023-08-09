@@ -5,7 +5,9 @@ using System.Xml;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Library;
+using DynamoServices;
 using ProtoCore.AST.AssociativeAST;
+using VMDataBridge;
 
 namespace Dynamo.Graph.Nodes.ZeroTouch
 {
@@ -48,6 +50,21 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
                 signature = Controller.Definition.Signature;
             }
             Description = String.IsNullOrEmpty(Controller.Description) ? signature : Controller.Description + "\n\n" + signature;
+        }
+
+        private void RegisterInfoLogger(object obj)
+        {
+            LogWarningMessageEvents.LogInfoMessage += LogInfoMessage;
+        }
+
+        private void LogInfoMessage(object obj)
+        {
+            var args = obj as LogWarningMessageEventArgs;
+
+            if (args != null)
+            {
+                Info(args.message);
+            }
         }
 
         /// <summary>
@@ -94,6 +111,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, CompilationContext context)
         {
+            DataBridge.Instance.RegisterCallback(GUID.ToString(), RegisterInfoLogger);
             return Controller.BuildAst(this, inputAstNodes);
         }
 
@@ -105,7 +123,13 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
         public override ProtoCore.Type GetTypeHintForOutput(int index)
         {
             return Controller.Definition.ReturnType;
-        } 
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            LogWarningMessageEvents.LogInfoMessage -= LogInfoMessage;
+        }
     }
     
 
@@ -304,6 +328,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
                     }
                     else
                     {
+
                         model.UseLevelAndReplicationGuide(inputAstNodes);
                         rhs = AstFactory.BuildFunctionCall(
                             Definition.ClassName,

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace DynamoServices
 {
@@ -16,11 +16,16 @@ namespace DynamoServices
 
     public static class LogWarningMessageEvents
     {
+        internal static event LogWarningMessageEventHandler LogInfoMessage;
         public static event LogWarningMessageEventHandler LogWarningMessage;
         public static void OnLogWarningMessage(string message)
         {
-            if (LogWarningMessage != null)
-                LogWarningMessage(new LogWarningMessageEventArgs(message));
+            LogWarningMessage?.Invoke(new LogWarningMessageEventArgs(message));
+        }
+
+        public static void OnLogInfoMessage(string message)
+        {
+            LogInfoMessage?.Invoke(new LogWarningMessageEventArgs(message));
         }
     }
 
