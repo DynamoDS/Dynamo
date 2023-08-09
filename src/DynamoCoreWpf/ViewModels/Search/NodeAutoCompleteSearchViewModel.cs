@@ -1,32 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using Dynamo.Configuration;
-using Dynamo.Engine;
-using Dynamo.Graph.Connectors;
-using Dynamo.Graph.Nodes;
-using Dynamo.Graph.Nodes.CustomNodes;
-using Dynamo.Graph.Nodes.ZeroTouch;
-using Dynamo.Logging;
-using Dynamo.Models;
-using Dynamo.PackageManager;
-using Dynamo.Properties;
-using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
-using Greg;
-using J2N.Text;
-using Lucene.Net.Documents;
-using Lucene.Net.QueryParsers.Classic;
-using Lucene.Net.Search;
-using Newtonsoft.Json;
-using ProtoCore.AST.AssociativeAST;
-using ProtoCore.Mirror;
-using ProtoCore.Utils;
-using RestSharp;
 
 namespace Dynamo.ViewModels
 {
@@ -617,7 +590,7 @@ namespace Dynamo.ViewModels
         /// <param name="search"> The search query </param>
         internal IEnumerable<NodeSearchElementViewModel> SearchNodeAutocomplete(string search)
         {
-            if (LuceneSearchUtility != null)
+            if (LuceneSearchUtilityNodeAutocomplete != null)
             {
                 //The DirectoryReader and IndexSearcher have to be assigned after commiting indexing changes and before executing the Searcher.Search() method, otherwise new indexed info won't be reflected
                 LuceneSearchUtilityNodeAutocomplete.dirReader = LuceneSearchUtilityNodeAutocomplete.writer?.GetReader(applyAllDeletes: true);
