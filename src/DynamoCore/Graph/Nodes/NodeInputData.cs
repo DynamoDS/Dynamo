@@ -81,6 +81,7 @@ namespace Dynamo.Graph.Nodes
                 else { type = value; }
             }
         }
+        /// <summary>
         /// The type of input this node is.
         /// </summary>
         public NodeInputTypes Type2 { get; set; }
@@ -184,5 +185,4 @@ namespace Dynamo.Graph.Nodes
                 ((this.Value == converted.Value) || valNumberComparison || this.Value.ToString() == converted.Value.ToString());
         }
     }
-
 }

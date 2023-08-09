@@ -161,7 +161,8 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// Gets the metadata for a specific version of a package.
         /// </summary>
-        /// <param name="packageInfo">Name and version of a package</param>
+        /// <param name="id">Name and version of a package</param>
+        /// <param name="version"></param>
         /// <returns>Package version metadata</returns>
         internal virtual PackageVersion GetPackageVersionHeader(string id, string version)
         {

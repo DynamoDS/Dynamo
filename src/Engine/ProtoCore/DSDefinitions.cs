@@ -1,4 +1,4 @@
-﻿namespace ProtoCore.DSDefinitions
+namespace ProtoCore.DSDefinitions
 {
     public struct Keyword
     {
@@ -42,7 +42,9 @@
         public const string Associative = "Associative";
         public const string Imperative = "Imperative";
         public const string Dispose = "_Dispose";
+#pragma warning disable CS0108 // Member hides inherited member; missing new keyword
         public const string GetType = "GetType";
+#pragma warning restore CS0108 // Member hides inherited member; missing new keyword
         public const string Invalid = "__invalid";
         public const string PointerReserved = "pointer_reserved";
         public static string[] KeywordList = {Native, Class, Constructor, Def, External, Extend, Heap,

@@ -67,11 +67,10 @@ namespace ProtoCore
         /// For a given list of formal parameters, get the function end points that resolve
         /// </summary>
         /// <param name="context"></param>
-        /// <param name="formalParams"></param>
-        /// <param name="replicationInstructions"></param>
+        /// <param name="reducedFormalParams"></param>
         /// <param name="stackFrame"></param>
-        /// <param name="core"></param>
-        /// <param name="unresolvable">The number of argument sets that couldn't be resolved</param>
+        /// <param name="runtimeCore"></param>
+        /// <param name="lookup">The number of argument sets that couldn't be resolved</param>
         /// <returns>Returns true, if it can find a matching FEP for all the reduced params. Returns False otherwise.</returns>
         public bool CanGetExactMatchStatics(
             Runtime.Context context,
@@ -155,6 +154,9 @@ namespace ProtoCore
         /// <param name="context"></param>
         /// <param name="formalParams"></param>
         /// <param name="replicationInstructions"></param>
+        /// <param name="classTable"></param>
+        /// <param name="runtimeCore"></param>
+        /// <param name="allowArrayPromotion"></param>
         /// <returns></returns>
         public Dictionary<FunctionEndPoint, int> GetConversionDistances(Runtime.Context context,
             List<StackValue> formalParams, List<ReplicationInstruction> replicationInstructions, 

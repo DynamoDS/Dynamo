@@ -192,6 +192,7 @@ namespace ProtoCore.Utils
         /// Generate type statistics for given layer of an array
         /// </summary>
         /// <param name="array"></param>
+        /// <param name="runtimeCore"></param>
         /// <returns></returns>
         public static Dictionary<ClassNode, int> GetTypeStatisticsForLayer(StackValue array, RuntimeCore runtimeCore)
         {
@@ -222,7 +223,7 @@ namespace ProtoCore.Utils
         /// Generate type statistics for the whole array
         /// </summary>
         /// <param name="array"></param>
-        /// <param name="core"></param>
+        /// <param name="runtimeCore"></param>
         /// <returns>usage frequency by type</returns>
         public static Dictionary<ClassNode, int> GetTypeStatisticsForArray(StackValue array, RuntimeCore runtimeCore)
         {
@@ -302,7 +303,7 @@ namespace ProtoCore.Utils
         /// Whether sv is double or arrays contains double value.
         /// </summary>
         /// <param name="sv"></param>
-        /// <param name="core"></param>
+        /// <param name="runtimeCore"></param>
         /// <returns></returns>
         public static bool ContainsDoubleElement(StackValue sv, RuntimeCore runtimeCore)
         {
@@ -321,7 +322,7 @@ namespace ProtoCore.Utils
         /// Otherwise, return true;
         /// </summary>
         /// <param name="sv"></param>
-        /// <param name="core"></param>
+        /// <param name="runtimeCore"></param>
         /// <returns></returns>
         public static bool ContainsNonArrayElement(StackValue sv, RuntimeCore runtimeCore)
         {
@@ -331,13 +332,13 @@ namespace ProtoCore.Utils
             var array = runtimeCore.Heap.ToHeapObject<DSArray>(sv);
             return array.Values.Any(v => ContainsNonArrayElement(v, runtimeCore)); 
         }
-    
+
         /// <summary>
         /// Retrieve the first non-array element in an array 
         /// </summary>
         /// <param name="svArray"></param>
         /// <param name="sv"></param>
-        /// <param name="core"></param>
+        /// <param name="runtimeCore"></param>
         /// <returns> true if the element was found </returns>
         public static bool GetFirstNonArrayStackValue(StackValue svArray, ref StackValue sv, RuntimeCore runtimeCore)
         {
@@ -452,7 +453,7 @@ namespace ProtoCore.Utils
         ///     
         /// </summary>
         /// <param name="indices"></param>
-        /// <param name="core"></param>
+        /// <param name="runtimeCore"></param>
         /// <returns></returns>
         public static StackValue[][] GetZippedIndices(List<StackValue> indices, RuntimeCore runtimeCore)
         {

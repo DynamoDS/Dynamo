@@ -1,5 +1,4 @@
 using System;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -1506,16 +1505,18 @@ namespace Dynamo.Graph.Workspaces
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-                throw (ex);
+#pragma warning disable CA2200 // Rethrow to preserve stack details
+                throw ex;
+#pragma warning restore CA2200 // Rethrow to preserve stack details
             }
         }
 
-        /// <summary>
-        ///     Adds a node to this workspace.
-        /// </summary>
-        /// <param name="node">The node which is being added to the workspace.</param>
-        /// <param name="centered">Indicates if the node should be placed at the center of workspace.</param>
-        internal void AddAndRegisterNode(NodeModel node, bool centered = false)
+            /// <summary>
+            ///     Adds a node to this workspace.
+            /// </summary>
+            /// <param name="node">The node which is being added to the workspace.</param>
+            /// <param name="centered">Indicates if the node should be placed at the center of workspace.</param>
+            internal void AddAndRegisterNode(NodeModel node, bool centered = false)
         {
             if (nodes.Contains(node))
                 return;
@@ -1575,6 +1576,7 @@ namespace Dynamo.Graph.Workspaces
         /// This method does not raise a NodesModified event. (LC notes this is clearly not true)
         /// </summary>
         /// <param name="model">The node which is being removed from the worksapce.</param>
+        /// <param name="dispose"></param>
         internal void RemoveAndDisposeNode(NodeModel model, bool dispose = true)
         {
             lock (nodes)
@@ -2388,7 +2390,7 @@ namespace Dynamo.Graph.Workspaces
             //            ensure that any contained notes are contained properly
             LoadNotesFromAnnotations(workspaceViewInfo.Annotations);
 
-            ///This function loads ConnectorPins to the corresponding connector models.
+            // This function loads ConnectorPins to the corresponding connector models.
             LoadConnectorPins(workspaceViewInfo.ConnectorPins);
 
             // This function loads annotations from the Annotations array in the JSON format
@@ -2433,7 +2435,7 @@ namespace Dynamo.Graph.Workspaces
             //            ensure that any contained notes are contained properly
             LoadNotesFromAnnotations(workspaceViewInfo.Annotations, offsetX, offsetY);
 
-            ///This function loads ConnectorPins to the corresponding connector models.
+            // This function loads ConnectorPins to the corresponding connector models.
             LoadConnectorPins(workspaceViewInfo.ConnectorPins, offsetX, offsetY);
 
             // This function loads annotations from the Annotations array in the JSON format
