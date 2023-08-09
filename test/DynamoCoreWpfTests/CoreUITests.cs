@@ -799,9 +799,10 @@ namespace DynamoCoreWpfTests
                 new DynamoModel.DefaultStartConfiguration()
                 {
                     StartInTestMode = startInTestMode,
-                    ProcessMode = startInTestMode
-                        ? TaskProcessMode.Synchronous
-                        : TaskProcessMode.Asynchronous
+                    ProcessMode = startInTestMode 
+                        ? TaskProcessMode.Synchronous 
+                        : TaskProcessMode.Asynchronous,
+                    Preferences= PreferenceSettings.Instance
                 });
 
             ViewModel = DynamoViewModel.Start(
