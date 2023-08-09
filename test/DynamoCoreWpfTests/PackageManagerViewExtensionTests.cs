@@ -91,7 +91,7 @@ namespace DynamoCoreWpfTests
             };
         }
 
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         /// <summary>
         /// This method compiles an extension at test time and injects it and an extension manifest into the testing package folder
         /// so that the extension gets loaded when the test instance of Dynamo starts.
@@ -302,7 +302,7 @@ namespace DynamoCoreWpfTests
 
 
 
-        [TestFixtureTearDown]
+        [OneTimeTearDown]
         /// <summary>
         /// This method cleans up the manifest so the generated extension does not load
         /// during other tests.

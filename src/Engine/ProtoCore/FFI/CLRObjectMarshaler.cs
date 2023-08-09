@@ -758,7 +758,7 @@ namespace ProtoFFI
         /// </summary>
         /// <param name="clrType">System.Type to which DS object needs to be 
         /// marshaled.</param>
-        /// <param name="dsType">DS Object type, that needs to be marshaled.
+        /// <param name="value">DS Object type, that needs to be marshaled.
         /// </param>
         /// <returns>FFIObjectMarshler or null</returns>
         private FFIObjectMarshaler GetMarshalerForCLRType(Type clrType, StackValue value)
@@ -1313,8 +1313,6 @@ namespace ProtoFFI
         /// 
         /// </summary>
         /// <param name="dsObject"></param>
-        /// <param name="context"></param>
-        /// <param name="dsi"></param>
         /// <param name="type"></param>
         /// <returns></returns>
         private object CreateCLRObject(StackValue dsObject, Type type)
@@ -1332,7 +1330,7 @@ namespace ProtoFFI
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="core">Core object for marshler.</param>
+        /// <param name="runtimeCore">Core object for marshler.</param>
         private CLRObjectMarshaler(ProtoCore.RuntimeCore runtimeCore)
         {
             runtimeCore.Dispose += core_Dispose;
@@ -1381,7 +1379,7 @@ namespace ProtoFFI
     /// </summary>
     public class ReferenceEqualityComparer: IEqualityComparer<object>
     {
-        public bool Equals(object x, object y)
+        bool IEqualityComparer<object>.Equals(object x, object y)
         {
             return object.ReferenceEquals(x, y);
         }

@@ -33,7 +33,7 @@
         </ProjectReference>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
     </ItemGroup>
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+    <ItemGroup Condition=" '$(TargetFramework)' != 'net48' ">
         <PackageReference Include="NUnit" Version="3.13.3" ExcludeAssets="none" />
         <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
         <PackageReference Include="NUnit.Analyzers" Version="3.3.0" />
@@ -52,12 +52,13 @@
     </PackageReference>
 
 
-<!--moq and deps - copied to test_dependencies folder-->
-        <PackageReference Include="Moq" Version="4.18.4" GeneratePathProperty="true" />
-        <PackageReference Include="Castle.Core" Version=" 5.1.1" GeneratePathProperty="true" />
-        <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" GeneratePathProperty="true" Condition=" '$(TargetFramework)' == 'net48' " />
+    <!--moq and deps - copied to test_dependencies folder-->
+    <PackageReference Include="Moq" Version="4.18.4" GeneratePathProperty="true" />
+    <PackageReference Include="Castle.Core" Version=" 5.1.1" GeneratePathProperty="true" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" GeneratePathProperty="true" Condition=" '$(TargetFramework)' == 'net48' " />
 
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="JUnitTestLogger" Version="1.1.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="RestSharp" Version="106.12.0" />
     <PackageReference Include="Microsoft.Diagnostics.Runtime" Version="2.0.226801" GeneratePathProperty="true" />
     <PackageReference Include="System.Collections.Immutable" Version="5.0.0" GeneratePathProperty="true" />
@@ -104,10 +105,6 @@
       <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>
       <Name>CoreNodeModels</Name>
       <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Libraries\DSOffice\DSOffice.csproj">
-      <Project>{9b4fdc96-e2f9-4b8f-894a-4294405d50e7}</Project>
-      <Name>DSOffice</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Libraries\DynamoUnits\UnitsCore.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
@@ -176,7 +173,7 @@
           <Copy SourceFiles="$(PkgMoq)\lib\netstandard2.0\Moq.xml" DestinationFolder="$(OutputPath)" />
           <Copy SourceFiles="$(PkgNUnit)\lib\nunit.framework.xml" DestinationFolder="$(OutputPath)" />
   </Target>
-    <Target Name="MoveSomeTestDepsOutOfBin_net60" AfterTargets="Build" Condition=" '$(TargetFramework)' == 'net6.0' ">
+    <Target Name="MoveSomeTestDepsOutOfBin_net60" AfterTargets="Build" Condition=" '$(TargetFramework)' != 'net48' ">
         <Message Importance="High" Text="copying test dependencies to test dependencies folder" />
         <CallTarget Targets="CopyDisableADPTestDeps"></CallTarget>
         <!--moq + deps-->

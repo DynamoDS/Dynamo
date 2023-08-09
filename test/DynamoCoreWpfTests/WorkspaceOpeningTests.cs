@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using Dynamo.Events;
 using Dynamo.Graph;
@@ -95,7 +95,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(ws.HasUnsavedChanges, false);
         }
 
-        [Test, Ignore]
+        [Test, Ignore("Unknown reason")]
         public void OpeningWorkspaceWithManualRunState()
         {
             var ws = (HomeWorkspaceModel)OpenWorkspaceInManualModeFromSampleFile(true);

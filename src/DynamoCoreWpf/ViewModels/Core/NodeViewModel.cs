@@ -241,6 +241,18 @@ namespace Dynamo.ViewModels
             get { return nodeLogic.GetOriginalName(); }
         }
 
+        /// <summary>
+        /// Returns the Package name of the node, if it comes from a package
+        /// </summary>
+        [JsonIgnore]
+        public string PackageName
+        {
+            get
+            {
+                var packageInfo = DynamoViewModel.Model.CurrentWorkspace.GetNodePackage(nodeLogic);
+                return nodeLogic.GetPackageName(packageInfo);
+            }
+        }
 
         /// <summary>
         /// If a node has been renamed. Notice this boolean will be disabled
@@ -287,7 +299,7 @@ namespace Dynamo.ViewModels
         {
             get { return nodeLogic.IsCustomFunction ? true : false; }
         }
-        
+
         /// <summary>
         /// Element's left position is two-way bound to this value
         /// </summary>
@@ -580,6 +592,7 @@ namespace Dynamo.ViewModels
         private static readonly string infoGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/info-64px.png";
         private static readonly string previewGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/hidden-64px.png";
         private static readonly string frozenGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/frozen-64px.png";
+        private static readonly string packageGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/package-64px.png";
 
         [JsonIgnore]
         public bool IsNodeAddedRecently
@@ -1283,19 +1296,19 @@ namespace Dynamo.ViewModels
         }
 
         // These colors are duplicated from the DynamoColorsAndBrushesDictionary as it is not assumed that the xaml will be loaded before setting the color
-        // SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeErrorColor"];
         private static SolidColorBrush errorColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#EB5555"));
-        // SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeWarningColor"];
         private static SolidColorBrush warningColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FAA21B"));
         private static SolidColorBrush infoColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#6AC0E7"));
-        // SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodePreviewColor"];
         private static SolidColorBrush noPreviewColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#BBBBBB"));
+        private static SolidColorBrush nodeCustomColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#B385F2"));
+        private static SolidColorBrush nodePreviewColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#BBBBBB"));
+        private static SolidColorBrush nodeFrozenOverlayColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#BCD3EE"));
+        private static SolidColorBrush nodeInfoColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#6AC0E7"));        
 
         /// <summary>
         /// Sets the color of the warning bar, which informs the user that the node is in
         /// either an error or a warning state.
         /// </summary>
-        /// <param name="style"></param>
         /// <returns></returns>
         internal SolidColorBrush GetWarningColor()
         {
@@ -1342,34 +1355,53 @@ namespace Dynamo.ViewModels
 
             ResetColorGlyphs();
 
+            if (this.NodeModel == null) return result;
+
+            if (this.NodeModel.IsCustomFunction)
+            {
+                result = nodeCustomColor;
+                if(result != null)
+                {
+                    ImgGlyphOneSource = packageGlyph;
+                }
+            }
             if (!this.IsVisible)
             {
-                result = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodePreviewColor"];
-                ImgGlyphOneSource = previewGlyph; 
+                result = nodePreviewColor;
+                if (result != null)
+                {
+                    ImgGlyphOneSource = previewGlyph;
+                } 
             }
             if (this.IsFrozen)
             {
-                result = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeFrozenOverlayColor"]; 
-                if (ImgGlyphOneSource == null)
+                result = nodeFrozenOverlayColor;
+                if (result != null)
                 {
-                    ImgGlyphOneSource = frozenGlyph;
-                }
-                else
-                {
-                    ImgGlyphOneSource = frozenGlyph;
-                    ImgGlyphTwoSource = previewGlyph;
+                    if (ImgGlyphOneSource == null)
+                    {
+                        ImgGlyphOneSource = frozenGlyph;
+                    }
+                    else
+                    {
+                        ImgGlyphOneSource = frozenGlyph;
+                        ImgGlyphTwoSource = previewGlyph;
+                    }
                 }
             }
             if (NodeModel.State == ElementState.Info)
             {
-                result = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeInfoColor"];
-                if (ImgGlyphTwoSource == null)
+                result = nodeInfoColor;
+                if (result != null)
                 {
-                    ImgGlyphTwoSource = infoGlyph;
-                }
-                else
-                {
-                    ImgGlyphThreeSource = infoGlyph;
+                    if (ImgGlyphTwoSource == null)
+                    {
+                        ImgGlyphTwoSource = infoGlyph;
+                    }
+                    else
+                    {
+                        ImgGlyphThreeSource = infoGlyph;
+                    }
                 }
             }
 

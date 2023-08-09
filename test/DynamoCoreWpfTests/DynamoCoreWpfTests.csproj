@@ -1,4 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <UILib>true</UILib>
+    </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config/CS_SDK.props" />
   </ImportGroup>
@@ -14,6 +17,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="HelixToolkit" Version="2.24.0" />
+        <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
+        <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
+    </ItemGroup>
   <ItemGroup>
 	  <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
       <PackageReference Include="Moq" Version="4.18.4" />
@@ -21,12 +29,9 @@
 	  <PackageReference Include="Greg" Version="2.5.0.5076">
 	    <PrivateAssets>all</PrivateAssets>
 	    <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-	  </PackageReference>
-	  <PackageReference Include="HelixToolkit" Version="2.17.0" />
-	  <PackageReference Include="HelixToolkit.Wpf" Version="2.17.0" />
-	  <PackageReference Include="HelixToolkit.Wpf.SharpDX" Version="2.17.0" />
+	  </PackageReference> 
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-	  <PackageReference Include="NUnit" Version="2.6.3" />
+	  <PackageReference Include="NUnit" Version="3.13.3" />
 	  <PackageReference Include="RestSharp" Version="106.12.0" />
 	  <PackageReference Include="SharpDX" Version="4.2.0" />
 	  <PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0" />
@@ -35,25 +40,9 @@
 	  <PackageReference Include="SharpDX.Direct3D9" Version="4.2.0" />
 	  <PackageReference Include="SharpDX.DXGI" Version="4.2.0" />
 	  <PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
-      <PackageReference Include="NUnitTestAdapter" Version="2.3.0" ExcludeAssets="all" />
+      <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
       <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
-  </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
-    <Reference Include="Microsoft.Practices.Prism">
-        <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-        <Private>False</Private>
-    </Reference>
+      <PackageReference Include="Prism.Core" Version="8.1.97"/>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\DocumentationBrowserViewExtension\DocumentationBrowserViewExtension.csproj">

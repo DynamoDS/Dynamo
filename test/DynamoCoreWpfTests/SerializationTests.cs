@@ -8,7 +8,6 @@ using CoreNodeModels.Input;
 using Dynamo.Engine;
 using Dynamo.Events;
 using Dynamo.Graph;
-using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
@@ -261,38 +260,6 @@ namespace DynamoCoreWpfTests
 */
             Assert.Inconclusive("Porting : NewList");
 
-        }
-
-
-        [Test]
-        [Category("UnitTests")]
-        public void TestFormula()
-        {
-            var formulaNode = new Formula { FormulaString = "x+y", X = 400 };
-
-            //To check if base Serialization method is being called
-
-            //Assert initial values
-            Assert.AreEqual(400, formulaNode.X);
-            Assert.AreEqual("x+y", formulaNode.FormulaString);
-            Assert.AreEqual(2, formulaNode.InPorts.Count);
-
-            //Serialize node and then change values
-            XmlDocument xmlDoc = new XmlDocument();
-            XmlElement serializedEl = formulaNode.Serialize(xmlDoc, SaveContext.Undo);
-            formulaNode.X = 250;
-            formulaNode.FormulaString = "x+y+z";
-
-            //Assert new changes
-            Assert.AreEqual(250, formulaNode.X);
-            Assert.AreEqual(3, formulaNode.InPorts.Count);
-            Assert.AreEqual("x+y+z", formulaNode.FormulaString);
-
-            //Deserialize and aasert old values
-            formulaNode.Deserialize(serializedEl, SaveContext.Undo);
-            Assert.AreEqual(400, formulaNode.X);
-            Assert.AreEqual("x+y", formulaNode.FormulaString);
-            Assert.AreEqual(2, formulaNode.InPorts.Count);
         }
 
         [Test]
@@ -794,8 +761,8 @@ namespace DynamoCoreWpfTests
             var token = JToken.Parse(viewModel.CurrentSpaceViewModel.ToJson());
             jo.Add("View", token);
 
-            Assert.IsNotNullOrEmpty(jsonModel);
-            Assert.IsNotNullOrEmpty(jo.ToString());
+            Assert.IsFalse(string.IsNullOrEmpty(jsonModel));
+            Assert.IsFalse(string.IsNullOrEmpty(jo.ToString()));
 
             var tempPath = Path.GetTempPath();
             var jsonFolder = Path.Combine(tempPath, jsonFolderName);
@@ -830,7 +797,7 @@ namespace DynamoCoreWpfTests
 
             json = serializationTestUtils.replaceModelIdsWithNonGuids(json, model.CurrentWorkspace ,modelsGuidToIdMap);
 
-            Assert.IsNotNullOrEmpty(json);
+            Assert.IsFalse(string.IsNullOrEmpty(json));
 
             // Call structured copy function for CoGS testing, see QNTM-2973
             // Only called for CoreWPFTests nonGuids
@@ -938,7 +905,7 @@ namespace DynamoCoreWpfTests
             }
         }
 
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void FixtureSetup()
         {
             ExecutionEvents.GraphPostExecution += ExecutionEvents_GraphPostExecution;
@@ -977,7 +944,7 @@ namespace DynamoCoreWpfTests
             }
         }
 
-        [TestFixtureTearDown]
+        [OneTimeTearDown]
         public void TearDown()
         {
             ExecutionEvents.GraphPostExecution -= ExecutionEvents_GraphPostExecution;

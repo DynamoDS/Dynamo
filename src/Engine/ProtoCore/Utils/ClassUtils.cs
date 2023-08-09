@@ -11,7 +11,7 @@ namespace ProtoCore.Utils
         /// It includes the class itself
         /// </summary>
         /// <param name="cn"></param>
-        /// <param name="core"></param>
+        /// <param name="runtimeCore"></param>
         /// <returns></returns>
         public static List<int> GetClassUpcastChain(ClassNode cn, RuntimeCore runtimeCore)
         {
@@ -39,7 +39,7 @@ namespace ProtoCore.Utils
         /// </summary>
         /// <param name="from"></param>
         /// <param name="to"></param>
-        /// <param name="core"></param>
+        /// <param name="runtimeCore"></param>
         /// <returns></returns>
         public static int GetUpcastCountTo(ClassNode from, ClassNode to, RuntimeCore runtimeCore)
         {

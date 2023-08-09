@@ -274,7 +274,6 @@ namespace Dynamo.Engine
 
                 case FunctionType.StaticMethod:
                     goto case FunctionType.InstanceMethod;
-                    break;
 
                 case FunctionType.InstanceProperty:
                     prefixCode = 'P';
@@ -282,10 +281,8 @@ namespace Dynamo.Engine
 
                 case FunctionType.StaticProperty:
                     goto case FunctionType.InstanceProperty;
-                    break;
                 case FunctionType.GenericFunction:
                     return member.FunctionName;
-                    break;
 
                 default:
                     throw new ArgumentException("Unknown member type", "member");

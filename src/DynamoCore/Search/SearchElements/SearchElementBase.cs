@@ -43,18 +43,18 @@ namespace Dynamo.Search.SearchElements
         /// Higher = closer to the top of search results </value>
         public abstract double Weight { get; set; }
 
-        public virtual void Execute()
+        internal override void Execute()
         {
             this.OnExecuted();
         }
-
+ 
         /// <summary>
         /// Delegate is used in Executed event.
         /// </summary>
         /// <param name="ele">search element</param>
         public delegate void SearchElementHandler(SearchElementBase ele);
-        internal event SearchElementHandler Executed;
-        protected void OnExecuted()
+        internal new event SearchElementHandler Executed;
+        protected new void OnExecuted()
         {
             if (Executed != null)
             {

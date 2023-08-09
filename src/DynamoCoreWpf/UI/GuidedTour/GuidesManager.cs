@@ -386,7 +386,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// This method will return a new HostControlInfo object populated with the information passed as parameter
         /// Basically this method store the information coming from Step and search the UIElement in the main WPF VisualTree
         /// </summary>
-        /// <param name="jsonStepInfo">Step that contains all the info deserialized from the Json file</param>
+        /// <param name="jsonHostControlInfo">Step that contains all the info deserialized from the Json file</param>
         /// <returns></returns>
         private HostControlInfo CreateHostControl(HostControlInfo jsonHostControlInfo)
         {

@@ -2191,7 +2191,6 @@ namespace ProtoAssociative
         public int AllocateMemberVariable(int classIndex, int classScope, string name, int rank = 0, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.Public, bool isStatic = false)
         {
             // TODO Jun: Create a class table for holding the primitive and custom data types
-            int datasize = ProtoCore.DSASM.Constants.kPointerSize;
             ProtoCore.Type ptrType = new ProtoCore.Type();
             if (rank == 0)
                 ptrType.UID = (int)PrimitiveType.Pointer;
@@ -3247,7 +3246,6 @@ namespace ProtoAssociative
                     }
 
                     // member variable
-                    int ix = -1;
                     int currentClassScope = -1;
                     foreach (ProtoCore.DSASM.SymbolNode sn in thisClass.Symbols.symbolList.Values)
                     {

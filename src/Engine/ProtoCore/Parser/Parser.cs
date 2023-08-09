@@ -1911,9 +1911,6 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			   }
 			   else
 			   {
-			       string rhsName = null;
-			       ProtoCore.AST.AssociativeAST.ExprListNode dimList = null;
-			       int dim = 0;
 			       if (rnode is ProtoCore.AST.AssociativeAST.FunctionCallNode)
 			       {
 			           ProtoCore.AST.AssociativeAST.FunctionCallNode rhsFNode = rnode as ProtoCore.AST.AssociativeAST.FunctionCallNode;

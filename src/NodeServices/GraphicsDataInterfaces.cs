@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Autodesk.DesignScript.Interfaces
@@ -329,6 +329,9 @@ namespace Autodesk.DesignScript.Interfaces
         /// Add a label position to the render package.
         /// </summary>
         /// <param name="label">Text to be displayed in the label</param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
         void AddLabel(string label, double x, double y, double z);
 
         /// <summary>
@@ -382,16 +385,16 @@ namespace Autodesk.DesignScript.Interfaces
         /// <summary>
         /// Set an instance reference for a specific range of mesh vertices
         /// </summary>
-        /// <param name="startIndex">The index associated with the first vertex in MeshVertices we want to associate with the instance matrices
-        /// <param name="endIndex">The index associated with the last vertex in MeshVertices we want to associate with the instance matrices
+        /// <param name="startIndex">The index associated with the first vertex in MeshVertices we want to associate with the instance matrices></param>
+        /// <param name="endIndex">The index associated with the last vertex in MeshVertices we want to associate with the instance matrices></param>
         /// <param name="id">A unique id associated with this tessellation geometry for instancing</param>
         void AddInstanceGuidForMeshVertexRange(int startIndex, int endIndex, Guid id);
 
         /// <summary>
         /// Set an instance reference for a specific range of line vertices
         /// </summary>
-        /// <param name="startIndex">The index associated with the first vertex in LineVertices we want to associate with the instance matrices
-        /// <param name="endIndex">The index associated with the last vertex in LineVertices we want to associate with the instance matrices
+        /// <param name="startIndex">The index associated with the first vertex in LineVertices we want to associate with the instance matrices></param>
+        /// <param name="endIndex">The index associated with the last vertex in LineVertices we want to associate with the instance matrices></param>
         /// <param name="id">A unique id associated with this tessellation geometry for instancing</param>
         void AddInstanceGuidForLineVertexRange(int startIndex, int endIndex, Guid id);
 
@@ -417,6 +420,7 @@ namespace Autodesk.DesignScript.Interfaces
         /// <param name="m42"></param>
         /// <param name="m43"></param>
         /// <param name="m44"></param>
+        /// <param name="id"></param>
         void AddInstanceMatrix(float m11, float m12, float m13, float m14,
            float m21, float m22, float m23, float m24,
            float m31, float m32, float m33, float m34,
@@ -434,6 +438,7 @@ namespace Autodesk.DesignScript.Interfaces
         /// the second row to the Y axis of the CS, the third row to the Z axis of the CS, and the last row to the CS origin, where W = 1. 
         /// </summary>
         /// <param name="matrix"></param>
+        /// <param name="id"></param>
         void AddInstanceMatrix(float[] matrix, Guid id);
     }
 
