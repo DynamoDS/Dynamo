@@ -946,48 +946,8 @@ namespace Dynamo.ViewModels
         {
             if (LuceneSearchUtility != null)
             {
-                //The DirectoryReader and IndexSearcher have to be assigned after commiting indexing changes and before executing the Searcher.Search() method, otherwise new indexed info won't be reflected
-                LuceneSearchUtility.dirReader = LuceneSearchUtility.writer?.GetReader(applyAllDeletes: true);
-                if (LuceneSearchUtility.dirReader == null) return null;
-
-                LuceneSearchUtility.Searcher = new IndexSearcher(LuceneSearchUtility.dirReader);
-
-                string searchTerm = search.Trim();
-                var candidates = new List<NodeSearchElementViewModel>();
-                var parser = new MultiFieldQueryParser(LuceneConfig.LuceneNetVersion, LuceneConfig.NodeIndexFields, LuceneSearchUtility.Analyzer)
-                {
-                    AllowLeadingWildcard = true,
-                    DefaultOperator = LuceneConfig.DefaultOperator,
-                    FuzzyMinSim = LuceneConfig.MinimumSimilarity
-                };
-
-                Query query = parser.Parse(LuceneSearchUtility.CreateSearchQuery(LuceneConfig.NodeIndexFields, searchTerm));
-                TopDocs topDocs = LuceneSearchUtility.Searcher.Search(query, n: LuceneConfig.DefaultResultsCount);
-
-                for (int i = 0; i < topDocs.ScoreDocs.Length; i++)
-                {
-                    // read back a Lucene doc from results
-                    Document resultDoc = LuceneSearchUtility.Searcher.Doc(topDocs.ScoreDocs[i].Doc);
-
-                    string name = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.Name));
-                    string docName = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.DocName));
-                    string cat = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName));
-                    string parameters = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.Parameters));
-
-                    if (!string.IsNullOrEmpty(docName))
-                    {
-                        //code for setting up documentation info
-                    }
-                    else
-                    {
-                        var foundNode = FindViewModelForNodeNameAndCategory(name, cat, parameters);
-                        if (foundNode != null)
-                        {
-                            candidates.Add(foundNode);
-                        }
-                    }
-                }
-                return candidates;
+                var searchElements = Model.Search(search, LuceneSearchUtility);
+                return searchElements.Select(MakeNodeSearchElementVM);
             }
             return null;
         }

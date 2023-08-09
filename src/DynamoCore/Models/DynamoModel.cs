@@ -40,10 +40,14 @@ using Dynamo.Utilities;
 using DynamoServices;
 using Greg;
 using Lucene.Net.Documents;
+using Lucene.Net.Index;
+using Lucene.Net.QueryParsers.Classic;
+using Lucene.Net.Search;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ProtoCore;
 using ProtoCore.Runtime;
+using static Lucene.Net.Util.Packed.PackedInt32s;
 using Compiler = ProtoAssociative.Compiler;
 // Dynamo package manager
 using DefaultUpdateManager = Dynamo.Updates.UpdateManager;
@@ -3272,6 +3276,18 @@ namespace Dynamo.Models
             LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Parameters), node.Parameters ?? string.Empty);
 
             LuceneSearchUtility.writer?.AddDocument(doc);
+        }
+
+        /// <summary>
+        /// Remove node information from Lucene indexing.
+        /// </summary>
+        /// <param name="node">node info that needs to be removed.</param>
+        internal void RemoveNodeTypeFromSearchIndex(NodeSearchElement node)
+        {
+            var term = new Term(nameof(LuceneConfig.NodeFieldsEnum.Name), node.Name);
+
+            LuceneSearchUtility.writer?.DeleteDocuments(term);
+            LuceneSearchUtility.CommitWriterChanges();
         }
 
         /// <summary>

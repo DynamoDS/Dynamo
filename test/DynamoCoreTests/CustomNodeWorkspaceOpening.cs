@@ -6,6 +6,7 @@ using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
+using Dynamo.Search;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -80,7 +81,7 @@ namespace Dynamo.Tests
         {
             OpenTestFile(@"core\combine", "Sequence2.dyf");
             
-            var res = CurrentDynamoModel.SearchModel.Search("Sequence2");
+            var res = CurrentDynamoModel.SearchModel.Search("Sequence2", CurrentDynamoModel.LuceneSearchUtility);
             Assert.AreEqual("Sequence2", res.First().Name);
         }
 
@@ -99,7 +100,8 @@ namespace Dynamo.Tests
         {
             OpenTestFile(@"core\combine", "Sequence_Json.dyf");
 
-            var res = CurrentDynamoModel.SearchModel.Search("Sequence2");
+
+            var res = CurrentDynamoModel.SearchModel.Search("Sequence2", CurrentDynamoModel.LuceneSearchUtility);
             Assert.AreEqual("Sequence2", res.First().Name);
         }
 
@@ -110,7 +112,7 @@ namespace Dynamo.Tests
             // folder as CustomNodeWorkspace and maintain the saved category
             OpenTestFile(@"core\combine", "combine-with-three.dyn");
 
-            var res = CurrentDynamoModel.SearchModel.Search("Sequence2");
+            var res = CurrentDynamoModel.SearchModel.Search("Sequence2", CurrentDynamoModel.LuceneSearchUtility);
             Assert.AreEqual("Sequence2", res.First().Name);
             Assert.AreEqual("Misc", res.First().FullCategoryName);
         }
