@@ -73,29 +73,22 @@ namespace CoreNodeModelsWpf.Charts.Controls
             {
                 var model = sender as BarChartNodeModel;
 
-                try
+                // Invoke on UI thread
+                this.Dispatcher.Invoke(() =>
                 {
-                    // Invoke on UI thread
-                    this.Dispatcher.Invoke(() =>
-                    {
-                        BarChartNode.Series = Enumerable.Empty<ISeries>();
+                    BarChartNode.Series = Enumerable.Empty<ISeries>();
 
-                        // Load sample data if any ports are not connected
-                        if (!model.InPorts[0].IsConnected && !model.InPorts[1].IsConnected && !model.InPorts[2].IsConnected)
-                        {
-                            DefaultSeries();
-                        }
-                        else
-                        {
-                            var seriesRange = UpdateSeries(model);
-                            BarChartNode.Series = BarChartNode.Series.Concat(seriesRange);
-                        }
-                    });
-                }
-                catch(Exception ex) {
-                    Console.WriteLine(ex.ToString());
-                    Console.WriteLine(ex.Message.ToString());
-                }
+                    // Load sample data if any ports are not connected
+                    if (!model.InPorts[0].IsConnected && !model.InPorts[1].IsConnected && !model.InPorts[2].IsConnected)
+                    {
+                        DefaultSeries();
+                    }
+                    else
+                    {
+                        var seriesRange = UpdateSeries(model);
+                        BarChartNode.Series = BarChartNode.Series.Concat(seriesRange);
+                    }
+                });
             }
         }
 
