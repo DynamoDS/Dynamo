@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -6,6 +7,7 @@ using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Logging;
 using Dynamo.Search.SearchElements;
+using Dynamo.Utilities;
 using DynamoUtilities;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Br;
@@ -18,6 +20,9 @@ using Lucene.Net.Analysis.Fr;
 using Lucene.Net.Analysis.It;
 using Lucene.Net.Analysis.Ru;
 using Lucene.Net.Analysis.Standard;
+using Lucene.Net.Documents;
+using Lucene.Net.QueryParsers.Classic;
+using Lucene.Net.Search;
 
 namespace Dynamo.Search
 {
@@ -235,40 +240,79 @@ namespace Dynamo.Search
             return category.Substring(0, index);
         }
 
-        /// <summary>
-        /// It creates an Analyzer to be used in the Indexing based on the user preference language
-        /// </summary>
-        /// <returns></returns>
-        internal Analyzer CreateAnalyzerByLanguage(string language)
+        internal IEnumerable<NodeSearchElement> Search(string search, LuceneSearchUtility luceneSearchUtility)
         {
-            switch (language)
+            
+            if (luceneSearchUtility != null)
             {
-                case "en-US":
-                    return new EnglishAnalyzer(LuceneConfig.LuceneNetVersion);
-                case "cs-CZ":
-                    return new CzechAnalyzer(LuceneConfig.LuceneNetVersion);
-                case "de-DE":
-                    return new GermanAnalyzer(LuceneConfig.LuceneNetVersion);
-                case "es-ES":
-                    return new SpanishAnalyzer(LuceneConfig.LuceneNetVersion);
-                case "fr-FR":
-                    return new FrenchAnalyzer(LuceneConfig.LuceneNetVersion);
-                case "it-IT":
-                    return new ItalianAnalyzer(LuceneConfig.LuceneNetVersion);
-                case "ja-JP":
-                case "ko-KR":
-                case "zh-CN":
-                case "zh-TW":
-                    return new CJKAnalyzer(LuceneConfig.LuceneNetVersion);
-                case "pl-PL":
-                    return new StandardAnalyzer(LuceneConfig.LuceneNetVersion);
-                case "pt-BR":
-                    return new BrazilianAnalyzer(LuceneConfig.LuceneNetVersion);
-                case "ru-RU":
-                    return new RussianAnalyzer(LuceneConfig.LuceneNetVersion);
-                default:
-                    return new StandardAnalyzer(LuceneConfig.LuceneNetVersion);
+                //The DirectoryReader and IndexSearcher have to be assigned after commiting indexing changes and before executing the Searcher.Search() method, otherwise new indexed info won't be reflected
+                luceneSearchUtility.dirReader = luceneSearchUtility.writer?.GetReader(applyAllDeletes: true);
+                if (luceneSearchUtility.dirReader == null) return null;
+
+                luceneSearchUtility.Searcher = new IndexSearcher(luceneSearchUtility.dirReader);
+
+                string searchTerm = search.Trim();
+                var candidates = new List<NodeSearchElement>();
+                var parser = new MultiFieldQueryParser(LuceneConfig.LuceneNetVersion, LuceneConfig.NodeIndexFields, luceneSearchUtility.Analyzer)
+                {
+                    AllowLeadingWildcard = true,
+                    DefaultOperator = LuceneConfig.DefaultOperator,
+                    FuzzyMinSim = LuceneConfig.MinimumSimilarity
+                };
+
+                Query query = parser.Parse(luceneSearchUtility.CreateSearchQuery(LuceneConfig.NodeIndexFields, searchTerm));
+                TopDocs topDocs = luceneSearchUtility.Searcher.Search(query, n: LuceneConfig.DefaultResultsCount);
+
+                for (int i = 0; i < topDocs.ScoreDocs.Length; i++)
+                {
+                    // read back a Lucene doc from results
+                    Document resultDoc = luceneSearchUtility.Searcher.Doc(topDocs.ScoreDocs[i].Doc);
+
+                    string name = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.Name));
+                    string docName = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.DocName));
+                    string cat = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName));
+                    string parameters = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.Parameters));
+
+                    if (!string.IsNullOrEmpty(docName))
+                    {
+                        //code for setting up documentation info
+                    }
+                    else
+                    {
+                        var foundNode = FindModelForNodeNameAndCategory(name, cat, parameters);
+                        if (foundNode != null)
+                        {
+                            candidates.Add(foundNode);
+                        }
+                    }
+                }
+                return candidates;
             }
+            return null;
+        }
+
+        internal NodeSearchElement FindModelForNodeNameAndCategory(string nodeName, string nodeCategory, string parameters)
+        {
+            var result = SearchEntries.Where(e => {
+                if (e.Name.Equals(nodeName) && e.FullCategoryName.Equals(nodeCategory))
+                {
+                    //When the node info was indexed if Parameters was null we added an empty space (null cannot be indexed)
+                    //Then in this case when searching if e.Parameters is null we need to check against empty space
+                    if (e.Parameters == null)
+                        return string.IsNullOrEmpty(parameters);
+                    //Parameters contain a value so we need to compare against the value indexed
+                    else
+                        return e.Parameters.Equals(parameters);
+                }
+                return false;
+            });
+
+            if (!result.Any())
+            {
+                return null;
+            }
+
+            return result.ElementAt(0);
         }
     }
 }
