@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -267,7 +267,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Reports whether the node this InfoBubble is inside a collapsed group.
         /// </summary>
-        public bool IsCollapsed
+        public override bool IsCollapsed
         {
             get => isCollapsed;
             set
@@ -472,7 +472,6 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// This constructor will update the TopBottom and BottomRight positions of the warnings since the beginning.
         /// </summary>
-        /// <param name="dynamoViewModel"></param>
         /// <param name="nodeViewModel">This parameter will be used to get the TopBottom and BottomRight positions of the NodeModel</param>
         public InfoBubbleViewModel(NodeViewModel nodeViewModel)
         {
@@ -760,7 +759,6 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="infoBubbleDataPackets"></param>
         /// <param name="style">The style of messages to be returned</param>
-        /// <param name="secondStyle">A second (optional) style.</param>
         /// <returns></returns>
         private List<InfoBubbleDataPacket> GetMessagesOfStyle(ObservableCollection<InfoBubbleDataPacket> infoBubbleDataPackets, Style style)
         {

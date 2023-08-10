@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
@@ -29,7 +30,8 @@ namespace Dynamo.Tests.Loggings
                 PathResolver = pathResolver,
                 StartInTestMode = false,
                 GeometryFactoryPath = preloader.GeometryFactoryPath,
-                ProcessMode = TaskProcessMode.Synchronous
+                ProcessMode = TaskProcessMode.Synchronous,
+                Preferences = new PreferenceSettings()
             };
         }
 
