@@ -9,7 +9,7 @@ namespace Dynamo.Tests
     internal class UnitsOfMeasureTests : UnitTestBase
     {
         [SetUp]
-        public void Setup()
+        public override void Setup()
         {
             Display.PrecisionFormat = "f4";
         }
@@ -759,7 +759,7 @@ namespace Dynamo.Tests
     internal class ForgeUnitsTests : UnitTestBase
     {
         [SetUp]
-        public void Setup()
+        public override void Setup()
         {
 
         }

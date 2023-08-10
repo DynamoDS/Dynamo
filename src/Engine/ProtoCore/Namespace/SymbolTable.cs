@@ -463,7 +463,7 @@ namespace ProtoCore.Namespace
         /// <summary>
         /// Returns set of all symbols in this table for the given symbol name
         /// </summary>
-        /// <param name="name">Symbol name</param>
+        /// <param name="symbolName">Symbol name</param>
         /// <returns>HashSet of Symbol</returns>
         internal HashSet<Symbol> GetAllSymbols(string symbolName)
         {

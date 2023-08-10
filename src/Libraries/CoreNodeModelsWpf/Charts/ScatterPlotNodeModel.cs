@@ -91,10 +91,10 @@ namespace CoreNodeModelsWpf.Charts
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        [JsonConstructor]
         /// <summary>
         /// Instantiate a new NodeModel instance.
         /// </summary>
+        [JsonConstructor]
         public ScatterPlotNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             PortConnected += ScatterPlotNodeModel_PortConnected;

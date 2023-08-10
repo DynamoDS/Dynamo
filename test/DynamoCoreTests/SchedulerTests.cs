@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using CoreNodeModels.Input;
+using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Models;
@@ -1154,7 +1155,8 @@ namespace Dynamo.Tests
                     SchedulerThread = schedulerThread,
                     PathResolver = pathResolver,
                     GeometryFactoryPath = preloader.GeometryFactoryPath,
-                    ProcessMode = TaskProcessMode.Asynchronous
+                    ProcessMode = TaskProcessMode.Asynchronous,
+                    Preferences = new PreferenceSettings()
                 });
         }
 
