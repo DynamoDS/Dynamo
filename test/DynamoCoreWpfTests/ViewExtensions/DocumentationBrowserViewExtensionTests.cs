@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo;
@@ -716,46 +717,47 @@ namespace DynamoCoreWpfTests
             var dynFileName = Path.Combine(testDirectory, @"UI\BasicAddition.dyn");
             var insertDynFilePath = Path.Combine(tempDynDirectory, @"BasicAddition.dyn");
 
-            //First check that the directory doesn't exist
-            Assert.IsTrue(!Directory.Exists(tempDynDirectory));
-
-            //Creates a directory that has empty spaces in the name
-            Directory.CreateDirectory(tempDynDirectory);
-
-            //Copy the dyn file to the new directory with empty spaces
-            File.Copy(dynFileName, insertDynFilePath);
-
-            //Adds a Number node into the Current Workspace
-            var nodeName = "Number";
-            this.ViewModel.ExecuteCommand(
-            new DynamoModel.CreateNodeCommand(
-                Guid.NewGuid().ToString(), nodeName, 0, 0, false, false)
-            );
-
-            //Validates that we have just one node in the CurrentWorkspace
-            Assert.AreEqual(ViewModel.Model.CurrentWorkspace.Nodes.Count(), 1);
-
-            var node = ViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault();
-            RequestNodeDocs(node);
-
-            // Show the DocumentationBrowser so we can get the DocumentationBrowserViewModel
-            ShowDocsBrowser();
-            var docsView = GetDocsTabItem().Content as DocumentationBrowserView;
-            var docsViewModel = docsView.DataContext as DocumentationBrowserViewModel;
-
-            //Using reflection change the path of the dyn file for using the created directory (which has empty spaces in the name)
-            FieldInfo fi = typeof(DocumentationBrowserViewModel).GetField("graphPath", BindingFlags.NonPublic | BindingFlags.Instance);
-            fi.SetValue(docsViewModel, insertDynFilePath);
-
-            //Insert the Graph into the current workspace
-            docsViewModel.InsertGraph();
-
-            //Deletes the Directory created previously
-            if (Directory.Exists(tempDynDirectory))
+            var cleanTempDir = () =>
             {
-                Directory.Delete(tempDynDirectory, true);
-            }
+                if (Directory.Exists(tempDynDirectory))
+                {
+                    Directory.Delete(tempDynDirectory, true);
+                }
+            };
 
+            using (Disposable.Create(cleanTempDir, cleanTempDir))
+            {
+                //Creates a directory that has empty spaces in the name
+                Directory.CreateDirectory(tempDynDirectory);
+                //Copy the dyn file to the new directory with empty spaces
+                File.Copy(dynFileName, insertDynFilePath);
+
+                //Adds a Number node into the Current Workspace
+                var nodeName = "Number";
+                this.ViewModel.ExecuteCommand(
+                new DynamoModel.CreateNodeCommand(
+                    Guid.NewGuid().ToString(), nodeName, 0, 0, false, false)
+                );
+
+                //Validates that we have just one node in the CurrentWorkspace
+                Assert.AreEqual(ViewModel.Model.CurrentWorkspace.Nodes.Count(), 1);
+
+                var node = ViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault();
+                RequestNodeDocs(node);
+
+                // Show the DocumentationBrowser so we can get the DocumentationBrowserViewModel
+                ShowDocsBrowser();
+                var docsView = GetDocsTabItem().Content as DocumentationBrowserView;
+                var docsViewModel = docsView.DataContext as DocumentationBrowserViewModel;
+
+                //Using reflection change the path of the dyn file for using the created directory (which has empty spaces in the name)
+                FieldInfo fi = typeof(DocumentationBrowserViewModel).GetField("graphPath", BindingFlags.NonPublic | BindingFlags.Instance);
+                fi.SetValue(docsViewModel, insertDynFilePath);
+
+                //Insert the Graph into the current workspace
+                docsViewModel.InsertGraph();
+            }
+   
             //Validates that we have 5 nodes the CurrentWorkspace (after the graph was added)
             Assert.AreEqual(ViewModel.Model.CurrentWorkspace.Nodes.Count(), 5);         
         }
@@ -868,17 +870,17 @@ namespace DynamoCoreWpfTests
         }
 
         #region Helpers
-        private string[] htmlResources()
+        private static string[] htmlResources()
         {
             return getContentFiles(@"*.html");
         }
 
-        private string[] mdResources()
+        private static string[] mdResources()
         {
             return getContentFiles(@"*.md");
         }
 
-        private string[] getContentFiles(string wildcard)
+        private static string[] getContentFiles(string wildcard)
         {
             var directory = new DirectoryInfo(ExecutingDirectory);
             var docsDirectory = Path.Combine(directory.Parent.Parent.Parent.FullName, @"src\DocumentationBrowserViewExtension\Docs");
