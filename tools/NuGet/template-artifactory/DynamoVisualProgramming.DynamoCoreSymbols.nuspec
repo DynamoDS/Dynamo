@@ -10,11 +10,12 @@
         <icon>content\images\logo.png</icon>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>This package bundles all symbol files from the Dynamo bin folder.</description>
-        <copyright>Copyright Autodesk 2020</copyright>
+        <copyright>Copyright Autodesk 2023</copyright>
         <dependencies>
             <group targetFramework=".NETFramework4.8" />
         </dependencies>
     </metadata>
+    <!--for now we assume that that the working directory root is dynamo/bin/AnyCPU/Release-->
     <files>
         <file src="*.pdb" target="lib\net48" exclude="CefSharp*.pdb;Helix*.pdb;MIConvexHull.NET Standard.pdb;*Test*.pdb;"/>
         <file src="nodes\*.pdb" target="lib\net48\nodes" />
