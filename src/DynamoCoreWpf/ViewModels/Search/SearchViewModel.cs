@@ -350,7 +350,13 @@ namespace Dynamo.ViewModels
         internal readonly DynamoViewModel dynamoViewModel;
 
         // Lucene search utility to perform indexing operations.
-        internal LuceneSearchUtility LuceneSearchUtility { get; }
+        private LuceneSearchUtility LuceneUtility
+        {
+            get
+            {
+                return dynamoViewModel.Model.LuceneUtility;
+            }
+        }
 
         /// <summary>
         /// Class name, that has been clicked in library search view.
@@ -372,7 +378,6 @@ namespace Dynamo.ViewModels
             iconServices = new IconServices(pathManager);
 
             InitializeCore();
-            LuceneSearchUtility = dynamoViewModel.Model.LuceneSearchUtility;
         }
 
         // Just for tests. Please refer to LibraryTests.cs
@@ -940,27 +945,27 @@ namespace Dynamo.ViewModels
             if (useLucene)
             {
                 //The DirectoryReader and IndexSearcher have to be assigned after commiting indexing changes and before executing the Searcher.Search() method, otherwise new indexed info won't be reflected
-                LuceneSearchUtility.dirReader = LuceneSearchUtility.writer?.GetReader(applyAllDeletes: true);
-                if (LuceneSearchUtility.dirReader == null) return null;
+                LuceneUtility.dirReader = LuceneUtility.writer?.GetReader(applyAllDeletes: true);
+                if (LuceneUtility.dirReader == null) return null;
 
-                LuceneSearchUtility.Searcher = new IndexSearcher(LuceneSearchUtility.dirReader);
+                LuceneUtility.Searcher = new IndexSearcher(LuceneUtility.dirReader);
 
                 string searchTerm = search.Trim();
                 var candidates = new List<NodeSearchElementViewModel>();
-                var parser = new MultiFieldQueryParser(LuceneConfig.LuceneNetVersion, LuceneConfig.NodeIndexFields, LuceneSearchUtility.Analyzer)
+                var parser = new MultiFieldQueryParser(LuceneConfig.LuceneNetVersion, LuceneConfig.NodeIndexFields, LuceneUtility.Analyzer)
                 {
                     AllowLeadingWildcard = true,
                     DefaultOperator = LuceneConfig.DefaultOperator,
                     FuzzyMinSim = LuceneConfig.MinimumSimilarity
                 };
 
-                Query query = parser.Parse(LuceneSearchUtility.CreateSearchQuery(LuceneConfig.NodeIndexFields, searchTerm));
-                TopDocs topDocs = LuceneSearchUtility.Searcher.Search(query, n: LuceneConfig.DefaultResultsCount);
+                Query query = parser.Parse(LuceneUtility.CreateSearchQuery(LuceneConfig.NodeIndexFields, searchTerm));
+                TopDocs topDocs = LuceneUtility.Searcher.Search(query, n: LuceneConfig.DefaultResultsCount);
 
                 for (int i = 0; i < topDocs.ScoreDocs.Length; i++)
                 {
                     // read back a Lucene doc from results
-                    Document resultDoc = LuceneSearchUtility.Searcher.Doc(topDocs.ScoreDocs[i].Doc);
+                    Document resultDoc = LuceneUtility.Searcher.Doc(topDocs.ScoreDocs[i].Doc);
 
                     string name = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.Name));
                     string docName = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.DocName));

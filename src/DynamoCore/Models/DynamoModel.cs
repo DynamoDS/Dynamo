@@ -40,7 +40,6 @@ using Dynamo.Utilities;
 using DynamoServices;
 using Greg;
 using Lucene.Net.Documents;
-using Lucene.Net.Search;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ProtoCore;
@@ -139,8 +138,14 @@ namespace Dynamo.Models
         /// </summary>
         internal bool IsASMLoaded = true;
 
-        // Lucene search utility to perform indexing operations.
-        internal LuceneSearchUtility LuceneSearchUtility { get; set; }
+        // Lucene search utility to perform indexing operations on nodes.
+        internal LuceneSearchUtility LuceneUtility
+        {
+            get
+            {
+                return LuceneSearch.LuceneSearchUtility;
+            }
+        }
 
         #endregion
 
@@ -919,8 +924,8 @@ namespace Dynamo.Models
 
             CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager, LibraryServices);
 
-            LuceneSearchUtility = new LuceneSearchUtility(this);
-            LuceneSearchUtility.InitializeLuceneConfig(LuceneConfig.NodesIndexingDirectory);
+            LuceneSearch.LuceneSearchUtility = new LuceneSearchUtility(this);
+            LuceneUtility.InitializeLuceneConfig(LuceneConfig.NodesIndexingDirectory);
 
             InitializeCustomNodeManager();
 
@@ -1437,11 +1442,11 @@ namespace Dynamo.Models
             }
 
             //The writer have to be disposed at DynamoModel level due that we could index package-nodes as new packages are installed
-            LuceneSearchUtility.DisposeWriter();
+            LuceneUtility.DisposeWriter();
 
             // Lucene disposals (just if LuceneNET was initialized)
-            LuceneSearchUtility.indexDir?.Dispose();
-            LuceneSearchUtility.dirReader?.Dispose();
+            LuceneUtility.indexDir?.Dispose();
+            LuceneUtility.dirReader?.Dispose();
 
 #if DEBUG
             CurrentWorkspace.NodeAdded -= CrashOnDemand.CurrentWorkspace_NodeAdded;
@@ -1498,13 +1503,13 @@ namespace Dynamo.Models
                 SearchModel.Add(searchElement);
 
                 //Indexing node packages installed using PackageManagerSearch
-                var iDoc = LuceneSearchUtility.InitializeIndexDocumentForNodes();
+                var iDoc = LuceneUtility.InitializeIndexDocumentForNodes();
                 if (searchElement != null)
                 {
                     AddNodeTypeToSearchIndex(searchElement, iDoc);
                 }
 
-                LuceneSearchUtility.CommitWriterChanges();
+                LuceneUtility.CommitWriterChanges();
 
                 Action<CustomNodeInfo> infoUpdatedHandler = null;
                 infoUpdatedHandler = newInfo =>
@@ -1535,7 +1540,7 @@ namespace Dynamo.Models
 
         private void InitializeIncludedNodes()
         {
-            var iDoc = LuceneSearchUtility.InitializeIndexDocumentForNodes();
+            var iDoc = LuceneUtility.InitializeIndexDocumentForNodes();
 
             var customNodeData = new TypeLoadData(typeof(Function));
             NodeFactory.AddLoader(new CustomNodeLoader(CustomNodeManager, IsTestMode));
@@ -1702,7 +1707,7 @@ namespace Dynamo.Models
             // When running parallel tests several are trying to write in the AppData folder then the job
             // is failing and in a wrong state so we prevent to initialize Lucene index writer during test mode.
             // Without the index files on disk, the dirReader cant be initialized correctly. So does the searcher.
-            LuceneSearchUtility.CommitWriterChanges();
+            LuceneUtility.CommitWriterChanges();
         }
 
         /// <summary>
@@ -1754,7 +1759,7 @@ namespace Dynamo.Models
 
         private void LoadNodeModels(List<TypeLoadData> nodes, bool isPackageMember)
         {
-            var iDoc = LuceneSearchUtility.InitializeIndexDocumentForNodes();
+            var iDoc = LuceneUtility.InitializeIndexDocumentForNodes();
             foreach (var type in nodes)
             {
                 // Protect ourselves from exceptions thrown by malformed third party nodes.
@@ -3301,15 +3306,15 @@ namespace Dynamo.Models
         private void AddNodeTypeToSearchIndex(NodeSearchElement node, Document doc)
         {
             if (IsTestMode) return;
-            if (LuceneSearchUtility.addedFields == null) return;
+            if (LuceneUtility.addedFields == null) return;
 
-            LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName), node.FullCategoryName);
-            LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), node.Name);
-            LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Description), node.Description);
-            if (node.SearchKeywords.Count > 0) LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords), node.SearchKeywords.Aggregate((x, y) => x + " " + y), true, true);
-            LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Parameters), node.Parameters?? string.Empty);
+            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName), node.FullCategoryName);
+            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), node.Name);
+            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Description), node.Description);
+            if (node.SearchKeywords.Count > 0) LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords), node.SearchKeywords.Aggregate((x, y) => x + " " + y), true, true);
+            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Parameters), node.Parameters?? string.Empty);
 
-            LuceneSearchUtility.writer?.AddDocument(doc);
+            LuceneUtility.writer?.AddDocument(doc);
         }
 
         /// <summary>
@@ -3340,7 +3345,7 @@ namespace Dynamo.Models
 
         internal void AddZeroTouchNodesToSearch(IEnumerable<FunctionGroup> functionGroups)
         {
-            var iDoc = LuceneSearchUtility.InitializeIndexDocumentForNodes();
+            var iDoc = LuceneUtility.InitializeIndexDocumentForNodes();
             foreach (var funcGroup in functionGroups)
                 AddZeroTouchNodeToSearch(funcGroup, iDoc);
         }
