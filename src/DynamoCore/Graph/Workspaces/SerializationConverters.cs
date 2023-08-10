@@ -364,6 +364,7 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="inPorts">The deserialized input ports.</param>
         /// <param name="outPorts">The deserialized output ports.</param>
         /// <param name="resolver">The IdReferenceResolver used during deserialization.</param>
+        /// <param name="logger"></param>
         private static void RemapPorts(NodeModel node, PortModel[] inPorts, PortModel[] outPorts, IdReferenceResolver resolver, ILogger logger)
         {
             foreach (var p in node.InPorts)
@@ -1399,7 +1400,7 @@ namespace Dynamo.Graph.Workspaces
         /// Add a reference to a newly created object, referencing
         /// an old id.
         /// </summary>
-        /// <param name="oldid">The old id of the object.</param>
+        /// <param name="oldId">The old id of the object.</param>
         /// <param name="newObject">The new object which maps to the old id.</param>
         public void AddToReferenceMap(Guid oldId, object newObject)
         {

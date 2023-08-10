@@ -214,7 +214,6 @@ namespace ProtoTestFx.TD
             double dVal = 0.0;
             bool bVal = false;
             string sVal = string.Empty;
-            object[] arrayVal = null;
 
             bool hasParsed = false;
             hasParsed = Int32.TryParse(value, out iVal);
@@ -403,7 +402,6 @@ namespace ProtoTestFx.TD
                 g = Guid.NewGuid();
                 
                 StackTrace trace = new StackTrace();
-                int caller = 2;
                 
                 string tempPath = System.IO.Path.GetTempPath();
                 string import = @"testImport\";

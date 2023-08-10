@@ -297,6 +297,7 @@ namespace Dynamo.Search
         /// matches any element in the tagDictionary.
         /// </summary>
         /// <param name="subset">The subset that will be used to match elements in tagDictionary.</param>
+        /// <param name="searchDict"></param>
         /// <returns></returns>
         private static Dictionary<V, double> MatchWithSubset(Dictionary<V,double> searchDict, IEnumerable<SearchElements.NodeSearchElement> subset)
         {

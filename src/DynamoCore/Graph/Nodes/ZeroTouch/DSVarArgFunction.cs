@@ -146,7 +146,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
     {
         /// <summary>
         ///     Initializes a new instance of
-        /// the <see cref="ZeroTouchVarArgNodeController"/> class with FunctionDescriptor.
+        /// the <see cref="ZeroTouchVarArgNodeController{T}"/> class with FunctionDescriptor.
         /// </summary>
         /// <param name="zeroTouchDef">FunctionDescriptor describing the function
         /// that this controller will call.</param>

@@ -17,7 +17,7 @@ namespace ProtoCore.DSASM
         /// points to. 
         /// </summary>
         /// <param name="functionPointer">Function pointer</param>
-        /// <param name="core">Core</param>
+        /// <param name="runtimeCore">Core</param>
         /// <param name="procNode">Procedure node</param>
         /// <returns></returns>
         public bool TryGetFunction(StackValue functionPointer, RuntimeCore runtimeCore, out ProcedureNode procNode)

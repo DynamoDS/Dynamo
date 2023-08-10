@@ -371,11 +371,11 @@ namespace Dynamo.ViewModels
             }
         }
 
-        [Obsolete("This was moved to PreferencesViewModel.cs")]
         /// <summary>
         /// Indicates whether to make T-Spline nodes (under ProtoGeometry.dll) discoverable
         /// in the node search library.
         /// </summary>
+        [Obsolete("This was moved to PreferencesViewModel.cs")]
         public bool EnableTSpline
         {
             get
@@ -630,10 +630,10 @@ namespace Dynamo.ViewModels
             }
         }
 
-        [Obsolete ("This was moved to PreferencesViewModel.cs")]
         /// <summary>
         /// Engine used by default for new Python script and string nodes. If not empty, this takes precedence over any system settings.
         /// </summary>
+        [Obsolete ("This was moved to PreferencesViewModel.cs")]
         public string DefaultPythonEngine
         {
             get { return model.PreferenceSettings.DefaultPythonEngine; }
@@ -1564,7 +1564,7 @@ namespace Dynamo.ViewModels
         /// Attempts to open a file using the Json content passed to OpenFromJsonCommand, but wraps
         /// the call with a check to make sure no unsaved changes to the HomeWorkspace are lost.
         /// </summary>
-        /// <param name="openFromJsonCommand"> <see cref="DynamoModel.OpenFileFromJsonCommand"/> </param>
+        /// <param name="openCommand"> <see cref="DynamoModel.OpenFileFromJsonCommand"/> </param>
         private void OpenFromJsonIfSaved(object openCommand)
         {
             filePath = string.Empty;
@@ -1626,12 +1626,12 @@ namespace Dynamo.ViewModels
 
         /// <summary>
         /// Open a definition or workspace.
-        /// </summary>
-        /// <param name="parameters"></param>
         /// For most cases, parameters variable refers to the Json content file to open
         /// However, when this command is used in OpenFileDialog, the variable is
-        /// a Tuple<string, bool> instead. The boolean flag is used to override the
+        /// a Tuple{string,bool} instead. The boolean flag is used to override the
         /// RunSetting of the workspace.
+        /// </summary>
+        /// <param name="parameters"></param>
         private void OpenFromJson(object parameters)
         {
             // try catch for exceptions thrown while opening files, say from a future version, 
@@ -1677,7 +1677,9 @@ namespace Dynamo.ViewModels
                 }
                 else
                 {
-                    throw (e);
+#pragma warning disable CA2200 // Rethrow to preserve stack details
+                    throw e;
+#pragma warning restore CA2200 // Rethrow to preserve stack details
                 }
                 return;
             }
@@ -1686,12 +1688,12 @@ namespace Dynamo.ViewModels
 
         /// <summary>
         /// Open a definition or workspace.
-        /// </summary>
-        /// <param name="parameters"></param>
         /// For most cases, parameters variable refers to the file path to open
         /// However, when this command is used in OpenFileDialog, the variable is
-        /// a Tuple<string, bool> instead. The boolean flag is used to override the
+        /// a Tuple{string, bool} instead. The boolean flag is used to override the
         /// RunSetting of the workspace.
+        /// </summary>
+        /// <param name="parameters"></param>
         private void Open(object parameters)
         {
             // try catch for exceptions thrown while opening files, say from a future version, 
@@ -1761,7 +1763,9 @@ namespace Dynamo.ViewModels
                 }
                 else
                 {
-                    throw (e);
+#pragma warning disable CA2200 // Rethrow to preserve stack details
+                    throw e;
+#pragma warning restore CA2200 // Rethrow to preserve stack details
                 }
                 return;
             }
@@ -1770,12 +1774,12 @@ namespace Dynamo.ViewModels
 
         /// <summary>
         /// Insert a definition or a custom node.
-        /// </summary>
-        /// <param name="parameters"></param>
         /// For most cases, parameters variable refers to the file path to open
         /// However, when this command is used in InsertFileDialog, the variable is
-        /// a Tuple<string, bool> instead. The boolean flag is used to override the
+        /// a Tuple&lt;string, bool&gt; instead. The boolean flag is used to override the
         /// RunSetting of the workspace.
+        /// </summary>
+        /// <param name="parameters"></param>
         private void Insert(object parameters)
         {
             // try catch for exceptions thrown while opening files, say from a future version, 
@@ -1843,7 +1847,9 @@ namespace Dynamo.ViewModels
                 }
                 else
                 {
-                    throw (e);
+#pragma warning disable CA2200 // Rethrow to preserve stack details
+                    throw e;
+#pragma warning restore CA2200 // Rethrow to preserve stack details
                 }
                 return;
             }
@@ -1887,7 +1893,7 @@ namespace Dynamo.ViewModels
                 Model.CurrentWorkspace.UpdateWithExtraWorkspaceViewInfo(viewInfo);
                 Model.OnWorkspaceOpening(viewInfo);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 this.ShowStartPage = false; // Hide start page if there's one.
                 return;
@@ -2714,6 +2720,7 @@ namespace Dynamo.ViewModels
         /// Requests a message box asking the user to save the workspace and allows saving.
         /// </summary>
         /// <param name="workspace">The workspace for which to show the dialog</param>
+        /// <param name="allowCancel"></param>
         /// <returns>False if the user cancels, otherwise true</returns>
         public bool AskUserToSaveWorkspaceOrCancel(WorkspaceModel workspace, bool allowCancel = true)
         {
