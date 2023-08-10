@@ -38,10 +38,11 @@
         <file src="DynamoCoreWpf.dll" target="lib\net48" />
         <file src="nodes\CoreNodeModelsWpf.dll" target="lib\net48" />
         <file src="nodes\CoreNodeModelsWpf.xml" target="lib\net48" />
-        <!--NET60 binaries, the path may change after we stop building NET48 solution-->
+        <!--
         <file src="..\..\NET60_Windows\Release\DynamoCoreWpf.dll" target="lib\net6.0" />
         <file src="..\..\NET60_Windows\Release\nodes\CoreNodeModelsWpf.dll" target="lib\net6.0" />
         <file src="..\..\NET60_Windows\Release\nodes\CoreNodeModelsWpf.xml" target="lib\net6.0" />
+        -->
         <file src="..\..\..\doc\distrib\Images\logo_square_32x32.png" target="content\images\logo.png" />
     </files>
 </package>
