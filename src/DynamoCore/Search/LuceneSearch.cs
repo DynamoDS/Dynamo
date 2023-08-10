@@ -21,14 +21,6 @@ namespace Dynamo.Search
         #endregion
 
         /// <summary>
-        /// Singleton class initialization logic which will be run in a lazy way the first time Dynamo try to access Lucene search utilities.
-        /// </summary>
-        private LuceneSearch()
-        {
-            
-        }
-
-        /// <summary>
         /// LuceneSearchUtility for nodes
         /// </summary>
         internal static LuceneSearchUtility LuceneSearchUtility { get; set; }
