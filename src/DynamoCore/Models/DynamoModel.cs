@@ -593,7 +593,7 @@ namespace Dynamo.Models
         /// <returns>The instance of <see cref="DynamoModel"/></returns>
         public static DynamoModel Start()
         {
-            return Start(new DefaultStartConfiguration() { ProcessMode = TaskProcessMode.Asynchronous });
+            return Start(new DefaultStartConfiguration() { ProcessMode = TaskProcessMode.Asynchronous, Preferences = PreferenceSettings.Instance });
         }
 
         /// <summary>
@@ -614,7 +614,7 @@ namespace Dynamo.Models
         internal static readonly string BuiltInPackagesToken = @"%BuiltInPackages%";
         [Obsolete("Only used for migration to the new for this directory - BuiltInPackages - do not use for other purposes")]
         // Token representing the standard library directory
-        internal static readonly string StandardLibraryToken = @"%StandardLibrary%";
+        internal static readonly string StandardLibraryToken = @"%StandardLibrary%";        
 
         /// <summary>
         /// Default constructor for DynamoModel
@@ -638,12 +638,7 @@ namespace Dynamo.Models
 
             ClipBoard = new ObservableCollection<ModelBase>();
 
-            pathManager = new PathManager(new PathManagerParams
-            {
-                CorePath = config.DynamoCorePath,
-                HostPath = config.DynamoHostPath,
-                PathResolver = config.PathResolver
-            });
+            pathManager = CreatePathManager(config);
 
             // Ensure we have all directories in place.
             var exceptions = new List<Exception>();
@@ -677,13 +672,9 @@ namespace Dynamo.Models
 
             OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenInitPreferencesSettings, 30));
 
-            IPreferences preferences = CreateOrLoadPreferences(config.Preferences);
-            if (preferences is PreferenceSettings settings)
+            PreferenceSettings = CreatePreferences(config);
+            if (PreferenceSettings != null)
             {
-                PreferenceSettings = settings;
-                // Setting the new locale for Dynamo after Preferences loaded
-                Thread.CurrentThread.CurrentUICulture = new CultureInfo(PreferenceSettings.Locale);
-                Thread.CurrentThread.CurrentCulture = new CultureInfo(PreferenceSettings.Locale);
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
                 PreferenceSettings.MessageLogged += LogMessage;
             }
@@ -1014,6 +1005,92 @@ namespace Dynamo.Models
             State = DynamoModelState.StartedUIless;
             // This event should only be raised at the end of this method.
             DynamoReady(new ReadyParams(this));
+        }
+
+        /// <summary>
+        /// It returns a PathManager instance based on the mode in order to reuse it's Singleton instance or create a new one
+        /// </summary>
+        /// <param name="config"></param>
+        /// <returns></returns>
+        internal PathManager CreatePathManager(IStartConfiguration config)
+        {
+            if (!config.StartInTestMode)
+            {
+                if (!Core.PathManager.Instance.HasPathResolver)
+                {
+                    Core.PathManager.Instance.AssignIPathResolver(config.PathResolver);
+                }
+                return Core.PathManager.Instance;
+            }
+            else
+            {
+                return new PathManager(new PathManagerParams
+                {
+                    CorePath = config.DynamoCorePath,
+                    HostPath = config.DynamoHostPath,
+                    PathResolver = config.PathResolver
+                });
+            }
+        }
+
+        /// <summary>
+        /// It returns a PreferenceSettings instance based on the mode in order to reuse it's Singleton instance or create a new one
+        /// </summary>
+        /// <param name="config"></param>
+        /// <returns></returns>
+        internal PreferenceSettings CreatePreferences(IStartConfiguration config)
+        {
+            PreferenceSettings preferences = null;
+            if (!config.StartInTestMode)
+            {
+                if (config.Preferences is PreferenceSettings settings)
+                {
+                    preferences = settings;
+                }
+            }
+            else
+            {
+                preferences = (PreferenceSettings)CreateOrLoadPreferences(config.Preferences);
+            }
+
+            return preferences;
+        }
+
+        /// <summary>
+        /// Create or load a preference checking the usage mode and if it already exists
+        /// </summary>
+        /// <param name="preferences"></param>
+        /// <returns></returns>
+        private IPreferences CreateOrLoadPreferences(IPreferences preferences)
+        {
+            if (preferences != null) // If there is preference settings provided...
+                return preferences;
+
+            //Skip file handling and trust location in service mode.
+            if (IsServiceMode)
+            {
+                var setting = new PreferenceSettings();
+                setting.SetTrustWarningsDisabled(true);
+                return setting;
+            }
+
+            // Is order for test cases not to interfere with the regular preference
+            // settings xml file, a test case usually specify a temporary xml file
+            // path from where preference settings are to be loaded. If that value
+            // is not set, then fall back to the file path specified in PathManager.
+            //
+            var xmlFilePath = PreferenceSettings.DynamoTestPath;
+            if (string.IsNullOrEmpty(xmlFilePath))
+                xmlFilePath = pathManager.PreferenceFilePath;
+
+            if (File.Exists(xmlFilePath))
+            {
+                // If the specified xml file path exists, load it.
+                return PreferenceSettings.Load(xmlFilePath);
+            }
+
+            // Otherwise make a default preference settings object.
+            return new PreferenceSettings();
         }
 
         private void CheckFeatureFlagTest()
@@ -1700,38 +1777,6 @@ namespace Dynamo.Models
                     Logger.Log(e);
                 }
             }
-        }
-
-        private IPreferences CreateOrLoadPreferences(IPreferences preferences)
-        {
-            if (preferences != null) // If there is preference settings provided...
-                return preferences;
-
-            //Skip file handling and trust location in service mode.
-            if (IsServiceMode)
-            {
-                var setting = new PreferenceSettings();
-                setting.SetTrustWarningsDisabled(true);
-                return setting;
-            }
-
-            // Is order for test cases not to interfere with the regular preference
-            // settings xml file, a test case usually specify a temporary xml file
-            // path from where preference settings are to be loaded. If that value
-            // is not set, then fall back to the file path specified in PathManager.
-            //
-            var xmlFilePath = PreferenceSettings.DynamoTestPath;
-            if (string.IsNullOrEmpty(xmlFilePath))
-                xmlFilePath = pathManager.PreferenceFilePath;
-
-            if (File.Exists(xmlFilePath))
-            {
-                // If the specified xml file path exists, load it.
-                return PreferenceSettings.Load(xmlFilePath);
-            }
-
-            // Otherwise make a default preference settings object.
-            return new PreferenceSettings();
         }
 
         private void InitializePreferences()

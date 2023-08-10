@@ -91,7 +91,8 @@ namespace Dynamo.Tests
 
             var config = new DynamoModel.DefaultStartConfiguration()
             {
-                PythonTemplatePath = templatePath
+                PythonTemplatePath = templatePath,
+                StartInTestMode = true
             };
 
             var model = DynamoModel.Start(config);
@@ -106,7 +107,8 @@ namespace Dynamo.Tests
 
             var config = new DynamoModel.DefaultStartConfiguration()
             {
-                PythonTemplatePath = templatePath
+                PythonTemplatePath = templatePath,
+                StartInTestMode = true
             };
 
             var model = DynamoModel.Start(config);
