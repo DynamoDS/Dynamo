@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33627.172
@@ -9,24 +9,18 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|NET60_Linux = Debug|NET60_Linux
-		Debug|NET60_Windows = Debug|NET60_Windows
 		Release|Any CPU = Release|Any CPU
 		Release|NET60_Linux = Release|NET60_Linux
-		Release|NET60_Windows = Release|NET60_Windows
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{F30253B6-6F68-4E56-9358-0832E4F38A0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F30253B6-6F68-4E56-9358-0832E4F38A0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F30253B6-6F68-4E56-9358-0832E4F38A0F}.Debug|NET60_Linux.ActiveCfg = Debug|NET60_Linux
 		{F30253B6-6F68-4E56-9358-0832E4F38A0F}.Debug|NET60_Linux.Build.0 = Debug|NET60_Linux
-		{F30253B6-6F68-4E56-9358-0832E4F38A0F}.Debug|NET60_Windows.ActiveCfg = Debug|NET60_Windows
-		{F30253B6-6F68-4E56-9358-0832E4F38A0F}.Debug|NET60_Windows.Build.0 = Debug|NET60_Windows
 		{F30253B6-6F68-4E56-9358-0832E4F38A0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F30253B6-6F68-4E56-9358-0832E4F38A0F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F30253B6-6F68-4E56-9358-0832E4F38A0F}.Release|NET60_Linux.ActiveCfg = Release|NET60_Linux
 		{F30253B6-6F68-4E56-9358-0832E4F38A0F}.Release|NET60_Linux.Build.0 = Release|NET60_Linux
-		{F30253B6-6F68-4E56-9358-0832E4F38A0F}.Release|NET60_Windows.ActiveCfg = Release|NET60_Windows
-		{F30253B6-6F68-4E56-9358-0832E4F38A0F}.Release|NET60_Windows.Build.0 = Release|NET60_Windows
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
