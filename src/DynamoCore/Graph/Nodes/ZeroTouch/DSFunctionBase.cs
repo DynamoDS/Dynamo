@@ -127,6 +127,12 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
         {
             return Controller.Definition.ReturnType;
         }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            DataBridge.Instance.UnregisterCallback(GUID.ToString());
+        }
     }
     
 
@@ -396,14 +402,6 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
 
                 // Generate AST for ZT function call.
                 resultAst.Add(AstFactory.BuildAssignment(dfb.AstIdentifierForPreview, rhs));
-
-                DataBridge.Instance.UnregisterCallback(dfb.GUID.ToString());
-
-                // Generate AST to call UnregisterInfoLogger callback.
-                DataBridge.Instance.RegisterCallback(dfb.GUID.ToString(), dfb.UnregisterInfoLogger);
-                resultAst.Add(AstFactory.BuildAssignment(dummyIdentifier, bridgeDataAst));
-
-                DataBridge.Instance.UnregisterCallback(dfb.GUID.ToString());
             }
 
             var keys = Definition.ReturnKeys ?? Enumerable.Empty<string>();
