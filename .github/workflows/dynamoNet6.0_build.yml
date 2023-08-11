@@ -18,7 +18,8 @@ jobs:
       run: echo "::remove-matcher owner=csc::"
 
     - name: Install dependencies for windows runtime
-      run: dotnet restore $Env:GITHUB_WORKSPACE\Dynamo\src\DynamoCore.sln p:Platform="Any CPU" --runtime=win10-x64
+      run: |
+        dotnet restore $Env:GITHUB_WORKSPACE\Dynamo\src\DynamoCore.sln p:Platform="Any CPU" --runtime=win10-x64
     - name: Build Dynamo with MSBuild for Windows
       run: |
         echo "***Continue with the build, Good luck developer!***"
