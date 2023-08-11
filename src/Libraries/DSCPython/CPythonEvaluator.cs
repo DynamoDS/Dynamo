@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -311,7 +311,9 @@ for modname,mod in sys.modules.copy().items():
                             }
                             else
                             {
+#pragma warning disable CA2200 // Rethrow to preserve stack details
                                 throw e;
+#pragma warning restore CA2200 // Rethrow to preserve stack details
                             }
                         }
                         finally

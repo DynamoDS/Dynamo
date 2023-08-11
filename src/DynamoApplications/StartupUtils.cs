@@ -8,6 +8,8 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using CommandLine;
+using Dynamo.Configuration;
+using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Scheduler;
@@ -241,6 +243,13 @@ namespace Dynamo.Applications
         /// <returns></returns>
         public static DynamoModel MakeCLIModel(string asmPath, string userDataFolder, string commonDataFolder, HostAnalyticsInfo info = new HostAnalyticsInfo(), bool isServiceMode = false)
         {
+            IPathResolver pathResolver = CreatePathResolver(false, string.Empty, string.Empty, string.Empty);
+            PathManager.Instance.AssignIPathResolver(pathResolver);
+
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo(PreferenceSettings.Instance.Locale);
+            Thread.CurrentThread.CurrentCulture = new CultureInfo(PreferenceSettings.Instance.Locale);
+            DynamoModel.OnDetectLanguage();
+
             // Preload ASM and display corresponding message on splash screen
             DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenPreLoadingAsm, 10));
             var isASMloaded = PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
@@ -273,12 +282,33 @@ namespace Dynamo.Applications
         /// <returns></returns>
         public static DynamoModel MakeModel(bool CLImode, string asmPath = "", HostAnalyticsInfo info = new HostAnalyticsInfo())
         {
+            IPathResolver pathResolver = CreatePathResolver(false, string.Empty, string.Empty, string.Empty);            
+            PathManager.Instance.AssignIPathResolver(pathResolver);
+
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo(PreferenceSettings.Instance.Locale);
+            Thread.CurrentThread.CurrentCulture = new CultureInfo(PreferenceSettings.Instance.Locale);
+            DynamoModel.OnDetectLanguage();
+
             // Preload ASM and display corresponding message on splash screen
             DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenPreLoadingAsm, 10));
             var isASMloaded = PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
             var model = StartDynamoWithDefaultConfig(CLImode, string.Empty, string.Empty, geometryFactoryPath, preloaderLocation, info);
             model.IsASMLoaded = isASMloaded;
             return model;
+        }
+
+        /// <summary>
+        /// It returns an IPathResolver based on the mode and some locations
+        /// </summary>
+        /// <param name="CLImode">CLI mode starts the model in test mode and uses a seperate path resolver.</param>
+        /// <param name="preloaderLocation">Path to be used by PathResolver for preLoaderLocation</param>
+        /// <param name="userDataFolder">Path to be used by PathResolver for UserDataFolder</param>
+        /// <param name="commonDataFolder">Path to be used by PathResolver for CommonDataFolder</param>
+        /// <returns></returns>
+        private static IPathResolver CreatePathResolver(bool CLImode, string preloaderLocation, string userDataFolder, string commonDataFolder)
+        {
+            IPathResolver pathResolver = CLImode ? new CLIPathResolver(preloaderLocation, userDataFolder, commonDataFolder) as IPathResolver : new SandboxPathResolver(preloaderLocation) as IPathResolver;
+            return pathResolver;
         }
 
         /// <summary>
@@ -377,8 +407,9 @@ namespace Dynamo.Applications
                 AuthProvider = CLImode ? null : new Core.IDSDKManager(),
                 UpdateManager = CLImode ? null : OSHelper.IsWindows() ? InitializeUpdateManager() : null,
                 StartInTestMode = CLImode,
-                PathResolver = CLImode ? new CLIPathResolver(preloaderLocation, userDataFolder, commonDataFolder) as IPathResolver : new SandboxPathResolver(preloaderLocation) as IPathResolver,
-                IsServiceMode = isServiceMode
+                PathResolver = CreatePathResolver(CLImode, preloaderLocation, userDataFolder, commonDataFolder),
+                IsServiceMode = isServiceMode,
+                Preferences = PreferenceSettings.Instance
             };
 
             var model = DynamoModel.Start(config);
@@ -437,7 +468,7 @@ namespace Dynamo.Applications
         /// If this happens Dynamo will most likely crash. We should alert the user they
         /// have an incompatible addin/package installed.. this is only called if the host calls or
         /// subscribes to it during AppDomain.AssemblyLoad event.
-        /// 
+        /// </summary>
         private static List<Exception> GetVersionMismatchedReferencesInAppDomain(Assembly assembly, String[] assemblyNamesToIgnore)
         {
             // Get all assemblies that are currently loaded into the appdomain.

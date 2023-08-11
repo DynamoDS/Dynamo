@@ -1,4 +1,4 @@
-﻿using ProtoCore.Properties;
+using ProtoCore.Properties;
 using ProtoCore.Runtime;
 
 namespace ProtoCore.DSASM

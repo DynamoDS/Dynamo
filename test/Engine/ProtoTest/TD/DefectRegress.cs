@@ -502,7 +502,6 @@ import(""FFITarget.dll"");
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Object[] x = new Object[] { 1, 3, 5 };
-            object c = null;
             thisTest.Verify("getval", x, 0);
         }
 

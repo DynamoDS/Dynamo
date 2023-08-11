@@ -1,10 +1,9 @@
-﻿
-#--Params--
+﻿#--Params--
 #issueTemplateFile: Name of the template file including extension (ex: ISSUE_TEMPLATE.md)
 #issueContent: Body of the issue to be analyzed
 #acceptableEmptyFields: Amount of fields from the template that can be missing information
 #                       in the issue (1 if unspecified)
-param([string]$issueTemplateFile, [string]$issueContent, [int]$acceptableEmptyFields = 1)
+param([string]$issueTemplateFile, [int]$acceptableEmptyFields = 1)
 
 #Loads the requiered functions
 . .\.github\scripts\issue_comparator.ps1
@@ -12,6 +11,7 @@ param([string]$issueTemplateFile, [string]$issueContent, [int]$acceptableEmptyFi
 
 #--Processing--
 $issueTemplate = Get-Content -Raw -Path .github\$issueTemplateFile
+$issueContent = $env:ISSUE_BODY
 
 #Parse the template and issue
 $parsed_issue_content = Get_Parsed_Issue $issueContent

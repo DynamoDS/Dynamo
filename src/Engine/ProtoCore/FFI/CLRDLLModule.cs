@@ -55,7 +55,6 @@ namespace ProtoFFI
                 {
                     mtype = new CLRModuleType(type);
                     //Now check that a type with same name is not imported.
-                    Type otherType;
                     if (mTypeNames.TryGetValue(mtype.FullName, out CLRModuleType otherMType))
                     {
                         if (otherMType.CLRType.IsEquivalentTo(type))
@@ -941,7 +940,7 @@ namespace ProtoFFI
 
     /// <summary>
     /// Implements DLLModule for CLR types and FFI. This class supports .NET
-    /// module import to DesignScript and provides FFIFunctionPointer &
+    /// module import to DesignScript and provides FFIFunctionPointer &amp;
     /// FFIObjectMarshler.
     /// </summary>
     public class CLRDLLModule : DLLModule

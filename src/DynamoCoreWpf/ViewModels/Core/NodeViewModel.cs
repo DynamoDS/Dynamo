@@ -1309,7 +1309,6 @@ namespace Dynamo.ViewModels
         /// Sets the color of the warning bar, which informs the user that the node is in
         /// either an error or a warning state.
         /// </summary>
-        /// <param name="style"></param>
         /// <returns></returns>
         internal SolidColorBrush GetWarningColor()
         {

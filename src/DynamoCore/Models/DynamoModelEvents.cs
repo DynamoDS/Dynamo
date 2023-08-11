@@ -74,6 +74,15 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// Event to throw for Splash Screen to display the content in the proper language
+        /// </summary>
+        internal static event SplashScreenLanguageDetected LanguageDetected;
+        internal static void OnDetectLanguage()
+        {
+            LanguageDetected?.Invoke();
+        }
+
+        /// <summary>
         /// Occurs when changes in data may affect UI and UI needs to be refreshed
         /// </summary>
         public event EventHandler RequestLayoutUpdate;

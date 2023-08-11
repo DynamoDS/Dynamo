@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
@@ -35,7 +35,7 @@ namespace Dynamo.ViewModels
         private Dispatcher Dispatcher { get; set; }
 
         /// <summary>
-        /// The size of the Watch Icon (x & y dimensions).
+        /// The size of the Watch Icon (x &amp; y dimensions).
         /// </summary>
         public double MarkerSize { get; set; } = 30;
         public double AnchorSize { get; set; } = 15;
@@ -338,6 +338,10 @@ namespace Dynamo.ViewModels
         /// <param name="startNode"></param>
         /// <param name="endNode"></param>
         /// <param name="watchNodeModel"></param>
+        /// <param name="connector"></param>
+        /// <param name="connectorPinLocations"></param>
+        /// <param name="allCreatedModels"></param>
+        /// <param name="allDeletedModels"></param>
         private void WireNewNode(
             DynamoModel dynamoModel, 
             NodeModel startNode,

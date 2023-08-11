@@ -12,26 +12,48 @@ jobs:
       #and then checked on step two to know if adding any labels is necessary.
       #The initial 'undefined' value will be overridden when the script runs.
       content_analysis_response: undefined
+      ISSUE_TITLE: ${{github.event.issue.title}}
+      ISSUE_BODY: ${{github.event.issue.body}}
     outputs:
       result: ${{env.content_analysis_response}}
     steps:
       - uses: actions/checkout@v2
+
+      #Detect if the issue_title follows the regex expression
+      - name: Check Issue Title
+        uses: actions-ecosystem/action-regex-match@v2
+        id: regex-match
+        with:
+          text: ${{github.event.issue.title}}
+          regex: '^[A-Za-z0-9 _.]*$'
+          flags: g
+
+      #If the regex output is '' means that the issue title contains special chars
+      - name: Exit Job
+        if: ${{ steps.regex-match.outputs.match == '' }}
+        run: |
+          echo "Bad Issue Title Format"
+          exit 1
+
+      #Remove the " character in the issue title and replaced with -
       - name: Remove conflicting chars
-        env:
-          ISSUE_TITLE: ${{github.event.issue.title}}
         uses: frabert/replace-string-action@v1.2
         id: remove_quotations
         with:
           pattern: "\""
-          string: ${{env.ISSUE_TITLE}}
+          string:  ${{env.ISSUE_TITLE}}
           replace-with: '-'
           flags: g    
+
+      #According to the issue_title returns a specific label 
       - name: Check Information
+        id: check-info
         env:
           ISSUE_TITLE_PARSED: ${{steps.remove_quotations.outputs.replaced}}
-        id: check-info
         run: |
-          echo "content_analysis_response=$(pwsh .\\.github\\scripts\\title_analyzer.ps1 "${{ env.ISSUE_TITLE_PARSED }}" )" >> $GITHUB_ENV
+          echo "content_analysis_response=$(pwsh .\\.github\\scripts\\title_analyzer.ps1)" >> $GITHUB_ENV
+
+      #labels the issue based in the text returned in content_analysis_response var
       - name: Label issue
         if: env.content_analysis_response != 'Valid'
         #Uses DYNAMOBOTTOKEN to allow interaction between repos
@@ -101,11 +123,11 @@ jobs:
 
       #Checks for missing information inside the issue content
       - name: Check Information
-        env:
-          ISSUE_TITLE_PARSED: ${{steps.remove_quotations.outputs.replaced}}
         id: check-info
+        env:
+          ISSUE_BODY: ${{ steps.remove_quotations.outputs.replaced }}
         run: |
-          echo "analysis_response=$(pwsh .\\.github\\scripts\\issue_analyzer.ps1 "${{ env.template }}" "${{ env.ISSUE_TITLE_PARSED }}" "${{ env.acceptable_missing_info }}" )" >> $GITHUB_ENV
+          echo "analysis_response=$(pwsh .\\.github\\scripts\\issue_analyzer.ps1 "${{ env.template }}" "${{ env.acceptable_missing_info }}" )" >> $GITHUB_ENV
       
       #Closes the issue if the analysis response is "Empty"
       - name: Close issue

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -210,7 +210,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     A description of the workspace
         /// </summary>
-        public string Description
+        public new string Description
         {
             get { return description; }
             set

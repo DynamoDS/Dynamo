@@ -293,7 +293,6 @@ x6 = power(i) >= power(h.IntVal) ? power(1) : power(0);
 x7 = power(f) >= power(i) ? power(1) : power(0);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object n1 = null;
             thisTest.SetErrorMessage("1467231 - Sprint 26 - Rev 3393 null to bool conversion should not be allowed");
             thisTest.Verify("x1", 1);
             thisTest.Verify("x2", 0);
