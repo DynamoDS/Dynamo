@@ -52,15 +52,19 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
             Description = String.IsNullOrEmpty(Controller.Description) ? signature : Controller.Description + "\n\n" + signature;
         }
 
-        private void RegisterInfoLogger(object obj)
+        internal void RegisterInfoLogger(object obj)
         {
             LogWarningMessageEvents.LogInfoMessage += LogInfoMessage;
+        }
+
+        internal void UnregisterInfoLogger(object obj)
+        {
+            LogWarningMessageEvents.LogInfoMessage -= LogInfoMessage;
         }
 
         private void LogInfoMessage(object obj)
         {
             var args = obj as LogWarningMessageEventArgs;
-
             if (args != null)
             {
                 Info(args.message);
@@ -111,7 +115,6 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, CompilationContext context)
         {
-            DataBridge.Instance.RegisterCallback(GUID.ToString(), RegisterInfoLogger);
             return Controller.BuildAst(this, inputAstNodes);
         }
 
@@ -128,7 +131,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
         public override void Dispose()
         {
             base.Dispose();
-            LogWarningMessageEvents.LogInfoMessage -= LogInfoMessage;
+            DataBridge.Instance.UnregisterCallback(GUID.ToString());
         }
     }
     
@@ -381,6 +384,43 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
             }
 
             return rhs;
+        }
+
+        protected override void AssignIdentifiersForFunctionCall(
+            NodeModel model, AssociativeNode rhs, List<AssociativeNode> resultAst)
+        {
+            var dfb = model as DSFunctionBase;
+            if (dfb != null)
+            {
+                DataBridge.Instance.RegisterCallback(dfb.GUID.ToString(), dfb.RegisterInfoLogger);
+
+                // Generate AST to call RegisterInfoLogger callback.
+                var dummyIdentifier = AstFactory.BuildIdentifier(dfb.AstIdentifierBase + "_dummy");
+                var bridgeDataAst = DataBridge.GenerateBridgeDataAst(dfb.GUID.ToString(),
+                    dummyIdentifier);
+                resultAst.Add(AstFactory.BuildAssignment(dummyIdentifier, bridgeDataAst));
+
+                // Generate AST for ZT function call.
+                resultAst.Add(AstFactory.BuildAssignment(dfb.AstIdentifierForPreview, rhs));
+
+                DataBridge.Instance.UnregisterCallback(dfb.GUID.ToString());
+
+                // Generate AST to call UnregisterInfoLogger callback.
+                DataBridge.Instance.RegisterCallback(dfb.GUID.ToString(), dfb.UnregisterInfoLogger);
+                resultAst.Add(AstFactory.BuildAssignment(dummyIdentifier, bridgeDataAst));
+
+                DataBridge.Instance.UnregisterCallback(dfb.GUID.ToString());
+            }
+
+            var keys = Definition.ReturnKeys ?? Enumerable.Empty<string>();
+            resultAst.AddRange(
+                from item in keys.Zip(Enumerable.Range(0, keys.Count()), (key, idx) => new { key, idx })
+                let outputIdentiferNode = model.GetAstIdentifierForOutputIndex(item.idx)
+                let outputIdentifier = outputIdentiferNode.ToString()
+                let getValueCall = AstFactory.BuildFunctionCall(BuiltinDictionaryTypeName, BuiltinDictionaryGet,
+                    new List<AssociativeNode> { model.AstIdentifierForPreview, AstFactory.BuildStringNode(item.key) })
+                select
+                AstFactory.BuildAssignment(outputIdentiferNode, getValueCall));
         }
     }
 }

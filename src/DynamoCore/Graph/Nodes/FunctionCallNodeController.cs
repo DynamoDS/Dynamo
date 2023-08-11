@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using Dynamo.Engine;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Logging;
 using ProtoCore.AST.AssociativeAST;
 
@@ -102,8 +103,8 @@ namespace Dynamo.Graph.Nodes
                                     }))));
         }
 
-        private static readonly string BuiltinDictionaryTypeName = typeof(DesignScript.Builtin.Dictionary).FullName;
-        private static readonly string BuiltinDictionaryGet = nameof(DesignScript.Builtin.Dictionary.ValueAtKey);
+        protected static readonly string BuiltinDictionaryTypeName = typeof(DesignScript.Builtin.Dictionary).FullName;
+        protected static readonly string BuiltinDictionaryGet = nameof(DesignScript.Builtin.Dictionary.ValueAtKey);
 
         /// <summary>
         ///     Produces AST that assigns all necessary Identifiers for the given NodeModel from
@@ -114,10 +115,6 @@ namespace Dynamo.Graph.Nodes
         /// <param name="resultAst">Result accumulator: add all new output AST to this list.</param>
         protected virtual void AssignIdentifiersForFunctionCall(NodeModel model, AssociativeNode rhs, List<AssociativeNode> resultAst)
         {
-            var dummyIdentifier = AstFactory.BuildIdentifier(model.AstIdentifierBase + "_dummy");
-            var bridgeDataAst = VMDataBridge.DataBridge.GenerateBridgeDataAst(model.GUID.ToString(),
-                dummyIdentifier);
-            resultAst.Add(AstFactory.BuildAssignment(dummyIdentifier, bridgeDataAst));
             resultAst.Add(AstFactory.BuildAssignment(model.AstIdentifierForPreview, rhs));
 
             var keys = Definition.ReturnKeys ?? Enumerable.Empty<string>();
