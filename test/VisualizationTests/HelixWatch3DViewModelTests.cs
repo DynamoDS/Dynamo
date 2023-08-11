@@ -141,7 +141,7 @@ namespace WpfVisualizationTests
             };
         }
 
-        private async void Model_EvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
+        private void Model_EvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
         {
             DispatcherUtil.DoEvents();
         }
@@ -162,9 +162,14 @@ namespace WpfVisualizationTests
 
         // With version 2.5 NUnit will call base class TearDown methods after those in the derived classes
         [TearDown]
-        private void CleanUp()
+        public void CleanUp()
         {
             Model.EvaluationCompleted -= Model_EvaluationCompleted;
+            //under some circumstances, closing the DynamoView does not trigger the unloaded
+            //event on the view or on child user controls, so here we clear the workspace
+            //before the base class teardown closes the view - this will trigger unloaded
+            //on all children of the workspace.
+            ViewModel.CurrentSpace.Clear();
         }
     }
 
@@ -1262,7 +1267,7 @@ namespace WpfVisualizationTests
             }
         }
 
-        private async void tagGeometryWhenClickingItem(int[] indexes, int expectedNumberOfLabels,
+        private void tagGeometryWhenClickingItem(int[] indexes, int expectedNumberOfLabels,
             string nodeName, Func<NodeView,NodeModel> getGeometryOwnerNode, bool expandPreviewBubble = false)
         {
             OpenVisualizationTest("MAGN_3815.dyn");
@@ -1290,7 +1295,6 @@ namespace WpfVisualizationTests
             {
                 treeViewItem = treeViewItem.ChildrenOfType<TreeViewItem>().ElementAt(index);
             }
-
             // click on the found TreeViewItem
             View.Dispatcher.Invoke(() =>
             {
@@ -1301,6 +1305,7 @@ namespace WpfVisualizationTests
             });
 
             DispatcherUtil.DoEvents();
+
 
             // check if label has been added to corresponding geometry
             var helix = ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel;
