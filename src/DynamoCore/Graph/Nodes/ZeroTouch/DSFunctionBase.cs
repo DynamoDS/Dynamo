@@ -127,12 +127,6 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
         {
             return Controller.Definition.ReturnType;
         }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-            DataBridge.Instance.UnregisterCallback(GUID.ToString());
-        }
     }
     
 
