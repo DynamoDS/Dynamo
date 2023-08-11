@@ -18,12 +18,12 @@ jobs:
       run: echo "::remove-matcher owner=csc::"
     - name: Install dependencies for windows runtime
       run: |
-        dotnet restore $Env:GITHUB_WORKSPACE\net60_Win_Dynamo\src\Dynamo.All.sln /p:Platform='Any CPU' --runtime=win10-x64
+        dotnet restore $Env:GITHUB_WORKSPACE\net60_Win_Dynamo\src\Dynamo.All.sln /p:Configuration=Release --runtime=win10-x64
     - name: Build Dynamo current branch with MSBuild for NET60-Windows
       run: |
         echo "***Continue with the build, Good luck developer!***"
         cd "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\"
-            .\MSBuild.exe $Env:GITHUB_WORKSPACE\net60_Win_Dynamo\src\Dynamo.All.sln p:Platform="Any CPU" /p:Configuration=Release
+            .\MSBuild.exe $Env:GITHUB_WORKSPACE\net60_Win_Dynamo\src\Dynamo.All.sln  /p:Configuration=Release
     - name: Navigate to Dynamo DotNet6 Windows Folder
       run: |
         cd "$Env:GITHUB_WORKSPACE\net60_Win_Dynamo\bin\AnyCPU\Release"
@@ -53,12 +53,12 @@ jobs:
       run: echo "::remove-matcher owner=csc::"
     - name: Install dependencies for windows runtime
       run: |
-        dotnet restore $Env:GITHUB_WORKSPACE\master_net60_Win_Dynamo\src\Dynamo.All.sln p:Platform='Any CPU' --runtime=win10-x64
+        dotnet restore $Env:GITHUB_WORKSPACE\master_net60_Win_Dynamo\src\Dynamo.All.sln /p:Configuration=Release --runtime=win10-x64
     - name: Build Dynamo master branch with MSBuild for NET60-Windows
       run: |
         echo "***Continue with the build, Good luck developer!***"
         cd "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\"
-            .\MSBuild.exe $Env:GITHUB_WORKSPACE\master_net60_Win_Dynamo\src\Dynamo.All.sln p:Platform="Any CPU" /p:Configuration=Release
+            .\MSBuild.exe $Env:GITHUB_WORKSPACE\master_net60_Win_Dynamo\src\Dynamo.All.sln /p:Configuration=Release
     - name: Navigate to Dynamo DotNet6 Windows Folder
       run: |
         cd "$Env:GITHUB_WORKSPACE\master_net60_Win_Dynamo\bin\AnyCPU\Release"
