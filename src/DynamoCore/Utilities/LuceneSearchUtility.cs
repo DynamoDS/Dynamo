@@ -69,9 +69,6 @@ namespace Dynamo.Utilities
             }
                 
 
-            // Create an analyzer to process the text
-            Analyzer = new StandardAnalyzer(LuceneConfig.LuceneNetVersion);
-
             // Initialize Lucene index writer, unless in test mode or we are using RAMDirectory for indexing info. 
             if (!DynamoModel.IsTestMode || currentStorageType == LuceneStorage.RAM)
             {
