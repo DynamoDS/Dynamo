@@ -111,6 +111,10 @@ namespace WpfVisualizationTests
 
             ViewModel = DynamoViewModel.Start(vmConfig);
 
+            // Disable edge rendering to ensure that curve counts are correct.
+            // because preferences settings is now a sinleton prefs changes can affect other tests.
+            ViewModel.RenderPackageFactoryViewModel.ShowEdges = false;
+
             //create the view
             View = new DynamoView(ViewModel);
             View.Show();
@@ -1300,7 +1304,7 @@ namespace WpfVisualizationTests
             {
                 treeViewItem.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left)
                 {
-                    RoutedEvent = Mouse.MouseDownEvent
+                    RoutedEvent = Mouse.MouseUpEvent
                 });
             });
 
