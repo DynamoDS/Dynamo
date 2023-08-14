@@ -1,23 +1,26 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <ImportGroup Label="PropertySheets">
-    <Import Project="$(SolutionDir)Config\CS_SDK.props" />
-    <Import Project="$(SolutionDir)Config/Cleanup.targets" />
-  </ImportGroup>
+    <PropertyGroup>
+        <UILib>true</UILib>
+    </PropertyGroup>
+    <ImportGroup Label="PropertySheets">
+        <Import Project="$(SolutionDir)Config/CS_SDK.props" />
+    </ImportGroup>
   <PropertyGroup>
     <ProjectGuid>{C4964946-B367-44EE-9ED2-451FF2A83D32}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>WpfVisualizationTests</RootNamespace>
     <AssemblyName>WpfVisualizationTests</AssemblyName>
-    <TestProjectDefaults>true</TestProjectDefaults>
   </PropertyGroup>
+    <ItemGroup>
+    <PackageReference Include="HelixToolkit" Version="2.24.0" />
+    <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
+        <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
+    </ItemGroup>
+   
   <ItemGroup>
-    <PackageReference Include="Cyotek.Drawing.BitmapFont" Version="2.0.0" />
-    <PackageReference Include="HelixToolkit" Version="2.17.0" />
-    <PackageReference Include="HelixToolkit.Wpf" Version="2.17.0" />
-    <PackageReference Include="HelixToolkit.Wpf.SharpDX" Version="2.17.0" />
+    <PackageReference Include="Cyotek.Drawing.BitmapFont" Version="2.0.0" /> 
     <PackageReference Include="Moq" Version="4.18.4" />
-    <PackageReference Include="NUnit" Version="2.6.3" />
     <PackageReference Include="SharpDX" Version="4.2.0" />
     <PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0" />
     <PackageReference Include="SharpDX.Direct2D1" Version="4.2.0" />
@@ -25,93 +28,69 @@
     <PackageReference Include="SharpDX.Direct3D9" Version="4.2.0" />
     <PackageReference Include="SharpDX.DXGI" Version="4.2.0" />
     <PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
-    <PackageReference Include="NUnitTestAdapter" Version="2.3.0" ExcludeAssets="all" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+    <PackageReference Include="NUnit" Version="3.13.3" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
-    <Reference Include="Microsoft.Practices.Prism">
-        <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-        <Private>False</Private>
-    </Reference>
-  </ItemGroup>
+  
   <ItemGroup>
-    <ProjectReference Include="..\..\test\DynamoCoreTests\DynamoCoreTests.csproj">
+    <ProjectReference Include="..\DynamoCoreTests\DynamoCoreTests.csproj">
       <Project>{472084ed-1067-4b2c-8737-3839a6143eb2}</Project>
       <Name>DynamoCoreTests</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\test\DynamoCoreWpfTests\DynamoCoreWpfTests.csproj">
+    <ProjectReference Include="..\DynamoCoreWpfTests\DynamoCoreWpfTests.csproj">
       <Project>{7dd8077a-201e-4c56-96c5-3c901a51bdf3}</Project>
       <Name>DynamoCoreWpfTests</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\test\Libraries\SystemTestServices\SystemTestServices.csproj">
+    <ProjectReference Include="..\Libraries\SystemTestServices\SystemTestServices.csproj">
       <Project>{89563cd0-509b-40a5-8728-9d3ec6fe8410}</Project>
       <Name>SystemTestServices</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\test\Libraries\TestServices\TestServices.csproj">
+    <ProjectReference Include="..\Libraries\TestServices\TestServices.csproj">
       <Project>{6cd0f0cf-8199-49f9-b0ea-0b9598b44419}</Project>
       <Name>TestServices</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj">
+    <ProjectReference Include="..\..\src\DynamoCoreWpf\DynamoCoreWpf.csproj">
       <Project>{51bb6014-43f7-4f31-b8d3-e3c37ebedaf4}</Project>
       <Name>DynamoCoreWpf</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
+    <ProjectReference Include="..\..\src\DynamoCore\DynamoCore.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoCore</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Engine\ProtoCore\ProtoCore.csproj">
+    <ProjectReference Include="..\..\src\Engine\ProtoCore\ProtoCore.csproj">
       <Project>{7A9E0314-966F-4584-BAA3-7339CBB849D1}</Project>
       <Name>ProtoCore</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Libraries\CoreNodeModels\CoreNodeModels.csproj">
+    <ProjectReference Include="..\..\src\Libraries\CoreNodeModels\CoreNodeModels.csproj">
       <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>
       <Name>CoreNodeModels</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Libraries\Watch3DNodeModelsWpf\Watch3DNodeModelsWpf.csproj">
+    <ProjectReference Include="..\..\src\Libraries\Watch3DNodeModelsWpf\Watch3DNodeModelsWpf.csproj">
       <Project>{b9e338ca-6677-4772-b01d-1fceabcdaaab}</Project>
       <Name>Watch3DNodeModelsWpf</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Libraries\Watch3DNodeModels\Watch3DNodeModels.csproj">
+    <ProjectReference Include="..\..\src\Libraries\Watch3DNodeModels\Watch3DNodeModels.csproj">
       <Project>{31183026-DE70-49CB-BC7C-0DFD0A088F62}</Project>
       <Name>Watch3DNodeModels</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\NodeServices\DynamoServices.csproj">
+    <ProjectReference Include="..\..\src\NodeServices\DynamoServices.csproj">
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>DynamoServices</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Tools\DynamoShapeManager\DynamoShapeManager.csproj">
+    <ProjectReference Include="..\..\src\Tools\DynamoShapeManager\DynamoShapeManager.csproj">
       <Project>{263FA9C1-F81E-4A8E-95E0-8CDAE20F177B}</Project>
       <Name>DynamoShapeManager</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
 </Project>

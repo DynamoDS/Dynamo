@@ -276,7 +276,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// This event method will be executed when the user press the Back button in the tooltip/popup
         /// </summary>
-        /// <param name="args">This parameter will contain the "sequence" of the current Step so we can get the previous Step from the list</param>
         private void GuideFlowEvents_GuidedTourPrevStep()
         {
             PreviousStep(CurrentStep.Sequence);
@@ -285,7 +284,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// This event method will be executed then the user press the Next button in the tooltip/popup
         /// </summary>
-        /// <param name="args">This parameter will contain the "sequence" of the current Step so we can get the next Step from the list</param>
         private void GuideFlowEvents_GuidedTourNextStep()
         {
             NextStep(CurrentStep.Sequence);

@@ -1,14 +1,17 @@
-using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Media;
-using LiveCharts;
-using LiveCharts.Defaults;
-using LiveCharts.Wpf;
-using System.ComponentModel;
-using System.Windows;
-using System.Linq;
+using CoreNodeModelsWpf.Charts.Utilities;
+using LiveChartsCore;
+using LiveChartsCore.Defaults;
+using LiveChartsCore.Drawing;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
+using SkiaSharp;
+using SkiaSharp.Views.WPF;
 
 namespace CoreNodeModelsWpf.Charts.Controls
 {
@@ -17,11 +20,19 @@ namespace CoreNodeModelsWpf.Charts.Controls
     /// </summary>
     public partial class XYLineChartControl : UserControl, INotifyPropertyChanged
     {
-        private Random rnd = new Random();
         private readonly XYLineChartNodeModel model;
 
-        private double MIN_WIDTH = 300;
-        private double MIN_HEIGHT = 300;
+        private SolidColorPaint AxisColor { get; set; }
+        private SolidColorPaint AxisSeparatorColor { get; set; }
+
+        /// <summary>
+        /// Used to get or set the X-axis of the chart
+        /// </summary>
+        public Axis[] XAxes { get; set; }
+        /// <summary>
+        /// Used to get or set the Y-axis of the chart
+        /// </summary>
+        public Axis[] YAxes { get; set; }
 
         private void OnPropertyChanged(string propertyName)
         {
@@ -45,21 +56,25 @@ namespace CoreNodeModelsWpf.Charts.Controls
 
         private void BuildUI(XYLineChartNodeModel model)
         {
+            SetAxes();
+            XYLineChart.LegendTextPaint = new SolidColorPaint(ChartStyle.LEGEND_TEXT_COLOR);
+            XYLineChart.LegendTextSize = ChartStyle.AXIS_FONT_SIZE;
+
             // Load sample data if any ports are not connected
             if (!model.InPorts[0].IsConnected && !model.InPorts[1].IsConnected && !model.InPorts[2].IsConnected && !model.InPorts[3].IsConnected)
             {
                 var seriesRange = DefaultSeries();
 
-                XYLineChart.Series.AddRange(seriesRange);
+                XYLineChart.Series = XYLineChart.Series.Concat(seriesRange);
             }
             // Else load input data
-            else if (model.InPorts[0].IsConnected && model.InPorts[1].IsConnected && model.InPorts[2].IsConnected)
+            else if (model.InPorts[0].IsConnected && model.InPorts[1].IsConnected)
             {
                 if (model.Labels.Count == model.XValues.Count && model.XValues.Count == model.YValues.Count && model.Labels.Count > 0)
                 {
                     var seriesRange = UpdateSeries();
 
-                    XYLineChart.Series.AddRange(seriesRange);
+                    XYLineChart.Series = XYLineChart.Series.Concat(seriesRange);
                 }
             }
         }
@@ -73,24 +88,24 @@ namespace CoreNodeModelsWpf.Charts.Controls
                 // Invoke on UI thread
                 this.Dispatcher.Invoke(() =>
                 {
-                    XYLineChart.Series.Clear();
+                    XYLineChart.Series = Enumerable.Empty<ISeries>();
 
                     if (!model.InPorts[0].IsConnected && !model.InPorts[1].IsConnected && !model.InPorts[2].IsConnected && !model.InPorts[3].IsConnected)
                     {
                         var seriesRange = DefaultSeries();
-                        XYLineChart.Series.AddRange(seriesRange);
+                        XYLineChart.Series = XYLineChart.Series.Concat(seriesRange);
                     }
                     else
                     {
                         var seriesRange = UpdateSeries(model);
-                        XYLineChart.Series.AddRange(seriesRange);
+                        XYLineChart.Series = XYLineChart.Series.Concat(seriesRange);
 
                     }
                 });
             }
         }
 
-        private LineSeries[] DefaultSeries()
+        private List<LineSeries<ObservablePoint>> DefaultSeries()
         {
             var defaultXValues = new double[][]
                 {
@@ -105,36 +120,34 @@ namespace CoreNodeModelsWpf.Charts.Controls
                     new double[]{ 1, 2, 3, 4 },
                     new double[]{ 2, 3, 4, 5 }
             };
-            List<string> labels = new List<string> { "Plot 1", "Plot 2", "Plot 3" };
-            LineSeries[] seriesRange = new LineSeries[defaultXValues.Length];
+
+            var labels = new List<string> { "Plot 1", "Plot 2", "Plot 3" };
+            var seriesRange = new List<LineSeries<ObservablePoint>>();
 
             for (var i = 0; i < defaultXValues.Length; i++)
             {
-                ChartValues<ObservablePoint> points = new ChartValues<ObservablePoint>();
+                var points = new List<ObservablePoint>();
 
                 for (int j = 0; j < defaultXValues[i].Length; j++)
                 {
-                    points.Add(new ObservablePoint
-                    {
-                        X = defaultXValues[i][j],
-                        Y = defaultYValues[i][j]
-                    });
+                    points.Add(new ObservablePoint(defaultXValues[i][j], defaultYValues[i][j]));
                 }
 
-                seriesRange[i] = new LineSeries
+                seriesRange.Add(new LineSeries<ObservablePoint>
                 {
-                    Title = labels[i],
                     Values = points,
-                    Fill = Brushes.Transparent
-                };
-            }
+                    Name = labels[i],
+                    Fill = null,
+                    DataPadding = new LvcPoint(0, 0)
+                });
+            }           
 
             return seriesRange;
         }
 
-        private List<LineSeries> UpdateSeries(XYLineChartNodeModel model = null)
+        private List<LineSeries<ObservablePoint>> UpdateSeries(XYLineChartNodeModel model = null)
         {
-            var seriesRange = new List<LineSeries>();
+            var seriesRange = new List<LineSeries<ObservablePoint>>();
             if(model == null)
             {
                 model = this.model;
@@ -146,29 +159,62 @@ namespace CoreNodeModelsWpf.Charts.Controls
             {
                 for (var i = 0; i < model.Labels.Count; i++)
                 {
-                    ChartValues<ObservablePoint> points = new ChartValues<ObservablePoint>();
+                    var points = new List<ObservablePoint>();
 
                     for (int j = 0; j < model.XValues[i].Count; j++)
                     {
-                        points.Add(new ObservablePoint
-                        {
-                            X = model.XValues[i][j],
-                            Y = model.YValues[i][j]
-                        });
+                        points.Add(new ObservablePoint(model.XValues[i][j], model.YValues[i][j]));
                     }
 
-                    seriesRange.Add(new LineSeries
+                    seriesRange.Add(new LineSeries<ObservablePoint>
                     {
-                        Title = model.Labels[i],
                         Values = points,
-                        Stroke = model.Colors[i],
-                        StrokeThickness = 2.0,
-                        Fill = Brushes.Transparent
+                        Name = model.Labels[i],
+                        Fill = null,
+                        Stroke = new SolidColorPaint(model.Colors[i].ToSKColor()) { StrokeThickness = ChartStyle.XY_LINE_STROKE_THICKNESS },
+                        DataPadding = new LvcPoint(0, 0)
                     });
                 }
             }
 
             return seriesRange;
+        }
+
+        private void SetAxes()
+        {
+            AxisColor = new SolidColorPaint(ChartStyle.AXIS_COLOR) { StrokeThickness = ChartStyle.AXIS_STROKE_THICKNESS, SKTypeface = SKTypeface.FromFamilyName(ChartStyle.AXIS_FONT_FAMILY) };
+            AxisSeparatorColor = new SolidColorPaint(ChartStyle.AXIS_SEPARATOR_COLOR) { StrokeThickness = ChartStyle.AXIS_STROKE_THICKNESS };
+
+            XAxes = new Axis[]
+            {
+                new Axis
+                {
+                    Name = "X-Values",
+                    NamePaint = AxisColor,
+                    LabelsPaint = AxisColor,
+                    Padding = new Padding(ChartStyle.AXIS_NAME_PADDING),
+                    TextSize = ChartStyle.AXIS_FONT_SIZE,
+                    SeparatorsPaint = AxisSeparatorColor,
+                    NameTextSize = ChartStyle.AXIS_FONT_SIZE,
+                    MinStep = ChartStyle.LINE_AXIS_MIN_STEP,
+                    NamePadding = new Padding(ChartStyle.AXIS_LABEL_PADDING)
+                }
+            };
+
+            YAxes = new Axis[]
+            {
+                new Axis
+                {
+                    Name = "Y-Values",
+                    NamePaint = AxisColor,
+                    LabelsPaint = AxisColor,
+                    Padding = new Padding(ChartStyle.AXIS_NAME_PADDING),
+                    TextSize = ChartStyle.AXIS_FONT_SIZE,
+                    SeparatorsPaint = AxisSeparatorColor,
+                    NameTextSize = ChartStyle.AXIS_FONT_SIZE,
+                    NamePadding = new Padding(ChartStyle.AXIS_LABEL_PADDING),
+                }
+            };
         }
 
         private void ThumbResizeThumbOnDragDeltaHandler(object sender, DragDeltaEventArgs e)
@@ -180,12 +226,12 @@ namespace CoreNodeModelsWpf.Charts.Controls
             {
                 var inputGrid = this.Parent as Grid;
 
-                if (xAdjust >= inputGrid.MinWidth && xAdjust >= MIN_WIDTH)
+                if (xAdjust >= inputGrid.MinWidth && xAdjust >= ChartStyle.CHART_MIN_WIDTH)
                 {
                     Width = xAdjust;
                 }
 
-                if (yAdjust >= inputGrid.MinHeight && xAdjust >= MIN_HEIGHT)
+                if (yAdjust >= inputGrid.MinHeight && xAdjust >= ChartStyle.CHART_MIN_HEIGHT)
                 {
                     Height = yAdjust;
                 }

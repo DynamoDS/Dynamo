@@ -1,6 +1,6 @@
-﻿using System.Windows;
+using System.Windows;
 using HelixToolkit.Wpf.SharpDX;
-using HelixToolkit.Wpf.SharpDX.Core;
+using HelixToolkit.SharpDX.Core.Core;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {

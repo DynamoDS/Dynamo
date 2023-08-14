@@ -1,14 +1,18 @@
-using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Media;
-using LiveCharts;
-using LiveCharts.Defaults;
-using LiveCharts.Wpf;
-using System.ComponentModel;
-using System.Windows;
-using System.Linq;
+using CoreNodeModelsWpf.Charts.Utilities;
+using LiveChartsCore;
+using LiveChartsCore.Defaults;
+using LiveChartsCore.Drawing;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
+using SkiaSharp;
+using SkiaSharp.Views.WPF;
 
 namespace CoreNodeModelsWpf.Charts.Controls
 {
@@ -17,11 +21,19 @@ namespace CoreNodeModelsWpf.Charts.Controls
     /// </summary>
     public partial class ScatterPlotControl : UserControl, INotifyPropertyChanged
     {
-        private Random rnd = new Random();
         private readonly ScatterPlotNodeModel model;
 
-        private double MIN_WIDTH = 300;
-        private double MIN_HEIGHT = 300;
+        private SolidColorPaint AxisColor { get; set; }
+        private SolidColorPaint AxisSeparatorColor { get; set; }
+
+        /// <summary>
+        /// Used to get or set the X-axis of the chart
+        /// </summary>
+        public Axis[] XAxes { get; set; }
+        /// <summary>
+        /// Used to get or set the Y-axis of the chart
+        /// </summary>
+        public Axis[] YAxes { get; set; }
 
         private void OnPropertyChanged(string propertyName)
         {
@@ -45,19 +57,23 @@ namespace CoreNodeModelsWpf.Charts.Controls
 
         private void BuildUI(ScatterPlotNodeModel model)
         {
+            SetAxes();
+            ScatterPlot.LegendTextPaint = new SolidColorPaint(ChartStyle.LEGEND_TEXT_COLOR);
+            ScatterPlot.LegendTextSize = ChartStyle.AXIS_FONT_SIZE;
+
             // Load sample data if any ports are not connected
             if (!model.InPorts[0].IsConnected && !model.InPorts[1].IsConnected && !model.InPorts[2].IsConnected && !model.InPorts[3].IsConnected)
             {
                 var plots = DefaultSeries();
-                ScatterPlot.Series.AddRange(plots);
+                ScatterPlot.Series = ScatterPlot.Series.Concat(plots);
             }
             // Else load input data
-            else if (model.InPorts[0].IsConnected && model.InPorts[1].IsConnected && model.InPorts[2].IsConnected)
+            else if (model.InPorts[0].IsConnected && model.InPorts[1].IsConnected)
             {
                 if (model.Labels.Count == model.XValues.Count && model.XValues.Count == model.YValues.Count && model.Labels.Count > 0)
                 {
-                    var plots = UpdateSeries();                    
-                    ScatterPlot.Series.AddRange(plots);
+                    var plots = UpdateSeries();
+                    ScatterPlot.Series = ScatterPlot.Series.Concat(plots);
                 }
             }
         }
@@ -71,48 +87,48 @@ namespace CoreNodeModelsWpf.Charts.Controls
                 // Invoke on UI thread
                 this.Dispatcher.Invoke(() =>
                 {
-                    ScatterPlot.Series.Clear();
+                    ScatterPlot.Series = Enumerable.Empty<ISeries>();
 
                     // Load sample data if any ports are not connected
                     if (!model.InPorts[0].IsConnected && !model.InPorts[1].IsConnected && !model.InPorts[2].IsConnected && !model.InPorts[3].IsConnected)
                     {
                         var plots = DefaultSeries();
-                        ScatterPlot.Series.AddRange(plots);
+                        ScatterPlot.Series = ScatterPlot.Series.Concat(plots);
                     }
                     else
                     {
                         var plots = UpdateSeries(model);
-                        ScatterPlot.Series.AddRange(plots);
+                        ScatterPlot.Series = ScatterPlot.Series.Concat(plots);
                     }
                 });
             }
         }
 
-        private ScatterSeries [] DefaultSeries()
+        private IEnumerable<ScatterSeries<ObservablePoint>> DefaultSeries()
         {
-            var ValuesA = new ChartValues<ObservablePoint>();
-            var ValuesB = new ChartValues<ObservablePoint>();
-            var ValuesC = new ChartValues<ObservablePoint>();
+            var ValuesA = new ObservableCollection<ObservablePoint>();
+            var ValuesB = new ObservableCollection<ObservablePoint>();
+            var ValuesC = new ObservableCollection<ObservablePoint>();
 
             for (var i = 0; i < 20; i++)
             {
-                ValuesA.Add(new ObservablePoint(rnd.NextDouble() * 10, rnd.NextDouble() * 10));
-                ValuesB.Add(new ObservablePoint(rnd.NextDouble() * 10, rnd.NextDouble() * 10));
-                ValuesC.Add(new ObservablePoint(rnd.NextDouble() * 10, rnd.NextDouble() * 10));
+                ValuesA.Add(new ObservablePoint(ChartStyle.GetRandomDouble(10), ChartStyle.GetRandomDouble(10)));
+                ValuesB.Add(new ObservablePoint(ChartStyle.GetRandomDouble(10), ChartStyle.GetRandomDouble(10)));
+                ValuesC.Add(new ObservablePoint(ChartStyle.GetRandomDouble(10), ChartStyle.GetRandomDouble(10)));
             }
 
-            var plot1 = new ScatterSeries { Title = "Plot 1", Values = ValuesA };
-            var plot2 = new ScatterSeries { Title = "Plot 2", Values = ValuesB };
-            var plot3 = new ScatterSeries { Title = "Plot 3", Values = ValuesC };
+            var plot1 = new ScatterSeries<ObservablePoint> { Name = "Plot 1", Values = ValuesA };
+            var plot2 = new ScatterSeries<ObservablePoint> { Name = "Plot 2", Values = ValuesB };
+            var plot3 = new ScatterSeries<ObservablePoint> { Name = "Plot 3", Values = ValuesC };
 
-            var plots = new ScatterSeries[] { plot1, plot2, plot3 };
+            var plots = new List<ScatterSeries<ObservablePoint>>() { plot1, plot2, plot3 };
 
             return plots;
         }
 
-        private List<ScatterSeries> UpdateSeries(ScatterPlotNodeModel model = null)
+        private List<ScatterSeries<ObservablePoint>> UpdateSeries(ScatterPlotNodeModel model = null)
         {
-            var plots = new List<ScatterSeries>();
+            var plots = new List<ScatterSeries<ObservablePoint>>();
 
             if(model == null)
             {
@@ -127,23 +143,19 @@ namespace CoreNodeModelsWpf.Charts.Controls
                 // For each set of points
                 for (var i = 0; i < model.Labels.Count; i++)
                 {
-                    ChartValues<ObservablePoint> points = new ChartValues<ObservablePoint>();
+                    var points = new ObservableCollection<ObservablePoint>();
 
                     // For each x-value list
                     for (int j = 0; j < model.XValues[i].Count; j++)
                     {
-                        points.Add(new ObservablePoint
-                        {
-                            X = model.XValues[i][j],
-                            Y = model.YValues[i][j]
-                        });
+                        points.Add(new ObservablePoint(model.XValues[i][j], model.YValues[i][j]));
                     }
 
-                    plots.Add(new ScatterSeries
+                    plots.Add(new ScatterSeries<ObservablePoint>
                     {
-                        Title = model.Labels[i],
+                        Name = model.Labels[i],
                         Values = points,
-                        Fill = model.Colors[i]
+                        Fill = new SolidColorPaint(model.Colors[i].ToSKColor()),
                     });
                 }
             }
@@ -160,16 +172,53 @@ namespace CoreNodeModelsWpf.Charts.Controls
             {
                 var inputGrid = this.Parent as Grid;
 
-                if (xAdjust >= MIN_WIDTH/*inputGrid.MinWidth*/ )
+                if (xAdjust >= ChartStyle.CHART_MIN_WIDTH/*inputGrid.MinWidth*/ )
                 {
                     Width = xAdjust;
                 }
 
-                if (yAdjust >= MIN_HEIGHT/*inputGrid.MinHeight*/)
+                if (yAdjust >= ChartStyle.CHART_MIN_HEIGHT/*inputGrid.MinHeight*/)
                 {
                     Height = yAdjust;
                 }
             }
+        }
+
+        private void SetAxes()
+        {
+            AxisColor = new SolidColorPaint(ChartStyle.AXIS_COLOR) { StrokeThickness = ChartStyle.AXIS_STROKE_THICKNESS, SKTypeface = SKTypeface.FromFamilyName(ChartStyle.AXIS_FONT_FAMILY) };
+            AxisSeparatorColor = new SolidColorPaint(ChartStyle.AXIS_SEPARATOR_COLOR) { StrokeThickness = ChartStyle.AXIS_STROKE_THICKNESS };
+
+            XAxes = new Axis[]
+            {
+                new Axis
+                {
+                    Name = "Index",
+                    NamePaint = AxisColor,
+                    LabelsPaint = AxisColor,
+                    Padding = new Padding(ChartStyle.AXIS_NAME_PADDING),
+                    TextSize = ChartStyle.AXIS_FONT_SIZE,
+                    SeparatorsPaint = AxisSeparatorColor,
+                    NameTextSize = ChartStyle.AXIS_FONT_SIZE,
+                    MinStep = ChartStyle.LINE_AXIS_MIN_STEP,
+                    NamePadding = new Padding(ChartStyle.AXIS_LABEL_PADDING)
+                }
+            };
+
+            YAxes = new Axis[]
+            {
+                new Axis
+                {
+                    Name = "Values",
+                    NamePaint = AxisColor,
+                    LabelsPaint = AxisColor,
+                    Padding = new Padding(ChartStyle.AXIS_NAME_PADDING),
+                    TextSize = ChartStyle.AXIS_FONT_SIZE,
+                    SeparatorsPaint = AxisSeparatorColor,
+                    NameTextSize = ChartStyle.AXIS_FONT_SIZE,
+                    NamePadding = new Padding(ChartStyle.AXIS_LABEL_PADDING),
+                }
+            };
         }
 
         /// <summary>

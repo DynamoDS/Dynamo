@@ -17,10 +17,20 @@
       <Reference Include="PresentationCore" />
       <Reference Include="System" />
       <Reference Include="System.Core" />
+      <ProjectReference Include="..\..\..\src\Libraries\DSOffice\DSOffice.csproj">
+          <Project>{9b4fdc96-e2f9-4b8f-894a-4294405d50e7}</Project>
+          <Name>DSOffice</Name>
+          <Private>False</Private>
+      </ProjectReference>
   </ItemGroup>
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' "> 
+    <ItemGroup Condition=" '$(TargetFramework)' != 'net48' "> 
         <PackageReference Include="NUnit" Version="3.13.3" ExcludeAssets="none" />
-        <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />   
+        <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
+        <ProjectReference Include="..\..\..\src\Libraries\DSOffice\DSOffice.csproj">
+            <Project>{9b4fdc96-e2f9-4b8f-894a-4294405d50e7}</Project>
+            <Name>DSOffice</Name>
+            <Private>False</Private>
+        </ProjectReference>
     </ItemGroup>
   <ItemGroup>
       <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" ExcludeAssets="none" />
@@ -44,11 +54,6 @@
       <Name>CoreNodeModels</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\src\Libraries\DSOffice\DSOffice.csproj">
-      <Project>{9b4fdc96-e2f9-4b8f-894a-4294405d50e7}</Project>
-      <Name>DSOffice</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\DynamoCoreTests\DynamoCoreTests.csproj">
       <Project>{472084ED-1067-4B2C-8737-3839A6143EB2}</Project>
       <Name>DynamoCoreTests</Name>
@@ -59,7 +64,7 @@
       <Name>DynamoUtilities</Name>
       <Private>False</Private>
     </ProjectReference> 
-          <ProjectReference Include="..\..\DynamoCoreWpfTests\DynamoCoreWpfTests.csproj" Condition=" '$(TargetFramework)' == 'net48' " >
+          <ProjectReference Include="..\..\DynamoCoreWpfTests\DynamoCoreWpfTests.csproj" Condition=" '$(TargetFramework)' == 'net48' ">
               <Project>{7dd8077a-201e-4c56-96c5-3c901a51bdf3}</Project>
               <Name>DynamoCoreWpfTests</Name>
           </ProjectReference> 

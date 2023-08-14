@@ -18,6 +18,7 @@ using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
 using Greg;
+using J2N.Text;
 using Lucene.Net.Documents;
 using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
@@ -614,10 +615,9 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
         /// <param name="search"> The search query </param>
-        /// <param name="useLucene"> Temporary flag that will be used for searching using Lucene.NET </param>
-        internal IEnumerable<NodeSearchElementViewModel> SearchNodeAutocomplete(string search, bool useLucene)
+        internal IEnumerable<NodeSearchElementViewModel> SearchNodeAutocomplete(string search)
         {
-            if (useLucene)
+            if (LuceneSearchUtilityNodeAutocomplete != null)
             {
                 //The DirectoryReader and IndexSearcher have to be assigned after commiting indexing changes and before executing the Searcher.Search() method, otherwise new indexed info won't be reflected
                 LuceneSearchUtilityNodeAutocomplete.dirReader = LuceneSearchUtilityNodeAutocomplete.writer?.GetReader(applyAllDeletes: true);
@@ -657,10 +657,7 @@ namespace Dynamo.ViewModels
 
                 return candidates;
             }
-            else
-            {
-                return Search(search);
-            }
+            return null;
         }
 
         /// <summary>
@@ -693,7 +690,7 @@ namespace Dynamo.ViewModels
                     //Write the Lucene documents to memory
                     LuceneSearchUtilityNodeAutocomplete.CommitWriterChanges();
                         
-                    var luceneResults = SearchNodeAutocomplete(input, true);
+                    var luceneResults = SearchNodeAutocomplete(input);
                     var foundNodesModels = luceneResults.Select(x => x.Model);
                     var foundNodes = foundNodesModels.Select(MakeNodeSearchElementVM);
 
@@ -760,6 +757,11 @@ namespace Dynamo.ViewModels
             else if (PortViewModel.PortModel.PortType == PortType.Output)
             {
                 portType = PortViewModel.PortModel.GetOutPortType();
+                //if the custom node output name contains spaces, try using the first word.
+                if (PortViewModel.PortModel.Owner is Graph.Nodes.CustomNodes.Function && portType.Any(char.IsWhiteSpace))
+                {
+                    portType = string.Concat(portType.TrimStart().TakeWhile(char.IsLetterOrDigit));
+                }
             }
 
             //List of input types that are skipped temporarily, and will display list of default suggestions instead.
@@ -784,7 +786,6 @@ namespace Dynamo.ViewModels
             var ast = parseResult?.CodeBlockNode.Children().FirstOrDefault() as IdentifierNode;
             //if parsing the type failed, revert to original string.
             portType = ast != null ? ast.datatype.Name : portType;
-
             //check if the input port return type is in the skipped input types list
             if (skippedInputTypes.Any(s => s == portType))
             {
@@ -824,7 +825,8 @@ namespace Dynamo.ViewModels
                 {
                     foreach (var inputParameter in ztSearchElement.Descriptor.Parameters.Select((value, index) => new { value, index }))
                     {
-                        if (inputParameter.value.Type.ToString() == portType || DerivesFrom(inputParameter.value.Type.ToString(), portType, core))
+                        var ZTparamName = inputParameter.value.Type.Name ?? inputParameter.value.Type.ToString();
+                        if (ZTparamName == portType || DerivesFrom(ZTparamName, portType, core))
                         {
                             ztSearchElement.AutoCompletionNodeElementInfo.PortToConnect = ztSearchElement.Descriptor.Type == FunctionType.InstanceMethod ? inputParameter.index + 1 : inputParameter.index;
                             elements.Add(ztSearchElement);

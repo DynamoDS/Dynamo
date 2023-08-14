@@ -25,6 +25,7 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels;
 using DynamoUnits;
+using FontAwesome5;
 using Color = System.Windows.Media.Color;
 using FlowDirection = System.Windows.FlowDirection;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
@@ -1332,8 +1333,8 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if ((bool)value)
-                return nameof(FontAwesome.WPF.FontAwesomeIcon.BellOutline);
-            return nameof(FontAwesome.WPF.FontAwesomeIcon.BellSlashOutline);
+                return nameof(EFontAwesomeIcon.Solid_Bell);
+            return nameof(EFontAwesomeIcon.Solid_BellSlash);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -3259,6 +3260,7 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
     /// Converter is used in WatchTree.xaml
     /// It converts the value of the padding required by each list level label to the required thickness (padding from the left)
     /// It then supplies the required thickness to the margin property for each label
@@ -3537,7 +3539,7 @@ namespace Dynamo.Controls
     }
 
     /// <summary>
-    /// Converts an ICollection<AnnotationViewModel> to a string
+    /// Converts an ICollection&lt;AnnotationViewModel&gt; to a string
     /// that displays how many AnnotationViewModels there is in the
     /// Collection.
     /// </summary>

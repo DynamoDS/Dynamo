@@ -44,7 +44,6 @@ namespace CoreNodeModelsWpf.Charts
     public class HeatSeriesNodeModel : NodeModel
     {
         #region Properties
-        private Random rnd = new Random();
 
         /// <summary>
         /// A list of X-axis Labels.
@@ -92,10 +91,10 @@ namespace CoreNodeModelsWpf.Charts
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        [JsonConstructor]
         /// <summary>
         /// Instantiate a new NodeModel instance.
         /// </summary>
+        [JsonConstructor]
         public HeatSeriesNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             PortConnected += HeatSeriesNodeModel_PortConnected;

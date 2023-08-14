@@ -579,14 +579,14 @@ namespace Dynamo.ViewModels
         {
             bool isCollectionofFiveorMore = false;
 
-            ///if model is null or enginecontroller is disposed, return
+            //if model is null or enginecontroller is disposed, return
             if (model is null ||
                 model.Start is null ||
                 model.Start.Owner is null||
                 workspaceViewModel.DynamoViewModel.EngineController.IsDisposed == true)
             { return; }
 
-            ///if it is possible to get the last value of the model.Start.Owner
+            //if it is possible to get the last value of the model.Start.Owner
             try
             {
                 var portValue = model.Start.Owner.GetValue(model.Start.Index, workspaceViewModel.DynamoViewModel.EngineController);
@@ -604,7 +604,7 @@ namespace Dynamo.ViewModels
                 {
                     if (isCollection && portValue.GetElements().Count() > 5)
                     {
-                        ///only sets 'is a collection' to true if the collection meets a size of 5
+                        // only sets 'is a collection' to true if the collection meets a size of 5
                         isCollectionofFiveorMore = true;
                         for (int i = 0; i < 5; i++)
                         {
@@ -904,7 +904,10 @@ namespace Dynamo.ViewModels
         /// Helper function ssed for placing (re-placing) connector
         /// pins when a WatchNode is placed in the center of a connector.
         /// </summary>
+        /// <param name="connectors"></param>
+        /// <param name="connectorWireIndex"></param>
         /// <param name="point"></param>
+        /// <param name="createdModels"></param>
         public void PinConnectorPlacementFromWatchNode(ConnectorModel[] connectors, int connectorWireIndex, Point point, List<ModelBase> createdModels)
         {
             var selectedConnector = connectors[connectorWireIndex];
@@ -1429,7 +1432,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Recalculate the connector's points given the end point
         /// </summary>
-        /// <param name="p2">The position of the end point</param>
+        /// <param name="parameter">The position of the end point</param>
         public void Redraw(object parameter)
         {
             var p2 = new Point();
@@ -1550,7 +1553,7 @@ namespace Dynamo.ViewModels
                 dotTop = CurvePoint3.Y - EndDotSize / 2;
                 dotLeft = CurvePoint3.X - EndDotSize / 2;
 
-                ///Add chain of points including start/end
+                // Add chain of points including start/end
                 Point[] points = new Point[ConnectorPinViewCollection.Count];
                 int count = 0;
                 foreach (var wirePin in ConnectorPinViewCollection)

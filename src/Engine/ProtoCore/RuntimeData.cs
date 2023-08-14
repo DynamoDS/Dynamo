@@ -303,10 +303,10 @@ namespace ProtoCore
         /// belonging to a given UI node denoted by the given node guid.
         /// </summary>
         /// <param name="nodeGuid">The Guid of a given UI node whose top-most 
+        /// <param name="callsiteID"></param>
         /// callsite trace data is to be retrieved and removed.</param>
         /// <returns>Returns the serialized callsite trace data in Base64 encoded
         /// string for the given UI node.</returns>
-        /// 
         private string GetAndRemoveTraceDataForNode(Guid nodeGuid, string callsiteID)
         {
             if (uiNodeToSerializedDataMap == null)

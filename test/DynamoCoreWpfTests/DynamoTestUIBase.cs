@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -139,7 +139,7 @@ namespace DynamoCoreWpfTests
             }
         }
 
-        [TestFixtureTearDown]
+        [OneTimeTearDown]
         public void FinalTearDown()
         {
             // Fix for COM exception on close

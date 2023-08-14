@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Dynamo;
+using Dynamo.Configuration;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Models;
@@ -24,7 +25,7 @@ namespace DynamoPythonTests
 
         protected override DynamoModel.IStartConfiguration CreateStartConfiguration(IPreferences settings)
         {
-            var config = base.CreateStartConfiguration(settings);
+            var config = base.CreateStartConfiguration(new PreferenceSettings());
             config.StartInTestMode = false;
             return config;
         }

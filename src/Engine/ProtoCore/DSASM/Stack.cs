@@ -235,7 +235,7 @@ namespace ProtoCore.DSASM
         /// </summary>
         /// <param name="sv1"></param>
         /// <param name="sv2"></param>
-        /// <param name="core"></param>
+        /// <param name="runtimeCore"></param>
         /// <returns></returns>
         public static bool CompareStackValues(StackValue sv1, StackValue sv2, RuntimeCore runtimeCore)
         {

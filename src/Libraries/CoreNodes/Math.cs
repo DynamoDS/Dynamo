@@ -1,11 +1,10 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Runtime;
 using DSCore.Properties;
 using DynamoServices;
-using NCalc;
 using ProtoCore.Utils;
 using CSMath = System.Math;
 
@@ -365,19 +364,10 @@ namespace DSCore
         /// <param name="parameters">Variable names</param>
         /// <param name="arguments">Variable bindings</param>
         /// <returns name="result">type: var[]..[] (result of the formula calculation)</returns>
+        [Obsolete("EvaluateFormula has been deprecated in Dynamo 3.0. If using this node in a graph, please write the corresponding DesignScript code for the formula to execute it in a Code Block node.")]
         public static object EvaluateFormula(string formulaString, string[] parameters, object[] arguments)
         {
-            var e = new Expression(formulaString.ToLower(), EvaluateOptions.IgnoreCase);
-
-            e.Parameters["pi"] = 3.14159265358979;
-
-            foreach (var arg in arguments.Select((arg, i) => new { Value = arg, Index = i }))
-            {
-                var parameter = parameters[arg.Index];
-                e.Parameters[parameter] = arg.Value;
-            }
-
-            return e.Evaluate();
+            return null;
         }
 
         /// <summary>
