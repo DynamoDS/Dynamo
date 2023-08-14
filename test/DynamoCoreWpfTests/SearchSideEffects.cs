@@ -1,4 +1,5 @@
-﻿using System.IO;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Dynamo.Graph.Workspaces;
 using NUnit.Framework;
@@ -19,6 +20,27 @@ namespace Dynamo.Tests
 
             ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.SearchAndUpdateResults("Output");
             Assert.AreEqual(1, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.Count(x => x.Model.Name == "Output"));
+        }
+
+
+        /// <summary>
+        /// This test will validate that the nodes "Input", "Output", "And", "Or", "Not", "+", "-"  appear in the InCanvasSearch results
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void WhenStartingDynamoOperatorNodesNolongerMissingFromSearch()
+        {
+            Assert.IsAssignableFrom(typeof(HomeWorkspaceModel), ViewModel.Model.CurrentWorkspace);
+
+            List<string> nodesList = new List<string>() { "Input", "Output", "And", "Or", "Not", "+", "-" };
+
+            foreach(var node in nodesList)
+            {
+                // search and check that the results are correct based in the node name provided for the searchTerm
+                ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.SearchAndUpdateResults(node);
+                var filteredResults = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults;
+                Assert.AreEqual(1, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.Count(x => x.Model.Name == node));
+            }    
         }
 
         [Test]
