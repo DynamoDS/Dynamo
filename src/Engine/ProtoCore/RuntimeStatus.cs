@@ -62,8 +62,6 @@ namespace ProtoCore
         {
             internal Runtime.InfoID ID;
             internal string Message;
-            internal int Line;
-            internal int Column;
             internal int ExpressionID;
             internal Guid GraphNodeGuid;
             internal int AstID;
@@ -240,19 +238,11 @@ namespace ProtoCore
             }
         }
 
-        internal void LogInfo(Runtime.InfoID ID, string message, string filename, int line, int col)
+        internal void LogInfo(Runtime.InfoID ID, string message, string filename)
         {
             filename ??= string.Empty;
-
-            if (!runtimeCore.Options.IsDeltaExecution && (string.IsNullOrEmpty(filename) ||
-                line == Constants.kInvalidIndex ||
-                col == Constants.kInvalidIndex))
-            {
-                AuditCodeLocation(ref filename, ref line, ref col);
-            }
-
             var infoMsg = string.Format(Resources.kConsoleWarningMessage,
-                                           message, filename, line, col);
+                                           message, filename);
 
 #if DEBUG
             if (runtimeCore.Options.Verbose)
@@ -270,7 +260,7 @@ namespace ProtoCore
             if (MessageHandler != null)
             {
                 var outputMessage = new OutputMessage(OutputMessage.MessageType.Info,
-                                                      message.Trim(), filename, line, col);
+                                                      message.Trim(), filename);
                 MessageHandler.Write(outputMessage);
             }
 
@@ -291,8 +281,6 @@ namespace ProtoCore
             {
                 ID = ID,
                 Message = message,
-                Column = col,
-                Line = line,
                 ExpressionID = runtimeCore.RuntimeExpressionUID,
                 GraphNodeGuid = executingGraphNode == null ? Guid.Empty : executingGraphNode.guid,
                 AstID = executingGraphNode == null ? Constants.kInvalidIndex : executingGraphNode.OriginalAstID,
@@ -312,7 +300,7 @@ namespace ProtoCore
 
         internal void LogInfo(Runtime.InfoID ID, string message)
         {
-            LogInfo(ID, message, string.Empty, Constants.kInvalidIndex, Constants.kInvalidIndex);
+            LogInfo(ID, message, string.Empty);
         }
 
         private void AuditCodeLocation(ref string filePath, ref int line, ref int column)
