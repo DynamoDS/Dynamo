@@ -1511,12 +1511,12 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
-            /// <summary>
-            ///     Adds a node to this workspace.
-            /// </summary>
-            /// <param name="node">The node which is being added to the workspace.</param>
-            /// <param name="centered">Indicates if the node should be placed at the center of workspace.</param>
-            internal void AddAndRegisterNode(NodeModel node, bool centered = false)
+        /// <summary>
+        ///     Adds a node to this workspace.
+        /// </summary>
+        /// <param name="node">The node which is being added to the workspace.</param>
+        /// <param name="centered">Indicates if the node should be placed at the center of workspace.</param>
+        internal void AddAndRegisterNode(NodeModel node, bool centered = false)
         {
             if (nodes.Contains(node))
                 return;

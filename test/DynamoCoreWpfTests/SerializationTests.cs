@@ -962,7 +962,7 @@ namespace DynamoCoreWpfTests
         /// </summary>
         /// <param name="filePath">The path to a .dyn file. This parameter is supplied
         /// by the test framework.</param>
-        [Test, TestCaseSource("FindWorkspaces"), Category("JsonTestExclude")]
+        [Test, TestCaseSource(nameof(FindWorkspaces)), Category("JsonTestExclude")]
         public void SerializationTest(string filePath)
         {
             DoWorkspaceOpenAndCompareView(filePath,
@@ -981,7 +981,7 @@ namespace DynamoCoreWpfTests
         /// </summary>
         /// <param name="filePath">The path to a .dyn file. This parameter is supplied
         /// by the test framework.</param>
-        [Test, TestCaseSource("FindWorkspaces"), Category("JsonTestExclude")]
+        [Test, TestCaseSource(nameof(FindWorkspaces)), Category("JsonTestExclude")]
         public void SerializationNonGuidIdsTest(string filePath)
         {
             modelsGuidToIdMap.Clear();
@@ -1141,7 +1141,7 @@ namespace DynamoCoreWpfTests
                 serializationTestUtils.SaveWorkspaceComparisonData);
         }
 
-        public object[] FindWorkspaces()
+        public static object[] FindWorkspaces()
         {
             var di = new DirectoryInfo(TestDirectory);
             var fis = new string[] { "*.dyn", "*.dyf" }
