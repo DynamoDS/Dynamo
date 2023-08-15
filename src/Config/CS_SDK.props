@@ -33,8 +33,7 @@
     <SelfContained>false</SelfContained>
   </PropertyGroup>
     <PropertyGroup>
-    <DebugType Condition="$(Platform.Contains('AnyCPU')) ">portable</DebugType>
-    <DebugType Condition="!$(Platform.Contains('AnyCPU')) ">full</DebugType>
+    <DebugType>full</DebugType>
     </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug' ">
     <Optimize>false</Optimize>
@@ -44,7 +43,7 @@
     <Optimize>true</Optimize>
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
-    <PropertyGroup Condition="$(Platform.Contains('AnyCPU'))" >
+    <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <!--Needed to copy nuget package assemblies to output folder. Anet6 issue-->
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
