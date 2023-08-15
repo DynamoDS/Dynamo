@@ -17,6 +17,7 @@ using ProtoCore.Utils;
 using ProtoScript.Runners;
 using BuildWarning = ProtoCore.BuildData.WarningEntry;
 using RuntimeWarning = ProtoCore.Runtime.WarningEntry;
+using RuntimeInfo = ProtoCore.Runtime.InfoEntry;
 
 namespace Dynamo.Engine
 {
@@ -498,6 +499,11 @@ namespace Dynamo.Engine
         internal IDictionary<Guid, List<RuntimeWarning>> GetRuntimeWarnings()
         {
             return liveRunnerServices.GetRuntimeWarnings();
+        }
+
+        internal IDictionary<Guid, List<RuntimeInfo>> GetRuntimeInfos()
+        {
+            return liveRunnerServices.GetRuntimeInfos();
         }
 
         internal IEnumerable<Guid> GetExecutedAstGuids(Guid sessionID)
