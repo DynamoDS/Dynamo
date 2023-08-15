@@ -1208,6 +1208,7 @@ namespace ProtoScript.Runners
         void ReInitializeLiveRunner();
         IDictionary<Guid, List<ProtoCore.Runtime.WarningEntry>> GetRuntimeWarnings();
         IDictionary<Guid, List<ProtoCore.BuildData.WarningEntry>> GetBuildWarnings();
+        IDictionary<Guid, List<ProtoCore.Runtime.InfoEntry>> GetRuntimeInfos();
         IEnumerable<Guid> GetExecutedAstGuids(Guid sessionID);
         void RemoveRecordedAstGuidsForSession(Guid SessionID);
     }
@@ -1840,6 +1841,37 @@ namespace ProtoScript.Runners
                                                   .GroupBy(w => w.ExpressionID)
                                                   .Select(g => g.FirstOrDefault());
                 ret[guid] = new List<ProtoCore.Runtime.WarningEntry>(trimmedWarnings);
+            }
+
+            return ret;
+        }
+
+        /// <summary>
+        /// Returns runtime info.
+        /// </summary>
+        /// <returns></returns>
+        public IDictionary<Guid, List<ProtoCore.Runtime.InfoEntry>> GetRuntimeInfos()
+        {
+            var ret = new Dictionary<Guid, List<ProtoCore.Runtime.InfoEntry>>();
+            if (runtimeCore == null)
+                return ret;
+
+            // Group all infos by their expression ids, and only keep the last
+            // warning for each expression, and then group by GUID.  
+            var infos = runtimeCore.RuntimeStatus
+                                     .Infos
+                                     .Where(w => !w.GraphNodeGuid.Equals(Guid.Empty))
+                                     .OrderBy(w => w.GraphNodeGuid)
+                                     .GroupBy(w => w.GraphNodeGuid);
+
+            foreach (var infoGroup in infos)
+            {
+                Guid guid = infoGroup.FirstOrDefault().GraphNodeGuid;
+                // If there are two infos in the same expression, take the first one.
+                var trimmedInfos = infoGroup.OrderBy(w => w.ExpressionID)
+                                                  .GroupBy(w => w.ExpressionID)
+                                                  .Select(g => g.FirstOrDefault());
+                ret[guid] = new List<ProtoCore.Runtime.InfoEntry>(trimmedInfos);
             }
 
             return ret;
