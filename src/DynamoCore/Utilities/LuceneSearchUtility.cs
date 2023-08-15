@@ -7,19 +7,21 @@ using Dynamo.Models;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Br;
 using Lucene.Net.Analysis.Cjk;
+using Lucene.Net.Analysis.Core;
 using Lucene.Net.Analysis.Cz;
 using Lucene.Net.Analysis.De;
-using Lucene.Net.Analysis.En;
 using Lucene.Net.Analysis.Es;
 using Lucene.Net.Analysis.Fr;
 using Lucene.Net.Analysis.It;
 using Lucene.Net.Analysis.Ru;
 using Lucene.Net.Analysis.Standard;
+using Lucene.Net.Analysis.Util;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
+using Lucene.Net.Util;
 
 namespace Dynamo.Utilities
 {
@@ -81,9 +83,6 @@ namespace Dynamo.Utilities
 
             // Create an analyzer to process the text
             Analyzer = CreateAnalyzerByLanguage(dynamoModel.PreferenceSettings.Locale);
-
-            // Create an analyzer to process the text
-            Analyzer = new StandardAnalyzer(LuceneConfig.LuceneNetVersion);
 
             // Initialize Lucene index writer, unless in test mode or we are using RAMDirectory for indexing info. 
             if (!DynamoModel.IsTestMode || currentStorageType == LuceneStorage.RAM)
@@ -311,7 +310,7 @@ namespace Dynamo.Utilities
             switch (language)
             {
                 case "en-US":
-                    return new EnglishAnalyzer(LuceneConfig.LuceneNetVersion);
+                    return new LuceneCustomAnalyzer(LuceneConfig.LuceneNetVersion);
                 case "cs-CZ":
                     return new CzechAnalyzer(LuceneConfig.LuceneNetVersion);
                 case "de-DE":
@@ -328,13 +327,13 @@ namespace Dynamo.Utilities
                 case "zh-TW":
                     return new CJKAnalyzer(LuceneConfig.LuceneNetVersion);
                 case "pl-PL":
-                    return new StandardAnalyzer(LuceneConfig.LuceneNetVersion);
+                    return new LuceneCustomAnalyzer(LuceneConfig.LuceneNetVersion);
                 case "pt-BR":
                     return new BrazilianAnalyzer(LuceneConfig.LuceneNetVersion);
                 case "ru-RU":
                     return new RussianAnalyzer(LuceneConfig.LuceneNetVersion);
                 default:
-                    return new StandardAnalyzer(LuceneConfig.LuceneNetVersion);
+                    return new LuceneCustomAnalyzer(LuceneConfig.LuceneNetVersion);
             }
         }
 
@@ -355,6 +354,42 @@ namespace Dynamo.Utilities
                 //Commit the info indexed
                 writer?.Commit();
             }
+        }
+    }
+
+    /// <summary>
+    /// Due that the Lucene StandardAnalyzer removes special characters/words like "+", "*", "And" then we had to implement a Custom Analyzer that support that that kind of search terms
+    /// </summary>
+    public class LuceneCustomAnalyzer : Analyzer
+    {
+        private LuceneVersion luceneVersion;
+
+        public LuceneCustomAnalyzer(LuceneVersion matchVersion)
+        {
+            luceneVersion = matchVersion;
+        }
+
+        protected override TokenStreamComponents CreateComponents(string fieldName, TextReader reader)
+        {
+
+            //This tokenizer won't remove special characters like + * / -
+            Tokenizer tokenizer = new WhitespaceTokenizer(luceneVersion, reader);
+
+            //Remove basic stop words a, an, the, in, on etc
+            TokenStream tok = new StandardFilter(luceneVersion, tokenizer);
+
+            //Lowercase all the text
+            tok = new LowerCaseFilter(luceneVersion, tok);
+
+            //List of stopwords that will be removed by the StopFilter like "a", "an", "and", "are", "as", "at", "be", "but", "by"
+            CharArraySet stopWords = new CharArraySet(luceneVersion, 1, true)
+            {
+                StopAnalyzer.ENGLISH_STOP_WORDS_SET,
+            };
+
+            tok = new StopFilter(LuceneConfig.LuceneNetVersion, tok, stopWords);
+
+            return new TokenStreamComponents(tokenizer, tok);
         }
     }
 }
