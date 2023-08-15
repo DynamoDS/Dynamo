@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -36,7 +36,7 @@ namespace WpfVisualizationTests
         }
 
         [Test]
-        public async void InHomeWorkspace_CustomNodeInstance_HasGeometry()
+        public void InHomeWorkspace_CustomNodeInstance_HasGeometry()
         {
             Assert.AreEqual(3, BackgroundPreviewGeometry.Meshes().Count());
             Assert.AreEqual(3, BackgroundPreviewGeometry.Curves().Count());
@@ -141,7 +141,7 @@ namespace WpfVisualizationTests
         }
 
         [Test]
-        public async void InsideInstance_AllGeometryFromInstancesOfThisCustomNode_Alive()
+        public void InsideInstance_AllGeometryFromInstancesOfThisCustomNode_Alive()
         {
             Assert.AreEqual(2, BackgroundPreviewGeometry.Points().Count(p => p.IsAlive()));
             Assert.AreEqual(2, BackgroundPreviewGeometry.Curves().Count(p => p.IsAlive()));
@@ -149,7 +149,7 @@ namespace WpfVisualizationTests
         }
 
         [Test]
-        public async void InsideInstance_OtherGeometryFromOtherNodes_Dead()
+        public void InsideInstance_OtherGeometryFromOtherNodes_Dead()
         {
             Assert.AreEqual(1, BackgroundPreviewGeometry.Points().Count(p => p.IsDead()));
             Assert.AreEqual(1, BackgroundPreviewGeometry.Curves().Count(p => p.IsDead()));

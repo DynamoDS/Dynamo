@@ -110,18 +110,7 @@
       <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <Choose>
-    <When Condition=" '$(OS)' != 'Unix' ">
-      <PropertyGroup>
-        <PowerShellCommand>powershell.exe</PowerShellCommand>
-      </PropertyGroup>
-    </When>
-    <Otherwise>
-      <PropertyGroup>
-        <PowerShellCommand>pwsh</PowerShellCommand>
-      </PropertyGroup>
-    </Otherwise>
-  </Choose>
+
   <Target Name="BeforeBuildOps" BeforeTargets="Build">
     <PropertyGroup>
       <LibGProtoGeometryLibGLocale>$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\libg_locale</LibGProtoGeometryLibGLocale>

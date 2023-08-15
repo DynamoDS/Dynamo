@@ -1,15 +1,27 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Dynamo.Configuration;
 using Dynamo.Models;
 using Lucene.Net.Analysis;
+using Lucene.Net.Analysis.Br;
+using Lucene.Net.Analysis.Cjk;
+using Lucene.Net.Analysis.Core;
+using Lucene.Net.Analysis.Cz;
+using Lucene.Net.Analysis.De;
+using Lucene.Net.Analysis.Es;
+using Lucene.Net.Analysis.Fr;
+using Lucene.Net.Analysis.It;
+using Lucene.Net.Analysis.Ru;
 using Lucene.Net.Analysis.Standard;
+using Lucene.Net.Analysis.Util;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
+using Lucene.Net.Util;
 
 namespace Dynamo.Utilities
 {
@@ -67,27 +79,31 @@ namespace Dynamo.Utilities
             {
                 indexDir = FSDirectory.Open(indexPath);
             }
-                
+
 
             // Create an analyzer to process the text
-            Analyzer = new StandardAnalyzer(LuceneConfig.LuceneNetVersion);
+            Analyzer = CreateAnalyzerByLanguage(dynamoModel.PreferenceSettings.Locale);
 
             // Initialize Lucene index writer, unless in test mode or we are using RAMDirectory for indexing info. 
             if (!DynamoModel.IsTestMode || currentStorageType == LuceneStorage.RAM)
             {
-                // Create an index writer
-                IndexWriterConfig indexConfig = new IndexWriterConfig(LuceneConfig.LuceneNetVersion, Analyzer)
-                {
-                    OpenMode = OpenMode.CREATE
-                };
                 try
                 {
+                    // Create an index writer
+                    IndexWriterConfig indexConfig = new IndexWriterConfig(LuceneConfig.LuceneNetVersion, Analyzer)
+                    {
+                        OpenMode = OpenMode.CREATE
+                    };
+
                     writer = new IndexWriter(indexDir, indexConfig);
                 }
-                catch(LockObtainFailedException ex)
+                catch (LockObtainFailedException ex)
                 {
                     DisposeWriter();
                     dynamoModel.Logger.LogError($"LuceneNET LockObtainFailedException {ex}");
+                }
+                catch (Exception ex) {
+                    dynamoModel.Logger.LogError($"LuceneNET Exception {ex}");
                 }
             }
         }
@@ -285,6 +301,42 @@ namespace Dynamo.Utilities
             return query;
         }
 
+        /// <summary>
+        /// It creates an Analyzer to be used in the Indexing based on the user preference language
+        /// </summary>
+        /// <returns></returns>
+        internal Analyzer CreateAnalyzerByLanguage(string language)
+        {
+            switch (language)
+            {
+                case "en-US":
+                    return new LuceneCustomAnalyzer(LuceneConfig.LuceneNetVersion);
+                case "cs-CZ":
+                    return new CzechAnalyzer(LuceneConfig.LuceneNetVersion);
+                case "de-DE":
+                    return new GermanAnalyzer(LuceneConfig.LuceneNetVersion);
+                case "es-ES":
+                    return new SpanishAnalyzer(LuceneConfig.LuceneNetVersion);
+                case "fr-FR":
+                    return new FrenchAnalyzer(LuceneConfig.LuceneNetVersion);
+                case "it-IT":
+                    return new ItalianAnalyzer(LuceneConfig.LuceneNetVersion);
+                case "ja-JP":
+                case "ko-KR":
+                case "zh-CN":
+                case "zh-TW":
+                    return new CJKAnalyzer(LuceneConfig.LuceneNetVersion);
+                case "pl-PL":
+                    return new LuceneCustomAnalyzer(LuceneConfig.LuceneNetVersion);
+                case "pt-BR":
+                    return new BrazilianAnalyzer(LuceneConfig.LuceneNetVersion);
+                case "ru-RU":
+                    return new RussianAnalyzer(LuceneConfig.LuceneNetVersion);
+                default:
+                    return new LuceneCustomAnalyzer(LuceneConfig.LuceneNetVersion);
+            }
+        }
+
         internal void DisposeWriter()
         {
             //We need to check if we are not running Dynamo tests because otherwise parallel test start to fail when trying to write in the same Lucene directory location
@@ -302,6 +354,42 @@ namespace Dynamo.Utilities
                 //Commit the info indexed
                 writer?.Commit();
             }
+        }
+    }
+
+    /// <summary>
+    /// Due that the Lucene StandardAnalyzer removes special characters/words like "+", "*", "And" then we had to implement a Custom Analyzer that support that that kind of search terms
+    /// </summary>
+    public class LuceneCustomAnalyzer : Analyzer
+    {
+        private LuceneVersion luceneVersion;
+
+        public LuceneCustomAnalyzer(LuceneVersion matchVersion)
+        {
+            luceneVersion = matchVersion;
+        }
+
+        protected override TokenStreamComponents CreateComponents(string fieldName, TextReader reader)
+        {
+
+            //This tokenizer won't remove special characters like + * / -
+            Tokenizer tokenizer = new WhitespaceTokenizer(luceneVersion, reader);
+
+            //Remove basic stop words a, an, the, in, on etc
+            TokenStream tok = new StandardFilter(luceneVersion, tokenizer);
+
+            //Lowercase all the text
+            tok = new LowerCaseFilter(luceneVersion, tok);
+
+            //List of stopwords that will be removed by the StopFilter like "a", "an", "and", "are", "as", "at", "be", "but", "by"
+            CharArraySet stopWords = new CharArraySet(luceneVersion, 1, true)
+            {
+                StopAnalyzer.ENGLISH_STOP_WORDS_SET,
+            };
+
+            tok = new StopFilter(LuceneConfig.LuceneNetVersion, tok, stopWords);
+
+            return new TokenStreamComponents(tokenizer, tok);
         }
     }
 }
