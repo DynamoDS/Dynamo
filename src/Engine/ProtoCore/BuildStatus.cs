@@ -101,7 +101,7 @@ namespace ProtoCore
         }
 
         // A constructor for info messages without line and colume.
-        public OutputMessage(MessageType type, string message, string filePath)
+        internal OutputMessage(MessageType type, string message, string filePath)
         {
             Type = type;
             Message = message;
