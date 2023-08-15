@@ -25,14 +25,6 @@
         <summary>This package contains the core assemblies for Dynamo.</summary>
         <copyright>Copyright Autodesk 2023</copyright>
         <dependencies>
-            <group targetFramework=".NETFramework4.8">
-                <!--TODO see if we can remove this prism ref -->
-                <dependency id="Prism" version="4.1"/>
-                <dependency id="NUnit" version="2.6.3"/>
-                <dependency id="DynamoVisualProgramming.ZeroTouchLibrary" version="$Version$"/>
-                <dependency id="Newtonsoft.Json" version="13.0.1"/>
-                <dependency id="System.Collections.Immutable" version="1.7.1"/>
-            </group>
             <!--TODO - why do we reference nunit from dynamo core? This is an odd partial collection of dependencies to mark.-->
             <group targetFramework="net6.0">
                 <dependency id="NUnit" version="3.13.3"/>

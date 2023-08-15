@@ -20,10 +20,6 @@
         </description>
         <copyright>Copyright Autodesk 2023</copyright>
         <dependencies>
-            <group targetFramework=".NETFramework4.8">
-                <dependency id="DynamoVisualProgramming.DynamoServices" version="$Version$" />
-                <dependency id="DynamoVisualProgramming.ZeroTouchLibrary" version="$Version$" />
-            </group>
             <group targetFramework="net6.0">
                 <dependency id="DynamoVisualProgramming.DynamoServices" version="$Version$" />
                 <dependency id="DynamoVisualProgramming.ZeroTouchLibrary" version="$Version$" />

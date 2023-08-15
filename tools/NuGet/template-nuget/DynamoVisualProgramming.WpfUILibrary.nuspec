@@ -23,10 +23,6 @@
             <frameworkAssembly assemblyName="PresentationFramework" targetFramework="net48"/>
         </frameworkAssemblies>
         <dependencies>
-            <group targetFramework=".NETFramework4.8">
-                <dependency id="DynamoVisualProgramming.Core" version="$Version$"/>
-                <dependency id="DynamoVisualProgramming.DynamoCoreNodes" version="$Version$"/>
-            </group>
             <group targetFramework="net6.0">
                 <dependency id="DynamoVisualProgramming.Core" version="$Version$"/>
                 <dependency id="DynamoVisualProgramming.DynamoCoreNodes" version="$Version$"/>

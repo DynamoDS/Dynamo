@@ -16,9 +16,6 @@
         <summary>This package contains all that is required to get up and running creating tests for Dynamo libraries.</summary>
         <copyright>Copyright Autodesk 2023</copyright>
         <dependencies>
-            <group targetFramework=".NETFramework4.8">
-                <dependency id="DynamoVisualProgramming.Core" version="$Version$"/>
-            </group>
             <group targetFramework="net6.0">
                 <dependency id="DynamoVisualProgramming.Core" version="$Version$"/>
             </group>

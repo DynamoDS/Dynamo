@@ -12,7 +12,7 @@
         <description>This package bundles all symbol files from the Dynamo bin folder.</description>
         <copyright>Copyright Autodesk 2023</copyright>
         <dependencies>
-            <group targetFramework=".NETFramework4.8" />
+            <group targetFramework="net6.0" />
         </dependencies>
     </metadata>
     <!--for now we assume that that the working directory root is dynamo/bin/AnyCPU/Release-->
