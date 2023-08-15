@@ -240,7 +240,7 @@ namespace ProtoCore
 
         internal void LogInfo(Runtime.InfoID ID, string message, string filename)
         {
-            filename ??= string.Empty;
+            filename = filename ?? string.Empty;
 
             if (MessageHandler != null)
             {
