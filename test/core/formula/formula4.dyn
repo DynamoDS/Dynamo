@@ -1,0 +1,341 @@
+{
+  "Uuid": "74dc5996-40a7-405b-9cf2-7cb68341dfc1",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "formula4",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Math": {
+        "Key": "DSCore.Math",
+        "Value": "DSCoreNodes.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Formula, CoreNodeModels",
+      "Formula": "if(sin(90+0)>log10(100),45,tan(90))",
+      "Id": "b052363d1713473595685d3a3e98a740",
+      "NodeType": "FormulaNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "f20aa4964a784b3893e07b825032ecc7",
+          "Name": "",
+          "Description": "Result from formula",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Evaluates mathematical formulas using NCalc"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Formula, CoreNodeModels",
+      "Formula": "exp(10)",
+      "Id": "cc59376e25a14ac1b0ecf525260c645c",
+      "NodeType": "FormulaNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "f828b580484241adbabe2051fb9bc545",
+          "Name": "",
+          "Description": "Result from formula",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Evaluates mathematical formulas using NCalc"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Formula, CoreNodeModels",
+      "Formula": "if(if(x,y,z),y,z)",
+      "Id": "5d2f36eae692436c9a3bf1d15b093c0b",
+      "NodeType": "FormulaNode",
+      "Inputs": [
+        {
+          "Id": "83bf3e348ff640f29b0cffbeb60b97c4",
+          "Name": "x",
+          "Description": "variable",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "ae1a51881aeb4f3db71b024bef045041",
+          "Name": "y",
+          "Description": "variable",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a69be81efa064e63b93d2b13a3b32e0e",
+          "Name": "z",
+          "Description": "variable",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1827f0cfd38744a7b593236723a5f399",
+          "Name": "",
+          "Description": "Result from formula",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Evaluates mathematical formulas using NCalc"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Formula, CoreNodeModels",
+      "Formula": "400",
+      "Id": "a418958a990b4b9a998abcfc581f4ff4",
+      "NodeType": "FormulaNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "931d392139904d1193c044d16dc32826",
+          "Name": "",
+          "Description": "Result from formula",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Evaluates mathematical formulas using NCalc"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Formula, CoreNodeModels",
+      "Formula": "x+y+z",
+      "Id": "98fe8b4bc82e4015a978fa632ce0c2b0",
+      "NodeType": "FormulaNode",
+      "Inputs": [
+        {
+          "Id": "d490d35ee9854b148f1045df9a0d2965",
+          "Name": "x",
+          "Description": "variable",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "43d30f78408543a9ba60ac86ad553833",
+          "Name": "y",
+          "Description": "variable",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "58a1eaf88e5842c3892c8dc7c382fdaa",
+          "Name": "z",
+          "Description": "variable",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "a0340e3d2edc4c45a9636f0243c3344a",
+          "Name": "",
+          "Description": "Result from formula",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Evaluates mathematical formulas using NCalc"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "b7b015ddaa264085940bacce73887365",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "4acc8087a0f849849213ae17844a3028",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "45fd933ae0a041fe9796016487c0f08f",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "74610c6bf1cc4a2f9c7857fa83f83a98",
+          "Name": "",
+          "Description": "Value of expression at line 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "1;\n2;\n3;"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "4acc8087a0f849849213ae17844a3028",
+      "End": "d490d35ee9854b148f1045df9a0d2965",
+      "Id": "86daaec79dfa41989b9edc570a3cb898",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "45fd933ae0a041fe9796016487c0f08f",
+      "End": "43d30f78408543a9ba60ac86ad553833",
+      "Id": "9bf7422ff1a5435bb5aa920515fcb4d1",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "74610c6bf1cc4a2f9c7857fa83f83a98",
+      "End": "58a1eaf88e5842c3892c8dc7c382fdaa",
+      "Id": "381eb7881e6e438aafecb4ccfe495b7e",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.19",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.19.0.5530",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "b052363d1713473595685d3a3e98a740",
+        "Name": "Formula",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 119.19999999999999,
+        "Y": 345.19999999999987
+      },
+      {
+        "Id": "cc59376e25a14ac1b0ecf525260c645c",
+        "Name": "Formula",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 606.8,
+        "Y": 506.40000000000003
+      },
+      {
+        "Id": "5d2f36eae692436c9a3bf1d15b093c0b",
+        "Name": "Formula",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 527.6,
+        "Y": 61.1999999999999
+      },
+      {
+        "Id": "a418958a990b4b9a998abcfc581f4ff4",
+        "Name": "Formula",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 188.80000000000013,
+        "Y": 63.600000000000009
+      },
+      {
+        "Id": "98fe8b4bc82e4015a978fa632ce0c2b0",
+        "Name": "Formula",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 799.59999999999991,
+        "Y": 314.80000000000013
+      },
+      {
+        "Id": "b7b015ddaa264085940bacce73887365",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 527.0,
+        "Y": 352.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

@@ -21,67 +21,55 @@
 		  <DestinationSubDirectory>..\</DestinationSubDirectory>
 	  </ReferenceCopyLocalPaths>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <PackageReference Include="Cyotek.Drawing.BitmapFont" Version="2.0.0" CopyMetaData="true" />
-    <PackageReference Include="HelixToolkit" Version="2.17.0" CopyPDB="true" />
-	<PackageReference Include="HelixToolkit.Wpf" Version="2.17.0" CopyPDB="true" />
-	<PackageReference Include="HelixToolkit.Wpf.SharpDX" Version="2.17.0" CopyPDB="true" />
-	<PackageReference Include="SharpDX" Version="4.2.0" CopyPDB="true" />
-	<PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0" CopyPDB="true" />
-	<PackageReference Include="SharpDX.Direct2D1" Version="4.2.0" CopyPDB="true" />
-	<PackageReference Include="SharpDX.Direct3D11" Version="4.2.0" CopyPDB="true" />
-	<PackageReference Include="SharpDX.Direct3D9" Version="4.2.0" CopyPDB="true" />
-	<PackageReference Include="SharpDX.DXGI" Version="4.2.0" CopyPDB="true" />
-	<PackageReference Include="SharpDX.Mathematics" Version="4.2.0" CopyPDB="true" />
+    <ItemGroup>
+        <PackageReference Include="HelixToolkit" Version="2.24.0" />
+        <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
+        <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
+        <PackageReference Include="Cyotek.Drawing.BitmapFont" Version="2.0.0" CopyMetaData="true" />
+	  <PackageReference Include="SharpDX" Version="4.2.0" CopyPDB="true" />
+	  <PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0" CopyPDB="true" />
+	  <PackageReference Include="SharpDX.Direct2D1" Version="4.2.0" CopyPDB="true" />
+	  <PackageReference Include="SharpDX.Direct3D11" Version="4.2.0" CopyPDB="true" />
+	  <PackageReference Include="SharpDX.Direct3D9" Version="4.2.0" CopyPDB="true" />
+	  <PackageReference Include="SharpDX.DXGI" Version="4.2.0" CopyPDB="true" />
+	  <PackageReference Include="SharpDX.Mathematics" Version="4.2.0" CopyPDB="true" />  
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="WindowsBase" />
-    <Reference Include="Microsoft.Practices.Prism">
-        <HintPath>..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-        <Private>False</Private>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\DynamoCoreWpf\DynamoCoreWpf.csproj">
-      <Project>{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}</Project>
-      <Name>DynamoCoreWpf</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
-      <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
-      <Name>DynamoCore</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\DynamoUtilities\DynamoUtilities.csproj">
-      <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
-      <Name>DynamoUtilities</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Engine\ProtoCore\ProtoCore.csproj">
-      <Project>{7A9E0314-966F-4584-BAA3-7339CBB849D1}</Project>
-      <Name>ProtoCore</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\NodeServices\DynamoServices.csproj">
-      <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
-      <Name>DynamoServices</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\VMDataBridge\VMDataBridge.csproj">
-      <Project>{ccb6e56b-2da1-4eba-a1f9-e8510e129d12}</Project>
-      <Name>VMDataBridge</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Watch3DNodeModels\Watch3DNodeModels.csproj">
-      <Project>{31183026-DE70-49CB-BC7C-0DFD0A088F62}</Project>
-      <Name>Watch3DNodeModels</Name>
-      <Private>False</Private>
-    </ProjectReference>
+    <ItemGroup>
+      <ProjectReference Include="..\..\DynamoCoreWpf\DynamoCoreWpf.csproj">
+          <Project>{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}</Project>
+          <Name>DynamoCoreWpf</Name>
+          <Private>False</Private>
+      </ProjectReference>
+      <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
+          <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
+          <Name>DynamoCore</Name>
+          <Private>False</Private>
+      </ProjectReference>
+      <ProjectReference Include="..\..\DynamoUtilities\DynamoUtilities.csproj">
+          <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
+          <Name>DynamoUtilities</Name>
+          <Private>False</Private>
+      </ProjectReference>
+      <ProjectReference Include="..\..\Engine\ProtoCore\ProtoCore.csproj">
+          <Project>{7A9E0314-966F-4584-BAA3-7339CBB849D1}</Project>
+          <Name>ProtoCore</Name>
+          <Private>False</Private>
+      </ProjectReference>
+      <ProjectReference Include="..\..\NodeServices\DynamoServices.csproj">
+          <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
+          <Name>DynamoServices</Name>
+          <Private>False</Private>
+      </ProjectReference>
+      <ProjectReference Include="..\VMDataBridge\VMDataBridge.csproj">
+          <Project>{ccb6e56b-2da1-4eba-a1f9-e8510e129d12}</Project>
+          <Name>VMDataBridge</Name>
+          <Private>False</Private>
+      </ProjectReference>
+      <ProjectReference Include="..\Watch3DNodeModels\Watch3DNodeModels.csproj">
+          <Project>{31183026-DE70-49CB-BC7C-0DFD0A088F62}</Project>
+          <Name>Watch3DNodeModels</Name>
+          <Private>False</Private>
+      </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="sharpdx_direct3d11_effects_x64.dll" />

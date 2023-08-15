@@ -35,6 +35,7 @@ namespace ProtoCore.DSASM.Mirror
         /// Create a mirror for a given executive
         /// </summary>
         /// <param name="exec"></param>
+        /// <param name="coreObj"></param>
         public ExecutionMirror(ProtoCore.DSASM.Executive exec, ProtoCore.RuntimeCore coreObj)
         {
             Validity.Assert(exec != null, "Can't mirror a null executive");
@@ -772,6 +773,9 @@ namespace ProtoCore.DSASM.Mirror
         /// Do the recursive unpacking of the data structure into mirror objects
         /// </summary>
         /// <param name="val"></param>
+        /// <param name="heap"></param>
+        /// <param name="runtimeCore"></param>
+        /// <param name="type"></param>
         /// <returns></returns>
         public static Obj Unpack(StackValue val, Heap heap, RuntimeCore runtimeCore, int type = (int)PrimitiveType.Pointer) 
         {

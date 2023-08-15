@@ -491,7 +491,7 @@ namespace ProtoCore
         /// Called only when we step over a function (including replicated and external functions) 
         /// Pops Debug stackframe and Restores breakpoints 
         /// </summary>
-        /// <param name="core"></param>
+        /// <param name="runtimeCore"></param>
         /// <param name="fNode"></param>
         /// <param name="isReplicating"></param>
         public void RestoreCallrForNoBreak(RuntimeCore runtimeCore, ProcedureNode fNode, bool isReplicating = false)

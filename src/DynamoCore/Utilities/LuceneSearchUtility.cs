@@ -1,9 +1,19 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Dynamo.Configuration;
 using Dynamo.Models;
 using Lucene.Net.Analysis;
+using Lucene.Net.Analysis.Br;
+using Lucene.Net.Analysis.Cjk;
+using Lucene.Net.Analysis.Cz;
+using Lucene.Net.Analysis.De;
+using Lucene.Net.Analysis.En;
+using Lucene.Net.Analysis.Es;
+using Lucene.Net.Analysis.Fr;
+using Lucene.Net.Analysis.It;
+using Lucene.Net.Analysis.Ru;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
@@ -67,7 +77,10 @@ namespace Dynamo.Utilities
             {
                 indexDir = FSDirectory.Open(indexPath);
             }
-                
+
+
+            // Create an analyzer to process the text
+            Analyzer = CreateAnalyzerByLanguage(dynamoModel.PreferenceSettings.Locale);
 
             // Create an analyzer to process the text
             Analyzer = new StandardAnalyzer(LuceneConfig.LuceneNetVersion);
@@ -75,19 +88,23 @@ namespace Dynamo.Utilities
             // Initialize Lucene index writer, unless in test mode or we are using RAMDirectory for indexing info. 
             if (!DynamoModel.IsTestMode || currentStorageType == LuceneStorage.RAM)
             {
-                // Create an index writer
-                IndexWriterConfig indexConfig = new IndexWriterConfig(LuceneConfig.LuceneNetVersion, Analyzer)
-                {
-                    OpenMode = OpenMode.CREATE
-                };
                 try
                 {
+                    // Create an index writer
+                    IndexWriterConfig indexConfig = new IndexWriterConfig(LuceneConfig.LuceneNetVersion, Analyzer)
+                    {
+                        OpenMode = OpenMode.CREATE
+                    };
+
                     writer = new IndexWriter(indexDir, indexConfig);
                 }
-                catch(LockObtainFailedException ex)
+                catch (LockObtainFailedException ex)
                 {
                     DisposeWriter();
                     dynamoModel.Logger.LogError($"LuceneNET LockObtainFailedException {ex}");
+                }
+                catch (Exception ex) {
+                    dynamoModel.Logger.LogError($"LuceneNET Exception {ex}");
                 }
             }
         }
@@ -218,32 +235,18 @@ namespace Dynamo.Utilities
                     booleanQuery.Add(fuzzyQuery, Occur.SHOULD);
                 }
 
-                var wildcardQuery = new WildcardQuery(new Term(f, searchTerm));
-                if (f.Equals(nameof(LuceneConfig.NodeFieldsEnum.Name)))
-                {
-                    wildcardQuery.Boost = LuceneConfig.SearchNameWeight;
-                }
-                else
-                {
-                    wildcardQuery.Boost = LuceneConfig.SearchMetaFieldsWeight;
-                }
-                booleanQuery.Add(wildcardQuery, Occur.SHOULD);
+                var fieldQuery = CalculateFieldWeight(f, searchTerm);
+                var wildcardQuery = CalculateFieldWeight(f, searchTerm, true);
 
-                wildcardQuery = new WildcardQuery(new Term(f, "*" + searchTerm + "*"));
-                if (f.Equals(nameof(LuceneConfig.NodeFieldsEnum.Name)))
-                {
-                    wildcardQuery.Boost = LuceneConfig.WildcardsSearchNameWeight;
-                }
-                else
-                {
-                    wildcardQuery.Boost = LuceneConfig.WildcardsSearchMetaFieldsWeight;
-                }
+                booleanQuery.Add(fieldQuery, Occur.SHOULD);
                 booleanQuery.Add(wildcardQuery, Occur.SHOULD);
 
                 if (searchTerm.Contains(' ') || searchTerm.Contains('.'))
                 {
                     foreach (string s in searchTerm.Split(' ', '.'))
                     {
+                        if (string.IsNullOrEmpty(s)) continue;
+
                         if (s.Length > LuceneConfig.FuzzySearchMinimalTermLength)
                         {
                             fuzzyQuery = new FuzzyQuery(new Term(f, s), LuceneConfig.FuzzySearchMinEdits);
@@ -253,7 +256,7 @@ namespace Dynamo.Utilities
 
                         if (f.Equals(nameof(LuceneConfig.NodeFieldsEnum.Name)))
                         {
-                            wildcardQuery.Boost = 5;
+                            wildcardQuery.Boost = LuceneConfig.WildcardsSearchNameParsedWeight;
                         }
                         else
                         {
@@ -264,6 +267,75 @@ namespace Dynamo.Utilities
                 }
             }
             return booleanQuery.ToString();
+        }
+
+        private WildcardQuery CalculateFieldWeight(string fieldName, string searchTerm, bool isWildcard = false)
+        {
+            WildcardQuery query;
+
+            query = isWildcard == false ?
+                new WildcardQuery(new Term(fieldName, searchTerm)) : new WildcardQuery(new Term(fieldName, "*" + searchTerm + "*"));
+
+            switch (fieldName)
+            {
+                case nameof(LuceneConfig.NodeFieldsEnum.Name):
+                    query.Boost = isWildcard == false?
+                        LuceneConfig.SearchNameWeight :  LuceneConfig.WildcardsSearchNameWeight;
+                    break;
+                case nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName):
+                    query.Boost = isWildcard == false?
+                        LuceneConfig.SearchCategoryWeight : LuceneConfig.WildcardsSearchCategoryWeight;
+                    break;
+                case nameof(LuceneConfig.NodeFieldsEnum.Description):
+                    query.Boost = isWildcard == false ?
+                        LuceneConfig.SearchDescriptionWeight : LuceneConfig.WildcardsSearchDescriptionWeight;
+                    break;
+                case nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords):
+                    query.Boost = isWildcard == false ?
+                       LuceneConfig.SearchTagsWeight : LuceneConfig.WildcardsSearchTagsWeight;
+                    break;
+                default:
+                    query.Boost = isWildcard == false ?
+                       LuceneConfig.SearchMetaFieldsWeight : LuceneConfig.WildcardsSearchMetaFieldsWeight;
+                    break;
+            }
+            return query;
+        }
+
+        /// <summary>
+        /// It creates an Analyzer to be used in the Indexing based on the user preference language
+        /// </summary>
+        /// <returns></returns>
+        internal Analyzer CreateAnalyzerByLanguage(string language)
+        {
+            switch (language)
+            {
+                case "en-US":
+                    return new EnglishAnalyzer(LuceneConfig.LuceneNetVersion);
+                case "cs-CZ":
+                    return new CzechAnalyzer(LuceneConfig.LuceneNetVersion);
+                case "de-DE":
+                    return new GermanAnalyzer(LuceneConfig.LuceneNetVersion);
+                case "es-ES":
+                    return new SpanishAnalyzer(LuceneConfig.LuceneNetVersion);
+                case "fr-FR":
+                    return new FrenchAnalyzer(LuceneConfig.LuceneNetVersion);
+                case "it-IT":
+                    return new ItalianAnalyzer(LuceneConfig.LuceneNetVersion);
+                case "ja-JP":
+                case "ko-KR":
+                case "zh-CN":
+                case "zh-TW":
+                    return new CJKAnalyzer(LuceneConfig.LuceneNetVersion);
+                case "pl-PL":
+                    return new StandardAnalyzer(LuceneConfig.LuceneNetVersion);
+                case "pt-BR":
+                    return new BrazilianAnalyzer(LuceneConfig.LuceneNetVersion);
+                case "ru-RU":
+                    return new RussianAnalyzer(LuceneConfig.LuceneNetVersion);
+                default:
+                    return new StandardAnalyzer(LuceneConfig.LuceneNetVersion);
+            }
         }
 
         internal void DisposeWriter()

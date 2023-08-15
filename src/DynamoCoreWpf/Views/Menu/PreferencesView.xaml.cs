@@ -59,7 +59,7 @@ namespace Dynamo.Wpf.Views
         /// <summary>
         /// Constructor of Preferences View
         /// </summary>
-        /// <param name="dynamoViewModel"> Dynamo ViewModel</param>
+        /// <param name="dynamoView"> Dynamo ViewModel</param>
         public PreferencesView(DynamoView dynamoView)
         {
             dynViewModel = dynamoView.DataContext as DynamoViewModel;            

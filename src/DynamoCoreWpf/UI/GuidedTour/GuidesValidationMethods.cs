@@ -380,6 +380,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         /// <param name="sender">PackageManagerSearchViewModel</param>
         /// <param name="e">PropertyChanged</param>
+        /// <param name="uiAutomationData"></param>
         private static void PackageManagerViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e, StepUIAutomation uiAutomationData)
         {
             PackageManagerSearchViewModel packageManagerViewModel = sender as PackageManagerSearchViewModel;

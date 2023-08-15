@@ -12,6 +12,7 @@ using System.Xml;
 using CoreNodeModels;
 using CoreNodeModels.Input;
 using Dynamo;
+using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
@@ -98,7 +99,8 @@ namespace WpfVisualizationTests
                 PathResolver = pathResolver,
                 GeometryFactoryPath = preloader.GeometryFactoryPath,
                 UpdateManager = this.UpdateManager,
-                ProcessMode = TaskProcessMode.Synchronous
+                ProcessMode = TaskProcessMode.Synchronous,
+                Preferences = PreferenceSettings.Instance
             });
 
             Model.EvaluationCompleted += Model_EvaluationCompleted;

@@ -799,10 +799,10 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
-        [JsonConverter(typeof(DescriptionConverter))]
         /// <summary>
         ///     Description of this Node.
         /// </summary>
+        [JsonConverter(typeof(DescriptionConverter))]
         [JsonProperty(Order = 7)]
         public string Description
         {
@@ -1841,7 +1841,7 @@ namespace Dynamo.Graph.Nodes
 
             if (State == ElementState.PersistentWarning) return;
 
-            if (Infos.Any(x => x.State == ElementState.PersistentWarning))
+            if (Infos.Any(x => x.State == ElementState.PersistentWarning || x.State == ElementState.MigratedFormula))
             {
                 State = ElementState.PersistentWarning;
                 return;
@@ -2921,7 +2921,8 @@ namespace Dynamo.Graph.Nodes
         PersistentWarning,
         Error,
         AstBuildBroken,
-        Info
+        Info,
+        MigratedFormula
     };
 
     /// <summary>

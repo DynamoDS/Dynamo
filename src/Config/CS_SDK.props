@@ -1,11 +1,11 @@
 <Project>
   <PropertyGroup>
-    <Platforms>AnyCPU;x64;NET60_Windows;NET60_Linux;</Platforms>
+    <Platforms>NET60_Windows;NET60_Linux;</Platforms>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">NET60_Windows</Platform>
     <PlatformTarget >x64</PlatformTarget>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">16.0</VisualStudioVersion>
-    <TargetFramework>net48</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <FileAlignment>512</FileAlignment>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath> 
@@ -52,11 +52,19 @@
   </PropertyGroup>
   <PropertyGroup Condition="$(Platform.Contains('Windows'))" >
     <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
+    <DefineConstants>$(DefineConstants);_WINDOWS</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="$(Platform.Contains('Linux'))" >
     <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+    <DefineConstants>$(DefineConstants);_LINUX</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(UILib)' == 'true' AND $(Platform.Contains('NET60'))">
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+  <!--Temporary configuration to make core test projects load UI packages successfully -->
+  <PropertyGroup Condition=" '$(TestProjectDefaults)' == 'true' AND $(Platform.Contains('Windows')) ">
     <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>

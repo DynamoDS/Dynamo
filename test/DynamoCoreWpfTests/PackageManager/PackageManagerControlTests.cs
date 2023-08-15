@@ -37,19 +37,18 @@ namespace DynamoCoreWpfTests.PackageManager
             var searchTextBox = searchBoxControl.SearchTextBox;
             var searchClearButton = searchBoxControl.SearchClearButton;
 
-            // Assert
-            Assert.IsNullOrEmpty(searchTextBox.Text);
+            Assert.IsTrue(string.IsNullOrEmpty(searchTextBox.Text));
             Assert.AreEqual(searchClearButton.Visibility, System.Windows.Visibility.Collapsed);
 
             searchTextBox.Text = "Test search string";
 
-            Assert.IsNotNullOrEmpty(searchTextBox.Text);
+            Assert.IsFalse(string.IsNullOrEmpty(searchTextBox.Text));
             Assert.AreEqual(searchClearButton.Visibility, System.Windows.Visibility.Visible);
 
             searchClearButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
             DispatcherUtil.DoEvents();
 
-            Assert.IsNullOrEmpty(searchTextBox.Text);
+            Assert.IsTrue(string.IsNullOrEmpty(searchTextBox.Text));
         }
 
         [Test]

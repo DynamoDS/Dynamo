@@ -367,7 +367,7 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="notes">Note collection of the workspace</param>
         /// <param name="annotations">Group collection of the workspace</param>
         /// <param name="presets">Preset collection of the workspace</param>
-        /// <param name="elementResolver">ElementResolver responsible for resolving 
+        /// <param name="resolver">ElementResolver responsible for resolving 
         /// a partial class name to its fully resolved name</param>
         /// <param name="info">Information for creating custom node workspace</param>
         /// <param name="verboseLogging">Indicates if detailed descriptions should be logged</param>
@@ -403,7 +403,7 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="notes">Note collection of the workspace</param>
         /// <param name="annotations">Group collection of the workspace</param>
         /// <param name="presets">Preset collection of the workspace</param>
-        /// <param name="elementResolver">ElementResolver responsible for resolving 
+        /// <param name="resolver">ElementResolver responsible for resolving 
         /// a partial class name to its fully resolved name</param>
         /// <param name="info">Information for creating custom node workspace</param>
         /// <param name="verboseLogging">Indicates if detailed descriptions should be logged</param>
