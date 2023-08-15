@@ -241,21 +241,6 @@ namespace ProtoCore
         internal void LogInfo(Runtime.InfoID ID, string message, string filename)
         {
             filename ??= string.Empty;
-            var infoMsg = string.Format(Resources.kConsoleWarningMessage,
-                                           message, filename);
-
-#if DEBUG
-            if (runtimeCore.Options.Verbose)
-            {
-                Console.WriteLine(infoMsg);
-            }
-#endif
-
-            if (WebMessageHandler != null)
-            {
-                var outputMessage = new OutputMessage(infoMsg);
-                WebMessageHandler.Write(outputMessage);
-            }
 
             if (MessageHandler != null)
             {
@@ -269,7 +254,7 @@ namespace ProtoCore
             if (executive != null)
             {
                 executingGraphNode = executive.Properties.executingGraphNode;
-                // In delta execution mode, it means the warning is from some
+                // In delta execution mode, it means the info is from some
                 // internal graph node. 
                 if (executingGraphNode != null && executingGraphNode.guid.Equals(System.Guid.Empty))
                 {
