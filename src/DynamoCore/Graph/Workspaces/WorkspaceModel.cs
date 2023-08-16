@@ -220,7 +220,7 @@ namespace Dynamo.Graph.Workspaces
         internal readonly LinterManager linterManager;
 
         private string fileName;
-        private string fileContentId;
+        private string fromJsonGraphId;
         private string name;
         private double height = 100;
         private double width = 100;
@@ -277,6 +277,11 @@ namespace Dynamo.Graph.Workspaces
         public void OnDummyNodesReloaded()
         {
             DummyNodesReloaded?.Invoke();
+        }
+
+        internal static string ComputeGraphIdFromJson(string fileContents)
+        {
+            return Hash.ToBase32String(Hash.GetHashFromString(fileContents));
         }
 
         /// <summary>
@@ -1139,15 +1144,17 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     A unique id representing a workspace that was created from an in-memory graph content.
         ///     This is usefull if you need to check if the current workspace was initially created from
-        ///     a specific graph content.
+        ///     a specific graph content. As oposed to graph uuid, FromJsonGraphId is not serialized and it
+        ///     only makes sense (and is computed) at runtime when we OpenFileFromJson. Because of that
+        ///     we eliminate the risk of having this value modified outside Dynamo environment.
         /// </summary>
         [JsonIgnore]
-        public string FileContentId
+        internal string FromJsonGraphId
         {
-            get { return fileContentId; }
+            get { return fromJsonGraphId; }
             set
             {
-                fileContentId = value;
+                fromJsonGraphId = value;
             }
         }
 
