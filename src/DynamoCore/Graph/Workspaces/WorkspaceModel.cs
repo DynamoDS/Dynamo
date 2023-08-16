@@ -220,6 +220,7 @@ namespace Dynamo.Graph.Workspaces
         internal readonly LinterManager linterManager;
 
         private string fileName;
+        private string fileContentId;
         private string name;
         private double height = 100;
         private double width = 100;
@@ -1132,6 +1133,21 @@ namespace Dynamo.Graph.Workspaces
             {
                 fileName = value;
                 RaisePropertyChanged("FileName");
+            }
+        }
+
+        /// <summary>
+        ///     A unique id representing a workspace that was created from an in-memory graph content.
+        ///     This is usefull if you need to check if the current workspace was initially created from
+        ///     a specific graph content.
+        /// </summary>
+        [JsonIgnore]
+        public string FileContentId
+        {
+            get { return fileContentId; }
+            set
+            {
+                fileContentId = value;
             }
         }
 
