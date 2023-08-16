@@ -388,7 +388,6 @@ namespace Dynamo.ViewModels
         {
             Model = model;
             InitializeCore();
-            LuceneSearchUtility = dynamoViewModel.Model.LuceneSearchUtility;
         }
 
         /// <summary>
@@ -946,9 +945,9 @@ namespace Dynamo.ViewModels
         /// <param name="useLucene"> Temporary flag that will be used for searching using Lucene.NET </param>
         internal IEnumerable<NodeSearchElementViewModel> Search(string search, bool useLucene)
         {
-            if (LuceneSearchUtility != null)
+            if (LuceneUtility != null)
             {
-                var searchElements = Model.Search(search, LuceneSearchUtility);
+                var searchElements = Model.Search(search, LuceneUtility);
                 return searchElements.Select(MakeNodeSearchElementVM);
             }
             return null;

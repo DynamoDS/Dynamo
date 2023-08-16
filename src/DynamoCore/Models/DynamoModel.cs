@@ -925,7 +925,7 @@ namespace Dynamo.Models
 
             CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager, LibraryServices);
 
-            LuceneUtility = new LuceneSearchUtility(this);
+            LuceneSearch.LuceneSearchUtility = new LuceneSearchUtility(this);
 
             if (IsTestMode)
             {
@@ -3317,11 +3317,11 @@ namespace Dynamo.Models
         {
             if (LuceneUtility.addedFields == null) return;
 
-            LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName), node.FullCategoryName);
-            LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), node.Name);
-            LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Description), node.Description);
-            if (node.SearchKeywords.Count > 0) LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords), node.SearchKeywords.Aggregate((x, y) => x + " " + y), true, true);
-            LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Parameters), node.Parameters ?? string.Empty);
+            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName), node.FullCategoryName);
+            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), node.Name);
+            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Description), node.Description);
+            if (node.SearchKeywords.Count > 0) LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords), node.SearchKeywords.Aggregate((x, y) => x + " " + y), true, true);
+            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Parameters), node.Parameters ?? string.Empty);
 
             LuceneUtility.writer?.AddDocument(doc);
         }
@@ -3334,8 +3334,8 @@ namespace Dynamo.Models
         {
             var term = new Term(nameof(LuceneConfig.NodeFieldsEnum.Name), node.Name);
 
-            LuceneSearchUtility.writer?.DeleteDocuments(term);
-            LuceneSearchUtility.CommitWriterChanges();
+            LuceneUtility.writer?.DeleteDocuments(term);
+            LuceneUtility.CommitWriterChanges();
         }
 
         /// <summary>

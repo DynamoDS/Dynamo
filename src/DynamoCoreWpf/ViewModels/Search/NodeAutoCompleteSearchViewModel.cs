@@ -624,7 +624,7 @@ namespace Dynamo.ViewModels
         /// <param name="search"> The search query </param>
         internal IEnumerable<NodeSearchElementViewModel> SearchNodeAutocomplete(string search)
         {
-            if (LuceneSearchUtilityNodeAutocomplete != null)
+            if (LuceneUtility != null)
             {
                 //The DirectoryReader and IndexSearcher have to be assigned after commiting indexing changes and before executing the Searcher.Search() method, otherwise new indexed info won't be reflected
                 LuceneUtility.dirReader = LuceneUtility.writer?.GetReader(applyAllDeletes: true);

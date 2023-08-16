@@ -799,10 +799,8 @@ namespace Dynamo.PackageManager
                         LuceneUtility.dirReader = LuceneUtility.writer?.GetReader(applyAllDeletes: true);
                         LuceneUtility.Searcher = new IndexSearcher(LuceneUtility.dirReader);
 
-                        LuceneUtility.writer?.Commit();
-                        LuceneUtility.writer?.Dispose();
-                        LuceneUtility.indexDir?.Dispose();
-                        LuceneUtility.writer = null;
+                        LuceneUtility.CommitWriterChanges();
+                        LuceneUtility.DisposeWriter();
                     }
                 }
                 RefreshInfectedPackages();
