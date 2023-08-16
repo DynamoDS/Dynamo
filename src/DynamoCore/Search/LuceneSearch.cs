@@ -33,7 +33,6 @@ namespace Dynamo.Search
         /// <summary>
         /// LuceneSearchUtility for packages in package manager.
         /// </summary>
-
         internal static LuceneSearchUtility LuceneUtilityPackageManager { get; set; }
     }
 }
