@@ -4,12 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:CoreNodeModelsWpf.Charts.Controls"
-             xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="500" 
-             Height="300" Width="300"
+             d:DesignHeight="500" d:DesignWidth="500" 
+             Height="500" Width="500"
              d:DataContext="{d:DesignInstance local:HeatSeriesControl}">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -21,17 +21,10 @@
     </UserControl.Resources>
     <Grid>
 
-        <lvc:CartesianChart Style="{StaticResource CartesianLiveChart}" Name="HeatSeriesUI" Grid.Row="1">
-            <lvc:CartesianChart.AxisX >
-                <lvc:Axis Name="XAxis" LabelsRotation="-15">
-                    <lvc:Axis.Separator>
-                        <lvc:Separator Step="1" IsEnabled="False"></lvc:Separator>
-                    </lvc:Axis.Separator>
-                </lvc:Axis>
-            </lvc:CartesianChart.AxisX>
-            <lvc:CartesianChart.AxisY>
-                <lvc:Axis Name="YAxis"></lvc:Axis>
-            </lvc:CartesianChart.AxisY>
+        <lvc:CartesianChart Style="{StaticResource CartesianLiveChart}" Name="HeatSeriesUI" Grid.Row="1"
+                            XAxes="{Binding XAxes}"
+                            YAxes="{Binding YAxes}"
+                            LegendPosition="Bottom">
         </lvc:CartesianChart>
 
         <Thumb Name ="resizeThumb"

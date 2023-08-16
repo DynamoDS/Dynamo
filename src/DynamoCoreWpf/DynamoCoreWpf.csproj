@@ -23,6 +23,7 @@
 
   <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
       <!--This command gets the latest build from the splash screen-->
+      <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command $(SolutionDir)\setnpmreg.ps1" />
       <Exec Command="npm pack @dynamods/splash-screen@latest" />
   </Target>
 

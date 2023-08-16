@@ -9,6 +9,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Windows;
 using System.Windows.Media.Imaging;
 using Dynamo.Controls;
 using Dynamo.Selection;
@@ -45,7 +46,8 @@ namespace WpfVisualizationTests
         {
             var w = view.RenderHost.ActualWidth;
             var h = view.RenderHost.ActualHeight;
-            view.RenderHost.Resize(width, height);
+            var dpiscaling = view.RenderHost.DpiScale;
+            view.RenderHost.Resize((int)(width/ dpiscaling), (int)(height/dpiscaling));
             var rtb = view.RenderBitmap();
             view.RenderHost.Resize((int)w, (int)h);
             return rtb;

@@ -4,22 +4,40 @@ using System.IO;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using CoreNodeModelsWpf.Charts.Controls;
+using LiveChartsCore.Kernel.Sketches;
+using LiveChartsCore.SkiaSharpView.SKCharts;
+using LiveChartsCore.SkiaSharpView.WPF;
 using Microsoft.Win32;
 
 namespace CoreNodeModelsWpf.Charts.Utilities
 {
     public static class Export
     {
-        public static void ToPng(UserControl control)
+        /// <summary>
+        /// Saves the chart as a image to the user defined location.
+        /// </summary>
+        /// <param name="control">For Cartesian or Pie Charts use this argument </param>
+        /// <param name="gcontrol">GeoMapChart Control, if the incoming chart is of type GeoMap, use this argument, defaults to null</param>
+        public static void ToPng(Chart control, GeoMap gcontrol = null)
         {
-            RenderTargetBitmap rtb = new RenderTargetBitmap((int)control.ActualWidth, (int)control.ActualHeight, 96, 96, PixelFormats.Pbgra32);
-            rtb.Render(control);
+            if (control == null && gcontrol == null) return;
 
-            PngBitmapEncoder png = new PngBitmapEncoder();
-            png.Frames.Add(BitmapFrame.Create(rtb));
-            MemoryStream stream = new MemoryStream();
-            png.Save(stream);
-            var image = System.Drawing.Image.FromStream(stream);
+            int img_width = control == null ? (int)gcontrol.ActualWidth : (int)control.ActualWidth;
+            int img_height = control == null ? (int)gcontrol.ActualHeight : (int)control.ActualHeight;
+            InMemorySkiaSharpChart skChart;
+            switch (control)
+            {
+                case CartesianChart cartesianChart:
+                    skChart = new SKCartesianChart(cartesianChart) { Width = img_width, Height = img_height, };
+                    break;
+                case PieChart pieChart:
+                    skChart = new SKPieChart(pieChart) { Width = img_width, Height = img_height, };
+                    break;
+                default:
+                    skChart = new SKGeoMap(gcontrol) { Width = img_width, Height = img_height, };
+                    break;
+            }
 
             SaveFileDialog dialog = new SaveFileDialog();
             dialog.FileName = "NodeModelChart"; // Default file name
@@ -27,14 +45,14 @@ namespace CoreNodeModelsWpf.Charts.Utilities
             dialog.Filter = "Image files (*.png) | *.png"; // Filter files by extension
 
             // Show save file dialog box
-            Nullable<bool> result = dialog.ShowDialog();
+            bool? result = dialog.ShowDialog();
 
             // Process save file dialog box results
             if (result == true)
             {
                 // Save document
                 string filename = dialog.FileName;
-                image.Save(filename, ImageFormat.Png);
+                skChart.SaveImage(filename, SkiaSharp.SKEncodedImageFormat.Png);
             }
         }
     }

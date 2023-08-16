@@ -199,6 +199,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSOfficeUtilities", "Librar
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoCoreWpfTests", "..\test\DynamoCoreWpfTests\DynamoCoreWpfTests.csproj", "{7DD8077A-201E-4C56-96C5-3C901A51BDF3}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfVisualizationTests", "..\test\VisualizationTests\WpfVisualizationTests.csproj", "{C4964946-B367-44EE-9ED2-451FF2A83D32}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|NET60_Linux = Debug|NET60_Linux
@@ -822,6 +824,14 @@ Global
 		{7DD8077A-201E-4C56-96C5-3C901A51BDF3}.Release|NET60_Linux.Build.0 = Release|NET60_Linux
 		{7DD8077A-201E-4C56-96C5-3C901A51BDF3}.Release|NET60_Windows.ActiveCfg = Release|NET60_Windows
 		{7DD8077A-201E-4C56-96C5-3C901A51BDF3}.Release|NET60_Windows.Build.0 = Release|NET60_Windows
+		{C4964946-B367-44EE-9ED2-451FF2A83D32}.Debug|NET60_Linux.ActiveCfg = Debug|NET60_Linux
+		{C4964946-B367-44EE-9ED2-451FF2A83D32}.Debug|NET60_Linux.Build.0 = Debug|NET60_Linux
+		{C4964946-B367-44EE-9ED2-451FF2A83D32}.Debug|NET60_Windows.ActiveCfg = Debug|NET60_Windows
+		{C4964946-B367-44EE-9ED2-451FF2A83D32}.Debug|NET60_Windows.Build.0 = Debug|NET60_Windows
+		{C4964946-B367-44EE-9ED2-451FF2A83D32}.Release|NET60_Linux.ActiveCfg = Release|NET60_Linux
+		{C4964946-B367-44EE-9ED2-451FF2A83D32}.Release|NET60_Linux.Build.0 = Release|NET60_Linux
+		{C4964946-B367-44EE-9ED2-451FF2A83D32}.Release|NET60_Windows.ActiveCfg = Release|NET60_Windows
+		{C4964946-B367-44EE-9ED2-451FF2A83D32}.Release|NET60_Windows.Build.0 = Release|NET60_Windows
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -898,6 +908,7 @@ Global
 		{6DD7D985-9057-4678-A2F3-E7A2531F31F4} = {FA7BE306-A3B0-45FA-9D87-0C69E6932C13}
 		{9B4FDC96-E2F9-4B8F-894A-4294405D50E7} = {FA7BE306-A3B0-45FA-9D87-0C69E6932C13}
 		{7DD8077A-201E-4C56-96C5-3C901A51BDF3} = {5B9B5B6B-0BA7-4606-B8E5-70C958346D57}
+		{C4964946-B367-44EE-9ED2-451FF2A83D32} = {5B9B5B6B-0BA7-4606-B8E5-70C958346D57}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89CB19C6-BF0A-4E6A-BFDA-79D143EAB59D}

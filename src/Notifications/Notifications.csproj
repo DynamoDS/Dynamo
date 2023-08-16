@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <UILib>true</UILib>
     </PropertyGroup>
@@ -16,6 +16,7 @@
 
     <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
         <!--This command gets the latest build from the notifcation center-->
+        <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command $(SolutionDir)\setnpmreg.ps1" />
         <Exec Command="npm pack @dynamods/notifications-center@latest" />
     </Target>
 

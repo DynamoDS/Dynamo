@@ -1008,7 +1008,7 @@ namespace Dynamo.Models
 #endif
 
             LogWarningMessageEvents.LogWarningMessage += LogWarningMessage;
-
+            LogWarningMessageEvents.LogInfoMessage += LogInfoMessage;
             StartBackupFilesTimer();
 
             TraceReconciliationProcessor = this;
@@ -1459,6 +1459,7 @@ namespace Dynamo.Models
 #endif
 
             LogWarningMessageEvents.LogWarningMessage -= LogWarningMessage;
+            LogWarningMessageEvents.LogInfoMessage -= LogInfoMessage;
             foreach (var ws in _workspaces)
             {
                 ws.Dispose();
@@ -1657,8 +1658,7 @@ namespace Dynamo.Models
 
             // Import Zero Touch libs
             var functionGroups = LibraryServices.GetAllFunctionGroups();
-            if (!IsTestMode)
-                AddZeroTouchNodesToSearch(functionGroups);
+            AddZeroTouchNodesToSearch(functionGroups);
 #if DEBUG_LIBRARY
             DumpLibrarySnapshot(functionGroups);
 #endif
@@ -1847,6 +1847,16 @@ namespace Dynamo.Models
         {
             Validity.Assert(EngineController.LiveRunnerRuntimeCore != null);
             EngineController.LiveRunnerRuntimeCore.RuntimeStatus.LogWarning(WarningID.Default, args.message);
+        }
+
+        /// <summary>
+        /// This info message is displayed on the node associated with the FFI dll
+        /// </summary>
+        /// <param name="args"></param>
+        private void LogInfoMessage(LogWarningMessageEventArgs args)
+        {
+            Validity.Assert(EngineController.LiveRunnerRuntimeCore != null);
+            EngineController.LiveRunnerRuntimeCore.RuntimeStatus.LogInfo(InfoID.Default, args.message);
         }
 
         #endregion
