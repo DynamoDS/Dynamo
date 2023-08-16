@@ -1,20 +1,8 @@
 using Dynamo.PackageManager.ViewModels;
-using Dynamo.UI.Controls;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Dynamo.PackageManager.UI
 {
@@ -23,10 +11,12 @@ namespace Dynamo.PackageManager.UI
     /// </summary>
     public partial class PackageManagerPackagesControl : UserControl
     {
-        public PackageManagerSearchViewModel PkgSearchVM { get; set; }
 
         #region Properties
 
+        /// <summary>
+        ///     Allows different collections of SearchItems to be assigned per instance of the PackageManagerPackagesControl
+        /// </summary>
         public IEnumerable<PackageManagerSearchElementViewModel> SearchItems
         {
             get
@@ -43,6 +33,9 @@ namespace Dynamo.PackageManager.UI
             }
         }
 
+        /// <summary>
+        ///     Returns the currently selected SearchItems
+        /// </summary>
         public PackageManagerSearchElementViewModel SelectedItem
         {
             get { return (PackageManagerSearchElementViewModel)GetValue(SelectedItemProperty); }
@@ -82,20 +75,11 @@ namespace Dynamo.PackageManager.UI
         public PackageManagerPackagesControl()
         {
             InitializeComponent();
-
-            this.Loaded += InitializeContext;
         }
-
-
-        private void InitializeContext(object sender, RoutedEventArgs e)
-        {
-            PkgSearchVM = this.DataContext as PackageManagerSearchViewModel;
-        }
-
 
 
         /// <summary>
-        /// Executes a command that opens the package details view extension.
+        ///     Executes a command that opens the package details view extension.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -104,7 +88,8 @@ namespace Dynamo.PackageManager.UI
             if (!(sender is Button button)) return;
             if (!(button.DataContext is PackageManagerSearchElementViewModel packageManagerSearchElementViewModel)) return;
 
-            PkgSearchVM.ViewPackageDetailsCommand.Execute(packageManagerSearchElementViewModel.Model);
+            var PkgSearchVM = this.DataContext as PackageManagerSearchViewModel;
+            PkgSearchVM?.ViewPackageDetailsCommand.Execute(packageManagerSearchElementViewModel.Model);
         }
     }
 }

@@ -1,19 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Input;
-using System.Windows.Interop;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Graph;
@@ -46,6 +30,22 @@ using Dynamo.Wpf.Windows;
 using HelixToolkit.Wpf.SharpDX;
 using ICSharpCode.AvalonEdit;
 using PythonNodeModels;
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Data;
+using System.Windows.Input;
+using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using Brush = System.Windows.Media.Brush;
 using Exception = System.Exception;
 using Image = System.Windows.Controls.Image;
@@ -2201,8 +2201,6 @@ namespace Dynamo.Controls
                     Owner = this,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
-
-                dynamoViewModel.Owner = packageManagerWindow;
 
                 packageManagerWindow.Closed += (sender, args) => { packageManagerWindow = null; cmd.Dispose(); };
                 packageManagerWindow.Show();
