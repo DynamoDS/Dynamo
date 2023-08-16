@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Dynamo.Configuration;
-using Autodesk.DesignScript.Geometry;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.Models;

@@ -1,16 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
 using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
@@ -26,7 +13,18 @@ using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels;
 using DynamoUnits;
 using FontAwesome5;
-using static Dynamo.PackageManager.PackageManagerSearchViewModel;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Data;
+using System.Windows.Media;
 using Color = System.Windows.Media.Color;
 using FlowDirection = System.Windows.FlowDirection;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
@@ -3793,18 +3791,18 @@ namespace Dynamo.Controls
         /// <returns>Visibility.Visible or Visibility.Collapsed</returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var searchState = (PackageSearchState) value;
+            var searchState = (PackageManagerSearchViewModel.PackageSearchState) value;
 
             // If no parameter is specified, we use True value
             bool param = parameter == null || bool.Parse(parameter.ToString());
 
             // If we have finished searching, and no parameter, or true parameter is provided, return Visible 
-            if (PackageSearchState.Results == searchState && param)
+            if (PackageManagerSearchViewModel.PackageSearchState.Results == searchState && param)
             {
                 return Visibility.Visible;
             }
             // If we are still searching, and false parameter is provided, then also return Visible (loading screen)
-            else if(PackageSearchState.Results != searchState && !param)
+            else if(PackageManagerSearchViewModel.PackageSearchState.Results != searchState && !param)
             {
                 return Visibility.Visible;
             }
