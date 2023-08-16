@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Dynamo.Models;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 
@@ -35,7 +36,7 @@ namespace Dynamo.LibraryViewExtensionWebView2.Handlers
         /// Constructor
         /// </summary>
         /// <param name="items"></param>
-        public SearchResultDataProvider(NodeSearchModel model, IconResourceProvider iconProvider) : base(model, iconProvider)
+        public SearchResultDataProvider(NodeSearchModel model, IconResourceProvider iconProvider, DynamoModel dynamoModel) : base(model, iconProvider, dynamoModel)
         {
         }
 
@@ -48,7 +49,7 @@ namespace Dynamo.LibraryViewExtensionWebView2.Handlers
         public override Stream GetResource(string searchText, out string extension)
         {
             var text = Uri.UnescapeDataString(searchText);
-            var elements = model.Search(text, 0, null);
+            var elements = model.Search(text, dynamoModel.LuceneSearchUtility);
             extension = "json";
             return GetNodeItemDataStream(elements, true);
         }

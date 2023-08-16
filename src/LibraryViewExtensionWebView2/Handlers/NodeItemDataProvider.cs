@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Dynamo.LibraryViewExtensionWebView2.Handlers;
+using Dynamo.Models;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Newtonsoft.Json;
@@ -40,6 +41,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
     class NodeItemDataProvider : ResourceProviderBase
     {
         protected NodeSearchModel model;
+        protected DynamoModel dynamoModel;
         private IconResourceProvider iconProvider;
         /// <summary>
         /// Constructor
@@ -50,10 +52,11 @@ namespace Dynamo.LibraryViewExtensionWebView2
             this.model = model;
         }
 
-        public NodeItemDataProvider(NodeSearchModel model, IconResourceProvider iconProvider)
+        public NodeItemDataProvider(NodeSearchModel model, IconResourceProvider iconProvider, DynamoModel dynModel)
         {
             this.model = model;
             this.iconProvider = iconProvider;
+            this.dynamoModel = dynModel;
         }
 
         public override Stream GetResource(string url, out string extension)
