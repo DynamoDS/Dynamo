@@ -296,9 +296,7 @@ namespace Dynamo.PackageManager
         public ObservableCollection<PackageManagerSearchElementViewModel> SearchMyResults
         {
             set
-            {
-                if (value == searchMyResults) return;
-                
+            {                
                 searchMyResults = value;
                 RaisePropertyChanged(nameof(SearchMyResults));                
             }
