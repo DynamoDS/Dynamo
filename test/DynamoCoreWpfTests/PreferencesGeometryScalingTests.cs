@@ -58,7 +58,7 @@ namespace DynamoCoreWpfTests
             DispatcherUtil.DoEvents();
 
             //When RunType = Automatic when the graph is executed the ByCenterPointRadius node change status to Warning due that ScaleFactor = Small
-            Assert.AreEqual(nodeView.ViewModel.State, ElementState.Warning);
+            Assert.AreEqual(nodeView.ViewModel.State, ElementState.Info);
         }
 
         /// <summary>
