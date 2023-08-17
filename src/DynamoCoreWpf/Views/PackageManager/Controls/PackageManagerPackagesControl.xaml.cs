@@ -1,8 +1,9 @@
-using Dynamo.PackageManager.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using Dynamo.PackageManager.ViewModels;
+using Dynamo.Utilities;
 
 namespace Dynamo.PackageManager.UI
 {
@@ -89,6 +90,34 @@ namespace Dynamo.PackageManager.UI
             if (!(button.DataContext is PackageManagerSearchElementViewModel packageManagerSearchElementViewModel)) return;
 
             var PkgSearchVM = this.DataContext as PackageManagerSearchViewModel;
+
+            var name = this.Name;
+            if (name.Equals(Dynamo.Wpf.Properties.Resources.PackageManagerSearchPackagesControlName))
+            {
+                var parent = WpfUtilities.FindUpVisualTree<PackageManagerSearchControl>(this) as PackageManagerSearchControl;
+                if (parent == null) return;
+
+                packageManagerSearchElementViewModel.Model.UIParent = parent.packageDetailsGrid;
+                if (parent.packageDetailsGrid.Width.Value <= 1.0)
+                {
+                    var width = (parent.packageDetailsGrid.Parent as Grid).ActualWidth * 0.5;
+                    parent.packageDetailsGrid.Width = new GridLength(width, GridUnitType.Pixel);
+                }
+            }
+            else if (name.Equals(Dynamo.Wpf.Properties.Resources.PackageManagerMyPackagesControlName))
+            {
+                var parent = WpfUtilities.FindUpVisualTree<PackageManagerView>(this) as PackageManagerView;
+                if (parent == null) return;
+
+                packageManagerSearchElementViewModel.Model.UIParent = parent.packageDetailsGrid;
+                if (parent.packageDetailsGrid.Width.Value <= 1.0)
+                {
+                    var width = (parent.packageDetailsGrid.Parent as Grid).ActualWidth * 0.5;
+                    parent.packageDetailsGrid.Width = new GridLength(width, GridUnitType.Pixel);
+                }
+            }
+
+            PkgSearchVM.IsDetailPackagesExtensionOpened = true;
             PkgSearchVM?.ViewPackageDetailsCommand.Execute(packageManagerSearchElementViewModel.Model);
         }
     }
