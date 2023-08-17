@@ -1658,7 +1658,8 @@ namespace Dynamo.Models
 
             // Import Zero Touch libs
             var functionGroups = LibraryServices.GetAllFunctionGroups();
-            AddZeroTouchNodesToSearch(functionGroups);
+            if (!IsTestMode)
+                AddZeroTouchNodesToSearch(functionGroups);
 #if DEBUG_LIBRARY
             DumpLibrarySnapshot(functionGroups);
 #endif
