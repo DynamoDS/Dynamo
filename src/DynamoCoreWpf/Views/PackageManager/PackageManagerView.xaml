@@ -34,6 +34,9 @@
             <controls:ExpandersBindingConverter x:Key="ExpandersBindingConverter" />
             <controls:InverseBoolToVisibilityConverter  x:Key="InverseBoolToVisibilityConverter " />
             <controls:InverseBoolToEnablingConverter  x:Key="InverseBoolToEnablingConverter " />
+            <controls:ListHasMoreThanNItemsToVisibilityConverter x:Key="ListHasMoreThanNItemsToVisibilityConverter" />
+            <controls:EmptyListToVisibilityConverter x:Key="EmptyListToVisibilityConverter" />
+            <controls:PackageSearchStateToVisibilityConverter x:Key="PackageSearchStateToVisibilityConverter" />
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
             <Style x:Key="PkgMngListBoxStyle" TargetType="ListBox">
@@ -73,7 +76,7 @@
     <!--The main grid of the Package Manager window-->
     <Border x:Name="mainBorder"
             BorderBrush="{StaticResource WorkspaceBackgroundHomeBrush}"
-            BorderThickness="2"
+            BorderThickness="1"
             CornerRadius="4"
             Background="{StaticResource PreferencesWindowBackgroundColor}">
 
@@ -156,7 +159,8 @@
                                     </Grid.RowDefinitions>
 
                                     <local:PackageManagerSearchControl x:Name="packageManagerSearch"
-                                                                       DataContext="{Binding Path=PackageManagerViewModel.PackageSearchViewModel, ElementName=PackageManagerWindow}" />
+                                                                       DataContext="{Binding Path=PackageManagerViewModel.PackageSearchViewModel, ElementName=PackageManagerWindow}"
+                                                                       />
 
                                 </Grid>
                             </Border>
@@ -197,9 +201,37 @@
                                     </Grid.RowDefinitions>
 
                                     <wpfControls:InstalledPackagesControl x:Name="installedPackages"
-                                                                          DataContext="{Binding PackageManagerViewModel }"
+                                                                          DataContext="{Binding PackageManagerViewModel}"
                                                                           VerticalAlignment="Stretch"
-                                                                          Height="650"/>
+                                                                          Height="650"
+                                                                          Visibility="{Binding PackageManagerViewModel.LocalPackages, Converter={StaticResource ListHasMoreThanNItemsToVisibilityConverter}}" />
+
+
+                                    <StackPanel Orientation="Vertical"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Center"
+                                                Visibility="{Binding PackageManagerViewModel.LocalPackages, Converter={StaticResource EmptyListToVisibilityConverter }}">
+                                        <Image HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Width="182px"
+                                               Height="Auto"
+                                               Margin="0 0 0 30"
+                                               Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/PackageManager/empty-state-first-use-light-gray.png"></Image>
+                                        <TextBlock Style="{StaticResource LabelStyle}"
+                                                   Text="You don’t have any installed packages yet." />
+                                        <TextBlock Style="{StaticResource SubLabelStyle}"
+                                                   Text="Once you install a package, you can find it here." />
+                                        <Button Content="Search for Packages"
+                                                Margin="0 30"
+                                                Background="#0696D7"
+                                                Foreground="White"
+                                                BorderBrush="#0696D7"
+                                                Width="Auto"
+                                                HorizontalAlignment="Center"
+                                                Padding="5"
+                                                Click="SearchForPackagesButton_Click"
+                                                Style="{StaticResource CtaButtonStyle}" />
+                                    </StackPanel>
 
                                 </Grid>
                             </Border>
@@ -215,9 +247,22 @@
                                       Margin="1"
                                       HorizontalAlignment="Stretch">
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
                                     </Grid.RowDefinitions>
+
+                                    <local:PackageManagerPackagesControl x:Name="packageManagerMyPackages"
+                                                                         DataContext="{Binding Path=PackageManagerViewModel.PackageSearchViewModel, ElementName=PackageManagerWindow}"
+                                                                         SearchItems="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.SearchMyResults, ElementName=PackageManagerWindow}"
+                                                                         Visibility="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.SearchState,
+                                                                                            ElementName=PackageManagerWindow, 
+                                                                                            Converter={StaticResource PackageSearchStateToVisibilityConverter}}" />
+
+                                    <local:PackageManagerPackageAnimationControl x:Name="loadingScreen"
+                                                                         Visibility="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.SearchState,
+                                                                                            ElementName=PackageManagerWindow, 
+                                                                                            Converter={StaticResource PackageSearchStateToVisibilityConverter},
+                                                                                            ConverterParameter=false}" />
+
                                 </Grid>
                             </Border>
                         </TabItem>
@@ -232,7 +277,7 @@
                                       Margin="1"
                                       HorizontalAlignment="Stretch"
                                       VerticalAlignment="Stretch"
-                                      DataContext="{Binding Path=PackageManagerViewModel.PreferencesViewModel, ElementName=PackageManagerWindow}">
+                                      DataContext="{Binding  Path=PackageManagerViewModel.PreferencesViewModel, ElementName=PackageManagerWindow}">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />

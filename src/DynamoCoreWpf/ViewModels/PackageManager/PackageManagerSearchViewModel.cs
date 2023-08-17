@@ -149,6 +149,8 @@ namespace Dynamo.PackageManager
         // Lucene search utility to perform indexing operations.
         internal LuceneSearchUtility LuceneSearchUtility { get; set; }
 
+        private ObservableCollection<PackageManagerSearchElementViewModel> searchMyResults;
+
         // The results of the last synchronization with the package manager server
         public List<PackageManagerSearchElement> LastSync { get; set; }
 
@@ -287,6 +289,22 @@ namespace Dynamo.PackageManager
         ///     This property is observed by SearchView to see the search results
         /// </value>
         public ObservableCollection<PackageManagerSearchElementViewModel> SearchResults { get; internal set; }
+
+        /// <summary>
+        /// Returns a new filtered collection of packages based on the current user
+        /// </summary>
+        public ObservableCollection<PackageManagerSearchElementViewModel> SearchMyResults
+        {
+            set
+            {                
+                searchMyResults = value;
+                RaisePropertyChanged(nameof(SearchMyResults));                
+            }
+            get
+            {
+                return searchMyResults;
+            }
+        }
 
         /// <summary>
         ///     MaxNumSearchResults property
@@ -493,6 +511,33 @@ namespace Dynamo.PackageManager
                 LuceneSearchUtility = new LuceneSearchUtility(PackageManagerClientViewModel.DynamoViewModel.Model);
             }          
             LuceneSearchUtility.InitializeLuceneConfig(LuceneConfig.PackagesIndexingDirectory);
+        }
+        
+        /// <summary>
+        /// Populates SearchMyResults collection containing all packages by current user
+        /// </summary>
+        private void PopulateMyPackages()
+        {
+            // First, clear already existing results to prevent stacking 
+            if (SearchMyResults != null) return;
+            // We should have already populated the CachedPackageList by this step
+            if (PackageManagerClientViewModel.CachedPackageList == null ||
+                !PackageManagerClientViewModel.CachedPackageList.Any()) return;
+            // We need the user to be logged in, otherwise there is no point in runnig this routine
+            if (PackageManagerClientViewModel.LoginState != Greg.AuthProviders.LoginState.LoggedIn) return;
+
+            List<PackageManagerSearchElement> packageManagerSearchElements;
+            List<PackageManagerSearchElementViewModel> myPackages = new List<PackageManagerSearchElementViewModel>();
+
+            // Check if any of the maintainers corresponds to the current logged in username
+            var name = PackageManagerClientViewModel.Username;
+            var pkgs = PackageManagerClientViewModel.CachedPackageList.Where(x => x.Maintainers != null && x.Maintainers.Contains(name)).ToList();
+            foreach(var pkg in pkgs)
+            {
+                myPackages.Add(new PackageManagerSearchElementViewModel(pkg, false));
+            }
+    
+            SearchMyResults = new ObservableCollection<PackageManagerSearchElementViewModel>(myPackages);
         }
 
         /// <summary>
@@ -754,6 +799,8 @@ namespace Dynamo.PackageManager
                 SearchDictionary.Add(pkg, pkg.Maintainers);
                 SearchDictionary.Add(pkg, pkg.Keywords);
             }
+
+            PopulateMyPackages();   // adding 
         }
 
         /// <summary>
@@ -763,6 +810,7 @@ namespace Dynamo.PackageManager
         public IEnumerable<PackageManagerSearchElementViewModel> RefreshAndSearch()
         {
             Refresh();
+            PopulateMyPackages();  
             return GetAllPackages();
         }
 

@@ -10,7 +10,6 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
 using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
@@ -151,6 +150,26 @@ namespace Dynamo.Controls
             return null;
         }
     }
+
+
+    /// <summary>
+    /// Returns Visibility.Visible if the collection is empty, otherwise returns Visibility.Collapsed.
+    /// </summary>
+    public class EmptyListToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (!(value is ICollection collection)) return Visibility.Collapsed;
+
+            return collection.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
 
     /// <summary>
     /// Controls the visibility of tooltip that displays python dependency in Package manager for each package version
@@ -3748,7 +3767,6 @@ namespace Dynamo.Controls
         }
     }
 
-
     public class SumConverter : IMultiValueConverter
     {
         /// <summary>
@@ -3762,6 +3780,39 @@ namespace Dynamo.Controls
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             return null;
+        }
+    }
+
+    public class PackageSearchStateToVisibilityConverter : IValueConverter
+    {
+        /// <summary>
+        /// Returns Visibility.Visible or Visibility.Collapsed based on the value of the Enum and the provided parameter
+        /// </summary>
+        /// <returns>Visibility.Visible or Visibility.Collapsed</returns>
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var searchState = (PackageManagerSearchViewModel.PackageSearchState) value;
+
+            // If no parameter is specified, we use True value
+            bool param = parameter == null || bool.Parse(parameter.ToString());
+
+            // If we have finished searching, and no parameter, or true parameter is provided, return Visible 
+            if (PackageManagerSearchViewModel.PackageSearchState.Results == searchState && param)
+            {
+                return Visibility.Visible;
+            }
+            // If we are still searching, and false parameter is provided, then also return Visible (loading screen)
+            else if(PackageManagerSearchViewModel.PackageSearchState.Results != searchState && !param)
+            {
+                return Visibility.Visible;
+            }
+
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 }
