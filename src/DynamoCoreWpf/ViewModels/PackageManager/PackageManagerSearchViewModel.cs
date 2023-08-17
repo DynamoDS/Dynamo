@@ -1130,9 +1130,8 @@ namespace Dynamo.PackageManager
 
                 //The DirectoryReader and IndexSearcher have to be assigned after commiting indexing changes and before executing the Searcher.Search() method,otherwise new indexed info won't be reflected
                 LuceneSearchUtility.dirReader = LuceneSearchUtility.writer?.GetReader(applyAllDeletes: true);
-                if (LuceneSearchUtility.dirReader == null) return null;
 
-                if (LuceneSearchUtility.Searcher == null)
+                if (LuceneSearchUtility.Searcher == null && LuceneSearchUtility.dirReader != null)
                 {
                     LuceneSearchUtility.Searcher = new IndexSearcher(LuceneSearchUtility.dirReader);
                 }
