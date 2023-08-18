@@ -1,4 +1,4 @@
-﻿using Dynamo.Tests;
+using Dynamo.Tests;
 using Dynamo.ViewModels;
 using NUnit.Framework;
 using System;
@@ -9,6 +9,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using CoreNodeModels.Input;
 using Dynamo.Graph;
+using Dynamo.Graph.Workspaces;
 
 namespace DynamoCoreWpfTests
 {
@@ -175,6 +176,7 @@ namespace DynamoCoreWpfTests
             Assert.NotNull(slider);
 
             DynamoModel model = GetModel();
+            (model.CurrentWorkspace as HomeWorkspaceModel).RunSettings.RunType = RunType.Manual;
             model.ExecuteCommand(new DynamoModel.CreateNodeCommand(slider, 0, 0, true, true));
 
             NodeViewModel sliderNodeViewModel = ViewModel.CurrentSpaceViewModel.Nodes
