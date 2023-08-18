@@ -7,6 +7,9 @@ using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 using Dynamo.ViewModels;
 using Dynamo.Views;
+using Dynamo.Graph;
+using Dynamo.Graph.Workspaces;
+using Dynamo.Models;
 
 namespace DynamoCoreWpfTests
 {
@@ -36,7 +39,7 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(dynamoViewModel);
 
             //The GeometryScalingCodeBlock.dyn contains a CodeBlock with a large number that needs ScaleFactor > Medium
-            Open(@"core\GeometryScalingCodeBlock.dyn");
+            Open(@"core\GeometryScalingInfoSlider.dyn");
 
             //Change the RunType to Automatic, so when the MarkNodesAsModifiedAndRequestRun() is called a graph execution will be kicked off 
             View.RunSettingsControl.RunTypesComboBox.SelectedItem = View.RunSettingsControl.RunTypesComboBox.Items[1];
@@ -57,8 +60,15 @@ namespace DynamoCoreWpfTests
             geoScalingPopup.Small.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
             DispatcherUtil.DoEvents();
 
-            //When RunType = Automatic when the graph is executed the ByCenterPointRadius node change status to Warning due that ScaleFactor = Small
-            Assert.AreEqual(nodeView.ViewModel.State, ElementState.Warning);
+            //When RunType = Automatic when the graph is executed the ByCenterPointRadius node change status to Info due that ScaleFactor = Small
+            Assert.AreEqual(nodeView.ViewModel.State, ElementState.Info);
+
+            // Get the int slider and update to a value within small scaling recommendation
+            var slider = NodeViewWithGuid("7db0c3d3-00b6-46e0-ab41-a5759bb66107");
+            var param = new UpdateValueParams("Value", "50");
+            slider.ViewModel.NodeModel.UpdateValue(param);
+            // The node info should clear after the change
+            Assert.AreEqual(nodeView.ViewModel.State, ElementState.Active);
         }
 
         /// <summary>
@@ -68,7 +78,7 @@ namespace DynamoCoreWpfTests
         public void PreferencesGeoScaling_RunGraph_Manual_Mode()
         {
             //The GeometryScalingCodeBlock.dyn contains a CodeBlock with a large number that needs ScaleFactor > Medium
-            Open(@"core\GeometryScalingCodeBlock.dyn");
+            Open(@"core\GeometryScalingInfoSlider.dyn");
 
             //Creates the Preferences dialog and the ScaleFactor = 2 ( Medium)
             var preferencesWindow = new PreferencesView(View);
