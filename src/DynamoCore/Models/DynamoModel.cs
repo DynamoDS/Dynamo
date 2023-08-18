@@ -2377,6 +2377,7 @@ namespace Dynamo.Models
                 this.LinterManager);
 
             workspace.FileName = string.IsNullOrEmpty(filePath) ? "" : filePath;
+            workspace.FromJsonGraphId = string.IsNullOrEmpty(filePath) ? WorkspaceModel.ComputeGraphIdFromJson(fileContents) : "";
             workspace.ScaleFactor = dynamoPreferences.ScaleFactor;
 
             // NOTE: This is to handle the case of opening a JSON file that does not have a version string
