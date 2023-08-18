@@ -78,7 +78,7 @@ namespace DynamoCoreWpfTests
         public void PreferencesGeoScaling_RunGraph_Manual_Mode()
         {
             //The GeometryScalingCodeBlock.dyn contains a CodeBlock with a large number that needs ScaleFactor > Medium
-            Open(@"core\GeometryScalingCodeBlock.dyn");
+            Open(@"core\GeometryScalingInfoSlider.dyn");
 
             //Creates the Preferences dialog and the ScaleFactor = 2 ( Medium)
             var preferencesWindow = new PreferencesView(View);
