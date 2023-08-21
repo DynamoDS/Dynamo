@@ -12,7 +12,7 @@ namespace Dynamo.PackageDetails
         /// <summary>
         ///     Used to notify when this control is closed 
         /// </summary>
-        public event EventHandler Closed;
+        internal event EventHandler Closed;
 
         public PackageDetailsView()
         {

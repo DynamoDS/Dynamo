@@ -15,6 +15,9 @@ namespace Dynamo.PackageManager.UI
 
         #region Properties
 
+        private static readonly string packageManagerSearchPackagesName = "packageManagerSearchPackages";
+        private static readonly string packageManagerMyPackagesName = "packageManagerMyPackages";
+
         /// <summary>
         ///     Allows different collections of SearchItems to be assigned per instance of the PackageManagerPackagesControl
         /// </summary>
@@ -78,7 +81,6 @@ namespace Dynamo.PackageManager.UI
             InitializeComponent();
         }
 
-
         /// <summary>
         ///     Executes a command that opens the package details view extension.
         /// </summary>
@@ -92,7 +94,7 @@ namespace Dynamo.PackageManager.UI
             var PkgSearchVM = this.DataContext as PackageManagerSearchViewModel;
 
             var name = this.Name;
-            if (name.Equals(Dynamo.Wpf.Properties.Resources.PackageManagerSearchPackagesControlName))
+            if (name.Equals(packageManagerSearchPackagesName))
             {
                 var parent = WpfUtilities.FindUpVisualTree<PackageManagerSearchControl>(this) as PackageManagerSearchControl;
                 if (parent == null) return;
@@ -104,7 +106,7 @@ namespace Dynamo.PackageManager.UI
                     parent.packageDetailsGrid.Width = new GridLength(width, GridUnitType.Pixel);
                 }
             }
-            else if (name.Equals(Dynamo.Wpf.Properties.Resources.PackageManagerMyPackagesControlName))
+            else if (name.Equals(packageManagerMyPackagesName))
             {
                 var parent = WpfUtilities.FindUpVisualTree<PackageManagerView>(this) as PackageManagerView;
                 if (parent == null) return;

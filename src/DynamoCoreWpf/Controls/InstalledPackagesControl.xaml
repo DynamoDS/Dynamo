@@ -28,6 +28,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
+    <!-- Separate elements of this control should not be cycled through using the `Tab` key -->
     <Grid KeyboardNavigation.IsTabStop="False">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
