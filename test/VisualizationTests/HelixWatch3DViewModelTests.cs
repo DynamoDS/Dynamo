@@ -164,16 +164,13 @@ namespace WpfVisualizationTests
             ViewModel.OpenCommand.Execute(relativePath);
         }
 
-        // With version 2.5 NUnit will call base class TearDown methods after those in the derived classes
-        [TearDown]
-        public void CleanUp()
+        public override void TearDown()
         {
             Model.EvaluationCompleted -= Model_EvaluationCompleted;
-            //under some circumstances, closing the DynamoView does not trigger the unloaded
-            //event on the view or on child user controls, so here we clear the workspace
-            //before the base class teardown closes the view - this will trigger unloaded
-            //on all children of the workspace.
-            ViewModel.CurrentSpace.Clear();
+            base.TearDown();
+            //ensure dispatcher queue is flushed after view is closed to make sure
+            //unloaded event is fired.
+            DispatcherUtil.DoEvents();
         }
     }
 
