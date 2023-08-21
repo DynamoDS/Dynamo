@@ -1874,6 +1874,18 @@ namespace Dynamo.Graph.Nodes
         /// Set an info on a node.
         /// </summary>
         /// <param name="p">The info text.</param>
+        [Obsolete("Info(string p) is deprecated, please use Info(string p, bool isPersistent = false) instead.")]
+
+        public void Info(string p)
+        {
+            State = ElementState.Info;
+            infos.Add(new Info(p, ElementState.Info));
+        }
+
+        /// <summary>
+        /// Set an info on a node.
+        /// </summary>
+        /// <param name="p">The info text.</param>
         /// <param name="isPersistent">Is the info persistent? If true, the info will not be
         /// cleared when the node is next evaluated and any additional info messages will be concatenated
         /// to the persistent error message. If false, the info will be cleared on the next evaluation.</param>
