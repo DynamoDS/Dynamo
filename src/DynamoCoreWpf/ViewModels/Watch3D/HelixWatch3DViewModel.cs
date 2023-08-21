@@ -2840,11 +2840,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     effectsManager = null;
                    
                 }
-                SelectedMaterial = null;
-                WhiteMaterial = null;
-                FrozenMaterial = null;
-                IsolatedMaterial = null;
-
                 foreach (var sceneItem in SceneItems)
                 {
                     sceneItem.Dispose();
