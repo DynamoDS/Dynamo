@@ -109,12 +109,15 @@ namespace WpfVisualizationTests
             vmConfig.DynamoModel = Model;
 
             ViewModel = DynamoViewModel.Start(vmConfig);
+            // Disable edge rendering to ensure that curve counts are correct.
+            // because preferences settings is now a sinleton prefs changes can affect other tests.
+            ViewModel.RenderPackageFactoryViewModel.ShowEdges = false;
 
             //create the view
             View = new DynamoView(ViewModel);
             View.Show();
 
-            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+            //SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
         }
 
         /// <summary>
@@ -140,7 +143,7 @@ namespace WpfVisualizationTests
             };
         }
 
-        private async void Model_EvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
+        private void Model_EvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
         {
             DispatcherUtil.DoEvents();
         }
@@ -159,11 +162,12 @@ namespace WpfVisualizationTests
             ViewModel.OpenCommand.Execute(relativePath);
         }
 
-        // With version 2.5 NUnit will call base class TearDown methods after those in the derived classes
-        [TearDown]
-        private void CleanUp()
+        //because this overrides the base class it will be called first.
+        public override void TearDown()
         {
             Model.EvaluationCompleted -= Model_EvaluationCompleted;
+            base.TearDown();
+            DispatcherUtil.DoEvents();
         }
     }
 
@@ -1261,7 +1265,7 @@ namespace WpfVisualizationTests
             }
         }
 
-        private async void tagGeometryWhenClickingItem(int[] indexes, int expectedNumberOfLabels,
+        private void tagGeometryWhenClickingItem(int[] indexes, int expectedNumberOfLabels,
             string nodeName, Func<NodeView,NodeModel> getGeometryOwnerNode, bool expandPreviewBubble = false)
         {
             OpenVisualizationTest("MAGN_3815.dyn");
@@ -1295,7 +1299,7 @@ namespace WpfVisualizationTests
             {
                 treeViewItem.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left)
                 {
-                    RoutedEvent = Mouse.MouseDownEvent
+                    RoutedEvent = Mouse.MouseUpEvent
                 });
             });
 
