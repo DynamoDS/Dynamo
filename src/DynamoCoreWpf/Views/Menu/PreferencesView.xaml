@@ -138,7 +138,7 @@
     <!--This is the main row of the Preference Window-->
     <Border x:Name="mainBorder"
             BorderBrush="{StaticResource WorkspaceBackgroundHomeBrush}"
-            BorderThickness="2"
+            BorderThickness="1"
             CornerRadius="4"
             Background="{StaticResource PreferencesWindowBackgroundColor}">
         <Grid x:Name="mainGrid"
@@ -1713,6 +1713,7 @@
                                             <ComboBox.ToolTip>
                                                 <ToolTip Content="{Binding Path=SelectedPackagePathForInstall}" Style="{StaticResource GenericToolTipLight}"/>
                                             </ComboBox.ToolTip>
+                                            <!-- Allows copy to clipboard of the download location -->
                                             <ComboBox.InputBindings>
                                                 <KeyBinding Key="C"
                                                             Modifiers="Ctrl"
