@@ -308,7 +308,6 @@
                                         <RowDefinition Height="*" />
                                         <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
-
                                     <!--Loading screen-->
                                     <local:PackageManagerPackageAnimationControl x:Name="loadingScreen"
                                                                                  Visibility="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.InitialResultsLoaded,
@@ -441,6 +440,42 @@
                                                 HorizontalAlignment="Left"
                                                 Background="{StaticResource YellowOrange500Brush}"
                                                 CornerRadius="3,0,0,3" />
+                                    </Grid>
+
+
+                                    <!--Grid controlling visibility of the MyPackages control-->
+                                    <Grid Visibility="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.SearchMyResults,
+                                                               UpdateSourceTrigger=PropertyChanged,
+                                                               ElementName=PackageManagerWindow,
+                                                               Converter={StaticResource ListHasMoreThanNItemsToVisibilityConverter}}"
+                                          x:Name="myPackagesGrid">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="2" />
+                                            <ColumnDefinition Width="0"
+                                                              MinWidth="1"
+                                                              x:Name="packageDetailsGrid" />
+                                        </Grid.ColumnDefinitions>
+                                        <!--My Packages control-->
+                                        <local:PackageManagerPackagesControl x:Name="packageManagerMyPackages"
+                                                                             DataContext="{Binding Path=PackageManagerViewModel.PackageSearchViewModel, ElementName=PackageManagerWindow}"
+                                                                             SearchItems="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.SearchMyResults, ElementName=PackageManagerWindow}"
+                                                                             Visibility="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.InitialResultsLoaded,
+                                                                                                ElementName=PackageManagerWindow, 
+                                                                                                Converter={StaticResource BoolToVisibilityCollapsedConverter},
+                                                                                                UpdateSourceTrigger=PropertyChanged}" />
+
+                                        <GridSplitter Grid.Column="1"
+                                                      Grid.Row="1"
+                                                      Grid.RowSpan="1"
+                                                      VerticalAlignment="Stretch"
+                                                      HorizontalAlignment="Center"
+                                                      Background="{StaticResource PackageManagerTabBackgroundColor}"
+                                                      Width="3"
+                                                      Visibility="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.IsDetailPackagesExtensionOpened,
+                                                               UpdateSourceTrigger=PropertyChanged,
+                                                               ElementName=PackageManagerWindow,
+                                                               Converter={StaticResource BoolToVisibilityCollapsedConverter}}" />
                                     </Grid>
 
 
