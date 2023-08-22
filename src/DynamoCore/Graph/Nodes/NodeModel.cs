@@ -1738,7 +1738,7 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public virtual void ClearInfoMessages()
         {
-            // It is very unlikely a node could be in both info state or persistent info state from the current design
+            // It is very unlikely a node could be in both info state and persistent info state from the current design
             // If that exception happens, we should redesign this function or have particular node override the behavior
             if (State == ElementState.Info)
             {
@@ -1887,8 +1887,7 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         /// <param name="p">The info text.</param>
         /// <param name="isPersistent">Is the info persistent? If true, the info will not be
-        /// cleared when the node is next evaluated and any additional info messages will be concatenated
-        /// to the persistent error message. If false, the info will be cleared on the next evaluation.</param>
+        /// cleared when the node is next evaluated. If false, the info will be cleared on the next evaluation.</param>
         public void Info(string p, bool isPersistent = false)
         {
             if (isPersistent)
