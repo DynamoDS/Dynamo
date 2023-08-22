@@ -170,7 +170,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void TestInfoState()
+        public void TestIntSliderInfoState()
         {
             var slider = new IntegerSlider64Bit();
             Assert.NotNull(slider);
@@ -187,6 +187,11 @@ namespace DynamoCoreWpfTests
             var param = new UpdateValueParams("Value", "9223372036854775808");
             slider.UpdateValue(param);
 
+            Assert.AreEqual(sliderNodeModel.Infos.Count, 1);
+            Assert.AreEqual(slider.Value, Int64.MaxValue);
+
+            // After graph run, persistent info still displays
+            model.CurrentWorkspace.RequestRun();
             Assert.AreEqual(sliderNodeModel.Infos.Count, 1);
             Assert.AreEqual(slider.Value, Int64.MaxValue);
         }

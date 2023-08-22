@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Dynamo.Core;
 using Dynamo.Graph.Nodes;
-using ProtoCore.AST.ImperativeAST;
 using ProtoCore.Mirror;
 
 namespace Dynamo.GraphNodeManager.ViewModels
@@ -205,7 +203,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
         {
             get
             {
-                if (NodeModel.State == ElementState.Info)
+                if (NodeModel.State == ElementState.Info || NodeModel.State == ElementState.PersistentInfo)
                 {
                     isInfo = true;
                 }
@@ -336,6 +334,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
                 switch (NodeModel.State)
                 {
                     case ElementState.Info:
+                    case ElementState.PersistentInfo:
                         infoIcon = "/GraphNodeManagerViewExtension;component/Images/Info.png";
                         break;
                     case ElementState.Warning:
