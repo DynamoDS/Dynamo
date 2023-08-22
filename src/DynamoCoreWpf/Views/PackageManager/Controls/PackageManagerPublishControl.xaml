@@ -8,6 +8,7 @@
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:packagemanager="clr-namespace:Dynamo.PackageManager"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=packagemanager:PublishPackageViewModel}"
@@ -538,6 +539,7 @@
                         </TextBlock>
                         <StackPanel Margin="0,0,0,12"
                                     Orientation="Horizontal">
+                            <xctk:IntegerUpDown Name="myUpDownControl" />
                             <TextBox Name="versionMajorInput"
                                      Margin="0,0,6,0"
                                      MaxLength="4"

@@ -2202,6 +2202,9 @@ namespace Dynamo.Controls
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
 
+                // setting the owner to the packageManagerWindow will centralize promts originating from the Package Manager
+                dynamoViewModel.Owner = packageManagerWindow;
+
                 packageManagerWindow.Closed += (sender, args) => { packageManagerWindow = null; cmd.Dispose(); };
                 packageManagerWindow.Show();
 
@@ -2209,6 +2212,10 @@ namespace Dynamo.Controls
             }
 
             packageManagerWindow.Focus();
+            if (e is OpenPackageManagerEventArgs)
+            {
+                packageManagerWindow.Navigate((e as OpenPackageManagerEventArgs).Tab);
+            }
             _pkgSearchVM.RefreshAndSearchAsync();
         }
 

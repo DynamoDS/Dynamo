@@ -1901,6 +1901,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to _Package Manager....
+        /// </summary>
+        public static string DynamoViewPackageMenuPackageManager {
+            get {
+                return ResourceManager.GetString("DynamoViewPackageMenuPackageManager", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Publish _Selected Nodes....
         /// </summary>
         public static string DynamoViewPackageMenuPublishNodes {
@@ -3687,6 +3696,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Package Manager.
+        /// </summary>
+        public static string InstalledPackagePartialHyperlinkMessage {
+            get {
+                return ResourceManager.GetString("InstalledPackagePartialHyperlinkMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View your installed packages in the .
+        /// </summary>
+        public static string InstalledPackagePartialTextMessage {
+            get {
+                return ResourceManager.GetString("InstalledPackagePartialTextMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Additional Files.
         /// </summary>
         public static string InstalledPackageViewAdditionalFileLabel {
@@ -4180,6 +4207,24 @@ namespace Dynamo.Wpf.Properties {
         public static string MessageErrorOpeningFileGeneral {
             get {
                 return ResourceManager.GetString("MessageErrorOpeningFileGeneral", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading the packages is taking longer than expected. What would you like to do?.
+        /// </summary>
+        public static string MessageExcessiveLoadTime {
+            get {
+                return ResourceManager.GetString("MessageExcessiveLoadTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Still loading.
+        /// </summary>
+        public static string MessageExcessiveLoadTimeTitle {
+            get {
+                return ResourceManager.GetString("MessageExcessiveLoadTimeTitle", resourceCulture);
             }
         }
         
@@ -5538,11 +5583,47 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Installed Packages.
+        /// </summary>
+        public static string PackageManagerInstalledPackagesTab {
+            get {
+                return ResourceManager.GetString("PackageManagerInstalledPackagesTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading the packages is taking longer than expected. Please wait, or restart the Package Manager..
+        /// </summary>
+        public static string PackageManagerLoadingTimedOutWarningMessage {
+            get {
+                return ResourceManager.GetString("PackageManagerLoadingTimedOutWarningMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to packageManagerMyPackages.
         /// </summary>
         public static string PackageManagerMyPackagesControlName {
             get {
                 return ResourceManager.GetString("PackageManagerMyPackagesControlName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to My Packages.
+        /// </summary>
+        public static string PackageManagerMyPackagesTab {
+            get {
+                return ResourceManager.GetString("PackageManagerMyPackagesTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Once you install a package, you can find it here..
+        /// </summary>
+        public static string PackageManagerNoInstalledPackagesSubMessage {
+            get {
+                return ResourceManager.GetString("PackageManagerNoInstalledPackagesSubMessage", resourceCulture);
             }
         }
         
@@ -5565,6 +5646,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Package Settings.
+        /// </summary>
+        public static string PackageManagerPackageSettingsTab {
+            get {
+                return ResourceManager.GetString("PackageManagerPackageSettingsTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Updated.
         /// </summary>
         public static string PackageManagerPackageUpdated {
@@ -5574,11 +5664,74 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Publish a Package.
+        /// </summary>
+        public static string PackageManagerPublishPackageButton {
+            get {
+                return ResourceManager.GetString("PackageManagerPublishPackageButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish a Package.
+        /// </summary>
+        public static string PackageManagerPublishTab {
+            get {
+                return ResourceManager.GetString("PackageManagerPublishTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search for Packages.
+        /// </summary>
+        public static string PackageManagerSearchPackagesButton {
+            get {
+                return ResourceManager.GetString("PackageManagerSearchPackagesButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to packageManagerSearchPackages.
         /// </summary>
         public static string PackageManagerSearchPackagesControlName {
             get {
                 return ResourceManager.GetString("PackageManagerSearchPackagesControlName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search for Packages.
+        /// </summary>
+        public static string PackageManagerSearchTab {
+            get {
+                return ResourceManager.GetString("PackageManagerSearchTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preferences.
+        /// </summary>
+        public static string PackageManagerSettingsHyperlink {
+            get {
+                return ResourceManager.GetString("PackageManagerSettingsHyperlink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit your package settings in .
+        /// </summary>
+        public static string PackageManagerSettingsRunPrefix {
+            get {
+                return ResourceManager.GetString("PackageManagerSettingsRunPrefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package Manager.
+        /// </summary>
+        public static string PackageManagerTitle {
+            get {
+                return ResourceManager.GetString("PackageManagerTitle", resourceCulture);
             }
         }
         
@@ -5768,6 +5921,33 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageRepositoryLabel {
             get {
                 return ResourceManager.GetString("PackageRepositoryLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You don’t have any installed packages yet..
+        /// </summary>
+        public static string PackagerManageNoInstalledPackagesMessage {
+            get {
+                return ResourceManager.GetString("PackagerManageNoInstalledPackagesMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You haven’t published any packages yet..
+        /// </summary>
+        public static string PackagerManageNoPublishedPackagesMessage {
+            get {
+                return ResourceManager.GetString("PackagerManageNoPublishedPackagesMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Once you publish a package, you can find it here..
+        /// </summary>
+        public static string PackagerManageNoPublishedPackagesSubMessage {
+            get {
+                return ResourceManager.GetString("PackagerManageNoPublishedPackagesSubMessage", resourceCulture);
             }
         }
         
@@ -6716,7 +6896,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Package Manager.
+        ///   Looks up a localized string similar to Package Settings.
         /// </summary>
         public static string PreferencesPackageManagerSettingsTab {
             get {
