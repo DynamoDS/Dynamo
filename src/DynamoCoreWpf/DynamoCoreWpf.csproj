@@ -23,6 +23,7 @@
 
   <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
       <!--This command gets the latest build from the splash screen-->
+      <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command $(SolutionDir)\setnpmreg.ps1" />
       <Exec Command="npm pack @dynamods/splash-screen@latest" />
   </Target>
 
@@ -56,12 +57,16 @@
     <None Remove="Packages\SplashScreen\build\index.html" />
     <None Remove="UI\Images\Canvas\canvas-button-geometry-scaling.png" />
     <None Remove="UI\Images\NodeStates\package-64px.png" />
+    <None Remove="UI\Images\PackageManager\empty-state-first-use-light-gray.png" />
     <None Remove="UI\Prompts\PortPropertiesEditPrompt.xaml" />
     <None Remove="Views\Core\CustomColorPicker.xaml" />
     <None Remove="Views\Core\GeometryScalingPopup.xaml" />
     <None Remove="UI\Images\question-hover-blue-16px.png" />
-    <None Remove="Views\PackageManager\Controls\ControlColorsAndBrushes.xaml" />
+    <None Remove="Views\PackageManager\Controls\ControlColorsAndBrushes.xaml" />      
+    <None Remove="Views\PackageManager\Controls\LoadingAnimationStripeControl.xaml" />
+    <None Remove="Views\PackageManager\Controls\PackageManagePackageAnimationControl.xaml" />
     <None Remove="Views\PackageManager\Controls\PackageManagerPublishControl.xaml" />
+    <None Remove="Views\PackageManager\Controls\PackageManagerPackagesControl.xaml" />
     <None Remove="Views\PackageManager\Controls\PackageManagerSearchControl.xaml" />
     <None Remove="Views\PackageManager\Controls\SearchBoxControl.xaml" />
     <None Remove="Views\SplashScreen\WebApp\splashScreenBackground.png" />
@@ -423,6 +428,9 @@
       <DependentUpon>SurveyPopupWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Input\ParameterEditor.cs" />
+    <Compile Include="Views\PackageManager\Controls\LoadingAnimationStripeControl.xaml.cs" />
+    <Compile Include="Views\PackageManager\Controls\PackageManagePackageAnimationControl.xaml.cs" />
+    <Compile Include="Views\PackageManager\Controls\PackageManagerPackagesControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\PackageManagerPublishControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\PackageManagerSearchControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\SearchBoxControl.xaml.cs" />
@@ -614,6 +622,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\PackageManager\Controls\LoadingAnimationStripeControl.xaml">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PackageManager\Controls\PackageManagePackageAnimationControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\PackageManager\Controls\SearchBoxControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -627,6 +643,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\PackageManager\PackageManagerView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\PackageManager\Controls\PackageManagerPackagesControl.xaml">
         <Generator>MSBuild:Compile</Generator>
         <SubType>Designer</SubType>
     </Page>
@@ -899,6 +919,7 @@
     <Resource Include="UI\Images\NodeStates\hidden-64px.png" />
     <Resource Include="UI\Images\NodeStates\info-64px.png" />
     <Resource Include="UI\Images\NodeStates\package-64px.png" />
+    <Resource Include="UI\Images\PackageManager\empty-state-first-use-light-gray.png" />
     <Resource Include="UI\Images\question-hover-blue-16px.png" />
     <Resource Include="UI\Images\TitleBarButtons\close-darktheme-default-16px.png" />
     <Resource Include="UI\Images\TitleBarButtons\close-lighttheme-default-16px.png" />

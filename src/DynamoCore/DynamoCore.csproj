@@ -25,10 +25,6 @@
     <!--The System.Drawing package is only included in DynamoCore (and not in all projects that have image resources) for simplicity-->
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">         
-    <Reference Include="System.Configuration" />
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
   <ItemGroup Label="Common dependencies">
     <PackageReference Include="Autodesk.IDSDK" Version="1.1.6" />
     <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.1400" GeneratePathProperty="true" />
@@ -39,7 +35,7 @@
 	<PackageReference Include="Lucene.Net" Version="4.8.0-beta00016" />
     <PackageReference Include="Lucene.Net.Analysis.Common" Version="4.8.0-beta00016" />
     <PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00016" />
-    <PackageReference Include="DynamoVisualProgramming.Analytics" Version="4.0.0.1432" />
+    <PackageReference Include="DynamoVisualProgramming.Analytics" Version="4.1.0.2298" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\GraphLayout\GraphLayout.csproj">
@@ -110,18 +106,7 @@
       <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <Choose>
-    <When Condition=" '$(OS)' != 'Unix' ">
-      <PropertyGroup>
-        <PowerShellCommand>powershell.exe</PowerShellCommand>
-      </PropertyGroup>
-    </When>
-    <Otherwise>
-      <PropertyGroup>
-        <PowerShellCommand>pwsh</PowerShellCommand>
-      </PropertyGroup>
-    </Otherwise>
-  </Choose>
+
   <Target Name="BeforeBuildOps" BeforeTargets="Build">
     <PropertyGroup>
       <LibGProtoGeometryLibGLocale>$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\libg_locale</LibGProtoGeometryLibGLocale>
@@ -140,11 +125,6 @@
           <NodeHelpFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.*" />
           <OpenSourceLicenses Include="$(SolutionDir)..\doc\distrib\Open Source Licenses\**\*.*" />
           <LocalizedResources Include="$(SolutionDir)..\extern\Localized\**\*.*" />
-      </ItemGroup>
-      <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-          <LegacyBinariesToBinFolder Include="$(SolutionDir)..\extern\legacy_remove_me\bin\*" />
-          <LegacyBinariesToNodesFolder Include="$(SolutionDir)..\extern\legacy_remove_me\nodes\*" />
-          <LegacyBinariesToBinResourcesFolder Include="$(SolutionDir)..\extern\legacy_remove_me\bin\en-US\*" />
       </ItemGroup>
     <Copy SourceFiles="$(SolutionDir)..\README.md" DestinationFiles="$(OutputPath)README.txt" />
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\License.rtf" DestinationFolder="$(OutputPath)" />
@@ -169,10 +149,6 @@
     <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\Operators.xml" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\BuiltIn.xml" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\BuiltIn.Migrations.xml" DestinationFolder="$(OutputPath)" />
-    <!--Enable these if/when we need to keep old binaries for patch installer compatability-->
-    <Copy SourceFiles="@(LegacyBinariesToBinFolder)" DestinationFolder="$(OutputPath)" Condition=" '$(TargetFramework)' == 'net48' " />
-    <Copy SourceFiles="@(LegacyBinariesToNodesFolder)" DestinationFolder="$(OutputPath)\nodes\" Condition=" '$(TargetFramework)' == 'net48' " />
-     <Copy SourceFiles="@(LegacyBinariesToBinResourcesFolder)" DestinationFolder="$(OutputPath)\en-US\" Condition=" '$(TargetFramework)' == 'net48' " />
     <Copy SourceFiles="$(SolutionDir)Config\upiconfig.xml" DestinationFolder="$(OutputPath)" /> 
   </Target>
   <Target Name="AfterBuildOps" AfterTargets="ResolveSateliteResDeps">

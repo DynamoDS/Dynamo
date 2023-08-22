@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <UILib>true</UILib>
   </PropertyGroup>
@@ -25,9 +25,9 @@
     </ReferenceCopyLocalPaths>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <PackageReference Include="LiveCharts" Version="0.9.7" />
-    <PackageReference Include="LiveCharts.Wpf" Version="0.9.7" />
     <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.103" />
+    <PackageReference Include="LiveChartsCore" Version="2.0.0-beta.855" />
+    <PackageReference Include="LiveChartsCore.SkiaSharpView.WPF" Version="2.0.0-beta.855" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
     <Reference Include="Microsoft.Practices.Prism">

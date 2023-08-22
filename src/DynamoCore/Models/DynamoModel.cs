@@ -1011,7 +1011,7 @@ namespace Dynamo.Models
 #endif
 
             LogWarningMessageEvents.LogWarningMessage += LogWarningMessage;
-
+            LogWarningMessageEvents.LogInfoMessage += LogInfoMessage;
             StartBackupFilesTimer();
 
             TraceReconciliationProcessor = this;
@@ -1462,6 +1462,7 @@ namespace Dynamo.Models
 #endif
 
             LogWarningMessageEvents.LogWarningMessage -= LogWarningMessage;
+            LogWarningMessageEvents.LogInfoMessage -= LogInfoMessage;
             foreach (var ws in _workspaces)
             {
                 ws.Dispose();
@@ -1850,6 +1851,16 @@ namespace Dynamo.Models
         {
             Validity.Assert(EngineController.LiveRunnerRuntimeCore != null);
             EngineController.LiveRunnerRuntimeCore.RuntimeStatus.LogWarning(WarningID.Default, args.message);
+        }
+
+        /// <summary>
+        /// This info message is displayed on the node associated with the FFI dll
+        /// </summary>
+        /// <param name="args"></param>
+        private void LogInfoMessage(LogWarningMessageEventArgs args)
+        {
+            Validity.Assert(EngineController.LiveRunnerRuntimeCore != null);
+            EngineController.LiveRunnerRuntimeCore.RuntimeStatus.LogInfo(InfoID.Default, args.message);
         }
 
         #endregion
@@ -2369,6 +2380,7 @@ namespace Dynamo.Models
                 this.LinterManager);
 
             workspace.FileName = string.IsNullOrEmpty(filePath) ? "" : filePath;
+            workspace.FromJsonGraphId = string.IsNullOrEmpty(filePath) ? WorkspaceModel.ComputeGraphIdFromJson(fileContents) : "";
             workspace.ScaleFactor = dynamoPreferences.ScaleFactor;
 
             // NOTE: This is to handle the case of opening a JSON file that does not have a version string

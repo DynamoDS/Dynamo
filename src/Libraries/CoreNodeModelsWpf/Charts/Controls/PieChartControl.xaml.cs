@@ -1,12 +1,15 @@
-using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using LiveCharts;
-using LiveCharts.Wpf;
-using System.ComponentModel;
-using System.Windows;
-using System.Collections.Generic;
-using System.Linq;
+using CoreNodeModelsWpf.Charts.Utilities;
+using LiveChartsCore;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
+using SkiaSharp;
+using SkiaSharp.Views.WPF;
 
 namespace CoreNodeModelsWpf.Charts.Controls
 {
@@ -15,12 +18,7 @@ namespace CoreNodeModelsWpf.Charts.Controls
     /// </summary>
     public partial class PieChartControl : UserControl, INotifyPropertyChanged
     {
-        //private Func<ChartPoint, string> PointLabel { get; set; }
-        private Random rnd = new Random();
         private readonly PieChartNodeModel model;
-
-        private double MIN_WIDTH = 300;
-        private double MIN_HEIGHT = 300;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -44,20 +42,22 @@ namespace CoreNodeModelsWpf.Charts.Controls
 
         private void BuildUI(PieChartNodeModel model)
         {
+            PieChart.LegendTextPaint = new SolidColorPaint(ChartStyle.LEGEND_TEXT_COLOR);
+            PieChart.LegendTextSize = ChartStyle.AXIS_FONT_SIZE;
             if (!model.InPorts[0].IsConnected && !model.InPorts[1].IsConnected && !model.InPorts[2].IsConnected)
             {
                 var seriesRange = DefaultSeries();
 
-                PieChart.Series.AddRange(seriesRange);
+                PieChart.Series = PieChart.Series.Concat(seriesRange);
             }
 
-            else if (model.InPorts[0].IsConnected && model.InPorts[1].IsConnected && model.InPorts[2].IsConnected)
+            else if (model.InPorts[0].IsConnected && model.InPorts[1].IsConnected)
             {
                 if (model.Labels.Count == model.Values.Count && model.Labels.Count > 0)
                 {
                     var seriesRange = UpdateSeries(model);
 
-                    PieChart.Series.AddRange(seriesRange);
+                    PieChart.Series = PieChart.Series.Concat(seriesRange);
                 }
             }
         }
@@ -71,39 +71,39 @@ namespace CoreNodeModelsWpf.Charts.Controls
                 // Invoke on UI thread
                 this.Dispatcher.Invoke(() =>
                 {
-                    PieChart.Series.Clear();
+                    PieChart.Series = Enumerable.Empty<ISeries>();
 
                     if (!model.InPorts[0].IsConnected && !model.InPorts[1].IsConnected && !model.InPorts[2].IsConnected)
                     {
                         var seriesRange = DefaultSeries();
 
-                        PieChart.Series.AddRange(seriesRange);
+                        PieChart.Series = PieChart.Series.Concat(seriesRange);
                     }
                     else
                     {
                         var seriesRange = UpdateSeries(model);
 
-                        PieChart.Series.AddRange(seriesRange);
+                        PieChart.Series = PieChart.Series.Concat(seriesRange);
                     }
                 });
             }
         }
 
-        private PieSeries[] DefaultSeries()
+        private IEnumerable<ISeries> DefaultSeries()
         {
-            var series = new PieSeries[]
+            var series = new List<ISeries>()
             {
-                new PieSeries { Title = "Item1", Values = new ChartValues<double> { 100.0 }, DataLabels = true/*, LabelPoint = PointLabel*/ },
-                new PieSeries { Title = "Item2", Values = new ChartValues<double> { 100.0 }, DataLabels = true/*, LabelPoint = PointLabel*/ },
-                new PieSeries { Title = "Item3", Values = new ChartValues<double> { 100.0 }, DataLabels = true/*, LabelPoint = PointLabel*/ },
+                new PieSeries<double> { Name = "Item1", Values = new List<double> { 100.0 }, DataLabelsPaint = new SolidColorPaint(SKColors.White), DataLabelsSize = ChartStyle.PIE_LABEL_TEXT_SIZE },
+                new PieSeries<double> { Name = "Item2", Values = new List<double> { 100.0 }, DataLabelsPaint = new SolidColorPaint(SKColors.White), DataLabelsSize = ChartStyle.PIE_LABEL_TEXT_SIZE },
+                new PieSeries<double> { Name = "Item3", Values = new List<double> { 100.0 }, DataLabelsPaint = new SolidColorPaint(SKColors.White), DataLabelsSize = ChartStyle.PIE_LABEL_TEXT_SIZE }
             };
 
             return series;
         }
 
-        private List<PieSeries> UpdateSeries(PieChartNodeModel model)
+        private IEnumerable<ISeries> UpdateSeries(PieChartNodeModel model)
         {
-            var seriesRange = new List<PieSeries>();
+            var seriesRange = new List<ISeries>();
 
             if (model == null)
             {
@@ -116,13 +116,13 @@ namespace CoreNodeModelsWpf.Charts.Controls
             {
                 for (var i = 0; i < model.Labels.Count; i++)
                 {
-                    seriesRange.Add(new PieSeries
+                    seriesRange.Add(new PieSeries<double>
                     {
-                        Title = model.Labels[i],
-                        Values = new ChartValues<double> { model.Values[i] },
-                        Fill = model.Colors[i],
-                        DataLabels = true,
-                        //LabelPoint = PointLabel
+                        Name = model.Labels[i],
+                        Values = new List<double> { model.Values[i] },
+                        Fill = new SolidColorPaint(model.Colors[i].ToSKColor()),
+                        DataLabelsPaint = new SolidColorPaint(SKColors.White),
+                        DataLabelsSize = ChartStyle.PIE_LABEL_TEXT_SIZE
                     });
                 }
             }
@@ -140,13 +140,13 @@ namespace CoreNodeModelsWpf.Charts.Controls
             {
                 var inputGrid = this.Parent as Grid;
 
-                if (xAdjust >= inputGrid.MinWidth && xAdjust >= MIN_WIDTH)
+                if (xAdjust >= inputGrid.MinWidth && xAdjust >= ChartStyle.CHART_MIN_WIDTH)
                 {
                     Width = xAdjust;
                     Height = xAdjust;
                 }
 
-                if (yAdjust >= inputGrid.MinHeight && xAdjust >= MIN_HEIGHT)
+                if (yAdjust >= inputGrid.MinHeight && xAdjust >= ChartStyle.CHART_MIN_HEIGHT)
                 {
                     Width = yAdjust;
                     Height = yAdjust;
