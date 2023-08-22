@@ -3,26 +3,25 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls.Primitives;
+using Dynamo.Core;
+using Dynamo.Extensions;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
 using Dynamo.Tests;
+using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Utilities;
+using Dynamo.Wpf.Views;
 using Greg;
 using Greg.Requests;
 using Greg.Responses;
 using Moq;
 using NUnit.Framework;
 using SystemTestServices;
-using Dynamo.Wpf.Views;
-using Dynamo.Core;
-using Dynamo.Extensions;
-using System.Reflection;
-using System.Threading.Tasks;
-using Dynamo.UI.Prompts;
-using System.Windows.Controls.Primitives;
 
 namespace DynamoCoreWpfTests
 {
@@ -1523,6 +1522,31 @@ namespace DynamoCoreWpfTests
 
             // Assert
             Assert.AreEqual(Dynamo.Wpf.Properties.Resources.PackageSearchViewSearchTextBox, searchViewModel.SearchBoxPrompt);
+        }
+
+        /// <summary>
+        ///     Checks the functionality of the InitialResultsLoaded property
+        /// </summary>
+        [Test]
+        public void PackageInitialResultsLoaded()
+        {
+            // Arrange
+            PackageManagerSearchViewModel searchViewModel = new PackageManagerSearchViewModel();
+
+            // Assert
+            Assert.AreEqual(false, searchViewModel.InitialResultsLoaded);
+
+            // Act
+            searchViewModel.SearchState = PackageManagerSearchViewModel.PackageSearchState.Results;
+
+            // Assert
+            Assert.AreEqual(true, searchViewModel.InitialResultsLoaded);
+
+            // Act
+            searchViewModel.SearchState = PackageManagerSearchViewModel.PackageSearchState.Searching;
+
+            // Assert
+            Assert.AreEqual(true, searchViewModel.InitialResultsLoaded);
         }
 
         [Test]
