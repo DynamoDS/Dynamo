@@ -5691,15 +5691,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to packageManagerSearchPackages.
-        /// </summary>
-        public static string PackageManagerSearchPackagesControlName {
-            get {
-                return ResourceManager.GetString("PackageManagerSearchPackagesControlName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Search for Packages.
         /// </summary>
         public static string PackageManagerSearchTab {
