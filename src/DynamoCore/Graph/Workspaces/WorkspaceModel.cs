@@ -1943,6 +1943,110 @@ namespace Dynamo.Graph.Workspaces
             this.currentPasteOffset = (this.currentPasteOffset + PasteOffsetStep) % PasteOffsetMax;
         }
 
+        #region [Nodes Info]
+
+        /// <summary>
+        /// Boolean indicates if the workspace run with warnings
+        /// </summary>
+        public bool HasWarnings
+        {
+            get { return Nodes.Any(n => n.State == ElementState.Warning || n.State == ElementState.PersistentWarning); }
+        }
+
+        /// <summary>
+        /// Boolean indicates if the workspace run with warnings with no Geometry
+        /// </summary>
+        public bool HasWarningsWithNoGeometry
+        {
+            get { return Nodes.Any(n => (n.State == ElementState.Warning || n.State == ElementState.PersistentWarning) && !n.Category.StartsWith("Geometry.")); }
+        }
+
+        /// <summary>
+        /// Boolean indicates if workspace run with errors
+        /// </summary>
+        public bool HasErrors
+        {
+            get { return Nodes.Any(n => n.State == ElementState.Error); }
+        }
+
+        /// <summary>
+        /// Boolean indicates if home workspace is displayed with infos
+        /// </summary>
+        public bool HasInfos
+        {
+            get { return Nodes.Any(n => n.State == ElementState.Info); }
+        }
+
+        /// <summary>
+        /// All the Nodes identified as deprecated
+        /// </summary>
+        public IEnumerable<NodeModel> DeprecatedNodes
+        {
+            get
+            {
+                return Nodes.Where(node => node.NodeInfos.Any(nodeInfo => nodeInfo.Message.Contains("This method is deprecated and will be removed")));
+            }
+        }
+
+        /// <summary>
+        /// Indicates if the Workspace have deprecated Nodes
+        /// </summary>
+        public bool AreDeprecatedNodes
+        {
+            get
+            {
+                return DeprecatedNodes.Count() > 0;
+            }
+        }
+
+        /// <summary>
+        /// Indicates if all the deprecated nodes have metadata, bearing on mind if all their ports are connected
+        /// </summary>
+        public bool AllDeprecatedNodesHaveMetadata
+        {
+            get
+            {
+                return DeprecatedNodes.All(node =>
+                node.InPorts.Count() == node.InPorts.Count(inPort => inPort.IsConnected == true) &&
+                node.OutPorts.Count() == node.OutPorts.Count(outPort => outPort.IsConnected == true));
+            }
+        }
+
+        /// <summary>
+        /// Indicates if the workspace has crashes or seriuos errors
+        /// </summary>
+        public bool AreThereCrashesOrSeriuosErrors
+        {
+            get
+            {
+                return HasErrors || HasInfos;
+            }
+        }
+
+        /// <summary>
+        /// Indicates if the workspace has warnings from unacceptable categories bearing in mind acceptable warnings are from Geometry Working Range and/or Gate Node
+        /// </summary>
+        public bool AreThereWarningsFromUnacceptableCategories
+        {
+            get
+            {
+                return HasWarningsWithNoGeometry; //Pending dealing with the Gate Nodes
+            }
+
+        }
+        /// <summary>
+        /// Indicates if the workspace is valid for sending to the FDX
+        /// </summary>
+        public bool IsValidForFDX
+        {
+            get
+            {
+                return !AreThereCrashesOrSeriuosErrors && !AreThereWarningsFromUnacceptableCategories && AllDeprecatedNodesHaveMetadata;
+            }
+        }
+
+        #endregion
+
         #endregion
 
         #region private/internal methods

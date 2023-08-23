@@ -68,31 +68,7 @@ namespace Dynamo.Wpf.ViewModels.Core
                 currentNotificationMessage = value;
                 RaisePropertyChanged("CurrentNotificationMessage");
             }
-        }
-
-        /// <summary>
-        /// Boolean indicates if home workspace run with errors
-        /// </summary>
-        public bool HasErrors
-        {
-            get { return Model.Nodes.Any(n => n.State == ElementState.Error); }
-        }
-
-        /// <summary>
-        /// Boolean indicates if home workspace is displayed with infos
-        /// </summary>
-        public bool HasInfos
-        {
-            get { return Model.Nodes.Any(n => n.State == ElementState.Info || n.State == ElementState.PersistentInfo); }
-        }
-
-        /// <summary>
-        /// Boolean indicates if home workspace run with warnings
-        /// </summary>
-        public bool HasWarnings
-        {
-            get { return Model.Nodes.Any(n => n.State == ElementState.Warning || n.State == ElementState.PersistentWarning); }
-        }
+        }        
 
         /// <summary>
         /// Contains all footer notification item bindings
@@ -265,7 +241,7 @@ namespace Dynamo.Wpf.ViewModels.Core
             }
 
             UpdateRunStatusMsgBasedOnStates();
-            UpdateFooterItems(HasInfos, HasWarnings, HasErrors);
+            UpdateFooterItems(Model.HasInfos, Model.HasWarnings, Model.HasErrors);
         }
 
 
@@ -286,7 +262,7 @@ namespace Dynamo.Wpf.ViewModels.Core
                 return;
             }
 
-            if (!HasWarnings && !HasErrors)
+            if (!Model.HasWarnings && !Model.HasErrors)
             {
                 if (Model.ScaleFactorChanged)
                 {
@@ -297,7 +273,7 @@ namespace Dynamo.Wpf.ViewModels.Core
                     SetCurrentWarning(NotificationLevel.Mild, Properties.Resources.RunCompletedMessage);
                 }
             }
-            else if (HasWarnings && !HasErrors)
+            else if (Model.HasWarnings && !Model.HasErrors)
             {
                 if (Model.ScaleFactorChanged)
                 {
