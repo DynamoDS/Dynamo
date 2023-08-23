@@ -373,7 +373,7 @@ namespace Dynamo.Graph.Nodes
             get { return state; }
             set
             {
-                if (value != ElementState.Error && value != ElementState.Info && value != ElementState.AstBuildBroken)
+                if (value != ElementState.Error && value != ElementState.Info && value != ElementState.PersistentInfo && value != ElementState.AstBuildBroken)
                     ClearTransientWarningsAndErrors();
 
                 // Check before settings and raising
@@ -1738,12 +1738,17 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public virtual void ClearInfoMessages()
         {
+            // It is very unlikely a node could be in both info state and persistent info state from the current design
+            // If that exception happens, we should redesign this function or have particular node override the behavior
             if (State == ElementState.Info)
             {
-                State = ElementState.Active;
+                infos.RemoveWhere(x => x.State == ElementState.Info);
             }
-
-            infos.RemoveWhere(x => x.State == ElementState.Info);
+            else if (State == ElementState.PersistentInfo)
+            {
+                infos.RemoveWhere(x => x.State == ElementState.PersistentInfo);
+            }
+            State = ElementState.Active;
             OnNodeInfoMessagesClearing();
         }
 
@@ -1869,10 +1874,35 @@ namespace Dynamo.Graph.Nodes
         /// Set an info on a node.
         /// </summary>
         /// <param name="p">The info text.</param>
+        [Obsolete("Info(string p) is deprecated, please use Info(string p, bool isPersistent = false) instead.")]
+
         public void Info(string p)
         {
             State = ElementState.Info;
             infos.Add(new Info(p, ElementState.Info));
+        }
+
+        /// <summary>
+        /// Set an info on a node.
+        /// </summary>
+        /// <param name="p">The info text.</param>
+        /// <param name="isPersistent">Is the info persistent? If true, the info will not be
+        /// cleared when the node is next evaluated. If false, the info will be cleared on the next evaluation.</param>
+        public void Info(string p, bool isPersistent = false)
+        {
+            if (isPersistent)
+            {
+                if (!Infos.Any(x => x.Message.Equals(p) && x.State == ElementState.PersistentInfo))
+                {
+                    State = ElementState.PersistentInfo;
+                    infos.Add(new Info(p, ElementState.PersistentInfo));
+                }
+            }
+            else
+            {
+                State = ElementState.Info;
+                infos.Add(new Info(p, ElementState.Info));
+            }
         }
 
         /// <summary>
@@ -2921,6 +2951,7 @@ namespace Dynamo.Graph.Nodes
         Error,
         AstBuildBroken,
         Info,
+        PersistentInfo,
         MigratedFormula
     };
 
