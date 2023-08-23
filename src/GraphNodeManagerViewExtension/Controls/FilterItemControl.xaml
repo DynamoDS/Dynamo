@@ -39,8 +39,8 @@
                                              UpdateSourceTrigger=PropertyChanged}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{Binding FilterImage}" 
-                               Width="10" 
-                               Height="10" 
+                               Width="12" 
+                               Height="12" 
                                SnapsToDevicePixels="True"
                                UseLayoutRounding="True"
                                VerticalAlignment="Stretch"
@@ -76,7 +76,7 @@
             <TextBlock Text="{Binding Name}" 
                        Padding="4 2 4 0"
                        TextAlignment="Center"
-                       FontSize="10"
+                       FontSize="11"
                        FontWeight="Medium"
                        Foreground="{StaticResource DarkThemeBodyMediumBrush}"
                        HorizontalAlignment="Center"
