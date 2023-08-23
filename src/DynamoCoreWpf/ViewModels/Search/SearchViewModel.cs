@@ -351,7 +351,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return dynamoViewModel.Model.LuceneUtility;
+                return LuceneSearch.LuceneUtilityNodeSearch;
             }
         }
 
