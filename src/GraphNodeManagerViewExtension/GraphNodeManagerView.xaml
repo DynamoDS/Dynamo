@@ -108,22 +108,6 @@
                     <EventSetter Event="PreviewMouseLeftButtonUp" Handler="Row_PreviewClickHandler"/>
                 </Style>
             </DataGrid.Resources>
-            <DataGrid.GroupStyle>
-                <GroupStyle>
-                    <GroupStyle.HeaderTemplate>
-                        <DataTemplate>
-                            <StackPanel>
-                                <TextBlock 
-                                    Text="{Binding Name}"
-                                    Foreground="#BBBBBB"
-                                    Margin="10 3 3 3"
-                                    FontSize="12"
-                                />
-                            </StackPanel>
-                        </DataTemplate>
-                    </GroupStyle.HeaderTemplate>
-                </GroupStyle>
-            </DataGrid.GroupStyle>
 
             <DataGrid.Columns>
 
@@ -266,7 +250,7 @@
                                        Width="16"
                                        Visibility="{Binding IsOutputSingleItem, Converter={StaticResource BooleanToVisibilityConverter}}"></Image>
                                     <TextBlock 
-                                        ToolTip="{x:Static p:Resources.Title_IsOutputSingleItem}"
+                                        ToolTip="{x:Static p:Resources.Title_TopLevelItemsNumber}"
                                         Text="{Binding TopLevelItemsNumber}"                                   
                                         FontSize="9"
                                         VerticalAlignment="Center"

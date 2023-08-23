@@ -91,7 +91,7 @@ namespace Dynamo.GraphNodeManager.Converters
             var infoType = parameter as string;
             if (infoType == null) return Visibility.Collapsed;
 
-            if ((ElementState)value == ElementState.Info && parameter.Equals(nameof(ElementState.Info)) || (ElementState)value == ElementState.PersistentInfo && parameter.Equals(nameof(ElementState.PersistentInfo)))
+            if ((ElementState)value == ElementState.Info && parameter.Equals(nameof(ElementState.Info)) || (ElementState)value == ElementState.PersistentInfo && parameter.Equals(nameof(ElementState.Info)))
             {
                 return Visibility.Visible;
             }

@@ -143,7 +143,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
         }
 
         /// <summary>
-        /// IsFrozen
+        /// IsFunction
         /// </summary>
         public bool StateIsFunction
         {
@@ -157,6 +157,35 @@ namespace Dynamo.GraphNodeManager.ViewModels
                 if (stateIsFunction == value) return;
                 stateIsFunction = value;
                 RaisePropertyChanged(nameof(StateIsFunction));
+            }
+        }
+        public bool IsOutputSingleItem
+        {
+            get
+            {
+                outputIsSingleItem = IsNodeOutputSingeItem(NodeModel.CachedValue);
+                return outputIsSingleItem;
+            }
+            internal set
+            {
+                if (outputIsSingleItem == value) return;
+                outputIsSingleItem = value;
+                RaisePropertyChanged(nameof(IsOutputSingleItem));
+            }
+        }
+
+        public string TopLevelItemsNumber
+        {
+            get
+            {
+                topLevelItemsNumber = GetTopLevelItemsNumber(NodeModel.CachedValue);
+                return topLevelItemsNumber;
+            }
+            internal set
+            {
+                if (topLevelItemsNumber == value) return;
+                topLevelItemsNumber = value;
+                RaisePropertyChanged(nameof(TopLevelItemsNumber));
             }
         }
 
