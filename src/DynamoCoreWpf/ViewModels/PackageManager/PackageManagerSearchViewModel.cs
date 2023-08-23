@@ -1259,16 +1259,16 @@ namespace Dynamo.PackageManager
             {
                 string searchTerm = searchText.Trim();
                 var packages = new List<PackageManagerSearchElementViewModel>();
-                
-                //The DirectoryReader and IndexSearcher have to be assigned after commiting indexing changes and before executing the Searcher.Search() method,otherwise new indexed info won't be reflected
-                LuceneSearch.LuceneSearchUtility.dirReader = LuceneSearch.LuceneSearchUtility.writer?.GetReader(applyAllDeletes: true);
 
-                if (LuceneSearch.LuceneSearchUtility.Searcher == null && LuceneSearch.LuceneSearchUtility.dirReader != null)
+                //The DirectoryReader and IndexSearcher have to be assigned after commiting indexing changes and before executing the Searcher.Search() method,otherwise new indexed info won't be reflected
+                LuceneUtility.dirReader = LuceneUtility.writer?.GetReader(applyAllDeletes: true);
+
+                if (LuceneUtility.Searcher == null && LuceneUtility.dirReader != null)
                 {
-                    LuceneSearch.LuceneSearchUtility.Searcher = new IndexSearcher(LuceneSearch.LuceneSearchUtility.dirReader);
+                    LuceneUtility.Searcher = new IndexSearcher(LuceneUtility.dirReader);
                 }
 
-                var parser = new MultiFieldQueryParser(LuceneConfig.LuceneNetVersion, LuceneConfig.PackageIndexFields, LuceneSearch.LuceneSearchUtility.Analyzer)
+                var parser = new MultiFieldQueryParser(LuceneConfig.LuceneNetVersion, LuceneConfig.PackageIndexFields, LuceneUtility.Analyzer)
                 {
                     AllowLeadingWildcard = true,
                     DefaultOperator = LuceneConfig.DefaultOperator,

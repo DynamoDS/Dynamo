@@ -21,9 +21,9 @@ namespace Dynamo.Search
         #endregion
 
         /// <summary>
-        /// LuceneSearchUtility for nodes
+        /// LuceneSearchUtility for library node search or in-canvas search
         /// </summary>
-        internal static LuceneSearchUtility LuceneSearchUtility { get; set; }
+        internal static LuceneSearchUtility LuceneUtilityNodeSearch { get; set; }
 
         /// <summary>
         /// LuceneSearchUtility for nodeaautocomplete.

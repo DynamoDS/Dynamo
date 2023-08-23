@@ -144,7 +144,7 @@ namespace Dynamo.Models
         {
             get
             {
-                return LuceneSearch.LuceneSearchUtility;
+                return LuceneSearch.LuceneUtilityNodeSearch;
             }
         }
 
@@ -925,7 +925,7 @@ namespace Dynamo.Models
 
             CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager, LibraryServices);
 
-            LuceneSearch.LuceneSearchUtility = new LuceneSearchUtility(this);
+            LuceneSearch.LuceneUtilityNodeSearch = new LuceneSearchUtility(this);
 
             if (IsTestMode)
             {
