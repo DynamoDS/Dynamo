@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -343,7 +343,7 @@ namespace CoreNodeModels.Input
             }
             else
             {
-                Info(Resources.IntegerSliderInfoMessage);
+                Info(Resources.IntegerSliderInfoMessage, true);
             }
         }
 

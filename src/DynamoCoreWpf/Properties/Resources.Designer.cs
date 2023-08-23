@@ -5538,6 +5538,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to packageManagerMyPackages.
+        /// </summary>
+        public static string PackageManagerMyPackagesControlName {
+            get {
+                return ResourceManager.GetString("PackageManagerMyPackagesControlName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Deprecated.
         /// </summary>
         public static string PackageManagerPackageDeprecated {
@@ -5561,6 +5570,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageManagerPackageUpdated {
             get {
                 return ResourceManager.GetString("PackageManagerPackageUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to packageManagerSearchPackages.
+        /// </summary>
+        public static string PackageManagerSearchPackagesControlName {
+            get {
+                return ResourceManager.GetString("PackageManagerSearchPackagesControlName", resourceCulture);
             }
         }
         

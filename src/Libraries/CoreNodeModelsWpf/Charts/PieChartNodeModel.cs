@@ -113,7 +113,7 @@ namespace CoreNodeModelsWpf.Charts
         private void PieChartNodeModel_PortConnected(PortModel port, ConnectorModel arg2)
         {
             // Reset an info states if any
-            if (port.PortType == PortType.Input && InPorts[2].IsConnected && NodeInfos.Any(x => x.State.Equals(ElementState.Info)))
+            if (port.PortType == PortType.Input && InPorts[2].IsConnected && NodeInfos.Any(x => x.State.Equals(ElementState.PersistentInfo)))
             {
                 this.ClearInfoMessages();
             }
@@ -176,7 +176,7 @@ namespace CoreNodeModelsWpf.Charts
                 if (InPorts[2].IsConnected) return;
 
                 // In case colors are not provided, we supply some from the default library of colors
-                Info(Dynamo.Wpf.Properties.CoreNodeModelWpfResources.ProvideDefaultColorsWarningMessage);
+                Info(Dynamo.Wpf.Properties.CoreNodeModelWpfResources.ProvideDefaultColorsWarningMessage, true);
 
                 for (var i = 0; i < keys.Count; i++)
                 {

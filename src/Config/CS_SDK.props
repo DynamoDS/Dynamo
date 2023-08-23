@@ -1,8 +1,8 @@
 <Project>
   <PropertyGroup>
-    <Platforms>NET60_Windows;NET60_Linux;</Platforms>
+    <Platforms>AnyCPU;NET60_Linux;</Platforms>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">NET60_Windows</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <PlatformTarget >x64</PlatformTarget>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">16.0</VisualStudioVersion>
     <TargetFramework>net6.0</TargetFramework>
@@ -33,8 +33,7 @@
     <SelfContained>false</SelfContained>
   </PropertyGroup>
     <PropertyGroup>
-    <DebugType Condition="$(Platform.Contains('NET60')) ">portable</DebugType>
-    <DebugType Condition="!$(Platform.Contains('NET60')) ">full</DebugType>
+    <DebugType>full</DebugType>
     </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug' ">
     <Optimize>false</Optimize>
@@ -44,13 +43,12 @@
     <Optimize>true</Optimize>
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
-    <PropertyGroup Condition="$(Platform.Contains('NET60'))" >
-    <TargetFramework>net6.0</TargetFramework>
+    <PropertyGroup>
     <!--Needed to copy nuget package assemblies to output folder. Anet6 issue-->
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <GenerateDependencyFile>false</GenerateDependencyFile>
   </PropertyGroup>
-  <PropertyGroup Condition="$(Platform.Contains('Windows'))" >
+  <PropertyGroup Condition="$(Platform.Contains('AnyCPU'))" >
     <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
     <DefineConstants>$(DefineConstants);_WINDOWS</DefineConstants>
   </PropertyGroup>
@@ -58,13 +56,13 @@
     <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
     <DefineConstants>$(DefineConstants);_LINUX</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(UILib)' == 'true' AND $(Platform.Contains('NET60'))">
+  <PropertyGroup Condition="'$(UILib)' == 'true' AND $(RuntimeIdentifier.Contains('win'))">
     <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
   <!--Temporary configuration to make core test projects load UI packages successfully -->
-  <PropertyGroup Condition=" '$(TestProjectDefaults)' == 'true' AND $(Platform.Contains('Windows')) ">
+  <PropertyGroup Condition=" '$(TestProjectDefaults)' == 'true' AND $(RuntimeIdentifier.Contains('win')) ">
     <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
