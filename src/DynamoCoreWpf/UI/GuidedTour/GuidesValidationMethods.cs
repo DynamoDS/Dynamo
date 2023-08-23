@@ -160,7 +160,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
             else
             {
                 if (CloseButtonSearchPackages != null)
+                {
                     CloseButtonSearchPackages.Click -= CloseButton_Click;
+                    CloseButtonSearchPackages = null;
+                }                    
             }
         }
 
