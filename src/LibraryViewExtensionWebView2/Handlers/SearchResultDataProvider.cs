@@ -36,7 +36,7 @@ namespace Dynamo.LibraryViewExtensionWebView2.Handlers
         /// Constructor
         /// </summary>
         /// <param name="items"></param>
-        public SearchResultDataProvider(NodeSearchModel model, IconResourceProvider iconProvider, DynamoModel dynamoModel) : base(model, iconProvider, dynamoModel)
+        public SearchResultDataProvider(NodeSearchModel model, IconResourceProvider iconProvider) : base(model, iconProvider)
         {
         }
 
@@ -48,8 +48,8 @@ namespace Dynamo.LibraryViewExtensionWebView2.Handlers
         /// <returns></returns>
         public override Stream GetResource(string searchText, out string extension)
         {
-            var text = Uri.UnescapeDataString(searchText);
-            var elements = model.Search(text, dynamoModel.LuceneSearchUtility);
+            var text = Uri.UnescapeDataString(searchText);          
+            var elements = model.Search(text, LuceneSearch.LuceneUtilityNodeSearch);
             extension = "json";
             return GetNodeItemDataStream(elements, true);
         }

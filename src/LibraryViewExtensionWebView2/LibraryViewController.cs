@@ -571,8 +571,8 @@ namespace Dynamo.LibraryViewExtensionWebView2
         {
             var dllProvider = new DllResourceProvider("http://localhost/dist", "Dynamo.LibraryViewExtensionWebView2.web.library");
             iconProvider = new IconResourceProvider(model.PathManager, dllProvider, customization);
-            nodeProvider = new NodeItemDataProvider(model.SearchModel, iconProvider, dynamoViewModel.Model);
-            searchResultDataProvider = new SearchResultDataProvider(model.SearchModel, iconProvider, dynamoViewModel.Model);
+            nodeProvider = new NodeItemDataProvider(model.SearchModel, iconProvider);
+            searchResultDataProvider = new SearchResultDataProvider(model.SearchModel, iconProvider);
             layoutProvider = new LayoutSpecProvider(customization, iconProvider, "Dynamo.LibraryViewExtensionWebView2.web.library.layoutSpecs.json");
         }
 

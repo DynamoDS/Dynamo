@@ -41,7 +41,6 @@ namespace Dynamo.LibraryViewExtensionWebView2
     class NodeItemDataProvider : ResourceProviderBase
     {
         protected NodeSearchModel model;
-        protected DynamoModel dynamoModel;
         private IconResourceProvider iconProvider;
         /// <summary>
         /// Constructor
@@ -52,11 +51,10 @@ namespace Dynamo.LibraryViewExtensionWebView2
             this.model = model;
         }
 
-        public NodeItemDataProvider(NodeSearchModel model, IconResourceProvider iconProvider, DynamoModel dynModel)
+        public NodeItemDataProvider(NodeSearchModel model, IconResourceProvider iconProvider)
         {
             this.model = model;
             this.iconProvider = iconProvider;
-            this.dynamoModel = dynModel;
         }
 
         public override Stream GetResource(string url, out string extension)
