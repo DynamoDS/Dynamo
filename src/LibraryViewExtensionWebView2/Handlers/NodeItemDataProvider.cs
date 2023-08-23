@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Dynamo.LibraryViewExtensionWebView2.Handlers;
-using Dynamo.Models;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Newtonsoft.Json;
