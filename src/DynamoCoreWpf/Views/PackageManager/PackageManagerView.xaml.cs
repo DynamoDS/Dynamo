@@ -12,13 +12,13 @@ using DynamoUtilities;
 
 namespace Dynamo.PackageManager.UI
 {
-    public class OpenPackageManagerEventArgs : EventArgs
+    internal class OpenPackageManagerEventArgs : EventArgs
     {
         private string tab;
 
-        public string Tab { get { return tab; } }
+        internal string Tab { get { return tab; } }
 
-        public OpenPackageManagerEventArgs(string _Tab)
+        internal OpenPackageManagerEventArgs(string _Tab)
         {
             tab = _Tab;
         }

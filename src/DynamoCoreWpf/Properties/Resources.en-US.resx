@@ -685,10 +685,6 @@ Don't worry, you'll have the option to save your work.</value>
     <value>Publish _Selected Nodes...</value>
     <comment>Package menu | Publish selected nodes as a package</comment>
   </data>
-  <data name="DynamoViewPackageMenuPublishPackage" xml:space="preserve">
-    <value>Publish _New Package...</value>
-    <comment>Package menu | Publish new package</comment>
-  </data>
   <data name="DynamoViewPackageMenuPublishWorkspace" xml:space="preserve">
     <value>Publish _Current Workspace...</value>
     <comment>Package menu | Publish current workspace as a package</comment>

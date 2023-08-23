@@ -1919,15 +1919,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Publish _New Package....
-        /// </summary>
-        public static string DynamoViewPackageMenuPublishPackage {
-            get {
-                return ResourceManager.GetString("DynamoViewPackageMenuPublishPackage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Publish _Current Workspace....
         /// </summary>
         public static string DynamoViewPackageMenuPublishWorkspace {
