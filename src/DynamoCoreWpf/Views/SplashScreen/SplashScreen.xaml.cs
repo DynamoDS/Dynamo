@@ -164,9 +164,9 @@ namespace Dynamo.UI.Views
         /// </summary>
         private void SplashScreenRequestClose(object sender, EventArgs e)
         {
-            //TODO this does not seem to be called in Revit or Sandbox context.
-            //investigate if that is appropriate. It only gets called when
-            //ShutdownParams.CloseDynamoView is true... which is never??
+            //This is only called when shutdownparams.closeDynamoView = true
+            //which is during tests or an exist command
+            //which is used rarely, during but we it is used when the Revit document is lost and Dynamo is open.
             CloseWindow();
             viewModel.RequestClose -= SplashScreenRequestClose;
         }
