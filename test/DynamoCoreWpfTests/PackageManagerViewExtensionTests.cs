@@ -27,7 +27,7 @@ namespace DynamoCoreWpfTests
 
         #region extensionGeneration
         private string extensionPath;
-        private string manifestPath;
+        private static string manifestPath;
         private string extensionManifest = 
             @"<ViewExtensionDefinition>
           <AssemblyPath>..\bin\TestViewExtension.dll</AssemblyPath>
@@ -307,11 +307,11 @@ namespace DynamoCoreWpfTests
         /// This method cleans up the manifest so the generated extension does not load
         /// during other tests.
         /// </summary>
-        public void RemoveExtension()
+        public static void RemoveExtension()
         {
             //TODO it would be good to cleanup the dll as well but we can't as it is currently loaded.
             System.IO.File.Delete(manifestPath);
-            this.FinalTearDown();
+            FinalTearDown();
         }
     }
 }

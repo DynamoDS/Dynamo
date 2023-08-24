@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
+using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
@@ -21,6 +22,7 @@ using TestServices;
 
 namespace DynamoCoreWpfTests
 {
+    [FixtureLifeCycle(LifeCycle.InstancePerTestCase)]
     public class DynamoTestUIBase
     {
         protected Preloader preloader;
@@ -140,11 +142,11 @@ namespace DynamoCoreWpfTests
         }
 
         [OneTimeTearDown]
-        public void FinalTearDown()
+        public static void FinalTearDown()
         {
             // Fix for COM exception on close
             // See: http://stackoverflow.com/questions/6232867/com-exceptions-on-exit-with-wpf 
-            //Dispatcher.CurrentDispatcher.InvokeShutdown();
+            Dispatcher.CurrentDispatcher.InvokeShutdown();
         }
 
         protected virtual void GetLibrariesToPreload(List<string> libraries)
