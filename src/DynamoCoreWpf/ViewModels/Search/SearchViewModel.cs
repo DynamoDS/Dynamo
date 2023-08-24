@@ -19,9 +19,6 @@ using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Services;
 using Dynamo.Wpf.ViewModels;
-using Lucene.Net.Documents;
-using Lucene.Net.QueryParsers.Classic;
-using Lucene.Net.Search;
 
 namespace Dynamo.ViewModels
 {
@@ -350,7 +347,13 @@ namespace Dynamo.ViewModels
         internal readonly DynamoViewModel dynamoViewModel;
 
         // Lucene search utility to perform indexing operations.
-        internal LuceneSearchUtility LuceneSearchUtility { get; }
+        private LuceneSearchUtility LuceneUtility
+        {
+            get
+            {
+                return LuceneSearch.LuceneUtilityNodeSearch;
+            }
+        }
 
         /// <summary>
         /// Class name, that has been clicked in library search view.
@@ -372,7 +375,6 @@ namespace Dynamo.ViewModels
             iconServices = new IconServices(pathManager);
 
             InitializeCore();
-            LuceneSearchUtility = dynamoViewModel.Model.LuceneSearchUtility;
         }
 
         // Just for tests. Please refer to LibraryTests.cs
@@ -386,7 +388,6 @@ namespace Dynamo.ViewModels
         {
             Model = model;
             InitializeCore();
-            LuceneSearchUtility = dynamoViewModel.Model.LuceneSearchUtility;
         }
 
         /// <summary>
@@ -944,9 +945,9 @@ namespace Dynamo.ViewModels
         /// <param name="useLucene"> Temporary flag that will be used for searching using Lucene.NET </param>
         internal IEnumerable<NodeSearchElementViewModel> Search(string search, bool useLucene)
         {
-            if (LuceneSearchUtility != null)
+            if (LuceneUtility != null)
             {
-                var searchElements = Model.Search(search, LuceneSearchUtility);
+                var searchElements = Model.Search(search, LuceneUtility);
                 return searchElements.Select(MakeNodeSearchElementVM);
             }
             return null;

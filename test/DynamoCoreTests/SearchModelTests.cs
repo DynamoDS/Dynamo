@@ -45,7 +45,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, search.NumElements);
 
             // search for new name
-            var results = search.Search(newNodeName, CurrentDynamoModel.LuceneSearchUtility).ToList();
+            var results = search.Search(newNodeName, CurrentDynamoModel.LuceneUtility).ToList();
 
             // results are correct
             Assert.AreEqual(1, results.Count());
@@ -54,7 +54,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(guid1, ((CustomNodeSearchElement)res1).ID);
 
             // search for old name
-            var results1 = search.Search(nodeName, CurrentDynamoModel.LuceneSearchUtility);
+            var results1 = search.Search(nodeName, CurrentDynamoModel.LuceneUtility);
 
             // results are correct
             Assert.AreEqual(0, results1.Count());
@@ -78,7 +78,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, search.NumElements);
 
             // search for name
-            var results = search.Search(nodeName, CurrentDynamoModel.LuceneSearchUtility).ToList();
+            var results = search.Search(nodeName, CurrentDynamoModel.LuceneUtility).ToList();
 
             // results are correct
             Assert.AreEqual(1, results.Count());
@@ -96,7 +96,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, search.NumElements);
 
             // search for name
-            var results1 = search.Search(nodeName, CurrentDynamoModel.LuceneSearchUtility).ToList();
+            var results1 = search.Search(nodeName, CurrentDynamoModel.LuceneUtility).ToList();
 
             // description is updated
             Assert.AreEqual(1, results1.Count());
@@ -142,7 +142,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(2, search.NumElements);
 
             // search for new name
-            var results = search.Search(newNodeName, CurrentDynamoModel.LuceneSearchUtility).ToList();
+            var results = search.Search(newNodeName, CurrentDynamoModel.LuceneUtility).ToList();
 
             // results are correct - only one result
             Assert.AreEqual(1, results.Count());
@@ -151,7 +151,7 @@ namespace Dynamo.Tests
             Assert.AreSame(dummySearch1, res1);
 
             // search for old name
-            results = search.Search(nodeName, CurrentDynamoModel.LuceneSearchUtility).ToList();
+            results = search.Search(nodeName, CurrentDynamoModel.LuceneUtility).ToList();
 
             // results are correct - the first nodes are returned
             Assert.AreEqual(2, results.Count());
@@ -176,7 +176,7 @@ namespace Dynamo.Tests
                 search.Add(element);
                 AddNodeElementToSearchIndex(element);
             }
-            var results = search.Search(nodeName, CurrentDynamoModel.LuceneSearchUtility).ToList();
+            var results = search.Search(nodeName, CurrentDynamoModel.LuceneUtility).ToList();
             Assert.AreEqual(nodeName, results[0].Name);
         }
 
@@ -227,7 +227,7 @@ namespace Dynamo.Tests
             search.Add(element);
             AddNodeElementToSearchIndex(element);
 
-            var results = search.Search("frog", CurrentDynamoModel.LuceneSearchUtility);
+            var results = search.Search("frog", CurrentDynamoModel.LuceneUtility);
             Assert.AreEqual(0, results.Count());
         }
 
@@ -242,7 +242,7 @@ namespace Dynamo.Tests
             search.Add(element);
             AddNodeElementToSearchIndex(element);
 
-            var results = search.Search("hi", CurrentDynamoModel.LuceneSearchUtility);
+            var results = search.Search("hi", CurrentDynamoModel.LuceneUtility);
             Assert.AreEqual(1, results.Count());
         }
 
@@ -262,7 +262,7 @@ namespace Dynamo.Tests
             search.Add(element1);
             AddNodeElementToSearchIndex(element1);
 
-            var results = search.Search("wh", CurrentDynamoModel.LuceneSearchUtility).ToList();
+            var results = search.Search("wh", CurrentDynamoModel.LuceneUtility).ToList();
             Assert.AreEqual(2, results.Count);
             Assert.AreEqual(nodeName1, results[0].Name);
             Assert.AreEqual(nodeName2, results[1].Name);
@@ -284,7 +284,7 @@ namespace Dynamo.Tests
             AddNodeElementToSearchIndex(element2);
             search.Add(element3);
             AddNodeElementToSearchIndex(element3);
-            var results = search.Search("Category.Child", CurrentDynamoModel.LuceneSearchUtility);
+            var results = search.Search("Category.Child", CurrentDynamoModel.LuceneUtility);
             Assert.AreEqual(3, results.Count());
         }
 
@@ -358,12 +358,12 @@ namespace Dynamo.Tests
             searchModel.Add(dummySearch);
             AddNodeElementToSearchIndex(dummySearch);
 
-            var res = searchModel.Search(nodeName, CurrentDynamoModel.LuceneSearchUtility).ToList();
+            var res = searchModel.Search(nodeName, CurrentDynamoModel.LuceneUtility).ToList();
             Assert.AreNotEqual(0, res.Count());
             Assert.AreEqual(res[0].Name, nodeName);
 
             searchModel.Remove(dummySearch);
-            res = searchModel.Search(nodeName, CurrentDynamoModel.LuceneSearchUtility).ToList();
+            res = searchModel.Search(nodeName, CurrentDynamoModel.LuceneUtility).ToList();
             Assert.AreEqual(0, res.Count());
         }
 
@@ -389,7 +389,7 @@ namespace Dynamo.Tests
             // it's gone
             Assert.AreEqual(0, search.NumElements);
 
-            var results = search.Search(nodeName, CurrentDynamoModel.LuceneSearchUtility);
+            var results = search.Search(nodeName, CurrentDynamoModel.LuceneUtility);
             Assert.AreEqual(0, results.Count());
         }
 
@@ -416,7 +416,7 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(2, search.NumElements);
 
-            var results = search.Search(nodeName, CurrentDynamoModel.LuceneSearchUtility).ToList();
+            var results = search.Search(nodeName, CurrentDynamoModel.LuceneUtility).ToList();
             Assert.AreEqual(2, results.Count());
 
             var resultIds = results.Cast<CustomNodeSearchElement>().Select(x => x.ID).ToList();
@@ -482,7 +482,7 @@ namespace Dynamo.Tests
         {
             search.Remove(new CustomNodeSearchElement(null, new CustomNodeInfo(Guid.NewGuid(), "", "", "", "")));
 
-            var results = search.Search("NonExistentName", CurrentDynamoModel.LuceneSearchUtility);
+            var results = search.Search("NonExistentName", CurrentDynamoModel.LuceneUtility);
             Assert.AreEqual(0, results.Count());
         }
 
@@ -513,7 +513,7 @@ namespace Dynamo.Tests
             RemoveNodeElementFromSearchIndex(dummySearch2);
             Assert.AreEqual(1, search.NumElements);
 
-            var results = search.Search(nodeName, CurrentDynamoModel.LuceneSearchUtility).ToList();
+            var results = search.Search(nodeName, CurrentDynamoModel.LuceneUtility).ToList();
             Assert.AreEqual(1, results.Count());
 
             var res1 = results[0];
@@ -532,12 +532,12 @@ namespace Dynamo.Tests
             search.Add(element);
             AddNodeElementToSearchIndex(element);
 
-            var results = search.Search("Peter", CurrentDynamoModel.LuceneSearchUtility);
+            var results = search.Search("Peter", CurrentDynamoModel.LuceneUtility);
             Assert.AreEqual(1, results.Count());
 
             search.Remove(element);
 
-            results = search.Search("Peter", CurrentDynamoModel.LuceneSearchUtility);
+            results = search.Search("Peter", CurrentDynamoModel.LuceneUtility);
             Assert.AreEqual(0, results.Count());
         }
 
@@ -551,18 +551,18 @@ namespace Dynamo.Tests
             search.Add(element);
             AddNodeElementToSearchIndex(element);
 
-            var results = search.Search("Peter", CurrentDynamoModel.LuceneSearchUtility);
+            var results = search.Search("Peter", CurrentDynamoModel.LuceneUtility);
             Assert.AreEqual(1, results.Count());
 
             search.Remove(element);
 
-            results = search.Search("Peter", CurrentDynamoModel.LuceneSearchUtility);
+            results = search.Search("Peter", CurrentDynamoModel.LuceneUtility);
             Assert.AreEqual(0, results.Count());
         }
 
         private void AddNodeElementToSearchIndex(NodeSearchElement element)
         {
-            var iDoc = CurrentDynamoModel.LuceneSearchUtility.InitializeIndexDocumentForNodes();
+            var iDoc = CurrentDynamoModel.LuceneUtility.InitializeIndexDocumentForNodes();
             if (element != null)
             {
                 CurrentDynamoModel.AddNodeTypeToSearchIndex(element, iDoc);
