@@ -391,7 +391,7 @@
              window.chrome.webview.postMessage(JSON.stringify({ "func": "ResizedEvent", "data": "" }));
         }
 
-        function dispatchEvent() {
+        function eventDispatcher() {
 
             const kbEvent = new KeyboardEvent('keydown', {
                 bubbles: true,
