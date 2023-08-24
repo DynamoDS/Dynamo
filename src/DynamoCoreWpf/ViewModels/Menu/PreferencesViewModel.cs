@@ -1341,7 +1341,6 @@ namespace Dynamo.ViewModels
             this.preferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
             this.pythonScriptEditorTextOptions = dynamoViewModel.PythonScriptEditorTextOptions;
             this.dynamoViewModel = dynamoViewModel;
-            this.dynamoViewModel.Model.ShutdownStarted += Model_ShutdownStarted;
 
             if (dynamoViewModel.PackageManagerClientViewModel != null)
             {
@@ -1427,11 +1426,6 @@ namespace Dynamo.ViewModels
 
             PropertyChanged += Model_PropertyChanged;
             InitializeCommands();
-        }
-
-        private void Model_ShutdownStarted(DynamoModel model)
-        {
-            dynamoViewModel.MainGuideManager?.CloseRealTimeInfoWindow();
         }
 
         private void PreferenceSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
