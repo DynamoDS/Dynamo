@@ -157,7 +157,7 @@ namespace Dynamo.UI.Views
                 webView.Focus();
                 System.Windows.Forms.SendKeys.SendWait("{TAB}");
             }
-            OnRequestDynamicSplashScreen();           
+            OnRequestDynamicSplashScreen();
         }
         /// <summary>
         /// Request to close SplashScreen.
@@ -219,11 +219,14 @@ namespace Dynamo.UI.Views
         private void LaunchDynamo(bool isCheckboxChecked)
         {
             CloseWasExplicit = false;
-            viewModel.PreferenceSettings.EnableStaticSplashScreen = !isCheckboxChecked;
+            if (viewModel != null)
+            {
+                viewModel.PreferenceSettings.EnableStaticSplashScreen = !isCheckboxChecked;
+            }
             StaticSplashScreenReady -= OnStaticScreenReady;
             Close();
-            dynamoView.Show();
-            dynamoView.Activate();
+            dynamoView?.Show();
+            dynamoView?.Activate();
         }
 
         /// <summary>
@@ -468,7 +471,7 @@ namespace Dynamo.UI.Views
         /// <summary>
         /// If the user wants to close the window, we shutdown the application and don't launch Dynamo
         /// </summary>
-        private void CloseWindow()
+        internal void CloseWindow()
         {
             CloseWasExplicit = true;
             if (Application.Current != null)
@@ -479,10 +482,10 @@ namespace Dynamo.UI.Views
             // If Dynamo is launched from an integrator host, user should be able to close the splash screen window.
             // Additionally, we will have to shutdown the ViewModel which will close all the services and dispose the events.
             // RequestUpdateLoadBarStatus event needs to be unsubscribed when the splash screen window is closed, to avoid populating the info on splash screen.
-            else if (this is SplashScreen)
+            else
             {
                 this.Close();
-                viewModel.Model.ShutDown(false);
+                viewModel?.Model.ShutDown(false);
             }
         }
 
