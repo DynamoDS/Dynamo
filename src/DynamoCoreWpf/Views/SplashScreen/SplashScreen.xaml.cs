@@ -26,6 +26,12 @@ namespace Dynamo.UI.Views
         private static readonly string jsEmbeddedFile = "Dynamo.Wpf.Packages.SplashScreen.build.index.bundle.js";
         private static readonly string backgroundImage = "Dynamo.Wpf.Views.SplashScreen.WebApp.splashScreenBackground.png";
         private static readonly string imageFileExtension = "png";
+        /// <summary>
+        /// True if the reason the splash screen was closed was because the user explicitly closed it,
+        /// as opposed to the splash screen closing because dynamo was launched.
+        /// This is useful for knowing if Dynamo is already started or not.
+        /// </summary>
+        public bool CloseWasExplicit { get; private set; }
 
         // Timer used for Splash Screen loading
         internal Stopwatch loadingTimer;
@@ -158,6 +164,9 @@ namespace Dynamo.UI.Views
         /// </summary>
         private void SplashScreenRequestClose(object sender, EventArgs e)
         {
+            //TODO this does not seem to be called in Revit or Sandbox context.
+            //investigate if that is appropriate. It only gets called when
+            //ShutdownParams.CloseDynamoView is true... which is never??
             CloseWindow();
             viewModel.RequestClose -= SplashScreenRequestClose;
         }
@@ -209,6 +218,7 @@ namespace Dynamo.UI.Views
         /// <param name="isCheckboxChecked"></param>
         private void LaunchDynamo(bool isCheckboxChecked)
         {
+            CloseWasExplicit = false;
             viewModel.PreferenceSettings.EnableStaticSplashScreen = !isCheckboxChecked;
             StaticSplashScreenReady -= OnStaticScreenReady;
             Close();
@@ -460,6 +470,7 @@ namespace Dynamo.UI.Views
         /// </summary>
         private void CloseWindow()
         {
+            CloseWasExplicit = true;
             if (Application.Current != null)
             {
                 Application.Current.Shutdown();
