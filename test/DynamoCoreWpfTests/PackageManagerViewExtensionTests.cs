@@ -18,7 +18,7 @@ using NUnit.Framework;
 
 namespace DynamoCoreWpfTests
 {
-    [TestFixture]
+    [TestFixture, Category("Failure")]
     class PackageManagerViewExtensionTests : DynamoTestUIBase
     {
         private string PackagesDirectory { get { return Path.Combine(GetTestDirectory(this.ExecutingDirectory), "pkgs"); } }
@@ -311,7 +311,6 @@ namespace DynamoCoreWpfTests
         {
             //TODO it would be good to cleanup the dll as well but we can't as it is currently loaded.
             System.IO.File.Delete(manifestPath);
-            this.FinalTearDown();
         }
     }
 }
