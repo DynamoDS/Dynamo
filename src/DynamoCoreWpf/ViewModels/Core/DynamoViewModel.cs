@@ -769,12 +769,6 @@ namespace Dynamo.ViewModels
             }
 
             FileTrustViewModel = new FileTrustWarningViewModel();
-            model.ShutdownStarted += Model_ShutdownStarted;
-        }
-
-        private void Model_ShutdownStarted(DynamoModel model)
-        {
-            MainGuideManager?.CloseRealTimeInfoWindow();
         }
 
         /// <summary>
@@ -876,7 +870,6 @@ namespace Dynamo.ViewModels
 
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
             UsageReportingManager.Instance.PropertyChanged -= CollectInfoManager_PropertyChanged;
-            model.ShutdownStarted -= Model_ShutdownStarted;
         }
 
         private void InitializeRecentFiles()
@@ -3426,6 +3419,7 @@ namespace Dynamo.ViewModels
             WatchHandler.RequestSelectGeometry -= BackgroundPreviewViewModel.AddLabelForPath;
             model.ComputeModelDeserialized -= model_ComputeModelDeserialized;
             model.RequestNotification -= model_RequestNotification;
+            MainGuideManager?.CloseRealTimeInfoWindow();
 
             return true;
         }
