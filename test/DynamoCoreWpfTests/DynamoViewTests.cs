@@ -50,7 +50,7 @@ namespace DynamoCoreWpfTests
             DispatcherUtil.DoEvents();
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void FooterNotificationControlTest()
         {
             // Arrange

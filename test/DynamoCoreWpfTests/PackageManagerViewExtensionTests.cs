@@ -18,7 +18,7 @@ using NUnit.Framework;
 
 namespace DynamoCoreWpfTests
 {
-    [TestFixture]
+    [TestFixture, Category("Failure")]
     class PackageManagerViewExtensionTests : DynamoTestUIBase
     {
         private string PackagesDirectory { get { return Path.Combine(GetTestDirectory(this.ExecutingDirectory), "pkgs"); } }

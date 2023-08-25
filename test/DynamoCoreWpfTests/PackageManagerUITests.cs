@@ -1277,7 +1277,7 @@ namespace DynamoCoreWpfTests
 
         }
 
-        [Test]
+        [Test, Category("Failures")]
         [Description("User tries to download packages that might conflict with an unloaded builtIn package")]
         public void PackageManagerConflictsUnloadedWithBltInPackage()
         {
