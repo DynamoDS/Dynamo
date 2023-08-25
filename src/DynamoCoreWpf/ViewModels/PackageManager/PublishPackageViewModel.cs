@@ -1338,7 +1338,7 @@ namespace Dynamo.PackageManager
             if (!(parameter is PackageItemRootViewModel packageItemRootViewModel)) return;
 
             string fileName = packageItemRootViewModel.FileInfo == null ? packageItemRootViewModel.Name : packageItemRootViewModel.FileInfo.FullName;
-            string fileType = packageItemRootViewModel.DependencyType.ToString();
+            DependencyType fileType = packageItemRootViewModel.DependencyType;
 
             if (fileName.ToLower().EndsWith(".dll") || fileType.Equals(DependencyType.Assembly))
             {
@@ -1358,7 +1358,6 @@ namespace Dynamo.PackageManager
                         
             RefreshPackageContents();
             return;
-
         }
 
         private bool CanShowAddFileDialogAndAdd()
