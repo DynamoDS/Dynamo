@@ -1738,6 +1738,9 @@ Next assemblies were loaded several times:
     <value>Package Warning</value>
     <comment>Message box title</comment>
   </data>
+  <data name="PackageManagerClearAllButtonText" xml:space="preserve">
+    <value>Clear all</value>
+  </data>
   <data name="Periodic" xml:space="preserve">
     <value>Periodic</value>
   </data>

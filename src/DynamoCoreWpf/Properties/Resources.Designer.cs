@@ -5592,6 +5592,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Clear all.
+        /// </summary>
+        public static string PackageManagerClearAllButtonText {
+            get {
+                return ResourceManager.GetString("PackageManagerClearAllButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Install.
         /// </summary>
         public static string PackageManagerInstall {
