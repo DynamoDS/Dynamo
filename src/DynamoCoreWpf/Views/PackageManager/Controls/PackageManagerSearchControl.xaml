@@ -405,7 +405,7 @@
                 <!-- Clear Filter Button -->
                 <Button x:Name="ClearFiltersButton"
                         DockPanel.Dock="Right"
-                        Content="{x:Static p:Resources.PackageSearchViewContextMenuFilterDependencies}"
+                        Content="{x:Static p:Resources.PackageManagerClearAllButtonText}"
                         Margin="0 3 5 15"
                         Width="60"
                         HorizontalAlignment="Right"
