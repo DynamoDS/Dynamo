@@ -194,7 +194,7 @@ namespace Dynamo.PackageManager
         }
 
         private List<FilterEntry> hostFilter;
-        
+
         /// <summary>
         /// Dynamic Filter for package hosts, should include all Dynamo known hosts from PM backend
         ///  e.g. "Advance Steel", "Alias", "Civil 3D", "FormIt", "Revit"
@@ -1294,8 +1294,12 @@ namespace Dynamo.PackageManager
 
             var isEnabledForInstall = !(Preferences as IDisablePackageLoadingPreferences).DisableCustomPackageLocations;
 
-            // Don't show deprecated packages
-            list = Filter(LastSync.Where(x => !x.IsDeprecated)
+            // Filter based on user preference
+            // A package has depndencies if the number of direct_dependency_ids is more than 1
+            list = Filter(LastSync.Where(x => ShowDeprecated ? true : !x.IsDeprecated)
+                                  .Where(x => ShowActive ? true : x.IsDeprecated)
+                                  .Where(x => !ShowDependencies ? true : PackageHasDependencies(x))
+                                  .Where(x => !ShowNoDependencies ? true : !PackageHasDependencies(x))
                                   .Select(x => new PackageManagerSearchElementViewModel(x,
                                                    PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider,
                                                    CanInstallPackage(x.Name), isEnabledForInstall)))
@@ -1313,6 +1317,17 @@ namespace Dynamo.PackageManager
 
             return list;
         }
+
+        /// <summary>
+        /// Checks if a package has any dependencies (will always have at least itself as 1 dependency) 
+        /// </summary>
+        /// <param name="package"></param>
+        /// <returns></returns>
+        private bool PackageHasDependencies(PackageManagerSearchElement package)
+        {
+            return package.Header.versions.First(v => v.version.Equals(package.SelectedVersion)).direct_dependency_ids.Count() > 1;
+        }
+
 
         /// <summary>
         ///     Performs a search using the given string as query, but does not update

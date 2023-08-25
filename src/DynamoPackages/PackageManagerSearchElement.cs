@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -42,6 +42,10 @@ namespace Dynamo.PackageManager
         public int UsedBy { get { return this.Header.used_by.Count; } }
         public string LatestVersion { get { return Header.versions[Header.versions.Count - 1].version; } }
         public string LatestVersionCreated { get { return Header.versions[Header.versions.Count - 1].created; } }
+        /// <summary>
+        /// The current selected package version of the user un the Package Manager UI
+        /// </summary>
+        public string SelectedVersion { get; set; }
 
         /// <summary>
         /// Hosts dependencies specified for latest version of particular package
@@ -143,6 +147,7 @@ namespace Dynamo.PackageManager
                 this.Keywords = "";
             }
             this.Votes = header.votes;
+            this.SelectedVersion = this.LatestVersion;
         }
 
         public PackageManagerSearchElement(PackageVersion infectedVersion)

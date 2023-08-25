@@ -1,14 +1,14 @@
-﻿using SystemTestServices;
+using System.Collections.Generic;
+using Dynamo.Controls;
 using Dynamo.PackageManager.ViewModels;
-using Moq;
-using NUnit.Framework;
-using Greg.Responses;
-using Greg;
 using Dynamo.Tests;
 using Dynamo.ViewModels;
-using System.Collections.Generic;
+using Greg;
+using Greg.Responses;
+using Moq;
+using NUnit.Framework;
+using SystemTestServices;
 using static Dynamo.PackageManager.PackageManagerSearchViewModel;
-using Dynamo.Controls;
 
 namespace Dynamo.PackageManager.Wpf.Tests
 {
