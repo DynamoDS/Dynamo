@@ -28,9 +28,6 @@
       <Reference Include="System.Windows" />
       <Reference Include="System.Xaml" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
-    <PackageReference Include="CoreCLR-NCalc" Version="2.2.92" />
-  </ItemGroup>
   <ItemGroup>
 	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
