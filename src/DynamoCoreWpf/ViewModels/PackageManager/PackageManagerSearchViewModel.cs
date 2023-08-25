@@ -98,7 +98,9 @@ namespace Dynamo.PackageManager
                 set
                 {
                     _onChecked = value;
+
                     RaisePropertyChanged(nameof(OnChecked));
+                    pmSearchViewModel.SetFilterChange();
                 }
             }
 
@@ -341,26 +343,45 @@ namespace Dynamo.PackageManager
             get { return this.SearchResults.Count == 0; }
         }
 
-        private bool showActive = true;
+        private bool showNew;
+        private bool showUpdated;
         private bool showDeprecated;
         private bool showDependencies;
         private bool showNoDependencies;
+        private bool isAnyFilterOn;
+
         /// <summary>
-        /// Toggles active packages on and off
+        /// Toggles active packages filter on and off
         /// </summary>
-        public bool ShowActive
+        public bool ShowNew
         {
-            get { return showActive; }
+            get { return showNew; }
             set
             {
-                showActive = value;
-                RaisePropertyChanged(nameof(ShowActive));
+                showNew = value;
+                RaisePropertyChanged(nameof(ShowNew));
+                SetFilterChange();
                 SearchAndUpdateResults();
             }
         }
+        /// <summary>
+        /// Toggles updated packages filter on and off
+        /// </summary>
+        public bool ShowUpdated
+        {
+            get { return showUpdated; }
+            set
+            {
+                showUpdated = value;
+                RaisePropertyChanged(nameof(ShowUpdated));
+                SetFilterChange();
+                SearchAndUpdateResults();
+            }
+
+        }
 
         /// <summary>
-        /// Toggles deprecated packages on and off
+        /// Toggles deprecated packages filter on and off
         /// </summary>
         public bool ShowDeprecated
         {
@@ -369,6 +390,7 @@ namespace Dynamo.PackageManager
             {
                 showDeprecated = value;
                 RaisePropertyChanged(nameof(ShowDeprecated));
+                SetFilterChange();
                 SearchAndUpdateResults();
             }
         }
@@ -383,6 +405,7 @@ namespace Dynamo.PackageManager
             {
                 showDependencies = value;
                 RaisePropertyChanged(nameof(ShowDependencies));
+                SetFilterChange();
                 SearchAndUpdateResults();
             }
         }
@@ -397,14 +420,32 @@ namespace Dynamo.PackageManager
             {
                 showNoDependencies = value;
                 RaisePropertyChanged(nameof(ShowNoDependencies));
+                SetFilterChange();
                 SearchAndUpdateResults();
             }
         }
 
+
         /// <summary>
         /// Returns true if any filter is currently active (set to `true`)
-        /// </summary>
-        public bool IsAnyFilterOn { get { return HostFilter.Any(f => f.OnChecked) || ShowActive || ShowDeprecated || ShowNoDependencies || ShowDependencies; } }
+        /// </summary>  
+        public bool IsAnyFilterOn
+        {
+            get
+            {
+                return isAnyFilterOn;
+            }
+            set
+            {
+                if(isAnyFilterOn != value) isAnyFilterOn = value;
+                RaisePropertyChanged(nameof(IsAnyFilterOn));
+            }
+        }
+
+        private void SetFilterChange()
+        {
+            IsAnyFilterOn = HostFilter.Any(f => f.OnChecked) || ShowNew || ShowUpdated || ShowDeprecated || ShowNoDependencies || ShowDependencies;
+        }
 
         /// <summary>
         /// Checks if the package can be installed.
@@ -579,7 +620,7 @@ namespace Dynamo.PackageManager
             ViewPackageDetailsCommand = new DelegateCommand<object>(ViewPackageDetails);
             ClearSearchTextBoxCommand = new DelegateCommand<object>(ClearSearchTextBox);
             ClearToastNotificationCommand = new DelegateCommand<object>(ClearToastNotification);
-            ClearFiltersCommand = new DelegateCommand<object>(ClearAllFilters, CanClearAllFilters);
+            ClearFiltersCommand = new DelegateCommand<object>(ClearAllFilters);
             SearchText = string.Empty;
             SortingKey = PackageSortingKey.Votes;
             SortingDirection = PackageSortingDirection.Descending;
@@ -859,17 +900,13 @@ namespace Dynamo.PackageManager
                 }
             }
 
-            if (ShowActive) ShowActive = false;
+            if (ShowNew) ShowNew = false;
+            if (ShowUpdated) ShowUpdated = false;
             if (ShowDeprecated) ShowDeprecated = false;
             if (ShowDependencies) ShowDependencies = false;
             if (ShowNoDependencies) ShowNoDependencies = false;
 
             RaisePropertyChanged(nameof(IsAnyFilterOn));
-        }
-
-        private bool CanClearAllFilters(object par)
-        {
-            return IsAnyFilterOn;
         }
 
         /// <summary>
@@ -1296,8 +1333,9 @@ namespace Dynamo.PackageManager
 
             // Filter based on user preference
             // A package has depndencies if the number of direct_dependency_ids is more than 1
-            list = Filter(LastSync.Where(x => ShowDeprecated ? true : !x.IsDeprecated)
-                                  .Where(x => ShowActive ? true : x.IsDeprecated)
+            list = Filter(LastSync.Where(x => ShowDeprecated ? x.IsDeprecated : true)
+                                  .Where(x => ShowNew ? IsNewPackage(x) : true)
+                                  .Where(x => ShowUpdated ? IsUpdatedPackage(x) : true)
                                   .Where(x => !ShowDependencies ? true : PackageHasDependencies(x))
                                   .Where(x => !ShowNoDependencies ? true : !PackageHasDependencies(x))
                                   .Select(x => new PackageManagerSearchElementViewModel(x,
@@ -1321,13 +1359,44 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// Checks if a package has any dependencies (will always have at least itself as 1 dependency) 
         /// </summary>
-        /// <param name="package"></param>
+        /// <param name="package">The package to be filtered</param>
         /// <returns></returns>
         private bool PackageHasDependencies(PackageManagerSearchElement package)
         {
             return package.Header.versions.First(v => v.version.Equals(package.SelectedVersion)).direct_dependency_ids.Count() > 1;
         }
 
+        /// <summary>
+        /// Follows DateToPackageLabelConverter logic:
+        /// If the package is brand new (only has 1 version) and is less than 30 days it says 'New'.
+        /// </summary>
+        /// <param name="package">The package to be filtered</param>
+        /// <returns></returns>
+        private bool IsNewPackage(PackageManagerSearchElement package)
+        {
+            DateTime.TryParse(package.LatestVersionCreated, out DateTime dateLastUpdated);
+            TimeSpan difference = DateTime.Now - dateLastUpdated;
+            int numberVersions = package.Header.num_versions;
+
+            if(difference.TotalDays >= 30 || numberVersions > 1) return false;
+            return true;
+        }
+
+        /// <summary>
+        /// Follows DateToPackageLabelConverter logic:
+        /// If the package was updated in the last 30 days and has more than 1 version it is 'Updated'.
+        /// </summary>
+        /// <param name="package">The package to be filtered</param>
+        /// <returns></returns>
+        private bool IsUpdatedPackage(PackageManagerSearchElement package)
+        {
+            DateTime.TryParse(package.LatestVersionCreated, out DateTime dateLastUpdated);
+            TimeSpan difference = DateTime.Now - dateLastUpdated;
+            int numberVersions = package.Header.num_versions;
+
+            if (difference.TotalDays >= 30 || numberVersions == 1) return false;
+            return true;
+        }
 
         /// <summary>
         ///     Performs a search using the given string as query, but does not update

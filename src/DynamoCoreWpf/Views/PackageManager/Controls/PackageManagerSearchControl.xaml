@@ -295,11 +295,16 @@
                                             </Separator.Template>
                                         </Separator>
 
-                                        <!--  Filter Active  -->
-                                        <MenuItem Header="{x:Static p:Resources.PackageSearchViewContextMenuFilterActive}"
+                                        <!--  Filter New  -->
+                                        <MenuItem Header="{x:Static p:Resources.PackageManagerPackageNew}"
                                                   ToolTipService.IsEnabled="False"
                                                   IsCheckable="True"
-                                                  IsChecked="{Binding Path=ShowActive, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                  IsChecked="{Binding Path=ShowNew, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                        <!--  Filter Updated  -->
+                                        <MenuItem Header="{x:Static p:Resources.PackageManagerPackageUpdated}"
+                                                  ToolTipService.IsEnabled="False"
+                                                  IsCheckable="True"
+                                                  IsChecked="{Binding Path=ShowUpdated, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                         <!--  Filter Deprecated  -->
                                         <MenuItem Header="{x:Static p:Resources.PackageSearchViewContextMenuFilterDeprecated}"
                                                   ToolTipService.IsEnabled="False"
@@ -359,9 +364,13 @@
                     <ItemsControl.ItemsSource>
                         <CompositeCollection>
                             <CollectionContainer Collection="{Binding Source={StaticResource FilterItems}}" />
-                            <local:FilterTagControl TagName="{x:Static p:Resources.PackageSearchViewContextMenuFilterActive}"
-                                                    IsFilterOn="{Binding ShowActive, Mode=TwoWay}"
-                                                    Visibility="{Binding ShowActive,
+                            <local:FilterTagControl TagName="{x:Static p:Resources.PackageManagerPackageNew}"
+                                                    IsFilterOn="{Binding ShowNew, Mode=TwoWay}"
+                                                    Visibility="{Binding ShowNew,
+                                                        Converter={StaticResource BoolToVisibilityCollapsedConverter}}" />
+                            <local:FilterTagControl TagName="{x:Static p:Resources.PackageManagerPackageUpdated}"
+                                                    IsFilterOn="{Binding ShowUpdated, Mode=TwoWay}"
+                                                    Visibility="{Binding ShowUpdated,
                                                         Converter={StaticResource BoolToVisibilityCollapsedConverter}}" />
                             <local:FilterTagControl TagName="{x:Static p:Resources.PackageSearchViewContextMenuFilterDeprecated}"
                                                     IsFilterOn="{Binding ShowDeprecated, Mode=TwoWay}"
