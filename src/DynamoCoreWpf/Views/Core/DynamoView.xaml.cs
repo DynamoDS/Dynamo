@@ -275,34 +275,52 @@ namespace Dynamo.Controls
 
         private void DynamoViewModel_RequestEnableShortcutBarItems(bool enable)
         {
-            saveThisButton.IsEnabled = enable;
-            saveButton.IsEnabled = enable;
-            exportMenu.IsEnabled = enable;
-            
-            shortcutBar.IsNewButtonEnabled = enable;
-            shortcutBar.IsOpenButtonEnabled = enable;
-            shortcutBar.IsSaveButtonEnabled = enable;
-            shortcutBar.IsLoginMenuEnabled = enable;
-            shortcutBar.IsExportMenuEnabled  = enable;
-            shortcutBar.IsNotificationCenterEnabled = enable;
-
-            if(dynamoViewModel.ShowStartPage)
+            if (!(saveThisButton is null))
             {
-                shortcutBar.IsNewButtonEnabled = true;
-                shortcutBar.IsOpenButtonEnabled = true;
-                shortcutBar.IsLoginMenuEnabled = true;
-                shortcutBar.IsNotificationCenterEnabled = true;
+                saveThisButton.IsEnabled = enable;
+                saveButton.IsEnabled = enable;
+            }
+            if (!(exportMenu is null))
+            {
+                exportMenu.IsEnabled = enable;
+            }
+           
+            if (!(shortcutBar is null))
+            {
+                shortcutBar.IsNewButtonEnabled = enable;
+                shortcutBar.IsOpenButtonEnabled = enable;
+                shortcutBar.IsSaveButtonEnabled = enable;
+                shortcutBar.IsLoginMenuEnabled = enable;
+                shortcutBar.IsExportMenuEnabled = enable;
+                shortcutBar.IsNotificationCenterEnabled = enable;
+
+                if (dynamoViewModel.ShowStartPage)
+                {
+                    shortcutBar.IsNewButtonEnabled = true;
+                    shortcutBar.IsOpenButtonEnabled = true;
+                    shortcutBar.IsLoginMenuEnabled = true;
+                    shortcutBar.IsNotificationCenterEnabled = true;
+                }
             }
         }
 
         private void OnWorkspaceOpened(WorkspaceModel workspace)
         {
-            saveThisButton.IsEnabled = true;
-            saveButton.IsEnabled = true;
-            exportMenu.IsEnabled = true;
+            if (!(saveThisButton is null))
+            {
+                saveThisButton.IsEnabled = true;
+                saveButton.IsEnabled = true;
+            }
 
-            ShortcutBar.IsSaveButtonEnabled = true;
-            shortcutBar.IsExportMenuEnabled = true;
+            if (!(exportMenu is null))
+            {
+                exportMenu.IsEnabled = true;
+            }
+            if (!(shortcutBar is null))
+            {
+                ShortcutBar.IsSaveButtonEnabled = true;
+                shortcutBar.IsExportMenuEnabled = true;
+            }
 
             if (!(workspace is HomeWorkspaceModel hws))
             return;
