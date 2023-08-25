@@ -3405,6 +3405,7 @@ namespace Dynamo.ViewModels
 
 
             BackgroundPreviewViewModel.Dispose();
+            MainGuideManager?.CloseRealTimeInfoWindow();
 
             model.ShutDown(shutdownParams.ShutdownHost);
             if (shutdownParams.ShutdownHost)
@@ -3418,8 +3419,7 @@ namespace Dynamo.ViewModels
             BackgroundPreviewViewModel.PropertyChanged -= Watch3DViewModelPropertyChanged;
             WatchHandler.RequestSelectGeometry -= BackgroundPreviewViewModel.AddLabelForPath;
             model.ComputeModelDeserialized -= model_ComputeModelDeserialized;
-            model.RequestNotification -= model_RequestNotification;
-            MainGuideManager?.CloseRealTimeInfoWindow();
+            model.RequestNotification -= model_RequestNotification;            
 
             return true;
         }
