@@ -286,8 +286,9 @@ namespace Dynamo.PackageManager
         /// </summary>
         /// <value>
         ///     This is the currently selected element in the UI.
+        ///     No initially selected item by setting to -1
         /// </value>
-        private int _selectedIndex;
+        private int _selectedIndex = -1;
         public int SelectedIndex
         {
             get { return _selectedIndex; }
