@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -8,6 +9,11 @@ namespace Dynamo.PackageDetails
 {
     public partial class PackageDetailsView : UserControl
     {
+        /// <summary>
+        ///     Used to notify when this control is closed 
+        /// </summary>
+        internal event EventHandler Closed;
+
         public PackageDetailsView()
         {
             InitializeComponent();
@@ -41,6 +47,11 @@ namespace Dynamo.PackageDetails
         {
             System.Diagnostics.Process.Start(new ProcessStartInfo(e.Uri.ToString()) { UseShellExecute = true });
             e.Handled = true;
+        }
+
+        private void CloseButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            Closed?.Invoke(this, EventArgs.Empty);
         }
     }
 }

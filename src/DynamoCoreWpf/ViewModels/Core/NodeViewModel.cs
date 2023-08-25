@@ -963,7 +963,8 @@ namespace Dynamo.ViewModels
         /// <param name="obj"></param>
         private void Logic_NodeInfoMessagesClearing(NodeModel obj)
         {
-            if (ErrorBubble == null) return;
+            // Do not clear persistent info
+            if (ErrorBubble == null || nodeLogic.State == ElementState.PersistentInfo) return;
 
             var itemsToRemove = ErrorBubble.NodeMessages.Where(x => x.Style == InfoBubbleViewModel.Style.Info).ToList();
 
@@ -1328,7 +1329,7 @@ namespace Dynamo.ViewModels
                 return warningColor;
             }
 
-            if (NodeModel.State == ElementState.Info)
+            if (NodeModel.State == ElementState.Info || NodeModel.State == ElementState.PersistentInfo)
             {
                 return infoColor;
             }
@@ -1389,7 +1390,7 @@ namespace Dynamo.ViewModels
                     }
                 }
             }
-            if (NodeModel.State == ElementState.Info)
+            if (NodeModel.State == ElementState.Info || NodeModel.State == ElementState.PersistentInfo)
             {
                 result = nodeInfoColor;
                 if (result != null)
@@ -1468,7 +1469,7 @@ namespace Dynamo.ViewModels
             if (DynamoViewModel == null) return;
 
             bool hasErrorOrWarning = NodeModel.IsInErrorState || NodeModel.State == ElementState.Warning; 
-            bool isNodeStateInfo = NodeModel.State == ElementState.Info;
+            bool isNodeStateInfo = NodeModel.State == ElementState.Info || NodeModel.State == ElementState.PersistentInfo;
 
             // Persistent warnings should continue to be displayed even if nodes are not involved in an execution as they can include:
             // 1. Compile-time warnings in CBNs
@@ -1497,7 +1498,7 @@ namespace Dynamo.ViewModels
             foreach (var info in NodeModel.Infos)
             {
                 var infoStyle = info.State == ElementState.Error ? InfoBubbleViewModel.Style.Error : InfoBubbleViewModel.Style.Warning;
-                infoStyle = info.State == ElementState.Info ? InfoBubbleViewModel.Style.Info : infoStyle;
+                infoStyle = info.State == ElementState.Info || info.State == ElementState.PersistentInfo? InfoBubbleViewModel.Style.Info : infoStyle;
 
                 // Set the info bubble style based on the heirarchy of node messages style. 1) Error 2) Warning 3) Info.
                 if (infoStyle == InfoBubbleViewModel.Style.Info && styleRank > 3)
