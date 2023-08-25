@@ -3039,6 +3039,7 @@ namespace Dynamo.ViewModels
 
 
             BackgroundPreviewViewModel.Dispose();
+            MainGuideManager?.CloseRealTimeInfoWindow();
 
             model.ShutDown(shutdownParams.ShutdownHost);
             if (shutdownParams.ShutdownHost)
