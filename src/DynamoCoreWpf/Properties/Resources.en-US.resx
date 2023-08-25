@@ -1710,6 +1710,27 @@ Next assemblies were loaded several times:
   <data name="PackageUploadStateUploading" xml:space="preserve">
     <value>Uploading...</value>
   </data>
+  <data name="PackageFilterByHost" xml:space="preserve">
+    <value>FILTER BY HOST</value>
+  </data>
+  <data name="PackageFilterByStatus" xml:space="preserve">
+    <value>FILTER BY STATUS</value>
+  </data>
+  <data name="PackageFilterByDependency" xml:space="preserve">
+    <value>FILTER BY DEPENDENCY</value>
+  </data>
+  <data name="PackageSearchViewContextMenuFilterActive" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="PackageSearchViewContextMenuFilterDeprecated" xml:space="preserve">
+    <value>Deprecated</value>
+  </data>
+  <data name="PackageSearchViewContextMenuFilterDependencies" xml:space="preserve">
+    <value>Has dependecies</value>
+  </data>
+  <data name="PackageSearchViewContextMenuFilterNoDependencies" xml:space="preserve">
+    <value>Has no dependecies</value>
+  </data>
   <data name="PackageUseNewerDynamoMessageBoxTitle" xml:space="preserve">
     <value>Package Uses Newer Version of {0}!</value>
   </data>

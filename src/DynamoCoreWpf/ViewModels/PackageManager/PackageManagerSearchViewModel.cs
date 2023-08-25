@@ -73,7 +73,7 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// Package Manager filter entry, binded to the host filter context menu
         /// </summary>
-        public class FilterEntry
+        public class FilterEntry : NotificationObject
         {
             /// <summary>
             /// Name of the host
@@ -87,11 +87,20 @@ namespace Dynamo.PackageManager
             /// </summary>
             public DelegateCommand<object> FilterCommand { get; set; }
 
+            private bool _onChecked;
             /// <summary>
             /// Boolean indicates if the Filter entry is checked, data binded to
             /// is checked property of each filter
             /// </summary>
-            public bool OnChecked { get; set; }
+            public bool OnChecked
+            {
+                get { return _onChecked; }
+                set
+                {
+                    _onChecked = value;
+                    RaisePropertyChanged(nameof(OnChecked));
+                }
+            }
 
             /// <summary>
             /// Private reference of PackageManagerSearchViewModel,
@@ -332,6 +341,71 @@ namespace Dynamo.PackageManager
             get { return this.SearchResults.Count == 0; }
         }
 
+        private bool showActive = true;
+        private bool showDeprecated;
+        private bool showDependencies;
+        private bool showNoDependencies;
+        /// <summary>
+        /// Toggles active packages on and off
+        /// </summary>
+        public bool ShowActive
+        {
+            get { return showActive; }
+            set
+            {
+                showActive = value;
+                RaisePropertyChanged(nameof(ShowActive));
+                SearchAndUpdateResults();
+            }
+        }
+
+        /// <summary>
+        /// Toggles deprecated packages on and off
+        /// </summary>
+        public bool ShowDeprecated
+        {
+            get { return showDeprecated; }
+            set
+            {
+                showDeprecated = value;
+                RaisePropertyChanged(nameof(ShowDeprecated));
+                SearchAndUpdateResults();
+            }
+        }
+
+        /// <summary>
+        /// Show only packages with dependencies 
+        /// </summary>
+        public bool ShowDependencies
+        {
+            get { return showDependencies; }
+            set
+            {
+                showDependencies = value;
+                RaisePropertyChanged(nameof(ShowDependencies));
+                SearchAndUpdateResults();
+            }
+        }
+
+        /// <summary>
+        /// Show only packages without dependencies 
+        /// </summary>
+        public bool ShowNoDependencies
+        {
+            get { return showNoDependencies; }
+            set
+            {
+                showNoDependencies = value;
+                RaisePropertyChanged(nameof(ShowNoDependencies));
+                SearchAndUpdateResults();
+            }
+        }
+
+        /// <summary>
+        /// Returns true if any filter is currently active (set to `true`)
+        /// </summary>
+        public bool IsAnyFilterOn { get { return HostFilter.Any(f => f.OnChecked) || ShowActive || ShowDeprecated || ShowNoDependencies || ShowDependencies; } }
+
         /// <summary>
         /// Checks if the package can be installed.
         /// </summary>
@@ -458,6 +532,10 @@ namespace Dynamo.PackageManager
         /// </summary>
         public DelegateCommand<object> ClearToastNotificationCommand { get; set; }
 
+        /// <summary>
+        /// Clears all filters, setting them to `false`
+        /// </summary>
+        public DelegateCommand<object> ClearFiltersCommand { get; set; }
 
         /// <summary>
         ///     Current downloads
@@ -501,8 +579,9 @@ namespace Dynamo.PackageManager
             ViewPackageDetailsCommand = new DelegateCommand<object>(ViewPackageDetails);
             ClearSearchTextBoxCommand = new DelegateCommand<object>(ClearSearchTextBox);
             ClearToastNotificationCommand = new DelegateCommand<object>(ClearToastNotification);
+            ClearFiltersCommand = new DelegateCommand<object>(ClearAllFilters, CanClearAllFilters);
             SearchText = string.Empty;
-            SortingKey = PackageSortingKey.LastUpdate;
+            SortingKey = PackageSortingKey.Votes;
             SortingDirection = PackageSortingDirection.Descending;
             HostFilter = new List<FilterEntry>();
             SelectedHosts = new List<string>();
@@ -653,7 +732,7 @@ namespace Dynamo.PackageManager
             {
                 hostFilter.Add(new FilterEntry(host, this));
             }
-            
+
             return hostFilter;
         }
 
@@ -763,6 +842,34 @@ namespace Dynamo.PackageManager
         public bool CanSetSortingDirection(object par)
         {
             return true;
+        }
+
+        /// <summary>
+        /// Sets all current filetrs to false
+        /// </summary>
+        /// <param name="obj"></param>
+        private void ClearAllFilters(object obj)
+        {
+            foreach (var filter in HostFilter)
+            {
+                if (filter.OnChecked)
+                {
+                    filter.OnChecked = false;
+                    filter.FilterCommand.Execute(filter.FilterName);
+                }
+            }
+
+            if (ShowActive) ShowActive = false;
+            if (ShowDeprecated) ShowDeprecated = false;
+            if (ShowDependencies) ShowDependencies = false;
+            if (ShowNoDependencies) ShowNoDependencies = false;
+
+            RaisePropertyChanged(nameof(IsAnyFilterOn));
+        }
+
+        private bool CanClearAllFilters(object par)
+        {
+            return IsAnyFilterOn;
         }
 
         /// <summary>

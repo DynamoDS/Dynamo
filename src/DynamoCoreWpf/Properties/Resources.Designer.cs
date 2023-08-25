@@ -5528,6 +5528,33 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to FILTER BY DEPENDENCY.
+        /// </summary>
+        public static string PackageFilterByDependency {
+            get {
+                return ResourceManager.GetString("PackageFilterByDependency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FILTER BY HOST.
+        /// </summary>
+        public static string PackageFilterByHost {
+            get {
+                return ResourceManager.GetString("PackageFilterByHost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FILTER BY STATUS.
+        /// </summary>
+        public static string PackageFilterByStatus {
+            get {
+                return ResourceManager.GetString("PackageFilterByStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A problem occurred when trying to install the package. Dynamo is unable to obtain read/write access to
         ///{0}.
         /// </summary>
@@ -6020,6 +6047,42 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageSearchViewClearButtonTooltip {
             get {
                 return ResourceManager.GetString("PackageSearchViewClearButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Active.
+        /// </summary>
+        public static string PackageSearchViewContextMenuFilterActive {
+            get {
+                return ResourceManager.GetString("PackageSearchViewContextMenuFilterActive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Has dependecies.
+        /// </summary>
+        public static string PackageSearchViewContextMenuFilterDependencies {
+            get {
+                return ResourceManager.GetString("PackageSearchViewContextMenuFilterDependencies", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deprecated.
+        /// </summary>
+        public static string PackageSearchViewContextMenuFilterDeprecated {
+            get {
+                return ResourceManager.GetString("PackageSearchViewContextMenuFilterDeprecated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Has no dependecies.
+        /// </summary>
+        public static string PackageSearchViewContextMenuFilterNoDependencies {
+            get {
+                return ResourceManager.GetString("PackageSearchViewContextMenuFilterNoDependencies", resourceCulture);
             }
         }
         
