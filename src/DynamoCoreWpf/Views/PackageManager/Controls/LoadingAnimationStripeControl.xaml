@@ -1,0 +1,83 @@
+<UserControl x:Class="Dynamo.PackageManager.UI.LoadingAnimationStripeControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:local="clr-namespace:Dynamo.PackageManager.UI"
+             mc:Ignorable="d"
+             d:DesignHeight="200"
+             d:DesignWidth="500"
+             Background="Transparent">
+    <UserControl.Resources>
+        <sys:Double x:Key="animationSpeed">1.5</sys:Double>
+    </UserControl.Resources>
+    <Grid HorizontalAlignment="Stretch"
+          VerticalAlignment="Stretch">
+        <!--Base color-->
+        <Rectangle HorizontalAlignment="Stretch"
+                   Name="viewDetailsRectangleBackground"
+                   Fill="#33808080">
+        </Rectangle>
+        <!--Moving part-->
+        <Rectangle HorizontalAlignment="Stretch"
+                   Name="viewDetailsRectangle">
+            <Rectangle.Fill>
+                <LinearGradientBrush StartPoint="1,0.5"
+                                     EndPoint="0,0.5">
+                    <GradientStop Color="#33808080"
+                                  Offset="0" />
+                    <GradientStop x:Name="GradiantStopA"
+                                  Color="#808080"
+                                  Offset="0.5" />
+                    <GradientStop Color="#33808080"
+                                  Offset="1" />
+                </LinearGradientBrush>
+            </Rectangle.Fill>
+            <Rectangle.Triggers>
+                <EventTrigger RoutedEvent="Loaded">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <!--Gradient offset animation-->
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="GradiantStopA"
+                                                           Storyboard.TargetProperty="Offset"
+                                                           RepeatBehavior="Forever"
+                                                           AccelerationRatio="0.5"
+                                                           DecelerationRatio="0.5"
+                                                           SpeedRatio="{DynamicResource animationSpeed}">
+                                <LinearDoubleKeyFrame Value="0.9"
+                                                      KeyTime="0:0:0">
+                                </LinearDoubleKeyFrame>
+                                <LinearDoubleKeyFrame Value="0.5"
+                                                      KeyTime="0:0:1.5">
+                                </LinearDoubleKeyFrame>
+                                <LinearDoubleKeyFrame Value="0.1"
+                                                      KeyTime="0:0:3">
+                                </LinearDoubleKeyFrame>
+                            </DoubleAnimationUsingKeyFrames>
+                            <!--Opacity animation-->
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity"
+                                                           RepeatBehavior="Forever"
+                                                           AccelerationRatio="0.5"
+                                                           DecelerationRatio="0.5"
+                                                           SpeedRatio="{DynamicResource animationSpeed}">
+                                <LinearDoubleKeyFrame Value="0"
+                                                      KeyTime="0:0:0">
+                                </LinearDoubleKeyFrame>
+                                <LinearDoubleKeyFrame Value="1"
+                                                      KeyTime="0:0:1.5">
+                                </LinearDoubleKeyFrame>
+                                <LinearDoubleKeyFrame Value="0"
+                                                      KeyTime="0:0:3">
+                                </LinearDoubleKeyFrame>
+                                <LinearDoubleKeyFrame Value="0"
+                                                      KeyTime="0:0:6">
+                                </LinearDoubleKeyFrame>
+                            </DoubleAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Rectangle.Triggers>
+        </Rectangle>
+    </Grid>
+</UserControl>

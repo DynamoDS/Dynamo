@@ -52,6 +52,21 @@ namespace ProtoCore
             public int AstID;
             public string Filename;
         }
+
+        internal enum InfoID
+        {
+            Default
+        }
+
+        public struct InfoEntry
+        {
+            internal Runtime.InfoID ID;
+            internal string Message;
+            internal int ExpressionID;
+            internal Guid GraphNodeGuid;
+            internal int AstID;
+            internal string Filename;
+        }
     }
 
     public class RuntimeStatus
@@ -59,6 +74,7 @@ namespace ProtoCore
         private readonly DynamoLock rwl = new DynamoLock();
         private ProtoCore.RuntimeCore runtimeCore;
         private List<Runtime.WarningEntry> warnings;
+        private List<Runtime.InfoEntry> infos;
 
         public IOutputStream MessageHandler
         {
@@ -83,6 +99,28 @@ namespace ProtoCore
             }
         }
 
+        internal List<Runtime.InfoEntry> Infos
+        {
+            get
+            {
+                using (rwl.CreateReadLock())
+                {
+                    return infos.ToList();
+                }
+            }
+        }
+
+        internal int InfosCount
+        {
+            get
+            {
+                using (rwl.CreateReadLock())
+                {
+                    return infos.Count;
+                }
+            }
+        }
+
         public int WarningCount
         {
             get
@@ -99,6 +137,7 @@ namespace ProtoCore
             using (rwl.CreateWriteLock())
             {
                 warnings.RemoveAll(w => w.ExpressionID == expressionID);
+                infos.RemoveAll(w => w.ExpressionID == expressionID);
             }
         }
 
@@ -107,6 +146,7 @@ namespace ProtoCore
             using (rwl.CreateWriteLock())
             {
                 warnings.RemoveAll(w => w.GraphNodeGuid.Equals(guid));
+                infos.RemoveAll(w => w.GraphNodeGuid.Equals(guid));
             }
         }
 
@@ -115,6 +155,7 @@ namespace ProtoCore
             using (rwl.CreateWriteLock())
             {
                 warnings.RemoveAll(w => w.AstID.Equals(astID));
+                infos.RemoveAll(w => w.AstID.Equals(astID));
             }
         }
 
@@ -123,6 +164,7 @@ namespace ProtoCore
                              System.IO.TextWriter writer = null)
         {
             warnings = new List<Runtime.WarningEntry>();
+            infos = new List<Runtime.InfoEntry>();
             this.runtimeCore = runtimeCore;
 
             if (writer != null)
@@ -196,9 +238,54 @@ namespace ProtoCore
             }
         }
 
+        internal void LogInfo(Runtime.InfoID ID, string message, string filename)
+        {
+            filename ??= string.Empty;
+
+            if (MessageHandler != null)
+            {
+                var outputMessage = new OutputMessage(OutputMessage.MessageType.Info,
+                                                      message.Trim(), filename);
+                MessageHandler.Write(outputMessage);
+            }
+
+            AssociativeGraph.GraphNode executingGraphNode = null;
+            var executive = runtimeCore.CurrentExecutive.CurrentDSASMExec;
+            if (executive != null)
+            {
+                executingGraphNode = executive.Properties.executingGraphNode;
+                // In delta execution mode, it means the info is from some
+                // internal graph node. 
+                if (executingGraphNode != null && executingGraphNode.guid.Equals(System.Guid.Empty))
+                {
+                    executingGraphNode = runtimeCore.DSExecutable.ExecutingGraphnode;
+                }
+            }
+
+            var entry = new InfoEntry
+            {
+                ID = ID,
+                Message = message,
+                ExpressionID = runtimeCore.RuntimeExpressionUID,
+                GraphNodeGuid = executingGraphNode == null ? Guid.Empty : executingGraphNode.guid,
+                AstID = executingGraphNode == null ? Constants.kInvalidIndex : executingGraphNode.OriginalAstID,
+                Filename = filename
+            };
+
+            using (rwl.CreateWriteLock())
+            {
+                infos.Add(entry);
+            }
+        }
+
         public void LogWarning(Runtime.WarningID ID, string message)
         {
             LogWarning(ID, message, string.Empty, Constants.kInvalidIndex, Constants.kInvalidIndex);
+        }
+
+        internal void LogInfo(Runtime.InfoID ID, string message)
+        {
+            LogInfo(ID, message, string.Empty);
         }
 
         private void AuditCodeLocation(ref string filePath, ref int line, ref int column)

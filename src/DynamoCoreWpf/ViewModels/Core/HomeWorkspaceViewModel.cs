@@ -83,7 +83,7 @@ namespace Dynamo.Wpf.ViewModels.Core
         /// </summary>
         public bool HasInfos
         {
-            get { return Model.Nodes.Any(n => n.State == ElementState.Info); }
+            get { return Model.Nodes.Any(n => n.State == ElementState.Info || n.State == ElementState.PersistentInfo); }
         }
 
         /// <summary>
@@ -347,7 +347,7 @@ namespace Dynamo.Wpf.ViewModels.Core
             else
                 if (FooterNotificationItems[1].NotificationCount != 0) FooterNotificationItems[1].NotificationCount = 0;
             if (hasInfo)
-                FooterNotificationItems[2].NotificationCount = Model.Nodes.Count(n => n.State == ElementState.Info);
+                FooterNotificationItems[2].NotificationCount = Model.Nodes.Count(n => n.State == ElementState.Info || n.State == ElementState.PersistentInfo);
             else
                 if (FooterNotificationItems[2].NotificationCount != 0) FooterNotificationItems[2].NotificationCount = 0;
         }
@@ -440,7 +440,7 @@ namespace Dynamo.Wpf.ViewModels.Core
                     FitSelection(nodes, (FooterNotificationItem.FooterNotificationType)parameter);
                     break;
                 case FooterNotificationItem.FooterNotificationType.Information:
-                    nodes = Model.Nodes.Where(n => n.State == ElementState.Info);
+                    nodes = Model.Nodes.Where(n => n.State == ElementState.Info || n.State == ElementState.PersistentInfo);
                     FitSelection(nodes, (FooterNotificationItem.FooterNotificationType)parameter);
                     break;
             }

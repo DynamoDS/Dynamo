@@ -27,13 +27,10 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
-            <controls:BrushColorToStringConverter x:Key="BrushColorToStringConverter" />
-            <controls:StringToBrushColorConverter x:Key="StringToBrushColorConverter" />
-            <controls:RadioButtonCheckedConverter x:Key="RadioButtonCheckedConverter" />
-            <controls:BinaryRadioButtonCheckedConverter x:Key="BinaryRadioButtonCheckedConverter" />
-            <controls:ExpandersBindingConverter x:Key="ExpandersBindingConverter" />
-            <controls:InverseBoolToVisibilityConverter  x:Key="InverseBoolToVisibilityConverter " />
-            <controls:InverseBoolToEnablingConverter  x:Key="InverseBoolToEnablingConverter " />
+            <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
+            <controls:InverseBooleanToVisibilityCollapsedConverter x:Key="InverseBooleanToVisibilityCollapsedConverter" />
+            <controls:ListHasMoreThanNItemsToVisibilityConverter x:Key="ListHasMoreThanNItemsToVisibilityConverter" />
+            <controls:EmptyListToVisibilityConverter x:Key="EmptyListToVisibilityConverter" />
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
             <Style x:Key="PkgMngListBoxStyle" TargetType="ListBox">
@@ -73,7 +70,7 @@
     <!--The main grid of the Package Manager window-->
     <Border x:Name="mainBorder"
             BorderBrush="{StaticResource WorkspaceBackgroundHomeBrush}"
-            BorderThickness="2"
+            BorderThickness="1"
             CornerRadius="4"
             Background="{StaticResource PreferencesWindowBackgroundColor}">
 
@@ -97,7 +94,7 @@
                     <ColumnDefinition Width="46" />
                 </Grid.ColumnDefinitions>
                 <TextBlock x:Name="HeaderTitle"
-                           Text="Package Manager (placeholder)"
+                           Text="{x:Static p:Resources.PackageManagerTitle}"
                            Foreground="{StaticResource PreferencesWindowFontColor}"
                            Grid.Column="0"
                            Margin="14,16,0,0"
@@ -139,7 +136,7 @@
                                 BorderThickness="0"
                                 Background="{StaticResource PreferencesWindowBackgroundColor}">
 
-                        <TabItem Header="Search for Packages"
+                        <TabItem Header="{x:Static p:Resources.PackageManagerSearchTab}"
                                  Style="{StaticResource PackageManagerTab}">
                             <!--Search Packages Tab-->
                             <Border BorderBrush="{StaticResource BorderBrushWithOpacity}"
@@ -153,16 +150,73 @@
                                       Background="{StaticResource PackageManagerTabBackgroundColor}">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*" />
+                                        <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
 
                                     <local:PackageManagerSearchControl x:Name="packageManagerSearch"
+                                                                       Background="{StaticResource PackageManagerTabBackgroundColor}"
                                                                        DataContext="{Binding Path=PackageManagerViewModel.PackageSearchViewModel, ElementName=PackageManagerWindow}" />
 
+                                    <!--  Loading taking longer warning bar  -->
+                                    <Grid Grid.Row="1"
+                                          x:Name="loadingSearchWarningBar"
+                                          Margin="4 0 3 0"
+                                          Visibility="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.TimedOut,
+                                                                                            ElementName=PackageManagerWindow, Converter={StaticResource BoolToVisibilityCollapsedConverter}}">
+                                        <!--  Contains all of the warning bar message  -->
+                                        <Border Padding="15,10"
+                                                Background="#4e4e4e"
+                                                CornerRadius="3">
+                                            <Grid Height="40">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <!--  Alert Icon  -->
+                                                <Image Grid.Column="0"
+                                                       Width="18"
+                                                       Height="18"
+                                                       VerticalAlignment="Center"
+                                                       Source="/DynamoCoreWpf;component/UI/Images/alert_2.png"
+                                                       Visibility="Visible" />
+
+                                                <!--  Warning Message  -->
+                                                <TextBlock Grid.Column="1"
+                                                           Margin="10,0,0,0"
+                                                           VerticalAlignment="Center"
+                                                           Foreground="#f5f5f5"
+                                                           FontWeight="Normal"
+                                                           FontSize="13"
+                                                           Text="{x:Static p:Resources.PackageManagerLoadingTimedOutWarningMessage}"
+                                                           TextTrimming="CharacterEllipsis" />
+
+                                                <Button Grid.Row="0"
+                                                        Grid.RowSpan="2"
+                                                        Grid.Column="3"
+                                                        Width="16"
+                                                        Height="16"
+                                                        Margin="10,0,0,0"
+                                                        Background="{StaticResource PrimaryCharcoal300Brush}"
+                                                        BorderThickness="0"
+                                                        Click="CloseToastButton_OnClick"
+                                                        DockPanel.Dock="Right"
+                                                        Style="{StaticResource CloseButtonStyle}" />
+                                            </Grid>
+                                        </Border>
+
+                                        <!--  The download status flag, which changes colour to reflect the downloadState  -->
+                                        <Border Width="3"
+                                                HorizontalAlignment="Left"
+                                                Background="{StaticResource YellowOrange500Brush}"
+                                                CornerRadius="3,0,0,3" />
+                                    </Grid>
                                 </Grid>
                             </Border>
                         </TabItem>
 
-                        <TabItem Header="Publish a Package"
+                        <TabItem Header="{x:Static p:Resources.PackageManagerPublishTab}"
                                  Style="{StaticResource PackageManagerTab}">
                             <!--Publish Packages Tab-->
                             <Border BorderBrush="{StaticResource BorderBrushWithOpacity}"
@@ -182,7 +236,7 @@
                             </Border>
                         </TabItem>
 
-                        <TabItem Header="Installed Packages"
+                        <TabItem Header="{x:Static p:Resources.PackageManagerInstalledPackagesTab}"
                                  Style="{StaticResource PackageManagerTab}">
                             <!--Installed Packages Tab-->
                             <Border BorderBrush="{StaticResource BorderBrushWithOpacity}"
@@ -195,17 +249,52 @@
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
-
+                                    
+                                    <!--Installed packages control-->
                                     <wpfControls:InstalledPackagesControl x:Name="installedPackages"
-                                                                          DataContext="{Binding PackageManagerViewModel }"
+                                                                          DataContext="{Binding PackageManagerViewModel}"
                                                                           VerticalAlignment="Stretch"
-                                                                          Height="650"/>
+                                                                          Height="650"
+                                                                          Visibility="{Binding PackageManagerViewModel.LocalPackages, Converter={StaticResource ListHasMoreThanNItemsToVisibilityConverter}}" />
+
+
+                                    <!--Empty list screen-->
+                                    <StackPanel Orientation="Vertical"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Center"
+                                                Margin="0 0 0 73"
+                                                Visibility="{Binding PackageManagerViewModel.LocalPackages, Converter={StaticResource EmptyListToVisibilityConverter }}">
+                                        <Image HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Width="158px"
+                                               Height="Auto"
+                                               Margin="0 0 0 50"
+                                               Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/PackageManager/empty-state-first-use-light-gray.png"></Image>
+                                        <TextBlock Style="{StaticResource LabelStyle}"
+                                                   FontSize="18px"
+                                                   HorizontalAlignment="Center"
+                                                   Text="{x:Static p:Resources.PackagerManageNoInstalledPackagesMessage}" />
+                                        <TextBlock Style="{StaticResource SubLabelStyle}"
+                                                   FontSize="13px"
+                                                   HorizontalAlignment="Center"
+                                                   Text="{x:Static p:Resources.PackageManagerNoInstalledPackagesSubMessage}" />
+                                        <Button Content="{x:Static p:Resources.PackageManagerSearchPackagesButton}"
+                                                Margin="0 25"
+                                                Background="#0696D7"
+                                                Foreground="White"
+                                                BorderBrush="#0696D7"
+                                                Width="Auto"
+                                                HorizontalAlignment="Center"
+                                                Padding="5"
+                                                Click="SearchForPackagesButton_Click"
+                                                Style="{StaticResource CtaButtonStyle}" />
+                                    </StackPanel>
 
                                 </Grid>
                             </Border>
                         </TabItem>
-    
-                        <TabItem Header="My Packages"
+
+                        <TabItem Header="{x:Static p:Resources.PackageManagerMyPackagesTab}"
                                  Style="{StaticResource PackageManagerTab}">
                             <!--My Packages Tab-->
                             <Border BorderBrush="{StaticResource BorderBrushWithOpacity}"
@@ -213,16 +302,151 @@
                                 <!--This Grid contains MyPackages tab-->
                                 <Grid x:Name="MyPackagesTab"
                                       Margin="1"
-                                      HorizontalAlignment="Stretch">
+                                      HorizontalAlignment="Stretch"
+                                      VerticalAlignment="Stretch">
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
                                         <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
+                                    <!--Loading screen-->
+                                    <local:PackageManagerPackageAnimationControl x:Name="loadingScreen"
+                                                                                 Visibility="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.InitialResultsLoaded,
+                                                                                                ElementName=PackageManagerWindow, 
+                                                                                                Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter},
+                                                                                                UpdateSourceTrigger=PropertyChanged}" />
+
+                                    <!--Grid controlling visibility of the MyPackages control-->
+                                    <Grid Visibility="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.SearchMyResults,
+                                                               UpdateSourceTrigger=PropertyChanged,
+                                                               ElementName=PackageManagerWindow,
+                                                               Converter={StaticResource ListHasMoreThanNItemsToVisibilityConverter}}"
+                                          x:Name="myPackagesGrid">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="2" />
+                                            <ColumnDefinition Width="0"
+                                                              MinWidth="1"
+                                                              x:Name="packageDetailsGrid" />
+                                        </Grid.ColumnDefinitions>
+                                        <!--My Packages control-->
+                                        <local:PackageManagerPackagesControl x:Name="packageManagerMyPackages"
+                                                                             DataContext="{Binding Path=PackageManagerViewModel.PackageSearchViewModel, ElementName=PackageManagerWindow}"
+                                                                             SearchItems="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.SearchMyResults, ElementName=PackageManagerWindow}"
+                                                                             Visibility="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.InitialResultsLoaded,
+                                                                                                ElementName=PackageManagerWindow, 
+                                                                                                Converter={StaticResource BoolToVisibilityCollapsedConverter},
+                                                                                                UpdateSourceTrigger=PropertyChanged}" />
+
+                                        <GridSplitter Grid.Column="1"
+                                                      Grid.Row="1"
+                                                      Grid.RowSpan="1"
+                                                      VerticalAlignment="Stretch"
+                                                      HorizontalAlignment="Center"
+                                                      Background="{StaticResource PackageManagerTabBackgroundColor}"
+                                                      Width="3"
+                                                      Visibility="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.IsDetailPackagesExtensionOpened,
+                                                               UpdateSourceTrigger=PropertyChanged,
+                                                               ElementName=PackageManagerWindow,
+                                                               Converter={StaticResource BoolToVisibilityCollapsedConverter}}" />
+                                    </Grid>
+
+                                    <!--Empty list screen-->
+                                    <StackPanel Orientation="Vertical"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Center"
+                                                Margin="0 0 0 80"
+                                                Visibility="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.SearchMyResults,
+                                                                     UpdateSourceTrigger=PropertyChanged,
+                                                                     ElementName=PackageManagerWindow,
+                                                                     Converter={StaticResource EmptyListToVisibilityConverter }}">
+                                        <Image HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Width="158px"
+                                               Height="Auto"
+                                               Margin="0 0 0 50"
+                                               Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/PackageManager/empty-state-first-use-light-gray.png"></Image>
+                                        <TextBlock Style="{StaticResource LabelStyle}"
+                                                   FontSize="18px"
+                                                   Text="{x:Static p:Resources.PackagerManageNoPublishedPackagesMessage}" />
+                                        <TextBlock Style="{StaticResource SubLabelStyle}"
+                                                   FontSize="13px"
+                                                   HorizontalAlignment="Center"
+                                                   Text="{x:Static p:Resources.PackagerManageNoPublishedPackagesSubMessage}" />
+                                        <Button Content="{x:Static p:Resources.PackageManagerPublishPackageButton}"
+                                                Margin="0 25"
+                                                Background="#0696D7"
+                                                Foreground="White"
+                                                BorderBrush="#0696D7"
+                                                Width="Auto"
+                                                HorizontalAlignment="Center"
+                                                Padding="5"
+                                                Click="PublishPackageButton_Click"
+                                                Style="{StaticResource CtaButtonStyle}" />
+                                    </StackPanel>
+
+                                    <!--  Loading taking longer warning bar  -->
+                                    <Grid Grid.Row="1"
+                                          x:Name="loadingMyPackagesWarningBar"
+                                          Margin="4 0 3 0"
+                                          Visibility="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.TimedOut,
+                                                                                            ElementName=PackageManagerWindow, Converter={StaticResource BoolToVisibilityCollapsedConverter}}">
+                                        <!--  Contains all of the warning bar message  -->
+                                        <Border Padding="15,10"
+                                                Background="#4e4e4e"
+                                                CornerRadius="3">
+                                            <Grid Height="40">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <!--  Alert Icon  -->
+                                                <Image Grid.Column="0"
+                                                       Width="18"
+                                                       Height="18"
+                                                       VerticalAlignment="Center"
+                                                       Source="/DynamoCoreWpf;component/UI/Images/alert_2.png"
+                                                       Visibility="Visible" />
+
+                                                <!--  Warning Message  -->
+                                                <TextBlock Name="warning"
+                                                           Grid.Column="1"
+                                                           Margin="10,0,0,0"
+                                                           VerticalAlignment="Center"
+                                                           Foreground="#f5f5f5"
+                                                           FontWeight="Normal"
+                                                           FontSize="13"
+                                                           Text="{x:Static p:Resources.PackageManagerLoadingTimedOutWarningMessage}"
+                                                           TextTrimming="CharacterEllipsis" />
+
+                                                <Button Name="closeToastButton"
+                                                        Grid.Row="0"
+                                                        Grid.RowSpan="2"
+                                                        Grid.Column="3"
+                                                        Width="16"
+                                                        Height="16"
+                                                        Margin="10,0,0,0"
+                                                        Background="{StaticResource PrimaryCharcoal300Brush}"
+                                                        BorderThickness="0"
+                                                        Click="CloseToastButton_OnClick"
+                                                        DockPanel.Dock="Right"
+                                                        Style="{StaticResource CloseButtonStyle}" />
+                                            </Grid>
+                                        </Border>
+
+                                        <!--  The download status flag, which changes colour to reflect the downloadState  -->
+                                        <Border Width="3"
+                                                HorizontalAlignment="Left"
+                                                Background="{StaticResource YellowOrange500Brush}"
+                                                CornerRadius="3,0,0,3" />
+                                    </Grid>
+
                                 </Grid>
                             </Border>
                         </TabItem>
 
-                        <TabItem Header="Package Settings"
+                        <TabItem Header="{x:Static p:Resources.PackageManagerPackageSettingsTab}"
                                  Style="{StaticResource PackageManagerTab}">
                             <!--Package Settings Tab-->
                             <Border BorderBrush="{StaticResource BorderBrushWithOpacity}"
@@ -232,7 +456,7 @@
                                       Margin="1"
                                       HorizontalAlignment="Stretch"
                                       VerticalAlignment="Stretch"
-                                      DataContext="{Binding Path=PackageManagerViewModel.PreferencesViewModel, ElementName=PackageManagerWindow}">
+                                      DataContext="{Binding  Path=PackageManagerViewModel.PreferencesViewModel, ElementName=PackageManagerWindow}">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />
@@ -241,11 +465,18 @@
                                                 Grid.Row="0"
                                                 Margin="15 6"
                                                 HorizontalAlignment="Stretch">
-                                        <Label Content="Edit your package settings in Preferences."
-                                               FontFamily="{StaticResource ArtifaktElementRegular}"
-                                               Foreground="{StaticResource PreferencesWindowFontColor}"
-                                               FontSize="13"
-                                               Margin="0 0 0 20" />
+                                        <TextBlock FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                   Foreground="{StaticResource PreferencesWindowFontColor}"
+                                                   FontSize="13"
+                                                   Margin="0 5 0 20">
+                                            <Run Text="{x:Static p:Resources.PackageManagerSettingsRunPrefix}" />
+                                            <Hyperlink Click="OnPackageManagerSettingsHyperlinkClicked"
+                                                       Foreground="{StaticResource TextBlockLinkForegroundColor}">
+                                                <TextBlock Name="PackageManagerLink"
+                                                           Text="{x:Static p:Resources.PackageManagerSettingsHyperlink}" />
+                                            </Hyperlink>
+                                            <Run>.</Run>
+                                        </TextBlock>
                                         <Label Content="{x:Static p:Resources.PreferencesViewPackageDownloadDirectory}"
                                                Padding="5,5,5,5"
                                                FontSize="13"

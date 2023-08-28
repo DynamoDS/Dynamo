@@ -30,6 +30,7 @@ using Dynamo.Wpf.Rendering;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoCoreWpfTests.Utility;
 using DynamoShapeManager;
+using HelixToolkit.SharpDX.Core;
 using HelixToolkit.Wpf.SharpDX;
 using NUnit.Framework;
 using SharpDX;
@@ -110,6 +111,10 @@ namespace WpfVisualizationTests
 
             ViewModel = DynamoViewModel.Start(vmConfig);
 
+            // Disable edge rendering to ensure that curve counts are correct.
+            // because preferences settings is now a sinleton prefs changes can affect other tests.
+            ViewModel.RenderPackageFactoryViewModel.ShowEdges = false;
+
             //create the view
             View = new DynamoView(ViewModel);
             View.Show();
@@ -140,7 +145,7 @@ namespace WpfVisualizationTests
             };
         }
 
-        private async void Model_EvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
+        private void Model_EvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
         {
             DispatcherUtil.DoEvents();
         }
@@ -159,11 +164,13 @@ namespace WpfVisualizationTests
             ViewModel.OpenCommand.Execute(relativePath);
         }
 
-        // With version 2.5 NUnit will call base class TearDown methods after those in the derived classes
-        [TearDown]
-        private void CleanUp()
+        public override void TearDown()
         {
             Model.EvaluationCompleted -= Model_EvaluationCompleted;
+            base.TearDown();
+            //ensure dispatcher queue is flushed after view is closed to make sure
+            //unloaded event is fired.
+            DispatcherUtil.DoEvents();
         }
     }
 
@@ -1261,7 +1268,7 @@ namespace WpfVisualizationTests
             }
         }
 
-        private async void tagGeometryWhenClickingItem(int[] indexes, int expectedNumberOfLabels,
+        private void tagGeometryWhenClickingItem(int[] indexes, int expectedNumberOfLabels,
             string nodeName, Func<NodeView,NodeModel> getGeometryOwnerNode, bool expandPreviewBubble = false)
         {
             OpenVisualizationTest("MAGN_3815.dyn");
@@ -1289,17 +1296,17 @@ namespace WpfVisualizationTests
             {
                 treeViewItem = treeViewItem.ChildrenOfType<TreeViewItem>().ElementAt(index);
             }
-
             // click on the found TreeViewItem
             View.Dispatcher.Invoke(() =>
             {
                 treeViewItem.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left)
                 {
-                    RoutedEvent = Mouse.MouseDownEvent
+                    RoutedEvent = Mouse.MouseUpEvent
                 });
             });
 
             DispatcherUtil.DoEvents();
+
 
             // check if label has been added to corresponding geometry
             var helix = ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel;
@@ -1440,6 +1447,35 @@ X: 0.5 Y: -0.5 Z: -0.5".Replace(" ",string.Empty),
                 System.String.Join(Environment.NewLine, edgeVerts.Select(x=>x.ToString())).Replace(" ",string.Empty));
         }
 
+        [Test]
+        public void Watch3dNodeDisposal_DoesNotBreakBackGroundPreview()
+        {
+           OpenVisualizationTest("FirstRunWatch3D.dyn");
+           RunCurrentModel();
+           DispatcherUtil.DoEvents();
+            //asset that background preview contains a mesh.
+            Assert.AreEqual(1, BackgroundPreviewGeometry.NumberOfVisibleMeshes());
+
+            //now delete watch3d and the cube constructor node
+            var delCommand = new DynamoModel.DeleteModelCommand("60a5fa8a-c0ef-41c8-b717-5465ef759f80");
+            var del2Command = new DynamoModel.DeleteModelCommand("fb256aa2-819a-4037-80fb-40dc2a70f2f0");
+            Model.ExecuteCommand(delCommand);
+            Model.ExecuteCommand(del2Command);
+            RunCurrentModel();
+            DispatcherUtil.DoEvents();
+            Assert.AreEqual(0, BackgroundPreviewGeometry.NumberOfVisibleMeshes());
+
+            //recreate the cube node
+            var undocommand = new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Undo);
+            Model.ExecuteCommand(undocommand);
+            RunCurrentModel();
+            DispatcherUtil.DoEvents();
+            Assert.AreEqual(1, BackgroundPreviewGeometry.NumberOfVisibleMeshes());
+            Assert.NotNull(HelixWatch3DViewModel.WhiteMaterial);
+            Assert.NotNull(HelixWatch3DViewModel.SelectedMaterial);
+            Assert.NotNull(HelixWatch3DViewModel.FrozenMaterial);
+            Assert.NotNull(HelixWatch3DViewModel.IsolatedMaterial);
+        }
 
     }
 

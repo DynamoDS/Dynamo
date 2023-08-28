@@ -2,7 +2,7 @@
   "Uuid": "036288cd-da3b-4c7d-a1b4-cb370a045013",
   "IsCustomNode": false,
   "Description": null,
-  "Name": "TestGeometryScaling",
+  "Name": "GeometryScalingCodeBlock",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -11,14 +11,13 @@
   "Nodes": [
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
       "Id": "bcf1c89353114dff9a04203ffb9d426c",
+      "NodeType": "FunctionNode",
       "Inputs": [
         {
           "Id": "2ec1e886e80744a283abbeb017072a83",
           "Name": "centerPoint",
-          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "Description": "Center point of circle\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -27,7 +26,7 @@
         {
           "Id": "34882a36bde147cfbaa01a6df0e304ab",
           "Name": "radius",
-          "Description": "double\nDefault value : 1",
+          "Description": "Radius\n\ndouble\nDefault value : 1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -38,27 +37,31 @@
         {
           "Id": "d580bf0fd5264d69b53c5c4e47953998",
           "Name": "Circle",
-          "Description": "Circle",
+          "Description": "Circle created with center point and radius",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
           "KeepListStructure": false
         }
       ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
       "Replication": "Auto",
       "Description": "Creates a Circle with input center Point and radius in the world XY plane, with world Z as normal.\n\nCircle.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Circle"
     },
     {
-      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "NodeType": "CodeBlockNode",
-      "Code": "100000;",
-      "Id": "a7e3c25d800a49f7852b6b28e1564863",
+      "ConcreteType": "CoreNodeModels.Input.IntegerSlider, CoreNodeModels",
+      "NumberType": "Integer",
+      "MaximumValue": 100000,
+      "MinimumValue": 0,
+      "StepValue": 1,
+      "Id": "7db0c3d300b646e0ab41a5759bb66107",
+      "NodeType": "NumberInputNode",
       "Inputs": [],
       "Outputs": [
         {
-          "Id": "5eece3def8ad4cf286fb2175351e5ca8",
+          "Id": "3e9260a4a94b4a46bf382bdcc071ed12",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Int64",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -66,31 +69,49 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly"
+      "Description": "Produces integer values",
+      "InputValue": 100000
     }
   ],
   "Connectors": [
     {
-      "Start": "5eece3def8ad4cf286fb2175351e5ca8",
+      "Start": "3e9260a4a94b4a46bf382bdcc071ed12",
       "End": "34882a36bde147cfbaa01a6df0e304ab",
-      "Id": "1b9ab8a2f70d4b3ebdefc2c7a491b235"
+      "Id": "f2d652ae0ae04501ba6c97742556e7ab",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
   "NodeLibraryDependencies": [],
-  "ExtensionWorkspaceData": [],
+  "Thumbnail": null,
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.19",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
   "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 100.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.11.0.4146",
+      "Version": "2.19.0.5944",
       "RunType": "Manual",
       "RunPeriod": "1000"
     },
     "Camera": {
-      "Name": "Background Preview",
+      "Name": "_Background Preview",
       "EyeX": -17.0,
       "EyeY": 24.0,
       "EyeZ": 50.0,
@@ -101,26 +122,27 @@
       "UpY": 1.0,
       "UpZ": 0.0
     },
+    "ConnectorPins": [],
     "NodeViews": [
       {
-        "ShowGeometry": true,
-        "Name": "Circle.ByCenterPointRadius",
         "Id": "bcf1c89353114dff9a04203ffb9d426c",
+        "Name": "Circle.ByCenterPointRadius",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
+        "ShowGeometry": true,
         "X": 480.5,
         "Y": 360.0
       },
       {
-        "ShowGeometry": true,
-        "Name": "Code Block",
-        "Id": "a7e3c25d800a49f7852b6b28e1564863",
+        "Id": "7db0c3d300b646e0ab41a5759bb66107",
+        "Name": "Integer Slider",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 225.5,
-        "Y": 377.0
+        "ShowGeometry": true,
+        "X": 51.999999999999943,
+        "Y": 371.33333333333366
       }
     ],
     "Annotations": [],

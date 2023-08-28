@@ -170,7 +170,7 @@
     <comment>It is comment in the code. OUT shouldn't be translated.</comment>
   </data>
   <data name="PythonScriptEditorRevertButtonTooltip" xml:space="preserve">
-    <value>Revert the changes made to current Python node editor and close it.</value>
+    <value>Revert the changes made to current Python node editor.</value>
   </data>
   <data name="PythonScriptEditorUndoButtonTooltip" xml:space="preserve">
     <value>Undo</value>

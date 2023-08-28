@@ -362,7 +362,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
         {
             if (e.Key == Key.Delete)
             {
-                _ = ExecuteScriptFunctionAsync(browser, "dispatchEvent");
+                _ = ExecuteScriptFunctionAsync(browser, "eventDispatcher");
             }
         }
 
