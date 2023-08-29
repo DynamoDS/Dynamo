@@ -1,4 +1,4 @@
-﻿using ProtoCore.DSASM;
+using ProtoCore.DSASM;
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -66,14 +66,40 @@ namespace ProtoCore.Utils
             return Regex.Split(text, "\r\n|\r|\n");
         }
 
+        /// <summary>
+        /// Replace all tabs with spaces given the text and tab spacing size
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="tabSpacingSize"></param>
+        /// <returns></returns>
         public static string TabToSpaceConversion(string text, int tabSpacingSize)
         {
-            return text.Replace("\t", new String(' ', tabSpacingSize));
+            try
+            {
+                return text.Replace("\t", new String(' ', tabSpacingSize));
+            }
+            catch (Exception)
+            {
+                return text;
+            }
         }
 
+        /// <summary>
+        /// Replace all spaces with tabs given the text and tab spacing size
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="tabSpacingSize"></param>
+        /// <returns></returns>
         public static string SpaceToTabConversion(string text, int tabSpacingSize)
         {
-            return text.Replace(new String(' ', tabSpacingSize), "\t");
+            try
+            {
+                return text.Replace(new string(' ', tabSpacingSize), "\t");
+            }
+            catch (Exception)
+            {
+                return text;
+            }
         }
     }
 }
