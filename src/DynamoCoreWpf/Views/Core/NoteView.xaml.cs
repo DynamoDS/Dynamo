@@ -21,7 +21,7 @@ namespace Dynamo.Nodes
         private EditWindow editWindow;
 
         /// <summary>
-        /// Special keys defination in note
+        /// Special keys definition in note
         /// </summary>
         internal Key[] specialKeys = { Key.OemMinus, Key.Tab, Key.Enter };
 
