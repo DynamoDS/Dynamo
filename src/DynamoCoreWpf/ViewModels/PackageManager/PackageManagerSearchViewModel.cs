@@ -143,7 +143,7 @@ namespace Dynamo.PackageManager
             /// <param name="obj"></param>
             private void SetFilterHosts(object obj)
             {
-                if(GroupName.Equals(Wpf.Properties.Resources.PackageFilterByHost))
+                if(GroupName.Equals(Resources.PackageFilterByHost))
                 {
                     if (OnChecked)
                     {
@@ -715,7 +715,7 @@ namespace Dynamo.PackageManager
             var hostFilter = new List<FilterEntry>();
             foreach (var host in PackageManagerClientViewModel.Model.GetKnownHosts())
             {
-                hostFilter.Add(new FilterEntry(host, Wpf.Properties.Resources.PackageFilterByHost, this));
+                hostFilter.Add(new FilterEntry(host, Resources.PackageFilterByHost, this));
             }
 
             return hostFilter;
@@ -728,11 +728,11 @@ namespace Dynamo.PackageManager
         //private bool isAnyFilterOn;
         private List<FilterEntry> InitializeNonHostFilter()
         {
-            var nonHostFilter = new List<FilterEntry>() { new FilterEntry(Wpf.Properties.Resources.PackageManagerPackageNew, Wpf.Properties.Resources.PackageFilterByStatus, this),
-                                                          new FilterEntry(Wpf.Properties.Resources.PackageManagerPackageUpdated, Wpf.Properties.Resources.PackageFilterByStatus, this),
-                                                          new FilterEntry(Wpf.Properties.Resources.PackageSearchViewContextMenuFilterDeprecated, Wpf.Properties.Resources.PackageFilterByStatus, this),
-                                                          new FilterEntry(Wpf.Properties.Resources.PackageSearchViewContextMenuFilterDependencies, Wpf.Properties.Resources.PackageFilterByDependency, this),
-                                                          new FilterEntry(Wpf.Properties.Resources.PackageSearchViewContextMenuFilterNoDependencies, Wpf.Properties.Resources.PackageFilterByDependency, this)
+            var nonHostFilter = new List<FilterEntry>() { new FilterEntry(Resources.PackageManagerPackageNew, Resources.PackageFilterByStatus, this),
+                                                          new FilterEntry(Resources.PackageManagerPackageUpdated, Resources.PackageFilterByStatus, this),
+                                                          new FilterEntry(Resources.PackageSearchViewContextMenuFilterDeprecated, Resources.PackageFilterByStatus, this),
+                                                          new FilterEntry(Resources.PackageSearchViewContextMenuFilterDependencies, Resources.PackageFilterByDependency, this),
+                                                          new FilterEntry(Resources.PackageSearchViewContextMenuFilterNoDependencies, Resources.PackageFilterByDependency, this)
             } ;
 
             return nonHostFilter;
@@ -1299,12 +1299,12 @@ namespace Dynamo.PackageManager
 
             // Filter based on user preference
             // A package has depndencies if the number of direct_dependency_ids is more than 1
-            list = Filter(LastSync.Where(x => NonHostFilter.First(f => f.FilterName.Equals(Wpf.Properties.Resources.PackageSearchViewContextMenuFilterDeprecated)).OnChecked ? x.IsDeprecated : !x.IsDeprecated)
-                                  .Where(x => NonHostFilter.First(f => f.FilterName.Equals(Wpf.Properties.Resources.PackageManagerPackageNew)).OnChecked ? IsNewPackage(x) : true)
-                                  .Where(x => NonHostFilter.First(f => f.FilterName.Equals(Wpf.Properties.Resources.PackageManagerPackageUpdated)).OnChecked ? IsUpdatedPackage(x) : true)
-                                  .Where(x => !NonHostFilter.First(f => f.FilterName.Equals(Wpf.Properties.Resources.PackageSearchViewContextMenuFilterDependencies)).OnChecked ? true : PackageHasDependencies(x))
-                                  .Where(x => !NonHostFilter.First(f => f.FilterName.Equals(Wpf.Properties.Resources.PackageSearchViewContextMenuFilterNoDependencies)).OnChecked ? true : !PackageHasDependencies(x))
-                                  .Select(x => new PackageManagerSearchElementViewModel(x,
+            list = Filter(LastSync.Where(x => NonHostFilter.First(f => f.FilterName.Equals(Resources.PackageSearchViewContextMenuFilterDeprecated)).OnChecked ? x.IsDeprecated : !x.IsDeprecated)
+                                  .Where(x => NonHostFilter.First(f => f.FilterName.Equals(Resources.PackageManagerPackageNew)).OnChecked ? IsNewPackage(x) : true)
+                                  .Where(x => NonHostFilter.First(f => f.FilterName.Equals(Resources.PackageManagerPackageUpdated)).OnChecked ? IsUpdatedPackage(x) : true)
+                                  .Where(x => !NonHostFilter.First(f => f.FilterName.Equals(Resources.PackageSearchViewContextMenuFilterDependencies)).OnChecked ? true : PackageHasDependencies(x))
+                                  .Where(x => !NonHostFilter.First(f => f.FilterName.Equals(Resources.PackageSearchViewContextMenuFilterNoDependencies)).OnChecked ? true : !PackageHasDependencies(x))
+                                  ?.Select(x => new PackageManagerSearchElementViewModel(x,
                                                    PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider,
                                                    CanInstallPackage(x.Name), isEnabledForInstall)))
                                   .ToList();
