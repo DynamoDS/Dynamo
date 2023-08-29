@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using Dynamo.PackageManager.ViewModels;
 
 namespace Dynamo.PackageManager.UI
@@ -67,6 +68,18 @@ namespace Dynamo.PackageManager.UI
             if (!(button.DataContext is PackageManagerSearchElementViewModel packageManagerSearchElementViewModel)) return;
 
             PkgSearchVM.ViewPackageDetailsCommand.Execute(packageManagerSearchElementViewModel.Model);
+        }
+
+        private void StatusItem_OnFilter(object sender, FilterEventArgs e)
+        {
+            var item = e.Item as PackageManagerSearchViewModel.FilterEntry;
+            e.Accepted = item.GroupName.Equals(Wpf.Properties.Resources.PackageFilterByStatus);
+        }
+
+        private void DependencyItem_OnFilter(object sender, FilterEventArgs e)
+        {
+            var item = e.Item as PackageManagerSearchViewModel.FilterEntry;
+            e.Accepted = item.GroupName.Equals(Wpf.Properties.Resources.PackageFilterByDependency);
         }
     }
 }

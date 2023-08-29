@@ -80,6 +80,8 @@ namespace Dynamo.PackageManager
             /// </summary>
             public string FilterName { get; set; }
 
+            public string GroupName { get; set; }
+
             /// <summary>
             /// Filter entry click command, notice this is a dynamic command
             /// with command param set to FilterName so that the code is robust
@@ -115,9 +117,10 @@ namespace Dynamo.PackageManager
             /// </summary>
             /// <param name="filterName">Filter name, same as host name</param>
             /// <param name="packageManagerSearchViewModel">a reference of the PackageManagerSearchViewModel</param>
-            public FilterEntry(string filterName, PackageManagerSearchViewModel packageManagerSearchViewModel)
+            public FilterEntry(string filterName, string groupName, PackageManagerSearchViewModel packageManagerSearchViewModel)
             {
                 FilterName = filterName;
+                GroupName = groupName;
                 FilterCommand = new DelegateCommand<object>(SetFilterHosts, CanSetFilterHosts);
                 pmSearchViewModel = packageManagerSearchViewModel;
                 OnChecked = false;
@@ -140,19 +143,22 @@ namespace Dynamo.PackageManager
             /// <param name="obj"></param>
             private void SetFilterHosts(object obj)
             {
-                if (OnChecked)
+                if(GroupName.Equals(Wpf.Properties.Resources.PackageFilterByHost))
                 {
-                    pmSearchViewModel.SelectedHosts.Add(obj as string);
+                    if (OnChecked)
+                    {
+                        pmSearchViewModel.SelectedHosts.Add(obj as string);
+                    }
+                    else
+                    {
+                        pmSearchViewModel.SelectedHosts.Remove(obj as string);
+                    }
+                    // Send filter event with what host filter user using
+                    Dynamo.Logging.Analytics.TrackEvent(
+                        Actions.Filter,
+                        Categories.PackageManagerOperations,
+                        string.Join(",", pmSearchViewModel.SelectedHosts));
                 }
-                else
-                {
-                    pmSearchViewModel.SelectedHosts.Remove(obj as string);
-                }
-                // Send filter event with what host filter user using
-                Dynamo.Logging.Analytics.TrackEvent(
-                    Actions.Filter,
-                    Categories.PackageManagerOperations,
-                    string.Join(",", pmSearchViewModel.SelectedHosts));
                 pmSearchViewModel.SearchAndUpdateResults();
                 return;
             }
@@ -208,6 +214,23 @@ namespace Dynamo.PackageManager
             {
                 hostFilter = value;
                 RaisePropertyChanged("HostFilter");
+            }
+        }
+
+
+        private List<FilterEntry> nonHostFilter;
+
+        /// <summary>
+        /// A collection of dynamic non-hosted filters
+        /// such as New, Updated, Deprecated, Has/HasNoDependencies
+        /// </summary>
+        public List<FilterEntry> NonHostFilter
+        {
+            get { return nonHostFilter; }
+            set
+            {
+                nonHostFilter = value;
+                RaisePropertyChanged("NonHostFilter");
             }
         }
 
@@ -344,89 +367,7 @@ namespace Dynamo.PackageManager
             get { return this.SearchResults.Count == 0; }
         }
 
-        private bool showNew;
-        private bool showUpdated;
-        private bool showDeprecated;
-        private bool showDependencies;
-        private bool showNoDependencies;
         private bool isAnyFilterOn;
-
-        /// <summary>
-        /// Toggles active packages filter on and off
-        /// </summary>
-        public bool ShowNew
-        {
-            get { return showNew; }
-            set
-            {
-                showNew = value;
-                RaisePropertyChanged(nameof(ShowNew));
-                SetFilterChange();
-                SearchAndUpdateResults();
-            }
-        }
-        /// <summary>
-        /// Toggles updated packages filter on and off
-        /// </summary>
-        public bool ShowUpdated
-        {
-            get { return showUpdated; }
-            set
-            {
-                showUpdated = value;
-                RaisePropertyChanged(nameof(ShowUpdated));
-                SetFilterChange();
-                SearchAndUpdateResults();
-            }
-
-        }
-
-        /// <summary>
-        /// Toggles deprecated packages filter on and off
-        /// </summary>
-        public bool ShowDeprecated
-        {
-            get { return showDeprecated; }
-            set
-            {
-                showDeprecated = value;
-                RaisePropertyChanged(nameof(ShowDeprecated));
-                SetFilterChange();
-                SearchAndUpdateResults();
-            }
-        }
-
-        /// <summary>
-        /// Show only packages with dependencies 
-        /// </summary>
-        public bool ShowDependencies
-        {
-            get { return showDependencies; }
-            set
-            {
-                showDependencies = value;
-                RaisePropertyChanged(nameof(ShowDependencies));
-                SetFilterChange();
-                SearchAndUpdateResults();
-            }
-        }
-
-        /// <summary>
-        /// Show only packages without dependencies 
-        /// </summary>
-        public bool ShowNoDependencies
-        {
-            get { return showNoDependencies; }
-            set
-            {
-                showNoDependencies = value;
-                RaisePropertyChanged(nameof(ShowNoDependencies));
-                SetFilterChange();
-                SearchAndUpdateResults();
-            }
-        }
-
-
         /// <summary>
         /// Returns true if any filter is currently active (set to `true`)
         /// </summary>  
@@ -445,7 +386,7 @@ namespace Dynamo.PackageManager
 
         private void SetFilterChange()
         {
-            IsAnyFilterOn = HostFilter.Any(f => f.OnChecked) || ShowNew || ShowUpdated || ShowDeprecated || ShowNoDependencies || ShowDependencies;
+            IsAnyFilterOn = HostFilter.Any(f => f.OnChecked) || NonHostFilter.Any(f => f.OnChecked);
         }
 
         /// <summary>
@@ -626,6 +567,7 @@ namespace Dynamo.PackageManager
             SortingKey = PackageSortingKey.Votes;
             SortingDirection = PackageSortingDirection.Descending;
             HostFilter = new List<FilterEntry>();
+            NonHostFilter = new List<FilterEntry>();
             SelectedHosts = new List<string>();
         }
 
@@ -662,6 +604,7 @@ namespace Dynamo.PackageManager
         {
             PackageManagerClientViewModel = client;
             HostFilter = InitializeHostFilter();
+            NonHostFilter = InitializeNonHostFilter();
             InitializeLuceneForPackageManager();
         }
 
@@ -772,11 +715,30 @@ namespace Dynamo.PackageManager
             var hostFilter = new List<FilterEntry>();
             foreach (var host in PackageManagerClientViewModel.Model.GetKnownHosts())
             {
-                hostFilter.Add(new FilterEntry(host, this));
+                hostFilter.Add(new FilterEntry(host, Wpf.Properties.Resources.PackageFilterByHost, this));
             }
 
             return hostFilter;
         }
+        //private bool showNew;
+        //private bool showUpdated;
+        //private bool showDeprecated;
+        //private bool showDependencies;
+        //private bool showNoDependencies;
+        //private bool isAnyFilterOn;
+        private List<FilterEntry> InitializeNonHostFilter()
+        {
+            var nonHostFilter = new List<FilterEntry>() { new FilterEntry(Wpf.Properties.Resources.PackageManagerPackageNew, Wpf.Properties.Resources.PackageFilterByStatus, this),
+                                                          new FilterEntry(Wpf.Properties.Resources.PackageManagerPackageUpdated, Wpf.Properties.Resources.PackageFilterByStatus, this),
+                                                          new FilterEntry(Wpf.Properties.Resources.PackageSearchViewContextMenuFilterDeprecated, Wpf.Properties.Resources.PackageFilterByStatus, this),
+                                                          new FilterEntry(Wpf.Properties.Resources.PackageSearchViewContextMenuFilterDependencies, Wpf.Properties.Resources.PackageFilterByDependency, this),
+                                                          new FilterEntry(Wpf.Properties.Resources.PackageSearchViewContextMenuFilterNoDependencies, Wpf.Properties.Resources.PackageFilterByDependency, this)
+            } ;
+
+            return nonHostFilter;
+
+        }
+
 
         /// <summary>
         /// Can search be performed.  Used by the associated command : SortCommand
@@ -901,11 +863,14 @@ namespace Dynamo.PackageManager
                 }
             }
 
-            if (ShowNew) ShowNew = false;
-            if (ShowUpdated) ShowUpdated = false;
-            if (ShowDeprecated) ShowDeprecated = false;
-            if (ShowDependencies) ShowDependencies = false;
-            if (ShowNoDependencies) ShowNoDependencies = false;
+            foreach (var filter in NonHostFilter)
+            {
+                if (filter.OnChecked)
+                {
+                    filter.OnChecked = false;
+                    filter.FilterCommand.Execute(filter.FilterName);
+                }
+            }
 
             RaisePropertyChanged(nameof(IsAnyFilterOn));
         }
@@ -1334,11 +1299,11 @@ namespace Dynamo.PackageManager
 
             // Filter based on user preference
             // A package has depndencies if the number of direct_dependency_ids is more than 1
-            list = Filter(LastSync.Where(x => ShowDeprecated ? x.IsDeprecated : true)
-                                  .Where(x => ShowNew ? IsNewPackage(x) : true)
-                                  .Where(x => ShowUpdated ? IsUpdatedPackage(x) : true)
-                                  .Where(x => !ShowDependencies ? true : PackageHasDependencies(x))
-                                  .Where(x => !ShowNoDependencies ? true : !PackageHasDependencies(x))
+            list = Filter(LastSync.Where(x => NonHostFilter.First(f => f.FilterName.Equals(Wpf.Properties.Resources.PackageSearchViewContextMenuFilterDeprecated)).OnChecked ? x.IsDeprecated : !x.IsDeprecated)
+                                  .Where(x => NonHostFilter.First(f => f.FilterName.Equals(Wpf.Properties.Resources.PackageManagerPackageNew)).OnChecked ? IsNewPackage(x) : true)
+                                  .Where(x => NonHostFilter.First(f => f.FilterName.Equals(Wpf.Properties.Resources.PackageManagerPackageUpdated)).OnChecked ? IsUpdatedPackage(x) : true)
+                                  .Where(x => !NonHostFilter.First(f => f.FilterName.Equals(Wpf.Properties.Resources.PackageSearchViewContextMenuFilterDependencies)).OnChecked ? true : PackageHasDependencies(x))
+                                  .Where(x => !NonHostFilter.First(f => f.FilterName.Equals(Wpf.Properties.Resources.PackageSearchViewContextMenuFilterNoDependencies)).OnChecked ? true : !PackageHasDependencies(x))
                                   .Select(x => new PackageManagerSearchElementViewModel(x,
                                                    PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider,
                                                    CanInstallPackage(x.Name), isEnabledForInstall)))

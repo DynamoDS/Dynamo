@@ -185,8 +185,8 @@ namespace Dynamo.PackageManager.Wpf.Tests
             //Adds the filters for FormIt and Advance Steel
             packageManagerSearchViewModel.HostFilter = new List<FilterEntry>
             {
-                new FilterEntry(advSteelFilterName, packageManagerSearchViewModel) { OnChecked = true },
-                new FilterEntry(formItFilterName, packageManagerSearchViewModel) { OnChecked = true },
+                new FilterEntry(advSteelFilterName, Dynamo.Wpf.Properties.Resources.PackageFilterByHost,  packageManagerSearchViewModel) { OnChecked = true },
+                new FilterEntry(formItFilterName, Dynamo.Wpf.Properties.Resources.PackageFilterByHost, packageManagerSearchViewModel) { OnChecked = true },
             };
 
             //Adding FormIt packages
