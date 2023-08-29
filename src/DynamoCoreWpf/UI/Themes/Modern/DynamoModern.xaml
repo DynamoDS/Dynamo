@@ -806,7 +806,7 @@
                                VerticalAlignment="Center"
                                FontFamily="{StaticResource ArtifaktElementBold}"
                                FontSize="14px"
-                               Foreground="#6DD2FF"
+                               Foreground="{StaticResource TextBlockLinkForegroundColor}"
                                Text="{TemplateBinding Content}" />
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
@@ -3025,6 +3025,9 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="closeIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/close-lighttheme-hover-16px.png" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="closeIcon" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/TitleBarButtons/close-darktheme-disabled-16px.png" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

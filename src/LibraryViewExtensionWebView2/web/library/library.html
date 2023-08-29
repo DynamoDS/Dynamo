@@ -286,13 +286,9 @@
                 return;
             }
             if (enable) {
-                found_div.addEventListener('click', nextStepInGuide);
-                found_div.parentNode.addEventListener('click', nextStepInGuide);
                 found_div.parentNode.parentNode.addEventListener('click', nextStepInGuide);
             }
             else {
-                found_div.removeEventListener('click', nextStepInGuide);
-                found_div.parentNode.removeEventListener('click', nextStepInGuide);
                 found_div.parentNode.parentNode.removeEventListener('click', nextStepInGuide);
             }
         }
@@ -391,7 +387,7 @@
              window.chrome.webview.postMessage(JSON.stringify({ "func": "ResizedEvent", "data": "" }));
         }
 
-        function dispatchEvent() {
+        function eventDispatcher() {
 
             const kbEvent = new KeyboardEvent('keydown', {
                 bubbles: true,

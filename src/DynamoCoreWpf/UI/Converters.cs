@@ -3782,37 +3782,4 @@ namespace Dynamo.Controls
             return null;
         }
     }
-
-    public class PackageSearchStateToVisibilityConverter : IValueConverter
-    {
-        /// <summary>
-        /// Returns Visibility.Visible or Visibility.Collapsed based on the value of the Enum and the provided parameter
-        /// </summary>
-        /// <returns>Visibility.Visible or Visibility.Collapsed</returns>
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            var searchState = (PackageManagerSearchViewModel.PackageSearchState) value;
-
-            // If no parameter is specified, we use True value
-            bool param = parameter == null || bool.Parse(parameter.ToString());
-
-            // If we have finished searching, and no parameter, or true parameter is provided, return Visible 
-            if (PackageManagerSearchViewModel.PackageSearchState.Results == searchState && param)
-            {
-                return Visibility.Visible;
-            }
-            // If we are still searching, and false parameter is provided, then also return Visible (loading screen)
-            else if(PackageManagerSearchViewModel.PackageSearchState.Results != searchState && !param)
-            {
-                return Visibility.Visible;
-            }
-
-            return Visibility.Collapsed;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
 }

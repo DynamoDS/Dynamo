@@ -43,7 +43,8 @@ namespace Dynamo.PackageManager
             Syncing,
             Searching,
             NoResults,
-            Results
+            Results,
+            Retry
         };
 
         /// <summary>
@@ -148,7 +149,13 @@ namespace Dynamo.PackageManager
 
         #region Properties & Fields
         // Lucene search utility to perform indexing operations.
-        internal LuceneSearchUtility LuceneSearchUtility { get; set; }
+        private LuceneSearchUtility LuceneUtility
+        {
+            get
+            {
+                return LuceneSearch.LuceneUtilityPackageManager;
+            }
+        }
 
         private ObservableCollection<PackageManagerSearchElementViewModel> searchMyResults;
 
@@ -509,22 +516,22 @@ namespace Dynamo.PackageManager
         private void AddPackageToSearchIndex(PackageManagerSearchElement package, Document doc)
         {
             if (DynamoModel.IsTestMode) return;
-            if (LuceneSearchUtility.addedFields == null) return;
+            if (LuceneUtility.addedFields == null) return;
 
-            LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), package.Name);
-            LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Description), package.Description);
+            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), package.Name);
+            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Description), package.Description);
 
             if (package.Keywords.Count() > 0)
             {
-                LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords), package.Keywords);
+                LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords), package.Keywords);
             }
 
             if (package.Hosts != null && string.IsNullOrEmpty(package.Hosts.ToString()))
             {
-                LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Hosts), package.Hosts.ToString(), true, true);
+                LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Hosts), package.Hosts.ToString(), true, true);
             }
 
-            LuceneSearchUtility.writer?.AddDocument(doc);
+            LuceneUtility.writer?.AddDocument(doc);
         }
 
         /// <summary>
@@ -539,11 +546,11 @@ namespace Dynamo.PackageManager
 
         internal void InitializeLuceneForPackageManager()
         {
-            if(LuceneSearchUtility == null)
+            if(LuceneUtility == null)
             {
-                LuceneSearchUtility = new LuceneSearchUtility(PackageManagerClientViewModel.DynamoViewModel.Model);
-            }          
-            LuceneSearchUtility.InitializeLuceneConfig(LuceneConfig.PackagesIndexingDirectory);
+                LuceneSearch.LuceneUtilityPackageManager = new LuceneSearchUtility(PackageManagerClientViewModel.DynamoViewModel.Model);
+            }
+            LuceneUtility.InitializeLuceneConfig(LuceneConfig.PackagesIndexingDirectory);
         }
         
         /// <summary>
@@ -559,8 +566,14 @@ namespace Dynamo.PackageManager
             // We need the user to be logged in, otherwise there is no point in runnig this routine
             if (PackageManagerClientViewModel.LoginState != Greg.AuthProviders.LoginState.LoggedIn) return;
 
-            List<PackageManagerSearchElement> packageManagerSearchElements;
             List<PackageManagerSearchElementViewModel> myPackages = new List<PackageManagerSearchElementViewModel>();
+
+            // We need the user to be logged in, otherwise there is no point in runnig this routine
+            if (PackageManagerClientViewModel.LoginState != Greg.AuthProviders.LoginState.LoggedIn)
+            {
+                SearchMyResults = new ObservableCollection<PackageManagerSearchElementViewModel>(myPackages);
+                return;
+            }
 
             // Check if any of the maintainers corresponds to the current logged in username
             var name = PackageManagerClientViewModel.Username;
@@ -854,7 +867,7 @@ namespace Dynamo.PackageManager
             this.ClearSearchResults();
             this.SearchState = PackageSearchState.Syncing;
 
-            var iDoc = LuceneSearchUtility.InitializeIndexDocumentForPackages();
+            var iDoc = LuceneUtility.InitializeIndexDocumentForPackages();
 
             Task<IEnumerable<PackageManagerSearchElementViewModel>>.Factory.StartNew(RefreshAndSearch).ContinueWith((t) =>
             {
@@ -874,13 +887,11 @@ namespace Dynamo.PackageManager
 
                     if (!DynamoModel.IsTestMode)
                     {
-                        LuceneSearchUtility.dirReader = LuceneSearchUtility.writer?.GetReader(applyAllDeletes: true);
-                        LuceneSearchUtility.Searcher = new IndexSearcher(LuceneSearchUtility.dirReader);
+                        LuceneUtility.dirReader = LuceneUtility.writer?.GetReader(applyAllDeletes: true);
+                        LuceneUtility.Searcher = new IndexSearcher(LuceneUtility.dirReader);
 
-                        LuceneSearchUtility.writer?.Commit();
-                        LuceneSearchUtility.writer?.Dispose();
-                        LuceneSearchUtility.indexDir?.Dispose();
-                        LuceneSearchUtility.writer = null;
+                        LuceneUtility.CommitWriterChanges();
+                        LuceneUtility.DisposeWriter();
                     }
                 }
                 RefreshInfectedPackages();
@@ -1257,28 +1268,28 @@ namespace Dynamo.PackageManager
                 var packages = new List<PackageManagerSearchElementViewModel>();
 
                 //The DirectoryReader and IndexSearcher have to be assigned after commiting indexing changes and before executing the Searcher.Search() method,otherwise new indexed info won't be reflected
-                LuceneSearchUtility.dirReader = LuceneSearchUtility.writer?.GetReader(applyAllDeletes: true);
+                LuceneUtility.dirReader = LuceneUtility.writer?.GetReader(applyAllDeletes: true);
 
-                if (LuceneSearchUtility.Searcher == null && LuceneSearchUtility.dirReader != null)
+                if (LuceneUtility.Searcher == null && LuceneUtility.dirReader != null)
                 {
-                    LuceneSearchUtility.Searcher = new IndexSearcher(LuceneSearchUtility.dirReader);
+                    LuceneUtility.Searcher = new IndexSearcher(LuceneUtility.dirReader);
                 }
 
-                var parser = new MultiFieldQueryParser(LuceneConfig.LuceneNetVersion, LuceneConfig.PackageIndexFields, LuceneSearchUtility.Analyzer)
+                var parser = new MultiFieldQueryParser(LuceneConfig.LuceneNetVersion, LuceneConfig.PackageIndexFields, LuceneUtility.Analyzer)
                 {
                     AllowLeadingWildcard = true,
                     DefaultOperator = LuceneConfig.DefaultOperator,
                     FuzzyMinSim = LuceneConfig.MinimumSimilarity
                 };
 
-                Query query = parser.Parse(LuceneSearchUtility.CreateSearchQuery(LuceneConfig.PackageIndexFields, searchTerm));
+                Query query = parser.Parse(LuceneUtility.CreateSearchQuery(LuceneConfig.PackageIndexFields, searchTerm));
 
                 //indicate we want the first 50 results
-                TopDocs topDocs = LuceneSearchUtility.Searcher.Search(query, n: LuceneConfig.DefaultResultsCount);
+                TopDocs topDocs = LuceneUtility.Searcher.Search(query, n: LuceneConfig.DefaultResultsCount);
                 for (int i = 0; i < topDocs.ScoreDocs.Length; i++)
                 {
                     //read back a doc from results
-                    Document resultDoc = LuceneSearchUtility.Searcher.Doc(topDocs.ScoreDocs[i].Doc);
+                    Document resultDoc = LuceneUtility.Searcher.Doc(topDocs.ScoreDocs[i].Doc);
 
                     // Get the view model of the package element and add it to the results.
                     string name = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.Name));

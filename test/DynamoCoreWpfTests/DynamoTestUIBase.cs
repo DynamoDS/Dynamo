@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
+using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
@@ -137,14 +138,6 @@ namespace DynamoCoreWpfTests
             {
                 Console.WriteLine(ex.StackTrace);
             }
-        }
-
-        [OneTimeTearDown]
-        public void FinalTearDown()
-        {
-            // Fix for COM exception on close
-            // See: http://stackoverflow.com/questions/6232867/com-exceptions-on-exit-with-wpf 
-            //Dispatcher.CurrentDispatcher.InvokeShutdown();
         }
 
         protected virtual void GetLibrariesToPreload(List<string> libraries)
