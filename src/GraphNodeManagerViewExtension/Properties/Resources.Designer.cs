@@ -409,6 +409,15 @@ namespace Dynamo.GraphNodeManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Number of top level items.
+        /// </summary>
+        public static string Title_TopLevelItemsNumber {
+            get {
+                return ResourceManager.GetString("Title_TopLevelItemsNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Warning.
         /// </summary>
         public static string Title_Warning {
