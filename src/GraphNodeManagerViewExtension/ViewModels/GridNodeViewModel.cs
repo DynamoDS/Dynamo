@@ -1,9 +1,9 @@
-using Dynamo.Core;
-using Dynamo.Graph.Nodes;
-using ProtoCore.Mirror;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Dynamo.Core;
+using Dynamo.Graph.Nodes;
+using ProtoCore.Mirror;
 
 namespace Dynamo.GraphNodeManager.ViewModels
 {
@@ -159,12 +159,15 @@ namespace Dynamo.GraphNodeManager.ViewModels
                 RaisePropertyChanged(nameof(StateIsFunction));
             }
         }
+
+        /// <summary>
+        /// Returns True if the output of the node is a single item
+        /// </summary>
         public bool IsOutputSingleItem
         {
             get
             {
-                outputIsSingleItem = IsNodeOutputSingeItem(NodeModel.CachedValue);
-                return outputIsSingleItem;
+                return IsNodeOutputSingeItem(NodeModel.CachedValue);
             }
             internal set
             {
@@ -174,12 +177,14 @@ namespace Dynamo.GraphNodeManager.ViewModels
             }
         }
 
+        /// <summary>
+        /// Returns the number of top-level items in list
+        /// </summary>
         public string TopLevelItemsNumber
         {
             get
             {
-                topLevelItemsNumber = GetTopLevelItemsNumber(NodeModel.CachedValue);
-                return topLevelItemsNumber;
+                return GetTopLevelItemsNumber(NodeModel.CachedValue);
             }
             internal set
             {
@@ -493,7 +498,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
         }
 
         /// <summary>
-        /// Returns the number of items in the top level of the node output
+        /// Returns the number of list items in the top level of the node output
         /// </summary>
         public string GetTopLevelItemsNumber(MirrorData mirrorData)
         {

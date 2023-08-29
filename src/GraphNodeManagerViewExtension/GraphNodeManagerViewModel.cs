@@ -1,3 +1,8 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Windows.Data;
 using Dynamo.Core;
 using Dynamo.Extensions;
 using Dynamo.Graph.Nodes;
@@ -11,11 +16,6 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using Newtonsoft.Json;
 using Prism.Commands;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Windows.Data;
 using DelegateCommand = Dynamo.UI.Commands.DelegateCommand;
 using GridNodeViewModel = Dynamo.GraphNodeManager.ViewModels.GridNodeViewModel;
 
