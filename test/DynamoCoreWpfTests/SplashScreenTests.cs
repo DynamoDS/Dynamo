@@ -21,7 +21,7 @@ namespace DynamoCoreWpfTests
             Assert.IsFalse(ss.CloseWasExplicit);
         }
         [Test]
-        public async void SplashScreen_CloseExplicitPropIsCorrect3()
+        public void SplashScreen_CloseExplicitPropIsCorrect3()
         {
             var ss = new Dynamo.UI.Views.SplashScreen();
             ss.CloseWindow();
