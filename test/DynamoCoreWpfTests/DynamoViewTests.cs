@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -18,6 +18,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Controls;
 using Dynamo.Wpf.ViewModels.Core;
+using Dynamo.Wpf.Views;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 using SharpDX.DXGI;
@@ -107,7 +108,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void OpeningWorkspaceWithTrustWarning()
+        public void OpeningWorkspaceWithTclsrustWarning()
         {
             // Open workspace with test mode as false, to verify trust warning.
             DynamoModel.IsTestMode = false;
@@ -122,6 +123,79 @@ namespace DynamoCoreWpfTests
             // Asert that the warning popup is closed, when the workspace is closed.
             Assert.IsFalse(ViewModel.FileTrustViewModel.ShowWarningPopup);
             DynamoModel.IsTestMode = true;
+        }
+
+        [Test]
+        public void TestToastNotificationClosingBehavior()
+        {
+            var preferencesWindow = new PreferencesView(View);
+            preferencesWindow.Show();
+            DispatcherUtil.DoEvents();
+            string selectedLanguage = (string)((ComboBox)preferencesWindow.FindName("LanguageCmb")).SelectedItem;
+
+            bool? xisToastNotificationVisible = ViewModel.MainGuideManager?.ExitTourPopupIsVisible;
+            ViewModel.PreferencesViewModel.SelectedLanguage = selectedLanguage == "English" ? "Español" : "English";
+
+            DispatcherUtil.DoEvents();
+            Exit_FirstPart();
+
+            bool isToastNotificationVisible = (bool)(ViewModel.MainGuideManager?.ExitTourPopupIsVisible);
+            Assert.IsFalse(isToastNotificationVisible);
+
+            Exit_SecondPart();
+        }
+
+        /// <summary>
+        /// First part of the Exit in order to catch the viewModel info
+        /// </summary>
+        public void Exit_FirstPart()
+        {
+            //Ensure that we leave the workspace marked as
+            //not having changes.
+            ViewModel.HomeSpace.HasUnsavedChanges = false;
+
+            if (View.IsLoaded)
+                View.Close();
+
+            if (ViewModel != null)
+            {
+                var shutdownParams = new DynamoViewModel.ShutdownParams(
+                    shutdownHost: false, allowCancellation: false);
+
+                ViewModel.PerformShutdownSequence(shutdownParams);
+            }
+        }
+
+        /// <summary>
+        /// Second part of the Exit in order to catch the viewModel info
+        /// </summary>
+        public void Exit_SecondPart()
+        {
+            if (ViewModel != null)
+            {
+                ViewModel = null;
+            }
+
+            View = null;
+            Model = null;
+            preloader = null;
+
+            try
+            {
+                var directory = new DirectoryInfo(TempFolder);
+                directory.Delete(true);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+            }
+        }
+
+        /// <summary>
+        /// Overrides the Exit base class method to custom handling
+        /// </summary>
+        public override void Exit()
+        {
         }
     }
 }

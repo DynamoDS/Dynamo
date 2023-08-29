@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -106,7 +106,7 @@ namespace DynamoCoreWpfTests
         }
 
         [TearDown]
-        public void Exit()
+        public virtual void Exit()
         {
             //Ensure that we leave the workspace marked as
             //not having changes.
