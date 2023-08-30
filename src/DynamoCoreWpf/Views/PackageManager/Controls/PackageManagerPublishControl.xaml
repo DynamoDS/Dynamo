@@ -837,7 +837,7 @@
                                                     Width="16"
                                                     Height="16"
                                                     Margin="5,-1,0,0"
-                                                    Command="{Binding ElementName=PublishInfoControl, Path=DataContext.RemoveItemCommand}"
+                                                    Command="{Binding ElementName=packageContentsGrid, Path=DataContext.RemoveItemCommand}"
                                                     CommandParameter="{Binding}"
                                                     Cursor="Hand"
                                                     DockPanel.Dock="Right">
