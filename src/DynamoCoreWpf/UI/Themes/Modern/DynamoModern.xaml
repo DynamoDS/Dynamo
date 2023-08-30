@@ -5038,14 +5038,14 @@
                             BorderThickness="0">
                         <Canvas Margin="0,0,0,0">
                             <Line x:Name="line1"
-                                  Stroke="{DynamicResource GenericMouseOverBackgroundColor}"
+                                  Stroke="{DynamicResource GenericMouseOverBackgroundColorBrush}"
                                   StrokeThickness="1"
                                   X1="0"
                                   X2="13"
                                   Y1="0"
                                   Y2="13" />
                             <Line x:Name="line2"
-                                  Stroke="{DynamicResource GenericMouseOverBackgroundColor}"
+                                  Stroke="{DynamicResource GenericMouseOverBackgroundColorBrush}"
                                   StrokeThickness="1"
                                   X1="0"
                                   X2="13"
@@ -5120,7 +5120,7 @@
                 <ControlTemplate TargetType="{x:Type Button}">
                     <Border x:Name="PopupButtonBorder"
                             Background="{StaticResource PopupWhiteColor}"
-                            BorderBrush="{DynamicResource GenericMouseOverBackgroundColor}"
+                            BorderBrush="{DynamicResource GenericMouseOverBackgroundColorBrush}"
                             Opacity="0.5"
                             BorderThickness="1"
                             CornerRadius="2">
