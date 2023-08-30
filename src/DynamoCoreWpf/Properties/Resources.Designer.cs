@@ -5528,7 +5528,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to FILTER BY DEPENDENCY.
+        ///   Looks up a localized string similar to DEPENDENCY.
         /// </summary>
         public static string PackageFilterByDependency {
             get {
@@ -5537,7 +5537,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to FILTER BY HOST.
+        ///   Looks up a localized string similar to HOST.
         /// </summary>
         public static string PackageFilterByHost {
             get {
@@ -5546,7 +5546,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to FILTER BY STATUS.
+        ///   Looks up a localized string similar to STATUS.
         /// </summary>
         public static string PackageFilterByStatus {
             get {

@@ -71,6 +71,8 @@
 
     <clr:Double x:Key="NodeNameHeight">53</clr:Double>
 
+    <SolidColorBrush x:Key="MenuHeaderForegroundColorBrush" Color="#DCDCDC"/>
+
 
     <!--  InfoBubble colors  -->
     <SolidColorBrush x:Key="InfoBubbleBackNormalBrush" Color="White" />
@@ -1942,7 +1944,7 @@
         <Setter Property="MinWidth" Value="300px" />
         <Setter Property="Margin" Value="-6,0,0,0" />
         <Setter Property="Height" Value="29px" />
-        <Setter Property="Foreground" Value="#DCDCDC" />
+        <Setter Property="Foreground" Value="{StaticResource MenuHeaderForegroundColorBrush}" />
         <Setter Property="FontSize" Value="16px" />
         <Setter Property="Template">
             <Setter.Value>
@@ -2020,7 +2022,7 @@
     <!--  SimpleStyles: ComboBoxItem  -->
     <Style x:Key="{x:Type ComboBoxItem}" TargetType="{x:Type ComboBoxItem}">
         <Setter Property="SnapsToDevicePixels" Value="true" />
-        <Setter Property="Foreground" Value="#DCDCDC" />
+        <Setter Property="Foreground" Value="{StaticResource MenuHeaderForegroundColorBrush}" />
         <Setter Property="OverridesDefaultStyle" Value="true" />
         <Setter Property="Template">
             <Setter.Value>
@@ -3926,6 +3928,7 @@
                         </Trigger>
                         <Trigger Property="IsChecked" Value="True">
                             <Setter TargetName="checkBox" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="ContentPresenter" Property="TextBlock.FontFamily" Value="{StaticResource ArtifaktElementBold}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

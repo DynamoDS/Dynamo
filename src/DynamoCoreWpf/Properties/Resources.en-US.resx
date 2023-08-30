@@ -1711,13 +1711,13 @@ Next assemblies were loaded several times:
     <value>Uploading...</value>
   </data>
   <data name="PackageFilterByHost" xml:space="preserve">
-    <value>FILTER BY HOST</value>
+    <value>HOST</value>
   </data>
   <data name="PackageFilterByStatus" xml:space="preserve">
-    <value>FILTER BY STATUS</value>
+    <value>STATUS</value>
   </data>
   <data name="PackageFilterByDependency" xml:space="preserve">
-    <value>FILTER BY DEPENDENCY</value>
+    <value>DEPENDENCY</value>
   </data>
   <data name="PackageSearchViewContextMenuFilterActive" xml:space="preserve">
     <value>Active</value>

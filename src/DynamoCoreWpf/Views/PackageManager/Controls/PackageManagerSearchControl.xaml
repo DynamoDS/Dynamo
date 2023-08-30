@@ -19,7 +19,7 @@
             <controls:InverseBooleanToVisibilityCollapsedConverter x:Key="InverseBooleanToVisibilityCollapsedConverter" />
             <!-- Button Style -->
             <Style x:Key="TextOnlyButtonStyle" TargetType="{x:Type Button}">
-                <Setter Property="Foreground" Value="#f5f5f5"></Setter>
+                <Setter Property="Foreground" Value="{StaticResource DarkThemeBodyMediumBrush}"></Setter>
                 <Setter Property="Background" Value="Transparent" />
                 <Setter Property="BorderThickness" Value="0"></Setter>
                 <Setter Property="FontSize" Value="12"></Setter>
@@ -56,6 +56,20 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
+            <SolidColorBrush x:Key="ContextMenuHeaderForegroundColorBrush" Color="#8c8c8c"/>
+            <!--  Separator Header Style  -->
+            <Style x:Key="SeparatorHeaderTextStyle" TargetType="{x:Type TextBlock}">
+                <Setter Property="Margin" Value="10 5"/>
+                <Setter Property="FontSize" Value="11"/>
+                <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementBold}"/>
+                <Setter Property="Foreground" Value="{StaticResource ContextMenuHeaderForegroundColorBrush}"/>
+                <Setter Property="UseLayoutRounding" Value="True"/>
+            </Style>
+            <Style x:Key="SeparatorLineStyle" TargetType="{x:Type Rectangle}">
+                <Setter Property="Height" Value="1"/>
+                <Setter Property="Margin" Value="0 3"/>
+                <Setter Property="Fill" Value="#4d4d4d"/>
+            </Style>
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
@@ -63,7 +77,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid x:Name="searchPackagesGrid">
+    <Grid x:Name="searchPackagesGrid" UseLayoutRounding="True"   >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="2" />
@@ -133,9 +147,7 @@
                                     <Separator.Template>
                                         <ControlTemplate TargetType="Separator">
                                             <StackPanel>
-                                                <TextBlock Margin="10,5"
-                                                           FontSize="11"
-                                                           Foreground="#8C8C8C "
+                                                <TextBlock Style="{StaticResource SeparatorHeaderTextStyle}"
                                                            Text="{x:Static p:Resources.PackageSearchSortBy}" />
                                             </StackPanel>
                                         </ControlTemplate>
@@ -177,16 +189,14 @@
                                           IsCheckable="True"
                                           IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Maintainers, Mode=TwoWay}" />
 
-                                <Separator />
 
                                 <!--  Sub-Title 'ORDER'  -->
                                 <Separator>
                                     <Separator.Template>
                                         <ControlTemplate TargetType="Separator">
                                             <StackPanel>
-                                                <TextBlock Margin="10,5"
-                                                           FontSize="11"
-                                                           Foreground="#8C8C8C "
+                                                <Rectangle Style="{StaticResource SeparatorLineStyle}" />
+                                                <TextBlock Style="{StaticResource SeparatorHeaderTextStyle}"
                                                            Text="{x:Static p:Resources.PackageSearchOrder}" />
                                             </StackPanel>
                                         </ControlTemplate>
@@ -273,9 +283,7 @@
                                             <Separator.Template>
                                                 <ControlTemplate TargetType="Separator">
                                                     <StackPanel>
-                                                        <TextBlock Margin="10,5"
-                                                                   FontSize="11"
-                                                                   Foreground="#8C8C8C "
+                                                        <TextBlock Style="{StaticResource SeparatorHeaderTextStyle}"
                                                                    Text="{x:Static p:Resources.PackageFilterByHost}" />
                                                     </StackPanel>
                                                 </ControlTemplate>
@@ -288,9 +296,8 @@
                                             <Separator.Template>
                                                 <ControlTemplate TargetType="Separator">
                                                     <StackPanel>
-                                                        <TextBlock Margin="10,5"
-                                                                   FontSize="11"
-                                                                   Foreground="#8C8C8C "
+                                                        <Rectangle Style="{StaticResource SeparatorLineStyle}" />
+                                                        <TextBlock Style="{StaticResource SeparatorHeaderTextStyle}"
                                                                    Text="{x:Static p:Resources.PackageFilterByStatus}" />
                                                     </StackPanel>
                                                 </ControlTemplate>
@@ -303,9 +310,8 @@
                                             <Separator.Template>
                                                 <ControlTemplate TargetType="Separator">
                                                     <StackPanel>
-                                                        <TextBlock Margin="10,5"
-                                                                   FontSize="11"
-                                                                   Foreground="#8C8C8C "
+                                                        <Rectangle Style="{StaticResource SeparatorLineStyle}" />
+                                                        <TextBlock Style="{StaticResource SeparatorHeaderTextStyle}"
                                                                    Text="{x:Static p:Resources.PackageFilterByDependency}" />
                                                     </StackPanel>
                                                 </ControlTemplate>
