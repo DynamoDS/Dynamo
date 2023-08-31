@@ -45,9 +45,9 @@ namespace Dynamo.PackageManager.ViewModels
             this.ToggleIsExpandedCommand = new DelegateCommand(() => this.Model.IsExpanded = !this.Model.IsExpanded);
 
             this.DownloadLatestCommand = new DelegateCommand(
-                () => OnRequestDownload(Model.Header.versions.Last(), false),
+                () => OnRequestDownload(Model.Header.versions.First(x => x.version.Equals(Model.SelectedVersion)), false),
                 () => !Model.IsDeprecated && CanInstall);
-            this.DownloadLatestToCustomPathCommand = new DelegateCommand(() => OnRequestDownload(Model.Header.versions.Last(), true));
+            this.DownloadLatestToCustomPathCommand = new DelegateCommand(() => OnRequestDownload(Model.Header.versions.First(x => x.version.Equals(Model.SelectedVersion)), true));
 
             this.UpvoteCommand = new DelegateCommand(Model.Upvote, () => canLogin);
 
