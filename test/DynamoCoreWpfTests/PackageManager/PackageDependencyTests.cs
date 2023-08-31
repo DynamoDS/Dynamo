@@ -1,9 +1,13 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.PackageManager.UI;
 using Dynamo.Tests;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 using NUnit.Framework;
 
 namespace Dynamo.PackageManager.Wpf.Tests
@@ -30,6 +34,43 @@ namespace Dynamo.PackageManager.Wpf.Tests
 
             Assert.AreEqual(2, packageRoot.Items[0].Items.Count);
             Assert.AreEqual(3, packageRoot.Items[1].Items.Count);
+        }
+
+        /// <summary>
+        /// This test is placed in this class because the DyanmoSample package has wpf dependency.
+        /// </summary>
+        [Test]
+        public void NodeModelPackageDependencyIsCollected()
+        {
+            // Load JSON file graph
+            string path = Path.Combine(TestDirectory, @"core\packageDependencyTests\OneDependentNode_NodeModel.dyn");
+
+            // Assert package dependency is not already serialized to .dyn
+            using (StreamReader file = new StreamReader(path))
+            {
+                var data = file.ReadToEnd();
+                var json = (JObject)JsonConvert.DeserializeObject(data);
+                Assert.IsNull(json[WorkspaceReadConverter.NodeLibraryDependenciesPropString]);
+            }
+
+            // Assert package dependency is collected
+            OpenModel(path);
+
+            var currentws = CurrentDynamoModel.CurrentWorkspace;
+            currentws.ForceComputeWorkspaceReferences = true;
+
+            var packageDependencies = currentws.NodeLibraryDependencies;
+            Assert.AreEqual(1, packageDependencies.Count);
+            var package = packageDependencies.First();
+            Assert.AreEqual(new PackageDependencyInfo("Dynamo Samples", new Version("1.0.0")), package);
+            Assert.AreEqual(1, package.Nodes.Count);
+
+            Assert.IsTrue(package.IsLoaded);
+            if (package is PackageDependencyInfo)
+            {
+                var packageDependencyState = ((PackageDependencyInfo)package).State;
+                Assert.AreEqual(PackageDependencyState.Loaded, packageDependencyState);
+            }
         }
     }
 }
