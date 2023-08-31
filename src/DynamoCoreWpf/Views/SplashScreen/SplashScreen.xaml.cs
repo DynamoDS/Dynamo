@@ -489,10 +489,12 @@ namespace Dynamo.UI.Views
             else
             {
                 Close();
-                viewModel.RequestClose -= SplashScreenRequestClose;
-                //viewModel?.Model.ShutDown(false);
-                //TODO ensure viewmodel is shutdown by view being disposed.
-                DynamoView.Close();
+                if (viewModel != null)
+                {
+                    viewModel.RequestClose -= SplashScreenRequestClose;
+                }
+
+                DynamoView?.Close();
                 DynamoView = null;
             }
         }
