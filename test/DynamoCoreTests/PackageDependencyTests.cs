@@ -417,6 +417,9 @@ namespace Dynamo.Tests
             Assert.AreEqual(pi, packageDependencies.First());
         }
 
+        /// <summary>
+        /// This test verifies the package dependency states after loading the package.
+        /// </summary>
         [Test]
         public void PackageDependencyStatechangeTestAfterLoadingPackage()
         {

@@ -9,11 +9,17 @@ using Dynamo.Tests;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using Dynamo.Models;
+using Dynamo.Interfaces;
+using Dynamo.Scheduler;
+using Dynamo.Configuration;
 
 namespace Dynamo.PackageManager.Wpf.Tests
 {
     internal class PackageDependencyTests : DynamoModelTestBase
     {
+        public string PackagesDirectory { get { return Path.Combine(TestDirectory, "pkgs"); } }
+
         [Test]
         public void CanDiscoverDependenciesForFunctionDefinitionOpenFromFile()
         {
@@ -62,7 +68,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
             var packageDependencies = currentws.NodeLibraryDependencies;
             Assert.AreEqual(1, packageDependencies.Count);
             var package = packageDependencies.First();
-            Assert.AreEqual(new PackageDependencyInfo("Dynamo Samples", new Version("1.0.0")), package);
+            Assert.AreEqual(new PackageDependencyInfo("Dynamo Samples", new Version("2.0.0")), package);
             Assert.AreEqual(1, package.Nodes.Count);
 
             Assert.IsTrue(package.IsLoaded);
@@ -71,6 +77,18 @@ namespace Dynamo.PackageManager.Wpf.Tests
                 var packageDependencyState = ((PackageDependencyInfo)package).State;
                 Assert.AreEqual(PackageDependencyState.Loaded, packageDependencyState);
             }
+        }
+
+        protected override DynamoModel.IStartConfiguration CreateStartConfiguration(IPreferences settings)
+        {
+            return new DynamoModel.DefaultStartConfiguration()
+            {
+                PathResolver = pathResolver,
+                StartInTestMode = true,
+                GeometryFactoryPath = preloader.GeometryFactoryPath,
+                ProcessMode = TaskProcessMode.Synchronous,
+                Preferences = new PreferenceSettings() { CustomPackageFolders = new List<string>() { this.PackagesDirectory } }
+            };
         }
     }
 }
