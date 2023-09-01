@@ -56,6 +56,7 @@
     <None Remove="Packages\SplashScreen\build\index.html" />
     <None Remove="UI\Images\Canvas\canvas-button-geometry-scaling.png" />
     <None Remove="UI\Images\NodeStates\package-64px.png" />
+    <None Remove="UI\Images\TitleBarButtons\close-darktheme-disabled-16px.png" />
     <None Remove="UI\Prompts\PortPropertiesEditPrompt.xaml" />
     <None Remove="Views\Core\CustomColorPicker.xaml" />
     <None Remove="Views\Core\GeometryScalingPopup.xaml" />
@@ -130,7 +131,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup> 
-    <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.2267" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.2406" />
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" CopyXML="true" />
     <PackageReference Include="Greg" Version="2.5.0.5076" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" />
@@ -917,6 +918,7 @@
     <Resource Include="UI\Images\NodeStates\package-64px.png" />
     <Resource Include="UI\Images\question-hover-blue-16px.png" />
     <Resource Include="UI\Images\TitleBarButtons\close-darktheme-default-16px.png" />
+    <Resource Include="UI\Images\TitleBarButtons\close-darktheme-disabled-16px.png" />
     <Resource Include="UI\Images\TitleBarButtons\close-lighttheme-default-16px.png" />
     <Resource Include="UI\Images\TitleBarButtons\close-lighttheme-hover-16px.png" />
     <Resource Include="UI\Images\TitleBarButtons\max-darktheme-default-16px.png" />
