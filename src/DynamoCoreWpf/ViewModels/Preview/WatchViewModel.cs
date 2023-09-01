@@ -271,10 +271,6 @@ namespace Dynamo.ViewModels
                 case TypeCode.Object:
                     return ObjectToLabelString(obj);
                 default:
-                    if (double.TryParse(obj.ToString(), out double d))
-                    {
-                        return Convert.ToDouble(obj).ToString(ProtoCore.Mirror.MirrorData.PrecisionFormat, CultureInfo.InvariantCulture);
-                    }
                     return (string)obj;
             };
         }

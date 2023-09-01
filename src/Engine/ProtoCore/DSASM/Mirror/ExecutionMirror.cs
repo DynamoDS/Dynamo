@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using ProtoCore.Lang;
@@ -44,15 +45,55 @@ namespace ProtoCore.DSASM.Mirror
             MirrorTarget = exec;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="val"></param>
+        /// <param name="heap"></param>
+        /// <param name="langblock"></param>
+        /// <param name="forPrint"></param>
+        /// <param name="useNumericFormat"></param>
+        /// <returns></returns>
+        public string GetStringValue2(StackValue val, Heap heap, int langblock, bool forPrint = false,
+            bool useNumericFormat = false)
+        {
+            return GetStringValueImplementation(val, heap, langblock, -1, -1, forPrint, useNumericFormat);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="val"></param>
+        /// <param name="heap"></param>
+        /// <param name="langblock"></param>
+        /// <param name="forPrint"></param>
+        /// <returns></returns>
+        [Obsolete]
         public string GetStringValue(StackValue val, Heap heap, int langblock, bool forPrint = false)
         {
             return GetStringValue(val, heap, langblock, -1, -1, forPrint);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="val"></param>
+        /// <param name="heap"></param>
+        /// <param name="langblock"></param>
+        /// <param name="maxArraySize"></param>
+        /// <param name="maxOutputDepth"></param>
+        /// <param name="forPrint"></param>
+        /// <returns></returns>
+        [Obsolete]
         public string GetStringValue(StackValue val, Heap heap, int langblock, int maxArraySize, int maxOutputDepth, bool forPrint = false)
         {
-            if (formatParams == null)
-                formatParams = new OutputFormatParameters(maxArraySize, maxOutputDepth);
+            return GetStringValueImplementation(val, heap, langblock, maxArraySize, maxOutputDepth, forPrint, false);
+        }
+
+        private string GetStringValueImplementation(StackValue val, Heap heap, int langblock, int maxArraySize,
+           int maxOutputDepth, bool forPrint = false, bool useNumericFormat = false)
+        {
+            formatParams ??= new OutputFormatParameters(maxArraySize, maxOutputDepth);
 
             if (val.IsInteger)
             {
@@ -61,6 +102,10 @@ namespace ProtoCore.DSASM.Mirror
 
             if (val.IsDouble)
             {
+                if (useNumericFormat)
+                {
+                    return val.DoubleValue.ToString(ProtoCore.Mirror.MirrorData.PrecisionFormat);
+                } 
                 return val.DoubleValue.ToString("F6");
             }
 
@@ -77,7 +122,7 @@ namespace ProtoCore.DSASM.Mirror
             if (val.IsArray)
             {
                 HashSet<int> pointers = new HashSet<int> { val.ArrayPointer };
-                string arrTrace = GetArrayTrace(val, heap, langblock, pointers, forPrint);
+                string arrTrace = GetArrayTrace(val, heap, langblock, pointers, forPrint, useNumericFormat);
                 if (forPrint)
                     return "[" + arrTrace + "]";
 
@@ -212,7 +257,7 @@ namespace ProtoCore.DSASM.Mirror
             }
         }
 
-        private string GetPointerTrace(StackValue ptr, Heap heap, int langblock, HashSet<int> pointers, bool forPrint)
+        private string GetPointerTrace(StackValue ptr, Heap heap, int langblock, HashSet<int> pointers, bool forPrint, bool useNumericFormat)
         {
             if (pointers.Contains(ptr.ArrayPointer))
             {
@@ -223,13 +268,13 @@ namespace ProtoCore.DSASM.Mirror
 
             if (forPrint)
             {
-                return "[" + GetArrayTrace(ptr, heap, langblock, pointers, forPrint) + "]";
+                return "[" + GetArrayTrace(ptr, heap, langblock, pointers, forPrint,useNumericFormat) + "]";
             }
 
-            return "[ " + GetArrayTrace(ptr, heap, langblock, pointers, forPrint) + " ]";
+            return "[ " + GetArrayTrace(ptr, heap, langblock, pointers, forPrint,useNumericFormat) + " ]";
         }
 
-        private string GetArrayTrace(StackValue svArray, Heap heap, int langblock, HashSet<int> pointers, bool forPrint)
+        private string GetArrayTrace(StackValue svArray, Heap heap, int langblock, HashSet<int> pointers, bool forPrint, bool useNumericFormat)
         {
             if (!formatParams.ContinueOutputTrace())
                 return "...";
@@ -264,11 +309,11 @@ namespace ProtoCore.DSASM.Mirror
                 StackValue sv = array.GetValueFromIndex(n, runtimeCore);
                 if (sv.IsArray)
                 {
-                    arrayElements.Append(GetPointerTrace(sv, heap, langblock, pointers, forPrint));
+                    arrayElements.Append(GetPointerTrace(sv, heap, langblock, pointers, forPrint,useNumericFormat));
                 }
                 else
                 {
-                    arrayElements.Append(GetStringValue(array.GetValueFromIndex(n, runtimeCore), heap, langblock, forPrint));
+                    arrayElements.Append(GetStringValue2(array.GetValueFromIndex(n, runtimeCore), heap, langblock, forPrint,useNumericFormat));
                 }
 
                 // If we need to truncate this array (halfArraySize > 0), and we have 

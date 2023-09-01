@@ -1,5 +1,6 @@
 using ProtoCore.DSASM;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -28,12 +29,31 @@ namespace ProtoCore.Utils
 
         public static StackValue ConvertToString(StackValue sv, RuntimeCore runtimeCore, ProtoCore.Runtime.RuntimeMemory rmem)
         {
+            return ConvertToStringInternal(sv, runtimeCore,false);
+        }
+        internal static StackValue ConvertToString(IEnumerable<StackValue> args, RuntimeCore runtimeCore, ProtoCore.Runtime.RuntimeMemory rmem)
+        {
+            var useNumericFormat = false;
+            var sv = args.ElementAt(0);
+            if (args.Count() > 1)
+            {
+                useNumericFormat = args.ElementAt(1).BooleanValue;
+            }
+            return ConvertToStringInternal(sv, runtimeCore, useNumericFormat);
+        }
+
+        private static StackValue ConvertToStringInternal(StackValue sv, RuntimeCore runtimeCore,bool useNumericFormat)
+        {
             StackValue returnSV;
             //TODO: Change Execution mirror class to have static methods, so that an instance does not have to be created
-            ProtoCore.DSASM.Mirror.ExecutionMirror mirror = new DSASM.Mirror.ExecutionMirror(new ProtoCore.DSASM.Executive(runtimeCore), runtimeCore);
-            returnSV = ProtoCore.DSASM.StackValue.BuildString(mirror.GetStringValue(sv, runtimeCore.RuntimeMemory.Heap, 0, true), runtimeCore.RuntimeMemory.Heap);
+            ProtoCore.DSASM.Mirror.ExecutionMirror mirror =
+                new DSASM.Mirror.ExecutionMirror(new ProtoCore.DSASM.Executive(runtimeCore), runtimeCore);
+            returnSV = ProtoCore.DSASM.StackValue.BuildString(
+                mirror.GetStringValue2(sv, runtimeCore.RuntimeMemory.Heap, 0, true, useNumericFormat), runtimeCore.RuntimeMemory.Heap);
             return returnSV;
         }
+
+      
 
         public static StackValue ConcatString(StackValue op1, StackValue op2, RuntimeCore runtimeCore)
         {

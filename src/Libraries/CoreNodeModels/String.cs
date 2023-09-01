@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using System.Linq;
 using CoreNodeModels.Properties;
 using Dynamo.Graph.Nodes;
 using Newtonsoft.Json;
@@ -8,7 +9,7 @@ namespace CoreNodeModels
 {
     /// <summary>
     /// Base class to represent a single input string node. It supports 
-    /// partiallied applied function. 
+    /// partially applied function. 
     /// </summary>
     public class ToStringNodeBase : NodeModel
     {
@@ -72,6 +73,10 @@ namespace CoreNodeModels
         private FromObject(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : 
             base("__ToStringFromObject",inPorts, outPorts)
         {
+            if (inPorts.Count() < 2)
+            {
+                InPorts.Add(new PortModel(PortType.Input, this, new PortData("useNumericFormat", "should the numeric precision format be used when converting doubles", AstFactory.BuildBooleanNode(false))));
+            }
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
@@ -79,6 +84,7 @@ namespace CoreNodeModels
         {
             ArgumentLacing = LacingStrategy.Disabled;
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("object", Resources.FromObjectPortDataObjToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("useNumericFormat", "should the numeric precision format be used when converting doubles",AstFactory.BuildBooleanNode(false))));
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("string", Resources.FromObjectPortDataResultToolTip)));
             RegisterAllPorts();
         }

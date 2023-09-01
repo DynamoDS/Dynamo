@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
@@ -795,6 +795,17 @@ namespace ProtoCore.Lang
                     Parameters = new List<KeyValuePair<string, ProtoCore.Type>> 
                     {
                         new KeyValuePair<string, ProtoCore.Type>("object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("useNumericFormat", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0)),
+                    },
+                    ID = BuiltInMethods.MethodID.ToStringFromObject,
+                },
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.String, 0),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("useNumericFormat", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0)),
                     },
                     ID = BuiltInMethods.MethodID.ToStringFromObject,
                 },
@@ -806,6 +817,7 @@ namespace ProtoCore.Lang
                     Parameters = new [] 
                     {
                         new KeyValuePair<string, Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var)),
+                        new KeyValuePair<string, ProtoCore.Type>("useNumericFormat", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0)),
                     }.ToList(),
                     ID = BuiltInMethods.MethodID.ToStringFromArray
                 },

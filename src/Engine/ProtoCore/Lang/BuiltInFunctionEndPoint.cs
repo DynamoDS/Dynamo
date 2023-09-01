@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -373,7 +373,9 @@ namespace ProtoCore.Lang
                 case BuiltInMethods.MethodID.ToString:
                 case BuiltInMethods.MethodID.ToStringFromObject:
                 case BuiltInMethods.MethodID.ToStringFromArray:
-                    ret = StringUtils.ConvertToString(formalParameters[0], runtimeCore, rmem);
+                    {
+                        ret = StringUtils.ConvertToString(formalParameters, runtimeCore, rmem);
+                    }
                     break;
                 case BuiltInMethods.MethodID.ImportData:
                     ret = ContextDataBuiltIns.ImportData(formalParameters[0], formalParameters[1], runtimeCore, interpreter, c);

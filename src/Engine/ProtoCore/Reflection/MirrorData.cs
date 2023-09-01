@@ -224,11 +224,11 @@ namespace ProtoCore
                     {
                         return "null";
                     }
-                    else if (Data is bool)
+                    if (Data is bool)
                     {
                         return Data.ToString().ToLower();
                     }
-                    else if (Data is IFormattable)
+                    if (Data is IFormattable)
                     {
                         // Object.ToString() by default will use the current 
                         // culture to do formatting. For example, Double.ToString()
@@ -236,24 +236,9 @@ namespace ProtoCore
                         // We should always use invariant culture format for formattable 
                         // object.
 
-                        //TODO: uncomment this once https://jira.autodesk.com/browse/DYN-5101 is complete
-                        //if (Data is double)
-                        //{
-                        //    return (Data as IFormattable).ToString(PrecisionFormat, CultureInfo.InvariantCulture);
-                        //}
-                        //else
-                        //{
                         return (Data as IFormattable).ToString(null, CultureInfo.InvariantCulture);
-                        //}
                     }
-                    else
-                    {
-                        if (double.TryParse(Data.ToString(), out double d))
-                        {
-                            return Convert.ToDouble(Data).ToString(PrecisionFormat, CultureInfo.InvariantCulture);
-                        }
-                        return Data.ToString();
-                    }
+                    return Data.ToString();
                 }
             }
 
