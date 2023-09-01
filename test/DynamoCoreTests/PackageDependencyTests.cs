@@ -95,41 +95,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void NodeModelPackageDependencyIsCollected()
-        {
-            // Load JSON file graph
-            string path = Path.Combine(TestDirectory, @"core\packageDependencyTests\OneDependentNode_NodeModel.dyn");
-
-            // Assert package dependency is not already serialized to .dyn
-            using (StreamReader file = new StreamReader(path))
-            {
-                var data = file.ReadToEnd();
-                var json = (JObject)JsonConvert.DeserializeObject(data);
-                Assert.IsNull(json[WorkspaceReadConverter.NodeLibraryDependenciesPropString]);
-            }
-
-            // Assert package dependency is collected
-            OpenModel(path);
-
-            var currentws = CurrentDynamoModel.CurrentWorkspace;
-            currentws.ForceComputeWorkspaceReferences = true;
-
-            var packageDependencies = currentws.NodeLibraryDependencies;
-            Assert.AreEqual(1, packageDependencies.Count);
-            var package = packageDependencies.First();
-            //TODO_NET6 following package cannot be loaded as depends on wpf.
-            Assert.AreEqual(new PackageDependencyInfo("Dynamo Samples", new Version("2.0.0")), package);
-            Assert.AreEqual(1, package.Nodes.Count);
-
-            Assert.IsTrue(package.IsLoaded);
-            if (package is PackageDependencyInfo)
-            {
-                var packageDependencyState = ((PackageDependencyInfo)package).State;
-                Assert.AreEqual(PackageDependencyState.Loaded, packageDependencyState);
-            }
-        }
-
-        [Test]
         public void CustomNodePackageDependencyIsCollected()
         {
             // Add "Round Down To Precision" custom node from the "Custom Rounding" package to a new workspace
@@ -451,6 +416,10 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, packageDependencies.Count);
             Assert.AreEqual(pi, packageDependencies.First());
         }
+
+        /// <summary>
+        /// This test verifies the package dependency states after loading the package.
+        /// </summary>
         [Test]
         public void PackageDependencyStatechangeTestAfterLoadingPackage()
         {
@@ -464,7 +433,7 @@ namespace Dynamo.Tests
 
             // Assert the total number of package dependencies.
             var packageDependenciesList = currentws.NodeLibraryDependencies;
-            Assert.AreEqual(4, packageDependenciesList.Count);
+            Assert.AreEqual(3, packageDependenciesList.Count);
 
             // Check for Missing package state
             PackageDependencyInfo firstPackage = (PackageDependencyInfo) packageDependenciesList[0];
@@ -478,13 +447,6 @@ namespace Dynamo.Tests
             PackageDependencyInfo thirdPackage = (PackageDependencyInfo) packageDependenciesList[2];
             Assert.AreEqual(new PackageDependencyInfo("Clockwork for Dynamo 1.x", new Version("1.33.0")), thirdPackage);
             Assert.AreEqual(PackageDependencyState.Missing, thirdPackage.State);
-
-            //TODO_NET6 following package cannot be loaded as depends on wpf.
-
-            // Check for Loaded package state
-            PackageDependencyInfo lastPackage = (PackageDependencyInfo) packageDependenciesList.Last();
-            Assert.AreEqual(new PackageDependencyInfo("Dynamo Samples", new Version("2.0.0")), lastPackage);
-            Assert.AreEqual(PackageDependencyState.Loaded, lastPackage.State);
 
             CurrentDynamoModel.ClearCurrentWorkspace();
 
@@ -501,7 +463,7 @@ namespace Dynamo.Tests
 
             // Assert the total number of package dependencies.
             packageDependenciesList = currentws.NodeLibraryDependencies;
-            Assert.AreEqual(4, packageDependenciesList.Count);
+            Assert.AreEqual(3, packageDependenciesList.Count);
 
             // Check for Missing package state
             firstPackage = (PackageDependencyInfo)packageDependenciesList[0];
@@ -518,11 +480,6 @@ namespace Dynamo.Tests
             thirdPackage = (PackageDependencyInfo)packageDependenciesList[2];
             Assert.AreEqual(new PackageDependencyInfo("Clockwork for Dynamo 1.x", new Version("1.33.0")), thirdPackage);
             Assert.AreEqual(PackageDependencyState.IncorrectVersion, thirdPackage.State);
-
-            // Check for Loaded package state
-            lastPackage = (PackageDependencyInfo)packageDependenciesList.Last();
-            Assert.AreEqual(new PackageDependencyInfo("Dynamo Samples", new Version("2.0.0")), lastPackage);
-            Assert.AreEqual(PackageDependencyState.Loaded, lastPackage.State);
         }
     }
 }

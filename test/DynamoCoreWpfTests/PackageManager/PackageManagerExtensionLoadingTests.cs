@@ -11,11 +11,11 @@ using Dynamo.Models;
 using Dynamo.Scheduler;
 using NUnit.Framework;
 
-namespace DynamoCoreWpfTests
+namespace DynamoCoreWpfTests.PackageManager
 {
     class PackageManagerExtensionLoadingTests : DynamoTestUIBase
     {
-        private string PackagesDirectory { get { return Path.Combine(GetTestDirectory(this.ExecutingDirectory), "pkgs"); } }
+        private string PackagesDirectory { get { return Path.Combine(GetTestDirectory(ExecutingDirectory), "pkgs"); } }
 
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
@@ -33,47 +33,47 @@ namespace DynamoCoreWpfTests
                 StartInTestMode = true,
                 GeometryFactoryPath = preloader.GeometryFactoryPath,
                 ProcessMode = TaskProcessMode.Synchronous,
-                Preferences = new PreferenceSettings() { CustomPackageFolders = new List<string>() { this.PackagesDirectory } }
+                Preferences = new PreferenceSettings() { CustomPackageFolders = new List<string>() { PackagesDirectory } }
             };
         }
 
         [Test]
         public void PackageManagerLoadsAndAddsExtension()
         {
-         
-            Assert.That(this.Model.ExtensionManager.Extensions.Select(x => x.Name),
-                Is.EquivalentTo (new List<string> { "DynamoPackageManager", "testExtension" }));
+
+            Assert.That(Model.ExtensionManager.Extensions.Select(x => x.Name),
+                Is.EquivalentTo(new List<string> { "DynamoPackageManager", "testExtension" }));
         }
         [Test]
         public void PackageManagerLoadsExtensionAndItWorks()
         {
-         
-            dynamic sampleExtension = this.Model.ExtensionManager.Extensions.Where(x => x.Name == "testExtension").FirstOrDefault();
+
+            dynamic sampleExtension = Model.ExtensionManager.Extensions.Where(x => x.Name == "testExtension").FirstOrDefault();
             var node = new DoubleInput();
-            this.Model.CurrentWorkspace.AddAndRegisterNode(node);
+            Model.CurrentWorkspace.AddAndRegisterNode(node);
             //assert the extension was keeping track of the node events in the workspace.
             Assert.AreEqual(1, (sampleExtension.nodes as List<NodeModel>).Count());
         }
         [Test]
         public void PackageManagerLoadsAndAddsViewExtension()
         {
-            Assert.That(this.View.viewExtensionManager.ViewExtensions.OrderBy(x => x.Name).Select(x => x.Name),
+            Assert.That(View.viewExtensionManager.ViewExtensions.OrderBy(x => x.Name).Select(x => x.Name),
                 Is.EquivalentTo(
-                    (new List<string>
+                    new List<string>
                     {
-                        "Documentation Browser", 
+                        "Documentation Browser",
                         "DynamoManipulationExtension",
                         "Graph Node Manager",
                         "Graph Status",
-                        "LibraryUI - WebView2", 
-                        "Notifications", 
+                        "LibraryUI - WebView2",
+                        "Notifications",
                         "Package Details",
                         "PackageManagerViewExtension",
                         "Properties",
                         "Python Migration",
                         "Sample View Extension",
                         "Workspace References",
-                    })
+                    }
                 )
             );
         }
@@ -81,12 +81,12 @@ namespace DynamoCoreWpfTests
         [Test]
         public void PackageManagerLoadsViewExtensionAndItWorks()
         {
-            dynamic sampleExtension = this.View.viewExtensionManager.ViewExtensions.Where(x => x.Name == "Sample View Extension").FirstOrDefault();
+            dynamic sampleExtension = View.viewExtensionManager.ViewExtensions.Where(x => x.Name == "Sample View Extension").FirstOrDefault();
             var node = new DoubleInput();
-            this.Model.CurrentWorkspace.AddAndRegisterNode(node);
+            Model.CurrentWorkspace.AddAndRegisterNode(node);
 
             //assert a menu item was added with the correct header.
-            var mi = this.View.viewMenu.Items.Cast<MenuItem>().Where
+            var mi = View.viewMenu.Items.Cast<MenuItem>().Where
                 (x => (string)x.Header == "Show View Extension Sample Window").FirstOrDefault();
             Assert.IsNotNull(mi);
         }
