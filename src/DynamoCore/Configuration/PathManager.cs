@@ -366,7 +366,7 @@ namespace Dynamo.Core
         /// </summary>
         /// <param name="hostPath"></param>
         /// /// <param name="resolver"></param>
-        internal void AssignIPathResolver(string hostPath, IPathResolver resolver)
+        internal void AssignHostPathAndIPathResolver(string hostPath, IPathResolver resolver)
         {
             pathResolver = resolver;
             BuildHostDirectories(hostPath);

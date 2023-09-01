@@ -1032,7 +1032,7 @@ namespace Dynamo.Models
             {
                 if (!Core.PathManager.Instance.HasPathResolver)
                 {
-                    Core.PathManager.Instance.AssignIPathResolver(config.DynamoHostPath, config.PathResolver);
+                    Core.PathManager.Instance.AssignHostPathAndIPathResolver(config.DynamoHostPath, config.PathResolver);
                 }
                 return Core.PathManager.Instance;
             }
