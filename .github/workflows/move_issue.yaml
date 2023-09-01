@@ -54,7 +54,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ env.gh_token }}
       - name: Move tracked issue to Todo
-        if: github.event.label.name == tracked
+        if: github.event.label.name == 'tracked'
         uses: leonsteinhaeuser/project-beta-automations@v2.1.0
         with:
           gh_token: ${{ env.gh_token }}
