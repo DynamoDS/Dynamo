@@ -11,13 +11,18 @@ namespace Dynamo.LibraryViewExtensionWebView2
 
     [ClassInterface(ClassInterfaceType.AutoDual)]
     [ComVisible(true)]
-    public class ScriptingObject
+    public class ScriptingObject: IDisposable
     {
         private LibraryViewController controller;
 
         public ScriptingObject(LibraryViewController controller)
         {
             this.controller = controller;
+        }
+
+        public void Dispose()
+        {
+            controller = null;
         }
 
         /// <summary>

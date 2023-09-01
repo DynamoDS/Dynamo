@@ -3405,6 +3405,10 @@ namespace Dynamo.ViewModels
 
 
             BackgroundPreviewViewModel.Dispose();
+            foreach (var wsvm in workspaces)
+            {
+                wsvm.Dispose();
+            }
 
             model.ShutDown(shutdownParams.ShutdownHost);
             if (shutdownParams.ShutdownHost)

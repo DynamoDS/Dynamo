@@ -2886,7 +2886,13 @@ namespace Dynamo.Controls
             dynamoViewModel.SideBarTabItems.CollectionChanged -= this.OnCollectionChanged;
 
             if (fileTrustWarningPopup != null)
+            {
                 fileTrustWarningPopup.CleanPopup();
+            }
+            //TODO code smell.
+            var workspaceView = this.ChildOfType<WorkspaceView>();
+            workspaceView?.Dispose();
+            (workspaceView?.NodeAutoCompleteSearchBar?.Child as IDisposable)?.Dispose();
         }
     }
 }

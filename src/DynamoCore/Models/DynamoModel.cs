@@ -873,8 +873,8 @@ namespace Dynamo.Models
             if (!IsServiceMode)
             {
                 SearchModel = new NodeSearchModel(Logger);
-                SearchModel.ItemProduced +=
-                    node => ExecuteCommand(new CreateNodeCommand(node, 0, 0, true, true));
+                SearchModel.ItemProduced += SearchModel_ItemProduced;
+                    
             }
 
             NodeFactory = new NodeFactory();
@@ -1019,6 +1019,11 @@ namespace Dynamo.Models
             State = DynamoModelState.StartedUIless;
             // This event should only be raised at the end of this method.
             DynamoReady(new ReadyParams(this));
+        }
+
+        private void SearchModel_ItemProduced(NodeModel node)
+        {
+            ExecuteCommand(new CreateNodeCommand(node, 0, 0, true, true));
         }
 
         /// <summary>
@@ -1476,6 +1481,10 @@ namespace Dynamo.Models
                 FeatureFlags.MessageLogged -= LogMessageWrapper;
             }
             DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved -= CheckFeatureFlagTest;
+            if (!IsServiceMode)
+            {
+                SearchModel.ItemProduced -= SearchModel_ItemProduced;
+            }
         }
 
         private void InitializeCustomNodeManager()
@@ -2881,7 +2890,7 @@ namespace Dynamo.Models
         {
             OnWorkspaceRemoveStarted(workspace);
             if (_workspaces.Remove(workspace))
-            {
+            {   
                 if (workspace is HomeWorkspaceModel)
                 {
                     workspace.Dispose();
