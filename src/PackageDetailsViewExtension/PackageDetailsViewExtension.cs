@@ -143,7 +143,10 @@ namespace Dynamo.PackageDetails
         public override void Dispose()
         {
             PackageDetailsViewModel?.Dispose();
-            ViewLoadedParamsReference.ViewExtensionOpenRequestWithParameter -= OnViewExtensionOpenWithParameterRequest;
+            if (ViewLoadedParamsReference != null)
+            {
+                ViewLoadedParamsReference.ViewExtensionOpenRequestWithParameter -= OnViewExtensionOpenWithParameterRequest;
+            }
         }
 
         public override void Closed()
