@@ -106,7 +106,7 @@ namespace DynamoCoreWpfTests
         }
 
         [TearDown]
-        public virtual void Exit()
+        public void Exit()
         {
             //Ensure that we leave the workspace marked as
             //not having changes.

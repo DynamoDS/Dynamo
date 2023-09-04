@@ -133,27 +133,9 @@ namespace DynamoCoreWpfTests
             DispatcherUtil.DoEvents();
             string selectedLanguage = (string)((ComboBox)preferencesWindow.FindName("LanguageCmb")).SelectedItem;
 
-            bool? xisToastNotificationVisible = ViewModel.MainGuideManager?.ExitTourPopupIsVisible;
             ViewModel.PreferencesViewModel.SelectedLanguage = selectedLanguage == "English" ? "Español" : "English";
 
-            DispatcherUtil.DoEvents();
-            Exit_FirstPart();
-
-            bool isToastNotificationVisible = (bool)(ViewModel.MainGuideManager?.ExitTourPopupIsVisible);
-            Assert.IsFalse(isToastNotificationVisible);
-
-            Exit_SecondPart();
-        }
-
-        /// <summary>
-        /// First part of the Exit in order to catch the viewModel info
-        /// </summary>
-        public void Exit_FirstPart()
-        {
-            //Ensure that we leave the workspace marked as
-            //not having changes.
             ViewModel.HomeSpace.HasUnsavedChanges = false;
-
             if (View.IsLoaded)
                 View.Close();
 
@@ -164,38 +146,14 @@ namespace DynamoCoreWpfTests
 
                 ViewModel.PerformShutdownSequence(shutdownParams);
             }
-        }
 
-        /// <summary>
-        /// Second part of the Exit in order to catch the viewModel info
-        /// </summary>
-        public void Exit_SecondPart()
-        {
-            if (ViewModel != null)
-            {
-                ViewModel = null;
-            }
-
-            View = null;
-            Model = null;
-            preloader = null;
-
-            try
-            {
-                var directory = new DirectoryInfo(TempFolder);
-                directory.Delete(true);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-            }
+            bool isToastNotificationVisible = (bool)(ViewModel.MainGuideManager?.ExitTourPopupIsVisible);
+            Assert.IsFalse(isToastNotificationVisible);
         }
 
         /// <summary>
         /// Overrides the Exit base class method to custom handling
         /// </summary>
-        public override void Exit()
-        {
-        }
+
     }
 }
