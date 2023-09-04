@@ -1699,7 +1699,6 @@ numpts1 = length(pts1);
 numpts2 = length(pts2);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            object v1 = null;
         }
 
         [Test]

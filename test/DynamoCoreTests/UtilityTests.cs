@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -832,8 +832,10 @@ namespace Dynamo.Tests
         public void GenerateSnapshotNameTest()
         {
             var examplePath = Path.Combine(TestDirectory, @"core\math", "Add.dyn");
-            var snapshotName = PathHelper.GetScreenCaptureNameFromPath(examplePath);
+            var snapshotName = PathHelper.GetScreenCaptureNameFromPath(examplePath, true);
             Assert.AreEqual(snapshotName, "Add_" + string.Format("{0:yyyy-MM-dd_hh-mm-ss}", DateTime.Now));
+            var snapshotNameWithoutTimestamp = PathHelper.GetScreenCaptureNameFromPath(examplePath, false);
+            Assert.AreEqual(snapshotNameWithoutTimestamp, "Add");
         }
     }
 }

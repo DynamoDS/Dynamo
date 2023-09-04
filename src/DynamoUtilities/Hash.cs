@@ -57,7 +57,7 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <remarks>
         /// This is a 32-character subset of the twenty-six letters A–Z and six digits 2–7.
-        /// <see cref="https://en.wikipedia.org/wiki/Base32" />
+        /// <see href="https://en.wikipedia.org/wiki/Base32" />
         /// </remarks>
         internal static string Base32AllowedCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 

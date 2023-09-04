@@ -186,6 +186,7 @@ namespace DynamoUtilities
         /// </summary>
         /// <param name="path">path to the target xml file</param>
         /// <param name="xmlDoc">System.Xml.XmlDocument representation of target xml file</param>
+        /// <param name="ex"></param>
         /// <returns>Return true if file is Json, false if file is not Json, exception as out param</returns>
         public static bool isValidXML(string path, out XmlDocument xmlDoc, out Exception ex)
         {
@@ -210,6 +211,7 @@ namespace DynamoUtilities
         /// This is a utility method for checking if a given string represents a valid Json document.
         /// </summary>
         /// <param name="fileContents"> string contents of target json file</param>
+        /// <param name="ex"></param>
         /// <returns>Return true if fileContents is Json, false if file is not Json, exception as out param</returns>
         public static bool isFileContentsValidJson(string fileContents, out Exception ex)
         {
@@ -247,6 +249,7 @@ namespace DynamoUtilities
         /// </summary>
         /// <param name="path">path to the target json file</param>
         /// <param name="fileContents"> string contents of target json file</param>
+        /// <param name="ex"></param>
         /// <returns>Return true if file is Json, false if file is not Json, exception as out param</returns>
         public static bool isValidJson(string path, out string fileContents, out Exception ex)
         {
@@ -281,12 +284,35 @@ namespace DynamoUtilities
         /// </summary>
         /// <param name="filePath">File path</param>
         /// <returns>Returns a default name(along with the timestamp) for the workspace image</returns>
+        [Obsolete("This function will be removed in future version of Dynamo - please use the version with more parameters")]
         public static String GetScreenCaptureNameFromPath(String filePath)
         {
             FileInfo fileInfo = new FileInfo(filePath);
             String timeStamp = string.Format("{0:yyyy-MM-dd_hh-mm-ss}", DateTime.Now);
             String snapshotName = fileInfo.Name.Replace(fileInfo.Extension, "_") + timeStamp;
             return snapshotName;
+        }
+
+        /// <summary>
+        /// This is a utility method for generating a default name to the snapshot image. 
+        /// </summary>
+        /// <param name="filePath">File path</param>
+        /// <param name="isTimeStampIncluded">Is timestamp included in file path</param>
+        /// <returns>Returns a default name(along with the timestamp) for the workspace image</returns>
+        public static String GetScreenCaptureNameFromPath(String filePath, bool isTimeStampIncluded)
+        {
+            FileInfo fileInfo = new FileInfo(filePath);
+            if (isTimeStampIncluded)
+            {
+                String timeStamp = string.Format("{0:yyyy-MM-dd_hh-mm-ss}", DateTime.Now);
+                String snapshotName = fileInfo.Name.Replace(fileInfo.Extension, "_") + timeStamp;
+                return snapshotName;
+            }
+            else
+            {
+                return fileInfo.Name.Replace(fileInfo.Extension, string.Empty);
+            }
+
         }
 
         /// <summary>
@@ -308,7 +334,9 @@ namespace DynamoUtilities
         /// <summary>
         /// Checks if the file exists at the specified path and computes size.
         /// </summary>
-        /// <param name="filePath">File path</param>
+        /// <param name="path">File path</param>
+        /// <param name="fileExists"></param>
+        /// <param name="size"></param>
         /// <returns>Returns a boolean if the file exists at the path and also returns its size</returns>
         public static void FileInfoAtPath(string path, out bool fileExists, out string size)
         {

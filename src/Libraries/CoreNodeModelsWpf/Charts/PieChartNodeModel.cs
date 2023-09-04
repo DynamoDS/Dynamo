@@ -43,7 +43,6 @@ namespace CoreNodeModelsWpf.Charts
     public class PieChartNodeModel : NodeModel
     {
         #region Properties
-        private Random rnd = new Random();
         /// <summary>
         /// Pie chart labels.
         /// </summary>
@@ -57,7 +56,7 @@ namespace CoreNodeModelsWpf.Charts
         /// <summary>
         /// Pie chart color values.
         /// </summary>
-        public List<SolidColorBrush> Colors { get; set; }
+        public List<Color> Colors { get; set; }
 
         /// <summary>
         /// Triggers when port is connected or disconnected
@@ -85,10 +84,10 @@ namespace CoreNodeModelsWpf.Charts
         }
 
 
-        [JsonConstructor]
         /// <summary>
         /// Instantiate a new NodeModel instance.
         /// </summary>
+        [JsonConstructor]
         public PieChartNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             PortConnected += PieChartNodeModel_PortConnected;
@@ -114,7 +113,7 @@ namespace CoreNodeModelsWpf.Charts
         private void PieChartNodeModel_PortConnected(PortModel port, ConnectorModel arg2)
         {
             // Reset an info states if any
-            if (port.PortType == PortType.Input && InPorts[2].IsConnected && NodeInfos.Any(x => x.State.Equals(ElementState.Info)))
+            if (port.PortType == PortType.Input && InPorts[2].IsConnected && NodeInfos.Any(x => x.State.Equals(ElementState.PersistentInfo)))
             {
                 this.ClearInfoMessages();
             }
@@ -162,7 +161,7 @@ namespace CoreNodeModelsWpf.Charts
             // Update chart properties
             Labels = new List<string>();
             Values = new List<double>();
-            Colors = new List<SolidColorBrush>();
+            Colors = new List<Color>();
 
             var anyNullData = keys == null || values == null;
 
@@ -177,16 +176,14 @@ namespace CoreNodeModelsWpf.Charts
                 if (InPorts[2].IsConnected) return;
 
                 // In case colors are not provided, we supply some from the default library of colors
-                Info(Dynamo.Wpf.Properties.CoreNodeModelWpfResources.ProvideDefaultColorsWarningMessage);
+                Info(Dynamo.Wpf.Properties.CoreNodeModelWpfResources.ProvideDefaultColorsWarningMessage, true);
 
                 for (var i = 0; i < keys.Count; i++)
                 {
                     Labels.Add((string)keys[i]);
                     Values.Add(System.Convert.ToDouble(values[i]));
                     Color color = Utilities.Colors.GetColor();
-                    SolidColorBrush brush = new SolidColorBrush(color);
-                    brush.Freeze();
-                    Colors.Add(brush);
+                    Colors.Add(color);
                 }
 
                 Utilities.Colors.ResetColors();
@@ -199,9 +196,7 @@ namespace CoreNodeModelsWpf.Charts
                     Values.Add(System.Convert.ToDouble(values[i]));
                     var dynColor = (DSCore.Color)colors[i];
                     var convertedColor = Color.FromArgb(dynColor.Alpha, dynColor.Red, dynColor.Green, dynColor.Blue);
-                    SolidColorBrush brush = new SolidColorBrush(convertedColor);
-                    brush.Freeze();
-                    Colors.Add(brush);
+                    Colors.Add(convertedColor);
                 }
             }
 

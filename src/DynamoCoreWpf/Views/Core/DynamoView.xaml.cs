@@ -77,6 +77,7 @@ namespace Dynamo.Controls
         private readonly LoginService loginService;
         private ShortcutToolbar shortcutBar;
         private PreferencesView preferencesWindow;
+        private PackageManagerView packageManagerWindow;
         private bool loaded = false;
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
         // called on the view model and the process is not cancelled
@@ -274,34 +275,52 @@ namespace Dynamo.Controls
 
         private void DynamoViewModel_RequestEnableShortcutBarItems(bool enable)
         {
-            saveThisButton.IsEnabled = enable;
-            saveButton.IsEnabled = enable;
-            exportMenu.IsEnabled = enable;
-            
-            shortcutBar.IsNewButtonEnabled = enable;
-            shortcutBar.IsOpenButtonEnabled = enable;
-            shortcutBar.IsSaveButtonEnabled = enable;
-            shortcutBar.IsLoginMenuEnabled = enable;
-            shortcutBar.IsExportMenuEnabled  = enable;
-            shortcutBar.IsNotificationCenterEnabled = enable;
-
-            if(dynamoViewModel.ShowStartPage)
+            if (!(saveThisButton is null))
             {
-                shortcutBar.IsNewButtonEnabled = true;
-                shortcutBar.IsOpenButtonEnabled = true;
-                shortcutBar.IsLoginMenuEnabled = true;
-                shortcutBar.IsNotificationCenterEnabled = true;
+                saveThisButton.IsEnabled = enable;
+                saveButton.IsEnabled = enable;
+            }
+            if (!(exportMenu is null))
+            {
+                exportMenu.IsEnabled = enable;
+            }
+           
+            if (!(shortcutBar is null))
+            {
+                shortcutBar.IsNewButtonEnabled = enable;
+                shortcutBar.IsOpenButtonEnabled = enable;
+                shortcutBar.IsSaveButtonEnabled = enable;
+                shortcutBar.IsLoginMenuEnabled = enable;
+                shortcutBar.IsExportMenuEnabled = enable;
+                shortcutBar.IsNotificationCenterEnabled = enable;
+
+                if (dynamoViewModel.ShowStartPage)
+                {
+                    shortcutBar.IsNewButtonEnabled = true;
+                    shortcutBar.IsOpenButtonEnabled = true;
+                    shortcutBar.IsLoginMenuEnabled = true;
+                    shortcutBar.IsNotificationCenterEnabled = true;
+                }
             }
         }
 
         private void OnWorkspaceOpened(WorkspaceModel workspace)
         {
-            saveThisButton.IsEnabled = true;
-            saveButton.IsEnabled = true;
-            exportMenu.IsEnabled = true;
+            if (!(saveThisButton is null))
+            {
+                saveThisButton.IsEnabled = true;
+                saveButton.IsEnabled = true;
+            }
 
-            ShortcutBar.IsSaveButtonEnabled = true;
-            shortcutBar.IsExportMenuEnabled = true;
+            if (!(exportMenu is null))
+            {
+                exportMenu.IsEnabled = true;
+            }
+            if (!(shortcutBar is null))
+            {
+                ShortcutBar.IsSaveButtonEnabled = true;
+                shortcutBar.IsExportMenuEnabled = true;
+            }
 
             if (!(workspace is HomeWorkspaceModel hws))
             return;
@@ -1221,6 +1240,7 @@ namespace Dynamo.Controls
 
             dynamoViewModel.RequestPackagePublishDialog += DynamoViewModelRequestRequestPackageManagerPublish;
             dynamoViewModel.RequestPackageManagerSearchDialog += DynamoViewModelRequestShowPackageManagerSearch;
+            dynamoViewModel.RequestPackageManagerDialog += DynamoViewModelRequestShowPackageManager;
 
             #endregion
 
@@ -1427,16 +1447,24 @@ namespace Dynamo.Controls
 
         private PackageManagerSearchView _searchPkgsView;
         private PackageManagerSearchViewModel _pkgSearchVM;
-        
+        private PackageManagerViewModel _pkgVM;
+
         private void DynamoViewModelRequestShowPackageManagerSearch(object s, EventArgs e)
         {
             if (!DisplayTermsOfUseForAcceptance())
                 return; // Terms of use not accepted.
 
             var cmd = Analytics.TrackCommandEvent("SearchPackage");
+
+            // The package search view model is shared and can be shared by resources at the moment
+            // If it hasn't been initialized yet, we do that here
             if (_pkgSearchVM == null)
             {
                 _pkgSearchVM = new PackageManagerSearchViewModel(dynamoViewModel.PackageManagerClientViewModel);
+            }
+            else
+            {
+                _pkgSearchVM.InitializeLuceneForPackageManager();
             }
 
             if (_searchPkgsView == null)
@@ -1608,8 +1636,7 @@ namespace Dynamo.Controls
         /// Presents the function name dialogue. Returns true if the user enters
         /// a function name and category.
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="category"></param>
+        /// <param name="e"></param>
         /// <returns></returns>
         internal void ShowNewFunctionDialog(FunctionNamePromptEventArgs e)
         {
@@ -2149,7 +2176,7 @@ namespace Dynamo.Controls
         private static void OnShowInFolder(object sender, RoutedEventArgs e)
         {
             var folderPath = (string)((MenuItem)sender).Tag;
-            Process.Start("explorer.exe", "/select," + folderPath);
+            Process.Start(new ProcessStartInfo("explorer.exe", "/select," + folderPath) { UseShellExecute = true });
         }
 #endif
 
@@ -2167,6 +2194,47 @@ namespace Dynamo.Controls
             dynamoViewModel.OnPreferencesWindowChanged(preferencesWindow);
             preferencesWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             preferencesWindow.Show();
+        }
+
+        private void DynamoViewModelRequestShowPackageManager(object s, EventArgs e)
+        {
+            if (!DisplayTermsOfUseForAcceptance())
+                return; // Terms of use not accepted.
+
+            var cmd = Analytics.TrackCommandEvent("PackageManager");
+            if (_pkgSearchVM == null)
+            {
+                _pkgSearchVM = new PackageManagerSearchViewModel(dynamoViewModel.PackageManagerClientViewModel);
+            }
+
+            if (_pkgVM == null)
+            {
+                _pkgVM = new PackageManagerViewModel(dynamoViewModel, _pkgSearchVM);
+            }
+
+            if (packageManagerWindow == null)
+            {
+                packageManagerWindow = new PackageManagerView(this, _pkgVM)
+                {
+                    Owner = this,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                };
+
+                // setting the owner to the packageManagerWindow will centralize promts originating from the Package Manager
+                dynamoViewModel.Owner = packageManagerWindow;
+
+                packageManagerWindow.Closed += (sender, args) => { packageManagerWindow = null; cmd.Dispose(); };
+                packageManagerWindow.Show();
+
+                if (packageManagerWindow.IsLoaded && IsLoaded) packageManagerWindow.Owner = this;
+            }
+
+            packageManagerWindow.Focus();
+            if (e is OpenPackageManagerEventArgs)
+            {
+                packageManagerWindow.Navigate((e as OpenPackageManagerEventArgs).Tab);
+            }
+            _pkgSearchVM.RefreshAndSearchAsync();
         }
 
         internal void EnableEnvironment(bool isEnabled)
@@ -2824,7 +2892,13 @@ namespace Dynamo.Controls
             dynamoViewModel.SideBarTabItems.CollectionChanged -= this.OnCollectionChanged;
 
             if (fileTrustWarningPopup != null)
+            {
                 fileTrustWarningPopup.CleanPopup();
+            }
+            //TODO code smell.
+            var workspaceView = this.ChildOfType<WorkspaceView>();
+            workspaceView?.Dispose();
+            (workspaceView?.NodeAutoCompleteSearchBar?.Child as IDisposable)?.Dispose();
         }
     }
 }

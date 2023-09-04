@@ -1,21 +1,20 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Web;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Dynamo.Core;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
-using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.Utilities;
-using DynamoUtilities;
+using MimeMapping;
+
 
 namespace Dynamo.WorkspaceDependency
 {
@@ -68,7 +67,7 @@ namespace Dynamo.WorkspaceDependency
         {
             try
             {
-                System.Diagnostics.Process.Start(FeedbackLink);
+                System.Diagnostics.Process.Start(new ProcessStartInfo(FeedbackLink) { UseShellExecute = true });
             }
             catch (Exception ex)
             {
@@ -419,27 +418,27 @@ namespace Dynamo.WorkspaceDependency
                         bitmap = Properties.Resources.ZeroTouchNodeReferenceIcon;
                         break;
 
-                    case ReferenceType.External when MimeMapping.GetMimeMapping(DependencyInfo.Name).Contains("image"):
+                    case ReferenceType.External when MimeUtility.GetMimeMapping(DependencyInfo.Name).Contains("image"):
                         bitmap = Properties.Resources.ImageIcon;
                         break;
 
-                    case ReferenceType.External when MimeMapping.GetMimeMapping(DependencyInfo.Name).Contains("excel") || MimeMapping.GetMimeMapping(DependencyInfo.Name).Contains("spreadsheet"):
+                    case ReferenceType.External when MimeUtility.GetMimeMapping(DependencyInfo.Name).Contains("excel") || MimeUtility.GetMimeMapping(DependencyInfo.Name).Contains("spreadsheet"):
                         bitmap = Properties.Resources.ExcelIcon;
                         break;
 
-                    case ReferenceType.External when MimeMapping.GetMimeMapping(DependencyInfo.Name).Contains("json"):
+                    case ReferenceType.External when MimeUtility.GetMimeMapping(DependencyInfo.Name).Contains("json"):
                         bitmap = Properties.Resources.JsonIcon;
                         break;
 
-                    case ReferenceType.External when MimeMapping.GetMimeMapping(DependencyInfo.Name).Contains("pdf"):
+                    case ReferenceType.External when MimeUtility.GetMimeMapping(DependencyInfo.Name).Contains("pdf"):
                         bitmap = Properties.Resources.PDFIcon;
                         break;
 
-                    case ReferenceType.External when MimeMapping.GetMimeMapping(DependencyInfo.Name).Contains("csv"):
+                    case ReferenceType.External when MimeUtility.GetMimeMapping(DependencyInfo.Name).Contains("csv"):
                         bitmap = Properties.Resources.CSVIcon;
                         break;
 
-                    case ReferenceType.External when MimeMapping.GetMimeMapping(DependencyInfo.Name).Contains("dwg"):
+                    case ReferenceType.External when MimeUtility.GetMimeMapping(DependencyInfo.Name).Contains("dwg"):
                         bitmap = Properties.Resources.DWGIcon;
                         break;
 

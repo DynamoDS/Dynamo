@@ -9,39 +9,52 @@
         <projectUrl>https://github.com/DynamoDS/Dynamo</projectUrl>
         <icon>content\images\logo.png</icon>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <description>Assemblies required to start a DynamoModel and execute DesignScript code. Contains the following files:
-        1) DynamoApplications.dll
-        2) DynamoCore.dll
-        3) DynamoInstallDetective.dll
-        4) DynamoShapeManager.dll 
-        5) DynamoUtilities.dll
-        6) ProtoCore.dll
-        7) DesignScriptBuiltin.dll
-        8) VMDataBridge.dll
-        9) DSCPython.dll</description>
+        <description>
+            Assemblies required to start a DynamoModel and execute DesignScript code. Contains the following files:
+            1) DynamoApplications.dll
+            2) DynamoCore.dll
+            3) DynamoInstallDetective.dll
+            4) DynamoShapeManager.dll
+            5) DynamoUtilities.dll
+            6) ProtoCore.dll
+            7) DesignScriptBuiltin.dll
+            8) VMDataBridge.dll
+            9) DSCPython.dll
+            10) DynamoPackages.dll
+        </description>
         <summary>This package contains the core assemblies for Dynamo.</summary>
-        <copyright>Copyright Autodesk 2020</copyright>
+        <copyright>Copyright Autodesk 2023</copyright>
         <dependencies>
-            <group targetFramework=".NETFramework4.8">
-                <dependency id="Prism" version="4.1"/>
-                <dependency id="NUnit" version="2.6.3"/>
+            <!--TODO - why do we reference nunit from dynamo core? This is an odd partial collection of dependencies to mark.-->
+            <group targetFramework="net6.0">
+                <dependency id="NUnit" version="3.13.3"/>
                 <dependency id="DynamoVisualProgramming.ZeroTouchLibrary" version="$Version$"/>
                 <dependency id="Newtonsoft.Json" version="13.0.1"/>
-                <dependency id="System.Collections.Immutable" version="1.7.1"/>
+                <dependency id="System.Collections.Immutable" version="5.0.0"/>
             </group>
         </dependencies>
     </metadata>
+    <!--for now we assume that that the working directory root is dynamo/bin/AnyCPU/Release-->
     <files>
-        <file src="DynamoApplications.dll" target="lib\net48" />
-        <file src="DynamoCore.dll" target="lib\net48" />
-        <file src="DynamoCore.xml" target="lib\net48" />
-        <file src="DynamoInstallDetective.dll" target="lib\net48" />
-        <file src="DynamoShapeManager.dll" target="lib\net48" />
-        <file src="DynamoUtilities.dll" target="lib\net48" />
-        <file src="ProtoCore.dll" target="lib\net48" />
-        <file src="DesignScriptBuiltin.dll" target="lib\net48" />
-        <file src="VMDataBridge.dll" target="lib\net48" />
+        <file src="DynamoApplications.dll" target="lib\net6.0" />
+        <file src="DynamoApplications.xml" target="lib\net6.0" />
+        <file src="DynamoCore.dll" target="lib\net6.0" />
+        <file src="DynamoCore.xml" target="lib\net6.0" />
+        <file src="DynamoInstallDetective.dll" target="lib\net6.0" />
+        <file src="DynamoShapeManager.dll" target="lib\net6.0" />
+        <file src="DynamoShapeManager.xml" target="lib\net6.0" />
+        <file src="DynamoUtilities.dll" target="lib\net6.0" />
+        <file src="DynamoUtilities.xml" target="lib\net6.0" />
+        <file src="ProtoCore.dll" target="lib\net6.0" />
+        <file src="ProtoCore.xml" target="lib\net6.0" />
+        <file src="DesignScriptBuiltin.dll" target="lib\net6.0" />
+        <file src="DesignScriptBuiltin.xml" target="lib\net6.0" />
+        <file src="VMDataBridge.dll" target="lib\net6.0" />
+        <file src="VMDataBridge.xml" target="lib\net6.0" />
+        <file src="DSCPython.dll" target="lib\net6.0" />
+        <!--TODO - arguable if DynamoPackages should be in this package-->
+        <file src="DynamoPackages.dll" target="lib\net6.0" />
+        <file src="DynamoPackages.xml" target="lib\net6.0" />
         <file src="..\..\..\doc\distrib\Images\logo_square_32x32.png" target="content\images\logo.png" />
-        <file src="DSCPython.dll" target="lib\net48" />
     </files>
 </package>

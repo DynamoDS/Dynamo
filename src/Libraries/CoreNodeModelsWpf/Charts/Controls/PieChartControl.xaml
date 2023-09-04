@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:CoreNodeModelsWpf.Charts.Controls"
-             xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              mc:Ignorable="d" 
@@ -20,7 +20,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <lvc:PieChart Style="{StaticResource PieLiveChart}"  x:Name="PieChart" LegendLocation="Bottom"/>
+        <lvc:PieChart Style="{StaticResource PieLiveChart}"  x:Name="PieChart" LegendPosition="Bottom"/>
         <Thumb Name ="resizeThumb"
                Style="{StaticResource ChartsThumb}"
                DragDelta="ThumbResizeThumbOnDragDeltaHandler">

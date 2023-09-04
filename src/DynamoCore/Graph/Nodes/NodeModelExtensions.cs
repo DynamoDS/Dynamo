@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -167,6 +167,19 @@ namespace Dynamo.Graph.Nodes
                 return elNameAttrib.Name;
 
             return nodeType.FullName;
+        }
+
+        /// <summary>
+        /// Returns the package name of the node
+        /// </summary>
+        /// <param name="node">target NodeModel</param>
+        /// <returns></returns>
+        internal static string GetPackageName(this NodeModel node, Workspaces.PackageInfo packageInfo)
+        {
+            // Only return package name if the node comes from a package
+            if (node == null || !node.IsCustomFunction || packageInfo == null) return string.Empty;
+
+            return packageInfo?.Name;
         }
 
         private static void GetGraphicItemsFromMirrorData(MirrorData mirrorData, List<IGraphicItem> graphicItems)

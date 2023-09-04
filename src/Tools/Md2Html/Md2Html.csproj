@@ -1,45 +1,53 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <ImportGroup Label="PropertySheets">
-    <Import Project="$(SolutionDir)Config\CS_SDK.props" />
-  </ImportGroup>
-  <PropertyGroup>
-    <ProjectGuid>{0893F745-CB1A-427A-8E87-CA927273039A}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>Md2Html</RootNamespace>
-    <AssemblyName>Md2Html</AssemblyName>
-    <SharedOutputPath>$(OutputPath)\Md2Html\</SharedOutputPath>
-	  <OutputPath>bin\AnyCPU\$(Configuration)\</OutputPath>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="HtmlSanitizer">
-      <Version>5.0.372</Version>
-    </PackageReference>
-    <PackageReference Include="ILMerge">
-      <Version>3.0.41</Version>
-    </PackageReference>
-    <PackageReference Include="Markdig">
-      <Version>0.22.0</Version>
-    </PackageReference>
-    <PackageReference Include="NDesk.Options">
-      <Version>0.2.1</Version>
-    </PackageReference>
-  </ItemGroup>
-  <Target Name="AfterBuildOps" AfterTargets="Build">
-    <Exec Condition=" '$([MSBuild]::IsOSPlatform(`Windows`))' == 'True'"
-		Command="if not exist $(SharedOutputPath) mkdir $(SharedOutputPath)"/>
-    <!-- the ILMergePath property points to the location of ILMerge.exe console application -->
-    <Exec Condition=" '$([MSBuild]::IsOSPlatform(`Windows`))' == 'True'"
-		Command="$(ILMergeConsolePath) $(OutputPath)Md2Html.exe ^
+<Project Sdk="Microsoft.NET.Sdk">
+    <ImportGroup Label="PropertySheets">
+        <Import Project="$(SolutionDir)Config\CS_SDK.props" />
+    </ImportGroup>
+    <PropertyGroup>
+        <ProjectGuid>{0893F745-CB1A-427A-8E87-CA927273039A}</ProjectGuid>
+        <OutputType>Exe</OutputType>
+        <RootNamespace>Md2Html</RootNamespace>
+        <AssemblyName>Md2Html</AssemblyName>
+        <SharedOutputPath>$(OutputPath)\Md2Html\</SharedOutputPath>
+        <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+        <PublishSingleFile>true</PublishSingleFile>
+        <SelfContained>false</SelfContained>
+    </PropertyGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
+        <Reference Include="System" />
+        <Reference Include="System.Core" />
+        <Reference Include="System.Xml.Linq" />
+        <Reference Include="System.Data.DataSetExtensions" />
+        <Reference Include="Microsoft.CSharp" />
+        <Reference Include="System.Data" />
+        <Reference Include="System.Net.Http" />
+        <Reference Include="System.Xml" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="CommandLineParser">
+            <Version>2.8.0</Version>
+        </PackageReference> 
+        <PackageReference Include="HtmlSanitizer">
+            <Version>5.0.372</Version>
+        </PackageReference>
+        <PackageReference Include="ILMerge" Condition=" '$(TargetFramework)' == 'net48'">
+            <Version>3.0.41</Version>
+        </PackageReference>
+        <PackageReference Include="Markdig">
+            <Version>0.22.0</Version>
+        </PackageReference>
+    </ItemGroup>
+    <Target Name="Publish net6" Condition=" '$(TargetFramework)' == 'net6.0' And '$([MSBuild]::IsOSPlatform(`Windows`))' == 'True' " AfterTargets="Build">
+        <CallTarget Targets="Publish" />
+        <Exec Command="if not exist $(SharedOutputPath) mkdir $(SharedOutputPath)"/>
+        <Copy Condition=" '$(RuntimeIdentifier)' == 'win10-x64' " SourceFiles="$(OutputPath)$(RuntimeIdentifier)\publish\Md2Html.exe" DestinationFolder="$(SharedOutputPath)" />
+        <Copy Condition=" '$(RuntimeIdentifier)' == 'linux-x64' " SourceFiles="$(OutputPath)$(RuntimeIdentifier)\publish\Md2Html" DestinationFolder="$(SharedOutputPath)" />
+    </Target>
+    <Target Name="AfterBuildOps" AfterTargets="Build" Condition=" '$(TargetFramework)' == 'net48' And '$([MSBuild]::IsOSPlatform(`Windows`))' == 'True'">
+        <Exec Command="if not exist $(SharedOutputPath) mkdir $(SharedOutputPath)"/>
+        <!-- the ILMergePath property points to the location of ILMerge.exe console application -->
+        <Exec Command="$(ILMergeConsolePath) $(OutputPath)Md2Html.exe ^
 		/allowDup ^
 		/lib:$(OutputPath) ^
 		/out:$(SharedOutputPath)Md2Html.exe ^
@@ -47,15 +55,11 @@
 		AngleSharp.dll ^
 		HtmlSanitizer.dll ^
 		Markdig.dll ^
-		NDesk.Options.dll ^
+		CommandLine.dll ^
 		System.Buffers.dll ^
 		System.Memory.dll ^
 		System.Numerics.Vectors.dll ^
 		System.Runtime.CompilerServices.Unsafe.dll ^
 		System.Text.Encoding.CodePages.dll " />
-    <Exec Condition=" '!$([MSBuild]::IsOSPlatform(`Windows`))' == 'True' "
-		Command="mkdir -p $(SharedOutputPath)"/>
-    <Exec Condition=" '!$([MSBuild]::IsOSPlatform(`Windows`))' == 'True' "
-		Command="cp $(OutputPath)*.* $(SharedOutputPath)"/>
-  </Target>
+    </Target>
 </Project>

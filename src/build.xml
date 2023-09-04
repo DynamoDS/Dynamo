@@ -1,15 +1,17 @@
 <Project
     xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
-    ToolsVersion="15.0"
+    ToolsVersion="16.0"
     DefaultTargets="Build">
 <PropertyGroup>
     <Solution>Dynamo.All.sln</Solution>
+    <Platform>Any CPU</Platform>
+    <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
     <NuGetPath>$(MSBuildProjectDirectory)\..\tools\Nuget\NuGet.exe</NuGetPath>
  </PropertyGroup>
 	
 <ItemGroup>
     <ProjectToBuild Include="$(Solution)" >
-        <Properties>Configuration=Release;Platform=Any CPU</Properties>
+        <Properties>Configuration=Release;Platform=$(Platform)</Properties>
     </ProjectToBuild>
 </ItemGroup>
 
@@ -19,7 +21,7 @@
 
 <Target Name="RestorePackages">
   <Exec Condition="!Exists($(NuGetPath))" Command="powershell.exe -ExecutionPolicy ByPass -Command Invoke-WebRequest -Uri https://dist.nuget.org/win-x86-commandline/latest/nuget.exe -OutFile $(NuGetPath)" />
-  <Exec Command="$(NuGetPath) restore $(Solution)"/>
+  <Exec Command="dotnet restore $(Solution) --runtime=$(RuntimeIdentifier)"/>
 </Target>
 
 </Project>

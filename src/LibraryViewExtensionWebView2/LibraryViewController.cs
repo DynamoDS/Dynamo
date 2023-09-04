@@ -9,6 +9,7 @@ using System.Security.Permissions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using CoreNodeModels.Properties;
 using Dynamo.Controls;
 using Dynamo.Extensions;
@@ -347,6 +348,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
             //The default value of the zoom factor is 1.0. The value that comes from the slider is in percentage, so we divide by 100 to be equivalent
             browser.ZoomFactor = (double)dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale / 100;
             browser.ZoomFactorChanged += Browser_ZoomFactorChanged;
+            browser.KeyDown += Browser_KeyDown;
         }
 
         private void Browser_Loaded(object sender, RoutedEventArgs e)
@@ -354,6 +356,16 @@ namespace Dynamo.LibraryViewExtensionWebView2
             string msg = "Browser Loaded";
             LogToDynamoConsole(msg);
         }
+
+        private void Browser_KeyDown(object sender, KeyEventArgs e)
+
+        {
+            if (e.Key == Key.Delete)
+            {
+                _ = ExecuteScriptFunctionAsync(browser, "eventDispatcher");
+            }
+        }
+
 
         //if the browser window itself is resized, toggle visibility to force redraw.
         private void Browser_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -610,7 +622,6 @@ namespace Dynamo.LibraryViewExtensionWebView2
         protected void Dispose(bool disposing)
         {
             if (!disposing) return;
-
             if (observer != null) observer.Dispose();
             observer = null;
             if (this.dynamoWindow != null)
@@ -620,14 +631,19 @@ namespace Dynamo.LibraryViewExtensionWebView2
                 browser.ZoomFactorChanged -= Browser_ZoomFactorChanged;
                 dynamoViewModel.PreferencesWindowChanged-= DynamoViewModel_PreferencesWindowChanged;
                 dynamoWindow = null;
+                browser.KeyDown -= Browser_KeyDown;
             }
             if (this.browser != null)
             {
+                browser.CoreWebView2.RemoveHostObjectFromScript("bridgeTwoWay");
                 browser.SizeChanged -= Browser_SizeChanged;
                 browser.Loaded -= Browser_Loaded;
                 browser.Dispose();
                 browser = null;
             }
+            twoWayScriptingObject.Dispose();
+            dynamoViewModel = null;
+            commandExecutive = null;
         }
 
         public static async Task<string> ExecuteScriptFunctionAsync(WebView2 webView2, string functionName, params object[] parameters)

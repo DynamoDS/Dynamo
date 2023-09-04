@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -58,7 +59,7 @@ namespace Dynamo.Wpf.Views
         /// <summary>
         /// Constructor of Preferences View
         /// </summary>
-        /// <param name="dynamoViewModel"> Dynamo ViewModel</param>
+        /// <param name="dynamoView"> Dynamo ViewModel</param>
         public PreferencesView(DynamoView dynamoView)
         {
             dynViewModel = dynamoView.DataContext as DynamoViewModel;            
@@ -491,7 +492,7 @@ namespace Dynamo.Wpf.Views
 
                     File.Copy(dynViewModel.Model.PathManager.PreferenceFilePath, selectedPathFile);
                     string argument = "/select, \"" + selectedPathFile + "\"";
-                    System.Diagnostics.Process.Start("explorer.exe", argument);
+                    System.Diagnostics.Process.Start(new ProcessStartInfo("explorer.exe", argument) { UseShellExecute = true });
                     Analytics.TrackEvent(Actions.Export, Categories.Preferences);
                 }
                 catch (Exception ex)
@@ -642,6 +643,11 @@ namespace Dynamo.Wpf.Views
                 label.Margin = new Thickness(marginValue, 0, 0, 0);
                 label.Content = slider.Value.ToString() + "%";
             }
+        }
+        private void OnInstalledPackagesHyperlinkClicked(object sender, RoutedEventArgs e)
+        {
+            this.CloseButton_Click(this.CloseButton, e);
+            this.dynViewModel.ShowPackageManager(Dynamo.Wpf.Properties.Resources.PackageManagerInstalledPackagesTab);
         }
     }
 }

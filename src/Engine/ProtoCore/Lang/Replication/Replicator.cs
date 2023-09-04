@@ -11,7 +11,7 @@ namespace ProtoCore.Lang.Replication
     {
         /// <summary>
         /// Calculate partial replication instruciton based on replication guide level.
-        /// For example, for foo(xs<1><2><3>, ys<1><1><2>, zs<1><1><3>), the guides
+        /// For example, for foo(xs&lt;1&gt;&lt;2&gt;&lt;3&gt;, ys&lt;1&gt;&lt;1&gt;&lt;2&gt;, zs&lt;1&gt;&lt;1&gt;&lt;3&gt;), the guides
         /// are:
         /// 
         ///     level |  0  |  1  |  2  |
@@ -297,6 +297,7 @@ namespace ProtoCore.Lang.Replication
         /// </summary>
         /// <param name="formalParams"></param>
         /// <param name="replicationInstructions"></param>
+        /// <param name="runtimeCore"></param>
         /// <returns></returns>
         public static List<StackValue> EstimateReducedParams(List<StackValue> formalParams, List<ReplicationInstruction> replicationInstructions, RuntimeCore runtimeCore)
         {
@@ -470,7 +471,7 @@ namespace ProtoCore.Lang.Replication
         /// This will include cases where only partial reduction can be performed on jagged arrays
         /// </summary>
         /// <param name="sv"></param>
-        /// <param name="core"></param>
+        /// <param name="runtimeCore"></param>
         /// <returns></returns>
         public static int GetMaxReductionDepth(StackValue sv, RuntimeCore runtimeCore)
         {
@@ -482,7 +483,7 @@ namespace ProtoCore.Lang.Replication
         /// It contains a protected envelope 
         /// </summary>
         /// <param name="sv"></param>
-        /// <param name="core"></param>
+        /// <param name="runtimeCore"></param>
         /// <param name="depthCount"></param>
         /// <returns></returns>
         private static int RecursiveProtectGetMaxReductionDepth(StackValue sv, RuntimeCore runtimeCore, int depthCount)

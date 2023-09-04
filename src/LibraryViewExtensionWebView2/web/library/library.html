@@ -286,13 +286,9 @@
                 return;
             }
             if (enable) {
-                found_div.addEventListener('click', nextStepInGuide);
-                found_div.parentNode.addEventListener('click', nextStepInGuide);
                 found_div.parentNode.parentNode.addEventListener('click', nextStepInGuide);
             }
             else {
-                found_div.removeEventListener('click', nextStepInGuide);
-                found_div.parentNode.removeEventListener('click', nextStepInGuide);
                 found_div.parentNode.parentNode.removeEventListener('click', nextStepInGuide);
             }
         }
@@ -389,6 +385,17 @@
         //This method will be executed when the WebBrowser change its size, so we can update the Popup vertical location that is over the library
         function bodyResizeEvent() {
              window.chrome.webview.postMessage(JSON.stringify({ "func": "ResizedEvent", "data": "" }));
+        }
+
+        function eventDispatcher() {
+
+            const kbEvent = new KeyboardEvent('keydown', {
+                bubbles: true,
+                cancelable: true,
+                key: 'Delete',
+             });
+
+            document.dispatchEvent(kbEvent);
         }
     </script>
 

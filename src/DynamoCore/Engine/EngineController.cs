@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -17,6 +17,7 @@ using ProtoCore.Utils;
 using ProtoScript.Runners;
 using BuildWarning = ProtoCore.BuildData.WarningEntry;
 using RuntimeWarning = ProtoCore.Runtime.WarningEntry;
+using RuntimeInfo = ProtoCore.Runtime.InfoEntry;
 
 namespace Dynamo.Engine
 {
@@ -500,6 +501,11 @@ namespace Dynamo.Engine
             return liveRunnerServices.GetRuntimeWarnings();
         }
 
+        internal IDictionary<Guid, List<RuntimeInfo>> GetRuntimeInfos()
+        {
+            return liveRunnerServices.GetRuntimeInfos();
+        }
+
         internal IEnumerable<Guid> GetExecutedAstGuids(Guid sessionID)
         {
             return liveRunnerServices.GetExecutedAstGuids(sessionID);
@@ -635,19 +641,19 @@ namespace Dynamo.Engine
         /// <summary>
         /// Creates CompilationServices.
         /// </summary>
-        /// <param name="core">Copilation core</param>
+        /// <param name="libraryServices">Copilation core</param>
         public CompilationServices(LibraryServices libraryServices)
         {
             compilationCore = libraryServices.LibraryManagementCore;
             priorNames = libraryServices.GetPriorNames();
         }
 
-        [Obsolete("This method is deprecated and will be removed in Dynamo 3.0")]
         /// <summary>
         /// Pre-compiles Design script code in code block node.
         /// </summary>
         /// <param name="parseParams">Container for compilation related parameters</param>
         /// <returns>true if code compilation succeeds, false otherwise</returns>
+        [Obsolete("This method is deprecated and will be removed in Dynamo 3.0")]
         public bool PreCompileCodeBlock(ref ParseParam parseParams)
         {
             return CompilerUtils.PreCompileCodeBlock(compilationCore, parseParams, priorNames);

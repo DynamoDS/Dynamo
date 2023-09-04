@@ -1,4 +1,4 @@
-﻿<Window x:Class="Dynamo.PackageManager.PublishPackageView"
+<Window x:Class="Dynamo.PackageManager.PublishPackageView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:Dynamo.Controls"
@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
         xmlns:ui="clr-namespace:Dynamo.UI" 
-        xmlns:fa="http://schemas.fontawesome.io/icons/"
+        xmlns:fa="clr-namespace:FontAwesome5;assembly=FontAwesome5.Net"
         xmlns:packagemanager="clr-namespace:Dynamo.PackageManager"
         d:DataContext="{d:DesignInstance Type=packagemanager:PublishPackageViewModel}"
         Name="PublishInfoControl"
@@ -399,7 +399,7 @@
                         <ToolTip Content="{x:Static p:Resources.PublishPackageDocTooltipText}" Style="{StaticResource GenericToolTipLight}"/>
                     </Label.ToolTip>
                     <Label.Content>
-                        <fa:ImageAwesome Width="15" Height="15" VerticalAlignment="Bottom" HorizontalAlignment="Left" Icon="QuestionCircleOutline" Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                        <fa:ImageAwesome Width="15" Height="15" VerticalAlignment="Bottom" HorizontalAlignment="Left" Icon="Regular_QuestionCircle" Foreground="{StaticResource PreferencesWindowFontColor}"/>
                     </Label.Content>
                 </Label>
             </DockPanel>

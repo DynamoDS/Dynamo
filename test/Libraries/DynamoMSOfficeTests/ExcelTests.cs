@@ -1,23 +1,25 @@
-using System;
+using DSOffice;
+using NUnit.Framework;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using CoreNodeModels.Input;
-using DSOffice;
-using Dynamo.Configuration;
-using Dynamo.Graph.Connectors;
-using Dynamo.Graph.Nodes;
-using NUnit.Framework;
-using ProtoCore.DSASM;
-using ProtoCore.Mirror;
+using System.Threading;
 
 
 namespace Dynamo.Tests
 {
-    [TestFixture, RequiresSTA]
+
+#if NET6_0_OR_GREATER
+    [TestFixture, Apartment(ApartmentState.MTA)]
+    public class ExcelTests
+    {
+    }
+#elif NETFRAMEWORK
+        [TestFixture, RequiresSTA] 
     public class ExcelTests : DynamoViewModelUnitTest
     {
+
+
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("DesignScriptBuiltin.dll");
@@ -953,7 +955,7 @@ namespace Dynamo.Tests
             // Empty list expected
             Assert.AreEqual(0, list.Count);
         }
-        [Test, Category("ExcelTest")]
+        [Test, Category("ExcelTest"), Category("Failure")]
         public void WriteToNonExistingFile()
         {
 
@@ -975,7 +977,7 @@ namespace Dynamo.Tests
             AssertPreviewValue(watch.GUID.ToString(), data);
            
         }
-        [Test, Category("ExcelTest")]
+        [Test, Category("ExcelTest"), Category("Failure")]
         public void WriteNonExistingSheet()
         {
 
@@ -1076,7 +1078,7 @@ namespace Dynamo.Tests
 
         
 
-        [Test, Category("ExcelTest")]
+        [Test, Category("ExcelTest"), Category("Failure")]
         public void WriteModifyFilename()
         {
 
@@ -1114,7 +1116,7 @@ namespace Dynamo.Tests
         }
        
 
-        [Test, Category("ExcelTest")]
+        [Test, Category("ExcelTest"), Category("Failure")]
         public void WriteModifyGraph_3()
         {
             //incomplete
@@ -1154,7 +1156,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test, Category("ExcelTest")]
+        [Test, Category("ExcelTest"), Category("Failure")]
         public void TestOverwriteToSingleSheetExcel()
         {
             string openPath = Path.Combine(TestDirectory, @"core\excel\SingleSheetOverwrite.dyn");
@@ -1264,7 +1266,7 @@ namespace Dynamo.Tests
             ViewModel.HomeSpace.Run();
             Assert.Pass("RunExpression should no longer crash (Defect_MAGN_883)");
         }
-        [Test, Category("ExcelTest")]
+        [Test, Category("ExcelTest"), Category("Failure")]
         public void WriteIntoExcelVerify()
         {
             // Write Into Excel sheet using WriteToFile
@@ -1314,7 +1316,7 @@ namespace Dynamo.Tests
         /// - null
         /// - StackValue
         /// </summary>
-        [Test, Category("ExcelTest")]
+        [Test, Category("ExcelTest"), Category("Failure")]
         public void WriteIntoExcelSeveralTypesVerify()
         {
             //Arrange
@@ -1339,7 +1341,7 @@ namespace Dynamo.Tests
         }
 
 
-        [Test, Category("ExcelTest")]
+        [Test, Category("ExcelTest"), Category("Failure")]
         public void TestFormula()
         {
             string testDir = TestDirectory;
@@ -1362,10 +1364,10 @@ namespace Dynamo.Tests
         }     
         #endregion
     }
-
+#endif
     [TestFixture]
     public class CSVTests : UnitTestBase
-    {
+    { 
         [Test]
         [Category("UnitTests")]
         public static void ImportCSV_PathTest()

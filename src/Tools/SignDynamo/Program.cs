@@ -1,13 +1,22 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
-
+using CommandLine;
+using CommandLine.Text;
 using DynamoCrypto;
-using NDesk.Options;
 
 namespace SignDynamo
 {
+    internal class CMDLineOptions
+    {
+        [Option('i', "installer", Required = false, HelpText = "The path to the installer to sign.")]
+        public string Installer { get; set; } = String.Empty;
+
+        [Option('h', "help", Required = false, HelpText = "Show this message and exit.")]
+        public bool ShowHelp { get; set; }
+    }
+
     class Program
     {
         private static byte[] privateBlob = null;
@@ -51,22 +60,30 @@ namespace SignDynamo
         private static bool ParseArguments(IEnumerable<string> args)
         {
             var showHelp = false;
-
-            var p = new OptionSet
+            var parser = new Parser(options =>
             {
-                {"i:|installer","The path to the installer to sign.", v=> installerPath = v},
-                {"h|help", "Show this message and exit.", v=> showHelp = v != null}
-            };
-
+                options.IgnoreUnknownArguments = true; options.HelpWriter = Console.Out;
+                options.CaseSensitive = false;
+            });
             var notParsed = new List<string>();
 
             const string helpMessage = "Try 'SignDynamo --help' for more information.";
 
+            ParserResult<CMDLineOptions> parserResult;
+            var lineOptions = new CMDLineOptions();
+            var errors = new List<Error>();
+
             try
             {
-                notParsed = p.Parse(args);
+                parserResult = Parser.Default.ParseArguments<CMDLineOptions>(args)
+                                                .WithParsed(o => lineOptions = o)
+                                                .WithNotParsed(e => errors = (List<Error>)e);
+
+                errors.ForEach(x => notParsed.Add(x.ToString()));
+                installerPath = lineOptions.Installer;
+                showHelp = lineOptions.ShowHelp;
             }
-            catch (OptionException e)
+            catch (AggregateException e)
             {
                 Console.WriteLine(e.Message);
                 Console.WriteLine(helpMessage);
@@ -81,7 +98,7 @@ namespace SignDynamo
 
             if (showHelp)
             {
-                ShowHelp(p);
+                ShowHelp(parserResult);
                 return false;
             }
 
@@ -100,13 +117,13 @@ namespace SignDynamo
             return true;
         }
 
-        private static void ShowHelp(OptionSet p)
+        private static void ShowHelp(ParserResult<CMDLineOptions> results)
         {
             Console.WriteLine("Usage: SignDynamo [OPTIONS]");
             Console.WriteLine("Generate a signature file for a dynamo installer.");
             Console.WriteLine();
             Console.WriteLine("Options:");
-            p.WriteOptionDescriptions(Console.Out);
+            Console.WriteLine(HelpText.AutoBuild(results, null, null).ToString());
         }
     }
 }

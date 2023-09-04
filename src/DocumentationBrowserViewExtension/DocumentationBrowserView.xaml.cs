@@ -89,7 +89,7 @@ namespace Dynamo.DocumentationBrowser
                 // in either of these two cases, cancel the navigation 
                 // and redirect it to a new process that starts the default OS browser
                 e.Cancel = true;
-                Process.Start(new ProcessStartInfo(e.Uri));
+                Process.Start(new ProcessStartInfo(e.Uri) { UseShellExecute = true });
             }
         }
 
@@ -109,23 +109,19 @@ namespace Dynamo.DocumentationBrowser
             // Cleanup
             this.viewModel.LinkChanged -= NavigateToPage;
             this.documentationBrowser.NavigationStarting -= ShouldAllowNavigation;
+            this.documentationBrowser.DpiChanged -= DocumentationBrowser_DpiChanged;
+
+            if (this.documentationBrowser.CoreWebView2 != null)
+            {
+                this.documentationBrowser.CoreWebView2.WebMessageReceived -= CoreWebView2OnWebMessageReceived;
+            }
+
             // Note to test writers
             // Disposing the document browser will cause future tests
             // that uses the Browser component to crash
             if (!Models.DynamoModel.IsTestMode)
             {
                 this.documentationBrowser.Dispose();
-            }
-            this.documentationBrowser.DpiChanged -= DocumentationBrowser_DpiChanged;
-            try
-            {
-                if (this.documentationBrowser.CoreWebView2 != null)
-                    this.documentationBrowser.CoreWebView2.WebMessageReceived -= CoreWebView2OnWebMessageReceived;
-
-            }
-            catch (Exception)
-            {
-                return;
             }
         }
 

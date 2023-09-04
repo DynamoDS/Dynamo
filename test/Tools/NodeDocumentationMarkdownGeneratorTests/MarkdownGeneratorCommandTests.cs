@@ -18,7 +18,9 @@ namespace NodeDocumentationMarkdownGeneratorTests
         private static readonly string DynamoCoreDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
         private static readonly string DynamoCoreNodesDir = Path.Combine(DynamoCoreDir, "Nodes");
         private static string DynamoRepoRoot = new DirectoryInfo(DynamoCoreDir).Parent.Parent.Parent.FullName;
-        private static readonly string NodeGeneratorToolBuildPath = Path.Combine(DynamoRepoRoot, "src","tools", "NodeDocumentationMarkdownGenerator","bin");
+        private static readonly string NodeGeneratorToolBuildPath = Path.Combine(DynamoRepoRoot, "src","tools", "NodeDocumentationMarkdownGenerator","bin",
+    "AnyCPU"
+            );
         private static readonly string toolsTestFilesDirectory = Path.GetFullPath(Path.Combine(DynamoRepoRoot, "test","Tools", "docGeneratorTestFiles"));
         private static readonly string testLayoutSpecPath = Path.Combine(toolsTestFilesDirectory, "testlayoutspec.json");
         private static readonly string mockedDictionaryRoot = Path.Combine(toolsTestFilesDirectory, "sampledictionarycontent");
@@ -162,7 +164,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
                 RecursiveScan = true,
                 OutputFolderPath = tempDirectory.FullName,
                 Filter = preloadedLibraryPaths.Concat(new string[] 
-                {CORENODEMODELS_DLL_NAME,"GeometryUI.dll","PythonNodeModels.dll","Watch3dNodeModels.dll","UnitsUI.dll","" }),
+                {CORENODEMODELS_DLL_NAME,"GeometryUI.dll","PythonNodeModels.dll","Watch3dNodeModels.dll","UnitsNodeModels.dll","" }),
                 ReferencePaths = new List<string>()
             };
 
@@ -171,7 +173,12 @@ namespace NodeDocumentationMarkdownGeneratorTests
             var generatedFileNames = tempDirectory.GetFiles().Select(x => x.Name);
             //assert count is correct.
             //TODO this should be 684 - but 2 tsplines nodes have such long signatures the paths are too long for windows.
+            // Net6 can make longer file names
+#if NET6_0_OR_GREATER
+            Assert.AreEqual(684, generatedFileNames.Count());
+#else
             Assert.AreEqual(682, generatedFileNames.Count());
+#endif
         }
         [Test]
         public void ProducesCorrectOutputFromCoreDirectory_dsFiles()

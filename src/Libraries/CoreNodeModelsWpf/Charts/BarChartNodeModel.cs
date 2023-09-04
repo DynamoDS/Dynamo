@@ -1,27 +1,24 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Autodesk.DesignScript.Runtime;
-using CoreNodes.ChartHelpers;
 using CoreNodeModelsWpf.Charts.Controls;
 using CoreNodeModelsWpf.Charts.Utilities;
+using CoreNodes.ChartHelpers;
+using Dynamo.Controls;
+using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
+using Dynamo.ViewModels;
+using Dynamo.Wpf;
+using Dynamo.Wpf.Properties;
+using LiveChartsCore.SkiaSharpView.Painting;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
-using Dynamo.Controls;
-using Dynamo.Nodes;
-using Dynamo.Wpf;
-using LiveCharts.Wpf;
-using Dynamo.UI;
-using DynamoServices;
-using Dynamo.Wpf.Properties;
-using Dynamo.Graph.Connectors;
-using System.Linq;
-using Newtonsoft.Json.Linq;
-using Dynamo.ViewModels;
+using SkiaSharp.Views.WPF;
 
 namespace CoreNodeModelsWpf.Charts
 {
@@ -44,7 +41,6 @@ namespace CoreNodeModelsWpf.Charts
     public class BarChartNodeModel : NodeModel
     {
         #region Properties
-        private Random rnd = new Random();
         private bool isNestedList;
 
         /// <summary>
@@ -60,7 +56,7 @@ namespace CoreNodeModelsWpf.Charts
         /// <summary>
         /// Bar chart color values.
         /// </summary>
-        public List<SolidColorBrush> Colors { get; set; }
+        public List<Color> Colors { get; set; }
 
         /// <summary>
         /// Triggers when port is connected or disconnected
@@ -115,7 +111,7 @@ namespace CoreNodeModelsWpf.Charts
         private void BarChartNodeModel_PortConnected(PortModel port, ConnectorModel arg2)
         {
             // Reset an info states if any
-            if (port.PortType == PortType.Input && InPorts[2].IsConnected && NodeInfos.Any(x => x.State.Equals(ElementState.Info)))
+            if (port.PortType == PortType.Input && InPorts[2].IsConnected && NodeInfos.Any(x => x.State.Equals(ElementState.PersistentInfo)))
             {
                 this.ClearInfoMessages();
             }
@@ -163,7 +159,7 @@ namespace CoreNodeModelsWpf.Charts
             // Update chart properties
             Labels = new List<string>();
             Values = new List<List<double>>();
-            Colors = new List<SolidColorBrush>();
+            Colors = new List<Color>();
 
             var anyNullData = labels == null || values == null;
 
@@ -194,12 +190,11 @@ namespace CoreNodeModelsWpf.Charts
 
                     Color color;
                     if (colors == null || colors.Count == 0 || colors.Count != labels.Count)
-                    {
+                        {
                         if (InPorts[2].IsConnected) return;
 
                         // In case colors are not provided, we supply some from the default library of colors
-                        Info(Dynamo.Wpf.Properties.CoreNodeModelWpfResources.ProvideDefaultColorsWarningMessage);
-
+                        Info(CoreNodeModelWpfResources.ProvideDefaultColorsWarningMessage, true);
                         color = Utilities.Colors.GetColor();
                     }
                     else
@@ -207,10 +202,7 @@ namespace CoreNodeModelsWpf.Charts
                         var dynColor = (DSCore.Color)colors[i];
                         color = Color.FromArgb(dynColor.Alpha, dynColor.Red, dynColor.Green, dynColor.Blue);
                     }
-
-                    SolidColorBrush brush = new SolidColorBrush(color);
-                    brush.Freeze();
-                    Colors.Add(brush);
+                    Colors.Add(color);
                 }
             }
             else
@@ -221,8 +213,6 @@ namespace CoreNodeModelsWpf.Charts
                 {
                     Labels.Add((string)labels[i]);
                     
-                    var labelValues = new List<double>();
-                    
                     Values.Add(new List<double>{Convert.ToDouble(values[i])} );
 
                     Color color;
@@ -231,8 +221,7 @@ namespace CoreNodeModelsWpf.Charts
                         if (InPorts[3].IsConnected) return;
 
                         // In case colors are not provided, we supply some from the default library of colors
-                        Info(Dynamo.Wpf.Properties.CoreNodeModelWpfResources.ProvideDefaultColorsWarningMessage);
-
+                        Info(CoreNodeModelWpfResources.ProvideDefaultColorsWarningMessage, true);
                         color = Utilities.Colors.GetColor();
                     }
                     else
@@ -240,13 +229,9 @@ namespace CoreNodeModelsWpf.Charts
                         var dynColor = (DSCore.Color)colors[i];
                         color = Color.FromArgb(dynColor.Alpha, dynColor.Red, dynColor.Green, dynColor.Blue);
                     }
-
-                    SolidColorBrush brush = new SolidColorBrush(color);
-                    brush.Freeze();
-                    Colors.Add(brush);
+                    Colors.Add(color);
                 }
             }
-
             Utilities.Colors.ResetColors();
 
             // Notify UI the data has been modified
@@ -417,7 +402,7 @@ namespace CoreNodeModelsWpf.Charts
 
         private void ExportImage_Click(object sender, RoutedEventArgs e)
         {
-            Export.ToPng(barChartControl.BarChart);
+            Export.ToPng(barChartControl.BarChartNode);
         }
 
         /// <summary>

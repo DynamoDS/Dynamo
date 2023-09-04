@@ -47,6 +47,13 @@ namespace Dynamo.Configuration
     /// </summary>
     public class PreferenceSettings : NotificationObject, IPreferences, IRenderPrecisionPreference, IDisablePackageLoadingPreferences, ILogSource, IHideAutocompleteMethodOptions
     {
+        internal readonly static Lazy<PreferenceSettings>
+            lazy = new Lazy<PreferenceSettings>
+            (() => PreferenceSettings.Load(PathManager.Instance.PreferenceFilePath));
+
+        [XmlIgnore]
+        public static PreferenceSettings Instance { get { return lazy.Value; } }
+
         private string numberFormat;
         private string lastUpdateDownloadPath;
         private int maxNumRecentFiles;
@@ -58,6 +65,7 @@ namespace Dynamo.Configuration
         private bool isNotificationCenterEnabled;
         private bool isEnablePersistExtensionsEnabled;
         private bool isStaticSplashScreenEnabled;
+        private bool isTimeStampIncludedInExportFilePath;
         private bool isCreatedFromValidFile = true;
         private string backupLocation;
 
@@ -111,7 +119,23 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Indicates whether Google analytics reporting is approved or not.
         /// </summary>
-        public bool IsAnalyticsReportingApproved { get; set; }
+        [Obsolete("Property will be deprecated in Dynamo 3.0")]
+        public bool IsAnalyticsReportingApproved { get { return false; } set { } }
+
+        /// <summary>
+        /// This defines if the user export file path would include timestamp
+        /// </summary>
+        public bool IsTimeStampIncludedInExportFilePath
+        {
+            get
+            {
+                return isTimeStampIncludedInExportFilePath;
+            }
+            set
+            {
+                isTimeStampIncludedInExportFilePath = value;
+            }
+        }
 
         /// <summary>
         /// Indicates whether ADP analytics reporting is approved or not.
@@ -328,6 +352,7 @@ namespace Dynamo.Configuration
         /// </summary>
         public int RenderPrecision { get; set; }
 
+        /// <summary>
         /// Indicates whether surface and solid edges will
         /// be rendered.
         /// </summary>
@@ -889,6 +914,7 @@ namespace Dynamo.Configuration
             HideAutocompleteMethodOptions = false;
             EnableNotificationCenter = true;
             isStaticSplashScreenEnabled = true;
+            isTimeStampIncludedInExportFilePath = true;
             DefaultPythonEngine = string.Empty;
             ViewExtensionSettings = new List<ViewExtensionSettings>();
             GroupStyleItemsList = new List<GroupStyleItem>();

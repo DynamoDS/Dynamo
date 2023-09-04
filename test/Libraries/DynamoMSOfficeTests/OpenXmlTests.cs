@@ -1,17 +1,24 @@
+using Dynamo.Graph.Nodes;
+using Dynamo.Tests;
+using NUnit.Framework;
+using ProtoCore.Mirror;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using Dynamo.Graph.Nodes;
-using Dynamo.Tests;
-using NUnit.Framework;
-using ProtoCore.Mirror;
+using System.Threading;
 
 namespace DynamoMSOfficeTests
 {
-    [TestFixture]
-    [RequiresSTA]
+#if NET6_0_OR_GREATER
+    [TestFixture, Apartment(ApartmentState.MTA)]
+
+    public class OpenXmlTests
+    {
+    }
+#elif NETFRAMEWORK
+    [TestFixture, RequiresSTA]
     public class OpenXmlTests : DynamoViewModelUnitTest
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
@@ -76,7 +83,7 @@ namespace DynamoMSOfficeTests
                 Assert.IsTrue(list[i].IsCollection);
                 var rowList = list[i].GetElements().ToList();
                 Assert.AreEqual(1, rowList.Count());
-                Assert.AreEqual(i+1, rowList[0].Data);
+                Assert.AreEqual(i + 1, rowList[0].Data);
             }
         }
 
@@ -148,7 +155,7 @@ namespace DynamoMSOfficeTests
             var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.OpenXMLImportExcel");
 
             ViewModel.HomeSpace.Run();
-            
+
             var data = new object[] { new object[] { 4 }, new object[] { 5 }, new object[] { 6 }, new object[] { 7 }, new object[] { 8 }, new object[] { 9 }, new object[] { 10 } };
             AssertPreviewValue(node.GUID.ToString(), data);
         }
@@ -783,5 +790,10 @@ namespace DynamoMSOfficeTests
         }
 
         #endregion
+
+
     }
+#endif
 }
+
+

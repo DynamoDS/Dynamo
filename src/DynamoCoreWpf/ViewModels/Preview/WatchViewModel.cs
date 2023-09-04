@@ -7,7 +7,11 @@ using System.Text;
 using Dynamo.Wpf.Properties;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
-using Microsoft.Practices.Prism.ViewModel;
+#if NETFRAMEWORK
+using NotificationObject = Microsoft.Practices.Prism.ViewModel.NotificationObject;
+#else
+using NotificationObject = Dynamo.Core.NotificationObject;
+#endif
 using Dynamo.Configuration;
 using CoreNodeModels;
 

@@ -141,7 +141,11 @@ namespace SystemTestServices
             }
         }
 
+#if NET6_0_OR_GREATER
+        [OneTimeTearDown]
+#elif NETFRAMEWORK
         [TestFixtureTearDown]
+#endif
         public virtual void FinalTearDown()
         {
             // Fix for COM exception on close
@@ -149,7 +153,7 @@ namespace SystemTestServices
             //Dispatcher.CurrentDispatcher.InvokeShutdown();
         }
 
-        #endregion
+#endregion
 
         #region protected methods
 

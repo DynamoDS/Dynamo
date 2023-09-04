@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Logging;
@@ -17,7 +18,6 @@ using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels.Core.Converters;
 using DynamoUtilities;
 using ViewModels.Core;
-using static Dynamo.Configuration.Configurations;
 using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.ViewModels
@@ -364,6 +364,22 @@ namespace Dynamo.ViewModels
             {
                 preferenceSettings.EnableStaticSplashScreen = value;
                 RaisePropertyChanged(nameof(StaticSplashScreenEnabled));
+            }
+        }
+
+        /// <summary>
+        /// Controls the IsChecked property in the selecting to include timestamp for export path section
+        /// </summary>
+        public bool IsTimeStampIncludedInExportFilePath
+        {
+            get
+            {
+                return preferenceSettings.IsTimeStampIncludedInExportFilePath;
+            }
+            set
+            {
+                preferenceSettings.IsTimeStampIncludedInExportFilePath = value;
+                RaisePropertyChanged(nameof(IsTimeStampIncludedInExportFilePath));
             }
         }
 
@@ -1436,12 +1452,15 @@ namespace Dynamo.ViewModels
         public DelegateCommand AddPythonPathCommand { get; private set; }
         public DelegateCommand DeletePythonPathCommand { get; private set; }
         public DelegateCommand UpdatePythonPathCommand { get; private set; }
+        public DelegateCommand CopyToClipboardCommand { get; set; }
+
 
         private void InitializeCommands()
         {
             AddPythonPathCommand = new DelegateCommand(p => AddPath());
             DeletePythonPathCommand = new DelegateCommand(p => RemovePath(), p => CanDelete());
             UpdatePythonPathCommand = new DelegateCommand(p => UpdatePathAt());
+            CopyToClipboardCommand = new DelegateCommand(p => CopyToClipboard(p));
         }
 
         public bool UpdateBackupLocation(string newBackupLocation)
@@ -1523,11 +1542,19 @@ namespace Dynamo.ViewModels
             OnRequestShowFileDialog(this, e);
         }
 
+        // Copy currently selected package download path to clipboard
+        private void CopyToClipboard(object obj)
+        {
+            var selectedItem = obj as string;
+            Clipboard.SetText(string.IsNullOrEmpty(selectedItem) ? string.Empty : selectedItem);
+        }
+
         private void RaiseCanExecuteChanged()
         {
             AddPythonPathCommand.RaiseCanExecuteChanged();
             DeletePythonPathCommand.RaiseCanExecuteChanged();
             UpdatePythonPathCommand.RaiseCanExecuteChanged();
+            CopyToClipboardCommand.RaiseCanExecuteChanged();
         }
 
         /// <summary>

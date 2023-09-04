@@ -1,8 +1,9 @@
-﻿using System.Windows;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
-using Microsoft.Practices.Prism;
+using FontAwesome5;
+using FontAwesome5.Extensions;
 
 namespace Dynamo.Notifications
 {
@@ -43,7 +44,7 @@ namespace Dynamo.Notifications
 
               //create our icon
                 var color = new SolidColorBrush(Colors.LightGray);
-                this.imageicon.Source = FontAwesome.WPF.ImageAwesome.CreateImageSource(FontAwesome.WPF.FontAwesomeIcon.ExclamationCircle, color);
+                this.imageicon.Source = EFontAwesomeIconsExtensions.CreateImageSource(EFontAwesomeIcon.Solid_ExclamationCircle, color);
 
             //create some bindings
             //attach the visibility of the badge and menuItems enabledState to the number of notifications without a binding...
