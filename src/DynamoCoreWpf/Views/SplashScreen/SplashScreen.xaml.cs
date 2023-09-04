@@ -73,6 +73,10 @@ namespace Dynamo.UI.Views
             set
             {
                 dynamoView = value;
+                if(dynamoView == null)
+                {
+                    return;
+                }
                 viewModel = value.DataContext as DynamoViewModel;
                 // When view model is closed, we need to close the splash screen if it is displayed.
                 viewModel.RequestClose += SplashScreenRequestClose;
@@ -484,8 +488,14 @@ namespace Dynamo.UI.Views
             // RequestUpdateLoadBarStatus event needs to be unsubscribed when the splash screen window is closed, to avoid populating the info on splash screen.
             else
             {
-                this.Close();
-                viewModel?.Model.ShutDown(false);
+                Close();
+                if (viewModel != null)
+                {
+                    viewModel.RequestClose -= SplashScreenRequestClose;
+                }
+
+                DynamoView?.Close();
+                DynamoView = null;
             }
         }
 
