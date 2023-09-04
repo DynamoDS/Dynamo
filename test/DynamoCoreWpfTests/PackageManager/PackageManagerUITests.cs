@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Dynamo.Core;
 using Dynamo.Extensions;
@@ -1611,6 +1612,33 @@ namespace DynamoCoreWpfTests.PackageManager
 
             AssertWindowOwnedByDynamoView<PackageManagerView>();
             AssertWindowClosedWithDynamoView<PackageManagerView>();
+        }
+
+        /// <summary>
+        ///     Asserts that the filter context menu will stay open while the user interacts with it
+        /// </summary>
+        [Test]
+        public void FiltersContextMenuStaysOpen()
+        {
+            ViewModel.OnRequestPackageManagerDialog(null, null);
+            Thread.Sleep(500);
+
+            var windows = GetWindowEnumerable(View.OwnedWindows);
+            var pacakgeManager = windows.First(x => x is PackageManagerView) as PackageManagerView;
+            var pacakgeManagerSearchControl = pacakgeManager.packageManagerSearch;
+            Assert.IsNotNull(pacakgeManagerSearchControl);
+
+            var button = pacakgeManager.packageManagerSearch.filterResultsButton;
+            button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+
+            var hostFilterContextMenu = pacakgeManagerSearchControl.HostFilter;
+            Assert.IsTrue(hostFilterContextMenu.IsOpen);
+
+            var menuItemOne = hostFilterContextMenu.Items[1] as PackageManagerSearchViewModel.FilterEntry;
+            Assert.IsNotNull(menuItemOne);
+
+            menuItemOne.FilterCommand.Execute(null);
+            Assert.IsTrue(hostFilterContextMenu.IsOpen);
         }
 
         #endregion
