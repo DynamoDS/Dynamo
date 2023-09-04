@@ -3421,6 +3421,10 @@ namespace Dynamo.ViewModels
 
 
             BackgroundPreviewViewModel.Dispose();
+            foreach (var wsvm in workspaces)
+            {
+                wsvm.Dispose();
+            }
             MainGuideManager?.CloseRealTimeInfoWindow();
 
             model.ShutDown(shutdownParams.ShutdownHost);
