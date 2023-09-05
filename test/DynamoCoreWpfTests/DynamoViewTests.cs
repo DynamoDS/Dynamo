@@ -133,7 +133,7 @@ namespace DynamoCoreWpfTests
             DispatcherUtil.DoEvents();
             string selectedLanguage = (string)((ComboBox)preferencesWindow.FindName("LanguageCmb")).SelectedItem;
 
-            ViewModel.PreferencesViewModel.SelectedLanguage = selectedLanguage == "English" ? "Español" : "English";
+            ViewModel.PreferencesViewModel.SelectedLanguage = selectedLanguage == "English" ? "EspaÃ±ol" : "English";
 
             ViewModel.HomeSpace.HasUnsavedChanges = false;
             if (View.IsLoaded)
@@ -150,10 +150,5 @@ namespace DynamoCoreWpfTests
             bool isToastNotificationVisible = (bool)(ViewModel.MainGuideManager?.ExitTourPopupIsVisible);
             Assert.IsFalse(isToastNotificationVisible);
         }
-
-        /// <summary>
-        /// Overrides the Exit base class method to custom handling
-        /// </summary>
-
     }
 }
