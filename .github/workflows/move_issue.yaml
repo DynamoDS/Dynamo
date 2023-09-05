@@ -14,7 +14,7 @@ name: Move issue by labels
 #   - moves issues labeled as 'Revit' to 'DynamoDS/DynamoRevit' repository
 #   - moves issues labeled as 'Advance-Steel' to 'DynamoDS/Dynamo-Advance-Steel' repository
 #   - moves issues labeled as 'Wishlist' to 'DynamoDS/DynamoWishlist' repository
-#   - moves issues labeled as 'tracked' to 'Todo' column the project
+#   - moves issues labeled as 'tracked' to 'Todo' column in the project
 
 on:
   issues:
@@ -24,37 +24,44 @@ env:
   gh_organization: DynamoDS
   gh_token: ${{ secrets.DYNAMO_ISSUES_TOKEN }}
   project_id: 4
-  bot_comment: 'FYI: @DynamoDS/dynamo'
 
 jobs:
-  issue_labeled:
-    name: issue labeled
-    strategy:
-      matrix:
-        include:
-          - label: 'Revit'
-            repoName: 'DynamoRevit'
-          - label: 'Advance-Steel'
-            repoName: 'Dynamo-Advance-Steel'
-          - label: 'Wishlist'
-            repoName: 'DynamoWishlist'
+  issue_labeled_as_revit:
+    name: Transfer issue labeled as 'Revit'
     runs-on: ubuntu-latest
+    if: github.event.label.name == 'Revit'
     steps:
       - uses: actions/checkout@v3
-      - name: Add comment
-        if: github.event.label.name == matrix.label
-        uses: peter-evans/create-or-update-comment@v3
-        with:
-          issue-number: ${{ github.event.issue.number }}
-          body: ${{ env.bot_comment }}
-          token: ${{ env.gh_token }}
-      - name: (Label ${{ matrix.label }}) Move to ${{ matrix.repoName }}
-        if: github.event.label.name == matrix.label
-        run: gh issue transfer ${{ github.event.issue.number }} ${{ matrix.repoName }}
+      - name: Transfer issue to DynamoRevit Repository
+        run: gh issue transfer ${{ github.event.issue.number }} DynamoDS/DynamoRevit
         env:
           GITHUB_TOKEN: ${{ env.gh_token }}
+  issue_labeled_as_dynamo_advance_steel:
+    name: Transfer issue labeled as 'Advance-Steel'
+    runs-on: ubuntu-latest
+    if: github.event.label.name == 'Advance-Steel'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Transfer issue to Dynamo-Advance-Steel Repository
+        run: gh issue transfer ${{ github.event.issue.number }} DynamoDS/Dynamo-Advance-Steel
+        env:
+          GITHUB_TOKEN: ${{ env.gh_token }}
+  issue_labeled_as_wishlist:
+    name: Transfer issue labeled as 'Wishlist'
+    runs-on: ubuntu-latest
+    if: github.event.label.name == 'Wishlist'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Transfer issue to DynamoWishlist Repository
+        run: gh issue transfer ${{ github.event.issue.number }} DynamoDS/DynamoWishlist
+        env:
+          GITHUB_TOKEN: ${{ env.gh_token }}
+  issue_labeled_as_tracked:
+    name: Move issue labeled as 'tracked'
+    runs-on: ubuntu-latest
+    if: github.event.label.name == 'tracked'
+    steps:
       - name: Move tracked issue to Todo
-        if: github.event.label.name == 'tracked'
         uses: leonsteinhaeuser/project-beta-automations@v2.1.0
         with:
           gh_token: ${{ env.gh_token }}
