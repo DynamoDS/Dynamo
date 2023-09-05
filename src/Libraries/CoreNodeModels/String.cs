@@ -84,6 +84,12 @@ namespace CoreNodeModels
             base("__ToStringFromObject", inPorts, outPorts)
         {
             ArgumentLacing = LacingStrategy.Disabled;
+            //TODO looks like our nodemodel json constructor base implementation needs some work
+            //I see this in a few node model nodes that use default vals.
+            if (inPorts?.Count() > 1)
+            {
+                inPorts.ElementAt(1).DefaultValue = AstFactory.BuildBooleanNode(false);
+            }
         }
 
         public StringFromObject() : base("__ToStringFromObject")
@@ -138,12 +144,22 @@ namespace CoreNodeModels
             base("__ToStringFromArray", inPorts, outPorts)
         {
             ArgumentLacing = LacingStrategy.Disabled;
+            //TODO looks like our nodemodel json constructor base implementation needs some work
+            //I see this in a few node model nodes that use default vals.
+            if(inPorts?.Count()>1)
+            {
+                inPorts.ElementAt(1).DefaultValue = AstFactory.BuildBooleanNode(false);
+            }
         }
 
         public StringFromArray() : base("__ToStringFromArray")
         {
             ArgumentLacing = LacingStrategy.Disabled;
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("array", Resources.FromArrayPortDataArrayToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this,
+                new PortData("useNumericFormat",
+                    "should the numeric precision format be used when converting doubles",
+                    AstFactory.BuildBooleanNode(false))));
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("string", Resources.FromArrayPortDataResultToolTip)));
             RegisterAllPorts();
         }
@@ -169,10 +185,6 @@ namespace CoreNodeModels
         {
             ArgumentLacing = LacingStrategy.Disabled;
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("array", Resources.FromArrayPortDataArrayToolTip)));
-            InPorts.Add(new PortModel(PortType.Input, this,
-                new PortData("useNumericFormat",
-                    "should the numeric precision format be used when converting doubles",
-                    AstFactory.BuildBooleanNode(false))));
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("string", Resources.FromArrayPortDataResultToolTip)));
             RegisterAllPorts();
         }
