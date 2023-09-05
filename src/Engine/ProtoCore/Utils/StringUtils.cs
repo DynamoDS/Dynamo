@@ -42,6 +42,7 @@ namespace ProtoCore.Utils
             return ConvertToStringInternal(sv, runtimeCore, useNumericFormat);
         }
 
+        //TODO support std format strings?
         private static StackValue ConvertToStringInternal(StackValue sv, RuntimeCore runtimeCore,bool useNumericFormat)
         {
             StackValue returnSV;

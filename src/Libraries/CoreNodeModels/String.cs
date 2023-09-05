@@ -71,7 +71,7 @@ namespace CoreNodeModels
         }
     }
 
-    [NodeName("String from Object2")]
+    [NodeName("String from Object")]
     [NodeDescription("StringfromObjectDescription", typeof(Resources))]
     [NodeCategory("Core.String.Actions")]
     [NodeSearchTags("FromObjectSearchTags", typeof(Resources))]
@@ -112,7 +112,8 @@ namespace CoreNodeModels
     [OutPortTypes("string")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.StringNodes.FromObject", "DSCoreNodesUI.FromObject")]
-    [Obsolete("TODO update to resx - please use string from object overload with numeric format option")]
+    [Obsolete("this node is obsolete, please use the version of string from _ with numeric format option")]
+    [NodeDeprecated]
     public class FromObject: ToStringNodeBase 
     {
         [JsonConstructor]
@@ -172,6 +173,8 @@ namespace CoreNodeModels
     [OutPortTypes("string")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.StringNodes.FromArray", "DSCoreNodesUI.FromArray")]
+    [Obsolete("TODO update to resx - please use string from object overload with numeric format option")]
+    [NodeDeprecated]
     public class FromArray : ToStringNodeBase 
     {
         [JsonConstructor]
