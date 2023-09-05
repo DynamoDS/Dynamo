@@ -42,7 +42,7 @@
 	  <PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
       <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
       <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
-      <PackageReference Include="Prism.Core" Version="8.1.97"/>
+      <PackageReference Include="Prism.Core" Version="8.1.97" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\DocumentationBrowserViewExtension\DocumentationBrowserViewExtension.csproj">

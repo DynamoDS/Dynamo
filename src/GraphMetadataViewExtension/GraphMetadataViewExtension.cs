@@ -110,10 +110,12 @@ namespace Dynamo.GraphMetadata
 
         protected virtual void Dispose(bool disposing)
         {
-            viewModel.Dispose();
-
-            this.graphMetadataMenuItem.Checked -= MenuItemCheckHandler;
-            this.graphMetadataMenuItem.Unchecked -= MenuItemUnCheckedHandler;
+            viewModel?.Dispose();
+            if (graphMetadataMenuItem != null)
+            {
+                graphMetadataMenuItem.Checked -= MenuItemCheckHandler;
+                graphMetadataMenuItem.Unchecked -= MenuItemUnCheckedHandler;
+            }
         }
 
         public override void Dispose()

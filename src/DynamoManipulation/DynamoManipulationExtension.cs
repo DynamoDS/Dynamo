@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -174,6 +174,13 @@ namespace Dynamo.Manipulation
                 BackgroundPreviewViewModel.CanNavigateBackgroundPropertyChanged -= Watch3DViewModelNavigateBackgroundPropertyChanged;
                 BackgroundPreviewViewModel.ViewMouseDown -= Watch3DViewModelOnViewMouseDown;
             }
+
+            var settings = GetRunSettings(WorkspaceModel);
+            if (settings != null)
+            {
+                settings.PropertyChanged -= OnRunSettingsPropertyChanged;
+            }
+
         }
 
         private void Watch3DViewModelOnViewMouseDown(object o, MouseButtonEventArgs mouseButtonEventArgs)
