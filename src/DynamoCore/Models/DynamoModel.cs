@@ -1594,7 +1594,6 @@ namespace Dynamo.Models
             NodeFactory.AddTypeFactoryAndLoader(outputData.Type);
             NodeFactory.AddAlsoKnownAs(outputData.Type, outputData.AlsoKnownAs);
 
-            SearchModel?.Add(new CodeBlockNodeSearchElement(cbnData, LibraryServices));
 
             var symbolSearchElement = new NodeModelSearchElement(symbolData)
             {
