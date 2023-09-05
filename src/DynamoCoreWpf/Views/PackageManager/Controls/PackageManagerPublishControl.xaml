@@ -3,13 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:Dynamo.PackageManager.UI"
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              xmlns:ui="clr-namespace:Dynamo.UI"
-             xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:packagemanager="clr-namespace:Dynamo.PackageManager"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d"
+             UseLayoutRounding="True"
              d:DataContext="{d:DesignInstance Type=packagemanager:PublishPackageViewModel}"
              d:DesignHeight="450"
              d:DesignWidth="800">
@@ -87,26 +87,16 @@
                     </Trigger>
                 </ControlTemplate.Triggers>
             </ControlTemplate>
-            <Style x:Key="ComboBoxStyle"
-                   TargetType="{x:Type ComboBox}">
-                <Setter Property="OverridesDefaultStyle"
-                        Value="true" />
-                <Setter Property="ScrollViewer.HorizontalScrollBarVisibility"
-                        Value="Auto" />
-                <Setter Property="ScrollViewer.VerticalScrollBarVisibility"
-                        Value="Auto" />
-                <Setter Property="ScrollViewer.CanContentScroll"
-                        Value="true" />
-                <Setter Property="Margin"
-                        Value="-6,0,0,0" />
-                <Setter Property="Height"
-                        Value="29px" />
-                <Setter Property="Foreground"
-                        Value="#DCDCDC" />
-                <Setter Property="FontSize"
-                        Value="12px" />
-                <Setter Property="FontFamily"
-                        Value="{StaticResource ArtifaktElementRegular}" />
+            <Style x:Key="ComboBoxStyle" TargetType="{x:Type ComboBox}">
+                <Setter Property="OverridesDefaultStyle" Value="true" />
+                <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
+                <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+                <Setter Property="ScrollViewer.CanContentScroll" Value="true" />
+                <Setter Property="Margin" Value="-6,0,0,0" />
+                <Setter Property="Height" Value="29px" />
+                <Setter Property="Foreground" Value="#DCDCDC" />
+                <Setter Property="FontSize" Value="12px" />
+                <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type ComboBox}">
@@ -240,28 +230,17 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
-            <Style x:Key="DataGridRowStyle"
-                   TargetType="DataGridRow">
-                <Setter Property="HorizontalAlignment"
-                        Value="Left" />
-                <Setter Property="VerticalAlignment"
-                        Value="Center" />
-                <Setter Property="VerticalContentAlignment"
-                        Value="Center" />
-                <Setter Property="Margin"
-                        Value="0" />
-                <Setter Property="Padding"
-                        Value="0" />
-                <Setter Property="FontFamily"
-                        Value="{StaticResource ArtifaktElementRegular}" />
-                <Setter Property="Foreground"
-                        Value="#F5F5F5" />
-                <Setter Property="Height"
-                        Value="25" />
-                <Setter Property="Background"
-                        Value="#353535" />
-                <Setter Property="IsEnabled"
-                        Value="True" />
+            <Style x:Key="DataGridRowStyle" TargetType="DataGridRow">
+                <Setter Property="HorizontalAlignment"  Value="Left" />
+                <Setter Property="VerticalAlignment"  Value="Center" />
+                <Setter Property="VerticalContentAlignment"  Value="Center" />
+                <Setter Property="Margin"  Value="0" />
+                <Setter Property="Padding"  Value="0" />
+                <Setter Property="FontFamily"  Value="{StaticResource ArtifaktElementRegular}" />
+                <Setter Property="Foreground" Value="#F5F5F5" />
+                <Setter Property="Height" Value="25" />
+                <Setter Property="Background" Value="#353535" />
+                <Setter Property="IsEnabled" Value="True" />
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver"
                              Value="True">
@@ -339,52 +318,29 @@
             </Style>
             <Style x:Key="DataGrid"
                    TargetType="{x:Type DataGrid}">
-                <Setter Property="BorderThickness"
-                        Value="0" />
-                <Setter Property="BorderBrush"
-                        Value="Transparent" />
-                <Setter Property="Margin"
-                        Value="0,0,0,10" />
-                <Setter Property="Padding"
-                        Value="0,0,0,0" />
-                <Setter Property="AutoGenerateColumns"
-                        Value="False" />
-                <Setter Property="IsReadOnly"
-                        Value="False" />
-                <Setter Property="IsEnabled"
-                        Value="True" />
-                <Setter Property="Background"
-                        Value="#353535" />
-                <Setter Property="CanUserAddRows"
-                        Value="False" />
-                <Setter Property="CanUserReorderColumns"
-                        Value="True" />
-                <Setter Property="CanUserDeleteRows"
-                        Value="False" />
-                <Setter Property="CanUserResizeColumns"
-                        Value="True" />
-                <Setter Property="CanUserResizeRows"
-                        Value="False" />
-                <Setter Property="FocusVisualStyle"
-                        Value="{x:Null}" />
-                <Setter Property="FontSize"
-                        Value="10px" />
-                <Setter Property="CellStyle"
-                        Value="{DynamicResource DataGridCellStyle}" />
-                <Setter Property="RowStyle"
-                        Value="{DynamicResource DataGridRowStyle}" />
-                <Setter Property="HeadersVisibility"
-                        Value="Column" />
-                <Setter Property="GridLinesVisibility"
-                        Value="None" />
-                <Setter Property="SelectionMode"
-                        Value="Extended" />
-                <Setter Property="HorizontalScrollBarVisibility"
-                        Value="Visible" />
-                <Setter Property="VerticalScrollBarVisibility"
-                        Value="Auto" />
-                <Setter Property="EnableRowVirtualization"
-                        Value="False" />
+                <Setter Property="BorderThickness"  Value="0" />
+                <Setter Property="BorderBrush" Value="Transparent" />
+                <Setter Property="Margin" Value="0,0,0,10" />
+                <Setter Property="Padding" Value="0,0,0,0" />
+                <Setter Property="AutoGenerateColumns" Value="False" />
+                <Setter Property="IsReadOnly" Value="False" />
+                <Setter Property="IsEnabled" Value="True" />
+                <Setter Property="Background" Value="#353535" />
+                <Setter Property="CanUserAddRows" Value="False" />
+                <Setter Property="CanUserReorderColumns" Value="True" />
+                <Setter Property="CanUserDeleteRows" Value="False" />
+                <Setter Property="CanUserResizeColumns" Value="True" />
+                <Setter Property="CanUserResizeRows" Value="False" />
+                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                <Setter Property="FontSize" Value="10px" />
+                <Setter Property="CellStyle" Value="{DynamicResource DataGridCellStyle}" />
+                <Setter Property="RowStyle" Value="{DynamicResource DataGridRowStyle}" />
+                <Setter Property="HeadersVisibility" Value="Column" />
+                <Setter Property="GridLinesVisibility"  Value="None" />
+                <Setter Property="SelectionMode" Value="Extended" />
+                <Setter Property="HorizontalScrollBarVisibility" Value="Visible" />
+                <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+                <Setter Property="EnableRowVirtualization" Value="False" />
             </Style>
             <Style x:Key="CheckBoxStyle"
                    TargetType="CheckBox">
@@ -457,6 +413,212 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+
+
+            <!--#region IntegerUpDown Style -->
+        <SolidColorBrush x:Key="backgroundColorBrush" Color="#343434" />
+        <Geometry x:Key="UpArrowGeometry">M 4.5 2 L 7.5 5 C 7.8 5.1 8.1 5.1 8.4 4.9 C 8.6 4.6 8.6 4.3 8.5 4 L 5 0.5 C 4.7 0.2 4.2 0.2 3.9 0.5 L 0.5 4 C 0.4 4.3 0.4 4.6 0.6 4.9 C 0.9 5.1 1.2 5.1 1.5 5 L 4.5 2 Z</Geometry>
+        <Geometry x:Key="DownArrowGeometry">M 4.5 3.9 L 1.5 1 C 1.2 0.9 0.9 0.9 0.6 1.1 C 0.4 1.4 0.4 1.7 0.5 2 L 4 5.5 C 4.3 5.8 4.8 5.8 5.1 5.5 L 8.5 2 C 8.6 1.7 8.6 1.4 8.4 1.1 C 8.1 0.9 7.8 0.9 7.5 1 L 4.5 3.9 Z</Geometry>
+        <DataTemplate x:Key="IncreaseGlyphNormalKey">
+            <Path Width="9"
+                      Height="6"
+                      Data="{StaticResource UpArrowGeometry}"
+                      Fill="#9a9a9a"
+                      Margin="1 4 0 0"
+                      SnapsToDevicePixels="True"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      Focusable="False" />
+        </DataTemplate>
+        <DataTemplate x:Key="DecreaseGlyphNormalKey">
+            <Path Width="9"
+                      Height="6"
+                      Data="{StaticResource DownArrowGeometry}"
+                      Fill="#9a9a9a"
+                      Margin="1 -4 0 0"
+                      SnapsToDevicePixels="True"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      Focusable="False" />
+        </DataTemplate>
+        <Style x:Key="CustomIncreaseRepeatButton"
+                   TargetType="{x:Type RepeatButton}">
+            <!-- Default appearance -->
+            <Setter Property="Background" Value="#343434" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type RepeatButton}">
+                        <Border Background="{TemplateBinding Background}"
+                                    BorderThickness="1 0 0 0"
+                                    BorderBrush="#484848">
+                            <ContentPresenter  ContentTemplate="{StaticResource IncreaseGlyphNormalKey}"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <!-- Style for mouse interactions -->
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#484848" />
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#5D5D5D" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="CustomDecreaseRepeatButton" TargetType="{x:Type RepeatButton}">
+            <!-- Default appearance -->
+            <Setter Property="Background" Value="#343434" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type RepeatButton}">
+                        <Border Background="{TemplateBinding Background}"
+                                    BorderThickness="1 0 0 0"
+                                    BorderBrush="#484848">
+                            <ContentPresenter  ContentTemplate="{StaticResource DecreaseGlyphNormalKey}"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <!-- Style for mouse interactions -->
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#484848" />
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#5D5D5D" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type xctk:ButtonSpinner}">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="{DynamicResource backgroundColorBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Focusable" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type xctk:ButtonSpinner}">
+                        <Border Name="border"
+                                Margin="{TemplateBinding Padding}"
+                                HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <DockPanel>
+                                <UniformGrid Name="PART_SpinnerPanel"
+                                             DockPanel.Dock="Right"
+                                             Width="35"
+                                             Rows="2">
+                                    <RepeatButton BorderThickness="0" 
+                                                  Style="{StaticResource CustomIncreaseRepeatButton}"
+                                                  Name="PART_IncreaseButton">
+                                        <Path Width="9"
+                                              Height="6"
+                                              Margin="0,6,0,0"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Bottom"
+                                              Data="{StaticResource UpArrowGeometry}"
+                                              Fill="#9a9a9a"
+                                              Stretch="Uniform" />
+                                    </RepeatButton>
+                                    <RepeatButton BorderThickness="0"
+                                                  Style="{StaticResource CustomDecreaseRepeatButton}"
+                                                  Name="PART_DecreaseButton">
+                                        <Path Width="9"
+                                              Height="6"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Top"
+                                              Fill="#9a9a9a"
+                                              Stretch="Uniform" Margin="0,-5,0,0" />
+                                    </RepeatButton>
+                                </UniformGrid>
+                                <ContentPresenter Name="PART_ContentPresenter"
+                                                  Grid.Column="1" />
+                            </DockPanel>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+            <Style x:Key="IntegerUpDownStyle" TargetType="{x:Type xctk:IntegerUpDown}">
+            <Setter Property="Background" Value="{DynamicResource backgroundColorBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource backgroundColorBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="DefaultValue" Value="0"/>
+            <Setter Property="Foreground" Value="{StaticResource TextColorBrush}"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}"/>
+            <Setter Property="Height" Value="65"/>
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="Padding" Value="10 5"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="MinWidth" Value="95"/>
+            <Setter Property="MaxLength" Value="4"/>
+            <Setter Property="TextAlignment" Value="Left"/>
+            <Setter Property="UseLayoutRounding" Value="True" />
+            <Setter Property="WatermarkTemplate" Value="{StaticResource DefaultWatermarkTemplate}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type xctk:IntegerUpDown}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <xctk:ButtonSpinner x:Name="PART_Spinner"
+                                                    AllowSpin="{Binding AllowSpin, RelativeSource={RelativeSource TemplatedParent}}"
+                                                    Background="{TemplateBinding Background}"
+                                                    ButtonSpinnerLocation="{Binding ButtonSpinnerLocation, RelativeSource={RelativeSource TemplatedParent}}"
+                                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                                    HorizontalContentAlignment="Left"
+                                                    IsTabStop="False"
+                                                    ShowButtonSpinner="{Binding ShowButtonSpinner, RelativeSource={RelativeSource TemplatedParent}}"
+                                                    VerticalContentAlignment="Stretch">
+                                    <xctk:WatermarkTextBox x:Name="PART_TextBox"
+                                                           AcceptsReturn="False"
+                                                           AutoSelectBehavior="{Binding AutoSelectBehavior, RelativeSource={RelativeSource TemplatedParent}}"
+                                                           AutoMoveFocus="{Binding AutoMoveFocus, RelativeSource={RelativeSource TemplatedParent}}"
+                                                           Background="Transparent"
+                                                           BorderThickness="0"
+                                                           ContextMenu="{TemplateBinding ContextMenu}"
+                                                           FontStretch="{TemplateBinding FontStretch}"
+                                                           Foreground="{TemplateBinding Foreground}"
+                                                           FontStyle="{TemplateBinding FontStyle}"
+                                                           FontFamily="{TemplateBinding FontFamily}"
+                                                           FontWeight="{TemplateBinding FontWeight}"
+                                                           FontSize="{TemplateBinding FontSize}"
+                                                           HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                           IsUndoEnabled="{Binding IsUndoEnabled, RelativeSource={RelativeSource TemplatedParent}}"
+                                                           IsTabStop="True"
+                                                           MinWidth="35"
+                                                           MaxLength="{Binding MaxLength, RelativeSource={RelativeSource TemplatedParent}}"
+                                                           Padding="{TemplateBinding Padding}"
+                                                           TextAlignment="{Binding TextAlignment, RelativeSource={RelativeSource TemplatedParent}}"
+                                                           TabIndex="{TemplateBinding TabIndex}"
+                                                           TextWrapping="NoWrap"
+                                                           VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                           Watermark="{Binding Watermark, RelativeSource={RelativeSource TemplatedParent}}"
+                                                           WatermarkTemplate="{Binding WatermarkTemplate, RelativeSource={RelativeSource TemplatedParent}}" />
+                                </xctk:ButtonSpinner>
+                                <Label Content="{TemplateBinding Tag}"
+                                       Grid.Row="1"
+                                       FontSize="12"
+                                       FontFamily="{StaticResource ArtifaktElementRegular}"
+                                       Foreground="{StaticResource TextColorBrush}"/>
+                            </Grid>
+                        </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+            <!--#endregion-->
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -474,10 +636,11 @@
             <Grid Name="midSectionGrid"
                   Grid.Row="0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition MinWidth="265" />
-                    <ColumnDefinition Width="1" />
                     <ColumnDefinition Width="*"
-                                      MinWidth="360" />
+                                      MinWidth="250" />
+                    <ColumnDefinition Width="1" />
+                    <ColumnDefinition Width="1.5*"
+                                      MinWidth="365" />
                 </Grid.ColumnDefinitions>
 
                 <!--  Background Border  -->
@@ -492,7 +655,7 @@
                               Grid.Column="0"
                               Margin="0,5"
                               VerticalScrollBarVisibility="Visible">
-                    <StackPanel Margin="25,11,10,16"
+                    <StackPanel Margin="15,6,10,6"
                                 Orientation="Vertical">
 
                         <!--  Name  -->
@@ -536,30 +699,31 @@
                                          Style="{StaticResource GenericToolTipLight}"></ToolTip>
                             </TextBlock.ToolTip>
                         </TextBlock>
-                        <StackPanel Margin="0,0,0,12"
-                                    Orientation="Horizontal">
-                            <TextBox Name="versionMajorInput"
-                                     Margin="0,0,6,0"
-                                     MaxLength="4"
-                                     Style="{StaticResource InputStyle}"
-                                     Tag="{x:Static p:Resources.PublishPackageVersionMajorWatermark}"
-                                     Text="{Binding Path=MajorVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                     TabIndex="2" />
-                            <TextBox Name="versionMinorInput"
-                                     Margin="0,0,6,0"
-                                     MaxLength="4"
-                                     Style="{StaticResource InputStyle}"
-                                     Tag="{x:Static p:Resources.PublishPackageVersionMinorWatermark}"
-                                     Text="{Binding Path=MinorVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                     TabIndex="3" />
-                            <TextBox Name="versionBuildInput"
-                                     Margin="0,0,6,0"
-                                     MaxLength="4"
-                                     Style="{StaticResource InputStyle}"
-                                     Tag="{x:Static p:Resources.PublishPackageVersionBuildWatermark}"
-                                     Text="{Binding Path=BuildVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                     TabIndex="4" />
-                        </StackPanel>
+                        <UniformGrid Margin="-5,0,-5,12"
+                                     Rows="1">
+
+                            <xctk:IntegerUpDown Name="versionMajorInput"
+                                                Margin="5,0,5,0"
+                                                Style="{DynamicResource IntegerUpDownStyle}"
+                                                Watermark="{x:Static p:Resources.PublishPackageVersionMajorWatermark}"
+                                                Text="{Binding Path=MajorVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                TabIndex="2"
+                                                Tag="{x:Static p:Resources.PublishPackageViewMajorPackageVersionLabel}"/>
+                            <xctk:IntegerUpDown Name="versionMinorInput"
+                                                Margin="5,0,5,0"
+                                                Style="{DynamicResource IntegerUpDownStyle}"
+                                                Watermark="{x:Static p:Resources.PublishPackageVersionMinorWatermark}"
+                                                Text="{Binding Path=MinorVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                TabIndex="3"
+                                                Tag="{x:Static p:Resources.PublishPackageViewMinorPackageVersionLabel}" />
+                            <xctk:IntegerUpDown Name="versionBuildInput"
+                                                Margin="5 0 5 0"
+                                                Style="{DynamicResource IntegerUpDownStyle}"
+                                                Watermark="{x:Static p:Resources.PublishPackageVersionBuildWatermark}"
+                                                Text="{Binding Path=BuildVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                TabIndex="4"
+                                                Tag="{x:Static p:Resources.PublishPackageViewBuildPackageVersionLabel}" />
+                        </UniformGrid>
 
                         <!--  External Dependency  -->
                         <TextBlock Name="hostLabel"
@@ -670,7 +834,7 @@
 
                         <!--  More  -->
                         <Expander x:Name="detailsExpander"
-                                  Margin="-2,6"
+                                  Margin="-2,6,-2,0"
                                   Header="{x:Static p:Resources.MoreButton}"
                                   Style="{StaticResource MenuExpanderStyle}"
                                   KeyboardNavigation.TabNavigation="Local"
@@ -967,7 +1131,7 @@
                               Focusable="False" />
             </Grid>
 
-            <!--  Bottom Section: Publish Buttons + Status Label  -->
+            <!--  Bottom Section: Publish Buttons + Status Label    -->
             <DockPanel Grid.Row="1"
                        Margin="25,0"
                        VerticalAlignment="Center">

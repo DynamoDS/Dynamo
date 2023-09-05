@@ -1610,7 +1610,16 @@ If the toggle is off custom packages that are not already loaded will load once 
     <value>File Path</value>
   </data>
   <data name="PublishPackageViewPackageVersion" xml:space="preserve">
-    <value>Version (Major Minor Build)</value>
+    <value>Version</value>
+  </data>
+  <data name="PublishPackageViewMajorPackageVersionLabel" xml:space="preserve">
+    <value>Major</value>
+  </data>
+  <data name="PublishPackageViewMinorPackageVersionLabel" xml:space="preserve">
+    <value>Minor</value>
+  </data>
+  <data name="PublishPackageViewBuildPackageVersionLabel" xml:space="preserve">
+    <value>Build</value>
   </data>
   <data name="PublishPackageViewPackageVersionTooltip" xml:space="preserve">
     <value>A version name helps a submitter keep track of updates to the package.  A new version of a package will be REJECTED if this is not incremeneted.</value>
