@@ -799,16 +799,6 @@ namespace ProtoCore.Lang
                     },
                     ID = BuiltInMethods.MethodID.ToStringFromObject,
                 },
-                new BuiltInMethod
-                {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.String, 0),
-                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
-                    {
-                        new KeyValuePair<string, ProtoCore.Type>("object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0)),
-                        new KeyValuePair<string, ProtoCore.Type>("useNumericFormat", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0)),
-                    },
-                    ID = BuiltInMethods.MethodID.ToStringFromObject,
-                },
 
                 new BuiltInMethod
                 {
