@@ -244,7 +244,7 @@ namespace Dynamo.Applications
         public static DynamoModel MakeCLIModel(string asmPath, string userDataFolder, string commonDataFolder, HostAnalyticsInfo info = new HostAnalyticsInfo(), bool isServiceMode = false)
         {
             IPathResolver pathResolver = CreatePathResolver(false, string.Empty, string.Empty, string.Empty);
-            PathManager.Instance.AssignIPathResolver(pathResolver);
+            PathManager.Instance.AssignHostPathAndIPathResolver(string.Empty, pathResolver);
 
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(PreferenceSettings.Instance.Locale);
             Thread.CurrentThread.CurrentCulture = new CultureInfo(PreferenceSettings.Instance.Locale);
@@ -282,8 +282,8 @@ namespace Dynamo.Applications
         /// <returns></returns>
         public static DynamoModel MakeModel(bool CLImode, string asmPath = "", HostAnalyticsInfo info = new HostAnalyticsInfo())
         {
-            IPathResolver pathResolver = CreatePathResolver(false, string.Empty, string.Empty, string.Empty);            
-            PathManager.Instance.AssignIPathResolver(pathResolver);
+            IPathResolver pathResolver = CreatePathResolver(false, string.Empty, string.Empty, string.Empty);
+            PathManager.Instance.AssignHostPathAndIPathResolver(string.Empty, pathResolver);
 
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(PreferenceSettings.Instance.Locale);
             Thread.CurrentThread.CurrentCulture = new CultureInfo(PreferenceSettings.Instance.Locale);
