@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Dynamo.Extensions;
 using Dynamo.Logging;
 using Dynamo.Models;
@@ -7,14 +7,19 @@ using LogMessage = Dynamo.Logging.LogMessage;
 
 namespace Dynamo.Wpf.Extensions
 {
-    internal class ViewExtensionCommandExecutive : ICommandExecutive
+    internal class ViewExtensionCommandExecutive : ICommandExecutive,IDisposable
     {
         private readonly DynamoViewModel dynamoViewModel;
 
         public ViewExtensionCommandExecutive(DynamoViewModel model)
         {
             dynamoViewModel = model;
-            MessageLogged += (message) => { dynamoViewModel.Model.Logger.Log(message); };
+            MessageLogged += ViewExtensionCommandExecutive_MessageLogged;
+        }
+
+        private void ViewExtensionCommandExecutive_MessageLogged(ILogMessage message)
+        {
+            dynamoViewModel.Model.Logger.Log(message);
         }
 
         public void ExecuteCommand(DynamoModel.RecordableCommand command, string uniqueId, string extensionName)
@@ -41,6 +46,11 @@ namespace Dynamo.Wpf.Extensions
         {
             var handler = MessageLogged;
             if (handler != null) handler(obj);
+        }
+
+        public void Dispose()
+        {
+            MessageLogged -= ViewExtensionCommandExecutive_MessageLogged;
         }
     }
 }
