@@ -147,18 +147,18 @@ namespace DynamoCoreWpfTests
 
             TestPathResolverParams revitResolverParams = new TestPathResolverParams()
             {
-                UserDataRootFolder = @"C:\\Users\\user\\AppData\\Roaming\\Dynamo\\Dynamo Revit",
-                CommonDataRootFolder = @"C:\\ProgramData\\Autodesk\\RVT 2024\\Dynamo"
+                UserDataRootFolder = "C:\\Users\\user\\AppData\\Roaming\\Dynamo\\Dynamo Revit",
+                CommonDataRootFolder = "C:\\ProgramData\\Autodesk\\RVT 2024\\Dynamo"
 
             };
 
             IPathResolver revitPathResolver = new TestPathResolver(revitResolverParams);
-            string dynamoRevitHostPath = @"C:\Program Files\Autodesk\Revit 2024\AddIns\DynamoForRevit\Revit)";
+            string dynamoRevitHostPath = "C:\\Program Files\\Autodesk\\Revit 2024\\AddIns\\DynamoForRevit\\Revit)";
             singletonPathManager.AssignHostPathAndIPathResolver(dynamoRevitHostPath, revitPathResolver);
 
             string dynamoRevitUserDataDirectory = "C:\\Users\\user\\AppData\\Roaming\\Dynamo\\Dynamo Revit\\2.19";
             string dynamoRevitCommonDataDirectory = "C:\\ProgramData\\Autodesk\\RVT 2024\\Dynamo\\2.19";
-            string dynamoRevitSamplesPath = @"C:\\ProgramData\\Autodesk\\RVT 2024\\Dynamo\\samples\\en-US";
+            string dynamoRevitSamplesPath = "C:\\ProgramData\\Autodesk\\RVT 2024\\Dynamo\\samples\\en-US";
 
             Assert.AreEqual(Path.GetFullPath(singletonPathManager.UserDataDirectory), Path.GetFullPath(dynamoRevitUserDataDirectory));
             Assert.AreEqual(Path.GetFullPath(singletonPathManager.CommonDataDirectory), Path.GetFullPath(dynamoRevitCommonDataDirectory));
