@@ -16,6 +16,9 @@ namespace Dynamo.PackageManager.UI
     public partial class SearchBoxControl : UserControl
     {
         private DispatcherTimer delayTimer;
+
+        // set delay for this event 500ms
+        private static int delayTime = 500;
         /// <summary>
         /// Constructor
         /// </summary>
@@ -23,7 +26,7 @@ namespace Dynamo.PackageManager.UI
         {
             InitializeComponent();
         }
-        public static DispatcherTimer Debounce(DispatcherTimer dispatcher, TimeSpan interval, Action action)
+        private static DispatcherTimer Debounce(DispatcherTimer dispatcher, TimeSpan interval, Action action)
         {
             dispatcher?.Stop();
             dispatcher = null;
@@ -45,8 +48,8 @@ namespace Dynamo.PackageManager.UI
         /// <exception cref="NotImplementedException"></exception>
         private void SearchTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            // set delay for this event 500ms
-            Debounce(delayTimer, TimeSpan.FromMilliseconds(500), () =>
+
+            Debounce(delayTimer, TimeSpan.FromMilliseconds(delayTime), () =>
             {
                 var textBox = sender as TextBox;
                 if (textBox == null) return;
