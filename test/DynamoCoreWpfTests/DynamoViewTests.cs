@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
@@ -132,8 +133,9 @@ namespace DynamoCoreWpfTests
             preferencesWindow.Show();
             DispatcherUtil.DoEvents();
             string selectedLanguage = (string)((ComboBox)preferencesWindow.FindName("LanguageCmb")).SelectedItem;
-
-            ViewModel.PreferencesViewModel.SelectedLanguage = selectedLanguage == "English" ? "EspaÃ±ol" : "English";
+            var english = Configurations.SupportedLocaleDic.FirstOrDefault(x => x.Value == "en-US").Key;
+            var spanish = Configurations.SupportedLocaleDic.FirstOrDefault(x => x.Value == "es-ES").Key;
+            ViewModel.PreferencesViewModel.SelectedLanguage = selectedLanguage == english ? spanish : english;
 
             ViewModel.HomeSpace.HasUnsavedChanges = false;
             if (View.IsLoaded)
