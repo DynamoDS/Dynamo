@@ -17,7 +17,7 @@ namespace Dynamo.PackageManager.UI
     {
         private DispatcherTimer delayTimer;
 
-        // set delay for this event 500ms
+        // set delay for event 500ms
         private static int delayTime = 500;
         /// <summary>
         /// Constructor
