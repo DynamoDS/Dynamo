@@ -266,7 +266,7 @@ namespace Dynamo.GraphMetadata
         public void Dispose()
         {
             this.viewLoadedParams.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
-            this.viewLoadedParams.CurrentWorkspaceCleared += OnCurrentWorkspaceChanged;
+            this.viewLoadedParams.CurrentWorkspaceCleared -= OnCurrentWorkspaceChanged;
             if (linterManager != null)
             {
                 linterManager.PropertyChanged -= OnLinterManagerPropertyChange;
