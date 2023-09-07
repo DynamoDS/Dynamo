@@ -72,13 +72,14 @@ namespace Dynamo.PackageManager.UI
         {
             InitializeComponent();
 
-            _numMatch = new Regex(@"^\d+$");
+            // Allows positive whole numbers
+            _numMatch = new Regex(@"^(?:0|[1-9]\d*)$");
         }
 
         #region UI utility functions
         private void spinnerUp_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(inputField.Text))
+            if (string.IsNullOrEmpty(   inputField.Text))
             {
                 if (Int32.TryParse(watermarkLabel.Content as string, out int watermarkValue))
                 {
@@ -112,6 +113,8 @@ namespace Dynamo.PackageManager.UI
             }
             if (Int32.TryParse(inputField.Text, out int value))
             {
+                // Allows positive whole numbers
+                if (value <= 0) return;
                 Value = --value;
             };
         }
