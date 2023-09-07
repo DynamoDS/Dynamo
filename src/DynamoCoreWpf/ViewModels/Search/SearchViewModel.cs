@@ -403,7 +403,7 @@ namespace Dynamo.ViewModels
             {
                 cate.DisposeTree();
             }
-            Model.EntryAdded += AddEntry;
+            Model.EntryAdded -= AddEntry;
             Model.EntryUpdated -= UpdateEntry;
             Model.EntryRemoved -= RemoveEntry;
 
