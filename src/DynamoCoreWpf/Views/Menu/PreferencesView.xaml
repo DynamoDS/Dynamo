@@ -254,7 +254,8 @@
                                                 </Image>
                                             </Label>
                                         </WrapPanel>
-                                        <ComboBox Grid.Row="1" 
+                                        <ComboBox Grid.Row="1"
+                                              Name="LanguageCmb"    
                                               Width="213"
                                               HorizontalAlignment="Left"
                                               ItemsSource="{Binding Path=LanguagesList}"
