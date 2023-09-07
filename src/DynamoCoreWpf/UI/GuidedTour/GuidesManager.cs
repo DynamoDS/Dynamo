@@ -573,5 +573,16 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 exitTourPopup.IsOpen = false;
             }
         }
+
+        /// <summary>
+        /// Returns if the ExitTourPopup (Toast Notification) is open or not.
+        /// </summary>
+        internal bool ExitTourPopupIsVisible
+        {
+            get
+            {
+                return exitTourPopup != null && exitTourPopup.IsOpen;
+            }
+        }
     }
 }
