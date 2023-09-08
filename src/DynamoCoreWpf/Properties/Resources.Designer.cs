@@ -39,7 +39,7 @@ namespace Dynamo.Wpf.Properties {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Dynamo.Wpf.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -2680,6 +2680,24 @@ namespace Dynamo.Wpf.Properties {
         public static string EditWindowTitle {
             get {
                 return ResourceManager.GetString("EditWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A Save As command will treat the workspace as a completely new file and cause element binding to break. Choose Save to preserve element binding with the host document..
+        /// </summary>
+        public static string ElementBindingWarningMessage {
+            get {
+                return ResourceManager.GetString("ElementBindingWarningMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Element Binding Warning.
+        /// </summary>
+        public static string ElementBindingWarningTitle {
+            get {
+                return ResourceManager.GetString("ElementBindingWarningTitle", resourceCulture);
             }
         }
         

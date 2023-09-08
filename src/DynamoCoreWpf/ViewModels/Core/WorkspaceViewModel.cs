@@ -20,6 +20,7 @@ using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Selection;
+using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
@@ -627,6 +628,19 @@ namespace Dynamo.ViewModels
                 {
                     // For intentional SaveAs either through UI or API calls, replace workspace elements' Guids and workspace Id
                     jo["Uuid"] = Guid.NewGuid().ToString();
+                    if (jo["Bindings"] != JToken.Parse("[]"))
+                    {
+                        jo["Bindings"] = JToken.Parse("[]");
+                        var result = DynamoMessageBox.Show( Wpf.Properties.Resources.ElementBindingWarningMessage,
+                            Wpf.Properties.Resources.ElementBindingWarningTitle, MessageBoxButton.OKCancel,
+                            MessageBoxImage.Warning);
+
+                        if (result == MessageBoxResult.Cancel)
+                        {
+                            return;
+                        }
+                    }
+
                     saveContent = GuidUtility.UpdateWorkspaceGUIDs(jo.ToString());
                 }
                 else
