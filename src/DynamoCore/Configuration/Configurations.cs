@@ -230,7 +230,7 @@ namespace Dynamo.Configuration
 
         internal static double ToolTipTargetGapInPixels = 3.0;
         internal static double NodeButtonHeight = 32; // Height of node button.
-        internal static double BottomPanelHeight = 48; // Height of black bottom panel with 2 buttons: Run & CanÑel.
+        internal static double BottomPanelHeight = 48; // Height of black bottom panel with 2 buttons: Run & Cancel.
         internal static int MaxLengthTooltipCode = 35; // Max length of field code in tooltip, it's near copy icon.
         internal static string NoDescriptionAvailable = Resources.NoDescriptionAvailable;
 
