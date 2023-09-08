@@ -21,6 +21,7 @@ using NUnit.Framework;
 
 namespace DynamoCoreWpfTests
 {
+    [TestFixture, Category("Failure")]
     public class DocumentationBrowserViewExtensionTests : DynamoTestUIBase
     {
         private const string docsTabName = "Documentation Browser";

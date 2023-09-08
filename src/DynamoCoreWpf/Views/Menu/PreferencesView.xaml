@@ -45,10 +45,10 @@
             <!--This Template will be used for the controls generated in the Styles list when a new Style is saved-->
             <DataTemplate x:Key="styleViewItemTemplate">
                  <Border Background="{StaticResource PreferencesWindowBackgroundColor}" Padding="0,0,0,10" Margin="0,0,0,5"
-                        BorderThickness="1" BorderBrush="#FF97A0A5" Width="205">
+                        BorderThickness="1" BorderBrush="#FF97A0A5" Width="203">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Grid Grid.Column="0">
@@ -138,7 +138,7 @@
     <!--This is the main row of the Preference Window-->
     <Border x:Name="mainBorder"
             BorderBrush="{StaticResource WorkspaceBackgroundHomeBrush}"
-            BorderThickness="2"
+            BorderThickness="1"
             CornerRadius="4"
             Background="{StaticResource PreferencesWindowBackgroundColor}">
         <Grid x:Name="mainGrid"
@@ -1673,7 +1673,7 @@
                     <TabItem Header="{x:Static p:Resources.PreferencesPackageManagerSettingsTab}"
                              Style="{StaticResource LeftTab}">
                         <!--This Grid contains the package manager settings tab-->
-                        <Grid x:Name="PackageManagerTab" 
+                        <Grid x:Name="PackageSettingsTab" 
                               Margin="1"
                               HorizontalAlignment="Stretch">
                             <Grid.RowDefinitions>
@@ -1713,7 +1713,14 @@
                                             <ComboBox.ToolTip>
                                                 <ToolTip Content="{Binding Path=SelectedPackagePathForInstall}" Style="{StaticResource GenericToolTipLight}"/>
                                             </ComboBox.ToolTip>
-                                        </ComboBox>
+                                            <!-- Allows copy to clipboard of the download location -->
+                                            <ComboBox.InputBindings>
+                                                <KeyBinding Key="C"
+                                                            Modifiers="Ctrl"
+                                                            Command="{Binding CopyToClipboardCommand}"
+                                                            CommandParameter="{Binding SelectedItem, ElementName=PackageDownloadDirectoryComboBox}" />
+                                            </ComboBox.InputBindings>
+                                            </ComboBox>
                                         <ScrollViewer Height="200" VerticalScrollBarVisibility="Auto">
                                             <packagemanager:PackagePathView x:Name="PackagePathView" DataContext="{Binding PackagePathsViewModel}"/>
                                         </ScrollViewer>
@@ -1778,9 +1785,18 @@
                                       IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=InstalledPackagesExpander}"
                                       Grid.Row="1"
                                       Header="{x:Static p:Resources.InstalledPackageViewTitle}">
-                                <StackPanel
-                                    Orientation="Vertical" Margin="0,6,0,0">
-                                    <wpfControls:InstalledPackagesControl Height="300"/>
+                                <StackPanel Orientation="Vertical"
+                                            Margin="0,6,0,0">
+                                    <TextBlock>
+                                    <Run Text="{x:Static p:Resources.InstalledPackagePartialTextMessage}"
+                                            FontWeight="Regular" />                                        
+                                    <Hyperlink Click="OnInstalledPackagesHyperlinkClicked"
+                                                Foreground="{StaticResource TextBlockLinkForegroundColor}">
+                                        <TextBlock Name="PackageManagerLink"
+                                                    Text="{x:Static p:Resources.InstalledPackagePartialHyperlinkMessage}" />
+                                    </Hyperlink>
+                                    <Run>.</Run>        
+                                </TextBlock>
                                 </StackPanel>
                             </Expander>
                         </Grid>

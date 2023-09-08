@@ -802,7 +802,7 @@ namespace Dynamo.Tests
             var element = new CustomNodeSearchElement(null,
                 new CustomNodeInfo(Guid.NewGuid(), name, category, description, path));
 
-            var iDoc = ViewModel.Model.LuceneSearchUtility.InitializeIndexDocumentForNodes();
+            var iDoc = ViewModel.Model.LuceneUtility.InitializeIndexDocumentForNodes();
             if (element != null)
             {
                 ViewModel.Model.AddNodeTypeToSearchIndex(element, iDoc);

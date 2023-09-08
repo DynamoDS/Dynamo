@@ -48,7 +48,7 @@ namespace Dynamo.LibraryViewExtensionWebView2.Handlers
         public override Stream GetResource(string searchText, out string extension)
         {
             var text = Uri.UnescapeDataString(searchText);
-            var elements = model.Search(text, 0, null);
+            var elements = model.Search(text, LuceneSearch.LuceneUtilityNodeSearch);
             extension = "json";
             return GetNodeItemDataStream(elements, true);
         }

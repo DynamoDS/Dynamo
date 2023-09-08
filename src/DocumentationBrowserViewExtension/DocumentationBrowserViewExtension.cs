@@ -436,6 +436,8 @@ namespace Dynamo.DocumentationBrowser
             {
                 this.pmExtension.PackageLoader.PackgeLoaded -= OnPackageLoaded;
             }
+
+            PackageDocumentationManager.Instance.MessageLogged -= OnMessageLogged;
             PackageDocumentationManager.Instance.Dispose();
         }
 

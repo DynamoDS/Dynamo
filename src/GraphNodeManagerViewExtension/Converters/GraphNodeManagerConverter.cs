@@ -1,4 +1,4 @@
-﻿using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes;
 using Dynamo.GraphNodeManager.Properties;
 using Dynamo.UI;
 using System;
@@ -16,6 +16,7 @@ namespace Dynamo.GraphNodeManager.Converters
             switch ((ElementState) value)
             {
                 case ElementState.Info:
+                case ElementState.PersistentInfo:
                     return SharedDictionaryManager.DynamoColorsAndBrushesDictionary["Blue400Brush"];
                 case ElementState.Warning:
                 case ElementState.PersistentWarning:
@@ -40,6 +41,7 @@ namespace Dynamo.GraphNodeManager.Converters
             switch ((ElementState)value)
             {
                 case ElementState.Info:
+                case ElementState.PersistentInfo:
                     return Resources.Title_Information;
                 case ElementState.Warning:
                 case ElementState.PersistentWarning:
@@ -64,6 +66,7 @@ namespace Dynamo.GraphNodeManager.Converters
             switch ((ElementState)value)
             {
                 case ElementState.Info:
+                case ElementState.PersistentInfo:
                     return "/GraphNodeManagerViewExtension;component/Images/Info.png";
                 case ElementState.Warning:
                 case ElementState.PersistentWarning:
@@ -88,7 +91,7 @@ namespace Dynamo.GraphNodeManager.Converters
             var infoType = parameter as string;
             if (infoType == null) return Visibility.Collapsed;
 
-            if ((ElementState)value == ElementState.Info && parameter.Equals("Info"))
+            if ((ElementState)value == ElementState.Info && parameter.Equals(nameof(ElementState.Info)) || (ElementState)value == ElementState.PersistentInfo && parameter.Equals(nameof(ElementState.PersistentInfo)))
             {
                 return Visibility.Visible;
             }

@@ -24,7 +24,7 @@ namespace Dynamo.UI.Controls
     /// Notice this control shares a lot of logic with InCanvasSearchControl for now
     /// But they will diverge eventually because of UI improvements to auto complete.
     /// </summary>
-    public partial class NodeAutoCompleteSearchControl
+    public partial class NodeAutoCompleteSearchControl : IDisposable
     {
         ListBoxItem HighlightedItem;
 
@@ -45,7 +45,10 @@ namespace Dynamo.UI.Controls
             if (Application.Current != null)
             {
                 Application.Current.Deactivated += CurrentApplicationDeactivated;
-                Application.Current.MainWindow.Closing += NodeAutoCompleteSearchControl_Unloaded;
+                if (Application.Current.MainWindow != null)
+                {
+                    Application.Current.MainWindow.Closing += NodeAutoCompleteSearchControl_Unloaded;
+                }
             }
             HomeWorkspaceModel.WorkspaceClosed += this.CloseAutoCompletion;
         }
@@ -55,8 +58,12 @@ namespace Dynamo.UI.Controls
             if (Application.Current != null)
             {
                 Application.Current.Deactivated -= CurrentApplicationDeactivated;
-                Application.Current.MainWindow.Closing -= NodeAutoCompleteSearchControl_Unloaded;
+                if (Application.Current.MainWindow != null)
+                {
+                    Application.Current.MainWindow.Closing -= NodeAutoCompleteSearchControl_Unloaded;
+                }
             }
+            HomeWorkspaceModel.WorkspaceClosed -= this.CloseAutoCompletion;
         }
 
         private void CurrentApplicationDeactivated(object sender, EventArgs e)
@@ -387,6 +394,11 @@ namespace Dynamo.UI.Controls
                 Analytics.TrackEvent(Actions.Switch, Categories.Preferences, nameof(NodeAutocompleteSuggestion.ObjectType));
             }
             ViewModel.PopulateAutoCompleteCandidates();
+        }
+
+        public void Dispose()
+        {
+            NodeAutoCompleteSearchControl_Unloaded(this,null);
         }
     }
 }

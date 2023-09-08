@@ -59,6 +59,8 @@ namespace Dynamo.PackageManager.UI
                     SelectedPath = e.Path
                 };
 
+                dialog.Owner = Owner;
+
                 if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     e.Cancel = false;

@@ -644,5 +644,10 @@ namespace Dynamo.Wpf.Views
                 label.Content = slider.Value.ToString() + "%";
             }
         }
+        private void OnInstalledPackagesHyperlinkClicked(object sender, RoutedEventArgs e)
+        {
+            this.CloseButton_Click(this.CloseButton, e);
+            this.dynViewModel.ShowPackageManager(Dynamo.Wpf.Properties.Resources.PackageManagerInstalledPackagesTab);
+        }
     }
 }

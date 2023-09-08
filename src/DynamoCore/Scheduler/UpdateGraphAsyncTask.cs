@@ -145,11 +145,19 @@ namespace Dynamo.Scheduler
                 {
                     node.WasInvolvedInExecution = true;
                     node.WasRenderPackageUpdatedAfterExecution = false;
+                    // Clear node warning or info messages because if node is involved in new graph execution, message should be refreshed
                     if (node.State == ElementState.Warning)
                     {
                         using (node.PropertyChangeManager.SetPropsToSuppress(nameof(NodeModel.ToolTipText), nameof(NodeModel.Infos), nameof(NodeModel.State)))
                         {
                             node.ClearErrorsAndWarnings();
+                        }
+                    }
+                    if (node.State == ElementState.Info)
+                    {
+                        using (node.PropertyChangeManager.SetPropsToSuppress(nameof(NodeModel.ToolTipText), nameof(NodeModel.Infos), nameof(NodeModel.State)))
+                        {
+                            node.ClearInfoMessages();
                         }
                     }
                 }

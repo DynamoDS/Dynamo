@@ -275,34 +275,52 @@ namespace Dynamo.Controls
 
         private void DynamoViewModel_RequestEnableShortcutBarItems(bool enable)
         {
-            saveThisButton.IsEnabled = enable;
-            saveButton.IsEnabled = enable;
-            exportMenu.IsEnabled = enable;
-            
-            shortcutBar.IsNewButtonEnabled = enable;
-            shortcutBar.IsOpenButtonEnabled = enable;
-            shortcutBar.IsSaveButtonEnabled = enable;
-            shortcutBar.IsLoginMenuEnabled = enable;
-            shortcutBar.IsExportMenuEnabled  = enable;
-            shortcutBar.IsNotificationCenterEnabled = enable;
-
-            if(dynamoViewModel.ShowStartPage)
+            if (!(saveThisButton is null))
             {
-                shortcutBar.IsNewButtonEnabled = true;
-                shortcutBar.IsOpenButtonEnabled = true;
-                shortcutBar.IsLoginMenuEnabled = true;
-                shortcutBar.IsNotificationCenterEnabled = true;
+                saveThisButton.IsEnabled = enable;
+                saveButton.IsEnabled = enable;
+            }
+            if (!(exportMenu is null))
+            {
+                exportMenu.IsEnabled = enable;
+            }
+           
+            if (!(shortcutBar is null))
+            {
+                shortcutBar.IsNewButtonEnabled = enable;
+                shortcutBar.IsOpenButtonEnabled = enable;
+                shortcutBar.IsSaveButtonEnabled = enable;
+                shortcutBar.IsLoginMenuEnabled = enable;
+                shortcutBar.IsExportMenuEnabled = enable;
+                shortcutBar.IsNotificationCenterEnabled = enable;
+
+                if (dynamoViewModel.ShowStartPage)
+                {
+                    shortcutBar.IsNewButtonEnabled = true;
+                    shortcutBar.IsOpenButtonEnabled = true;
+                    shortcutBar.IsLoginMenuEnabled = true;
+                    shortcutBar.IsNotificationCenterEnabled = true;
+                }
             }
         }
 
         private void OnWorkspaceOpened(WorkspaceModel workspace)
         {
-            saveThisButton.IsEnabled = true;
-            saveButton.IsEnabled = true;
-            exportMenu.IsEnabled = true;
+            if (!(saveThisButton is null))
+            {
+                saveThisButton.IsEnabled = true;
+                saveButton.IsEnabled = true;
+            }
 
-            ShortcutBar.IsSaveButtonEnabled = true;
-            shortcutBar.IsExportMenuEnabled = true;
+            if (!(exportMenu is null))
+            {
+                exportMenu.IsEnabled = true;
+            }
+            if (!(shortcutBar is null))
+            {
+                ShortcutBar.IsSaveButtonEnabled = true;
+                shortcutBar.IsExportMenuEnabled = true;
+            }
 
             if (!(workspace is HomeWorkspaceModel hws))
             return;
@@ -2202,6 +2220,9 @@ namespace Dynamo.Controls
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
 
+                // setting the owner to the packageManagerWindow will centralize promts originating from the Package Manager
+                dynamoViewModel.Owner = packageManagerWindow;
+
                 packageManagerWindow.Closed += (sender, args) => { packageManagerWindow = null; cmd.Dispose(); };
                 packageManagerWindow.Show();
 
@@ -2209,6 +2230,10 @@ namespace Dynamo.Controls
             }
 
             packageManagerWindow.Focus();
+            if (e is OpenPackageManagerEventArgs)
+            {
+                packageManagerWindow.Navigate((e as OpenPackageManagerEventArgs).Tab);
+            }
             _pkgSearchVM.RefreshAndSearchAsync();
         }
 
@@ -2867,7 +2892,13 @@ namespace Dynamo.Controls
             dynamoViewModel.SideBarTabItems.CollectionChanged -= this.OnCollectionChanged;
 
             if (fileTrustWarningPopup != null)
+            {
                 fileTrustWarningPopup.CleanPopup();
+            }
+            //TODO code smell.
+            var workspaceView = this.ChildOfType<WorkspaceView>();
+            workspaceView?.Dispose();
+            (workspaceView?.NodeAutoCompleteSearchBar?.Child as IDisposable)?.Dispose();
         }
     }
 }

@@ -1,3 +1,4 @@
+using Dynamo.Controls;
 using Dynamo.ViewModels;
 #if NETFRAMEWORK
 using NotificationObject = Microsoft.Practices.Prism.ViewModel.NotificationObject;
@@ -40,7 +41,7 @@ namespace Dynamo.PackageManager
 
         public PackageManagerViewModel(DynamoViewModel dynamoViewModel, PackageManagerSearchViewModel PkgSearchVM)
         {
-            this.dynamoViewModel = dynamoViewModel;            
+            this.dynamoViewModel = dynamoViewModel;
             this.PackageSearchViewModel = PkgSearchVM;            
 
             this.PreferencesViewModel = dynamoViewModel.PreferencesViewModel;
@@ -54,6 +55,13 @@ namespace Dynamo.PackageManager
             InitializeInstalledPackages();
 
             PkgSearchVM.RegisterTransientHandlers();
+
+            LocalPackages.CollectionChanged += LocalPackages_CollectionChanged;
+        }
+
+        private void LocalPackages_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            RaisePropertyChanged(nameof(LocalPackages));
         }
 
         private void InitializeInstalledPackages()

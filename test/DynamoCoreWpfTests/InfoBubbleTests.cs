@@ -1,4 +1,4 @@
-﻿using Dynamo.Tests;
+using Dynamo.Tests;
 using Dynamo.ViewModels;
 using NUnit.Framework;
 using System;
@@ -9,6 +9,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using CoreNodeModels.Input;
 using Dynamo.Graph;
+using Dynamo.Graph.Workspaces;
 
 namespace DynamoCoreWpfTests
 {
@@ -169,12 +170,13 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void TestInfoState()
+        public void TestIntSliderInfoState()
         {
             var slider = new IntegerSlider64Bit();
             Assert.NotNull(slider);
 
             DynamoModel model = GetModel();
+            (model.CurrentWorkspace as HomeWorkspaceModel).RunSettings.RunType = RunType.Manual;
             model.ExecuteCommand(new DynamoModel.CreateNodeCommand(slider, 0, 0, true, true));
 
             NodeViewModel sliderNodeViewModel = ViewModel.CurrentSpaceViewModel.Nodes
@@ -185,6 +187,11 @@ namespace DynamoCoreWpfTests
             var param = new UpdateValueParams("Value", "9223372036854775808");
             slider.UpdateValue(param);
 
+            Assert.AreEqual(sliderNodeModel.Infos.Count, 1);
+            Assert.AreEqual(slider.Value, Int64.MaxValue);
+
+            // After graph run, persistent info still displays
+            model.CurrentWorkspace.RequestRun();
             Assert.AreEqual(sliderNodeModel.Infos.Count, 1);
             Assert.AreEqual(slider.Value, Int64.MaxValue);
         }

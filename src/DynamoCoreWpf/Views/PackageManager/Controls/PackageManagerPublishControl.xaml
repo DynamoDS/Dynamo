@@ -3,13 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:Dynamo.PackageManager.UI"
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              xmlns:ui="clr-namespace:Dynamo.UI"
-             xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:packagemanager="clr-namespace:Dynamo.PackageManager"
+             xmlns:local="clr-namespace:Dynamo.PackageManager.UI"
              mc:Ignorable="d"
+             UseLayoutRounding="True"
              d:DataContext="{d:DesignInstance Type=packagemanager:PublishPackageViewModel}"
              d:DesignHeight="450"
              d:DesignWidth="800">
@@ -87,26 +87,16 @@
                     </Trigger>
                 </ControlTemplate.Triggers>
             </ControlTemplate>
-            <Style x:Key="ComboBoxStyle"
-                   TargetType="{x:Type ComboBox}">
-                <Setter Property="OverridesDefaultStyle"
-                        Value="true" />
-                <Setter Property="ScrollViewer.HorizontalScrollBarVisibility"
-                        Value="Auto" />
-                <Setter Property="ScrollViewer.VerticalScrollBarVisibility"
-                        Value="Auto" />
-                <Setter Property="ScrollViewer.CanContentScroll"
-                        Value="true" />
-                <Setter Property="Margin"
-                        Value="-6,0,0,0" />
-                <Setter Property="Height"
-                        Value="29px" />
-                <Setter Property="Foreground"
-                        Value="#DCDCDC" />
-                <Setter Property="FontSize"
-                        Value="12px" />
-                <Setter Property="FontFamily"
-                        Value="{StaticResource ArtifaktElementRegular}" />
+            <Style x:Key="ComboBoxStyle" TargetType="{x:Type ComboBox}">
+                <Setter Property="OverridesDefaultStyle" Value="true" />
+                <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
+                <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+                <Setter Property="ScrollViewer.CanContentScroll" Value="true" />
+                <Setter Property="Margin" Value="-6,0,0,0" />
+                <Setter Property="Height" Value="29px" />
+                <Setter Property="Foreground" Value="#DCDCDC" />
+                <Setter Property="FontSize" Value="12px" />
+                <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type ComboBox}">
@@ -240,28 +230,17 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
-            <Style x:Key="DataGridRowStyle"
-                   TargetType="DataGridRow">
-                <Setter Property="HorizontalAlignment"
-                        Value="Left" />
-                <Setter Property="VerticalAlignment"
-                        Value="Center" />
-                <Setter Property="VerticalContentAlignment"
-                        Value="Center" />
-                <Setter Property="Margin"
-                        Value="0" />
-                <Setter Property="Padding"
-                        Value="0" />
-                <Setter Property="FontFamily"
-                        Value="{StaticResource ArtifaktElementRegular}" />
-                <Setter Property="Foreground"
-                        Value="#F5F5F5" />
-                <Setter Property="Height"
-                        Value="25" />
-                <Setter Property="Background"
-                        Value="#353535" />
-                <Setter Property="IsEnabled"
-                        Value="True" />
+            <Style x:Key="DataGridRowStyle" TargetType="DataGridRow">
+                <Setter Property="HorizontalAlignment"  Value="Left" />
+                <Setter Property="VerticalAlignment"  Value="Center" />
+                <Setter Property="VerticalContentAlignment"  Value="Center" />
+                <Setter Property="Margin"  Value="0" />
+                <Setter Property="Padding"  Value="0" />
+                <Setter Property="FontFamily"  Value="{StaticResource ArtifaktElementRegular}" />
+                <Setter Property="Foreground" Value="#F5F5F5" />
+                <Setter Property="Height" Value="25" />
+                <Setter Property="Background" Value="#353535" />
+                <Setter Property="IsEnabled" Value="True" />
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver"
                              Value="True">
@@ -339,52 +318,29 @@
             </Style>
             <Style x:Key="DataGrid"
                    TargetType="{x:Type DataGrid}">
-                <Setter Property="BorderThickness"
-                        Value="0" />
-                <Setter Property="BorderBrush"
-                        Value="Transparent" />
-                <Setter Property="Margin"
-                        Value="0,0,0,10" />
-                <Setter Property="Padding"
-                        Value="0,0,0,0" />
-                <Setter Property="AutoGenerateColumns"
-                        Value="False" />
-                <Setter Property="IsReadOnly"
-                        Value="False" />
-                <Setter Property="IsEnabled"
-                        Value="True" />
-                <Setter Property="Background"
-                        Value="#353535" />
-                <Setter Property="CanUserAddRows"
-                        Value="False" />
-                <Setter Property="CanUserReorderColumns"
-                        Value="True" />
-                <Setter Property="CanUserDeleteRows"
-                        Value="False" />
-                <Setter Property="CanUserResizeColumns"
-                        Value="True" />
-                <Setter Property="CanUserResizeRows"
-                        Value="False" />
-                <Setter Property="FocusVisualStyle"
-                        Value="{x:Null}" />
-                <Setter Property="FontSize"
-                        Value="10px" />
-                <Setter Property="CellStyle"
-                        Value="{DynamicResource DataGridCellStyle}" />
-                <Setter Property="RowStyle"
-                        Value="{DynamicResource DataGridRowStyle}" />
-                <Setter Property="HeadersVisibility"
-                        Value="Column" />
-                <Setter Property="GridLinesVisibility"
-                        Value="None" />
-                <Setter Property="SelectionMode"
-                        Value="Extended" />
-                <Setter Property="HorizontalScrollBarVisibility"
-                        Value="Visible" />
-                <Setter Property="VerticalScrollBarVisibility"
-                        Value="Auto" />
-                <Setter Property="EnableRowVirtualization"
-                        Value="False" />
+                <Setter Property="BorderThickness"  Value="0" />
+                <Setter Property="BorderBrush" Value="Transparent" />
+                <Setter Property="Margin" Value="0,0,0,10" />
+                <Setter Property="Padding" Value="0,0,0,0" />
+                <Setter Property="AutoGenerateColumns" Value="False" />
+                <Setter Property="IsReadOnly" Value="False" />
+                <Setter Property="IsEnabled" Value="True" />
+                <Setter Property="Background" Value="#353535" />
+                <Setter Property="CanUserAddRows" Value="False" />
+                <Setter Property="CanUserReorderColumns" Value="True" />
+                <Setter Property="CanUserDeleteRows" Value="False" />
+                <Setter Property="CanUserResizeColumns" Value="True" />
+                <Setter Property="CanUserResizeRows" Value="False" />
+                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                <Setter Property="FontSize" Value="10px" />
+                <Setter Property="CellStyle" Value="{DynamicResource DataGridCellStyle}" />
+                <Setter Property="RowStyle" Value="{DynamicResource DataGridRowStyle}" />
+                <Setter Property="HeadersVisibility" Value="Column" />
+                <Setter Property="GridLinesVisibility"  Value="None" />
+                <Setter Property="SelectionMode" Value="Extended" />
+                <Setter Property="HorizontalScrollBarVisibility" Value="Visible" />
+                <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+                <Setter Property="EnableRowVirtualization" Value="False" />
             </Style>
             <Style x:Key="CheckBoxStyle"
                    TargetType="CheckBox">
@@ -457,6 +413,8 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+
+
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -474,10 +432,11 @@
             <Grid Name="midSectionGrid"
                   Grid.Row="0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition MinWidth="265" />
-                    <ColumnDefinition Width="1" />
                     <ColumnDefinition Width="*"
-                                      MinWidth="360" />
+                                      MinWidth="250" />
+                    <ColumnDefinition Width="1" />
+                    <ColumnDefinition Width="1.5*"
+                                      MinWidth="365" />
                 </Grid.ColumnDefinitions>
 
                 <!--  Background Border  -->
@@ -492,7 +451,7 @@
                               Grid.Column="0"
                               Margin="0,5"
                               VerticalScrollBarVisibility="Visible">
-                    <StackPanel Margin="25,11,10,16"
+                    <StackPanel Margin="15,6,10,6"
                                 Orientation="Vertical">
 
                         <!--  Name  -->
@@ -536,30 +495,28 @@
                                          Style="{StaticResource GenericToolTipLight}"></ToolTip>
                             </TextBlock.ToolTip>
                         </TextBlock>
-                        <StackPanel Margin="0,0,0,12"
-                                    Orientation="Horizontal">
-                            <TextBox Name="versionMajorInput"
-                                     Margin="0,0,6,0"
-                                     MaxLength="4"
-                                     Style="{StaticResource InputStyle}"
-                                     Tag="{x:Static p:Resources.PublishPackageVersionMajorWatermark}"
-                                     Text="{Binding Path=MajorVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                     TabIndex="2" />
-                            <TextBox Name="versionMinorInput"
-                                     Margin="0,0,6,0"
-                                     MaxLength="4"
-                                     Style="{StaticResource InputStyle}"
-                                     Tag="{x:Static p:Resources.PublishPackageVersionMinorWatermark}"
-                                     Text="{Binding Path=MinorVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                     TabIndex="3" />
-                            <TextBox Name="versionBuildInput"
-                                     Margin="0,0,6,0"
-                                     MaxLength="4"
-                                     Style="{StaticResource InputStyle}"
-                                     Tag="{x:Static p:Resources.PublishPackageVersionBuildWatermark}"
-                                     Text="{Binding Path=BuildVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                     TabIndex="4" />
-                        </StackPanel>
+                        <UniformGrid Margin="-5,0,-5,12"
+                                     Rows="1">
+
+                            <local:NumericUpDownControl x:Name="versionMajorInput"
+                                                        Margin="5,0,5,0"
+                                                        Watermark="{x:Static p:Resources.PublishPackageVersionMajorWatermark}"
+                                                        Value="{Binding Path=MajorVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                        TabIndex="2"
+                                                        Label="{x:Static p:Resources.PublishPackageViewMajorPackageVersionLabel}"/>
+                            <local:NumericUpDownControl x:Name="versionMinorInput"
+                                                        Margin="5,0,5,0"
+                                                        Watermark="{x:Static p:Resources.PublishPackageVersionMinorWatermark}"
+                                                        Value="{Binding Path=MinorVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                        TabIndex="3"
+                                                        Label="{x:Static p:Resources.PublishPackageViewMinorPackageVersionLabel}" />
+                            <local:NumericUpDownControl x:Name="versionBuildInput"
+                                                        Margin="5 0 5 0"
+                                                        Watermark="{x:Static p:Resources.PublishPackageVersionBuildWatermark}"
+                                                        Value="{Binding Path=BuildVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                        TabIndex="4"
+                                                        Label="{x:Static p:Resources.PublishPackageViewBuildPackageVersionLabel}" />
+                        </UniformGrid>
 
                         <!--  External Dependency  -->
                         <TextBlock Name="hostLabel"
@@ -670,7 +627,7 @@
 
                         <!--  More  -->
                         <Expander x:Name="detailsExpander"
-                                  Margin="-2,6"
+                                  Margin="-2,6,-2,0"
                                   Header="{x:Static p:Resources.MoreButton}"
                                   Style="{StaticResource MenuExpanderStyle}"
                                   KeyboardNavigation.TabNavigation="Local"
@@ -837,7 +794,7 @@
                                                     Width="16"
                                                     Height="16"
                                                     Margin="5,-1,0,0"
-                                                    Command="{Binding ElementName=PublishInfoControl, Path=DataContext.RemoveItemCommand}"
+                                                    Command="{Binding ElementName=packageContentsGrid, Path=DataContext.RemoveItemCommand}"
                                                     CommandParameter="{Binding}"
                                                     Cursor="Hand"
                                                     DockPanel.Dock="Right">
@@ -967,7 +924,7 @@
                               Focusable="False" />
             </Grid>
 
-            <!--  Bottom Section: Publish Buttons + Status Label  -->
+            <!--  Bottom Section: Publish Buttons + Status Label    -->
             <DockPanel Grid.Row="1"
                        Margin="25,0"
                        VerticalAlignment="Center">

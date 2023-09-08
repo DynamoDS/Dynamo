@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Input;
 using Dynamo.Configuration;
@@ -42,7 +43,8 @@ namespace Dynamo.PackageManager
             Syncing,
             Searching,
             NoResults,
-            Results
+            Results,
+            Retry
         };
 
         /// <summary>
@@ -147,7 +149,15 @@ namespace Dynamo.PackageManager
 
         #region Properties & Fields
         // Lucene search utility to perform indexing operations.
-        internal LuceneSearchUtility LuceneSearchUtility { get; set; }
+        private LuceneSearchUtility LuceneUtility
+        {
+            get
+            {
+                return LuceneSearch.LuceneUtilityPackageManager;
+            }
+        }
+
+        private ObservableCollection<PackageManagerSearchElementViewModel> searchMyResults;
 
         // The results of the last synchronization with the package manager server
         public List<PackageManagerSearchElement> LastSync { get; set; }
@@ -289,6 +299,22 @@ namespace Dynamo.PackageManager
         public ObservableCollection<PackageManagerSearchElementViewModel> SearchResults { get; internal set; }
 
         /// <summary>
+        /// Returns a new filtered collection of packages based on the current user
+        /// </summary>
+        public ObservableCollection<PackageManagerSearchElementViewModel> SearchMyResults
+        {
+            set
+            {                
+                searchMyResults = value;
+                RaisePropertyChanged(nameof(SearchMyResults));                
+            }
+            get
+            {
+                return searchMyResults;
+            }
+        }
+
+        /// <summary>
         ///     MaxNumSearchResults property
         /// </summary>
         /// <value>
@@ -353,6 +379,25 @@ namespace Dynamo.PackageManager
                 RaisePropertyChanged(nameof(this.SearchState));
                 RaisePropertyChanged(nameof(this.SearchBoxPrompt));
                 RaisePropertyChanged(nameof(this.ShowSearchText));
+
+                if (value == PackageSearchState.Results && !this.InitialResultsLoaded)
+                {
+                    this.InitialResultsLoaded = true;
+                }
+            }
+        }
+
+        private bool _initialResultsLoaded = false;
+        /// <summary>
+        /// Will only be set to true once after the initial search has been finished.
+        /// </summary>
+        public bool InitialResultsLoaded
+        {
+            get { return _initialResultsLoaded; }
+            set
+            {
+                _initialResultsLoaded = value;
+                RaisePropertyChanged(nameof(InitialResultsLoaded));
             }
         }
 
@@ -427,6 +472,19 @@ namespace Dynamo.PackageManager
             get { return PackageManagerClientViewModel.DynamoViewModel.PreferenceSettings; }
         }
 
+        private bool isDetailPackagesExtensionOpened;
+        public bool IsDetailPackagesExtensionOpened
+        {
+            get { return isDetailPackagesExtensionOpened; }
+            set
+            {
+                if (isDetailPackagesExtensionOpened != value)
+                {
+                    isDetailPackagesExtensionOpened = value;
+                    RaisePropertyChanged(nameof(IsDetailPackagesExtensionOpened));
+                }
+            }
+        }
         #endregion Properties & Fields
 
         internal PackageManagerSearchViewModel()
@@ -458,22 +516,22 @@ namespace Dynamo.PackageManager
         private void AddPackageToSearchIndex(PackageManagerSearchElement package, Document doc)
         {
             if (DynamoModel.IsTestMode) return;
-            if (LuceneSearchUtility.addedFields == null) return;
+            if (LuceneUtility.addedFields == null) return;
 
-            LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), package.Name);
-            LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Description), package.Description);
+            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), package.Name);
+            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Description), package.Description);
 
             if (package.Keywords.Count() > 0)
             {
-                LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords), package.Keywords);
+                LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords), package.Keywords);
             }
 
             if (package.Hosts != null && string.IsNullOrEmpty(package.Hosts.ToString()))
             {
-                LuceneSearchUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Hosts), package.Hosts.ToString(), true, true);
+                LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Hosts), package.Hosts.ToString(), true, true);
             }
 
-            LuceneSearchUtility.writer?.AddDocument(doc);
+            LuceneUtility.writer?.AddDocument(doc);
         }
 
         /// <summary>
@@ -488,11 +546,44 @@ namespace Dynamo.PackageManager
 
         internal void InitializeLuceneForPackageManager()
         {
-            if(LuceneSearchUtility == null)
+            if(LuceneUtility == null)
             {
-                LuceneSearchUtility = new LuceneSearchUtility(PackageManagerClientViewModel.DynamoViewModel.Model);
-            }          
-            LuceneSearchUtility.InitializeLuceneConfig(LuceneConfig.PackagesIndexingDirectory);
+                LuceneSearch.LuceneUtilityPackageManager = new LuceneSearchUtility(PackageManagerClientViewModel.DynamoViewModel.Model);
+            }
+            LuceneUtility.InitializeLuceneConfig(LuceneConfig.PackagesIndexingDirectory);
+        }
+        
+        /// <summary>
+        /// Populates SearchMyResults collection containing all packages by current user
+        /// </summary>
+        private void PopulateMyPackages()
+        {
+            // First, clear already existing results to prevent stacking 
+            if (SearchMyResults != null) return;
+            // We should have already populated the CachedPackageList by this step
+            if (PackageManagerClientViewModel.CachedPackageList == null ||
+                !PackageManagerClientViewModel.CachedPackageList.Any()) return;
+            // We need the user to be logged in, otherwise there is no point in runnig this routine
+            if (PackageManagerClientViewModel.LoginState != Greg.AuthProviders.LoginState.LoggedIn) return;
+
+            List<PackageManagerSearchElementViewModel> myPackages = new List<PackageManagerSearchElementViewModel>();
+
+            // We need the user to be logged in, otherwise there is no point in runnig this routine
+            if (PackageManagerClientViewModel.LoginState != Greg.AuthProviders.LoginState.LoggedIn)
+            {
+                SearchMyResults = new ObservableCollection<PackageManagerSearchElementViewModel>(myPackages);
+                return;
+            }
+
+            // Check if any of the maintainers corresponds to the current logged in username
+            var name = PackageManagerClientViewModel.Username;
+            var pkgs = PackageManagerClientViewModel.CachedPackageList.Where(x => x.Maintainers != null && x.Maintainers.Contains(name)).ToList();
+            foreach(var pkg in pkgs)
+            {
+                myPackages.Add(new PackageManagerSearchElementViewModel(pkg, false));
+            }
+    
+            SearchMyResults = new ObservableCollection<PackageManagerSearchElementViewModel>(myPackages);
         }
 
         /// <summary>
@@ -754,6 +845,8 @@ namespace Dynamo.PackageManager
                 SearchDictionary.Add(pkg, pkg.Maintainers);
                 SearchDictionary.Add(pkg, pkg.Keywords);
             }
+
+            PopulateMyPackages();   // adding 
         }
 
         /// <summary>
@@ -763,15 +856,18 @@ namespace Dynamo.PackageManager
         public IEnumerable<PackageManagerSearchElementViewModel> RefreshAndSearch()
         {
             Refresh();
+            PopulateMyPackages();  
             return GetAllPackages();
         }
 
         public void RefreshAndSearchAsync()
         {
+            StartTimer();   // Times out according to MAX_LOAD_TIME
+
             this.ClearSearchResults();
             this.SearchState = PackageSearchState.Syncing;
 
-            var iDoc = LuceneSearchUtility.InitializeIndexDocumentForPackages();
+            var iDoc = LuceneUtility.InitializeIndexDocumentForPackages();
 
             Task<IEnumerable<PackageManagerSearchElementViewModel>>.Factory.StartNew(RefreshAndSearch).ContinueWith((t) =>
             {
@@ -787,22 +883,65 @@ namespace Dynamo.PackageManager
                         this.AddToSearchResults(result);
                     }
                     this.SearchState = HasNoResults ? PackageSearchState.NoResults : PackageSearchState.Results;
+                    TimedOut = false;
 
                     if (!DynamoModel.IsTestMode)
                     {
-                        LuceneSearchUtility.dirReader = LuceneSearchUtility.writer?.GetReader(applyAllDeletes: true);
-                        LuceneSearchUtility.Searcher = new IndexSearcher(LuceneSearchUtility.dirReader);
+                        LuceneUtility.dirReader = LuceneUtility.writer?.GetReader(applyAllDeletes: true);
+                        LuceneUtility.Searcher = new IndexSearcher(LuceneUtility.dirReader);
 
-                        LuceneSearchUtility.writer?.Commit();
-                        LuceneSearchUtility.writer?.Dispose();
-                        LuceneSearchUtility.indexDir?.Dispose();
-                        LuceneSearchUtility.writer = null;
+                        LuceneUtility.CommitWriterChanges();
+                        LuceneUtility.DisposeWriter();
                     }
                 }
                 RefreshInfectedPackages();
             }
             , TaskScheduler.FromCurrentSynchronizationContext()); // run continuation in ui thread
         }
+
+        #region Time Out
+
+        // maximum loading time for packages - 30 seconds
+        // if exceeded will trigger `timed out` event and failure screen
+        internal int MAX_LOAD_TIME = 30 * 1000;
+        private bool _timedOut;
+        /// <summary>
+        /// Will trigger timed out event
+        /// </summary>
+        public bool TimedOut
+        {
+            get { return _timedOut; }
+            set
+            {
+                _timedOut = value;
+                RaisePropertyChanged(nameof(TimedOut));
+            }
+        }
+
+        private void StartTimer()
+        {
+            var aTimer = new System.Timers.Timer();
+            aTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
+            aTimer.Interval = MAX_LOAD_TIME;
+            aTimer.AutoReset = false;
+            aTimer.Enabled = true;
+        }
+
+        private void OnTimedEvent(object sender, ElapsedEventArgs e)
+        {
+            var aTimer = (System.Timers.Timer)sender;
+            aTimer.Dispose();
+
+            // If we have managed to get all the results
+            // Simply dispose of the timer
+            // Otherwise act 
+            if (this.SearchState != PackageSearchState.Results)
+            {
+                TimedOut = true;
+            }
+        }
+
+        #endregion
 
         internal void RefreshInfectedPackages()
         {
@@ -1128,21 +1267,29 @@ namespace Dynamo.PackageManager
                 string searchTerm = searchText.Trim();
                 var packages = new List<PackageManagerSearchElementViewModel>();
 
-                var parser = new MultiFieldQueryParser(LuceneConfig.LuceneNetVersion, LuceneConfig.PackageIndexFields, LuceneSearchUtility.Analyzer)
+                //The DirectoryReader and IndexSearcher have to be assigned after commiting indexing changes and before executing the Searcher.Search() method,otherwise new indexed info won't be reflected
+                LuceneUtility.dirReader = LuceneUtility.writer?.GetReader(applyAllDeletes: true);
+
+                if (LuceneUtility.Searcher == null && LuceneUtility.dirReader != null)
+                {
+                    LuceneUtility.Searcher = new IndexSearcher(LuceneUtility.dirReader);
+                }
+
+                var parser = new MultiFieldQueryParser(LuceneConfig.LuceneNetVersion, LuceneConfig.PackageIndexFields, LuceneUtility.Analyzer)
                 {
                     AllowLeadingWildcard = true,
                     DefaultOperator = LuceneConfig.DefaultOperator,
                     FuzzyMinSim = LuceneConfig.MinimumSimilarity
                 };
 
-                Query query = parser.Parse(LuceneSearchUtility.CreateSearchQuery(LuceneConfig.PackageIndexFields, searchTerm));
+                Query query = parser.Parse(LuceneUtility.CreateSearchQuery(LuceneConfig.PackageIndexFields, searchTerm));
 
                 //indicate we want the first 50 results
-                TopDocs topDocs = LuceneSearchUtility.Searcher.Search(query, n: LuceneConfig.DefaultResultsCount);
+                TopDocs topDocs = LuceneUtility.Searcher.Search(query, n: LuceneConfig.DefaultResultsCount);
                 for (int i = 0; i < topDocs.ScoreDocs.Length; i++)
                 {
                     //read back a doc from results
-                    Document resultDoc = LuceneSearchUtility.Searcher.Doc(topDocs.ScoreDocs[i].Doc);
+                    Document resultDoc = LuceneUtility.Searcher.Doc(topDocs.ScoreDocs[i].Doc);
 
                     // Get the view model of the package element and add it to the results.
                     string name = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.Name));
@@ -1270,6 +1417,16 @@ namespace Dynamo.PackageManager
             {
                 RequestDisableTextSearch(null, null);
             }
+        }
+
+        /// <summary>
+        /// Clear after closing down
+        /// </summary>
+        internal void Close()
+        {
+            TimedOut = false;   // reset the timedout screen 
+            InitialResultsLoaded = false;   // reset the loading screen settings
+            RequestShowFileDialog -= OnRequestShowFileDialog;
         }
     }
 }

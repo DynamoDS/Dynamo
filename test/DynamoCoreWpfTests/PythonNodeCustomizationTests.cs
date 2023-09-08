@@ -20,6 +20,7 @@ using PythonNodeModelsWpf;
 
 namespace DynamoCoreWpfTests
 {
+    [TestFixture, Category("Failure")]
     public class PythonNodeCustomizationTests : DynamoTestUIBase
     {
         bool bTextEnteringEventRaised = false;

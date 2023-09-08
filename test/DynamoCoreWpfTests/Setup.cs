@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Windows.Threading;
 using Dynamo.Utilities;
 using NUnit.Framework;
 
@@ -13,6 +14,9 @@ using NUnit.Framework;
         [OneTimeSetUp]
         public void RunBeforeAllTests()
         {
+            var dispatcher = Dispatcher.CurrentDispatcher;
+            Assert.IsNotNull(dispatcher);
+
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
             var moduleRootFolder = new DirectoryInfo(assemblyPath).Parent;
 
@@ -33,5 +37,6 @@ using NUnit.Framework;
         {
             AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssembly;
             assemblyHelper = null;
+            Dispatcher.CurrentDispatcher.InvokeShutdown();
         }
     }

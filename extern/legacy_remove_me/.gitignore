@@ -1,5 +1,0 @@
-# override specific package dlls#
-###################
-!bin/
-!*.exe
-!*.pdb

@@ -20,10 +20,6 @@
         </description>
         <copyright>Copyright Autodesk 2023</copyright>
         <dependencies>
-            <group targetFramework=".NETFramework4.8">
-                <dependency id="DynamoVisualProgramming.DynamoServices" version="$Version$" />
-                <dependency id="DynamoVisualProgramming.ZeroTouchLibrary" version="$Version$" />
-            </group>
             <group targetFramework="net6.0">
                 <dependency id="DynamoVisualProgramming.DynamoServices" version="$Version$" />
                 <dependency id="DynamoVisualProgramming.ZeroTouchLibrary" version="$Version$" />
@@ -32,31 +28,18 @@
     </metadata>
     <!--for now we assume that that the working directory root is dynamo/bin/AnyCPU/Release-->
     <files>
-        <file src="Analysis.dll" target="lib\net48" />
-        <file src="Analysis.xml" target="lib\net48" />
-        <file src="GeometryColor.dll" target="lib\net48" />
-        <file src="GeometryColor.xml" target="lib\net48" />
-        <file src="DSCoreNodes.dll" target="lib\net48" />
-        <file src="DSCoreNodes.xml" target="lib\net48" />
-        <file src="nodes\CoreNodeModels.dll" target="lib\net48" />
-        <file src="nodes\CoreNodeModels.xml" target="lib\net48" />
-        <file src="nodes\Watch3DNodeModels.dll" target="lib\net48" />
-        <file src="nodes\Watch3DNodeModels.xml" target="lib\net48" />
-        <file src="nodes\UnitsNodeModels.dll" target="lib\net48" />
-        <file src="nodes\UnitsNodeModels.xml" target="lib\net48" />
-        <!--NET60 binaries, the path may change after we stop building NET48 solution-->
-        <file src="..\..\..\bin\NET60_Windows\Release\Analysis.dll" target="lib\net6.0" />
-        <file src="..\..\..\bin\NET60_Windows\Release\Analysis.xml" target="lib\net6.0" />
-        <file src="..\..\..\bin\NET60_Windows\Release\GeometryColor.dll" target="lib\net6.0" />
-        <file src="..\..\..\bin\NET60_Windows\Release\GeometryColor.xml" target="lib\net6.0" />
-        <file src="..\..\..\bin\NET60_Windows\Release\DSCoreNodes.dll" target="lib\net6.0" />
-        <file src="..\..\..\bin\NET60_Windows\Release\DSCoreNodes.xml" target="lib\net6.0" />
-        <file src="..\..\..\bin\NET60_Windows\Release\nodes\CoreNodeModels.dll" target="lib\net6.0" />
-        <file src="..\..\..\bin\NET60_Windows\Release\nodes\CoreNodeModels.xml" target="lib\net6.0" />
-        <file src="..\..\..\bin\NET60_Windows\Release\nodes\Watch3DNodeModels.dll" target="lib\net6.0" />
-        <file src="..\..\..\bin\NET60_Windows\Release\nodes\Watch3DNodeModels.xml" target="lib\net6.0" />
-        <file src="..\..\..\bin\NET60_Windows\Release\nodes\UnitsNodeModels.dll" target="lib\net6.0" />
-        <file src="..\..\..\bin\NET60_Windows\Release\nodes\UnitsNodeModels.xml" target="lib\net6.0" />
+        <file src="Analysis.dll" target="lib\net6.0" />
+        <file src="Analysis.xml" target="lib\net6.0" />
+        <file src="GeometryColor.dll" target="lib\net6.0" />
+        <file src="GeometryColor.xml" target="lib\net6.0" />
+        <file src="DSCoreNodes.dll" target="lib\net6.0" />
+        <file src="DSCoreNodes.xml" target="lib\net6.0" />
+        <file src="nodes\CoreNodeModels.dll" target="lib\net6.0" />
+        <file src="nodes\CoreNodeModels.xml" target="lib\net6.0" />
+        <file src="nodes\Watch3DNodeModels.dll" target="lib\net6.0" />
+        <file src="nodes\Watch3DNodeModels.xml" target="lib\net6.0" />
+        <file src="nodes\UnitsNodeModels.dll" target="lib\net6.0" />
+        <file src="nodes\UnitsNodeModels.xml" target="lib\net6.0" />
         <file src="..\..\..\doc\distrib\Images\logo_square_32x32.png" target="content\images\logo.png" />
     </files>
 </package>

@@ -1,5 +1,6 @@
-﻿using System.IO;
+using System.IO;
 using System.Xml;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using NUnit.Framework;
@@ -20,6 +21,7 @@ namespace Dynamo.Tests.ModelsTest
             //Arrange
             string samplepath = Path.Combine(TestDirectory, @"core\callsite\RebindingSingleDimension.dyn");
             string fileContents = File.ReadAllText(samplepath);
+            string jsonGraphId = WorkspaceModel.ComputeGraphIdFromJson(fileContents);
             var openFromJsonCommand = new OpenFileFromJsonCommand(fileContents, true);
 
             //Act
@@ -35,6 +37,7 @@ namespace Dynamo.Tests.ModelsTest
 
 
             //Assert
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.FromJsonGraphId == jsonGraphId);
             Assert.IsEmpty(CurrentDynamoModel.CurrentWorkspace.FileName);
             Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
             Assert.IsNotNull(deserializedCommand);

@@ -73,7 +73,7 @@ namespace DynamoCoreWpfTests
             homespace.Run();
             Assert.DoesNotThrow(DispatcherUtil.DoEvents);
             Assert.AreEqual(2, homespace.Connectors.Count());
-            Assert.AreEqual(ElementState.Info, chart.State);
+            Assert.AreEqual(ElementState.PersistentInfo, chart.State);
 
             string codeD = "a = Color.ByARGB(255, 255, 255, 255);" +
                 "\r\nb = Color.ByARGB(255, 255, 255, 255);" +
@@ -133,7 +133,7 @@ namespace DynamoCoreWpfTests
             homespace.Run();
             Assert.DoesNotThrow(DispatcherUtil.DoEvents);
             Assert.AreEqual(2, homespace.Connectors.Count());
-            Assert.AreEqual(ElementState.Info, chart.State);
+            Assert.AreEqual(ElementState.PersistentInfo, chart.State);
 
             string codeD = "a = Color.ByARGB(255, 255, 255, 255);" +
                 "\r\nb = Color.ByARGB(255, 255, 255, 255);" +
@@ -197,7 +197,7 @@ namespace DynamoCoreWpfTests
             homespace.Run();
             Assert.DoesNotThrow(DispatcherUtil.DoEvents);
             Assert.AreEqual(3, homespace.Connectors.Count());
-            Assert.AreEqual(ElementState.Info, chart.State);
+            Assert.AreEqual(ElementState.PersistentInfo, chart.State);
 
             string codeD = "a = Color.ByARGB(255, 255, 255, 255);" +
                 "\r\nb = Color.ByARGB(255, 255, 255, 255);" +
@@ -260,7 +260,7 @@ namespace DynamoCoreWpfTests
             homespace.Run();
             Assert.DoesNotThrow(DispatcherUtil.DoEvents);
             Assert.AreEqual(2, homespace.Connectors.Count());
-            Assert.AreEqual(ElementState.Info, chart.State);
+            Assert.AreEqual(ElementState.PersistentInfo, chart.State);
 
             string codeD = "a = Color.ByARGB(255, 255, 255, 255);" +
                 "\r\nb = Color.ByARGB(255, 255, 255, 255);" +
@@ -324,7 +324,7 @@ namespace DynamoCoreWpfTests
             homespace.Run();
             Assert.DoesNotThrow(DispatcherUtil.DoEvents);
             Assert.AreEqual(3, homespace.Connectors.Count());
-            Assert.AreEqual(ElementState.Info, chart.State);
+            Assert.AreEqual(ElementState.PersistentInfo, chart.State);
 
             string codeD = "a = Color.ByARGB(255, 255, 255, 255);" +
                 "\r\nb = Color.ByARGB(255, 255, 255, 255);" +
@@ -388,7 +388,7 @@ namespace DynamoCoreWpfTests
             homespace.Run();
             Assert.DoesNotThrow(DispatcherUtil.DoEvents);
             Assert.AreEqual(3, homespace.Connectors.Count());
-            Assert.AreEqual(ElementState.Info, chart.State);
+            Assert.AreEqual(ElementState.PersistentInfo, chart.State);
 
             string codeD = "a = Color.ByARGB(255, 255, 255, 255);" +
                 "\r\nb = Color.ByARGB(255, 255, 255, 255);" +

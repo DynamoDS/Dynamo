@@ -6,7 +6,6 @@
 Greg.dll
 Analytics.Net.ADP.dll
 Analytics.NET.Core.dll
-Analytics.NET.Google.dll
 LibG.Interface.dll
 ProtoGeometry.customization.dll
 ProtoGeometry.dll

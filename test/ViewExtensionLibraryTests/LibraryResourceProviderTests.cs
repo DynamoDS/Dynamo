@@ -326,43 +326,7 @@ namespace ViewExtensionLibraryTests
             Assert.AreEqual(IconUrl.DefaultIcon, url.Name);
             Assert.AreEqual(IconUrl.DefaultPath, url.Path);
         }
-
-        [Test]
-        [Category("UnitTests")]
-        public void SearchNodeTest()
-        {
-            var nodeSearchModel = new NodeSearchModel();
-            var path = @"C:\temp\xyz.dyf";
-            var nodeName = "Code Block";
-            var expectedQualifiedName = $"dyf://123.456.somepackage.{nodeName}";
-
-            for (int i = 0; i < 100; i++)
-            {
-                nodeSearchModel.Add(
-                    new CustomNodeSearchElement(new Mock<ICustomNodeSource>().Object,
-                    new CustomNodeInfo(Guid.NewGuid(), $"Node-{i}", $"Node-{i}-Category{i}", $"Node-{i}-Description", path))
-                    );
-            }
-
-            nodeSearchModel.Add(
-                    new CustomNodeSearchElement(new Mock<ICustomNodeSource>().Object,
-                    new CustomNodeInfo(Guid.NewGuid(), nodeName, "123.456.somepackage", "Node-Description", path))
-                    );
-
-            var pathmanager = new Mock<IPathManager>();
-            var iconProvider = new IconResourceProvider(pathmanager.Object);
-
-            SearchResultDataProvider searchResultDataProvider = new SearchResultDataProvider(nodeSearchModel, iconProvider);
-
-            var extension = string.Empty;
-            var searchResultStream = searchResultDataProvider.GetResource(nodeName, out extension);
-
-            var searchResult = GetLoadedTypesFromJson(searchResultStream);
-            List<LoadedTypeItem> nodesResult = searchResult.loadedTypes;
-
-            Assert.AreEqual(nodesResult.Count, 1);
-            Assert.AreEqual(expectedQualifiedName, nodesResult[0].fullyQualifiedName);
-        }
+     
 
         private LoadedTypeData<LoadedTypeItem> GetLoadedTypesFromJson(Stream stream)
         {

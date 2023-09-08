@@ -25,14 +25,6 @@
         <summary>This package contains the core assemblies for Dynamo.</summary>
         <copyright>Copyright Autodesk 2023</copyright>
         <dependencies>
-            <group targetFramework=".NETFramework4.8">
-                <!--TODO see if we can remove this prism ref -->
-                <dependency id="Prism" version="4.1"/>
-                <dependency id="NUnit" version="2.6.3"/>
-                <dependency id="DynamoVisualProgramming.ZeroTouchLibrary" version="$Version$"/>
-                <dependency id="Newtonsoft.Json" version="13.0.1"/>
-                <dependency id="System.Collections.Immutable" version="1.7.1"/>
-            </group>
             <!--TODO - why do we reference nunit from dynamo core? This is an odd partial collection of dependencies to mark.-->
             <group targetFramework="net6.0">
                 <dependency id="NUnit" version="3.13.3"/>
@@ -44,45 +36,25 @@
     </metadata>
     <!--for now we assume that that the working directory root is dynamo/bin/AnyCPU/Release-->
     <files>
-        <file src="DynamoApplications.dll" target="lib\net48" />
-        <file src="DynamoApplications.xml" target="lib\net48" />
-        <file src="DynamoCore.dll" target="lib\net48" />
-        <file src="DynamoCore.xml" target="lib\net48" />
-        <file src="DynamoInstallDetective.dll" target="lib\net48" />
-        <file src="DynamoShapeManager.dll" target="lib\net48" />
-        <file src="DynamoShapeManager.xml" target="lib\net48" />
-        <file src="DynamoUtilities.dll" target="lib\net48" />
-        <file src="DynamoUtilities.xml" target="lib\net48" />
-        <file src="ProtoCore.dll" target="lib\net48" />
-        <file src="ProtoCore.xml" target="lib\net48" />
-        <file src="DesignScriptBuiltin.dll" target="lib\net48" />
-        <file src="DesignScriptBuiltin.xml" target="lib\net48" />
-        <file src="VMDataBridge.dll" target="lib\net48" />
-        <file src="VMDataBridge.xml" target="lib\net48" />
-        <file src="DSCPython.dll" target="lib\net48" />
+        <file src="DynamoApplications.dll" target="lib\net6.0" />
+        <file src="DynamoApplications.xml" target="lib\net6.0" />
+        <file src="DynamoCore.dll" target="lib\net6.0" />
+        <file src="DynamoCore.xml" target="lib\net6.0" />
+        <file src="DynamoInstallDetective.dll" target="lib\net6.0" />
+        <file src="DynamoShapeManager.dll" target="lib\net6.0" />
+        <file src="DynamoShapeManager.xml" target="lib\net6.0" />
+        <file src="DynamoUtilities.dll" target="lib\net6.0" />
+        <file src="DynamoUtilities.xml" target="lib\net6.0" />
+        <file src="ProtoCore.dll" target="lib\net6.0" />
+        <file src="ProtoCore.xml" target="lib\net6.0" />
+        <file src="DesignScriptBuiltin.dll" target="lib\net6.0" />
+        <file src="DesignScriptBuiltin.xml" target="lib\net6.0" />
+        <file src="VMDataBridge.dll" target="lib\net6.0" />
+        <file src="VMDataBridge.xml" target="lib\net6.0" />
+        <file src="DSCPython.dll" target="lib\net6.0" />
         <!--TODO - arguable if DynamoPackages should be in this package-->
-        <file src="DynamoPackages.dll" target="lib\net48" />
-        <file src="DynamoPackages.xml" target="lib\net48" />
-        <!--NET60 binaries, the path may change after we stop building NET48 solution-->
-        <file src="..\..\..\bin\NET60_Windows\Release\DynamoApplications.dll" target="lib\net6.0" />
-        <file src="..\..\..\bin\NET60_Windows\Release\DynamoApplications.xml" target="lib\net6.0" />
-        <file src="..\..\..\bin\NET60_Windows\Release\DynamoCore.dll" target="lib\net6.0" />
-        <file src="..\..\..\bin\NET60_Windows\Release\DynamoCore.xml" target="lib\net6.0" />
-        <file src="..\..\..\bin\NET60_Windows\Release\DynamoInstallDetective.dll" target="lib\net6.0" />
-        <file src="..\..\..\bin\NET60_Windows\Release\DynamoShapeManager.dll" target="lib\net6.0" />
-        <file src="..\..\..\bin\NET60_Windows\Release\DynamoShapeManager.xml" target="lib\net6.0" />
-        <file src="..\..\..\bin\NET60_Windows\Release\DynamoUtilities.dll" target="lib\net6.0" />
-        <file src="..\..\..\bin\NET60_Windows\Release\DynamoUtilities.xml" target="lib\net6.0" />
-        <file src="..\..\..\bin\NET60_Windows\Release\ProtoCore.dll" target="lib\net6.0" />
-        <file src="..\..\..\bin\NET60_Windows\Release\ProtoCore.xml" target="lib\net6.0" />
-        <file src="..\..\..\bin\NET60_Windows\Release\DesignScriptBuiltin.dll" target="lib\net6.0" />
-        <file src="..\..\..\bin\NET60_Windows\Release\DesignScriptBuiltin.xml" target="lib\net6.0" />
-        <file src="..\..\..\bin\NET60_Windows\Release\VMDataBridge.dll" target="lib\net6.0" />
-        <file src="..\..\..\bin\NET60_Windows\Release\VMDataBridge.xml" target="lib\net6.0" />
-        <file src="..\..\..\bin\NET60_Windows\Release\DSCPython.dll" target="lib\net6.0" />
-        <file src="..\..\..\bin\NET60_Windows\Release\DynamoPackages.dll" target="lib\net6.0" />
-        <file src="..\..\..\bin\NET60_Windows\Release\DynamoPackages.xml" target="lib\net6.0" />
-
+        <file src="DynamoPackages.dll" target="lib\net6.0" />
+        <file src="DynamoPackages.xml" target="lib\net6.0" />
         <file src="..\..\..\doc\distrib\Images\logo_square_32x32.png" target="content\images\logo.png" />
     </files>
 </package>

@@ -144,7 +144,29 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Background="{StaticResource ExtensionBackgroundColor}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <DockPanel Margin="0 8 0 0">
+            <Label Content="Package Details"
+                   Margin="10 0 0 0"
+                   Foreground="#f5f5f5"
+                   FontWeight="Regular"
+                   FontSize="14" />
+            <Button Name="closeButton"
+                    Width="16"
+                    Height="16"
+                    Margin="0,0,17,0"
+                    Background="{StaticResource PrimaryCharcoal300Brush}"
+                    BorderThickness="0"
+                    Click="CloseButton_OnClick"
+                    DockPanel.Dock="Right"
+                    HorizontalAlignment="Right"
+                    Style="{StaticResource CloseButtonStyle}" />
+        </DockPanel>
         <ScrollViewer Name="MainScrollViewer"
+                      Grid.Row="1"
                       DataContextChanged="FrameworkElement_OnDataContextChanged"
                       Margin="17px"
                       VerticalScrollBarVisibility="Visible">

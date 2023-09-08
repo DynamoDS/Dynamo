@@ -154,13 +154,18 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     {
                         CloseButtonSearchPackages = GuideUtilities.FindChild(ownedWindow, handler.HandlerElement) as Button;
                         CloseButtonSearchPackages.Click += CloseButton_Click;
+                        CloseButtonSearchPackages.IsEnabled = false;
                     }
                 }
             }
             else
             {
                 if (CloseButtonSearchPackages != null)
+                {
+                    CloseButtonSearchPackages.IsEnabled = true;
                     CloseButtonSearchPackages.Click -= CloseButton_Click;
+                    CloseButtonSearchPackages = null;
+                }
             }
         }
 

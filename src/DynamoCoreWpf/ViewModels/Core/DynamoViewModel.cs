@@ -24,6 +24,7 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.PackageManager;
+using Dynamo.PackageManager.UI;
 using Dynamo.Scheduler;
 using Dynamo.Selection;
 using Dynamo.Services;
@@ -2222,7 +2223,15 @@ namespace Dynamo.ViewModels
 
         internal void ShowPackageManager(object parameters)
         {
-            OnRequestPackageManagerDialog(this, EventArgs.Empty);
+            if (parameters == null)
+            {
+                OnRequestPackageManagerDialog(this, EventArgs.Empty);
+            }
+            else
+            {
+                var param = (string)parameters;
+                OnRequestPackageManagerDialog(this, new OpenPackageManagerEventArgs(param));
+            }
         }
 
         internal bool CanShowPackageManagerSearch(object parameters)
@@ -3412,6 +3421,11 @@ namespace Dynamo.ViewModels
 
 
             BackgroundPreviewViewModel.Dispose();
+            foreach (var wsvm in workspaces)
+            {
+                wsvm.Dispose();
+            }
+            MainGuideManager?.CloseRealTimeInfoWindow();
 
             model.ShutDown(shutdownParams.ShutdownHost);
             if (shutdownParams.ShutdownHost)
@@ -3425,7 +3439,7 @@ namespace Dynamo.ViewModels
             BackgroundPreviewViewModel.PropertyChanged -= Watch3DViewModelPropertyChanged;
             WatchHandler.RequestSelectGeometry -= BackgroundPreviewViewModel.AddLabelForPath;
             model.ComputeModelDeserialized -= model_ComputeModelDeserialized;
-            model.RequestNotification -= model_RequestNotification;
+            model.RequestNotification -= model_RequestNotification;            
 
             return true;
         }

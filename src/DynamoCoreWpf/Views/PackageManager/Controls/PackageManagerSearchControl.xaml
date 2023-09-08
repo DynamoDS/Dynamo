@@ -9,17 +9,14 @@
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              mc:Ignorable="d"
+             x:Name="PackageSearchControl"
              d:DesignHeight="450"
              d:DesignWidth="800"
              d:DataContext="{d:DesignInstance ViewModels:PackageManagerSearchElementViewModel, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
         <ResourceDictionary>
-            <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter" />
-            <controls:DateToVisibilityCollapsedConverter x:Key="DateToVisibilityCollapsedConverter" />
-            <controls:DateToPackageLabelConverter x:Key="DateToPackageLabelCollapsedConverter" />
-            <controls:PrettyDateConverter x:Key="PrettyDateConverter" />
-            <controls:DependencyListToStringConverter x:Key="DependencyListToStringConverter" />
-            <controls:ListHasMoreThanNItemsToVisibilityConverter x:Key="ListHasMoreThanNItemsToVisibilityConverter" />
+            <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
+            <controls:InverseBooleanToVisibilityCollapsedConverter x:Key="InverseBooleanToVisibilityCollapsedConverter" />
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
@@ -27,654 +24,247 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Background="Transparent">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="77" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+    <Grid x:Name="searchPackagesGrid">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="2" />
+            <ColumnDefinition Width="0"
+                              MinWidth="1"
+                              x:Name="packageDetailsGrid" />
+        </Grid.ColumnDefinitions>
+        <Grid Background="Transparent">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="77" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
 
-        <!--  Contains the search bar, sort and filter buttons  -->
-        <Border Name="searchBar"
-                Grid.Row="0"
-                Padding="25,18"
-                BorderBrush="#7E7E7E"
-                BorderThickness="0,1,0,0">
-            <DockPanel>
-                <!--  Sort Button  -->
-                <Button Name="sortResultsButton"
-                        Width="20"
-                        Height="20"
-                        Margin="10,0,0,0"
-                        Background="{StaticResource PrimaryCharcoal300Brush}"
-                        BorderThickness="0"
-                        Click="OnSortButtonClicked"
-                        Cursor="Hand"
-                        DockPanel.Dock="Right">
-                    <Button.ToolTip>
-                        <ToolTip Content="{x:Static p:Resources.PackageSortToolTip}"
-                                 Style="{StaticResource GenericToolTipLight}" />
-                    </Button.ToolTip>
-                    <Button.Template>
-                        <ControlTemplate>
-                            <Rectangle Width="16"
-                                       Height="16">
-                                <Rectangle.Fill>
-                                    <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/sort.png" />
-                                </Rectangle.Fill>
-                            </Rectangle>
-                        </ControlTemplate>
-                    </Button.Template>
+            <!--  Contains the search bar, sort and filter buttons  -->
+            <Border Name="searchBar"
+                    Grid.Row="0"
+                    Padding="16 16 25 8"
+                    BorderBrush="#7E7E7E"
+                    BorderThickness="0">
+                <DockPanel>
+                    <!--  Sort Button  -->
+                    <Button Name="sortResultsButton"
+                            Width="20"
+                            Height="20"
+                            Margin="10,0,0,0"
+                            Background="{StaticResource PrimaryCharcoal300Brush}"
+                            BorderThickness="0"
+                            Click="OnSortButtonClicked"
+                            Cursor="Hand"
+                            DockPanel.Dock="Right"
+                            IsEnabled="{Binding Path=InitialResultsLoaded, UpdateSourceTrigger=PropertyChanged}">
+                        <Button.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.PackageSortToolTip}"
+                                     Style="{StaticResource GenericToolTipLight}" />
+                        </Button.ToolTip>
+                        <Button.Template>
+                            <ControlTemplate>
+                                <Grid>
+                                    <local:LoadingAnimationStripeControl  Width="16"
+                                                                          Height="16"
+                                                                          VerticalAlignment="Center"
+                                                                          Visibility="{Binding Path=InitialResultsLoaded, UpdateSourceTrigger=PropertyChanged,
+                                                                                               Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}" />
+                                    <Rectangle Width="16"
+                                               Height="16"
+                                               Visibility="{Binding Path=InitialResultsLoaded, UpdateSourceTrigger=PropertyChanged,
+                                                                    Converter={StaticResource BoolToVisibilityCollapsedConverter}}">
+                                        <Rectangle.Fill>
+                                            <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/sort.png" />
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                </Grid>
+                            </ControlTemplate>
+                        </Button.Template>
 
-                    <!--  When clicked, the sort button displays a ContextMenu of options to the user  -->
-                    <Button.ContextMenu>
-                        <ContextMenu MinWidth="180"
-                                     Width="Auto"
-                                     Background="{StaticResource NodeContextMenuBackground}"
-                                     Style="{StaticResource ContextMenuStyle}">
+                        <!--  When clicked, the sort button displays a ContextMenu of options to the user  -->
+                        <Button.ContextMenu>
+                            <ContextMenu MinWidth="180"
+                                         Width="Auto"
+                                         Background="{StaticResource NodeContextMenuBackground}"
+                                         Style="{StaticResource ContextMenuStyle}">
 
-                            <!--  Sub-Title 'SORT BY'  -->
-                            <Separator>
-                                <Separator.Template>
-                                    <ControlTemplate TargetType="Separator">
-                                        <StackPanel>
-                                            <TextBlock Margin="10,5"
-                                                       FontSize="11"
-                                                       Foreground="#8C8C8C "
-                                                       Text="{x:Static p:Resources.PackageSearchSortBy}" />
-                                        </StackPanel>
-                                    </ControlTemplate>
-                                </Separator.Template>
-                            </Separator>
+                                <!--  Sub-Title 'SORT BY'  -->
+                                <Separator>
+                                    <Separator.Template>
+                                        <ControlTemplate TargetType="Separator">
+                                            <StackPanel>
+                                                <TextBlock Margin="10,5"
+                                                           FontSize="11"
+                                                           Foreground="#8C8C8C "
+                                                           Text="{x:Static p:Resources.PackageSearchSortBy}" />
+                                            </StackPanel>
+                                        </ControlTemplate>
+                                    </Separator.Template>
+                                </Separator>
 
-                            <!--  Sort By Package Name  -->
-                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}"
-                                      CommandParameter="Name"
-                                      Header="{x:Static p:Resources.PackageSearchViewContextMenuSortByName}"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Name, Mode=TwoWay}" />
+                                <!--  Sort By Package Name  -->
+                                <MenuItem Command="{Binding Path=SetSortingKeyCommand}"
+                                          CommandParameter="Name"
+                                          Header="{x:Static p:Resources.PackageSearchViewContextMenuSortByName}"
+                                          IsCheckable="True"
+                                          IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Name, Mode=TwoWay}" />
 
-                            <!--  Sort By Most Recent Update  -->
-                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}"
-                                      CommandParameter="LastUpdate"
-                                      Header="{x:Static p:Resources.PackageSearchViewContextMenuSortyByUpdate}"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=LastUpdate, Mode=TwoWay}" />
+                                <!--  Sort By Most Recent Update  -->
+                                <MenuItem Command="{Binding Path=SetSortingKeyCommand}"
+                                          CommandParameter="LastUpdate"
+                                          Header="{x:Static p:Resources.PackageSearchViewContextMenuSortyByUpdate}"
+                                          IsCheckable="True"
+                                          IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=LastUpdate, Mode=TwoWay}" />
 
-                            <!--  Sort By Number of Downloads  -->
-                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}"
-                                      CommandParameter="Downloads"
-                                      Header="{x:Static p:Resources.PackageSearchViewContextMenuSortByDownloads}"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Downloads, Mode=TwoWay}" />
+                                <!--  Sort By Number of Downloads  -->
+                                <MenuItem Command="{Binding Path=SetSortingKeyCommand}"
+                                          CommandParameter="Downloads"
+                                          Header="{x:Static p:Resources.PackageSearchViewContextMenuSortByDownloads}"
+                                          IsCheckable="True"
+                                          IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Downloads, Mode=TwoWay}" />
 
-                            <!--  Sort By Number Of Votes  -->
-                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}"
-                                      CommandParameter="Votes"
-                                      Header="{x:Static p:Resources.PackageSearchViewContextMenuSortByVotes}"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Votes, Mode=TwoWay}" />
+                                <!--  Sort By Number Of Votes  -->
+                                <MenuItem Command="{Binding Path=SetSortingKeyCommand}"
+                                          CommandParameter="Votes"
+                                          Header="{x:Static p:Resources.PackageSearchViewContextMenuSortByVotes}"
+                                          IsCheckable="True"
+                                          IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Votes, Mode=TwoWay}" />
 
-                            <!--  Sort By Author Name  -->
-                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}"
-                                      CommandParameter="Maintainers"
-                                      Header="{x:Static p:Resources.PackageSearchViewContextMenuSortByAuthor}"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Maintainers, Mode=TwoWay}" />
+                                <!--  Sort By Author Name  -->
+                                <MenuItem Command="{Binding Path=SetSortingKeyCommand}"
+                                          CommandParameter="Maintainers"
+                                          Header="{x:Static p:Resources.PackageSearchViewContextMenuSortByAuthor}"
+                                          IsCheckable="True"
+                                          IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Maintainers, Mode=TwoWay}" />
 
-                            <Separator />
+                                <Separator />
 
-                            <!--  Sub-Title 'ORDER'  -->
-                            <Separator>
-                                <Separator.Template>
-                                    <ControlTemplate TargetType="Separator">
-                                        <StackPanel>
-                                            <TextBlock Margin="10,5"
-                                                       FontSize="11"
-                                                       Foreground="#8C8C8C "
-                                                       Text="{x:Static p:Resources.PackageSearchOrder}" />
-                                        </StackPanel>
-                                    </ControlTemplate>
-                                </Separator.Template>
-                            </Separator>
+                                <!--  Sub-Title 'ORDER'  -->
+                                <Separator>
+                                    <Separator.Template>
+                                        <ControlTemplate TargetType="Separator">
+                                            <StackPanel>
+                                                <TextBlock Margin="10,5"
+                                                           FontSize="11"
+                                                           Foreground="#8C8C8C "
+                                                           Text="{x:Static p:Resources.PackageSearchOrder}" />
+                                            </StackPanel>
+                                        </ControlTemplate>
+                                    </Separator.Template>
+                                </Separator>
 
-                            <!--  Sort Ascending  -->
-                            <MenuItem Command="{Binding Path=SetSortingDirectionCommand}"
-                                      CommandParameter="Ascending"
-                                      Header="{x:Static p:Resources.PackageSearchViewContextMenuOrderAscending}"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding Path=SortingDirection, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Ascending, Mode=TwoWay}" />
+                                <!--  Sort Ascending  -->
+                                <MenuItem Command="{Binding Path=SetSortingDirectionCommand}"
+                                          CommandParameter="Ascending"
+                                          Header="{x:Static p:Resources.PackageSearchViewContextMenuOrderAscending}"
+                                          IsCheckable="True"
+                                          IsChecked="{Binding Path=SortingDirection, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Ascending, Mode=TwoWay}" />
 
-                            <!--  Sort Descending  -->
-                            <MenuItem Command="{Binding Path=SetSortingDirectionCommand}"
-                                      CommandParameter="Descending"
-                                      Header="{x:Static p:Resources.PackageSearchViewContextMenuOrderDescending}"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding Path=SortingDirection, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Descending, Mode=TwoWay}" />
-                        </ContextMenu>
-                    </Button.ContextMenu>
-                </Button>
+                                <!--  Sort Descending  -->
+                                <MenuItem Command="{Binding Path=SetSortingDirectionCommand}"
+                                          CommandParameter="Descending"
+                                          Header="{x:Static p:Resources.PackageSearchViewContextMenuOrderDescending}"
+                                          IsCheckable="True"
+                                          IsChecked="{Binding Path=SortingDirection, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Descending, Mode=TwoWay}" />
+                            </ContextMenu>
+                        </Button.ContextMenu>
+                    </Button>
 
-                <!--  Filter Button  -->
-                <Button Name="filterResultsButton"
-                        Width="20"
-                        Height="20"
-                        Margin="25,0,0,0"
-                        Background="{StaticResource PrimaryCharcoal300Brush}"
-                        BorderThickness="0"
-                        Click="OnFilterButtonClicked"
-                        Cursor="Hand"
-                        DockPanel.Dock="Right">
-                    <Button.ToolTip>
-                        <ToolTip Content="{x:Static p:Resources.PackageHostDependencyFilter}"
-                                 Style="{StaticResource GenericToolTipLight}" />
-                    </Button.ToolTip>
-                    <Button.Template>
-                        <ControlTemplate>
-                            <Rectangle Width="16"
-                                       Height="16">
-                                <Rectangle.Fill>
-                                    <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Filter.png" />
-                                </Rectangle.Fill>
-                            </Rectangle>
-                        </ControlTemplate>
-                    </Button.Template>
+                    <!--  Filter Button  -->
+                    <Button Name="filterResultsButton"
+                            Width="20"
+                            Height="20"
+                            Margin="25,0,0,0"
+                            Background="{StaticResource PrimaryCharcoal300Brush}"
+                            BorderThickness="0"
+                            Click="OnFilterButtonClicked"
+                            Cursor="Hand"
+                            DockPanel.Dock="Right"
+                            IsEnabled="{Binding Path=InitialResultsLoaded, UpdateSourceTrigger=PropertyChanged}">
+                        <Button.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.PackageHostDependencyFilter}"
+                                     Style="{StaticResource GenericToolTipLight}" />
+                        </Button.ToolTip>
+                        <Button.Template>
+                            <ControlTemplate>
+                                <Grid>
+                                    <local:LoadingAnimationStripeControl  Width="16"
+                                                                          Height="16"
+                                                                          VerticalAlignment="Center"
+                                                                          Visibility="{Binding Path=InitialResultsLoaded, UpdateSourceTrigger=PropertyChanged,
+                                                                                               Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}" />
+                                    <Rectangle Width="16"
+                                               Height="16"
+                                               Visibility="{Binding Path=InitialResultsLoaded, UpdateSourceTrigger=PropertyChanged,
+                                                                    Converter={StaticResource BoolToVisibilityCollapsedConverter}}">
+                                        <Rectangle.Fill>
+                                            <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Filter.png" />
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                </Grid>
+                            </ControlTemplate>
+                        </Button.Template>
 
-                    <!--  When clicked, the filter button displays a ContextMenu of options to the user  -->
-                    <Button.ContextMenu>
-                        <ContextMenu Name="HostFilter"
-                                     Width="180"
-                                     Background="{StaticResource NodeContextMenuBackground}"
-                                     DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Mode=Self}}"
-                                     DisplayMemberPath="FilterName"
-                                     ItemsSource="{Binding HostFilter}"
-                                     Style="{StaticResource ContextMenuStyle}">
-                            <ContextMenu.ItemContainerStyle>
-                                <Style BasedOn="{StaticResource ContextMenuItemStyle}"
-                                       TargetType="{x:Type MenuItem}">
-                                    <Setter Property="IsCheckable"
-                                            Value="True" />
-                                    <Setter Property="Command"
-                                            Value="{Binding FilterCommand}" />
-                                    <Setter Property="CommandParameter"
-                                            Value="{Binding FilterName}" />
-                                    <Setter Property="IsChecked"
-                                            Value="{Binding OnChecked}" />
-                                    <Setter Property="ToolTip"
-                                            Value="{x:Static p:Resources.PackageHostDependencyFilterContextItem}" />
-                                </Style>
-                            </ContextMenu.ItemContainerStyle>
-                        </ContextMenu>
-                    </Button.ContextMenu>
-                </Button>
-
-                <!--  Search Bar  -->
-                <local:SearchBoxControl x:Name="SearchBox"
-                                        DockPanel.Dock="Left"
-                                        Margin="10 5 20 5"
-                                        />
-
-            </DockPanel>
-        </Border>
-
-
-
-        <ListBox Name="searchResultsListBox"
-                 Grid.Row="1"
-                 Background="{StaticResource PackageManagerTabBackgroundColor}"
-                 BorderThickness="0"
-                 ItemsSource="{Binding Path=SearchResults}"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                 ScrollViewer.VerticalScrollBarVisibility="Auto"
-                 SelectedIndex="{Binding Path=SelectedIndex}"
-                 VirtualizingPanel.ScrollUnit="Pixel">
-
-            <ListBox.Resources>
-                <!--  Local style used for labels on result, e.g. Number of Installs  -->
-                <Style x:Key="resultLabelStyle"
-                       TargetType="TextBlock">
-                    <Setter Property="FontFamily"
-                            Value="{StaticResource ArtifaktElementRegular}" />
-                    <Setter Property="FontSize"
-                            Value="10" />
-                    <Setter Property="Foreground"
-                            Value="#C7C7C7" />
-                    <Setter Property="VerticalAlignment"
-                            Value="Center" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Model.IsDeprecated}"
-                                     Value="True">
-                            <Setter Property="Opacity"
-                                    Value="0.5" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </ListBox.Resources>
-
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="ListBoxItem">
-                    <Setter Property="Padding"
-                            Value="0" />
-                    <Setter Property="HorizontalContentAlignment"
-                            Value="Stretch" />
-                    <Setter Property="BorderThickness"
-                            Value="0" />
-                </Style>
-            </ListBox.ItemContainerStyle>
-
-            <!--  The template for all package search results  -->
-            <ListBox.ItemTemplate>
-                <DataTemplate DataType="ViewModels:PackageManagerSearchElementViewModel">
-                    <Grid Name="resultItemTemplate"
-                          VerticalAlignment="Center">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="40px" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="35px" />
-                        </Grid.RowDefinitions>
-
-                        <!--  Top Row  -->
-                        <DockPanel Name="resultTopRow"
-                                   Grid.Row="0"
-                                   Margin="15,15,5,0"
-                                   LastChildFill="False">
-
-                            <!--  View Details Button  -->
-                            <Button Name="viewDetailsButton"
-                                    Click="ViewDetailsButton_OnClick"
-                                    Content="{x:Static p:Resources.PackageSearchResultViewDetails}"
-                                    DockPanel.Dock="Right">
-                                <Button.Template>
-                                    <ControlTemplate TargetType="{x:Type Button}">
-                                        <Border Name="ButtonBorder"
-                                                Height="25"
-                                                Padding="5,0"
-                                                BorderThickness="2"
-                                                CornerRadius="2">
-                                            <Grid x:Name="viewDetailsGrid">
-                                                <DockPanel>
-                                                    <Rectangle Width="9"
-                                                               Height="9"
-                                                               Margin="0,0,0,0"
-                                                               VerticalAlignment="Center"
-                                                               DockPanel.Dock="Left">
-                                                        <Rectangle.Fill>
-                                                            <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/View details.png" />
-                                                        </Rectangle.Fill>
-                                                    </Rectangle>
-                                                    <TextBlock Name="textBlock"
-                                                               Padding="4,4,4,3"
-                                                               HorizontalAlignment="Right"
-                                                               VerticalAlignment="Center"
-                                                               Cursor="Hand"
-                                                               DockPanel.Dock="Right"
-                                                               FontFamily="{StaticResource ArtifaktElementRegular}"
-                                                               FontSize="11"
-                                                               Foreground="#84D7CE"
-                                                               Text="{TemplateBinding Content}" />
-                                                </DockPanel>
-                                            </Grid>
-                                        </Border>
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="IsMouseOver"
-                                                     Value="True">
-                                                <Setter TargetName="ButtonBorder"
-                                                        Property="BorderBrush"
-                                                        Value="#4A4A4A" />
-                                            </Trigger>
-                                            <Trigger Property="IsPressed"
-                                                     Value="True">
-                                                <Setter TargetName="ButtonBorder"
-                                                        Property="BorderBrush"
-                                                        Value="#5F5F5F" />
-                                            </Trigger>
-                                            <Trigger Property="IsEnabled"
-                                                     Value="False">
-                                                <Setter Property="TextBlock.Foreground"
-                                                        Value="#999999" />
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Button.Template>
-                            </Button>
-
-                            <!--  Install Button  -->
-                            <Button Name="installButton"
-                                    Command="{Binding DownloadLatestCommand}"
-                                    Content="{Binding CanInstall, Converter={StaticResource InstalledButtonTextConverter}}"
-                                    DockPanel.Dock="Right"
-                                    ToolTipService.ShowOnDisabled="True"
-                                    IsEnabled="{Binding IsEnabledForInstall}">
-                                <Button.Style>
-                                    <Style TargetType="Button">
-                                        <Setter Property="Template">
-                                            <Setter.Value>
-                                                <ControlTemplate TargetType="{x:Type Button}">
-                                                    <Border Name="ButtonBorder"
-                                                            Height="25"
-                                                            Padding="5,0"
-                                                            BorderThickness="2"
-                                                            CornerRadius="2">
-                                                        <Grid x:Name="installPackageGrid">
-
-                                                            <DockPanel LastChildFill="False">
-                                                                <TextBlock Name="textBlock"
-                                                                           Padding="4,4,4,3"
-                                                                           VerticalAlignment="Center"
-                                                                           Cursor="Hand"
-                                                                           DockPanel.Dock="Right"
-                                                                           FontFamily="{StaticResource ArtifaktElementRegular}"
-                                                                           FontSize="11"
-                                                                           Text="{TemplateBinding Content}" />
-                                                                <Rectangle Width="10"
-                                                                           Height="10"
-                                                                           VerticalAlignment="Center"
-                                                                           DockPanel.Dock="Left">
-                                                                    <Rectangle.Style>
-                                                                        <Style TargetType="Rectangle">
-                                                                            <Style.Triggers>
-                                                                                <DataTrigger Binding="{Binding Path=Model.IsDeprecated}"
-                                                                                             Value="True">
-                                                                                    <Setter Property="Fill">
-                                                                                        <Setter.Value>
-                                                                                            <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Add - default.png" />
-                                                                                        </Setter.Value>
-                                                                                    </Setter>
-                                                                                    <Setter Property="Opacity"
-                                                                                            Value="0.5" />
-                                                                                </DataTrigger>
-                                                                                <DataTrigger Binding="{Binding Path=CanInstall}"
-                                                                                             Value="False">
-                                                                                    <Setter Property="Fill">
-                                                                                        <Setter.Value>
-                                                                                            <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/checkmark - grey.png" />
-                                                                                        </Setter.Value>
-                                                                                    </Setter>
-                                                                                    <Setter Property="Opacity"
-                                                                                            Value="1" />
-                                                                                </DataTrigger>
-                                                                                <DataTrigger Binding="{Binding Path=IsEnabledForInstall}"
-                                                                                             Value="False">
-                                                                                    <Setter Property="Fill">
-                                                                                        <Setter.Value>
-                                                                                            <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Add - disabled.png" />
-                                                                                        </Setter.Value>
-                                                                                    </Setter>
-                                                                                    <Setter Property="Opacity"
-                                                                                            Value="1" />
-                                                                                </DataTrigger>
-                                                                                <MultiDataTrigger>
-                                                                                    <MultiDataTrigger.Conditions>
-                                                                                        <Condition Binding="{Binding Path=Model.IsDeprecated}"
-                                                                                                   Value="False" />
-                                                                                        <Condition Binding="{Binding Path=CanInstall}"
-                                                                                                   Value="True" />
-                                                                                        <Condition Binding="{Binding Path=IsEnabledForInstall}"
-                                                                                                   Value="True" />
-                                                                                    </MultiDataTrigger.Conditions>
-                                                                                    <Setter Property="Fill">
-                                                                                        <Setter.Value>
-                                                                                            <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Add - default.png" />
-                                                                                        </Setter.Value>
-                                                                                    </Setter>
-                                                                                </MultiDataTrigger>
-                                                                            </Style.Triggers>
-                                                                        </Style>
-                                                                    </Rectangle.Style>
-                                                                </Rectangle>
-                                                            </DockPanel>
-                                                        </Grid>
-                                                    </Border>
-                                                    <ControlTemplate.Triggers>
-                                                        <Trigger Property="IsMouseOver"
-                                                                 Value="True">
-                                                            <Setter TargetName="ButtonBorder"
-                                                                    Property="BorderBrush"
-                                                                    Value="#4A4A4A" />
-                                                        </Trigger>
-                                                        <Trigger Property="IsPressed"
-                                                                 Value="True">
-                                                            <Setter TargetName="ButtonBorder"
-                                                                    Property="BorderBrush"
-                                                                    Value="#5F5F5F" />
-                                                        </Trigger>
-                                                        <DataTrigger Binding="{Binding Model.IsDeprecated}"
-                                                                     Value="True">
-                                                            <Setter Property="TextBlock.Opacity"
-                                                                    Value="0.5" />
-                                                            <Setter Property="TextBlock.Foreground"
-                                                                    Value="#84D7CE" />
-                                                            <Setter Property="ToolTip"
-                                                                    Value="{x:Static p:Resources.PackageDeprecatedTooltip}" />
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding CanInstall}"
-                                                                     Value="False">
-                                                            <Setter Property="TextBlock.Foreground"
-                                                                    Value="#999999" />
-                                                            <Setter Property="Opacity"
-                                                                    Value="1" />
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding IsEnabledForInstall}"
-                                                                     Value="False">
-                                                            <Setter Property="TextBlock.Foreground"
-                                                                    Value="#999999" />
-                                                            <Setter Property="TextBlock.Opacity"
-                                                                    Value="1" />
-                                                        </DataTrigger>
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding Path=Model.IsDeprecated}"
-                                                                           Value="False" />
-                                                                <Condition Binding="{Binding Path=CanInstall}"
-                                                                           Value="True" />
-                                                                <Condition Binding="{Binding Path=IsEnabledForInstall}"
-                                                                           Value="True" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter Property="TextBlock.Opacity"
-                                                                    Value="1" />
-                                                            <Setter Property="TextBlock.Foreground"
-                                                                    Value="#84D7CE" />
-                                                        </MultiDataTrigger>
-                                                    </ControlTemplate.Triggers>
-                                                </ControlTemplate>
-                                            </Setter.Value>
-                                        </Setter>
+                        <!--  When clicked, the filter button displays a ContextMenu of options to the user  -->
+                        <Button.ContextMenu>
+                            <ContextMenu Name="HostFilter"
+                                         Width="180"
+                                         Background="{StaticResource NodeContextMenuBackground}"
+                                         DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Mode=Self}}"
+                                         DisplayMemberPath="FilterName"
+                                         ItemsSource="{Binding HostFilter}"
+                                         Style="{StaticResource ContextMenuStyle}">
+                                <ContextMenu.ItemContainerStyle>
+                                    <Style BasedOn="{StaticResource ContextMenuItemStyle}"
+                                           TargetType="{x:Type MenuItem}">
+                                        <Setter Property="IsCheckable"
+                                                Value="True" />
+                                        <Setter Property="Command"
+                                                Value="{Binding FilterCommand}" />
+                                        <Setter Property="CommandParameter"
+                                                Value="{Binding FilterName}" />
+                                        <Setter Property="IsChecked"
+                                                Value="{Binding OnChecked}" />
+                                        <Setter Property="ToolTip"
+                                                Value="{x:Static p:Resources.PackageHostDependencyFilterContextItem}" />
                                     </Style>
-                                </Button.Style>
-                            </Button>
+                                </ContextMenu.ItemContainerStyle>
+                            </ContextMenu>
+                        </Button.ContextMenu>
+                    </Button>
 
-                            <!--  Contains Package Name and New Label  -->
-                            <Grid Margin="0,0,0,0"
-                                  DockPanel.Dock="Left">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Name="packageName"
-                                           Grid.Column="0"
-                                           VerticalAlignment="Center"
-                                           FontFamily="{StaticResource ArtifaktElementRegular}"
-                                           FontSize="14"
-                                           FontWeight="SemiBold"
-                                           Text="{Binding Path=Model.Name}"
-                                           TextTrimming="CharacterEllipsis"
-                                           TextWrapping="NoWrap">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Path=Model.IsDeprecated}"
-                                                             Value="True">
-                                                    <Setter Property="Foreground"
-                                                            Value="#999999" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Path=Model.IsDeprecated}"
-                                                             Value="False">
-                                                    <Setter Property="Foreground"
-                                                            Value="{StaticResource PrimaryCharcoal200Brush}" />
-                                                </DataTrigger>
-                                                <Trigger Property="IsMouseOver"
-                                                         Value="True">
-                                                    <Setter Property="TextDecorations"
-                                                            Value="Underline" />
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                    <TextBlock.ToolTip>
-                                        <ToolTip Content="{Binding Path=Model.Name}"
-                                                 Style="{StaticResource GenericToolTipLight}" />
-                                    </TextBlock.ToolTip>
-                                </TextBlock>
-                                <Border Name="newPackageLabel"
-                                        Grid.Column="1"
-                                        Width="Auto"
-                                        Height="18"
-                                        Margin="7,-3,7,0"
-                                        HorizontalAlignment="Right"
-                                        VerticalAlignment="Center"
-                                        Background="Transparent"
-                                        BorderBrush="{StaticResource PrimaryCharcoal200Brush}"
-                                        BorderThickness="1"
-                                        CornerRadius="3"
-                                        Visibility="{Binding Path=Model, Converter={StaticResource DateToVisibilityCollapsedConverter}}">
-                                    <TextBlock Margin="3,0"
-                                               Padding="0,2,0,0"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               FontFamily="{StaticResource ArtifaktElementRegular}"
-                                               FontSize="11"
-                                               Foreground="{StaticResource PrimaryCharcoal200Brush}"
-                                               Text="{Binding Path=Model, Converter={StaticResource DateToPackageLabelCollapsedConverter}}">
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Path=Model.IsDeprecated}"
-                                                                 Value="True">
-                                                        <Setter Property="ToolTip"
-                                                                Value="{x:Static p:Resources.PackageDeprecatedTooltip}" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
-                                </Border>
-                            </Grid>
-                        </DockPanel>
+                    <!--  Search Bar  -->
+                    <local:SearchBoxControl x:Name="SearchBox"
+                                            DockPanel.Dock="Left"
+                                            IsEnabled="{Binding Path=InitialResultsLoaded}"
+                                            Margin="0 5 0 0" />
 
-                        <!--  Middle Row  -->
-                        <DockPanel Name="requirementsRow"
-                                   Grid.Row="1"
-                                   Margin="15,0,0,0"
-                                   VerticalAlignment="Center"
-                                   LastChildFill="False">
-                            <Rectangle Width="9"
-                                       Height="9"
-                                       Margin="0,0,0,1"
-                                       VerticalAlignment="Center"
-                                       DockPanel.Dock="Left"
-                                       Visibility="{Binding Path=Model.Hosts, Converter={StaticResource ListHasMoreThanNItemsToVisibilityConverter}}">
-                                <Rectangle.Fill>
-                                    <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Requirements - disabled.png" />
-                                </Rectangle.Fill>
-                            </Rectangle>
-                            <TextBlock x:Name="requirementsLabel"
-                                       Margin="5,0"
-                                       DockPanel.Dock="Left"
-                                       Style="{StaticResource resultLabelStyle}"
-                                       Text="{Binding Model.Hosts, Converter={StaticResource DependencyListToStringConverter}}"
-                                       Visibility="{Binding Path=Model.Hosts, Converter={StaticResource ListHasMoreThanNItemsToVisibilityConverter}}" />
-                        </DockPanel>
+                </DockPanel>
+            </Border>
+    
+            <local:PackageManagerPackageAnimationControl x:Name="loadingScreen"
+                                                         Grid.Row="1"
+                                                         Visibility="{Binding Path=InitialResultsLoaded, UpdateSourceTrigger=PropertyChanged,
+                                                                Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}" />
 
-                        <!--  Bottom Row  -->
-                        <DockPanel Name="resultBottomRow"
-                                   Grid.Row="2"
-                                   Margin="15,0,5,15"
-                                   VerticalAlignment="Bottom"
-                                   LastChildFill="True">
-                            <TextBlock Name="dateLabel"
-                                       Margin="5,0"
-                                       DockPanel.Dock="Right"
-                                       Style="{StaticResource resultLabelStyle}"
-                                       Text="{Binding Path=Model.LatestVersionCreated, Converter={StaticResource PrettyDateConverter}}" />
-                            <Rectangle Width="10"
-                                       Height="10"
-                                       Margin="5,0,0,2"
-                                       VerticalAlignment="Center"
-                                       DockPanel.Dock="Right">
-                                <Rectangle.Fill>
-                                    <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Date.png" />
-                                </Rectangle.Fill>
-                            </Rectangle>
-                            <TextBlock Name="noDownloadsLabel"
-                                       Margin="5,0"
-                                       DockPanel.Dock="Right"
-                                       Style="{StaticResource resultLabelStyle}"
-                                       Text="{Binding Path=Model.Downloads}" />
-                            <Rectangle Width="10"
-                                       Height="10"
-                                       Margin="5,0,0,2"
-                                       VerticalAlignment="Center"
-                                       DockPanel.Dock="Right">
-                                <Rectangle.Fill>
-                                    <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Download.png" />
-                                </Rectangle.Fill>
-                            </Rectangle>
-                            <TextBlock Name="noFavoritesLabel"
-                                       Margin="5,0"
-                                       DockPanel.Dock="Right"
-                                       Style="{StaticResource resultLabelStyle}"
-                                       Text="{Binding Path=Model.Votes, Converter={StaticResource NegativeIntToZeroConverter}}" />
-                            <Rectangle Width="10"
-                                       Height="10"
-                                       Margin="5,0,0,2"
-                                       VerticalAlignment="Center"
-                                       DockPanel.Dock="Right">
-                                <Rectangle.Fill>
-                                    <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Favorite.png" />
-                                </Rectangle.Fill>
-                            </Rectangle>
-                            <TextBlock Name="versionLabel"
-                                       Margin="5,0"
-                                       DockPanel.Dock="Right"
-                                       Style="{StaticResource resultLabelStyle}"
-                                       Text="{Binding Path=Model.LatestVersion}" />
-                            <Rectangle Width="10"
-                                       Height="10"
-                                       Margin="5,0,0,2"
-                                       VerticalAlignment="Center"
-                                       DockPanel.Dock="Right">
-                                <Rectangle.Fill>
-                                    <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Flag.png" />
-                                </Rectangle.Fill>
-                            </Rectangle>
-                            <Rectangle Width="10"
-                                       Height="10"
-                                       Margin="0,0,0,2"
-                                       VerticalAlignment="Center"
-                                       DockPanel.Dock="Left">
-                                <Rectangle.Fill>
-                                    <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Profile.png" />
-                                </Rectangle.Fill>
-                            </Rectangle>
-                            <TextBlock Name="authorName"
-                                       Margin="5,0"
-                                       DockPanel.Dock="Left"
-                                       Style="{StaticResource resultLabelStyle}"
-                                       Text="{Binding Path=Model.Maintainers}"
-                                       TextTrimming="CharacterEllipsis" />
-                        </DockPanel>
+            <local:PackageManagerPackagesControl x:Name="packageManagerSearchPackages"
+                                                 Grid.Row="1"
+                                                 SearchItems="{Binding Path=SearchResults}"
+                                                 Visibility="{Binding Path=InitialResultsLoaded, UpdateSourceTrigger=PropertyChanged,
+                                                                      Converter={StaticResource BoolToVisibilityCollapsedConverter}}" />
 
-                        <!--  A 1px bar that separates List Items  -->
-                        <Rectangle Name="separator"
-                                   Grid.Row="2"
-                                   Height="1"
-                                   VerticalAlignment="Bottom"
-                                   Fill="{StaticResource DarkMidGreyBrush}" />
 
-                    </Grid>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+        </Grid>
 
+        <GridSplitter Grid.Column="1"
+                      Grid.Row="1"
+                      Grid.RowSpan="1"
+                      VerticalAlignment="Stretch"
+                      HorizontalAlignment="Center"
+                      Background="{StaticResource PackageManagerTabBackgroundColor}"
+                      Width="3"
+                      Visibility="{Binding Path=IsDetailPackagesExtensionOpened,
+                                            UpdateSourceTrigger=PropertyChanged,
+                                            Converter={StaticResource BoolToVisibilityCollapsedConverter}}" />
     </Grid>
 </UserControl>

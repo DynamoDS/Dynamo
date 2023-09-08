@@ -909,7 +909,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             renderTimer.Start();
 #endif
             var packages = taskPackages.Packages;
-            var meshPackages = packages.Cast<HelixRenderPackage>().Where(rp => rp.MeshVertexCount % 3 == 0);
+
+            var meshPackages = packages.Where(renderPackage => (renderPackage as HelixRenderPackage)?.MeshVertexCount % 3 == 0)
+                .Select(renderPackage => renderPackage as HelixRenderPackage);
 
             RemoveGeometryForUpdatedPackages(meshPackages);
             try
@@ -2840,11 +2842,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     effectsManager = null;
                    
                 }
-                SelectedMaterial = null;
-                WhiteMaterial = null;
-                FrozenMaterial = null;
-                IsolatedMaterial = null;
-
                 foreach (var sceneItem in SceneItems)
                 {
                     sceneItem.Dispose();

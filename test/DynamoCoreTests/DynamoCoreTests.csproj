@@ -18,21 +18,6 @@
     <Compile Remove="AstBuilderTest.cs" />
     <Compile Remove="Saving.cs" />
   </ItemGroup>
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-        <PackageReference Include="NUnit" Version="2.6.3" ExcludeAssets="none" GeneratePathProperty="true" />
-        <PackageReference Include="NUnitTestAdapter" Version="2.3.0" ExcludeAssets="all" /> 
-        <PackageReference Include="DynamoVisualProgramming.Analytics" Version="4.0.0.1432">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <Reference Include="System.Configuration" />
-        <Reference Include="Microsoft.CSharp" />
-        <ProjectReference Include="..\..\src\DynamoCrypto\DynamoCrypto.csproj">
-            <Project>{96643e77-c786-498c-aaa9-80e449854ce9}</Project>
-            <Name>DynamoCrypto</Name>
-        </ProjectReference>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
-    </ItemGroup>
     <ItemGroup Condition=" '$(TargetFramework)' != 'net48' ">
         <PackageReference Include="NUnit" Version="3.13.3" ExcludeAssets="none" />
         <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
@@ -40,7 +25,7 @@
         <PackageReference Include="coverlet.collector" Version="3.1.2" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" ExcludeAssets="none" />
         <PackageReference Include="JunitXml.TestLogger" Version="3.0.124" />
-        <PackageReference Include="DynamoVisualProgramming.Analytics" Version="4.0.0.1432">
+        <PackageReference Include="DynamoVisualProgramming.Analytics" Version="4.1.0.2437">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
@@ -54,7 +39,6 @@
         <!--moq and deps - copied to test_dependencies folder-->
         <PackageReference Include="Moq" Version="4.18.4" GeneratePathProperty="true" />
         <PackageReference Include="Castle.Core" Version=" 5.1.1" GeneratePathProperty="true" />
-        <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" GeneratePathProperty="true" Condition=" '$(TargetFramework)' == 'net48' " />
 
         <PackageReference Include="JUnitTestLogger" Version="1.1.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
@@ -149,18 +133,6 @@
     <Copy SourceFiles="$(PkgMicrosoft_Diagnostics_Runtime)\lib\netstandard2.0\Microsoft.Diagnostics.Runtime.dll" DestinationFolder="$(TestDependenciesPath)" />
 </Target>
 
-  <Target Name="MoveSomeTestDepsOutOfBin_net48" AfterTargets="Build" Condition=" '$(TargetFramework)' == 'net48' ">
-      <Message Importance="High" Text="copying test dependencies to test dependencies folder" />
-      <CallTarget Targets="CopyDisableADPTestDeps"></CallTarget>
-    <!--moq + deps-->
-          <Copy SourceFiles="$(PkgCastle_Core)\lib\net462\Castle.Core.dll" DestinationFolder="$(TestDependenciesPath)" />
-          <Copy SourceFiles="$(PkgSystem_Threading_Tasks_Extensions)\lib\net461\System.Threading.Tasks.Extensions.dll" DestinationFolder="$(TestDependenciesPath)" />
-          <Copy SourceFiles="$(PkgMoq)\lib\netstandard2.0\Moq.dll" DestinationFolder="$(TestDependenciesPath)" />
-          <Copy SourceFiles="$(PkgMoq)\lib\netstandard2.0\Moq.dll" DestinationFolder="$(OutputPath)" />
-      <!-- for .net48 build we also copy some test .xml files to output to satisfy patch installer reqs -->
-          <Copy SourceFiles="$(PkgMoq)\lib\netstandard2.0\Moq.xml" DestinationFolder="$(OutputPath)" />
-          <Copy SourceFiles="$(PkgNUnit)\lib\nunit.framework.xml" DestinationFolder="$(OutputPath)" />
-  </Target>
     <Target Name="MoveSomeTestDepsOutOfBin_net60" AfterTargets="Build" Condition=" '$(TargetFramework)' != 'net48' ">
         <Message Importance="High" Text="copying test dependencies to test dependencies folder" />
         <CallTarget Targets="CopyDisableADPTestDeps"></CallTarget>

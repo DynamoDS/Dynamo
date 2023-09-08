@@ -19,11 +19,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
         private static readonly string DynamoCoreNodesDir = Path.Combine(DynamoCoreDir, "Nodes");
         private static string DynamoRepoRoot = new DirectoryInfo(DynamoCoreDir).Parent.Parent.Parent.FullName;
         private static readonly string NodeGeneratorToolBuildPath = Path.Combine(DynamoRepoRoot, "src","tools", "NodeDocumentationMarkdownGenerator","bin",
-#if NET48
     "AnyCPU"
-#else
-    "NET60_Windows"
-#endif
             );
         private static readonly string toolsTestFilesDirectory = Path.GetFullPath(Path.Combine(DynamoRepoRoot, "test","Tools", "docGeneratorTestFiles"));
         private static readonly string testLayoutSpecPath = Path.Combine(toolsTestFilesDirectory, "testlayoutspec.json");
@@ -175,15 +171,9 @@ namespace NodeDocumentationMarkdownGeneratorTests
             FromDirectoryCommand.HandleDocumentationFromDirectory(opts);
 
             var generatedFileNames = tempDirectory.GetFiles().Select(x => x.Name);
-            //assert count is correct.
-            //TODO this should be 684 - but 2 tsplines nodes have such long signatures the paths are too long for windows.
-            // Net6 can make longer file names
-#if NET6_0_OR_GREATER
-            Assert.AreEqual(684, generatedFileNames.Count());
-#else
-            Assert.AreEqual(682, generatedFileNames.Count());
-#endif
+            Assert.AreEqual(683, generatedFileNames.Count());
         }
+
         [Test]
         public void ProducesCorrectOutputFromCoreDirectory_dsFiles()
         {

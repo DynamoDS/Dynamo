@@ -16,9 +16,6 @@
         <summary>This package contains all that is required to get up and running creating tests for Dynamo libraries.</summary>
         <copyright>Copyright Autodesk 2023</copyright>
         <dependencies>
-            <group targetFramework=".NETFramework4.8">
-                <dependency id="DynamoVisualProgramming.Core" version="$Version$"/>
-            </group>
             <group targetFramework="net6.0">
                 <dependency id="DynamoVisualProgramming.Core" version="$Version$"/>
             </group>
@@ -26,13 +23,9 @@
     </metadata>
     <files>
         <!--These assemblies are referenced from the bin directory since they are not harvested for the installer-->
-        <file src="..\..\..\bin\AnyCPU\Release\DynamoCoreTests.dll" target="lib\net48" />
-        <file src="..\..\..\bin\AnyCPU\Release\SystemTestServices.dll" target="lib\net48" />
-        <file src="..\..\..\bin\AnyCPU\Release\TestServices.dll" target="lib\net48" />
-        <!--NET60 binaries, the path may change after we stop building NET48 solution-->
-        <file src="..\..\..\bin\NET60_Windows\Release\DynamoCoreTests.dll" target="lib\net6.0" />
-        <file src="..\..\..\bin\NET60_Windows\Release\SystemTestServices.dll" target="lib\net6.0" />
-        <file src="..\..\..\bin\NET60_Windows\Release\TestServices.dll" target="lib\net6.0" />
+        <file src="..\..\..\bin\AnyCPU\Release\DynamoCoreTests.dll" target="lib\net6.0" />
+        <file src="..\..\..\bin\AnyCPU\Release\SystemTestServices.dll" target="lib\net6.0" />
+        <file src="..\..\..\bin\AnyCPU\Release\TestServices.dll" target="lib\net6.0" />
         <file src="..\..\..\doc\distrib\Images\logo_square_32x32.png" target="content\images\logo.png" />
     </files>
 </package>

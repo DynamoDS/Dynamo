@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Dynamo.Wpf.Controls.InstalledPackagesControl"
+<UserControl x:Class="Dynamo.Wpf.Controls.InstalledPackagesControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -17,7 +17,7 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
-            <controls:SumConverter x:Key="SumConverter"/>
+            <controls:SumConverter x:Key="SumConverter" />
             <Style TargetType="{x:Type MenuItem}" x:Key="MenuItemCollapseStyle">
                 <Style.Triggers>
                     <Trigger Property="IsEnabled" Value="False">
@@ -28,15 +28,18 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid>
+    <!-- Separate elements of this control should not be cycled through using the `Tab` key -->
+    <Grid KeyboardNavigation.IsTabStop="False">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
+        
         <ItemsControl Name="Filters"
                       Grid.Column="0" Grid.Row="0"
-                      ItemsSource="{Binding Path=Filters}" 
+                      ItemsSource="{Binding Path=Filters}"
                       Background="Transparent"
+                      KeyboardNavigation.IsTabStop="False"
                       Padding="0,5,0,5">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -68,9 +71,11 @@
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
-        <ScrollViewer Grid.Row="1"  
-            VerticalScrollBarVisibility="Auto" 
-            Background="{StaticResource PreferencesWindowBackgroundColor}">
+        
+        <ScrollViewer Grid.Row="1"
+                      VerticalScrollBarVisibility="Auto"
+                      KeyboardNavigation.IsTabStop="False"
+                      Background="{StaticResource PreferencesWindowBackgroundColor}">
             <ScrollViewer.Height>
                 <MultiBinding Converter="{StaticResource SumConverter}">
                     <Binding Path="ActualHeight"
@@ -86,6 +91,7 @@
                               ItemsSource="{Binding Path=LocalPackages}"
                               HorizontalContentAlignment="Stretch"
                               VirtualizingPanel.ScrollUnit="Pixel"
+                              KeyboardNavigation.IsTabStop="False"
                               BorderThickness="0"
                               Padding="0">
 
@@ -361,6 +367,7 @@
 
             </ItemsControl>
         </ScrollViewer>
+
     </Grid>
 
 </UserControl>
