@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Xml;
+using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
@@ -1948,7 +1949,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Boolean indicates if the workspace run with warnings
         /// </summary>
-        public bool HasWarnings
+        internal bool HasWarnings
         {
             get { return Nodes.Any(n => n.State == ElementState.Warning || n.State == ElementState.PersistentWarning); }
         }
@@ -1956,7 +1957,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Boolean indicates if the workspace run with warnings with no Geometry
         /// </summary>
-        public bool HasWarningsWithNoGeometry
+        internal bool HasWarningsWithNoGeometry
         {
             get { return Nodes.Any(n => (n.State == ElementState.Warning || n.State == ElementState.PersistentWarning) && !n.Category.StartsWith("Geometry.")); }
         }
@@ -1964,7 +1965,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Boolean indicates if workspace run with errors
         /// </summary>
-        public bool HasErrors
+        internal bool HasErrors
         {
             get { return Nodes.Any(n => n.State == ElementState.Error); }
         }
@@ -1972,7 +1973,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Boolean indicates if home workspace is displayed with infos
         /// </summary>
-        public bool HasInfos
+        internal bool HasInfos
         {
             get { return Nodes.Any(n => n.State == ElementState.Info); }
         }
@@ -1980,18 +1981,18 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// All the Nodes identified as deprecated
         /// </summary>
-        public IEnumerable<NodeModel> DeprecatedNodes
+        internal IEnumerable<NodeModel> DeprecatedNodes
         {
             get
             {
-                return Nodes.Where(node => node.NodeInfos.Any(nodeInfo => nodeInfo.Message.Contains("This method is deprecated and will be removed")));
+                return Nodes.Where(node => node.NodeInfos.Any(nodeInfo => nodeInfo.Message.Contains(Configurations.DeprecatedMethodMessage)));
             }
         }
 
         /// <summary>
         /// Indicates if the Workspace have deprecated Nodes
         /// </summary>
-        public bool AreDeprecatedNodes
+        internal bool AreDeprecatedNodes
         {
             get
             {
@@ -2002,7 +2003,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Indicates if all the deprecated nodes have metadata, bearing on mind if all their ports are connected
         /// </summary>
-        public bool AllDeprecatedNodesHaveMetadata
+        internal bool AllDeprecatedNodesHaveMetadata
         {
             get
             {
@@ -2013,20 +2014,20 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Indicates if the workspace has crashes or seriuos errors
+        /// Indicates if the workspace has crashes or serious errors
         /// </summary>
-        public bool AreThereCrashesOrSeriuosErrors
+        internal bool AreThereCrashesOrSeriousErrors
         {
             get
             {
-                return HasErrors || HasInfos;
+                return HasErrors;
             }
         }
 
         /// <summary>
         /// Indicates if the workspace has warnings from unacceptable categories bearing in mind acceptable warnings are from Geometry Working Range and/or Gate Node
         /// </summary>
-        public bool AreThereWarningsFromUnacceptableCategories
+        internal bool AreThereWarningsFromUnacceptableCategories
         {
             get
             {
@@ -2037,11 +2038,11 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Indicates if the workspace is valid for sending to the FDX
         /// </summary>
-        public bool IsValidForFDX
+        internal bool IsValidForFDX
         {
             get
             {
-                return !AreThereCrashesOrSeriuosErrors && !AreThereWarningsFromUnacceptableCategories && AllDeprecatedNodesHaveMetadata;
+                return !AreThereCrashesOrSeriousErrors && !AreThereWarningsFromUnacceptableCategories && AllDeprecatedNodesHaveMetadata;
             }
         }
 

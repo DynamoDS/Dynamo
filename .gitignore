@@ -108,3 +108,5 @@ logo.png
 dynamods-splash-screen-*.tgz
 /src/Notifications/Packages
 /src/Notifications/dynamods-notifications-center-*.tgz
+/src/DynamoCoreWpf/.npmrc
+/src/Notifications/.npmrc

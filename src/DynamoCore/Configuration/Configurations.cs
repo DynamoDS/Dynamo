@@ -50,6 +50,11 @@ namespace Dynamo.Configuration
         [Obsolete("This property is no longer used. Remove in Dynamo 3.0")]
         public static readonly double MaxWatchNodeHeight = 310.0;
 
+        /// <summary>
+        /// Message to display to the user when a Node is deprecated.
+        /// </summary>
+        public static readonly string DeprecatedMethodMessage = "This method is deprecated and will be removed";
+
         #endregion
 
         #region Usage Reporting Error Message
@@ -225,7 +230,7 @@ namespace Dynamo.Configuration
 
         internal static double ToolTipTargetGapInPixels = 3.0;
         internal static double NodeButtonHeight = 32; // Height of node button.
-        internal static double BottomPanelHeight = 48; // Height of black bottom panel with 2 buttons: Run & Canсel.
+        internal static double BottomPanelHeight = 48; // Height of black bottom panel with 2 buttons: Run & CanÑel.
         internal static int MaxLengthTooltipCode = 35; // Max length of field code in tooltip, it's near copy icon.
         internal static string NoDescriptionAvailable = Resources.NoDescriptionAvailable;
 

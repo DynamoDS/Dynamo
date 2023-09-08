@@ -68,7 +68,31 @@ namespace Dynamo.Wpf.ViewModels.Core
                 currentNotificationMessage = value;
                 RaisePropertyChanged("CurrentNotificationMessage");
             }
-        }        
+        }
+
+        /// <summary>
+        /// Boolean indicates if home workspace run with errors
+        /// </summary>
+        public bool HasErrors
+        {
+            get { return Model.HasErrors; }
+        }
+
+        /// <summary>
+        /// Boolean indicates if home workspace is displayed with infos
+        /// </summary>
+        public bool HasInfos
+        {
+            get { return Model.HasErrors; }
+        }
+
+        /// <summary>
+        /// Boolean indicates if home workspace run with warnings
+        /// </summary>
+        public bool HasWarnings
+        {
+            get { return Model.HasWarnings; }
+        }
 
         /// <summary>
         /// Contains all footer notification item bindings
@@ -241,7 +265,7 @@ namespace Dynamo.Wpf.ViewModels.Core
             }
 
             UpdateRunStatusMsgBasedOnStates();
-            UpdateFooterItems(Model.HasInfos, Model.HasWarnings, Model.HasErrors);
+            UpdateFooterItems(HasInfos, HasWarnings, HasErrors);
         }
 
 
@@ -262,7 +286,7 @@ namespace Dynamo.Wpf.ViewModels.Core
                 return;
             }
 
-            if (!Model.HasWarnings && !Model.HasErrors)
+            if (!HasWarnings && !HasErrors)
             {
                 if (Model.ScaleFactorChanged)
                 {
@@ -273,7 +297,7 @@ namespace Dynamo.Wpf.ViewModels.Core
                     SetCurrentWarning(NotificationLevel.Mild, Properties.Resources.RunCompletedMessage);
                 }
             }
-            else if (Model.HasWarnings && !Model.HasErrors)
+            else if (HasWarnings && !HasErrors)
             {
                 if (Model.ScaleFactorChanged)
                 {
