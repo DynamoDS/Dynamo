@@ -3707,4 +3707,10 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="PreferencesViewIncludeTimestampExportPathTooltip" xml:space="preserve">
     <value>When toggled on, file names of exported images include date and time of export.</value>
   </data>
+  <data name="ElementBindingWarningMessage" xml:space="preserve">
+    <value>A Save As command will treat the workspace as a completely new file and cause element binding to break. Choose Save to preserve element binding with the host document.</value>
+  </data>
+  <data name="ElementBindingWarningTitle" xml:space="preserve">
+    <value>Element Binding Warning</value>
+  </data>
 </root>
