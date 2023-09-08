@@ -141,9 +141,6 @@ namespace Dynamo.PackageManager.UI
 
         private void RaisePackageHostNotifications(IEnumerable<Package> packages)
         {
-            // ALIAS does needs a total network traffic blackout.
-            // Since there is no way to switch this on/off, we will just skip it for now.
-            
             foreach (var pkg in packages)
             {
                 //check that the package does not target another host, if it does raise a warning.
