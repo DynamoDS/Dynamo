@@ -66,6 +66,7 @@
     <None Remove="UI\Images\question-hover-blue-16px.png" />
     <None Remove="Views\PackageManager\Controls\ControlColorsAndBrushes.xaml" />      
     <None Remove="Views\PackageManager\Controls\LoadingAnimationStripeControl.xaml" />
+    <None Remove="Views\PackageManager\Controls\NumericUpDownControl.xaml" />
     <None Remove="Views\PackageManager\Controls\PackageManagePackageAnimationControl.xaml" />
     <None Remove="Views\PackageManager\Controls\PackageManagerPublishControl.xaml" />
     <None Remove="Views\PackageManager\Controls\PackageManagerPackagesControl.xaml" />
@@ -126,7 +127,7 @@
       <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-      <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.2416" />
+      <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.2485" />
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" CopyXML="true" />
     <PackageReference Include="Greg" Version="2.5.0.5076" />
@@ -431,6 +432,7 @@
     </Compile>
     <Compile Include="Views\Input\ParameterEditor.cs" />
     <Compile Include="Views\PackageManager\Controls\LoadingAnimationStripeControl.xaml.cs" />
+    <Compile Include="Views\PackageManager\Controls\NumericUpDownControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\PackageManagePackageAnimationControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\PackageManagerPackagesControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\PackageManagerPublishControl.xaml.cs" />
@@ -625,6 +627,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\PackageManager\Controls\LoadingAnimationStripeControl.xaml">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PackageManager\Controls\NumericUpDownControl.xaml">
         <SubType>Designer</SubType>
         <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1703,6 +1709,11 @@
     <Resource Include="UI\Images\icon-dictionary-small.png" />
     <Resource Include="UI\Images\no-recommendations.png" />
     <Resource Include="UI\Images\not-authenticated.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Views\PackageManager\Controls\NumericUpDownControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
   </ItemGroup>
   <Target Name="AfterBuildOps" AfterTargets="Build">
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />
