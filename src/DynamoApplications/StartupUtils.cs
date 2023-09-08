@@ -398,24 +398,20 @@ namespace Dynamo.Applications
             HostAnalyticsInfo info = new HostAnalyticsInfo(),
             bool isServiceMode = false)
         {
+
             var config = new DynamoModel.DefaultStartConfiguration
             {
                 GeometryFactoryPath = geometryFactoryPath,
                 ProcessMode = CLImode ? TaskProcessMode.Synchronous : TaskProcessMode.Asynchronous,
                 HostAnalyticsInfo = info,
                 CLIMode = CLImode,
-                AuthProvider = CLImode ? null : new Core.IDSDKManager(),
+                AuthProvider = CLImode || Dynamo.Logging.Analytics.DisableAnalytics ? null : new Core.IDSDKManager(),
                 UpdateManager = CLImode ? null : OSHelper.IsWindows() ? InitializeUpdateManager() : null,
                 StartInTestMode = CLImode,
                 PathResolver = CreatePathResolver(CLImode, preloaderLocation, userDataFolder, commonDataFolder),
                 IsServiceMode = isServiceMode,
                 Preferences = PreferenceSettings.Instance
             };
-            config.AuthProvider = CLImode ? null : new Core.IDSDKManager();
-            config.UpdateManager = CLImode ? null : InitializeUpdateManager();
-            config.StartInTestMode = CLImode;
-            config.PathResolver = CLImode ? new CLIPathResolver(preloaderLocation, userDataFolder, commonDataFolder) as IPathResolver : new SandboxPathResolver(preloaderLocation) as IPathResolver;
-
             var model = DynamoModel.Start(config);
             return model;
         }

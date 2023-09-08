@@ -337,9 +337,15 @@ namespace Dynamo.PackageManager
         {
             // determine if any of the packages are targeting other hosts
             var containsPackagesThatTargetOtherHosts = false;
-
-            // Known hosts
-            var knownHosts = PackageManagerClient.GetKnownHosts();
+            //fallback list of hosts as of 9/8/23
+            IEnumerable<string> knownHosts =  new List<string> { "Revit", "Civil 3D", "Alias", "Advance Steel", "FormIt" };
+            //if analytics is disabled, treat this as network black out
+            //and don't ask dpm for known hosts.
+            if (!Dynamo.Logging.Analytics.DisableAnalytics)
+            {
+                // Known hosts
+                knownHosts = PackageManagerClient.GetKnownHosts();
+            }
 
             // Sandbox, special case: Warn if any package targets only one known host
             if (String.IsNullOrEmpty(Host))
