@@ -405,6 +405,7 @@ namespace Dynamo.Applications
                 ProcessMode = CLImode ? TaskProcessMode.Synchronous : TaskProcessMode.Asynchronous,
                 HostAnalyticsInfo = info,
                 CLIMode = CLImode,
+                //TODO we currently use this like a no network comms flags - work on introducing a new flag or renaming this flag.
                 AuthProvider = CLImode || Dynamo.Logging.Analytics.DisableAnalytics ? null : new Core.IDSDKManager(),
                 UpdateManager = CLImode ? null : OSHelper.IsWindows() ? InitializeUpdateManager() : null,
                 StartInTestMode = CLImode,

@@ -341,6 +341,7 @@ namespace Dynamo.PackageManager
             IEnumerable<string> knownHosts =  new List<string> { "Revit", "Civil 3D", "Alias", "Advance Steel", "FormIt" };
             //if analytics is disabled, treat this as network black out
             //and don't ask dpm for known hosts.
+            //TODO we currently use this like a no network comms flags - work on introducing a new flag or renaming this flag.
             if (!Dynamo.Logging.Analytics.DisableAnalytics)
             {
                 // Known hosts
