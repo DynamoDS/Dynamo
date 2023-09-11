@@ -137,7 +137,7 @@ namespace Dynamo.Tests
             //We take the first 10 nodes from the result
             foreach (var node in nodesResult.Take(10))
             {
-                //All the resulting nodes will have the Category = Core so we check agains the splitted (by . char) value "Core.Input"
+                //All the resulting nodes will have the Category = Core and Class = Input so we check against the first splitted value (by . char) of "Core.Input"
                 Assert.IsTrue(node.Category.Contains(category.Split('.')[0]) || node.Category.Contains(category.Split('.')[1]));
             }
         }
