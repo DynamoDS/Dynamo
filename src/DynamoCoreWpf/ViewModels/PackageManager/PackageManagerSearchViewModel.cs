@@ -149,7 +149,7 @@ namespace Dynamo.PackageManager
 
         #region Properties & Fields
         // Lucene search utility to perform indexing operations.
-        private LuceneSearchUtility LuceneUtility
+        internal LuceneSearchUtility LuceneUtility
         {
             get
             {
@@ -513,9 +513,8 @@ namespace Dynamo.PackageManager
         /// </summary>
         /// <param name="package">package info that will be indexed</param>
         /// <param name="doc">Lucene document in which the package info will be indexed</param>
-        private void AddPackageToSearchIndex(PackageManagerSearchElement package, Document doc)
+        internal void AddPackageToSearchIndex(PackageManagerSearchElement package, Document doc)
         {
-            if (DynamoModel.IsTestMode) return;
             if (LuceneUtility.addedFields == null) return;
 
             LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), package.Name);
@@ -550,7 +549,14 @@ namespace Dynamo.PackageManager
             {
                 LuceneSearch.LuceneUtilityPackageManager = new LuceneSearchUtility(PackageManagerClientViewModel.DynamoViewModel.Model);
             }
-            LuceneUtility.InitializeLuceneConfig(LuceneConfig.PackagesIndexingDirectory);
+            if (DynamoModel.IsTestMode)
+            {
+                LuceneUtility.InitializeLuceneConfig(string.Empty, LuceneSearchUtility.LuceneStorage.RAM);
+            }
+            else
+            {
+                LuceneUtility.InitializeLuceneConfig(LuceneConfig.PackagesIndexingDirectory);
+            }
         }
         
         /// <summary>
