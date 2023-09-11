@@ -80,6 +80,9 @@ namespace Dynamo.PackageManager
             /// </summary>
             public string FilterName { get; set; }
 
+            /// <summary>
+            /// The context sub-menu name the filter belongs to
+            /// </summary>
             public string GroupName { get; set; }
 
             /// <summary>
@@ -564,7 +567,7 @@ namespace Dynamo.PackageManager
             ClearToastNotificationCommand = new DelegateCommand<object>(ClearToastNotification);
             ClearFiltersCommand = new DelegateCommand<object>(ClearAllFilters);
             SearchText = string.Empty;
-            SortingKey = PackageSortingKey.Votes;
+            SortingKey = PackageSortingKey.LastUpdate;
             SortingDirection = PackageSortingDirection.Descending;
             HostFilter = new List<FilterEntry>();
             NonHostFilter = new List<FilterEntry>();
