@@ -77,23 +77,23 @@ namespace Dynamo.Core
         private readonly int majorFileVersion;
         private readonly int minorFileVersion;
         private readonly string dynamoCoreDir;
-        private readonly string hostApplicationDirectory;
-        private readonly string userDataDir;
-        private readonly string commonDataDir;
+        private string hostApplicationDirectory;
+        private string userDataDir;
+        private string commonDataDir;
 
-        private readonly string commonDefinitions;
-        private readonly string commonPackages;
-        private readonly string logDirectory;
-        private readonly string samplesDirectory;
+        private string commonDefinitions;
+        private string commonPackages;
+        private string logDirectory;
+        private string samplesDirectory;
         private string backupDirectory;
         private string defaultBackupDirectory;
-        private readonly string preferenceFilePath;
+        private string preferenceFilePath;
         private string pythonTemplateFilePath;
 
-        private readonly List<string> rootDirectories;
-        private readonly HashSet<string> nodeDirectories;
-        private readonly HashSet<string> additionalResolutionPaths;
-        private readonly HashSet<string> preloadedLibraries;
+        private List<string> rootDirectories;
+        private HashSet<string> nodeDirectories;
+        private HashSet<string> additionalResolutionPaths;
+        private HashSet<string> preloadedLibraries;
         private readonly HashSet<string> extensionsDirectories;
         private readonly HashSet<string> viewExtensionsDirectories;
         private IPathResolver pathResolver;
@@ -362,12 +362,16 @@ namespace Dynamo.Core
         #region Public Class Operational Methods
 
         /// <summary>
-        /// Assigns an IPathResolver on demand with the same behavior as the Ctor.
+        /// Assigns a hostPath and IPathResolver on demand with the same behavior as the Ctor.
         /// </summary>
-        /// <param name="resolver"></param>
-        internal void AssignIPathResolver(IPathResolver resolver)
+        /// <param name="hostPath"></param>
+        /// /// <param name="resolver"></param>
+        internal void AssignHostPathAndIPathResolver(string hostPath, IPathResolver resolver)
         {
-            pathResolver = resolver;            
+            pathResolver = resolver;
+            BuildHostDirectories(hostPath);
+            BuildUserSpecificDirectories();
+            BuildCommonDirectories();
             LoadPathsFromResolver();
         }
 
@@ -392,6 +396,7 @@ namespace Dynamo.Core
             }
 
             dynamoCoreDir = corePath;
+
             var assemblyPath = Path.Combine(dynamoCoreDir, "DynamoCore.dll");
             if (!PathHelper.IsValidPath(assemblyPath))
             {
@@ -401,18 +406,13 @@ namespace Dynamo.Core
                     "TestServices.dll.config.");
             }
 
-            hostApplicationDirectory = pathManagerParams.HostPath;
             extensionsDirectories = new HashSet<string>();
             viewExtensionsDirectories = new HashSet<string>();
 
             extensionsDirectories.Add(Path.Combine(dynamoCoreDir, ExtensionsDirectoryName));
             viewExtensionsDirectories.Add(Path.Combine(dynamoCoreDir, ViewExtensionsDirectoryName));
 
-            if(!string.IsNullOrEmpty(hostApplicationDirectory))
-            {
-                extensionsDirectories.Add(Path.Combine(hostApplicationDirectory, ExtensionsDirectoryName));
-                viewExtensionsDirectories.Add(Path.Combine(hostApplicationDirectory, ViewExtensionsDirectoryName));
-            }
+            BuildHostDirectories(pathManagerParams.HostPath);
 
             // If both major/minor versions are zero, get from assembly.
             majorFileVersion = pathManagerParams.MajorFileVersion;
@@ -424,36 +424,8 @@ namespace Dynamo.Core
                 minorFileVersion = v.FileMinorPart;
             }
 
-            // Current user specific directories.
-            userDataDir = GetUserDataFolder();
-
-            // When running as a headless process, put the logs directory in a consistent
-            // location that doesn't change every time the version number changes.
-            var userDataDirNoVersion = Directory.GetParent(userDataDir).FullName;
-            logDirectory = Path.Combine(Dynamo.Models.DynamoModel.IsHeadless ? userDataDirNoVersion : userDataDir,
-                                        LogsDirectoryName);
-
-            preferenceFilePath = Path.Combine(userDataDir, PreferenceSettingsFileName);
-            pythonTemplateFilePath = Path.Combine(userDataDir, PythonTemplateFileName);
-            backupDirectory = Path.Combine(userDataDirNoVersion, BackupDirectoryName);
-            defaultBackupDirectory = backupDirectory;
-
-            // Common directories.
-            commonDataDir = GetCommonDataFolder();
-
-            commonDefinitions = Path.Combine(commonDataDir, DefinitionsDirectoryName);
-            commonPackages = Path.Combine(commonDataDir, PackagesDirectoryName);
-            samplesDirectory = GetSamplesFolder(commonDataDir);
-
-            rootDirectories = new List<string> { userDataDir };
-
-            nodeDirectories = new HashSet<string>
-            {
-                Path.Combine(dynamoCoreDir, NodesDirectoryName)
-            };
-
-            preloadedLibraries = new HashSet<string>();
-            additionalResolutionPaths = new HashSet<string>();
+            BuildUserSpecificDirectories();
+            BuildCommonDirectories();
             LoadPathsFromResolver();
         }
 
@@ -555,6 +527,68 @@ namespace Dynamo.Core
 
         #region Private Class Helper Methods
 
+        /// <summary>
+        /// Build the Extensions and ViewExtensions directories based on the Host.
+        /// </summary>
+        /// <param name="hostPath"></param>
+        private void BuildHostDirectories(string hostPath)
+        {
+            hostApplicationDirectory = hostPath;
+
+            if (!string.IsNullOrEmpty(hostApplicationDirectory))
+            {
+                extensionsDirectories.Add(Path.Combine(hostApplicationDirectory, ExtensionsDirectoryName));
+                viewExtensionsDirectories.Add(Path.Combine(hostApplicationDirectory, ViewExtensionsDirectoryName));
+            }
+        }
+
+        /// <summary>
+        /// Build directories based on the User.
+        /// </summary>
+        private void BuildUserSpecificDirectories()
+        {
+            // Current user specific directories.
+            userDataDir = GetUserDataFolder();
+
+            // When running as a headless process, put the logs directory in a consistent
+            // location that doesn't change every time the version number changes.
+            var userDataDirNoVersion = Directory.GetParent(userDataDir).FullName;
+            logDirectory = Path.Combine(Dynamo.Models.DynamoModel.IsHeadless ? userDataDirNoVersion : userDataDir,
+                                        LogsDirectoryName);
+
+            preferenceFilePath = Path.Combine(userDataDir, PreferenceSettingsFileName);
+            pythonTemplateFilePath = Path.Combine(userDataDir, PythonTemplateFileName);
+            backupDirectory = Path.Combine(userDataDirNoVersion, BackupDirectoryName);
+            defaultBackupDirectory = backupDirectory;
+        }
+
+        /// <summary>
+        /// Build common Directories.
+        /// </summary>
+        private void BuildCommonDirectories()
+        {
+            // Common directories.
+            commonDataDir = GetCommonDataFolder();
+
+            commonDefinitions = Path.Combine(commonDataDir, DefinitionsDirectoryName);
+            commonPackages = Path.Combine(commonDataDir, PackagesDirectoryName);
+            samplesDirectory = GetSamplesFolder(commonDataDir);
+
+            rootDirectories = new List<string> { userDataDir };
+
+            nodeDirectories = new HashSet<string>
+            {
+                Path.Combine(dynamoCoreDir, NodesDirectoryName)
+            };
+
+            preloadedLibraries = new HashSet<string>();
+            additionalResolutionPaths = new HashSet<string>();
+        }
+
+        /// <summary>
+        /// Load the Paths based on the Resolver
+        /// </summary>
+        /// <exception cref="DirectoryNotFoundException"></exception>
         private void LoadPathsFromResolver()
         {
             if (pathResolver == null) // No optional path resolver is specified...
