@@ -761,10 +761,6 @@ namespace Dynamo.Models
                     }
                     catch (Exception e) { Logger.LogError($"could not start feature flags manager {e}"); };
                 });
-
-                //TODO just a test of feature flag event, safe to remove at any time.
-                DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved += CheckFeatureFlagTest;
-
             }
 
             // TBD: Do we need settings migrator for service mode? If we config the docker correctly, this could be skipped I think
@@ -1105,31 +1101,6 @@ namespace Dynamo.Models
 
             // Otherwise make a default preference settings object.
             return new PreferenceSettings();
-        }
-
-        private void CheckFeatureFlagTest()
-        {
-            if (!DynamoModel.IsTestMode)
-            {
-                if (DynamoModel.FeatureFlags.CheckFeatureFlag<bool>("EasterEggIcon1", false))
-                {
-                    this.Logger.Log("EasterEggIcon1 is true FROM MODEL");
-
-                }
-                else
-                {
-                    this.Logger.Log("EasterEggIcon1 is false FROM MODEL");
-                }
-
-                if (DynamoModel.FeatureFlags.CheckFeatureFlag<string>("EasterEggMessage1", "NA") is var s && s != "NA")
-                {
-                    this.Logger.Log("EasterEggMessage1 is enabled FROM MODEL");
-                }
-                else
-                {
-                    this.Logger.Log("EasterEggMessage1 is disabled FROM MODEL");
-                }
-            }
         }
 
         private void SetDefaultPythonTemplate()
@@ -1475,7 +1446,6 @@ namespace Dynamo.Models
             {
                 FeatureFlags.MessageLogged -= LogMessageWrapper;
             }
-            DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved -= CheckFeatureFlagTest;
         }
 
         private void InitializeCustomNodeManager()

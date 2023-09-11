@@ -271,6 +271,7 @@ namespace DynamoCoreWpfTests
                 count = count + 1;
             }
         }
+
         [Test]
         public void PackageManagerViewExtesion_SendsNotificationForPackagesThatTargetDifferentHost_AtLatePackageLoad()
         {

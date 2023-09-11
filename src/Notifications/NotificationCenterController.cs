@@ -92,10 +92,11 @@ namespace Dynamo.Notifications
                 VerticalOffset = notificationPopupVerticalOffset
             };
             logger = dynLogger;
-            
+
             // If user turns on the feature, they will need to restart Dynamo to see the count
             // This ensures no network traffic when Notification center feature is turned off
-            if (dynamoViewModel.PreferenceSettings.EnableNotificationCenter) 
+            //TODO we currently use DisableAnalytics like a no network comms flags - work on introducing a new flag or renaming this flag.
+            if (dynamoViewModel.PreferenceSettings.EnableNotificationCenter && !Dynamo.Logging.Analytics.DisableAnalytics ) 
             {               
                 InitializeBrowserAsync();
                 RequestNotifications();
