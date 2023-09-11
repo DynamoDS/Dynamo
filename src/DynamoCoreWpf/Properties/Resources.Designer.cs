@@ -39,7 +39,7 @@ namespace Dynamo.Wpf.Properties {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Dynamo.Wpf.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -2684,7 +2684,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A Save As command will treat the workspace as a completely new file and cause element binding to break. Choose Save to preserve element binding with the host document..
+        ///   Looks up a localized string similar to A Save As command will create a workspace which is treated as a completely new file by Dynamo and existing element binding data will be lost. New element binding data will created as normal as you run this file. Use the Save command instead if you wish to preserve element binding with the host document..
         /// </summary>
         public static string ElementBindingWarningMessage {
             get {

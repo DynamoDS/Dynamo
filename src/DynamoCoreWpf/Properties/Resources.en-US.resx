@@ -3721,7 +3721,7 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
     <value>When toggled on, file names of exported images include date and time of export.</value>
   </data>
   <data name="ElementBindingWarningMessage" xml:space="preserve">
-    <value>A Save As command will treat the workspace as a completely new file and cause element binding to break. Choose Save to preserve element binding with the host document.</value>
+    <value>A Save As command will create a workspace which is treated as a completely new file by Dynamo and existing element binding data will be lost. New element binding data will created as normal as you run this file. Use the Save command instead if you wish to preserve element binding with the host document.</value>
   </data>
   <data name="ElementBindingWarningTitle" xml:space="preserve">
     <value>Element Binding Warning</value>
