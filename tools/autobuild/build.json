@@ -2,8 +2,8 @@
   "product_id": "DYN",
   "release_id": "2.19.0",
   "master_id": "Win64",
-  "build_id": "2.19.0",
-  "name": "2.19.0",
-  "build_milestone": "FCS",
+  "build_id": "2.19.1",
+  "name": "2.19.1",
+  "build_milestone": "Update 1",
   "description":"Build"
 }
