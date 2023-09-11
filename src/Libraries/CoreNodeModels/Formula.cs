@@ -14,6 +14,7 @@ namespace CoreNodeModels
     [IsDesignScriptCompatible]
     [OutPortTypes("Function")]
     [AlsoKnownAs("DSCoreNodesUI.Formula")]
+    [NodeDeprecated]
     public class Formula : NodeModel
     {
         [NodeMigration(version: "3.0.0.0")]
