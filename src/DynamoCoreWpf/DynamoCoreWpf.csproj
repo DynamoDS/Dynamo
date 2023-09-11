@@ -1719,6 +1719,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Update="Views\PackageManager\Controls\FilterTagControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
     <None Update="Views\PackageManager\Controls\NumericUpDownControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>

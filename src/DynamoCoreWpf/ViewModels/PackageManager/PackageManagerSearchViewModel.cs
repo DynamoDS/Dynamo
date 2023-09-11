@@ -735,8 +735,41 @@ namespace Dynamo.PackageManager
                                                           new FilterEntry(Resources.PackageSearchViewContextMenuFilterNoDependencies, Resources.PackageFilterByDependency, this)
             } ;
 
+            nonHostFilter.ForEach(f => f.PropertyChanged += filter_PropertyChanged);
+
             return nonHostFilter;
 
+        }
+
+        /// <summary>
+        /// Toggles `dependecy` and `no dependecy` filters so that both cannot be 'ON' at the same time.
+        /// We need both filters to function individually in their 'OFF' states (it's not a simple toggle state switch)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        internal void filter_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            var filter = sender as FilterEntry;
+            switch (filter.FilterName)
+            {
+                case var name when name.Equals( Resources.PackageSearchViewContextMenuFilterDependencies ):
+                    if(!filter.OnChecked)
+                        break;
+                    var negateFilter = NonHostFilter.First(x => x.FilterName.Equals(Resources.PackageSearchViewContextMenuFilterNoDependencies));
+                    if (!negateFilter.OnChecked)
+                        break;
+                    negateFilter.OnChecked = false;
+                    break;
+                case var name when name.Equals(Resources.PackageSearchViewContextMenuFilterNoDependencies):
+                    if (!filter.OnChecked)
+                        break;
+                    negateFilter = NonHostFilter.First(x => x.FilterName.Equals(Resources.PackageSearchViewContextMenuFilterDependencies));
+                    if (!negateFilter.OnChecked)
+                        break;
+                    negateFilter.OnChecked = false;
+                    break;
+
+            }
         }
 
 
@@ -1584,6 +1617,7 @@ namespace Dynamo.PackageManager
             TimedOut = false;   // reset the timedout screen 
             InitialResultsLoaded = false;   // reset the loading screen settings
             RequestShowFileDialog -= OnRequestShowFileDialog;
+            nonHostFilter.ForEach(f => f.PropertyChanged -= filter_PropertyChanged);
         }
     }
 }

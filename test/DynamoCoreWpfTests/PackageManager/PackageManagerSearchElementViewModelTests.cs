@@ -261,7 +261,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
         /// `Deprecated` resutls are excluded, unless the filter is turned on
         /// </summary>
         [Test]
-        public void PackageSearchDialogSearchTvestStatusFilters()
+        public void PackageSearchDialogSearchTestStatusFilters()
         {
             //Arrange
             int numberOfPackages = 9;
@@ -397,7 +397,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
         /// `Has Dependency` and `Has No Dependency` filters are mutually exclusive
         /// </summary>
         [Test]
-        public void PackageSearchDialogSearchTvestDependencyFilters()
+        public void PackageSearchDialogSearchTestDependencyFilters()
         {
             //Arrange
             int numberOfPackages = 7;
@@ -428,6 +428,9 @@ namespace Dynamo.PackageManager.Wpf.Tests
                 new FilterEntry(Dynamo.Wpf.Properties.Resources.PackageSearchViewContextMenuFilterDependencies, Dynamo.Wpf.Properties.Resources.PackageFilterByStatus, packageManagerSearchViewModel) { OnChecked = false },
                 new FilterEntry(Dynamo.Wpf.Properties.Resources.PackageSearchViewContextMenuFilterNoDependencies, Dynamo.Wpf.Properties.Resources.PackageFilterByStatus, packageManagerSearchViewModel) { OnChecked = false },
             };
+
+
+            packageManagerSearchViewModel.NonHostFilter.ForEach(f => f.PropertyChanged += packageManagerSearchViewModel.filter_PropertyChanged);
 
             //Adding packages with no dependencies
             foreach (var package in noDependencyPackagesName)
@@ -486,17 +489,18 @@ namespace Dynamo.PackageManager.Wpf.Tests
             Assert.That(packageManagerSearchViewModel.SearchResults.Count == dependencyPackagesName.Count, "The search results are not getting the dependent packages");
 
             //Check the NoDependency filter
-            packageManagerSearchViewModel.NonHostFilter[3].OnChecked = false;
             packageManagerSearchViewModel.NonHostFilter[4].OnChecked = true;
             packageManagerSearchViewModel.NonHostFilter[4].FilterCommand.Execute(string.Empty);
             Assert.IsNotNull(packageManagerSearchViewModel.SearchResults, "There was no results");
             Assert.That(packageManagerSearchViewModel.SearchResults.Count > 0, "There was no results");
             Assert.That(packageManagerSearchViewModel.SearchResults.Count == noDependencyPackagesName.Count, "The search results are not getting the non-dependent packages");
 
-            //Check the exclusivity of the two filters
+            //Check that the two filters cannot be 'ON' at the same time
+            Assert.IsFalse(packageManagerSearchViewModel.NonHostFilter[3].OnChecked);
             packageManagerSearchViewModel.NonHostFilter[3].OnChecked = true;
             packageManagerSearchViewModel.NonHostFilter[3].FilterCommand.Execute(string.Empty);
-            Assert.That(packageManagerSearchViewModel.SearchResults.Count == 0, "There was some results incorrectly going through past the filters");
+            Assert.IsFalse(packageManagerSearchViewModel.NonHostFilter[4].OnChecked);
         }
+
     }
 }
