@@ -7939,6 +7939,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Build.
+        /// </summary>
+        public static string PublishPackageViewBuildPackageVersionLabel {
+            get {
+                return ResourceManager.GetString("PublishPackageViewBuildPackageVersionLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Is Node Library.
         /// </summary>
         public static string PublishPackageViewContextMenuIsNodeLibrary {
@@ -8038,6 +8047,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Major.
+        /// </summary>
+        public static string PublishPackageViewMajorPackageVersionLabel {
+            get {
+                return ResourceManager.GetString("PublishPackageViewMajorPackageVersionLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Markdown Files Path (optional).
         /// </summary>
         public static string PublishPackageViewMarkdownFilesDirectory {
@@ -8052,6 +8070,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PublishPackageViewMarkdownFilesDirectoryToolTip {
             get {
                 return ResourceManager.GetString("PublishPackageViewMarkdownFilesDirectoryToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minor.
+        /// </summary>
+        public static string PublishPackageViewMinorPackageVersionLabel {
+            get {
+                return ResourceManager.GetString("PublishPackageViewMinorPackageVersionLabel", resourceCulture);
             }
         }
         
@@ -8173,7 +8200,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Version (Major Minor Build).
+        ///   Looks up a localized string similar to Version.
         /// </summary>
         public static string PublishPackageViewPackageVersion {
             get {

@@ -17,6 +17,6 @@
         </dependencies>
     </metadata>
     <files>
-        <file src="**" target="lib\net6.0\linux\" />
+        <file src="**" target="lib\net6.0\linux\" exclude="en-US\fallback_docs\*"/>
     </files>
 </package>

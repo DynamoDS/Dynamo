@@ -1832,7 +1832,16 @@ Want to publish a different package?</value>
     <value>A unique name for the package.</value>
   </data>
   <data name="PublishPackageViewPackageVersion" xml:space="preserve">
-    <value>Version (Major Minor Build)</value>
+    <value>Version</value>
+  </data>
+  <data name="PublishPackageViewMajorPackageVersionLabel" xml:space="preserve">
+    <value>Major</value>
+  </data>
+  <data name="PublishPackageViewMinorPackageVersionLabel" xml:space="preserve">
+    <value>Minor</value>
+  </data>
+  <data name="PublishPackageViewBuildPackageVersionLabel" xml:space="preserve">
+    <value>Build</value>
   </data>
   <data name="PublishPackageViewPackageVersionTooltip" xml:space="preserve">
     <value>A version name helps a submitter keep track of updates to the package.  A new version of a package will be REJECTED if this is not incremeneted.</value>
@@ -2214,7 +2223,7 @@ Uninstall the following packages: {0}?</value>
     <value>Version {0} of {1} could not be found.</value>
   </data>
   <data name="PublishPackageViewPackageHostDependency" xml:space="preserve">
-    <value>External Dependency (optional)</value>
+    <value>Host (optional)</value>
   </data>
   <data name="PublishPackageViewPackageHostDependencyTooltip" xml:space="preserve">
     <value>An indication of what applications outside of Dynamo your package depends on, such as Revit, Civil 3D or Photoshop. Users of your package will need to install these applications to fully utilize your package.</value>
