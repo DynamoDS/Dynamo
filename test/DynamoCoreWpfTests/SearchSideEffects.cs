@@ -131,10 +131,13 @@ namespace Dynamo.Tests
             // Search and check that the results are correct based in the node name provided for the searchTerm
             var nodesResult = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.Search(category,true);
 
+            //Check that we got at least 1 result from the Lucene Search
             Assert.That(nodesResult.Count(), Is.GreaterThan(0));
 
+            //We take the first 10 nodes from the result
             foreach (var node in nodesResult.Take(10))
             {
+                //All the resulting nodes will have the Category = Core so we check agains the splitted (by . char) value "Core.Input"
                 Assert.IsTrue(node.Category.Contains(category.Split('.')[0]) || node.Category.Contains(category.Split('.')[1]));
             }
         }
