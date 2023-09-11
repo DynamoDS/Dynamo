@@ -1037,7 +1037,7 @@ namespace Dynamo.Models
             {
                 if (!Core.PathManager.Instance.HasPathResolver)
                 {
-                    Core.PathManager.Instance.AssignIPathResolver(config.PathResolver);
+                    Core.PathManager.Instance.AssignHostPathAndIPathResolver(config.DynamoHostPath, config.PathResolver);
                 }
                 return Core.PathManager.Instance;
             }
@@ -1594,7 +1594,9 @@ namespace Dynamo.Models
             NodeFactory.AddTypeFactoryAndLoader(outputData.Type);
             NodeFactory.AddAlsoKnownAs(outputData.Type, outputData.AlsoKnownAs);
 
-            SearchModel?.Add(new CodeBlockNodeSearchElement(cbnData, LibraryServices));
+            var cnbNode = new CodeBlockNodeSearchElement(cbnData, LibraryServices);
+            SearchModel?.Add(cnbNode);
+            AddNodeTypeToSearchIndex(cnbNode, iDoc);
 
             var symbolSearchElement = new NodeModelSearchElement(symbolData)
             {
@@ -1613,29 +1615,11 @@ namespace Dynamo.Models
             };
 
             SearchModel?.Add(symbolSearchElement);
+            AddNodeTypeToSearchIndex(symbolSearchElement, iDoc);
+
             SearchModel?.Add(outputSearchElement);
+            AddNodeTypeToSearchIndex(outputSearchElement, iDoc);
 
-            //Adding this nodes are breaking the tests (due that we have two input and two output nodes):
-            //WhenHomeWorkspaceIsFocusedInputAndOutputNodesAreMissingFromSearch
-            //WhenStartingDynamoInputAndOutputNodesAreNolongerMissingFromSearch
-            // New index process from Lucene, adding missing nodes: Code Block, Input and Output
-            var ele = AddNodeTypeToSearch(outputData);      
-            if (ele != null)
-            {
-                AddNodeTypeToSearchIndex(ele, iDoc);
-            }
-
-            ele = AddNodeTypeToSearch(symbolData);
-            if (ele != null)
-            {
-                AddNodeTypeToSearchIndex(ele, iDoc);
-            }
-
-            ele = AddNodeTypeToSearch(cbnData);
-            if (ele != null)
-            {
-                AddNodeTypeToSearchIndex(ele, iDoc);
-            }
         }
 
         internal static bool IsDisabledPath(string packagesDirectory, IPreferences preferences)

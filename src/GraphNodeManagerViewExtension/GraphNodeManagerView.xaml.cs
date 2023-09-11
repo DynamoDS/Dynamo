@@ -1,4 +1,4 @@
-﻿using System.Windows;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Dynamo.GraphNodeManager.ViewModels;
@@ -34,23 +34,6 @@ namespace Dynamo.GraphNodeManager
             InitializeComponent();
 
             this.DataContext = viewModel;
-        }
-
-        /// <summary>
-        /// Handles export image click function
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ExportImage_OnMouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Left)
-            {
-                Image image = sender as Image;
-                ContextMenu contextMenu = image.ContextMenu;
-                contextMenu.PlacementTarget = image;
-                contextMenu.IsOpen = true;
-                e.Handled = true;
-            }
         }
 
         /// <summary>
@@ -118,9 +101,21 @@ namespace Dynamo.GraphNodeManager
 
             if (node == null || info == null) return;
 
-            var message = $"Node Name: {node.Name}\nPackage: {node.Package}\nDynamo Version: {dynamoVersion}\nHost: {hostProgram}\nMessages: {info.Message}\nState: {info.State}";
+            var message = $"Node Name: {node.Name}\nOriginal Node Name: {node.OriginalName}\nPackage: {node.Package}\nDynamo Version: {dynamoVersion}\nHost: {hostProgram}\nMessages: {info.Message}\nState: {info.State}";
 
             Clipboard.SetText(message);
+        }
+
+        /// <summary>
+        /// Handles export button click function
+        /// </summary>
+        private void ExportButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            ContextMenu contextMenu = button.ContextMenu;
+            contextMenu.PlacementTarget = button;
+            contextMenu.IsOpen = true;
+            e.Handled = true;
         }
 
     }
