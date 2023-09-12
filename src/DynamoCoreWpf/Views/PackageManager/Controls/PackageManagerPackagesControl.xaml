@@ -534,7 +534,7 @@
                                 <ComboBox x:Name="VersionComboBox"
                                           HorizontalAlignment="Left"
                                           ItemsSource="{Binding Path=Model.PackageVersions}"
-                                          SelectedItem="{Binding Path=Model.SelectedVersion}"
+                                          SelectedItem="{Binding Path=SelectedVersion}"
                                           Style="{StaticResource PackageManagerSmallComboBox}">
                                 </ComboBox>
                                 <Rectangle Style="{StaticResource RectangleStyle}"
