@@ -3,22 +3,21 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Data;
-//using System.Windows.Input;
 using Dynamo.Core;
+using Dynamo.Extensions;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
+using Dynamo.GraphNodeManager.Properties;
 using Dynamo.GraphNodeManager.ViewModels;
 using Dynamo.Models;
-using Dynamo.Wpf.Extensions;
-using Dynamo.Extensions;
-using Dynamo.GraphNodeManager.Properties;
 using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Extensions;
+using Newtonsoft.Json;
 using Prism.Commands;
 using DelegateCommand = Dynamo.UI.Commands.DelegateCommand;
 using GridNodeViewModel = Dynamo.GraphNodeManager.ViewModels.GridNodeViewModel;
-using Newtonsoft.Json;
 
 namespace Dynamo.GraphNodeManager
 {
