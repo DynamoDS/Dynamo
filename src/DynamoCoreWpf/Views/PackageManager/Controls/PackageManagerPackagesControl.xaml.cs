@@ -122,5 +122,12 @@ namespace Dynamo.PackageManager.UI
             PkgSearchVM.IsDetailPackagesExtensionOpened = true;
             PkgSearchVM?.ViewPackageDetailsCommand.Execute(packageManagerSearchElementViewModel.Model);
         }
+
+        private void DropDownInstallButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            ContextMenu cm = this.FindResource("installContextMenu") as ContextMenu;
+            cm.PlacementTarget = sender as Button;
+            cm.IsOpen = true;
+        }
     }
 }

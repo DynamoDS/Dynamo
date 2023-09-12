@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
@@ -19,6 +20,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Controls;
 using Dynamo.Wpf.ViewModels.Core;
+using Dynamo.Wpf.Views;
 using DynamoCoreWpfTests.Utility;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
@@ -109,7 +111,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void OpeningWorkspaceWithTrustWarning()
+        public void OpeningWorkspaceWithTclsrustWarning()
         {
             // Open workspace with test mode as false, to verify trust warning.
             DynamoModel.IsTestMode = false;
@@ -167,6 +169,32 @@ namespace DynamoCoreWpfTests
 
             File.Delete(filePath);
             File.Delete(saveAsPath);
+        }
+        
+        public void TestToastNotificationClosingBehavior()
+        {
+            var preferencesWindow = new PreferencesView(View);
+            preferencesWindow.Show();
+            DispatcherUtil.DoEvents();
+            string selectedLanguage = (string)((ComboBox)preferencesWindow.FindName("LanguageCmb")).SelectedItem;
+            var english = Configurations.SupportedLocaleDic.FirstOrDefault(x => x.Value == "en-US").Key;
+            var spanish = Configurations.SupportedLocaleDic.FirstOrDefault(x => x.Value == "es-ES").Key;
+            ViewModel.PreferencesViewModel.SelectedLanguage = selectedLanguage == english ? spanish : english;
+
+            ViewModel.HomeSpace.HasUnsavedChanges = false;
+            if (View.IsLoaded)
+                View.Close();
+
+            if (ViewModel != null)
+            {
+                var shutdownParams = new DynamoViewModel.ShutdownParams(
+                    shutdownHost: false, allowCancellation: false);
+
+                ViewModel.PerformShutdownSequence(shutdownParams);
+            }
+
+            bool isToastNotificationVisible = (bool)(ViewModel.MainGuideManager?.ExitTourPopupIsVisible);
+            Assert.IsFalse(isToastNotificationVisible);
         }
     }
 }

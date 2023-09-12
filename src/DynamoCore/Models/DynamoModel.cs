@@ -761,10 +761,6 @@ namespace Dynamo.Models
                     }
                     catch (Exception e) { Logger.LogError($"could not start feature flags manager {e}"); };
                 });
-
-                //TODO just a test of feature flag event, safe to remove at any time.
-                DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved += CheckFeatureFlagTest;
-
             }
 
             // TBD: Do we need settings migrator for service mode? If we config the docker correctly, this could be skipped I think
@@ -1112,31 +1108,6 @@ namespace Dynamo.Models
             return new PreferenceSettings();
         }
 
-        private void CheckFeatureFlagTest()
-        {
-            if (!DynamoModel.IsTestMode)
-            {
-                if (DynamoModel.FeatureFlags.CheckFeatureFlag<bool>("EasterEggIcon1", false))
-                {
-                    this.Logger.Log("EasterEggIcon1 is true FROM MODEL");
-
-                }
-                else
-                {
-                    this.Logger.Log("EasterEggIcon1 is false FROM MODEL");
-                }
-
-                if (DynamoModel.FeatureFlags.CheckFeatureFlag<string>("EasterEggMessage1", "NA") is var s && s != "NA")
-                {
-                    this.Logger.Log("EasterEggMessage1 is enabled FROM MODEL");
-                }
-                else
-                {
-                    this.Logger.Log("EasterEggMessage1 is disabled FROM MODEL");
-                }
-            }
-        }
-
         private void SetDefaultPythonTemplate()
         {
             // First check if the default python template is overridden by a PythonTemplate.py file in AppData
@@ -1480,7 +1451,6 @@ namespace Dynamo.Models
             {
                 FeatureFlags.MessageLogged -= LogMessageWrapper;
             }
-            DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved -= CheckFeatureFlagTest;
             if (!IsServiceMode)
             {
                 SearchModel.ItemProduced -= SearchModel_ItemProduced;
@@ -1594,7 +1564,9 @@ namespace Dynamo.Models
             NodeFactory.AddTypeFactoryAndLoader(outputData.Type);
             NodeFactory.AddAlsoKnownAs(outputData.Type, outputData.AlsoKnownAs);
 
-            SearchModel?.Add(new CodeBlockNodeSearchElement(cbnData, LibraryServices));
+            var cnbNode = new CodeBlockNodeSearchElement(cbnData, LibraryServices);
+            SearchModel?.Add(cnbNode);
+            AddNodeTypeToSearchIndex(cnbNode, iDoc);
 
             var symbolSearchElement = new NodeModelSearchElement(symbolData)
             {
@@ -1613,29 +1585,11 @@ namespace Dynamo.Models
             };
 
             SearchModel?.Add(symbolSearchElement);
+            AddNodeTypeToSearchIndex(symbolSearchElement, iDoc);
+
             SearchModel?.Add(outputSearchElement);
+            AddNodeTypeToSearchIndex(outputSearchElement, iDoc);
 
-            //Adding this nodes are breaking the tests (due that we have two input and two output nodes):
-            //WhenHomeWorkspaceIsFocusedInputAndOutputNodesAreMissingFromSearch
-            //WhenStartingDynamoInputAndOutputNodesAreNolongerMissingFromSearch
-            // New index process from Lucene, adding missing nodes: Code Block, Input and Output
-            var ele = AddNodeTypeToSearch(outputData);      
-            if (ele != null)
-            {
-                AddNodeTypeToSearchIndex(ele, iDoc);
-            }
-
-            ele = AddNodeTypeToSearch(symbolData);
-            if (ele != null)
-            {
-                AddNodeTypeToSearchIndex(ele, iDoc);
-            }
-
-            ele = AddNodeTypeToSearch(cbnData);
-            if (ele != null)
-            {
-                AddNodeTypeToSearchIndex(ele, iDoc);
-            }
         }
 
         internal static bool IsDisabledPath(string packagesDirectory, IPreferences preferences)
