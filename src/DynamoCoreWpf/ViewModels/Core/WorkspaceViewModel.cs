@@ -631,13 +631,17 @@ namespace Dynamo.ViewModels
                     if (jo["Bindings"] != JToken.Parse("[]"))
                     {
                         jo["Bindings"] = JToken.Parse("[]");
-                        var result = DynamoMessageBox.Show( Wpf.Properties.Resources.ElementBindingWarningMessage,
-                            Wpf.Properties.Resources.ElementBindingWarningTitle, MessageBoxButton.OKCancel,
-                            MessageBoxImage.Warning);
 
-                        if (result == MessageBoxResult.Cancel)
+                        if (!DynamoModel.IsTestMode)
                         {
-                            return;
+                            var result = DynamoMessageBox.Show(Wpf.Properties.Resources.ElementBindingWarningMessage,
+                                Wpf.Properties.Resources.ElementBindingWarningTitle, MessageBoxButton.OKCancel,
+                                MessageBoxImage.Warning);
+
+                            if (result == MessageBoxResult.Cancel)
+                            {
+                                return;
+                            }
                         }
                     }
 
