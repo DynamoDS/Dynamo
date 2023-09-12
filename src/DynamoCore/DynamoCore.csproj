@@ -27,15 +27,15 @@
   </ItemGroup>
   <ItemGroup Label="Common dependencies">
     <PackageReference Include="Autodesk.IDSDK" Version="1.1.6" />
-    <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.2267" GeneratePathProperty="true" />
-    <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.18.0.2270" GeneratePathProperty="true" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.2485" GeneratePathProperty="true" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.18.0.2486" GeneratePathProperty="true" />
     <PackageReference Include="Greg" Version="2.5.0.5076" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" CopyXML="true" />
 	  <PackageReference Include="RestSharp" Version="106.12.0" CopyXML="true" />
 	<PackageReference Include="Lucene.Net" Version="4.8.0-beta00016" />
     <PackageReference Include="Lucene.Net.Analysis.Common" Version="4.8.0-beta00016" />
     <PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00016" />
-    <PackageReference Include="DynamoVisualProgramming.Analytics" Version="4.1.0.2298" />
+    <PackageReference Include="DynamoVisualProgramming.Analytics" Version="4.1.0.2437" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\GraphLayout\GraphLayout.csproj">

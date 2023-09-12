@@ -622,7 +622,6 @@ namespace Dynamo.LibraryViewExtensionWebView2
         protected void Dispose(bool disposing)
         {
             if (!disposing) return;
-
             if (observer != null) observer.Dispose();
             observer = null;
             if (this.dynamoWindow != null)
@@ -636,11 +635,15 @@ namespace Dynamo.LibraryViewExtensionWebView2
             }
             if (this.browser != null)
             {
+                browser.CoreWebView2.RemoveHostObjectFromScript("bridgeTwoWay");
                 browser.SizeChanged -= Browser_SizeChanged;
                 browser.Loaded -= Browser_Loaded;
                 browser.Dispose();
                 browser = null;
             }
+            twoWayScriptingObject.Dispose();
+            dynamoViewModel = null;
+            commandExecutive = null;
         }
 
         public static async Task<string> ExecuteScriptFunctionAsync(WebView2 webView2, string functionName, params object[] parameters)

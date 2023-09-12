@@ -2,7 +2,7 @@
 using Dynamo.PackageManager;
 using NUnit.Framework;
 
-namespace DynamoCoreWpfTests
+namespace DynamoCoreWpfTests.PackageManager
 {
     [TestFixture]
     public class PackageManagerUnitTests : UnitTestBase

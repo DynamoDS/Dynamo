@@ -16,19 +16,19 @@ using Microsoft.CSharp;
 using Moq;
 using NUnit.Framework;
 
-namespace DynamoCoreWpfTests
+namespace DynamoCoreWpfTests.PackageManager
 {
     [TestFixture, Category("Failure")]
     class PackageManagerViewExtensionTests : DynamoTestUIBase
     {
-        private string PackagesDirectory { get { return Path.Combine(GetTestDirectory(this.ExecutingDirectory), "pkgs"); } }
-        internal string BuiltinPackagesTestDir { get { return Path.Combine(GetTestDirectory(this.ExecutingDirectory), "builtinpackages testdir", "Packages"); } }
+        private string PackagesDirectory { get { return Path.Combine(GetTestDirectory(ExecutingDirectory), "pkgs"); } }
+        internal string BuiltinPackagesTestDir { get { return Path.Combine(GetTestDirectory(ExecutingDirectory), "builtinpackages testdir", "Packages"); } }
 
 
         #region extensionGeneration
         private string extensionPath;
         private string manifestPath;
-        private string extensionManifest = 
+        private string extensionManifest =
             @"<ViewExtensionDefinition>
           <AssemblyPath>..\bin\TestViewExtension.dll</AssemblyPath>
           <TypeName>TestViewExtension</TypeName>
@@ -86,7 +86,7 @@ namespace DynamoCoreWpfTests
                 ProcessMode = TaskProcessMode.Synchronous,
                 Preferences = new PreferenceSettings()
                 {
-                    CustomPackageFolders = new List<string>() { Path.Combine(this.PackagesDirectory, "subPackageDirectory") }
+                    CustomPackageFolders = new List<string>() { Path.Combine(PackagesDirectory, "subPackageDirectory") }
                 }
             };
         }
@@ -106,7 +106,7 @@ namespace DynamoCoreWpfTests
             };
             options.ReferencedAssemblies.Add("DynamoCore.dll");
             options.ReferencedAssemblies.Add("DynamoCoreWPF.dll");
-            string source = this.testViewExtensionSource;
+            string source = testViewExtensionSource;
 
             var results = provider.CompileAssemblyFromSource(options, new[] { source });
             if (results.Errors.Count > 0)
@@ -125,32 +125,32 @@ namespace DynamoCoreWpfTests
 
                 //move the new assembly into the package directory/bin folder.
                 extensionPath = Path.Combine(PackagesDirectory, "subPackageDirectory", "runtimeGeneratedExtension", "bin", "TestViewExtension.dll");
-                System.IO.File.Copy(results.CompiledAssembly.Location, extensionPath, true);
+                File.Copy(results.CompiledAssembly.Location, extensionPath, true);
 
                 //copy the manifest as well.
                 manifestPath = Path.Combine(PackagesDirectory, "subPackageDirectory", "runtimeGeneratedExtension",
                     "extra", "TestViewExtension_ViewExtensionDefinition.xml");
-                System.IO.File.WriteAllText(manifestPath, this.extensionManifest);
+                File.WriteAllText(manifestPath, extensionManifest);
             }
         }
 
         [Test]
         public void PackageManagerLoadsRuntimeGeneratedExtension()
         {
-            Assert.IsTrue(this.View.viewExtensionManager.ViewExtensions.Select(x => x.Name).Contains("Test View Extension"));
+            Assert.IsTrue(View.viewExtensionManager.ViewExtensions.Select(x => x.Name).Contains("Test View Extension"));
         }
 
         [Test]
         public void PackageManagerViewExtensionHasCorrectNumberOfRequestedExtensions()
         {
-            var pkgViewExtension = this.View.viewExtensionManager.ViewExtensions.OfType<PackageManagerViewExtension>().FirstOrDefault();
+            var pkgViewExtension = View.viewExtensionManager.ViewExtensions.OfType<PackageManagerViewExtension>().FirstOrDefault();
             Assert.AreEqual(pkgViewExtension.RequestedExtensions.Count(), 1);
         }
 
         [Test]
         async public void LateLoadedViewExtensionsHaveMethodsCalled()
         {
-            var pkgviewExtension = this.View.viewExtensionManager.ViewExtensions.OfType<PackageManagerViewExtension>().FirstOrDefault();
+            var pkgviewExtension = View.viewExtensionManager.ViewExtensions.OfType<PackageManagerViewExtension>().FirstOrDefault();
             var pkgDir = Path.Combine(PackagesDirectory, "SampleViewExtension");
 
             var viewExtensionLoadStart = false;
@@ -165,7 +165,7 @@ namespace DynamoCoreWpfTests
             {
                 viewExtensionLoadStart = true;
 
-                var mockExtension = new Moq.Mock<IViewExtension>();
+                var mockExtension = new Mock<IViewExtension>();
                 mockExtension.Setup(ext => ext.Startup(It.IsAny<ViewStartupParams>())).Callback(() =>
                 {
                     startCount = startCount + 1;
@@ -186,14 +186,14 @@ namespace DynamoCoreWpfTests
             };
 
             //must wait until the view is loaded to accurately test late loading of a viewExtension package.
-            this.View.Loaded += (sender, args) =>
+            View.Loaded += (sender, args) =>
             {
                 viewLoaded = true;
                 var loader = Model.GetPackageManagerExtension().PackageLoader;
                 var pkg = loader.ScanPackageDirectory(pkgDir);
-                loader.LoadPackages(new List<Package> {pkg});
+                loader.LoadPackages(new List<Package> { pkg });
                 Assert.AreEqual(0, loader.RequestedExtensions.Count());
-                Assert.AreEqual(2, this.View.viewExtensionManager.ViewExtensions.OfType<PackageManagerViewExtension>().FirstOrDefault().RequestedExtensions.Count());
+                Assert.AreEqual(2, View.viewExtensionManager.ViewExtensions.OfType<PackageManagerViewExtension>().FirstOrDefault().RequestedExtensions.Count());
                 Assert.IsTrue(viewExtensionLoadStart);
                 Assert.IsTrue(viewExtensionAdd);
                 Assert.IsTrue(viewExtensionLoaded);
@@ -201,7 +201,7 @@ namespace DynamoCoreWpfTests
                 Assert.AreEqual(0, startCount);
             };
 
-            ViewExtensionTests.RaiseLoadedEvent(this.View);
+            ViewExtensionTests.RaiseLoadedEvent(View);
             Assert.IsTrue(viewLoaded, "view was never loaded, invalid test");
 
         }
@@ -211,7 +211,7 @@ namespace DynamoCoreWpfTests
         {
             //this extension is compiled at testTime and injected into test package folder.
             //source is above.
-            dynamic testExtension = this.View.viewExtensionManager.ViewExtensions.Where(x => x.Name == "Test View Extension").FirstOrDefault();
+            dynamic testExtension = View.viewExtensionManager.ViewExtensions.Where(x => x.Name == "Test View Extension").FirstOrDefault();
             Assert.AreEqual(1, testExtension.startupCount);
             Assert.AreEqual(1, testExtension.loadedCount);
         }
@@ -220,7 +220,7 @@ namespace DynamoCoreWpfTests
         public void PackageManagerViewExtesion_TriesToLoadLayoutSpecForBuiltInPackages()
         {
             //check that the packageManagerViewExtension requested the test layout spec to be applied.
-            var packageManagerViewExtension = this.View.viewExtensionManager.ViewExtensions.OfType<PackageManagerViewExtension>().FirstOrDefault();
+            var packageManagerViewExtension = View.viewExtensionManager.ViewExtensions.OfType<PackageManagerViewExtension>().FirstOrDefault();
             var packageManager = ViewModel.Model.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
             Assert.IsNotNull(packageManagerViewExtension);
             Assert.IsNotNull(packageManager);
@@ -231,12 +231,12 @@ namespace DynamoCoreWpfTests
             var builtInPackageLocation = Path.Combine(BuiltinPackagesTestDir, "SignedPackage2");
             var bltinPkg = packageManager.PackageLoader.ScanPackageDirectory(builtInPackageLocation);
             packageManager.PackageLoader.LoadPackages(new List<Package> { bltinPkg });
-            
+
 
             //trigger packmanViewExt to load layoutspecs. Usually this would just happen at startup, but we're loading the bltin package late.
             packageManagerViewExtension.Loaded(new ViewLoadedParams(View, ViewModel));
             Assert.AreEqual(1, packageManagerViewExtension.RequestedLayoutSpecPaths.Count());
-            Assert.AreEqual(Path.Combine(BuiltinPackagesTestDir,"SignedPackage2","extra","layoutspecs.json"), packageManagerViewExtension.RequestedLayoutSpecPaths.FirstOrDefault());
+            Assert.AreEqual(Path.Combine(BuiltinPackagesTestDir, "SignedPackage2", "extra", "layoutspecs.json"), packageManagerViewExtension.RequestedLayoutSpecPaths.FirstOrDefault());
         }
 
         [Test]
@@ -244,7 +244,7 @@ namespace DynamoCoreWpfTests
         {
             var count = 0;
             //check that the packageManagerViewExtension logged a notification for a package that targets revit.
-            var packageManagerViewExtension = this.View.viewExtensionManager.ViewExtensions.OfType<PackageManagerViewExtension>().FirstOrDefault();
+            var packageManagerViewExtension = View.viewExtensionManager.ViewExtensions.OfType<PackageManagerViewExtension>().FirstOrDefault();
             var packageManager = ViewModel.Model.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
 
             Assert.IsNotNull(packageManagerViewExtension);
@@ -258,7 +258,7 @@ namespace DynamoCoreWpfTests
             (packageManagerViewExtension as INotificationSource).NotificationLogged += PackageManagerViewExtensionTests_NotificationLogged;
 
             //force Loaded, which should run the check.
-            packageManagerViewExtension.Loaded(new ViewLoadedParams(View,ViewModel));
+            packageManagerViewExtension.Loaded(new ViewLoadedParams(View, ViewModel));
 
             //check that notification is raised.
             Assert.AreEqual(1, count);
@@ -271,12 +271,13 @@ namespace DynamoCoreWpfTests
                 count = count + 1;
             }
         }
+
         [Test]
         public void PackageManagerViewExtesion_SendsNotificationForPackagesThatTargetDifferentHost_AtLatePackageLoad()
         {
             var count = 0;
             //check that the packageManagerViewExtension logged a notification for a package that targets revit.
-            var packageManagerViewExtension = this.View.viewExtensionManager.ViewExtensions.OfType<PackageManagerViewExtension>().FirstOrDefault();
+            var packageManagerViewExtension = View.viewExtensionManager.ViewExtensions.OfType<PackageManagerViewExtension>().FirstOrDefault();
             var packageManager = ViewModel.Model.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
             (packageManagerViewExtension as INotificationSource).NotificationLogged += PackageManagerViewExtensionTests_NotificationLogged;
 
@@ -310,7 +311,7 @@ namespace DynamoCoreWpfTests
         public void RemoveExtension()
         {
             //TODO it would be good to cleanup the dll as well but we can't as it is currently loaded.
-            System.IO.File.Delete(manifestPath);
+            File.Delete(manifestPath);
         }
     }
 }

@@ -4,6 +4,9 @@ using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
+    /// <summary>
+    /// This is a WPF test because NodeWithFailingASTOutput is a node that is defined in the TestUINodes assembly
+    /// </summary>
     [TestFixture]
     internal class AstBuildFailTest : DynamoModelTestBase
     {

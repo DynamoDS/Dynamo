@@ -244,7 +244,7 @@ namespace Dynamo.Applications
         public static DynamoModel MakeCLIModel(string asmPath, string userDataFolder, string commonDataFolder, HostAnalyticsInfo info = new HostAnalyticsInfo(), bool isServiceMode = false)
         {
             IPathResolver pathResolver = CreatePathResolver(false, string.Empty, string.Empty, string.Empty);
-            PathManager.Instance.AssignIPathResolver(pathResolver);
+            PathManager.Instance.AssignHostPathAndIPathResolver(string.Empty, pathResolver);
 
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(PreferenceSettings.Instance.Locale);
             Thread.CurrentThread.CurrentCulture = new CultureInfo(PreferenceSettings.Instance.Locale);
@@ -282,8 +282,8 @@ namespace Dynamo.Applications
         /// <returns></returns>
         public static DynamoModel MakeModel(bool CLImode, string asmPath = "", HostAnalyticsInfo info = new HostAnalyticsInfo())
         {
-            IPathResolver pathResolver = CreatePathResolver(false, string.Empty, string.Empty, string.Empty);            
-            PathManager.Instance.AssignIPathResolver(pathResolver);
+            IPathResolver pathResolver = CreatePathResolver(false, string.Empty, string.Empty, string.Empty);
+            PathManager.Instance.AssignHostPathAndIPathResolver(string.Empty, pathResolver);
 
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(PreferenceSettings.Instance.Locale);
             Thread.CurrentThread.CurrentCulture = new CultureInfo(PreferenceSettings.Instance.Locale);
@@ -398,20 +398,21 @@ namespace Dynamo.Applications
             HostAnalyticsInfo info = new HostAnalyticsInfo(),
             bool isServiceMode = false)
         {
+
             var config = new DynamoModel.DefaultStartConfiguration
             {
                 GeometryFactoryPath = geometryFactoryPath,
                 ProcessMode = CLImode ? TaskProcessMode.Synchronous : TaskProcessMode.Asynchronous,
                 HostAnalyticsInfo = info,
                 CLIMode = CLImode,
-                AuthProvider = CLImode ? null : new Core.IDSDKManager(),
+                //TODO we currently use this like a no network comms flags - work on introducing a new flag or renaming this flag.
+                AuthProvider = CLImode || Dynamo.Logging.Analytics.DisableAnalytics ? null : new Core.IDSDKManager(),
                 UpdateManager = CLImode ? null : OSHelper.IsWindows() ? InitializeUpdateManager() : null,
                 StartInTestMode = CLImode,
                 PathResolver = CreatePathResolver(CLImode, preloaderLocation, userDataFolder, commonDataFolder),
                 IsServiceMode = isServiceMode,
                 Preferences = PreferenceSettings.Instance
             };
-
             var model = DynamoModel.Start(config);
             return model;
         }

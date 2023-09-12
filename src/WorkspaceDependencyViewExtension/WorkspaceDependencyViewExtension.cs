@@ -68,7 +68,7 @@ namespace Dynamo.WorkspaceDependency
         /// </summary>
         public override void Dispose()
         {
-            DependencyView.Dispose();
+            DependencyView?.Dispose();
             dataRows = null;
             localDefinitionDataRows = null;
             externalFilesDataRows = null;

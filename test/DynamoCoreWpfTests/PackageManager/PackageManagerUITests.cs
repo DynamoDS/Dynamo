@@ -23,7 +23,7 @@ using Moq;
 using NUnit.Framework;
 using SystemTestServices;
 
-namespace DynamoCoreWpfTests
+namespace DynamoCoreWpfTests.PackageManager
 {
     [TestFixture]
     public class PackageManagerUITests : SystemTestBase
@@ -73,7 +73,7 @@ namespace DynamoCoreWpfTests
             var window = windows.FirstOrDefault(x => x is T);
             Assert.IsNotNull(window);
 
-            Assert.IsTrue(window.Owner == (Window)View);
+            Assert.IsTrue(window.Owner == View);
         }
 
         public void AssertWindowClosedWithDynamoView<T>()
@@ -84,7 +84,7 @@ namespace DynamoCoreWpfTests
             var window = windows.FirstOrDefault(x => x is T);
             Assert.IsNotNull(window);
 
-            Assert.IsTrue(window.Owner == (Window)View);
+            Assert.IsTrue(window.Owner == View);
         }
 
         public override void Setup()
@@ -318,7 +318,7 @@ namespace DynamoCoreWpfTests
             var pmVm = new PackageManagerClientViewModel(ViewModel, client);
 
             var dlgMock = new Mock<MessageBoxService.IMessageBox>();
-            dlgMock.Setup(m => m.Show(It.IsAny<Window>(), It.IsAny<string>(), It.IsAny<string>(), 
+            dlgMock.Setup(m => m.Show(It.IsAny<Window>(), It.IsAny<string>(), It.IsAny<string>(),
                 It.Is<MessageBoxButton>(x => x == MessageBoxButton.OKCancel || x == MessageBoxButton.OK), It.IsAny<MessageBoxImage>()))
                 .Returns(MessageBoxResult.OK);
             MessageBoxService.OverrideMessageBoxDuringTests(dlgMock.Object);
@@ -705,7 +705,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("1", messageBox.YesButton.Content);
             Assert.AreEqual("2", messageBox.NoButton.Content);
         }
-      
+
         [Test]
         [Description("DynamoMessageBox buttons set correct results")]
         public void DynamoMessageBoxButtonsSetCorrectly()
@@ -1052,11 +1052,11 @@ namespace DynamoCoreWpfTests
 
             var clientmock = new Mock<Dynamo.PackageManager.PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
             var pmVmMock = new Mock<PackageManagerClientViewModel>(ViewModel, clientmock.Object) { CallBase = true };
-       
+
 
             //when we attempt a download - it returns a valid download path, also record order
             pmVmMock.Setup(x => x.Download(It.IsAny<PackageDownloadHandle>())).
-                Returns<PackageDownloadHandle>(h => Task.Factory.StartNew(()=>
+                Returns<PackageDownloadHandle>(h => Task.Factory.StartNew(() =>
                 {
                     //our downloads should take different amounts of time.
                     var dlTime = 0;
@@ -1067,11 +1067,12 @@ namespace DynamoCoreWpfTests
                             break;
                         case "Dep123":
                             dlTime = 200;
-                       break;
+                            break;
                     }
-                    System.Threading.Thread.Sleep(dlTime); 
-                    operations.Add($"download operation:{h.Name}"); 
-                    return (h, h.Name); }));
+                    Thread.Sleep(dlTime);
+                    operations.Add($"download operation:{h.Name}");
+                    return (h, h.Name);
+                }));
 
             //these are our fake packages
 
@@ -1135,7 +1136,7 @@ namespace DynamoCoreWpfTests
             pmVmMock.Object.ExecutePackageDownload(id, pkgVer, "");
 
             //wait a bit.
-            System.Threading.Thread.Sleep(500);
+            Thread.Sleep(500);
 
             //assert that all downloads are complete before installs,
             // and install order is determined by topological order, not download completion order.
@@ -1271,9 +1272,9 @@ namespace DynamoCoreWpfTests
             Assert.DoesNotThrow(() =>
             {
                 pmVmMock.InstallPackage(new PackageDownloadHandle(), string.Empty, string.Empty);
-                pmVmMock.InstallPackage(new PackageDownloadHandle() {DownloadState=PackageDownloadHandle.State.Error }, "somepath","somepath");
+                pmVmMock.InstallPackage(new PackageDownloadHandle() { DownloadState = PackageDownloadHandle.State.Error }, "somepath", "somepath");
             });
-          
+
 
         }
 
@@ -1295,7 +1296,8 @@ namespace DynamoCoreWpfTests
             string expectedDownloadPath = "download/" + bltInPackage.Name + "/" + bltInPackage.VersionName;
             // Simulate the user downloading the same package from PM
             var mockGreg = new Mock<IGregClient>();
-            mockGreg.Setup(x => x.Execute(It.IsAny<PackageDownload>())).Callback((Request x) => {
+            mockGreg.Setup(x => x.Execute(It.IsAny<PackageDownload>())).Callback((Request x) =>
+            {
                 Assert.AreEqual(expectedDownloadPath, x.Path);
             });
 
@@ -1369,11 +1371,11 @@ namespace DynamoCoreWpfTests
             var pmVm = new PackageManagerClientViewModel(ViewModel, client);
 
             var dlgMock = new Mock<MessageBoxService.IMessageBox>();
-            dlgMock.Setup(m => m.Show(It.Is<string>(x => x.Contains("conflicts with a different version")), It.IsAny<string>(), It.IsAny<MessageBoxButton>(), It.IsAny<string[]>(),It.IsAny<MessageBoxImage>()))
+            dlgMock.Setup(m => m.Show(It.Is<string>(x => x.Contains("conflicts with a different version")), It.IsAny<string>(), It.IsAny<MessageBoxButton>(), It.IsAny<string[]>(), It.IsAny<MessageBoxImage>()))
                 .Returns(MessageBoxResult.Cancel);
-             dlgMock.Setup(m => m.Show(It.Is<string>(x => x.Contains("Are you sure you want to install")), It.IsAny<string>(), It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>()))
-                .Returns(MessageBoxResult.OK);
-            
+            dlgMock.Setup(m => m.Show(It.Is<string>(x => x.Contains("Are you sure you want to install")), It.IsAny<string>(), It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>()))
+               .Returns(MessageBoxResult.OK);
+
             MessageBoxService.OverrideMessageBoxDuringTests(dlgMock.Object);
 
             //

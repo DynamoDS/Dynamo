@@ -56,8 +56,10 @@
     <None Remove="Packages\SplashScreen\build\index.bundle.js" />
     <None Remove="Packages\SplashScreen\build\index.html" />
     <None Remove="UI\Images\Canvas\canvas-button-geometry-scaling.png" />
+    <None Remove="UI\Images\caret_drop_down.png" />
     <None Remove="UI\Images\NodeStates\package-64px.png" />
     <None Remove="UI\Images\PackageManager\empty-state-first-use-light-gray.png" />
+    <None Remove="UI\Images\search_icon_20px.png" />
     <None Remove="UI\Images\TitleBarButtons\close-darktheme-disabled-16px.png" />
     <None Remove="UI\Prompts\PortPropertiesEditPrompt.xaml" />
     <None Remove="Views\Core\CustomColorPicker.xaml" />
@@ -65,6 +67,7 @@
     <None Remove="UI\Images\question-hover-blue-16px.png" />
     <None Remove="Views\PackageManager\Controls\ControlColorsAndBrushes.xaml" />      
     <None Remove="Views\PackageManager\Controls\LoadingAnimationStripeControl.xaml" />
+    <None Remove="Views\PackageManager\Controls\NumericUpDownControl.xaml" />
     <None Remove="Views\PackageManager\Controls\PackageManagePackageAnimationControl.xaml" />
     <None Remove="Views\PackageManager\Controls\PackageManagerPublishControl.xaml" />
     <None Remove="Views\PackageManager\Controls\PackageManagerPackagesControl.xaml" />
@@ -125,7 +128,7 @@
       <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-      <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.2267" />
+      <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.2485" />
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" CopyXML="true" />
     <PackageReference Include="Greg" Version="2.5.0.5076" />
@@ -430,6 +433,7 @@
     </Compile>
     <Compile Include="Views\Input\ParameterEditor.cs" />
     <Compile Include="Views\PackageManager\Controls\LoadingAnimationStripeControl.xaml.cs" />
+    <Compile Include="Views\PackageManager\Controls\NumericUpDownControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\PackageManagePackageAnimationControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\PackageManagerPackagesControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\PackageManagerPublishControl.xaml.cs" />
@@ -627,6 +631,10 @@
         <SubType>Designer</SubType>
         <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\PackageManager\Controls\NumericUpDownControl.xaml">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\PackageManager\Controls\PackageManagePackageAnimationControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -777,6 +785,7 @@
     <Resource Include="UI\Images\Alignment\align_y_average.png" />
     <Resource Include="UI\Images\Alignment\align_y_distribute.png" />
     <Resource Include="UI\Images\Canvas\canvas-button-geometry-scaling.png" />
+    <Resource Include="UI\Images\caret_drop_down.png" />
     <Resource Include="UI\Images\caret_up.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\ArtifaktElement-Regular.woff" />
     <Resource Include="UI\Images\cursors.psd" />
@@ -922,6 +931,7 @@
     <Resource Include="UI\Images\NodeStates\package-64px.png" />
     <Resource Include="UI\Images\PackageManager\empty-state-first-use-light-gray.png" />
     <Resource Include="UI\Images\question-hover-blue-16px.png" />
+    <Resource Include="UI\Images\search_icon_20px.png" />
     <Resource Include="UI\Images\TitleBarButtons\close-darktheme-default-16px.png" />
     <Resource Include="UI\Images\TitleBarButtons\close-darktheme-disabled-16px.png" />
     <Resource Include="UI\Images\TitleBarButtons\close-lighttheme-default-16px.png" />
@@ -1701,6 +1711,11 @@
     <Resource Include="UI\Images\icon-dictionary-small.png" />
     <Resource Include="UI\Images\no-recommendations.png" />
     <Resource Include="UI\Images\not-authenticated.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Views\PackageManager\Controls\NumericUpDownControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
   </ItemGroup>
   <Target Name="AfterBuildOps" AfterTargets="Build">
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />

@@ -71,10 +71,18 @@ namespace Dynamo.LintingViewExtension
 
         public override void Dispose()
         {
-            this.linterMenuItem.Checked -= MenuItemCheckHandler;
-            this.linterMenuItem.Unchecked -= MenuItemUnCheckedHandler;
-            if (linterManager != null) linterManager.PropertyChanged -= OnLinterManagerPropertyChange;
-            viewLoadedParamsReference.ViewExtensionOpenRequest -= OnViewExtensionOpenRequest;
+            if (linterMenuItem != null)
+            {
+                linterMenuItem.Checked -= MenuItemCheckHandler;
+                linterMenuItem.Unchecked -= MenuItemUnCheckedHandler;
+            }
+            if (linterManager != null){
+                linterManager.PropertyChanged -= OnLinterManagerPropertyChange;
+            }
+            if (viewLoadedParamsReference != null)
+            {
+                viewLoadedParamsReference.ViewExtensionOpenRequest -= OnViewExtensionOpenRequest;
+            }
         }
 
         public override void Closed()

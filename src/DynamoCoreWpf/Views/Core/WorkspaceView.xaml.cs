@@ -33,7 +33,7 @@ namespace Dynamo.Views
     /// <summary>
     /// Interaction logic for WorkspaceView.xaml
     /// </summary>
-    public partial class WorkspaceView
+    public partial class WorkspaceView: IDisposable
     {
         public enum CursorState
         {
@@ -1133,6 +1133,11 @@ namespace Dynamo.Views
                 GeoScalingPopup.PlacementTarget = geometryScalingButton;
             }
             GeoScalingPopup.IsOpen = true;
+        }
+
+        public void Dispose()
+        {
+            RemoveViewModelsubscriptions(ViewModel);
         }
     }
 }

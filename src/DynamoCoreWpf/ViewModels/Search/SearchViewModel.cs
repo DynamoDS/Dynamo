@@ -403,6 +403,7 @@ namespace Dynamo.ViewModels
             {
                 cate.DisposeTree();
             }
+            Model.EntryAdded -= AddEntry;
             Model.EntryUpdated -= UpdateEntry;
             Model.EntryRemoved -= RemoveEntry;
 
@@ -425,12 +426,7 @@ namespace Dynamo.ViewModels
             searchIconAlignment = System.Windows.HorizontalAlignment.Left;
 
             // When Library changes, sync up
-            Model.EntryAdded += entry =>
-            {
-                InsertEntry(MakeNodeSearchElementVM(entry), entry.Categories);
-                RaisePropertyChanged("BrowserRootCategories");
-            };
-             
+            Model.EntryAdded += AddEntry;
             Model.EntryUpdated += UpdateEntry;
             Model.EntryRemoved += RemoveEntry;
 
@@ -438,6 +434,12 @@ namespace Dynamo.ViewModels
 
             DefineFullCategoryNames(LibraryRootCategories, "");
             InsertClassesIntoTree(LibraryRootCategories);
+        }
+
+        private void AddEntry(NodeSearchElement entry)
+        {
+            InsertEntry(MakeNodeSearchElementVM(entry), entry.Categories);
+            RaisePropertyChanged("BrowserRootCategories");
         }
 
         private IEnumerable<RootNodeCategoryViewModel> CategorizeEntries(IEnumerable<NodeSearchElement> entries, bool expanded)

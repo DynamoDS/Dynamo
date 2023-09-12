@@ -42,9 +42,9 @@
             <!--  Contains the search bar, sort and filter buttons  -->
             <Border Name="searchBar"
                     Grid.Row="0"
-                    Padding="25,18"
+                    Padding="16 16 25 8"
                     BorderBrush="#7E7E7E"
-                    BorderThickness="0,1,0,0">
+                    BorderThickness="0">
                 <DockPanel>
                     <!--  Sort Button  -->
                     <Button Name="sortResultsButton"
@@ -236,11 +236,12 @@
                     <!--  Search Bar  -->
                     <local:SearchBoxControl x:Name="SearchBox"
                                             DockPanel.Dock="Left"
-                                            Margin="10 5 20 5" />
+                                            IsEnabled="{Binding Path=InitialResultsLoaded}"
+                                            Margin="0 5 0 0" />
 
                 </DockPanel>
             </Border>
-
+    
             <local:PackageManagerPackageAnimationControl x:Name="loadingScreen"
                                                          Grid.Row="1"
                                                          Visibility="{Binding Path=InitialResultsLoaded, UpdateSourceTrigger=PropertyChanged,
