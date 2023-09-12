@@ -141,5 +141,43 @@ namespace Dynamo.Tests
                 Assert.IsTrue(node.Category.Contains(category.Split('.')[0]) || node.Category.Contains(category.Split('.')[1]));
             }
         }
+
+        //This test will validate that resulting nodes have a specific order
+        [Test]
+        [Category("UnitTests")]
+        public void LuceneSearchNodesOrderingValidation()
+        {
+            Assert.IsAssignableFrom(typeof(HomeWorkspaceModel), ViewModel.Model.CurrentWorkspace);
+            string searchTerm = "number";
+            List<string> expectedSearchResults1 = new List<string> { "number", "number slider", "round" };
+
+            string searchTerm2 = "list.join";
+            List<string> expectedSearchResults2 = new List<string> { "join", "list create", "list.map" };
+
+            // Search and check that the results are correct based in the node name provided for the searchTerm
+            var nodesResult = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.Search(searchTerm, true);
+            Assert.IsNotNull(nodesResult);
+            Assert.That(nodesResult.Count(), Is.GreaterThan(0));
+            var nodesNamesList = nodesResult.Select(x => x.Name.ToLower());
+
+
+            for(int i = 0; i < 3; i++)
+            {
+                //Check that the result match the expected position
+                Assert.AreEqual(nodesNamesList.ElementAt(i), expectedSearchResults1.ElementAt(i));
+            }
+            
+            // Search and check that the results are correct based in the node name provided for the searchTerm
+            nodesResult = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.Search(searchTerm2, true);
+            Assert.IsNotNull(nodesResult);
+            Assert.That(nodesResult.Count(), Is.GreaterThan(0));
+            nodesNamesList = nodesResult.Select(x => x.Name.ToLower());
+
+            for (int i = 0; i < 3; i++)
+            {
+                //Check that the result match the expected position
+                Assert.AreEqual(nodesNamesList.ElementAt(i), expectedSearchResults2.ElementAt(i));
+            }
+        }
     }
 }
