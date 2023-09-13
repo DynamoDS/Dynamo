@@ -41,13 +41,13 @@ namespace Dynamo.PackageManager.UI
         }
 
         public static readonly DependencyProperty TagNameProperty =
-            DependencyProperty.Register("TagName", typeof(string), typeof(FilterTagControl), new PropertyMetadata(string.Empty));
+            DependencyProperty.Register(nameof(TagName), typeof(string), typeof(FilterTagControl), new PropertyMetadata(string.Empty));
 
         public static readonly DependencyProperty IsFilterOnProperty =
-            DependencyProperty.Register("IsFilterOn", typeof(bool), typeof(FilterTagControl), new PropertyMetadata(false));
+            DependencyProperty.Register(nameof(IsFilterOn), typeof(bool), typeof(FilterTagControl), new PropertyMetadata(false));
 
         public static readonly DependencyProperty FilterCommandProperty =
-            DependencyProperty.Register("FilterCommand", typeof(ICommand), typeof(FilterTagControl));
+            DependencyProperty.Register(nameof(FilterCommand), typeof(ICommand), typeof(FilterTagControl));
 
 
         public FilterTagControl()
