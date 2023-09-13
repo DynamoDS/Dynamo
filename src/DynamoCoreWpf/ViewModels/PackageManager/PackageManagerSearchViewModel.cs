@@ -1371,7 +1371,7 @@ namespace Dynamo.PackageManager
         /// <returns></returns>
         private bool PackageHasDependencies(PackageManagerSearchElement package)
         {
-            return package.Header.versions.First(v => v.version.Equals(package.SelectedVersion)).direct_dependency_ids.Count() > 1;
+            return package.Header.versions.First(v => v.version.Equals(package.LatestVersion)).direct_dependency_ids.Count() > 1;
         }
 
         /// <summary>
