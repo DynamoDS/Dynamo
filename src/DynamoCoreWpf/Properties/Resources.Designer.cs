@@ -2684,6 +2684,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A Save As command will create a workspace which is treated as a completely new file by Dynamo and existing element binding data will be lost. New element binding data will created as normal as you run this file. Use the Save command instead if you wish to preserve element binding with the host document..
+        /// </summary>
+        public static string ElementBindingWarningMessage {
+            get {
+                return ResourceManager.GetString("ElementBindingWarningMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Element Binding Warning.
+        /// </summary>
+        public static string ElementBindingWarningTitle {
+            get {
+                return ResourceManager.GetString("ElementBindingWarningTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An error occurred when loading the application icon: {0}.
         /// </summary>
         public static string ErrorLoadingIcon {
