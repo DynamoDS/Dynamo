@@ -283,13 +283,13 @@ namespace Dynamo.PackageManager.Wpf.Tests
             List<PackageManagerSearchElement> cachedPackages = new List<PackageManagerSearchElement>();
             foreach (var packageName in packagesNameDifferentLanguages)
             {
-                cachedPackages.Add(new PackageManagerSearchElement(new PackageHeader() { name = packageName}));
+                var tmpPackageVersion = new PackageVersion { version = packageVersionNumber, host_dependencies = new List<string> { formItFilterName }, created = packageCreatedDateString };
+                cachedPackages.Add(new PackageManagerSearchElement(new PackageHeader() { name = packageName, versions = new List<PackageVersion> { tmpPackageVersion } }));
             }
             pmCVM.SetupProperty(p => p.CachedPackageList, cachedPackages);
 
             var packageManagerSearchViewModel = new PackageManagerSearchViewModel(pmCVM.Object);
             packageManagerSearchViewModel.RegisterTransientHandlers();
-
 
             //Adding packages
             foreach (var package in packagesNameDifferentLanguages)
@@ -304,7 +304,6 @@ namespace Dynamo.PackageManager.Wpf.Tests
                 }), false);
                 packageManagerSearchViewModel.AddToSearchResults(tmpPackage);
             }
-
 
             //This line will be indexing the package information using Lucene
             packageManagerSearchViewModel.LuceneUtility.InitializeLuceneConfig(string.Empty, Utilities.LuceneSearchUtility.LuceneStorage.RAM);
