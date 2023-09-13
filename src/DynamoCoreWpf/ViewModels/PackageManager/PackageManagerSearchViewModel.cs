@@ -86,6 +86,11 @@ namespace Dynamo.PackageManager
             public string GroupName { get; set; }
 
             /// <summary>
+            /// The tooltip associated with the filter entry
+            /// </summary>
+            public string Tooltip { get; set; }
+
+            /// <summary>
             /// Filter entry click command, notice this is a dynamic command
             /// with command param set to FilterName so that the code is robust
             /// in a way UI could handle as many hosts as possible
@@ -120,10 +125,11 @@ namespace Dynamo.PackageManager
             /// </summary>
             /// <param name="filterName">Filter name, same as host name</param>
             /// <param name="packageManagerSearchViewModel">a reference of the PackageManagerSearchViewModel</param>
-            public FilterEntry(string filterName, string groupName, PackageManagerSearchViewModel packageManagerSearchViewModel)
+            public FilterEntry(string filterName, string groupName, string tooltip, PackageManagerSearchViewModel packageManagerSearchViewModel)
             {
                 FilterName = filterName;
                 GroupName = groupName;
+                Tooltip = tooltip;
                 FilterCommand = new DelegateCommand<object>(SetFilterHosts, CanSetFilterHosts);
                 pmSearchViewModel = packageManagerSearchViewModel;
                 OnChecked = false;
@@ -718,7 +724,7 @@ namespace Dynamo.PackageManager
             var hostFilter = new List<FilterEntry>();
             foreach (var host in PackageManagerClientViewModel.Model.GetKnownHosts())
             {
-                hostFilter.Add(new FilterEntry(host, Resources.PackageFilterByHost, this));
+                hostFilter.Add(new FilterEntry(host, Resources.PackageFilterByHost, Resources.PackageHostDependencyFilterContextItem, this));
             }
 
             return hostFilter;
@@ -731,11 +737,11 @@ namespace Dynamo.PackageManager
         //private bool isAnyFilterOn;
         private List<FilterEntry> InitializeNonHostFilter()
         {
-            var nonHostFilter = new List<FilterEntry>() { new FilterEntry(Resources.PackageManagerPackageNew, Resources.PackageFilterByStatus, this),
-                                                          new FilterEntry(Resources.PackageManagerPackageUpdated, Resources.PackageFilterByStatus, this),
-                                                          new FilterEntry(Resources.PackageSearchViewContextMenuFilterDeprecated, Resources.PackageFilterByStatus, this),
-                                                          new FilterEntry(Resources.PackageSearchViewContextMenuFilterDependencies, Resources.PackageFilterByDependency, this),
-                                                          new FilterEntry(Resources.PackageSearchViewContextMenuFilterNoDependencies, Resources.PackageFilterByDependency, this)
+            var nonHostFilter = new List<FilterEntry>() { new FilterEntry(Resources.PackageManagerPackageNew, Resources.PackageFilterByStatus, Resources.PackageFilterNewTooltip, this),
+                                                          new FilterEntry(Resources.PackageManagerPackageUpdated, Resources.PackageFilterByStatus, Resources.PackageFilterUpdatedTooltip, this),
+                                                          new FilterEntry(Resources.PackageSearchViewContextMenuFilterDeprecated, Resources.PackageFilterByStatus, Resources.PackageFilterDeprecatedTooltip, this),
+                                                          new FilterEntry(Resources.PackageSearchViewContextMenuFilterDependencies, Resources.PackageFilterByDependency, Resources.PackageFilterHasDependenciesTooltip, this),
+                                                          new FilterEntry(Resources.PackageSearchViewContextMenuFilterNoDependencies, Resources.PackageFilterByDependency, Resources.PackageFilterHasNoDependenciesTooltip, this)
             } ;
 
             nonHostFilter.ForEach(f => f.PropertyChanged += filter_PropertyChanged);

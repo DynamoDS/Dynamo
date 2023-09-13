@@ -5555,6 +5555,51 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Discontinued packages.
+        /// </summary>
+        public static string PackageFilterDeprecatedTooltip {
+            get {
+                return ResourceManager.GetString("PackageFilterDeprecatedTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Packages that require other packages to be installed.
+        /// </summary>
+        public static string PackageFilterHasDependenciesTooltip {
+            get {
+                return ResourceManager.GetString("PackageFilterHasDependenciesTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stand-alone packages.
+        /// </summary>
+        public static string PackageFilterHasNoDependenciesTooltip {
+            get {
+                return ResourceManager.GetString("PackageFilterHasNoDependenciesTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Published in the last 30 days.
+        /// </summary>
+        public static string PackageFilterNewTooltip {
+            get {
+                return ResourceManager.GetString("PackageFilterNewTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updated in the last 30 days.
+        /// </summary>
+        public static string PackageFilterUpdatedTooltip {
+            get {
+                return ResourceManager.GetString("PackageFilterUpdatedTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A problem occurred when trying to install the package. Dynamo is unable to obtain read/write access to
         ///{0}.
         /// </summary>
@@ -5574,7 +5619,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Packages contain node(s)  that depend on specified application outside Dynamo..
+        ///   Looks up a localized string similar to Packages that depend on selected external application.
         /// </summary>
         public static string PackageHostDependencyFilterContextItem {
             get {

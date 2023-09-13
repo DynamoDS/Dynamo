@@ -186,8 +186,8 @@ namespace Dynamo.PackageManager.Wpf.Tests
             //Adds the filters for FormIt and Advance Steel
             packageManagerSearchViewModel.HostFilter = new List<FilterEntry>
             {
-                new FilterEntry(advSteelFilterName, Dynamo.Wpf.Properties.Resources.PackageFilterByHost,  packageManagerSearchViewModel) { OnChecked = true },
-                new FilterEntry(formItFilterName, Dynamo.Wpf.Properties.Resources.PackageFilterByHost, packageManagerSearchViewModel) { OnChecked = true },
+                new FilterEntry(advSteelFilterName, Dynamo.Wpf.Properties.Resources.PackageFilterByHost, Dynamo.Wpf.Properties.Resources.PackageHostDependencyFilterContextItem, packageManagerSearchViewModel) { OnChecked = true },
+                new FilterEntry(formItFilterName, Dynamo.Wpf.Properties.Resources.PackageFilterByHost, Dynamo.Wpf.Properties.Resources.PackageHostDependencyFilterContextItem, packageManagerSearchViewModel) { OnChecked = true },
             };
 
             //Adding FormIt packages
@@ -289,11 +289,26 @@ namespace Dynamo.PackageManager.Wpf.Tests
             //Adds the NonHost filters 
             packageManagerSearchViewModel.NonHostFilter = new List<FilterEntry>
             {
-                new FilterEntry(Dynamo.Wpf.Properties.Resources.PackageManagerPackageNew, Dynamo.Wpf.Properties.Resources.PackageFilterByStatus,  packageManagerSearchViewModel) { OnChecked = false },
-                new FilterEntry(Dynamo.Wpf.Properties.Resources.PackageManagerPackageUpdated, Dynamo.Wpf.Properties.Resources.PackageFilterByStatus, packageManagerSearchViewModel) { OnChecked = false },
-                new FilterEntry(Dynamo.Wpf.Properties.Resources.PackageManagerPackageDeprecated, Dynamo.Wpf.Properties.Resources.PackageFilterByStatus, packageManagerSearchViewModel) { OnChecked = false },
-                new FilterEntry(Dynamo.Wpf.Properties.Resources.PackageSearchViewContextMenuFilterDependencies, Dynamo.Wpf.Properties.Resources.PackageFilterByStatus, packageManagerSearchViewModel) { OnChecked = false },
-                new FilterEntry(Dynamo.Wpf.Properties.Resources.PackageSearchViewContextMenuFilterNoDependencies, Dynamo.Wpf.Properties.Resources.PackageFilterByStatus, packageManagerSearchViewModel) { OnChecked = false },
+                new FilterEntry(Dynamo.Wpf.Properties.Resources.PackageManagerPackageNew,
+                                Dynamo.Wpf.Properties.Resources.PackageFilterByStatus,
+                                Dynamo.Wpf.Properties.Resources.PackageFilterNewTooltip,
+                                packageManagerSearchViewModel) { OnChecked = false },
+                new FilterEntry(Dynamo.Wpf.Properties.Resources.PackageManagerPackageUpdated,
+                                Dynamo.Wpf.Properties.Resources.PackageFilterByStatus,
+                                Dynamo.Wpf.Properties.Resources.PackageFilterUpdatedTooltip,
+                                packageManagerSearchViewModel) { OnChecked = false },
+                new FilterEntry(Dynamo.Wpf.Properties.Resources.PackageManagerPackageDeprecated,
+                                Dynamo.Wpf.Properties.Resources.PackageFilterByStatus,
+                                Dynamo.Wpf.Properties.Resources.PackageFilterDeprecatedTooltip,
+                                packageManagerSearchViewModel) { OnChecked = false },
+                new FilterEntry(Dynamo.Wpf.Properties.Resources.PackageSearchViewContextMenuFilterDependencies,
+                                Dynamo.Wpf.Properties.Resources.PackageFilterByDependency,
+                                Dynamo.Wpf.Properties.Resources.PackageFilterHasDependenciesTooltip,
+                                packageManagerSearchViewModel) { OnChecked = false },
+                new FilterEntry(Dynamo.Wpf.Properties.Resources.PackageSearchViewContextMenuFilterNoDependencies,
+                                Dynamo.Wpf.Properties.Resources.PackageFilterByDependency,
+                                Dynamo.Wpf.Properties.Resources.PackageFilterHasNoDependenciesTooltip,
+                                packageManagerSearchViewModel) { OnChecked = false },
             };
 
             //Adding new packages
@@ -422,11 +437,26 @@ namespace Dynamo.PackageManager.Wpf.Tests
             //Adds the NonHost filters 
             packageManagerSearchViewModel.NonHostFilter = new List<FilterEntry>
             {
-                new FilterEntry(Dynamo.Wpf.Properties.Resources.PackageManagerPackageNew, Dynamo.Wpf.Properties.Resources.PackageFilterByStatus,  packageManagerSearchViewModel) { OnChecked = false },
-                new FilterEntry(Dynamo.Wpf.Properties.Resources.PackageManagerPackageUpdated, Dynamo.Wpf.Properties.Resources.PackageFilterByStatus, packageManagerSearchViewModel) { OnChecked = false },
-                new FilterEntry(Dynamo.Wpf.Properties.Resources.PackageManagerPackageDeprecated, Dynamo.Wpf.Properties.Resources.PackageFilterByStatus, packageManagerSearchViewModel) { OnChecked = false },
-                new FilterEntry(Dynamo.Wpf.Properties.Resources.PackageSearchViewContextMenuFilterDependencies, Dynamo.Wpf.Properties.Resources.PackageFilterByStatus, packageManagerSearchViewModel) { OnChecked = false },
-                new FilterEntry(Dynamo.Wpf.Properties.Resources.PackageSearchViewContextMenuFilterNoDependencies, Dynamo.Wpf.Properties.Resources.PackageFilterByStatus, packageManagerSearchViewModel) { OnChecked = false },
+                new FilterEntry(Dynamo.Wpf.Properties.Resources.PackageManagerPackageNew,
+                                Dynamo.Wpf.Properties.Resources.PackageFilterByStatus,
+                                Dynamo.Wpf.Properties.Resources.PackageFilterNewTooltip,
+                                packageManagerSearchViewModel) { OnChecked = false },
+                new FilterEntry(Dynamo.Wpf.Properties.Resources.PackageManagerPackageUpdated,
+                                Dynamo.Wpf.Properties.Resources.PackageFilterByStatus,
+                                Dynamo.Wpf.Properties.Resources.PackageFilterUpdatedTooltip,
+                                packageManagerSearchViewModel) { OnChecked = false },
+                new FilterEntry(Dynamo.Wpf.Properties.Resources.PackageManagerPackageDeprecated,
+                                Dynamo.Wpf.Properties.Resources.PackageFilterByStatus,
+                                Dynamo.Wpf.Properties.Resources.PackageFilterDeprecatedTooltip,
+                                packageManagerSearchViewModel) { OnChecked = false },
+                new FilterEntry(Dynamo.Wpf.Properties.Resources.PackageSearchViewContextMenuFilterDependencies,
+                                Dynamo.Wpf.Properties.Resources.PackageFilterByDependency,
+                                Dynamo.Wpf.Properties.Resources.PackageFilterHasDependenciesTooltip,
+                                packageManagerSearchViewModel) { OnChecked = false },
+                new FilterEntry(Dynamo.Wpf.Properties.Resources.PackageSearchViewContextMenuFilterNoDependencies,
+                                Dynamo.Wpf.Properties.Resources.PackageFilterByDependency,
+                                Dynamo.Wpf.Properties.Resources.PackageFilterHasNoDependenciesTooltip,
+                                packageManagerSearchViewModel) { OnChecked = false },
             };
 
 

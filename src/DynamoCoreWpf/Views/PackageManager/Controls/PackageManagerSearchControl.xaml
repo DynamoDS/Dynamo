@@ -272,13 +272,18 @@
                                         <Setter Property="Command" Value="{Binding FilterCommand}" />
                                         <Setter Property="CommandParameter" Value="{Binding FilterName}" />
                                         <Setter Property="IsChecked" Value="{Binding OnChecked, UpdateSourceTrigger=PropertyChanged}" />
-                                        <Setter Property="ToolTip" Value="{x:Static p:Resources.PackageHostDependencyFilterContextItem}" />
+                                        <Setter Property="ToolTip">
+                                            <Setter.Value>
+                                                <ToolTip Content="{Binding Tooltip}"
+                                                         Style="{StaticResource GenericToolTipLight}"/>
+                                            </Setter.Value>
+                                        </Setter> 
                                     </Style>
                                     <CollectionViewSource x:Key="MenuItems" Source="{Binding HostFilter}" />
                                     <CollectionViewSource x:Key="StatusItems" Source="{Binding NonHostFilter}" Filter="StatusItem_OnFilter" />
                                     <CollectionViewSource x:Key="DependencyItems" Source="{Binding NonHostFilter}" Filter="DependencyItem_OnFilter" />
                                 </ContextMenu.Resources>
-                                <ContextMenu.ItemsSource>
+                                <ContextMenu.ItemsSource>   
                                     <CompositeCollection>
                                         <!--  Sub-Title 'FILTER BY HOST'  -->
                                         <Separator>
