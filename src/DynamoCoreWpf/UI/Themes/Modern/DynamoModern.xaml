@@ -324,6 +324,37 @@
         </Setter>
         <Style.Triggers />
     </Style>
+    
+    <!-- Package Manager Styles -->
+    <ControlTemplate x:Key="PackageManagerComboBoxToggleButton"
+                     TargetType="ToggleButton">
+        <Grid>
+            <Border x:Name="Border"
+                    Background="Transparent"
+                    BorderBrush="#a9a9a9"
+                    BorderThickness="0 0 0 1" />
+            <Path x:Name="Arrow"
+                  Margin="0"
+                  HorizontalAlignment="Right"
+                  VerticalAlignment="Center"
+                  Data="M 0 0 L 4 4 L 8 0 Z"
+                  Fill="#999" />
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="ToggleButton.IsMouseOver"
+                     Value="true">
+                <Setter TargetName="Arrow"
+                        Property="Fill"
+                        Value="#fff" />
+            </Trigger>
+            <Trigger Property="ToggleButton.IsChecked"
+                     Value="true">
+                <Setter TargetName="Border"
+                        Property="BorderBrush"
+                        Value="{DynamicResource BlueBrush}" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
 
      <!-- Package Manager Styles --> 
     <ControlTemplate x:Key="PackageManagerComboBoxToggleButton"
@@ -482,7 +513,6 @@
         <Style.Triggers />
     </Style>
     <!-- End Package Manager Styles -->
-
     <Style x:Key="SComboBox_Update" TargetType="{x:Type ComboBox}">
         <Setter Property="SnapsToDevicePixels" Value="true" />
         <Setter Property="OverridesDefaultStyle" Value="true" />

@@ -24,6 +24,8 @@ namespace Dynamo.PackageManager.Wpf.Tests
             var name1 = "non-duplicate";
             var name2 = "duplicate";
             var version = "1.0.0";
+            string packageCreatedDateString = "2016 - 12 - 02T13:13:20.135000 + 00:00";
+            string formItFilterName = "FormIt";
 
             var mockGreg = new Mock<IGregClient>();
             var clientmock = new Mock<PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
@@ -36,14 +38,17 @@ namespace Dynamo.PackageManager.Wpf.Tests
             var packageManagerSearchViewModel = new PackageManagerSearchViewModel(pmCVM.Object);
             packageManagerSearchViewModel.RegisterTransientHandlers();
 
+            var tmpPackageVersion = new PackageVersion { version = version, host_dependencies = new List<string> { formItFilterName }, created = packageCreatedDateString };
             var newSE1 = new PackageManagerSearchElementViewModel(new PackageManagerSearchElement(new PackageHeader()
             {
-                name = name1
+                name = name1,
+                versions = new List<PackageVersion> { tmpPackageVersion },
             }), false);
 
             var newSE2 = new PackageManagerSearchElementViewModel(new PackageManagerSearchElement(new PackageHeader()
             {
-                name = name2
+                name = name2,
+                versions = new List<PackageVersion> { tmpPackageVersion },
             }), false);
 
             packageManagerSearchViewModel.AddToSearchResults(newSE1);
