@@ -10,7 +10,6 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DynamoPythonTests</RootNamespace>
     <AssemblyName>DynamoPythonTests</AssemblyName>
-    <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
