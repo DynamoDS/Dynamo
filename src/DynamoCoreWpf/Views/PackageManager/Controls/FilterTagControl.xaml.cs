@@ -10,21 +10,30 @@ namespace Dynamo.PackageManager.UI
 {
     /// <summary>
     /// Interaction logic for FilterTagControl.xaml
+    /// Used to create visual representation (bubbles) of a filter property that is currently applied
     /// </summary>
     public partial class FilterTagControl : UserControl
     {
+        /// <summary>
+        /// The name of the filter Tag
+        /// </summary>
         public string TagName
         {
             get { return (string)GetValue(TagNameProperty); }
             set { SetValue(TagNameProperty, value); }
         }
-
+        /// <summary>
+        /// Allows to toggle the filter on/off
+        /// </summary>
         public bool IsFilterOn
         {
             get { return (bool)GetValue(IsFilterOnProperty); }
             set { SetValue(IsFilterOnProperty, value); }
         }
 
+        /// <summary>
+        /// Binds to the 'FilterCommand' of the filter
+        /// </summary>
         public ICommand FilterCommand
         {
             get { return (ICommand)GetValue(FilterCommandProperty); }
