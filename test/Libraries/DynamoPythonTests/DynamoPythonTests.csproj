@@ -10,29 +10,20 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DynamoPythonTests</RootNamespace>
     <AssemblyName>DynamoPythonTests</AssemblyName>
+    <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="AvalonEdit" Version="6.3.0.90"/>
-    <PackageReference Include="NUnit" Version="2.6.3" />
+    <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
+    <PackageReference Include="NUnit" Version="3.13.3" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
     <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.2485" />
     <PackageReference Include="DynamicLanguageRuntime" Version="1.2.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="NUnitTestAdapter" Version="2.3.0" ExcludeAssets="all" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
     <Reference Include="Python.Runtime">
       <HintPath>..\..\..\extern\Python\Python.Runtime.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-  </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-      <Reference Include="System" />
-      <Reference Include="System.Core" />
-      <Reference Include="Microsoft.CSharp" />
-      <Reference Include="System.Numerics" />
-      <Reference Include="Microsoft.Practices.Prism">
-          <HintPath>..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-          <Private>False</Private>
-      </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\DynamoCoreWpf\DynamoCoreWpf.csproj">

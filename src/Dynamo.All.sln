@@ -203,6 +203,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewExtensionLibraryTests",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfVisualizationTests", "..\test\VisualizationTests\WpfVisualizationTests.csproj", "{C4964946-B367-44EE-9ED2-451FF2A83D32}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoPythonTests", "..\test\Libraries\DynamoPythonTests\DynamoPythonTests.csproj", "{773988FE-EDF6-45CB-A63F-482955EB3553}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -524,6 +526,10 @@ Global
 		{C4964946-B367-44EE-9ED2-451FF2A83D32}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C4964946-B367-44EE-9ED2-451FF2A83D32}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C4964946-B367-44EE-9ED2-451FF2A83D32}.Release|Any CPU.Build.0 = Release|Any CPU
+		{773988FE-EDF6-45CB-A63F-482955EB3553}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{773988FE-EDF6-45CB-A63F-482955EB3553}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{773988FE-EDF6-45CB-A63F-482955EB3553}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{773988FE-EDF6-45CB-A63F-482955EB3553}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -602,6 +608,7 @@ Global
 		{7DD8077A-201E-4C56-96C5-3C901A51BDF3} = {5B9B5B6B-0BA7-4606-B8E5-70C958346D57}
 		{AE7F2579-104A-4AF4-AA7B-614AE9E79279} = {5B9B5B6B-0BA7-4606-B8E5-70C958346D57}
 		{C4964946-B367-44EE-9ED2-451FF2A83D32} = {5B9B5B6B-0BA7-4606-B8E5-70C958346D57}
+		{773988FE-EDF6-45CB-A63F-482955EB3553} = {5B9B5B6B-0BA7-4606-B8E5-70C958346D57}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89CB19C6-BF0A-4E6A-BFDA-79D143EAB59D}
