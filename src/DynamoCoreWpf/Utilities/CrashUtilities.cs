@@ -66,21 +66,6 @@ namespace Dynamo.Wpf.Utilities
         }
 
         /// <summary>
-        /// Formats crash details and adds metadata for use in Github issue body
-        /// </summary>
-        /// <param name="details">Crash details, such as a stack trace.</param>
-        /// <returns>A formatted, but not escaped, string to use as issue body.</returns>
-        private static string GitHubCrashReportBody(object details)
-        {
-            var markdownPackages = details?.ToString() ?? string.Empty;
-
-            // This functionality was not available prior to version 2.1.0, so it should be the fallback value
-            var dynamoVersion = AssemblyHelper.GetDynamoVersion().ToString() ?? "2.1.0+";
-
-            return BuildMarkdownContent(dynamoVersion, markdownPackages);
-        }
-
-        /// <summary>
         /// Builds a Markdown string that will be posted to our new GitHub issue
         /// </summary>
         /// <param name="dynamoVersion">Dynamo version that should be recorded in the issue report</param>
