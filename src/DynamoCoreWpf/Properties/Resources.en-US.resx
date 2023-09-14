@@ -1710,12 +1710,51 @@ Next assemblies were loaded several times:
   <data name="PackageUploadStateUploading" xml:space="preserve">
     <value>Uploading...</value>
   </data>
+  <data name="PackageFilterByHost" xml:space="preserve">
+    <value>HOST</value>
+  </data>
+  <data name="PackageFilterByStatus" xml:space="preserve">
+    <value>STATUS</value>
+  </data>
+  <data name="PackageFilterNewTooltip" xml:space="preserve">
+    <value>Published in the last 30 days</value>
+  </data>
+  <data name="PackageFilterUpdatedTooltip" xml:space="preserve">
+    <value>Updated in the last 30 days</value>
+  </data>    
+  <data name="PackageFilterDeprecatedTooltip" xml:space="preserve">
+    <value>Discontinued packages</value>
+  </data>
+  <data name="PackageFilterByDependency" xml:space="preserve">
+    <value>DEPENDENCY</value>
+  </data> 
+  <data name="PackageFilterHasDependenciesTooltip" xml:space="preserve">
+    <value>Packages that require other packages to be installed</value>
+  </data>
+  <data name="PackageFilterHasNoDependenciesTooltip" xml:space="preserve">
+    <value>Stand-alone packages</value>
+  </data>
+  <data name="PackageSearchViewContextMenuFilterActive" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="PackageSearchViewContextMenuFilterDeprecated" xml:space="preserve">
+    <value>Deprecated</value>
+  </data>
+  <data name="PackageSearchViewContextMenuFilterDependencies" xml:space="preserve">
+    <value>Has dependecies</value>
+  </data>
+  <data name="PackageSearchViewContextMenuFilterNoDependencies" xml:space="preserve">
+    <value>Has no dependecies</value>
+  </data>
   <data name="PackageUseNewerDynamoMessageBoxTitle" xml:space="preserve">
     <value>Package Uses Newer Version of {0}!</value>
   </data>
   <data name="PackageWarningMessageBoxTitle" xml:space="preserve">
     <value>Package Warning</value>
     <comment>Message box title</comment>
+  </data>
+  <data name="PackageManagerClearAllButtonText" xml:space="preserve">
+    <value>Clear all</value>
   </data>
   <data name="Periodic" xml:space="preserve">
     <value>Periodic</value>
@@ -2187,7 +2226,7 @@ Uninstall the following packages: {0}?</value>
     <value>Filter packages that depend on applications outside Dynamo. This feature currently can only filter packages which have been marked manually by package authors during publish.</value>
   </data>
   <data name="PackageHostDependencyFilterContextItem" xml:space="preserve">
-    <value>Packages contain node(s)  that depend on specified application outside Dynamo.</value>
+    <value>Packages that depend on selected external application</value>
   </data>
   <data name="MessageUninstallSamePackage" xml:space="preserve">
     <value>"The package {0} is already installed. To reinstall it, you must first uninstall it and restart to complete the uninstall. Would you like to mark {0} for uninstall?"</value>

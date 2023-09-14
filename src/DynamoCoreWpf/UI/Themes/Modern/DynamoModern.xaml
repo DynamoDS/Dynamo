@@ -51,6 +51,10 @@
     <Color x:Key="DisabledBorderDarkColor">#FF888888</Color>
 
     <Color x:Key="DefaultBorderBrushDarkColor">Black</Color>
+    <Color x:Key="GenericMouseOverBackgroundColor">#808080</Color>
+
+    <SolidColorBrush x:Key="GenericBorderBackgroundColorBrush" Color="#3c3c3c"/>    
+    <SolidColorBrush x:Key="GenericMouseOverBackgroundColorBrush" Color="{DynamicResource GenericMouseOverBackgroundColor}"/>    
 
 
     <!--  Control-specific resources.  -->
@@ -66,6 +70,8 @@
     <SolidColorBrush x:Key="DarkThemeInputBoxBackgroundBrush" Color="{DynamicResource DarkThemeInputBoxBackgroundColor}" />
 
     <clr:Double x:Key="NodeNameHeight">53</clr:Double>
+
+    <SolidColorBrush x:Key="MenuHeaderForegroundColorBrush" Color="#DCDCDC"/>
 
 
     <!--  InfoBubble colors  -->
@@ -350,8 +356,7 @@
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
-    <Style x:Key="PackageManagerComboBoxItemStyle"
-           TargetType="{x:Type ComboBoxItem}">
+     <Style x:Key="PackageManagerComboBoxItemStyle" TargetType="{x:Type ComboBoxItem}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ComboBoxItem}">
@@ -378,32 +383,19 @@
         </Setter>
     </Style>
 
-    <Style x:Key="PackageManagerSmallComboBox"
-           TargetType="{x:Type ComboBox}">
-        <Setter Property="SnapsToDevicePixels"
-                Value="true" />
-        <Setter Property="OverridesDefaultStyle"
-                Value="true" />
-        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility"
-                Value="Auto" />
-        <Setter Property="ScrollViewer.VerticalScrollBarVisibility"
-                Value="Auto" />
-        <Setter Property="ScrollViewer.CanContentScroll"
-                Value="true" />
-        <Setter Property="MinWidth"
-                Value="40" />
-        <Setter Property="Padding"
-                Value="0" />
-        <Setter Property="MinHeight"
-                Value="20" />
-        <Setter Property="MaxHeight"
-                Value="40" />
-        <Setter Property="FontSize"
-                Value="10" />
-        <Setter Property="Foreground"
-                Value="#C7C7C7" />
-        <Setter Property="ItemContainerStyle"
-                Value="{DynamicResource PackageManagerComboBoxItemStyle}" />
+    <Style x:Key="PackageManagerSmallComboBox" TargetType="{x:Type ComboBox}">
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="ScrollViewer.CanContentScroll" Value="true" />
+        <Setter Property="MinWidth" Value="40" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="MinHeight" Value="20" />  
+        <Setter Property="MaxHeight" Value="40" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="Foreground" Value="#C7C7C7" />
+        <Setter Property="ItemContainerStyle" Value="{DynamicResource PackageManagerComboBoxItemStyle}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ComboBox">
@@ -497,7 +489,6 @@
         <Style.Triggers />
     </Style>
     <!-- End Package Manager Styles -->
-    
     <Style x:Key="SComboBox_Update" TargetType="{x:Type ComboBox}">
         <Setter Property="SnapsToDevicePixels" Value="true" />
         <Setter Property="OverridesDefaultStyle" Value="true" />
@@ -1959,7 +1950,7 @@
         <Setter Property="MinWidth" Value="300px" />
         <Setter Property="Margin" Value="-6,0,0,0" />
         <Setter Property="Height" Value="29px" />
-        <Setter Property="Foreground" Value="#DCDCDC" />
+        <Setter Property="Foreground" Value="{StaticResource MenuHeaderForegroundColorBrush}" />
         <Setter Property="FontSize" Value="16px" />
         <Setter Property="Template">
             <Setter.Value>
@@ -2037,7 +2028,7 @@
     <!--  SimpleStyles: ComboBoxItem  -->
     <Style x:Key="{x:Type ComboBoxItem}" TargetType="{x:Type ComboBoxItem}">
         <Setter Property="SnapsToDevicePixels" Value="true" />
-        <Setter Property="Foreground" Value="#DCDCDC" />
+        <Setter Property="Foreground" Value="{StaticResource MenuHeaderForegroundColorBrush}" />
         <Setter Property="OverridesDefaultStyle" Value="true" />
         <Setter Property="Template">
             <Setter.Value>
@@ -3875,7 +3866,7 @@
                                Content="✓"
                                DockPanel.Dock="Left"
                                FontSize="9px"
-                               Foreground="White"
+                               Foreground="{StaticResource PreferencesWindowButtonColor}"
                                Visibility="Collapsed" />
                         <ContentPresenter x:Name="ContentPresenter"
                                           Margin="{TemplateBinding Padding}"
@@ -3939,13 +3930,14 @@
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="ContentPresenter" Property="TextBlock.Foreground" Value="White" />
-                            <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackgroundHighlight}" />
+                            <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource GenericMouseOverBackgroundColorBrush}" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="False">
-                            <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackground}" />
+                            <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource GenericBorderBackgroundColorBrush}" />
                         </Trigger>
                         <Trigger Property="IsChecked" Value="True">
                             <Setter TargetName="checkBox" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="ContentPresenter" Property="TextBlock.FontFamily" Value="{StaticResource ArtifaktElementBold}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -5052,14 +5044,14 @@
                             BorderThickness="0">
                         <Canvas Margin="0,0,0,0">
                             <Line x:Name="line1"
-                                  Stroke="#808080"
+                                  Stroke="{DynamicResource GenericMouseOverBackgroundColorBrush}"
                                   StrokeThickness="1"
                                   X1="0"
                                   X2="13"
                                   Y1="0"
                                   Y2="13" />
                             <Line x:Name="line2"
-                                  Stroke="#808080"
+                                  Stroke="{DynamicResource GenericMouseOverBackgroundColorBrush}"
                                   StrokeThickness="1"
                                   X1="0"
                                   X2="13"
@@ -5085,10 +5077,10 @@
 
     <SolidColorBrush x:Key="Button.MouseOver.Border"
                      Opacity="0.15"
-                     Color="#808080" />
+                     Color="{DynamicResource GenericMouseOverBackgroundColor}" />
     <SolidColorBrush x:Key="Button.Pressed.Border"
                      Opacity="0.25"
-                     Color="#808080" />
+                     Color="{DynamicResource GenericMouseOverBackgroundColor}" />
     <Style x:Key="PoupButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="MinWidth" Value="80" />
         <Setter Property="MaxHeight" Value="36" />
@@ -5134,7 +5126,7 @@
                 <ControlTemplate TargetType="{x:Type Button}">
                     <Border x:Name="PopupButtonBorder"
                             Background="{StaticResource PopupWhiteColor}"
-                            BorderBrush="#808080"
+                            BorderBrush="{DynamicResource GenericMouseOverBackgroundColorBrush}"
                             Opacity="0.5"
                             BorderThickness="1"
                             CornerRadius="2">

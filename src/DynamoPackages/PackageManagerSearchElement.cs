@@ -40,8 +40,9 @@ namespace Dynamo.PackageManager
         public int Downloads { get { return this.Header.downloads; } }
         public string EngineVersion { get { return Header.versions[Header.versions.Count - 1].engine_version; } }
         public int UsedBy { get { return this.Header.used_by.Count; } }
-        public string LatestVersion { get { return Header.versions[Header.versions.Count - 1].version; } }
+        public string LatestVersion { get { return Header.versions != null ? Header.versions[Header.versions.Count - 1].version : String.Empty; } }
         public string LatestVersionCreated { get { return Header.versions[Header.versions.Count - 1].created; } }
+
         public IEnumerable<string> PackageVersions { get { return Header.versions.Select(x => x.version); } }
 
         /// <summary>
