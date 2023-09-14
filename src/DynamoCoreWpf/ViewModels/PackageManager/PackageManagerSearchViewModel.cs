@@ -1208,52 +1208,6 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        ///     Performs a search using the given string as query, but does not update
-        ///     the SearchResults object.
-        /// </summary>
-        /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
-        /// <param name="query"> The search query </param>
-        [Obsolete("This method will be removed in future Dynamo versions - please use Search method with Lucene flag.")]
-        internal IEnumerable<PackageManagerSearchElementViewModel> Search(string query)
-        {
-            if (LastSync == null) return new List<PackageManagerSearchElementViewModel>();
-
-            List<PackageManagerSearchElementViewModel> list = null;
-
-            var isEnabledForInstall = !(Preferences as IDisablePackageLoadingPreferences).DisableCustomPackageLocations;
-            if (!String.IsNullOrEmpty(query))
-            {
-                list = Filter(SearchDictionary.Search(query)
-                    .Select(x => new PackageManagerSearchElementViewModel(x,
-                        PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider,
-                        CanInstallPackage(x.Name), isEnabledForInstall))
-                    .Take(MaxNumSearchResults))
-                    .ToList();
-            }
-            else
-            {
-                // with null query, don't show deprecated packages
-                list = Filter(LastSync.Where(x => !x.IsDeprecated)
-                    .Select(x => new PackageManagerSearchElementViewModel(x,
-                        PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider,
-                        CanInstallPackage(x.Name), isEnabledForInstall)))
-                    .ToList();
-
-                Sort(list, this.SortingKey);
-
-                if (SortingDirection == PackageSortingDirection.Descending)
-                {
-                    list.Reverse();
-                }
-            }
-
-            foreach (var x in list)
-                x.RequestShowFileDialog += OnRequestShowFileDialog;
-
-            return list;
-        }
-
-        /// <summary>
         /// Performs a search using the given string as query, but does not update
         /// the SearchResults object.
         /// </summary>
