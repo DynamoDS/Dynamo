@@ -44,10 +44,11 @@
         </Grid.RowDefinitions>
 
         <!-- Search Bar -->
-        <controls:SearchBoxControl Grid.Row="0" Margin="10 5 20 5"/>
+        <controls:SearchBoxControl Grid.Row="0" Margin="10 5 20 0"/>
 
         <!-- Contains all filter icons -->
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1"
+              Margin="0 0 0 10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="{Binding IsAnyFilterOn,
@@ -74,7 +75,7 @@
             <Button x:Name="ClearFiltersButton"
                     Grid.Column="1"
                     Content="Clear all" 
-                    Margin="0 3 0 15"
+                    Margin="0 3 10 15"
                     Width="60"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
