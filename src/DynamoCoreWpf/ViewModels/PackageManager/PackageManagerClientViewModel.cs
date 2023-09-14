@@ -236,7 +236,7 @@ namespace Dynamo.ViewModels
             get { return pmExtension ?? (pmExtension = DynamoViewModel.Model.GetPackageManagerExtension()); }
         }
 
-        public List<PackageManagerSearchElement> CachedPackageList { get; private set; }
+        public virtual List<PackageManagerSearchElement> CachedPackageList { get; private set; }
         public List<PackageManagerSearchElement> InfectedPackageList { get; private set; }
 
         public readonly DynamoViewModel DynamoViewModel;
