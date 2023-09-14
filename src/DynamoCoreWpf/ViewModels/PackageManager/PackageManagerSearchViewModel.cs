@@ -735,12 +735,7 @@ namespace Dynamo.PackageManager
 
             return hostFilter;
         }
-        //private bool showNew;
-        //private bool showUpdated;
-        //private bool showDeprecated;
-        //private bool showDependencies;
-        //private bool showNoDependencies;
-        //private bool isAnyFilterOn;
+
         private List<FilterEntry> InitializeNonHostFilter()
         {
             var nonHostFilter = new List<FilterEntry>() { new FilterEntry(Resources.PackageManagerPackageNew, Resources.PackageFilterByStatus, Resources.PackageFilterNewTooltip, this),
