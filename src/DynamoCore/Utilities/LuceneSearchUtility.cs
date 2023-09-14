@@ -143,7 +143,6 @@ namespace Dynamo.Utilities
         /// <returns></returns>
         internal Document InitializeIndexDocumentForPackages()
         {
-            if (DynamoModel.IsTestMode) return null;
 
             var name = new TextField(nameof(LuceneConfig.NodeFieldsEnum.Name), string.Empty, Field.Store.YES);
             var description = new TextField(nameof(LuceneConfig.NodeFieldsEnum.Description), string.Empty, Field.Store.YES);

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Dynamo.Controls;
 using Dynamo.PackageManager.ViewModels;
 using Dynamo.Tests;
@@ -536,6 +537,72 @@ namespace Dynamo.PackageManager.Wpf.Tests
             packageManagerSearchViewModel.NonHostFilter[3].FilterCommand.Execute(string.Empty);
             Assert.IsFalse(packageManagerSearchViewModel.NonHostFilter[4].OnChecked);
         }
+		
+		  /// <summary>
+        /// This unit test will validate that we can search packages in different languages and they will be found.
+        /// </summary>
+        [Test]
+        public void PackageSearchDialogSearchDifferentLanguage()
+        {
+            //Arrange
+            string packageId = "c5ecd20a-d41c-4e0c-8e11-8ddfb953d77f";
+            string packageVersionNumber = "1.0.0.0";
+            string packageCreatedDateString = "2016 - 12 - 02T13:13:20.135000 + 00:00";
+            string formItFilterName = "FormIt";
 
+            //Packages list
+            List<string> packagesNameDifferentLanguages = new List<string> { "paquete", "упаковка", "包裹" };
+
+            List<PackageHeader> packageHeaders = new List<PackageHeader>();
+            var mockGreg = new Mock<IGregClient>();
+
+            var clientmock = new Mock<PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var pmCVM = new Mock<PackageManagerClientViewModel>(ViewModel, clientmock.Object) { CallBase = true };
+            List<PackageManagerSearchElement> cachedPackages = new List<PackageManagerSearchElement>();
+            foreach (var packageName in packagesNameDifferentLanguages)
+            {
+                var tmpPackageVersion = new PackageVersion { version = packageVersionNumber, host_dependencies = new List<string> { formItFilterName }, created = packageCreatedDateString };
+                cachedPackages.Add(new PackageManagerSearchElement(new PackageHeader() { name = packageName, versions = new List<PackageVersion> { tmpPackageVersion } }));
+            }
+            pmCVM.SetupProperty(p => p.CachedPackageList, cachedPackages);
+
+            var packageManagerSearchViewModel = new PackageManagerSearchViewModel(pmCVM.Object);
+            packageManagerSearchViewModel.RegisterTransientHandlers();
+
+            //Adding packages
+            foreach (var package in packagesNameDifferentLanguages)
+            {
+                var tmpPackageVersion = new PackageVersion { version = packageVersionNumber, host_dependencies = new List<string> { formItFilterName }, created = packageCreatedDateString };
+                var tmpPackage = new PackageManagerSearchElementViewModel(new PackageManagerSearchElement(new PackageHeader()
+                {
+                    _id = packageId,
+                    name = package,
+                    versions = new List<PackageVersion> { tmpPackageVersion },
+                    host_dependencies = new List<string> { formItFilterName },
+                }), false);
+                packageManagerSearchViewModel.AddToSearchResults(tmpPackage);
+            }
+
+            //This line will be indexing the package information using Lucene
+            packageManagerSearchViewModel.LuceneUtility.InitializeLuceneConfig(string.Empty, Utilities.LuceneSearchUtility.LuceneStorage.RAM);
+            foreach (var package in packageManagerSearchViewModel.SearchResults)
+            {
+                var iDoc = packageManagerSearchViewModel.LuceneUtility.InitializeIndexDocumentForPackages();
+                packageManagerSearchViewModel.AddPackageToSearchIndex(package.Model, iDoc);
+            }
+
+            packageManagerSearchViewModel.LuceneUtility.CommitWriterChanges();
+
+            //Act - Searching for packages
+            var resultingNodesChinese = packageManagerSearchViewModel.Search("包裹", true);
+            var resultingNodesRussian = packageManagerSearchViewModel.Search("упаковка", true);
+            var resultingNodesSpanish = packageManagerSearchViewModel.Search("paquete", true);
+
+            //Assert
+            //Validates that the packages were found
+            Assert.That(resultingNodesChinese.Count(), Is.EqualTo(1), "There was no results");
+            Assert.That(resultingNodesRussian.Count(), Is.EqualTo(1), "There was no results");
+            Assert.That(resultingNodesSpanish.Count(), Is.EqualTo(1), "There was no results");
+        }
     }
 }
