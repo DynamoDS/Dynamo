@@ -327,7 +327,7 @@ namespace Dynamo.ViewModels
         /// <returns></returns>
         public NodeSearchElementViewModel FindViewModelForNode(string nodeName)
         {
-            var result = Model.SearchEntries.Where(e => {
+            var result = Model.Entries.Where(e => {
                 if (e.CreationName.Equals(nodeName))
                 {
                     return true;
@@ -430,7 +430,7 @@ namespace Dynamo.ViewModels
             Model.EntryUpdated += UpdateEntry;
             Model.EntryRemoved += RemoveEntry;
 
-            LibraryRootCategories.AddRange(CategorizeEntries(Model.SearchEntries, false));
+            LibraryRootCategories.AddRange(CategorizeEntries(Model.Entries, false));
 
             DefineFullCategoryNames(LibraryRootCategories, "");
             InsertClassesIntoTree(LibraryRootCategories);
@@ -951,7 +951,7 @@ namespace Dynamo.ViewModels
         /// <returns></returns>
         internal NodeSearchElementViewModel FindViewModelForNodeNameAndCategory(string nodeName, string nodeCategory, string parameters)
         {
-            var result = Model.SearchEntries.Where(e => {
+            var result = Model.Entries.Where(e => {
                 if (e.Name.Equals(nodeName) && e.FullCategoryName.Equals(nodeCategory))
                 {
                     //When the node info was indexed if Parameters was null we added an empty space (null cannot be indexed)

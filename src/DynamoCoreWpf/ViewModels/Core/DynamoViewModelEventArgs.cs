@@ -333,11 +333,11 @@ namespace Dynamo.ViewModels
 
         private static bool NodeModelHasCollisions(string typeName, DynamoViewModel viewModel)
         {     
-            var searchEntries = viewModel.Model.SearchModel.SearchEntries
+            var searchEntries = viewModel.Model.SearchModel.Entries
                 .Where(x => x.CreationName == typeName)
                 .Select(x => x).ToList();
 
-            if (searchEntries.Count() > 1)
+            if (Entries.Count() > 1)
                 return true;
 
             return false;
