@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Media;
 using Dynamo.Graph.Nodes;
@@ -333,11 +332,11 @@ namespace Dynamo.ViewModels
 
         private static bool NodeModelHasCollisions(string typeName, DynamoViewModel viewModel)
         {     
-            var searchEntries = viewModel.Model.SearchModel.Entries
+            var entries = viewModel.Model.SearchModel.Entries
                 .Where(x => x.CreationName == typeName)
                 .Select(x => x).ToList();
 
-            if (Entries.Count() > 1)
+            if (entries.Count() > 1)
                 return true;
 
             return false;
