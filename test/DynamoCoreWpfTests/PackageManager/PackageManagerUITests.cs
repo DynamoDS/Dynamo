@@ -899,7 +899,7 @@ namespace DynamoCoreWpfTests.PackageManager
             Assert.AreEqual(PackageLoadState.ScheduledTypes.None, builtInPkgViewModel.Model.LoadState.ScheduledState);
 
             Assert.IsFalse(currentDynamoModel.PreferenceSettings.PackageDirectoriesToUninstall.Contains(builtInPkgViewModel.Model.RootDirectory));
-            Assert.IsTrue(currentDynamoModel.SearchModel.SearchEntries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello") == 1);
+            Assert.IsTrue(currentDynamoModel.SearchModel.Entries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello") == 1);
 
             Assert.AreEqual(2, filters.Count);
             Assert.AreEqual(@"All", filters[0].Name);
@@ -938,7 +938,7 @@ namespace DynamoCoreWpfTests.PackageManager
             var pkg = loader.LocalPackages.Where(x => x.Name == "SignedPackage").FirstOrDefault();
             Assert.IsNotNull(pkg, "Expected Signed package to be valid");
             Assert.AreEqual(PackageLoadState.StateTypes.Loaded, pkg.LoadState.State);
-            Assert.AreEqual(1, currentDynamoModel.SearchModel.SearchEntries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello"));
+            Assert.AreEqual(1, currentDynamoModel.SearchModel.Entries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello"));
 
             // remove the path to SignedPackage2
             vm.DeletePathCommand.Execute(vm.RootLocations.Count - 1);
@@ -947,7 +947,7 @@ namespace DynamoCoreWpfTests.PackageManager
             vm.SaveSettingCommand.Execute(null);
 
             Assert.AreEqual(1, loader.LocalPackages.Count(x => x.Name == "SignedPackage"));
-            Assert.AreEqual(1, currentDynamoModel.SearchModel.SearchEntries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello"));
+            Assert.AreEqual(1, currentDynamoModel.SearchModel.Entries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello"));
 
             // re-add the path to SignedPackage2
             vm.AddPathCommand.Execute(null);
@@ -956,7 +956,7 @@ namespace DynamoCoreWpfTests.PackageManager
             vm.SaveSettingCommand.Execute(null);
 
             Assert.AreEqual(1, loader.LocalPackages.Count(x => x.Name == "SignedPackage"));
-            Assert.AreEqual(1, currentDynamoModel.SearchModel.SearchEntries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello"));
+            Assert.AreEqual(1, currentDynamoModel.SearchModel.Entries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello"));
         }
 
         public void PackageContainingNodeViewOnlyCustomization_AddsCustomizationToCustomizationLibrary()

@@ -11,34 +11,34 @@ namespace Dynamo.Search
     /// <summary>
     ///     A dictionary of objects.
     /// </summary>
-    public class SearchDictionary<V>
+    public class EntryDictionary<V>
     {
         private ILogger logger;
 
         /// <summary>
-        ///     Construct a SearchDictionary object
+        ///     Construct a EntryDictionary object
         /// </summary>
-        /// <param name="logger"> (Optional) A logger to use to log search data</param>
-        internal SearchDictionary(ILogger logger = null)
+        /// <param name="logger"> (Optional) A logger to use to log entry data</param>
+        internal EntryDictionary(ILogger logger = null)
         {
             this.logger = logger;
         }
 
         /// <summary>
-        ///     Dictionary of searchElement:(tag, weight)
+        ///     Dictionary of entry Element:(tag, weight)
         /// </summary>
         protected readonly Dictionary<V, Dictionary<string, double>> entryDictionary =
             new Dictionary<V, Dictionary<string, double>>();
 
         /// <summary>
-        /// Dictionary of tag:(list(searchelement, weight)) which contains all nodes that share a tag 
+        /// Dictionary of tag:(list(element, weight)) which contains all nodes that share a tag 
         /// </summary>
         private List<IGrouping<string, Tuple<V, double>>> tagDictionary;        
 
         /// <summary>
-        ///     All the current entries in search.
+        ///     All the current entries.
         /// </summary>
-        public IEnumerable<V> SearchEntries
+        public IEnumerable<V> Entries
         {
             get { return entryDictionary.Keys; }
         }
@@ -99,7 +99,7 @@ namespace Dynamo.Search
         ///     Add a single element with a single tag
         /// </summary>
         /// <param name="value"> The object to add  </param>
-        /// <param name="tag"> The string to identify it in search </param>
+        /// <param name="tag"> The string to identify it </param>
         /// <param name="weight"></param>
         internal void Add(V value, string tag, double weight = 1)
         {
@@ -110,7 +110,7 @@ namespace Dynamo.Search
         ///     Add a list of elements with a single tag
         /// </summary>
         /// <param name="values"> List of objects to add  </param>
-        /// <param name="tag"> The string to identify it in search </param>
+        /// <param name="tag"> The string to identify it </param>
         /// <param name="weight"></param>
         internal void Add(IEnumerable<V> values, string tag, double weight = 1)
         {
@@ -122,7 +122,7 @@ namespace Dynamo.Search
         ///     Add a single element with a number of tags
         /// </summary>
         /// <param name="value"> The object to add  </param>
-        /// <param name="tags"> The list of strings to identify it in search </param>
+        /// <param name="tags"> The list of strings to identify it </param>
         /// <param name="weights">The list of corresponding weights coefficients</param>
         internal void Add(V value, IEnumerable<string> tags, IEnumerable<double> weights)
         {
@@ -159,7 +159,7 @@ namespace Dynamo.Search
         }
 
         /// <summary>
-        ///     Remove an element from the search
+        ///     Remove an element from the dictionary.
         /// </summary>
         /// <param name="value"> The object to remove </param>
         /// <param name="tag">The tag to remove for the given value </param>
@@ -171,7 +171,7 @@ namespace Dynamo.Search
         }
 
         /// <summary>
-        ///     Remove an element from the search
+        ///     Remove an element from the dictionary
         /// </summary>
         /// <param name="value"> The object to remove </param>
         internal bool Remove(V value)
@@ -183,7 +183,7 @@ namespace Dynamo.Search
         }
 
         /// <summary>
-        ///     Remove elements from search based on a predicate
+        ///     Remove elements from dictionary based on a predicate
         /// </summary>
         /// <param name="removeCondition"> The predicate with which to test.  True results in removal. </param>
         internal int Remove(Func<V, bool> removeCondition)
@@ -195,7 +195,7 @@ namespace Dynamo.Search
         }
 
         /// <summary>
-        ///     Removes elements from search, based on separate predicates for values and tags.
+        ///     Removes elements from dictionary, based on separate predicates for values and tags.
         /// </summary>
         /// <param name="valueCondition"></param>
         /// <param name="removeTagCondition"></param>
@@ -219,7 +219,7 @@ namespace Dynamo.Search
         }
 
         /// <summary>
-        ///     Remove elements from search
+        ///     Remove elements from dictionary
         /// </summary>
         /// <param name="value"> The object to remove </param>
         /// <param name="tags"> The list of tags to remove. </param>
@@ -246,7 +246,7 @@ namespace Dynamo.Search
         }
 
         /// <summary>
-        ///     Determines if this SearchDictionary contains a specific element.
+        ///     Determines if this EntryDictionary contains a specific element.
         /// </summary>
         /// <param name="a"></param>
         /// <returns></returns>
@@ -254,8 +254,5 @@ namespace Dynamo.Search
         {
             return entryDictionary.Keys.Any(x => Equals(x, a));
         }
-
-        #region Manual Searching
-        #endregion
     }
 }

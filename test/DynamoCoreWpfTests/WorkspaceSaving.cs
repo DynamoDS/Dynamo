@@ -1342,7 +1342,7 @@ namespace Dynamo.Tests
 
             def.Save(tempPath2);
 
-            var count = dynamoModel.SearchModel.SearchEntries.OfType<CustomNodeSearchElement>().Where(
+            var count = dynamoModel.SearchModel.Entries.OfType<CustomNodeSearchElement>().Where(
                             x => string.CompareOrdinal(x.Name, nodeName) == 0).Count();
             Assert.AreEqual(count, 2);
         }

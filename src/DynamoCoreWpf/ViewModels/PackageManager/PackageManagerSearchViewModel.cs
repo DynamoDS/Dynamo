@@ -362,7 +362,7 @@ namespace Dynamo.PackageManager
         ///     MaxNumSearchResults property
         /// </summary>
         /// <value>
-        ///     Internal limit on the number of search results returned by SearchDictionary
+        ///     Internal limit on the number of search results returned by EntryDictionary
         /// </value>
         public int MaxNumSearchResults { get; set; }
 
@@ -480,7 +480,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         public List<string> SelectedHosts { get; set; }
 
-        private SearchDictionary<PackageManagerSearchElement> SearchDictionary;
+        private EntryDictionary<PackageManagerSearchElement> EntryDictionary;
         
         /// <summary>
         ///     Command to clear the completed package downloads
@@ -562,7 +562,7 @@ namespace Dynamo.PackageManager
             SearchResults = new ObservableCollection<PackageManagerSearchElementViewModel>();
             InfectedPackages = new ObservableCollection<PackageManagerSearchElement>();
             MaxNumSearchResults = 35;
-            SearchDictionary = new SearchDictionary<PackageManagerSearchElement>();
+            EntryDictionary = new EntryDictionary<PackageManagerSearchElement>();
             ClearCompletedCommand = new DelegateCommand(ClearCompleted, CanClearCompleted);
             SortCommand = new DelegateCommand(Sort, CanSort);
             SearchSortCommand = new DelegateCommand<object>(Sort, CanSort);
@@ -994,14 +994,14 @@ namespace Dynamo.PackageManager
             pkgs.Sort((e1, e2) => e1.Name.ToLower().CompareTo(e2.Name.ToLower()));
             LastSync = pkgs;
 
-            SearchDictionary = new SearchDictionary<PackageManagerSearchElement>();
+            EntryDictionary = new EntryDictionary<PackageManagerSearchElement>();
 
             foreach (var pkg in pkgs)
             {
-                SearchDictionary.Add(pkg, pkg.Name);
-                SearchDictionary.Add(pkg, pkg.Description);
-                SearchDictionary.Add(pkg, pkg.Maintainers);
-                SearchDictionary.Add(pkg, pkg.Keywords);
+                EntryDictionary.Add(pkg, pkg.Name);
+                EntryDictionary.Add(pkg, pkg.Description);
+                EntryDictionary.Add(pkg, pkg.Maintainers);
+                EntryDictionary.Add(pkg, pkg.Keywords);
             }
 
             PopulateMyPackages();   // adding 

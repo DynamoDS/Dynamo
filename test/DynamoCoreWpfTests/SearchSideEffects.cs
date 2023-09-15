@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Dynamo.Configuration;
 using Dynamo.Graph.Workspaces;
 using NUnit.Framework;
 
@@ -107,7 +106,7 @@ namespace Dynamo.Tests
         public void LuceneSearchAllNodesValidation()
         {
             Assert.IsAssignableFrom(typeof(HomeWorkspaceModel), ViewModel.Model.CurrentWorkspace);
-            List<string> nodesList = ViewModel.Model.SearchModel.SearchEntries.Select(entry => entry.Name).ToList();
+            List<string> nodesList = ViewModel.Model.SearchModel.Entries.Select(entry => entry.Name).ToList();
 
             foreach (var node in nodesList)
             {
@@ -129,7 +128,7 @@ namespace Dynamo.Tests
             string category = "Core.Input";
 
             // Search and check that the results are correct based in the node name provided for the searchTerm
-            var nodesResult = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.Search(category,true);
+            var nodesResult = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.Search(category);
 
             //Check that we got at least 1 result from the Lucene Search
             Assert.That(nodesResult.Count(), Is.GreaterThan(0));
@@ -155,7 +154,7 @@ namespace Dynamo.Tests
             List<string> expectedSearchResults2 = new List<string> { "join", "list create", "list.map" };
 
             // Search and check that the results are correct based in the node name provided for the searchTerm
-            var nodesResult = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.Search(searchTerm, true);
+            var nodesResult = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.Search(searchTerm);
             Assert.IsNotNull(nodesResult);
             Assert.That(nodesResult.Count(), Is.GreaterThan(0));
             var nodesNamesList = nodesResult.Select(x => x.Name.ToLower());
@@ -168,7 +167,7 @@ namespace Dynamo.Tests
             }
             
             // Search and check that the results are correct based in the node name provided for the searchTerm
-            nodesResult = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.Search(searchTerm2, true);
+            nodesResult = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.Search(searchTerm2);
             Assert.IsNotNull(nodesResult);
             Assert.That(nodesResult.Count(), Is.GreaterThan(0));
             nodesNamesList = nodesResult.Select(x => x.Name.ToLower());
