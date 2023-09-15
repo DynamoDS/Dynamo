@@ -173,7 +173,7 @@ namespace Dynamo.ViewModels
             var queries = new List<string>(){"String", "Number Slider", "Integer Slider", "Number", "Boolean", "Watch", "Watch 3D", "Python Script"};
             foreach (var query in queries)
             {
-                var foundNode = Search(query).FirstOrDefault();
+                var foundNode = Search(query).Where(n => n.Name.Equals(query)).FirstOrDefault();
                 if(foundNode != null)
                 {
                     candidates.Add(foundNode);
