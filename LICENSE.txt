@@ -514,9 +514,6 @@ https://github.com/Live-Charts/Live-Charts/blob/master/LICENSE.TXT
 Magick.NET.Core
 https://github.com/dlemstra/Magick.NET/blob/main/License.txt
 
-Microsoft 2015 C Runtime DLLs, msvcp140.dll, msvcr140.dll
-https://docs.microsoft.com/en-us/visualstudio/productinfo/2015-redistribution-vs
-
 Open XML SDK
 https://github.com/OfficeDev/Open-XML-SDK
 https://github.com/OfficeDev/Open-XML-SDK/blob/main/LICENSE
