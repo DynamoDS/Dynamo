@@ -3,6 +3,7 @@ description: File an issue with Dynamo
 projects: [DynamoDS/4]
 body:
   - type: textarea
+    id: dynamo_version
     attributes:
       label: Dynamo Version
       description: |
@@ -11,12 +12,14 @@ body:
     validations:
       required: true
   - type: textarea
+    id: host
     attributes:
       label: Host
       description: Which host are you using?
     validations:
       required: false
   - type: textarea
+    id: os
     attributes:
       label: Operating System
       description: e.g Windows 10, Windows 11
@@ -34,15 +37,23 @@ body:
       required: true
   - type: textarea
     attributes:
-      label: What did you see instead
+      label: What did you see instead?
     validations:
       required: true
   - type: textarea
+    id: packages
+    attributes:
+      label: What packages or external references (if any) were used?
+    validations:
+      required: false
+  - type: textarea
+    id: stack_trace
     attributes:
       label: Stack Trace
     validations:
       required: false
   - type: textarea
+    id: details
     attributes:
       label: Details
       description: |
