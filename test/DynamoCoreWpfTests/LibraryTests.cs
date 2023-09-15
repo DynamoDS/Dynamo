@@ -138,17 +138,12 @@ namespace DynamoCoreWpfTests
             var searchViewModel = new SearchViewModel(new NodeSearchModel());
             string libraryPath = "FFITarget.dll";
 
-            LoadLibraryIntoSearchViewModel(searchViewModel, libraryPath);
-
+           LoadLibraryIntoSearchViewModel(searchViewModel, libraryPath);
+             
             var searchString = "InterfaceA";
             var nodes = searchViewModel.Model.Search(searchString, CurrentDynamoModel.LuceneUtility);
             var foundNodes = nodes.Where(n => n.Equals(searchString));
             Assert.IsFalse(foundNodes.Any());
-
-            /*searchString = "DerivedFromInterfaceA";
-            nodes = searchViewModel.Model.Search(searchString, CurrentDynamoModel.LuceneUtility);
-            foundNodes = nodes.Where(n => n.Equals(searchString));
-            Assert.AreEqual(2, foundNodes.Count());*/
 
             searchString = "TraceableId";
             nodes = searchViewModel.Model.Search(searchString, CurrentDynamoModel.LuceneUtility);
