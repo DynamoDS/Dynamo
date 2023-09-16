@@ -362,7 +362,7 @@ namespace Dynamo.PackageManager
         ///     MaxNumSearchResults property
         /// </summary>
         /// <value>
-        ///     Internal limit on the number of search results returned by SearchDictionary
+        ///     Internal limit on the number of search results returned by EntryDictionary
         /// </value>
         public int MaxNumSearchResults { get; set; }
 
@@ -480,7 +480,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         public List<string> SelectedHosts { get; set; }
 
-        private SearchDictionary<PackageManagerSearchElement> SearchDictionary;
+        private EntryDictionary<PackageManagerSearchElement> EntryDictionary;
         
         /// <summary>
         ///     Command to clear the completed package downloads
@@ -562,7 +562,7 @@ namespace Dynamo.PackageManager
             SearchResults = new ObservableCollection<PackageManagerSearchElementViewModel>();
             InfectedPackages = new ObservableCollection<PackageManagerSearchElement>();
             MaxNumSearchResults = 35;
-            SearchDictionary = new SearchDictionary<PackageManagerSearchElement>();
+            EntryDictionary = new EntryDictionary<PackageManagerSearchElement>();
             ClearCompletedCommand = new DelegateCommand(ClearCompleted, CanClearCompleted);
             SortCommand = new DelegateCommand(Sort, CanSort);
             SearchSortCommand = new DelegateCommand<object>(Sort, CanSort);
@@ -989,14 +989,14 @@ namespace Dynamo.PackageManager
             pkgs.Sort((e1, e2) => e1.Name.ToLower().CompareTo(e2.Name.ToLower()));
             LastSync = pkgs;
 
-            SearchDictionary = new SearchDictionary<PackageManagerSearchElement>();
+            EntryDictionary = new EntryDictionary<PackageManagerSearchElement>();
 
             foreach (var pkg in pkgs)
             {
-                SearchDictionary.Add(pkg, pkg.Name);
-                SearchDictionary.Add(pkg, pkg.Description);
-                SearchDictionary.Add(pkg, pkg.Maintainers);
-                SearchDictionary.Add(pkg, pkg.Keywords);
+                EntryDictionary.Add(pkg, pkg.Name);
+                EntryDictionary.Add(pkg, pkg.Description);
+                EntryDictionary.Add(pkg, pkg.Maintainers);
+                EntryDictionary.Add(pkg, pkg.Keywords);
             }
 
             PopulateMyPackages();   // adding 
@@ -1405,52 +1405,6 @@ namespace Dynamo.PackageManager
 
             if (difference.TotalDays >= 30 || numberVersions == 1) return false;
             return true;
-        }
-
-        /// <summary>
-        ///     Performs a search using the given string as query, but does not update
-        ///     the SearchResults object.
-        /// </summary>
-        /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
-        /// <param name="query"> The search query </param>
-        [Obsolete("This method will be removed in future Dynamo versions - please use Search method with Lucene flag.")]
-        internal IEnumerable<PackageManagerSearchElementViewModel> Search(string query)
-        {
-            if (LastSync == null) return new List<PackageManagerSearchElementViewModel>();
-
-            List<PackageManagerSearchElementViewModel> list = null;
-
-            var isEnabledForInstall = !(Preferences as IDisablePackageLoadingPreferences).DisableCustomPackageLocations;
-            if (!String.IsNullOrEmpty(query))
-            {
-                list = Filter(SearchDictionary.Search(query)
-                    .Select(x => new PackageManagerSearchElementViewModel(x,
-                        PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider,
-                        CanInstallPackage(x.Name), isEnabledForInstall))
-                    .Take(MaxNumSearchResults))
-                    .ToList();
-            }
-            else
-            {
-                // with null query, don't show deprecated packages
-                list = Filter(LastSync.Where(x => !x.IsDeprecated)
-                    .Select(x => new PackageManagerSearchElementViewModel(x,
-                        PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider,
-                        CanInstallPackage(x.Name), isEnabledForInstall)))
-                    .ToList();
-
-                Sort(list, this.SortingKey);
-
-                if (SortingDirection == PackageSortingDirection.Descending)
-                {
-                    list.Reverse();
-                }
-            }
-
-            foreach (var x in list)
-                x.RequestShowFileDialog += OnRequestShowFileDialog;
-
-            return list;
         }
 
         /// <summary>
