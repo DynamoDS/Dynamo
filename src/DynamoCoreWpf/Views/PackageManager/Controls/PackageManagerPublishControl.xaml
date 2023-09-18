@@ -236,7 +236,7 @@
                 <Setter Property="VerticalContentAlignment"  Value="Center" />
                 <Setter Property="Margin"  Value="0" />
                 <Setter Property="Padding"  Value="0" />
-                <Setter Property="FontFamily"  Value="{StaticResource ArtifaktElementRegular}" />
+                <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
                 <Setter Property="Foreground" Value="#F5F5F5" />
                 <Setter Property="Height" Value="25" />
                 <Setter Property="Background" Value="#353535" />
@@ -316,8 +316,7 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-            <Style x:Key="DataGrid"
-                   TargetType="{x:Type DataGrid}">
+            <Style x:Key="DataGrid" TargetType="{x:Type DataGrid}">
                 <Setter Property="BorderThickness"  Value="0" />
                 <Setter Property="BorderBrush" Value="Transparent" />
                 <Setter Property="Margin" Value="0,0,0,10" />
@@ -342,16 +341,11 @@
                 <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
                 <Setter Property="EnableRowVirtualization" Value="False" />
             </Style>
-            <Style x:Key="CheckBoxStyle"
-                   TargetType="CheckBox">
-                <Setter Property="FontFamily"
-                        Value="{StaticResource ArtifaktElementRegular}" />
-                <Setter Property="Foreground"
-                        Value="{StaticResource DarkGreyBrush}" />
-                <Setter Property="Margin"
-                        Value="0" />
-                <Setter Property="FontSize"
-                        Value="14px" />
+            <Style x:Key="CheckBoxStyle" TargetType="CheckBox">
+                <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
+                <Setter Property="Foreground" Value="{StaticResource DarkGreyBrush}" />
+                <Setter Property="Margin" Value="0" />
+                <Setter Property="FontSize" Value="14px" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type CheckBox}">
@@ -414,6 +408,101 @@
                 </Setter>
             </Style>
 
+
+            <!-- TabControl -->
+            <Style x:Key="TabControlStyle" TargetType="{x:Type TabControl}">
+                <Setter Property="Padding" Value="0"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="Background" Value="{StaticResource TabItem.Selected.Background}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource TabItem.Selected.Border}"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type TabControl}">
+                            <Grid x:Name="templateRoot" ClipToBounds="true" SnapsToDevicePixels="true" KeyboardNavigation.TabNavigation="Local">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition x:Name="ColumnDefinition0"/>
+                                    <ColumnDefinition x:Name="ColumnDefinition1" Width="0"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition x:Name="RowDefinition0" Height="Auto"/>
+                                    <RowDefinition x:Name="RowDefinition1" Height="*"/>
+                                </Grid.RowDefinitions>
+                                <TabPanel x:Name="headerPanel" Background="Transparent" Grid.Column="0" IsItemsHost="true" Margin="0" Grid.Row="0" KeyboardNavigation.TabIndex="1" Panel.ZIndex="1"/>
+                                <Border x:Name="contentPanel" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Grid.Column="0" KeyboardNavigation.DirectionalNavigation="Contained" Grid.Row="1" KeyboardNavigation.TabIndex="2" KeyboardNavigation.TabNavigation="Local">
+                                    <ContentPresenter x:Name="PART_SelectedContentHost" ContentSource="SelectedContent" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                </Border>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="TabStripPlacement" Value="Bottom">
+                                    <Setter Property="Grid.Row" TargetName="headerPanel" Value="1"/>
+                                    <Setter Property="Grid.Row" TargetName="contentPanel" Value="0"/>
+                                    <Setter Property="Height" TargetName="RowDefinition0" Value="*"/>
+                                    <Setter Property="Height" TargetName="RowDefinition1" Value="Auto"/>
+                                    <Setter Property="Margin" TargetName="headerPanel" Value="2,0,2,2"/>
+                                </Trigger>
+                                <Trigger Property="TabStripPlacement" Value="Left">
+                                    <Setter Property="Grid.Row" TargetName="headerPanel" Value="0"/>
+                                    <Setter Property="Grid.Row" TargetName="contentPanel" Value="0"/>
+                                    <Setter Property="Grid.Column" TargetName="headerPanel" Value="0"/>
+                                    <Setter Property="Grid.Column" TargetName="contentPanel" Value="1"/>
+                                    <Setter Property="Width" TargetName="ColumnDefinition0" Value="Auto"/>
+                                    <Setter Property="Width" TargetName="ColumnDefinition1" Value="*"/>
+                                    <Setter Property="Height" TargetName="RowDefinition0" Value="*"/>
+                                    <Setter Property="Height" TargetName="RowDefinition1" Value="0"/>
+                                    <Setter Property="Margin" TargetName="headerPanel" Value="2,2,0,2"/>
+                                </Trigger>
+                                <Trigger Property="TabStripPlacement" Value="Right">
+                                    <Setter Property="Grid.Row" TargetName="headerPanel" Value="0"/>
+                                    <Setter Property="Grid.Row" TargetName="contentPanel" Value="0"/>
+                                    <Setter Property="Grid.Column" TargetName="headerPanel" Value="1"/>
+                                    <Setter Property="Grid.Column" TargetName="contentPanel" Value="0"/>
+                                    <Setter Property="Width" TargetName="ColumnDefinition0" Value="*"/>
+                                    <Setter Property="Width" TargetName="ColumnDefinition1" Value="Auto"/>
+                                    <Setter Property="Height" TargetName="RowDefinition0" Value="*"/>
+                                    <Setter Property="Height" TargetName="RowDefinition1" Value="0"/>
+                                    <Setter Property="Margin" TargetName="headerPanel" Value="0,2,2,2"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="false">
+                                    <Setter Property="TextElement.Foreground" TargetName="templateRoot" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            
+            <!-- TabItem -->
+            <Style x:Key="TabItemStyle" TargetType="{x:Type TabItem}">
+                <Setter Property="Margin" Value="0"/>
+                <Setter Property="Foreground" Value="#F5F5F5"/>
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="FontFamily" Value="{DynamicResource ArtifaktElementRegular}"/>
+                <Setter Property="UseLayoutRounding" Value="True"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="TabItem">
+                            <Border BorderThickness="{TemplateBinding BorderThickness}" 
+                                    BorderBrush="{TemplateBinding BorderBrush}" 
+                                    Padding="10 5"
+                                    Background="{TemplateBinding Background}">
+                                <ContentPresenter Content="{TemplateBinding Header}"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="#434343"/>
+                                    <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementBold}"/>
+                                </Trigger>
+                                <Trigger Property="IsSelected" Value="False">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
         </ResourceDictionary>
     </UserControl.Resources>
@@ -727,106 +816,152 @@
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
+                    
+                    <!--  Package Contents Label  -->
+                    <TextBlock Grid.Row="0"
+                                Style="{StaticResource LabelStyle}"
+                                Text="{x:Static p:Resources.PublishPackagePackageContent}" />
+
+                    <!--  Middle: DataGrid  -->
+                    <TabControl Background="Transparent"
+                                BorderBrush="Transparent"
+                                Grid.Row="1"
+                                Height="360"
+                                Margin="0,0,0,15"
+                                Style="{StaticResource TabControlStyle}">
+                        <TabItem Header="Source Path"
+                                 Style="{StaticResource TabItemStyle}"
+                                 IsSelected="True">
+                            <DataGrid
+                                      Margin="0"
+                                      VerticalAlignment="Stretch"
+                                      CanUserReorderColumns="False"
+                                      ItemsSource="{Binding PackageContents, UpdateSourceTrigger=PropertyChanged}"
+                                      Style="{StaticResource DataGrid}">
+                                <DataGrid.Columns>
+                                    <DataGridCheckBoxColumn MinWidth="85"
+                                                            MaxWidth="130"
+                                                            Binding="{Binding Path=IsNodeLibrary, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                            ElementStyle="{StaticResource CheckBoxStyle}"
+                                                            Header="{x:Static p:Resources.PublishPackageViewNodeLibrary}"
+                                                            HeaderStyle="{StaticResource DataGridColumnHeaderText}"
+                                                            IsReadOnly="False"
+                                                            IsThreeState="False" />
+                                    <DataGridTextColumn MinWidth="50"
+                                                        Binding="{Binding Path=DisplayName, UpdateSourceTrigger=PropertyChanged}"
+                                                        Header="{x:Static p:Resources.PublishPackageViewPackageName}"
+                                                        HeaderStyle="{StaticResource DataGridColumnHeaderText}"
+                                                        IsReadOnly="True" />
+                                    <DataGridTemplateColumn MinWidth="90"
+                                                            Width="*"
+                                                            Header="{x:Static p:Resources.PublishPackageViewFilePath}"
+                                                            HeaderStyle="{StaticResource DataGridColumnHeaderLast}"
+                                                            IsReadOnly="True">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <DockPanel>
+                                                    <Button Name="removeItemButton"
+                                                            Width="16"
+                                                            Height="16"
+                                                            Margin="5,-1,0,0"
+                                                            Command="{Binding ElementName=packageContentsGrid, Path=DataContext.RemoveItemCommand}"
+                                                            CommandParameter="{Binding}"
+                                                            Cursor="Hand"
+                                                            DockPanel.Dock="Right">
+                                                        <Button.ToolTip>
+                                                            <ToolTip Content="{x:Static p:Resources.PublishPackageViewRemoveItemToolTip}"
+                                                                     Style="{StaticResource GenericToolTipLight}" />
+                                                        </Button.ToolTip>
+                                                        <Button.Template>
+                                                            <ControlTemplate>
+                                                                <Rectangle Width="16"
+                                                                           Height="16">
+                                                                    <Rectangle.Fill>
+                                                                        <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/remove - default.png" />
+                                                                    </Rectangle.Fill>
+                                                                </Rectangle>
+                                                            </ControlTemplate>
+                                                        </Button.Template>
+                                                    </Button>
+                                                    <TextBlock Margin="0"
+                                                               Text="{Binding Path=FilePath, UpdateSourceTrigger=PropertyChanged}"
+                                                               TextTrimming="CharacterEllipsis">
+                                                        <TextBlock.ToolTip>
+                                                            <ToolTip Content="{Binding FilePath}"
+                                                                     Style="{StaticResource GenericToolTipLight}" />
+                                                        </TextBlock.ToolTip>
+                                                    </TextBlock>
+                                                </DockPanel>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </TabItem>
+                        <TabItem Header="Target Path"
+                                 Style="{StaticResource TabItemStyle}">
+                            <Label Foreground="White" Content="Not implemented yet"/>
+
+                        </TabItem>
+                    </TabControl>
 
                     <!--  Top Row: Buttons and Label  -->
-                    <DockPanel Grid.Row="0">
+                    <DockPanel Grid.Row="1"
+                               VerticalAlignment="Top"
+                               HorizontalAlignment="Right">
                         <!--  Add Directory  -->
                         <Button Command="{Binding Path=SelectDirectoryAndAddFilesRecursivelyCommand}"
                                 Content="{x:Static p:Resources.PublishPackageViewAddDirectoryButton}"
                                 DockPanel.Dock="Right"
-                                Style="{StaticResource TextButtonStyle}"
-                                TabIndex="16">
+                                TabIndex="16"
+                                Background="{StaticResource PrimaryCharcoal300Brush}"
+                                BorderThickness="0"
+                                Cursor="Hand">
                             <Button.ToolTip>
                                 <ToolTip Content="{x:Static p:Resources.PublishPackageViewAddDirectoryButtonTooltip}"
-                                         Style="{StaticResource GenericToolTipLight}"></ToolTip>
+                                         Style="{StaticResource GenericToolTipLight}" />
                             </Button.ToolTip>
+                            <Button.Template>
+                                <ControlTemplate>
+                                    <Grid>
+                                        <Rectangle Width="16"
+                                                   Height="16">
+                                            <Rectangle.Fill>
+                                                <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/add-folder-16px.png" />
+                                            </Rectangle.Fill>
+                                        </Rectangle>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Button.Template>
                         </Button>
 
                         <!--  Add Files  -->
                         <Button Command="{Binding Path=ShowAddFileDialogAndAddCommand}"
                                 Content="{x:Static p:Resources.PublishPackageViewAddFileButton}"
                                 DockPanel.Dock="Right"
-                                Style="{StaticResource TextButtonStyle}"
-                                TabIndex="15">
+                                TabIndex="15"
+                                Margin="0 2 10 0"
+                                Background="{StaticResource PrimaryCharcoal300Brush}"
+                                BorderThickness="0"
+                                Cursor="Hand">
                             <Button.ToolTip>
                                 <ToolTip Content="{x:Static p:Resources.PublishPackageViewAddFileButtonTooltip}"
-                                         Style="{StaticResource GenericToolTipLight}"></ToolTip>
+                                         Style="{StaticResource GenericToolTipLight}" />
                             </Button.ToolTip>
+                            <Button.Template>
+                                <ControlTemplate>
+                                    <Grid>
+                                        <Rectangle Width="16"
+                                                   Height="16">
+                                            <Rectangle.Fill>
+                                                <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/add-file-16px.png" />
+                                            </Rectangle.Fill>
+                                        </Rectangle>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Button.Template>
                         </Button>
-
-                        <!--  Package Contents Label  -->
-                        <TextBlock DockPanel.Dock="Left"
-                                   Style="{StaticResource LabelStyle}"
-                                   Text="{x:Static p:Resources.PublishPackagePackageContent}" />
                     </DockPanel>
-
-                    <!--  Middle: DataGrid  -->
-                    <DataGrid Grid.Row="1"
-                              Height="370"
-                              Margin="0,0,0,15"
-                              VerticalAlignment="Stretch"
-                              CanUserReorderColumns="False"
-                              ItemsSource="{Binding PackageContents, UpdateSourceTrigger=PropertyChanged}"
-                              Style="{StaticResource DataGrid}">
-                        <DataGrid.Columns>
-                            <DataGridCheckBoxColumn MinWidth="85"
-                                                    MaxWidth="130"
-                                                    Binding="{Binding Path=IsNodeLibrary, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                    ElementStyle="{StaticResource CheckBoxStyle}"
-                                                    Header="{x:Static p:Resources.PublishPackageViewNodeLibrary}"
-                                                    HeaderStyle="{StaticResource DataGridColumnHeaderText}"
-                                                    IsReadOnly="False"
-                                                    IsThreeState="False" />
-                            <DataGridTextColumn MinWidth="50"
-                                                Binding="{Binding Path=DisplayName, UpdateSourceTrigger=PropertyChanged}"
-                                                Header="{x:Static p:Resources.PublishPackageViewPackageName}"
-                                                HeaderStyle="{StaticResource DataGridColumnHeaderText}"
-                                                IsReadOnly="True" />
-                            <DataGridTemplateColumn MinWidth="90"
-                                                    Width="*"
-                                                    Header="{x:Static p:Resources.PublishPackageViewFilePath}"
-                                                    HeaderStyle="{StaticResource DataGridColumnHeaderLast}"
-                                                    IsReadOnly="True">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <DockPanel>
-                                            <Button Name="removeItemButton"
-                                                    Width="16"
-                                                    Height="16"
-                                                    Margin="5,-1,0,0"
-                                                    Command="{Binding ElementName=packageContentsGrid, Path=DataContext.RemoveItemCommand}"
-                                                    CommandParameter="{Binding}"
-                                                    Cursor="Hand"
-                                                    DockPanel.Dock="Right">
-                                                <Button.ToolTip>
-                                                    <ToolTip Content="{x:Static p:Resources.PublishPackageViewRemoveItemToolTip}"
-                                                             Style="{StaticResource GenericToolTipLight}" />
-                                                </Button.ToolTip>
-                                                <Button.Template>
-                                                    <ControlTemplate>
-                                                        <Rectangle Width="16"
-                                                                   Height="16">
-                                                            <Rectangle.Fill>
-                                                                <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/remove - default.png" />
-                                                            </Rectangle.Fill>
-                                                        </Rectangle>
-                                                    </ControlTemplate>
-                                                </Button.Template>
-                                            </Button>
-                                            <TextBlock Margin="0"
-                                                       Text="{Binding Path=FilePath, UpdateSourceTrigger=PropertyChanged}"
-                                                       TextTrimming="CharacterEllipsis">
-                                                <TextBlock.ToolTip>
-                                                    <ToolTip Content="{Binding FilePath}"
-                                                             Style="{StaticResource GenericToolTipLight}" />
-                                                </TextBlock.ToolTip>
-                                            </TextBlock>
-                                        </DockPanel>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
 
                     <!--  Bottom: Markdown Files & Dependencies  -->
                     <StackPanel Grid.Row="2"
@@ -914,11 +1049,11 @@
 
                 <!--  Grid Splitter  -->
                 <GridSplitter Grid.Column="1"
-                              Margin="-3,1"
+                              Margin="-3,0"
                               HorizontalAlignment="Stretch"
-                              BorderBrush="Transparent"
+                              BorderBrush="#FFFFFF"
                               BorderThickness="3,0"
-                              Opacity="0.3"
+                              Opacity="0.1"
                               ResizeBehavior="PreviousAndNext"
                               ResizeDirection="Columns"
                               Focusable="False" />

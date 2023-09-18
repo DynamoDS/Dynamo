@@ -55,6 +55,8 @@
   <ItemGroup>
     <None Remove="Packages\SplashScreen\build\index.bundle.js" />
     <None Remove="Packages\SplashScreen\build\index.html" />
+    <None Remove="UI\Images\add-file-16px.png" />
+    <None Remove="UI\Images\add-folder-16px.png" />
     <None Remove="UI\Images\Canvas\canvas-button-geometry-scaling.png" />
     <None Remove="UI\Images\NodeStates\package-64px.png" />
     <None Remove="UI\Images\PackageManager\empty-state-first-use-light-gray.png" />
@@ -775,6 +777,8 @@
     <Resource Include="UI\Images\AboutWindow\logo_about_dark.png">
       <CopyToOutputDirectory></CopyToOutputDirectory>
     </Resource>
+    <Resource Include="UI\Images\add-file-16px.png" />
+    <Resource Include="UI\Images\add-folder-16px.png" />
     <Resource Include="UI\Images\Alignment\align_bottom.png" />
     <Resource Include="UI\Images\Alignment\align_left.png" />
     <Resource Include="UI\Images\Alignment\align_right.png" />

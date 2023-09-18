@@ -1773,7 +1773,7 @@ Want to publish a different package?</value>
     <value>Add Files</value>
   </data>
   <data name="PublishPackageViewAddFileButtonTooltip" xml:space="preserve">
-    <value>Add File To Package</value>
+    <value>Add file</value>
   </data>
   <data name="PublishPackageViewContextMenuIsNodeLibrary" xml:space="preserve">
     <value>Is Node Library</value>
@@ -2848,7 +2848,7 @@ This package will be unloaded after the next Dynamo restart.</value>
     <value>Add Directory</value>
   </data>
   <data name="PublishPackageViewAddDirectoryButtonTooltip" xml:space="preserve">
-    <value>Add Directory And Its Files To Package</value>
+    <value>Add folder</value>
   </data>
   <data name="PublishPackageViewMarkdownFilesDirectory" xml:space="preserve">
     <value>Markdown Files Path (optional)</value>
