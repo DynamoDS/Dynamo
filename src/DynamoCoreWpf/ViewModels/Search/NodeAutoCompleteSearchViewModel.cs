@@ -173,7 +173,7 @@ namespace Dynamo.ViewModels
             var queries = new List<string>(){"String", "Number Slider", "Integer Slider", "Number", "Boolean", "Watch", "Watch 3D", "Python Script"};
             foreach (var query in queries)
             {
-                var foundNode = Search(query).FirstOrDefault();
+                var foundNode = Search(query).Where(n => n.Name.Equals(query)).FirstOrDefault();
                 if(foundNode != null)
                 {
                     candidates.Add(foundNode);
@@ -316,8 +316,8 @@ namespace Dynamo.ViewModels
             ServiceVersion = MLresults.Version;
             var results = new List<NodeSearchElementViewModel>();
 
-            var zeroTouchSearchElements = Model.SearchEntries.OfType<ZeroTouchSearchElement>().Where(x => x.IsVisibleInSearch);
-            var nodeModelSearchElements = Model.SearchEntries.OfType<NodeModelSearchElement>().Where(x => x.IsVisibleInSearch);
+            var zeroTouchSearchElements = Model.Entries.OfType<ZeroTouchSearchElement>().Where(x => x.IsVisibleInSearch);
+            var nodeModelSearchElements = Model.Entries.OfType<NodeModelSearchElement>().Where(x => x.IsVisibleInSearch);
 
             // ML Results are categorized based on the threshold confidence score before displaying. 
             if (MLresults.Results.Count() > 0)
@@ -800,8 +800,8 @@ namespace Dynamo.ViewModels
             }
 
             //gather all ztsearchelements or nodemodel nodes that are visible in search and filter using inputPortType and zt return type name.
-            var ztSearchElements = Model.SearchEntries.OfType<ZeroTouchSearchElement>().Where(x => x.IsVisibleInSearch);
-            var nodeModelSearchElements = Model.SearchEntries.OfType<NodeModelSearchElement>().Where(x => x.IsVisibleInSearch);
+            var ztSearchElements = Model.Entries.OfType<ZeroTouchSearchElement>().Where(x => x.IsVisibleInSearch);
+            var nodeModelSearchElements = Model.Entries.OfType<NodeModelSearchElement>().Where(x => x.IsVisibleInSearch);
 
             if (PortViewModel.PortModel.PortType == PortType.Input)
             {

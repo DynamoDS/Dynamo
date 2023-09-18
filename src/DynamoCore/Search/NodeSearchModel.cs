@@ -9,17 +9,6 @@ using Dynamo.Logging;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using DynamoUtilities;
-using Lucene.Net.Analysis;
-using Lucene.Net.Analysis.Br;
-using Lucene.Net.Analysis.Cjk;
-using Lucene.Net.Analysis.Cz;
-using Lucene.Net.Analysis.De;
-using Lucene.Net.Analysis.En;
-using Lucene.Net.Analysis.Es;
-using Lucene.Net.Analysis.Fr;
-using Lucene.Net.Analysis.It;
-using Lucene.Net.Analysis.Ru;
-using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
@@ -72,7 +61,7 @@ namespace Dynamo.Search
             var document = XmlHelper.CreateDocument("LibraryTree");
 
             var root = SearchCategoryUtil.CategorizeSearchEntries(
-                SearchEntries,
+                Entries,
                 entry => entry.Categories);
 
             foreach (var category in root.SubCategories)
@@ -294,7 +283,7 @@ namespace Dynamo.Search
 
         internal NodeSearchElement FindModelForNodeNameAndCategory(string nodeName, string nodeCategory, string parameters)
         {
-            var result = SearchEntries.Where(e => {
+            var result = Entries.Where(e => {
                 if (e.Name.Equals(nodeName) && e.FullCategoryName.Equals(nodeCategory))
                 {
                     //When the node info was indexed if Parameters was null we added an empty space (null cannot be indexed)
