@@ -1979,41 +1979,6 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// All the Nodes identified as deprecated
-        /// </summary>
-        internal IEnumerable<NodeModel> DeprecatedNodes
-        {
-            get
-            {
-                return Nodes.Where(node => node.NodeInfos.Any(nodeInfo => nodeInfo.Message.Contains(Configurations.DeprecatedMethodMessage)));
-            }
-        }
-
-        /// <summary>
-        /// Indicates if the Workspace have deprecated Nodes
-        /// </summary>
-        internal bool AreDeprecatedNodes
-        {
-            get
-            {
-                return DeprecatedNodes.Count() > 0;
-            }
-        }
-
-        /// <summary>
-        /// Indicates if all the deprecated nodes have metadata, bearing on mind if all their ports are connected
-        /// </summary>
-        internal bool AllDeprecatedNodesHaveMetadata
-        {
-            get
-            {
-                return DeprecatedNodes.All(node =>
-                node.InPorts.Count() == node.InPorts.Count(inPort => inPort.IsConnected == true) &&
-                node.OutPorts.Count() == node.OutPorts.Count(outPort => outPort.IsConnected == true));
-            }
-        }
-
-        /// <summary>
         /// Indicates if the workspace has crashes or serious errors
         /// </summary>
         internal bool AreThereCrashesOrSeriousErrors
@@ -2042,7 +2007,7 @@ namespace Dynamo.Graph.Workspaces
         {
             get
             {
-                return !AreThereCrashesOrSeriousErrors && !AreThereWarningsFromUnacceptableCategories && AllDeprecatedNodesHaveMetadata;
+                return !AreThereCrashesOrSeriousErrors && !AreThereWarningsFromUnacceptableCategories;
             }
         }
 
