@@ -1979,17 +1979,6 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Indicates if the workspace has crashes or serious errors
-        /// </summary>
-        internal bool AreThereCrashesOrSeriousErrors
-        {
-            get
-            {
-                return HasErrors;
-            }
-        }
-
-        /// <summary>
         /// Indicates if the workspace has warnings from unacceptable categories bearing in mind acceptable warnings are from Geometry Working Range and/or Gate Node
         /// </summary>
         internal bool AreThereWarningsFromUnacceptableCategories
@@ -2007,7 +1996,7 @@ namespace Dynamo.Graph.Workspaces
         {
             get
             {
-                return !AreThereCrashesOrSeriousErrors && !AreThereWarningsFromUnacceptableCategories;
+                return !HasErrors && !AreThereWarningsFromUnacceptableCategories;
             }
         }
 
