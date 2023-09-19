@@ -83,7 +83,7 @@ namespace Dynamo.Wpf.ViewModels.Core
         /// </summary>
         public bool HasInfos
         {
-            get { return Model.HasErrors; }
+            get { return Model.HasInfos; }
         }
 
         /// <summary>

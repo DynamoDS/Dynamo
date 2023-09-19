@@ -1979,24 +1979,13 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Indicates if the workspace has warnings from unacceptable categories bearing in mind acceptable warnings are from Geometry Working Range and/or Gate Node
-        /// </summary>
-        internal bool AreThereWarningsFromUnacceptableCategories
-        {
-            get
-            {
-                return HasWarningsWithNoGeometry; //Pending dealing with the Gate Nodes
-            }
-
-        }
-        /// <summary>
         /// Indicates if the workspace is valid for sending to the FDX
         /// </summary>
         internal bool IsValidForFDX
         {
             get
             {
-                return !HasErrors && !AreThereWarningsFromUnacceptableCategories;
+                return !HasErrors && !HasWarningsWithNoGeometry; //Pending dealing with the Gate Nodes
             }
         }
 
