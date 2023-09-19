@@ -689,34 +689,6 @@ namespace Dynamo.ViewModels
             return modelData;
         }
 
-        /// <summary>
-        /// Load the extra view information required to fully construct a WorkspaceModel object 
-        /// </summary>
-        /// <param name="json"></param>
-        static public ExtraWorkspaceViewInfo ExtraWorkspaceViewInfoFromJson(string json)
-        {
-            JsonReader reader = new JsonTextReader(new StringReader(json));
-            var obj = JObject.Load(reader);
-            var viewBlock = obj["View"];
-            if (viewBlock == null)
-              return null;
-
-           var settings = new JsonSerializerSettings
-           {
-               Error = (sender, args) =>
-               {
-                   args.ErrorContext.Handled = true;
-                   Console.WriteLine(args.ErrorContext.Error);
-               },
-               ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-               TypeNameHandling = TypeNameHandling.Auto,
-               Formatting = Newtonsoft.Json.Formatting.Indented,
-               Culture = CultureInfo.InvariantCulture
-           };
-
-            return JsonConvert.DeserializeObject<ExtraWorkspaceViewInfo>(viewBlock.ToString(), settings);
-        }
-
         void CopyPasteChanged(object sender, EventArgs e)
         {
             RaisePropertyChanged("CanPaste", "CanCopy", "CanCopyOrPaste");
