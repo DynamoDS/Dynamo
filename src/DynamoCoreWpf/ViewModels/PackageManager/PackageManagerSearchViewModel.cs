@@ -620,16 +620,10 @@ namespace Dynamo.PackageManager
         {
             if(LuceneUtility == null)
             {
-                LuceneSearch.LuceneUtilityPackageManager = new LuceneSearchUtility(PackageManagerClientViewModel.DynamoViewModel.Model);
+                LuceneSearch.LuceneUtilityPackageManager = new LuceneSearchUtility(PackageManagerClientViewModel.DynamoViewModel.Model,
+                    new LuceneStartConfig(LuceneSearchUtility.LuceneStorage.FILE_SYSTEM, LuceneConfig.PackagesIndexingDirectory));
             }
-            if (DynamoModel.IsTestMode)
-            {
-                LuceneUtility.InitializeLuceneConfig(string.Empty, LuceneSearchUtility.LuceneStorage.RAM);
-            }
-            else
-            {
-                LuceneUtility.InitializeLuceneConfig(LuceneConfig.PackagesIndexingDirectory);
-            }
+            LuceneUtility.InitializeLuceneConfig();
         }
         
         /// <summary>

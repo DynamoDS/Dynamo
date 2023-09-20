@@ -683,9 +683,7 @@ namespace Dynamo.ViewModels
                 else
                 {
                     LuceneSearch.LuceneUtilityNodeAutocomplete = new LuceneSearchUtility(dynamoViewModel.Model);
-
-                    //The dirName parameter doesn't matter because we are using RAMDirectory indexing and no files are created
-                    LuceneUtility.InitializeLuceneConfig(string.Empty, LuceneSearchUtility.LuceneStorage.RAM);
+                    LuceneUtility.InitializeLuceneConfig();
 
                     //Memory indexing process for Node Autocomplete (indexing just the nodes returned by the NodeAutocomplete service so we limit the scope of the query search)
                     foreach (var node in searchElementsCache.Select(x => x.Model))

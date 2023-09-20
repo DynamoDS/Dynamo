@@ -584,7 +584,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
             }
 
             //This line will be indexing the package information using Lucene
-            packageManagerSearchViewModel.LuceneUtility.InitializeLuceneConfig(string.Empty, Utilities.LuceneSearchUtility.LuceneStorage.RAM);
+            packageManagerSearchViewModel.LuceneUtility.InitializeLuceneConfig();
             foreach (var package in packageManagerSearchViewModel.SearchResults)
             {
                 var iDoc = packageManagerSearchViewModel.LuceneUtility.InitializeIndexDocumentForPackages();
