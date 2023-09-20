@@ -1056,7 +1056,7 @@ namespace Dynamo.Models
         internal PreferenceSettings CreatePreferences(IStartConfiguration config)
         {
             PreferenceSettings preferences = null;
-            if (!config.StartInTestMode)
+            if (config.Preferences != null)
             {
                 if (config.Preferences is PreferenceSettings settings)
                 {
