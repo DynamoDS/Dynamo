@@ -26,8 +26,8 @@
                            VerticalAlignment="Center"/>
                 <Image Source="{Binding InfoIcon}"
                        Margin="0 1 1 1"
-                       Width="10"
-                       Height="10"
+                       Width="12"
+                       Height="12"
                        HorizontalAlignment="Right"
                        SnapsToDevicePixels="True"
                        UseLayoutRounding="True"/>

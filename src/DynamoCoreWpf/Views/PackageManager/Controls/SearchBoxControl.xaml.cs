@@ -5,20 +5,39 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Threading;
 
 namespace Dynamo.PackageManager.UI
 {
+
     /// <summary>
     /// Interaction logic for SearchBoxControl.xaml
     /// </summary>
     public partial class SearchBoxControl : UserControl
     {
+        private DispatcherTimer delayTimer;
+
+        // set delay for event 500ms
+        private static int delayTime = 500;
         /// <summary>
         /// Constructor
         /// </summary>
         public SearchBoxControl()
         {
             InitializeComponent();
+        }
+        private static DispatcherTimer Debounce(DispatcherTimer dispatcher, TimeSpan interval, Action action)
+        {
+            dispatcher?.Stop();
+            dispatcher = null;
+            dispatcher = new DispatcherTimer(interval,  DispatcherPriority.ApplicationIdle, (s, e) =>
+            {
+                dispatcher?.Stop();
+                action.Invoke();
+            }, Dispatcher.CurrentDispatcher);
+            dispatcher?.Start();
+
+            return dispatcher;
         }
 
         /// <summary>
@@ -29,14 +48,15 @@ namespace Dynamo.PackageManager.UI
         /// <exception cref="NotImplementedException"></exception>
         private void SearchTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            var textBox = sender as TextBox;
-            if (textBox == null) return;
 
-            (this.DataContext as PackageManagerSearchViewModel).SearchAndUpdateResults(textBox.Text);
-
-            textBox.Focus();
+            Debounce(delayTimer, TimeSpan.FromMilliseconds(delayTime), () =>
+            {
+                var textBox = sender as TextBox;
+                if (textBox == null) return;
+                (this.DataContext as PackageManagerSearchViewModel)?.SearchAndUpdateResults(textBox.Text);
+                textBox.Focus();
+            });
         }
-
         private void OnSearchClearButtonClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             this.SearchTextBox.Clear();
@@ -110,7 +130,7 @@ namespace Dynamo.PackageManager.UI
     }
 
     /// <summary>
-    /// Converts null or empty string to Visibility Collapsed 
+    /// Converts null or empty string to Visibility Collapsed
     /// </summary>
     public class NonEmptyStringToCollapsedConverter : IValueConverter
     {
@@ -139,7 +159,7 @@ namespace Dynamo.PackageManager.UI
     }
 
     /// <summary>
-    /// Converts null or empty string to Visibility Collapsed 
+    /// Converts null or empty string to Visibility Collapsed
     /// </summary>
     public class EmptyStringToCollapsedConverter : IValueConverter
     {

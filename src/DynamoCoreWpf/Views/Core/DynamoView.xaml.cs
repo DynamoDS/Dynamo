@@ -1307,19 +1307,6 @@ namespace Dynamo.Controls
                 this.Deactivated += (s, args) => { HidePopupWhenWindowDeactivated(null); };
             }
             loaded = true;
-
-
-            //The following code illustrates use of FeatureFlagsManager.
-            //safe to remove.
-            if (DynamoModel.FeatureFlags != null)
-            {
-                CheckTestFlags();
-            }
-            //if feature flags is not yet initialized, subscribe to the event and wait.
-            else
-            {
-                DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved += CheckTestFlags;
-            }            
         }
 
         private void GuideFlowEvents_GuidedTourStart(GuidedTourStateEventArgs args)
@@ -1333,41 +1320,11 @@ namespace Dynamo.Controls
         /// <summary>
         /// Close Popup when the Dynamo window is not in the foreground.
         /// </summary>
-
         private void HidePopupWhenWindowDeactivated(object obj)
         {
             var workspace = this.ChildOfType<WorkspaceView>();
             if (workspace != null)
                 workspace.HideAllPopUp(obj);
-        }
-        /// <summary>
-        /// check some test flags from launch darkly.
-        /// code is safe to remove at any time.
-        /// </summary>
-        private void CheckTestFlags()
-        {
-            if (!DynamoModel.IsTestMode)
-            {
-                //feature flag test.
-                if (DynamoModel.FeatureFlags?.CheckFeatureFlag<bool>("EasterEggIcon1", false) == true)
-                {
-                    dynamoViewModel.Model.Logger.Log("EasterEggIcon1 is true from view");
-                }
-                else
-                {
-                    dynamoViewModel.Model.Logger.Log("EasterEggIcon1 is false from view");
-                }
-
-                if (DynamoModel.FeatureFlags?.CheckFeatureFlag<string>("EasterEggMessage1", "NA") is string ffs && ffs != "NA")
-                {
-                    dynamoViewModel.Model.Logger.Log("EasterEggMessage1 is enabled from view");
-                    MessageBoxService.Show(this, ffs, "EasterEggMessage1", MessageBoxButton.OK, MessageBoxImage.Asterisk);
-                }
-                else
-                {
-                    dynamoViewModel.Model.Logger.Log("EasterEggMessage1 is disabled from view");
-                }
-            }
         }
 
         private void TrackStartupAnalytics()
@@ -1640,7 +1597,7 @@ namespace Dynamo.Controls
         /// <returns></returns>
         internal void ShowNewFunctionDialog(FunctionNamePromptEventArgs e)
         {
-            var elements = dynamoViewModel.Model.SearchModel.SearchEntries;
+            var elements = dynamoViewModel.Model.SearchModel.Entries;
 
             // Unique package and custom node categories
             var allCategories = getUniqueAddOnCategories(elements);
@@ -1967,8 +1924,6 @@ namespace Dynamo.Controls
             this.dynamoViewModel.RequestReturnFocusToView -= OnRequestReturnFocusToView;
             this.dynamoViewModel.Model.WorkspaceSaving -= OnWorkspaceSaving;
             this.dynamoViewModel.Model.WorkspaceOpened -= OnWorkspaceOpened;
-            DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved -= CheckTestFlags;
-
             this.dynamoViewModel.RequestEnableShortcutBarItems -= DynamoViewModel_RequestEnableShortcutBarItems;
             this.dynamoViewModel.RequestExportWorkSpaceAsImage -= OnRequestExportWorkSpaceAsImage;
 

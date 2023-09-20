@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Dynamo.Logging
 {
@@ -7,6 +7,7 @@ namespace Dynamo.Logging
     /// </summary>
     public static class Analytics
     {
+        //TODO we currently use this like a no network comms flags - work on introducing a new flag or renaming this flag.
         /// <summary>
         /// Disables all analytics collection for the lifetime of the process.
         /// To ensure that no analytics get through, please set set this flag to false before the DynamoModel is constructed.

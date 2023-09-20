@@ -1441,6 +1441,31 @@ namespace Dynamo.Controls
     }
 
     /// <summary>
+    /// Takes a boolean value and if the value is true returns Unity Type Auto (*) as a length value
+    /// Returns 0 length if the value is false
+    /// To be used in Grid Column/Row width 
+    /// </summary>
+    public class BoolToZeroLengthConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if ((bool)value)
+            {
+                return new GridLength(1, GridUnitType.Auto);
+            }
+            else
+            {
+                return new GridLength(0);
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    /// <summary>
     /// Used in the Dynamo package manager search window to hide or show a label next to each package's name.
     /// The label only appears if the package has been recently created/updated (in the last 30 days).
     /// Label text is set via the DateToPackageLabelConverter.

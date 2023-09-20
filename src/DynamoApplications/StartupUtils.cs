@@ -398,20 +398,21 @@ namespace Dynamo.Applications
             HostAnalyticsInfo info = new HostAnalyticsInfo(),
             bool isServiceMode = false)
         {
+
             var config = new DynamoModel.DefaultStartConfiguration
             {
                 GeometryFactoryPath = geometryFactoryPath,
                 ProcessMode = CLImode ? TaskProcessMode.Synchronous : TaskProcessMode.Asynchronous,
                 HostAnalyticsInfo = info,
                 CLIMode = CLImode,
-                AuthProvider = CLImode ? null : new Core.IDSDKManager(),
+                //TODO we currently use this like a no network comms flags - work on introducing a new flag or renaming this flag.
+                AuthProvider = CLImode || Dynamo.Logging.Analytics.DisableAnalytics ? null : new Core.IDSDKManager(),
                 UpdateManager = CLImode ? null : OSHelper.IsWindows() ? InitializeUpdateManager() : null,
                 StartInTestMode = CLImode,
                 PathResolver = CreatePathResolver(CLImode, preloaderLocation, userDataFolder, commonDataFolder),
                 IsServiceMode = isServiceMode,
                 Preferences = PreferenceSettings.Instance
             };
-
             var model = DynamoModel.Start(config);
             return model;
         }

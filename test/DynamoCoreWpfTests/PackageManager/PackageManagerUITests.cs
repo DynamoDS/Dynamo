@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Dynamo.Core;
 using Dynamo.Extensions;
@@ -898,7 +899,7 @@ namespace DynamoCoreWpfTests.PackageManager
             Assert.AreEqual(PackageLoadState.ScheduledTypes.None, builtInPkgViewModel.Model.LoadState.ScheduledState);
 
             Assert.IsFalse(currentDynamoModel.PreferenceSettings.PackageDirectoriesToUninstall.Contains(builtInPkgViewModel.Model.RootDirectory));
-            Assert.IsTrue(currentDynamoModel.SearchModel.SearchEntries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello") == 1);
+            Assert.IsTrue(currentDynamoModel.SearchModel.Entries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello") == 1);
 
             Assert.AreEqual(2, filters.Count);
             Assert.AreEqual(@"All", filters[0].Name);
@@ -937,7 +938,7 @@ namespace DynamoCoreWpfTests.PackageManager
             var pkg = loader.LocalPackages.Where(x => x.Name == "SignedPackage").FirstOrDefault();
             Assert.IsNotNull(pkg, "Expected Signed package to be valid");
             Assert.AreEqual(PackageLoadState.StateTypes.Loaded, pkg.LoadState.State);
-            Assert.AreEqual(1, currentDynamoModel.SearchModel.SearchEntries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello"));
+            Assert.AreEqual(1, currentDynamoModel.SearchModel.Entries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello"));
 
             // remove the path to SignedPackage2
             vm.DeletePathCommand.Execute(vm.RootLocations.Count - 1);
@@ -946,7 +947,7 @@ namespace DynamoCoreWpfTests.PackageManager
             vm.SaveSettingCommand.Execute(null);
 
             Assert.AreEqual(1, loader.LocalPackages.Count(x => x.Name == "SignedPackage"));
-            Assert.AreEqual(1, currentDynamoModel.SearchModel.SearchEntries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello"));
+            Assert.AreEqual(1, currentDynamoModel.SearchModel.Entries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello"));
 
             // re-add the path to SignedPackage2
             vm.AddPathCommand.Execute(null);
@@ -955,7 +956,7 @@ namespace DynamoCoreWpfTests.PackageManager
             vm.SaveSettingCommand.Execute(null);
 
             Assert.AreEqual(1, loader.LocalPackages.Count(x => x.Name == "SignedPackage"));
-            Assert.AreEqual(1, currentDynamoModel.SearchModel.SearchEntries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello"));
+            Assert.AreEqual(1, currentDynamoModel.SearchModel.Entries.Count(x => x.FullName == "SignedPackage2.SignedPackage2.SignedPackage2.Hello"));
         }
 
         public void PackageContainingNodeViewOnlyCustomization_AddsCustomizationToCustomizationLibrary()
@@ -1611,6 +1612,33 @@ namespace DynamoCoreWpfTests.PackageManager
 
             AssertWindowOwnedByDynamoView<PackageManagerView>();
             AssertWindowClosedWithDynamoView<PackageManagerView>();
+        }
+
+        /// <summary>
+        ///     Asserts that the filter context menu will stay open while the user interacts with it
+        /// </summary>
+        [Test]
+        public void FiltersContextMenuStaysOpen()
+        {
+            ViewModel.OnRequestPackageManagerDialog(null, null);
+            Thread.Sleep(500);
+
+            var windows = GetWindowEnumerable(View.OwnedWindows);
+            var pacakgeManager = windows.First(x => x is PackageManagerView) as PackageManagerView;
+            var pacakgeManagerSearchControl = pacakgeManager.packageManagerSearch;
+            Assert.IsNotNull(pacakgeManagerSearchControl);
+
+            var button = pacakgeManager.packageManagerSearch.filterResultsButton;
+            button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+
+            var hostFilterContextMenu = pacakgeManagerSearchControl.HostFilter;
+            Assert.IsTrue(hostFilterContextMenu.IsOpen);
+
+            var menuItemOne = hostFilterContextMenu.Items[1] as PackageManagerSearchViewModel.FilterEntry;
+            Assert.IsNotNull(menuItemOne);
+
+            menuItemOne.FilterCommand.Execute(null);
+            Assert.IsTrue(hostFilterContextMenu.IsOpen);
         }
 
         #endregion
