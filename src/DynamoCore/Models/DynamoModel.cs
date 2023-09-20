@@ -1495,7 +1495,7 @@ namespace Dynamo.Models
                 var iDoc = LuceneUtility.InitializeIndexDocumentForNodes();
                 if (searchElement != null)
                 {
-                    AddNodeTypeToSearchIndex(searchElement, iDoc);
+                    LuceneUtility.AddNodeTypeToSearchIndex(searchElement, iDoc);
                 }
 
                 LuceneUtility.CommitWriterChanges();
@@ -1566,7 +1566,7 @@ namespace Dynamo.Models
 
             var cnbNode = new CodeBlockNodeSearchElement(cbnData, LibraryServices);
             SearchModel?.Add(cnbNode);
-            AddNodeTypeToSearchIndex(cnbNode, iDoc);
+            LuceneUtility.AddNodeTypeToSearchIndex(cnbNode, iDoc);
 
             var symbolSearchElement = new NodeModelSearchElement(symbolData)
             {
@@ -1585,10 +1585,10 @@ namespace Dynamo.Models
             };
 
             SearchModel?.Add(symbolSearchElement);
-            AddNodeTypeToSearchIndex(symbolSearchElement, iDoc);
+            LuceneUtility.AddNodeTypeToSearchIndex(symbolSearchElement, iDoc);
 
             SearchModel?.Add(outputSearchElement);
-            AddNodeTypeToSearchIndex(outputSearchElement, iDoc);
+            LuceneUtility.AddNodeTypeToSearchIndex(outputSearchElement, iDoc);
 
         }
 
@@ -1748,7 +1748,7 @@ namespace Dynamo.Models
                     // TODO: get search element some other way
                     if (ele != null)
                     {
-                        AddNodeTypeToSearchIndex(ele, iDoc);
+                        LuceneUtility.AddNodeTypeToSearchIndex(ele, iDoc);
                     }
                 }
                 catch (Exception e)
@@ -3255,24 +3255,6 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Add node information to Lucene index
-        /// </summary>
-        /// <param name="node">node info that will be indexed</param>
-        /// <param name="doc">Lucene document in which the node info will be indexed</param>
-        internal void AddNodeTypeToSearchIndex(NodeSearchElement node, Document doc)
-        {
-            if (LuceneUtility.addedFields == null) return;
-
-            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName), node.FullCategoryName);
-            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), node.Name);
-            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Description), node.Description);
-            if (node.SearchKeywords.Count > 0) LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords), node.SearchKeywords.Aggregate((x, y) => x + " " + y), true, true);
-            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Parameters), node.Parameters ?? string.Empty);
-
-            LuceneUtility.writer?.AddDocument(doc);
-        }
-
-        /// <summary>
         /// Remove node information from Lucene indexing.
         /// </summary>
         /// <param name="node">node info that needs to be removed.</param>
@@ -3331,7 +3313,7 @@ namespace Dynamo.Models
             {
                 var ele = new ZeroTouchSearchElement(functionDescriptor);
                 SearchModel?.Add(ele);
-                AddNodeTypeToSearchIndex(ele, iDoc);
+                LuceneUtility.AddNodeTypeToSearchIndex(ele, iDoc);
             }
         }
 

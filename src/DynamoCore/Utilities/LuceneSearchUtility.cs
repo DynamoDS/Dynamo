@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Dynamo.Configuration;
 using Dynamo.Models;
+using Dynamo.Search.SearchElements;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Br;
 using Lucene.Net.Analysis.Cjk;
@@ -25,14 +26,44 @@ using Lucene.Net.Util;
 
 namespace Dynamo.Utilities
 {
+    /// <summary>
+    /// Lucene search utility class that will be used for indexing and searching nodes and packages
+    /// </summary>
     internal class LuceneSearchUtility
     {
+        /// <summary>
+        /// Dynamo Model reference
+        /// </summary>
         internal DynamoModel dynamoModel;
+
+        /// <summary>
+        /// Index fields that were added to the document
+        /// </summary>
         internal List<string> addedFields;
+
+        /// <summary>
+        /// Lucene Directory Reader
+        /// </summary>
         internal DirectoryReader dirReader;
+
+        /// <summary>
+        /// Lucene Index Directory, it can be RAMDirectory or FSDirectory
+        /// </summary>
         internal Lucene.Net.Store.Directory indexDir;
+
+        /// <summary>
+        /// Lucene Index write
+        /// </summary>
         internal IndexWriter writer;
+
+        /// <summary>
+        /// Lucene Index Directory name
+        /// </summary>
         internal string directory;
+
+        /// <summary>
+        /// Current Lucene Index Storage type, it could be RAM or FILE_SYSTEM
+        /// </summary>
         internal LuceneStorage currentStorageType;
 
         public enum LuceneStorage
@@ -96,6 +127,7 @@ namespace Dynamo.Utilities
                     };
 
                     writer = new IndexWriter(indexDir, indexConfig);
+                    writer.Commit();
                 }
                 catch (LockObtainFailedException ex)
                 {
@@ -353,6 +385,27 @@ namespace Dynamo.Utilities
                 //Commit the info indexed
                 writer?.Commit();
             }
+        }
+
+        /// <summary>
+        /// Add node information to existing Lucene index
+        /// </summary>
+        /// <param name="node">node info that will be indexed</param>
+        /// <param name="doc">Lucene document in which the node info will be indexed</param>
+        internal void AddNodeTypeToSearchIndex(NodeSearchElement node, Document doc)
+        {
+            if (addedFields == null) return;
+
+            SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName), node.FullCategoryName);
+            SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), node.Name);
+            SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Description), node.Description);
+            if (node.SearchKeywords.Count > 0)
+            {
+                SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords), node.SearchKeywords.Aggregate((x, y) => x + " " + y), true, true);
+            }
+            SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Parameters), node.Parameters ?? string.Empty);
+
+            writer?.AddDocument(doc);
         }
     }
 

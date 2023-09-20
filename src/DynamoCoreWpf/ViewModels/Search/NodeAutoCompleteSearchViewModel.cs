@@ -45,7 +45,7 @@ namespace Dynamo.ViewModels
         private const string nodeAutocompleteMLEndpoint = "MLNodeAutocomplete";
 
         // Lucene search utility to perform indexing operations just for NodeAutocomplete.
-        private LuceneSearchUtility LuceneUtility
+        private static LuceneSearchUtility LuceneUtility
         {
             get
             {
@@ -691,7 +691,7 @@ namespace Dynamo.ViewModels
                     foreach (var node in searchElementsCache.Select(x => x.Model))
                     {
                         var doc = LuceneUtility.InitializeIndexDocumentForNodes();
-                        AddNodeTypeToSearchIndex(node, doc);
+                        LuceneUtility.AddNodeTypeToSearchIndex(node, doc);
                     }
 
                     //Write the Lucene documents to memory
@@ -720,24 +720,6 @@ namespace Dynamo.ViewModels
                     LuceneUtility.DisposeWriter();
                 }
             }
-        }
-
-        /// <summary>
-        /// Add node information to Lucene index
-        /// </summary>
-        /// <param name="node">node info that will be indexed</param>
-        /// <param name="doc">Lucene document in which the node info will be indexed</param>
-        private void AddNodeTypeToSearchIndex(NodeSearchElement node, Document doc)
-        {
-            if (LuceneUtility.addedFields == null) return;
-
-            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName), node.FullCategoryName);
-            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), node.Name);
-            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Description), node.Description);
-            if (node.SearchKeywords.Count > 0) LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords), node.SearchKeywords.Aggregate((x, y) => x + " " + y), true, true);
-            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Parameters), node.Parameters ?? string.Empty);
-
-            LuceneUtility.writer?.AddDocument(doc);
         }
 
         /// <summary>
