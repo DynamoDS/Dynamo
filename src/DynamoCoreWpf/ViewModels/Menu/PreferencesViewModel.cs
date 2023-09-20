@@ -195,7 +195,7 @@ namespace Dynamo.ViewModels
                     selectedUnits = value;
                     RaisePropertyChanged(nameof(SelectedUnits));
 
-                    if (UseHostScaleUnits) return;
+                    if (UseHostScaleUnits && IsDynamoRevit) return;
 
                     var result = Enum.TryParse(selectedUnits, out Configurations.Units currentUnit);
                     if (!result) return;
