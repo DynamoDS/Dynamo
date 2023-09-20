@@ -970,8 +970,8 @@ Don't worry, you'll have the option to save your work.</value>
     <comment>View menu | Show console</comment>
   </data>
   <data name="DynamoViewViewMenuShowGrid" xml:space="preserve">
-    <value>_Show Grid</value>
-    <comment>View menu | Show Grid</comment>
+    <value>_Show Helpers</value>
+    <comment>View menu | Show Helpers</comment>
   </data>
   <data name="DynamoViewViewMenuZoom" xml:space="preserve">
     <value>_Zoom</value>

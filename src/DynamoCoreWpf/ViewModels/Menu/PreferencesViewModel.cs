@@ -17,7 +17,6 @@ using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels.Core.Converters;
 using DynamoUtilities;
 using ViewModels.Core;
-using static Dynamo.Configuration.Configurations;
 using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.ViewModels
@@ -195,7 +194,7 @@ namespace Dynamo.ViewModels
                     selectedUnits = value;
                     RaisePropertyChanged(nameof(SelectedUnits));
 
-                    if (UseHostScaleUnits) return;
+                    if (UseHostScaleUnits && IsDynamoRevit) return;
 
                     var result = Enum.TryParse(selectedUnits, out Configurations.Units currentUnit);
                     if (!result) return;

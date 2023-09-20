@@ -677,8 +677,8 @@
     <comment>View menu | Navigate background 3D preview</comment>
   </data>
   <data name="DynamoViewViewMenuShowGrid" xml:space="preserve">
-    <value>_Show Grid</value>
-    <comment>View menu | Show Grid</comment>
+    <value>_Show Helpers</value>
+    <comment>View menu | Show Helpers</comment>
   </data>
   <data name="DynamoViewViewMenuShowBackground3DPreview" xml:space="preserve">
     <value>Showing Background 3D Preview</value>
