@@ -27,7 +27,7 @@ namespace Dynamo.DocumentationBrowser
         internal string WebBrowserUserDataFolder { get; set; }
         internal string FallbackDirectoryName { get; set; }
         //This folder will be used to store all the images located in Degub/en-US/fallback_docs so we don't need to copy all the images per each language
-        internal const string FallbackImagesDirectoryName = "fallback_docs_images";
+        internal const string FallbackImagesDirectoryName = "NodeHelpDocsImages";
 
         //Path in which the virtual folder for loading images will be created
         internal string VirtualFolderPath { get; set; }

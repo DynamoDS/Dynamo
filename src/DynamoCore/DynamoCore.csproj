@@ -135,9 +135,9 @@
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\InstrumentationConsent.rtf" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\ADPAnalyticsConsent.rtf" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(NodeHelpFiles)" DestinationFolder="$(OutputPath)\en-US\fallback_docs\" />
-    <Copy SourceFiles="@(NodeHelpJpgImageFiles)" DestinationFolder="$(OutputPath)\fallback_docs_images\" />
-	<Copy SourceFiles="@(NodeHelpPngImageFiles)" DestinationFolder="$(OutputPath)\fallback_docs_images\" />
-	<Copy SourceFiles="@(NodeHelpGifImageFiles)" DestinationFolder="$(OutputPath)\fallback_docs_images\" />
+    <Copy SourceFiles="@(NodeHelpJpgImageFiles)" DestinationFolder="$(OutputPath)\NodeHelpDocsImages\" />
+	<Copy SourceFiles="@(NodeHelpPngImageFiles)" DestinationFolder="$(OutputPath)\NodeHelpDocsImages\" />
+	<Copy SourceFiles="@(NodeHelpGifImageFiles)" DestinationFolder="$(OutputPath)\NodeHelpDocsImages\" />
     <Copy SourceFiles="@(OpenSourceLicenses)" DestinationFolder="$(OutputPath)Open Source Licenses\" />
     <Copy SourceFiles="@(LibGInterface)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(LibGProtoGeometryDLL)" DestinationFolder="$(OutputPath)" />
