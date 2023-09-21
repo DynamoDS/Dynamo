@@ -170,7 +170,8 @@ namespace DynamoCoreWpfTests
             File.Delete(filePath);
             File.Delete(saveAsPath);
         }
-        
+
+        [Test]
         public void TestToastNotificationClosingBehavior()
         {
             var preferencesWindow = new PreferencesView(View);

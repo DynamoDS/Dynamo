@@ -628,7 +628,7 @@ namespace Dynamo.ViewModels
                 {
                     // For intentional SaveAs either through UI or API calls, replace workspace elements' Guids and workspace Id
                     jo["Uuid"] = Guid.NewGuid().ToString();
-                    if (jo["Bindings"] != JToken.Parse("[]"))
+                    if (jo["Bindings"] != null && jo["Bindings"].Any())
                     {
                         jo["Bindings"] = JToken.Parse("[]");
 
