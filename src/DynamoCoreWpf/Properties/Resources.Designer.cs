@@ -2603,7 +2603,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Show Helpers.
+        ///   Looks up a localized string similar to _Show Grid.
         /// </summary>
         public static string DynamoViewViewMenuShowGrid {
             get {
