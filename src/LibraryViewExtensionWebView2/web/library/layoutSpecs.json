@@ -1186,7 +1186,7 @@
                   "path": "DSCoreNodes.DSCore.Data.StringifyJSON"
                 },
                 {
-                  "path": "Core.Data.Rememeber"
+                  "path": "Core.Data.Remember"
                 }
               ],
               "childElements": []
