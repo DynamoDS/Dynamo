@@ -119,17 +119,26 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-ICSharpCode.AvalonEdit v.6.3.0.90:
-http://www.avalonedit.net/
-https://licenses.nuget.org/MIT
+ICSharpCode.AvalonEdit v.4.3.1.9430:
+http://avalonedit.net
+https://opensource.org/licenses/lgpl-2.1.php
 
-MIT License
+Portions related to the Avalon Edit v.4.3.1.9429 are © 2014 AlphaSierraPapa for the SharpDevelop Team. All rights reserved. Avalon Edit is licensed under the GNU Lesser General Public License v.3.0, which can be found at http://opensource.org/licenses/lgpl-3.0.html. A text copy of this license is included on the media provided by Autodesk or with the download of this Autodesk software. You may obtain a copy of the source code for Avalon Edit v.4.3.1.9429 from www.autodesk.com/lgplsource or by sending a written request to:
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+Autodesk, Inc.
+Attention: General Counsel
+Legal Department
+111 McInnis Parkway
+San Rafael, CA 9490
 
-The above copyright notice and this permission notice (including the next paragraph) shall be included in all copies or substantial portions of the Software.
+Your written request must:
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+1. Contain a self-addressed CD/DVD mailer (or envelope sufficiently large to hold a DVD) with postage sufficient to cover the amount of the current U.S. Post Office First Class postage rate for CD/DVD mailers (or the envelope you have chosen) weighing 5 ounces from San Rafael, California USA to your indicated address; and
+2. Identify:
+• this Autodesk software name and release number;
+• that you are requesting the source code for Avalon Edit v.4.3.1.9429; and
+• the above URL (www.autodesk.com/lgplsource)
+so that Autodesk may properly respond to your request. The offer to receive this Avalon Edit source code via the above URL (www.autodesk.com/lgplsource) or by written request to Autodesk is valid for a period of three (3) years from the date you purchased your license to this Autodesk software. You may modify, debug and relink Avalon Edit to this Autodesk software as provided under the terms of the GNU Lesser General Public License v.3.0.
 
 Google OpenSans:
 OpenSans font from Google

@@ -10,7 +10,7 @@
     <AssemblyName>DSIronPython</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-	<PackageReference Include="AvalonEdit" Version="6.3.0.90" />
+	<PackageReference Include="AvalonEdit" Version="4.3.1.9430" />
 	<PackageReference Include="DynamicLanguageRuntime" Version="1.2.2" />
 	<PackageReference Include="IronPython" Version="2.7.9" />
 	<PackageReference Include="IronPython.StdLib" Version="2.7.9" />

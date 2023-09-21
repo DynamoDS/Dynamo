@@ -15,7 +15,7 @@
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-	  <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
+	  <PackageReference Include="AvalonEdit" Version="4.3.1.9430" />
       <PackageReference Include="Moq" Version="4.18.4" />
 	  <PackageReference Include="Cyotek.Drawing.BitmapFont" Version="2.0.0" />
 	  <PackageReference Include="Greg" Version="2.5.0.5076">
