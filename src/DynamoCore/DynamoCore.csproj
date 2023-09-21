@@ -122,7 +122,10 @@
           <LibG229 Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\LibG_229_0_0\*" />
           <ExternSimplexNoise Include="$(SolutionDir)..\extern\SimplexNoise\*" />
           <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\**\*.*" />
-          <NodeHelpFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.*" />
+          <NodeHelpMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.md"/>
+		  <NodeHelpDYNFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.dyn"/>
+		  <NodeHelpTXTFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.txt"/>
+		  <NodeHelpSATFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.sat"/>
           <NodeHelpJpgImageFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.jpg" />
 		  <NodeHelpPngImageFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.png" />
 		  <NodeHelpGifImageFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.gif" />
@@ -134,7 +137,10 @@
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\TermsOfUse.rtf" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\InstrumentationConsent.rtf" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\ADPAnalyticsConsent.rtf" DestinationFolder="$(OutputPath)" />
-    <Copy SourceFiles="@(NodeHelpFiles)" DestinationFolder="$(OutputPath)\en-US\fallback_docs\" />
+    <Copy SourceFiles="@(NodeHelpMDFiles)" DestinationFolder="$(OutputPath)\en-US\fallback_docs\" />
+	<Copy SourceFiles="@(NodeHelpDYNFiles)" DestinationFolder="$(OutputPath)\en-US\fallback_docs\" />
+	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\en-US\fallback_docs\" />
+	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\en-US\fallback_docs\" />
     <Copy SourceFiles="@(NodeHelpJpgImageFiles)" DestinationFolder="$(OutputPath)\NodeHelpDocsImages\" />
 	<Copy SourceFiles="@(NodeHelpPngImageFiles)" DestinationFolder="$(OutputPath)\NodeHelpDocsImages\" />
 	<Copy SourceFiles="@(NodeHelpGifImageFiles)" DestinationFolder="$(OutputPath)\NodeHelpDocsImages\" />
