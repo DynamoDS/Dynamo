@@ -132,7 +132,7 @@
   </ItemGroup>
   <ItemGroup> 
     <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.2485" />
-    <PackageReference Include="AvalonEdit" Version="6.3.0.90" CopyXML="true" />
+    <PackageReference Include="AvalonEdit" Version="4.3.1.9430" CopyXML="true" />
     <PackageReference Include="Greg" Version="2.5.0.5076" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" />
 	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
