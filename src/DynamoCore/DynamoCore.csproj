@@ -123,6 +123,9 @@
           <ExternSimplexNoise Include="$(SolutionDir)..\extern\SimplexNoise\*" />
           <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\**\*.*" />
           <NodeHelpFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.*" />
+          <NodeHelpJpgImageFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.jpg" />
+		  <NodeHelpPngImageFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.png" />
+		  <NodeHelpGifImageFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.gif" />
           <OpenSourceLicenses Include="$(SolutionDir)..\doc\distrib\Open Source Licenses\**\*.*" />
           <LocalizedResources Include="$(SolutionDir)..\extern\Localized\**\*.*" />
       </ItemGroup>
@@ -132,6 +135,9 @@
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\InstrumentationConsent.rtf" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\ADPAnalyticsConsent.rtf" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(NodeHelpFiles)" DestinationFolder="$(OutputPath)\en-US\fallback_docs\" />
+    <Copy SourceFiles="@(NodeHelpJpgImageFiles)" DestinationFolder="$(OutputPath)\fallback_docs_images\" />
+	<Copy SourceFiles="@(NodeHelpPngImageFiles)" DestinationFolder="$(OutputPath)\fallback_docs_images\" />
+	<Copy SourceFiles="@(NodeHelpGifImageFiles)" DestinationFolder="$(OutputPath)\fallback_docs_images\" />
     <Copy SourceFiles="@(OpenSourceLicenses)" DestinationFolder="$(OutputPath)Open Source Licenses\" />
     <Copy SourceFiles="@(LibGInterface)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(LibGProtoGeometryDLL)" DestinationFolder="$(OutputPath)" />

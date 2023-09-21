@@ -26,6 +26,8 @@ namespace Dynamo.DocumentationBrowser
 
         internal string WebBrowserUserDataFolder { get; set; }
         internal string FallbackDirectoryName { get; set; }
+        //This folder will be used to store all the images located in Degub/en-US/fallback_docs so we don't need to copy all the images per each language
+        internal const string FallbackImagesDirectoryName = "fallback_docs_images";
 
         //Path in which the virtual folder for loading images will be created
         internal string VirtualFolderPath { get; set; }
@@ -136,7 +138,11 @@ namespace Dynamo.DocumentationBrowser
             {
                 if (viewModel.Link != null && !string.IsNullOrEmpty(viewModel.CurrentPackageName))
                 {
-                    VirtualFolderPath = Path.GetDirectoryName(HttpUtility.UrlDecode(viewModel.Link.AbsolutePath));
+                    string absolutePath = Path.GetDirectoryName(HttpUtility.UrlDecode(viewModel.Link.AbsolutePath));
+                    //We move two levels up so it will be located in same level than the the fallback_docs_images directory
+                    string imagesLocation = Directory.GetParent(Directory.GetParent(absolutePath).FullName).FullName;
+                    //Adds the fallback_docs_images directory to the path
+                    VirtualFolderPath = Path.Combine(imagesLocation, FallbackImagesDirectoryName);
                 }
                 else
                     VirtualFolderPath = FallbackDirectoryName;
