@@ -375,7 +375,7 @@ namespace Dynamo.Tests.Configuration
         }
 
         [Test]
-        [Category("UnitTests"), Category("FailureNET6")]
+        [Category("UnitTests")]
         public void TestImportCopySettings()
         {
             string settingDirectory = Path.Combine(TestDirectory, "settings");
