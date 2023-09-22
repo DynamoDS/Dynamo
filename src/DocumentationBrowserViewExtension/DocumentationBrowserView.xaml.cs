@@ -26,8 +26,8 @@ namespace Dynamo.DocumentationBrowser
 
         internal string WebBrowserUserDataFolder { get; set; }
         internal string FallbackDirectoryName { get; set; }
-        //This folder will be used to store all the images located in Degub/en-US/fallback_docs so we don't need to copy all the images per each language
-        internal const string SharedImagesDirectoryName = "NodeHelpDocsImages";
+        //This folder will be used to store images and dyn files previosuly located in /rootDirectory/en-US/fallback_docs so we don't need to copy all those files per each language
+        internal const string SharedDocsDirectoryName = "NodeHelpSharedDocs";
 
         //Path in which the virtual folder for loading images will be created
         internal string VirtualFolderPath { get; set; }
@@ -138,11 +138,11 @@ namespace Dynamo.DocumentationBrowser
             {
                 if (viewModel.Link != null && !string.IsNullOrEmpty(viewModel.CurrentPackageName))
                 {
-                    string absolutePath = Path.GetDirectoryName(HttpUtility.UrlDecode(viewModel.Link.AbsolutePath));
-                    //We move two levels up so it will be located in same level than the the fallback_docs_images directory
-                    string imagesLocation = Directory.GetParent(Directory.GetParent(absolutePath).FullName).FullName;
-                    //Adds the fallback_docs_images directory to the path
-                    VirtualFolderPath = Path.Combine(imagesLocation, SharedImagesDirectoryName);
+                    var absolutePath = Path.GetDirectoryName(HttpUtility.UrlDecode(viewModel.Link.AbsolutePath));
+                    //We move two levels up so it will be located in same level than the the NodeHelpSharedDocs directory
+                    var imagesLocation = new DirectoryInfo(absolutePath).Parent.Parent.FullName;
+                    //Adds the NodeHelpSharedDocs directory to the path
+                    VirtualFolderPath = Path.Combine(imagesLocation, SharedDocsDirectoryName);
                 }
                 else
                     VirtualFolderPath = FallbackDirectoryName;
