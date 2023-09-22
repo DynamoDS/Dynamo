@@ -205,6 +205,14 @@ namespace Dynamo.ViewModels
                         preferenceSettings.GraphicScaleUnit = value;
                         preferenceSettings.GridScaleFactor = (float)units;
                         dynamoViewModel.UpdateGraphicHelpersScaleCommand.Execute(null);
+
+                        // We have turn the grid visilibilty on
+                        // Check the current visibility settings, and turn it back off 
+                        if (!preferenceSettings.IsBackgroundGridVisible)
+                        {
+                            dynamoViewModel.ToggleBackgroundGridVisibilityCommand.Execute(null);    // switch 'on'
+                            dynamoViewModel.ToggleBackgroundGridVisibilityCommand.Execute(null);    // switch 'off'
+                        }
                     }
                 }
             }
