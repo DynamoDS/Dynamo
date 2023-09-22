@@ -127,26 +127,37 @@ namespace Dynamo.Utilities
             // Create an analyzer to process the text
             Analyzer = CreateAnalyzerByLanguage(dynamoModel.PreferenceSettings.Locale);
 
+            // Check if Lucene index file exists, if not create it
+            if (!DirectoryReader.IndexExists(indexDir))
+            {
+                CreateLuceneIndex();    
+            }
+        }
+
+        internal void CreateLuceneIndex()
+        {
             // Initialize Lucene index writer, unless in test mode or we are using RAMDirectory for indexing info. 
             if (!DynamoModel.IsTestMode || startConfig.StorageType == LuceneStorage.RAM)
             {
+                // Create an index writer
+                IndexWriterConfig indexConfig = new IndexWriterConfig(LuceneConfig.LuceneNetVersion, Analyzer)
+                {
+                    OpenMode = OpenMode.CREATE
+                };
                 try
                 {
-                    // Create an index writer
-                    IndexWriterConfig indexConfig = new IndexWriterConfig(LuceneConfig.LuceneNetVersion, Analyzer)
-                    {
-                        OpenMode = OpenMode.CREATE
-                    };
-
                     writer = new IndexWriter(indexDir, indexConfig);
                     writer.Commit();
                 }
                 catch (LockObtainFailedException ex)
                 {
-                    DisposeWriter();
-                    dynamoModel.Logger.LogError($"LuceneNET LockObtainFailedException {ex}");
+                    writer = new IndexWriter(new RAMDirectory(), indexConfig);
+                    writer.Commit();
+                    // DisposeWriter();
+                    dynamoModel.Logger.LogError($"LuceneNET LockObtainFailedException {ex}, switching to RAM mode.");
                 }
-                catch (Exception ex) {
+                catch (Exception ex)
+                {
                     dynamoModel.Logger.LogError($"LuceneNET Exception {ex}");
                 }
             }
@@ -390,6 +401,9 @@ namespace Dynamo.Utilities
             }
         }
 
+        /// <summary>
+        /// Commit the changes made to the Lucene index
+        /// </summary>
         internal void CommitWriterChanges()
         {
             if (!DynamoModel.IsTestMode || startConfig.StorageType == LuceneStorage.RAM)
