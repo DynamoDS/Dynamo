@@ -131,7 +131,7 @@ namespace Dynamo.Utilities
                             }
                         }
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                         KillProcess();
                         return GetCantCommunicateErrorMessage();

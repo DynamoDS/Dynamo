@@ -3,12 +3,9 @@ using System.ComponentModel;
 using System.Linq;
 using Dynamo.Controls;
 using Dynamo.Utilities;
-using Dynamo.Wpf.Utilities;
-using DynamoUtilities;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Dynamo.Core;
 using Dynamo.Graph.Nodes;
 
 namespace UI.Prompts

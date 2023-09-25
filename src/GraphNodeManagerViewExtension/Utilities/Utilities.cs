@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
@@ -21,8 +21,6 @@ namespace Dynamo.GraphNodeManager.Utilities
 
             using (SaveFileDialog saveFileDialog = new SaveFileDialog())
             {
-                Stream myStream;
-                
                 saveFileDialog.Filter = "csv files (*.csv)|*.csv|All files (*.*)|*.*";
                 saveFileDialog.FilterIndex = 2;
                 saveFileDialog.Title = "Save CSV file";
@@ -53,8 +51,6 @@ namespace Dynamo.GraphNodeManager.Utilities
 
             using (SaveFileDialog saveFileDialog = new SaveFileDialog())
             {
-                Stream myStream;
-                
                 saveFileDialog.Filter = "json files (*.json)|*.json|All files (*.*)|*.*";
                 saveFileDialog.FilterIndex = 2;
                 saveFileDialog.Title = "Save JSON file";

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -79,7 +79,7 @@ namespace CoreNodeModels
         }
 
         [JsonProperty("NodeType")]
-        public string NodeType
+        public new string NodeType
         {
             get
             {

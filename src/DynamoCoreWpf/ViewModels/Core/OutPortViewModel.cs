@@ -43,7 +43,7 @@ namespace Dynamo.ViewModels
         /// Sets the condensed styling on Code Block output ports.
         /// This is used to style the output ports on Code Blocks to be smaller.
         /// </summary>
-        public bool IsPortCondensed => this.PortModel.Owner is CodeBlockNodeModel;
+        public new bool IsPortCondensed => this.PortModel.Owner is CodeBlockNodeModel;
 
         /// <summary>
         /// If should display Use Levels popup menu. 

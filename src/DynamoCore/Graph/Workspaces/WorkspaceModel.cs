@@ -1,5 +1,4 @@
 using System;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -50,6 +49,34 @@ namespace Dynamo.Graph.Workspaces
         public double X;
         public double Y;
         public double Zoom;
+
+        /// <summary>
+        /// Load the extra view information required to fully construct a WorkspaceModel object 
+        /// </summary>
+        /// <param name="json"></param>
+        static internal ExtraWorkspaceViewInfo ExtraWorkspaceViewInfoFromJson(string json)
+        {
+            JsonReader reader = new JsonTextReader(new StringReader(json));
+            var obj = JObject.Load(reader);
+            var viewBlock = obj["View"];
+            if (viewBlock == null)
+                return null;
+
+            var settings = new JsonSerializerSettings
+            {
+                Error = (sender, args) =>
+                {
+                    args.ErrorContext.Handled = true;
+                    Console.WriteLine(args.ErrorContext.Error);
+                },
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                TypeNameHandling = TypeNameHandling.Auto,
+                Formatting = Newtonsoft.Json.Formatting.Indented,
+                Culture = CultureInfo.InvariantCulture
+            };
+
+            return JsonConvert.DeserializeObject<ExtraWorkspaceViewInfo>(viewBlock.ToString(), settings);
+        }
     }
 
     /// <summary>
@@ -220,6 +247,7 @@ namespace Dynamo.Graph.Workspaces
         internal readonly LinterManager linterManager;
 
         private string fileName;
+        private string fromJsonGraphId;
         private string name;
         private double height = 100;
         private double width = 100;
@@ -276,6 +304,11 @@ namespace Dynamo.Graph.Workspaces
         public void OnDummyNodesReloaded()
         {
             DummyNodesReloaded?.Invoke();
+        }
+
+        internal static string ComputeGraphIdFromJson(string fileContents)
+        {
+            return Hash.ToBase32String(Hash.GetHashFromString(fileContents));
         }
 
         /// <summary>
@@ -1136,6 +1169,23 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
+        ///     A unique id representing a workspace that was created from an in-memory graph content.
+        ///     This is usefull if you need to check if the current workspace was initially created from
+        ///     a specific graph content. As oposed to graph uuid, FromJsonGraphId is not serialized and it
+        ///     only makes sense (and is computed) at runtime when we OpenFileFromJson. Because of that
+        ///     we eliminate the risk of having this value modified outside Dynamo environment.
+        /// </summary>
+        [JsonIgnore]
+        internal string FromJsonGraphId
+        {
+            get { return fromJsonGraphId; }
+            set
+            {
+                fromJsonGraphId = value;
+            }
+        }
+
+        /// <summary>
         ///     The name of this workspace.
         /// </summary>
         public string Name
@@ -1506,7 +1556,9 @@ namespace Dynamo.Graph.Workspaces
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-                throw (ex);
+#pragma warning disable CA2200 // Rethrow to preserve stack details
+                throw ex;
+#pragma warning restore CA2200 // Rethrow to preserve stack details
             }
         }
 
@@ -1575,6 +1627,7 @@ namespace Dynamo.Graph.Workspaces
         /// This method does not raise a NodesModified event. (LC notes this is clearly not true)
         /// </summary>
         /// <param name="model">The node which is being removed from the worksapce.</param>
+        /// <param name="dispose"></param>
         internal void RemoveAndDisposeNode(NodeModel model, bool dispose = true)
         {
             lock (nodes)
@@ -2388,7 +2441,7 @@ namespace Dynamo.Graph.Workspaces
             //            ensure that any contained notes are contained properly
             LoadNotesFromAnnotations(workspaceViewInfo.Annotations);
 
-            ///This function loads ConnectorPins to the corresponding connector models.
+            // This function loads ConnectorPins to the corresponding connector models.
             LoadConnectorPins(workspaceViewInfo.ConnectorPins);
 
             // This function loads annotations from the Annotations array in the JSON format
@@ -2433,7 +2486,7 @@ namespace Dynamo.Graph.Workspaces
             //            ensure that any contained notes are contained properly
             LoadNotesFromAnnotations(workspaceViewInfo.Annotations, offsetX, offsetY);
 
-            ///This function loads ConnectorPins to the corresponding connector models.
+            // This function loads ConnectorPins to the corresponding connector models.
             LoadConnectorPins(workspaceViewInfo.ConnectorPins, offsetX, offsetY);
 
             // This function loads annotations from the Annotations array in the JSON format

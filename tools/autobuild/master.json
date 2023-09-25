@@ -1,11 +1,11 @@
 {
   "product_id": "DYN",
-  "release_id": "2.19.0",
-  "name": "DynamoCore2.19.0 Win64",
+  "release_id": "3.0.0",
+  "name": "DynamoCore3.0.0 Win64",
   "master_id": "Win64",
   "language_pk": 1,
   "language_code_pk": 3,
   "master_platform_pk": 2,
   "master_type_pk": 1,
-  "description":"DynamoCore2.19.0"
+  "description":"DynamoCore3.0.0"
 }

@@ -58,7 +58,7 @@ namespace DynamoUnits
             {
                 return new Symbol(Utilities.ForgeUnitsEngine.getSymbol(typeId));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //The exact match for the Forge TypeID failed.  Test for a fallback.  This can be either earlier or later version number.
                 if (Utilities.TryParseTypeId(typeId, out string typeName, out Version version))

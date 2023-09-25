@@ -272,9 +272,9 @@ namespace Dynamo.Graph.Nodes
 
                 var inportConnections = new OrderedDictionary();
                 var outportConnections = new OrderedDictionary();
-                ///ConnectorPins corresponding to inports
+                // ConnectorPins corresponding to inports
                 var inportPins = new OrderedDictionary();
-                ///ConnectorPins corresponding to outports
+                // ConnectorPins corresponding to outports
                 var outportPins = new OrderedDictionary();
 
                 // disable node modification events while mutating the code
@@ -385,9 +385,9 @@ namespace Dynamo.Graph.Nodes
 
             var inportConnections = new OrderedDictionary();
             var outportConnections = new OrderedDictionary();
-            ///ConnectorPins corresponding to inports
+            // ConnectorPins corresponding to inports
             var inportPins = new OrderedDictionary();
-            ///ConnectorPins corresponding to outports
+            // ConnectorPins corresponding to outports
             var outportPins = new OrderedDictionary();
 
             //before the refactor here: https://github.com/DynamoDS/Dynamo/pull/7301
@@ -656,6 +656,21 @@ namespace Dynamo.Graph.Nodes
 
             // Mark node for update
             OnNodeModified();
+        }
+
+        internal void FormulaMigrationWarning(string p)
+        {
+            State = ElementState.MigratedFormula;
+            if (!Infos.Any(x => x.Message.Equals(p)))
+            {
+                var texts = p.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+                var infoList = new List<Info>();
+                foreach (var text in texts)
+                {
+                    infoList.Add(new Info(text, State));
+                }
+                Infos.AddRange(infoList);
+            }
         }
 
         /// <summary>
@@ -1013,6 +1028,8 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         /// <param name="inportConnections">A list of connections that will be destroyed</param>
         /// <param name="outportConnections"></param>
+        /// <param name="inportPins"></param>
+        /// <param name="outportPins"></param>
         private void SaveAndDeleteConnectors(IDictionary inportConnections, IDictionary outportConnections, IDictionary inportPins, IDictionary outportPins)
         {
             //----------------------------Inputs---------------------------------
@@ -1070,6 +1087,8 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         /// <param name="inportConnections"></param>
         /// <param name="outportConnections"> List of the connections that were killed</param>
+        /// <param name="inportPins"></param>
+        /// <param name="outportPins"></param>
         /// <param name="context">context this operation is being performed in</param>
         private void LoadAndCreateConnectors(OrderedDictionary inportConnections, OrderedDictionary outportConnections,
             OrderedDictionary inportPins, OrderedDictionary outportPins, SaveContext context)
@@ -1213,9 +1232,9 @@ namespace Dynamo.Graph.Nodes
                 unusedConnections.RemoveAt(0);
             }
 
-            ///All connectorPins corresponding to INports
+            // All connectorPins corresponding to INports
             List<List<ConnectorPinModel>> inportPinsList = inportPins.Values.Cast<List<ConnectorPinModel>>().ToList();
-            ///All connectorPins corresponding to OUTports
+            // All connectorPins corresponding to OUTports
             List<List<ConnectorPinModel>> outportPinsList = outportPins.Values.Cast<List<ConnectorPinModel>>().ToList();
 
             AddConnectorPinsToConnectors(inportPinsList);

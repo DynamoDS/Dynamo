@@ -33,7 +33,7 @@ namespace Dynamo.Notifications
             this.onNotificationPopupUpdated = onNotificationPopupUpdated;
         }
 
-        public void SetNoficationsAsRead(object[] ids)
+        public void SetNotificationsAsRead(object[] ids)
         {
             onMarkAllAsRead(ids);
         }
@@ -92,10 +92,11 @@ namespace Dynamo.Notifications
                 VerticalOffset = notificationPopupVerticalOffset
             };
             logger = dynLogger;
-            
+
             // If user turns on the feature, they will need to restart Dynamo to see the count
             // This ensures no network traffic when Notification center feature is turned off
-            if (dynamoViewModel.PreferenceSettings.EnableNotificationCenter) 
+            //TODO we currently use DisableAnalytics like a no network comms flags - work on introducing a new flag or renaming this flag.
+            if (dynamoViewModel.PreferenceSettings.EnableNotificationCenter && !Dynamo.Logging.Analytics.DisableAnalytics ) 
             {               
                 InitializeBrowserAsync();
                 RequestNotifications();
@@ -110,6 +111,8 @@ namespace Dynamo.Notifications
 
         async void SuspendCoreWebviewAsync()
         {
+            if (notificationUIPopup == null) return;
+
             notificationUIPopup.IsOpen = false;
             notificationUIPopup.webView.Visibility = Visibility.Hidden;
 
@@ -219,7 +222,7 @@ namespace Dynamo.Notifications
         // Handler for new Webview2 tab window request
         private void WebView_NewWindowRequested(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NewWindowRequestedEventArgs e)
         {
-            Process.Start(e.Uri);
+            Process.Start(new ProcessStartInfo(e.Uri) { UseShellExecute = true });
             e.Handled = true;
         }
 

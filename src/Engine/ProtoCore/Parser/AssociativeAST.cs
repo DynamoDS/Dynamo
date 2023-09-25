@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using ProtoCore.AST.ImperativeAST;
 using ProtoCore.DSASM;
@@ -2803,6 +2804,34 @@ namespace ProtoCore.AST.AssociativeAST
         }
 
         /// <summary>
+        /// Get the default value of Type "t"
+        /// </summary>
+        /// <param name="t">The type that we want to generate a default value for</param>
+        /// <returns>The default value</returns>
+        private static object GetDefault(System.Type t)
+        {
+            Func<object> f = GetDefault<object>;
+            return f.Method.GetGenericMethodDefinition().MakeGenericMethod(t).Invoke(null, null);
+        }
+
+        private static T GetDefault<T>() => default;
+
+        /// <summary>
+        /// Builds an AssociativeNode (int, double, null etc) from the input value or type
+        /// </summary>
+        /// <param name="value">The value of the object</param>
+        /// <param name="type">The target type that the "value" parameter represents</param>
+        /// <returns>AssociativeNode</returns>
+        internal static AssociativeNode BuildPrimitiveNodeFromObjectAndType(object value, System.Type type)
+        {
+            if (value is Missing)
+            {
+                value = GetDefault(type);
+            }
+            return BuildPrimitiveNodeFromObject(value);
+        }
+
+        /// <summary>   
         /// Builds a integer, double, string, boolean or null node depending
         /// on input value type.
         /// </summary>
@@ -2810,11 +2839,10 @@ namespace ProtoCore.AST.AssociativeAST
         /// <returns>AssociativeNode</returns>
         public static AssociativeNode BuildPrimitiveNodeFromObject(object value)
         {
-            if (null == value)
-                return BuildNullNode();
-
             switch (value)
             {
+                case null:
+                    return BuildNullNode();
                 case short s:
                     return BuildIntNode(Convert.ToInt64(s));
                 case int i:

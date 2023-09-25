@@ -10,7 +10,6 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
 using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
@@ -25,6 +24,7 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels;
 using DynamoUnits;
+using FontAwesome5;
 using Color = System.Windows.Media.Color;
 using FlowDirection = System.Windows.FlowDirection;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
@@ -150,6 +150,26 @@ namespace Dynamo.Controls
             return null;
         }
     }
+
+
+    /// <summary>
+    /// Returns Visibility.Visible if the collection is empty, otherwise returns Visibility.Collapsed.
+    /// </summary>
+    public class EmptyListToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (!(value is ICollection collection)) return Visibility.Collapsed;
+
+            return collection.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
 
     /// <summary>
     /// Controls the visibility of tooltip that displays python dependency in Package manager for each package version
@@ -1332,8 +1352,8 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if ((bool)value)
-                return nameof(FontAwesome.WPF.FontAwesomeIcon.BellOutline);
-            return nameof(FontAwesome.WPF.FontAwesomeIcon.BellSlashOutline);
+                return nameof(EFontAwesomeIcon.Solid_Bell);
+            return nameof(EFontAwesomeIcon.Solid_BellSlash);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -1405,6 +1425,31 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (value != null)
+            {
+                return new GridLength(1, GridUnitType.Auto);
+            }
+            else
+            {
+                return new GridLength(0);
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    /// <summary>
+    /// Takes a boolean value and if the value is true returns Unity Type Auto (*) as a length value
+    /// Returns 0 length if the value is false
+    /// To be used in Grid Column/Row width 
+    /// </summary>
+    public class BoolToZeroLengthConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if ((bool)value)
             {
                 return new GridLength(1, GridUnitType.Auto);
             }
@@ -3259,6 +3304,7 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
     /// Converter is used in WatchTree.xaml
     /// It converts the value of the padding required by each list level label to the required thickness (padding from the left)
     /// It then supplies the required thickness to the margin property for each label
@@ -3537,7 +3583,7 @@ namespace Dynamo.Controls
     }
 
     /// <summary>
-    /// Converts an ICollection<AnnotationViewModel> to a string
+    /// Converts an ICollection&lt;AnnotationViewModel&gt; to a string
     /// that displays how many AnnotationViewModels there is in the
     /// Collection.
     /// </summary>
@@ -3743,6 +3789,22 @@ namespace Dynamo.Controls
                 return ((SolidColorBrush)value).Color;
 
             return value;
+        }
+    }
+
+    public class SumConverter : IMultiValueConverter
+    {
+        /// <summary>
+        /// Calculates and returns the sum of the values provided
+        /// </summary>
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            return values.Cast<double>().Sum();
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            return null;
         }
     }
 }

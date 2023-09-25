@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
@@ -44,7 +44,7 @@ namespace Dynamo.UI.Views
 
         private void OnClickLink(object sender, RoutedEventArgs e)
         {
-            Process.Start("http://dynamobim.org/");
+            Process.Start(new ProcessStartInfo("http://dynamobim.org/") { UseShellExecute = true });
         }
         
         private void CloseButton_OnClick(object sender, RoutedEventArgs e)
@@ -122,7 +122,7 @@ namespace Dynamo.UI.Views
                 Hyperlink link = inArgs.Source as Hyperlink;
                 if (link != null)
                 {
-                    Process.Start(link.NavigateUri.ToString());
+                    Process.Start(new ProcessStartInfo(link.NavigateUri.ToString()) { UseShellExecute = true });
                     inArgs.Handled = true;
                 }
             }

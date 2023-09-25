@@ -47,4 +47,8 @@ namespace Dynamo.Models
     /// <param name="args"></param>
     internal delegate void SplashScreenLoadingHandler(SplashScreenLoadEventArgs args);
 
+    /// <summary>
+    /// This delegate is used to notify the detected language to the Splash Screen.
+    /// </summary>
+    internal delegate void SplashScreenLanguageDetected();
 }

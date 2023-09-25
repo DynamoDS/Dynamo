@@ -1,4 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <UILib>true</UILib>
+  </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -10,6 +13,7 @@
     <AssemblyName>CoreNodeModelsWpf</AssemblyName>
     <OutputPath>$(OutputPath)\nodes\</OutputPath>
     <DocumentationFile>$(OutputPath)\CoreNodeModelsWpf.XML</DocumentationFile>
+    <EnableDefaultPageItems>false</EnableDefaultPageItems>
   </PropertyGroup>
   <PropertyGroup>
     <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
@@ -21,9 +25,14 @@
     </ReferenceCopyLocalPaths>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.103" />
+    <PackageReference Include="LiveChartsCore" Version="2.0.0-beta.855" />
+    <PackageReference Include="LiveChartsCore.SkiaSharpView.WPF" Version="2.0.0-beta.855" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
     <Reference Include="Microsoft.Practices.Prism">
-      <HintPath>..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-      <Private>False</Private>
+        <HintPath>..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
+        <Private>False</Private>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -38,51 +47,47 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
-	<PackageReference Include="LiveCharts" Version="0.9.7" />
-	<PackageReference Include="LiveCharts.Wpf" Version="0.9.7" />
-	<Reference Include="Xceed.Wpf.Toolkit, Version=3.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-		<HintPath>$(PkgExtended_Wpf_Toolkit)\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
-		<Private>True</Private>
-	</Reference>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\DynamoCoreWpf\DynamoCoreWpf.csproj">
-      <Project>{51bb6014-43f7-4f31-b8d3-e3c37ebedaf4}</Project>
-      <Name>DynamoCoreWpf</Name>
-      <Private>False</Private>
+        <Project>{51bb6014-43f7-4f31-b8d3-e3c37ebedaf4}</Project>
+        <Name>DynamoCoreWpf</Name>
+        <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
-      <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
-      <Name>DynamoCore</Name>
-      <Private>False</Private>
+        <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
+        <Name>DynamoCore</Name>
+        <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\DynamoUtilities\DynamoUtilities.csproj">
-      <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
-      <Name>DynamoUtilities</Name>
-      <Private>False</Private>
+        <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
+        <Name>DynamoUtilities</Name>
+        <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Engine\ProtoCore\ProtoCore.csproj">
-      <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
-      <Name>ProtoCore</Name>
-      <Private>False</Private>
+        <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
+        <Name>ProtoCore</Name>
+        <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\NodeServices\DynamoServices.csproj">
-      <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
-      <Name>DynamoServices</Name>
-      <Private>False</Private>
+        <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
+        <Name>DynamoServices</Name>
+        <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\CoreNodeModels\CoreNodeModels.csproj">
-      <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>
-      <Name>CoreNodeModels</Name>
-      <Private>False</Private>
+        <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>
+        <Name>CoreNodeModels</Name>
+        <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\CoreNodes\CoreNodes.csproj">
-      <Project>{87550b2b-6cb8-461e-8965-dfafe3aafb5c}</Project>
-      <Name>CoreNodes</Name>
-      <Private>False</Private>
+        <Project>{87550b2b-6cb8-461e-8965-dfafe3aafb5c}</Project>
+        <Name>CoreNodes</Name>
+        <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\DynamoConversions\DynamoConversions.csproj">
-      <Project>{67cf6cf2-cd6a-442c-babe-864f896dd8ea}</Project>
-      <Name>DynamoConversions</Name>
-      <Private>False</Private>
+        <Project>{67cf6cf2-cd6a-442c-babe-864f896dd8ea}</Project>
+        <Name>DynamoConversions</Name>
+        <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -147,16 +152,9 @@
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
   </ItemGroup>
-  <Target Name="BinaryCompatibilityOps" BeforeTargets="Build">
-    <Copy SourceFiles="$(PkgExtended_Wpf_Toolkit)\lib\net40\Xceed.Wpf.Toolkit.dll" DestinationFolder="$(OutputPath)" />
+  <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" '$(OS)' != 'Unix' ">
+    <!-- Generate customization dll -->
+    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)CoreNodeModelsWpfImages.resx" OutputResources="$(ProjectDir)CoreNodeModelsWpfImages.resources" References="$(SystemDrawingDllPath)" />
+    <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)CoreNodeModelsWpfImages.resources" OutputAssembly="$(OutDir)CoreNodeModelsWpf.customization.dll" Version="%(AssemblyInfo.Version)" />
   </Target>
-    <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" '$(OS)' != 'Unix' ">
-        <!-- Get assembly -->
-        <GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
-            <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
-        </GetAssemblyIdentity>
-        <!-- Generate customization dll -->
-        <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)CoreNodeModelsWpfImages.resx" OutputResources="$(ProjectDir)CoreNodeModelsWpfImages.resources" References="$(SystemDrawingDllPath)" />
-        <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)CoreNodeModelsWpfImages.resources" OutputAssembly="$(OutDir)CoreNodeModelsWpf.customization.dll" Version="%(AssemblyInfo.Version)" />
-    </Target>
 </Project>

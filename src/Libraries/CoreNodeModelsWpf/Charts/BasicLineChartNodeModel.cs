@@ -41,7 +41,6 @@ namespace CoreNodeModelsWpf.Charts
     public class BasicLineChartNodeModel : NodeModel
     {
         #region Properties
-        private Random rnd = new Random();
 
         /// <summary>
         /// A list of Labels for each line to be plotted.
@@ -56,7 +55,7 @@ namespace CoreNodeModelsWpf.Charts
         /// <summary>
         /// A list of color values, one for each plotted line.
         /// </summary>
-        public List<SolidColorBrush> Colors { get; set; }
+        public List<Color> Colors { get; set; }
 
         /// <summary>
         /// Triggers when port is connected or disconnected
@@ -83,10 +82,10 @@ namespace CoreNodeModelsWpf.Charts
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        [JsonConstructor]
         /// <summary>
         /// Instantiate a new NodeModel instance.
         /// </summary>
+        [JsonConstructor]
         public BasicLineChartNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             PortConnected += BasicLineChartNodeModel_PortConnected;
@@ -112,7 +111,7 @@ namespace CoreNodeModelsWpf.Charts
         private void BasicLineChartNodeModel_PortConnected(PortModel port, ConnectorModel arg2)
         {
             // Reset an info states if any
-            if (port.PortType == PortType.Input && InPorts[2].IsConnected && NodeInfos.Any(x => x.State.Equals(ElementState.Info)))
+            if (port.PortType == PortType.Input && InPorts[2].IsConnected && NodeInfos.Any(x => x.State.Equals(ElementState.PersistentInfo)))
             {
                 this.ClearInfoMessages();
             }
@@ -160,7 +159,7 @@ namespace CoreNodeModelsWpf.Charts
             // Clear current chart values
             Labels = new List<string>();
             Values = new List<List<double>>();
-            Colors = new List<SolidColorBrush>();
+            Colors = new List<Color>();
 
             var anyNullData = labels == null || values == null;
 
@@ -176,24 +175,21 @@ namespace CoreNodeModelsWpf.Charts
                 if (InPorts[2].IsConnected) return;
 
                 // In case colors are not provided, we supply some from the default library of colors
-                Info(Dynamo.Wpf.Properties.CoreNodeModelWpfResources.ProvideDefaultColorsWarningMessage);
-
+                Info(CoreNodeModelWpfResources.ProvideDefaultColorsWarningMessage, true);
                 for (var i = 0; i < labels.Count; i++)
                 {
                     var outputValues = new List<double>();
 
                     foreach (var plotVal in values[i] as ArrayList)
                     {
-                        outputValues.Add(System.Convert.ToDouble(plotVal));
+                        outputValues.Add(Convert.ToDouble(plotVal));
                     }
 
                     Labels.Add((string)labels[i]);
                     Values.Add(outputValues);
 
                     Color color = Utilities.Colors.GetColor();
-                    SolidColorBrush brush = new SolidColorBrush(color);
-                    brush.Freeze();
-                    Colors.Add(brush);
+                    Colors.Add(color);
                 }
 
                 Utilities.Colors.ResetColors();
@@ -206,7 +202,7 @@ namespace CoreNodeModelsWpf.Charts
 
                     foreach (var plotVal in values[i] as ArrayList)
                     {
-                        outputValues.Add(System.Convert.ToDouble(plotVal));
+                        outputValues.Add(Convert.ToDouble(plotVal));
                     }
 
                     Labels.Add((string)labels[i]);
@@ -214,9 +210,7 @@ namespace CoreNodeModelsWpf.Charts
 
                     var dynColor = (DSCore.Color)colors[i];
                     var convertedColor = Color.FromArgb(dynColor.Alpha, dynColor.Red, dynColor.Green, dynColor.Blue);
-                    SolidColorBrush brush = new SolidColorBrush(convertedColor);
-                    brush.Freeze();
-                    Colors.Add(brush);
+                    Colors.Add(convertedColor);
                 }
             }
 

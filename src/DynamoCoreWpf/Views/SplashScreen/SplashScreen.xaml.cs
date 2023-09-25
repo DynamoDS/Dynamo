@@ -26,6 +26,12 @@ namespace Dynamo.UI.Views
         private static readonly string jsEmbeddedFile = "Dynamo.Wpf.Packages.SplashScreen.build.index.bundle.js";
         private static readonly string backgroundImage = "Dynamo.Wpf.Views.SplashScreen.WebApp.splashScreenBackground.png";
         private static readonly string imageFileExtension = "png";
+        /// <summary>
+        /// True if the reason the splash screen was closed was because the user explicitly closed it,
+        /// as opposed to the splash screen closing because dynamo was launched.
+        /// This is useful for knowing if Dynamo is already started or not.
+        /// </summary>
+        public bool CloseWasExplicit { get; private set; }
 
         // Timer used for Splash Screen loading
         internal Stopwatch loadingTimer;
@@ -67,6 +73,10 @@ namespace Dynamo.UI.Views
             set
             {
                 dynamoView = value;
+                if(dynamoView == null)
+                {
+                    return;
+                }
                 viewModel = value.DataContext as DynamoViewModel;
                 // When view model is closed, we need to close the splash screen if it is displayed.
                 viewModel.RequestClose += SplashScreenRequestClose;
@@ -130,6 +140,7 @@ namespace Dynamo.UI.Views
             // Bind event handlers
             webView.NavigationCompleted += WebView_NavigationCompleted;
             DynamoModel.RequestUpdateLoadBarStatus += DynamoModel_RequestUpdateLoadBarStatus;
+            DynamoModel.LanguageDetected += DynamoModel_LanguageDetected;
             StaticSplashScreenReady += OnStaticScreenReady;
             RequestLaunchDynamo = LaunchDynamo;
             RequestImportSettings = ImportSettings;
@@ -137,22 +148,29 @@ namespace Dynamo.UI.Views
             RequestSignOut = SignOut;
         }
 
-        private void WebView_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
+        private void DynamoModel_LanguageDetected()
         {
             SetLabels();
+        }
+
+        private void WebView_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
+        {            
             if (webView != null)
             {
                 webView.NavigationCompleted -= WebView_NavigationCompleted;
                 webView.Focus();
                 System.Windows.Forms.SendKeys.SendWait("{TAB}");
             }
-            OnRequestDynamicSplashScreen();           
+            OnRequestDynamicSplashScreen();
         }
         /// <summary>
         /// Request to close SplashScreen.
         /// </summary>
         private void SplashScreenRequestClose(object sender, EventArgs e)
         {
+            //This is only called when shutdownparams.closeDynamoView = true
+            //which is during tests or an exist command
+            //which is used rarely, during but we it is used when the Revit document is lost and Dynamo is open.
             CloseWindow();
             viewModel.RequestClose -= SplashScreenRequestClose;
         }
@@ -204,11 +222,15 @@ namespace Dynamo.UI.Views
         /// <param name="isCheckboxChecked"></param>
         private void LaunchDynamo(bool isCheckboxChecked)
         {
-            viewModel.PreferenceSettings.EnableStaticSplashScreen = !isCheckboxChecked;
+            CloseWasExplicit = false;
+            if (viewModel != null)
+            {
+                viewModel.PreferenceSettings.EnableStaticSplashScreen = !isCheckboxChecked;
+            }
             StaticSplashScreenReady -= OnStaticScreenReady;
             Close();
-            dynamoView.Show();
-            dynamoView.Activate();
+            dynamoView?.Show();
+            dynamoView?.Activate();
         }
 
         /// <summary>
@@ -276,7 +298,7 @@ namespace Dynamo.UI.Views
             webView.CoreWebView2.Settings.IsZoomControlEnabled = false;
 
             var assembly = Assembly.GetExecutingAssembly();
-           
+
             using (Stream stream = assembly.GetManifestResourceStream(htmlEmbeddedFile))
             using (StreamReader reader = new StreamReader(stream))
             {
@@ -296,6 +318,7 @@ namespace Dynamo.UI.Views
                 jsonString = jsonString.Replace("#base64BackgroundImage", $"data:image/{imageFileExtension};base64,{resourceBase64}");
             }
 
+            jsonString = jsonString.Replace("Welcome to Dynamo!", "");
             htmlString = htmlString.Replace("mainJs", jsonString);
 
             webView.NavigateToString(htmlString);
@@ -452,8 +475,9 @@ namespace Dynamo.UI.Views
         /// <summary>
         /// If the user wants to close the window, we shutdown the application and don't launch Dynamo
         /// </summary>
-        private void CloseWindow()
+        internal void CloseWindow()
         {
+            CloseWasExplicit = true;
             if (Application.Current != null)
             {
                 Application.Current.Shutdown();
@@ -462,10 +486,16 @@ namespace Dynamo.UI.Views
             // If Dynamo is launched from an integrator host, user should be able to close the splash screen window.
             // Additionally, we will have to shutdown the ViewModel which will close all the services and dispose the events.
             // RequestUpdateLoadBarStatus event needs to be unsubscribed when the splash screen window is closed, to avoid populating the info on splash screen.
-            else if (this is SplashScreen)
+            else
             {
-                this.Close();
-                viewModel.Model.ShutDown(false);
+                Close();
+                if (viewModel != null)
+                {
+                    viewModel.RequestClose -= SplashScreenRequestClose;
+                }
+
+                DynamoView?.Close();
+                DynamoView = null;
             }
         }
 
@@ -474,6 +504,7 @@ namespace Dynamo.UI.Views
             base.OnClosed(e);
 
             DynamoModel.RequestUpdateLoadBarStatus -= DynamoModel_RequestUpdateLoadBarStatus;
+            DynamoModel.LanguageDetected -= DynamoModel_LanguageDetected;
             webView.Dispose();
             webView = null;
 

@@ -157,7 +157,6 @@ namespace Dynamo.PackageManager.UI
                         Resources.TitlePackageTargetOtherHost));
                 }
             }
-
         }
 
         private void RequestLoadLayoutSpecs(IEnumerable<Package> packages)

@@ -309,21 +309,7 @@ namespace DynamoShapeManager
                 }
 
                 // Fallback mechanism, look inside libg folders if any of them contains ASM dlls.
-                foreach (var v in versions)
-                {
-                    var dirpath = GetLibGPreloaderLocation(v, rootFolder);
-                    if (string.IsNullOrEmpty(dirpath))
-                    {
-                        continue;
-                    }
-                    var dir = new DirectoryInfo(dirpath);
-                    var files = dir.GetFiles(ASMFileMask);
-                    if (!files.Any())
-                        continue;
-
-                    location = dir.FullName;
-                    return v;
-                }
+                if (SearchForASMInLibGFallback(versions, ref location, rootFolder, out var installedAsmVersion3)) return installedAsmVersion3;
             }
             catch (Exception)
             {
@@ -331,6 +317,33 @@ namespace DynamoShapeManager
             }
 
             return null;
+        }
+
+        internal static bool SearchForASMInLibGFallback(IEnumerable<Version> versions, ref string location, string rootFolder,
+            out Version installedAsmVersion3)
+        {
+            foreach (var v in versions)
+            {
+                var dirpath = GetLibGPreloaderLocation(v, rootFolder);
+                if (string.IsNullOrEmpty(dirpath))
+                {
+                    continue;
+                }
+
+                var dir = new DirectoryInfo(dirpath);
+                var files = dir.GetFiles(ASMFileMask);
+                if (!files.Any())
+                    continue;
+
+                location = dir.FullName;
+                {
+                    installedAsmVersion3 = v;
+                    return true;
+                }
+            }
+
+            installedAsmVersion3 = null;
+            return false;
         }
 
         /// <summary>

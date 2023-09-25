@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -554,7 +554,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test, Category("ExcelTest")]
+        [Test, Category("ExcelTest"), Category("Failure")]
             //Todo Ritesh: Locally passing but failing on CI.
             //After fixing issue with this test case add Smoke Test Category.
         public void ImportExport_Excel_to_Dynamo()

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Reflection;
 using Dynamo.Utilities;
@@ -11,7 +11,11 @@ namespace Dynamo.Tests
     {
         private AssemblyHelper assemblyHelper;
 
+#if NETFRAMEWORK
         [SetUp]
+#elif NET6_0_OR_GREATER
+        [OneTimeSetUp]
+#endif
         public void RunBeforeAllTests()
         {
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
@@ -27,7 +31,11 @@ namespace Dynamo.Tests
             AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssembly;
         }
 
+#if NETFRAMEWORK
         [TearDown]
+#elif NET6_0_OR_GREATER
+        [OneTimeTearDown]
+#endif
         public void RunAfterAllTests()
         {
             AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssembly;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Xml;
 using Dynamo.Applications;
 using Dynamo.ViewModels;
@@ -221,7 +222,13 @@ namespace Dynamo.Tests
         //
         // DynamoWPFCLI Tests
         //
+
+#if NET6_0_OR_GREATER
+        [Test]
+        [Apartment(ApartmentState.STA)]
+#else
         [Test, RequiresSTA]
+#endif
         public void CanOpenAndRunDynamoModelWithWPFCommandLineRunner()
         {
             string openpath = Path.Combine(TestDirectory, @"core\math\Add.dyn");
@@ -244,7 +251,12 @@ namespace Dynamo.Tests
             AssertPreviewValue("4c5889ac-7b91-4fb5-aaad-a2128b533279", 4.0);
         }
 
+#if NET6_0_OR_GREATER
+        [Test]
+        [Apartment(ApartmentState.STA)]
+#else
         [Test, RequiresSTA]
+#endif
         public void CanOpenAndRunFileWihtListsCorrectlyToOutputFileFromDynamoWPFCLIexe()
         {
             string openpath = Path.Combine(TestDirectory, @"core\commandline\simplelists.dyn");
@@ -261,7 +273,12 @@ namespace Dynamo.Tests
                 output);
         }
 
+#if NET6_0_OR_GREATER
+        [Test]
+        [Apartment(ApartmentState.STA)]
+#else
         [Test, RequiresSTA]
+#endif
         public void CanOpenAndRunFileWithDictionaryCorrectlyToOutputFileFromDynamoWPFCLIexe()
         {
             string openpath = Path.Combine(TestDirectory, @"core\commandline\simpleDict.dyn");
@@ -284,7 +301,12 @@ namespace Dynamo.Tests
                 }, output);
         }
 
+#if NET6_0_OR_GREATER
+        [Test]
+        [Apartment(ApartmentState.STA)]
+#else
         [Test, RequiresSTA]
+#endif
         public void CanOpenAndRunFileWithCustomNodeAndOutputGeometryFromDynamoWPFCLIexe()
         {
             string openpath = Path.Combine(TestDirectory, @"core\commandline\GeometryTest.dyn");
@@ -304,10 +326,12 @@ namespace Dynamo.Tests
                     Assert.IsNotNull(newFile);
                     var newGeometry = newFile.ReadToEnd();
 
-                    Assert.IsNotNullOrEmpty(geometry);
+                    Assert.IsNotNull(geometry);
+                    Assert.IsNotEmpty(geometry);
                     var geometryJson = JsonConvert.DeserializeObject(geometry) as JArray;
 
-                    Assert.IsNotNullOrEmpty(newGeometry);
+                    Assert.IsNotNull(newGeometry);
+                    Assert.IsNotEmpty(newGeometry);
                     var newGeometryJson = JsonConvert.DeserializeObject(newGeometry) as JArray;
 
                     Assert.IsNotNull(geometryJson);

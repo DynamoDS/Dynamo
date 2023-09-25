@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.IO;
+using System.Linq;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Running;
-using NDesk.Options;
-using System.Linq;
+using CommandLine;
+using DynamoPerformanceTests.Enums;
 
 namespace DynamoPerformanceTests
 {
@@ -15,16 +16,6 @@ namespace DynamoPerformanceTests
             ComparisonFailure = 1
         }
 
-        private enum Command
-        {
-            Benchmark,
-            NonOptimizedBenchmark,
-            DebugInProcess,
-            Compare,
-            ModelOnlyBenchmark,
-            StandardConfigModelOnlyBenchmark
-        }
-
         private static readonly string modelTestBaseReport = "DynamoPerformanceTests.DynamoModelPerformanceTestBase-report.csv";
         private static readonly string modelTestComparison = "DynamoPerformanceTests.Comparison-Model.csv";
 
@@ -33,88 +24,44 @@ namespace DynamoPerformanceTests
 
         public static void Main(string[] args)
         {
-            var showHelp = false;
-
-            if (args.Length <= 0)
-            {
-                Console.WriteLine("Please specify a command.");
-                return;
-            }
-
             // Default arguments
             IConfig config = PerformanceTestHelper.getFastReleaseConfig();
-            var testDirectory = "../../../graphs/";
-            var baseResultsPath = string.Empty;
-            var newResultsPath = "BenchmarkDotNet.Artifacts/results/";
-            var saveComparisonPath = string.Empty;
 
-            // Command line options
-            var opts = new OptionSet() {
-                { "g=|graphs=", "Path to Directory containing test graphs. Defaults to 'Dynamo/tools/Performance/DynamoPerformanceTests/graphs/'", v => { testDirectory = v; } },
-                { "b=|base=", "Path to Directory containing performance results files to use as comparison base. Defaults to 'BenchmarkDotNet.Artifacts/results/'", v => { baseResultsPath = v; }},
-                { "n=|new=", "Path to Directory containing new performance results files to compare against the baseline", v => { newResultsPath = v; }},
-                { "s=|save=", "Location to save comparison csv", v => { saveComparisonPath = v; }},
-                { "h|help",  "show this message and return", v => showHelp = v != null },
-            };
-            opts.Parse(args);
+            Parser.Default
+                .ParseArguments<PerformanceTestConsoleAppOptions>(args)
+                .WithParsed(o =>
+                    {
+                        // Execute command
+                        switch (o.Command)
+                        {
+                            case Command.NonOptimizedBenchmark:
+                                config = PerformanceTestHelper.getDebugConfig();
+                                goto case Command.Benchmark;
 
-            // Show help
-            if (showHelp)
-            {
-                ShowHelp(opts);
-                return;
-            }
+                            case Command.DebugInProcess:
+                                config = PerformanceTestHelper.getDebugInProcessConfig();
+                                goto case Command.Benchmark;
 
-            // Get command
-            Command command;
-            var commandRecognized = Enum.TryParse(args[0], out command);
-            if (!commandRecognized)
-            {
-                Console.WriteLine("Command \"{0}\" not recognized.", args[0]);
-                return;
-            }
-            
-            // Execute command
-            switch (command)
-            {
-                case Command.NonOptimizedBenchmark:
-                    config = PerformanceTestHelper.getDebugConfig();
-                    goto case Command.Benchmark;
+                            case Command.Benchmark:
+                                DynamoViewPerformanceTestBase.testDirectory = o.TestDirectory;
+                                var runSummaryWithUI = BenchmarkRunner.Run<DynamoViewPerformanceTestBase>(config);
 
-                case Command.DebugInProcess:
-                    config = PerformanceTestHelper.getDebugInProcessConfig();
-                    goto case Command.Benchmark;
+                                goto case Command.ModelOnlyBenchmark;
 
-                case Command.Benchmark:
-                    DynamoViewPerformanceTestBase.testDirectory = testDirectory;
-                    var runSummaryWithUI = BenchmarkRunner.Run<DynamoViewPerformanceTestBase>(config);
+                            case Command.ModelOnlyBenchmark:
+                                DynamoModelPerformanceTestBase.testDirectory = o.TestDirectory;
+                                var runSummaryWithoutUI = BenchmarkRunner.Run<DynamoModelPerformanceTestBase>(config);
+                                break;
 
-                    goto case Command.ModelOnlyBenchmark;
+                            case Command.StandardConfigModelOnlyBenchmark:
+                                config = PerformanceTestHelper.getReleaseConfig();
+                                goto case Command.ModelOnlyBenchmark;
 
-                case Command.ModelOnlyBenchmark:
-                    DynamoModelPerformanceTestBase.testDirectory = testDirectory;
-                    var runSummaryWithoutUI = BenchmarkRunner.Run<DynamoModelPerformanceTestBase>(config);
-                    break;
-
-                case Command.StandardConfigModelOnlyBenchmark:
-                    config = PerformanceTestHelper.getReleaseConfig();
-                    goto case Command.ModelOnlyBenchmark;
-
-                case Command.Compare:
-                    Compare(baseResultsPath, newResultsPath, saveComparisonPath);
-                    break;
-            }
-        }
-
-        private static void ShowHelp(OptionSet opSet)
-        {
-            Console.WriteLine("\ncommands:");
-            Console.WriteLine("  Benchmark: Run performance tests");
-            Console.WriteLine("  NonOptimizedBenchmark: Use this call in order to run benchmarks on debug build of DynamoCore");
-            Console.WriteLine("  DebugInProcess: Use this call to get debug in process config in order to debug benchmarks");
-            Console.WriteLine("  Compare: Compare results from two performance test runs");
-            Console.WriteLine("\noptions:");
-            opSet.WriteOptionDescriptions(Console.Out);
+                            case Command.Compare:
+                                Compare(o.BaseResultsPath, o.NewResultsPath, o.SaveComparisonPath);
+                                break;
+                        }
+                    });
         }
 
         private static void Compare(string baseResultsPath, string newResultsPath, string savePath)

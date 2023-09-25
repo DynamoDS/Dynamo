@@ -1,15 +1,8 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:avalonedit="clr-namespace:ICSharpCode.AvalonEdit;assembly=ICSharpCode.AvalonEdit"
-                    xmlns:clr="clr-namespace:System;assembly=mscorlib"
-                    xmlns:controls="clr-namespace:Dynamo.Views;assembly=DynamoCoreWpf"
-                    xmlns:nodes="clr-namespace:Dynamo.Nodes;assembly=DynamoCoreWpf"
-                    xmlns:dynui="clr-namespace:Dynamo.UI.Controls;assembly=DynamoCoreWpf"
-                    xmlns:fa="clr-namespace:FontAwesome.WPF;assembly=FontAwesome.WPF"
-                    xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
-                    xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
-                    xmlns:system="clr-namespace:System;assembly=mscorlib"
-                    xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf">
+                    xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+                    xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
 
     <ResourceDictionary.MergedDictionaries>
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
@@ -20,8 +13,8 @@
     <FontFamily x:Key="ArtifaktElementRegular">../../Fonts/Autodesk/#Artifakt Element Regular</FontFamily>
     <FontFamily x:Key="ArtifaktElementBold">../../Fonts/Autodesk/#Artifakt Element Bold</FontFamily>
 
-    <lvc:ColorsCollection x:Key="ColorsCollection">
-        <Color A="255" R="80" G="195" B="218" />
+    <x:Array Type="Color" x:Key="ColorsCollection">
+        <Color  A="255" R="80" G="195" B="218" />
         <Color A="255" R="212" G="118" B="134" />
         <Color A="255" R="224" G="200" B="78" />
         <Color A="255" R="113" G="207" B="65" />
@@ -48,7 +41,7 @@
         <Color A="255" R="223" G="197" B="237" />
         <Color A="255" R="225" G="225" B="220" />
         <Color A="255" R="237" G="191" B="229" />
-    </lvc:ColorsCollection>
+    </x:Array>
 
     <system:Double x:Key="Size">12</system:Double>
 
@@ -63,94 +56,13 @@
     </system:Double>
 
     <Style TargetType="lvc:CartesianChart" x:Key="CartesianLiveChart">
-        <Setter Property="AnimationsSpeed" Value="0:0:0.420"></Setter>
-        <Setter Property="SeriesColors" Value="{StaticResource ColorsCollection}"/>
+        <Setter Property="AnimationsSpeed" Value="00:00:00.420"></Setter>
     </Style>
 
     <Style TargetType="lvc:PieChart" x:Key="PieLiveChart">
-        <Setter Property="AnimationsSpeed" Value="0:0:0.420"></Setter>
-        <Setter Property="SeriesColors" Value="{StaticResource ColorsCollection}"/>
+        <Setter Property="AnimationsSpeed" Value="00:00:00.420"></Setter>
         <Setter Property="SnapsToDevicePixels" Value="True"/>
     </Style>
-
-    <Style TargetType="lvc:Axis" x:Key="LiveAxis">
-        <Setter Property="FontSize" Value="{StaticResource Size}" />
-        <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
-        <Setter Property="Foreground" Value="{StaticResource LightGreyBrush}" />
-    </Style>
-
-    <Style TargetType="lvc:Separator" x:Key="LiveSeparator">
-        <Setter Property="StrokeThickness" 
-                     Value="{StaticResource SeparatorStrokeThickness}" />
-        <Setter Property="Stroke" Value="{StaticResource MidGreyBrush}" />
-        <Setter Property="Opacity" Value="81" />
-        <Style.Triggers>
-            <Trigger Property="AxisOrientation" Value="X">
-                <Setter Property="IsEnabled" Value="False"></Setter>
-            </Trigger>
-        </Style.Triggers>
-    </Style>
-    
-    <Style TargetType="lvc:Separator" x:Key="LiveSeparatorDashed">
-        <Setter Property="StrokeThickness" 
-                     Value="{StaticResource SeparatorStrokeThickness}" />
-        <Setter Property="StrokeDashArray" 
-                     Value="{StaticResource SeparatorStrokeDashArray}" />
-        <Setter Property="Stroke" Value="{StaticResource MidGreyBrush}" />
-        <Setter Property="Opacity" Value="81" />
-        <Style.Triggers>
-            <Trigger Property="AxisOrientation" Value="X">
-                <Setter Property="IsEnabled" Value="False"></Setter>
-            </Trigger>
-        </Style.Triggers>
-    </Style>
-
-    <Style TargetType="lvc:DefaultLegend">
-        <Setter Property="Foreground" Value="#DCDCDC"/>
-    </Style>
-
-    <Style TargetType="lvc:Series" x:Key="SeriesStyle">
-        <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}"  />
-        <Setter Property="FontSize" Value="{StaticResource Size}" />
-        <Setter Property="StrokeThickness" 
-                     Value="{StaticResource SeriesStrokeThickness}" />
-    </Style>
-
-    <Style TargetType="lvc:CandleSeries" 
-                          BasedOn="{StaticResource SeriesStyle}"/>
-    <Style TargetType="lvc:ColumnSeries" 
-                          BasedOn="{StaticResource SeriesStyle}"/>
-    <Style TargetType="lvc:HeatSeries" 
-                          BasedOn="{StaticResource SeriesStyle}"/>
-    <Style TargetType="lvc:LineSeries" 
-                          BasedOn="{StaticResource SeriesStyle}">
-        <Setter Property="PointGeometrySize" 
-                             Value="{StaticResource Size}" />
-    </Style>
-    <Style TargetType="lvc:StepLineSeries" 
-                          BasedOn="{StaticResource SeriesStyle}">
-        <Setter Property="PointGeometrySize" 
-                               Value="{StaticResource Size}" />
-    </Style>
-    <Style TargetType="lvc:VerticalLineSeries" 
-                          BasedOn="{StaticResource SeriesStyle}">
-        <Setter Property="PointGeometrySize" 
-                               Value="{StaticResource Size}" />
-    </Style>
-    <Style TargetType="lvc:OhlcSeries" 
-                          BasedOn="{StaticResource SeriesStyle}"/>
-    <Style TargetType="lvc:RowSeries" 
-                          BasedOn="{StaticResource SeriesStyle}"/>
-    <Style TargetType="lvc:ScatterSeries" 
-                          BasedOn="{StaticResource SeriesStyle}"/>
-    <Style TargetType="lvc:StackedAreaSeries" 
-                          BasedOn="{StaticResource SeriesStyle}"/>
-    <Style TargetType="lvc:StackedColumnSeries" 
-                          BasedOn="{StaticResource SeriesStyle}"/>
-    <Style TargetType="lvc:StackedRowSeries" 
-                          BasedOn="{StaticResource SeriesStyle}"/>
-    <Style TargetType="lvc:VerticalStackedAreaSeries" 
-                          BasedOn="{StaticResource SeriesStyle}"/>
 
 
     <DrawingBrush x:Key="DefaultBrush" Viewport="0 0 8 8" ViewportUnits="Absolute" TileMode="Tile">

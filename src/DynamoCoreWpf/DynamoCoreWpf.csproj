@@ -1,24 +1,29 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <UILib>true</UILib>
+  </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
   <PropertyGroup>
     <ProjectGuid>{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <OutputType>Library</OutputType> 
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dynamo.Wpf</RootNamespace>
     <AssemblyName>DynamoCoreWpf</AssemblyName>
     <DocumentationFile>$(OutputPath)\DynamoCoreWpf.XML</DocumentationFile>
     <EnableDefaultCompileItems>False</EnableDefaultCompileItems>
     <EnableDefaultEmbeddedResourceItems>False</EnableDefaultEmbeddedResourceItems>
-    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
-  </PropertyGroup>
+    <EnableDefaultPageItems>false</EnableDefaultPageItems>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture> 
+  </PropertyGroup> 
   <PropertyGroup>
     <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
   </PropertyGroup>
 
   <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
       <!--This command gets the latest build from the splash screen-->
+      <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command $(SolutionDir)\setnpmreg.ps1" />
       <Exec Command="npm pack @dynamods/splash-screen@latest" />
   </Target>
 
@@ -51,10 +56,24 @@
     <None Remove="Packages\SplashScreen\build\index.bundle.js" />
     <None Remove="Packages\SplashScreen\build\index.html" />
     <None Remove="UI\Images\Canvas\canvas-button-geometry-scaling.png" />
+    <None Remove="UI\Images\close_16px.png" />
+    <None Remove="UI\Images\caret_drop_down.png" />
+    <None Remove="UI\Images\NodeStates\package-64px.png" />
+    <None Remove="UI\Images\PackageManager\empty-state-first-use-light-gray.png" />
+    <None Remove="UI\Images\search_icon_20px.png" />
+    <None Remove="UI\Images\TitleBarButtons\close-darktheme-disabled-16px.png" />
     <None Remove="UI\Prompts\PortPropertiesEditPrompt.xaml" />
     <None Remove="Views\Core\CustomColorPicker.xaml" />
     <None Remove="Views\Core\GeometryScalingPopup.xaml" />
     <None Remove="UI\Images\question-hover-blue-16px.png" />
+    <None Remove="Views\PackageManager\Controls\ControlColorsAndBrushes.xaml" />      
+    <None Remove="Views\PackageManager\Controls\LoadingAnimationStripeControl.xaml" />
+    <None Remove="Views\PackageManager\Controls\NumericUpDownControl.xaml" />
+    <None Remove="Views\PackageManager\Controls\PackageManagePackageAnimationControl.xaml" />
+    <None Remove="Views\PackageManager\Controls\PackageManagerPublishControl.xaml" />
+    <None Remove="Views\PackageManager\Controls\PackageManagerPackagesControl.xaml" />
+    <None Remove="Views\PackageManager\Controls\PackageManagerSearchControl.xaml" />
+    <None Remove="Views\PackageManager\Controls\SearchBoxControl.xaml" />
     <None Remove="Views\SplashScreen\WebApp\splashScreenBackground.png" />
   </ItemGroup>
   <ItemGroup>
@@ -104,18 +123,20 @@
     <None Remove="Views\Menu\TrustedPathView.xaml" />
     <None Remove="Views\GuidedTour\HtmlPages\Resources\ConnectTheNode.gif" />
   </ItemGroup>
+
   <ItemGroup>
-  <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.1400" />
-  <PackageReference Include="AvalonEdit" Version="4.3.1.9430" CopyXML="true" />
-  <PackageReference Include="Greg" Version="2.5.0.5076" />
-  <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" />
+      <PackageReference Include="HelixToolkit" Version="2.24.0" />
+      <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
+      <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
+      <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
+      <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.2485" />
+    <PackageReference Include="FontAwesome5" Version="2.1.11" />
+    <PackageReference Include="AvalonEdit" Version="6.3.0.90" CopyXML="true" />
+    <PackageReference Include="Greg" Version="2.5.0.5076" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" />
 	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 	<PackageReference Include="RestSharp" Version="106.12.0" />
-	<PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" CopyXML="true" />
 	<PackageReference Include="Cyotek.Drawing.BitmapFont" Version="2.0.0" />
-	<PackageReference Include="HelixToolkit" Version="2.17.0" />
-	<PackageReference Include="HelixToolkit.Wpf" Version="2.17.0" />
-	<PackageReference Include="HelixToolkit.Wpf.SharpDX" Version="2.17.0" />
 	<PackageReference Include="SharpDX" Version="4.2.0" />
 	<PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0">
 	  <IncludeAssets>none</IncludeAssets>
@@ -127,32 +148,12 @@
 	<PackageReference Include="SharpDX.Direct3D9" Version="4.2.0" />
 	<PackageReference Include="SharpDX.DXGI" Version="4.2.0" />
 	<PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
-    <Reference Include="Dynamo.Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\Microsoft.Xaml.Behaviors\Dynamo.Microsoft.Xaml.Behaviors.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Practices.Prism">
-      <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-    </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
-	<PackageReference Include="Extended.Wpf.Toolkit" version="3.0.0">
-	  <GeneratePathProperty>true</GeneratePathProperty>
-    <!--Exclude copying the dll because we will handle it in the BinaryCompatibilityOps target -->
-    <ExcludeAssets>runtime</ExcludeAssets>
-	</PackageReference>
+    <Reference Include="Dynamo.Microsoft.Xaml.Behaviors">
+      <HintPath>..\..\extern\Microsoft.Xaml.Behaviors\$(TargetFramework)\Dynamo.Microsoft.Xaml.Behaviors.dll</HintPath>
+    </Reference> 
+  
+    <PackageReference Include="Prism.Core" Version="8.1.97" />
+    <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.103" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\InstalledPackagesControl.xaml.cs">
@@ -363,6 +364,7 @@
     <Compile Include="ViewModels\Menu\TrustedPathViewModel.cs" />
     <Compile Include="ViewModels\Menu\PreferencesViewModel.cs" />
     <Compile Include="ViewModels\PackageManager\IPackageInstaller.cs" />
+    <Compile Include="ViewModels\PackageManager\PackageManagerViewModel.cs" />
     <Compile Include="ViewModels\PackageManager\PackagePathViewModel.cs" />
     <Compile Include="ViewModels\Preview\CompactBubbleViewModel.cs" />
     <Compile Include="ViewModels\Preview\ConnectorAnchorViewModel.cs" />
@@ -431,6 +433,15 @@
       <DependentUpon>SurveyPopupWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Input\ParameterEditor.cs" />
+    <Compile Include="Views\PackageManager\Controls\FilterTagControl.xaml.cs" />
+    <Compile Include="Views\PackageManager\Controls\LoadingAnimationStripeControl.xaml.cs" />
+    <Compile Include="Views\PackageManager\Controls\NumericUpDownControl.xaml.cs" />
+    <Compile Include="Views\PackageManager\Controls\PackageManagePackageAnimationControl.xaml.cs" />
+    <Compile Include="Views\PackageManager\Controls\PackageManagerPackagesControl.xaml.cs" />
+    <Compile Include="Views\PackageManager\Controls\PackageManagerPublishControl.xaml.cs" />
+    <Compile Include="Views\PackageManager\Controls\PackageManagerSearchControl.xaml.cs" />
+    <Compile Include="Views\PackageManager\Controls\SearchBoxControl.xaml.cs" />
+    <Compile Include="Views\PackageManager\PackageManagerView.xaml.cs" />
     <Compile Include="Views\Menu\TrustedPathView.xaml.cs" />
     <Compile Include="Views\Output\OutputEditor.cs" />
     <Compile Include="Views\PackageManager\PackagePathView.xaml.cs">
@@ -614,6 +625,30 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\PackageManager\Controls\ControlColorsAndBrushes.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PackageManager\Controls\LoadingAnimationStripeControl.xaml">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PackageManager\Controls\NumericUpDownControl.xaml">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PackageManager\Controls\PackageManagePackageAnimationControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PackageManager\Controls\SearchBoxControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PackageManager\Controls\FilterTagControl.xaml">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Menu\TrustedPathView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -621,6 +656,22 @@
     <Page Include="Views\Menu\PreferencesView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\PackageManager\PackageManagerView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\PackageManager\Controls\PackageManagerPackagesControl.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\PackageManager\Controls\PackageManagerSearchControl.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\PackageManager\Controls\PackageManagerPublishControl.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\ExtensionWindow.xaml">
       <SubType>Designer</SubType>
@@ -740,8 +791,10 @@
     <Resource Include="UI\Images\Alignment\align_y_average.png" />
     <Resource Include="UI\Images\Alignment\align_y_distribute.png" />
     <Resource Include="UI\Images\Canvas\canvas-button-geometry-scaling.png" />
+    <Resource Include="UI\Images\caret_drop_down.png" />
     <Resource Include="UI\Images\caret_up.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\ArtifaktElement-Regular.woff" />
+    <Resource Include="UI\Images\close_16px.png" />
     <Resource Include="UI\Images\cursors.psd" />
     <Resource Include="UI\Images\cursors1.psd" />
   </ItemGroup>
@@ -882,8 +935,12 @@
     <Resource Include="UI\Images\NodeStates\frozen-64px.png" />
     <Resource Include="UI\Images\NodeStates\hidden-64px.png" />
     <Resource Include="UI\Images\NodeStates\info-64px.png" />
+    <Resource Include="UI\Images\NodeStates\package-64px.png" />
+    <Resource Include="UI\Images\PackageManager\empty-state-first-use-light-gray.png" />
     <Resource Include="UI\Images\question-hover-blue-16px.png" />
+    <Resource Include="UI\Images\search_icon_20px.png" />
     <Resource Include="UI\Images\TitleBarButtons\close-darktheme-default-16px.png" />
+    <Resource Include="UI\Images\TitleBarButtons\close-darktheme-disabled-16px.png" />
     <Resource Include="UI\Images\TitleBarButtons\close-lighttheme-default-16px.png" />
     <Resource Include="UI\Images\TitleBarButtons\close-lighttheme-hover-16px.png" />
     <Resource Include="UI\Images\TitleBarButtons\max-darktheme-default-16px.png" />
@@ -1492,7 +1549,7 @@
       <Project>{87550b2b-6cb8-461e-8965-dfafe3aafb5c}</Project>
       <Name>CoreNodes</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Libraries\DynamoUnits\Units.csproj">
+    <ProjectReference Include="..\Libraries\DynamoUnits\UnitsCore.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>Units</Name>
     </ProjectReference>
@@ -1661,6 +1718,14 @@
     <Resource Include="UI\Images\icon-dictionary-small.png" />
     <Resource Include="UI\Images\no-recommendations.png" />
     <Resource Include="UI\Images\not-authenticated.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Views\PackageManager\Controls\FilterTagControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\PackageManager\Controls\NumericUpDownControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
   </ItemGroup>
   <Target Name="AfterBuildOps" AfterTargets="Build">
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />

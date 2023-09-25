@@ -4,15 +4,18 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading;
 using Microsoft.Diagnostics.Runtime;
 using NUnit.Framework;
+using System.Runtime.Versioning;
 
 namespace Dynamo.Tests.Loggings
 {
     public class DynamoAnalyticsDisableTest
     {
-        [Test,Category("FailureNET6")]//TODO this test requires finding ASM using the registry, will not run on linux.
+        [Test]
+        [Platform("win")]//nunit attribute for now only run on windows until we know it's useful on linux.
         public void DisableAnalytics()
         {
             var versions = new List<Version>(){
@@ -28,14 +31,23 @@ namespace Dynamo.Tests.Loggings
             var locatedPath = string.Empty;
             var coreDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             Process dynamoCLI = null;
-
-            DynamoShapeManager.Utilities.GetInstalledAsmVersion2(versions, ref locatedPath, coreDirectory);
+            //TODO an approach we could take to get this running on linux.
+            //unclear if this needs to be compiled with an ifdef or runtime is ok.
+            //related to https://jira.autodesk.com/browse/DYN-5705
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                DynamoShapeManager.Utilities.SearchForASMInLibGFallback(versions, ref locatedPath, coreDirectory, out _);
+            }
+            else
+            {
+                DynamoShapeManager.Utilities.GetInstalledAsmVersion2(versions, ref locatedPath, coreDirectory);
+            }
             try
             {
                 Assert.DoesNotThrow(() =>
                 {
 
-                    dynamoCLI = Process.Start(Path.Combine(coreDirectory, "DynamoCLI.exe"), $"--GeometryPath \"{locatedPath}\" -k --DisableAnalytics -o \"{openPath}\" ");
+                    dynamoCLI = Process.Start(new ProcessStartInfo(Path.Combine(coreDirectory, "DynamoCLI.exe"), $"--GeometryPath \"{locatedPath}\" -k --DisableAnalytics -o \"{openPath}\" ") { UseShellExecute = true });
 
                     Thread.Sleep(5000);// Wait 5 seconds to open the dyn
                     Assert.IsFalse(dynamoCLI.HasExited);

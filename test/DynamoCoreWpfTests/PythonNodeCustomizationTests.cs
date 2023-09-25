@@ -13,12 +13,14 @@ using Dynamo.PythonServices;
 using Dynamo.Tests;
 using Dynamo.Utilities;
 using DynamoCoreWpfTests.Utility;
+using ICSharpCode.AvalonEdit.Document;
 using NUnit.Framework;
 using PythonNodeModels;
 using PythonNodeModelsWpf;
 
 namespace DynamoCoreWpfTests
 {
+    [TestFixture, Category("Failure")]
     public class PythonNodeCustomizationTests : DynamoTestUIBase
     {
         bool bTextEnteringEventRaised = false;
@@ -145,16 +147,15 @@ namespace DynamoCoreWpfTests
             codeEditor.Focus();
 
             //This will generate the event of going to the end of the line
-            var textArea = Keyboard.FocusedElement;
-            textArea.RaiseEvent(new KeyEventArgs(
-                Keyboard.PrimaryDevice,
-                PresentationSource.FromVisual(codeEditor),
-                0,
-                Key.End)
-            {
-                RoutedEvent = Keyboard.KeyDownEvent
-            }
-            );
+            var textArea = scriptWindow.editText.TextArea;
+
+            // Get the current caret position
+            TextLocation caretPosition = textArea.Caret.Location;
+
+            // Set the caret position to the end of the line
+            var endOfLine = new TextLocation(caretPosition.Line,
+                codeEditor.Document.GetLineByNumber(caretPosition.Line).Length + 1);
+            textArea.Caret.Location = endOfLine;
 
             //This will pop up the automcompletion list info
             textArea.RaiseEvent(

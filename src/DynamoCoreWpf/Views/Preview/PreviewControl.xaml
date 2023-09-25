@@ -1,4 +1,4 @@
-﻿<UserControl x:Name="thisPreviewControl"
+<UserControl x:Name="thisPreviewControl"
              x:Class="Dynamo.UI.Controls.PreviewControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -9,7 +9,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:ui="clr-namespace:Dynamo.UI"
-             xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:fa="clr-namespace:FontAwesome5;assembly=FontAwesome5.Net"
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              mc:Ignorable="d"  Canvas.Top="-20"
@@ -96,7 +96,7 @@
                                                         Path=StaysOpen,
                                                         Converter={StaticResource PinIconForegroundConverter}}"/>
                         <fa:ImageAwesome Name="PinnIcon" 
-                                         Icon="ThumbTack" 
+                                         Icon="Solid_Thumbtack" 
                                          Height="12" 
                                          Width="9" 
                                          Margin="4"                                       

@@ -235,7 +235,7 @@ namespace Dynamo.Core
                             return ret;
                         }
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                         return false;
                     }

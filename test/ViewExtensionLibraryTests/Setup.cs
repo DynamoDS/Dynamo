@@ -10,7 +10,7 @@ public class Setup
 {
     private AssemblyHelper assemblyHelper;
 
-    [SetUp]
+    [OneTimeSetUp]
     public void SetUp()
     {
         var assemblyPath = Assembly.GetExecutingAssembly().Location;
@@ -28,7 +28,7 @@ public class Setup
         AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssembly;
     }
 
-    [TearDown]
+    [OneTimeTearDown]
     public void TearDown()
     {
         AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssembly;

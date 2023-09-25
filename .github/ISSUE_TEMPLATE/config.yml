@@ -1,0 +1,14 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Dynamo Revit Issues
+    url: https://github.com/DynamoDS/DynamoRevit/issues/new/choose
+    about: File an issue with Dynamo Revit
+  - name: Dynamo Advance Steel Issues
+    url: https://github.com/DynamoDS/Dynamo-Advance-Steel/issues/new
+    about: File an issue with Dynamo Advanced Steel
+  - name: Dynamo Wishlist
+    url: https://github.com/DynamoDS/DynamoWishlist/issues/new/choose
+    about: File an improvement request
+  - name: Dynamo Forum
+    url: https://forum.dynamobim.com
+    about: Discussions? Questions? Ideas? Something to share?

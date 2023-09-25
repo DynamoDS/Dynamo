@@ -77,12 +77,8 @@ jobs:
           echo "Deleting caches..."
           echo "Deleting: $WNNUM-cache-net60Win-current"
           gh actions-cache delete $WNNUM-cache-net60Win-current -R $REPO --confirm
-          echo "Deleting: $WNNUM-cache-current"
-          gh actions-cache delete $WNNUM-cache-current -R $REPO --confirm
-          echo "Deleting: $WNNUM-cache-master"
-          gh actions-cache delete $WNNUM-cache-net60Win-master -R $REPO --confirm
           echo "Deleting: $WNNUM-cache-net60Win-master"
-          gh actions-cache delete $WNNUM-cache-master -R $REPO --confirm
+          gh actions-cache delete $WNNUM-cache-net60Win-master -R $REPO --confirm
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         

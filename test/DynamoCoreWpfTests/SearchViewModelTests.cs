@@ -20,7 +20,7 @@ namespace Dynamo.Tests
         public void Init()
         {
             model = new NodeSearchModel();
-            viewModel = new SearchViewModel(model);
+            viewModel = new SearchViewModel(model, ViewModel);
         }
 
         [Test]
@@ -794,23 +794,30 @@ namespace Dynamo.Tests
 
         #region Helpers
 
-        private static NodeSearchElement CreateCustomNode(string name, string category,
+        private NodeSearchElement CreateCustomNode(string name, string category,
             string description = "", string path = "")
         {
             var element = new CustomNodeSearchElement(null,
                 new CustomNodeInfo(Guid.NewGuid(), name, category, description, path));
 
+            var iDoc = ViewModel.Model.LuceneUtility.InitializeIndexDocumentForNodes();
+            if (element != null)
+            {
+                ViewModel.Model.AddNodeTypeToSearchIndex(element, iDoc);
+            }
+
+
             return element;
         }
 
-        private static NodeSearchElementViewModel CreateCustomNodeViewModel(string name, string category,
+        private NodeSearchElementViewModel CreateCustomNodeViewModel(string name, string category,
             string description = "", string path = "")
         {
             var element = CreateCustomNode(name, category, description, path);
             return new NodeSearchElementViewModel(element, null);
         }
 
-        private static NodeSearchElementViewModel CreateCustomNodeViewModel(NodeSearchElement element)
+        private NodeSearchElementViewModel CreateCustomNodeViewModel(NodeSearchElement element)
         {
             return new NodeSearchElementViewModel(element, null);
         }
@@ -819,7 +826,7 @@ namespace Dynamo.Tests
         /// Build complex tree.
         /// </summary>
         /// <returns>All members of built tree.</returns>
-        private static IEnumerable<NodeSearchElementViewModel> PrepareTestTree()
+        private IEnumerable<NodeSearchElementViewModel> PrepareTestTree()
         {
             // Next tree will be built.
             // Used blocks: ─, │, ┌, ┐, ┤, ├, ┴, ┬. 

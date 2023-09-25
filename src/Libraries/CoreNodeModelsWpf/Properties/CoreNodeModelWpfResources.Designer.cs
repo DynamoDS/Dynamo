@@ -377,8 +377,6 @@ namespace Dynamo.Wpf.Properties {
 
         /// <summary>
         ///   Looks up a localized string similar to A list of string labels for each group of points to be plotted.
-        ///
-        ///List&lt;string&gt.;
         /// </summary>
         public static string ChartsScatterPlotLabelsDataPortToolTip
         {

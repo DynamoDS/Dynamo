@@ -24,6 +24,7 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.PackageManager;
+using Dynamo.PackageManager.UI;
 using Dynamo.Scheduler;
 using Dynamo.Selection;
 using Dynamo.Services;
@@ -371,11 +372,11 @@ namespace Dynamo.ViewModels
             }
         }
 
-        [Obsolete("This was moved to PreferencesViewModel.cs")]
         /// <summary>
         /// Indicates whether to make T-Spline nodes (under ProtoGeometry.dll) discoverable
         /// in the node search library.
         /// </summary>
+        [Obsolete("This was moved to PreferencesViewModel.cs")]
         public bool EnableTSpline
         {
             get
@@ -630,10 +631,10 @@ namespace Dynamo.ViewModels
             }
         }
 
-        [Obsolete ("This was moved to PreferencesViewModel.cs")]
         /// <summary>
         /// Engine used by default for new Python script and string nodes. If not empty, this takes precedence over any system settings.
         /// </summary>
+        [Obsolete ("This was moved to PreferencesViewModel.cs")]
         public string DefaultPythonEngine
         {
             get { return model.PreferenceSettings.DefaultPythonEngine; }
@@ -1045,7 +1046,7 @@ namespace Dynamo.ViewModels
             // launching the process using explorer.exe will format the URL incorrectly
             // and Github will not recognise the query parameters in the URL
             // so launch with default operating system web browser
-            Process.Start(new ProcessStartInfo(urlWithParameters));
+            Process.Start(new ProcessStartInfo(urlWithParameters) { UseShellExecute = true });
         }
 
         public static void ReportABug()
@@ -1055,7 +1056,7 @@ namespace Dynamo.ViewModels
 
         internal static void DownloadDynamo()
         {
-            Process.Start(new ProcessStartInfo("explorer.exe", Configurations.DynamoDownloadLink));
+            Process.Start(new ProcessStartInfo("explorer.exe", Configurations.DynamoDownloadLink) { UseShellExecute = true });
         }
 
         private void Disable3DPreview()
@@ -1430,7 +1431,7 @@ namespace Dynamo.ViewModels
                 Exception ex;
                 if (DynamoUtilities.PathHelper.isValidJson(newVm.Model.FileName, out fileContents, out ex))
                 {
-                    ExtraWorkspaceViewInfo viewInfo = WorkspaceViewModel.ExtraWorkspaceViewInfoFromJson(fileContents);
+                    ExtraWorkspaceViewInfo viewInfo = ExtraWorkspaceViewInfo.ExtraWorkspaceViewInfoFromJson(fileContents);
                     newVm.Model.UpdateWithExtraWorkspaceViewInfo(viewInfo);
                 }
                 workspaces.Add(newVm);
@@ -1564,7 +1565,7 @@ namespace Dynamo.ViewModels
         /// Attempts to open a file using the Json content passed to OpenFromJsonCommand, but wraps
         /// the call with a check to make sure no unsaved changes to the HomeWorkspace are lost.
         /// </summary>
-        /// <param name="openFromJsonCommand"> <see cref="DynamoModel.OpenFileFromJsonCommand"/> </param>
+        /// <param name="openCommand"> <see cref="DynamoModel.OpenFileFromJsonCommand"/> </param>
         private void OpenFromJsonIfSaved(object openCommand)
         {
             filePath = string.Empty;
@@ -1626,12 +1627,12 @@ namespace Dynamo.ViewModels
 
         /// <summary>
         /// Open a definition or workspace.
-        /// </summary>
-        /// <param name="parameters"></param>
         /// For most cases, parameters variable refers to the Json content file to open
         /// However, when this command is used in OpenFileDialog, the variable is
-        /// a Tuple<string, bool> instead. The boolean flag is used to override the
+        /// a Tuple{string,bool} instead. The boolean flag is used to override the
         /// RunSetting of the workspace.
+        /// </summary>
+        /// <param name="parameters"></param>
         private void OpenFromJson(object parameters)
         {
             // try catch for exceptions thrown while opening files, say from a future version, 
@@ -1677,7 +1678,9 @@ namespace Dynamo.ViewModels
                 }
                 else
                 {
-                    throw (e);
+#pragma warning disable CA2200 // Rethrow to preserve stack details
+                    throw e;
+#pragma warning restore CA2200 // Rethrow to preserve stack details
                 }
                 return;
             }
@@ -1686,12 +1689,12 @@ namespace Dynamo.ViewModels
 
         /// <summary>
         /// Open a definition or workspace.
-        /// </summary>
-        /// <param name="parameters"></param>
         /// For most cases, parameters variable refers to the file path to open
         /// However, when this command is used in OpenFileDialog, the variable is
-        /// a Tuple<string, bool> instead. The boolean flag is used to override the
+        /// a Tuple{string, bool} instead. The boolean flag is used to override the
         /// RunSetting of the workspace.
+        /// </summary>
+        /// <param name="parameters"></param>
         private void Open(object parameters)
         {
             // try catch for exceptions thrown while opening files, say from a future version, 
@@ -1761,7 +1764,9 @@ namespace Dynamo.ViewModels
                 }
                 else
                 {
-                    throw (e);
+#pragma warning disable CA2200 // Rethrow to preserve stack details
+                    throw e;
+#pragma warning restore CA2200 // Rethrow to preserve stack details
                 }
                 return;
             }
@@ -1770,12 +1775,12 @@ namespace Dynamo.ViewModels
 
         /// <summary>
         /// Insert a definition or a custom node.
-        /// </summary>
-        /// <param name="parameters"></param>
         /// For most cases, parameters variable refers to the file path to open
         /// However, when this command is used in InsertFileDialog, the variable is
-        /// a Tuple<string, bool> instead. The boolean flag is used to override the
+        /// a Tuple&lt;string, bool&gt; instead. The boolean flag is used to override the
         /// RunSetting of the workspace.
+        /// </summary>
+        /// <param name="parameters"></param>
         private void Insert(object parameters)
         {
             // try catch for exceptions thrown while opening files, say from a future version, 
@@ -1843,7 +1848,9 @@ namespace Dynamo.ViewModels
                 }
                 else
                 {
-                    throw (e);
+#pragma warning disable CA2200 // Rethrow to preserve stack details
+                    throw e;
+#pragma warning restore CA2200 // Rethrow to preserve stack details
                 }
                 return;
             }
@@ -1882,12 +1889,12 @@ namespace Dynamo.ViewModels
                 }
 
                 // This call will fail in the case of an XML file
-                ExtraWorkspaceViewInfo viewInfo = WorkspaceViewModel.ExtraWorkspaceViewInfoFromJson(fileContentsInUse);
+                ExtraWorkspaceViewInfo viewInfo = ExtraWorkspaceViewInfo.ExtraWorkspaceViewInfoFromJson(fileContentsInUse);
 
                 Model.CurrentWorkspace.UpdateWithExtraWorkspaceViewInfo(viewInfo);
                 Model.OnWorkspaceOpening(viewInfo);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 this.ShowStartPage = false; // Hide start page if there's one.
                 return;
@@ -2214,7 +2221,25 @@ namespace Dynamo.ViewModels
             OnRequestPackageManagerSearchDialog(this, EventArgs.Empty);
         }
 
+        internal void ShowPackageManager(object parameters)
+        {
+            if (parameters == null)
+            {
+                OnRequestPackageManagerDialog(this, EventArgs.Empty);
+            }
+            else
+            {
+                var param = (string)parameters;
+                OnRequestPackageManagerDialog(this, new OpenPackageManagerEventArgs(param));
+            }
+        }
+
         internal bool CanShowPackageManagerSearch(object parameters)
+        {
+            return !model.IsServiceMode;
+        }
+
+        internal bool CanShowPackageManager(object parameters)
         {
             return !model.IsServiceMode;
         }
@@ -2704,6 +2729,7 @@ namespace Dynamo.ViewModels
         /// Requests a message box asking the user to save the workspace and allows saving.
         /// </summary>
         /// <param name="workspace">The workspace for which to show the dialog</param>
+        /// <param name="allowCancel"></param>
         /// <returns>False if the user cancels, otherwise true</returns>
         public bool AskUserToSaveWorkspaceOrCancel(WorkspaceModel workspace, bool allowCancel = true)
         {
@@ -2911,7 +2937,7 @@ namespace Dynamo.ViewModels
 
         public void GoToWiki(object parameter)
         {
-            Process.Start(new ProcessStartInfo("explorer.exe", Configurations.DynamoWikiLink));
+            Process.Start(new ProcessStartInfo("explorer.exe", Configurations.DynamoWikiLink) { UseShellExecute = true });
         }
 
         internal bool CanGoToWiki(object parameter)
@@ -2921,7 +2947,7 @@ namespace Dynamo.ViewModels
 
         public void GoToSourceCode(object parameter)
         {
-            Process.Start(new ProcessStartInfo("explorer.exe", Configurations.GitHubDynamoLink));
+            Process.Start(new ProcessStartInfo("explorer.exe", Configurations.GitHubDynamoLink) { UseShellExecute = true });
         }
 
         internal bool CanGoToSourceCode(object parameter)
@@ -2931,7 +2957,7 @@ namespace Dynamo.ViewModels
 
         public void GoToDictionary(object parameter)
         {
-            Process.Start(new ProcessStartInfo("explorer.exe", Configurations.DynamoDictionary));
+            Process.Start(new ProcessStartInfo("explorer.exe", Configurations.DynamoDictionary) { UseShellExecute = true });
         }
 
         internal bool CanGoToDictionary(object parameter)
@@ -3395,6 +3421,11 @@ namespace Dynamo.ViewModels
 
 
             BackgroundPreviewViewModel.Dispose();
+            foreach (var wsvm in workspaces)
+            {
+                wsvm.Dispose();
+            }
+            MainGuideManager?.CloseRealTimeInfoWindow();
 
             model.ShutDown(shutdownParams.ShutdownHost);
             if (shutdownParams.ShutdownHost)
@@ -3408,7 +3439,7 @@ namespace Dynamo.ViewModels
             BackgroundPreviewViewModel.PropertyChanged -= Watch3DViewModelPropertyChanged;
             WatchHandler.RequestSelectGeometry -= BackgroundPreviewViewModel.AddLabelForPath;
             model.ComputeModelDeserialized -= model_ComputeModelDeserialized;
-            model.RequestNotification -= model_RequestNotification;
+            model.RequestNotification -= model_RequestNotification;            
 
             return true;
         }

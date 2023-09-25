@@ -23,7 +23,7 @@ jobs:
       acceptable_missing_info: 1
     steps:
       #Removes conflicting characters before using the issue content as a script parameter
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Remove conflicting chars
         env:
           ISSUE_BODY: ${{github.event.issue.body}}
@@ -37,33 +37,36 @@ jobs:
        #Checks for missing information inside the issue content
       - name: Check Information
         id: check-info
+        env:
+          ISSUE_BODY: ${{ steps.remove_quotations.outputs.replaced }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
         run: |
-          ls -la
-          echo "analysis_response=$(pwsh .\\.github\\scripts\\issue_analyzer.ps1 "${{ env.template }}" "${{ steps.remove_quotations.outputs.replaced }}" "${{ env.acceptable_missing_info }}" )" >> $GITHUB_ENV
+          echo "analysis_response=$(pwsh .\\.github\\scripts\\issue_analyzer.ps1 "${{ env.template }}" "${{ env.acceptable_missing_info }}" )" >> $GITHUB_ENV
       
       #Remove sections in the issue body like "Dynamo version", "Stack Trace" because won't be used to predict the issue type
       - name: Clean Issue Body
+        env:
+          ISSUE_BODY_PARSED: ${{steps.remove_quotations.outputs.replaced}}
         if: env.analysis_response == 'Valid'
         id: clean-issue-body
         run: |
-          echo "parsed_issue_body="$(pwsh  .\\.github\\scripts\\issue_body_cleaner.ps1 "${{ steps.remove_quotations.outputs.replaced }}" )"" >> $GITHUB_ENV
+          echo "parsed_issue_body="$(pwsh  .\\.github\\scripts\\issue_body_cleaner.ps1 )"" >> $GITHUB_ENV
 
       #The IssuesTypePredicter program receives as a parameter a json string with the issue content, then It's creating the json string in this section based in the issue body
       - name: Create Issue JSON String
         env:
           ISSUE_NUMBER: ${{github.event.issue.number}}
-          ISSUE_TITLE: ${{github.event.issue.title}}
-          ISSUE_BODY: ${{env.parsed_issue_body}}
+          ISSUE_TITLE:  ${{github.event.issue.title}}
         if: env.analysis_response == 'Valid'
         id: create-issue-json
         run: |
           mkdir IssuesTypePredicter
-          echo "issue_json_string="$(pwsh  .\\.github\\scripts\\get_issue_json_body.ps1 "$ISSUE_NUMBER" "$ISSUE_TITLE" "$ISSUE_BODY" )""  >> $GITHUB_ENV
+          echo "issue_json_string="$(pwsh  .\\.github\\scripts\\get_issue_json_body.ps1 "$ISSUE_NUMBER")""  >> $GITHUB_ENV
 
       #Now checkout the IssuesTypePredicter source code from the repo https://github.com/DynamoDS/IssuesTypePredicter
       - name: Checkout IssuesTypePredicter
         if: env.analysis_response == 'Valid'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: DynamoDS/IssuesTypePredicter
           path: IssuesTypePredicter

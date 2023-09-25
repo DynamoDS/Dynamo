@@ -44,7 +44,6 @@ namespace CoreNodeModelsWpf.Charts
     public class HeatSeriesNodeModel : NodeModel
     {
         #region Properties
-        private Random rnd = new Random();
 
         /// <summary>
         /// A list of X-axis Labels.
@@ -92,10 +91,10 @@ namespace CoreNodeModelsWpf.Charts
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        [JsonConstructor]
         /// <summary>
         /// Instantiate a new NodeModel instance.
         /// </summary>
+        [JsonConstructor]
         public HeatSeriesNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             PortConnected += HeatSeriesNodeModel_PortConnected;
@@ -123,7 +122,7 @@ namespace CoreNodeModelsWpf.Charts
         private void HeatSeriesNodeModel_PortConnected(PortModel port, ConnectorModel arg2)
         {
             // Reset an info states if any
-            if (port.PortType == PortType.Input && InPorts[3].IsConnected && NodeInfos.Any(x => x.State.Equals(ElementState.Info)))
+            if (port.PortType == PortType.Input && InPorts[3].IsConnected && NodeInfos.Any(x => x.State.Equals(ElementState.PersistentInfo)))
             {
                 this.ClearInfoMessages();
             }
@@ -216,7 +215,7 @@ namespace CoreNodeModelsWpf.Charts
                 if (InPorts[3].IsConnected) return;
 
                 // In case colors are not provided, we supply some from the default library of colors
-                Info(Dynamo.Wpf.Properties.CoreNodeModelWpfResources.ProvideDefaultColorsWarningMessage);
+                Info(Dynamo.Wpf.Properties.CoreNodeModelWpfResources.ProvideDefaultColorsWarningMessage, true);
 
                 Color color = Utilities.Colors.GetColor();
                 Colors.Add(color);

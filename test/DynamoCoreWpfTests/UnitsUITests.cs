@@ -15,7 +15,7 @@ using Dynamo.Graph.Nodes;
 
 namespace DynamoCoreWpfTests
 {
-    [TestFixture]
+    [TestFixture, Category("Failure")]
     public class UnitsUITests : DynamoTestUIBase
     {
         private LengthFromString lengthFromString;

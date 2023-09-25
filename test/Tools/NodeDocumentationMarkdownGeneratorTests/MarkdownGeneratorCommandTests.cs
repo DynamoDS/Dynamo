@@ -19,11 +19,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
         private static readonly string DynamoCoreNodesDir = Path.Combine(DynamoCoreDir, "Nodes");
         private static string DynamoRepoRoot = new DirectoryInfo(DynamoCoreDir).Parent.Parent.Parent.FullName;
         private static readonly string NodeGeneratorToolBuildPath = Path.Combine(DynamoRepoRoot, "src","tools", "NodeDocumentationMarkdownGenerator","bin",
-#if NET48
     "AnyCPU"
-#else
-    "NET60_Windows"
-#endif
             );
         private static readonly string toolsTestFilesDirectory = Path.GetFullPath(Path.Combine(DynamoRepoRoot, "test","Tools", "docGeneratorTestFiles"));
         private static readonly string testLayoutSpecPath = Path.Combine(toolsTestFilesDirectory, "testlayoutspec.json");
@@ -153,7 +149,6 @@ namespace NodeDocumentationMarkdownGeneratorTests
         }
 
         [Test]
-        [Category("FailureNET6")]
         public void ProducesCorrectOutputFromCoreDirectory_preloadedbinaries()
         {
             // Arrange
@@ -169,17 +164,16 @@ namespace NodeDocumentationMarkdownGeneratorTests
                 RecursiveScan = true,
                 OutputFolderPath = tempDirectory.FullName,
                 Filter = preloadedLibraryPaths.Concat(new string[] 
-                {CORENODEMODELS_DLL_NAME,"GeometryUI.dll","PythonNodeModels.dll","Watch3dNodeModels.dll","UnitsUI.dll","" }),
+                {CORENODEMODELS_DLL_NAME,"GeometryUI.dll","PythonNodeModels.dll","Watch3dNodeModels.dll","UnitsNodeModels.dll","" }),
                 ReferencePaths = new List<string>()
             };
 
             FromDirectoryCommand.HandleDocumentationFromDirectory(opts);
 
             var generatedFileNames = tempDirectory.GetFiles().Select(x => x.Name);
-            //assert count is correct.
-            //TODO this should be 684 - but 2 tsplines nodes have such long signatures the paths are too long for windows.
-            Assert.AreEqual(682, generatedFileNames.Count());
+            Assert.AreEqual(683, generatedFileNames.Count());
         }
+
         [Test]
         public void ProducesCorrectOutputFromCoreDirectory_dsFiles()
         {
@@ -224,7 +218,6 @@ namespace NodeDocumentationMarkdownGeneratorTests
 
 
         [Test]
-        [Category("FailureNET6")]
         public void DictionaryContentIsFoundCorrectlyForCoreNodes()
         {
             // Test output is generated with the following args:
@@ -270,7 +263,6 @@ namespace NodeDocumentationMarkdownGeneratorTests
         }
 
         [Test]
-        [Category("FailureNET6")]
         public void DictionaryImagesAreCompressed()
         {
            
@@ -312,7 +304,6 @@ namespace NodeDocumentationMarkdownGeneratorTests
 
 
         [Test]
-        [Category("FailureNET6")]
         public void ProducesCorrectOutputFromPackage()
         {
             // Arrange

@@ -49,25 +49,68 @@ namespace Dynamo.Configuration
         /// </summary>
         internal static int DefaultResultsCount = 50;
 
+
+        #region Field Weights
         /// <summary>
         /// Search name matching weight
         /// </summary>
         internal static int SearchNameWeight = 10;
 
         /// <summary>
+        /// Search Category matching weight
+        /// </summary>
+        internal static int SearchCategoryWeight = 9;
+
+        /// <summary>
+        /// Search Description matching weight
+        /// </summary>
+        internal static int SearchDescriptionWeight = 6;
+
+        /// <summary>
+        /// Search tags matching weight
+        /// </summary>
+        internal static int SearchTagsWeight = 6;
+
+        /// <summary>
+        /// other fields search matching weight
+        /// </summary>
+        internal static int SearchMetaFieldsWeight = 6;
+
+        #endregion
+
+
+        #region Wildcards Field Weights
+        /// <summary>
         /// Wildcards search name matching weight
         /// </summary>
         internal static int WildcardsSearchNameWeight = 7;
 
         /// <summary>
-        /// Search non-name meta fields matching weight
+        /// Wildcards search Category matching weight
         /// </summary>
-        internal static int SearchMetaFieldsWeight = 6;
+        internal static int WildcardsSearchCategoryWeight = 6;
 
         /// <summary>
-        /// Wildcards search non-name meta fields matching weight
+        /// Wildcards search Description matching weight
+        /// </summary>
+        internal static int WildcardsSearchDescriptionWeight = 4;
+
+        /// <summary>
+        /// Wildcards search tags matching weight
+        /// </summary>
+        internal static int WildcardsSearchTagsWeight = 4;
+
+        /// <summary>
+        /// other wildcards fields search matching weight
         /// </summary>
         internal static int WildcardsSearchMetaFieldsWeight = 4;
+
+        /// <summary>
+        /// Wildcards search name matching weight
+        /// </summary>
+        internal static int WildcardsSearchNameParsedWeight = 5;
+
+        #endregion
 
         /// <summary>
         /// Fuzzy search matching weight
@@ -75,9 +118,24 @@ namespace Dynamo.Configuration
         internal static int FuzzySearchWeight = 2;
 
         /// <summary>
+        /// Parent directory where information is indexed.
+        /// </summary>
+        internal static string Index = "Index";
+
+        /// <summary>
+        /// Directory where Nodes info are indexed
+        /// </summary>
+        internal static string NodesIndexingDirectory = "Nodes";
+
+        /// <summary>
+        /// Directory where packages info are indexed
+        /// </summary>
+        internal static string PackagesIndexingDirectory = "Packages";
+
+        /// <summary>
         /// This represent the fields that will be indexed when initializing Lucene Search
         /// </summary>
-        public enum IndexFieldsEnum
+        public enum NodeFieldsEnum
         {
             /// <summary>
             /// Name - The name of the node
@@ -107,17 +165,37 @@ namespace Dynamo.Configuration
             /// <summary>
             /// Documentation - Documentation of the node
             /// </summary>
-            Documentation
+            Documentation,
+
+            /// <summary>
+            /// Hosts - Package hosts
+            /// </summary>
+            Hosts,
+
+            /// <summary>
+            /// Node Input Parameters as string (there are nodes with same name and category but different parameters)
+            /// </summary>
+            Parameters
         }
 
         /// <summary>
-        /// Fields to be indexed by Lucene Search
+        /// Nodes Fields to be indexed by Lucene Search
         /// </summary>
-        public static string[] IndexFields = { nameof(IndexFieldsEnum.Name),
-                                               nameof(IndexFieldsEnum.FullCategoryName),
-                                               nameof(IndexFieldsEnum.Description),
-                                               nameof(IndexFieldsEnum.SearchKeywords),
-                                               nameof(IndexFieldsEnum.DocName),
-                                               nameof(IndexFieldsEnum.Documentation)};
+        public static string[] NodeIndexFields = { nameof(NodeFieldsEnum.Name),
+                                                   nameof(NodeFieldsEnum.FullCategoryName),
+                                                   nameof(NodeFieldsEnum.Description),
+                                                   nameof(NodeFieldsEnum.SearchKeywords),
+                                                   nameof(NodeFieldsEnum.DocName),
+                                                   nameof(NodeFieldsEnum.Documentation),
+                                                   nameof(NodeFieldsEnum.Parameters)};
+
+
+        /// <summary>
+        /// Package Fields to be indexed by Lucene Search
+        /// </summary>
+        public static string[] PackageIndexFields = { nameof(NodeFieldsEnum.Name),
+                                                      nameof(NodeFieldsEnum.Description),
+                                                      nameof(NodeFieldsEnum.SearchKeywords),
+                                                      nameof(NodeFieldsEnum.Hosts)};
     }
 }

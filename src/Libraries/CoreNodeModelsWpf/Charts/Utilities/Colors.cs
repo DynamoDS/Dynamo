@@ -1,8 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media;
 using Dynamo.UI;
 
@@ -16,7 +13,7 @@ namespace CoreNodeModelsWpf.Charts.Utilities
     {
         private static int current = 0;
 
-        private static List<Color> _colors => SharedDictionaryManager.LiveChartDictionary["ColorsCollection"] as List<Color>;
+        private static IEnumerable<Color> _colors => SharedDictionaryManager.LiveChartDictionary["ColorsCollection"] as IEnumerable<Color>;
 
         /// <summary>
         /// Cycles through all the colors inside the palette returning the next color
@@ -26,8 +23,8 @@ namespace CoreNodeModelsWpf.Charts.Utilities
         public static Color GetColor()
         {
             int index = current++;
-            if (current == _colors.Count) current = 0;
-            return _colors[index];
+            if (current == _colors.Count()) current = 0;
+            return _colors.ElementAt(index);
         }
 
         /// <summary>

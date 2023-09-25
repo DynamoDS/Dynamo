@@ -17,7 +17,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        ///     Returns <see cref="Dispalyoptions"/> flag which indicates whether args contain default text overriden,
+        ///     Returns <see cref="DisplayOptions"/> flag which indicates whether args contain default text overriden,
         ///     has details or has file path
         /// </summary>
         public DisplayOptions Options { get; private set; }

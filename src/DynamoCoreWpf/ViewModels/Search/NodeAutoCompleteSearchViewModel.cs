@@ -14,10 +14,15 @@ using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.Properties;
+using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
 using Greg;
+using J2N.Text;
+using Lucene.Net.Documents;
+using Lucene.Net.QueryParsers.Classic;
+using Lucene.Net.Search;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
@@ -38,6 +43,15 @@ namespace Dynamo.ViewModels
         private bool displayAutocompleteMLStaticPage;
         private bool displayLowConfidence;
         private const string nodeAutocompleteMLEndpoint = "MLNodeAutocomplete";
+
+        // Lucene search utility to perform indexing operations just for NodeAutocomplete.
+        private LuceneSearchUtility LuceneUtility
+        {
+            get
+            {
+                return LuceneSearch.LuceneUtilityNodeAutocomplete;
+            }
+        }
 
         /// <summary>
         /// The Node AutoComplete ML service version, this could be empty if user has not used ML way
@@ -159,7 +173,7 @@ namespace Dynamo.ViewModels
             var queries = new List<string>(){"String", "Number Slider", "Integer Slider", "Number", "Boolean", "Watch", "Watch 3D", "Python Script"};
             foreach (var query in queries)
             {
-                var foundNode = Search(query).FirstOrDefault();
+                var foundNode = Search(query).Where(n => n.Name.Equals(query)).FirstOrDefault();
                 if(foundNode != null)
                 {
                     candidates.Add(foundNode);
@@ -302,8 +316,8 @@ namespace Dynamo.ViewModels
             ServiceVersion = MLresults.Version;
             var results = new List<NodeSearchElementViewModel>();
 
-            var zeroTouchSearchElements = Model.SearchEntries.OfType<ZeroTouchSearchElement>().Where(x => x.IsVisibleInSearch);
-            var nodeModelSearchElements = Model.SearchEntries.OfType<NodeModelSearchElement>().Where(x => x.IsVisibleInSearch);
+            var zeroTouchSearchElements = Model.Entries.OfType<ZeroTouchSearchElement>().Where(x => x.IsVisibleInSearch);
+            var nodeModelSearchElements = Model.Entries.OfType<NodeModelSearchElement>().Where(x => x.IsVisibleInSearch);
 
             // ML Results are categorized based on the threshold confidence score before displaying. 
             if (MLresults.Results.Count() > 0)
@@ -602,6 +616,57 @@ namespace Dynamo.ViewModels
             return null;
         }
 
+
+        /// <summary>
+        ///     Performs a search using the given string as query and subset, if provided.
+        /// </summary>
+        /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
+        /// <param name="search"> The search query </param>
+        internal IEnumerable<NodeSearchElementViewModel> SearchNodeAutocomplete(string search)
+        {
+            if (LuceneUtility != null)
+            {
+                //The DirectoryReader and IndexSearcher have to be assigned after commiting indexing changes and before executing the Searcher.Search() method, otherwise new indexed info won't be reflected
+                LuceneUtility.dirReader = LuceneUtility.writer?.GetReader(applyAllDeletes: true);
+                if (LuceneUtility.dirReader == null) return null;
+
+                LuceneUtility.Searcher = new IndexSearcher(LuceneUtility.dirReader);
+
+                string searchTerm = search.Trim();
+                var candidates = new List<NodeSearchElementViewModel>();
+                var parser = new MultiFieldQueryParser(LuceneConfig.LuceneNetVersion, LuceneConfig.NodeIndexFields, LuceneUtility.Analyzer)
+                {
+                    AllowLeadingWildcard = true,
+                    DefaultOperator = LuceneConfig.DefaultOperator,
+                    FuzzyMinSim = LuceneConfig.MinimumSimilarity
+                };
+
+                Query query = parser.Parse(LuceneUtility.CreateSearchQuery(LuceneConfig.NodeIndexFields, searchTerm));
+                TopDocs topDocs = LuceneUtility.Searcher.Search(query, n: LuceneConfig.DefaultResultsCount);
+
+                for (int i = 0; i < topDocs.ScoreDocs.Length; i++)
+                {
+                    // read back a Lucene doc from results
+                    Document resultDoc = LuceneUtility.Searcher.Doc(topDocs.ScoreDocs[i].Doc);
+
+                    string name = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.Name));
+                    string docName = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.DocName));
+                    string cat = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName));
+                    string parameters = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.Parameters));
+
+
+                    var foundNode = FindViewModelForNodeNameAndCategory(name, cat, parameters);
+                    if (foundNode != null)
+                    {
+                        candidates.Add(foundNode);
+                    }
+                }
+
+                return candidates;
+            }
+            return null;
+        }
+
         /// <summary>
         /// Filters the matching node search elements based on user input in the search field. 
         /// </summary>
@@ -617,9 +682,25 @@ namespace Dynamo.ViewModels
                 }
                 else
                 {
-                    // Providing the saved search results to limit the scope of the query search.
-                    // Then add back the ML info on filterted nodes as the Search function accepts elements of type NodeSearchElement
-                    var foundNodes = Search(input, searchElementsCache.Select(x => x.Model));
+                    LuceneSearch.LuceneUtilityNodeAutocomplete = new LuceneSearchUtility(dynamoViewModel.Model);
+
+                    //The dirName parameter doesn't matter because we are using RAMDirectory indexing and no files are created
+                    LuceneUtility.InitializeLuceneConfig(string.Empty, LuceneSearchUtility.LuceneStorage.RAM);
+
+                    //Memory indexing process for Node Autocomplete (indexing just the nodes returned by the NodeAutocomplete service so we limit the scope of the query search)
+                    foreach (var node in searchElementsCache.Select(x => x.Model))
+                    {
+                        var doc = LuceneUtility.InitializeIndexDocumentForNodes();
+                        AddNodeTypeToSearchIndex(node, doc);
+                    }
+
+                    //Write the Lucene documents to memory
+                    LuceneUtility.CommitWriterChanges();
+                        
+                    var luceneResults = SearchNodeAutocomplete(input);
+                    var foundNodesModels = luceneResults.Select(x => x.Model);
+                    var foundNodes = foundNodesModels.Select(MakeNodeSearchElementVM);
+
                     var filteredSearchElements = new List<NodeSearchElementViewModel>();
 
                     foreach (var node in foundNodes)
@@ -635,8 +716,28 @@ namespace Dynamo.ViewModels
                         }
                     }
                     FilteredResults = new List<NodeSearchElementViewModel>(filteredSearchElements).OrderBy(x => x.Name).ThenBy(x => x.Description);
+
+                    LuceneUtility.DisposeWriter();
                 }
             }
+        }
+
+        /// <summary>
+        /// Add node information to Lucene index
+        /// </summary>
+        /// <param name="node">node info that will be indexed</param>
+        /// <param name="doc">Lucene document in which the node info will be indexed</param>
+        private void AddNodeTypeToSearchIndex(NodeSearchElement node, Document doc)
+        {
+            if (LuceneUtility.addedFields == null) return;
+
+            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName), node.FullCategoryName);
+            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), node.Name);
+            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Description), node.Description);
+            if (node.SearchKeywords.Count > 0) LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords), node.SearchKeywords.Aggregate((x, y) => x + " " + y), true, true);
+            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Parameters), node.Parameters ?? string.Empty);
+
+            LuceneUtility.writer?.AddDocument(doc);
         }
 
         /// <summary>
@@ -663,6 +764,11 @@ namespace Dynamo.ViewModels
             else if (PortViewModel.PortModel.PortType == PortType.Output)
             {
                 portType = PortViewModel.PortModel.GetOutPortType();
+                //if the custom node output name contains spaces, try using the first word.
+                if (PortViewModel.PortModel.Owner is Graph.Nodes.CustomNodes.Function && portType.Any(char.IsWhiteSpace))
+                {
+                    portType = string.Concat(portType.TrimStart().TakeWhile(char.IsLetterOrDigit));
+                }
             }
 
             //List of input types that are skipped temporarily, and will display list of default suggestions instead.
@@ -687,7 +793,6 @@ namespace Dynamo.ViewModels
             var ast = parseResult?.CodeBlockNode.Children().FirstOrDefault() as IdentifierNode;
             //if parsing the type failed, revert to original string.
             portType = ast != null ? ast.datatype.Name : portType;
-
             //check if the input port return type is in the skipped input types list
             if (skippedInputTypes.Any(s => s == portType))
             {
@@ -695,8 +800,8 @@ namespace Dynamo.ViewModels
             }
 
             //gather all ztsearchelements or nodemodel nodes that are visible in search and filter using inputPortType and zt return type name.
-            var ztSearchElements = Model.SearchEntries.OfType<ZeroTouchSearchElement>().Where(x => x.IsVisibleInSearch);
-            var nodeModelSearchElements = Model.SearchEntries.OfType<NodeModelSearchElement>().Where(x => x.IsVisibleInSearch);
+            var ztSearchElements = Model.Entries.OfType<ZeroTouchSearchElement>().Where(x => x.IsVisibleInSearch);
+            var nodeModelSearchElements = Model.Entries.OfType<NodeModelSearchElement>().Where(x => x.IsVisibleInSearch);
 
             if (PortViewModel.PortModel.PortType == PortType.Input)
             {
@@ -727,7 +832,8 @@ namespace Dynamo.ViewModels
                 {
                     foreach (var inputParameter in ztSearchElement.Descriptor.Parameters.Select((value, index) => new { value, index }))
                     {
-                        if (inputParameter.value.Type.ToString() == portType || DerivesFrom(inputParameter.value.Type.ToString(), portType, core))
+                        var ZTparamName = inputParameter.value.Type.Name ?? inputParameter.value.Type.ToString();
+                        if (ZTparamName == portType || DerivesFrom(ZTparamName, portType, core))
                         {
                             ztSearchElement.AutoCompletionNodeElementInfo.PortToConnect = ztSearchElement.Descriptor.Type == FunctionType.InstanceMethod ? inputParameter.index + 1 : inputParameter.index;
                             elements.Add(ztSearchElement);

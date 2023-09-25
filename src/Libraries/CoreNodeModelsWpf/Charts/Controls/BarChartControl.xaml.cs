@@ -1,6 +1,3 @@
-using LiveCharts;
-using LiveCharts.Wpf;
-using SharpDX.Direct2D1;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,6 +5,12 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using CoreNodeModelsWpf.Charts.Utilities;
+using LiveChartsCore;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
+using SkiaSharp;
+using SkiaSharp.Views.WPF;
 
 namespace CoreNodeModelsWpf.Charts.Controls
 {
@@ -16,25 +19,24 @@ namespace CoreNodeModelsWpf.Charts.Controls
     /// </summary>
     public partial class BarChartControl : UserControl, INotifyPropertyChanged
     {
-        private Random rnd = new Random();
         private readonly BarChartNodeModel model;
-
         public event PropertyChangedEventHandler PropertyChanged;
-        private static double PADDING = 4.0;
-        private static double MAX_COLUMN_WIDTH = 20.0;
 
-        private double MIN_WIDTH = 300;
-        private double MIN_HEIGHT = 300;
+        private SolidColorPaint AxisColor { get; set; }
+        private SolidColorPaint AxisSeparatorColor { get; set; }
 
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        /// <summary>
+        /// Used to get or set the X-axis of the chart
+        /// </summary>
+        public Axis[] XAxes { get; set; }
+        /// <summary>
+        /// Used to get or set the Y-axis of the chart
+        /// </summary>
+        public Axis[] YAxes { get; set; }
 
         public BarChartControl(BarChartNodeModel model)
         {
             InitializeComponent();
-
             this.model = model;
             this.model.PropertyChanged += NodeModel_PropertyChanged;
             this.Unloaded += Unload;
@@ -46,17 +48,21 @@ namespace CoreNodeModelsWpf.Charts.Controls
 
         private void BuildUI(BarChartNodeModel model)
         {
+            SetAxes();
+            BarChartNode.LegendTextPaint = new SolidColorPaint(ChartStyle.LEGEND_TEXT_COLOR);
+            BarChartNode.LegendTextSize = ChartStyle.AXIS_FONT_SIZE;
+
             if (!model.InPorts[0].IsConnected && !model.InPorts[1].IsConnected && !model.InPorts[2].IsConnected)
             {
                 DefaultSeries();
             }
-            else if (model.InPorts[0].IsConnected && model.InPorts[1].IsConnected && model.InPorts[2].IsConnected)
+            else if (model.InPorts[0].IsConnected && model.InPorts[1].IsConnected)
             {
                 if (model.Labels.Count == model.Values.Count && model.Labels.Count > 0)
                 {
                     var seriesRange = UpdateSeries(model);
 
-                    BarChart.Series.AddRange(seriesRange);
+                    BarChartNode.Series = BarChartNode.Series.Concat(seriesRange);
                 }
             }
         }
@@ -70,7 +76,7 @@ namespace CoreNodeModelsWpf.Charts.Controls
                 // Invoke on UI thread
                 this.Dispatcher.Invoke(() =>
                 {
-                    BarChart.Series.Clear();
+                    BarChartNode.Series = Enumerable.Empty<ISeries>();
 
                     // Load sample data if any ports are not connected
                     if (!model.InPorts[0].IsConnected && !model.InPorts[1].IsConnected && !model.InPorts[2].IsConnected)
@@ -80,8 +86,7 @@ namespace CoreNodeModelsWpf.Charts.Controls
                     else
                     {
                         var seriesRange = UpdateSeries(model);
-
-                        BarChart.Series.AddRange(seriesRange.ToArray());
+                        BarChartNode.Series = BarChartNode.Series.Concat(seriesRange);
                     }
                 });
             }
@@ -89,59 +94,69 @@ namespace CoreNodeModelsWpf.Charts.Controls
 
         private void DefaultSeries()
         {
-            BarChart.Series = new SeriesCollection
-            {
-                new ColumnSeries
+            BarChartNode.Series = new List<ISeries>()
                 {
-                    Title = "2019",
-                    Values = new ChartValues<double> { 5, 6, 7, 8 },
-                    ColumnPadding = PADDING,
-                    MaxColumnWidth = MAX_COLUMN_WIDTH,
-                },
-                new ColumnSeries
-                {
-                    Title = "2020",
-                    Values = new ChartValues<double> { 10, 12, 14, 16 },
-                    ColumnPadding = PADDING,
-                    MaxColumnWidth = MAX_COLUMN_WIDTH,
-                },
-                new ColumnSeries
-                {
-                    Title = "2021",
-                    Values = new ChartValues<double> { 15, 18, 21, 24 },
-                    ColumnPadding = PADDING,
-                    MaxColumnWidth = MAX_COLUMN_WIDTH,
-                }
-            };
+                    new ColumnSeries<double>
+                    {
+                        Name = "2019",
+                        Values = ChartStyle.GetRandomList(4),
+                        Padding = ChartStyle.COLUMN_GROUP_PADDING,
+                        MaxBarWidth = ChartStyle.MAX_COLUMN_WIDTH,
+                        Rx = ChartStyle.COLUMN_RADIUS,
+                        Ry = ChartStyle.COLUMN_RADIUS,
+                    },
+                    new ColumnSeries<double>
+                    {
+                        Name = "2020",
+                        Values = ChartStyle.GetRandomList(4),
+                        Padding = ChartStyle.COLUMN_GROUP_PADDING,
+                        MaxBarWidth = ChartStyle.MAX_COLUMN_WIDTH,
+                        Rx = ChartStyle.COLUMN_RADIUS,
+                        Ry = ChartStyle.COLUMN_RADIUS,
+                    },
+                    new ColumnSeries<double>
+                    {
+                        Name = "2021",
+                        Values = ChartStyle.GetRandomList(4),
+                        Padding = ChartStyle.COLUMN_GROUP_PADDING,
+                        MaxBarWidth = ChartStyle.MAX_COLUMN_WIDTH,
+                        Rx = ChartStyle.COLUMN_RADIUS,
+                        Ry = ChartStyle.COLUMN_RADIUS,
+                    }
+                };
         }
 
-        private List<ColumnSeries> UpdateSeries(BarChartNodeModel model)
+        private IEnumerable<ISeries> UpdateSeries(BarChartNodeModel model)
         {
-            var seriesRange = new List<ColumnSeries>();
-
             if (model == null)
             {
                 model = this.model;
             }
 
-            if (model.Labels != null && model.Labels.Any()
-             && model.Values != null && model.Values.Any()
-             && model.Colors != null && model.Colors.Any())
+            var seriesRange = new List<ISeries>();
+
+            if (model != null)
             {
-                for (var i = 0; i < model.Labels.Count; i++)
+                if (model.Labels != null && model.Labels.Any()
+                 && model.Values != null && model.Values.Any()
+                 && model.Colors != null && model.Colors.Any())
                 {
-                    seriesRange.Add(new ColumnSeries
+                    for (var i = 0; i < model.Labels.Count; i++)
                     {
-                        Title = model.Labels[i],
-                        Values = new ChartValues<double>(model.Values[i]),
-                        Fill = model.Colors[i],
-                        Stroke = model.Colors[i],
-                        ColumnPadding = PADDING,
-                        MaxColumnWidth = MAX_COLUMN_WIDTH,
-                    });
+                        seriesRange.Add(new ColumnSeries<double>
+                        {
+                            Name = model.Labels[i],
+                            Values = model.Values[i].ToArray(),
+                            Fill = new SolidColorPaint(model.Colors[i].ToSKColor()),
+                            Stroke = new SolidColorPaint(model.Colors[i].ToSKColor()),
+                            Padding = ChartStyle.COLUMN_GROUP_PADDING,
+                            MaxBarWidth = ChartStyle.MAX_COLUMN_WIDTH,
+                            Rx = ChartStyle.COLUMN_RADIUS,
+                            Ry = ChartStyle.COLUMN_RADIUS,
+                        });
+                    }
                 }
             }
-
             return seriesRange;
         }
 
@@ -154,16 +169,55 @@ namespace CoreNodeModelsWpf.Charts.Controls
             {
                 var inputGrid = this.Parent as Grid;
 
-                if (xAdjust >= inputGrid.MinWidth && xAdjust >= MIN_WIDTH)
+                if (xAdjust >= inputGrid.MinWidth && xAdjust >= ChartStyle.CHART_MIN_WIDTH)
                 {
                     Width = xAdjust;
                 }
 
-                if (yAdjust >= inputGrid.MinHeight && xAdjust >= MIN_HEIGHT)
+                if (yAdjust >= inputGrid.MinHeight && xAdjust >= ChartStyle.CHART_MIN_HEIGHT)
                 {
                     Height = yAdjust;
                 }
             }
+        }
+
+        private void SetAxes()
+        {
+            AxisColor = new SolidColorPaint(ChartStyle.AXIS_COLOR) { StrokeThickness = ChartStyle.AXIS_STROKE_THICKNESS, SKTypeface = SKTypeface.FromFamilyName(ChartStyle.AXIS_FONT_FAMILY) };
+            AxisSeparatorColor = new SolidColorPaint(ChartStyle.AXIS_SEPARATOR_COLOR) { StrokeThickness = ChartStyle.AXIS_STROKE_THICKNESS };
+
+            XAxes = new Axis[]
+            {
+                new Axis
+                {
+                    Name = "Index",
+                    NamePaint = AxisColor,
+                    LabelsPaint = AxisColor,
+                    Padding = new LiveChartsCore.Drawing.Padding(ChartStyle.AXIS_NAME_PADDING),
+                    TextSize = ChartStyle.AXIS_FONT_SIZE,
+                    SeparatorsPaint = AxisSeparatorColor,
+                    NameTextSize = ChartStyle.AXIS_FONT_SIZE,
+                    ShowSeparatorLines = false,
+                    MinStep = ChartStyle.COLUMN_AXIS_MIN_STEP,
+                    NamePadding = new LiveChartsCore.Drawing.Padding(ChartStyle.AXIS_LABEL_PADDING)
+                }
+            };
+
+            YAxes = new Axis[]
+            {
+                new Axis
+                {
+                    Name = "Values",
+                    NamePaint = AxisColor,
+                    LabelsPaint = AxisColor,
+                    Padding = new LiveChartsCore.Drawing.Padding(ChartStyle.AXIS_NAME_PADDING),
+                    TextSize = ChartStyle.AXIS_FONT_SIZE,
+                    SeparatorsPaint = AxisSeparatorColor,
+                    NameTextSize = ChartStyle.AXIS_FONT_SIZE,
+                    MinStep = ChartStyle.COLUMN_AXIS_MIN_STEP,
+                    NamePadding = new LiveChartsCore.Drawing.Padding(ChartStyle.AXIS_LABEL_PADDING),
+                }
+            };
         }
 
         /// <summary>

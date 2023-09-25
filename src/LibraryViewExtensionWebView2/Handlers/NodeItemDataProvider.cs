@@ -60,24 +60,24 @@ namespace Dynamo.LibraryViewExtensionWebView2
         {
             extension = "json";
             //pass false to keep original icon urls
-            return GetNodeItemDataStream(model?.SearchEntries, false);
+            return GetNodeItemDataStream(model?.Entries, false);
         }
 
         /// <summary>
         /// main nodeItem data lookup method.
         /// </summary>
-        /// <param name="searchEntries"></param>
+        /// <param name="entries"></param>
         /// <param name="replaceIconURLWithData">the option to replace the nodeItems iconUrl property with the base64Data 
         /// imagedata before it gets sent to the library UI. If this parameter is false, the urls will remain unchanged
         /// and the librayUI will need to resolve them.</param>
         /// <returns></returns>
-        protected Stream GetNodeItemDataStream(IEnumerable<NodeSearchElement> searchEntries, bool replaceIconURLWithData)
+        protected Stream GetNodeItemDataStream(IEnumerable<NodeSearchElement> entries, bool replaceIconURLWithData)
         {
             var ms = new MemoryStream();
             var sw = new StreamWriter(ms);
             var serializer = new JsonSerializer();
             var stringBuilder = new StringBuilder();
-            var data = CreateObjectForSerialization(searchEntries);
+            var data = CreateObjectForSerialization(entries);
 
             if (replaceIconURLWithData)
             {
@@ -119,17 +119,17 @@ namespace Dynamo.LibraryViewExtensionWebView2
         /// <summary>
         /// Create a LoadedTypeData object for serialization
         /// </summary>
-        /// <param name="searchEntries"></param>
+        /// <param name="entries"></param>
         /// <returns></returns>
-        protected virtual object CreateObjectForSerialization(IEnumerable<NodeSearchElement> searchEntries)
+        protected virtual object CreateObjectForSerialization(IEnumerable<NodeSearchElement> entries)
         {
             var data = new LoadedTypeData<LoadedTypeItem>();
 
-            // Converting searchEntries to another list so as to avoid modifying the actual searchEntries list when iterating through it. 
-            data.loadedTypes = searchEntries.ToList().Select(e => CreateLoadedTypeItem<LoadedTypeItem>(e)).ToList();
+            // Converting entries to another list sos as to avoid modifying the actual entries list when iterating through it. 
+            data.loadedTypes = entries.ToList().Select(e => CreateLoadedTypeItem<LoadedTypeItem>(e)).ToList();
             return data;
         }
-
+        
         /// Gets fully qualified name for the given node search element
         /// </summary>
         public static string GetFullyQualifiedName(NodeSearchElement element)

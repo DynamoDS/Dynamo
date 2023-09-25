@@ -42,12 +42,16 @@ namespace CoreNodeModels
 
         /// <summary>
         ///     Watch node's Width
+        /// </summary>
         public double WatchWidth { get; set; }
         /// <summary>
         ///     Watch node's Height
+        /// </summary>
         public double WatchHeight { get; set; }
 
-        //Stores the custom sizes for each watch node.
+        /// <summary>
+        /// Stores the custom sizes for each watch node.
+        /// </summary>
         public static Dictionary<Guid, Tuple<double,double>> NodeSizes = new Dictionary<Guid, Tuple<double, double>>();
 
         public void SetWatchSize(double w, double h)

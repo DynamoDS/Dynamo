@@ -422,10 +422,6 @@
     <value>Publish _Selected Nodes...</value>
     <comment>Package menu | Publish selected nodes as a package</comment>
   </data>
-  <data name="DynamoViewPackageMenuPublishPackage" xml:space="preserve">
-    <value>Publish _New Package...</value>
-    <comment>Package menu | Publish new package</comment>
-  </data>
   <data name="DynamoViewPackageMenuPublishWorkspace" xml:space="preserve">
     <value>Publish _Current Workspace...</value>
     <comment>Package menu | Publish current workspace as a package</comment>
@@ -433,6 +429,10 @@
   <data name="DynamoViewPackageMenuSearchPackage" xml:space="preserve">
     <value>_Search for a Package...</value>
     <comment>Package menu | Search for a package</comment>
+  </data>
+  <data name="DynamoViewPackageMenuPackageManager" xml:space="preserve">
+    <value>_Package Manager...</value>
+    <comment>Package menu | Launches the Package Manager</comment>
   </data>
   <data name="DynamoViewRunAutomaticallyOption" xml:space="preserve">
     <value>Run Automatically</value>
@@ -937,6 +937,12 @@ Would you like to save your changes?</value>
 
 You can always redownload the package.</value>
   </data>
+  <data name="MessageExcessiveLoadTime" xml:space="preserve">
+    <value>Loading the packages is taking longer than expected. What would you like to do?</value>
+  </data>
+  <data name="MessageExcessiveLoadTimeTitle" xml:space="preserve">
+    <value>Still loading</value>
+  </data>
   <data name="MessageCustomNodeNameExist" xml:space="preserve">
     <value>A built-in node with the given name already exists.</value>
   </data>
@@ -1047,6 +1053,9 @@ To avoid unintended behavior, uninstall the conflicting loaded package(s), resta
   <data name="PackageWarningMessageBoxTitle" xml:space="preserve">
     <value>Package Warning</value>
     <comment>Message box title</comment>
+  </data>
+  <data name="PackageManagerClearAllButtonText" xml:space="preserve">
+    <value>Clear all</value>
   </data>
   <data name="UnsavedChangesMessageBoxTitle" xml:space="preserve">
     <value>Unsaved changes</value>
@@ -1211,6 +1220,12 @@ Don't worry, you'll have the option to save your work.</value>
   <data name="InstalledPackageViewTitle" xml:space="preserve">
     <value>Installed Packages</value>
   </data>
+  <data name="InstalledPackagePartialTextMessage" xml:space="preserve">
+    <value>View your installed packages in the </value>
+  </data>
+  <data name="InstalledPackagePartialHyperlinkMessage" xml:space="preserve">
+    <value>Package Manager</value>
+  </data>
   <data name="LacingCrossProductToolTip" xml:space="preserve">
     <value>For two lists [a,b,c][1,2,3] returns [a1,a2,a3][b1,b2,b3][c1,c2,c3].</value>
   </data>
@@ -1258,6 +1273,54 @@ Don't worry, you'll have the option to save your work.</value>
   <data name="PackageManagerPackageNew" xml:space="preserve">
     <value>New</value>
     <comment>Displays next to the package name in the Package Search window if the package has been added in the last 30 days.</comment>
+  </data>
+  <data name="PackageManagerMyPackagesControlName" xml:space="preserve">
+    <value>packageManagerMyPackages</value>
+  </data>
+  <data name="PackageManagerSearchTab" xml:space="preserve">
+    <value>Search for Packages</value>
+  </data>
+  <data name="PackageManagerPublishTab" xml:space="preserve">
+    <value>Publish a Package</value>
+  </data>
+  <data name="PackageManagerInstalledPackagesTab" xml:space="preserve">
+    <value>Installed Packages</value>
+  </data>
+  <data name="PackageManagerMyPackagesTab" xml:space="preserve">
+    <value>My Packages</value>
+  </data>
+  <data name="PackageManagerPackageSettingsTab" xml:space="preserve">
+    <value>Package Settings</value>
+  </data>
+  <data name="PackageManagerTitle" xml:space="preserve">
+    <value>Package Manager</value>
+  </data>
+  <data name="PackageManagerLoadingTimedOutWarningMessage" xml:space="preserve">
+    <value>Loading the packages is taking longer than expected. Please wait, or restart the Package Manager.</value>
+  </data>
+  <data name="PackagerManageNoInstalledPackagesMessage" xml:space="preserve">
+    <value>You don’t have any installed packages yet.</value>
+  </data>
+  <data name="PackageManagerNoInstalledPackagesSubMessage" xml:space="preserve">
+    <value>Once you install a package, you can find it here.</value>
+  </data>
+  <data name="PackageManagerSearchPackagesButton" xml:space="preserve">
+    <value>Search for Packages</value>
+  </data>
+  <data name="PackagerManageNoPublishedPackagesMessage" xml:space="preserve">
+    <value>You haven’t published any packages yet.</value>
+  </data>
+  <data name="PackagerManageNoPublishedPackagesSubMessage" xml:space="preserve">
+    <value>Once you publish a package, you can find it here.</value>
+  </data>
+  <data name="PackageManagerPublishPackageButton" xml:space="preserve">
+    <value>Publish a Package</value>
+  </data>
+  <data name="PackageManagerSettingsRunPrefix" xml:space="preserve">
+    <value>Edit your package settings in </value>
+  </data>
+  <data name="PackageManagerSettingsHyperlink" xml:space="preserve">
+    <value>Preferences</value>
   </data>
   <data name="PackageDetailsDescription" xml:space="preserve">
     <value>DESCRIPTION</value>
@@ -1466,6 +1529,42 @@ If the toggle is off custom packages that are not already loaded will load once 
   <data name="PackageUploadStateUploading" xml:space="preserve">
     <value>Uploading...</value>
   </data>
+  <data name="PackageFilterByHost" xml:space="preserve">
+    <value>HOST</value>
+  </data>
+  <data name="PackageFilterByStatus" xml:space="preserve">
+    <value>STATUS</value>
+  </data>    
+  <data name="PackageFilterNewTooltip" xml:space="preserve">
+    <value>Published in the last 30 days</value>
+  </data>    
+  <data name="PackageFilterUpdatedTooltip" xml:space="preserve">
+    <value>Updated in the last 30 days</value>
+  </data>
+  <data name="PackageFilterDeprecatedTooltip" xml:space="preserve">
+    <value>Discontinued packages</value>
+  </data>    
+  <data name="PackageFilterHasDependenciesTooltip" xml:space="preserve">
+    <value>Packages that require other packages to be installed</value>
+  </data>
+  <data name="PackageFilterHasNoDependenciesTooltip" xml:space="preserve">
+    <value>Stand-alone packages</value>
+  </data>
+  <data name="PackageFilterByDependency" xml:space="preserve">
+    <value>DEPENDENCY</value>
+  </data>
+  <data name="PackageSearchViewContextMenuFilterActive" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="PackageSearchViewContextMenuFilterDeprecated" xml:space="preserve">
+    <value>Deprecated</value>
+  </data>
+  <data name="PackageSearchViewContextMenuFilterDependencies" xml:space="preserve">
+    <value>Has dependecies</value>
+  </data>
+  <data name="PackageSearchViewContextMenuFilterNoDependencies" xml:space="preserve">
+    <value>Has no dependecies</value>
+  </data>
   <data name="PortViewContextMenuUserDefaultValue" xml:space="preserve">
     <value>Use Default Value</value>
   </data>
@@ -1550,7 +1649,16 @@ If the toggle is off custom packages that are not already loaded will load once 
     <value>File Path</value>
   </data>
   <data name="PublishPackageViewPackageVersion" xml:space="preserve">
-    <value>Version (Major Minor Build)</value>
+    <value>Version</value>
+  </data>
+  <data name="PublishPackageViewMajorPackageVersionLabel" xml:space="preserve">
+    <value>Major</value>
+  </data>
+  <data name="PublishPackageViewMinorPackageVersionLabel" xml:space="preserve">
+    <value>Minor</value>
+  </data>
+  <data name="PublishPackageViewBuildPackageVersionLabel" xml:space="preserve">
+    <value>Build</value>
   </data>
   <data name="PublishPackageViewPackageVersionTooltip" xml:space="preserve">
     <value>A version name helps a submitter keep track of updates to the package.  A new version of a package will be REJECTED if this is not incremeneted.</value>
@@ -1916,9 +2024,6 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
-  </data>
-  <data name="ConsentFormGoogleAnalyticsCheckBoxContent" xml:space="preserve">
-    <value>I agree to contribute to the Google Analytics program.</value>
   </data>
   <data name="ConsentFormADPAnalyticsCheckBoxContent" xml:space="preserve">
     <value>I agree to data collection in desktop products for Autodesk analytics programs.</value>
@@ -2396,7 +2501,7 @@ Uninstall the following packages: {0}?</value>
     <value>Sort Packages.</value>
   </data>
   <data name="PackageHostDependencyFilterContextItem" xml:space="preserve">
-    <value>Packages contain node(s)  that depend on specified application outside Dynamo.</value>
+    <value>Packages that depend on selected external application</value>
   </data>
   <data name="MessageUninstallSamePackage" xml:space="preserve">
     <value>"The package {0} is already installed. To reinstall it, you must first uninstall it and restart to complete the uninstall. Would you like to mark {0} for uninstall?"</value>
@@ -2441,6 +2546,9 @@ Uninstall the following packages: {0}?</value>
   </data>
   <data name="NodeTooltipOriginalName" xml:space="preserve">
     <value>Original node name: </value>
+  </data>
+  <data name="NodeTooltipPackage" xml:space="preserve">
+    <value>Package: </value>
   </data>
   <data name="RenderingMemoryOutageDescription" xml:space="preserve">
     <value>Please check if you intended to render this amount of geometry, and consider turning off the preview of other nodes within your graph, lowering the amount of Geometry you wish to render, or turning down the render precision.</value>
@@ -2682,7 +2790,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>Node and Package File Locations</value>
   </data>
   <data name="PreferencesPackageManagerSettingsTab" xml:space="preserve">
-    <value>Package Manager</value>
+    <value>Package Settings</value>
   </data>
   <data name="PackagePathAddPathButtonName" xml:space="preserve">
     <value>Add Path</value>
@@ -3637,5 +3745,11 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   </data>
   <data name="PreferencesViewIncludeTimestampExportPathTooltip" xml:space="preserve">
     <value>When toggled on, file names of exported images include date and time of export.</value>
+  </data>
+  <data name="ElementBindingWarningMessage" xml:space="preserve">
+    <value>A Save As command will create a workspace which is treated as a completely new file by Dynamo and existing element binding data will be lost. New element binding data will be created as normal as you run this file. Use the Save command instead if you wish to preserve element binding with the host document.</value>
+  </data>
+  <data name="ElementBindingWarningTitle" xml:space="preserve">
+    <value>Element Binding Warning</value>
   </data>
 </root>

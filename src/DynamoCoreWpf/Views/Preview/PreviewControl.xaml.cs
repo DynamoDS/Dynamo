@@ -438,6 +438,7 @@ namespace Dynamo.UI.Controls
         /// It's used to apply Collapsed and Expanded events for TreeViewItems.
         /// </summary>
         /// <param name="sender">TreeView</param>
+        /// <param name="e"></param>
         private void WatchContainer_StatusChanged(object sender, EventArgs e)
         {
             var generator = sender as ItemContainerGenerator;

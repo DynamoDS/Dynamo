@@ -39,10 +39,8 @@ using Dynamo.Updates;
 using Dynamo.Utilities;
 using DynamoServices;
 using Greg;
-using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
-using Lucene.Net.Search;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ProtoCore;
@@ -134,16 +132,21 @@ namespace Dynamo.Models
         private Timer backupFilesTimer;
         private Dictionary<Guid, string> backupFilesDict = new Dictionary<Guid, string>();
         internal readonly Stopwatch stopwatch = Stopwatch.StartNew();
-        internal IndexWriter writer;
-        internal Lucene.Net.Store.Directory indexDir;
-        internal DirectoryReader dirReader;
-        internal List<string> addedFields;
 
         /// <summary>
         /// Indicating if ASM is loaded correctly, defaulting to true because integrators most likely have code for ASM preloading
         /// During sandbox initializing, Dynamo checks specifically if ASM loading was correct
         /// </summary>
         internal bool IsASMLoaded = true;
+
+        // Lucene search utility to perform indexing operations on nodes.
+        internal LuceneSearchUtility LuceneUtility
+        {
+            get
+            {
+                return LuceneSearch.LuceneUtilityNodeSearch;
+            }
+        }
 
         #endregion
 
@@ -596,7 +599,7 @@ namespace Dynamo.Models
         /// <returns>The instance of <see cref="DynamoModel"/></returns>
         public static DynamoModel Start()
         {
-            return Start(new DefaultStartConfiguration() { ProcessMode = TaskProcessMode.Asynchronous });
+            return Start(new DefaultStartConfiguration() { ProcessMode = TaskProcessMode.Asynchronous, Preferences = PreferenceSettings.Instance });
         }
 
         /// <summary>
@@ -617,35 +620,7 @@ namespace Dynamo.Models
         internal static readonly string BuiltInPackagesToken = @"%BuiltInPackages%";
         [Obsolete("Only used for migration to the new for this directory - BuiltInPackages - do not use for other purposes")]
         // Token representing the standard library directory
-        internal static readonly string StandardLibraryToken = @"%StandardLibrary%";
-
-
-        private void InitializeLuceneConfig()
-        {
-            addedFields = new List<string>();
-
-            DirectoryInfo webBrowserUserDataFolder;
-            var userDataDir = new DirectoryInfo(pathManager.UserDataDirectory);
-            webBrowserUserDataFolder = userDataDir.Exists ? userDataDir : null;
-
-            string indexPath = Path.Combine(webBrowserUserDataFolder.FullName, "Index");
-            indexDir = Lucene.Net.Store.FSDirectory.Open(indexPath);
-
-            // Create an analyzer to process the text
-            SearchModel.Analyzer = new StandardAnalyzer(LuceneConfig.LuceneNetVersion);
-
-            // When running parallel tests several are trying to write in the AppData folder then the job
-            // is failing and in a wrong state so we prevent to initialize Lucene index writer during test mode.
-            if (!IsTestMode)
-            {
-                // Create an index writer
-                IndexWriterConfig indexConfig = new IndexWriterConfig(LuceneConfig.LuceneNetVersion, SearchModel.Analyzer)
-                {
-                    OpenMode = OpenMode.CREATE
-                };
-                writer = new IndexWriter(indexDir, indexConfig);
-            }
-        }
+        internal static readonly string StandardLibraryToken = @"%StandardLibrary%";        
 
         /// <summary>
         /// Default constructor for DynamoModel
@@ -669,12 +644,7 @@ namespace Dynamo.Models
 
             ClipBoard = new ObservableCollection<ModelBase>();
 
-            pathManager = new PathManager(new PathManagerParams
-            {
-                CorePath = config.DynamoCorePath,
-                HostPath = config.DynamoHostPath,
-                PathResolver = config.PathResolver
-            });
+            pathManager = CreatePathManager(config);
 
             // Ensure we have all directories in place.
             var exceptions = new List<Exception>();
@@ -692,7 +662,7 @@ namespace Dynamo.Models
                 // Log all exceptions as part of directories check.
                 foreach (var exception in exceptions)
                 {
-                    Logger.Log(exception); 
+                    Logger.Log(exception);
                 }
             }
 
@@ -708,13 +678,9 @@ namespace Dynamo.Models
 
             OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenInitPreferencesSettings, 30));
 
-            IPreferences preferences = CreateOrLoadPreferences(config.Preferences);
-            if (preferences is PreferenceSettings settings)
+            PreferenceSettings = (PreferenceSettings)CreateOrLoadPreferences(config.Preferences);
+            if (PreferenceSettings != null)
             {
-                PreferenceSettings = settings;
-                // Setting the new locale for Dynamo after Preferences loaded
-                Thread.CurrentThread.CurrentUICulture = new CultureInfo(PreferenceSettings.Locale);
-                Thread.CurrentThread.CurrentCulture = new CultureInfo(PreferenceSettings.Locale);
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
                 PreferenceSettings.MessageLogged += LogMessage;
             }
@@ -795,10 +761,6 @@ namespace Dynamo.Models
                     }
                     catch (Exception e) { Logger.LogError($"could not start feature flags manager {e}"); };
                 });
-
-                //TODO just a test of feature flag event, safe to remove at any time.
-                DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved += CheckFeatureFlagTest;
-
             }
 
             // TBD: Do we need settings migrator for service mode? If we config the docker correctly, this could be skipped I think
@@ -907,8 +869,8 @@ namespace Dynamo.Models
             if (!IsServiceMode)
             {
                 SearchModel = new NodeSearchModel(Logger);
-                SearchModel.ItemProduced +=
-                    node => ExecuteCommand(new CreateNodeCommand(node, 0, 0, true, true));
+                SearchModel.ItemProduced += SearchModel_ItemProduced;
+                    
             }
 
             NodeFactory = new NodeFactory();
@@ -959,7 +921,16 @@ namespace Dynamo.Models
 
             CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager, LibraryServices);
 
-            InitializeLuceneConfig();
+            LuceneSearch.LuceneUtilityNodeSearch = new LuceneSearchUtility(this);
+
+            if (IsTestMode)
+            {
+                LuceneUtility.InitializeLuceneConfig(string.Empty, LuceneSearchUtility.LuceneStorage.RAM);
+            }
+            else
+            {
+                LuceneUtility.InitializeLuceneConfig(LuceneConfig.NodesIndexingDirectory);
+            }
 
             InitializeCustomNodeManager();
 
@@ -1015,7 +986,7 @@ namespace Dynamo.Models
                                     {
                                         loadedLinter.InitializeBase(this.LinterManager);
                                     }
-                                    
+
                                     (loadedExtension as IExtension).Startup(startupParams);
                                 }
                             }
@@ -1036,7 +1007,7 @@ namespace Dynamo.Models
 #endif
 
             LogWarningMessageEvents.LogWarningMessage += LogWarningMessage;
-
+            LogWarningMessageEvents.LogInfoMessage += LogInfoMessage;
             StartBackupFilesTimer();
 
             TraceReconciliationProcessor = this;
@@ -1046,29 +1017,72 @@ namespace Dynamo.Models
             DynamoReady(new ReadyParams(this));
         }
 
-        private void CheckFeatureFlagTest()
+        private void SearchModel_ItemProduced(NodeModel node)
         {
-            if (!DynamoModel.IsTestMode)
+            ExecuteCommand(new CreateNodeCommand(node, 0, 0, true, true));
+        }
+
+        /// <summary>
+        /// It returns a PathManager instance based on the mode in order to reuse it's Singleton instance or create a new one
+        /// </summary>
+        /// <param name="config"></param>
+        /// <returns></returns>
+        internal PathManager CreatePathManager(IStartConfiguration config)
+        {
+            if (!config.StartInTestMode)
             {
-                if (DynamoModel.FeatureFlags.CheckFeatureFlag<bool>("EasterEggIcon1", false))
+                if (!Core.PathManager.Instance.HasPathResolver)
                 {
-                    this.Logger.Log("EasterEggIcon1 is true FROM MODEL");
-
+                    Core.PathManager.Instance.AssignHostPathAndIPathResolver(config.DynamoHostPath, config.PathResolver);
                 }
-                else
-                {
-                    this.Logger.Log("EasterEggIcon1 is false FROM MODEL");
-                }
-
-                if (DynamoModel.FeatureFlags.CheckFeatureFlag<string>("EasterEggMessage1", "NA") is var s && s != "NA")
-                {
-                    this.Logger.Log("EasterEggMessage1 is enabled FROM MODEL");
-                }
-                else
-                {
-                    this.Logger.Log("EasterEggMessage1 is disabled FROM MODEL");
-                }
+                return Core.PathManager.Instance;
             }
+            else
+            {
+                return new PathManager(new PathManagerParams
+                {
+                    CorePath = config.DynamoCorePath,
+                    HostPath = config.DynamoHostPath,
+                    PathResolver = config.PathResolver
+                });
+            }
+        }
+
+        /// <summary>
+        /// Create or load a preference checking the usage mode and if it already exists
+        /// </summary>
+        /// <param name="preferences"></param>
+        /// <returns></returns>
+        private IPreferences CreateOrLoadPreferences(IPreferences preferences)
+        {
+            if (preferences != null) // If there is preference settings provided...
+                return preferences;
+
+            //Skip file handling and trust location in service mode.
+            if (IsServiceMode)
+            {
+                var setting = new PreferenceSettings();
+                setting.SetTrustWarningsDisabled(true);
+                return setting;
+            }
+
+            // Is order for test cases not to interfere with the regular preference
+            // settings xml file, a test case usually specify a temporary xml file
+            // path from where preference settings are to be loaded. If that value
+            // is not set, then fall back to the file path specified in PathManager.
+            //
+            var xmlFilePath = PreferenceSettings.DynamoTestPath;
+            if (string.IsNullOrEmpty(xmlFilePath))
+                xmlFilePath = pathManager.PreferenceFilePath;
+
+            if (File.Exists(xmlFilePath))
+            {
+                // If the specified xml file path exists, load it.
+                return PreferenceSettings.Load(xmlFilePath);
+            }
+
+            // Otherwise make a default preference settings object.
+            return new PreferenceSettings();
         }
 
         private void SetDefaultPythonTemplate()
@@ -1389,15 +1403,19 @@ namespace Dynamo.Models
                 PreferenceSettings.MessageLogged -= LogMessage;
             }
 
+            //The writer have to be disposed at DynamoModel level due that we could index package-nodes as new packages are installed
+            LuceneUtility.DisposeWriter();
+
             // Lucene disposals (just if LuceneNET was initialized)
-            indexDir?.Dispose();
-            dirReader?.Dispose();
+            LuceneUtility.indexDir?.Dispose();
+            LuceneUtility.dirReader?.Dispose();
 
 #if DEBUG
             CurrentWorkspace.NodeAdded -= CrashOnDemand.CurrentWorkspace_NodeAdded;
 #endif
 
             LogWarningMessageEvents.LogWarningMessage -= LogWarningMessage;
+            LogWarningMessageEvents.LogInfoMessage -= LogInfoMessage;
             foreach (var ws in _workspaces)
             {
                 ws.Dispose();
@@ -1410,7 +1428,10 @@ namespace Dynamo.Models
             {
                 FeatureFlags.MessageLogged -= LogMessageWrapper;
             }
-            DynamoUtilities.DynamoFeatureFlagsManager.FlagsRetrieved -= CheckFeatureFlagTest;
+            if (!IsServiceMode)
+            {
+                SearchModel.ItemProduced -= SearchModel_ItemProduced;
+            }
         }
 
         private void InitializeCustomNodeManager()
@@ -1424,14 +1445,14 @@ namespace Dynamo.Models
                         || !info.IsVisibleInDynamoLibrary)
                     return;
 
-                var elements = SearchModel.SearchEntries.OfType<CustomNodeSearchElement>().
+                var elements = SearchModel.Entries.OfType<CustomNodeSearchElement>().
                                 Where(x =>
-                                        {
-                                            // Search for common paths and get rid of empty paths.
-                                            // It can be empty just in case it's just created node.
-                                            return String.Compare(x.Path, info.Path, StringComparison.OrdinalIgnoreCase) == 0 &&
-                                                !String.IsNullOrEmpty(x.Path);
-                                        }).ToList();
+                                {
+                                    // Search for common paths and get rid of empty paths.
+                                    // It can be empty just in case it's just created node.
+                                    return String.Compare(x.Path, info.Path, StringComparison.OrdinalIgnoreCase) == 0 &&
+                                        !String.IsNullOrEmpty(x.Path);
+                                }).ToList();
 
                 if (elements.Any())
                 {
@@ -1446,6 +1467,16 @@ namespace Dynamo.Models
                 customNodeSearchRegistry.Add(info.FunctionId);
                 var searchElement = new CustomNodeSearchElement(CustomNodeManager, info);
                 SearchModel.Add(searchElement);
+
+                //Indexing node packages installed using PackageManagerSearch
+                var iDoc = LuceneUtility.InitializeIndexDocumentForNodes();
+                if (searchElement != null)
+                {
+                    AddNodeTypeToSearchIndex(searchElement, iDoc);
+                }
+
+                LuceneUtility.CommitWriterChanges();
+
                 Action<CustomNodeInfo> infoUpdatedHandler = null;
                 infoUpdatedHandler = newInfo =>
                 {
@@ -1475,7 +1506,7 @@ namespace Dynamo.Models
 
         private void InitializeIncludedNodes()
         {
-            var iDoc = InitializeIndexDocument();
+            var iDoc = LuceneUtility.InitializeIndexDocumentForNodes();
 
             var customNodeData = new TypeLoadData(typeof(Function));
             NodeFactory.AddLoader(new CustomNodeLoader(CustomNodeManager, IsTestMode));
@@ -1510,7 +1541,9 @@ namespace Dynamo.Models
             NodeFactory.AddTypeFactoryAndLoader(outputData.Type);
             NodeFactory.AddAlsoKnownAs(outputData.Type, outputData.AlsoKnownAs);
 
-            SearchModel?.Add(new CodeBlockNodeSearchElement(cbnData, LibraryServices));
+            var cnbNode = new CodeBlockNodeSearchElement(cbnData, LibraryServices);
+            SearchModel?.Add(cnbNode);
+            AddNodeTypeToSearchIndex(cnbNode, iDoc);
 
             var symbolSearchElement = new NodeModelSearchElement(symbolData)
             {
@@ -1529,29 +1562,11 @@ namespace Dynamo.Models
             };
 
             SearchModel?.Add(symbolSearchElement);
+            AddNodeTypeToSearchIndex(symbolSearchElement, iDoc);
+
             SearchModel?.Add(outputSearchElement);
+            AddNodeTypeToSearchIndex(outputSearchElement, iDoc);
 
-            //Adding this nodes are breaking the tests (due that we have two input and two output nodes):
-            //WhenHomeWorkspaceIsFocusedInputAndOutputNodesAreMissingFromSearch
-            //WhenStartingDynamoInputAndOutputNodesAreNolongerMissingFromSearch
-            // New index process from Lucene, adding missing nodes: Code Block, Input and Output
-            //var ele = AddNodeTypeToSearch(outputData);      
-            //if (ele != null)
-            //{
-            //    AddNodeTypeToSearchIndex(ele, iDoc);
-            //}
-
-            //ele = AddNodeTypeToSearch(symbolData);
-            //if (ele != null)
-            //{
-            //    AddNodeTypeToSearchIndex(ele, iDoc);
-            //}
-
-            var ele = AddNodeTypeToSearch(cbnData);
-            if (ele != null)
-            {
-                AddNodeTypeToSearchIndex(ele, iDoc);
-            }         
         }
 
         internal static bool IsDisabledPath(string packagesDirectory, IPreferences preferences)
@@ -1609,7 +1624,7 @@ namespace Dynamo.Models
                 {
                     continue;
                 }
-                
+
                 // NOTE: extension will only be null if path is null
                 string extension = null;
                 try
@@ -1642,16 +1657,7 @@ namespace Dynamo.Models
             // When running parallel tests several are trying to write in the AppData folder then the job
             // is failing and in a wrong state so we prevent to initialize Lucene index writer during test mode.
             // Without the index files on disk, the dirReader cant be initialized correctly. So does the searcher.
-            if (!IsTestMode)
-            {
-                dirReader = writer?.GetReader(applyAllDeletes: true);
-                IndexSearcher searcher = new IndexSearcher(dirReader);
-                SearchModel.Searcher = searcher;
-
-                writer?.Commit();
-                writer?.Dispose();
-                writer = null;
-            }
+            LuceneUtility.CommitWriterChanges();
         }
 
         /// <summary>
@@ -1664,19 +1670,20 @@ namespace Dynamo.Models
         /// </param>
         internal void LoadNodeLibrary(Assembly assem, bool suppressZeroTouchLibraryLoad = true)
         {
-           // don't import assembly if its marked node lib and contains any nodemodels and any nodecustomizations
-           // as a consequence we won't import any ZT nodes from assemblies that contain customziations and are marked node libraries.
-           // We'll only apply the customizations and import NodeModels which are present.
-           // I think this is consistent with the current behavior - IE today - if a nodeModel exists in an assembly, the rest of the assembly 
-           // is not imported as ZT - the same will be true if the assembly contains a NodeViewCustomization.
+            // don't import assembly if its marked node lib and contains any nodemodels and any nodecustomizations
+            // as a consequence we won't import any ZT nodes from assemblies that contain customziations and are marked node libraries.
+            // We'll only apply the customizations and import NodeModels which are present.
+            // I think this is consistent with the current behavior - IE today - if a nodeModel exists in an assembly, the rest of the assembly 
+            // is not imported as ZT - the same will be true if the assembly contains a NodeViewCustomization.
 
             bool hasNodeModelOrNodeViewTypes;
             try
             {
                 hasNodeModelOrNodeViewTypes = NodeModelAssemblyLoader.ContainsNodeModelSubType(assem)
                 || (NodeModelAssemblyLoader.ContainsNodeViewCustomizationType(assem));
-            } 
-            catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 throw new Exceptions.LibraryLoadFailedException(assem.Location, ex.Message);
             }
 
@@ -1703,7 +1710,7 @@ namespace Dynamo.Models
 
         private void LoadNodeModels(List<TypeLoadData> nodes, bool isPackageMember)
         {
-            var iDoc = InitializeIndexDocument();
+            var iDoc = LuceneUtility.InitializeIndexDocumentForNodes();
             foreach (var type in nodes)
             {
                 // Protect ourselves from exceptions thrown by malformed third party nodes.
@@ -1726,38 +1733,6 @@ namespace Dynamo.Models
                     Logger.Log(e);
                 }
             }
-        }
-
-        private IPreferences CreateOrLoadPreferences(IPreferences preferences)
-        {
-            if (preferences != null) // If there is preference settings provided...
-                return preferences;
-
-            //Skip file handling and trust location in service mode.
-            if (IsServiceMode)
-            {
-                var setting = new PreferenceSettings();
-                setting.SetTrustWarningsDisabled(true);
-                return setting;
-            }
-
-            // Is order for test cases not to interfere with the regular preference
-            // settings xml file, a test case usually specify a temporary xml file
-            // path from where preference settings are to be loaded. If that value
-            // is not set, then fall back to the file path specified in PathManager.
-            //
-            var xmlFilePath = PreferenceSettings.DynamoTestPath;
-            if (string.IsNullOrEmpty(xmlFilePath))
-                xmlFilePath = pathManager.PreferenceFilePath;
-
-            if (File.Exists(xmlFilePath))
-            {
-                // If the specified xml file path exists, load it.
-                return PreferenceSettings.Load(xmlFilePath);
-            }
-
-            // Otherwise make a default preference settings object.
-            return new PreferenceSettings();
         }
 
         private void InitializePreferences()
@@ -1816,6 +1791,16 @@ namespace Dynamo.Models
         {
             Validity.Assert(EngineController.LiveRunnerRuntimeCore != null);
             EngineController.LiveRunnerRuntimeCore.RuntimeStatus.LogWarning(WarningID.Default, args.message);
+        }
+
+        /// <summary>
+        /// This info message is displayed on the node associated with the FFI dll
+        /// </summary>
+        /// <param name="args"></param>
+        private void LogInfoMessage(LogWarningMessageEventArgs args)
+        {
+            Validity.Assert(EngineController.LiveRunnerRuntimeCore != null);
+            EngineController.LiveRunnerRuntimeCore.RuntimeStatus.LogInfo(InfoID.Default, args.message);
         }
 
         #endregion
@@ -2098,7 +2083,9 @@ namespace Dynamo.Models
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
+#pragma warning disable CA2200 // Rethrow to preserve stack details
                 throw e;
+#pragma warning restore CA2200 // Rethrow to preserve stack details
             }
         }
 
@@ -2116,11 +2103,10 @@ namespace Dynamo.Models
                 {
                     if (true) //MigrationManager.ProcessWorkspace(dynamoPreferences.Version, xmlDoc, IsTestMode, NodeFactory))
                     {
-                        WorkspaceModel ws;
-                        if (OpenJsonFile(filePath, fileContents, dynamoPreferences, forceManualExecutionMode, out ws))
+                        if (OpenJsonFile(filePath, fileContents, dynamoPreferences, forceManualExecutionMode, out WorkspaceModel ws))
                         {
-                            ExtraWorkspaceViewInfo viewInfo = ExtraWorkspaceViewInfoFromJson(fileContents);
-                            
+                            ExtraWorkspaceViewInfo viewInfo = ExtraWorkspaceViewInfo.ExtraWorkspaceViewInfoFromJson(fileContents);
+
                             InsertWorkspace(ws, viewInfo);
                         }
                     }
@@ -2130,13 +2116,16 @@ namespace Dynamo.Models
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
+#pragma warning disable CA2200 // Rethrow to preserve stack details
                 throw e;
+#pragma warning restore CA2200 // Rethrow to preserve stack details
             }
         }
-        
+
         /// <summary>
         /// Opens a Dynamo workspace from a path to an Xml file on disk.
         /// </summary>
+        /// <param name="xmlDoc">xml file content</param>
         /// <param name="filePath">Path to file</param>
         /// <param name="forceManualExecutionMode">Set this to true to discard
         /// execution mode specified in the file and set manual mode</param>
@@ -2269,14 +2258,17 @@ namespace Dynamo.Models
 
             CurrentWorkspace.UpdateWithExtraWorkspaceViewInfo(viewInfo, offsetX, offsetY);
 
-            List<NoteModel> insertedNotes = GetInsertedNotes(viewInfo.Annotations);
+            if (viewInfo != null)
+            {
+                List<NoteModel> insertedNotes = GetInsertedNotes(viewInfo.Annotations);
+                DynamoSelection.Instance.Selection.AddRange(insertedNotes);
+            }
 
             DynamoSelection.Instance.Selection.AddRange(nodes);
-            DynamoSelection.Instance.Selection.AddRange(insertedNotes);
-            
+
             currentWorkspace.HasUnsavedChanges = true;
         }
-        
+
         private void SetPeriodicEvaluation(WorkspaceModel ws)
         {
             // TODO: #4258
@@ -2308,7 +2300,7 @@ namespace Dynamo.Models
             if (!string.IsNullOrEmpty(filePath))
             {
                 CustomNodeManager.AddUninitializedCustomNodesInPath(Path.GetDirectoryName(filePath), IsTestMode);
-            }            
+            }
 
             var currentHomeSpace = Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
             currentHomeSpace.UndefineCBNFunctionDefinitions();
@@ -2327,6 +2319,7 @@ namespace Dynamo.Models
                 this.LinterManager);
 
             workspace.FileName = string.IsNullOrEmpty(filePath) ? "" : filePath;
+            workspace.FromJsonGraphId = string.IsNullOrEmpty(filePath) ? WorkspaceModel.ComputeGraphIdFromJson(fileContents) : "";
             workspace.ScaleFactor = dynamoPreferences.ScaleFactor;
 
             // NOTE: This is to handle the case of opening a JSON file that does not have a version string
@@ -2364,34 +2357,6 @@ namespace Dynamo.Models
                 customNodeWorkspace.IsVisibleInDynamoLibrary = dynamoPreferences.IsVisibleInDynamoLibrary;
 
             return true;
-        }
-
-        /// <summary>
-        /// Load the extra view information required to fully construct a WorkspaceModel object 
-        /// </summary>
-        /// <param name="json"></param>
-        static internal ExtraWorkspaceViewInfo ExtraWorkspaceViewInfoFromJson(string json)
-        {
-            JsonReader reader = new JsonTextReader(new StringReader(json));
-            var obj = JObject.Load(reader);
-            var viewBlock = obj["View"];
-            if (viewBlock == null)
-                return null;
-
-            var settings = new JsonSerializerSettings
-            {
-                Error = (sender, args) =>
-                {
-                    args.ErrorContext.Handled = true;
-                    Console.WriteLine(args.ErrorContext.Error);
-                },
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                TypeNameHandling = TypeNameHandling.Auto,
-                Formatting = Newtonsoft.Json.Formatting.Indented,
-                Culture = CultureInfo.InvariantCulture
-            };
-
-            return JsonConvert.DeserializeObject<ExtraWorkspaceViewInfo>(viewBlock.ToString(), settings);
         }
 
         // Attempts to reload all the dummy nodes in the current workspace and replaces them with resolved version. 
@@ -2616,7 +2581,7 @@ namespace Dynamo.Models
                     //If there is only one model, then deleting that model should delete the group. In that case, do not record
                     //the group for modification. Until we have one model in a group, group should be recorded for modification
                     //otherwise, undo operation cannot get the group back.
-                    if (annotation.Nodes.Count() > 1 && 
+                    if (annotation.Nodes.Count() > 1 &&
                         annotation.Nodes.Where(x => x.GUID == model.GUID).Any())
                     {
                         CurrentWorkspace.RecordGroupModelBeforeUngroup(annotation);
@@ -2832,7 +2797,7 @@ namespace Dynamo.Models
         {
             OnWorkspaceRemoveStarted(workspace);
             if (_workspaces.Remove(workspace))
-            {
+            {   
                 if (workspace is HomeWorkspaceModel)
                 {
                     workspace.Dispose();
@@ -3080,7 +3045,7 @@ namespace Dynamo.Models
                 //so adding the group after nodes / notes are added to workspace.
                 //select only those nodes that are part of a group.
                 var newAnnotations = new List<AnnotationModel>();
-                foreach (var annotation in annotations.OrderByDescending(a => a.HasNestedGroups)) 
+                foreach (var annotation in annotations.OrderByDescending(a => a.HasNestedGroups))
                 {
                     if (modelLookup.ContainsKey(annotation.GUID))
                     {
@@ -3267,74 +3232,33 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Initialize Lucene index document object for reuse
-        /// </summary>
-        /// <returns></returns>
-        private Document InitializeIndexDocument()
-        {
-            if (IsTestMode) return null;
-
-            var name = new TextField(nameof(LuceneConfig.IndexFieldsEnum.Name), string.Empty, Field.Store.YES);
-            var fullCategory = new TextField(nameof(LuceneConfig.IndexFieldsEnum.FullCategoryName), string.Empty, Field.Store.YES);
-            var description = new TextField(nameof(LuceneConfig.IndexFieldsEnum.Description), string.Empty, Field.Store.YES);
-            var keywords = new TextField(nameof(LuceneConfig.IndexFieldsEnum.SearchKeywords), string.Empty, Field.Store.YES);
-            var docName = new StringField(nameof(LuceneConfig.IndexFieldsEnum.DocName), string.Empty, Field.Store.YES);
-            var fullDoc = new TextField(nameof(LuceneConfig.IndexFieldsEnum.Documentation), string.Empty, Field.Store.YES);
-
-            var d = new Document()
-            {
-                fullCategory,
-                name,
-                description,
-                keywords,
-                fullDoc,
-                docName
-            };
-            return d;
-        }
-
-        /// <summary>
         /// Add node information to Lucene index
         /// </summary>
         /// <param name="node">node info that will be indexed</param>
         /// <param name="doc">Lucene document in which the node info will be indexed</param>
-        private void AddNodeTypeToSearchIndex(NodeSearchElement node, Document doc)
+        internal void AddNodeTypeToSearchIndex(NodeSearchElement node, Document doc)
         {
-            if (IsTestMode) return;
-            if (addedFields == null) return;
+            if (LuceneUtility.addedFields == null) return;
 
-            SetDocumentFieldValue(doc, nameof(LuceneConfig.IndexFieldsEnum.FullCategoryName), node.FullCategoryName);
-            SetDocumentFieldValue(doc, nameof(LuceneConfig.IndexFieldsEnum.Name), node.Name);
-            SetDocumentFieldValue(doc, nameof(LuceneConfig.IndexFieldsEnum.Description), node.Description);
-            if (node.SearchKeywords.Count > 0) SetDocumentFieldValue(doc, nameof(LuceneConfig.IndexFieldsEnum.SearchKeywords), node.SearchKeywords.Aggregate((x, y) => x + " " + y), true, true);
+            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName), node.FullCategoryName);
+            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), node.Name);
+            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Description), node.Description);
+            if (node.SearchKeywords.Count > 0) LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords), node.SearchKeywords.Aggregate((x, y) => x + " " + y), true, true);
+            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Parameters), node.Parameters ?? string.Empty);
 
-            writer?.AddDocument(doc);
+            LuceneUtility.writer?.AddDocument(doc);
         }
 
-        //TODO:
-        //isLast option is used for the last value set in the document, and it will fetch all the other field not set for the document and add them with an empty string.
-        //isTextField is used when the value need to be tokenized(broken down into pieces), whereas StringTextFields are tokenized.
-        //The SetDocumentFieldValue method should be optimized later
-        private void SetDocumentFieldValue(Document doc, string field, string value, bool isTextField = true, bool isLast = false)
+        /// <summary>
+        /// Remove node information from Lucene indexing.
+        /// </summary>
+        /// <param name="node">node info that needs to be removed.</param>
+        internal void RemoveNodeTypeFromSearchIndex(NodeSearchElement node)
         {
-            addedFields.Add(field);
-            if (isTextField && !field.Equals("DocName"))
-            {
-                ((TextField)doc.GetField(field)).SetStringValue(value);
-            }
-            else
-            {
-                ((StringField)doc.GetField(field)).SetStringValue(value);
-            }
-            if (isLast)
-            {
-                List<string> diff = LuceneConfig.IndexFields.Except(addedFields).ToList();
-                foreach (var d in diff)
-                {
-                    SetDocumentFieldValue(doc, d, "");
-                }
-                addedFields.Clear();
-            }
+            var term = new Term(nameof(LuceneConfig.NodeFieldsEnum.Name), node.Name);
+
+            LuceneUtility.writer?.DeleteDocuments(term);
+            LuceneUtility.CommitWriterChanges();
         }
 
         /// <summary>
@@ -3365,7 +3289,7 @@ namespace Dynamo.Models
 
         internal void AddZeroTouchNodesToSearch(IEnumerable<FunctionGroup> functionGroups)
         {
-            var iDoc = InitializeIndexDocument();
+            var iDoc = LuceneUtility.InitializeIndexDocumentForNodes();
             foreach (var funcGroup in functionGroups)
                 AddZeroTouchNodeToSearch(funcGroup, iDoc);
         }
@@ -3591,13 +3515,13 @@ namespace Dynamo.Models
                 {
                     continue;  // prevent loading the same node twice
                 }
-                
+
                 currentWorkspace.AddAndRegisterNode(node, false);
             }
             RecordUndoModels(currentWorkspace, nodes.Cast<ModelBase>().ToList());
         }
 
-        
+
         private void InsertConnectors(IEnumerable<ConnectorModel> connectors)
         {
             List<ConnectorModel> newConnectors = new List<ConnectorModel>();
@@ -3735,6 +3659,8 @@ namespace Dynamo.Models
 
         private bool NotesAlreadyLoaded(IEnumerable<ExtraAnnotationViewInfo> notes)
         {
+            if (notes == null) return false;
+
             foreach (var note in notes)
             {
                 if (currentWorkspace.Notes.Any(n => n.GUID.ToString() == note.Id))
@@ -3743,7 +3669,7 @@ namespace Dynamo.Models
                     return true;
                 }
             }
-            // If no nodes exist with the same GUID, then we are good to go
+            // If no notes exist with the same GUID, then we are good to go
             return false;
         }
         #endregion

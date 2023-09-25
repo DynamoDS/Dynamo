@@ -21,9 +21,9 @@ namespace ProtoCore
     /// Represents a single replication guide entity that is associated with an argument to a function
     /// 
     /// Given:
-    ///     a = f(i<1>, j<2L>)
+    ///     a = f(i&lt;1&gt;, j&lt;2L&gt;)
     ///     
-    ///     <1> and <2L> are each represented by a ReplicationGuide instance
+    ///     &lt;1&gt; and &lt;2L&gt; are each represented by a ReplicationGuide instance
     ///     
     /// </summary>
     public class ReplicationGuide

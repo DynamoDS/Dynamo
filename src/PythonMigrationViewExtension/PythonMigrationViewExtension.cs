@@ -199,10 +199,17 @@ namespace Dynamo.PythonMigration
 
         private void UnsubscribeEvents()
         {
-            LoadedParams.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
-            DynamoViewModel.CurrentSpaceViewModel.Model.NodeAdded -= OnNodeAdded;
-            DynamoViewModel.Model.Logger.NotificationLogged -= OnNotificationLogged;
-            CurrentWorkspace.RequestPackageDependencies -= PythonDependencies.AddPythonPackageDependency;
+            if (LoadedParams != null)
+            {
+                LoadedParams.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
+                DynamoViewModel.CurrentSpaceViewModel.Model.NodeAdded -= OnNodeAdded;
+                DynamoViewModel.Model.Logger.NotificationLogged -= OnNotificationLogged;
+            }
+            
+            if (CurrentWorkspace  != null)
+            {
+                CurrentWorkspace.RequestPackageDependencies -= PythonDependencies.AddPythonPackageDependency;
+            }
             UnSubscribeWorkspaceEvents();
         }
         #endregion

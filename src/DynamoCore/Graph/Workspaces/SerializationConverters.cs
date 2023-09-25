@@ -46,6 +46,39 @@ namespace Dynamo.Graph.Workspaces
         // Map of all loaded assemblies including LoadFrom context assemblies
         private Dictionary<string, List<Assembly>> loadedAssemblies;
 
+        private CodeBlockNodeModel DeserializeAsCBN(string code, JObject obj, Guid guid)
+        {
+            var codeBlockNode = new CodeBlockNodeModel(code, guid, 0.0, 0.0, libraryServices, ElementResolver);
+
+            // If the code block node is in an error state read the extra port data
+            // and initialize the input and output ports
+            if (codeBlockNode.IsInErrorState)
+            {
+                List<string> inPortNames = new List<string>();
+                var inputs = obj["Inputs"];
+                foreach (var input in inputs)
+                {
+                    inPortNames.Add(input["Name"].ToString());
+                }
+
+                // NOTE: This could be done in a simpler way, but is being implemented
+                //       in this manner to allow for possible future port line number
+                //       information being available in the file
+                List<int> outPortLineIndexes = new List<int>();
+                var outputs = obj["Outputs"];
+                int outputLineIndex = 0;
+                foreach (var output in outputs)
+                {
+                    outPortLineIndexes.Add(outputLineIndex++);
+                }
+
+                codeBlockNode.SetErrorStatePortData(inPortNames, outPortLineIndexes);
+            }
+            return codeBlockNode;
+        }
+
+        
+
         [Obsolete("This constructor will be removed in Dynamo 3.0, please use new NodeReadConverter constructor with additional parameters to support node migration.")]
         public NodeReadConverter(CustomNodeManager manager, LibraryServices libraryServices, bool isTestMode = false)
         {
@@ -111,7 +144,7 @@ namespace Dynamo.Graph.Workspaces
             {
                type = Type.GetType(obj["$type"].Value<string>());
                typeName = obj["$type"].Value<string>().Split(',').FirstOrDefault();
-
+                
                 if (typeName.Equals("Dynamo.Graph.Nodes.ZeroTouch.DSFunction"))
                 {
                     // If it is a zero touch node, then get the whole function name including the namespace.
@@ -165,7 +198,7 @@ namespace Dynamo.Graph.Workspaces
 
             // If the id is not a guid, makes a guid based on the id of the node
             var guid = GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());
-
+            
             var replication = obj["Replication"].Value<string>();
            
             var inPorts = obj["Inputs"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
@@ -176,9 +209,9 @@ namespace Dynamo.Graph.Workspaces
 
             bool remapPorts = true;
 
-            // If type is still null at this point return a dummy node
             if (type == null)
             {
+                // If type is still null at this point return a dummy node
                 node = CreateDummyNode(obj, typeName, assemblyName, functionName, inPorts, outPorts);
             }
             // Attempt to create a valid node using the type
@@ -197,37 +230,10 @@ namespace Dynamo.Graph.Workspaces
                 if (isUnresolved)
                   function.UpdatePortsForUnresolved(inPorts, outPorts);
             }
-
             else if (type == typeof(CodeBlockNodeModel))
             {
                 var code = obj["Code"].Value<string>();
-                CodeBlockNodeModel codeBlockNode = new CodeBlockNodeModel(code, guid, 0.0, 0.0, libraryServices, ElementResolver);
-                node = codeBlockNode;
-
-                // If the code block node is in an error state read the extra port data
-                // and initialize the input and output ports
-                if (node.IsInErrorState)
-                {
-                    List<string> inPortNames = new List<string>();
-                    var inputs = obj["Inputs"];
-                    foreach (var input in inputs)
-                    {
-                        inPortNames.Add(input["Name"].ToString());
-                    }
-
-                    // NOTE: This could be done in a simpler way, but is being implemented
-                    //       in this manner to allow for possible future port line number
-                    //       information being available in the file
-                    List<int> outPortLineIndexes = new List<int>();
-                    var outputs = obj["Outputs"];
-                    int outputLineIndex = 0;
-                    foreach (var output in outputs)
-                    {
-                        outPortLineIndexes.Add(outputLineIndex++);
-                    }
-
-                    codeBlockNode.SetErrorStatePortData(inPortNames, outPortLineIndexes);
-                }
+                node = DeserializeAsCBN(code, obj, guid);
             }
             else if (typeof(DSFunctionBase).IsAssignableFrom(type))
             {
@@ -263,7 +269,25 @@ namespace Dynamo.Graph.Workspaces
             }
             else if (type.ToString() == "CoreNodeModels.Formula")
             {
-                node = (NodeModel)obj.ToObject(type);
+                var code = obj["Formula"].Value<string>();
+                var formulaConverter = new MigrateFormulaToDS();
+                string convertedCode = string.Empty;
+                bool conversionFailed = false;
+                try
+                {
+                    convertedCode = formulaConverter.ConvertFormulaToDS(code);
+                }
+                catch (BuildHaltException)
+                {
+                    node = DeserializeAsCBN(code + ";", obj, guid);
+                    (node as CodeBlockNodeModel).FormulaMigrationWarning(Resources.FormulaDSConversionFailure);
+                    conversionFailed = true;
+                }
+                if (!conversionFailed)
+                {
+                    node = DeserializeAsCBN(convertedCode + ";", obj, guid);
+                    (node as CodeBlockNodeModel).FormulaMigrationWarning(Resources.FormulaMigrated);
+                }
             }
             else
             {
@@ -340,6 +364,7 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="inPorts">The deserialized input ports.</param>
         /// <param name="outPorts">The deserialized output ports.</param>
         /// <param name="resolver">The IdReferenceResolver used during deserialization.</param>
+        /// <param name="logger"></param>
         private static void RemapPorts(NodeModel node, PortModel[] inPorts, PortModel[] outPorts, IdReferenceResolver resolver, ILogger logger)
         {
             foreach (var p in node.InPorts)
@@ -1375,7 +1400,7 @@ namespace Dynamo.Graph.Workspaces
         /// Add a reference to a newly created object, referencing
         /// an old id.
         /// </summary>
-        /// <param name="oldid">The old id of the object.</param>
+        /// <param name="oldId">The old id of the object.</param>
         /// <param name="newObject">The new object which maps to the old id.</param>
         public void AddToReferenceMap(Guid oldId, object newObject)
         {

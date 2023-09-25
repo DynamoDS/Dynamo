@@ -1,6 +1,6 @@
 <dww:ModelessChildWindow x:Class="PythonNodeModelsWpf.ScriptEditorWindow"
                          xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                         xmlns:fa="http://schemas.fontawesome.io/icons/"
+                         xmlns:fa="http://schemas.fontawesome.com/icons/"
                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                          xmlns:ui1="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
                          xmlns:dww="clr-namespace:Dynamo.Wpf.Windows;assembly=DynamoCoreWpf"
@@ -59,68 +59,6 @@
                 <Setter Property="Foreground" Value="#bbbbbb" />
             </Style>
 
-            <Style x:Key="SaveButtonStyle"
-                   TargetType="{x:Type Button}"
-                   BasedOn="{StaticResource CtaButtonStyle}">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate>
-                            <Border x:Name="container"
-                                    Background="Transparent"
-                                    BorderBrush="#FF23A597"
-                                    CornerRadius="2"
-                                    BorderThickness="1">
-                                <Grid x:Name="inner"
-                                      Background="#FF23A597">
-                                    <TextBlock x:Name="text"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               FontSize="14px"
-                                               Foreground="#FFFFFF"
-                                               Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
-                                </Grid>
-                            </Border>
-
-                            <ControlTemplate.Triggers>
-
-                                <Trigger Property="Button.IsMouseOver"
-                                         Value="true">
-                                    <Setter TargetName="container"
-                                            Property="BorderBrush"
-                                            Value="#26808080" />
-                                    <Setter TargetName="container"
-                                            Property="BorderThickness"
-                                            Value="2" />
-                                </Trigger>
-
-                                <Trigger Property="Button.IsPressed"
-                                         Value="true">
-                                    <Setter TargetName="container"
-                                            Property="BorderBrush"
-                                            Value="#40808080" />
-                                    <Setter TargetName="container"
-                                            Property="BorderThickness"
-                                            Value="4" />
-                                </Trigger>
-
-                                <Trigger Property="Button.IsEnabled"
-                                         Value="false">
-                                    <Setter TargetName="inner"
-                                            Property="Background"
-                                            Value="#218d81" />
-                                    <Setter TargetName="text"
-                                            Property="Foreground"
-                                            Value="#bebebe" />
-                                    <Setter TargetName="container"
-                                            Property="BorderBrush"
-                                            Value="#218d81" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
             <Style x:Key="UnSaveButtonStyle"
                    TargetType="{x:Type Button}"
                    BasedOn="{StaticResource CtaButtonStyle}">
@@ -237,7 +175,7 @@
                                 Style="{StaticResource RestoreButtonDarkStyle}" />
 
                         <Button Name="UndockButton"
-                                Click="OnDockButtonClicked"
+                                Click="OnDockButtonClicked" 
                                 Margin="0 0 20 0"
                                 DockPanel.Dock="Right"
                                 Style="{StaticResource DockButtonDarkStyle}" >
@@ -402,7 +340,7 @@
                                            FontFamily="{StaticResource SourceCodePro}"
                                            FontSize="10pt"
                                            ShowLineNumbers="True"
-                                           Background="{StaticResource ExtensionBackgroundColor}"
+                                           Background="{StaticResource TextEditorBrush}"
                                            Foreground="{StaticResource AutocompletionWindowFontColor}"
                                            Padding="5"
                                            HorizontalScrollBarVisibility="Disabled"
@@ -424,7 +362,7 @@
                             MinWidth="90"
                             Width="140"
                             Height="45"
-                            Style="{StaticResource SaveButtonStyle}" 
+                            Style="{StaticResource RunButtonStyle}" 
                             Name="RunPythonScriptButton"
                             Click="OnRunClicked">
                         <Button.ToolTip>

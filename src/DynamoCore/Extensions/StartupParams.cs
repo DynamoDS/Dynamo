@@ -83,7 +83,6 @@ namespace Dynamo.Extensions
             this.dynamoVersion = dynamoVersion;
             this.preferences = preferences;
         }
-        [Obsolete("Use internal constructor")]
         /// <summary>
         /// Initializes a new instance of the <see cref="StartupParams"/> class.
         /// </summary>
@@ -94,6 +93,7 @@ namespace Dynamo.Extensions
         /// <param name="dynamoVersion"><see cref="Version"/> for DynamoModel</param>
         /// <param name="preferences"><see cref="IPreferences"/> for DynamoModel</param>
         /// <param name="linterManager"><see cref="LinterManager"/> for DynamoModel></param>
+        [Obsolete("Use internal constructor")]
         public StartupParams(IAuthProvider provider, IPathManager pathManager,
             ILibraryLoader libraryLoader, ICustomNodeManager customNodeManager,
             Version dynamoVersion, IPreferences preferences, LinterManager linterManager)

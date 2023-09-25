@@ -26,11 +26,7 @@ namespace NodeDocumentationMarkdownGenerator
 #else
             var config = "Release";
 #endif
-#if NET48
             var platform = "AnyCPU";
-#else
-            var platform = "NET60_Windows";
-#endif
             var dirName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             var relativePathToDynamo = $@"..\..\..\..\..\..\bin\{platform}\{config}";
 

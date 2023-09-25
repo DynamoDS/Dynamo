@@ -1,10 +1,10 @@
-﻿<UserControl x:Class="Dynamo.WorkspaceDependency.WorkspaceDependencyView"
+<UserControl x:Class="Dynamo.WorkspaceDependency.WorkspaceDependencyView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
-             xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:fa="clr-namespace:FontAwesome5;assembly=FontAwesome5.Net"
              xmlns:w="clr-namespace:Dynamo.WorkspaceDependency.Properties"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
              xmlns:controls="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
@@ -176,7 +176,7 @@
                         Width="38">
                         <DataGridTemplateColumn.Header>
                             <fa:ImageAwesome Name="Refresh" 
-                                             Icon="Refresh" 
+                                             Icon="Solid_Sync" 
                                              MouseLeftButtonDown="Refresh_MouseLeftButtonDown">
                                 <fa:ImageAwesome.ToolTip>
                                     <ToolTip Content="{x:Static w:Resources.RefreshButtonTooltipText}" Style="{StaticResource GenericToolTipLight}"/>
@@ -296,7 +296,7 @@
                         Width="38">
                         <DataGridTemplateColumn.Header>
                             <fa:ImageAwesome Name="RefreshReferences" 
-                                             Icon="Refresh" 
+                                             Icon="Solid_Sync" 
                                              MouseLeftButtonDown="Refresh_MouseLeftButtonDown">
                                 <fa:ImageAwesome.ToolTip>
                                     <ToolTip Content="{x:Static w:Resources.RefreshButtonTooltipText}" Style="{StaticResource GenericToolTipLight}"/>
@@ -386,7 +386,7 @@
                         Width="38">
                         <DataGridTemplateColumn.Header>
                             <fa:ImageAwesome Name="RefreshExternalReferences" 
-                                             Icon="Refresh" 
+                                             Icon="Solid_Sync" 
                                              MouseLeftButtonDown="ForceRefresh_MouseLeftButtonDown">
                                 <fa:ImageAwesome.ToolTip>
                                     <ToolTip Content="{x:Static w:Resources.RefreshButtonTooltipText}" Style="{StaticResource GenericToolTipLight}"/>

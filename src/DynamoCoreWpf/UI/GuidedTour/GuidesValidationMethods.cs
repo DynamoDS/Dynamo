@@ -154,13 +154,18 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     {
                         CloseButtonSearchPackages = GuideUtilities.FindChild(ownedWindow, handler.HandlerElement) as Button;
                         CloseButtonSearchPackages.Click += CloseButton_Click;
+                        CloseButtonSearchPackages.IsEnabled = false;
                     }
                 }
             }
             else
             {
                 if (CloseButtonSearchPackages != null)
+                {
+                    CloseButtonSearchPackages.IsEnabled = true;
                     CloseButtonSearchPackages.Click -= CloseButton_Click;
+                    CloseButtonSearchPackages = null;
+                }
             }
         }
 
@@ -380,6 +385,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         /// <param name="sender">PackageManagerSearchViewModel</param>
         /// <param name="e">PropertyChanged</param>
+        /// <param name="uiAutomationData"></param>
         private static void PackageManagerViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e, StepUIAutomation uiAutomationData)
         {
             PackageManagerSearchViewModel packageManagerViewModel = sender as PackageManagerSearchViewModel;

@@ -11,7 +11,7 @@
 	<OutputPath>bin\$(Configuration)\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-	<PackageReference Include="NDesk.Options" Version="0.2.1" />
+	<PackageReference Include="CommandLineParser" Version="2.8.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DynamoCrypto\DynamoCrypto.csproj">

@@ -61,7 +61,6 @@ namespace ProtoFFITests
         }
 
         [Test]
-        [Category("FailureNET6")]
         public void TestDecimals()
         {
             String code =
@@ -94,6 +93,21 @@ namespace ProtoFFITests
             int F = 'F';
             ValidationData[] data = { new ValidationData { ValueName = "F", ExpectedValue = F, BlockIndex = 0 } };
             ExecuteAndVerify(code, data);
+        }
+        [Test]
+        public void TestDateTime()
+        {
+            String code =
+                @"
+               import(""System.DateTime"");
+               x = DateTime.Parse(""2/16/2008 12:15:12 PM"");
+               result = x.Hour;
+               success = (12 == result);
+            ";
+            ValidationData[] data = { new ValidationData { ValueName = "success", ExpectedValue = true, BlockIndex = 0 } };
+            int nErrors = -1;
+            ExecuteAndVerify(code, data, out nErrors);
+            Assert.IsTrue(nErrors == 0);
         }
 
         [Test]

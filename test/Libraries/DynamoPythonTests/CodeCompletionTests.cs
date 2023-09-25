@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -42,8 +42,7 @@ namespace DynamoPythonTests
 
             Assert.IsTrue(completionList.Any());
             Assert.IsTrue(completionList.Intersect(new[] { "Hashtable", "Queue", "Stack" }).Count() == 3);
-            // Serial tests load an extra type (System.Collections.Immutable) in the Python engine
-            Assert.IsTrue(completionData.Length >= 29 && completionData.Length <= 30);
+            Assert.IsTrue(completionData.Length == 31);
         }
     }
 
@@ -237,8 +236,7 @@ namespace DynamoPythonTests
 
             Assert.IsTrue(completionList.Any());
             Assert.IsTrue(completionList.Intersect(new[] { "Hashtable", "Queue", "Stack" }).Count() == 3);
-            // Serial tests load an extra type (System.Collections.Immutable) in the Python engine
-            Assert.IsTrue(completionData.Length >= 29 && completionData.Length <= 30);
+            Assert.IsTrue(completionData.Length == 31);
         }
 
         [Test]

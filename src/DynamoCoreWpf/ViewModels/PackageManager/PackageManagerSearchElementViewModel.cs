@@ -6,7 +6,11 @@ using System.Windows.Input;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels;
 using Greg.Responses;
+#if NETFRAMEWORK
 using Microsoft.Practices.Prism.Commands;
+#else
+using Prism.Commands;
+#endif
 
 namespace Dynamo.PackageManager.ViewModels
 {
@@ -23,6 +27,12 @@ namespace Dynamo.PackageManager.ViewModels
 
         public new PackageManagerSearchElement Model { get; internal set; }
 
+
+        /// <summary>
+        /// The currently selected version of a package
+        /// </summary>
+        public string SelectedVersion { get; set; }
+
         /// <summary>
         /// Alternative constructor to assist communication between the 
         /// PackageManagerSearchViewModel and the PackageManagerSearchElementViewModel.
@@ -38,12 +48,14 @@ namespace Dynamo.PackageManager.ViewModels
             CanInstall = install;
             IsEnabledForInstall = isEnabledForInstall;
 
+            this.SelectedVersion = this.Model.LatestVersion;
+
             this.ToggleIsExpandedCommand = new DelegateCommand(() => this.Model.IsExpanded = !this.Model.IsExpanded);
 
             this.DownloadLatestCommand = new DelegateCommand(
-                () => OnRequestDownload(Model.Header.versions.Last(), false),
+                () => OnRequestDownload(Model.Header.versions.First(x => x.version.Equals(SelectedVersion)), false),
                 () => !Model.IsDeprecated && CanInstall);
-            this.DownloadLatestToCustomPathCommand = new DelegateCommand(() => OnRequestDownload(Model.Header.versions.Last(), true));
+            this.DownloadLatestToCustomPathCommand = new DelegateCommand(() => OnRequestDownload(Model.Header.versions.First(x => x.version.Equals(SelectedVersion)), true));
 
             this.UpvoteCommand = new DelegateCommand(Model.Upvote, () => canLogin);
 
@@ -114,7 +126,7 @@ namespace Dynamo.PackageManager.ViewModels
         {
             if (Uri.IsWellFormedUriString(url, UriKind.Absolute))
             {
-                var sInfo = new ProcessStartInfo("explorer.exe", new Uri(url).AbsoluteUri);
+                var sInfo = new ProcessStartInfo("explorer.exe", new Uri(url).AbsoluteUri) { UseShellExecute = true };
                 Process.Start(sInfo);
             }
         }

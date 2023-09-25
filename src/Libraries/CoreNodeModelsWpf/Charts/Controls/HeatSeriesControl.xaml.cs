@@ -1,13 +1,18 @@
-using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Media;
-using LiveCharts;
-using LiveCharts.Defaults;
-using LiveCharts.Wpf;
-using System.ComponentModel;
-using System.Windows;
-using System.Linq;
+using CoreNodeModelsWpf.Charts.Utilities;
+using LiveChartsCore;
+using LiveChartsCore.Defaults;
+using LiveChartsCore.Drawing;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
+using SkiaSharp;
+using SkiaSharp.Views.WPF;
 
 namespace CoreNodeModelsWpf.Charts.Controls
 {
@@ -16,11 +21,19 @@ namespace CoreNodeModelsWpf.Charts.Controls
     /// </summary>
     public partial class HeatSeriesControl : UserControl, INotifyPropertyChanged
     {
-        private Random rnd = new Random();
         private readonly HeatSeriesNodeModel model;
 
-        private double MIN_WIDTH = 300;
-        private double MIN_HEIGHT = 300;
+        private SolidColorPaint AxisColor { get; set; }
+        private SolidColorPaint AxisSeparatorColor { get; set; }
+
+        /// <summary>
+        /// Used to get or set the X-axis of the chart
+        /// </summary>
+        public Axis[] XAxes { get; set; }
+        /// <summary>
+        /// Used to get or set the Y-axis of the chart
+        /// </summary>
+        public Axis[] YAxes { get; set; }
 
         private void OnPropertyChanged(string propertyName)
         {
@@ -44,19 +57,15 @@ namespace CoreNodeModelsWpf.Charts.Controls
 
         private void BuildUI(HeatSeriesNodeModel model)
         {
+            SetAxes();
+            HeatSeriesUI.Legend = null;
             // Load sample data if any ports are not connected
             if (!model.InPorts[0].IsConnected && !model.InPorts[1].IsConnected && !model.InPorts[2].IsConnected && !model.InPorts[3].IsConnected)
             {
-                var chartValues = DefaultValues();
-
-                HeatSeriesUI.Series.Add(new HeatSeries()
-                {
-                    Values = chartValues,
-                    DrawsHeatRange = false,
-                });
+                HeatSeriesUI.Series = DefaultValues();
             }
             // Else load input data
-            else if (model.InPorts[0].IsConnected && model.InPorts[1].IsConnected && model.InPorts[2].IsConnected && model.InPorts[3].IsConnected)
+            else if (model.InPorts[0].IsConnected && model.InPorts[1].IsConnected && model.InPorts[2].IsConnected)
             {
                 if (model.XLabels.Count == model.Values.Count && model.XLabels.Count > 0)
                 {
@@ -75,13 +84,7 @@ namespace CoreNodeModelsWpf.Charts.Controls
                 {
                     if (!model.InPorts[0].IsConnected && !model.InPorts[1].IsConnected && !model.InPorts[2].IsConnected && !model.InPorts[3].IsConnected)
                     {
-                        var chartValues = DefaultValues();
-
-                        HeatSeriesUI.Series.Add(new HeatSeries()
-                        {
-                            Values = chartValues,
-                            DrawsHeatRange = false,
-                        });
+                        HeatSeriesUI.Series = DefaultValues();
                     }
                     else
                     {
@@ -91,7 +94,7 @@ namespace CoreNodeModelsWpf.Charts.Controls
             }
         }
 
-        private ChartValues<HeatPoint> DefaultValues()
+        private IEnumerable<HeatSeries<WeightedPoint>> DefaultValues()
         {
             // X - Products
             var XLabels = new[]
@@ -116,94 +119,87 @@ namespace CoreNodeModelsWpf.Charts.Controls
                 };
 
             // Value for each product on every day of the week
-            var chartValues = new ChartValues<HeatPoint>();
+            var chartValues = new ObservableCollection<WeightedPoint>();
 
             for (var i = 0; i < XLabels.Length; i++)
             {
                 for (var j = 0; j < YLabels.Length; j++)
                 {
-                    chartValues.Add(new HeatPoint(i, j, rnd.Next(0, 10)));
+                    chartValues.Add(new WeightedPoint(i, j, ChartStyle.GetRandomInt(0, 10)));
                 }
             }
 
-            XAxis.Labels = XLabels;
-            YAxis.Labels = YLabels;
+            XAxes.FirstOrDefault().Labels = XLabels;
+            YAxes.FirstOrDefault().Labels = YLabels;
 
-            return chartValues;
+            var seriesRange = new List<HeatSeries<WeightedPoint>>()
+            {
+                new HeatSeries<WeightedPoint>
+                {
+                    Values = chartValues,
+                    PointPadding = new Padding(1),
+                }
+            };
+
+            return seriesRange;
         }
 
         private void UpdateValues(HeatSeriesNodeModel model)
         {
-            var chartValues = new ChartValues<HeatPoint>();
-            HeatSeriesUI.Series.Clear();
+            var chartValues = new ObservableCollection<WeightedPoint>();
+            HeatSeriesUI.Series = Enumerable.Empty<ISeries>();
 
             if (model == null)
             {
                 model = this.model;
             }
 
-            var colors = new GradientStopCollection();
-
             if (model.XLabels != null && model.XLabels.Any()
              && model.YLabels != null && model.YLabels.Any()
              && model.Values != null && model.Values.Any()
              && model.Colors != null && model.Colors.Any())
             {
+                var colors = BuildColors(model);
+
                 for (var i = 0; i < model.XLabels.Count; i++)
                 {
                     for (var j = 0; j < model.YLabels.Count; j++)
                     {
-                        chartValues.Add(new HeatPoint(i, j, model.Values[i][j]));
+                        chartValues.Add(new WeightedPoint(i, j, model.Values[i][j]));
                     }
                 }
 
-                colors = BuildColors(model);
+                XAxes.FirstOrDefault().Labels = model.XLabels;
+                YAxes.FirstOrDefault().Labels = model.YLabels;
 
-                XAxis.Labels = model.XLabels;
-                YAxis.Labels = model.YLabels;
+
+                HeatSeriesUI.Series = HeatSeriesUI.Series.Concat(new List<HeatSeries<WeightedPoint>>() {
+                    new HeatSeries<WeightedPoint>
+                    {
+                        Values = chartValues,
+                        HeatMap = colors.ToArray(),
+                        PointPadding = new Padding(1),
+                    }
+                });
             }
-
-            HeatSeriesUI.Series.Add(new HeatSeries()
-            {
-                Values = chartValues,
-                DrawsHeatRange = false,
-                GradientStopCollection = colors,
-                PointGeometry = DefaultGeometries.Square
-            });
         }
 
-        private GradientStopCollection BuildColors(HeatSeriesNodeModel model)
+        private IEnumerable<LvcColor> BuildColors(HeatSeriesNodeModel model)
         {
-            var colors = new GradientStopCollection();
+            var colors = new List<LvcColor>();
 
             // If provided with a single color create range from transparent white to color
             if (model.Colors.Count == 1)
             {
-                colors.Add(new GradientStop()
-                {
-                    Offset = 0,
-                    Color = Color.FromArgb(255, 255, 255, 255)
-                });
-
-                colors.Add(new GradientStop()
-                {
-                    Offset = 1,
-                    Color = model.Colors[0]
-                });
+                colors.Add(new SKColor(255, 255, 255).AsLvcColor());
+                colors.Add((model.Colors[0].ToSKColor()).AsLvcColor());
             }
-
             // If provided with several colors create a range for provided colors
             else if (model.Colors.Count > 1)
             {
-                var count = model.Colors.Count;
-
-                for (var i = 0; i < count; i++)
+                for (var i = 0; i < model.Colors.Count; i++)
                 {
-                    colors.Add(new GradientStop()
-                    {
-                        Offset = i / (count - 1),
-                        Color = model.Colors[i]
-                    });
+                    colors.Add((model.Colors[i].ToSKColor()).AsLvcColor());
                 }
             }
 
@@ -219,18 +215,54 @@ namespace CoreNodeModelsWpf.Charts.Controls
             {
                 var inputGrid = this.Parent as Grid;
 
-                if (xAdjust >= inputGrid.MinWidth && xAdjust >= MIN_WIDTH)
+                if (xAdjust >= inputGrid.MinWidth && xAdjust >= ChartStyle.CHART_MIN_WIDTH)
                 {
                     Width = xAdjust;
                 }
 
-                if (yAdjust >= inputGrid.MinHeight && yAdjust >= MIN_HEIGHT)
+                if (yAdjust >= inputGrid.MinHeight && yAdjust >= ChartStyle.CHART_MIN_HEIGHT)
                 {
                     Height = yAdjust;
                 }
             }
         }
+        private void SetAxes()
+        {
+            AxisColor = new SolidColorPaint(ChartStyle.AXIS_COLOR) { StrokeThickness = ChartStyle.AXIS_STROKE_THICKNESS, SKTypeface = SKTypeface.FromFamilyName(ChartStyle.AXIS_FONT_FAMILY) };
+            AxisSeparatorColor = new SolidColorPaint(ChartStyle.AXIS_SEPARATOR_COLOR) { StrokeThickness = ChartStyle.AXIS_STROKE_THICKNESS };
 
+            XAxes = new Axis[]
+            {
+                new Axis
+                {
+                    Name = "Index",
+                    NamePaint = AxisColor,
+                    LabelsPaint = AxisColor,
+                    TextSize = ChartStyle.AXIS_FONT_SIZE,
+                    SeparatorsPaint = AxisSeparatorColor,
+                    NameTextSize = ChartStyle.AXIS_FONT_SIZE,
+                    MinStep = ChartStyle.AXIS_MIN_STEP,
+                    LabelsRotation = -15,
+                    NamePadding = new Padding(ChartStyle.AXIS_LABEL_PADDING),
+                    Padding = new Padding(ChartStyle.AXIS_LABEL_PADDING),
+                }
+            };
+
+            YAxes = new Axis[]
+            {
+                new Axis
+                {
+                    Name = "Values",
+                    NamePaint = AxisColor,
+                    LabelsPaint = AxisColor,
+                    TextSize = ChartStyle.AXIS_FONT_SIZE,
+                    SeparatorsPaint = AxisSeparatorColor,
+                    NameTextSize = ChartStyle.AXIS_FONT_SIZE,
+                    NamePadding = new Padding(ChartStyle.AXIS_LABEL_PADDING),
+                    Padding = new Padding(ChartStyle.AXIS_LABEL_PADDING),
+                }
+            };
+        }
         /// <summary>
         /// Unsubscribes from ViewModel events
         /// </summary>

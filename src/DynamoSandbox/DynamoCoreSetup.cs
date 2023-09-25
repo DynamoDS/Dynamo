@@ -117,7 +117,7 @@ namespace DynamoSandbox
 
                         if (result == MessageBoxResult.Yes)
                         {
-                            Process.Start(sandboxWikiPage);
+                            Process.Start(new ProcessStartInfo(sandboxWikiPage) { UseShellExecute = true });
                         }
                     }
                 }

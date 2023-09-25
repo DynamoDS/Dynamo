@@ -19,6 +19,12 @@ namespace Dynamo.Nodes
     public partial class NoteView : IViewModelView<NoteViewModel>
     {
         private EditWindow editWindow;
+
+        /// <summary>
+        /// Special keys definition in note
+        /// </summary>
+        internal Key[] specialKeys = { Key.OemMinus, Key.Tab, Key.Enter };
+
         public NoteViewModel ViewModel { get; private set; }
 
         public NoteView()
@@ -204,37 +210,46 @@ namespace Dynamo.Nodes
 
         private void noteTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            Key[] specialKeys = { Key.OemMinus, Key.Tab, Key.Enter };
             if (!specialKeys.Contains(e.Key))
             {
                 return;
             }
-                
             e.Handled = true;
-            var textBox = sender as TextBox;
-            
-            // Remove selected text
-            textBox.Text = textBox.Text.Remove(textBox.SelectionStart, textBox.SelectionLength);
-            
-            var text = StringUtils.SpaceToTabConversion(textBox.Text, TAB_SPACING_SIZE);
-            var caretIndex = textBox.CaretIndex + (text.Length - textBox.Text.Length);
 
-            switch (e.Key)
+            if (sender is TextBox textBox)
             {
-                case Key.OemMinus:
-                    textBox.Text = BulletDashHandler(text, caretIndex);
-                    break;
-                case Key.Tab:
-                    textBox.Text = BulletTabHandler(text, caretIndex);
-                    break;
-                case Key.Enter:
-                    textBox.Text = BulletEnterHandler(text, caretIndex);
-                    break;
+                var originalText = textBox.Text;
+                try
+                {
+                    // Remove selected text
+                    textBox.Text = textBox.Text.Remove(textBox.SelectionStart, textBox.SelectionLength);
+
+                    var text = StringUtils.SpaceToTabConversion(textBox.Text, TAB_SPACING_SIZE);
+                    var caretIndex = textBox.CaretIndex + (text.Length - textBox.Text.Length);
+
+                    switch (e.Key)
+                    {
+                        case Key.OemMinus:
+                            textBox.Text = BulletDashHandler(text, caretIndex);
+                            break;
+                        case Key.Tab:
+                            textBox.Text = BulletTabHandler(text, caretIndex);
+                            break;
+                        case Key.Enter:
+                            textBox.Text = BulletEnterHandler(text, caretIndex);
+                            break;
+                    }
+
+                    textBox.Text = StringUtils.TabToSpaceConversion(textBox.Text, TAB_SPACING_SIZE);
+
+                    textBox.CaretIndex = caretIndex + (textBox.Text.Length - text.Length);
+                }
+                catch (Exception)
+                {
+                    // Restore original text if something went wrong
+                    textBox.Text = originalText;
+                }
             }
-
-            textBox.Text = StringUtils.TabToSpaceConversion(textBox.Text, TAB_SPACING_SIZE);
-
-            textBox.CaretIndex = caretIndex + (textBox.Text.Length - text.Length);
         }
 
         #region Bullet point support

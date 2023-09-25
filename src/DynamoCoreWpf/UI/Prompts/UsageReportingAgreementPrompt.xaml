@@ -7,7 +7,7 @@
         WindowStyle="None"
         MinWidth="530"
         MaxWidth="650"
-        Height="605"
+        Height="310"
         ResizeMode="NoResize"
         ShowInTaskbar="False"
         AllowsTransparency="True"
@@ -97,7 +97,6 @@
 
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="220"></RowDefinition>
                     <RowDefinition Height="145"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
@@ -159,32 +158,11 @@
 
                 <Rectangle Style="{StaticResource DividerRectangleStyle}" Grid.Row="0" Grid.ColumnSpan="2" Margin="-15 0"/>
 
-                <Border Background="#E6E6E6" 
-                        Grid.Row="1" 
-                        Grid.Column="0"
-                        Grid.ColumnSpan="2"
-                        Margin="0 15 3 15" 
-                        Padding="0">
-                    <ScrollViewer 
-                        Margin="0 0 -18 0"
-                        HorizontalScrollBarVisibility="Disabled" >
-                        <views:RichTextFile x:Name="GoogleAnalyticsConsent"
-                                        IsReadOnly="True"
-                                        IsEnabled="True"
-                                        IsDocumentEnabled="True"
-                                        Margin="0 5"
-                                        Padding="5 5 15 10"
-                                        Background="Transparent" 
-                                        OpenLinksInBrowser="True"
-                                        BorderThickness="0" />
-                    </ScrollViewer>
-                </Border>
-
                 <Border Background="#E6E6E6"
-                        Grid.Row="2"
+                        Grid.Row="1"
                         Grid.Column="0"
                         Grid.ColumnSpan="2" 
-                        Margin="0 0 3 0" 
+                        Margin="0 15 3 0" 
                         Padding="0">
                     <ScrollViewer 
                               Padding="0"
@@ -204,26 +182,11 @@
                 </Border>
 
                 <StackPanel Orientation="Vertical" 
-                            Grid.Row="3"
+                            Grid.Row="2"
                             Grid.Column="0"
                             Grid.ColumnSpan="2">
 
                     <Rectangle Style="{StaticResource DividerRectangleStyle}" Margin="-15 15 -15 0"/>
-
-                    <CheckBox x:Name="AcceptGoogleAnalyticsCheck"
-                              Click="ToggleIsGoogleAnalyticsChecked"
-                              Margin="-2 18 0 15"
-                              VerticalAlignment="Center"
-                              FontSize="13.333"
-                              Background="White"
-                              IsChecked="True">
-                        <TextBlock FontWeight="SemiBold"
-                                   FontSize="12"
-                                   Foreground="{StaticResource DarkThemeInputBoxBackgroundBrush}" 
-                                   TextWrapping="Wrap"
-                                   Name="AcceptGoogleAnalyticsTextBlock"
-                                   Text="{x:Static p:Resources.ConsentFormGoogleAnalyticsCheckBoxContent}"/>
-                    </CheckBox>
 
                     <!--The instrumentation checkbox will be hidden and unchecked by default-->
                     <CheckBox x:Name="AcceptUsageReportingCheck"
@@ -244,7 +207,7 @@
 
                 </StackPanel>
                 <!--Configure ADP Consent-->
-                <Button Grid.Row="4"
+                <Button Grid.Row="3"
                         Grid.Column="0"
                         x:Name="configure_adp_button"
                         Background="White"
@@ -252,25 +215,14 @@
                         Foreground="#3C3C3C"
                         Style="{StaticResource CtaButtonStyle}"
                         VerticalAlignment="Bottom"
-                        Margin="-4 0 0 0"
+                        Margin="-4 10 0 0"
                         Width="auto"
                         HorizontalAlignment="Left"
                         Content="{x:Static p:Resources.ConfigureADPButtonText}"
                         Click="configure_adp_button_Click" />
 
-                <!--Learn More Button-->
-                <TextBlock Grid.Row="5"
-                           Grid.Column="0"
-                           Margin="0 0 0 2"
-                           VerticalAlignment="Bottom"
-                           HorizontalAlignment="Stretch">
-                    <Hyperlink Click="OnLearnMoreClick" Foreground="#4790cd">
-                        <TextBlock Name="LearnMore" Text="{x:Static p:Resources.LearnMore}" />
-                    </Hyperlink>
-                </TextBlock>
-
                 <!--Continue Button-->
-                <Button Grid.Row="5"
+                <Button Grid.Row="3"
                         Grid.Column="1"
                         x:Name="okButton"
                         BorderBrush="#0696D7"

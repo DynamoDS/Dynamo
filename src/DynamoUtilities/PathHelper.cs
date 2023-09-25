@@ -186,6 +186,7 @@ namespace DynamoUtilities
         /// </summary>
         /// <param name="path">path to the target xml file</param>
         /// <param name="xmlDoc">System.Xml.XmlDocument representation of target xml file</param>
+        /// <param name="ex"></param>
         /// <returns>Return true if file is Json, false if file is not Json, exception as out param</returns>
         public static bool isValidXML(string path, out XmlDocument xmlDoc, out Exception ex)
         {
@@ -210,6 +211,7 @@ namespace DynamoUtilities
         /// This is a utility method for checking if a given string represents a valid Json document.
         /// </summary>
         /// <param name="fileContents"> string contents of target json file</param>
+        /// <param name="ex"></param>
         /// <returns>Return true if fileContents is Json, false if file is not Json, exception as out param</returns>
         public static bool isFileContentsValidJson(string fileContents, out Exception ex)
         {
@@ -247,6 +249,7 @@ namespace DynamoUtilities
         /// </summary>
         /// <param name="path">path to the target json file</param>
         /// <param name="fileContents"> string contents of target json file</param>
+        /// <param name="ex"></param>
         /// <returns>Return true if file is Json, false if file is not Json, exception as out param</returns>
         public static bool isValidJson(string path, out string fileContents, out Exception ex)
         {
@@ -276,6 +279,7 @@ namespace DynamoUtilities
             return false;
         }
 
+        /// <summary>
         /// This is a utility method for generating a default name to the snapshot image. 
         /// </summary>
         /// <param name="filePath">File path</param>
@@ -330,7 +334,9 @@ namespace DynamoUtilities
         /// <summary>
         /// Checks if the file exists at the specified path and computes size.
         /// </summary>
-        /// <param name="filePath">File path</param>
+        /// <param name="path">File path</param>
+        /// <param name="fileExists"></param>
+        /// <param name="size"></param>
         /// <returns>Returns a boolean if the file exists at the path and also returns its size</returns>
         public static void FileInfoAtPath(string path, out bool fileExists, out string size)
         {

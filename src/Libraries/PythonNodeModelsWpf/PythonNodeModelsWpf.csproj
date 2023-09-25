@@ -1,4 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <UILib>true</UILib>
+    </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -9,6 +12,7 @@
     <RootNamespace>PythonNodeModelsWpf</RootNamespace>
     <AssemblyName>PythonNodeModelsWpf</AssemblyName>
     <OutputPath>$(OutputPath)\nodes\</OutputPath>
+    <EnableDefaultPageItems>false</EnableDefaultPageItems>
   </PropertyGroup>
   <ItemDefinitionGroup>
  	<ReferenceCopyLocalPaths>
@@ -36,20 +40,22 @@
     <None Remove="Resources\zoom-out_hover.png" />
   </ItemGroup>
   <ItemGroup>
-	<PackageReference Include="AvalonEdit" Version="4.3.1.9430" />
-	<PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
-    <Reference Include="Microsoft.Practices.Prism">
-      <HintPath>..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
+	<PackageReference Include="FontAwesome5" Version="2.1.11" />
+	<PackageReference Include="AvalonEdit" Version="6.3.0.90" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
     <Reference Include="PresentationCore">
-      <Private>False</Private>
+        <Private>False</Private>
     </Reference>
     <Reference Include="PresentationFramework">
-      <Private>False</Private>
+        <Private>False</Private>
     </Reference>
     <Reference Include="System.Xaml" />
     <Reference Include="WindowsBase" />
+    <Reference Include="Microsoft.Practices.Prism">
+        <HintPath>..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
+        <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DynamoCoreWpf\DynamoCoreWpf.csproj">

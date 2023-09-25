@@ -1,1 +1,0 @@
-These assemblies are built from https://git.autodesk.com/Dynamo/pythonnet targeting netstandard2.0

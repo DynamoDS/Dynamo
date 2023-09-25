@@ -1165,7 +1165,7 @@ namespace Dynamo.Models
                 this.Outputs = outputs;
             }
 
-            internal static CreateProxyNodeCommand DeserializeCore(XmlElement element)
+            internal static new CreateProxyNodeCommand DeserializeCore(XmlElement element)
             {
                 var baseCommand = CreateNodeCommand.DeserializeCore(element);
                 var helper = new XmlElementHelper(element);
@@ -1987,7 +1987,7 @@ namespace Dynamo.Models
             /// <summary>
             /// A collection of <see cref="Guid"/> which identify the model objects to update.
             /// </summary>
-            public IEnumerable<Guid> ModelGuids { get { return modelGuids; } }
+            public new IEnumerable<Guid> ModelGuids { get { return modelGuids; } }
 
             /// <summary>
             /// The name of the property to update.

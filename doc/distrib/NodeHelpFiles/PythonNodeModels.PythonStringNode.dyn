@@ -328,7 +328,7 @@
       ],
       "Replication": "Disabled",
       "Description": "Allows you to select a file on the system and returns its file path",
-      "HintPath": "C:\\Users\\roberto.tellez\\Downloads\\PythonScript.txt",
+      "HintPath": "PythonScript.txt",
       "InputValue": ".\\PythonScript.txt"
     },
     {

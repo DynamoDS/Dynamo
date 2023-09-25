@@ -47,7 +47,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
         /// <summary>
         ///     Initializes a new instance of the <see cref="DSFunction"/> class.
         /// </summary>
-        /// <param name="description">Function descritor.</param>
+        /// <param name="functionDescription">Function descritor.</param>
         public DSFunction(FunctionDescriptor functionDescription) 
             : base(new ZeroTouchNodeController<FunctionDescriptor>(functionDescription)) 
         {

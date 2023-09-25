@@ -31,7 +31,7 @@ namespace Dynamo.Tests.Configuration
 
         [Test]
         [Category("UnitTests")]
-        public void TestGetPythonTemplateFilePath ()
+        public void TestGetPythonTemplateFilePath()
         {
             string settingDirectory = Path.Combine(TestDirectory, "settings");
             string settingsFilePath = Path.Combine(settingDirectory, "DynamoSettings-PythonTemplate-initial.xml");
@@ -189,7 +189,7 @@ namespace Dynamo.Tests.Configuration
 
             var token = settings.CustomPackageFolders[1];
 
-            Assert.AreEqual(DynamoModel.BuiltInPackagesToken,token);
+            Assert.AreEqual(DynamoModel.BuiltInPackagesToken, token);
         }
 
         [Test]
@@ -375,7 +375,7 @@ namespace Dynamo.Tests.Configuration
         }
 
         [Test]
-        [Category("UnitTests"), Category("FailureNET6")]
+        [Category("UnitTests")]
         public void TestImportCopySettings()
         {
             string settingDirectory = Path.Combine(TestDirectory, "settings");

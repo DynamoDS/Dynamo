@@ -29,6 +29,8 @@ namespace Dynamo.Tests
 
             assemblyHelper = new AssemblyHelper(moduleRootFolder, resolutionPaths);
             AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssembly;
+
+            DSOffice.ExcelInterop.ShowOnStartup = false;
         }
 
 #if NETFRAMEWORK

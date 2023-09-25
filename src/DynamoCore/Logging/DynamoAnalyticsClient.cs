@@ -95,7 +95,7 @@ namespace Dynamo.Logging
         public virtual IAnalyticsSession Session { get; private set; }
 
         /// <summary>
-        /// Return if Analytics Client is allowed to send any analytics information (Google, ADP etc.)
+        /// Return if Analytics Client is allowed to send any analytics information
         /// </summary>
         public bool ReportingAnalytics
         {
@@ -103,20 +103,6 @@ namespace Dynamo.Logging
             {
                 return !Analytics.DisableAnalytics &&
                     Service.IsInitialized;
-            }
-        }
-
-        /// <summary>
-        /// Return if Google Analytics Client is allowed to send analytics info
-        /// </summary>
-        private bool ReportingGoogleAnalytics
-        {
-            get
-            {
-                return preferences != null
-                    && Service.IsInitialized
-                    && !Analytics.DisableAnalytics
-                    && preferences.IsAnalyticsReportingApproved;
             }
         }
 
@@ -165,20 +151,6 @@ namespace Dynamo.Logging
             product = new ProductInfo() { Id = "DYN", Name = hostName, VersionString = appversion, AppVersion = appversion, BuildId = buildId, ReleaseId = releaseId };
         }
 
-        // TODO: Google analytics can be made available on dotnet6-windows (windows only)
-        private void RegisterGATracker(Service service)
-        {
-#if NET48
-            //Some clients such as Revit may allow start/close Dynamo multiple times
-            //in the same session so register only if the factory is not registered.
-            if (service.GetTrackerFactory(Autodesk.Analytics.Google.GATrackerFactory.Name) == null)
-            {
-                service.Register(new Autodesk.Analytics.Google.GATrackerFactory(ANALYTICS_PROPERTY));
-                service.AddTrackerFactoryFilter(Autodesk.Analytics.Google.GATrackerFactory.Name, () => ReportingGoogleAnalytics);
-            }
-#endif
-        }
-
         private void RegisterADPTracker(Service service)
         {
             //Some clients such as Revit may allow start/close Dynamo multiple times
@@ -203,13 +175,6 @@ namespace Dynamo.Logging
             {
                 //Register trackers
                 var service = Service.Instance;
-
-                // Use separate functions to avoid loading the tracker dlls if they are not opted in (as an extra safety measure).
-                // ADP will be loaded because opt-in/opt-out is handled/serialized exclusively by the ADP module.
-
-                // Register Google Tracker only if the user is opted in.
-                if (preferences.IsAnalyticsReportingApproved)
-                    RegisterGATracker(service);
 
                 // Always register ADP Tracker.
                 // ADP manages opt in status internally.
