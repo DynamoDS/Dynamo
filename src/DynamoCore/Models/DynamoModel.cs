@@ -678,7 +678,7 @@ namespace Dynamo.Models
 
             OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenInitPreferencesSettings, 30));
 
-            PreferenceSettings = CreatePreferences(config);
+            PreferenceSettings = (PreferenceSettings)CreateOrLoadPreferences(config.Preferences);
             if (PreferenceSettings != null)
             {
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
@@ -1040,29 +1040,6 @@ namespace Dynamo.Models
                     PathResolver = config.PathResolver
                 });
             }
-        }
-
-        /// <summary>
-        /// It returns a PreferenceSettings instance based on the mode in order to reuse it's Singleton instance or create a new one
-        /// </summary>
-        /// <param name="config"></param>
-        /// <returns></returns>
-        internal PreferenceSettings CreatePreferences(IStartConfiguration config)
-        {
-            PreferenceSettings preferences = null;
-            if (!config.StartInTestMode)
-            {
-                if (config.Preferences is PreferenceSettings settings)
-                {
-                    preferences = settings;
-                }
-            }
-            else
-            {
-                preferences = (PreferenceSettings)CreateOrLoadPreferences(config.Preferences);
-            }
-
-            return preferences;
         }
 
         /// <summary>
