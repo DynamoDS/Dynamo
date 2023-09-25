@@ -20,6 +20,71 @@
             <controls:PrettyDateConverter x:Key="PrettyDateConverter" />
             <controls:DependencyListToStringConverter x:Key="DependencyListToStringConverter" />
             <controls:ListHasMoreThanNItemsToVisibilityConverter x:Key="ListHasMoreThanNItemsToVisibilityConverter" />
+            <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
+
+
+            <ContextMenu x:Key="installContextMenu"
+                         Style="{StaticResource ContextMenuStyle}">
+                <MenuItem Header="{x:Static p:Resources.PackageSearchViewInstallLatestVersionTo}"
+                          Command="{Binding DownloadLatestToCustomPathCommand}"
+                          CommandParameter="{Binding Path=Model.LatestVersion}"
+                          MinHeight="30"
+                          MinWidth="60" />
+            </ContextMenu>
+
+            <Style x:Key="RectangleStyle"
+                   TargetType="Rectangle">
+                <Setter Property="Opacity"
+                        Value="0" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding ElementName=VersionComboBox, Path=IsMouseOver}"
+                                 Value="True">
+                        <Setter Property="Fill"
+                                Value="DimGray" />
+                        <DataTrigger.EnterActions>
+                            <BeginStoryboard>
+                                <Storyboard SpeedRatio="2">
+                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                     To="0.75"
+                                                     Duration="0:0:1" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </DataTrigger.EnterActions>
+                        <DataTrigger.ExitActions>
+                            <BeginStoryboard>
+                                <Storyboard SpeedRatio="2">
+                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                     To="0"
+                                                     Duration="0:0:1" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </DataTrigger.ExitActions>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding ElementName=VersionComboBox, Path=IsDropDownOpen}"
+                                 Value="True">
+                        <Setter Property="Fill"
+                                Value="{StaticResource MidDarkBlueBrush}" />
+                        <DataTrigger.EnterActions>
+                            <BeginStoryboard>
+                                <Storyboard SpeedRatio="2">
+                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                     To="0.75"
+                                                     Duration="0:0:1" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </DataTrigger.EnterActions>
+                        <DataTrigger.ExitActions>
+                            <BeginStoryboard>
+                                <Storyboard SpeedRatio="2">
+                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                     To="0"
+                                                     Duration="0:0:1" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </DataTrigger.ExitActions>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
@@ -82,7 +147,7 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="40px" />
                             <RowDefinition Height="Auto" />
-                            <RowDefinition Height="35px" />
+                            <RowDefinition Height="40px" />
                         </Grid.RowDefinitions>
 
                         <!--  Top Row  -->
@@ -170,6 +235,20 @@
                                                         <Grid x:Name="installPackageGrid">
 
                                                             <DockPanel LastChildFill="False">
+                                                                <!-- The drop-down context menu arrow button -->
+                                                                <Button Name="dropDownInstallButton"
+                                                                        DockPanel.Dock="Right"
+                                                                        Visibility="{Binding CanInstall,
+                                                                                             Converter={StaticResource BoolToVisibilityCollapsedConverter}}"
+                                                                        Click="DropDownInstallButton_OnClick"
+                                                                        BorderThickness="0"
+                                                                        Cursor="Hand"
+                                                                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+                                                                    <Image Source=" /DynamoCoreWpf;component/UI/Images/caret_drop_down.png"
+                                                                           Width="7"
+                                                                           Height="5" />
+                                                                </Button>
+
                                                                 <TextBlock Name="textBlock"
                                                                            Padding="4,4,4,3"
                                                                            VerticalAlignment="Center"
@@ -403,6 +482,7 @@
                                    Margin="15,0,5,15"
                                    VerticalAlignment="Bottom"
                                    LastChildFill="True">
+                            <!-- Right-hand side -->
                             <TextBlock Name="dateLabel"
                                        Margin="5,0"
                                        DockPanel.Dock="Right"
@@ -436,8 +516,8 @@
                                        DockPanel.Dock="Right"
                                        Style="{StaticResource resultLabelStyle}"
                                        Text="{Binding Path=Model.Votes, Converter={StaticResource NegativeIntToZeroConverter}}" />
-                            <Rectangle Width="10"
-                                       Height="10"
+                            <Rectangle Width="12"
+                                       Height="11"
                                        Margin="5,0,0,2"
                                        VerticalAlignment="Center"
                                        DockPanel.Dock="Right">
@@ -445,11 +525,23 @@
                                     <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Favorite.png" />
                                 </Rectangle.Fill>
                             </Rectangle>
-                            <TextBlock Name="versionLabel"
-                                       Margin="5,0"
-                                       DockPanel.Dock="Right"
-                                       Style="{StaticResource resultLabelStyle}"
-                                       Text="{Binding Path=Model.LatestVersion}" />
+
+                            <!-- The version combobox -->
+                            <StackPanel Margin="5,0,5,0"
+                                        DockPanel.Dock="Right"
+                                        Orientation="Vertical"
+                                        MinHeight="120">
+                                <ComboBox x:Name="VersionComboBox"
+                                          HorizontalAlignment="Left"
+                                          ItemsSource="{Binding Path=Model.PackageVersions}"
+                                          SelectedItem="{Binding Path=SelectedVersion}"
+                                          Style="{StaticResource PackageManagerSmallComboBox}">
+                                </ComboBox>
+                                <Rectangle Style="{StaticResource RectangleStyle}"
+                                           Height="5" />
+
+                            </StackPanel>
+
                             <Rectangle Width="10"
                                        Height="10"
                                        Margin="5,0,0,2"
@@ -459,6 +551,8 @@
                                     <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Flag.png" />
                                 </Rectangle.Fill>
                             </Rectangle>
+
+                            <!-- Left-hand side -->
                             <Rectangle Width="10"
                                        Height="10"
                                        Margin="0,0,0,2"

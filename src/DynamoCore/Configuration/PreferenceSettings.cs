@@ -808,14 +808,14 @@ namespace Dynamo.Configuration
         public List<GroupStyleItem> GroupStyleItemsList { get; set; }
 
         /// <summary>
-        /// Limits the size of the tags used by the SearchDictionary
+        /// Limits the size of the tags used by the EntryDictionary
         /// This static property is not serialized and is assigned NodeSearchTagSizeLimit's value
         /// if found at deserialize time.
         /// </summary>
         internal static int nodeSearchTagSizeLimit = 300;
 
         /// <summary>
-        /// Limits the size of the tags used by the SearchDictionary
+        /// Limits the size of the tags used by the EntryDictionary
         /// </summary>
         public int NodeSearchTagSizeLimit
         {

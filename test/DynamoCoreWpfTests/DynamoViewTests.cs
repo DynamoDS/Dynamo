@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -21,6 +22,7 @@ using Dynamo.Wpf.Controls;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.Views;
 using DynamoCoreWpfTests.Utility;
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using SharpDX.DXGI;
 
@@ -124,6 +126,49 @@ namespace DynamoCoreWpfTests
             // Asert that the warning popup is closed, when the workspace is closed.
             Assert.IsFalse(ViewModel.FileTrustViewModel.ShowWarningPopup);
             DynamoModel.IsTestMode = true;
+        }
+
+        [Test]
+        public void ElementBinding_SaveAs()
+        {
+            var prebindingPathInTestDir = @"core\callsite\trace_test-prebinding.dyn";
+            var prebindingPath = Path.Combine(GetTestDirectory(ExecutingDirectory), prebindingPathInTestDir);
+
+            var pathInTestsDir = @"core\callsite\trace_test.dyn";
+            var filePath = Path.Combine(GetTestDirectory(ExecutingDirectory), pathInTestsDir);
+
+            // Always start with a fresh workspace with no binding data for this test.
+            File.Copy(prebindingPath, filePath);
+            OpenAndRun(pathInTestsDir);
+
+            // Assert that the node doesn't have trace data the first time it's run.
+            var hasTraceData = Model.CurrentWorkspace.Nodes.FirstOrDefault(x =>
+                x.Name == "IncrementerTracedClass.WasCreatedWithTrace");
+            Assert.AreEqual(false, hasTraceData.CachedValue.Data);
+
+            // Saving the workspace after a run serializes trace data to the DYN.
+            ViewModel.SaveCommand.Execute(null);
+
+            DynamoUtilities.PathHelper.isValidJson(filePath, out string fileContents, out Exception ex);
+            var obj = DSCore.Data.ParseJSON(fileContents) as Dictionary<string, object>;
+            Assert.AreEqual(1, (obj["Bindings"] as IEnumerable<object>).Count());
+
+            var saveAsPathInTestDir = @"core\callsite\trace_test2.dyn";
+            var saveAsPath = Path.Combine(GetTestDirectory(ExecutingDirectory), saveAsPathInTestDir);
+
+            // SaveAs current workspace, close workspace.
+            ViewModel.SaveAsCommand.Execute(saveAsPath);
+            ViewModel.CloseHomeWorkspaceCommand.Execute(null);
+
+            Open(saveAsPathInTestDir);
+
+            // Assert saved as file doesn't have binding data after open.
+            DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents, out ex);
+            obj = DSCore.Data.ParseJSON(fileContents) as Dictionary<string, object>;
+            Assert.AreEqual(1, (obj["Bindings"] as IEnumerable<object>).Count());
+
+            File.Delete(filePath);
+            File.Delete(saveAsPath);
         }
 
         [Test]
