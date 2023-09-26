@@ -435,6 +435,7 @@
       <DependentUpon>SurveyPopupWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Input\ParameterEditor.cs" />
+    <Compile Include="Views\PackageManager\Controls\CustomBrowserControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\FilterTagControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\LoadingAnimationStripeControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\NumericUpDownControl.xaml.cs" />
@@ -646,6 +647,10 @@
     <Page Include="Views\PackageManager\Controls\SearchBoxControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PackageManager\Controls\CustomBrowserControl.xaml">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\PackageManager\Controls\FilterTagControl.xaml">
         <SubType>Designer</SubType>
@@ -1724,6 +1729,9 @@
     <Resource Include="UI\Images\not-authenticated.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="Views\PackageManager\Controls\CustomBrowserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
     <None Update="Views\PackageManager\Controls\FilterTagControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>

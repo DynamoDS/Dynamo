@@ -511,7 +511,7 @@
             BorderThickness="0"
             BorderBrush="#7E7E7E">
 
-        <Grid Name="mainGrid">
+        <Grid Name="mainGrid" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="66px" />
@@ -832,71 +832,79 @@
                         <TabItem Header="Source Path"
                                  Style="{StaticResource TabItemStyle}"
                                  IsSelected="True">
-                            <DataGrid
-                                      Margin="0"
-                                      VerticalAlignment="Stretch"
-                                      CanUserReorderColumns="False"
-                                      ItemsSource="{Binding PackageContents, UpdateSourceTrigger=PropertyChanged}"
-                                      Style="{StaticResource DataGrid}">
-                                <DataGrid.Columns>
-                                    <DataGridCheckBoxColumn MinWidth="85"
-                                                            MaxWidth="130"
-                                                            Binding="{Binding Path=IsNodeLibrary, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                            ElementStyle="{StaticResource CheckBoxStyle}"
-                                                            Header="{x:Static p:Resources.PublishPackageViewNodeLibrary}"
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="1" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <DataGrid
+                                          Margin="0"
+                                          VerticalAlignment="Stretch"
+                                          CanUserReorderColumns="False"
+                                          ItemsSource="{Binding PackageContents, UpdateSourceTrigger=PropertyChanged}"
+                                          Style="{StaticResource DataGrid}">
+                                    <DataGrid.Columns>
+                                        <DataGridCheckBoxColumn MinWidth="85"
+                                                                MaxWidth="130"
+                                                                Binding="{Binding Path=IsNodeLibrary, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                ElementStyle="{StaticResource CheckBoxStyle}"
+                                                                Header="{x:Static p:Resources.PublishPackageViewNodeLibrary}"
+                                                                HeaderStyle="{StaticResource DataGridColumnHeaderText}"
+                                                                IsReadOnly="False"
+                                                                IsThreeState="False" />
+                                        <DataGridTextColumn MinWidth="50"
+                                                            Binding="{Binding Path=DisplayName, UpdateSourceTrigger=PropertyChanged}"
+                                                            Header="{x:Static p:Resources.PublishPackageViewPackageName}"
                                                             HeaderStyle="{StaticResource DataGridColumnHeaderText}"
-                                                            IsReadOnly="False"
-                                                            IsThreeState="False" />
-                                    <DataGridTextColumn MinWidth="50"
-                                                        Binding="{Binding Path=DisplayName, UpdateSourceTrigger=PropertyChanged}"
-                                                        Header="{x:Static p:Resources.PublishPackageViewPackageName}"
-                                                        HeaderStyle="{StaticResource DataGridColumnHeaderText}"
-                                                        IsReadOnly="True" />
-                                    <DataGridTemplateColumn MinWidth="90"
-                                                            Width="*"
-                                                            Header="{x:Static p:Resources.PublishPackageViewFilePath}"
-                                                            HeaderStyle="{StaticResource DataGridColumnHeaderLast}"
-                                                            IsReadOnly="True">
-                                        <DataGridTemplateColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <DockPanel>
-                                                    <Button Name="removeItemButton"
-                                                            Width="16"
-                                                            Height="16"
-                                                            Margin="5,-1,0,0"
-                                                            Command="{Binding ElementName=packageContentsGrid, Path=DataContext.RemoveItemCommand}"
-                                                            CommandParameter="{Binding}"
-                                                            Cursor="Hand"
-                                                            DockPanel.Dock="Right">
-                                                        <Button.ToolTip>
-                                                            <ToolTip Content="{x:Static p:Resources.PublishPackageViewRemoveItemToolTip}"
-                                                                     Style="{StaticResource GenericToolTipLight}" />
-                                                        </Button.ToolTip>
-                                                        <Button.Template>
-                                                            <ControlTemplate>
-                                                                <Rectangle Width="16"
-                                                                           Height="16">
-                                                                    <Rectangle.Fill>
-                                                                        <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/remove - default.png" />
-                                                                    </Rectangle.Fill>
-                                                                </Rectangle>
-                                                            </ControlTemplate>
-                                                        </Button.Template>
-                                                    </Button>
-                                                    <TextBlock Margin="0"
-                                                               Text="{Binding Path=FilePath, UpdateSourceTrigger=PropertyChanged}"
-                                                               TextTrimming="CharacterEllipsis">
-                                                        <TextBlock.ToolTip>
-                                                            <ToolTip Content="{Binding FilePath}"
-                                                                     Style="{StaticResource GenericToolTipLight}" />
-                                                        </TextBlock.ToolTip>
-                                                    </TextBlock>
-                                                </DockPanel>
-                                            </DataTemplate>
-                                        </DataGridTemplateColumn.CellTemplate>
-                                    </DataGridTemplateColumn>
-                                </DataGrid.Columns>
-                            </DataGrid>
+                                                            IsReadOnly="True" />
+                                        <DataGridTemplateColumn MinWidth="90"
+                                                                Width="*"
+                                                                Header="{x:Static p:Resources.PublishPackageViewFilePath}"
+                                                                HeaderStyle="{StaticResource DataGridColumnHeaderLast}"
+                                                                IsReadOnly="True">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <DockPanel>
+                                                        <Button Name="removeItemButton"
+                                                                Width="16"
+                                                                Height="16"
+                                                                Margin="5,-1,0,0"
+                                                                Command="{Binding ElementName=packageContentsGrid, Path=DataContext.RemoveItemCommand}"
+                                                                CommandParameter="{Binding}"
+                                                                Cursor="Hand"
+                                                                DockPanel.Dock="Right">
+                                                            <Button.ToolTip>
+                                                                <ToolTip Content="{x:Static p:Resources.PublishPackageViewRemoveItemToolTip}"
+                                                                         Style="{StaticResource GenericToolTipLight}" />
+                                                            </Button.ToolTip>
+                                                            <Button.Template>
+                                                                <ControlTemplate>
+                                                                    <Rectangle Width="16"
+                                                                               Height="16">
+                                                                        <Rectangle.Fill>
+                                                                            <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/remove - default.png" />
+                                                                        </Rectangle.Fill>
+                                                                    </Rectangle>
+                                                                </ControlTemplate>
+                                                            </Button.Template>
+                                                        </Button>
+                                                        <TextBlock Margin="0"
+                                                                   Text="{Binding Path=FilePath, UpdateSourceTrigger=PropertyChanged}"
+                                                                   TextTrimming="CharacterEllipsis">
+                                                            <TextBlock.ToolTip>
+                                                                <ToolTip Content="{Binding FilePath}"
+                                                                         Style="{StaticResource GenericToolTipLight}" />
+                                                            </TextBlock.ToolTip>
+                                                        </TextBlock>
+                                                    </DockPanel>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                                <local:CustomBrowserControl Grid.Row="1"
+                                                            Root="{Binding PackageContents, UpdateSourceTrigger=PropertyChanged}" />
+                            </Grid>
                         </TabItem>
                         <TabItem Header="Target Path"
                                  Style="{StaticResource TabItemStyle}">

@@ -787,7 +787,112 @@ namespace Dynamo.PackageManager
                 .ToList()
                 .ToObservableCollection();
 
-            foreach (var item in itemsToAdd) PackageContents.Add(item);
+            var items = new Dictionary<string, PackageItemRootViewModel>();
+
+            foreach (var item in itemsToAdd)
+            {
+                if (!items.ContainsKey(item.DirectoryName))
+                {
+                    // Custom nodes don't have folders?
+                    if (item.DependencyType.Equals(DependencyType.CustomNode)) continue;
+                    if (items.Values.Any(x => IsDuplicateFile(x, item))) continue;
+                    var root = new PackageItemRootViewModel(item.DirectoryName);
+
+                    root.ChildItems.Add(item);
+                    items[item.DirectoryName] = root;
+                }
+                else
+                {
+                    items[item.DirectoryName].ChildItems.Add(item);
+                }
+            }
+
+            var updatedItems = BindParentToChild(items);   
+
+            updatedItems.AddRange(itemsToAdd.Where(pa => pa.DependencyType.Equals(DependencyType.CustomNode)));
+
+            foreach (var item in updatedItems) PackageContents.Add(item);
+        }
+
+        private bool IsDuplicateFile(PackageItemRootViewModel item1, PackageItemRootViewModel item2)
+        {
+            // We know that item2 is a file
+            switch (item1.DependencyType)
+            {
+                case DependencyType.Folder:
+                    return item1.ChildItems.Any(x => IsDuplicateFile(x, item2));
+                case DependencyType.File:
+                case DependencyType.Assembly:
+                    return item1.FilePath.Equals(item2.FilePath);
+                case DependencyType.CustomNode:
+                default:
+                    return false;
+            }                    
+        }
+
+        private List<PackageItemRootViewModel> BindParentToChild(Dictionary<string, PackageItemRootViewModel> items)
+        {
+            var updatedItems = new List<PackageItemRootViewModel>();
+
+            foreach (var parent in items)
+            {
+                foreach(var child in items)
+                {
+                    if (parent.Value.Equals(child.Value)) continue;
+                    if (IsSubPathOfDeep(parent.Value, child.Value))
+                    {
+                        if (child.Value.isChild) continue; // if this was picked up already, don't add it again
+                        parent.Value.AddChild(child.Value);
+                        child.Value.isChild = true;
+                    }
+                    //if (IsSubPathOf(parent.Value.DirectoryName, child.Value.DirectoryName))
+                    //{
+                    //    child.Value.isChild = true;
+                    //    parent.Value.ChildItems.Add(child.Value);
+                    //}
+                }
+            }
+
+            // Only add the folder items, they contain the files
+            updatedItems = items.Values.Where(x => !x.isChild).ToList();
+            return updatedItems;
+        }
+
+        private bool IsSubPathOf(string path1, string path2)
+        {
+            var di1 = new DirectoryInfo(path1);
+            var di2 = new DirectoryInfo(path2);
+
+            if (di2.Parent == null) return false;
+            if (di2.Parent.FullName == di1.FullName)
+            {
+                return true;
+            }
+            return false;            
+        }
+
+        /// <summary>
+        /// Test if path2 is subpath of path1
+        /// If it is, make sure all the intermediate file paths are created as separte PackageItemRootViewModel
+        /// </summary>
+        /// <param name="path1"></param>
+        /// <param name="path2"></param>
+        /// <returns></returns>
+        private bool IsSubPathOfDeep(PackageItemRootViewModel path1, PackageItemRootViewModel path2)
+        {
+            var di1 = new DirectoryInfo(path1.DirectoryName);
+            var di2 = new DirectoryInfo(path2.DirectoryName);
+
+            while (di2.Parent != null)
+            {
+                if (di2.Parent.FullName == di1.FullName)
+                {
+                    return true;
+                }
+                else di2 = di2.Parent;
+            }
+
+            return false;
         }
 
         /// <summary>
