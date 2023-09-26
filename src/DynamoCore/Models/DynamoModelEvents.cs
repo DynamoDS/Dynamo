@@ -371,11 +371,6 @@ namespace Dynamo.Models
                 Action showFailureMessage = () => DisplayEngineFailureMessage(e.Error);
                 OnRequestDispatcherBeginInvoke(showFailureMessage);
             }
-            else
-            {
-                // TODO: DYN-6050 This is not the final place to check this property, this is only for Testing                
-                this.Logger.Log("The Workspace is valid for FDX : " + ((HomeWorkspaceModel)CurrentWorkspace).IsValidForFDX);
-            }
 
             if (EvaluationCompleted != null)
                 EvaluationCompleted(sender, e);

@@ -1985,7 +1985,7 @@ namespace Dynamo.Graph.Workspaces
         {
             get
             {
-                return !HasErrors && !HasWarningsWithNoGeometry; //Pending dealing with the Gate Nodes
+                return !HasErrors && !HasWarningsWithNoGeometry;
             }
         }
 

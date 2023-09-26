@@ -2097,9 +2097,8 @@ namespace Dynamo.ViewModels
                 Model.Logger.Log(String.Format(Properties.Resources.SavingInProgress, path));
                 CurrentSpaceViewModel.Save(path, isBackup, Model.EngineController, saveContext);
                 if (!isBackup) AddToRecentFiles(path);
-                // TODO: DYN-6050 This is not the final place to check this property, this is only for Testing
                 if (currentWorkspaceViewModel?.IsHomeSpace ?? true)
-                    Model.Logger.Log("The Workspace is valid for FDX : " + Model.CurrentWorkspace.IsValidForFDX);
+                    Model.Logger.Log("The Workspace is valid for FDX : " + (HomeSpace.HasRunWithoutCrash && Model.CurrentWorkspace.IsValidForFDX).ToString());
             }
             catch (Exception ex)
             {
