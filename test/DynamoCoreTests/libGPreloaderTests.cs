@@ -429,26 +429,6 @@ namespace Dynamo.Tests
             libG22401path.Delete(true);
         }
 
-        [Test]
-        public void GetGeometryFactoryPath_CalledFromOldClient_ShouldGetNewVersion()
-        {
-            var rootFolder = Path.Combine(Path.GetTempPath(), "LibGTest");
-
-            //setup some mock libG folders with protoInterface.dll nested.
-            var libG22440path = System.IO.Directory.CreateDirectory(Path.Combine(rootFolder, "LibG_224_4_0"));
-            File.WriteAllText(Path.Combine(libG22440path.FullName, DynamoShapeManager.Utilities.GeometryFactoryAssembly), "someText");
-            var libG22401path = System.IO.Directory.CreateDirectory(Path.Combine(rootFolder, "LibG_224_0_1"));
-            File.WriteAllText(Path.Combine(libG22401path.FullName, DynamoShapeManager.Utilities.GeometryFactoryAssembly), "someText");
-
-            //look for old version of libG 224 from old client
-            var foundGeoPath = DynamoShapeManager.Utilities.GetGeometryFactoryPath(rootFolder, LibraryVersion.Version224);
-
-            var expectedDirectoryInfo = new DirectoryInfo(Path.Combine(libG22401path.FullName, DynamoShapeManager.Utilities.GeometryFactoryAssembly));
-            Assert.AreEqual(expectedDirectoryInfo, new DirectoryInfo(foundGeoPath));
-            //cleanup
-            libG22440path.Delete(true);
-            libG22401path.Delete(true);
-        }
 
         [Test]
         public void GetGeometryFactoryPath2_CalledFromNewClient_ShouldGetCorrectVersion()
@@ -471,27 +451,6 @@ namespace Dynamo.Tests
             libG22401path.Delete(true);
         }
 
-        [Test]
-        public void LoadASMFromPathShouldWorkWithOldPath()
-        {
-            var oldPath = Path.Combine("C", "Dynamo", "Extern", "FakePath", "LibG_223");
-            var newPath = DynamoShapeManager.Utilities.RemapOldLibGPathToNewVersionPath(oldPath);
-            Assert.AreEqual(new DirectoryInfo(Path.Combine("C", "Dynamo", "Extern", "FakePath", "LibG_223_0_1")), new DirectoryInfo(newPath));
-        }
-        [Test]
-        public void RemapPathShouldReturnEmptyStringForNewPath()
-        {
-            var oldPath = Path.Combine("C", "Dynamo", "Extern", "FakePath", "LibG_223_0_1");
-            var newPath = DynamoShapeManager.Utilities.RemapOldLibGPathToNewVersionPath(oldPath);
-            Assert.AreEqual(String.Empty, newPath);
-        }
-        [Test]
-        public void RemapPathShouldReturnEmptyStringForNullPath()
-        {
-            string oldPath = null;
-            var newPath = DynamoShapeManager.Utilities.RemapOldLibGPathToNewVersionPath(oldPath);
-            Assert.AreEqual(string.Empty, newPath);
-        }
         [Test]
         public void PreloaderThatDoesNotFindASMDoesNotThrow()
         {

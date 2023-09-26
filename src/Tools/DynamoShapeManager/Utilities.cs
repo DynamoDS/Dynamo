@@ -47,51 +47,49 @@ namespace DynamoShapeManager
             //
 
         #region ASM DLLs per version (to be kept in sync with LibG)
-        private static readonly ISet<string> ASM228DllNames = new HashSet<string>()
+        private static readonly ISet<string> ASM230DllNames = new HashSet<string>()
         {
-            "TBB.DLL",
-            "TBBMALLOC.DLL",
-            "TSPLINES10A.DLL",
-            "ASMAHL228A.DLL",
-            "ASMBASE228A.DLL",
-            "ASMBLND228A.DLL",
-            "ASMBOOL228A.DLL",
-            "ASMCOVR228A.DLL",
-            "ASMCSTR228A.DLL",
-            "ASMCT228A.DLL",
-            "ASMDATAX228A.DLL",
-            "ASMDEFM228A.DLL",
-            "ASMEULR228A.DLL",
-            "ASMFCT228A.DLL",
-            "ASMFREC228A.DLL",
-            "ASMGA228A.DLL",
-            "ASMHEAL228A.DLL",
-            "ASMIMPORT228A.DLL",
-            "ASMINTR228A.DLL",
-            "ASMKERN228A.DLL",
-            "ASMLAW228A.DLL",
-            "ASMLOP228A.DLL",
-            "ASMLOPT228A.DLL",
-            "ASMNPCH228A.DLL",
-            "ASMOFST228A.DLL",
-            "ASMOPER228A.DLL",
-            "ASMPID228A.DLL",
-            "ASMRBASE228A.DLL",
-            "ASMRBI228A.DLL",
-            "ASMREM228A.DLL",
-            "ASMSASM228A.DLL",
-            "ASMSBAP228A.DLL",
-            "ASMSBOOL228A.DLL",
-            "ASMSHL228A.DLL",
-            "ASMSKIN228A.DLL",
-            "ASMSWP228A.DLL",
-            "ASMTOPT228A.DLL",
-            "ASMTWK228A.DLL",
-            "ASMUFLD228A.DLL",
-            "ASMWELD228A.DLL",
-            "ADPSDKWRAPPER.DLL",
-            "ADPSDKUI.DLL",
-            "ADPSDKCORE.DLL"
+            "tbb12.dll",
+            "tbbmalloc.dll",
+            "mmsdk.dll",
+            "tsplines12.dll",
+            "ASMAHL230A.dll",
+            "ASMBASE230A.dll",
+            "ASMBLND230A.dll",
+            "ASMBOOL230A.dll",
+            "ASMCOVR230A.dll",
+            "ASMCSTR230A.dll",
+            "ASMCT230A.dll",
+            "ASMDATAX230A.dll",
+            "ASMDEFM230A.dll",
+            "ASMEULR230A.dll",
+            "ASMFCT230A.dll",
+            "ASMFREC230A.dll",
+            "ASMGA230A.dll",
+            "ASMHEAL230A.dll",
+            "ASMIMPORT230A.dll",
+            "ASMINTR230A.dll",
+            "ASMKERN230A.dll",
+            "ASMLAW230A.dll",
+            "ASMLOP230A.dll",
+            "ASMLOPT230A.dll",
+            "ASMNPCH230A.dll",
+            "ASMOFST230A.dll",
+            "ASMOPER230A.dll",
+            "ASMPID230A.dll",
+            "ASMRBASE230A.dll",
+            "ASMRBI230A.dll",
+            "ASMREM230A.dll",
+            "ASMSASM230A.dll",
+            "ASMSBAP230A.dll",
+            "ASMSBOOL230A.dll",
+            "ASMSHL230A.dll",
+            "ASMSKIN230A.dll",
+            "ASMSWP230A.dll",
+            "ASMTOPT230A.dll",
+            "ASMTWK230A.dll",
+            "ASMUFLD230A.dll",
+            "ASMWELD230A.dll"
         };
         private static readonly ISet<string> ASM229DllNames = new HashSet<string>()
         {
@@ -417,13 +415,7 @@ namespace DynamoShapeManager
 
             // if we can't find the preloader location directly as passed
             // try converting it to a precise version location.
-            if (!Directory.Exists(preloaderLocation))
-            {
-                // Path/To/Extern/LibG_223 ->  Path/To/Extern/LibG_223_0_1
-                preloaderLocationToLoad = RemapOldLibGPathToNewVersionPath(preloaderLocation);
-            }
-            // the directory exists, just load it.
-            else
+            if (Directory.Exists(preloaderLocation))
             {
                 preloaderLocationToLoad = preloaderLocation;
             }
@@ -474,57 +466,6 @@ namespace DynamoShapeManager
                 throw new Exception(message);
             }
             Debug.WriteLine("Successfully loaded ASM binaries");
-        }
-
-        /// <summary>
-        /// Attempts to remap a an old LibG path to a new one using a version map.
-        /// We assume that the leaf directory is of the form LibG_[Version].
-        /// </summary>
-        /// <param name="preloaderLocation"></param>
-        /// <returns> new version LibG path or Empty string if the path could not be remapped.</returns>
-        internal static string RemapOldLibGPathToNewVersionPath(string preloaderLocation)
-        {
-            if (String.IsNullOrEmpty(preloaderLocation))
-            {
-                return string.Empty;
-            }
-            var folderName = Path.GetFileName(preloaderLocation);
-            var splitName = folderName.Split('_');
-            if (splitName.Count() == 2)
-            {
-                LibraryVersion outVersion;
-                if (Enum.TryParse<LibraryVersion>(string.Format("Version{0}", splitName[1]), out outVersion))
-                {
-                    var version = DynamoShapeManager.Preloader.MapLibGVersionEnumToFullVersion(outVersion);
-                    return Path.Combine(
-                        Path.GetDirectoryName(preloaderLocation),
-                        string.Format("libg_{0}_{1}_{2}", version.Major, version.Minor, version.Build)
-                        );
-                }
-            }
-
-            return "";
-        }
-
-        /// <summary>
-        /// This method will return the path to the GeometryFactory assembly location 
-        /// for a requested version of the geometry library.
-        /// This method is tolerant to the requested version in that it will attempt to 
-        /// locate an exact or lower version of the GeometryFactory assembly.
-        /// </summary>
-        /// <param name="rootFolder">Full path of the directory that contains 
-        /// LibG_xxx_y_z folder, where 'xxx y z' represents the library version of asm. In a 
-        /// typical setup this would be the same directory that contains Dynamo 
-        /// core modules. This must represent a valid directory - it cannot be null.</param>
-        /// <param name="version">Version number of the targeted geometry library.
-        /// If the resulting assembly does not exist, this method will look for a lower version match.
-        /// This parameter cannot be null. </param>
-        /// <returns>The full path to GeometryFactoryAssembly assembly.</returns>
-        /// 
-        [Obsolete("Please use GetGeometryFactoryPath2(string rootFolder, Version version).")]
-        public static string GetGeometryFactoryPath(string rootFolder, LibraryVersion version)
-        {
-            return GetGeometryFactoryPath2(rootFolder, Preloader.MapLibGVersionEnumToFullVersion(version));
         }
 
         /// <summary>
@@ -627,10 +568,10 @@ namespace DynamoShapeManager
             var fileNames = filePaths.Select(path => Path.GetFileName(path).ToUpper());
             switch (majorVersion)
             {
-                case 228:
-                    return !ASM228DllNames.Except(fileNames).Any();
                 case 229:
                     return !ASM229DllNames.Except(fileNames).Any();
+                case 230:
+                    return !ASM230DllNames.Except(fileNames).Any();
                 default:
                     // We don't know this version so it's safest to assume it's not complete.
                     return false;
