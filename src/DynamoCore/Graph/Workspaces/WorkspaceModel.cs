@@ -1957,7 +1957,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Boolean indicates if the workspace run with warnings with no Geometry
         /// </summary>
-        internal bool HasWarningsWithNoGeometry
+        internal bool HasNoneGeometryRelatedWarnings
         {
             get { return Nodes.Any(n => (n.State == ElementState.Warning || n.State == ElementState.PersistentWarning) && !n.Category.StartsWith("Geometry.")); }
         }
@@ -1985,7 +1985,7 @@ namespace Dynamo.Graph.Workspaces
         {
             get
             {
-                return !HasErrors && !HasWarningsWithNoGeometry;
+                return !HasErrors && !HasNoneGeometryRelatedWarnings;
             }
         }
 
