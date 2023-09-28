@@ -226,6 +226,11 @@ namespace Dynamo.Models
         internal bool IsServiceMode { get; set; }
 
         /// <summary>
+        /// Boolean to indicate if lucene node indexing is skipped or not during startup.
+        /// </summary>
+        internal bool SkipLuceneIndexing { get; set; }
+
+        /// <summary>
         /// UpdateManager to handle automatic upgrade to higher version.
         /// </summary>
         public IUpdateManager UpdateManager { get; private set; }
@@ -591,6 +596,11 @@ namespace Dynamo.Models
             /// CLIMode indicates if we are running in DynamoCLI or DynamoWPFCLI mode.
             /// </summary>
             public bool CLIMode { get; set; }
+
+            /// <summary>
+            /// Boolean to indicate if lucene node indexing should be skipped or not during startup.
+            /// </summary>
+            public bool SkipLuceneIndexing { get; set; }
         }
 
         /// <summary>
@@ -635,6 +645,7 @@ namespace Dynamo.Models
                 DefaultPythonEngine = defaultStartConfig.DefaultPythonEngine;
                 CLIMode = defaultStartConfig.CLIMode;
                 IsServiceMode = defaultStartConfig.IsServiceMode;
+                SkipLuceneIndexing = defaultStartConfig.SkipLuceneIndexing;
             }
 
             if (config is IStartConfigCrashReporter cerConfig)
@@ -3299,7 +3310,7 @@ namespace Dynamo.Models
         /// <param name="doc">Lucene document in which the node info will be indexed</param>
         internal void AddNodeTypeToSearchIndex(NodeSearchElement node, Document doc)
         {
-            if (LuceneUtility.addedFields == null) return;
+            if (SkipLuceneIndexing || LuceneUtility.addedFields == null) return;
 
             LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName), node.FullCategoryName);
             LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), node.Name);
