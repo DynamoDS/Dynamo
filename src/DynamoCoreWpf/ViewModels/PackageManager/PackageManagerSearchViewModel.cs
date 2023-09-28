@@ -20,6 +20,7 @@ using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Utilities;
 using Greg.Responses;
 using Lucene.Net.Documents;
+using Lucene.Net.Index;
 using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
 #if NETFRAMEWORK
@@ -1033,7 +1034,14 @@ namespace Dynamo.PackageManager
 
                     if (!DynamoModel.IsTestMode)
                     {
-                        LuceneUtility.dirReader = LuceneUtility.writer?.GetReader(applyAllDeletes: true);
+                        if (LuceneUtility.writer != null)
+                        {
+                            LuceneUtility.dirReader = LuceneUtility.writer.GetReader(applyAllDeletes: true);
+                        }
+                        else
+                        {
+                            LuceneUtility.dirReader = DirectoryReader.Open(LuceneUtility.indexDir);
+                        }
                         LuceneUtility.Searcher = new IndexSearcher(LuceneUtility.dirReader);
 
                         LuceneUtility.CommitWriterChanges();

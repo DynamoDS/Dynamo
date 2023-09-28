@@ -125,11 +125,14 @@ namespace Dynamo.Utilities
             // Check if Lucene index file exists, if not create it
             if (!DirectoryReader.IndexExists(indexDir))
             {
-                CreateLuceneIndex();    
+                CreateLuceneIndexWriter();    
             }
         }
 
-        internal void CreateLuceneIndex()
+        /// <summary>
+        /// Create index writer for followup indexing
+        /// </summary>
+        internal void CreateLuceneIndexWriter()
         {
             // Initialize Lucene index writer, unless in test mode or we are using RAMDirectory for indexing info. 
             if (!DynamoModel.IsTestMode || startConfig.StorageType == LuceneStorage.RAM)
@@ -142,7 +145,6 @@ namespace Dynamo.Utilities
                 try
                 {
                     writer = new IndexWriter(indexDir, indexConfig);
-                    writer.Commit();
                 }
                 catch (LockObtainFailedException ex)
                 {
