@@ -45,7 +45,7 @@ namespace Dynamo.ViewModels
         private const string nodeAutocompleteMLEndpoint = "MLNodeAutocomplete";
 
         // Lucene search utility to perform indexing operations just for NodeAutocomplete.
-        private static LuceneSearchUtility LuceneUtility
+        private LuceneSearchUtility LuceneUtility
         {
             get
             {

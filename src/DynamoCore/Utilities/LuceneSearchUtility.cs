@@ -466,10 +466,13 @@ namespace Dynamo.Utilities
         }
     }
 
-    public class LuceneStartConfig
+    /// <summary>
+    /// Start up config for Lucene indexing
+    /// </summary>
+    internal class LuceneStartConfig
     {
         /// <summary>
-        /// Lucene Index Directory name
+        /// Lucene Index Directory name, e.g. Nodes
         /// </summary>
         internal string Directory { get; set; }
 
