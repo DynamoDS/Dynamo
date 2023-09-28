@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Dynamo.GraphNodeManager.GraphNodeManagerView"
+<UserControl x:Class="Dynamo.GraphNodeManager.GraphNodeManagerView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -23,6 +23,7 @@
             </ResourceDictionary.MergedDictionaries>
             <dynconverters:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <dynconverters:InverseBoolToVisibilityConverter  x:Key="InverseBooleanToVisibilityConverter"></dynconverters:InverseBoolToVisibilityConverter>
+            <dynconverters:BoolToZeroLengthConverter  x:Key="BoolToZeroLengthConverter"></dynconverters:BoolToZeroLengthConverter>
             <converters:StateToVisibilityCollapsedConverter x:Key="StateToVisibilityCollapsedConverter"/>
             <converters:StateToColorBrushConverter x:Key="StateToColorBrushConverter"/>
             <converters:StateToImageSourceConverter x:Key="StateToImageSourceConverter"/>
@@ -43,11 +44,17 @@
         </Grid.RowDefinitions>
 
         <!-- Search Bar -->
-        <controls:SearchBoxControl Grid.Row="0" Margin="10 5 20 5"/>
+        <controls:SearchBoxControl Grid.Row="0" Margin="10 5 20 0"/>
 
         <!-- Contains all filter icons -->
-        <DockPanel Grid.Row="1">
-            <Grid x:Name="FilterGrid" DockPanel.Dock="Top">
+        <Grid Grid.Row="1"
+              Margin="0 0 0 10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="{Binding IsAnyFilterOn,
+                                                  Converter={StaticResource BoolToZeroLengthConverter}}"/>
+            </Grid.ColumnDefinitions>
+            <Grid x:Name="FilterGrid">
                 <ItemsControl x:Name="FilterItemControl"
                                   Margin="5"
                                   ItemsSource="{Binding FilterItems, UpdateSourceTrigger=PropertyChanged}">
@@ -66,15 +73,16 @@
 
             <!-- Clear Filter Button -->
             <Button x:Name="ClearFiltersButton"
-                    DockPanel.Dock="Right"
+                    Grid.Column="1"
                     Content="Clear all" 
-                    Margin="0 3 0 15"
+                    Margin="0 3 10 15"
                     Width="60"
                     HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
                     Style="{StaticResource ButtonStyle1}" 
                     Command="{Binding ClearFiltersCommand}" 
                     Visibility="{Binding IsAnyFilterOn, Converter={StaticResource BooleanToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}"/>
-        </DockPanel>
+        </Grid>
 
         <!-- Node Data Grid -->
         <DataGrid x:Name="NodesInfoDataGrid"

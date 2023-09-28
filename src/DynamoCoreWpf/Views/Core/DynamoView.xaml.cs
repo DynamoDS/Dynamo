@@ -1597,7 +1597,7 @@ namespace Dynamo.Controls
         /// <returns></returns>
         internal void ShowNewFunctionDialog(FunctionNamePromptEventArgs e)
         {
-            var elements = dynamoViewModel.Model.SearchModel.SearchEntries;
+            var elements = dynamoViewModel.Model.SearchModel.Entries;
 
             // Unique package and custom node categories
             var allCategories = getUniqueAddOnCategories(elements);

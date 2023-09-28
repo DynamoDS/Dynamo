@@ -678,7 +678,7 @@ namespace Dynamo.Models
 
             OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenInitPreferencesSettings, 30));
 
-            PreferenceSettings = CreatePreferences(config);
+            PreferenceSettings = (PreferenceSettings)CreateOrLoadPreferences(config.Preferences);
             if (PreferenceSettings != null)
             {
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
@@ -1046,29 +1046,6 @@ namespace Dynamo.Models
                     PathResolver = config.PathResolver
                 });
             }
-        }
-
-        /// <summary>
-        /// It returns a PreferenceSettings instance based on the mode in order to reuse it's Singleton instance or create a new one
-        /// </summary>
-        /// <param name="config"></param>
-        /// <returns></returns>
-        internal PreferenceSettings CreatePreferences(IStartConfiguration config)
-        {
-            PreferenceSettings preferences = null;
-            if (!config.StartInTestMode)
-            {
-                if (config.Preferences is PreferenceSettings settings)
-                {
-                    preferences = settings;
-                }
-            }
-            else
-            {
-                preferences = (PreferenceSettings)CreateOrLoadPreferences(config.Preferences);
-            }
-
-            return preferences;
         }
 
         /// <summary>
@@ -1468,7 +1445,7 @@ namespace Dynamo.Models
                         || !info.IsVisibleInDynamoLibrary)
                     return;
 
-                var elements = SearchModel.SearchEntries.OfType<CustomNodeSearchElement>().
+                var elements = SearchModel.Entries.OfType<CustomNodeSearchElement>().
                                 Where(x =>
                                 {
                                     // Search for common paths and get rid of empty paths.
@@ -2126,10 +2103,9 @@ namespace Dynamo.Models
                 {
                     if (true) //MigrationManager.ProcessWorkspace(dynamoPreferences.Version, xmlDoc, IsTestMode, NodeFactory))
                     {
-                        WorkspaceModel ws;
-                        if (OpenJsonFile(filePath, fileContents, dynamoPreferences, forceManualExecutionMode, out ws))
+                        if (OpenJsonFile(filePath, fileContents, dynamoPreferences, forceManualExecutionMode, out WorkspaceModel ws))
                         {
-                            ExtraWorkspaceViewInfo viewInfo = ExtraWorkspaceViewInfoFromJson(fileContents);
+                            ExtraWorkspaceViewInfo viewInfo = ExtraWorkspaceViewInfo.ExtraWorkspaceViewInfoFromJson(fileContents);
 
                             InsertWorkspace(ws, viewInfo);
                         }
@@ -2381,34 +2357,6 @@ namespace Dynamo.Models
                 customNodeWorkspace.IsVisibleInDynamoLibrary = dynamoPreferences.IsVisibleInDynamoLibrary;
 
             return true;
-        }
-
-        /// <summary>
-        /// Load the extra view information required to fully construct a WorkspaceModel object 
-        /// </summary>
-        /// <param name="json"></param>
-        static internal ExtraWorkspaceViewInfo ExtraWorkspaceViewInfoFromJson(string json)
-        {
-            JsonReader reader = new JsonTextReader(new StringReader(json));
-            var obj = JObject.Load(reader);
-            var viewBlock = obj["View"];
-            if (viewBlock == null)
-                return null;
-
-            var settings = new JsonSerializerSettings
-            {
-                Error = (sender, args) =>
-                {
-                    args.ErrorContext.Handled = true;
-                    Console.WriteLine(args.ErrorContext.Error);
-                },
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                TypeNameHandling = TypeNameHandling.Auto,
-                Formatting = Newtonsoft.Json.Formatting.Indented,
-                Culture = CultureInfo.InvariantCulture
-            };
-
-            return JsonConvert.DeserializeObject<ExtraWorkspaceViewInfo>(viewBlock.ToString(), settings);
         }
 
         // Attempts to reload all the dummy nodes in the current workspace and replaces them with resolved version. 

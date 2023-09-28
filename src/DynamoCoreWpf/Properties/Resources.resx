@@ -677,8 +677,8 @@
     <comment>View menu | Navigate background 3D preview</comment>
   </data>
   <data name="DynamoViewViewMenuShowGrid" xml:space="preserve">
-    <value>_Show Grid</value>
-    <comment>View menu | Show Grid</comment>
+    <value>_Show Helpers</value>
+    <comment>View menu | Show Helpers</comment>
   </data>
   <data name="DynamoViewViewMenuShowBackground3DPreview" xml:space="preserve">
     <value>Showing Background 3D Preview</value>
@@ -1053,6 +1053,9 @@ To avoid unintended behavior, uninstall the conflicting loaded package(s), resta
   <data name="PackageWarningMessageBoxTitle" xml:space="preserve">
     <value>Package Warning</value>
     <comment>Message box title</comment>
+  </data>
+  <data name="PackageManagerClearAllButtonText" xml:space="preserve">
+    <value>Clear all</value>
   </data>
   <data name="UnsavedChangesMessageBoxTitle" xml:space="preserve">
     <value>Unsaved changes</value>
@@ -1525,6 +1528,42 @@ If the toggle is off custom packages that are not already loaded will load once 
   </data>
   <data name="PackageUploadStateUploading" xml:space="preserve">
     <value>Uploading...</value>
+  </data>
+  <data name="PackageFilterByHost" xml:space="preserve">
+    <value>HOST</value>
+  </data>
+  <data name="PackageFilterByStatus" xml:space="preserve">
+    <value>STATUS</value>
+  </data>    
+  <data name="PackageFilterNewTooltip" xml:space="preserve">
+    <value>Published in the last 30 days</value>
+  </data>    
+  <data name="PackageFilterUpdatedTooltip" xml:space="preserve">
+    <value>Updated in the last 30 days</value>
+  </data>
+  <data name="PackageFilterDeprecatedTooltip" xml:space="preserve">
+    <value>Discontinued packages</value>
+  </data>    
+  <data name="PackageFilterHasDependenciesTooltip" xml:space="preserve">
+    <value>Packages that require other packages to be installed</value>
+  </data>
+  <data name="PackageFilterHasNoDependenciesTooltip" xml:space="preserve">
+    <value>Stand-alone packages</value>
+  </data>
+  <data name="PackageFilterByDependency" xml:space="preserve">
+    <value>DEPENDENCY</value>
+  </data>
+  <data name="PackageSearchViewContextMenuFilterActive" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="PackageSearchViewContextMenuFilterDeprecated" xml:space="preserve">
+    <value>Deprecated</value>
+  </data>
+  <data name="PackageSearchViewContextMenuFilterDependencies" xml:space="preserve">
+    <value>Has dependecies</value>
+  </data>
+  <data name="PackageSearchViewContextMenuFilterNoDependencies" xml:space="preserve">
+    <value>Has no dependecies</value>
   </data>
   <data name="PortViewContextMenuUserDefaultValue" xml:space="preserve">
     <value>Use Default Value</value>
@@ -2462,7 +2501,7 @@ Uninstall the following packages: {0}?</value>
     <value>Sort Packages.</value>
   </data>
   <data name="PackageHostDependencyFilterContextItem" xml:space="preserve">
-    <value>Packages contain node(s)  that depend on specified application outside Dynamo.</value>
+    <value>Packages that depend on selected external application</value>
   </data>
   <data name="MessageUninstallSamePackage" xml:space="preserve">
     <value>"The package {0} is already installed. To reinstall it, you must first uninstall it and restart to complete the uninstall. Would you like to mark {0} for uninstall?"</value>
@@ -3706,5 +3745,11 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   </data>
   <data name="PreferencesViewIncludeTimestampExportPathTooltip" xml:space="preserve">
     <value>When toggled on, file names of exported images include date and time of export.</value>
+  </data>
+  <data name="ElementBindingWarningMessage" xml:space="preserve">
+    <value>A Save As command will create a workspace which is treated as a completely new file by Dynamo and existing element binding data will be lost. New element binding data will be created as normal as you run this file. Use the Save command instead if you wish to preserve element binding with the host document.</value>
+  </data>
+  <data name="ElementBindingWarningTitle" xml:space="preserve">
+    <value>Element Binding Warning</value>
   </data>
 </root>

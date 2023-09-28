@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,10 +14,11 @@ using NUnit.Framework;
 using PythonNodeModels;
 using Dynamo.PythonServices;
 using DynCmd = Dynamo.Models.DynamoModel;
+using System.Threading;
 
 namespace Dynamo.Tests
 {
-    [RequiresSTA]
+    [RequiresThread(ApartmentState.STA)]
     public class PythonEditTests : DynamoViewModelUnitTest
     {
         protected override void GetLibrariesToPreload(List<string> libraries)

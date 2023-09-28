@@ -4,7 +4,6 @@ using System.Linq;
 using Dynamo.Configuration;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels;
 using NUnit.Framework;
@@ -16,7 +15,6 @@ namespace Dynamo.Tests
     {
         private static NodeSearchModel model;
         private static SearchViewModel viewModel;
-        private static LuceneSearchUtility LuceneSearchUtility;
 
         [SetUp]
         public void Init()
