@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Dynamo.Configuration;
+using Dynamo.Core;
+using Dynamo.Events;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Search.SearchElements;
+using Dynamo.Session;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Br;
 using Lucene.Net.Analysis.Cjk;
@@ -31,11 +35,6 @@ namespace Dynamo.Utilities
     /// </summary>
     internal class LuceneSearchUtility
     {
-        /// <summary>
-        /// Dynamo Model reference
-        /// </summary>
-        internal DynamoModel dynamoModel;
-
         /// <summary>
         /// Index fields that were added to the document
         /// </summary>
@@ -79,21 +78,17 @@ namespace Dynamo.Utilities
         /// <summary>
         /// Default constructor for LuceneSearchUtility, it will use the default storage type - RAM
         /// </summary>
-        /// <param name="model"></param>
-        internal LuceneSearchUtility(DynamoModel model)
+        internal LuceneSearchUtility()
         {
-            dynamoModel = model;
             startConfig = new LuceneStartConfig();
         }
 
         /// <summary>
         /// Constructor for LuceneSearchUtility, it will use the storage type passed as parameter
         /// </summary>
-        /// <param name="model"></param>
         /// <param name="config"></param>
-        internal LuceneSearchUtility(DynamoModel model, LuceneStartConfig config)
+        internal LuceneSearchUtility(LuceneStartConfig config)
         {
-            dynamoModel = model;
             startConfig = config;
             if (DynamoModel.IsTestMode)
             {
@@ -110,7 +105,7 @@ namespace Dynamo.Utilities
             addedFields = new List<string>();
 
             DirectoryInfo luceneUserDataFolder;
-            var userDataDir = new DirectoryInfo(dynamoModel.PathManager.UserDataDirectory);
+            var userDataDir = new DirectoryInfo(PathManager.Instance.UserDataDirectory);
             luceneUserDataFolder = userDataDir.Exists ? userDataDir : null;
             string indexPath = Path.Combine(luceneUserDataFolder.FullName, LuceneConfig.Index, startConfig.Directory);
 
@@ -125,7 +120,7 @@ namespace Dynamo.Utilities
 
 
             // Create an analyzer to process the text
-            Analyzer = CreateAnalyzerByLanguage(dynamoModel.PreferenceSettings.Locale);
+            Analyzer = CreateAnalyzerByLanguage(PreferenceSettings.Instance.Locale);
 
             // Check if Lucene index file exists, if not create it
             if (!DirectoryReader.IndexExists(indexDir))
@@ -154,11 +149,11 @@ namespace Dynamo.Utilities
                     writer = new IndexWriter(new RAMDirectory(), indexConfig);
                     writer.Commit();
                     // DisposeWriter();
-                    dynamoModel.Logger.LogError($"LuceneNET LockObtainFailedException {ex}, switching to RAM mode.");
+                    (ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger) as DynamoLogger).LogError($"LuceneNET LockObtainFailedException {ex}, switching to RAM mode.");
                 }
                 catch (Exception ex)
                 {
-                    dynamoModel.Logger.LogError($"LuceneNET Exception {ex}");
+                    (ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger) as DynamoLogger).LogError($"LuceneNET Exception {ex}");
                 }
             }
         }
