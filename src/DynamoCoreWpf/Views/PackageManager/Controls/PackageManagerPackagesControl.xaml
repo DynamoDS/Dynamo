@@ -106,18 +106,16 @@
                  SelectedIndex="{Binding Path=SelectedIndex}"
                  VirtualizingPanel.ScrollUnit="Pixel">
 
-            <ListBox.Resources>
+            <ListBox.Resources>                
+                <SolidColorBrush x:Key="ForegroundGrayBrush" Color="#D8D8D8" />
+                <SolidColorBrush x:Key="HasVotedBlueBrush" Color="#84D7CE" />   
                 <!--  Local style used for labels on result, e.g. Number of Installs  -->
                 <Style x:Key="resultLabelStyle"
                        TargetType="TextBlock">
-                    <Setter Property="FontFamily"
-                            Value="{StaticResource ArtifaktElementRegular}" />
-                    <Setter Property="FontSize"
-                            Value="10" />
-                    <Setter Property="Foreground"
-                            Value="#C7C7C7" />
-                    <Setter Property="VerticalAlignment"
-                            Value="Center" />
+                    <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
+                    <Setter Property="FontSize" Value="10" />
+                    <Setter Property="Foreground" Value="#C7C7C7" />
+                    <Setter Property="VerticalAlignment" Value="Center" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Model.IsDeprecated}"
                                      Value="True">
@@ -516,15 +514,19 @@
                                        DockPanel.Dock="Right"
                                        Style="{StaticResource resultLabelStyle}"
                                        Text="{Binding Path=Model.Votes, Converter={StaticResource NegativeIntToZeroConverter}}" />
-                            <Rectangle Width="12"
-                                       Height="11"
-                                       Margin="5,0,0,2"
-                                       VerticalAlignment="Center"
-                                       DockPanel.Dock="Right">
-                                <Rectangle.Fill>
-                                    <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Favorite.png" />
-                                </Rectangle.Fill>
-                            </Rectangle>
+                          
+
+                            <Viewbox Width="12"
+                                     Height="12"
+                                     Margin="5,0,0,2"
+                                     VerticalAlignment="Center"
+                                     DockPanel.Dock="Right">
+                                <Path x:Name="heartIcon"
+                                      Data="M13.91,6.75c-1.17,2.25-4.3,5.31-6.07,6.94c-0.1903,0.1718-0.4797,0.1718-0.67,0C5.39,12.06,2.26,9,1.09,6.75&#xA;&#x9;C-1.48,1.8,5-1.5,7.5,3.45C10-1.5,16.48,1.8,13.91,6.75z"
+                                      Stroke="{StaticResource ForegroundGrayBrush}"
+                                      StrokeThickness="1"
+                                      VerticalAlignment="Center" />
+                            </Viewbox>
 
                             <!-- The version combobox -->
                             <StackPanel Margin="5,0,5,0"
@@ -578,6 +580,17 @@
                                    Fill="{StaticResource DarkMidGreyBrush}" />
 
                     </Grid>
+                    <DataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding Path=Model.HasUpvote}"
+                                     Value="True">
+                            <Setter TargetName="heartIcon"
+                                    Property="Fill"
+                                    Value="{StaticResource HasVotedBlueBrush}" />
+                            <Setter TargetName="heartIcon"
+                                    Property="Stroke"
+                                    Value="{StaticResource HasVotedBlueBrush}" />
+                        </DataTrigger>
+                    </DataTemplate.Triggers>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>

@@ -120,6 +120,10 @@ namespace Dynamo.PackageDetails
         /// False if custom package paths are disabled.
         /// </summary>
         public bool IsEnabledForInstall { get; private set; }
+
+        /// <summary>
+        /// Shows if the current user has voted for this package
+        /// </summary>
         public bool HasVoted
         {
             get => hasVoted;
@@ -168,20 +172,25 @@ namespace Dynamo.PackageDetails
         }
 
         /// <summary>
-        /// Upvote a packge - only keep track if a packge is due an upvote, 
-        /// but do not commit to it until dispose - if it still needs upvoting, then propagate further
+        /// Upvotes a packge
         /// </summary>
         /// <param name="obj"></param>
         private void UpvotePackage(object obj)
         {
-            HasVoted = !HasVoted;
-            NumberVotes = HasVoted ? ++NumberVotes : --NumberVotes;
+            PackageManagerSearchElement packageManagerSearchElement = GetPackageByName(this.PackageName);
+            packageManagerSearchElement?.Upvote();
+
+            HasVoted = true;
+            NumberVotes = ++NumberVotes;
         }
+
 
         private bool CanUpvotePackage(object obj)
         {
-            // If any version of the package has been installed locally, then we allow voting
-            return PackageDetailItems.Any(x => !x.CanInstall);
+            // If any version of the package has been installed locally, 
+            // and if the user has not voted for this package before
+            // then we allow voting
+            return PackageDetailItems.Any(x => !x.CanInstall) && !this.HasVoted;
         }
 
 
@@ -265,6 +274,7 @@ namespace Dynamo.PackageDetails
             License = packageManagerSearchElement.Header.license;
             PackageSiteURL = packageManagerSearchElement.SiteUrl;
             PackageRepositoryURL = packageManagerSearchElement.RepositoryUrl;
+            HasVoted = packageManagerSearchElement.HasUpvote;
 
             if (!Models.DynamoModel.IsTestMode)
             {
@@ -317,11 +327,6 @@ namespace Dynamo.PackageDetails
         internal void Dispose()
         {
             PackageDetailsViewExtension.PackageManagerExtension.PackageLoader.PackageAdded -= PackageLoaderOnPackageAdded;
-            if (HasVoted)
-            {
-                PackageManagerSearchElement packageManagerSearchElement = GetPackageByName(this.PackageName);
-                packageManagerSearchElement?.Upvote();
-            }
         }
     }
 }

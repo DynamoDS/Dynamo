@@ -263,6 +263,12 @@ namespace Dynamo.ViewModels
 
         public ICommand ToggleLoginStateCommand { get; private set; }
 
+        /// <summary>
+        /// Contains all votes the user has been submitted.
+        /// Will allow the user to vote for a package they have not upvoted before
+        /// </summary>
+        private List<string> Uservotes { get; set; }
+
         internal PackageManagerClientViewModel(DynamoViewModel dynamoViewModel, PackageManagerClient model )
         {
             this.DynamoViewModel = dynamoViewModel;
@@ -279,6 +285,11 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("LoginState");
                     RaisePropertyChanged("Username");
                 };
+            }
+
+            if (AuthenticationManager.LoginState.Equals(LoginState.LoggedIn))
+            {
+                this.Uservotes = this.Model.UserVotes();
             }
         }
 
@@ -489,6 +500,11 @@ namespace Dynamo.ViewModels
                 var ele = new PackageManagerSearchElement(header);
 
                 ele.UpvoteRequested += this.Model.Upvote;
+                if (Uservotes != null)
+                {
+                    ele.HasUpvote = Uservotes.Contains(header._id);
+                }
+
                 CachedPackageList.Add( ele );
             }
 

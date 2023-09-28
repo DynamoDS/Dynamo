@@ -17,7 +17,7 @@
         <PackageReference Include="RestSharp" Version="106.12.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
         <PackageReference Include="Moq" Version="4.18.4" />
-        <PackageReference Include="Greg" Version="2.5.0.5076">
+        <PackageReference Include="Greg" Version="2.5.0.6325">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>

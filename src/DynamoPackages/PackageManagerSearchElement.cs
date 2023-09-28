@@ -124,6 +124,11 @@ namespace Dynamo.PackageManager
         public string InfectedPackageVersion { get; set; }
         public string InfectedPackageCreationDate { get; set; }
 
+        /// <summary>
+        ///     Shows if the current user has upvoted this package
+        /// </summary>
+        public bool HasUpvote { get; internal set; }
+
         #endregion
 
         /// <summary>

@@ -65,16 +65,16 @@ namespace Dynamo.PackageManager
             }, false);
         }
 
-        internal IEnumerable<string> UserVotes(string packageId)
+        internal List<string> UserVotes()
         {
             var votes = FailFunc.TryExecute(() =>
             {
                 var nv = new GetUserVotes();
-                var pkgResponse = this.client.ExecuteAndDeserializeWithContent<List<String>>(nv);
+                var pkgResponse = this.client.ExecuteAndDeserializeWithContent<UserVotes>(nv);
                 return pkgResponse.content;
-            }, new List<string>());
+            }, null);
 
-            return votes;
+            return votes.has_upvoted;
         }
 
         internal PackageManagerResult DownloadPackage(string packageId, string version, out string pathToPackage)
