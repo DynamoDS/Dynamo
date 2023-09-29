@@ -117,7 +117,7 @@ namespace Dynamo.Utilities
 
             // Check if Lucene index file exists, if not create it
             // TODO: Add a check to see if the index is corrupted and recreate it if it is
-            if (!DirectoryReader.IndexExists(indexDir))
+            // if (!DirectoryReader.IndexExists(indexDir))
             {
                 CreateLuceneIndexWriter();    
             }
