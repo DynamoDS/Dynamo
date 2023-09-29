@@ -60,6 +60,11 @@ namespace Dynamo.Utilities
         /// </summary>
         internal LuceneStartConfig startConfig;
 
+        /// <summary>
+        /// Default start config for Lucene, it will use RAM storage type and empty directory
+        /// </summary>
+        internal static LuceneStartConfig DefaultStartConfig = new LuceneStartConfig();
+
         public enum LuceneStorage
         {
             //Lucene Storage will be located in RAM and all the info indexed will be lost when Dynamo app is closed
@@ -76,25 +81,13 @@ namespace Dynamo.Utilities
         internal IndexSearcher Searcher;
 
         /// <summary>
-        /// Default constructor for LuceneSearchUtility, it will use the default storage type - RAM
-        /// </summary>
-        internal LuceneSearchUtility()
-        {
-            startConfig = new LuceneStartConfig();
-        }
-
-        /// <summary>
         /// Constructor for LuceneSearchUtility, it will use the storage type passed as parameter
         /// </summary>
         /// <param name="config"></param>
         internal LuceneSearchUtility(LuceneStartConfig config)
         {
-            startConfig = config;
-            if (DynamoModel.IsTestMode)
-            {
-                // If under test mode, switch to the default storage type - RAM
-                startConfig = new LuceneStartConfig();
-            }
+            // If under test mode, use the default StartConfig - RAM storage type and empty directory
+            startConfig = DynamoModel.IsTestMode? DefaultStartConfig : config;
         }
 
         /// <summary>
@@ -123,6 +116,7 @@ namespace Dynamo.Utilities
             Analyzer = CreateAnalyzerByLanguage(PreferenceSettings.Instance.Locale);
 
             // Check if Lucene index file exists, if not create it
+            // TODO: Add a check to see if the index is corrupted and recreate it if it is
             if (!DirectoryReader.IndexExists(indexDir))
             {
                 CreateLuceneIndexWriter();    
@@ -130,33 +124,28 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        /// Create index writer for followup indexing
+        /// Create index writer for followup doc indexing
         /// </summary>
         internal void CreateLuceneIndexWriter()
         {
-            // Initialize Lucene index writer, unless in test mode or we are using RAMDirectory for indexing info. 
-            if (!DynamoModel.IsTestMode || startConfig.StorageType == LuceneStorage.RAM)
+            // Create an index writer
+            IndexWriterConfig indexConfig = new IndexWriterConfig(LuceneConfig.LuceneNetVersion, Analyzer)
             {
-                // Create an index writer
-                IndexWriterConfig indexConfig = new IndexWriterConfig(LuceneConfig.LuceneNetVersion, Analyzer)
-                {
-                    OpenMode = OpenMode.CREATE
-                };
-                try
-                {
-                    writer = new IndexWriter(indexDir, indexConfig);
-                }
-                catch (LockObtainFailedException ex)
-                {
-                    writer = new IndexWriter(new RAMDirectory(), indexConfig);
-                    writer.Commit();
-                    // DisposeWriter();
-                    (ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger) as DynamoLogger).LogError($"LuceneNET LockObtainFailedException {ex}, switching to RAM mode.");
-                }
-                catch (Exception ex)
-                {
-                    (ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger) as DynamoLogger).LogError($"LuceneNET Exception {ex}");
-                }
+                OpenMode = OpenMode.CREATE
+            };
+            try
+            {
+                writer = new IndexWriter(indexDir, indexConfig);
+            }
+            catch (LockObtainFailedException ex)
+            {
+                writer = new IndexWriter(new RAMDirectory(), indexConfig);
+                // DisposeWriter();
+                (ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger) as DynamoLogger).LogError($"LuceneNET LockObtainFailedException {ex}, switching to RAM mode.");
+            }
+            catch (Exception ex)
+            {
+                (ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger) as DynamoLogger).LogError($"LuceneNET Exception {ex}");
             }
         }
 
@@ -390,12 +379,8 @@ namespace Dynamo.Utilities
 
         internal void DisposeWriter()
         {
-            //We need to check if we are not running Dynamo tests because otherwise parallel test start to fail when trying to write in the same Lucene directory location
-            if (!DynamoModel.IsTestMode || startConfig.StorageType == LuceneStorage.RAM)
-            {
-                writer?.Dispose();
-                writer = null;
-            }
+            writer?.Dispose();
+            writer = null;
         }
 
         /// <summary>
@@ -403,11 +388,8 @@ namespace Dynamo.Utilities
         /// </summary>
         internal void CommitWriterChanges()
         {
-            if (!DynamoModel.IsTestMode || startConfig.StorageType == LuceneStorage.RAM)
-            {
-                //Commit the info indexed
-                writer?.Commit();
-            }
+            //Commit the info indexed if index writer exists
+            writer?.Commit();
         }
 
         /// <summary>
