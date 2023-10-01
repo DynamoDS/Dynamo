@@ -124,10 +124,24 @@ namespace Dynamo.PackageManager
         public string InfectedPackageVersion { get; set; }
         public string InfectedPackageCreationDate { get; set; }
 
+        private bool hasUpvote;
         /// <summary>
         ///     Shows if the current user has upvoted this package
         /// </summary>
-        public bool HasUpvote { get; internal set; }
+        public bool HasUpvote
+        {
+            get
+            {
+                return hasUpvote;
+            }
+
+            internal set
+            {
+                hasUpvote = value;
+                RaisePropertyChanged(nameof(HasUpvote));
+            }
+        }
+
 
         #endregion
 
@@ -172,6 +186,8 @@ namespace Dynamo.PackageManager
                     }
                 }
                 , TaskScheduler.FromCurrentSynchronizationContext());
+
+            HasUpvote = true;
         }
 
         [Obsolete("This API will no longer decrease package votes and will be removed in Dynamo 3.0")]

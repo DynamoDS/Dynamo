@@ -206,6 +206,9 @@ namespace Dynamo.PackageDetails
                 if (packageDetailItem.PackageVersion.version != versionName) continue;
                 packageDetailItem.CanInstall = false;
                 RaisePropertyChanged(nameof(packageDetailItem.CanInstall));
+
+                // Also update the 'CanExecute' condition for 'UpvoteCommand' which relies on a package being installed
+                ((DelegateCommand)UpvoteCommand).RaiseCanExecuteChanged();  
             }
         }
 
