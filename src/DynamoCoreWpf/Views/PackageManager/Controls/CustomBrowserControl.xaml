@@ -536,6 +536,7 @@
             <!--https://stackoverflow.com/questions/61217523/wpf-treeview-how-to-make-controls-align-relative-to-every-treeviewitem-yet-sti-->
             <local:IndentConverter x:Key="IndentConverter" />
             <local:HasChildrenToVisibilityConverter x:Key="HasChildrenToVisibilityConverter" />
+            <local:DependencyTypeToVisibilityConverter x:Key="DependencyTypeToVisibilityConverter" />
 
             <ControlTemplate x:Key="TreeViewItemControlTemplate1" TargetType="{x:Type TreeViewItem}">
                 <Grid x:Name="tvGrid">
@@ -558,7 +559,8 @@
                     <Border Grid.Column="1" 
                             Width="{Binding Path=(local:TreeViewItemHelper.Indent).Value, Mode=OneWay, RelativeSource={RelativeSource AncestorType=ItemsPresenter}}">
                         <Grid>
-                            <Rectangle Width="1" Height="24" Stroke="#DCDCDC" StrokeDashArray="3 3" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10 0 0 0"/>
+                            <Rectangle Width="1" Height="1" Stroke="#DCDCDC" StrokeDashArray="3 3" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10 0 0 0"
+                                       x:Name="LongMarker" />
                             <Rectangle Width="1" Height="24" Stroke="#DCDCDC" StrokeDashArray="3 3" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0 0 5 0"
                                        x:Name="VerticalMarker"/>
                         </Grid>
@@ -567,14 +569,20 @@
                     <ToggleButton x:Name="Expander" Grid.Column="2" ClickMode="Press" IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" Style="{StaticResource FolderToggleStyle}"/>
 
                     <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Grid.Column="3" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
-                        <ContentPresenter x:Name="PART_Header"
-                                          ContentTemplate="{TemplateBinding HeaderTemplate}" 
-                                          Content="{TemplateBinding Header}" 
-                                          ContentStringFormat="{TemplateBinding HeaderStringFormat}" 
-                                          ContentSource="Header" 
-                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
-                                          VerticalAlignment="Center"
-                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                        <Grid>                        
+                            <ContentPresenter x:Name="PART_Header"
+                                              ContentTemplate="{TemplateBinding HeaderTemplate}" 
+                                              Content="{TemplateBinding Header}" 
+                                              ContentStringFormat="{TemplateBinding HeaderStringFormat}" 
+                                              ContentSource="Header" 
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                              VerticalAlignment="Center"
+                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+
+                            <Rectangle Width="10" Height="1" Stroke="#DCDCDC" StrokeDashArray="2 2" HorizontalAlignment="Left" VerticalAlignment="Center" 
+                                       Margin="-26 0 -5 0"
+                                       x:Name="HorizontalMarker"/>
+                        </Grid>
                     </Border>
                 
 
@@ -595,7 +603,7 @@
                 <ControlTemplate.Triggers>
                     <Trigger Property="IsExpanded" Value="False">
                         <Setter Property="Visibility" TargetName="ItemsHost" Value="Collapsed"/>
-                    </Trigger>
+                    </Trigger>  
                     <Trigger Property="HasItems" Value="False">
                         <Setter Property="Visibility" TargetName="Expander" Value="Hidden"/>
                     </Trigger>
@@ -634,6 +642,11 @@
                 <Setter Property="IsExpanded" Value="True" />
                 <Setter Property="FontSize" Value="12"/>
                 <Setter Property="Foreground" Value="#F5F5F5"/>
+                <Style.Triggers>
+                    <Trigger Property="HasItems" Value="False">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                    </Trigger>
+                </Style.Triggers>
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -641,41 +654,14 @@
         <TreeView Style="{DynamicResource TreeViewStyle}"
                   x:Name="customTreeView"
                   ItemContainerStyle="{StaticResource CustomTreeViewItem}"
-                  ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=Root}">
+                  ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=Root, Mode=TwoWay}">
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type local:PackageItemRootViewModel}"
                                           ItemsSource="{Binding ChildItems}">
-                    <TextBlock Text="{Binding DisplayName}" FontFamily="{StaticResource ArtifaktElementRegular}" />
+                    <TextBlock Text="{Binding DisplayName}"
+                               FontFamily="{StaticResource ArtifaktElementRegular}" />
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
-            <!--<TreeViewItem Style="{DynamicResource CustomTreeViewItem}" Header="My cool package" >
-                <TreeViewItem Style="{DynamicResource CustomTreeViewItem}" Header="bin">
-                    <TreeViewItem Style="{DynamicResource CustomTreeViewItem}" Header="file.dll"/>
-                    <TreeViewItem Style="{DynamicResource CustomTreeViewItem}" Header="bin">
-                        <TreeViewItem Style="{DynamicResource CustomTreeViewItem}" Header="file.dll"/>
-                        <TreeViewItem Style="{DynamicResource CustomTreeViewItem}" Header="bin">
-                            <TreeViewItem Style="{DynamicResource CustomTreeViewItem}" Header="file.dll"/>
-                            <TreeViewItem Style="{DynamicResource CustomTreeViewItem}" Header="bin">
-                                <TreeViewItem Style="{DynamicResource CustomTreeViewItem}" Header="file.dll"/>
-                                <TreeViewItem Style="{DynamicResource CustomTreeViewItem}" Header="bin">
-                                    <TreeViewItem Style="{DynamicResource CustomTreeViewItem}" Header="file.dll"/>
-                                </TreeViewItem>
-                            </TreeViewItem>
-                        </TreeViewItem>
-                    </TreeViewItem>
-                </TreeViewItem>
-                <TreeViewItem Header="doc" Style="{DynamicResource CustomTreeViewItem}" IsExpanded="True">
-                    <TreeViewItem Style="{DynamicResource CustomTreeViewItem}" Header="file.doc"/>
-                    <TreeViewItem Style="{DynamicResource CustomTreeViewItem}" Header="file1.doc"/>
-                </TreeViewItem>
-                <TreeViewItem Header="dyf" Style="{DynamicResource CustomTreeViewItem}" IsExpanded="false">
-                    <TreeViewItem Style="{DynamicResource CustomTreeViewItem}" Header="Test file 1"/>
-                </TreeViewItem>
-                <TreeViewItem Header="extra" Style="{DynamicResource CustomTreeViewItem}" IsExpanded="true">
-                    <TreeViewItem Style="{DynamicResource CustomTreeViewItem}" Header="file.xml"/>
-                </TreeViewItem>
-                <TreeViewItem Style="{DynamicResource CustomTreeViewItem}" Header="package.json"/>
-            </TreeViewItem>-->
         </TreeView>
     </Grid>
 </UserControl>

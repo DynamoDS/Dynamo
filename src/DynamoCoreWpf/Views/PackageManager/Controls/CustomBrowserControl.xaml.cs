@@ -1,10 +1,14 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Globalization;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace Dynamo.PackageManager.UI
 {
@@ -16,24 +20,183 @@ namespace Dynamo.PackageManager.UI
         /// <summary>
         /// Binds the ItemsSource of the TreeView
         /// </summary>
-        public IEnumerable Root
+        public ObservableCollection<PackageItemRootViewModel> Root
         {
-            get { return (IEnumerable)GetValue(RootProperty); }
+            get { return (ObservableCollection<PackageItemRootViewModel>)GetValue(RootProperty); }
             set { SetValue(RootProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for Root.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty RootProperty =
-            DependencyProperty.Register("Root", typeof(IEnumerable), typeof(CustomBrowserControl), new FrameworkPropertyMetadata(null, OnItemsSourceChanged));
+            DependencyProperty.Register("Root", typeof(ObservableCollection<PackageItemRootViewModel>), typeof(CustomBrowserControl),
+                new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: OnItemsSourceChanged));
 
         private static void OnItemsSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            // Handles changes to the ItemsSource here
+            var root = (CustomBrowserControl)d;
+
+            if (e.OldValue != null)
+            {
+                var coll = (INotifyCollectionChanged)e.OldValue;
+                // Unsubscribe from CollectionChanged on the old collection of the DP-instance (!)
+                coll.CollectionChanged -= root.Root_CollectionChanged;
+            }
+
+            if (e.NewValue != null)
+            {
+                var coll = (ObservableCollection<PackageItemRootViewModel>)e.NewValue;
+                // Subscribe to CollectionChanged on the new collection of the DP-instance (!)
+                coll.CollectionChanged += root.Root_CollectionChanged;
+            }
+        }
+
+        private void Root_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            UpdateCustomTreeView(sender);
         }
 
         public CustomBrowserControl()
         {
-            InitializeComponent();
+            InitializeComponent();  
+        }
+
+
+        private void UpdateCustomTreeView(object sender)
+        {
+            if ((sender as ObservableCollection<PackageItemRootViewModel>).Count == 0) return;
+
+            var treeView = this.customTreeView;
+            treeView.ApplyTemplate();
+
+            var visualChildren = FindVisualChildren<TreeViewItem>(treeView);
+            if (visualChildren == null) return;
+
+            ApplyLastTreeItem(visualChildren);
+
+            // setting the visual styles for each separate 'root' folder
+            foreach(var firstItem in visualChildren)
+            {
+                var rootItem = firstItem.Header as PackageItemRootViewModel;
+                if (rootItem.isChild) continue;
+
+                firstItem.IsExpanded = true;
+                firstItem.UpdateLayout();
+                firstItem.ApplyTemplate();
+
+                var hmarker = FindVisualChild<System.Windows.Shapes.Rectangle>(firstItem, "HorizontalMarker");
+                if (hmarker != null) hmarker.Visibility = Visibility.Hidden;
+                var vmarker = FindVisualChild<System.Windows.Shapes.Rectangle>(firstItem, "VerticalMarker");
+                if (vmarker != null) vmarker.Visibility = Visibility.Hidden;
+
+                var children = FindVisualChildren<TreeViewItem>(firstItem);
+                if(children != null)
+                {
+                    try
+                    {   
+                        var lastItem = children.Last();
+
+                        lastItem.IsExpanded = true;
+                        lastItem.UpdateLayout();
+                        lastItem.ApplyTemplate();
+
+                        var lmarker = FindVisualChild<System.Windows.Shapes.Rectangle>(lastItem, "LongMarker");
+                        if (lmarker != null) lmarker.Visibility = Visibility.Hidden;
+                    }
+                    catch (Exception) { }
+                }
+            }
+        }
+
+
+        private static void ApplyLastTreeItem(IEnumerable<TreeViewItem> treeViewItems) 
+        {
+            foreach (TreeViewItem item in treeViewItems)
+            {
+                item.IsExpanded = true;
+                item.UpdateLayout();
+                item.ApplyTemplate();
+
+                var parent = FindParent<TreeViewItem>(item);
+                if (parent == null)
+                {
+                    return;
+                }
+                var children = FindVisualChildren<TreeViewItem>(parent);
+                if (children != null)
+                {
+                    var lastItem = children.Last();
+
+                    if (item == lastItem)
+                    {
+                        lastItem.IsExpanded = true;
+                        lastItem.UpdateLayout();
+                        lastItem.ApplyTemplate();
+
+                        var marker = FindVisualChild<System.Windows.Shapes.Rectangle>(item, "VerticalMarker");
+                        if (marker != null) marker.Height = 12;
+                    }
+                }
+            }
+        }
+
+        private static T FindParent<T>(DependencyObject child) where T : DependencyObject
+        {
+            DependencyObject parentObject = VisualTreeHelper.GetParent(child);
+
+            if (parentObject == null)
+                return null;
+
+            T parent = parentObject as T;
+            if (parent != null)
+                return parent;
+
+            return FindParent<T>(parentObject);
+        }
+
+        // Helper method to find visual children in a WPF control
+        private static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
+        {
+            if (depObj != null)
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+                {
+                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
+                    if (child != null && child is T)
+                    {
+                        yield return (T)child;
+                    }
+
+                    foreach (T childOfChild in FindVisualChildren<T>(child))
+                    {
+                        yield return childOfChild;
+                    }
+                }
+            }
+        }
+
+        public static T FindVisualChild<T>(DependencyObject parent, string name) where T : DependencyObject
+        {
+            if (parent == null)
+            {
+                return null;
+            }
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(parent, i);
+                if (child is T && (child as FrameworkElement).Name == name)
+                {
+                    return child as T;
+                }
+
+                T result = FindVisualChild<T>(child, name);
+                if (result != null)
+                {
+                    return result;
+                }
+            }
+
+            return null;
         }
     }
 
@@ -111,6 +274,26 @@ namespace Dynamo.PackageManager.UI
 
             // Default style or value if the input is not a TreeViewItem
             return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class DependencyTypeToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is DependencyType.Folder)
+            {
+                // Return visible only if the item is a Folder
+                return Visibility.Visible;
+            }
+
+            // If the item is anything else (Assembly, File, Custom Node) return collapsed
+            return Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

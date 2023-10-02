@@ -112,6 +112,7 @@ namespace Dynamo.PackageManager.UI
                     return;
                 }
                 subFolder = new PackageItemRootViewModel(di.Parent.FullName);
+                subFolder.isChild = true;   
                 subFolder.ChildItems.Add(elem);
                 elem = subFolder;
                 di = di.Parent;

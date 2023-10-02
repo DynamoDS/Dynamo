@@ -903,7 +903,7 @@
                                     </DataGrid.Columns>
                                 </DataGrid>
                                 <local:CustomBrowserControl Grid.Row="1"
-                                                            Root="{Binding PackageContents, UpdateSourceTrigger=PropertyChanged}" />
+                                                            Root="{Binding PackageContents, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
                             </Grid>
                         </TabItem>
                         <TabItem Header="Target Path"
