@@ -547,7 +547,7 @@
                         <ColumnDefinition MinWidth="19" Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="90"/>
+                        <ColumnDefinition Width="30"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="24"/>
@@ -588,7 +588,7 @@
                 
                     <!-- Right buttons -->
                     <Grid Grid.Column="4" HorizontalAlignment="Right">
-                        <Button Margin="2 2 55 2"
+                        <Button Margin="2"
                                 x:Name="RemoveButton"
                                 BorderThickness="0"
                                 HorizontalAlignment="Right"
@@ -624,12 +624,14 @@
                     <Trigger Property="HasItems" Value="False">
                         <Setter Property="Visibility" TargetName="Expander" Value="Hidden"/>
                     </Trigger>
-                    <Trigger Property="HasItems" Value="True">
+                    <Trigger Property="HasItems" Value="True">  
                         <Setter Property="Height" TargetName="VerticalMarker" Value="12"/>
                     </Trigger>
                     <Trigger Property="IsSelected" Value="True">
-                        <Setter Property="Background" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                        <Setter Property="Background" TargetName="Bd" Value="Transparent"/>
                         <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
+                        <Setter Property="Visibility" TargetName="RemoveButton" Value="Visible"/>
+                        <Setter Property="Background" TargetName="SelectionBorder" Value="#F5F5F5"/>
                     </Trigger>
                     <MultiTrigger>
                         <MultiTrigger.Conditions>
@@ -670,7 +672,8 @@
         <!--Folders-->
         <TreeView Style="{DynamicResource TreeViewStyle}"
                   x:Name="customTreeView"
-                  Margin="5"
+                  Margin="8"
+                  SelectedItemChanged="customTreeView_SelectedItemChanged"
                   ItemContainerStyle="{StaticResource CustomTreeViewItem}"
                   ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=Root, Mode=TwoWay}">
             <TreeView.ItemTemplate>

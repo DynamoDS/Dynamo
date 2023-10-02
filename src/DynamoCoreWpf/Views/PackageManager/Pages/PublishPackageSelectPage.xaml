@@ -291,7 +291,8 @@
         </DockPanel>
         
         <local:CustomBrowserControl Grid.Column="0" Grid.Row="1"
-                                    Root="{Binding PackageContents, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                                    Root="{Binding PackageContents, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                    SelectedFolder="{Binding RootContents, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
 
 
         <!--Files-->
@@ -300,7 +301,7 @@
                   Margin="0"
                   VerticalAlignment="Stretch"
                   CanUserReorderColumns="False"
-                  ItemsSource="{Binding PackageContents, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                  ItemsSource="{Binding RootContents, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                   Style="{StaticResource DataGrid}">
             <DataGrid.Columns>
                 <DataGridCheckBoxColumn MinWidth="85"

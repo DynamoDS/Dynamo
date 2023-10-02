@@ -55,6 +55,17 @@ namespace Dynamo.PackageManager.UI
             UpdateCustomTreeView(sender);
         }
 
+        public ObservableCollection<PackageItemRootViewModel> SelectedFolder
+        {
+            get { return (ObservableCollection<PackageItemRootViewModel>)GetValue(SelectedFolderProperty); }
+            set { SetValue(SelectedFolderProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Root.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SelectedFolderProperty =
+            DependencyProperty.Register("SelectedFolder", typeof(ObservableCollection<PackageItemRootViewModel>), typeof(CustomBrowserControl),
+                new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
         public CustomBrowserControl()
         {
             InitializeComponent();  
@@ -139,6 +150,8 @@ namespace Dynamo.PackageManager.UI
             }
         }
 
+        #region Utility
+
         private static T FindParent<T>(DependencyObject child) where T : DependencyObject
         {
             DependencyObject parentObject = VisualTreeHelper.GetParent(child);
@@ -174,7 +187,7 @@ namespace Dynamo.PackageManager.UI
             }
         }
 
-        public static T FindVisualChild<T>(DependencyObject parent, string name) where T : DependencyObject
+        private static T FindVisualChild<T>(DependencyObject parent, string name) where T : DependencyObject
         {
             if (parent == null)
             {
@@ -198,7 +211,23 @@ namespace Dynamo.PackageManager.UI
 
             return null;
         }
+
+        #endregion
+
+        private void customTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            var customTree = sender as TreeView;
+            var selectedItem = customTree.SelectedItem as PackageItemRootViewModel;
+
+            if (selectedItem != null)
+            {
+                var viewModel = this.DataContext as PublishPackageViewModel;
+                viewModel.RootContents = selectedItem.ChildItems;
+            }
+        }
     }
+
+    #region Helpers
 
     public static class TreeViewItemHelper
     {
@@ -408,4 +437,6 @@ namespace Dynamo.PackageManager.UI
             }
         }
     }
+
+    #endregion
 }

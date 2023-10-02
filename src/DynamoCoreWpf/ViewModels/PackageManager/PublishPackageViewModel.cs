@@ -620,6 +620,23 @@ namespace Dynamo.PackageManager
         /// </summary>
         public ObservableCollection<PackageItemRootViewModel> PackageContents { get; set; } = new ObservableCollection<PackageItemRootViewModel>();
 
+        private ObservableCollection<PackageItemRootViewModel> _rootContents;
+        /// <summary>
+        /// A dedicated container for the files located under the current selected folder
+        /// </summary>
+        public ObservableCollection<PackageItemRootViewModel> RootContents
+        {
+            get { return _rootContents; }
+            set
+            {
+                if (_rootContents != value)
+                {
+                    _rootContents = value;
+                    RaisePropertyChanged(nameof(RootContents));
+                }
+            }
+        }
+
         /// <summary>
         /// CustomNodeDefinitions property 
         /// </summary>
