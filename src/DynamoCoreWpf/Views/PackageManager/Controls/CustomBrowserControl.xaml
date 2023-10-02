@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Dynamo.PackageManager.UI"
              xmlns:ui="clr-namespace:Dynamo.UI"
+             xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -393,7 +394,7 @@
            <!--Tree view style-->
             <SolidColorBrush x:Key="ListBorder" Color="#828790"/>
             <Style x:Key="TreeViewStyle" TargetType="{x:Type TreeView}">
-                <Setter Property="Background" Value="#2F2E30"/>
+                <Setter Property="Background" Value="Transparent"/>
                 <Setter Property="BorderBrush" Value="{StaticResource ListBorder}"/>
                 <Setter Property="BorderThickness" Value="0"/>
                 <Setter Property="Padding" Value="1"/>
@@ -403,6 +404,7 @@
                 <Setter Property="ScrollViewer.PanningMode" Value="Both"/>
                 <Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="UseLayoutRounding" Value="True"/>
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type TreeView}">
@@ -542,7 +544,6 @@
                 <Grid x:Name="tvGrid">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition MinWidth="19" Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
@@ -554,9 +555,9 @@
                     </Grid.RowDefinitions>
                 
                     <!-- Selection border -->
-                    <Border Grid.ColumnSpan="6" Grid.Column="0" x:Name="SelectionBorder" Background="Transparent" Opacity="0.1"/>
+                    <Border Grid.ColumnSpan="5" Grid.Column="0" x:Name="SelectionBorder" Background="Transparent" Opacity="0.1"/>
 
-                    <Border Grid.Column="1" 
+                    <Border Grid.Column="0" 
                             Width="{Binding Path=(local:TreeViewItemHelper.Indent).Value, Mode=OneWay, RelativeSource={RelativeSource AncestorType=ItemsPresenter}}">
                         <Grid>
                             <Rectangle Width="1" Height="1" Stroke="#DCDCDC" StrokeDashArray="3 3" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10 0 0 0"
@@ -566,9 +567,9 @@
                         </Grid>
                     </Border>
 
-                    <ToggleButton x:Name="Expander" Grid.Column="2" ClickMode="Press" IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" Style="{StaticResource FolderToggleStyle}"/>
+                    <ToggleButton x:Name="Expander" Grid.Column="1" ClickMode="Press" IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" Style="{StaticResource FolderToggleStyle}"/>
 
-                    <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Grid.Column="3" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                    <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Grid.Column="2" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
                         <Grid>                        
                             <ContentPresenter x:Name="PART_Header"
                                               ContentTemplate="{TemplateBinding HeaderTemplate}" 
@@ -585,19 +586,35 @@
                         </Grid>
                     </Border>
                 
-
-                    <!-- Left buttons -->
-                    <CheckBox Style="{DynamicResource CheckBoxStyle}" x:Name="FileCheckBox"
-                              IsChecked="{Binding IsSelected}"
-                              Grid.Column="0" Width="12" Height="12" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="6 2 12 2" />
-               
                     <!-- Right buttons -->
-                    <Grid Grid.Column="5" HorizontalAlignment="Right">
-                        <CheckBox Margin="2 2 55 2" Style="{DynamicResource CheckBoxStyle}" x:Name="NodeLibraryCheckBox" Width="12" Height="12" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                        <Rectangle Margin="2 0 85 0" Width="1" Height="24" Fill="#FFFFFF" Opacity="0.1" />
+                    <Grid Grid.Column="4" HorizontalAlignment="Right">
+                        <Button Margin="2 2 55 2"
+                                x:Name="RemoveButton"
+                                BorderThickness="0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Visibility="Hidden" 
+                                Cursor="Hand">
+                            <Button.ToolTip>
+                                <ToolTip Content="{x:Static p:Resources.PublishPackageViewAddFileButtonTooltip}"
+                                         Style="{StaticResource GenericToolTipLight}" />
+                            </Button.ToolTip>
+                            <Button.Template>
+                                <ControlTemplate>
+                                    <Grid>
+                                        <Rectangle Width="12"
+                                                   Height="12">
+                                            <Rectangle.Fill>
+                                                <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/remove-pk-16px.png" />
+                                            </Rectangle.Fill>
+                                        </Rectangle>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
                     </Grid>
 
-                    <ItemsPresenter x:Name="ItemsHost" Grid.ColumnSpan="6" Grid.Column="0" Grid.Row="1"
+                    <ItemsPresenter x:Name="ItemsHost" Grid.ColumnSpan="5" Grid.Column="0" Grid.Row="1"
                                     local:TreeViewItemHelper.Indent="{Binding Path=(local:TreeViewItemHelper.Indent), Mode=OneWay, RelativeSource={RelativeSource AncestorType=ItemsPresenter}, Converter={StaticResource IndentConverter}}" />
                 </Grid>
                 <ControlTemplate.Triggers>
@@ -617,10 +634,8 @@
                     <MultiTrigger>
                         <MultiTrigger.Conditions>
                             <Condition Property="local:MyTreeViewHelper.IsMouseDirectlyOverItem" Value="True"/>
-                            <Condition Property="HasItems" Value="False"/>
                         </MultiTrigger.Conditions>
-                        <Setter Property="Visibility" TargetName="FileCheckBox" Value="Visible"/>
-                        <Setter Property="Visibility" TargetName="NodeLibraryCheckBox" Value="Visible"/>
+                        <Setter Property="Visibility" TargetName="RemoveButton" Value="Visible"/>
                         <Setter Property="Background" TargetName="SelectionBorder" Value="#F5F5F5"/>
                     </MultiTrigger>
                     <MultiTrigger>
@@ -648,11 +663,14 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
+            
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
+        <!--Folders-->
         <TreeView Style="{DynamicResource TreeViewStyle}"
                   x:Name="customTreeView"
+                  Margin="5"
                   ItemContainerStyle="{StaticResource CustomTreeViewItem}"
                   ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=Root, Mode=TwoWay}">
             <TreeView.ItemTemplate>

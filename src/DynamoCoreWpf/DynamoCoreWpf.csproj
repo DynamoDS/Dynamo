@@ -62,6 +62,7 @@
     <None Remove="UI\Images\caret_drop_down.png" />
     <None Remove="UI\Images\NodeStates\package-64px.png" />
     <None Remove="UI\Images\PackageManager\empty-state-first-use-light-gray.png" />
+    <None Remove="UI\Images\remove-pk-16px.png" />
     <None Remove="UI\Images\search_icon_20px.png" />
     <None Remove="UI\Images\TitleBarButtons\close-darktheme-disabled-16px.png" />
     <None Remove="UI\Prompts\PortPropertiesEditPrompt.xaml" />
@@ -76,6 +77,11 @@
     <None Remove="Views\PackageManager\Controls\PackageManagerPackagesControl.xaml" />
     <None Remove="Views\PackageManager\Controls\PackageManagerSearchControl.xaml" />
     <None Remove="Views\PackageManager\Controls\SearchBoxControl.xaml" />
+    <None Remove="Views\PackageManager\Pages\PublishPackageFinishPage.xaml" />
+    <None Remove="Views\PackageManager\Pages\PublishPackagePreviewPage.xaml" />
+    <None Remove="Views\PackageManager\Pages\PublishPackagePublishPage.xaml" />
+    <None Remove="Views\PackageManager\Pages\PublishPackageReadyToPublishPage.xaml" />
+    <None Remove="Views\PackageManager\Pages\PublishPackageSelectPage.xaml" />
     <None Remove="Views\SplashScreen\WebApp\splashScreenBackground.png" />
   </ItemGroup>
   <ItemGroup>
@@ -450,6 +456,11 @@
     <Compile Include="Views\PackageManager\PackagePathView.xaml.cs">
       <DependentUpon>PackagePathView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\PackageManager\Pages\PublishPackageFinishPage.xaml.cs" />
+    <Compile Include="Views\PackageManager\Pages\PublishPackagePreviewPage.xaml.cs" />
+    <Compile Include="Views\PackageManager\Pages\PublishPackagePublishPage.xaml.cs" />
+    <Compile Include="Views\PackageManager\Pages\PublishPackageReadyToPublishPage.xaml.cs" />
+    <Compile Include="Views\PackageManager\Pages\PublishPackageSelectPage.xaml.cs" />
     <Compile Include="Views\PackageManager\TermsOfUseView.xaml.cs">
       <DependentUpon>TermsOfUseView.xaml</DependentUpon>
     </Compile>
@@ -683,6 +694,26 @@
     <Page Include="Windows\ExtensionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>      
+    <Page Include="Views\PackageManager\Pages\PublishPackageFinishPage.xaml">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:Compile</Generator>
+    </Page>   
+    <Page Include="Views\PackageManager\Pages\PublishPackagePreviewPage.xaml">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:Compile</Generator>
+    </Page>   
+    <Page Include="Views\PackageManager\Pages\PublishPackagePublishPage.xaml">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:Compile</Generator>
+    </Page>   
+    <Page Include="Views\PackageManager\Pages\PublishPackageReadyToPublishPage.xaml">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:Compile</Generator>
+    </Page>   
+    <Page Include="Views\PackageManager\Pages\PublishPackageSelectPage.xaml">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -947,6 +978,7 @@
     <Resource Include="UI\Images\NodeStates\package-64px.png" />
     <Resource Include="UI\Images\PackageManager\empty-state-first-use-light-gray.png" />
     <Resource Include="UI\Images\question-hover-blue-16px.png" />
+    <Resource Include="UI\Images\remove-pk-16px.png" />
     <Resource Include="UI\Images\search_icon_20px.png" />
     <Resource Include="UI\Images\TitleBarButtons\close-darktheme-default-16px.png" />
     <Resource Include="UI\Images\TitleBarButtons\close-darktheme-disabled-16px.png" />
@@ -1736,6 +1768,21 @@
       <Generator>MSBuild:Compile</Generator>
     </None>
     <None Update="Views\PackageManager\Controls\NumericUpDownControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\PackageManager\Pages\PublishPackageFinishPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\PackageManager\Pages\PublishPackagePreviewPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\PackageManager\Pages\PublishPackagePublishPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\PackageManager\Pages\PublishPackageReadyToPublishPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Views\PackageManager\Pages\PublishPackageSelectPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
   </ItemGroup>

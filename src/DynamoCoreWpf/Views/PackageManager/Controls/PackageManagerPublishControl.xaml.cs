@@ -1,13 +1,14 @@
 using System;
-using System.Diagnostics;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Navigation;
 using Dynamo.Logging;
 using Dynamo.UI;
 using Dynamo.ViewModels;
 using DynamoUtilities;
+using Views.PackageManager.Pages;
 
 namespace Dynamo.PackageManager.UI
 {
@@ -18,6 +19,8 @@ namespace Dynamo.PackageManager.UI
     {
         public Window Owner { get; set; }
         public PublishPackageViewModel PublishPackageViewModel { get; set; }
+        private Dictionary<int, Page> PublishPages { get; set; }
+        public ObservableCollection<string> Breadcrumbs { get; } = new ObservableCollection<string>();
 
         public PackageManagerPublishControl()
         {
@@ -39,7 +42,26 @@ namespace Dynamo.PackageManager.UI
             PublishPackageViewModel.RequestShowFolderBrowserDialog += OnRequestShowFolderBrowserDialog;
             Logging.Analytics.TrackScreenView("PackageManager");
 
+            InitializePages();
+
+            this.mainFrame.NavigationService.Navigate(PublishPages[0]);
+
             this.Loaded -= InitializeContext;
+        }
+
+        private void InitializePages()
+        {
+            PublishPages = new Dictionary<int, Page>();
+
+            PublishPages[0] = new PublishPackagePublishPage();
+            PublishPages[1] = new PublishPackageSelectPage();
+            PublishPages[2] = new PublishPackagePreviewPage();
+            PublishPages[3] = new PublishPackageReadyToPublishPage();
+            PublishPages[4] = new PublishPackageFinishPage();
+
+            foreach(var pageEntry in PublishPages) { pageEntry.Value.DataContext = PublishPackageViewModel; }
+
+            Breadcrumbs.Add((string)PublishPages[0].Tag); // Initial breadcrumb
         }
 
         private void PackageViewModelOnPublishSuccess(PublishPackageViewModel sender)
@@ -75,21 +97,6 @@ namespace Dynamo.PackageManager.UI
 
         }
 
-        private void HostEntry_CheckStateChanged(object sender, RoutedEventArgs e)
-        {
-            PublishPackageViewModel.SelectedHosts.Clear();
-            PublishPackageViewModel.SelectedHostsString = string.Empty;
-            foreach (var host in PublishPackageViewModel.KnownHosts)
-            {
-                if (host.IsSelected)
-                {
-                    PublishPackageViewModel.SelectedHosts.Add(host.HostName);
-                    PublishPackageViewModel.SelectedHostsString += host.HostName + ", ";
-                }
-            }
-            // Format string since it will be displayed
-            PublishPackageViewModel.SelectedHostsString = PublishPackageViewModel.SelectedHostsString.Trim().TrimEnd(',');
-        }
 
         public void Dispose()
         {
@@ -117,22 +124,42 @@ namespace Dynamo.PackageManager.UI
             }
         }
 
-        /// <summary>
-        /// Navigates to a predefined URL in the user's default browser.
-        /// Currently used to make the MIT license text a clickable link.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
-        {
-            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
-            e.Handled = true;
-        }
-
         private void OnMoreInfoClicked(object sender, MouseButtonEventArgs e)
         {
             PublishPackageViewModel.DynamoViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Wpf.Properties.Resources.PublishPackageMoreInfoFile, UriKind.Relative)));
         }
 
+        internal void BreadcrumbButton_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            if (button != null)
+            {
+                switch (button.Tag)
+                {
+                    case "filesDialogButton":
+                    case "folderDialogButton":
+                        Breadcrumbs.Add((string)PublishPages[1].Tag);
+                        this.mainFrame.NavigationService.Navigate(PublishPages[1]);
+                        break;
+                    case var value when value == (string)PublishPages[0].Tag:
+                        int stepIndex = Breadcrumbs.IndexOf((string)PublishPages[0].Tag);
+                        for (int i = Breadcrumbs.Count - 1; i > stepIndex; i--)
+                        {
+                            Breadcrumbs.RemoveAt(i);
+                        }
+                        this.mainFrame.NavigationService.Navigate(PublishPages[0]);
+                        break;
+                    case var value when value == (string)PublishPages[1].Tag:
+                        stepIndex = Breadcrumbs.IndexOf((string)PublishPages[1].Tag);
+                        for (int i = Breadcrumbs.Count - 1; i > stepIndex; i--)
+                        {
+                            Breadcrumbs.RemoveAt(i);
+                        }
+                        this.mainFrame.NavigationService.Navigate(PublishPages[1]); 
+                        break;
+
+                }
+            }
+        }
     }
 }
