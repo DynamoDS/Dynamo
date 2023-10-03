@@ -17,6 +17,8 @@ namespace Dynamo.PackageManager.UI
     /// </summary>
     public partial class CustomBrowserControl : UserControl
     {
+        private PublishPackageViewModel PublishPackageViewModel;
+
         /// <summary>
         /// Binds the ItemsSource of the TreeView
         /// </summary>
@@ -29,7 +31,7 @@ namespace Dynamo.PackageManager.UI
         // Using a DependencyProperty as the backing store for Root.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty RootProperty =
             DependencyProperty.Register("Root", typeof(ObservableCollection<PackageItemRootViewModel>), typeof(CustomBrowserControl),
-                new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure, propertyChangedCallback: OnItemsSourceChanged));
+                new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.None, propertyChangedCallback: OnItemsSourceChanged));
 
         private static void OnItemsSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -38,14 +40,12 @@ namespace Dynamo.PackageManager.UI
             if (e.OldValue != null)
             {
                 var coll = (INotifyCollectionChanged)e.OldValue;
-                // Unsubscribe from CollectionChanged on the old collection of the DP-instance (!)
                 coll.CollectionChanged -= root.Root_CollectionChanged;
             }
 
             if (e.NewValue != null)
             {
                 var coll = (ObservableCollection<PackageItemRootViewModel>)e.NewValue;
-                // Subscribe to CollectionChanged on the new collection of the DP-instance (!)
                 coll.CollectionChanged += root.Root_CollectionChanged;
             }
         }
@@ -55,51 +55,43 @@ namespace Dynamo.PackageManager.UI
             UpdateCustomTreeView(sender);
         }
 
-        public ObservableCollection<PackageItemRootViewModel> SelectedFolder
-        {
-            get { return (ObservableCollection<PackageItemRootViewModel>)GetValue(SelectedFolderProperty); }
-            set { SetValue(SelectedFolderProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for Root.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty SelectedFolderProperty =
-            DependencyProperty.Register("SelectedFolder", typeof(ObservableCollection<PackageItemRootViewModel>), typeof(CustomBrowserControl),
-                new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
-
         public CustomBrowserControl()
         {
-            InitializeComponent();  
+            InitializeComponent();
         }
-
 
         private void UpdateCustomTreeView(object sender)
         {
             if ((sender as ObservableCollection<PackageItemRootViewModel>).Count == 0) return;
 
+            //UnselectSelectedItem();
+
             var treeView = this.customTreeView;
             treeView.ApplyTemplate();
+            treeView.UpdateLayout();
+            //treeView.Items.Refresh();
 
             var visualChildren = FindVisualChildren<TreeViewItem>(treeView);
-            if (visualChildren == null) return;
+            if (visualChildren == null || visualChildren.Count() == 0) return;
 
             ApplyLastTreeItem(visualChildren);
 
             // setting the visual styles for each separate 'root' folder
-            foreach(var firstItem in visualChildren)
+            foreach(var item in visualChildren)
             {
-                var rootItem = firstItem.Header as PackageItemRootViewModel;
+                var rootItem = item.Header as PackageItemRootViewModel;
                 if (rootItem.isChild) continue;
 
-                firstItem.IsExpanded = true;
-                firstItem.UpdateLayout();
-                firstItem.ApplyTemplate();
+                item.ApplyTemplate();
+                item.IsExpanded = true;
+                item.UpdateLayout();    
 
-                var hmarker = FindVisualChild<System.Windows.Shapes.Rectangle>(firstItem, "HorizontalMarker");
+                var hmarker = FindVisualChild<System.Windows.Shapes.Rectangle>(item, "HorizontalMarker");
                 if (hmarker != null) hmarker.Visibility = Visibility.Hidden;
-                var vmarker = FindVisualChild<System.Windows.Shapes.Rectangle>(firstItem, "VerticalMarker");
+                var vmarker = FindVisualChild<System.Windows.Shapes.Rectangle>(item, "VerticalMarker");
                 if (vmarker != null) vmarker.Visibility = Visibility.Hidden;
 
-                var children = FindVisualChildren<TreeViewItem>(firstItem);
+                var children = FindVisualChildren<TreeViewItem>(item);
                 if(children != null)
                 {
                     try
@@ -116,16 +108,47 @@ namespace Dynamo.PackageManager.UI
                     catch (Exception) { }
                 }
             }
+
+            visualChildren.First().IsSelected = true;
         }
 
+        private void UnselectSelectedItem()
+        {
+            if (this.customTreeView.SelectedItem != null)
+            {
+                var container = FindTreeViewSelectedItemContainer(this.customTreeView, this.customTreeView.SelectedItem);
+                if (container != null)
+                {
+                    container.IsSelected = false;
+                }
+            }
+        }
+
+        private static TreeViewItem FindTreeViewSelectedItemContainer(ItemsControl root, object selection)
+        {
+            var item = root.ItemContainerGenerator.ContainerFromItem(selection) as TreeViewItem;
+            if (item == null)
+            {
+                foreach (var subItem in root.Items)
+                {
+                    item = FindTreeViewSelectedItemContainer((TreeViewItem)root.ItemContainerGenerator.ContainerFromItem(subItem), selection);
+                    if (item != null)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            return item;
+        }
 
         private static void ApplyLastTreeItem(IEnumerable<TreeViewItem> treeViewItems) 
         {
             foreach (TreeViewItem item in treeViewItems)
             {
+                item.ApplyTemplate();
                 item.IsExpanded = true;
                 item.UpdateLayout();
-                item.ApplyTemplate();
 
                 var parent = FindParent<TreeViewItem>(item);
                 if (parent == null)
@@ -222,6 +245,8 @@ namespace Dynamo.PackageManager.UI
             if (selectedItem != null)
             {
                 var viewModel = this.DataContext as PublishPackageViewModel;
+                //viewModel.RootContents = new ObservableCollection<PackageItemRootViewModel>( selectedItem.ChildItems
+                //    .Where(x => !x.DependencyType.Equals(DependencyType.Folder)).ToList() );
                 viewModel.RootContents = selectedItem.ChildItems;
             }
         }
