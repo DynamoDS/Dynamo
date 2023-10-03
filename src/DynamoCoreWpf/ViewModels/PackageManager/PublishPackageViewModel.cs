@@ -776,6 +776,7 @@ namespace Dynamo.PackageManager
             Dependencies.CollectionChanged += DependenciesOnCollectionChanged;
             Assemblies = new List<PackageAssembly>();
             MarkdownFiles = new List<string>();
+            RootContents = new ObservableCollection<PackageItemRootViewModel>();
             PropertyChanged += ThisPropertyChanged;
             RefreshPackageContents();
             RefreshDependencyNames();

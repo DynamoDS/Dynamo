@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using Dynamo.Utilities;
 
 namespace Dynamo.PackageManager.UI
 {
@@ -67,12 +68,9 @@ namespace Dynamo.PackageManager.UI
         {
             if ((sender as ObservableCollection<PackageItemRootViewModel>).Count == 0) return;
 
-            //UnselectSelectedItem();
-
             var treeView = this.customTreeView;
             treeView.ApplyTemplate();
             treeView.UpdateLayout();
-            //treeView.Items.Refresh();
 
             var visualChildren = FindVisualChildren<TreeViewItem>(treeView);
             if (visualChildren == null || visualChildren.Count() == 0) return;
@@ -113,18 +111,6 @@ namespace Dynamo.PackageManager.UI
             }
 
             visualChildren.First().IsSelected = true;
-        }
-
-        private void UnselectSelectedItem()
-        {
-            if (this.customTreeView.SelectedItem != null)
-            {
-                var container = FindTreeViewSelectedItemContainer(this.customTreeView, this.customTreeView.SelectedItem);
-                if (container != null)
-                {
-                    container.IsSelected = false;
-                }
-            }
         }
 
         private static TreeViewItem FindTreeViewSelectedItemContainer(ItemsControl root, object selection)
@@ -250,7 +236,8 @@ namespace Dynamo.PackageManager.UI
                 var viewModel = this.DataContext as PublishPackageViewModel;
                 //viewModel.RootContents = new ObservableCollection<PackageItemRootViewModel>( selectedItem.ChildItems
                 //    .Where(x => !x.DependencyType.Equals(DependencyType.Folder)).ToList() );
-                viewModel.RootContents = selectedItem.ChildItems;
+                viewModel.RootContents.Clear();
+                viewModel.RootContents.AddRange(selectedItem.ChildItems);
             }
         }
     }

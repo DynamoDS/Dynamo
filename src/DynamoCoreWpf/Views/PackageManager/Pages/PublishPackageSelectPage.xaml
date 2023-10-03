@@ -323,23 +323,22 @@
                                     Root="{Binding PackageContents, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
 
         <!--Files-->
-        <DataGrid Grid.Column="1"
+        <DataGrid x:Name="rootContentsDataGrid"
+                  Grid.Column="1"
                   Grid.Row="1"
                   Margin="0 0 20 0"
                   VerticalAlignment="Stretch"
                   CanUserReorderColumns="False"
+                  CanUserSortColumns="True"
                   ItemsSource="{Binding RootContents, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                  Sorting="DataGrid_Sorting"
                   Style="{StaticResource DataGrid}">
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow" BasedOn="{StaticResource DataGridRowStyle}">
                     <Style.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <!-- Change the visibility of the CheckBox when the mouse is over the row -->
                             <Setter Property="Tag" Value="Visible" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="False">
-                            <!-- Change the visibility of the CheckBox when the mouse is not over the row -->
                             <Setter Property="Tag" Value="Hidden" />
                         </Trigger>
                         <Trigger Property="IsSelected" Value="True">                            
@@ -352,7 +351,7 @@
                 <DataGridTemplateColumn Width="*"
                                         Header="{x:Static p:Resources.PublishPackageViewPackageName}"
                                         HeaderStyle="{StaticResource DataGridColumnHeaderText}"
-                                        SortDirection="Descending"
+                                        SortDirection="Ascending"
                                         IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
