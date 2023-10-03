@@ -69,7 +69,7 @@ jobs:
     if: github.event.label.name == 'tracked'
     steps:
       - name: Move tracked issue to Todo
-        uses: leonsteinhaeuser/project-beta-automations@v2.1.0
+        uses: leonsteinhaeuser/project-beta-automations@v2.2.1
         with:
           gh_token: ${{ env.gh_token }}
           organization: ${{ env.gh_organization }}
