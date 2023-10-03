@@ -52,7 +52,10 @@ namespace Dynamo.PackageManager.UI
 
         private void Root_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            UpdateCustomTreeView(sender);
+            Dispatcher.BeginInvoke((Action)(() =>
+            {
+                UpdateCustomTreeView(sender);
+            }));
         }
 
         public CustomBrowserControl()
