@@ -3,6 +3,8 @@ using Dynamo.Models;
 using Autodesk.Analytics.ADP;
 using Autodesk.Analytics.Core;
 using System;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace Dynamo.Logging
 {
@@ -11,6 +13,20 @@ namespace Dynamo.Logging
     /// </summary>
     class AnalyticsService
     {
+        private static readonly ManualResetEventSlim waitInit = new ManualResetEventSlim(false);
+        static AnalyticsService()
+        {
+            // Initialize the concrete class only when we initialize the Service.
+            // This will also load the Analytics.Net.ADP assembly
+            // We must initialize the ADPAnalyticsUI instance before the Analytics.Start call.
+            Task.Run(() =>
+            {
+                adpAnalyticsUI = new ADPAnalyticsUI();
+                Analytics.Start(new DynamoAnalyticsClient());
+                waitInit.Set();
+            });
+        }
+
         // Use the Analytics.Core interface so that we do not have to load the ADP assembly at this time.
         private static IAnalyticsUI adpAnalyticsUI;
         /// <summary>
@@ -28,20 +44,17 @@ namespace Dynamo.Logging
                 {
                     model.Logger.Log("Incompatible configuration: [IsTestMode] and [Analytics disabled] ");
                 }
+
+                ShutDown();
                 return;
             }
 
             if (isHeadless)
             {
+                ShutDown();
                 return;
             }
 
-            // Initialize the concrete class only when we initialize the Service.
-            // This will also load the Analytics.Net.ADP assembly
-            // We must initialize the ADPAnalyticsUI instance before the Analytics.Start call.
-            adpAnalyticsUI = new ADPAnalyticsUI();
-
-            Analytics.Start(new DynamoAnalyticsClient(model));
             model.WorkspaceAdded += OnWorkspaceAdded;
         }
 
@@ -92,7 +105,13 @@ namespace Dynamo.Logging
         /// </summary>
         internal static void ShutDown()
         {
-            Analytics.ShutDown();
+            Task.Run(() =>
+            {
+                waitInit.Wait();
+                adpAnalyticsUI = null;
+                Analytics.ShutDown();
+            });
+
         }
 
         /// <summary>

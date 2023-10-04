@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -36,7 +37,7 @@ namespace Dynamo.Wpf.Views
         // Used for tracking the manage package command event
         // This is not a command any more but we keep it
         // around in a compatible way for now
-        private IDisposable managePackageCommandEvent;
+        private Task<IDisposable> managePackageCommandEvent;
 
         //This list will be passed everytime that we create a new GroupStyle so the custom colors can remain
         internal ObservableCollection<CustomColorItem> stylesCustomColors;
@@ -367,7 +368,7 @@ namespace Dynamo.Wpf.Views
         {
             if (e.OriginalSource == e.Source)
             {
-                managePackageCommandEvent = Analytics.TrackCommandEvent("ManagePackage");
+                managePackageCommandEvent = Analytics.TrackTaskCommandEvent("ManagePackage");
             }
         }
 
@@ -375,7 +376,7 @@ namespace Dynamo.Wpf.Views
         {
             if (e.OriginalSource == e.Source)
             {
-                managePackageCommandEvent?.Dispose();
+                Analytics.EndTaskCommandEvent(managePackageCommandEvent);
             }
         }
 

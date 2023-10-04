@@ -486,7 +486,7 @@ namespace Dynamo.ViewModels
 
         public string Version
         {
-            get { return model.Version; }
+            get { return DynamoModel.Version; }
         }
 
         public string HostVersion
@@ -2762,7 +2762,7 @@ namespace Dynamo.ViewModels
         {
             OnRequestSaveImage(this, new ImageSaveEventArgs(parameters.ToString()));
 
-            Dynamo.Logging.Analytics.TrackCommandEvent("ImageCapture",
+            Dynamo.Logging.Analytics.TrackTaskCommandEvent("ImageCapture",
                 "NodeCount", CurrentSpace.Nodes.Count());
         }
 
@@ -3237,7 +3237,7 @@ namespace Dynamo.ViewModels
             {
                 BackgroundPreviewViewModel.ExportToSTL(_fileDialog.FileName, HomeSpace.Name);
 
-                Dynamo.Logging.Analytics.TrackCommandEvent("ExportToSTL");
+                Dynamo.Logging.Analytics.TrackTaskCommandEvent("ExportToSTL");
             }
         }
 

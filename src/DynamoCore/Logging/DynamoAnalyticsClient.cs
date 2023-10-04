@@ -1,5 +1,8 @@
 using System;
 using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Xml.Linq;
 using Autodesk.Analytics.ADP;
 using Autodesk.Analytics.Core;
 using Autodesk.Analytics.Events;
@@ -17,7 +20,7 @@ namespace Dynamo.Logging
             SessionId = Guid.NewGuid().ToString();
         }
 
-        public void Start(DynamoModel model)
+        public void Start()
         {
             StabilityCookie.Startup();
         }
@@ -70,6 +73,7 @@ namespace Dynamo.Logging
     /// </summary>
     class DynamoAnalyticsClient : IAnalyticsClient, IDisposable
     {
+        private readonly ManualResetEventSlim waitInit = new ManualResetEventSlim(false);
         /// <summary>
         /// A dummy IDisposable class
         /// </summary>
@@ -121,29 +125,28 @@ namespace Dynamo.Logging
         }
 
         /// <summary>
-        /// Constructs DynamoAnalyticsClient with given DynamoModel
+        /// Constructs DynamoAnalyticsClient for the current host.
         /// </summary>
-        /// <param name="dynamoModel">DynamoModel</param>
-        public DynamoAnalyticsClient(DynamoModel dynamoModel)
+        public DynamoAnalyticsClient()
         {
             //Set the preferences, so that we can get live value of analytics 
             //reporting approved status.
-            preferences = dynamoModel.PreferenceSettings;
+            preferences = Configuration.PreferenceSettings.Instance;
 
             if (Session == null) Session = new DynamoAnalyticsSession();
 
             //Setup Analytics service, and StabilityCookie.
-            Session.Start(dynamoModel);
+            Session.Start();
 
             //Dynamo app version.
-            var appversion = dynamoModel.AppVersion;
+            var appversion = DynamoModel.AppVersion;
 
-            var hostName = string.IsNullOrEmpty(dynamoModel.HostName) ? "Dynamo" : dynamoModel.HostName;
+            var hostName = string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName) ? "Dynamo" : DynamoModel.HostAnalyticsInfo.HostName;
 
-            hostInfo = new HostContextInfo() { ParentId = dynamoModel.HostAnalyticsInfo.ParentId, SessionId = dynamoModel.HostAnalyticsInfo.SessionId };
+            hostInfo = new HostContextInfo() { ParentId = DynamoModel.HostAnalyticsInfo.ParentId, SessionId = DynamoModel.HostAnalyticsInfo.SessionId };
 
             string buildId = String.Empty, releaseId = String.Empty;
-            if (Version.TryParse(dynamoModel.Version, out Version version))
+            if (Version.TryParse(DynamoModel.Version, out Version version))
             {
                 buildId = $"{version.Major}.{version.Minor}.{version.Build}"; // BuildId has the following format major.minor.build, ex: 2.5.1
                 releaseId = $"{version.Major}.{version.Minor}.0"; // ReleaseId has the following format: major.minor.0; ex: 2.5.0
@@ -162,15 +165,8 @@ namespace Dynamo.Logging
             }
         }
 
-        /// <summary>
-        /// Starts the client when DynamoModel is created. This method initializes
-        /// the Analytics service and application life cycle start is tracked.
-        /// </summary>
-        public void Start()
+        private void StartInternal()
         {
-            // Start Analytics service regardless of optin status.
-            // Each track event will be enabled/disabled based on the corresponding optin status.
-            // Ex. ADP will manage optin status internally
             if (preferences != null && !Analytics.DisableAnalytics)
             {
                 //Register trackers
@@ -182,66 +178,117 @@ namespace Dynamo.Logging
 
                 //If not ReportingAnalytics, then set the idle time as infinite so idle state is not recorded.
                 Service.StartUp(product, new UserInfo(Session.UserId), hostInfo, TimeSpan.FromMinutes(30));
-                TrackPreferenceInternal("ReportingAnalytics", "", ReportingAnalytics ? 1 : 0);
             }
+
+            waitInit.Set();
+        }
+        /// <summary>
+        /// Starts the client when DynamoModel is created. This method initializes
+        /// the Analytics service and application life cycle start is tracked.
+        /// </summary>
+        public void Start()
+        {
+            // Start Analytics service regardless of optin status.
+            // Each track event will be enabled/disabled based on the corresponding optin status.
+            // Ex. ADP will manage optin status internally
+            Task.Run(() => StartInternal());
+
+            TrackPreferenceInternal("ReportingAnalytics", "", ReportingAnalytics ? 1 : 0);
         }
 
         public void ShutDown()
         {
+            waitInit.Wait();
             Dispose();
         }
 
         public void TrackEvent(Actions action, Categories category, string description, int? value)
         {
-            if (!ReportingAnalytics) return;
+            Task.Run(() =>
+            {
+                waitInit.Wait();
+                {
+                    if (!ReportingAnalytics) return;
 
-            var e = AnalyticsEvent.Create(category.ToString(), action.ToString(), description, value);
-            e.Track();
+                    var e = AnalyticsEvent.Create(category.ToString(), action.ToString(), description, value);
+                    e.Track();
+                }
+            });
         }
 
         public void TrackPreference(string name, string stringValue, int? metricValue)
         {
-            if (!ReportingAnalytics) return;
+            Task.Run(() =>
+            {
+                waitInit.Wait();
+                {
+                    if (!ReportingAnalytics) return;
 
-            TrackPreferenceInternal(name, stringValue, metricValue);
+                    TrackPreferenceInternal(name, stringValue, metricValue);
+                }
+            });
         }
 
         private void TrackPreferenceInternal(string name, string stringValue, int? metricValue)
         {
-            var e = AnalyticsEvent.Create(Categories.Preferences.ToString(), name, stringValue, metricValue);
-            e.Track();
+            Task.Run(() =>
+            {
+                waitInit.Wait();
+                var e = AnalyticsEvent.Create(Categories.Preferences.ToString(), name, stringValue, metricValue);
+                e.Track();                
+            });
         }
 
         public void TrackTimedEvent(Categories category, string variable, TimeSpan time, string description = "")
         {
-            if (!ReportingAnalytics) return;
-
-            var e = new TimedEvent(time)
+            Task.Run(() =>
             {
-                Category = category.ToString(),
-                VariableName = variable,
-                Description = description
-            };
-            e.Track();
+                waitInit.Wait();
+                {
+                    if (!ReportingAnalytics) return;
+
+                    var e = new TimedEvent(time)
+                    {
+                        Category = category.ToString(),
+                        VariableName = variable,
+                        Description = description
+                    };
+                    e.Track();
+                }
+            });
         }
 
         public void TrackScreenView(string viewName)
         {
-            if (!ReportingAnalytics) return;
+            Task.Run(() =>
+            {
+                waitInit.Wait();
+                {
+                    if (!ReportingAnalytics) return;
 
-            var e = new ScreenViewEvent(viewName);
-            e.Track();
+                    var e = new ScreenViewEvent(viewName);
+                    e.Track();
+                }
+            });
         }
 
         public void TrackException(Exception ex, bool isFatal)
         {
-            if (!ReportingAnalytics) return;
+            Task.Run(() =>
+            {
+                waitInit.Wait();
+                {
+                    if (!ReportingAnalytics) return;
 
-            Service.TrackException(ex, isFatal);
+                    Service.TrackException(ex, isFatal);
+                }
+            });
         }
 
+        [Obsolete("Method will become private in Dynamo 3.0, please use CreateTaskTimedEvent")]
         public IDisposable CreateTimedEvent(Categories category, string variable, string description, int? value)
         {
+            waitInit.Wait();                
             if (!ReportingAnalytics) return Disposable;
 
             var e = new TimedEvent()
@@ -255,8 +302,16 @@ namespace Dynamo.Logging
             return e;
         }
 
+        public Task<IDisposable> CreateTaskTimedEvent(Categories category, string variable, string description, int? value)
+        {
+            return Task.Run(() => CreateTimedEvent(category, variable, description, value));
+        }
+
+        [Obsolete("Property will become private in Dynamo 3.0, please use CreateTaskCommandEvent")]
         public IDisposable CreateCommandEvent(string name, string description, int? value)
         {
+            waitInit.Wait();
+
             if (!ReportingAnalytics) return Disposable;
 
             var e = new CommandEvent(name) { Description = description, Value = value };
@@ -264,8 +319,24 @@ namespace Dynamo.Logging
             return e;
         }
 
+        public Task<IDisposable> CreateTaskCommandEvent(string name, string description, int? value)
+        {
+            return Task.Run(() => CreateCommandEvent(name, description, value));
+        }
+
+        public void EndEventTask(Task<IDisposable> taskToEnd)
+        {
+            Task.Run(() =>
+            {
+                taskToEnd.Wait();
+                taskToEnd.Result.Dispose();
+            });
+        }
+
+        [Obsolete("Property will become private in Dynamo 3.0, please use TrackTaskFileOperationEvent")]
         public IDisposable TrackFileOperationEvent(string filepath, Actions operation, int size, string description)
         {
+            waitInit.Wait();
             if (!ReportingAnalytics) return Disposable;
 
             var e = new FileOperationEvent()
@@ -276,7 +347,13 @@ namespace Dynamo.Logging
                 Description = description
             };
             e.Track();
+
             return e;
+        }
+
+        public Task<IDisposable> TrackTaskFileOperationEvent(string filepath, Actions operation, int size, string description)
+        {
+            return Task.Run(() => TrackFileOperationEvent(filepath, operation, size, description));
         }
 
         private FileOperationEvent.Actions FileAction(Actions operation)

@@ -1428,7 +1428,7 @@ namespace Dynamo.Controls
 
         private void DynamoViewModelRequestRequestPackageManagerPublish(PublishPackageViewModel model)
         {
-            var cmd = Analytics.TrackCommandEvent("PublishPackage");
+            var cmd = Analytics.TrackTaskCommandEvent("PublishPackage");
             if (_pubPkgView == null)
             {
                 _pubPkgView = new PublishPackageView(model)
@@ -1436,7 +1436,7 @@ namespace Dynamo.Controls
                     Owner = this,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
-                _pubPkgView.Closed += (sender, args) => { _pubPkgView = null; cmd.Dispose(); };
+                _pubPkgView.Closed += (sender, args) => { _pubPkgView = null; Analytics.EndTaskCommandEvent(cmd) ; };
                 _pubPkgView.Show();
 
                 if (_pubPkgView.IsLoaded && IsLoaded) _pubPkgView.Owner = this;
@@ -1454,7 +1454,7 @@ namespace Dynamo.Controls
             if (!DisplayTermsOfUseForAcceptance())
                 return; // Terms of use not accepted.
 
-            var cmd = Analytics.TrackCommandEvent("SearchPackage");
+            var cmd = Analytics.TrackTaskCommandEvent("SearchPackage");
 
             // The package search view model is shared and can be shared by resources at the moment
             // If it hasn't been initialized yet, we do that here
@@ -1475,7 +1475,7 @@ namespace Dynamo.Controls
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
 
-                _searchPkgsView.Closed += (sender, args) => { _searchPkgsView = null; cmd.Dispose(); };
+                _searchPkgsView.Closed += (sender, args) => { _searchPkgsView = null; Analytics.EndTaskCommandEvent(cmd); };
                 _searchPkgsView.Show();
 
                 if (_searchPkgsView.IsLoaded && IsLoaded) _searchPkgsView.Owner = this;
@@ -2202,7 +2202,7 @@ namespace Dynamo.Controls
             if (!DisplayTermsOfUseForAcceptance())
                 return; // Terms of use not accepted.
 
-            var cmd = Analytics.TrackCommandEvent("PackageManager");
+            var cmd = Analytics.TrackTaskCommandEvent("PackageManager");
             if (_pkgSearchVM == null)
             {
                 _pkgSearchVM = new PackageManagerSearchViewModel(dynamoViewModel.PackageManagerClientViewModel);
@@ -2221,7 +2221,7 @@ namespace Dynamo.Controls
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
 
-                packageManagerWindow.Closed += (sender, args) => { packageManagerWindow = null; cmd.Dispose(); };
+                packageManagerWindow.Closed += (sender, args) => { packageManagerWindow = null; Analytics.EndTaskCommandEvent(cmd); };
                 packageManagerWindow.Show();
 
                 if (packageManagerWindow.IsLoaded && IsLoaded) packageManagerWindow.Owner = this;

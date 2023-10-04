@@ -224,6 +224,11 @@ namespace Dynamo.Applications
         /// <returns></returns>
         public static DynamoModel MakeCLIModel(string asmPath, string userDataFolder, string commonDataFolder, HostAnalyticsInfo info = new HostAnalyticsInfo())
         {
+            if (string.IsNullOrEmpty(info.HostName))
+            {
+                info.HostName = "Dynamo";
+            }
+
             // Preload ASM and display corresponding message on splash screen
             DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenPreLoadingAsm, 10));
             var isASMloaded = PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
@@ -243,6 +248,11 @@ namespace Dynamo.Applications
         /// <returns></returns>
         public static DynamoModel MakeCLIModel(string asmPath, string userDataFolder, string commonDataFolder, HostAnalyticsInfo info = new HostAnalyticsInfo(), bool isServiceMode = false)
         {
+            if (string.IsNullOrEmpty(info.HostName))
+            {
+                info.HostName = "Dynamo";
+            }
+
             IPathResolver pathResolver = CreatePathResolver(false, string.Empty, string.Empty, string.Empty);
             PathManager.Instance.AssignHostPathAndIPathResolver(string.Empty, pathResolver);
 
@@ -282,6 +292,11 @@ namespace Dynamo.Applications
         /// <returns></returns>
         public static DynamoModel MakeModel(bool CLImode, string asmPath = "", HostAnalyticsInfo info = new HostAnalyticsInfo())
         {
+            if (string.IsNullOrEmpty(info.HostName))
+            {
+                info.HostName = "Dynamo";
+            }
+
             IPathResolver pathResolver = CreatePathResolver(false, string.Empty, string.Empty, string.Empty);
             PathManager.Instance.AssignHostPathAndIPathResolver(string.Empty, pathResolver);
 
@@ -398,6 +413,11 @@ namespace Dynamo.Applications
             HostAnalyticsInfo info = new HostAnalyticsInfo(),
             bool isServiceMode = false)
         {
+            if (string.IsNullOrEmpty(info.HostName))
+            {
+                info.HostName = "Dynamo";
+            }
+
             var config = new DynamoModel.DefaultStartConfiguration
             {
                 GeometryFactoryPath = geometryFactoryPath,

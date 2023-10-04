@@ -115,7 +115,7 @@ namespace Dynamo.Extensions
             this.pathManager = dynamoModel.PathManager;
             this.libraryLoader = new ExtensionLibraryLoader(dynamoModel);
             this.customNodeManager = dynamoModel.CustomNodeManager;
-            this.dynamoVersion = new Version(dynamoModel.Version);
+            this.dynamoVersion = new Version(DynamoModel.Version);
             this.preferences = dynamoModel.PreferenceSettings;
             this.linterManager = dynamoModel.LinterManager;
             this.IsGeometryLibraryLoaded = dynamoModel.IsASMLoaded;

@@ -199,7 +199,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     This version of Dynamo.
         /// </summary>
-        public string Version
+        public static string Version
         {
             get { return DefaultUpdateManager.GetProductVersion().ToString(); }
         }
@@ -218,7 +218,7 @@ namespace Dynamo.Models
         /// <summary>
         /// Host analytics info
         /// </summary>
-        public HostAnalyticsInfo HostAnalyticsInfo { get; set; }
+        public static HostAnalyticsInfo HostAnalyticsInfo { get; set; }
 
         /// <summary>
         /// Boolean indication of launching Dynamo in service mode, this mode is optimized for minimal launch time, mostly leveraged by CLI or WPF CLI.
@@ -283,7 +283,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     The application version string for analytics reporting APIs
         /// </summary>
-        internal virtual string AppVersion
+        internal static string AppVersion
         {
             get
             {
@@ -1643,6 +1643,7 @@ namespace Dynamo.Models
 #if DEBUG_LIBRARY
             DumpLibrarySnapshot(functionGroups);
 #endif
+
 
             // Load local custom nodes and locally imported libraries
             foreach (var path in pathManager.DefinitionDirectories)
