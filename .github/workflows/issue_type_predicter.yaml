@@ -23,7 +23,7 @@ jobs:
       acceptable_missing_info: 1
     steps:
       #Removes conflicting characters before using the issue content as a script parameter
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Remove conflicting chars
         env:
           ISSUE_BODY: ${{github.event.issue.body}}
@@ -66,7 +66,7 @@ jobs:
       #Now checkout the IssuesTypePredicter source code from the repo https://github.com/DynamoDS/IssuesTypePredicter
       - name: Checkout IssuesTypePredicter
         if: env.analysis_response == 'Valid'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: DynamoDS/IssuesTypePredicter
           path: IssuesTypePredicter

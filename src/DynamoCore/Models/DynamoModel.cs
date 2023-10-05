@@ -1008,7 +1008,7 @@ namespace Dynamo.Models
             State = DynamoModelState.StartedUIless;
             // This event should only be raised at the end of this method.
             DynamoReady(new ReadyParams(this));
-            // Initialize searcher, if the applyAllDeletes is true all buffered deletes on documents will be applied (made visible) in the returned reader
+            // Write index to disk only once
             LuceneUtility.CommitWriterChanges();
         }
 

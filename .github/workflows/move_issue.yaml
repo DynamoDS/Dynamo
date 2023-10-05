@@ -24,6 +24,7 @@ env:
   gh_organization: DynamoDS
   gh_token: ${{ secrets.DYNAMO_ISSUES_TOKEN }}
   project_id: 4
+  project_name: 'Dynamo Issues'
 
 jobs:
   issue_labeled_as_revit:
@@ -31,9 +32,11 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.label.name == 'Revit'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Transfer issue to DynamoRevit Repository
-        run: gh issue transfer ${{ github.event.issue.number }} DynamoDS/DynamoRevit
+        run: |
+            gh issue edit ${{ github.event.issue.number }} --remove-project "${{ env.project_name }}"
+            gh issue transfer ${{ github.event.issue.number }} DynamoDS/DynamoRevit
         env:
           GITHUB_TOKEN: ${{ env.gh_token }}
   issue_labeled_as_dynamo_advance_steel:
@@ -41,9 +44,11 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.label.name == 'Advance-Steel'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Transfer issue to Dynamo-Advance-Steel Repository
-        run: gh issue transfer ${{ github.event.issue.number }} DynamoDS/Dynamo-Advance-Steel
+        run: |
+            gh issue edit ${{ github.event.issue.number }} --remove-project "${{ env.project_name }}"
+            gh issue transfer ${{ github.event.issue.number }} DynamoDS/Dynamo-Advance-Steel
         env:
           GITHUB_TOKEN: ${{ env.gh_token }}
   issue_labeled_as_wishlist:
@@ -51,9 +56,11 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.label.name == 'Wishlist'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Transfer issue to DynamoWishlist Repository
-        run: gh issue transfer ${{ github.event.issue.number }} DynamoDS/DynamoWishlist
+        run: |
+            gh issue edit ${{ github.event.issue.number }} --remove-project "${{ env.project_name }}"
+            gh issue transfer ${{ github.event.issue.number }} DynamoDS/DynamoWishlist
         env:
           GITHUB_TOKEN: ${{ env.gh_token }}
   issue_labeled_as_tracked:
@@ -62,7 +69,7 @@ jobs:
     if: github.event.label.name == 'tracked'
     steps:
       - name: Move tracked issue to Todo
-        uses: leonsteinhaeuser/project-beta-automations@v2.1.0
+        uses: leonsteinhaeuser/project-beta-automations@v2.2.1
         with:
           gh_token: ${{ env.gh_token }}
           organization: ${{ env.gh_organization }}

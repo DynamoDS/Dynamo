@@ -99,13 +99,6 @@ namespace TestServices
             {
                 RequestedLibraryVersion2 = version;
             }
-            // else try to load the older one and convert it to a known precise version.
-            else if (Enum.TryParse<LibraryVersion>(versionStrOld, out libVersion))
-            {
-                var realVersion = Preloader.MapLibGVersionEnumToFullVersion(libVersion);
-                RequestedLibraryVersion2 = realVersion;
-
-            }
             // find an installed ASM version if we could not find a specified version in the config file.
             else
             {

@@ -21,7 +21,7 @@ All other brand names, product names or trademarks belong to their respective ho
 Autodesk Cloud and Desktop Components
 This Product or Service may incorporate or use background Autodesk online and desktop technology components.  For information about these components, see Autodesk Cloud Platform Components and Autodesk Desktop Platform Components.
 
-LIBG, ProtoGeometry v.2.7.0, Analytics.NET, ADP, GRegRevitAuth, AGET, IDSDK, and IDSDK Wrapper are closed source files licensed by Autodesk under the license that can be found here https://github.com/DynamoDS/Dynamo/tree/master/doc/distrib/Autodesk.rtf
+LIBG, ProtoGeometry v.2.7.0, Analytics.NET, ADP, GRegRevitAuth, AGET, IDSDK, IDSDK Wrapper, and Autodesk.GeometryPrimitive are closed source files licensed by Autodesk under the license that can be found here https://github.com/DynamoDS/Dynamo/tree/master/doc/distrib/Autodesk.rtf
 
 
 Third-Party Trademarks, Software Credits and Attributions

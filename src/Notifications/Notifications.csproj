@@ -58,7 +58,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="FontAwesome5" Version="2.1.11" />
-		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" />
+		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2045.28" />
 	</ItemGroup>
     <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
         <Reference Include="PresentationCore" />
