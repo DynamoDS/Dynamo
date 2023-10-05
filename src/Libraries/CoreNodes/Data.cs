@@ -83,24 +83,29 @@ namespace DSCore
 
                 switch (typeid)
                 {
-                    case "autodesk.geometry:boundingbox3d-1.0.0":
-                        return BoundingBox.FromJson(jObject.ToString());
-
-                    case "dynamo.goemetry:mesh-1.0.0":
-                        return Mesh.FromJson(jObject.ToString());
-
-                    case "autodesk.math:point3d-1.0.0":
-                    case "dynamo.geometry:sab-1.0.0":
-                    case "dynamo.goemetry:tsm-1.0.0":
-                    case string geoId when geoId.Contains("autodesk.geometry"):
-                        return Geometry.FromJson(jObject.ToString());
-
+                    //autodesk.math to abstract ProtoGeometry types
                     case "autodesk.math:vector3d-1.0.0":
                         return Vector.FromJson(jObject.ToString());
 
                     case "autodesk.math:matrix44d-1.0.0":
                         return CoordinateSystem.FromJson(jObject.ToString());
 
+                    //autodesk.geometry to abstract ProtoGeometry types
+                    case "autodesk.geometry:boundingbox3d-1.0.0":
+                        return BoundingBox.FromJson(jObject.ToString());
+
+                    case "dynamo.goemetry:mesh-1.0.0":
+                        return Mesh.FromJson(jObject.ToString());
+
+                    //types supported by Goemetry.FromJson
+                    case "autodesk.math:point3d-1.0.0":
+                    case "dynamo.geometry:sab-1.0.0":
+                    case "dynamo.goemetry:tsm-1.0.0":
+                    case "dynamo.geometry:rectangle-1.0.0":
+                    case string geoId when geoId.Contains("autodesk.geometry"):
+                        return Geometry.FromJson(jObject.ToString());
+
+                    //Dynamo types
                     case "dynamo.graphics:color-1.0.0":
                         return Color.ByARGB(
                         (int)jObject["A"],
