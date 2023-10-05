@@ -129,11 +129,11 @@ namespace DSCore
 
                         return null;
 
-                    case "dynamo.data:location-1.0.0":
-                        return DynamoUnits.Location.ByLatitudeAndLongitude(
-                        (double)jObject["Latitude"],
-                        (double)jObject["Longitude"],
-                        (string)jObject["Name"]);
+                    //case "dynamo.data:location-1.0.0":
+                    //    return DynamoUnits.Location.ByLatitudeAndLongitude(
+                    //    (double)jObject["Latitude"],
+                    //    (double)jObject["Longitude"],
+                    //    (string)jObject["Name"]);
 
                     default:
                         return null;
@@ -165,7 +165,7 @@ namespace DSCore
                     new DictConverter(),
                     new DesignScriptGeometryConverter(),
                     new ColorConveter(),
-                    new LocationConverter(),
+                    //new LocationConverter(),
                     new ImageConverter()
                 });
         }
@@ -290,31 +290,31 @@ namespace DSCore
             }
         }
 
-        private class LocationConverter : JsonConverter
-        {
-            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-            {
-                var jobject = JObject.FromObject(value);
-                jobject.Add("$typeid", "dynamo.data:location-1.0.0");
+        //private class LocationConverter : JsonConverter
+        //{
+        //    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        //    {
+        //        var jobject = JObject.FromObject(value);
+        //        jobject.Add("$typeid", "dynamo.data:location-1.0.0");
 
-                jobject.WriteTo(writer);
-            }
+        //        jobject.WriteTo(writer);
+        //    }
 
-            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-            {
-                throw new NotImplementedException("Unnecessary because CanRead is false. The type will skip the converter.");
-            }
+        //    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        //    {
+        //        throw new NotImplementedException("Unnecessary because CanRead is false. The type will skip the converter.");
+        //    }
 
-            public override bool CanRead
-            {
-                get { return false; }
-            }
+        //    public override bool CanRead
+        //    {
+        //        get { return false; }
+        //    }
 
-            public override bool CanConvert(Type objectType)
-            {
-                return typeof(DynamoUnits.Location) == objectType;
-            }
-        }
+        //    public override bool CanConvert(Type objectType)
+        //    {
+        //        return typeof(DynamoUnits.Location) == objectType;
+        //    }
+        //}
 
         private class ImageConverter : JsonConverter
         {
