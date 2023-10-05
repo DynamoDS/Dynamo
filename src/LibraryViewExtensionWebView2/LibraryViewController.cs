@@ -357,13 +357,43 @@ namespace Dynamo.LibraryViewExtensionWebView2
             LogToDynamoConsole(msg);
         }
 
+        /// <summary>
+        /// Collect the main and modifier key from KeyEventArgs in order to pass
+        /// that data to eventDispatcher (located in library.html) which is responsible
+        /// for binding KeyDown events between dynamo and webview instances
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        ///
+
+        // This enum is for matching the modifier keys between C# and javaScript
+        enum ModifiersJS
+        {
+            none = 0,
+            altKey = 1,
+            ctrlKey = 2,
+            shiftKey = 4
+        }
+
+        // This enum is for define the events to be tracked
+        enum EventsTracked
+        {
+            Delete,
+            C
+        }
+
         private void Browser_KeyDown(object sender, KeyEventArgs e)
 
         {
-            if (e.Key == Key.Delete)
+            if (!Enum.IsDefined(typeof(EventsTracked), e.Key.ToString())) return;
+
+            var synteticEventData = new Dictionary<string, string>
             {
-                _ = ExecuteScriptFunctionAsync(browser, "eventDispatcher");
-            }
+                [Enum.GetName(typeof(ModifiersJS), e.KeyboardDevice.Modifiers).ToString()] = "true",
+                ["key"] = e.Key.ToString()
+            };
+
+            _ = ExecuteScriptFunctionAsync(browser, "eventDispatcher", synteticEventData);
         }
 
 

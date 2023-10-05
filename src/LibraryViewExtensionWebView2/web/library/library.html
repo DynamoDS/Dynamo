@@ -387,13 +387,14 @@
              window.chrome.webview.postMessage(JSON.stringify({ "func": "ResizedEvent", "data": "" }));
         }
 
-        function eventDispatcher() {
+        //This function will be dispatching javaScript keydown events based on Dynamo keydown events
+        function eventDispatcher(eventKeyData) {
 
             const kbEvent = new KeyboardEvent('keydown', {
                 bubbles: true,
                 cancelable: true,
-                key: 'Delete',
-             });
+                ...eventKeyData
+            });
 
             document.dispatchEvent(kbEvent);
         }
