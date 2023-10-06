@@ -921,7 +921,7 @@ namespace Dynamo.Models
 
             CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager, LibraryServices);
 
-            LuceneSearch.LuceneUtilityNodeSearch = new LuceneSearchUtility(LuceneSearchUtility.DefaultNodeIndexStartConfig);
+            LuceneSearch.LuceneUtilityNodeSearch = new LuceneSearchUtility(this, LuceneSearchUtility.DefaultNodeIndexStartConfig);
 
             InitializeCustomNodeManager();
 

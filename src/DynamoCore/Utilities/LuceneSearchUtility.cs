@@ -35,6 +35,8 @@ namespace Dynamo.Utilities
     /// </summary>
     internal class LuceneSearchUtility
     {
+        internal DynamoModel dynamoModel;
+
         /// <summary>
         /// Index fields that were added to the document
         /// </summary>
@@ -94,8 +96,9 @@ namespace Dynamo.Utilities
         /// Constructor for LuceneSearchUtility, it will use the storage type passed as parameter
         /// </summary>
         /// <param name="config"></param>
-        internal LuceneSearchUtility(LuceneStartConfig config)
+        internal LuceneSearchUtility(DynamoModel model, LuceneStartConfig config)
         {
+            dynamoModel = model;
             // If under test mode, use the default StartConfig - RAM storage type and empty directory
             startConfig = DynamoModel.IsTestMode? DefaultStartConfig : config;
             InitializeLuceneConfig();
@@ -109,7 +112,7 @@ namespace Dynamo.Utilities
             addedFields = new List<string>();
 
             DirectoryInfo luceneUserDataFolder;
-            var userDataDir = new DirectoryInfo(PathManager.Instance.UserDataDirectory);
+            var userDataDir = new DirectoryInfo(dynamoModel.PathManager.UserDataDirectory);
             luceneUserDataFolder = userDataDir.Exists ? userDataDir : null;
             string indexPath = Path.Combine(luceneUserDataFolder.FullName, LuceneConfig.Index, startConfig.Directory);
 
@@ -125,19 +128,14 @@ namespace Dynamo.Utilities
             try
             {
                 // Create an analyzer to process the text
-                Analyzer = CreateAnalyzerByLanguage(PreferenceSettings.Instance.Locale);
+                Analyzer = CreateAnalyzerByLanguage(dynamoModel.PreferenceSettings.Locale);
             }
             catch (Exception)
             {
                 Analyzer = new LuceneCustomAnalyzer(LuceneConfig.LuceneNetVersion);
             }
 
-            // Check if Lucene index file exists, if not create it
-            // TODO: Add a check to see if the index is corrupted and recreate it if it is
-            // if (!DirectoryReader.IndexExists(indexDir))
-            {
-                CreateLuceneIndexWriter();    
-            }
+            CreateLuceneIndexWriter();    
         }
 
         /// <summary>
@@ -156,9 +154,15 @@ namespace Dynamo.Utilities
             }
             catch (LockObtainFailedException ex)
             {
-                writer = new IndexWriter(new RAMDirectory(), indexConfig);
-                // DisposeWriter();
-                (ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger) as DynamoLogger).LogError($"LuceneNET LockObtainFailedException {ex}, switching to RAM mode.");
+                try
+                {
+                    writer = new IndexWriter(new RAMDirectory(), indexConfig);
+                    (ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger) as DynamoLogger).LogError($"LuceneNET LockObtainFailedException {ex}, switching to RAM mode.");
+                }
+                catch(Exception)
+                {
+                    DisposeWriter();
+                }
             }
             catch (Exception ex)
             {

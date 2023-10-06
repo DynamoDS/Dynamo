@@ -621,7 +621,7 @@ namespace Dynamo.PackageManager
         {
             if(LuceneUtility == null)
             {
-                LuceneSearch.LuceneUtilityPackageManager = new LuceneSearchUtility(LuceneSearchUtility.DefaultPkgIndexStartConfig);
+                LuceneSearch.LuceneUtilityPackageManager = new LuceneSearchUtility(PackageManagerClientViewModel.DynamoViewModel.Model, LuceneSearchUtility.DefaultPkgIndexStartConfig);
             }
         }
         
