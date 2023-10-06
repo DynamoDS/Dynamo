@@ -63,7 +63,17 @@ namespace Dynamo.Utilities
         /// <summary>
         /// Default start config for Lucene, it will use RAM storage type and empty directory
         /// </summary>
-        internal static LuceneStartConfig DefaultStartConfig = new LuceneStartConfig();
+        internal static readonly LuceneStartConfig DefaultStartConfig = new LuceneStartConfig();
+
+        /// <summary>
+        /// Start config for node index, it will use file storage type and node index directory
+        /// </summary>
+        internal static readonly LuceneStartConfig DefaultNodeIndexStartConfig = new LuceneStartConfig(LuceneSearchUtility.LuceneStorage.FILE_SYSTEM, LuceneConfig.NodesIndexingDirectory);
+
+        /// <summary>
+        /// Start config for package index, it will use file storage type and package index directory
+        /// </summary>
+        internal static readonly LuceneStartConfig DefaultPkgIndexStartConfig = new LuceneStartConfig(LuceneSearchUtility.LuceneStorage.FILE_SYSTEM, LuceneConfig.PackagesIndexingDirectory);
 
         public enum LuceneStorage
         {
@@ -88,10 +98,11 @@ namespace Dynamo.Utilities
         {
             // If under test mode, use the default StartConfig - RAM storage type and empty directory
             startConfig = DynamoModel.IsTestMode? DefaultStartConfig : config;
+            InitializeLuceneConfig();
         }
 
         /// <summary>
-        /// Initialize Lucene config file writer.
+        /// Initialize Lucene index writer based on start config.
         /// </summary>
         internal void InitializeLuceneConfig()
         {
@@ -111,9 +122,15 @@ namespace Dynamo.Utilities
                 indexDir = FSDirectory.Open(indexPath);
             }
 
-
-            // Create an analyzer to process the text
-            Analyzer = CreateAnalyzerByLanguage(PreferenceSettings.Instance.Locale);
+            try
+            {
+                // Create an analyzer to process the text
+                Analyzer = CreateAnalyzerByLanguage(PreferenceSettings.Instance.Locale);
+            }
+            catch (Exception)
+            {
+                Analyzer = new LuceneCustomAnalyzer(LuceneConfig.LuceneNetVersion);
+            }
 
             // Check if Lucene index file exists, if not create it
             // TODO: Add a check to see if the index is corrupted and recreate it if it is
@@ -456,12 +473,12 @@ namespace Dynamo.Utilities
     internal class LuceneStartConfig
     {
         /// <summary>
-        /// Lucene Index Directory name, e.g. Nodes
+        /// Lucene Index Directory name, e.g. Nodes, Packages
         /// </summary>
         internal string Directory { get; set; }
 
         /// <summary>
-        /// Current Lucene Index Storage type, it could be RAM or FILE_SYSTEM
+        /// Current Lucene Index Storage type, it could be either RAM or FILE_SYSTEM
         /// </summary>
         internal LuceneSearchUtility.LuceneStorage StorageType { get; set; }
 

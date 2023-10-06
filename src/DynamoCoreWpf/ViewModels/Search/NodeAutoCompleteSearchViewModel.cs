@@ -683,7 +683,6 @@ namespace Dynamo.ViewModels
                 else
                 {
                     LuceneSearch.LuceneUtilityNodeAutocomplete = new LuceneSearchUtility(LuceneSearchUtility.DefaultStartConfig);
-                    LuceneUtility.InitializeLuceneConfig();
 
                     //Memory indexing process for Node Autocomplete (indexing just the nodes returned by the NodeAutocomplete service so we limit the scope of the query search)
                     foreach (var node in searchElementsCache.Select(x => x.Model))
