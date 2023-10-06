@@ -653,6 +653,11 @@ namespace Dynamo.ViewModels
                 }
                 File.WriteAllText(filePath, saveContent);
 
+                Tuple<string,JObject> jsonObjectWithoutPIIData = PIIDetector.RemovePIIData(jo);
+                // Creating a graph without PPIData in the same directory for testing purpose, the name is the Uuid from the original one.
+                string directoryFile = Path.GetDirectoryName(filePath);
+                File.WriteAllText(Path.Combine(directoryFile , jsonObjectWithoutPIIData.Item1 + ".dyn"), jsonObjectWithoutPIIData.Item2.ToString());
+
                 // Handle Workspace or CustomNodeWorkspace related non-serialization internal logic
                 // Only for actual save, update file path and recent file list
                 if (!isBackup)
