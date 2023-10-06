@@ -1008,6 +1008,8 @@ namespace Dynamo.Models
             DynamoReady(new ReadyParams(this));
             // Write index to disk only once
             LuceneUtility.CommitWriterChanges();
+            //The writer have to be disposed at DynamoModel level due that we could index package-nodes as new packages are installed
+            LuceneUtility.DisposeWriter();
         }
 
         private void SearchModel_ItemProduced(NodeModel node)
@@ -1396,12 +1398,8 @@ namespace Dynamo.Models
                 PreferenceSettings.MessageLogged -= LogMessage;
             }
 
-            //The writer have to be disposed at DynamoModel level due that we could index package-nodes as new packages are installed
-            LuceneUtility.DisposeWriter();
-
             // Lucene disposals (just if LuceneNET was initialized)
-            LuceneUtility.indexDir?.Dispose();
-            LuceneUtility.dirReader?.Dispose();
+            LuceneUtility.DisposeAll();
 
 #if DEBUG
             CurrentWorkspace.NodeAdded -= CrashOnDemand.CurrentWorkspace_NodeAdded;

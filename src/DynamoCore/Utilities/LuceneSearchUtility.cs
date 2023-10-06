@@ -401,6 +401,17 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
+        /// Dispose all the Lucene objects
+        /// </summary>
+        internal void DisposeAll()
+        {
+            writer?.Dispose();
+            dirReader?.Dispose();
+            indexDir?.Dispose();
+            Analyzer?.Dispose();
+        }
+
+        /// <summary>
         /// Commit the changes made to the Lucene index
         /// </summary>
         internal void CommitWriterChanges()
