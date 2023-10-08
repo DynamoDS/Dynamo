@@ -129,5 +129,30 @@ namespace Dynamo.PackageManager.UI
             cm.PlacementTarget = sender as Button;
             cm.IsOpen = true;
         }
+
+
+
+        /// <summary>
+        /// Fires when the user clicks the 'X' button to dismiss a package toast notification.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CloseToastButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            var PkgSearchVM = this.DataContext as PackageManagerSearchViewModel;
+            if (PkgSearchVM != null) { return; }
+
+            Button button = sender as Button;
+
+            if (button.DataContext is PackageDownloadHandle packageDownloadHandle)
+            {
+                PkgSearchVM.ClearToastNotificationCommand.Execute(packageDownloadHandle);
+            }
+            else if (button.DataContext is PackageManagerSearchElement packageSearchElement)
+            {
+                PkgSearchVM.ClearToastNotificationCommand.Execute(packageSearchElement);
+            }
+            return;
+        }
     }
 }
