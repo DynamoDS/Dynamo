@@ -54,4 +54,27 @@ namespace Dynamo.PackageManager.UI
         }
     }
 
+
+    public class DependencyTypeToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value != null && value is DependencyType dependencyType)
+            {
+                if (dependencyType.ToString() == parameter?.ToString())
+                {
+                    // Return visible if the item matches the specified dependency type
+                    return Visibility.Visible;
+                }
+            }
+            // If the item does not match the specified dependency type or value is null, return collapsed
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
 }

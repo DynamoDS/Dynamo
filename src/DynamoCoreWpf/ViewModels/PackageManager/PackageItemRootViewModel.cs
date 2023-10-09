@@ -26,7 +26,7 @@ namespace Dynamo.PackageManager.UI
         /// The name of this item, regardless of which constructor was used.
         /// </summary>
         public string DisplayName { get; }
-
+            
         /// <summary>
         /// The file path of this item (if any), regardless of which constructor was used.
         /// </summary>

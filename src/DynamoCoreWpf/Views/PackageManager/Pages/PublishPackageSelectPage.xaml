@@ -21,6 +21,8 @@
             </ResourceDictionary.MergedDictionaries>
             <SolidColorBrush x:Key="GridLineColorBrush" Color="#FFFFFF" Opacity="0.1"/>
             <local:DependencyTypeToImageSourceConverter x:Key="DependencyTypeToImageSourceConverter" />
+            <local:DependencyTypeToVisibilityConverter x:Key="DependencyTypeToVisibilityConverter" />
+            
             <!--  DataGrid  -->
             <Style x:Key="DataGridCellStyle" TargetType="DataGridCell">
                 <Setter Property="Padding" Value="6,0" />
@@ -92,7 +94,7 @@
                                            Foreground="{StaticResource PrimaryCharcoal200Brush}"
                                            Text="{TemplateBinding Content}" />
                                 <Thumb x:Name="PART_RightHeaderGripper"
-                                       Width="2"
+                                       Width="1"
                                        HorizontalAlignment="Right"
                                        BorderBrush="#5E5E5E"
                                        BorderThickness="1,0,0,0"
@@ -197,6 +199,8 @@
                 <Setter Property="BorderBrush" Value="{StaticResource OptionMark.Static.Border}"/>
                 <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
                 <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type CheckBox}">
@@ -358,7 +362,7 @@
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <CheckBox IsThreeState="False"
                                           VerticalAlignment="Center"
-                                          Margin="10 2 10 0">
+                                          Margin="10 0 10 5">
                                     <CheckBox.Style>
                                         <Style TargetType="CheckBox" BasedOn="{StaticResource CheckBoxStyle}">
                                             <Setter Property="Visibility"
@@ -392,15 +396,36 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridCheckBoxColumn MinWidth="130"
+                <DataGridTemplateColumn MinWidth="130"
                                         MaxWidth="160"
-                                        Binding="{Binding Path=IsNodeLibrary, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                        ElementStyle="{StaticResource CheckBoxStyle}"
                                         Header="{x:Static p:Resources.PublishPackageViewNodeLibrary}"
                                         HeaderStyle="{StaticResource DataGridColumnHeaderText}"
-                                        IsReadOnly="False"
-                                        IsThreeState="False" />
-            </DataGrid.Columns>
+                                        IsReadOnly="False">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                                <CheckBox IsThreeState="False"
+                                          IsChecked="{Binding Path=IsNodeLibrary, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Margin="10 0 10 5">
+                                    <CheckBox.Style>
+                                        <Style TargetType="CheckBox"
+                                               BasedOn="{StaticResource CheckBoxStyle}">
+                                            <Setter Property="Visibility"
+                                                    Value="{Binding DependencyType,
+                                                             Converter={StaticResource DependencyTypeToVisibilityConverter},
+                                                             ConverterParameter=Assembly}" />
+                                        </Style>
+                                    </CheckBox.Style>
+                                </CheckBox>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns> 
         </DataGrid>
     </Grid>
 </Page>

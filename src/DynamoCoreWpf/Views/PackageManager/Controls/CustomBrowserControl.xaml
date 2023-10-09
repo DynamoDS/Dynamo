@@ -190,7 +190,7 @@
                                 <ToggleButton Margin="32 0 0 0" x:Name="Expander" ClickMode="Press" IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" Style="{StaticResource FolderToggleStyle}"/>
                                 <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Grid.Column="1" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
                                     <ContentPresenter x:Name="PART_Header" ContentSource="Header" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                                </Border>
+                                </Border>   
                                 <ItemsPresenter x:Name="ItemsHost" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1"/>
                             </Grid>
                             <ControlTemplate.Triggers>
@@ -198,7 +198,7 @@
                                     <Setter Property="Visibility" TargetName="ItemsHost" Value="Collapsed"/>
                                 </Trigger>
                                 <Trigger Property="IsSelected" Value="true">
-                                    <Setter Property="Background" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                                    <Setter Property="Background" TargetName="Bd" Value="Transparent"/>
                                     <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
                                 </Trigger>
                                 <MultiTrigger>
@@ -206,7 +206,7 @@
                                         <Condition Property="IsSelected" Value="true"/>
                                         <Condition Property="IsSelectionActive" Value="false"/>
                                     </MultiTrigger.Conditions>
-                                    <Setter Property="Background" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}"/>
+                                    <Setter Property="Background" TargetName="Bd" Value="Transparent"/>
                                     <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}}"/>
                                 </MultiTrigger>
                                 <Trigger Property="IsEnabled" Value="false">
@@ -560,9 +560,9 @@
                     <Border Grid.Column="0" 
                             Width="{Binding Path=(local:TreeViewItemHelper.Indent).Value, Mode=OneWay, RelativeSource={RelativeSource AncestorType=ItemsPresenter}}">
                         <Grid>
-                            <Rectangle Width="1" Height="1" Stroke="#DCDCDC" StrokeDashArray="3 3" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10 0 0 0"
-                                       x:Name="LongMarker" />
-                            <Rectangle Width="1" Height="24" Stroke="#DCDCDC" StrokeDashArray="3 3" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0 0 5 0"
+                            <!--<Rectangle Width="1" Height="24" Stroke="#DCDCDC" StrokeDashArray="3 3" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10 0 0 0"
+                                       x:Name="LongMarker" />-->
+                            <Rectangle Width="1" Height="24" Stroke="#696969" StrokeDashArray="3 3" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0 0 5 0"
                                        x:Name="VerticalMarker"/>
                         </Grid>
                     </Border>
@@ -580,9 +580,9 @@
                                               VerticalAlignment="Center"
                                               SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
 
-                            <Rectangle Width="10" Height="1" Stroke="#DCDCDC" StrokeDashArray="2 2" HorizontalAlignment="Left" VerticalAlignment="Center" 
+                            <Rectangle Width="10" Height="1" Stroke="#696969" StrokeDashArray="2 2" HorizontalAlignment="Left" VerticalAlignment="Center" 
                                        Margin="-26 0 -5 0"
-                                       x:Name="HorizontalMarker"/>
+                                       x:Name="HorizontalMarker"/>  
                         </Grid>
                     </Border>
                 

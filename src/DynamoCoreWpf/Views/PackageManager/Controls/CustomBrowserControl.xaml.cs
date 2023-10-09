@@ -10,6 +10,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using Dynamo.Utilities;
+using Lucene.Net.Util;
 
 namespace Dynamo.PackageManager.UI
 {
@@ -92,44 +93,44 @@ namespace Dynamo.PackageManager.UI
                 var vmarker = FindVisualChild<System.Windows.Shapes.Rectangle>(item, "VerticalMarker");
                 if (vmarker != null) vmarker.Visibility = Visibility.Hidden;
 
-                var children = FindVisualChildren<TreeViewItem>(item);
-                if(children != null)
-                {
-                    try
-                    {   
-                        var lastItem = children.Last();
+                //var children = FindVisualChildren<TreeViewItem>(item);
+                //if(children != null)
+                //{
+                //    try
+                //    {   
+                //        var lastItem = children.Last();
 
-                        lastItem.IsExpanded = true;
-                        lastItem.UpdateLayout();
-                        lastItem.ApplyTemplate();
+                //        lastItem.IsExpanded = true;
+                //        lastItem.UpdateLayout();
+                //        lastItem.ApplyTemplate();
 
-                        var lmarker = FindVisualChild<System.Windows.Shapes.Rectangle>(lastItem, "LongMarker");
-                        if (lmarker != null) lmarker.Visibility = Visibility.Hidden;
-                    }
-                    catch (Exception) { }
-                }
+                //        var lmarker = FindVisualChild<System.Windows.Shapes.Rectangle>(lastItem, "LongMarker");
+                //        if (lmarker != null) lmarker.Visibility = Visibility.Hidden;
+                //    }
+                //    catch (Exception) { }
+                //}
             }
 
             visualChildren.First().IsSelected = true;
         }
 
-        private static TreeViewItem FindTreeViewSelectedItemContainer(ItemsControl root, object selection)
-        {
-            var item = root.ItemContainerGenerator.ContainerFromItem(selection) as TreeViewItem;
-            if (item == null)
-            {
-                foreach (var subItem in root.Items)
-                {
-                    item = FindTreeViewSelectedItemContainer((TreeViewItem)root.ItemContainerGenerator.ContainerFromItem(subItem), selection);
-                    if (item != null)
-                    {
-                        break;
-                    }
-                }
-            }
+        //private static TreeViewItem FindTreeViewSelectedItemContainer(ItemsControl root, object selection)
+        //{
+        //    var item = root.ItemContainerGenerator.ContainerFromItem(selection) as TreeViewItem;
+        //    if (item == null)
+        //    {
+        //        foreach (var subItem in root.Items)
+        //        {
+        //            item = FindTreeViewSelectedItemContainer((TreeViewItem)root.ItemContainerGenerator.ContainerFromItem(subItem), selection);
+        //            if (item != null)
+        //            {
+        //                break;
+        //            }
+        //        }
+        //    }
 
-            return item;
-        }
+        //    return item;
+        //}
 
         private static void ApplyLastTreeItem(IEnumerable<TreeViewItem> treeViewItems) 
         {
@@ -237,7 +238,10 @@ namespace Dynamo.PackageManager.UI
                 //viewModel.RootContents = new ObservableCollection<PackageItemRootViewModel>( selectedItem.ChildItems
                 //    .Where(x => !x.DependencyType.Equals(DependencyType.Folder)).ToList() );
                 viewModel.RootContents.Clear();
-                viewModel.RootContents.AddRange(selectedItem.ChildItems);
+                viewModel.RootContents.AddRange(new ObservableCollection<PackageItemRootViewModel> (selectedItem.ChildItems
+                    .OrderBy(x => x.DependencyType.Equals(DependencyType.Folder) ? 0 : 1)
+                    .ThenBy(x => x.DisplayName)
+                    .ToList()));
             }
         }
     }
@@ -318,26 +322,6 @@ namespace Dynamo.PackageManager.UI
 
             // Default style or value if the input is not a TreeViewItem
             return Visibility.Visible;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class DependencyTypeToVisibilityConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value is DependencyType.Folder)
-            {
-                // Return visible only if the item is a Folder
-                return Visibility.Visible;
-            }
-
-            // If the item is anything else (Assembly, File, Custom Node) return collapsed
-            return Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
