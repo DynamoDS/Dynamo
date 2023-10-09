@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using Dynamo.Utilities;
 
 namespace Dynamo.PackageManager.UI
 {
@@ -100,10 +101,11 @@ namespace Dynamo.PackageManager.UI
 
             while (di.Parent != null)
             {
-                // if we already have a subfodler item with that name, add this element to it instead of creating a new subfolder branch
+                // if we already have a subfodler item with that name,
+                // add this element's children to its children instead of creating a new subfolder branch
                 if(existingSubFolders.Keys.Contains(elem.DirectoryName))
                 {
-                    existingSubFolders[elem.DirectoryName].ChildItems.Add(elem);
+                    existingSubFolders[elem.DirectoryName].ChildItems.AddRange(elem.ChildItems);
                     return;
                 }
                 if (di.Parent.FullName == this.DirectoryName)
@@ -121,7 +123,7 @@ namespace Dynamo.PackageManager.UI
 
         private Dictionary<string, PackageItemRootViewModel> GetAllSubfolderItems(PackageItemRootViewModel elem)
         {
-            if(elem.ChildItems.Count == 0) return null;
+            if(elem.ChildItems.Count == 0) return new Dictionary<string, PackageItemRootViewModel>();
 
             var existingSubFolders = new Dictionary<string, PackageItemRootViewModel>();
             foreach (var child in elem.ChildItems)
@@ -132,6 +134,41 @@ namespace Dynamo.PackageManager.UI
                     .ToDictionary(x => x.Key, x => x.Value);
             }
             return existingSubFolders;
+        }
+
+        /// <summary>
+        /// Recursivelly search and return all children files and folders under a PackageItemRootViewModel root item
+        /// </summary>
+        /// <param name="packageItemRootViewModel">The root item to search</param>
+        internal static List<PackageItemRootViewModel> GetFiles(PackageItemRootViewModel packageItemRootViewModel)
+        {
+            if(packageItemRootViewModel.ChildItems.Count == 0) return new List<PackageItemRootViewModel> { packageItemRootViewModel };
+
+            var allFilesAndFolders = new List<PackageItemRootViewModel> { packageItemRootViewModel };
+
+            foreach (var child in packageItemRootViewModel.ChildItems)
+            {
+                allFilesAndFolders.AddRange(GetFiles(child));
+            }
+
+            return allFilesAndFolders;
+        }
+
+        /// <summary>
+        /// Performs the recursive GetFiles search and return on a list of PackageItemRootViewModel items
+        /// </summary>
+        /// <param name="packageItemRootViewModels"></param>
+        /// <returns></returns>
+        internal static List<PackageItemRootViewModel> GetFiles(List<PackageItemRootViewModel> packageItemRootViewModels)
+        {
+            var allFilesAndFolders = new List<PackageItemRootViewModel> ();
+
+            foreach(var item in packageItemRootViewModels)
+            {
+                allFilesAndFolders.AddRange(GetFiles(item));
+            }
+
+            return allFilesAndFolders;
         }
     }
 }

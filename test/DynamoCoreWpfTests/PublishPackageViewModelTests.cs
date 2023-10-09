@@ -2,14 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using Dynamo;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.PackageManager;
-using Dynamo.Tests;
-using NUnit.Framework;
-using Moq;
 using Dynamo.PackageManager.UI;
+using Dynamo.Tests;
+using Dynamo.Wpf.Utilities;
+using Moq;
+using NUnit.Framework;
 
 namespace DynamoCoreWpfTests
 {
@@ -97,6 +99,118 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(nodePath, vm.GetAllFiles().First());
 
         }
+
+
+        [Test]
+        public void AddsFilesAndFoldersFromFilePathsCorrectly()
+        {
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder\\PackageWithNodeDocumentation");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
+            var allFolders = Directory.GetDirectories(nodePath, "*", SearchOption.AllDirectories).ToList();
+
+            // Arrange
+            var vm = new PublishPackageViewModel(this.ViewModel);
+            vm.AddAllFilesAfterSelection(allFiles);
+
+            var assemblies = vm.Assemblies;
+            var additionalFiles = vm.AdditionalFiles;
+
+            // Assert number of files PackageContents items is the one we expect
+            Assert.AreEqual(assemblies.Count, allFiles.Count(f => f.EndsWith(".dll")));
+            Assert.AreEqual(additionalFiles.Count, allFiles.Count(f => !f.EndsWith(".dll")));
+
+            var packageContents = vm.PackageContents;
+            Assert.AreEqual(packageContents.Count, 1); // We expect only 1 root item here
+
+            // Assert that the PackageContents contains the correct number of items
+            var allFilesAndFoldres = PackageItemRootViewModel.GetFiles(packageContents.First());
+            Assert.AreEqual(allFilesAndFoldres.Count, allFiles.Count + allFolders.Count + 1);
+            Assert.AreEqual(allFilesAndFoldres.Count(i => i.DependencyType.Equals(DependencyType.Assembly)), assemblies.Count);
+            Assert.AreEqual(allFilesAndFoldres.Count(i => i.DependencyType.Equals(DependencyType.File)), additionalFiles.Count);
+            Assert.AreEqual(allFilesAndFoldres.Count(i => i.DependencyType.Equals(DependencyType.Folder)), allFolders.Count + 1);
+
+            // Arrange - try to add the same files again
+            var dlgMock = new Mock<MessageBoxService.IMessageBox>();
+            dlgMock.Setup(m => m.Show(It.IsAny<Window>(), It.IsAny<string>(), It.IsAny<string>(),
+                It.Is<MessageBoxButton>(x => x == MessageBoxButton.OKCancel || x == MessageBoxButton.OK), It.IsAny<MessageBoxImage>()))
+                .Returns(MessageBoxResult.OK);
+            MessageBoxService.OverrideMessageBoxDuringTests(dlgMock.Object);
+
+            vm.AddAllFilesAfterSelection(allFiles);
+            packageContents = vm.PackageContents;
+
+            // Assert that the PackageContents still contains the correct number of items
+            allFilesAndFoldres = PackageItemRootViewModel.GetFiles(packageContents.First());
+            Assert.AreEqual(allFilesAndFoldres.Count, allFiles.Count + allFolders.Count + 1);
+            Assert.AreEqual(allFilesAndFoldres.Count(i => i.DependencyType.Equals(DependencyType.Assembly)), assemblies.Count);
+            Assert.AreEqual(allFilesAndFoldres.Count(i => i.DependencyType.Equals(DependencyType.File)), additionalFiles.Count);
+            Assert.AreEqual(allFilesAndFoldres.Count(i => i.DependencyType.Equals(DependencyType.Folder)), allFolders.Count + 1);
+        }
+
+
+        [Test]
+        public void AddsFilesAndFoldersFromMultipleFilePathsCorrectly()
+        {
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder\\PackageWithNodeDocumentation");
+            string duplicateNodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder\\DuplicatePackageWithNodeDocumentation");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
+            var allFolders = Directory.GetDirectories(nodePath, "*", SearchOption.AllDirectories).ToList();
+            var allDuplicateFiles = Directory.GetFiles(duplicateNodePath, "*", SearchOption.AllDirectories).ToList();
+            var allDuplicateFolders = Directory.GetDirectories(duplicateNodePath, "*", SearchOption.AllDirectories).ToList();
+
+            // Arrange
+            var dlgMock = new Mock<MessageBoxService.IMessageBox>();
+            dlgMock.Setup(m => m.Show(It.IsAny<Window>(), It.IsAny<string>(), It.IsAny<string>(),
+                It.Is<MessageBoxButton>(x => x == MessageBoxButton.OKCancel || x == MessageBoxButton.OK), It.IsAny<MessageBoxImage>()))
+                .Returns(MessageBoxResult.OK);
+            MessageBoxService.OverrideMessageBoxDuringTests(dlgMock.Object);
+
+            var vm = new PublishPackageViewModel(this.ViewModel);
+            vm.AddAllFilesAfterSelection(allFiles);
+            vm.AddAllFilesAfterSelection(allDuplicateFiles);
+
+            var assemblies = vm.Assemblies;
+            var additionalFiles = vm.AdditionalFiles;
+
+            var packageContents = vm.PackageContents;
+            Assert.AreEqual(packageContents.Count, 2); // We expect 2 separate root item here
+
+            // Assert
+            // that the PackageContents contains the correct number of items
+            var allFilesAndFoldres = PackageItemRootViewModel.GetFiles(packageContents.ToList());
+
+            // add 2 root folders, but discard one duplicate assembly file and one folder containing duplicate assembly file  
+            Assert.AreEqual(allFilesAndFoldres.Count, allFiles.Count + allFolders.Count + (allDuplicateFiles.Count - 1) + (allDuplicateFolders.Count -1) + 2);
+            Assert.AreEqual(allFilesAndFoldres.Count(i => i.DependencyType.Equals(DependencyType.Assembly)), assemblies.Count);
+            Assert.AreEqual(allFilesAndFoldres.Count(i => i.DependencyType.Equals(DependencyType.File)), additionalFiles.Count);
+
+            // add 2 root folders, but discard one folder containing duplicate assembly file
+            Assert.AreEqual(allFilesAndFoldres.Count(i => i.DependencyType.Equals(DependencyType.Folder)), allFolders.Count + (allDuplicateFolders.Count - 1) + 2);
+
+            // Arrange
+            // try to add the folder one level above the two root folders
+            string commonRootPath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder");
+            var commonRootFiles = Directory.GetFiles(commonRootPath, "*", SearchOption.AllDirectories).ToList();
+            var commonRootFolders = Directory.GetDirectories(commonRootPath, "*", SearchOption.AllDirectories).ToList();
+
+            vm.AddAllFilesAfterSelection(commonRootFiles, commonRootPath);
+            packageContents = vm.PackageContents;
+
+            Assert.AreEqual(packageContents.Count, 1); // We expect only 1 common root item now
+
+            // Assert
+            // that the PackageContents still contains the correct number of items
+            allFilesAndFoldres = PackageItemRootViewModel.GetFiles(packageContents.First());
+
+            // add 1 root folder, but discard one duplicate assembly file and one folder containing duplicate assembly file  
+            Assert.AreEqual(allFilesAndFoldres.Count, (commonRootFiles.Count - 1) + (commonRootFolders.Count - 1) + 1);
+            Assert.AreEqual(allFilesAndFoldres.Count(i => i.DependencyType.Equals(DependencyType.Assembly)), assemblies.Count);
+            Assert.AreEqual(allFilesAndFoldres.Count(i => i.DependencyType.Equals(DependencyType.File)), additionalFiles.Count);
+
+            // add 1 root folder1, but discard one folder containing duplicate assembly file
+            Assert.AreEqual(allFilesAndFoldres.Count(i => i.DependencyType.Equals(DependencyType.Folder)), (commonRootFolders.Count - 1) + 1);
+        }
+
 
 
         [Test, Category("Failure")]

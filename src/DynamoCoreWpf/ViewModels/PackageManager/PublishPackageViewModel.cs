@@ -807,6 +807,13 @@ namespace Dynamo.PackageManager
 
             var items = new Dictionary<string, PackageItemRootViewModel>();
 
+            if(!String.IsNullOrEmpty(rootFolder))
+            {
+                var root = new PackageItemRootViewModel(rootFolder);
+                items[rootFolder] = root;
+                rootFolder = String.Empty;
+            }
+
             foreach (var item in itemsToAdd)
             {
                 if (!items.ContainsKey(item.DirectoryName))
@@ -1333,6 +1340,7 @@ namespace Dynamo.PackageManager
 
         private string _errorString = "";
         private string dependencyNames;
+        private string rootFolder;
 
         public string ErrorString
         {
@@ -1373,15 +1381,7 @@ namespace Dynamo.PackageManager
 
             if (fDialog.ShowDialog() != DialogResult.OK) return;
 
-            UploadState = PackageUploadHandle.State.Ready;
-
-            foreach (var file in fDialog.FileNames)
-            {
-                AddFile(file);
-            }
-            RefreshPackageContents();
-            RaisePropertyChanged(nameof(PackageContents));
-            RefreshDependencyNames();
+            AddAllFilesAfterSelection(fDialog.FileNames.ToList());
         }
 
         /// <summary>
@@ -1413,7 +1413,20 @@ namespace Dynamo.PackageManager
 
             if (filePaths.Count < 1) return;
 
-            List<string> existingPackageContents = PackageContents
+            AddAllFilesAfterSelection(filePaths);
+        }
+
+        /// <summary>
+        /// Combines adding files from single file prompt and files in folders propt
+        /// </summary>
+        /// <param name="filePaths"></param>
+        internal void AddAllFilesAfterSelection(List<string> filePaths, string rootFolder = null)
+        {
+            this.rootFolder = rootFolder ?? string.Empty;
+
+            UploadState = PackageUploadHandle.State.Ready;
+
+            List<string> existingPackageContents = PackageItemRootViewModel.GetFiles(PackageContents.ToList())
                 .Where(x => x.FileInfo != null)
                 .Select(x => x.FileInfo.FullName)
                 .ToList();
