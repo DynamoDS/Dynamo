@@ -379,21 +379,23 @@ namespace Dynamo.LibraryViewExtensionWebView2
         enum EventsTracked
         {
             Delete,
-            C
+            C,
+            V
         }
 
         private void Browser_KeyDown(object sender, KeyEventArgs e)
 
         {
+
             if (!Enum.IsDefined(typeof(EventsTracked), e.Key.ToString())) return;
 
             var synteticEventData = new Dictionary<string, string>
             {
-                [Enum.GetName(typeof(ModifiersJS), e.KeyboardDevice.Modifiers).ToString()] = "true",
+                [Enum.GetName(typeof(ModifiersJS), e.KeyboardDevice.Modifiers)] = "true",
                 ["key"] = e.Key.ToString()
             };
 
-            _ = ExecuteScriptFunctionAsync(browser, "eventDispatcher", synteticEventData);
+            _= ExecuteScriptFunctionAsync(browser, "eventDispatcher", synteticEventData);
         }
 
 

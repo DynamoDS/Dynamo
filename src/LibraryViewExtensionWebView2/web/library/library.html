@@ -389,16 +389,15 @@
 
         //This function will be dispatching javaScript keydown events based on Dynamo keydown events
         function eventDispatcher(eventKeyData) {
-
             const kbEvent = new KeyboardEvent('keydown', {
                 bubbles: true,
                 cancelable: true,
                 ...eventKeyData
             });
-
+             
             document.dispatchEvent(kbEvent);
         }
-    </script>
+        </script>
 
 </body>
 
