@@ -442,6 +442,10 @@ namespace Dynamo.Utilities
             }
             SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Parameters), node.Parameters ?? string.Empty);
 
+            if(writer == null)
+            {
+                CreateLuceneIndexWriter();
+            }
             writer?.AddDocument(doc);
         }
     }
