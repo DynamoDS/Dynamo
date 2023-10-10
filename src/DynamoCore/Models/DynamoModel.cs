@@ -1947,11 +1947,12 @@ namespace Dynamo.Models
         /// execution mode specified in the file and set manual mode</param>
         public void OpenFileFromPath(string filePath, bool forceManualExecutionMode = false)
         {
-            XmlDocument xmlDoc;
-            Exception ex;
-            if (DynamoUtilities.PathHelper.isValidXML(filePath, out xmlDoc, out ex))
+            
+            Exception ex;            
+            string fileContents;
+            if (DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents, out ex))
             {
-                OpenXmlFileFromPath(xmlDoc, filePath, forceManualExecutionMode);
+                OpenJsonFileFromPath(fileContents, filePath, forceManualExecutionMode);
                 return;
             }
             else
@@ -1961,24 +1962,20 @@ namespace Dynamo.Models
                 {
                     throw ex;
                 }
-                if (ex is System.Xml.XmlException)
-                {
-                    // XML opening failure can indicate that this file is corrupted XML or Json
-                    string fileContents;
 
-                    if (DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents, out ex))
-                    {
-                        OpenJsonFileFromPath(fileContents, filePath, forceManualExecutionMode);
-                        return;
-                    }
-                    else
-                    {
-                        // When Json opening also failed, either this file is corrupted or there
-                        // are other kind of failures related to Json de-serialization
-                        throw ex;
-                    }
+                XmlDocument xmlDoc;
+
+                // When Json opening failed, either this file is corrupted or file might be XML
+                if (ex is JsonReaderException && DynamoUtilities.PathHelper.isValidXML(filePath, out xmlDoc, out ex))
+                {
+                    OpenXmlFileFromPath(xmlDoc, filePath, forceManualExecutionMode);
+                    return;
                 }
-            }
+                else
+                {
+                    throw ex;
+                }                
+            }            
         }
 
         /// <summary>
@@ -1988,11 +1985,12 @@ namespace Dynamo.Models
         /// <param name="forceManualExecutionMode"></param>
         public void InsertFileFromPath(string filePath, bool forceManualExecutionMode = false)
         {
-            XmlDocument xmlDoc;
             Exception ex;
-            if (DynamoUtilities.PathHelper.isValidXML(filePath, out xmlDoc, out ex))
+            string fileContents;
+
+            if (DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents, out ex))
             {
-                InsertXmlFileFromPath(xmlDoc, filePath, forceManualExecutionMode);
+                InsertJsonFileFromPath(fileContents, filePath, forceManualExecutionMode);
                 return;
             }
             else
@@ -2002,24 +2000,20 @@ namespace Dynamo.Models
                 {
                     throw ex;
                 }
-                if (ex is System.Xml.XmlException)
-                {
-                    // XML opening failure can indicate that this file is corrupted XML or Json
-                    string fileContents;
 
-                    if (DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents, out ex))
+                if (ex is JsonReaderException)
+                {
+                    XmlDocument xmlDoc;
+                    if (DynamoUtilities.PathHelper.isValidXML(filePath, out xmlDoc, out ex))
                     {
-                        InsertJsonFileFromPath(fileContents, filePath, forceManualExecutionMode);
+                        InsertXmlFileFromPath(xmlDoc, filePath, forceManualExecutionMode);
                         return;
                     }
-                    else
-                    {
-                        // When Json opening also failed, either this file is corrupted or there
-                        // are other kind of failures related to Json de-serialization
-                        throw ex;
-                    }
                 }
-
+                else
+                {
+                    throw ex;
+                }
             }
         }
 
