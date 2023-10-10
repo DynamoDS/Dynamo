@@ -98,6 +98,11 @@ namespace Dynamo.PackageManager.UI
 
             Dictionary<string, PackageItemRootViewModel> existingSubFolders = GetAllSubfolderItems(this);
 
+            if (di.FullName == this.DirectoryName)
+            {
+                this.ChildItems.Add(elem);
+                return;
+            }
 
             while (di.Parent != null)
             {

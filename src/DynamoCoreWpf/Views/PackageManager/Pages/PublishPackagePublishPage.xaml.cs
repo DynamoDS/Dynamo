@@ -26,6 +26,15 @@ namespace Dynamo.PackageManager.UI
             PublishPackageViewModel = this.DataContext as PublishPackageViewModel;
         }
 
+        public void LoadEvents()
+        {
+            var firstItem = (TreeViewItem)this.previewBrowserControl.customTreeView.ItemContainerGenerator.ContainerFromIndex(0);
+            if (firstItem != null)
+            {
+                firstItem.IsSelected = true;
+            }
+        }
+
         private void HostEntry_CheckStateChanged(object sender, RoutedEventArgs e)
         {
             PublishPackageViewModel.SelectedHosts.Clear();
@@ -90,6 +99,15 @@ namespace Dynamo.PackageManager.UI
             }
 
             return null; // Page is not hosted in a Window
+        }
+
+        private void previewBrowserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            var firstItem = (TreeViewItem)this.previewBrowserControl.customTreeView.ItemContainerGenerator.ContainerFromIndex(0);
+            if (firstItem != null)
+            {
+                firstItem.IsSelected = true;
+            }
         }
     }
 }

@@ -619,6 +619,7 @@ namespace Dynamo.PackageManager
         /// PackageContents property 
         /// </summary>
         public ObservableCollection<PackageItemRootViewModel> PackageContents { get; set; } = new ObservableCollection<PackageItemRootViewModel>();
+        public ObservableCollection<PackageItemRootViewModel> PreviewPackageContents { get; set; } = new ObservableCollection<PackageItemRootViewModel>();
 
         private ObservableCollection<PackageItemRootViewModel> _rootContents;
         /// <summary>
@@ -837,6 +838,8 @@ namespace Dynamo.PackageManager
             updatedItems.AddRange(itemsToAdd.Where(pa => pa.DependencyType.Equals(DependencyType.CustomNode)));
 
             foreach (var item in updatedItems) PackageContents.Add(item);
+
+            PreviewPackageBuild();
         }
 
         private bool IsDuplicateFile(PackageItemRootViewModel item1, PackageItemRootViewModel item2)
@@ -2009,5 +2012,107 @@ namespace Dynamo.PackageManager
             CurrentWarningMessage = warningMessage;
             IsWarningEnabled = true;
         }
+
+        private void PreviewPackageBuild()
+        {
+            if (PackageContents?.Count == 0) return;
+
+            var publishPath = !String.IsNullOrEmpty(rootFolder) ? rootFolder : PackageContents.First().DirectoryName;
+            if (string.IsNullOrEmpty(publishPath))
+                return;
+
+            var files = GetAllFiles().ToList();
+
+            try
+            {
+                var unqualifiedFiles = GetAllUnqualifiedFiles();
+
+                // if the unqualified files are bigger than 0, error message is triggered.
+                // At the same time, as unqualified files existed, 
+                // files returned from BuildPackage() is 0.
+                // This is caused by the package file is not existed or it has already been in a package.
+                // files.Count() is also checking for the exception that was caught in BuildPackage().
+                // The scenario can be user trying to publish unsaved workspace.
+                if (files == null || files.Count() < 1 || unqualifiedFiles.Count() > 0)
+                {
+                    string filesCannotBePublished = null;
+                    foreach (var file in unqualifiedFiles)
+                    {
+                        filesCannotBePublished = filesCannotBePublished + file + "\n";
+                    }
+                    string FileNotPublishMessage = string.Format(Resources.FileNotPublishMessage, filesCannotBePublished);
+                    UploadState = PackageUploadHandle.State.Error;
+                    MessageBoxResult response = DynamoModel.IsTestMode ? MessageBoxResult.OK : MessageBoxService.Show(FileNotPublishMessage, Resources.FileNotPublishCaption, MessageBoxButton.OK, MessageBoxImage.Error);
+
+                    return;
+                }
+
+                var packageName = !string.IsNullOrEmpty(Description) ? Description : Path.GetFileName(publishPath);
+                PackageDirectoryBuilder.PreBuildDirectory(packageName, publishPath, files, MarkdownFiles,
+                    out string rootDir, out string dyfDir, out string binDir, out string extraDir, out string docDir);
+
+                var rootItemPreview = new PackageItemRootViewModel(rootDir);
+                var dyfItemPreview = new PackageItemRootViewModel(dyfDir) { isChild = true };
+                var binItemPreview = new PackageItemRootViewModel(binDir) { isChild = true }; 
+                var extraItemPreview = new PackageItemRootViewModel(extraDir) { isChild = true };
+                var docItemPreview = new PackageItemRootViewModel(docDir) { isChild = true };
+
+
+                var pkg = new PackageItemRootViewModel(new FileInfo(Path.Combine(rootDir, "pkg.json")));
+                rootItemPreview.AddChild(pkg);
+
+                foreach(var file in files)
+                {
+                    var fileName = Path.GetFileName(file);
+                    if (Path.GetDirectoryName(file).EndsWith("doc"))
+                    {
+                        var doc = new PackageItemRootViewModel(new FileInfo(Path.Combine(binDir, packageName, fileName)));
+                        docItemPreview.AddChild(doc);
+                    }
+                    else if (file.EndsWith(".dyf"))
+                    {
+                        var customNodeDefinition = CustomNodeDefinitions.FirstOrDefault(x => x.DisplayName.Equals(Path.GetFileNameWithoutExtension(fileName)));
+                        if (customNodeDefinition == null) continue;
+                        var dyf = new PackageItemRootViewModel(customNodeDefinition);
+                        //dyfItemPreview.AddChild(dyf);
+                    }
+                    else if (file.EndsWith(".dll") || PackageDirectoryBuilder.IsXmlDocFile(file, files) || PackageDirectoryBuilder.IsDynamoCustomizationFile(file, files))
+                    {
+                        var assembly = Assemblies.FirstOrDefault(x => x.Name.Equals(Path.GetFileNameWithoutExtension(fileName)));
+                        if (assembly == null)
+                        {
+                            var extra = new PackageItemRootViewModel(new FileInfo(Path.Combine(extraDir, packageName, fileName)));
+                            extraItemPreview.AddChild(extra);
+                        }
+                    }
+                    else
+                    {
+                        var extra = new PackageItemRootViewModel(new FileInfo(Path.Combine(extraDir, packageName, fileName)));
+                        extraItemPreview.AddChild(extra);
+                    }
+                }
+
+                rootItemPreview.AddChild(dyfItemPreview);
+                rootItemPreview.AddChild(binItemPreview);
+                rootItemPreview.AddChild(extraItemPreview);
+                rootItemPreview.AddChild(docItemPreview);
+
+                if (PreviewPackageContents == null) PreviewPackageContents = new ObservableCollection<PackageItemRootViewModel> { rootItemPreview };
+                else
+                {
+                    PreviewPackageContents.Clear();
+                    PreviewPackageContents.Add(rootItemPreview);
+                }
+
+                RaisePropertyChanged(nameof(PreviewPackageContents));
+            }
+            catch (Exception e)
+            {
+                UploadState = PackageUploadHandle.State.Error;
+                ErrorString = e.Message;
+                dynamoViewModel.Model.Logger.Log(e);
+            }
+        }
+        
     }
 }

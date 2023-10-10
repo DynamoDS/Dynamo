@@ -22,6 +22,7 @@
             </ResourceDictionary.MergedDictionaries>
             <controls:EmptyStringToFalseConverter x:Key="EmptyStringToFalseConverter" />
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <SolidColorBrush x:Key="DetailsButtonBorderColorBrush" Color="#808080" Opacity="0.5"/>
             <ControlTemplate x:Key="ComboBoxToggleButton"
                              TargetType="{x:Type ToggleButton}">
                 <Grid Height="29px"
@@ -296,30 +297,40 @@
             BorderThickness="0"
             BorderBrush="#7E7E7E">
 
-        <Grid Name="mainGrid" >
+        <Grid Name="mainGrid">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="66px" />
             </Grid.RowDefinitions>
 
-            <StackPanel UseLayoutRounding="True" Margin="2">
-                <ItemsControl ItemsSource="{Binding Path=Breadcrumbs, RelativeSource={RelativeSource AncestorType=UserControl}}">
-                    <ItemsControl.ItemTemplate> 
+            <StackPanel UseLayoutRounding="True"
+                        Margin="2">
+                <ItemsControl ItemsSource="{Binding Path=Breadcrumbs, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                              Name="breadcrumbsNavigation"
+                              Visibility="Collapsed">
+                    <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="/" FontSize="12" Margin="5,0,5,0" Foreground="#F5F5F5">
+                                <TextBlock Text="/"
+                                           FontSize="12"
+                                           Margin="5,0,5,0"
+                                           Foreground="#F5F5F5">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource PreviousData}}" Value="{x:Null}">
-                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource PreviousData}}"
+                                                             Value="{x:Null}">
+                                                    <Setter Property="Visibility"
+                                                            Value="Collapsed" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </TextBlock.Style>
                                 </TextBlock>
-                                <Button Content="{Binding}" Tag="{Binding}" Click="BreadcrumbButton_Click"
+                                <Button Content="{Binding}"
+                                        Tag="{Binding}"
+                                        Click="BreadcrumbButton_Click"
                                         Foreground="#F5F5F5"
                                         FontSize="12"
                                         FontFamily="{StaticResource ArtifaktElementRegular}"
@@ -338,49 +349,116 @@
             <!-- Main navigation frame hosting the pages -->
             <Frame x:Name="mainFrame"
                    Grid.Row="1"
-                   NavigationUIVisibility="Hidden" />
-            
+                   NavigationUIVisibility="Hidden"
+                   Navigated="mainFrame_Navigated"/>
+
             <!--  Bottom Section: Publish Buttons + Status Label    -->
-            <DockPanel Grid.Row="2"
-                       Margin="25,0"
-                       VerticalAlignment="Center">
+            <DockPanel VerticalAlignment="Center"
+                           Grid.Row="2"
+                           Margin="25,0">
 
-                <!--  Publish Online  -->
-                <Button Command="{Binding Path=SubmitCommand}"
-                        Content="{x:Static p:Resources.PublishPackage}"
-                        DockPanel.Dock="Right"
-                        Background="#0696D7"
-                        Foreground="White"
-                        BorderBrush="#0696D7"
-                        Margin="0,0,-5,0"
-                        Style="{StaticResource CtaButtonStyle}"
-                        TabIndex="20" />
+                <StackPanel DockPanel.Dock="Right"
+                            x:Name="PublishPageButtonStack"
+                            Orientation="Horizontal">
+                    <!--  Publish Online  -->
+                    <Button Command="{Binding Path=SubmitCommand}"
+                            Content="{x:Static p:Resources.PublishPackage}"
+                            DockPanel.Dock="Right"
+                            Background="#0696D7"
+                            Foreground="White"
+                            BorderBrush="#0696D7"
+                            Margin="0,0,-5,0"
+                            Style="{StaticResource CtaButtonStyle}"
+                            TabIndex="20" />
 
-                <!--  Publish Locally  -->
-                <Button Command="{Binding Path=PublishLocallyCommand}"
-                        Content="{x:Static p:Resources.PublishPackageLocally}"
-                        DockPanel.Dock="Right"
-                        Margin="0,0,2,0"
-                        Background="#0696D7"
-                        Foreground="White"
-                        BorderBrush="#0696D7"
-                        Style="{StaticResource CtaButtonStyle}"
-                        TabIndex="19" />
+                    <!--  Publish Locally  -->
+                    <Button Command="{Binding Path=PublishLocallyCommand}"
+                            Content="{x:Static p:Resources.PublishPackageLocally}"
+                            DockPanel.Dock="Right"
+                            Margin="0,0,2,0"
+                            Background="#0696D7"
+                            Foreground="White"
+                            BorderBrush="#0696D7"
+                            Style="{StaticResource CtaButtonStyle}"
+                            TabIndex="19" />
+                </StackPanel>
+                        
+                <StackPanel DockPanel.Dock="Right"
+                        x:Name="SelectPageButtonStack"
+                        Orientation="Horizontal"
+                        Visibility="Collapsed">
+
+
+                    <!--  Back to Details -->
+                    <Button Content="Back to Package Details"
+                            Tag="Back"
+                            Click="BreadcrumbButton_Click"
+                            DockPanel.Dock="Right"
+                            Background="Transparent"
+                            Foreground="White"
+                            BorderBrush="{StaticResource DetailsButtonBorderColorBrush}"
+                            Margin="0,0,-5,0"
+                            Style="{StaticResource CtaButtonStyle}"
+                            TabIndex="20" />
+                    
+                    <!--  Next  -->
+                    <Button Content="Next"
+                            Tag="Next"
+                            Click="BreadcrumbButton_Click"
+                            DockPanel.Dock="Right"
+                            Margin="0,0,2,0"
+                            Background="#0696D7"
+                            Foreground="White"
+                            BorderBrush="#0696D7"
+                            Style="{StaticResource CtaButtonStyle}"
+                            TabIndex="19" />
+                </StackPanel>
+
+                <StackPanel DockPanel.Dock="Right"
+                            x:Name="PreviewPageButtonStack"
+                            Orientation="Horizontal"
+                            Visibility="Collapsed">
+
+                    <!--  Back to Selection -->
+                    <Button Content="Back to File Selection"
+                            Tag="Back"
+                            Click="BreadcrumbButton_Click"
+                            DockPanel.Dock="Right"
+                            Background="Transparent"
+                            Foreground="White"
+                            BorderBrush="{StaticResource DetailsButtonBorderColorBrush}"
+                            Margin="0,0,-5,0"
+                            Style="{StaticResource CtaButtonStyle}"
+                            TabIndex="20" />
+
+                    <!--  Finish  -->
+                    <Button Content="Finish"
+                            Tag="Next"
+                            Click="BreadcrumbButton_Click"
+                            DockPanel.Dock="Right"
+                            Margin="0,0,2,0"
+                            Background="#0696D7"
+                            Foreground="White"
+                            BorderBrush="#0696D7"
+                            Style="{StaticResource CtaButtonStyle}"
+                            TabIndex="19" />
+                </StackPanel>
 
                 <!--  Status Label  -->
-                <TextBlock Name="statusLabel"
-                           Margin="0,4,0,0"
-                           VerticalAlignment="Center"
-                           FontFamily="{StaticResource ArtifaktElementRegular}"
-                           Style="{StaticResource LabelStyle}"
-                           Text="{Binding ErrorString, UpdateSourceTrigger=PropertyChanged}"
-                           TextTrimming="CharacterEllipsis">
+                <TextBlock Margin="0,4,0,0"
+                            VerticalAlignment="Center"
+                            FontFamily="{StaticResource ArtifaktElementRegular}"
+                            Style="{StaticResource LabelStyle}"
+                            Text="{Binding ErrorString, UpdateSourceTrigger=PropertyChanged}"
+                            TextTrimming="CharacterEllipsis">
                     <TextBlock.ToolTip>
                         <ToolTip Content="{Binding ErrorString, UpdateSourceTrigger=PropertyChanged}"
-                                 Style="{StaticResource GenericToolTipLight}" />
+                                    Style="{StaticResource GenericToolTipLight}" />
                     </TextBlock.ToolTip>
                 </TextBlock>
             </DockPanel>
+
+            
         </Grid>
     </Border>
 </UserControl>

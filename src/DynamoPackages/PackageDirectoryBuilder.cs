@@ -62,6 +62,12 @@ namespace Dynamo.PackageManager
             return rootDir;
         }
 
+        public static void PreBuildDirectory(string packageName, string packagesDirectory, IEnumerable<string> contentFiles, IEnumerable<string> markdownFiles,
+             out string rootDir, out string dyfDir, out string binDir, out string extraDir, out string docDir)
+        {
+            PreviewPackageDirectory(packagesDirectory, packageName, out rootDir, out dyfDir, out binDir, out extraDir, out docDir);
+        }
+
         #endregion
 
         #region Private Utility Methods
@@ -120,6 +126,18 @@ namespace Dynamo.PackageManager
             binDir = fileSystem.TryCreateDirectory(binPath);
             extraDir = fileSystem.TryCreateDirectory(extraPath);
             docDir = fileSystem.TryCreateDirectory(docPath);
+        }
+
+        private static void PreviewPackageDirectory(string packageDirectory, string packageName,
+            out string root, out string dyfDir,
+            out string binDir, out string extraDir,
+            out string docDir)
+        {
+            root = Path.Combine(packageDirectory, packageName);
+            dyfDir = Path.Combine(root, CustomNodeDirectoryName);
+            binDir = Path.Combine(root, BinaryDirectoryName);
+            extraDir = Path.Combine(root, ExtraDirectoryName);
+            docDir = Path.Combine(root, DocumentationDirectoryName);
         }
 
         private void WritePackageHeader(Package package, IDirectoryInfo rootDir)

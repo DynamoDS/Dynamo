@@ -324,6 +324,7 @@
         
         <local:CustomBrowserControl x:Name="customBrowserControl"
                                     Grid.Column="0" Grid.Row="1"
+                                    Loaded="customBrowserControl_Loaded"
                                     Root="{Binding PackageContents, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
 
         <!--Files-->

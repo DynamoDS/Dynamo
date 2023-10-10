@@ -17,9 +17,11 @@ namespace Dynamo.PackageManager.UI
     /// </summary>
     public partial class PackageManagerPublishControl : UserControl
     {
+
         public Window Owner { get; set; }
         public PublishPackageViewModel PublishPackageViewModel { get; set; }
         private Dictionary<int, Page> PublishPages { get; set; }
+        private Dictionary<int, StackPanel> NavButtonStacks { get; set; }
         public ObservableCollection<string> Breadcrumbs { get; } = new ObservableCollection<string>();
 
         public PackageManagerPublishControl()
@@ -28,7 +30,6 @@ namespace Dynamo.PackageManager.UI
 
             this.Loaded += InitializeContext;
         }
-
 
         private void InitializeContext(object sender, RoutedEventArgs e)
         {
@@ -62,6 +63,12 @@ namespace Dynamo.PackageManager.UI
             foreach(var pageEntry in PublishPages) { pageEntry.Value.DataContext = PublishPackageViewModel; }
 
             Breadcrumbs.Add((string)PublishPages[0].Tag); // Initial breadcrumb
+
+            NavButtonStacks = new Dictionary<int, StackPanel>();
+
+            NavButtonStacks[0] = this.PublishPageButtonStack;
+            NavButtonStacks[1] = this.SelectPageButtonStack;
+            NavButtonStacks[2] = this.PreviewPageButtonStack;
         }
 
         private void PackageViewModelOnPublishSuccess(PublishPackageViewModel sender)
@@ -129,6 +136,8 @@ namespace Dynamo.PackageManager.UI
             PublishPackageViewModel.DynamoViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Wpf.Properties.Resources.PublishPackageMoreInfoFile, UriKind.Relative)));
         }
 
+        private int currentPage = 0;
+
         internal void BreadcrumbButton_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
@@ -136,30 +145,102 @@ namespace Dynamo.PackageManager.UI
             {
                 switch (button.Tag)
                 {
-                    case "filesDialogButton":
-                    case "folderDialogButton":
-                        Breadcrumbs.Add((string)PublishPages[1].Tag);
-                        this.mainFrame.NavigationService.Navigate(PublishPages[1]);
-                        break;
                     case var value when value == (string)PublishPages[0].Tag:
+                        currentPage = 0;
                         int stepIndex = Breadcrumbs.IndexOf((string)PublishPages[0].Tag);
                         for (int i = Breadcrumbs.Count - 1; i > stepIndex; i--)
                         {
                             Breadcrumbs.RemoveAt(i);
                         }
                         this.mainFrame.NavigationService.Navigate(PublishPages[0]);
+                        this.breadcrumbsNavigation.Visibility = Visibility.Collapsed;
+                        ToggleButtonRowVisibility(0);
                         break;
                     case var value when value == (string)PublishPages[1].Tag:
+                        currentPage = 1;
                         stepIndex = Breadcrumbs.IndexOf((string)PublishPages[1].Tag);
                         for (int i = Breadcrumbs.Count - 1; i > stepIndex; i--)
                         {
                             Breadcrumbs.RemoveAt(i);
                         }
-                        this.mainFrame.NavigationService.Navigate(PublishPages[1]); 
+                        this.mainFrame.NavigationService.Navigate(PublishPages[1]);
+                        this.breadcrumbsNavigation.Visibility = Visibility.Visible;
+                        ToggleButtonRowVisibility(1);
                         break;
-
+                    case var value when value == (string)PublishPages[2].Tag:
+                        if (!Breadcrumbs.Contains((string)PublishPages[2].Tag)) Breadcrumbs.Add((string)PublishPages[2].Tag);
+                        currentPage = 2;
+                        stepIndex = Breadcrumbs.IndexOf((string)PublishPages[2].Tag);
+                        for (int i = Breadcrumbs.Count - 1; i > stepIndex; i--)
+                        {
+                            Breadcrumbs.RemoveAt(i);
+                        }
+                        this.mainFrame.NavigationService.Navigate(PublishPages[2]);
+                        this.breadcrumbsNavigation.Visibility = Visibility.Visible;
+                        ToggleButtonRowVisibility(2);
+                        break;
+                    case "Back":
+                        --currentPage;
+                        stepIndex = Breadcrumbs.IndexOf((string)PublishPages[currentPage].Tag);
+                        for (int i = Breadcrumbs.Count - 1; i > stepIndex; i--) 
+                        {
+                            Breadcrumbs.RemoveAt(i);
+                        }
+                        this.mainFrame.NavigationService.Navigate(PublishPages[currentPage]);
+                        this.breadcrumbsNavigation.Visibility = currentPage == 0 ? Visibility.Collapsed : Visibility.Visible;
+                        ToggleButtonRowVisibility(currentPage);
+                        break;
+                    case "Next":
+                        ++currentPage;
+                        if (!Breadcrumbs.Contains((string)PublishPages[currentPage].Tag)) Breadcrumbs.Add((string)PublishPages[currentPage].Tag);
+                        stepIndex = Breadcrumbs.IndexOf((string)PublishPages[currentPage].Tag);
+                        if(stepIndex > 0)
+                        {
+                            for (int i = Breadcrumbs.Count - 1; i > stepIndex; i--)
+                            {
+                                Breadcrumbs.RemoveAt(i);
+                            }
+                        }
+                        this.mainFrame.NavigationService.Navigate(PublishPages[currentPage]);
+                        this.breadcrumbsNavigation.Visibility = Visibility.Visible;
+                        ToggleButtonRowVisibility(currentPage);
+                        break;
                 }
             }
+        }
+
+        private void ToggleButtonRowVisibility(int page)
+        {
+            // Reset all buttons visibility
+            foreach (var stackPanel in NavButtonStacks.Values)
+            {
+                stackPanel.Visibility = Visibility.Collapsed;
+            }
+
+            // Set appropriate buttonStack visible
+            if(NavButtonStacks.TryGetValue(page, out var buttonstack))
+            {
+                buttonstack.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void mainFrame_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
+        {
+            Page navigatedPage = e.Content as Page;
+
+            Dispatcher.BeginInvoke((Action)(() =>
+            {
+                if (navigatedPage != null)
+                {
+                    if (navigatedPage is PublishPackagePublishPage)
+                        (navigatedPage as PublishPackagePublishPage).LoadEvents();
+                    if (navigatedPage is PublishPackageSelectPage)
+                        (navigatedPage as PublishPackageSelectPage).LoadEvents();
+                    if (navigatedPage is PublishPackagePreviewPage)
+                        (navigatedPage as PublishPackagePreviewPage).LoadEvents();
+                    // Initialize or update the page as needed
+                }
+            }));
         }
     }
 }

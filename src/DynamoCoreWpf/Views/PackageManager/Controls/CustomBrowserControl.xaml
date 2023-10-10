@@ -621,9 +621,9 @@
                     <Trigger Property="IsExpanded" Value="False">
                         <Setter Property="Visibility" TargetName="ItemsHost" Value="Collapsed"/>
                     </Trigger>  
-                    <Trigger Property="HasItems" Value="False">
+                    <!--<Trigger Property="HasItems" Value="False">
                         <Setter Property="Visibility" TargetName="Expander" Value="Hidden"/>
-                    </Trigger>
+                    </Trigger>-->
                     <Trigger Property="HasItems" Value="True">  
                         <Setter Property="Height" TargetName="VerticalMarker" Value="12"/>
                     </Trigger>
@@ -660,9 +660,10 @@
                 <Setter Property="FontSize" Value="12"/>
                 <Setter Property="Foreground" Value="#F5F5F5"/>
                 <Style.Triggers>
-                    <Trigger Property="HasItems" Value="False">
-                        <Setter Property="Visibility" Value="Collapsed"/>
-                    </Trigger>
+                    <DataTrigger Binding="{Binding DependencyType, Converter={StaticResource DependencyTypeToVisibilityConverter}, ConverterParameter=Folder}"
+                                 Value="Collapsed">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                    </DataTrigger>
                 </Style.Triggers>
             </Style>
             
@@ -683,7 +684,7 @@
                                FontSize="14"
                                SnapsToDevicePixels="True"
                                UseLayoutRounding="True"
-                               FontFamily="{StaticResource ArtifaktElementRegular}" />
+                               FontFamily="{StaticResource ArtifaktElementRegular}"/>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>

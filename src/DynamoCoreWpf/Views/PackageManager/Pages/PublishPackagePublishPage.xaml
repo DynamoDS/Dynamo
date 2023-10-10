@@ -22,6 +22,8 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
             <controls:EmptyStringToFalseConverter x:Key="EmptyStringToFalseConverter" />
+            <controls:EmptyListToVisibilityConverter x:Key="EmptyListToVisibilityConverter" />
+            <controls:ListHasMoreThanNItemsToVisibilityConverter x:Key="ListHasMoreThanNItemsToVisibilityConverter"/>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <ControlTemplate x:Key="ComboBoxToggleButton"
                              TargetType="{x:Type ToggleButton}">
@@ -595,54 +597,77 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <!--  Package Contents Label  -->
-                    <TextBlock DockPanel.Dock="Left"
-                               Style="{StaticResource LabelStyle}"
-                               Text="{x:Static p:Resources.PublishPackagePackageContent}" />
+                    <DockPanel>                        
+                        <TextBlock DockPanel.Dock="Left"
+                                   Style="{StaticResource LabelStyle}"
+                                   Text="{x:Static p:Resources.PublishPackagePackageContent}" />
+
+
+                        <Button Content="Edit"
+                                Tag="Next"
+                                DockPanel.Dock="Right"
+                                Click="NavigationButton_Click"
+                                HorizontalAlignment="Right"
+                                Foreground="#38ABDF"
+                                FontSize="12"
+                                FontFamily="{StaticResource ArtifaktElementRegular}"
+                                Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
+                                Visibility="{Binding PreviewPackageContents, Converter={StaticResource ListHasMoreThanNItemsToVisibilityConverter}}" />
+                    </DockPanel>
 
                     <Border Grid.Row="1"
                             Background="#2F2E30"
-                            Padding="30"
+                            Padding="0"
                             Margin="0 10 0 20">
-                        
-                         <!--  Top Row: Buttons and Label  -->
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+
+                        <Grid>                            
+                             <!--  Top Row: Buttons and Label  -->
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
+                                        Margin="30"
+                                        Visibility="{Binding PreviewPackageContents, Converter={StaticResource EmptyListToVisibilityConverter}}">
                             
-                            <!--  Add Files  -->
-                            <Button Click="NavigationButton_Click"
-                                    Tag="filesDialogButton"
-                                    Command="{Binding Path=ShowAddFileDialogAndAddCommand}" 
-                                    Content="{x:Static p:Resources.PublishPackageViewAddFileButton}"
-                                    Margin="0,0,20,0"
-                                    Background="#0696D7"
-                                    Foreground="White"
-                                    BorderBrush="#0696D7"
-                                    Style="{StaticResource CtaButtonStyle}"
-                                    TabIndex="15">
-                                <Button.ToolTip>
-                                    <ToolTip Content="{x:Static p:Resources.PublishPackageViewAddFileButtonTooltip}"
-                                             Style="{StaticResource GenericToolTipLight}"></ToolTip>
-                                </Button.ToolTip>
-                            </Button>
+                                <!--  Add Files  -->
+                                <Button Click="NavigationButton_Click"
+                                        Tag="Next"
+                                        Command="{Binding Path=ShowAddFileDialogAndAddCommand}" 
+                                        Content="{x:Static p:Resources.PublishPackageViewAddFileButton}"
+                                        Margin="0,0,20,0"
+                                        Background="#0696D7"
+                                        Foreground="White"
+                                        BorderBrush="#0696D7"
+                                        Style="{StaticResource CtaButtonStyle}"
+                                        TabIndex="15">
+                                    <Button.ToolTip>
+                                        <ToolTip Content="{x:Static p:Resources.PublishPackageViewAddFileButtonTooltip}"
+                                                 Style="{StaticResource GenericToolTipLight}"></ToolTip>
+                                    </Button.ToolTip>
+                                </Button>
                             
-                            <!--  Add Directory  -->
-                            <Button Click="NavigationButton_Click"
-                                    Tag="folderDialogButton"
-                                    Command="{Binding Path=SelectDirectoryAndAddFilesRecursivelyCommand}"
-                                    Content="{x:Static p:Resources.PublishPackageViewAddDirectoryButton}"
-                                    Margin="20,0,0,0"
-                                    Background="#0696D7"
-                                    Foreground="White"
-                                    BorderBrush="#0696D7"
-                                    Style="{StaticResource CtaButtonStyle}"
-                                    TabIndex="16">
-                                <Button.ToolTip>
-                                    <ToolTip Content="{x:Static p:Resources.PublishPackageViewAddDirectoryButtonTooltip}"
-                                             Style="{StaticResource GenericToolTipLight}"></ToolTip>
-                                </Button.ToolTip>
-                            </Button>
+                                <!--  Add Directory  -->
+                                <Button Click="NavigationButton_Click"
+                                        Tag="Next"
+                                        Command="{Binding Path=SelectDirectoryAndAddFilesRecursivelyCommand}"
+                                        Content="{x:Static p:Resources.PublishPackageViewAddDirectoryButton}"
+                                        Margin="20,0,0,0"
+                                        Background="#0696D7"
+                                        Foreground="White"
+                                        BorderBrush="#0696D7"
+                                        Style="{StaticResource CtaButtonStyle}"
+                                        TabIndex="16">
+                                    <Button.ToolTip>
+                                        <ToolTip Content="{x:Static p:Resources.PublishPackageViewAddDirectoryButtonTooltip}"
+                                                 Style="{StaticResource GenericToolTipLight}"></ToolTip>
+                                    </Button.ToolTip>
+                                </Button>
 
                     
-                        </StackPanel>    
+                            </StackPanel>
+                            <local:CustomBrowserControl x:Name="previewBrowserControl"
+                                                        Loaded="previewBrowserControl_Loaded"
+                                                        Root="{Binding PreviewPackageContents, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
+                                                        Visibility="{Binding PreviewPackageContents, Converter={StaticResource ListHasMoreThanNItemsToVisibilityConverter}}"/>
+                        </Grid>
+
                     </Border>
                 </Grid>
 

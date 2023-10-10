@@ -26,10 +26,27 @@ namespace Dynamo.PackageManager.UI
             PublishPackageViewModel = this.DataContext as PublishPackageViewModel;
         }
 
+        public void LoadEvents()
+        {
+            var firstItem = (TreeViewItem)this.customBrowserControl.customTreeView.ItemContainerGenerator.ContainerFromIndex(0);
+            if (firstItem != null)
+            {
+                firstItem.IsSelected = true;
+            }
+        }
 
         public void Dispose()
         {
             this.DataContextChanged -= PublishPackagePublishPage_DataContextChanged;
+        }
+
+        private void customBrowserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            var firstItem = (TreeViewItem)this.customBrowserControl.customTreeView.ItemContainerGenerator.ContainerFromIndex(0);
+            if (firstItem != null)
+            {
+                firstItem.IsSelected = true;
+            }
         }
     }
 

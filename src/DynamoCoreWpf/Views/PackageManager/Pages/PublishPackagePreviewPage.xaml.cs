@@ -1,26 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
-namespace Views.PackageManager.Pages
+namespace Dynamo.PackageManager.UI
 {
     /// <summary>
     /// Interaction logic for PublishPackagePreviewPage.xaml
     /// </summary>
     public partial class PublishPackagePreviewPage : Page
     {
+        private PublishPackageViewModel PublishPackageViewModel;
+
         public PublishPackagePreviewPage()
         {
             InitializeComponent();
+
+            this.DataContextChanged += PublishPackagePublishPage_DataContextChanged;
+            this.Tag = "Preview Package Contents";
+        }
+
+        private void PublishPackagePublishPage_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            PublishPackageViewModel = this.DataContext as PublishPackageViewModel;
+        }
+
+        public void LoadEvents()
+        {
+            var firstItem = (TreeViewItem)this.customBrowserControl.customTreeView.ItemContainerGenerator.ContainerFromIndex(0);
+            if (firstItem != null)
+            {
+                firstItem.IsSelected = true;
+            }
+        }
+
+
+        public void Dispose()
+        {
+            this.DataContextChanged -= PublishPackagePublishPage_DataContextChanged;
+        }
+
+        private void customBrowserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            var firstItem = (TreeViewItem)this.customBrowserControl.customTreeView.ItemContainerGenerator.ContainerFromIndex(0);
+            if (firstItem != null)
+            {
+                firstItem.IsSelected = true;
+            }
         }
     }
 }
