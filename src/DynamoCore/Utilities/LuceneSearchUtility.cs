@@ -124,17 +124,8 @@ namespace Dynamo.Utilities
             {
                 indexDir = FSDirectory.Open(indexPath);
             }
-
-            try
-            {
-                // Create an analyzer to process the text
-                Analyzer = CreateAnalyzerByLanguage(dynamoModel.PreferenceSettings.Locale);
-            }
-            catch (Exception)
-            {
-                Analyzer = new LuceneCustomAnalyzer(LuceneConfig.LuceneNetVersion);
-            }
-
+            // Create an analyzer to process the text
+            Analyzer = CreateAnalyzerByLanguage(dynamoModel.PreferenceSettings.Locale);
             CreateLuceneIndexWriter();    
         }
 

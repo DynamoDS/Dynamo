@@ -1004,12 +1004,15 @@ namespace Dynamo.Models
             TraceReconciliationProcessor = this;
 
             State = DynamoModelState.StartedUIless;
-            // This event should only be raised at the end of this method.
-            DynamoReady(new ReadyParams(this));
             // Write index to disk only once
             LuceneUtility.CommitWriterChanges();
-            //The writer have to be disposed at DynamoModel level due that we could index package-nodes as new packages are installed
-            LuceneUtility.DisposeWriter();
+            //Disposed writer if it is in file system mode so that the index files can be used by other processes (potentially a second Dynamo session)
+            if (LuceneUtility.startConfig.StorageType == LuceneSearchUtility.LuceneStorage.FILE_SYSTEM)
+            {
+                LuceneUtility.DisposeWriter();
+            }
+            // This event should only be raised at the end of this method.
+            DynamoReady(new ReadyParams(this));
         }
 
         private void SearchModel_ItemProduced(NodeModel node)
