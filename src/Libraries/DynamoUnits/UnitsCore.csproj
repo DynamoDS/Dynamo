@@ -21,7 +21,7 @@
         <PackageReference Include="System.Resources.Extensions" Version="5.0.0" />
     </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ForgeUnits.NET" Version="4.0.3" GeneratePathProperty="true">
+    <PackageReference Include="ForgeUnits.NET" Version="4.1.1" GeneratePathProperty="true">
         <ExcludeAssets>build</ExcludeAssets>
     </PackageReference>
 	  <PackageReference Include="ForgeUnits.Schemas" Version="1.0.0" GeneratePathProperty="true" />
