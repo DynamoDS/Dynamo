@@ -15,6 +15,7 @@ namespace Dynamo.Wpf.ViewModels.Core
         private AuthenticationManager authManager;
 
         private int notificationsNumber;
+        private bool viewButtonsText;
 
         public ShortcutToolbarViewModel(DynamoViewModel dynamoViewModel)
         {
@@ -22,7 +23,14 @@ namespace Dynamo.Wpf.ViewModels.Core
             authManager = dynamoViewModel.Model.AuthenticationManager;
             ValidateWorkSpaceBeforeToExportAsImageCommand = new DelegateCommand(dynamoViewModel.ValidateWorkSpaceBeforeToExportAsImage);
             SignOutCommand = new DelegateCommand(authManager.ToggleLoginState);
-            authManager.LoginStateChanged += (o) => { RaisePropertyChanged(nameof(LoginState)); };
+            authManager.LoginStateChanged += (o) => { RaisePropertyChanged(nameof(LoginState)); };            
+            dynamoViewModel.WindowRezised += DynamoViewModel_WindowRezised;
+            ViewButtonsText = true;
+        }
+
+        private void DynamoViewModel_WindowRezised(object sender, System.EventArgs e)
+        {
+            ViewButtonsText = !(bool)sender;
         }
 
         /// <summary>
@@ -68,6 +76,19 @@ namespace Dynamo.Wpf.ViewModels.Core
                     return false;
                 }
                 return true;
+            }
+        }
+
+        public bool ViewButtonsText
+        {
+            get
+            {
+                return viewButtonsText;
+            }
+            set
+            {
+                viewButtonsText = value;
+                RaisePropertyChanged(nameof(ViewButtonsText));
             }
         }
     }

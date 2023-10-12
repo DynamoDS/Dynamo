@@ -830,11 +830,19 @@ namespace Dynamo.ViewModels
             }
         }
 
+        internal event EventHandler WindowRezised;
+        internal void OnWindowResized(object lessthan1000)
+        {
+            if(WindowRezised != null)
+            {
+                WindowRezised(lessthan1000, new EventArgs());
+            }
+        }
 
         internal event EventHandler PreferencesWindowChanged;
         internal void OnPreferencesWindowChanged(object preferencesView)
         {
-            if(PreferencesWindowChanged != null)
+            if (PreferencesWindowChanged != null)
             {
                 PreferencesWindowChanged(preferencesView, new EventArgs());
             }
@@ -2669,6 +2677,7 @@ namespace Dynamo.ViewModels
                 this.ShowStartPage = (Model.Workspaces.Count() <= 1);
                 RunSettings.ForceBlockRun = false;
                 OnEnableShortcutBarItems(false);
+                OnRequestCloseHomeWorkSpace();
             }
         }
 

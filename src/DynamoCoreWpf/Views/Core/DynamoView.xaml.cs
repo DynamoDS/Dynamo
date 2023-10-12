@@ -84,6 +84,8 @@ namespace Dynamo.Controls
         private bool isPSSCalledOnViewModelNoCancel = false;
         private readonly DispatcherTimer _workspaceResizeTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 500), IsEnabled = false };
         private ViewLoadedParams sharedViewExtensionLoadedParams;
+        private double toolBarRightMenuWidth = 0;
+        private double additionalWidth = 50;
 
         /// <summary>
         /// Extensions currently displayed as windows.
@@ -100,6 +102,8 @@ namespace Dynamo.Controls
         internal PreferencesView PreferencesWindow {
             get { return preferencesWindow; }
         }
+
+        internal double DefaultMinWidth = 0;
 
         /// <summary>
         /// Constructor
@@ -228,9 +232,12 @@ namespace Dynamo.Controls
             this.HideOrShowRightSideBar();
 
             this.dynamoViewModel.RequestPaste += OnRequestPaste;
+            this.dynamoViewModel.RequestCloseHomeWorkSpace += OnRequestCloseHomeWorkSpace;
             this.dynamoViewModel.RequestReturnFocusToView += OnRequestReturnFocusToView;
             this.dynamoViewModel.Model.WorkspaceSaving += OnWorkspaceSaving;
             this.dynamoViewModel.Model.WorkspaceOpened += OnWorkspaceOpened;
+            this.dynamoViewModel.Model.WorkspaceAdded += OwnWorkspaceAdded;
+            this.dynamoViewModel.Model.WorkspaceHidden += OnWorkspaceHidden;
             this.dynamoViewModel.RequestEnableShortcutBarItems += DynamoViewModel_RequestEnableShortcutBarItems;
             this.dynamoViewModel.RequestExportWorkSpaceAsImage += OnRequestExportWorkSpaceAsImage;
 
@@ -244,8 +251,30 @@ namespace Dynamo.Controls
             {
                 Application.Current.MainWindow = this;
             }
+
+            DefaultMinWidth = MinWidth;
+    }
+
+        private void OnRequestCloseHomeWorkSpace()
+        {
+            CalculateMinWidth();
         }
 
+        private void OnWorkspaceHidden(WorkspaceModel workspace)
+        {            
+            CalculateMinWidth();
+        }
+
+        private void OwnWorkspaceAdded(WorkspaceModel workspace)
+        {            
+            CalculateMinWidth();
+        }
+
+        protected override async void OnContentRendered(EventArgs e)
+        {
+            base.OnContentRendered(e);
+            toolBarRightMenuWidth = shortcutBar.RightMenu.ActualWidth;
+        }
         private void OnRequestExportWorkSpaceAsImage(object parameter)
         {
             var workspace = this.ChildOfType<WorkspaceView>();
@@ -1027,6 +1056,34 @@ namespace Dynamo.Controls
             }
 
             UpdateGeometryScalingPopupLocation();
+            
+            CalculateWindowThreshold();
+        }
+        
+        internal void CalculateWindowThreshold()
+        {
+            List<TabItem> tabItems = WpfUtilities.ChildrenOfType<TabItem>(WorkspaceTabs).ToList();
+            
+            double tabItemsWidth = tabItems.Count > 0 ? tabItems[0].Width * tabItems.Count : 0;
+            double threshold = Convert.ToDouble(dynamoViewModel.LibraryWidth) + tabItemsWidth + toolBarRightMenuWidth + additionalWidth;
+            dynamoViewModel.OnWindowResized(dynamoViewModel.Model.PreferenceSettings.WindowW <= threshold);            
+        }
+
+        internal void CalculateMinWidth()
+        {
+            List<TabItem> tabItems = WpfUtilities.ChildrenOfType<TabItem>(WorkspaceTabs).ToList();
+            double tabItemsWidth = tabItems.Count > 0 ? tabItems[0].Width * tabItems.Count : 0;
+
+            if (dynamoViewModel.Model.PreferenceSettings.WindowW > DefaultMinWidth)
+            {
+                MinWidth = Convert.ToDouble(dynamoViewModel.LibraryWidth) + tabItemsWidth + toolBarRightMenuWidth + additionalWidth;
+            }
+            else
+            {
+                MinWidth = DefaultMinWidth;
+            }
+
+            CalculateWindowThreshold();
         }
 
         private void UpdateGeometryScalingPopupLocation()
@@ -1103,7 +1160,7 @@ namespace Dynamo.Controls
             shortcutBar.ShortcutBarItems.Add(undoButton);
             shortcutBar.ShortcutBarItems.Add(redoButton);
             
-            shortcutBarGrid.Children.Add(shortcutBar);
+            shortcutBarGrid.Children.Add(shortcutBar);            
         }
 
         /// <summary>
@@ -1921,9 +1978,12 @@ namespace Dynamo.Controls
 
             //COMMANDS
             this.dynamoViewModel.RequestPaste -= OnRequestPaste;
+            this.dynamoViewModel.RequestCloseHomeWorkSpace -= OnRequestCloseHomeWorkSpace;
             this.dynamoViewModel.RequestReturnFocusToView -= OnRequestReturnFocusToView;
             this.dynamoViewModel.Model.WorkspaceSaving -= OnWorkspaceSaving;
             this.dynamoViewModel.Model.WorkspaceOpened -= OnWorkspaceOpened;
+            this.dynamoViewModel.Model.WorkspaceAdded -= OwnWorkspaceAdded;
+            this.dynamoViewModel.Model.WorkspaceHidden -= OnWorkspaceHidden;
             this.dynamoViewModel.RequestEnableShortcutBarItems -= DynamoViewModel_RequestEnableShortcutBarItems;
             this.dynamoViewModel.RequestExportWorkSpaceAsImage -= OnRequestExportWorkSpaceAsImage;
 

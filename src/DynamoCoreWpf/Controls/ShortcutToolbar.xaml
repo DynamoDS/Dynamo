@@ -137,15 +137,17 @@
                 <Menu HorizontalAlignment="Right"
                       Style="{StaticResource MainMenu}"
                       Margin="0,0,10,0"
-                      IsMainMenu="True">
+                      IsMainMenu="True"
+                      Name="RightMenu">
                     <MenuItem Name="loginMenu" Margin="0,-3,-10,0">
                         <MenuItem.Header>
-                            <Button Name="LoginButton" Click="LoginButton_OnClick" Foreground="#DCDCDC" Padding="5,0,5,0">
+                            <Button Name="LoginButton" Click="LoginButton_OnClick" Foreground="#DCDCDC"
+                                    >
                                 <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal">
 
                                     <Image Source="/DynamoCoreWpf;component/UI/Images/Profile_48px.png" Width="16" Height ="16"></Image>
 
-                                    <TextBlock Name="txtSignIn" Padding="10,5,5,5">
+                                    <TextBlock Name="txtSignIn" Padding="10,5,5,5" Visibility="{Binding ViewButtonsText, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                                         <TextBlock.Style>
                                             <Style TargetType="{x:Type TextBlock}">
                                                 <Setter Property="Text" Value="{x:Static p:Resources.SignInButtonText}" />
@@ -237,7 +239,8 @@
                                            VerticalAlignment="Center"
                                            Margin="10 0 0 0"
                                            Foreground="#DCDCDC"
-                                           FontFamily="{StaticResource ArtifaktElementRegular}">
+                                           FontFamily="{StaticResource ArtifaktElementRegular}"
+                                           Visibility="{Binding ViewButtonsText, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                                 </TextBlock>
                             </StackPanel>
                         </MenuItem.Header>
