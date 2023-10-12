@@ -2,10 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Autodesk.DesignScript.Runtime;
-
-#if NET6_0_OR_GREATER
-using ForgeUnitsCLR = Autodesk.ForgeUnits;
-#endif
+using ForgeUnits = Autodesk.ForgeUnits;
 
 namespace DynamoUnits
 {
@@ -14,10 +11,10 @@ namespace DynamoUnits
     /// </summary>
     public class Symbol
     {
-        internal readonly ForgeUnitsCLR.Symbol forgeSymbol;
-        internal readonly ForgeUnitsCLR.PrefixOrSuffix forgePrefixOrSuffix;
+        internal readonly ForgeUnits.Symbol forgeSymbol;
+        internal readonly ForgeUnits.PrefixOrSuffix forgePrefixOrSuffix;
 
-        internal Symbol(ForgeUnitsCLR.Symbol symbol)
+        internal Symbol(ForgeUnits.Symbol symbol)
         {
             this.forgeSymbol = symbol ?? throw new ArgumentNullException();
             this.forgePrefixOrSuffix = symbol.getPrefixOrSuffix();
