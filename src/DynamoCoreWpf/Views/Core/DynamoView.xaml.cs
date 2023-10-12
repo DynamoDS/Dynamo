@@ -257,17 +257,17 @@ namespace Dynamo.Controls
 
         private void OnRequestCloseHomeWorkSpace()
         {
-            CalculateMinWidth();
+            CalculateWindowMinWidth();
         }
 
         private void OnWorkspaceHidden(WorkspaceModel workspace)
         {            
-            CalculateMinWidth();
+            CalculateWindowMinWidth();
         }
 
         private void OwnWorkspaceAdded(WorkspaceModel workspace)
         {            
-            CalculateMinWidth();
+            CalculateWindowMinWidth();
         }
 
         protected override async void OnContentRendered(EventArgs e)
@@ -1069,7 +1069,7 @@ namespace Dynamo.Controls
             dynamoViewModel.OnWindowResized(dynamoViewModel.Model.PreferenceSettings.WindowW <= threshold);            
         }
 
-        internal void CalculateMinWidth()
+        internal void CalculateWindowMinWidth()
         {
             List<TabItem> tabItems = WpfUtilities.ChildrenOfType<TabItem>(WorkspaceTabs).ToList();
             double tabItemsWidth = tabItems.Count > 0 ? tabItems[0].Width * tabItems.Count : 0;
@@ -1160,7 +1160,7 @@ namespace Dynamo.Controls
             shortcutBar.ShortcutBarItems.Add(undoButton);
             shortcutBar.ShortcutBarItems.Add(redoButton);
             
-            shortcutBarGrid.Children.Add(shortcutBar);            
+            shortcutBarGrid.Children.Add(shortcutBar);
         }
 
         /// <summary>
