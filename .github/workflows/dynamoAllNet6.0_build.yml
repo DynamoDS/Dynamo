@@ -31,3 +31,9 @@ jobs:
         cd "$Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Release"
         echo "***Locating DynamoCLI for Windows!***"
         test ".\DynamoCLI.exe" && echo "DynamoCLI exists!"
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: DynamoSandbox
+        path: $env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Release
+        if-no-files-found: warn
