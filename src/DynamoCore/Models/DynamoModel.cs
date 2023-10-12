@@ -925,16 +925,7 @@ namespace Dynamo.Models
 
             CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager, LibraryServices);
 
-            LuceneSearch.LuceneUtilityNodeSearch = new LuceneSearchUtility(this);
-
-            if (IsTestMode)
-            {
-                LuceneUtility.InitializeLuceneConfig(string.Empty, LuceneSearchUtility.LuceneStorage.RAM);
-            }
-            else
-            {
-                LuceneUtility.InitializeLuceneConfig(LuceneConfig.NodesIndexingDirectory);
-            }
+            LuceneSearch.LuceneUtilityNodeSearch = new LuceneSearchUtility(this, LuceneSearchUtility.DefaultNodeIndexStartConfig);
 
             InitializeCustomNodeManager();
 
@@ -1017,10 +1008,15 @@ namespace Dynamo.Models
             TraceReconciliationProcessor = this;
 
             State = DynamoModelState.StartedUIless;
-            // This event should only be raised at the end of this method.
-            DynamoReady(new ReadyParams(this));
             // Write index to disk only once
             LuceneUtility.CommitWriterChanges();
+            //Disposed writer if it is in file system mode so that the index files can be used by other processes (potentially a second Dynamo session)
+            if (LuceneUtility.startConfig.StorageType == LuceneSearchUtility.LuceneStorage.FILE_SYSTEM)
+            {
+                LuceneUtility.DisposeWriter();
+            }
+            // This event should only be raised at the end of this method.
+            DynamoReady(new ReadyParams(this));
         }
 
         /// <summary>
@@ -1429,12 +1425,8 @@ namespace Dynamo.Models
                 PreferenceSettings.MessageLogged -= LogMessage;
             }
 
-            //The writer have to be disposed at DynamoModel level due that we could index package-nodes as new packages are installed
-            LuceneUtility.DisposeWriter();
-
             // Lucene disposals (just if LuceneNET was initialized)
-            LuceneUtility.indexDir?.Dispose();
-            LuceneUtility.dirReader?.Dispose();
+            LuceneUtility.DisposeAll();
 
 #if DEBUG
             CurrentWorkspace.NodeAdded -= CrashOnDemand.CurrentWorkspace_NodeAdded;
@@ -1495,7 +1487,7 @@ namespace Dynamo.Models
                 var iDoc = LuceneUtility.InitializeIndexDocumentForNodes();
                 if (searchElement != null)
                 {
-                    AddNodeTypeToSearchIndex(searchElement, iDoc);
+                    LuceneUtility.AddNodeTypeToSearchIndex(searchElement, iDoc);
                 }
 
                 Action<CustomNodeInfo> infoUpdatedHandler = null;
@@ -1562,7 +1554,9 @@ namespace Dynamo.Models
             NodeFactory.AddTypeFactoryAndLoader(outputData.Type);
             NodeFactory.AddAlsoKnownAs(outputData.Type, outputData.AlsoKnownAs);
 
-            SearchModel?.Add(new CodeBlockNodeSearchElement(cbnData, LibraryServices));
+            var cnbNode = new CodeBlockNodeSearchElement(cbnData, LibraryServices);
+            SearchModel?.Add(cnbNode);
+            LuceneUtility.AddNodeTypeToSearchIndex(cnbNode, iDoc);
 
             var symbolSearchElement = new NodeModelSearchElement(symbolData)
             {
@@ -1581,7 +1575,10 @@ namespace Dynamo.Models
             };
 
             SearchModel?.Add(symbolSearchElement);
+            LuceneUtility.AddNodeTypeToSearchIndex(symbolSearchElement, iDoc);
+
             SearchModel?.Add(outputSearchElement);
+            LuceneUtility.AddNodeTypeToSearchIndex(outputSearchElement, iDoc);
 
             //Adding this nodes are breaking the tests (due that we have two input and two output nodes):
             //WhenHomeWorkspaceIsFocusedInputAndOutputNodesAreMissingFromSearch
@@ -1756,7 +1753,7 @@ namespace Dynamo.Models
                     // TODO: get search element some other way
                     if (ele != null)
                     {
-                        AddNodeTypeToSearchIndex(ele, iDoc);
+                        LuceneUtility.AddNodeTypeToSearchIndex(ele, iDoc);
                     }
                 }
                 catch (Exception e)
@@ -3287,24 +3284,6 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Add node information to Lucene index
-        /// </summary>
-        /// <param name="node">node info that will be indexed</param>
-        /// <param name="doc">Lucene document in which the node info will be indexed</param>
-        internal void AddNodeTypeToSearchIndex(NodeSearchElement node, Document doc)
-        {
-            if (LuceneUtility.addedFields == null) return;
-
-            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName), node.FullCategoryName);
-            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), node.Name);
-            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Description), node.Description);
-            if (node.SearchKeywords.Count > 0) LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords), node.SearchKeywords.Aggregate((x, y) => x + " " + y), true, true);
-            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Parameters), node.Parameters ?? string.Empty);
-
-            LuceneUtility.writer?.AddDocument(doc);
-        }
-
-        /// <summary>
         /// Remove node information from Lucene indexing.
         /// </summary>
         /// <param name="node">node info that needs to be removed.</param>
@@ -3363,7 +3342,7 @@ namespace Dynamo.Models
             {
                 var ele = new ZeroTouchSearchElement(functionDescriptor);
                 SearchModel?.Add(ele);
-                AddNodeTypeToSearchIndex(ele, iDoc);
+                LuceneUtility.AddNodeTypeToSearchIndex(ele, iDoc);
             }
         }
 

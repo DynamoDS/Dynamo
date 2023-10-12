@@ -21,6 +21,7 @@ using Lucene.Net.Analysis.It;
 using Lucene.Net.Analysis.Ru;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
+using Lucene.Net.Index;
 using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
 
@@ -246,9 +247,14 @@ namespace Dynamo.Search
             if (luceneSearchUtility != null)
             {
                 //The DirectoryReader and IndexSearcher have to be assigned after commiting indexing changes and before executing the Searcher.Search() method, otherwise new indexed info won't be reflected
-                luceneSearchUtility.dirReader = luceneSearchUtility.writer?.GetReader(applyAllDeletes: true);
-                if (luceneSearchUtility.dirReader == null) return null;
-
+                if (luceneSearchUtility.writer != null)
+                {
+                    luceneSearchUtility.dirReader = luceneSearchUtility.writer.GetReader(applyAllDeletes: true);
+                }
+                else
+                {
+                    luceneSearchUtility.dirReader = DirectoryReader.Open(luceneSearchUtility.indexDir);
+                }
                 luceneSearchUtility.Searcher = new IndexSearcher(luceneSearchUtility.dirReader);
 
                 string searchTerm = search.Trim();

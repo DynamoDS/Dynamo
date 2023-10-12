@@ -948,7 +948,10 @@ namespace Dynamo.ViewModels
             if (LuceneUtility != null)
             {
                 var searchElements = Model.Search(search, LuceneUtility);
-                return searchElements.Select(MakeNodeSearchElementVM);
+                if (searchElements != null)
+                {
+                    return searchElements.Select(MakeNodeSearchElementVM);
+                }
             }
             return null;
         }
