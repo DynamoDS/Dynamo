@@ -62,8 +62,8 @@ namespace Dynamo.PackageManager
             return rootDir;
         }
 
-        public static void PreBuildDirectory(string packageName, string packagesDirectory, IEnumerable<string> contentFiles, IEnumerable<string> markdownFiles,
-             out string rootDir, out string dyfDir, out string binDir, out string extraDir, out string docDir)
+        public static void PreBuildDirectory(string packageName, string packagesDirectory,
+            out string rootDir, out string dyfDir, out string binDir, out string extraDir, out string docDir)
         {
             PreviewPackageDirectory(packagesDirectory, packageName, out rootDir, out dyfDir, out binDir, out extraDir, out docDir);
         }

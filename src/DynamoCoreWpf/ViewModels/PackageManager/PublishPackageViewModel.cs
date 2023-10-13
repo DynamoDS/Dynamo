@@ -2047,56 +2047,10 @@ namespace Dynamo.PackageManager
                     return;
                 }
 
+                // Generate the Package Name, either based on the user 'Description', or the root path name, if no 'Description' yet
                 var packageName = !string.IsNullOrEmpty(Description) ? Description : Path.GetFileName(publishPath);
-                PackageDirectoryBuilder.PreBuildDirectory(packageName, publishPath, files, MarkdownFiles,
-                    out string rootDir, out string dyfDir, out string binDir, out string extraDir, out string docDir);
-
-                var rootItemPreview = new PackageItemRootViewModel(rootDir);
-                var dyfItemPreview = new PackageItemRootViewModel(dyfDir) { isChild = true };
-                var binItemPreview = new PackageItemRootViewModel(binDir) { isChild = true }; 
-                var extraItemPreview = new PackageItemRootViewModel(extraDir) { isChild = true };
-                var docItemPreview = new PackageItemRootViewModel(docDir) { isChild = true };
-
-
-                var pkg = new PackageItemRootViewModel(new FileInfo(Path.Combine(rootDir, "pkg.json")));
-                rootItemPreview.AddChild(pkg);
-
-                foreach(var file in files)
-                {
-                    var fileName = Path.GetFileName(file);
-                    if (Path.GetDirectoryName(file).EndsWith("doc"))
-                    {
-                        var doc = new PackageItemRootViewModel(new FileInfo(Path.Combine(binDir, packageName, fileName)));
-                        docItemPreview.AddChild(doc);
-                    }
-                    else if (file.EndsWith(".dyf"))
-                    {
-                        var customNodeDefinition = CustomNodeDefinitions.FirstOrDefault(x => x.DisplayName.Equals(Path.GetFileNameWithoutExtension(fileName)));
-                        if (customNodeDefinition == null) continue;
-                        var dyf = new PackageItemRootViewModel(customNodeDefinition);
-                        //dyfItemPreview.AddChild(dyf);
-                    }
-                    else if (file.EndsWith(".dll") || PackageDirectoryBuilder.IsXmlDocFile(file, files) || PackageDirectoryBuilder.IsDynamoCustomizationFile(file, files))
-                    {
-                        var assembly = Assemblies.FirstOrDefault(x => x.Name.Equals(Path.GetFileNameWithoutExtension(fileName)));
-                        if (assembly == null)
-                        {
-                            var extra = new PackageItemRootViewModel(new FileInfo(Path.Combine(extraDir, packageName, fileName)));
-                            extraItemPreview.AddChild(extra);
-                        }
-                    }
-                    else
-                    {
-                        var extra = new PackageItemRootViewModel(new FileInfo(Path.Combine(extraDir, packageName, fileName)));
-                        extraItemPreview.AddChild(extra);
-                    }
-                }
-
-                rootItemPreview.AddChild(dyfItemPreview);
-                rootItemPreview.AddChild(binItemPreview);
-                rootItemPreview.AddChild(extraItemPreview);
-                rootItemPreview.AddChild(docItemPreview);
-
+                var rootItemPreview = GetPreBuildRootItemViewModel(publishPath, packageName, files);
+                
                 if (PreviewPackageContents == null) PreviewPackageContents = new ObservableCollection<PackageItemRootViewModel> { rootItemPreview };
                 else
                 {
@@ -2113,6 +2067,72 @@ namespace Dynamo.PackageManager
                 dynamoViewModel.Model.Logger.Log(e);
             }
         }
-        
+
+        internal PackageItemRootViewModel GetPreBuildRootItemViewModel(string publishPath, string packageName, List<string> files)
+        {
+            PackageDirectoryBuilder.PreBuildDirectory(packageName, publishPath,
+                    out string rootDir, out string dyfDir, out string binDir, out string extraDir, out string docDir);
+
+            var rootItemPreview = new PackageItemRootViewModel(rootDir);
+            var dyfItemPreview = new PackageItemRootViewModel(dyfDir) { isChild = true };
+            var binItemPreview = new PackageItemRootViewModel(binDir) { isChild = true };
+            var extraItemPreview = new PackageItemRootViewModel(extraDir) { isChild = true };
+            var docItemPreview = new PackageItemRootViewModel(docDir) { isChild = true };
+
+            var pkg = new PackageItemRootViewModel(new FileInfo(Path.Combine(rootDir, "pkg.json")));
+            rootItemPreview.AddChild(pkg);
+
+            foreach (var file in files)
+            {
+                if (!File.Exists(file)) continue;
+                var fileName = Path.GetFileName(file);
+
+                if (Path.GetDirectoryName(file).EndsWith(PackageDirectoryBuilder.DocumentationDirectoryName))
+                {
+                    var doc = new PackageItemRootViewModel(new FileInfo(Path.Combine(docDir, fileName)));
+                    docItemPreview.AddChild(doc);
+                }
+                else if (file.EndsWith(".dyf"))
+                {
+                    // Get the custom definition from the CustomNodeDefinition collection
+                    var customNodeDefinition = CustomNodeDefinitions.FirstOrDefault(x => x.DisplayName.Equals(Path.GetFileNameWithoutExtension(fileName)));
+                    if (customNodeDefinition == null) continue;
+                    var dyf = new PackageItemRootViewModel(customNodeDefinition);
+                }
+                else if (file.EndsWith(".dll") || PackageDirectoryBuilder.IsXmlDocFile(file, files) || PackageDirectoryBuilder.IsDynamoCustomizationFile(file, files))
+                {
+                    var assembly = Assemblies.FirstOrDefault(x => x.Name.Equals(Path.GetFileNameWithoutExtension(fileName)));
+                    if (assembly == null)
+                    {
+                        var extra = new PackageItemRootViewModel(new FileInfo(Path.Combine(extraDir, fileName)));
+                        extraItemPreview.AddChild(extra);
+                    }
+                    else
+                    {
+                        var dll = new PackageItemRootViewModel(new FileInfo(Path.Combine(binDir, fileName)));
+                        binItemPreview.AddChild(dll);
+                    }
+                }
+                else
+                {
+                    var extra = new PackageItemRootViewModel(new FileInfo(Path.Combine(extraDir, fileName)));
+                    extraItemPreview.AddChild(extra);
+                }
+            }
+
+            foreach(var docFile in MarkdownFiles)
+            {
+                var fileName = Path.GetFileName(docFile);
+                var doc = new PackageItemRootViewModel(new FileInfo(Path.Combine(binDir, fileName)));
+                docItemPreview.AddChild(doc);
+            }
+
+            rootItemPreview.AddChild(dyfItemPreview);
+            rootItemPreview.AddChild(binItemPreview);
+            rootItemPreview.AddChild(extraItemPreview);
+            rootItemPreview.AddChild(docItemPreview);
+
+            return rootItemPreview;
+        }
     }
 }

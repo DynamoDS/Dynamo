@@ -212,6 +212,55 @@ namespace DynamoCoreWpfTests
         }
 
 
+        [Test]
+        public void GetAllFilesReturnsEqualsPackageContents()
+        {
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder\\PackageWithNodeDocumentation");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
+            var vm = new PublishPackageViewModel(this.ViewModel);
+
+            ViewModel.OnRequestPackagePublishDialog(vm);
+
+            vm.AddAllFilesAfterSelection(allFiles);
+
+            int packageContentsCount = 0;
+
+            foreach(var rootItem in vm.PackageContents)
+            {
+                var items = PackageItemRootViewModel.GetFiles(rootItem).Where(x => !x.DependencyType.Equals(DependencyType.Folder)).ToList();
+                packageContentsCount += items.Count;
+            }
+
+            var files = vm.GetAllFiles();
+
+            // check if GetAllFiles return the same number of files as stored inside the PackageContents
+            Assert.AreEqual(packageContentsCount, files.Count());
+        }
+
+        [Test]
+        public void AssertGetPreBuildRootItemViewModelReturnsCorrectItem()
+        {
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder\\PackageWithNodeDocumentation");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
+            var vm = new PublishPackageViewModel(this.ViewModel);
+
+            ViewModel.OnRequestPackagePublishDialog(vm);
+
+            vm.AddAllFilesAfterSelection(allFiles);
+
+            var testPath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder\\", "TestPath");
+            var testPkgName = @"Test Package";
+
+            var rootItemPreview = vm.GetPreBuildRootItemViewModel(testPath, testPkgName, allFiles);
+            var allRootItems = PackageItemRootViewModel.GetFiles(rootItemPreview);
+
+            var folders = allRootItems.Count(x => x.DependencyType.Equals(DependencyType.Folder));  
+            var files = allRootItems.Count(x => !x.DependencyType.Equals(DependencyType.Folder));
+
+            Assert.AreEqual(5, folders);
+            Assert.AreEqual(5, files);
+        }
+
 
         [Test, Category("Failure")]
         public void NewPackageVersionUpload_DoesNotThrowExceptionWhenDLLIsLoadedSeveralTimes()
