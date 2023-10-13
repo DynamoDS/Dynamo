@@ -446,7 +446,9 @@ namespace Dynamo.DocumentationBrowser
         private string DynamoGraphFromMDFilePath(string path)
         {
             path = HttpUtility.UrlDecode(path);
-            return Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path)) + ".dyn";
+            var rootLevelDir = Path.GetDirectoryName(path);
+            var imagesLocation = Path.Combine(new DirectoryInfo(rootLevelDir).Parent.Parent.FullName, DocumentationBrowserView.SharedDocsDirectoryName);
+            return Path.Combine(imagesLocation, Path.GetFileNameWithoutExtension(path)) + ".dyn";
         }
 
 

@@ -27,7 +27,7 @@ namespace Dynamo.DocumentationBrowser
         internal string WebBrowserUserDataFolder { get; set; }
         internal string FallbackDirectoryName { get; set; }
         //This folder will be used to store images and dyn files previosuly located in /rootDirectory/en-US/fallback_docs so we don't need to copy all those files per each language
-        internal const string SharedDocsDirectoryName = "NodeHelpSharedDocs";
+        internal static readonly string SharedDocsDirectoryName = "NodeHelpSharedDocs";
 
         //Path in which the virtual folder for loading images will be created
         internal string VirtualFolderPath { get; set; }

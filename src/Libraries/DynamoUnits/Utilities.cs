@@ -4,11 +4,7 @@ using Autodesk.DesignScript.Runtime;
 using System.Reflection;
 using System.IO;
 using System.Configuration;
-
-#if NET6_0_OR_GREATER
-using ForgeUnitsCLR = Autodesk.ForgeUnits;
-using SchemasCLR = Autodesk.ForgeUnits;
-#endif
+using ForgeUnits = Autodesk.ForgeUnits;
 
 namespace DynamoUnits
 {
@@ -17,7 +13,7 @@ namespace DynamoUnits
     /// </summary>
     public static class Utilities
     {
-        private static ForgeUnitsCLR.UnitsEngine unitsEngine;
+        private static ForgeUnits.UnitsEngine unitsEngine;
 
         /// <summary>
         /// Path to the directory used load the schema definitions.
@@ -53,8 +49,8 @@ namespace DynamoUnits
 
             try
             {
-                unitsEngine = new ForgeUnitsCLR.UnitsEngine();
-                SchemasCLR.SchemaUtility.addDefinitionsFromFolder(SchemaDirectory, unitsEngine);
+                unitsEngine = new ForgeUnits.UnitsEngine();
+                ForgeUnits.SchemaUtility.addDefinitionsFromFolder(SchemaDirectory, unitsEngine);
                 unitsEngine.resolveSchemas();
             }
             catch
@@ -72,8 +68,8 @@ namespace DynamoUnits
         {
             try
             {
-                unitsEngine = new ForgeUnitsCLR.UnitsEngine();
-                SchemasCLR.SchemaUtility.addDefinitionsFromFolder(testSchemaDir, unitsEngine);
+                unitsEngine = new ForgeUnits.UnitsEngine();
+                ForgeUnits.SchemaUtility.addDefinitionsFromFolder(testSchemaDir, unitsEngine);
                 unitsEngine.resolveSchemas();
             }
             catch
@@ -146,7 +142,7 @@ namespace DynamoUnits
         /// <summary>
         /// Engine which loads schemas and is responsible for all ForgeUnit operations.
         /// </summary>
-        internal static ForgeUnitsCLR.UnitsEngine ForgeUnitsEngine
+        internal static ForgeUnits.UnitsEngine ForgeUnitsEngine
         {
             get
             {
@@ -205,7 +201,7 @@ namespace DynamoUnits
         /// <param name="forgeDictionary">A dictionary keyed by a forge typeID and Forge SDK Quantities as values</param>
         /// <returns></returns>
         internal static IEnumerable<Quantity> CovertForgeQuantityDictionaryToCollection(
-            Dictionary<string, ForgeUnitsCLR.Quantity> forgeDictionary)
+            Dictionary<string, ForgeUnits.Quantity> forgeDictionary)
         {
             var dynQuantities = new List<Quantity>();
 
@@ -229,7 +225,7 @@ namespace DynamoUnits
         /// <param name="forgeDictionary">A dictionary keyed by a forge typeID and Forge SDK Symbols as values</param>
         /// <returns></returns>
         internal static IEnumerable<Symbol> ConvertForgeSymbolDictionaryToCollection(
-            Dictionary<string, ForgeUnitsCLR.Symbol> forgeDictionary)
+            Dictionary<string, ForgeUnits.Symbol> forgeDictionary)
         {
             var dynSymbols = new List<Symbol>();
 
@@ -253,7 +249,7 @@ namespace DynamoUnits
         /// <param name="forgeDictionary">A dictionary keyed by a forge typeID and Forge SDK Units as values</param>
         /// <returns></returns>
         internal static IEnumerable<Unit> ConvertForgeUnitDictionaryToCollection(
-            Dictionary<string, ForgeUnitsCLR.Unit> forgeDictionary)
+            Dictionary<string, ForgeUnits.Unit> forgeDictionary)
         {
             var dynUnits = new List<Unit>();
 
@@ -285,7 +281,7 @@ namespace DynamoUnits
         /// </summary>
         /// <param name="forgeDictionary">A dictionary keyed by a forge typeID and Forge SDK Quantities as values</param>
         /// <returns>A dictionary keyed by a version-less typeID and the latest registered version as value</returns>
-        internal static Dictionary<string, Version> GetAllRegisteredQuantityVersions(Dictionary<string, ForgeUnitsCLR.Quantity> forgeDictionary)
+        internal static Dictionary<string, Version> GetAllRegisteredQuantityVersions(Dictionary<string, ForgeUnits.Quantity> forgeDictionary)
         {
             var versionDictionary = new Dictionary<string, Version>();
 
@@ -322,7 +318,7 @@ namespace DynamoUnits
         /// </summary>
         /// <param name="forgeDictionary">A dictionary keyed by a forge typeID and Forge SDK Symbols as values</param>
         /// <returns>A dictionary keyed by a version-less typeID and the latest registered version as value</returns>
-        internal static Dictionary<string, Version> GetAllLastestRegisteredSymbolVersions(Dictionary<string, ForgeUnitsCLR.Symbol> forgeDictionary)
+        internal static Dictionary<string, Version> GetAllLastestRegisteredSymbolVersions(Dictionary<string, ForgeUnits.Symbol> forgeDictionary)
         {
             var versionDictionary = new Dictionary<string, Version>();
 
@@ -359,7 +355,7 @@ namespace DynamoUnits
         /// </summary>
         /// <param name="forgeDictionary">A dictionary keyed by a forge typeID and Forge SDK Units as values</param>
         /// <returns>A dictionary keyed by a version-less typeID and the latest registered version as value</returns>
-        internal static Dictionary<string, Version> GetAllLatestRegisteredUnitVersions(Dictionary<string, ForgeUnitsCLR.Unit> forgeDictionary)
+        internal static Dictionary<string, Version> GetAllLatestRegisteredUnitVersions(Dictionary<string, ForgeUnits.Unit> forgeDictionary)
         {
             var versionDictionary = new Dictionary<string, Version>();
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Xml;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
@@ -73,13 +73,13 @@ namespace NodeDocumentationMarkdownGenerator
             WorkspaceInfo header = null;
             ILogger log = new DummyConsoleLogger();
 
-            if (DynamoUtilities.PathHelper.isValidXML(path, out XmlDocument xmlDoc, out Exception ex))
-            {
-                WorkspaceInfo.FromXmlDocument(xmlDoc, path, true, false, log, out header);
-            }
-            else if (DynamoUtilities.PathHelper.isValidJson(path, out string jsonDoc, out ex))
+            if (DynamoUtilities.PathHelper.isValidJson(path, out string jsonDoc, out Exception ex))
             {
                 WorkspaceInfo.FromJsonDocument(jsonDoc, path, true, false, log, out header);
+            }
+            else if (DynamoUtilities.PathHelper.isValidXML(path, out XmlDocument xmlDoc, out ex))
+            {
+                WorkspaceInfo.FromXmlDocument(xmlDoc, path, true, false, log, out header);
             }
             else throw ex;
 
