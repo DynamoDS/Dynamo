@@ -20,6 +20,7 @@ using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Utilities;
 using Greg.Responses;
 using Lucene.Net.Documents;
+using Lucene.Net.Index;
 using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
 #if NETFRAMEWORK
@@ -592,7 +593,7 @@ namespace Dynamo.PackageManager
             LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), package.Name);
             LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Description), package.Description);
 
-            if (package.Keywords.Count() > 0)
+            if (package.Keywords.Length > 0)
             {
                 LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords), package.Keywords);
             }
@@ -620,15 +621,7 @@ namespace Dynamo.PackageManager
         {
             if(LuceneUtility == null)
             {
-                LuceneSearch.LuceneUtilityPackageManager = new LuceneSearchUtility(PackageManagerClientViewModel.DynamoViewModel.Model);
-            }
-            if (DynamoModel.IsTestMode)
-            {
-                LuceneUtility.InitializeLuceneConfig(string.Empty, LuceneSearchUtility.LuceneStorage.RAM);
-            }
-            else
-            {
-                LuceneUtility.InitializeLuceneConfig(LuceneConfig.PackagesIndexingDirectory);
+                LuceneSearch.LuceneUtilityPackageManager = new LuceneSearchUtility(PackageManagerClientViewModel.DynamoViewModel.Model, LuceneSearchUtility.DefaultPkgIndexStartConfig);
             }
         }
         
@@ -1040,7 +1033,14 @@ namespace Dynamo.PackageManager
 
                     if (!DynamoModel.IsTestMode)
                     {
-                        LuceneUtility.dirReader = LuceneUtility.writer?.GetReader(applyAllDeletes: true);
+                        if (LuceneUtility.writer != null)
+                        {
+                            LuceneUtility.dirReader = LuceneUtility.writer.GetReader(applyAllDeletes: true);
+                        }
+                        else
+                        {
+                            LuceneUtility.dirReader = DirectoryReader.Open(LuceneUtility.indexDir);
+                        }
                         LuceneUtility.Searcher = new IndexSearcher(LuceneUtility.dirReader);
 
                         LuceneUtility.CommitWriterChanges();
@@ -1582,6 +1582,7 @@ namespace Dynamo.PackageManager
             InitialResultsLoaded = false;   // reset the loading screen settings
             RequestShowFileDialog -= OnRequestShowFileDialog;
             nonHostFilter.ForEach(f => f.PropertyChanged -= filter_PropertyChanged);
+            LuceneUtility.DisposeAll();
         }
     }
 }
