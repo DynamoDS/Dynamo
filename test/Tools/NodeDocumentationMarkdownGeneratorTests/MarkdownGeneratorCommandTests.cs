@@ -171,7 +171,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
             FromDirectoryCommand.HandleDocumentationFromDirectory(opts);
 
             var generatedFileNames = tempDirectory.GetFiles().Select(x => x.Name);
-            Assert.AreEqual(683, generatedFileNames.Count());
+            Assert.AreEqual(684, generatedFileNames.Count());
         }
 
         [Test]
