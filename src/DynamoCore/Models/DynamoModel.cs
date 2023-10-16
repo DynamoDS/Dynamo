@@ -681,10 +681,11 @@ namespace Dynamo.Models
             PreferenceSettings = (PreferenceSettings)CreateOrLoadPreferences(config.Preferences);
             if (PreferenceSettings != null)
             {
-                // In a integration case, respect default setting to use the host locale
-                if (!PreferenceSettings.Locale.Equals(Configuration.Configurations.SupportedLocaleList.First()) && HostAnalyticsInfo.HostName != string.Empty)
+                // Setting the locale for Dynamo from loaded Preferences only when
+                // In a non-in-process integration case (when HostAnalyticsInfo.HostName is unspecified)
+                // Language is specified, otherwise Default setting means following host locale
+                if (string.IsNullOrEmpty(HostAnalyticsInfo.HostName) || !PreferenceSettings.Locale.Equals(Configuration.Configurations.SupportedLocaleList.First()))
                 {
-                    // Setting the locale for Dynamo from loaded Preferences
                     SetUICulture(PreferenceSettings.Locale);
                 }
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
