@@ -674,7 +674,7 @@
         <!--Folders-->
         <TreeView Style="{DynamicResource TreeViewStyle}"
                   x:Name="customTreeView"
-                  Margin="8"
+                  Margin="0"
                   SelectedItemChanged="customTreeView_SelectedItemChanged"
                   ItemContainerStyle="{StaticResource CustomTreeViewItem}"
                   ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=Root, Mode=OneWay}">

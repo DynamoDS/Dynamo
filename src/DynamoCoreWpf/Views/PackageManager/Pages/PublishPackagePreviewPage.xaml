@@ -404,69 +404,9 @@
             <ColumnDefinition Width="2*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="28px" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-
-        <!--  Top Row: Buttons and Label  -->
-        <DockPanel Grid.Row="0"
-                   Grid.ColumnSpan="2"
-                   Margin="5 5 20 5"
-                   VerticalAlignment="Top"
-                   HorizontalAlignment="Right">
-            <!--  Add Directory  -->
-            <Button Command="{Binding Path=SelectDirectoryAndAddFilesRecursivelyCommand}"
-                    Content="{x:Static p:Resources.PublishPackageViewAddDirectoryButton}"
-                    DockPanel.Dock="Right"
-                    TabIndex="16"
-                    Background="{StaticResource PrimaryCharcoal300Brush}"
-                    BorderThickness="0"
-                    Cursor="Hand">
-                <Button.ToolTip>
-                    <ToolTip Content="{x:Static p:Resources.PublishPackageViewAddDirectoryButtonTooltip}"
-                             Style="{StaticResource GenericToolTipLight}" />
-                </Button.ToolTip>
-                <Button.Template>
-                    <ControlTemplate>
-                        <Grid>
-                            <Rectangle Width="16"
-                                       Height="16">
-                                <Rectangle.Fill>
-                                    <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/add-folder-16px.png" />
-                                </Rectangle.Fill>
-                            </Rectangle>
-                        </Grid>
-                    </ControlTemplate>
-                </Button.Template>
-            </Button>
-
-            <!--  Add Files  -->
-            <Button Command="{Binding Path=ShowAddFileDialogAndAddCommand}"
-                    Content="{x:Static p:Resources.PublishPackageViewAddFileButton}"
-                    DockPanel.Dock="Right"
-                    TabIndex="15"
-                    Margin="0 2 10 0"
-                    Background="{StaticResource PrimaryCharcoal300Brush}"
-                    BorderThickness="0"
-                    Cursor="Hand">
-                <Button.ToolTip>
-                    <ToolTip Content="{x:Static p:Resources.PublishPackageViewAddFileButtonTooltip}"
-                             Style="{StaticResource GenericToolTipLight}" />
-                </Button.ToolTip>
-                <Button.Template>
-                    <ControlTemplate>
-                        <Grid>
-                            <Rectangle Width="16"
-                                       Height="16">
-                                <Rectangle.Fill>
-                                    <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/add-file-16px.png" />
-                                </Rectangle.Fill>
-                            </Rectangle>
-                        </Grid>
-                    </ControlTemplate>
-                </Button.Template>
-            </Button>
-        </DockPanel>
 
         <local:CustomBrowserControl x:Name="customBrowserControl"
                                     Grid.Column="0"

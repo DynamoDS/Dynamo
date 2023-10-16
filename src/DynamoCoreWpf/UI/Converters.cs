@@ -1416,6 +1416,27 @@ namespace Dynamo.Controls
     }
 
     /// <summary>
+    /// Converts 0 Collapsed state, otherwise returns Visible
+    /// </summary>
+    public class ZeroToVisibilityCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value is int zero)
+            {
+                return zero == 0 ? Visibility.Collapsed : Visibility.Visible;   
+            }
+
+            return Visibility.Collapsed; // If not int or int not zero, return collapsed.
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    /// <summary>
     /// Takes a value and if the value is not null returns Unity Type Auto (*) as a length value
     /// Returns 0 length if the value is null
     /// To be used in Grid Column/Row width 

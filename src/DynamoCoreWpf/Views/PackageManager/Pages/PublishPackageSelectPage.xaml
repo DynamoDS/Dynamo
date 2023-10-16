@@ -11,6 +11,7 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       UseLayoutRounding="True"
+      x:Name="PublishPackagePage"
       Title="PublishPackageSelectPage">
     <Page.Resources>
         <ResourceDictionary>
@@ -23,144 +24,7 @@
             <local:DependencyTypeToImageSourceConverter x:Key="DependencyTypeToImageSourceConverter" />
             <local:DependencyTypeToVisibilityConverter x:Key="DependencyTypeToVisibilityConverter" />
             
-            <!--  DataGrid  -->
-            <Style x:Key="DataGridCellStyle" TargetType="DataGridCell">
-                <Setter Property="Padding" Value="6,0" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type DataGridCell}">
-                            <Border Padding="{TemplateBinding Padding}"
-                                    BorderThickness="0"
-                                    SnapsToDevicePixels="True">
-                                <ContentPresenter Margin="2,3,2,0"
-                                                  HorizontalAlignment="Stretch"
-                                                  VerticalAlignment="Center"
-                                                  TextElement.FontFamily="{StaticResource ArtifaktElementRegular}"
-                                                  TextElement.FontSize="10px"
-                                                  TextElement.FontWeight="Regular"
-                                                  TextElement.Foreground="Blue"
-                                                  ToolTipService.ShowDuration="30000">
-                                    <ContentPresenter.ToolTip>
-                                        <ToolTip Content="{Binding RelativeSource={RelativeSource Self}, Path=Content.Text}"
-                                                 Style="{StaticResource GenericToolTipLight}"></ToolTip>
-                                    </ContentPresenter.ToolTip>
-                                </ContentPresenter>
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-                <Style.Triggers>
-                    <Trigger Property="IsSelected" Value="True">
-                        <Setter Property="Foreground" Value="White" />
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-            <Style x:Key="DataGridRowStyle" TargetType="DataGridRow">
-                <Setter Property="HorizontalAlignment"  Value="Left" />
-                <Setter Property="VerticalAlignment"  Value="Center" />
-                <Setter Property="VerticalContentAlignment"  Value="Center" />
-                <Setter Property="Margin"  Value="0" />
-                <Setter Property="Padding"  Value="0" />
-                <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
-                <Setter Property="Foreground" Value="#F5F5F5" />
-                <Setter Property="Height" Value="25" />
-                <Setter Property="Background" Value="#353535" />
-                <Setter Property="IsEnabled" Value="True" />
-                <Setter Property="Tag" Value="Hidden"/>
-                <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="#444444" />
-                        <Setter Property="Tag" Value="Visible"/>
-                    </Trigger>
-                    <Trigger Property="IsSelected" Value="True">
-                        <Setter Property="Background" Value="#888888" />
-                        <Setter Property="Tag" Value="Visible" />                        
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-            <Style x:Key="DataGridColumnHeaderText" TargetType="DataGridColumnHeader">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="DataGridColumnHeader">
-                            <Grid>
-                                <TextBlock Name="DataGridColumnHeader"
-                                           Height="26"
-                                           Padding="10,4,10,0"
-                                           VerticalAlignment="Center"
-                                           Background="#434343"
-                                           FontFamily="{StaticResource ArtifaktElementRegular}"
-                                           FontSize="14px"
-                                           FontWeight="Regular"
-                                           Foreground="{StaticResource PrimaryCharcoal200Brush}"
-                                           Text="{TemplateBinding Content}" />
-                                <Thumb x:Name="PART_RightHeaderGripper"
-                                       Width="1"
-                                       HorizontalAlignment="Right"
-                                       BorderBrush="#5E5E5E"
-                                       BorderThickness="1,0,0,0"
-                                       Cursor="SizeWE" />
-                            </Grid>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="DataGridColumnHeader" Property="Background" Value="#666666" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-            <Style x:Key="DataGridColumnHeaderLast"
-                   TargetType="DataGridColumnHeader">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="DataGridColumnHeader">
-                            <TextBlock Name="DataGridColumnHeader"
-                                       Height="26"
-                                       Padding="10,8,10,0"
-                                       VerticalAlignment="Center"
-                                       Background="#434343"
-                                       FontFamily="{StaticResource ArtifaktElementRegular}"
-                                       FontSize="10px"
-                                       FontWeight="Regular"
-                                       Foreground="{StaticResource PrimaryCharcoal200Brush}"
-                                       Text="{TemplateBinding Content}" />
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver"  Value="True">
-                                    <Setter TargetName="DataGridColumnHeader"  Property="Background" Value="#666666" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-            <Style x:Key="DataGrid" TargetType="{x:Type DataGrid}">
-                <Setter Property="BorderThickness"  Value="0" />
-                <Setter Property="BorderBrush" Value="Transparent" />
-                <Setter Property="Margin" Value="0,0,0,10" />
-                <Setter Property="Padding" Value="0,0,0,0" />
-                <Setter Property="AutoGenerateColumns" Value="False" />
-                <Setter Property="IsReadOnly" Value="False" />
-                <Setter Property="IsEnabled" Value="True" />
-                <Setter Property="Background" Value="#353535" />
-                <Setter Property="CanUserAddRows" Value="False" />
-                <Setter Property="CanUserReorderColumns" Value="True" />
-                <Setter Property="CanUserDeleteRows" Value="False" />
-                <Setter Property="CanUserResizeColumns" Value="True" />
-                <Setter Property="CanUserResizeRows" Value="False" />
-                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-                <Setter Property="FontSize" Value="10px" />
-                <Setter Property="CellStyle" Value="{DynamicResource DataGridCellStyle}" />
-                <Setter Property="RowStyle" Value="{DynamicResource DataGridRowStyle}" />
-                <Setter Property="HeadersVisibility" Value="Column" />
-                <Setter Property="GridLinesVisibility"  Value="Vertical" />
-                <Setter Property="VerticalGridLinesBrush" Value="{StaticResource GridLineColorBrush}"/> 
-                <Setter Property="SelectionMode" Value="Extended" />
-                <Setter Property="HorizontalScrollBarVisibility" Value="Visible" />
-                <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
-                <Setter Property="EnableRowVirtualization" Value="False" />
-            </Style>
-            
-            <!--#region CheckBox -->
+            <!--#region CheckBox Style-->
             <!--CheckBox Style-->
             <Style x:Key="FocusVisual">
                 <Setter Property="Control.Template">
@@ -250,6 +114,270 @@
                 </Setter>
             </Style>
             <!--#endregion-->
+
+            <!--#region DataGrid Style-->
+            <!--  DataGrid  -->
+            <Style x:Key="DataGridCellStyle" TargetType="DataGridCell">
+                <Setter Property="Padding" Value="6,0" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type DataGridCell}">
+                            <Border Padding="{TemplateBinding Padding}"
+                                    BorderThickness="0"
+                                    SnapsToDevicePixels="True">
+                                <ContentPresenter Margin="2,3,2,0"
+                                                  HorizontalAlignment="Stretch"
+                                                  VerticalAlignment="Center"
+                                                  TextElement.FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                  TextElement.FontSize="10px"
+                                                  TextElement.FontWeight="Regular"
+                                                  TextElement.Foreground="Blue"
+                                                  ToolTipService.ShowDuration="30000">
+                                    <ContentPresenter.ToolTip>
+                                        <ToolTip Content="{Binding RelativeSource={RelativeSource Self}, Path=Content.Text}"
+                                                 Style="{StaticResource GenericToolTipLight}"></ToolTip>
+                                    </ContentPresenter.ToolTip>
+                                </ContentPresenter>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="Foreground" Value="White" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            <Style x:Key="DataGridRowStyle" TargetType="DataGridRow">
+                <Setter Property="HorizontalAlignment"  Value="Left" />
+                <Setter Property="VerticalAlignment"  Value="Center" />
+                <Setter Property="VerticalContentAlignment"  Value="Center" />
+                <Setter Property="Margin"  Value="0" />
+                <Setter Property="Padding"  Value="0" />
+                <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
+                <Setter Property="Foreground" Value="#F5F5F5" />
+                <Setter Property="Height" Value="25" />
+                <Setter Property="Background" Value="#353535" />
+                <Setter Property="IsEnabled" Value="True" />
+                <Setter Property="Tag" Value="Hidden"/>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="#444444" />
+                        <Setter Property="Tag" Value="Visible"/>
+                    </Trigger>
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="Background" Value="#888888" />
+                        <Setter Property="Tag" Value="Visible" />                        
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            <Style x:Key="DataGridColumnHeaderTextAndControl" TargetType="DataGridColumnHeader">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="DataGridColumnHeader">
+                            <Grid Background="#434343">
+                                <DockPanel Background="Transparent"
+                                           LastChildFill="False"
+                                           VerticalAlignment="Center">
+                                    <CheckBox IsThreeState="False"
+                                              VerticalAlignment="Center"
+                                              Click="SelectDeselectButton_Click"
+                                              Margin="18 0 10 0">
+                                        <CheckBox.Style>
+                                            <Style TargetType="CheckBox" BasedOn="{StaticResource CheckBoxStyle}">
+                                                <Setter Property="Visibility"
+                                                        Value="{Binding RelativeSource={RelativeSource AncestorType=DataGridColumnHeader}, Path=Tag}" />
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsChecked" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </CheckBox.Style>
+                                    </CheckBox>
+                                    <TextBlock Name="DataGridColumnHeader"
+                                            Height="26"
+                                            Padding="5,4,10,0"
+                                            VerticalAlignment="Center"
+                                            Background="#434343"
+                                            FontFamily="{StaticResource ArtifaktElementRegular}"
+                                            FontSize="14px"
+                                            FontWeight="Regular"
+                                            Foreground="{StaticResource TextColorBrush}"
+                                            Text="{TemplateBinding Content}" />
+
+                                    <StackPanel DockPanel.Dock="Right"
+                                                Orientation="Horizontal"
+                                                Visibility="{Binding ElementName=PublishPackagePage,
+                                                                     Path=ItemSelection.Count,
+                                                                     UpdateSourceTrigger=PropertyChanged,
+                                                                     Converter={StaticResource ZeroToVisibilityCollapsedConverter}}">                                      
+                                        <Button Width="16"
+                                                Height="16"
+                                                Margin="10 0"
+                                                BorderThickness="0"
+                                                Background="Transparent"
+                                                Click="DeselectButton_Click"
+                                                Cursor="Hand">
+                                            <Button.Template>
+                                                <ControlTemplate>
+                                                    <Grid>
+                                                        <Rectangle Width="12"
+                                                                   Height="12">
+                                                            <Rectangle.Fill>
+                                                                <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/close_16px.png" />
+                                                            </Rectangle.Fill>
+                                                        </Rectangle>
+                                                    </Grid>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                        </Button>
+                                        <TextBlock VerticalAlignment="Center"
+                                                   FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                   Foreground="{StaticResource TextColorBrush}"
+                                                   DataContext=""
+                                                   FontSize="14">
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="{}{0} selected">
+                                                    <Binding ElementName="PublishPackagePage"
+                                                             Path="ItemSelection.Count" />
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                        <Button Margin="10 0"
+                                                x:Name="RemoveButton"
+                                                BorderThickness="0"
+                                                HorizontalAlignment="Right"
+                                                VerticalAlignment="Center"
+                                                Visibility="Visible"
+                                                Click="RemoveButton_Click"
+                                                Cursor="Hand">
+                                            <Button.ToolTip>
+                                                <ToolTip Content="{x:Static p:Resources.PublishPackageViewAddFileButtonTooltip}"
+                                                         Style="{StaticResource GenericToolTipLight}" />
+                                            </Button.ToolTip>
+                                            <Button.Template>
+                                                <ControlTemplate>
+                                                    <Grid>
+                                                        <Rectangle Width="12"
+                                                                   Height="12">
+                                                            <Rectangle.Fill>
+                                                                <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/remove-pk-dark-16px.png" />
+                                                            </Rectangle.Fill>
+                                                        </Rectangle>
+                                                    </Grid>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                        </Button>
+                                    </StackPanel>
+                                </DockPanel>
+                                <Thumb x:Name="PART_RightHeaderGripper"
+                                       Width="1"
+                                       HorizontalAlignment="Right"
+                                       BorderBrush="#5E5E5E"
+                                       BorderThickness="1,0,0,0"
+                                       Cursor="SizeWE" />
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="DataGridColumnHeader" Property="Background" Value="#666666" />
+                                    <Setter Property="Tag" Value="Visible" />
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="False">
+                                    <Setter Property="Tag" Value="Hidden" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="DataGridColumnHeaderText" TargetType="DataGridColumnHeader">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="DataGridColumnHeader">
+                            <Grid>
+                                <TextBlock Name="DataGridColumnHeader"
+                                           Height="26"
+                                           Padding="10,4,10,0"
+                                           VerticalAlignment="Center"
+                                           Background="#434343"
+                                           FontFamily="{StaticResource ArtifaktElementRegular}"
+                                           FontSize="14px"
+                                           FontWeight="Regular"
+                                           Foreground="{StaticResource TextColorBrush}"
+                                           Text="{TemplateBinding Content}" />
+                                <Thumb x:Name="PART_RightHeaderGripper"
+                                       Width="1"
+                                       HorizontalAlignment="Right"
+                                       BorderBrush="#5E5E5E"
+                                       BorderThickness="1,0,0,0"
+                                       Cursor="SizeWE" />
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver"
+                                         Value="True">
+                                    <Setter TargetName="DataGridColumnHeader"
+                                            Property="Background"
+                                            Value="#666666" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="DataGridColumnHeaderLast"
+                   TargetType="DataGridColumnHeader">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="DataGridColumnHeader">
+                            <TextBlock Name="DataGridColumnHeader"
+                                       Height="26"
+                                       Padding="10,8,10,0"
+                                       VerticalAlignment="Center"
+                                       Background="#434343"
+                                       FontFamily="{StaticResource ArtifaktElementRegular}"
+                                       FontSize="10px"
+                                       FontWeight="Regular"
+                                       Foreground="{StaticResource PrimaryCharcoal200Brush}"
+                                       Text="{TemplateBinding Content}" />
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver"  Value="True">
+                                    <Setter TargetName="DataGridColumnHeader"  Property="Background" Value="#666666" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="DataGrid" TargetType="{x:Type DataGrid}">
+                <Setter Property="BorderThickness"  Value="0" />
+                <Setter Property="BorderBrush" Value="Transparent" />
+                <Setter Property="Margin" Value="0,0,0,10" />
+                <Setter Property="Padding" Value="0,0,0,0" />
+                <Setter Property="AutoGenerateColumns" Value="False" />
+                <Setter Property="IsReadOnly" Value="False" />
+                <Setter Property="IsEnabled" Value="True" />
+                <Setter Property="Background" Value="#353535" />
+                <Setter Property="CanUserAddRows" Value="False" />
+                <Setter Property="CanUserReorderColumns" Value="True" />
+                <Setter Property="CanUserDeleteRows" Value="False" />
+                <Setter Property="CanUserResizeColumns" Value="True" />
+                <Setter Property="CanUserResizeRows" Value="False" />
+                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                <Setter Property="FontSize" Value="10px" />
+                <Setter Property="CellStyle" Value="{DynamicResource DataGridCellStyle}" />
+                <Setter Property="RowStyle" Value="{DynamicResource DataGridRowStyle}" />
+                <Setter Property="HeadersVisibility" Value="Column" />
+                <Setter Property="GridLinesVisibility"  Value="Vertical" />
+                <Setter Property="VerticalGridLinesBrush" Value="{StaticResource GridLineColorBrush}"/> 
+                <Setter Property="SelectionMode" Value="Extended" />
+                <Setter Property="HorizontalScrollBarVisibility" Value="Visible" />
+                <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+                <Setter Property="EnableRowVirtualization" Value="False" />
+            </Style>
+            <!--#endregion-->
+            
         </ResourceDictionary>
     </Page.Resources>
     
@@ -357,7 +485,7 @@
             <DataGrid.Columns>
                 <DataGridTemplateColumn Width="*"
                                         Header="{x:Static p:Resources.PublishPackageViewPackageName}"
-                                        HeaderStyle="{StaticResource DataGridColumnHeaderText}"
+                                        HeaderStyle="{StaticResource DataGridColumnHeaderTextAndControl}"
                                         SortDirection="Ascending"
                                         IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
@@ -365,6 +493,8 @@
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <CheckBox IsThreeState="False"
                                           VerticalAlignment="Center"
+                                          Click="SelectItemCheckBox_Checked"
+                                          IsChecked="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}"
                                           Margin="10 0 10 5">
                                     <CheckBox.Style>
                                         <Style TargetType="CheckBox" BasedOn="{StaticResource CheckBoxStyle}">
