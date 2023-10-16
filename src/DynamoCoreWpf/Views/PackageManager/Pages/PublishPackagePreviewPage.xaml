@@ -166,54 +166,30 @@
             </Style>
             <Style x:Key="DataGrid"
                    TargetType="{x:Type DataGrid}">
-                <Setter Property="BorderThickness"
-                        Value="0" />
-                <Setter Property="BorderBrush"
-                        Value="Transparent" />
-                <Setter Property="Margin"
-                        Value="0,0,0,10" />
-                <Setter Property="Padding"
-                        Value="0,0,0,0" />
-                <Setter Property="AutoGenerateColumns"
-                        Value="False" />
-                <Setter Property="IsReadOnly"
-                        Value="False" />
-                <Setter Property="IsEnabled"
-                        Value="True" />
-                <Setter Property="Background"
-                        Value="#353535" />
-                <Setter Property="CanUserAddRows"
-                        Value="False" />
-                <Setter Property="CanUserReorderColumns"
-                        Value="True" />
-                <Setter Property="CanUserDeleteRows"
-                        Value="False" />
-                <Setter Property="CanUserResizeColumns"
-                        Value="True" />
-                <Setter Property="CanUserResizeRows"
-                        Value="False" />
-                <Setter Property="FocusVisualStyle"
-                        Value="{x:Null}" />
-                <Setter Property="FontSize"
-                        Value="10px" />
-                <Setter Property="CellStyle"
-                        Value="{DynamicResource DataGridCellStyle}" />
-                <Setter Property="RowStyle"
-                        Value="{DynamicResource DataGridRowStyle}" />
-                <Setter Property="HeadersVisibility"
-                        Value="Column" />
-                <Setter Property="GridLinesVisibility"
-                        Value="Vertical" />
-                <Setter Property="VerticalGridLinesBrush"
-                        Value="{StaticResource GridLineColorBrush}" />
-                <Setter Property="SelectionMode"
-                        Value="Extended" />
-                <Setter Property="HorizontalScrollBarVisibility"
-                        Value="Visible" />
-                <Setter Property="VerticalScrollBarVisibility"
-                        Value="Auto" />
-                <Setter Property="EnableRowVirtualization"
-                        Value="False" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="BorderBrush" Value="Transparent" />
+                <Setter Property="Margin" Value="0,0,0,10" />
+                <Setter Property="Padding" Value="0,0,0,0" />
+                <Setter Property="AutoGenerateColumns"  Value="False" />
+                <Setter Property="IsReadOnly"  Value="False" />
+                <Setter Property="IsEnabled" Value="True" />
+                <Setter Property="Background" Value="#353535" />
+                <Setter Property="CanUserAddRows" Value="False" />
+                <Setter Property="CanUserReorderColumns" Value="False" />
+                <Setter Property="CanUserDeleteRows" Value="False" />
+                <Setter Property="CanUserResizeColumns" Value="True" />
+                <Setter Property="CanUserResizeRows" Value="False" />
+                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                <Setter Property="FontSize" Value="10px" />
+                <Setter Property="CellStyle" Value="{DynamicResource DataGridCellStyle}" />
+                <Setter Property="RowStyle" Value="{DynamicResource DataGridRowStyle}" />
+                <Setter Property="HeadersVisibility" Value="Column" />
+                <Setter Property="GridLinesVisibility" Value="Vertical" />
+                <Setter Property="VerticalGridLinesBrush" Value="{StaticResource GridLineColorBrush}" />
+                <Setter Property="SelectionMode" Value="Extended" />
+                <Setter Property="HorizontalScrollBarVisibility" Value="Visible" />
+                <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+                <Setter Property="EnableRowVirtualization" Value="False" />
             </Style>
 
             <!--#region CheckBox -->
@@ -459,19 +435,11 @@
                                         VerticalAlignment="Center">
                                 <CheckBox IsThreeState="False"
                                           VerticalAlignment="Center"
+                                          Visibility="Hidden"
                                           Margin="10 0 10 5">
                                     <CheckBox.Style>
                                         <Style TargetType="CheckBox"
                                                BasedOn="{StaticResource CheckBoxStyle}">
-                                            <Setter Property="Visibility"
-                                                    Value="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=Tag}" />
-                                            <Style.Triggers>
-                                                <Trigger Property="IsChecked"
-                                                         Value="True">
-                                                    <Setter Property="Visibility"
-                                                            Value="Visible" />
-                                                </Trigger>
-                                            </Style.Triggers>
                                         </Style>
                                     </CheckBox.Style>
                                 </CheckBox>

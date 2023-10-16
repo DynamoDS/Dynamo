@@ -251,13 +251,20 @@ namespace Dynamo.PackageManager.UI
             if (button == null) { return; }
 
             var treeViewItem = FindParent<TreeViewItem>(button);
-            if (treeViewItem != null)            {
+            if (treeViewItem != null) {
+
+                var treeView = this.customTreeView;
+                var selectedItem = treeView.SelectedItem;
 
                 var rootItem = treeViewItem.Header as PackageItemRootViewModel;
                 if (rootItem == null) { return; }
 
                 var viewModel = this.DataContext as PublishPackageViewModel;
-                viewModel.RemoveItemCommand.Execute(rootItem);
+
+                Dispatcher.BeginInvoke((Action)(() =>
+                {
+                    viewModel.RemoveItemCommand.Execute(rootItem);
+                }));
             }
         }
     }
