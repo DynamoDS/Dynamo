@@ -681,6 +681,12 @@ namespace Dynamo.Models
             PreferenceSettings = (PreferenceSettings)CreateOrLoadPreferences(config.Preferences);
             if (PreferenceSettings != null)
             {
+                // In a integration case, respect default setting to use the host locale
+                if (!PreferenceSettings.Locale.Equals(Configuration.Configurations.SupportedLocaleList.First()) && HostAnalyticsInfo.HostName != string.Empty)
+                {
+                    // Setting the locale for Dynamo from loaded Preferences
+                    SetUICulture(PreferenceSettings.Locale);
+                }
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
                 PreferenceSettings.MessageLogged += LogMessage;
             }
@@ -2697,6 +2703,15 @@ namespace Dynamo.Models
         #endregion
 
         #region public methods
+
+        /// <summary>
+        /// Set UI culture based on preferences
+        /// </summary>
+        public static void SetUICulture(string locale)
+        {
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo(locale == "Default" ? "en-US" : locale);
+            Thread.CurrentThread.CurrentCulture = new CultureInfo(locale == "Default" ? "en-US" : locale);
+        }
 
         /// <summary>
         ///     Add a new HomeWorkspace and set as current

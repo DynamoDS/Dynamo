@@ -245,9 +245,7 @@ namespace Dynamo.Applications
         {
             IPathResolver pathResolver = CreatePathResolver(false, string.Empty, string.Empty, string.Empty);
             PathManager.Instance.AssignHostPathAndIPathResolver(string.Empty, pathResolver);
-
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo(PreferenceSettings.Instance.Locale);
-            Thread.CurrentThread.CurrentCulture = new CultureInfo(PreferenceSettings.Instance.Locale);
+            DynamoModel.SetUICulture(PreferenceSettings.Instance.Locale);
             DynamoModel.OnDetectLanguage();
 
             // Preload ASM and display corresponding message on splash screen
@@ -284,9 +282,7 @@ namespace Dynamo.Applications
         {
             IPathResolver pathResolver = CreatePathResolver(false, string.Empty, string.Empty, string.Empty);
             PathManager.Instance.AssignHostPathAndIPathResolver(string.Empty, pathResolver);
-
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo(PreferenceSettings.Instance.Locale);
-            Thread.CurrentThread.CurrentCulture = new CultureInfo(PreferenceSettings.Instance.Locale);
+            DynamoModel.SetUICulture(PreferenceSettings.Instance.Locale);
             DynamoModel.OnDetectLanguage();
 
             // Preload ASM and display corresponding message on splash screen
@@ -425,8 +421,7 @@ namespace Dynamo.Applications
             if (!string.IsNullOrEmpty(cmdLineArgs.Locale))
             {
                 // Change the application locale, if a locale information is supplied.
-                Thread.CurrentThread.CurrentUICulture = new CultureInfo(cmdLineArgs.Locale);
-                Thread.CurrentThread.CurrentCulture = new CultureInfo(cmdLineArgs.Locale);
+                DynamoModel.SetUICulture(cmdLineArgs.Locale);
                 libgLocale = cmdLineArgs.Locale;
             }
             else
