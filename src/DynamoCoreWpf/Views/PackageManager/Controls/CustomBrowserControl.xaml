@@ -593,7 +593,8 @@
                                 BorderThickness="0"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Center"
-                                Visibility="Hidden" 
+                                Visibility="Hidden"
+                                Click="RemoveButton_Click"
                                 Cursor="Hand">
                             <Button.ToolTip>
                                 <ToolTip Content="{x:Static p:Resources.PublishPackageViewAddFileButtonTooltip}"

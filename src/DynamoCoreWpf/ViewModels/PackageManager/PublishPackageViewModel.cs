@@ -761,6 +761,27 @@ namespace Dynamo.PackageManager
             }
         }
 
+        private bool _retainFolderStructureOverride;
+        /// <summary>
+        /// Controls if the automatic folder structure should be used, or retain existing one
+        /// </summary>
+        public bool RetainFolderStructureOverride
+        {
+            get
+            {
+                return _retainFolderStructureOverride;
+            }
+            set
+            {
+                if(_retainFolderStructureOverride != value)
+                {
+                    _retainFolderStructureOverride = value;
+                    RaisePropertyChanged(nameof(RetainFolderStructureOverride));
+                    PreviewPackageBuild();
+                }
+            }
+        }
+
         #endregion
 
         internal PublishPackageViewModel()
@@ -1497,13 +1518,44 @@ namespace Dynamo.PackageManager
         {
             if (!(parameter is PackageItemRootViewModel packageItemRootViewModel)) return;
 
-            string fileName = packageItemRootViewModel.FileInfo == null ? packageItemRootViewModel.Name : packageItemRootViewModel.FileInfo.FullName;
             DependencyType fileType = packageItemRootViewModel.DependencyType;
 
+            if(fileType == DependencyType.Folder)
+            {
+                var nestedFiles = PackageItemRootViewModel.GetFiles(packageItemRootViewModel)
+                                                          .Where(x => !x.DependencyType.Equals(DependencyType.Folder))
+                                                          .ToList();
+
+                foreach(var file in nestedFiles)
+                {
+                    RemoveItem(file);
+                }
+            }
+            else
+            {
+                string fileName = packageItemRootViewModel.FileInfo == null ? packageItemRootViewModel.Name : packageItemRootViewModel.FileInfo.FullName;
+                RemoveSingleItem(fileName, fileType);
+            }
+
+            RefreshPackageContents();
+            return;
+        }
+
+        private void RemoveSingleItem(string fileName, DependencyType fileType)
+        {
             if (fileName.ToLower().EndsWith(".dll") || fileType.Equals(DependencyType.Assembly))
             {
-                Assemblies.Remove(Assemblies
-                    .First(x => x.Name == Path.GetFileNameWithoutExtension(fileName)));
+                // It is possible that the .dll was external and added as an additional file
+                if(!Assemblies.Any(x => x.Name.Equals(fileName)))
+                {
+                    AdditionalFiles.Remove(AdditionalFiles
+                        .First(x => x == fileName));
+                }
+                else
+                {
+                    Assemblies.Remove(Assemblies
+                        .First(x => x.Name == Path.GetFileNameWithoutExtension(fileName)));
+                }
             }
             else if (fileType.Equals(DependencyType.CustomNode))
             {
@@ -1515,9 +1567,6 @@ namespace Dynamo.PackageManager
                 AdditionalFiles.Remove(AdditionalFiles
                     .First(x => x == fileName));
             }
-                        
-            RefreshPackageContents();
-            return;
         }
 
         private bool CanShowAddFileDialogAndAdd()
@@ -2049,7 +2098,9 @@ namespace Dynamo.PackageManager
 
                 // Generate the Package Name, either based on the user 'Description', or the root path name, if no 'Description' yet
                 var packageName = !string.IsNullOrEmpty(Description) ? Description : Path.GetFileName(publishPath);
-                var rootItemPreview = GetPreBuildRootItemViewModel(publishPath, packageName, files);
+                var rootItemPreview = RetainFolderStructureOverride ?
+                    GetExistingRootItemViewModel(publishPath, packageName) :
+                    GetPreBuildRootItemViewModel(publishPath, packageName, files);
                 
                 if (PreviewPackageContents == null) PreviewPackageContents = new ObservableCollection<PackageItemRootViewModel> { rootItemPreview };
                 else
@@ -2066,6 +2117,29 @@ namespace Dynamo.PackageManager
                 ErrorString = e.Message;
                 dynamoViewModel.Model.Logger.Log(e);
             }
+        }
+
+        internal PackageItemRootViewModel GetExistingRootItemViewModel(string publishPath, string packageName)
+        {
+            if (!PackageContents.Any()) return null;
+            if (PackageContents.Count == 1) {
+                var item = PackageContents.First();
+                if(item.DisplayName != packageName)
+                {
+                    item = new PackageItemRootViewModel(Path.Combine(publishPath, packageName));
+                    item.AddChildren(PackageContents.First().ChildItems.ToList());
+                }
+                return item;
+            }
+
+            // It means we have more than 1 root item, in which case we need to combine them
+            var rootItem = new PackageItemRootViewModel(Path.Combine(publishPath, packageName));
+            foreach(var item in PackageContents)
+            {
+                item.isChild = true;
+                rootItem.AddChild(item);
+            }
+            return rootItem;
         }
 
         internal PackageItemRootViewModel GetPreBuildRootItemViewModel(string publishPath, string packageName, List<string> files)

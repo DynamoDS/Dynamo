@@ -252,6 +252,7 @@
             <!--#endregion-->
         </ResourceDictionary>
     </Page.Resources>
+    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -260,6 +261,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         
         <!--  Top Row: Buttons and Label  -->
@@ -428,5 +430,35 @@
                 </DataGridTemplateColumn>
             </DataGrid.Columns> 
         </DataGrid>
+
+        <!--Toggle-->
+        <StackPanel Orientation="Horizontal"
+                    Grid.Column="1"
+                    Grid.Row="2">
+            <ToggleButton Width="30"
+                          Height="15"
+                          VerticalAlignment="Center"
+                          Margin="0 5"
+                          IsEnabled="True"
+                          IsChecked="{Binding Path=RetainFolderStructureOverride, Mode=TwoWay}"
+                          IsTabStop="False"
+                          Style="{StaticResource EllipseToggleButton1}" />
+            <TextBlock Text="Retain folder structure (Advanced)"
+                       Style="{StaticResource LabelStyle}"
+                       Margin="5 0"
+                       VerticalAlignment="Center" />
+            <Rectangle Width="16"
+                       Height="16"
+                       VerticalAlignment="Center">
+                <Rectangle.Fill>
+                    <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/help-16px.png" />
+                </Rectangle.Fill>
+                <Rectangle.ToolTip>
+                    <ToolTip Content="Test"
+                             Style="{StaticResource GenericToolTipLight}" />
+                </Rectangle.ToolTip>
+            </Rectangle>
+
+        </StackPanel>
     </Grid>
 </Page>

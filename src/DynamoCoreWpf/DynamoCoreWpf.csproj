@@ -62,6 +62,7 @@
     <None Remove="UI\Images\caret_drop_down.png" />
     <None Remove="UI\Images\file-generic-16px.png" />
     <None Remove="UI\Images\folder-generic-16px.png" />
+    <None Remove="UI\Images\help-16px.png" />
     <None Remove="UI\Images\NodeStates\package-64px.png" />
     <None Remove="UI\Images\PackageManager\empty-state-first-use-light-gray.png" />
     <None Remove="UI\Images\remove-pk-16px.png" />
@@ -971,6 +972,7 @@
     <Resource Include="UI\Images\dynamonotext.png" />
     <Resource Include="UI\Images\file-generic-16px.png" />
     <Resource Include="UI\Images\folder-generic-16px.png" />
+    <Resource Include="UI\Images\help-16px.png" />
     <Resource Include="UI\Images\maximize_16px_blue.png" />
     <Resource Include="UI\Images\minimize_16px_blue.png" />
     <Resource Include="UI\Images\minus_16px_blue.png" />

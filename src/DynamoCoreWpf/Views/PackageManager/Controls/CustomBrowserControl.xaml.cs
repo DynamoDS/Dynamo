@@ -244,6 +244,22 @@ namespace Dynamo.PackageManager.UI
                     .ToList()));
             }
         }
+
+        private void RemoveButton_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            if (button == null) { return; }
+
+            var treeViewItem = FindParent<TreeViewItem>(button);
+            if (treeViewItem != null)            {
+
+                var rootItem = treeViewItem.Header as PackageItemRootViewModel;
+                if (rootItem == null) { return; }
+
+                var viewModel = this.DataContext as PublishPackageViewModel;
+                viewModel.RemoveItemCommand.Execute(rootItem);
+            }
+        }
     }
 
     #region Helpers
