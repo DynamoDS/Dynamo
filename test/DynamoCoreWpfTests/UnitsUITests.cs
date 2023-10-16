@@ -1,4 +1,4 @@
-﻿using System.Xml;
+using System.Xml;
 using Dynamo.Graph;
 using Dynamo.Models;
 using Dynamo.Tests;
@@ -15,7 +15,7 @@ using Dynamo.Graph.Nodes;
 
 namespace DynamoCoreWpfTests
 {
-    [TestFixture, Category("Failure")]
+    [TestFixture]
     public class UnitsUITests : DynamoTestUIBase
     {
         private LengthFromString lengthFromString;
@@ -61,7 +61,7 @@ namespace DynamoCoreWpfTests
 
             lengthFromString.MigrateLengthFromFeetToMeters(root);
 
-            string oneFeetInMeters = "0.304800000001219";
+            string oneFeetInMeters = "0.3048000000012192";
 
             Assert.AreEqual(oneFeetInMeters, systemDouble.Attributes[0].Value);
         }

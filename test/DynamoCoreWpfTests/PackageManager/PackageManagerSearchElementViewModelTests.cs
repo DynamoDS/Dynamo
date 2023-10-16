@@ -583,8 +583,6 @@ namespace Dynamo.PackageManager.Wpf.Tests
                 packageManagerSearchViewModel.AddToSearchResults(tmpPackage);
             }
 
-            //This line will be indexing the package information using Lucene
-            packageManagerSearchViewModel.LuceneUtility.InitializeLuceneConfig(string.Empty, Utilities.LuceneSearchUtility.LuceneStorage.RAM);
             foreach (var package in packageManagerSearchViewModel.SearchResults)
             {
                 var iDoc = packageManagerSearchViewModel.LuceneUtility.InitializeIndexDocumentForPackages();

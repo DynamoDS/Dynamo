@@ -116,7 +116,7 @@
     <EmbeddedResource Include="Docs\syntaxHighlight.html" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2045.28" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">

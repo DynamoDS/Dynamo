@@ -4,7 +4,6 @@ using System.Windows.Controls;
 using Dynamo.Controls;
 using Dynamo.Graph;
 using Dynamo.Models;
-using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Utilities;
@@ -67,23 +66,28 @@ namespace Dynamo.Nodes
             //
             if (null != this.model && (!string.IsNullOrEmpty(this.eventName)))
             {
-                MessageBoxResult result = MessageBoxResult.None;
+                // Only show the prompt if it is a Python node
+                var nodeVM = (sender as DynamoNodeButton)?.DataContext as NodeViewModel;
+                if (nodeVM?.NodeModel is PythonNodeModels.PythonNode)
+                {                    
+                    MessageBoxResult result = MessageBoxResult.None;
 
-                if (eventName.Equals("RemoveInPort") && ShowWarningForRemovingInPort)
-                {
-                    result = MessageBoxService.Show
-                    (
-                        Owner,
-                        Dynamo.Wpf.Properties.Resources.MessageRemovePythonPort,
-                        Dynamo.Wpf.Properties.Resources.RemovePythonPortWarningMessageBoxTitle,
-                        MessageBoxButton.OKCancel,
-                        MessageBoxImage.Information
-                    );
-                }
+                    if (eventName.Equals("RemoveInPort") && ShowWarningForRemovingInPort)
+                    {
+                        result = MessageBoxService.Show
+                        (
+                            Owner,
+                            Dynamo.Wpf.Properties.Resources.MessageRemovePythonPort,
+                            Dynamo.Wpf.Properties.Resources.RemovePythonPortWarningMessageBoxTitle,
+                            MessageBoxButton.OKCancel,
+                            MessageBoxImage.Information
+                        );
+                    }
 
-                if (result == MessageBoxResult.Cancel)
-                {
-                    return;
+                    if (result == MessageBoxResult.Cancel)
+                    {
+                        return;
+                    }
                 }
 
                 var command = new DynamoModel.ModelEventCommand(model.GUID, eventName);
