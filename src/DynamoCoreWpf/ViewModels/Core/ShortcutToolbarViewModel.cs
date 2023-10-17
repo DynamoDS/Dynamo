@@ -1,6 +1,7 @@
 using Dynamo.Core;
 using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
+using System;
 
 namespace Dynamo.Wpf.ViewModels.Core
 {
@@ -15,22 +16,24 @@ namespace Dynamo.Wpf.ViewModels.Core
         private AuthenticationManager authManager;
 
         private int notificationsNumber;
-        private bool viewButtonsText;
+        private bool showMenuItemText;
+        public readonly DynamoViewModel DynamoViewModel;
 
         public ShortcutToolbarViewModel(DynamoViewModel dynamoViewModel)
         {
+            this.DynamoViewModel = dynamoViewModel;
             NotificationsNumber = 0;
             authManager = dynamoViewModel.Model.AuthenticationManager;
             ValidateWorkSpaceBeforeToExportAsImageCommand = new DelegateCommand(dynamoViewModel.ValidateWorkSpaceBeforeToExportAsImage);
             SignOutCommand = new DelegateCommand(authManager.ToggleLoginState);
-            authManager.LoginStateChanged += (o) => { RaisePropertyChanged(nameof(LoginState)); };            
-            dynamoViewModel.WindowRezised += DynamoViewModel_WindowRezised;
-            ViewButtonsText = true;
+            authManager.LoginStateChanged += (o) => { RaisePropertyChanged(nameof(LoginState)); };
+            this.DynamoViewModel.WindowRezised += OnDynamoViewModelWindowRezised;
+            ShowMenuItemText = true;
         }
 
-        private void DynamoViewModel_WindowRezised(object sender, System.EventArgs e)
+        private void OnDynamoViewModelWindowRezised(object sender, System.EventArgs e)
         {
-            ViewButtonsText = !(bool)sender;
+            if (sender is Boolean) ShowMenuItemText = !(bool)sender;                
         }
 
         /// <summary>
@@ -79,17 +82,23 @@ namespace Dynamo.Wpf.ViewModels.Core
             }
         }
 
-        public bool ViewButtonsText
+        public bool ShowMenuItemText
         {
             get
             {
-                return viewButtonsText;
+                return showMenuItemText;
             }
             set
             {
-                viewButtonsText = value;
-                RaisePropertyChanged(nameof(ViewButtonsText));
+                showMenuItemText = value;
+                RaisePropertyChanged(nameof(ShowMenuItemText));
             }
+        }
+
+        public override void Dispose()
+        {
+            this.DynamoViewModel.WindowRezised -= OnDynamoViewModelWindowRezised;
+            base.Dispose();
         }
     }
 }

@@ -831,11 +831,11 @@ namespace Dynamo.ViewModels
         }
 
         internal event EventHandler WindowRezised;
-        internal void OnWindowResized(object lessthan1000)
+        internal void OnWindowResized(object underThreshold)
         {
             if(WindowRezised != null)
             {
-                WindowRezised(lessthan1000, new EventArgs());
+                WindowRezised(underThreshold, new EventArgs());
             }
         }
 

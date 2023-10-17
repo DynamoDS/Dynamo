@@ -147,7 +147,7 @@
 
                                     <Image Source="/DynamoCoreWpf;component/UI/Images/Profile_48px.png" Width="16" Height ="16"></Image>
 
-                                    <TextBlock Name="txtSignIn" Padding="10,5,5,5" Visibility="{Binding ViewButtonsText, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                    <TextBlock Name="txtSignIn" Padding="10,5,5,5" Visibility="{Binding ShowMenuItemText, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                                         <TextBlock.Style>
                                             <Style TargetType="{x:Type TextBlock}">
                                                 <Setter Property="Text" Value="{x:Static p:Resources.SignInButtonText}" />
@@ -240,7 +240,7 @@
                                            Margin="10 0 0 0"
                                            Foreground="#DCDCDC"
                                            FontFamily="{StaticResource ArtifaktElementRegular}"
-                                           Visibility="{Binding ViewButtonsText, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                           Visibility="{Binding ShowMenuItemText, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                                 </TextBlock>
                             </StackPanel>
                         </MenuItem.Header>
