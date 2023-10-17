@@ -51,4 +51,4 @@ jobs:
         token: ${{ secrets.DYNAMO_TESTS_TOKEN }}
         repository: DynamoDS/TestCompleteTests
         event-type: build-completed
-        client-payload: '{"artifact_name": "${{ env.ARTIFACT_NAME }}"}'
+        client-payload: '{"artifact_name": "${{ env.ARTIFACT_NAME }}", "run_id": "${{ github.run_id }}"}'
