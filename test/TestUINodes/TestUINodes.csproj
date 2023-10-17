@@ -20,12 +20,6 @@
       <PackageReference Include="Newtonsoft.Json" Version="13.0.1">
       </PackageReference>
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-    <PackageReference Include="NUnitTestAdapter" Version="2.3.0" ExcludeAssets="all" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
   <!--net6.0 net8.0 etc-->
   <ItemGroup Condition=" '$(TargetFramework)' != 'net48' ">
     <PackageReference Include="NUnit" Version="3.13.3">

@@ -23,12 +23,6 @@
   <ItemGroup>
     <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="3.0.0.2767" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="WindowsBase" />
-  </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\ExportWithUnitsControl.xaml">
       <SubType>Designer</SubType>

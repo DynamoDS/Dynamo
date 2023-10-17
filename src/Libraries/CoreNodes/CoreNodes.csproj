@@ -18,10 +18,6 @@
   <ItemGroup>
     <Compile Remove="GeometryColor.cs" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="PresentationCore" />
-  </ItemGroup>
   <ItemGroup Label="Common dependencies">
     <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="3.0.0.2767" />
   </ItemGroup>
