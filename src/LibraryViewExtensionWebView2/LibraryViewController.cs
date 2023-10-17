@@ -32,6 +32,29 @@ namespace Dynamo.LibraryViewExtensionWebView2
 {
     [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
     [ComVisibleAttribute(true)]
+
+    public class ScriptObject
+    {
+        Action<string> onCopyToClipboard;
+        Action onPasteFromClipboard;
+
+        internal ScriptObject(Action<string> onCopyToClipboard, Action onPasteFromClipboard)
+        {
+            this.onCopyToClipboard = onCopyToClipboard;
+            this.onPasteFromClipboard = onPasteFromClipboard;
+        }
+        public void CopyToClipboard(string text)
+        {
+            onCopyToClipboard(text);
+        }
+        public string PasteFromClipboard()
+        {
+            var text = Clipboard.GetText();
+            return text;
+        }
+
+    }
+
     public class LibraryViewController : IDisposable
     {
         private Window dynamoWindow;
@@ -193,6 +216,13 @@ namespace Dynamo.LibraryViewExtensionWebView2
 
         #endregion
 
+        internal void OnCopyToClipboard(string text)
+        {
+            Clipboard.SetText(text);
+        }
+
+        internal void OnPasteFromClipboard() { }
+
         private string ReplaceUrlWithBase64Image(string html, string minifiedURL, bool magicreplace = true)
         {
             var ext = string.Empty;
@@ -349,6 +379,10 @@ namespace Dynamo.LibraryViewExtensionWebView2
             browser.ZoomFactor = (double)dynamoViewModel.Model.PreferenceSettings.LibraryZoomScale / 100;
             browser.ZoomFactorChanged += Browser_ZoomFactorChanged;
             browser.KeyDown += Browser_KeyDown;
+
+            // Hosts an object that will expose the properties and methods to be called from the javascript side
+            browser.CoreWebView2.AddHostObjectToScript("scriptObject",
+                new ScriptObject(OnCopyToClipboard, OnPasteFromClipboard));
         }
 
         private void Browser_Loaded(object sender, RoutedEventArgs e)
@@ -357,13 +391,45 @@ namespace Dynamo.LibraryViewExtensionWebView2
             LogToDynamoConsole(msg);
         }
 
+        /// <summary>
+        /// Collect the main and modifier key from KeyEventArgs in order to pass
+        /// that data to eventDispatcher (located in library.html) which is responsible
+        /// for binding KeyDown events between dynamo and webview instances
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        ///
+
+        // This enum is for matching the modifier keys between C# and javaScript
+        enum ModifiersJS
+        {
+            none = 0,
+            altKey = 1,
+            ctrlKey = 2,
+            shiftKey = 4
+        }
+
+        // This enum is for define the events to be tracked
+        enum EventsTracked
+        {
+            Delete,
+            C,
+            V
+        }
+
         private void Browser_KeyDown(object sender, KeyEventArgs e)
 
         {
-            if (e.Key == Key.Delete)
+
+            if (!Enum.IsDefined(typeof(EventsTracked), e.Key.ToString())) return;
+
+            var synteticEventData = new Dictionary<string, string>
             {
-                _ = ExecuteScriptFunctionAsync(browser, "eventDispatcher");
-            }
+                [Enum.GetName(typeof(ModifiersJS), e.KeyboardDevice.Modifiers)] = "true",
+                ["key"] = e.Key.ToString()
+            };
+
+            _ = ExecuteScriptFunctionAsync(browser, "eventDispatcher", synteticEventData);
         }
 
 
