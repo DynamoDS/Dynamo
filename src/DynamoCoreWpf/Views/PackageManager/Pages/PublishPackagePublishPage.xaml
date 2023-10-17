@@ -435,7 +435,7 @@
                                         <Grid Name="DropDown"
                                                 SnapsToDevicePixels="True">
                                             <Border Name="DropDownBorder"
-                                                    Background="#353535"
+                                                    Background="#343434"
                                                     BorderBrush="#444444"
                                                     BorderThickness="1,0,1,1" />
                                             <ScrollViewer Margin="4,6,4,6"
@@ -616,7 +616,7 @@
                     </DockPanel>
 
                     <Border Grid.Row="1"
-                            Background="#2F2E30"
+                            Background="#343434"
                             Padding="0"
                             Margin="0 10 0 20">
 
@@ -664,6 +664,7 @@
                             </StackPanel>
                             <local:CustomBrowserControl x:Name="previewBrowserControl"
                                                         Loaded="previewBrowserControl_Loaded"
+                                                        IsEnabled="False"
                                                         Root="{Binding PreviewPackageContents, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
                                                         Visibility="{Binding PreviewPackageContents, Converter={StaticResource ListHasMoreThanNItemsToVisibilityConverter}}"/>
                         </Grid>
@@ -671,7 +672,7 @@
                     </Border>
                 </Grid>
 
-                <!--  Bottom: Markdown Files & Dependencies  -->
+                <!--  Bottom: Markdown Files & Depende  ncies  -->
                 <StackPanel Grid.Row="1"
                             Margin="0,0,0,0"
                             VerticalAlignment="Top">
@@ -703,7 +704,7 @@
                         </Button>
                     </DockPanel>
                     <Grid Margin="0,0,0,10"
-                            Background="#353535">
+                            Background="#343434">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
@@ -242,13 +243,19 @@ namespace Dynamo.PackageManager.UI
 
         #endregion
 
+        /// <summary>
+        /// Updates the current files DataGrid preview based on the folder selection
+        /// Will not fire if the Page that's triggering it is not currently enabled
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         internal void customTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             var customTree = sender as TreeView;
             if (customTree == null) return;
 
             var parentPage = FindLogicalParent<Page>(customTree);
-            if (!parentPage.IsEnabled) return;
+            if (parentPage == null || !parentPage.IsEnabled) return;
 
             var selectedItem = customTree.SelectedItem as PackageItemRootViewModel;
 
@@ -368,6 +375,24 @@ namespace Dynamo.PackageManager.UI
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
+        }
+    }
+
+    public class SortingConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            System.Collections.IList collection = value as System.Collections.IList;
+            var view = new ListCollectionView(collection);
+            var sort = new SortDescription(parameter.ToString(), ListSortDirection.Ascending);
+            view.SortDescriptions.Add(sort);
+
+            return view;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
         }
     }
 

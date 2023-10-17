@@ -188,7 +188,7 @@
                             </Border>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsEnabled" Value="false">
-                                    <Setter Property="Background" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                                    <Setter Property="Background" TargetName="Bd" Value="#343434"/>
                                 </Trigger>
                                 <Trigger Property="VirtualizingPanel.IsVirtualizing" Value="true">
                                     <Setter Property="CanContentScroll" TargetName="_tv_scrollviewer_" Value="true"/>
@@ -207,7 +207,10 @@
                             </Setter.Value>
                         </Setter>
                     </Trigger>
-                </Style.Triggers>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter Property="Background" Value="#343434"/>
+                    </Trigger>
+                </Style.Triggers>   
             </Style>
 
             <!--#region CheckBox -->
@@ -312,6 +315,7 @@
             <local:IndentConverter x:Key="IndentConverter" />
             <local:HasChildrenToVisibilityConverter x:Key="HasChildrenToVisibilityConverter" />
             <local:DependencyTypeToVisibilityConverter x:Key="DependencyTypeToVisibilityConverter" />
+            <local:SortingConverter x:Key="SortingConverter" />
 
             <ControlTemplate x:Key="TreeViewItemControlTemplate1" TargetType="{x:Type TreeViewItem}">
                 <Grid x:Name="tvGrid">
@@ -376,8 +380,7 @@
                             <Button.Template>
                                 <ControlTemplate>
                                     <Grid>
-                                        <Rectangle Width="12"
-                                                   Height="12">
+                                        <Rectangle Width="12" Height="12">
                                             <Rectangle.Fill>
                                                 <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/remove-pk-16px.png" />
                                             </Rectangle.Fill>
@@ -416,6 +419,9 @@
                     </MultiTrigger>
                     <Trigger Property="IsEnabled" Value="False">
                         <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                        <Setter Property="Visibility" TargetName="RemoveButton" Value="Hidden"/>
+                        <Setter Property="Background" TargetName="Bd" Value="#343434"/>
+                        <Setter Property="Background" TargetName="SelectionBorder" Value="#343434"/>
                     </Trigger>
                 </ControlTemplate.Triggers>
             </ControlTemplate>
@@ -423,13 +429,17 @@
             <Style TargetType="TreeViewItem" x:Key="CustomTreeViewItem">
                 <Setter Property="Template" Value="{DynamicResource TreeViewItemControlTemplate1}" />
                 <Setter Property="IsExpanded" Value="True" />
-                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="FontSize" Value="12"/>    
                 <Setter Property="Foreground" Value="#F5F5F5"/>
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding DependencyType, Converter={StaticResource DependencyTypeToVisibilityConverter}, ConverterParameter=Folder}"
                                  Value="Collapsed">
                         <Setter Property="Visibility" Value="Collapsed" />
-                    </DataTrigger>
+                    </DataTrigger>                    
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter Property="Foreground" Value="#F5F5F5"/>
+                        <Setter Property="IsSelected" Value="False"/>
+                    </Trigger>
                 </Style.Triggers>
             </Style>
             
@@ -445,7 +455,9 @@
                   ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=Root, Mode=OneWay}">
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type local:PackageItemRootViewModel}"
-                                          ItemsSource="{Binding ChildItems}">
+                                          ItemsSource="{Binding ChildItems,
+                                                                Converter={StaticResource SortingConverter},
+                                                                ConverterParameter=DisplayName}">
                     <TextBlock Text="{Binding DisplayName}"
                                FontSize="14"
                                SnapsToDevicePixels="True"

@@ -61,30 +61,18 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
-            <Style x:Key="DataGridRowStyle"
-                   TargetType="DataGridRow">
-                <Setter Property="HorizontalAlignment"
-                        Value="Left" />
-                <Setter Property="VerticalAlignment"
-                        Value="Center" />
-                <Setter Property="VerticalContentAlignment"
-                        Value="Center" />
-                <Setter Property="Margin"
-                        Value="0" />
-                <Setter Property="Padding"
-                        Value="0" />
-                <Setter Property="FontFamily"
-                        Value="{StaticResource ArtifaktElementRegular}" />
-                <Setter Property="Foreground"
-                        Value="#F5F5F5" />
-                <Setter Property="Height"
-                        Value="25" />
-                <Setter Property="Background"
-                        Value="#353535" />
-                <Setter Property="IsEnabled"
-                        Value="True" />
-                <Setter Property="Tag"
-                        Value="Hidden" />
+            <Style x:Key="DataGridRowStyle" TargetType="DataGridRow">
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="Margin" Value="0" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
+                <Setter Property="Foreground" Value="#F5F5F5" />
+                <Setter Property="Height" Value="25" />
+                <Setter Property="Background" Value="#353535" />
+                <Setter Property="IsEnabled" Value="True" />
+                <Setter Property="Tag" Value="Hidden" />
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver"
                              Value="True">
@@ -93,17 +81,47 @@
                         <Setter Property="Tag"
                                 Value="Visible" />
                     </Trigger>
-                    <Trigger Property="IsSelected"
-                             Value="True">
-                        <Setter Property="Background"
-                                Value="#888888" />
-                        <Setter Property="Tag"
-                                Value="Visible" />
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="Background" Value="#888888" />
+                        <Setter Property="Tag" Value="Visible" />
                     </Trigger>
                 </Style.Triggers>
             </Style>
-            <Style x:Key="DataGridColumnHeaderText"
-                   TargetType="DataGridColumnHeader">
+            <Style x:Key="DataGridColumnHeaderFirst" TargetType="DataGridColumnHeader">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="DataGridColumnHeader">
+                            <Grid>
+                                <TextBlock Name="DataGridColumnHeader"
+                                           Height="26"
+                                           Padding="40,4,10,0"
+                                           VerticalAlignment="Center"
+                                           Background="#434343"
+                                           FontFamily="{StaticResource ArtifaktElementRegular}"
+                                           FontSize="14px"
+                                           FontWeight="Regular"
+                                           Foreground="{StaticResource PrimaryCharcoal200Brush}"
+                                           Text="{TemplateBinding Content}" />
+                                <Thumb x:Name="PART_RightHeaderGripper"
+                                       Width="1"
+                                       HorizontalAlignment="Right"
+                                       BorderBrush="#5E5E5E"
+                                       BorderThickness="1,0,0,0"
+                                       Cursor="SizeWE" />
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver"
+                                         Value="True">
+                                    <Setter TargetName="DataGridColumnHeader"
+                                            Property="Background"
+                                            Value="#666666" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="DataGridColumnHeaderText" TargetType="DataGridColumnHeader">
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="DataGridColumnHeader">
@@ -137,35 +155,7 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-            <Style x:Key="DataGridColumnHeaderLast"
-                   TargetType="DataGridColumnHeader">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="DataGridColumnHeader">
-                            <TextBlock Name="DataGridColumnHeader"
-                                       Height="26"
-                                       Padding="10,8,10,0"
-                                       VerticalAlignment="Center"
-                                       Background="#434343"
-                                       FontFamily="{StaticResource ArtifaktElementRegular}"
-                                       FontSize="10px"
-                                       FontWeight="Regular"
-                                       Foreground="{StaticResource PrimaryCharcoal200Brush}"
-                                       Text="{TemplateBinding Content}" />
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver"
-                                         Value="True">
-                                    <Setter TargetName="DataGridColumnHeader"
-                                            Property="Background"
-                                            Value="#666666" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-            <Style x:Key="DataGrid"
-                   TargetType="{x:Type DataGrid}">
+            <Style x:Key="DataGrid" TargetType="{x:Type DataGrid}">
                 <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="BorderBrush" Value="Transparent" />
                 <Setter Property="Margin" Value="0,0,0,10" />
@@ -220,47 +210,27 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-            <SolidColorBrush x:Key="OptionMark.Static.Background"
-                             Color="#FFFFFFFF" />
-            <SolidColorBrush x:Key="OptionMark.Static.Border"
-                             Color="#FF707070" />
-            <SolidColorBrush x:Key="OptionMark.Static.Glyph"
-                             Color="#FF212121" />
-            <SolidColorBrush x:Key="OptionMark.MouseOver.Background"
-                             Color="#FFF3F9FF" />
-            <SolidColorBrush x:Key="OptionMark.MouseOver.Border"
-                             Color="#FF5593FF" />
-            <SolidColorBrush x:Key="OptionMark.MouseOver.Glyph"
-                             Color="#FF212121" />
-            <SolidColorBrush x:Key="OptionMark.Pressed.Background"
-                             Color="#FFD9ECFF" />
-            <SolidColorBrush x:Key="OptionMark.Pressed.Border"
-                             Color="#FF3C77DD" />
-            <SolidColorBrush x:Key="OptionMark.Pressed.Glyph"
-                             Color="#FF212121" />
-            <SolidColorBrush x:Key="OptionMark.Disabled.Background"
-                             Color="#FFE6E6E6" />
-            <SolidColorBrush x:Key="OptionMark.Disabled.Border"
-                             Color="#FFBCBCBC" />
-            <SolidColorBrush x:Key="OptionMark.Disabled.Glyph"
-                             Color="#FF707070" />
+            <SolidColorBrush x:Key="OptionMark.Static.Background" Color="#FFFFFFFF" />
+            <SolidColorBrush x:Key="OptionMark.Static.Border" Color="#FF707070" />
+            <SolidColorBrush x:Key="OptionMark.Static.Glyph" Color="#FF212121" />
+            <SolidColorBrush x:Key="OptionMark.MouseOver.Background" Color="#FFF3F9FF" />
+            <SolidColorBrush x:Key="OptionMark.MouseOver.Border" Color="#FF5593FF" />
+            <SolidColorBrush x:Key="OptionMark.MouseOver.Glyph" Color="#FF212121" />
+            <SolidColorBrush x:Key="OptionMark.Pressed.Background" Color="#FFD9ECFF" />
+            <SolidColorBrush x:Key="OptionMark.Pressed.Border" Color="#FF3C77DD" />
+            <SolidColorBrush x:Key="OptionMark.Pressed.Glyph" Color="#FF212121" />
+            <SolidColorBrush x:Key="OptionMark.Disabled.Background" Color="#FFE6E6E6" />
+            <SolidColorBrush x:Key="OptionMark.Disabled.Border" Color="#FFBCBCBC" />
+            <SolidColorBrush x:Key="OptionMark.Disabled.Glyph" Color="#FF707070" />
 
-            <Style x:Key="CheckBoxStyle"
-                   TargetType="{x:Type CheckBox}">
-                <Setter Property="FocusVisualStyle"
-                        Value="{StaticResource FocusVisual}" />
-                <Setter Property="Background"
-                        Value="{StaticResource OptionMark.Static.Background}" />
-                <Setter Property="BorderBrush"
-                        Value="{StaticResource OptionMark.Static.Border}" />
-                <Setter Property="Foreground"
-                        Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
-                <Setter Property="BorderThickness"
-                        Value="1" />
-                <Setter Property="HorizontalAlignment"
-                        Value="Center" />
-                <Setter Property="HorizontalContentAlignment"
-                        Value="Center" />
+            <Style x:Key="CheckBoxStyle" TargetType="{x:Type CheckBox}">
+                <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}" />
+                <Setter Property="Background" Value="{StaticResource OptionMark.Static.Background}" />
+                <Setter Property="BorderBrush" Value="{StaticResource OptionMark.Static.Border}" />
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="HorizontalContentAlignment" Value="Center" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type CheckBox}">
@@ -426,7 +396,7 @@
             <DataGrid.Columns>
                 <DataGridTemplateColumn Width="*"
                                         Header="{x:Static p:Resources.PublishPackageViewPackageName}"
-                                        HeaderStyle="{StaticResource DataGridColumnHeaderText}"
+                                        HeaderStyle="{StaticResource DataGridColumnHeaderFirst}"
                                         SortDirection="Ascending"
                                         IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
