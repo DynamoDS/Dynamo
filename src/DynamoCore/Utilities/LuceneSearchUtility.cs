@@ -145,15 +145,10 @@ namespace Dynamo.Utilities
             }
             catch (LockObtainFailedException ex)
             {
-                try
-                {
-                    writer = new IndexWriter(new RAMDirectory(), indexConfig);
-                    (ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger) as DynamoLogger).LogError($"LuceneNET LockObtainFailedException {ex}, switching to RAM mode.");
-                }
-                catch(Exception)
-                {
-                    DisposeWriter();
-                }
+
+                DisposeWriter();
+                (ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger) as DynamoLogger).LogError($"LuceneNET LockObtainFailedException {ex}");
+
             }
             catch (Exception ex)
             {
@@ -433,10 +428,6 @@ namespace Dynamo.Utilities
             }
             SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Parameters), node.Parameters ?? string.Empty);
 
-            if(writer == null)
-            {
-                CreateLuceneIndexWriter();
-            }
             writer?.AddDocument(doc);
         }
     }
