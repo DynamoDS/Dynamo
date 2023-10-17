@@ -28,11 +28,17 @@ namespace Dynamo.PackageManager.UI
 
         public void LoadEvents()
         {
-            var firstItem = (TreeViewItem)this.previewBrowserControl.customTreeView.ItemContainerGenerator.ContainerFromIndex(0);
+            this.IsEnabled = true;
+
+            var treeView = this.previewBrowserControl.customTreeView;
+
+            var firstItem = (TreeViewItem)treeView.ItemContainerGenerator.ContainerFromIndex(0);
             if (firstItem != null)
             {
                 firstItem.IsSelected = true;
             }
+
+            this.previewBrowserControl.customTreeView_SelectedItemChanged(treeView, null);
         }
 
         private void HostEntry_CheckStateChanged(object sender, RoutedEventArgs e)

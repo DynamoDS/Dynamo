@@ -37,11 +37,17 @@ namespace Dynamo.PackageManager.UI
 
         public void LoadEvents()
         {
-            var firstItem = (TreeViewItem)this.customBrowserControl.customTreeView.ItemContainerGenerator.ContainerFromIndex(0);
+            this.IsEnabled = true;
+
+            var treeView = this.customBrowserControl.customTreeView;
+
+            var firstItem = (TreeViewItem)treeView.ItemContainerGenerator.ContainerFromIndex(0);
             if (firstItem != null)
             {
                 firstItem.IsSelected = true;
             }
+
+            this.customBrowserControl.customTreeView_SelectedItemChanged(treeView, null);
         }
 
         public void Dispose()

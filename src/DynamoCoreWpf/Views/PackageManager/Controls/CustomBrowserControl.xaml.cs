@@ -179,6 +179,21 @@ namespace Dynamo.PackageManager.UI
             return FindParent<T>(parentObject);
         }
 
+        private static T FindLogicalParent<T>(DependencyObject child) where T : DependencyObject
+        {
+            DependencyObject parentObject = LogicalTreeHelper.GetParent(child);
+
+            if (parentObject == null)
+                return null;
+
+            T parent = parentObject as T;
+            if (parent != null)
+                return parent;
+
+            return FindLogicalParent<T>(parentObject);
+        }
+        
+
         // Helper method to find visual children in a WPF control
         private static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
         {
@@ -227,16 +242,19 @@ namespace Dynamo.PackageManager.UI
 
         #endregion
 
-        private void customTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        internal void customTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             var customTree = sender as TreeView;
+            if (customTree == null) return;
+
+            var parentPage = FindLogicalParent<Page>(customTree);
+            if (!parentPage.IsEnabled) return;
+
             var selectedItem = customTree.SelectedItem as PackageItemRootViewModel;
 
             if (selectedItem != null)
             {
                 var viewModel = this.DataContext as PublishPackageViewModel;
-                //viewModel.RootContents = new ObservableCollection<PackageItemRootViewModel>( selectedItem.ChildItems
-                //    .Where(x => !x.DependencyType.Equals(DependencyType.Folder)).ToList() );
                 viewModel.RootContents.Clear();
                 viewModel.RootContents.AddRange(new ObservableCollection<PackageItemRootViewModel> (selectedItem.ChildItems
                     .OrderBy(x => x.DependencyType.Equals(DependencyType.Folder) ? 0 : 1)

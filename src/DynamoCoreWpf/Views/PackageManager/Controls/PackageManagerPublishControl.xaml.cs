@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -228,6 +229,8 @@ namespace Dynamo.PackageManager.UI
         {
             Page navigatedPage = e.Content as Page;
 
+            PublishPages.Values.ToList().ForEach(page => { page.IsEnabled = false; });
+
             Dispatcher.BeginInvoke((Action)(() =>
             {
                 if (navigatedPage != null)
@@ -238,7 +241,6 @@ namespace Dynamo.PackageManager.UI
                         (navigatedPage as PublishPackageSelectPage).LoadEvents();
                     if (navigatedPage is PublishPackagePreviewPage)
                         (navigatedPage as PublishPackagePreviewPage).LoadEvents();
-                    // Initialize or update the page as needed
                 }
             }));
         }

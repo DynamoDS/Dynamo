@@ -93,6 +93,8 @@ namespace Dynamo.PackageManager.UI
 
         internal void AddChild(PackageItemRootViewModel elem)
         {
+            if (elem.DependencyType.Equals(DependencyType.CustomNode)) return;
+
             var di = new DirectoryInfo(elem.DirectoryName);
             PackageItemRootViewModel subFolder;
 

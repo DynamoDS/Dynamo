@@ -2122,8 +2122,8 @@ namespace Dynamo.PackageManager
         internal PackageItemRootViewModel GetExistingRootItemViewModel(string publishPath, string packageName)
         {
             if (!PackageContents.Any()) return null;
-            if (PackageContents.Count == 1) {
-                var item = PackageContents.First();
+            if (PackageContents.Count(x => x.DependencyType.Equals(DependencyType.Folder)) == 1) {
+                var item = PackageContents.First(x => x.DependencyType.Equals(DependencyType.Folder));
                 if(item.DisplayName != packageName)
                 {
                     item = new PackageItemRootViewModel(Path.Combine(publishPath, packageName));
