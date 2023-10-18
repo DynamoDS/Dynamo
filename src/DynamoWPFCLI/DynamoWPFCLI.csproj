@@ -12,12 +12,6 @@
     <RootNamespace>DynamoWPFCLI</RootNamespace>
     <AssemblyName>DynamoWPFCLI</AssemblyName>
   </PropertyGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-    <Reference Include="Microsoft.Practices.Prism">
-        <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-    </Reference>
-    <Reference Include="WindowsBase" />
-  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
