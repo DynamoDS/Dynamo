@@ -9,7 +9,7 @@ namespace Dynamo.PackageManager.UI
 {
     public enum DependencyType
     {
-        CustomNode, Assembly, File, Folder
+        CustomNode, Assembly, File, Folder, CustomNodePreview
     }
 
     public class PackageItemRootViewModel : PackageItemViewModel
@@ -32,8 +32,8 @@ namespace Dynamo.PackageManager.UI
         /// </summary>
         public string FilePath { get; }
         public string DirectoryName { get; private set; }
-        public bool IsAssemblyContainer { get; private set; }
         public string PathName { get; private set; }
+
         internal bool isChild;
 
         public PackageItemRootViewModel(CustomNodeDefinition def)
@@ -71,12 +71,20 @@ namespace Dynamo.PackageManager.UI
             this.isChild = true;
         }
 
-        public PackageItemRootViewModel(string folderName, bool assemblyContainer = false)
+        public PackageItemRootViewModel(string folderName)
         {
             this.DependencyType = DependencyType.Folder;
             this.DisplayName = Path.GetFileName(folderName);
             this.DirectoryName = folderName;
-            this.IsAssemblyContainer = assemblyContainer;
+        }
+
+        public PackageItemRootViewModel(string fileName, string filePath)
+        {
+            this.DependencyType = DependencyType.CustomNodePreview;
+            this.DisplayName = fileName;
+            this.FilePath = filePath;
+            this.DirectoryName = Path.GetDirectoryName(filePath);
+            this.isChild = true;
         }
 
         internal void AddChildren(List<PackageItemRootViewModel> items)

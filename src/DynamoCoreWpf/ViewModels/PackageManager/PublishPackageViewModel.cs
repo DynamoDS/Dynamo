@@ -659,6 +659,8 @@ namespace Dynamo.PackageManager
             }
         }
 
+        private Dictionary<string, string> CustomDyfFilepaths { get; set; } = new Dictionary<string, string>();
+
         public List<PackageAssembly> Assemblies { get; set; }
 
         /// <summary>
@@ -824,6 +826,7 @@ namespace Dynamo.PackageManager
                 .Select(def => new PackageItemRootViewModel(def))
                 .Concat(Assemblies.Select((pa) => new PackageItemRootViewModel(pa)))
                 .Concat(AdditionalFiles.Select((s) => new PackageItemRootViewModel(new FileInfo(s))))
+                .Concat(CustomDyfFilepaths.Select((s) => new PackageItemRootViewModel((string)s.Key, (string)s.Value)))
                 .ToList()
                 .ToObservableCollection();
 
@@ -840,11 +843,10 @@ namespace Dynamo.PackageManager
             {
                 if (!items.ContainsKey(item.DirectoryName))
                 {
-                    // Custom nodes don't have folders?
+                    // Custom nodes don't have folders, we have introduced CustomNodePreview item instead
                     if (item.DependencyType.Equals(DependencyType.CustomNode)) continue;
                     if (items.Values.Any(x => IsDuplicateFile(x, item))) continue;
-                    var assemblyContainer = item.DependencyType.Equals(DependencyType.Assembly);
-                    var root = new PackageItemRootViewModel(item.DirectoryName, assemblyContainer);
+                    var root = new PackageItemRootViewModel(item.DirectoryName);
 
                     root.ChildItems.Add(item);
                     items[item.DirectoryName] = root;
@@ -873,6 +875,7 @@ namespace Dynamo.PackageManager
                     return item1.ChildItems.Any(x => IsDuplicateFile(x, item2));
                 case DependencyType.File:
                 case DependencyType.Assembly:
+                case DependencyType.CustomNodePreview:
                     return item1.FilePath.Equals(item2.FilePath);
                 case DependencyType.CustomNode:
                 default:
@@ -1626,6 +1629,7 @@ namespace Dynamo.PackageManager
                     && CustomNodeDefinitions.All(x => x.FunctionId != funcDef.FunctionId))
                 {
                     CustomNodeDefinitions.Add(funcDef);
+                    CustomDyfFilepaths.TryAdd(Path.GetFileName(filename), filename);
                     RaisePropertyChanged("PackageContents");
                 }
             }
@@ -2076,7 +2080,7 @@ namespace Dynamo.PackageManager
 
             if (PackageContents?.Count == 0) return;
 
-            var publishPath = !String.IsNullOrEmpty(rootFolder) ? rootFolder : PackageContents.First(x => !x.IsAssemblyContainer).DirectoryName;
+            var publishPath = !String.IsNullOrEmpty(rootFolder) ? rootFolder : new FileInfo("Publish Path").FullName;
             if (string.IsNullOrEmpty(publishPath))
                 return;
 
@@ -2175,10 +2179,8 @@ namespace Dynamo.PackageManager
                 }
                 else if (file.EndsWith(".dyf"))
                 {
-                    // Get the custom definition from the CustomNodeDefinition collection
-                    var customNodeDefinition = CustomNodeDefinitions.FirstOrDefault(x => x.DisplayName.Equals(Path.GetFileNameWithoutExtension(fileName)));
-                    if (customNodeDefinition == null) continue;
-                    var dyf = new PackageItemRootViewModel(customNodeDefinition);
+                    var dyfPreview = new PackageItemRootViewModel(fileName, Path.Combine(dyfDir, fileName));
+                    dyfItemPreview.AddChild(dyfPreview);
                 }
                 else if (file.EndsWith(".dll") || PackageDirectoryBuilder.IsXmlDocFile(file, files) || PackageDirectoryBuilder.IsDynamoCustomizationFile(file, files))
                 {
