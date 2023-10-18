@@ -32,6 +32,7 @@ namespace Dynamo.PackageManager.UI
         /// </summary>
         public string FilePath { get; }
         public string DirectoryName { get; private set; }
+        public bool IsAssemblyContainer { get; private set; }
         public string PathName { get; private set; }
         internal bool isChild;
 
@@ -52,7 +53,7 @@ namespace Dynamo.PackageManager.UI
             this.DependencyType = DependencyType.Assembly;
             this.Assembly = assembly;
             this.DisplayName = assembly.Name;
-            this.FilePath = assembly.Assembly.Location;
+            this.FilePath = assembly.LocalFilePath;
             this.DirectoryName = Path.GetDirectoryName(this.FilePath);
             this.BuildDependencies(new HashSet<object>());
             this.isChild = true;
@@ -70,11 +71,12 @@ namespace Dynamo.PackageManager.UI
             this.isChild = true;
         }
 
-        public PackageItemRootViewModel(string folderName)
+        public PackageItemRootViewModel(string folderName, bool assemblyContainer = false)
         {
             this.DependencyType = DependencyType.Folder;
             this.DisplayName = Path.GetFileName(folderName);
             this.DirectoryName = folderName;
+            this.IsAssemblyContainer = assemblyContainer;
         }
 
         internal void AddChildren(List<PackageItemRootViewModel> items)

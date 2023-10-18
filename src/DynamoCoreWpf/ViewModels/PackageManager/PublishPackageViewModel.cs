@@ -843,7 +843,8 @@ namespace Dynamo.PackageManager
                     // Custom nodes don't have folders?
                     if (item.DependencyType.Equals(DependencyType.CustomNode)) continue;
                     if (items.Values.Any(x => IsDuplicateFile(x, item))) continue;
-                    var root = new PackageItemRootViewModel(item.DirectoryName);
+                    var assemblyContainer = item.DependencyType.Equals(DependencyType.Assembly);
+                    var root = new PackageItemRootViewModel(item.DirectoryName, assemblyContainer);
 
                     root.ChildItems.Add(item);
                     items[item.DirectoryName] = root;
@@ -1514,21 +1515,29 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// Removes an item from the package contents list.
         /// </summary>
-        private void RemoveItem(object parameter)
+        private void RemoveItem (object parameter)
         {
             if (!(parameter is PackageItemRootViewModel packageItemRootViewModel)) return;
 
+            RemoveItemRecursively(packageItemRootViewModel);    
+            RefreshPackageContents();
+
+            return;
+        }
+
+        private void RemoveItemRecursively(PackageItemRootViewModel packageItemRootViewModel)
+        {
             DependencyType fileType = packageItemRootViewModel.DependencyType;
 
-            if(fileType == DependencyType.Folder)
+            if (fileType == DependencyType.Folder)
             {
                 var nestedFiles = PackageItemRootViewModel.GetFiles(packageItemRootViewModel)
                                                           .Where(x => !x.DependencyType.Equals(DependencyType.Folder))
                                                           .ToList();
 
-                foreach(var file in nestedFiles)
+                foreach (var file in nestedFiles)
                 {
-                    RemoveItem(file);
+                    RemoveItemRecursively(file);
                 }
             }
             else
@@ -1536,9 +1545,6 @@ namespace Dynamo.PackageManager
                 string fileName = packageItemRootViewModel.FileInfo == null ? packageItemRootViewModel.Name : packageItemRootViewModel.FileInfo.FullName;
                 RemoveSingleItem(fileName, fileType);
             }
-
-            RefreshPackageContents();
-            return;
         }
 
         private void RemoveSingleItem(string fileName, DependencyType fileType)
@@ -1546,7 +1552,7 @@ namespace Dynamo.PackageManager
             if (fileName.ToLower().EndsWith(".dll") || fileType.Equals(DependencyType.Assembly))
             {
                 // It is possible that the .dll was external and added as an additional file
-                if(!Assemblies.Any(x => x.Name.Equals(fileName)))
+                if (!Assemblies.Any(x => x.Name.Equals(Path.GetFileNameWithoutExtension(fileName))))
                 {
                     AdditionalFiles.Remove(AdditionalFiles
                         .First(x => x == fileName));
@@ -1666,7 +1672,8 @@ namespace Dynamo.PackageManager
                     Assemblies.Add(new PackageAssembly()
                     {
                         Assembly = assem,
-                        IsNodeLibrary = true // assume is node library when first added
+                        IsNodeLibrary = true, // assume is node library when first added
+                        LocalFilePath = filename
                     });
                     RaisePropertyChanged("PackageContents");
                 }
@@ -2064,14 +2071,19 @@ namespace Dynamo.PackageManager
 
         private void PreviewPackageBuild()
         {
+            if (PreviewPackageContents == null) PreviewPackageContents = new ObservableCollection<PackageItemRootViewModel>();
+            else PreviewPackageContents.Clear();
+
             if (PackageContents?.Count == 0) return;
 
-            var publishPath = !String.IsNullOrEmpty(rootFolder) ? rootFolder : PackageContents.First().DirectoryName;
+            var publishPath = !String.IsNullOrEmpty(rootFolder) ? rootFolder : PackageContents.First(x => !x.IsAssemblyContainer).DirectoryName;
             if (string.IsNullOrEmpty(publishPath))
                 return;
 
             var files = GetAllFiles().ToList();
-
+            files = files.GroupBy(file => Path.GetFileName(file), StringComparer.OrdinalIgnoreCase)
+                         .Select(group => group.First()) 
+                         .ToList();
             try
             {
                 var unqualifiedFiles = GetAllUnqualifiedFiles();
@@ -2102,12 +2114,7 @@ namespace Dynamo.PackageManager
                     GetExistingRootItemViewModel(publishPath, packageName) :
                     GetPreBuildRootItemViewModel(publishPath, packageName, files);
                 
-                if (PreviewPackageContents == null) PreviewPackageContents = new ObservableCollection<PackageItemRootViewModel> { rootItemPreview };
-                else
-                {
-                    PreviewPackageContents.Clear();
-                    PreviewPackageContents.Add(rootItemPreview);
-                }
+                PreviewPackageContents.Add(rootItemPreview);
 
                 RaisePropertyChanged(nameof(PreviewPackageContents));
             }

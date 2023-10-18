@@ -23,6 +23,7 @@ namespace Dynamo.PackageManager
     {
         public bool IsNodeLibrary { get; set; }
         public Assembly Assembly { get; set; }
+        public string LocalFilePath {get;set;} 
 
         public string Name
         {
