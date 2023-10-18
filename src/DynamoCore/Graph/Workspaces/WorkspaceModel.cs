@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Xml;
+using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
@@ -49,6 +50,34 @@ namespace Dynamo.Graph.Workspaces
         public double X;
         public double Y;
         public double Zoom;
+
+        /// <summary>
+        /// Load the extra view information required to fully construct a WorkspaceModel object 
+        /// </summary>
+        /// <param name="json"></param>
+        static internal ExtraWorkspaceViewInfo ExtraWorkspaceViewInfoFromJson(string json)
+        {
+            JsonReader reader = new JsonTextReader(new StringReader(json));
+            var obj = JObject.Load(reader);
+            var viewBlock = obj["View"];
+            if (viewBlock == null)
+                return null;
+
+            var settings = new JsonSerializerSettings
+            {
+                Error = (sender, args) =>
+                {
+                    args.ErrorContext.Handled = true;
+                    Console.WriteLine(args.ErrorContext.Error);
+                },
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                TypeNameHandling = TypeNameHandling.Auto,
+                Formatting = Newtonsoft.Json.Formatting.Indented,
+                Culture = CultureInfo.InvariantCulture
+            };
+
+            return JsonConvert.DeserializeObject<ExtraWorkspaceViewInfo>(viewBlock.ToString(), settings);
+        }
     }
 
     /// <summary>
@@ -1942,6 +1971,53 @@ namespace Dynamo.Graph.Workspaces
         {
             this.currentPasteOffset = (this.currentPasteOffset + PasteOffsetStep) % PasteOffsetMax;
         }
+
+        #region [Nodes Info]
+
+        /// <summary>
+        /// Boolean indicates if the workspace run with warnings
+        /// </summary>
+        internal bool HasWarnings
+        {
+            get { return Nodes.Any(n => n.State == ElementState.Warning || n.State == ElementState.PersistentWarning); }
+        }
+
+        /// <summary>
+        /// Boolean indicates if the workspace run with warnings with no Geometry
+        /// </summary>
+        internal bool HasNoneGeometryRelatedWarnings
+        {
+            get { return Nodes.Any(n => (n.State == ElementState.Warning || n.State == ElementState.PersistentWarning) && !n.Category.StartsWith("Geometry.")); }
+        }
+
+        /// <summary>
+        /// Boolean indicates if workspace run with errors
+        /// </summary>
+        internal bool HasErrors
+        {
+            get { return Nodes.Any(n => n.State == ElementState.Error); }
+        }
+
+        /// <summary>
+        /// Boolean indicates if home workspace is displayed with infos
+        /// </summary>
+        internal bool HasInfos
+        {
+            get { return Nodes.Any(n => n.State == ElementState.Info); }
+        }
+
+        /// <summary>
+        /// Indicates if the workspace is valid for sending to the FDX
+        /// </summary>
+        internal bool IsValidForFDX
+        {
+            get
+            {
+                return !HasErrors && !HasNoneGeometryRelatedWarnings;
+            }
+        }
+
+        #endregion
 
         #endregion
 

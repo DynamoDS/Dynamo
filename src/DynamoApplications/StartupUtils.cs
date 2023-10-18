@@ -188,8 +188,8 @@ namespace Dynamo.Applications
 
             var versions = new[]
             {
+                new Version(230,0,0),
                 new Version(229,0,0),
-                new Version(228,5,0),
             };
 
             var preloader = new Preloader(rootFolder, versions);

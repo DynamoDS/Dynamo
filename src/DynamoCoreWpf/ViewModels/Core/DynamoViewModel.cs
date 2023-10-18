@@ -1431,7 +1431,7 @@ namespace Dynamo.ViewModels
                 Exception ex;
                 if (DynamoUtilities.PathHelper.isValidJson(newVm.Model.FileName, out fileContents, out ex))
                 {
-                    ExtraWorkspaceViewInfo viewInfo = WorkspaceViewModel.ExtraWorkspaceViewInfoFromJson(fileContents);
+                    ExtraWorkspaceViewInfo viewInfo = ExtraWorkspaceViewInfo.ExtraWorkspaceViewInfoFromJson(fileContents);
                     newVm.Model.UpdateWithExtraWorkspaceViewInfo(viewInfo);
                 }
                 workspaces.Add(newVm);
@@ -1889,7 +1889,7 @@ namespace Dynamo.ViewModels
                 }
 
                 // This call will fail in the case of an XML file
-                ExtraWorkspaceViewInfo viewInfo = WorkspaceViewModel.ExtraWorkspaceViewInfoFromJson(fileContentsInUse);
+                ExtraWorkspaceViewInfo viewInfo = ExtraWorkspaceViewInfo.ExtraWorkspaceViewInfoFromJson(fileContentsInUse);
 
                 Model.CurrentWorkspace.UpdateWithExtraWorkspaceViewInfo(viewInfo);
                 Model.OnWorkspaceOpening(viewInfo);
@@ -2096,8 +2096,9 @@ namespace Dynamo.ViewModels
             {
                 Model.Logger.Log(String.Format(Properties.Resources.SavingInProgress, path));
                 CurrentSpaceViewModel.Save(path, isBackup, Model.EngineController, saveContext);
-
                 if (!isBackup) AddToRecentFiles(path);
+                if (currentWorkspaceViewModel?.IsHomeSpace ?? true)
+                    Model.Logger.Log("The Workspace is valid for FDX : " + (HomeSpace.HasRunWithoutCrash && Model.CurrentWorkspace.IsValidForFDX).ToString());
             }
             catch (Exception ex)
             {

@@ -3,7 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Dynamo.Configuration;
+using Dynamo.Core;
+using Dynamo.Events;
+using Dynamo.Logging;
 using Dynamo.Models;
+using Dynamo.Search.SearchElements;
+using Dynamo.Session;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Br;
 using Lucene.Net.Analysis.Cjk;
@@ -25,15 +30,52 @@ using Lucene.Net.Util;
 
 namespace Dynamo.Utilities
 {
+    /// <summary>
+    /// Lucene search utility class that will be used for indexing and searching nodes and packages
+    /// </summary>
     internal class LuceneSearchUtility
     {
         internal DynamoModel dynamoModel;
+
+        /// <summary>
+        /// Index fields that were added to the document
+        /// </summary>
         internal List<string> addedFields;
+
+        /// <summary>
+        /// Lucene Directory Reader
+        /// </summary>
         internal DirectoryReader dirReader;
+
+        /// <summary>
+        /// Lucene Index Directory, it can be RAMDirectory or FSDirectory
+        /// </summary>
         internal Lucene.Net.Store.Directory indexDir;
+
+        /// <summary>
+        /// Lucene Index write
+        /// </summary>
         internal IndexWriter writer;
-        internal string directory;
-        internal LuceneStorage currentStorageType;
+
+        /// <summary>
+        /// Start config for Lucene
+        /// </summary>
+        internal LuceneStartConfig startConfig;
+
+        /// <summary>
+        /// Default start config for Lucene, it will use RAM storage type and empty directory
+        /// </summary>
+        internal static readonly LuceneStartConfig DefaultStartConfig = new LuceneStartConfig();
+
+        /// <summary>
+        /// Start config for node index, it will use file storage type and node index directory
+        /// </summary>
+        internal static readonly LuceneStartConfig DefaultNodeIndexStartConfig = new LuceneStartConfig(LuceneSearchUtility.LuceneStorage.FILE_SYSTEM, LuceneConfig.NodesIndexingDirectory);
+
+        /// <summary>
+        /// Start config for package index, it will use file storage type and package index directory
+        /// </summary>
+        internal static readonly LuceneStartConfig DefaultPkgIndexStartConfig = new LuceneStartConfig(LuceneSearchUtility.LuceneStorage.FILE_SYSTEM, LuceneConfig.PackagesIndexingDirectory);
 
         public enum LuceneStorage
         {
@@ -50,28 +92,31 @@ namespace Dynamo.Utilities
         // Holds the instance for the IndexSearcher
         internal IndexSearcher Searcher;
 
-        internal LuceneSearchUtility(DynamoModel model)
+        /// <summary>
+        /// Constructor for LuceneSearchUtility, it will use the storage type passed as parameter
+        /// </summary>
+        /// <param name="config"></param>
+        internal LuceneSearchUtility(DynamoModel model, LuceneStartConfig config)
         {
             dynamoModel = model;
+            // If under test mode, use the default StartConfig - RAM storage type and empty directory
+            startConfig = DynamoModel.IsTestMode? DefaultStartConfig : config;
+            InitializeLuceneConfig();
         }
 
         /// <summary>
-        /// Initialize Lucene config file writer.
+        /// Initialize Lucene index writer based on start config.
         /// </summary>
-        internal void InitializeLuceneConfig(string dirName, LuceneStorage storageType = LuceneStorage.FILE_SYSTEM)
+        internal void InitializeLuceneConfig()
         {
             addedFields = new List<string>();
 
             DirectoryInfo luceneUserDataFolder;
             var userDataDir = new DirectoryInfo(dynamoModel.PathManager.UserDataDirectory);
             luceneUserDataFolder = userDataDir.Exists ? userDataDir : null;
+            string indexPath = Path.Combine(luceneUserDataFolder.FullName, LuceneConfig.Index, startConfig.Directory);
 
-            directory = dirName;
-            string indexPath = Path.Combine(luceneUserDataFolder.FullName, LuceneConfig.Index, dirName);
-
-            currentStorageType = storageType;
-
-            if (storageType == LuceneStorage.RAM)
+            if (startConfig.StorageType == LuceneStorage.RAM)
             {
                 indexDir = new RAMDirectory();
             }
@@ -79,32 +124,35 @@ namespace Dynamo.Utilities
             {
                 indexDir = FSDirectory.Open(indexPath);
             }
-
-
             // Create an analyzer to process the text
             Analyzer = CreateAnalyzerByLanguage(dynamoModel.PreferenceSettings.Locale);
+            CreateLuceneIndexWriter();    
+        }
 
-            // Initialize Lucene index writer, unless in test mode or we are using RAMDirectory for indexing info. 
-            if (!DynamoModel.IsTestMode || currentStorageType == LuceneStorage.RAM)
+        /// <summary>
+        /// Create index writer for followup doc indexing
+        /// </summary>
+        internal void CreateLuceneIndexWriter()
+        {
+            // Create an index writer
+            IndexWriterConfig indexConfig = new IndexWriterConfig(LuceneConfig.LuceneNetVersion, Analyzer)
             {
-                try
-                {
-                    // Create an index writer
-                    IndexWriterConfig indexConfig = new IndexWriterConfig(LuceneConfig.LuceneNetVersion, Analyzer)
-                    {
-                        OpenMode = OpenMode.CREATE
-                    };
+                OpenMode = OpenMode.CREATE
+            };
+            try
+            {
+                writer = new IndexWriter(indexDir, indexConfig);
+            }
+            catch (LockObtainFailedException ex)
+            {
 
-                    writer = new IndexWriter(indexDir, indexConfig);
-                }
-                catch (LockObtainFailedException ex)
-                {
-                    DisposeWriter();
-                    dynamoModel.Logger.LogError($"LuceneNET LockObtainFailedException {ex}");
-                }
-                catch (Exception ex) {
-                    dynamoModel.Logger.LogError($"LuceneNET Exception {ex}");
-                }
+                DisposeWriter();
+                (ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger) as DynamoLogger).LogError($"LuceneNET LockObtainFailedException {ex}");
+
+            }
+            catch (Exception ex)
+            {
+                (ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger) as DynamoLogger).LogError($"LuceneNET Exception {ex}");
             }
         }
 
@@ -114,7 +162,7 @@ namespace Dynamo.Utilities
         /// <returns></returns>
         internal Document InitializeIndexDocumentForNodes()
         {
-            if (DynamoModel.IsTestMode && currentStorageType == LuceneStorage.FILE_SYSTEM) return null;
+            if (DynamoModel.IsTestMode && startConfig.StorageType == LuceneStorage.FILE_SYSTEM) return null;
 
             var name = new TextField(nameof(LuceneConfig.NodeFieldsEnum.Name), string.Empty, Field.Store.YES);
             var fullCategory = new TextField(nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName), string.Empty, Field.Store.YES);
@@ -170,11 +218,11 @@ namespace Dynamo.Utilities
         internal void SetDocumentFieldValue(Document doc, string field, string value, bool isTextField = true, bool isLast = false)
         {
             string[] indexedFields = null;
-            if (directory.Equals(LuceneConfig.NodesIndexingDirectory))
+            if (startConfig.Directory.Equals(LuceneConfig.NodesIndexingDirectory))
             {
                 indexedFields = LuceneConfig.NodeIndexFields;
             }
-            else if (directory.Equals(LuceneConfig.PackagesIndexingDirectory))
+            else if (startConfig.Directory.Equals(LuceneConfig.PackagesIndexingDirectory))
             {
                 indexedFields = LuceneConfig.PackageIndexFields;
             }
@@ -338,21 +386,49 @@ namespace Dynamo.Utilities
 
         internal void DisposeWriter()
         {
-            //We need to check if we are not running Dynamo tests because otherwise parallel test start to fail when trying to write in the same Lucene directory location
-            if (!DynamoModel.IsTestMode || currentStorageType == LuceneStorage.RAM)
-            {
-                writer?.Dispose();
-                writer = null;
-            }
+            writer?.Dispose();
+            writer = null;
         }
 
+        /// <summary>
+        /// Dispose all the Lucene objects
+        /// </summary>
+        internal void DisposeAll()
+        {
+            writer?.Dispose();
+            dirReader?.Dispose();
+            indexDir?.Dispose();
+            Analyzer?.Dispose();
+        }
+
+        /// <summary>
+        /// Commit the changes made to the Lucene index
+        /// </summary>
         internal void CommitWriterChanges()
         {
-            if (!DynamoModel.IsTestMode || currentStorageType == LuceneStorage.RAM)
+            //Commit the info indexed if index writer exists
+            writer?.Commit();
+        }
+
+        /// <summary>
+        /// Add node information to existing Lucene index
+        /// </summary>
+        /// <param name="node">node info that will be indexed</param>
+        /// <param name="doc">Lucene document in which the node info will be indexed</param>
+        internal void AddNodeTypeToSearchIndex(NodeSearchElement node, Document doc)
+        {
+            if (addedFields == null) return;
+
+            SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName), node.FullCategoryName);
+            SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), node.Name);
+            SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Description), node.Description);
+            if (node.SearchKeywords.Count > 0)
             {
-                //Commit the info indexed
-                writer?.Commit();
+                SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords), node.SearchKeywords.Aggregate((x, y) => x + " " + y), true, true);
             }
+            SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Parameters), node.Parameters ?? string.Empty);
+
+            writer?.AddDocument(doc);
         }
     }
 
@@ -361,7 +437,7 @@ namespace Dynamo.Utilities
     /// </summary>
     public class LuceneCustomAnalyzer : Analyzer
     {
-        private LuceneVersion luceneVersion;
+        private readonly LuceneVersion luceneVersion;
 
         public LuceneCustomAnalyzer(LuceneVersion matchVersion)
         {
@@ -389,6 +465,33 @@ namespace Dynamo.Utilities
             tok = new StopFilter(LuceneConfig.LuceneNetVersion, tok, stopWords);
 
             return new TokenStreamComponents(tokenizer, tok);
+        }
+    }
+
+    /// <summary>
+    /// Start up config for Lucene indexing
+    /// </summary>
+    internal class LuceneStartConfig
+    {
+        /// <summary>
+        /// Lucene Index Directory name, e.g. Nodes, Packages
+        /// </summary>
+        internal string Directory { get; set; }
+
+        /// <summary>
+        /// Current Lucene Index Storage type, it could be either RAM or FILE_SYSTEM
+        /// </summary>
+        internal LuceneSearchUtility.LuceneStorage StorageType { get; set; }
+
+        /// <summary>
+        /// Constructor for LuceneStartConfig
+        /// </summary>
+        /// <param name="directory"></param>
+        /// <param name="storageType"></param>
+        internal LuceneStartConfig(LuceneSearchUtility.LuceneStorage storageType = LuceneSearchUtility.LuceneStorage.RAM, string directory = "")
+        {
+            Directory = directory;
+            StorageType = storageType;
         }
     }
 }

@@ -58,18 +58,8 @@
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="FontAwesome5" Version="2.1.11" />
-		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" />
+		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2045.28" />
 	</ItemGroup>
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-        <Reference Include="PresentationCore" />
-        <Reference Include="PresentationFramework" />
-        <Reference Include="System.Xaml" />
-        <Reference Include="WindowsBase" />
-        <Reference Include="Microsoft.Practices.Prism">
-            <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-    </ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj">
 			<Project>{51bb6014-43f7-4f31-b8d3-e3c37ebedaf4}</Project>
