@@ -22,23 +22,6 @@
             <Private>False</Private>
         </Reference>
     </ItemGroup>
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-        <Reference Include="PresentationCore">
-            <Private>False</Private>
-        </Reference>
-        <Reference Include="PresentationFramework">
-            <Private>False</Private>
-        </Reference>
-        <Reference Include="System.Windows.Forms">
-            <Private>False</Private>
-        </Reference>
-        <Reference Include="System.Xaml">
-            <Private>False</Private>
-        </Reference>
-        <Reference Include="WindowsBase">
-            <Private>False</Private>
-        </Reference>
-    </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj">
             <Project>{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}</Project>
