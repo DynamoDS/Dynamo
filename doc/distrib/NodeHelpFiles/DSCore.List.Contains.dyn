@@ -1,0 +1,374 @@
+{
+  "Uuid": "5ef35249-3355-4878-91d6-06b12a00e3b8",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "DSCore.List.Contains",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "9a460ec3ee1044908bc7352106d7acc5",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "0a9014ddb21e441bae60d3d2f6caaa9e",
+          "Name": "list",
+          "Description": "List to search in\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b4db9c75d4b24ee7afbd04d1c75f5d06",
+          "Name": "item",
+          "Description": "Item to look for\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4d262ae0d0774320a169864f6da7663b",
+          "Name": "bool",
+          "Description": "True if list contains item, false if it doesn’t",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.List.Contains@var[]..[],var[]..[]",
+      "Replication": "Auto",
+      "Description": "Determines if the given list contains the given item. This function searches through the sublists contained in it.\n\nList.Contains (list: var[]..[], item: var[]..[]): bool"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "b9302ea6fa9a41adb82d955d7e484610",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "f58095bef94c4e0298e493075eada2b4",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "\"The best way to predict your future is to create it. - Abraham Lincoln\";"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 50.0,
+      "WatchHeight": 38.0,
+      "Id": "59fd1e2718604f418dad1029178f477a",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "37aba79c791f4b849b669dd97e5eeb1b",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6070f5cc6f1e4beb9e418bf20650ccb7",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "fab8f90ebc784e458ac1e69b94772a8c",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "662230bbc4184ce29f5a93194858ad87",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6335058786b04e95ab7ed5448b9da4de",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7ea12595370e43c4bb12d2d383ccb228",
+          "Name": "",
+          "Description": "Value of expression at line 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0bb239d575dc404696b99d18dab2cdb6",
+          "Name": "",
+          "Description": "Value of expression at line 4",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "9be170e7cc324b22b2ffee5730233662",
+          "Name": "",
+          "Description": "Value of expression at line 6",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "\"The only way to do great work is to love what you do. - Steve Jobs\";\n\"If you want to go fast, go alone. If you want to go far, go together. - African Proverb\";\n\"The man who moves a mountain begins by carrying away small stones. - Confucius\";\n\"Don't watch the clock;\n do what it does. Keep going. - Sam Levenson\";\n\"The best way to predict your future is to create it. - Abraham Lincoln\";"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
+      "VariableInputPorts": true,
+      "Id": "c1eba1b857f94ddca101cda3baf1b5da",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "d5dd63b642654ff18f0fe09f919f7354",
+          "Name": "item0",
+          "Description": "Item Index #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0d3dda79938443a8acdc269afa132d85",
+          "Name": "item1",
+          "Description": "Item Index #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2ca6dca9587b42dc89d49af2e158c6f1",
+          "Name": "item2",
+          "Description": "Item Index #2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8b68135ec2d04cb8829d1e54fd97ec34",
+          "Name": "item3",
+          "Description": "Item Index #3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d6d7bcf249db495a81f87acb08da87cb",
+          "Name": "item4",
+          "Description": "Item Index #4",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "41bbc8e9c0a14890a36b1085c707655d",
+          "Name": "list",
+          "Description": "A list (type: var[]..[])",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Makes a new list from the given inputs"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "4d262ae0d0774320a169864f6da7663b",
+      "End": "37aba79c791f4b849b669dd97e5eeb1b",
+      "Id": "37d72f03424f4ae59147266adfb59022",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "f58095bef94c4e0298e493075eada2b4",
+      "End": "b4db9c75d4b24ee7afbd04d1c75f5d06",
+      "Id": "b22800fe2edd4a3fbaa23a794d8429e8",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "662230bbc4184ce29f5a93194858ad87",
+      "End": "d5dd63b642654ff18f0fe09f919f7354",
+      "Id": "fa435b0171724341b8b85e52d6efa0b7",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "6335058786b04e95ab7ed5448b9da4de",
+      "End": "0d3dda79938443a8acdc269afa132d85",
+      "Id": "1e7397d06558461c919d75fab68a9b27",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "7ea12595370e43c4bb12d2d383ccb228",
+      "End": "2ca6dca9587b42dc89d49af2e158c6f1",
+      "Id": "6219133edb214edbb27fcf220ec9a3b1",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "0bb239d575dc404696b99d18dab2cdb6",
+      "End": "8b68135ec2d04cb8829d1e54fd97ec34",
+      "Id": "bbc1d30b74744065ae68742c9d7b4fe1",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "9be170e7cc324b22b2ffee5730233662",
+      "End": "d6d7bcf249db495a81f87acb08da87cb",
+      "Id": "1159f5eee17f4a04b3020fcfe50999a9",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "41bbc8e9c0a14890a36b1085c707655d",
+      "End": "0a9014ddb21e441bae60d3d2f6caaa9e",
+      "Id": "9cfafd4b404d4aed9c352010faa960b3",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.19",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.19.0.5742",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "9a460ec3ee1044908bc7352106d7acc5",
+        "Name": "List.Contains",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1210.0885269754403,
+        "Y": 246.64391691394667
+      },
+      {
+        "Id": "b9302ea6fa9a41adb82d955d7e484610",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 381.0122542293052,
+        "Y": 537.55844393087443
+      },
+      {
+        "Id": "59fd1e2718604f418dad1029178f477a",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1445.7784374964074,
+        "Y": 246.64391691394667
+      },
+      {
+        "Id": "fab8f90ebc784e458ac1e69b94772a8c",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 17.01939522304599,
+        "Y": 238.51465331733419
+      },
+      {
+        "Id": "c1eba1b857f94ddca101cda3baf1b5da",
+        "Name": "List Create",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 868.52971783597,
+        "Y": 247.337807559929
+      }
+    ],
+    "Annotations": [],
+    "X": 58.57821921680204,
+    "Y": -23.769335843317776,
+    "Zoom": 0.76140659543178513
+  }
+}
