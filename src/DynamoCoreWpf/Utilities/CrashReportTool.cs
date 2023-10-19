@@ -264,7 +264,8 @@ namespace Dynamo.Wpf.Utilities
 
                         cerDLL.SetMultiStringParam(ReportMultiStringParamKey.MultiStringKeyAppXML, appConfig, 1);
                         cerDLL.SetBoolParam(ReportBoolParamKey.BoolKeyUseExceptionTrace, true);
-                        model?.Logger?.LogError(cerDLL.SendReportWithDump(miniDumpFilePath, true)
+                        var success = cerDLL.SendReportWithDump(miniDumpFilePath, true);
+                        model?.Logger?.LogError(success
                             ? $"Successfully sent CER error report"
                             : $"Failed to send CER error report");
                     }
