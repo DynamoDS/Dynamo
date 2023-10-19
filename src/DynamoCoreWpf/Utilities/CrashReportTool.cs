@@ -10,13 +10,14 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using CoreNodeModels.HigherOrder;
 
 namespace Dynamo.Wpf.Utilities
 {
     internal class CrashReportTool
     {
         private static List<string> ProductsWithCER => new List<string>() { "Revit", "Civil", "Robot Structural Analysis" };
-        private static readonly string CERExeName = "senddmp.exe";
+        private static readonly string CERDllName = "cer.dll";
 
         private static string CERInstallLocation = null;
 
@@ -143,7 +144,7 @@ namespace Dynamo.Wpf.Utilities
                     throw new MissingMethodException("Method 'DynamoInstallDetective.Utilities.FindProductInstallations' not found");
                 }
 
-                var methodParams = new object[] { ProductsWithCER, CERExeName };
+                var methodParams = new object[] { ProductsWithCER, CERDllName };
                 var installs = installationsMethod.Invoke(null, methodParams) as IEnumerable;
 
                 CERInstallLocation = installs.Cast<KeyValuePair<string, Tuple<int, int, int, int>>>().Select(x => x.Key).LastOrDefault() ?? string.Empty;
@@ -173,7 +174,7 @@ namespace Dynamo.Wpf.Utilities
             string cerToolDir = !string.IsNullOrEmpty(model.CERLocation) ?
                 model.CERLocation : FindCERToolInInstallLocations();
 
-            var cerToolPath = Path.Combine(cerToolDir, CERExeName);
+            var cerToolPath = Path.Combine(cerToolDir, CERDllName);
             if (string.IsNullOrEmpty(cerToolPath) || !File.Exists(cerToolPath))
             {
                 model?.Logger?.LogError($"The CER tool was not found at location {cerToolPath}");
@@ -233,30 +234,42 @@ namespace Dynamo.Wpf.Utilities
                         filesToSend.Add(viewModel.DumpRecordedCommands());
                     }
 
-                    var extras = string.Join(" ", filesToSend.Select(f => "/EXTRA \"" + f + "\""));
-
                     string appConfig = "";
                     if (model != null)
                     {
                         var appName = GetHostAppName(model);
-                        appConfig = $@"<ProductInformation name=\""{appName}\"" build_version=\""{model.Version}\"" " +
-                                    $@"registry_version=\""{model.Version}\"" registry_localeID=\""{CultureInfo.CurrentCulture.LCID}\"" uptime=\""0\"" " +
-                                    $@"session_start_count=\""0\"" session_clean_close_count=\""0\"" current_session_length=\""0\"" />";
+                        appConfig = $"<ProductInformation name=\"{appName}\" build_version=\"{model.Version}\" " +
+                                    $"registry_version=\"{model.Version}\" registry_localeID=\"{CultureInfo.CurrentCulture.LCID}\" uptime=\"0\" " +
+                                    $"session_start_count=\"0\" session_clean_close_count=\"0\" current_session_length=\"0\" />";
                     }
 
-                    string dynConfig = string.Empty;
                     string dynName = viewModel?.Model.CurrentWorkspace.Name;
-                    if (!string.IsNullOrEmpty(dynName))
-                    {
-                        dynConfig = $"/DWG {dynName}";
-                    }
 
                     var miniDumpFilePath = CreateMiniDumpFile(cerDir.FullName);
                     var upiConfigFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "upiconfig.xml");
 
-                    var cerArgs = $"/UPITOKEN \"{upiConfigFilePath}\" /DMP \"{miniDumpFilePath}\" /APPXML \"{appConfig}\" {dynConfig} {extras} /USEEXCEPTIONTRACE";
+                    using (var cerDLL = new CerDLL(cerToolPath)) 
+                    {
+                        cerDLL.ToggleCER(true);
+                        cerDLL.RegisterUPI(upiConfigFilePath);
+
+                        if (!string.IsNullOrEmpty(dynName))
+                        {
+                            cerDLL.SetStringParam(ReportStringParamKey.StringKeyDwg, dynName);
+                        }
+
+                        foreach (var file in filesToSend)
+                        {
+                            cerDLL.SetMultiStringParam(ReportMultiStringParamKey.MultiStringKeyExtraFile, file, filesToSend.Count + 1);
+                        }
+
+                        cerDLL.SetMultiStringParam(ReportMultiStringParamKey.MultiStringKeyAppXML, appConfig, 1);
+                        cerDLL.SetBoolParam(ReportBoolParamKey.BoolKeyUseExceptionTrace, true);
+                        model?.Logger?.LogError(cerDLL.SendReportWithDump(miniDumpFilePath, true)
+                            ? $"Successfully sent CER error report"
+                            : $"Failed to send CER error report");
+                    }
                     
-                    Process.Start(new ProcessStartInfo(cerToolPath, cerArgs) { UseShellExecute = true }).WaitForExit();
                     return true;
                 }
             }
