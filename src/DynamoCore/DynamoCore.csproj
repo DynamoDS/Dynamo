@@ -120,7 +120,6 @@
           <LibGProtoGeometryUICulture Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\$(UICulture)\*" />
           <LibG230 Include="$(PkgDynamoVisualProgramming_LibG_230_0_0)\tools\netstandard2.0\$(LibGOsToken)\LibG_230_0_0\*" />
           <LibG229 Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\LibG_229_0_0\*" />
-          <ExternSimplexNoise Include="$(SolutionDir)..\extern\SimplexNoise\*" />
           <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\**\*.*" />
           <NodeHelpMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.md"/>
 		  <NodeHelpDYNFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.dyn"/>
@@ -155,7 +154,6 @@
     <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command Copy-Item -Path $(LibGProtoGeometryLibGLocale) -Destination $(OutputPath) -Recurse -Force" />
     <Copy SourceFiles="@(LibG230)" DestinationFolder="$(OutputPath)libg_230_0_0\" />
     <Copy SourceFiles="@(LibG229)" DestinationFolder="$(OutputPath)libg_229_0_0\" />
-    <Copy SourceFiles="@(ExternSimplexNoise)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(SampleFiles)" DestinationFolder="$(OutputPath)samples\%(RecursiveDir)" />
     <Copy SourceFiles="@(LocalizedResources)" DestinationFolder="$(OutputPath)%(RecursiveDir)" />
     <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\Operators.xml" DestinationFolder="$(OutputPath)\$(UICulture)" />
