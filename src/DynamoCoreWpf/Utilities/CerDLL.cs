@@ -303,14 +303,14 @@ namespace Dynamo.Wpf.Utilities
         }
     }
 
-    public enum ThemeType : int
+    internal enum ThemeType : int
     {
         Light,
         Dark,
         Blue,
     };
 
-    public enum ReportStringParamKey : int
+    internal enum ReportStringParamKey : int
     {
         StringKeyBegin = 10000,
         StringKeyUpiToken, // will be deprecated, please call RegisterUPI function as instead
@@ -346,7 +346,7 @@ namespace Dynamo.Wpf.Utilities
         StringKeyEnd = 19999
     };
 
-    public enum ReportMultiStringParamKey
+    internal enum ReportMultiStringParamKey
     {
         MultiStringKeyBegin = 20000,
         MultiStringKeyAppCData,
@@ -358,7 +358,7 @@ namespace Dynamo.Wpf.Utilities
         MultiStringKeyEnd = 29999
     };
 
-    public enum ReportIntParamKey : int
+    internal enum ReportIntParamKey : int
     {
         IntKeyBegin = 30000,
         IntKeyCrashCount,
@@ -368,7 +368,7 @@ namespace Dynamo.Wpf.Utilities
         IntKeyEnd = 39999
     };
 
-    public enum ReportBoolParamKey : int
+    internal enum ReportBoolParamKey : int
     {
         BoolKeyBegin = 40000,
         BoolKeyAltForceSend,
