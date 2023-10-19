@@ -421,11 +421,7 @@ namespace Dynamo.Tests
         /// from getting the same time-stamp value.
         /// </summary>
         ///
-#if NETFRAMEWORK
-        [Test, RequiresMTA]
-#elif NET6_0_OR_GREATER
         [Test, Apartment(ApartmentState.MTA)]
-#endif
         [Category("UnitTests")]
         public void TimeStampGenerator01()
         {
