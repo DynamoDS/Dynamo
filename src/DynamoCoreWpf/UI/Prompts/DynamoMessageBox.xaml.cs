@@ -88,6 +88,10 @@ namespace Dynamo.UI.Prompts
             }
         }
 
+        public bool ShowTooltip { get; private set; }
+
+        public string Tooltip { get; private set; }
+
         #endregion
 
         /// <summary>
@@ -97,6 +101,8 @@ namespace Dynamo.UI.Prompts
         {
             InitializeComponent();
             DataContext = this;
+            ShowTooltip = false;
+            ToolTip = "";
         }
 
         /// <summary>
@@ -116,6 +122,24 @@ namespace Dynamo.UI.Prompts
                 TitleText = caption,
                 MessageBoxButton = button,
                 MessageBoxImage = icon
+            };
+
+            dynamoMessageBox.ConfigureButtons(button);
+            dynamoMessageBox.ShowDialog();
+            return dynamoMessageBox.CustomDialogResult;
+        }
+
+        public static MessageBoxResult Show(string messageBoxText, string caption, MessageBoxButton button,
+            MessageBoxImage icon, string tooltip)
+        {
+            var dynamoMessageBox = new DynamoMessageBox
+            {
+                BodyText = messageBoxText,
+                TitleText = caption,
+                MessageBoxButton = button,
+                MessageBoxImage = icon,
+                ShowTooltip = !string.IsNullOrEmpty(tooltip),
+                Tooltip = tooltip
             };
 
             dynamoMessageBox.ConfigureButtons(button);
