@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -11,7 +10,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using CoreNodeModels.Properties;
-using Dynamo.Controls;
 using Dynamo.Extensions;
 using Dynamo.LibraryViewExtensionWebView2.Handlers;
 using Dynamo.LibraryViewExtensionWebView2.ViewModels;
@@ -33,24 +31,38 @@ namespace Dynamo.LibraryViewExtensionWebView2
     [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
     [ComVisibleAttribute(true)]
 
+    /// <summary>
+    /// This is for the object we're gonna host exposing the functions
+    /// for clipboard management to React component
+    /// </summary>
     public class ScriptObject
     {
         Action<string> onCopyToClipboard;
-        Action onPasteFromClipboard;
+        Func<string> onPasteFromClipboard;
 
-        internal ScriptObject(Action<string> onCopyToClipboard, Action onPasteFromClipboard)
+        internal ScriptObject(Action<string> onCopyToClipboard, Func<string> onPasteFromClipboard)
         {
             this.onCopyToClipboard = onCopyToClipboard;
             this.onPasteFromClipboard = onPasteFromClipboard;
         }
+
+        /// <summary>
+        /// This is the function we expose for adding a string to the clipboard
+        /// In React component will be accesible from chrome.webview.hostObjects.scriptObject.CopyToClipboard(text)
+        /// </summary>
+        /// <param name="text">text to be added to the clipboard</param>
         public void CopyToClipboard(string text)
         {
             onCopyToClipboard(text);
         }
+
+        /// <summary>
+        /// This is the function we expose for paste a string from the clipboard
+        /// In React component will be accesible from chrome.webview.hostObjects.scriptObject.PasteFromClipboard();
+        /// </summary>
         public string PasteFromClipboard()
         {
-            var text = Clipboard.GetText();
-            return text;
+            return onPasteFromClipboard();
         }
 
     }
@@ -216,12 +228,21 @@ namespace Dynamo.LibraryViewExtensionWebView2
 
         #endregion
 
+        /// <summary>
+        /// This function will copy a string to clipboard 
+        /// </summary>
+        /// <param name="text">text to be added to clipboard</param>
         internal void OnCopyToClipboard(string text)
         {
             Clipboard.SetText(text);
         }
 
-        internal void OnPasteFromClipboard() { }
+        /// <summary>
+        /// This function will return the clipboard content
+        /// </summary>
+        internal string OnPasteFromClipboard() {
+            return Clipboard.GetText();
+        }
 
         private string ReplaceUrlWithBase64Image(string html, string minifiedURL, bool magicreplace = true)
         {
@@ -391,15 +412,6 @@ namespace Dynamo.LibraryViewExtensionWebView2
             LogToDynamoConsole(msg);
         }
 
-        /// <summary>
-        /// Collect the main and modifier key from KeyEventArgs in order to pass
-        /// that data to eventDispatcher (located in library.html) which is responsible
-        /// for binding KeyDown events between dynamo and webview instances
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        ///
-
         // This enum is for matching the modifier keys between C# and javaScript
         enum ModifiersJS
         {
@@ -417,10 +429,18 @@ namespace Dynamo.LibraryViewExtensionWebView2
             V
         }
 
+        /// <summary>
+        /// Collect the main and modifier key from KeyEventArgs in order to pass
+        /// that data to eventDispatcher (located in library.html) which is responsible
+        /// for binding KeyDown events between dynamo and webview instances
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        ///
+
         private void Browser_KeyDown(object sender, KeyEventArgs e)
 
         {
-
             if (!Enum.IsDefined(typeof(EventsTracked), e.Key.ToString())) return;
 
             var synteticEventData = new Dictionary<string, string>
