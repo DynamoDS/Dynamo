@@ -102,6 +102,8 @@ namespace DSCore
                     case "dynamo.geometry:sab-1.0.0":
                     case "dynamo.goemetry:tsm-1.0.0":
                     case "dynamo.geometry:rectangle-1.0.0":
+                    case "dynamo.geometry:cuboid-1.0.0":
+                    case "dynamo.geometry:solid-1.0.0":
                     case string geoId when geoId.Contains("autodesk.geometry"):
                         return Geometry.FromJson(jObject.ToString());
 
@@ -165,7 +167,7 @@ namespace DSCore
                     new DictConverter(),
                     new DesignScriptGeometryConverter(),
                     new ColorConveter(),
-                    //new LocationConverter(),
+                    new LocationConverter(),
                     new ImageConverter()
                 });
         }
