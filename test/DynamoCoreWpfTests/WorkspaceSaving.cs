@@ -650,6 +650,62 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        public void RemovePIIDataFromWorkspace()
+        {
+            string graphWithPIIDataPath = Path.Combine(TestDirectory, (@"UI\GraphWithPIIData.dyn"));
+            ViewModel.OpenCommand.Execute(graphWithPIIDataPath);
+
+            var noteWithEmailId = "75ccaa00c10c4aedab9250a6d9720951";
+            var nodeWithWebPageId = "cd09502288c448348bd2d0bcd0a3c088";
+            var nodeWithDirectoryId = "5e1f42a0cc8d427cbd7fde969a988d5f";
+            var noteWithCreditCardsId = "2126a32c0f474a5887205bd1b3061d8a";
+            var noteWithSSNsId = "5bcdbd22f679417cb7e3bd19b2d984d3";
+            var nodeWithIPAddressId = "8d58c36ff11d4eb89025f73b4527d55a";
+            var nodeWithDatesId = "7d471f2e3b7a4cc8946aa4101fbf348a";
+
+            JObject workspaceWithPIIData = ViewModel.CurrentSpaceViewModel.GetJsonRepresentation();
+
+            var valueWhitEmail = PIIDetector.GetNoteValue(workspaceWithPIIData, noteWithEmailId);
+            var valueWithWebPage = PIIDetector.GetNodeValue(workspaceWithPIIData, nodeWithWebPageId, "Code");
+            var valueWithDirectory = PIIDetector.GetNodeValue(workspaceWithPIIData, nodeWithDirectoryId, "InputValue");
+            var valueWithDirectory2 = PIIDetector.GetNodeValue(workspaceWithPIIData, nodeWithDirectoryId, "HintPath");
+            var valueWithCreditCards = PIIDetector.GetNoteValue(workspaceWithPIIData, noteWithCreditCardsId);
+            var valueWithSSNs = PIIDetector.GetNoteValue(workspaceWithPIIData, noteWithSSNsId);
+            var valueWithIPAddress = PIIDetector.GetNodeValue(workspaceWithPIIData, nodeWithIPAddressId,"InputValue");
+            var valueWithDates = PIIDetector.GetNodeValue(workspaceWithPIIData, nodeWithDatesId, "InputValue");
+
+            JObject  workspaceWithoutPIIData = PIIDetector.RemovePIIData(ViewModel.CurrentSpaceViewModel.GetJsonRepresentation());
+
+            var valueWithoutEmail = PIIDetector.GetNoteValue(workspaceWithoutPIIData, noteWithEmailId);
+            var valueWithoutWebPage = PIIDetector.GetNodeValue(workspaceWithoutPIIData, nodeWithWebPageId, "Code");
+            var valueWithoutDirectory = PIIDetector.GetNodeValue(workspaceWithoutPIIData, nodeWithDirectoryId, "InputValue");
+            var valueWithoutDirectory2 = PIIDetector.GetNodeValue(workspaceWithoutPIIData, nodeWithDirectoryId, "HintPath");
+            var valueWithoutCreditCards = PIIDetector.GetNoteValue(workspaceWithoutPIIData, noteWithCreditCardsId);
+            var valueWithoutSSNs = PIIDetector.GetNoteValue(workspaceWithoutPIIData, noteWithSSNsId);
+            var valueWithoutIPAddress = PIIDetector.GetNodeValue(workspaceWithoutPIIData, nodeWithIPAddressId, "InputValue");
+            var valueWithoutDates = PIIDetector.GetNodeValue(workspaceWithoutPIIData, nodeWithDatesId, "InputValue");
+
+            Assert.IsTrue(PIIDetector.ContainsEmail((string)valueWhitEmail));
+            Assert.IsTrue(PIIDetector.ContainsWebsite((string)valueWithWebPage));
+            Assert.IsTrue(PIIDetector.ContainsDirectory((string)valueWithDirectory));
+            Assert.IsTrue(PIIDetector.ContainsDirectory((string)valueWithDirectory2));
+            Assert.IsTrue(PIIDetector.ContainsCreditCard((string)valueWithCreditCards));
+            Assert.IsTrue(PIIDetector.ContainsSSN((string)valueWithSSNs));
+            Assert.IsTrue(PIIDetector.ContainsIpAddress((string)valueWithIPAddress));
+            Assert.IsTrue(PIIDetector.ContainsDate((string)valueWithDates));
+
+            Assert.IsFalse(PIIDetector.ContainsEmail((string)valueWithoutEmail));            
+            Assert.IsFalse(PIIDetector.ContainsWebsite((string)valueWithoutWebPage));
+            Assert.IsFalse(PIIDetector.ContainsDirectory((string)valueWithoutDirectory));
+            Assert.IsFalse(PIIDetector.ContainsDirectory((string)valueWithoutDirectory2));
+            Assert.IsFalse(PIIDetector.ContainsCreditCard((string)valueWithoutCreditCards));
+            Assert.IsFalse(PIIDetector.ContainsSSN((string)valueWithoutSSNs));
+            Assert.IsFalse(PIIDetector.ContainsIpAddress((string)valueWithoutIPAddress));
+            Assert.IsFalse(PIIDetector.ContainsDate((string)valueWithoutDates));
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void BackUpSaveDoesNotChangeName()
         {
             // get empty workspace

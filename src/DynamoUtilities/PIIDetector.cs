@@ -17,18 +17,13 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <param name="jsonObject"></param>
         /// <returns></returns>
-        public static Tuple<string, JObject> RemovePIIData(JObject jsonObject)
+        public static JObject RemovePIIData(JObject jsonObject)
         {
             JObject jObjectResult = jsonObject;
-            string uuid = string.Empty;
 
             foreach (var properties in jObjectResult.Properties())
             {
-                if (properties.Name == "Uuid")
-                {
-                    uuid = properties.Value.ToString();
-                }
-                else if (properties.Name == "Nodes")
+                if (properties.Name == "Nodes")
                 {
                     if (properties.Value.Type == JTokenType.Array)
                     {
@@ -69,7 +64,7 @@ namespace Dynamo.Utilities
                     }
                 }
             }
-            return new Tuple<string, JObject>(uuid, jObjectResult);
+            return jObjectResult;
         }
 
         static string emailPattern = @"\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*";
@@ -78,7 +73,35 @@ namespace Dynamo.Utilities
         static string creditCardPattern = @"(\d{4}[-, ]\d{4})";
         static string ssnPattern = @"\d{3}[- ]\d{2}[- ]\d{4}";
         static string ipPattern = @"((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)";
-        static string datePattern = @"(3[01]|[12][0-9]|0?[1-9])(\/|-)(1[0-2]|0?[1-9])\2([0-9]{2})?[0-9]{2}";
+        static string datePattern = @"\d{1,2}[/-]\d{1,2}[/-]\d{2,4}";
+
+        public static JToken GetNodeById(JObject jsonWorkspace,string nodeId)
+        {
+            return jsonWorkspace["Nodes"].Where(t => t.Value<string>("Id") == nodeId).Select(t => t).FirstOrDefault();
+        }
+
+        public static JToken GetNodeValue(JObject jsonWorkspace, string nodeId,string propertyName)
+        {
+            var node = jsonWorkspace["Nodes"].Where(t => t.Value<string>("Id") == nodeId).Select(t => t).FirstOrDefault();
+            var property = node.Children<JProperty>().FirstOrDefault(x => x.Name == propertyName);
+            return property.Value;
+        }
+
+        public static JToken GetNoteValue(JObject jsonWorkspace, string nodeId)
+        {
+            var x = jsonWorkspace["View"]["Annotations"];
+            var note = jsonWorkspace["View"]["Annotations"].Where(t => t.Value<string>("Id") == nodeId).Select(t => t).FirstOrDefault();
+            var property = note.Children<JProperty>().FirstOrDefault(x => x.Name == "Title");
+            return property.Value;
+        }
+
+        public static bool ContainsEmail(string value) { return new Regex(emailPattern).Match(value).Success; }
+        public static bool ContainsWebsite(string value) { return new Regex(websitePattern).Match(value).Success; }
+        public static bool ContainsDirectory(string value) { return new Regex(directoryPattern).Match(value).Success; }
+        public static bool ContainsCreditCard(string value) { return new Regex(creditCardPattern).Match(value).Success; }
+        public static bool ContainsSSN(string value) { return new Regex(ssnPattern).Match(value).Success; }
+        public static bool ContainsIpAddress(string value) { return new Regex(ipPattern).Match(value).Success; }
+        public static bool ContainsDate(string value) { return new Regex(datePattern).Match(value).Success; }
 
         /// <summary>
         /// Removes the PII data based on the information patterns
