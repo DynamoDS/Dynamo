@@ -479,5 +479,25 @@ namespace Dynamo.Tests
             Assert.AreEqual(newInputObject, returnObject);
             Assert.AreEqual("true", returnCacheJson);
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ThrowsWhenPassedUnsupportedInputAndInvalidCacheJson()
+        {
+            var invalidCachedJson = "{\"one: 2}";
+            object unsupportedInput = null;
+
+            Assert.That(() => DSCore.Data.Remember(unsupportedInput, invalidCachedJson), Throws.Exception);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ThrowsWhenPassedAnObjectThatCanNotSerialize()
+        {
+            var validCachedJson = "";
+            object unsupportedInput = new FileInfo(Path.Combine(TestDirectory, @"core\json\Solid_Cylinder_JSONParsing.dyn"));
+
+            Assert.That(() => DSCore.Data.Remember(unsupportedInput, validCachedJson), Throws.Exception);
+        }
     }
 }
