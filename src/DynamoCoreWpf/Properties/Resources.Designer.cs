@@ -2603,7 +2603,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Show Grid.
+        ///   Looks up a localized string similar to _Show Helpers.
         /// </summary>
         public static string DynamoViewViewMenuShowGrid {
             get {
@@ -2680,6 +2680,33 @@ namespace Dynamo.Wpf.Properties {
         public static string EditWindowTitle {
             get {
                 return ResourceManager.GetString("EditWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Element Binding allows a two-way interaction between Dynamo and the host application like Revit or Civil3D where a user can select an element in the host document and have Dynamo &quot;bind&quot; that element to a node in the workspace..
+        /// </summary>
+        public static string ElementBindingDesc {
+            get {
+                return ResourceManager.GetString("ElementBindingDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A Save As command will create a workspace which is treated as a completely new file by Dynamo and existing element binding data will be lost. New element binding data will be created as normal as you run this file. Use the Save command instead if you wish to preserve element binding with the host document..
+        /// </summary>
+        public static string ElementBindingWarningMessage {
+            get {
+                return ResourceManager.GetString("ElementBindingWarningMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Element Binding Warning.
+        /// </summary>
+        public static string ElementBindingWarningTitle {
+            get {
+                return ResourceManager.GetString("ElementBindingWarningTitle", resourceCulture);
             }
         }
         
@@ -3476,24 +3503,6 @@ namespace Dynamo.Wpf.Properties {
         public static string HideClassicNodeLibrary {
             get {
                 return ResourceManager.GetString("HideClassicNodeLibrary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hide nodes below a specified confidence level.
-        /// </summary>
-        public static string HideNodesBelowSpecificConfidenceLevel {
-            get {
-                return ResourceManager.GetString("HideNodesBelowSpecificConfidenceLevel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Confidence level appears next to each recommended node and represents estimated probability that the node is a good choice. When toggled on, this setting hides recommended nodes that don’t meet the specified confidence level. You can click the Low Confidence header to show the nodes..
-        /// </summary>
-        public static string HideNodesBelowSpecificConfidenceLevelInfo {
-            get {
-                return ResourceManager.GetString("HideNodesBelowSpecificConfidenceLevelInfo", resourceCulture);
             }
         }
         
@@ -5528,6 +5537,78 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DEPENDENCY.
+        /// </summary>
+        public static string PackageFilterByDependency {
+            get {
+                return ResourceManager.GetString("PackageFilterByDependency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to HOST.
+        /// </summary>
+        public static string PackageFilterByHost {
+            get {
+                return ResourceManager.GetString("PackageFilterByHost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to STATUS.
+        /// </summary>
+        public static string PackageFilterByStatus {
+            get {
+                return ResourceManager.GetString("PackageFilterByStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Discontinued packages.
+        /// </summary>
+        public static string PackageFilterDeprecatedTooltip {
+            get {
+                return ResourceManager.GetString("PackageFilterDeprecatedTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Packages that require other packages to be installed.
+        /// </summary>
+        public static string PackageFilterHasDependenciesTooltip {
+            get {
+                return ResourceManager.GetString("PackageFilterHasDependenciesTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stand-alone packages.
+        /// </summary>
+        public static string PackageFilterHasNoDependenciesTooltip {
+            get {
+                return ResourceManager.GetString("PackageFilterHasNoDependenciesTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Published in the last 30 days.
+        /// </summary>
+        public static string PackageFilterNewTooltip {
+            get {
+                return ResourceManager.GetString("PackageFilterNewTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updated in the last 30 days.
+        /// </summary>
+        public static string PackageFilterUpdatedTooltip {
+            get {
+                return ResourceManager.GetString("PackageFilterUpdatedTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A problem occurred when trying to install the package. Dynamo is unable to obtain read/write access to
         ///{0}.
         /// </summary>
@@ -5547,7 +5628,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Packages contain node(s)  that depend on specified application outside Dynamo..
+        ///   Looks up a localized string similar to Packages that depend on selected external application.
         /// </summary>
         public static string PackageHostDependencyFilterContextItem {
             get {
@@ -5561,6 +5642,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageHostDependencyTooltip {
             get {
                 return ResourceManager.GetString("PackageHostDependencyTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear all.
+        /// </summary>
+        public static string PackageManagerClearAllButtonText {
+            get {
+                return ResourceManager.GetString("PackageManagerClearAllButtonText", resourceCulture);
             }
         }
         
@@ -6020,6 +6110,42 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageSearchViewClearButtonTooltip {
             get {
                 return ResourceManager.GetString("PackageSearchViewClearButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Active.
+        /// </summary>
+        public static string PackageSearchViewContextMenuFilterActive {
+            get {
+                return ResourceManager.GetString("PackageSearchViewContextMenuFilterActive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Has dependecies.
+        /// </summary>
+        public static string PackageSearchViewContextMenuFilterDependencies {
+            get {
+                return ResourceManager.GetString("PackageSearchViewContextMenuFilterDependencies", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deprecated.
+        /// </summary>
+        public static string PackageSearchViewContextMenuFilterDeprecated {
+            get {
+                return ResourceManager.GetString("PackageSearchViewContextMenuFilterDeprecated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Has no dependecies.
+        /// </summary>
+        public static string PackageSearchViewContextMenuFilterNoDependencies {
+            get {
+                return ResourceManager.GetString("PackageSearchViewContextMenuFilterNoDependencies", resourceCulture);
             }
         }
         
@@ -7553,6 +7679,24 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesWindowShowPreviewBubblesTooltip {
             get {
                 return ResourceManager.GetString("PreferencesWindowShowPreviewBubblesTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preferred confidence level.
+        /// </summary>
+        public static string PreferredConfidenceLevel {
+            get {
+                return ResourceManager.GetString("PreferredConfidenceLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confidence level appears next to each recommended node and represents estimated probability that the node is a good choice. When toggled on, this setting hides recommended nodes that don’t meet the specified confidence level. You can click the Low Confidence header to show the nodes..
+        /// </summary>
+        public static string PreferredConfidenceLevelInfo {
+            get {
+                return ResourceManager.GetString("PreferredConfidenceLevelInfo", resourceCulture);
             }
         }
         

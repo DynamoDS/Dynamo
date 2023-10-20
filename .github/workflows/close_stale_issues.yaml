@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: close stale issues
-      uses: actions/stale@v3
+      uses: actions/stale@v8
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         #By default the action will leave a message when marking the issue as stale and another-one when closing the issue. 

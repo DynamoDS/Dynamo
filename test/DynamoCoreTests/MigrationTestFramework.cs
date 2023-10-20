@@ -62,12 +62,11 @@ namespace Dynamo.Tests
             {
                 if (fileInfo.FullName.Contains("FAILURE"))
                     continue;
-#if NET6_0_OR_GREATER
+
                 var filenameLowerInvariant = fileInfo.FullName.ToLowerInvariant();
                 //TODO_NET6 excel nodes and legacy unitUI nodes not built for net6.
                 if (filenameLowerInvariant.Contains("excel") || filenameLowerInvariant.Contains("testmigration_core_input.dyn") )
                     continue;
-#endif
 
                 testParameters.Add(fileInfo.FullName);        
             }

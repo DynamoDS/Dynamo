@@ -195,7 +195,7 @@ namespace Dynamo.ViewModels
                     selectedUnits = value;
                     RaisePropertyChanged(nameof(SelectedUnits));
 
-                    if (UseHostScaleUnits) return;
+                    if (UseHostScaleUnits && IsDynamoRevit) return;
 
                     var result = Enum.TryParse(selectedUnits, out Configurations.Units currentUnit);
                     if (!result) return;
@@ -206,6 +206,14 @@ namespace Dynamo.ViewModels
                         preferenceSettings.GraphicScaleUnit = value;
                         preferenceSettings.GridScaleFactor = (float)units;
                         dynamoViewModel.UpdateGraphicHelpersScaleCommand.Execute(null);
+
+                        // We have turn the grid visilibilty on
+                        // Check the current visibility settings, and turn it back off 
+                        if (!preferenceSettings.IsBackgroundGridVisible)
+                        {
+                            dynamoViewModel.ToggleBackgroundGridVisibilityCommand.Execute(null);    // switch 'on'
+                            dynamoViewModel.ToggleBackgroundGridVisibilityCommand.Execute(null);    // switch 'off'
+                        }
                     }
                 }
             }
@@ -1114,7 +1122,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return DynamoModel.FeatureFlags.CheckFeatureFlag("NodeAutocompleteMachineLearningIsBeta", false);
+                return DynamoModel.FeatureFlags?.CheckFeatureFlag("NodeAutocompleteMachineLearningIsBeta", false) ?? false;
             }
         }
 

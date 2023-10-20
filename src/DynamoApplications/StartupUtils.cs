@@ -188,8 +188,8 @@ namespace Dynamo.Applications
 
             var versions = new[]
             {
+                new Version(230,0,0),
                 new Version(229,0,0),
-                new Version(228,5,0),
             };
 
             var preloader = new Preloader(rootFolder, versions);
@@ -245,9 +245,7 @@ namespace Dynamo.Applications
         {
             IPathResolver pathResolver = CreatePathResolver(false, string.Empty, string.Empty, string.Empty);
             PathManager.Instance.AssignHostPathAndIPathResolver(string.Empty, pathResolver);
-
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo(PreferenceSettings.Instance.Locale);
-            Thread.CurrentThread.CurrentCulture = new CultureInfo(PreferenceSettings.Instance.Locale);
+            DynamoModel.SetUICulture(PreferenceSettings.Instance.Locale);
             DynamoModel.OnDetectLanguage();
 
             // Preload ASM and display corresponding message on splash screen
@@ -284,9 +282,7 @@ namespace Dynamo.Applications
         {
             IPathResolver pathResolver = CreatePathResolver(false, string.Empty, string.Empty, string.Empty);
             PathManager.Instance.AssignHostPathAndIPathResolver(string.Empty, pathResolver);
-
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo(PreferenceSettings.Instance.Locale);
-            Thread.CurrentThread.CurrentCulture = new CultureInfo(PreferenceSettings.Instance.Locale);
+            DynamoModel.SetUICulture(PreferenceSettings.Instance.Locale);
             DynamoModel.OnDetectLanguage();
 
             // Preload ASM and display corresponding message on splash screen
@@ -398,20 +394,21 @@ namespace Dynamo.Applications
             HostAnalyticsInfo info = new HostAnalyticsInfo(),
             bool isServiceMode = false)
         {
+
             var config = new DynamoModel.DefaultStartConfiguration
             {
                 GeometryFactoryPath = geometryFactoryPath,
                 ProcessMode = CLImode ? TaskProcessMode.Synchronous : TaskProcessMode.Asynchronous,
                 HostAnalyticsInfo = info,
                 CLIMode = CLImode,
-                AuthProvider = CLImode ? null : new Core.IDSDKManager(),
+                //TODO we currently use this like a no network comms flags - work on introducing a new flag or renaming this flag.
+                AuthProvider = CLImode || Dynamo.Logging.Analytics.DisableAnalytics ? null : new Core.IDSDKManager(),
                 UpdateManager = CLImode ? null : OSHelper.IsWindows() ? InitializeUpdateManager() : null,
                 StartInTestMode = CLImode,
                 PathResolver = CreatePathResolver(CLImode, preloaderLocation, userDataFolder, commonDataFolder),
                 IsServiceMode = isServiceMode,
                 Preferences = PreferenceSettings.Instance
             };
-
             var model = DynamoModel.Start(config);
             return model;
         }
@@ -424,8 +421,7 @@ namespace Dynamo.Applications
             if (!string.IsNullOrEmpty(cmdLineArgs.Locale))
             {
                 // Change the application locale, if a locale information is supplied.
-                Thread.CurrentThread.CurrentUICulture = new CultureInfo(cmdLineArgs.Locale);
-                Thread.CurrentThread.CurrentCulture = new CultureInfo(cmdLineArgs.Locale);
+                DynamoModel.SetUICulture(cmdLineArgs.Locale);
                 libgLocale = cmdLineArgs.Locale;
             }
             else

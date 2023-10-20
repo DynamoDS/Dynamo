@@ -13,18 +13,16 @@
   <PropertyGroup>
     <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
   </PropertyGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'net48' ">
-    <Reference Include="System.Configuration" />
+  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0' ">
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
+    <PackageReference Include="System.Resources.Extensions" Version="5.0.0" />
   </ItemGroup>
-    <ItemGroup Condition="'$(TargetFramework)' == 'net6.0' ">
-        <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-        <PackageReference Include="System.Resources.Extensions" Version="5.0.0" />
-    </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ForgeUnits.NET" Version="4.0.3" GeneratePathProperty="true">
-        <ExcludeAssets>build</ExcludeAssets>
+    <PackageReference Include="ForgeUnits.NET" Version="4.1.1" GeneratePathProperty="true">
+        <!--Skip copying the runtime dlls because we only need one (ForgeUnitsManaged.dll) which we copy in a task bellow.-->
+        <ExcludeAssets>runtime;build</ExcludeAssets>
     </PackageReference>
-	  <PackageReference Include="ForgeUnits.Schemas" Version="1.0.0" GeneratePathProperty="true" />
+	  <PackageReference Include="ForgeUnits.Schemas" Version="1.0.1" GeneratePathProperty="true" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="DynamoUnits_DynamoCustomization.xml" />
@@ -43,6 +41,7 @@
   </ItemGroup>
     <Target Name="CopyFiles" BeforeTargets="Build">
     <Copy SourceFiles="$(ProjectDir)DynamoUnits_DynamoCustomization.xml" DestinationFolder="$(OutputPath)" />
+    <Copy SourceFiles="$(PkgForgeUnits_NET)\lib\net6.0\ForgeUnitsManaged.dll" DestinationFolder="$(OutputPath)" />
   </Target>
   <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" '$(OS)' != 'Unix' ">
     <!-- Generate customization dll -->

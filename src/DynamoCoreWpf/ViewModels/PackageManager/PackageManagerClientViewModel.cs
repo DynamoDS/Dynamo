@@ -23,11 +23,7 @@ using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Utilities;
 using Greg.AuthProviders;
 using Greg.Responses;
-#if NETFRAMEWORK
-using Microsoft.Practices.Prism.Commands;
-#else
 using Prism.Commands;
-#endif
 
 namespace Dynamo.ViewModels
 {
@@ -236,7 +232,7 @@ namespace Dynamo.ViewModels
             get { return pmExtension ?? (pmExtension = DynamoViewModel.Model.GetPackageManagerExtension()); }
         }
 
-        public List<PackageManagerSearchElement> CachedPackageList { get; private set; }
+        public virtual List<PackageManagerSearchElement> CachedPackageList { get; private set; }
         public List<PackageManagerSearchElement> InfectedPackageList { get; private set; }
 
         public readonly DynamoViewModel DynamoViewModel;

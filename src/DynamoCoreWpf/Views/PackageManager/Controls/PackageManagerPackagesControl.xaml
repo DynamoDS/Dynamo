@@ -20,6 +20,71 @@
             <controls:PrettyDateConverter x:Key="PrettyDateConverter" />
             <controls:DependencyListToStringConverter x:Key="DependencyListToStringConverter" />
             <controls:ListHasMoreThanNItemsToVisibilityConverter x:Key="ListHasMoreThanNItemsToVisibilityConverter" />
+            <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
+
+
+            <ContextMenu x:Key="installContextMenu"
+                         Style="{StaticResource ContextMenuStyle}">
+                <MenuItem Header="{x:Static p:Resources.PackageSearchViewInstallLatestVersionTo}"
+                          Command="{Binding DownloadLatestToCustomPathCommand}"
+                          CommandParameter="{Binding Path=Model.LatestVersion}"
+                          MinHeight="30"
+                          MinWidth="60" />
+            </ContextMenu>
+
+            <Style x:Key="RectangleStyle"
+                   TargetType="Rectangle">
+                <Setter Property="Opacity"
+                        Value="0" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding ElementName=VersionComboBox, Path=IsMouseOver}"
+                                 Value="True">
+                        <Setter Property="Fill"
+                                Value="DimGray" />
+                        <DataTrigger.EnterActions>
+                            <BeginStoryboard>
+                                <Storyboard SpeedRatio="2">
+                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                     To="0.75"
+                                                     Duration="0:0:1" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </DataTrigger.EnterActions>
+                        <DataTrigger.ExitActions>
+                            <BeginStoryboard>
+                                <Storyboard SpeedRatio="2">
+                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                     To="0"
+                                                     Duration="0:0:1" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </DataTrigger.ExitActions>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding ElementName=VersionComboBox, Path=IsDropDownOpen}"
+                                 Value="True">
+                        <Setter Property="Fill"
+                                Value="{StaticResource MidDarkBlueBrush}" />
+                        <DataTrigger.EnterActions>
+                            <BeginStoryboard>
+                                <Storyboard SpeedRatio="2">
+                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                     To="0.75"
+                                                     Duration="0:0:1" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </DataTrigger.EnterActions>
+                        <DataTrigger.ExitActions>
+                            <BeginStoryboard>
+                                <Storyboard SpeedRatio="2">
+                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                     To="0"
+                                                     Duration="0:0:1" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </DataTrigger.ExitActions>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
@@ -28,8 +93,56 @@
     </UserControl.Resources>
 
     <Grid Background="Transparent">
+        <Grid.Resources>            
+            <!--  Local style for ListBoxItems, used in the package search results  -->
+            <Style TargetType="{x:Type ListBoxItem}">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                            <Border
+                                x:Name="Border"
+                                Padding="{TemplateBinding Padding}"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                SnapsToDevicePixels="true">
+                                <ContentPresenter
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                            </Border>
+                            <!--  Overwriting default WPF triggers to stop ListBoxItems appearing with default styling  -->
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsSelected" Value="true">
+                                    <Setter TargetName="Border" Property="Background" Value="Transparent" />
+                                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+                                </Trigger>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsSelected" Value="true" />
+                                        <Condition Property="Selector.IsSelectionActive" Value="false" />
+                                    </MultiTrigger.Conditions>
+                                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}" />
+                                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}}" />
+                                </MultiTrigger>
+                                <Trigger Property="IsEnabled" Value="false">
+                                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="Transparent" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <ListBox Name="myPackagesListBox"
@@ -82,7 +195,7 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="40px" />
                             <RowDefinition Height="Auto" />
-                            <RowDefinition Height="35px" />
+                            <RowDefinition Height="40px" />
                         </Grid.RowDefinitions>
 
                         <!--  Top Row  -->
@@ -170,6 +283,20 @@
                                                         <Grid x:Name="installPackageGrid">
 
                                                             <DockPanel LastChildFill="False">
+                                                                <!-- The drop-down context menu arrow button -->
+                                                                <Button Name="dropDownInstallButton"
+                                                                        DockPanel.Dock="Right"
+                                                                        Visibility="{Binding CanInstall,
+                                                                                             Converter={StaticResource BoolToVisibilityCollapsedConverter}}"
+                                                                        Click="DropDownInstallButton_OnClick"
+                                                                        BorderThickness="0"
+                                                                        Cursor="Hand"
+                                                                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+                                                                    <Image Source=" /DynamoCoreWpf;component/UI/Images/caret_drop_down.png"
+                                                                           Width="7"
+                                                                           Height="5" />
+                                                                </Button>
+
                                                                 <TextBlock Name="textBlock"
                                                                            Padding="4,4,4,3"
                                                                            VerticalAlignment="Center"
@@ -403,6 +530,7 @@
                                    Margin="15,0,5,15"
                                    VerticalAlignment="Bottom"
                                    LastChildFill="True">
+                            <!-- Right-hand side -->
                             <TextBlock Name="dateLabel"
                                        Margin="5,0"
                                        DockPanel.Dock="Right"
@@ -436,8 +564,8 @@
                                        DockPanel.Dock="Right"
                                        Style="{StaticResource resultLabelStyle}"
                                        Text="{Binding Path=Model.Votes, Converter={StaticResource NegativeIntToZeroConverter}}" />
-                            <Rectangle Width="10"
-                                       Height="10"
+                            <Rectangle Width="12"
+                                       Height="11"
                                        Margin="5,0,0,2"
                                        VerticalAlignment="Center"
                                        DockPanel.Dock="Right">
@@ -445,11 +573,23 @@
                                     <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Favorite.png" />
                                 </Rectangle.Fill>
                             </Rectangle>
-                            <TextBlock Name="versionLabel"
-                                       Margin="5,0"
-                                       DockPanel.Dock="Right"
-                                       Style="{StaticResource resultLabelStyle}"
-                                       Text="{Binding Path=Model.LatestVersion}" />
+
+                            <!-- The version combobox -->
+                            <StackPanel Margin="5,0,5,0"
+                                        DockPanel.Dock="Right"
+                                        Orientation="Vertical"
+                                        MinHeight="120">
+                                <ComboBox x:Name="VersionComboBox"
+                                          HorizontalAlignment="Left"
+                                          ItemsSource="{Binding Path=Model.PackageVersions}"
+                                          SelectedItem="{Binding Path=SelectedVersion}"
+                                          Style="{StaticResource PackageManagerSmallComboBox}">
+                                </ComboBox>
+                                <Rectangle Style="{StaticResource RectangleStyle}"
+                                           Height="5" />
+
+                            </StackPanel>
+
                             <Rectangle Width="10"
                                        Height="10"
                                        Margin="5,0,0,2"
@@ -459,6 +599,8 @@
                                     <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Flag.png" />
                                 </Rectangle.Fill>
                             </Rectangle>
+
+                            <!-- Left-hand side -->
                             <Rectangle Width="10"
                                        Height="10"
                                        Margin="0,0,0,2"
@@ -483,6 +625,325 @@
                                    VerticalAlignment="Bottom"
                                    Fill="{StaticResource DarkMidGreyBrush}" />
 
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <!--  Download bar: A stacking list of (up to 3) most-recently downloaded packages. Appears when the user installs a package.  -->
+        <ListBox
+            Name="DownloadsListBox"
+            Grid.Row="1"
+            Margin="0,5,0,0"
+            Background="Transparent"
+            BorderThickness="0"
+            IsHitTestVisible="True"
+            ItemsSource="{Binding Path=Downloads, UpdateSourceTrigger=PropertyChanged}"
+            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+            ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <!--  Ensure the stackpanel fills bottom-to-top  -->
+                        <VirtualizingStackPanel VerticalAlignment="Bottom" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+
+                    <!--  Template for displaying downloaded package details to the user  -->
+                    <DataTemplate>
+                        <Grid>
+                            <!--  Contains everything except for the download status flag  -->
+                            <Border
+                            Name="mainBody"
+                            Padding="15,10"
+                            Background="#4E4E4E"
+                            CornerRadius="3">
+                                <Grid Height="40">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="23" />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <!--  Download Icon  -->
+                                    <Image
+                                    Name="downloadCompletedIcon"
+                                    Grid.Row="0"
+                                    Grid.RowSpan="2"
+                                    Grid.Column="0"
+                                    Width="16"
+                                    Height="16"
+                                    VerticalAlignment="Center"
+                                    Margin="0 0 0 14"
+                                    Source="/DynamoCoreWpf;component/UI/Images/icon-shape.png"
+                                    Visibility="Collapsed" />
+                                    <Image
+                                    Name="downloadingIcon"
+                                    Grid.Row="0"
+                                    Grid.RowSpan="2"
+                                    Grid.Column="0"
+                                    Width="16"
+                                    Height="16"
+                                    VerticalAlignment="Center"
+                                    Margin="0 0 0 14"
+                                    RenderTransformOrigin="0.5,0.5"
+                                    Source="/DynamoCoreWpf;component/UI/Images/Progress circle.png"
+                                    Visibility="Visible">
+                                        <Image.RenderTransform>
+                                            <RotateTransform x:Name="AnimatedRotateTransform" Angle="0" />
+                                        </Image.RenderTransform>
+                                        <Image.Triggers>
+                                            <EventTrigger RoutedEvent="Window.Loaded">
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation
+                                                        By="10"
+                                                        FillBehavior="Stop"
+                                                        RepeatBehavior="Forever"
+                                                        Storyboard.TargetName="AnimatedRotateTransform"
+                                                        Storyboard.TargetProperty="Angle"
+                                                        To="360"
+                                                        Duration="0:0:0.5" />
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </EventTrigger>
+                                        </Image.Triggers>
+                                    </Image>
+
+                                    <!--  Package Name  -->
+                                    <TextBlock
+                                    Name="name"
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Margin="10,0,0,0"
+                                    VerticalAlignment="Bottom"
+                                    FontFamily="{StaticResource ArtifaktElementRegular}"
+                                    FontSize="14"
+                                    Foreground="#F5F5F5"
+                                    Text="{Binding Path=Name}"
+                                    TextTrimming="CharacterEllipsis" />
+
+                                    <!--  Error Message  -->
+                                    <TextBlock
+                                    Name="error"
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Margin="10,0,0,0"
+                                    VerticalAlignment="Top"
+                                    FontSize="10"
+                                    Foreground="White"
+                                    Text="{Binding Path=ErrorString}"
+                                    TextTrimming="CharacterEllipsis" />
+
+                                    <!--  Download State  -->
+                                    <TextBlock
+                                    Name="downloadState"
+                                    Grid.Row="0"
+                                    Grid.Column="2"
+                                    Margin="0,0,0,2"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Bottom"
+                                    FontFamily="{StaticResource ArtifaktElementRegular}"
+                                    FontSize="10"
+                                    Foreground="#F5F5F5"
+                                    Text="{Binding Path=DownloadState, Converter={StaticResource PackageDownloadStateToStringConverter}}" />
+
+                                    <!--  Version  -->
+                                    <TextBlock
+                                    Name="version"
+                                    Grid.Row="1"
+                                    Grid.Column="2"
+                                    VerticalAlignment="Top"
+                                    FontFamily="{StaticResource ArtifaktElementRegular}"
+                                    FontSize="10"
+                                    Foreground="#F5F5F5"
+                                    Text="{Binding Path=VersionName}" />
+                                    <Button
+                                    Name="closeDownloadToastButton"
+                                    Grid.Row="0"
+                                    Grid.RowSpan="2"
+                                    Grid.Column="3"
+                                    Width="16"
+                                    Height="16"
+                                    Margin="10,0,0,0"
+                                    Background="{StaticResource PrimaryCharcoal300Brush}"
+                                    BorderThickness="0"
+                                    Click="CloseToastButton_OnClick"
+                                    DockPanel.Dock="Right"
+                                    Style="{StaticResource CloseButtonStyle}" />
+                                </Grid>
+                            </Border>
+
+                            <!--  The download status flag, which changes colour to reflect the downloadState  -->
+                            <Border
+                            Name="downloadStatusFlag"
+                            Width="3"
+                            HorizontalAlignment="Left"
+                            Background="Transparent"
+                            CornerRadius="3,0,0,3" />
+                        </Grid>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=downloadState, Path=Text}" Value="{x:Static p:Resources.PackageStateUnknown}">
+                                <DataTrigger.Setters>
+                                    <Setter TargetName="downloadStatusFlag" Property="Background" Value="#CC000000" />
+                                </DataTrigger.Setters>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ElementName=downloadState, Path=Text}" Value="{x:Static p:Resources.PackageDownloadStateDownloaded}">
+                                <DataTrigger.Setters>
+                                    <Setter TargetName="downloadStatusFlag" Property="Background" Value="Gray" />
+                                </DataTrigger.Setters>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ElementName=downloadState, Path=Text}" Value="{x:Static p:Resources.PackageDownloadStateDownloading}">
+                                <DataTrigger.Setters>
+                                    <Setter TargetName="downloadStatusFlag" Property="Background" Value="#0696D7" />
+                                </DataTrigger.Setters>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ElementName=downloadState, Path=Text}" Value="{x:Static p:Resources.PackageDownloadStateError}">
+                                <DataTrigger.Setters>
+                                    <Setter TargetName="downloadStatusFlag" Property="Background" Value="#DD2222" />
+                                    <Setter TargetName="downloadCompletedIcon" Property="Source" Value="/DynamoCoreWpf;component/UI/Images/package_error.png" />
+                                </DataTrigger.Setters>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ElementName=downloadState, Path=Text}" Value="{x:Static p:Resources.PackageDownloadStateInstalled}">
+                                <DataTrigger.Setters>
+                                    <Setter TargetName="downloadStatusFlag" Property="Background" Value="#6A9728" />
+                                    <Setter TargetName="downloadCompletedIcon" Property="Visibility" Value="Visible" />
+                                    <Setter TargetName="downloadingIcon" Property="Visibility" Value="Collapsed" />
+                                </DataTrigger.Setters>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ElementName=downloadState, Path=Text}" Value="{x:Static p:Resources.PackageDownloadStateInstalling}">
+                                <DataTrigger.Setters>
+                                    <Setter TargetName="downloadStatusFlag" Property="Background" Value="#0696D7" />
+                                </DataTrigger.Setters>
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+        <!--  Infected status bar: A stacking list of (up to 3) most-recently published packages which were infected. Appears when the user opens package manager search window.  -->
+        <ListBox
+            Name="InfectedListBox"
+            Grid.Row="2"
+            Margin="0,5,0,0"
+            Background="Transparent"
+            BorderThickness="0"
+            IsHitTestVisible="True"
+            ItemsSource="{Binding Path=InfectedPackages, UpdateSourceTrigger=PropertyChanged}"
+            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+            ScrollViewer.VerticalScrollBarVisibility="Disabled">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <!--  Ensure the stackpanel fills bottom-to-top  -->
+                    <VirtualizingStackPanel VerticalAlignment="Bottom" />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.ItemTemplate>
+
+                <!--  Template for displaying downloaded package details to the user  -->
+                <DataTemplate>
+                    <Grid>
+                        <!--  Contains everything except for the download status flag  -->
+                        <Border
+                            Name="imainBody"
+                            Padding="15,10"
+                            Background="#4E4E4E"
+                            CornerRadius="3">
+                            <Grid Height="40">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="23" />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <Image
+                                    Name="downloadCompletedIcon"
+                                    Grid.Row="0"
+                                    Grid.RowSpan="2"
+                                    Grid.Column="0"
+                                    Width="16"
+                                    Height="16"
+                                    VerticalAlignment="Center"
+                                    Margin="0 0 0 14"   
+                                    Source="/DynamoCoreWpf;component/UI/Images/package_error.png"
+                                    Visibility="Visible" />
+                                <!--  Package Name  -->
+                                <TextBlock
+                                    Name="iname"
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Margin="10,0,0,0"
+                                    VerticalAlignment="Bottom"
+                                    FontFamily="{StaticResource ArtifaktElementRegular}"
+                                    FontSize="14"
+                                    Foreground="#F5F5F5"
+                                    Text="{Binding Path=InfectedPackageName}"
+                                    TextTrimming="CharacterEllipsis" />
+
+                                <TextBlock
+                                    Name="imsg"
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Margin="10,0,0,0"
+                                    VerticalAlignment="Top"
+                                    FontSize="10"
+                                    Foreground="White"
+                                    Text="{x:Static p:Resources.InfectedPackageMessageString}"
+                                    TextTrimming="CharacterEllipsis" />
+
+                                <!--  Upload State  -->
+                                <TextBlock
+                                    Name="icreateDate"
+                                    Grid.Row="0"
+                                    Grid.Column="2"
+                                    Margin="0,0,0,2"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Bottom"
+                                    FontFamily="{StaticResource ArtifaktElementRegular}"
+                                    FontSize="10"
+                                    Foreground="#F5F5F5"
+                                    Text="{x:Static p:Resources.InfectedPackageErrorString}" />
+
+                                <!--  Version  -->
+                                <TextBlock
+                                    Name="iversion"
+                                    Grid.Row="1"
+                                    Grid.Column="2"
+                                    VerticalAlignment="Top"
+                                    FontFamily="{StaticResource ArtifaktElementRegular}"
+                                    FontSize="10"
+                                    Foreground="#F5F5F5"
+                                    Text="{Binding Path=InfectedPackageVersion}" />
+                                <Button
+                                    Name="closeiToastButton"
+                                    Grid.Row="0"
+                                    Grid.RowSpan="2"
+                                    Grid.Column="3"
+                                    Width="16"
+                                    Height="16"
+                                    Margin="10,0,0,0"
+                                    Background="{StaticResource PrimaryCharcoal300Brush}"
+                                    BorderThickness="0"
+                                    Click="CloseToastButton_OnClick"
+                                    DockPanel.Dock="Right"
+                                    Style="{StaticResource CloseButtonStyle}" />
+                            </Grid>
+                        </Border>
+                        <Border
+                            Name="idownloadStatusFlag"
+                            Width="3"
+                            HorizontalAlignment="Left"
+                            Background="LightCoral"
+                            CornerRadius="3,0,0,3" />
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>

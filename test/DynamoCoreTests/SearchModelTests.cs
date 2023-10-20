@@ -194,7 +194,7 @@ namespace Dynamo.Tests
                         new CustomNodeInfo(Guid.NewGuid(), nodeName, catName, "des", "")));
             }
 
-            var categorized = SearchCategoryUtil.CategorizeSearchEntries(search.SearchEntries, x => x.Categories);
+            var categorized = SearchCategoryUtil.CategorizeSearchEntries(search.Entries, x => x.Categories);
             Assert.AreEqual(1, categorized.SubCategories.Count());
 
             categorized = categorized.SubCategories.First();
@@ -565,7 +565,7 @@ namespace Dynamo.Tests
             var iDoc = CurrentDynamoModel.LuceneUtility.InitializeIndexDocumentForNodes();
             if (element != null)
             {
-                CurrentDynamoModel.AddNodeTypeToSearchIndex(element, iDoc);
+                CurrentDynamoModel.LuceneUtility.AddNodeTypeToSearchIndex(element, iDoc);
             }
         }
 

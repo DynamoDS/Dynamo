@@ -17,7 +17,7 @@ jobs:
     outputs:
       result: ${{env.content_analysis_response}}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       #Detect if the issue_title follows the regex expression
       - name: Check Issue Title
@@ -107,7 +107,7 @@ jobs:
       acceptable_missing_info: 1
     steps:
       #Checkout the repo
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       #Removes conflicting characters before using the issue content as a script parameter
       - name: Remove conflicting chars

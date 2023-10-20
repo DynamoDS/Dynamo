@@ -763,6 +763,44 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(ViewModel.Model.CurrentWorkspace.Nodes.Count(), 5);         
         }
 
+        [Test]
+        public void Validate_GetGraphLinkFromMDLocation()
+        {
+            var nodeName = "Number";
+            this.ViewModel.ExecuteCommand(
+            new DynamoModel.CreateNodeCommand(
+                Guid.NewGuid().ToString(), nodeName, 0, 0, false, false)
+            );
+
+            //Validates that we have just one node in the CurrentWorkspace
+            Assert.AreEqual(ViewModel.Model.CurrentWorkspace.Nodes.Count(), 1);
+
+            var node = ViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault();
+
+            //In this call the GetGraphLinkFromMDLocation() method is executed internally
+            RequestNodeDocs(node);
+
+            // Show the DocumentationBrowser so we can get the DocumentationBrowserViewModel
+            ShowDocsBrowser();
+            var docsView = GetDocsTabItem().Content as DocumentationBrowserView;
+            var docsViewModel = docsView.DataContext as DocumentationBrowserViewModel;
+
+            //Due that graphPath is a private we use reflection to get the value.
+            FieldInfo type = typeof(DocumentationBrowserViewModel).GetField("graphPath", BindingFlags.NonPublic | BindingFlags.Instance);
+            var graphPathValue = type.GetValue(docsViewModel);
+
+            var dynFileName = Path.GetFileNameWithoutExtension(docsViewModel.Link.AbsolutePath) + ".dyn";
+
+            //This will return a path with the NodeHelpSharedDocs + dyn file name
+            var sharedFilesPath = Path.Combine(DocumentationBrowserView.SharedDocsDirectoryName, dynFileName);
+
+            Assert.IsNotNull(graphPathValue);
+            Assert.IsTrue(!string.IsNullOrEmpty(graphPathValue.ToString()));
+
+            //Chech that the pathPath contains "NodeHelpSharedDocs//dynfilename"
+            Assert.That(graphPathValue.ToString().Contains(sharedFilesPath));
+        }
+
         #region Helpers
 
         private DocumentationBrowserViewExtension SetupNewViewExtension(bool runLoadedMethod = false)

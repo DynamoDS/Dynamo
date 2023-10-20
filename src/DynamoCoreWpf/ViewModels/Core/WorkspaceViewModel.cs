@@ -20,6 +20,7 @@ using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Selection;
+using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
@@ -572,6 +573,7 @@ namespace Dynamo.ViewModels
             Errors.Clear();
             Annotations.Clear();
             InCanvasSearchViewModel?.Dispose();
+            NodeAutoCompleteSearchViewModel.LuceneUtility?.DisposeAll();
             NodeAutoCompleteSearchViewModel?.Dispose();
         }
 
@@ -627,6 +629,23 @@ namespace Dynamo.ViewModels
                 {
                     // For intentional SaveAs either through UI or API calls, replace workspace elements' Guids and workspace Id
                     jo["Uuid"] = Guid.NewGuid().ToString();
+                    if (jo["Bindings"] != null && jo["Bindings"].Any())
+                    {
+                        jo["Bindings"] = JToken.Parse("[]");
+
+                        if (!DynamoModel.IsTestMode)
+                        {
+                            var result = DynamoMessageBox.Show(Wpf.Properties.Resources.ElementBindingWarningMessage,
+                                Wpf.Properties.Resources.ElementBindingWarningTitle, MessageBoxButton.OKCancel,
+                                MessageBoxImage.Warning, Wpf.Properties.Resources.ElementBindingDesc);
+
+                            if (result == MessageBoxResult.Cancel)
+                            {
+                                return;
+                            }
+                        }
+                    }
+
                     saveContent = GuidUtility.UpdateWorkspaceGUIDs(jo.ToString());
                 }
                 else
@@ -669,34 +688,6 @@ namespace Dynamo.ViewModels
             modelData.Add("View", token);
 
             return modelData;
-        }
-
-        /// <summary>
-        /// Load the extra view information required to fully construct a WorkspaceModel object 
-        /// </summary>
-        /// <param name="json"></param>
-        static public ExtraWorkspaceViewInfo ExtraWorkspaceViewInfoFromJson(string json)
-        {
-            JsonReader reader = new JsonTextReader(new StringReader(json));
-            var obj = JObject.Load(reader);
-            var viewBlock = obj["View"];
-            if (viewBlock == null)
-              return null;
-
-           var settings = new JsonSerializerSettings
-           {
-               Error = (sender, args) =>
-               {
-                   args.ErrorContext.Handled = true;
-                   Console.WriteLine(args.ErrorContext.Error);
-               },
-               ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-               TypeNameHandling = TypeNameHandling.Auto,
-               Formatting = Newtonsoft.Json.Formatting.Indented,
-               Culture = CultureInfo.InvariantCulture
-           };
-
-            return JsonConvert.DeserializeObject<ExtraWorkspaceViewInfo>(viewBlock.ToString(), settings);
         }
 
         void CopyPasteChanged(object sender, EventArgs e)

@@ -70,7 +70,7 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(settings.ViewExtensionSettings.Count, 0);
             Assert.AreEqual(settings.DefaultRunType, RunType.Automatic);
             Assert.AreEqual(settings.DynamoPlayerFolderGroups.Count, 0);
-            Assert.AreEqual(settings.Locale, "en-US");
+            Assert.AreEqual(settings.Locale, "Default");
 
             // Save
             settings.Save(tempPath);
@@ -89,7 +89,7 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(settings.ViewExtensionSettings.Count, 0);
             Assert.AreEqual(settings.DefaultRunType, RunType.Automatic);
             Assert.AreEqual(settings.DynamoPlayerFolderGroups.Count, 0);
-            Assert.AreEqual(settings.Locale, "en-US");
+            Assert.AreEqual(settings.Locale, "Default");
 
             // Change setting values
             settings.SetIsBackgroundPreviewActive("MyBackgroundPreview", false);
@@ -375,7 +375,7 @@ namespace Dynamo.Tests.Configuration
         }
 
         [Test]
-        [Category("UnitTests"), Category("FailureNET6")]
+        [Category("UnitTests")]
         public void TestImportCopySettings()
         {
             string settingDirectory = Path.Combine(TestDirectory, "settings");
