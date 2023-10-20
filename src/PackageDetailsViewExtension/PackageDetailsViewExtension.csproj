@@ -14,9 +14,9 @@
     <EnableDefaultPageItems>false</EnableDefaultPageItems>
   </PropertyGroup>
   <ItemGroup>
-	<PackageReference Include="Greg" Version="3.0.0.2846" />
+	<PackageReference Include="Greg" Version="3.0.0.2926" />
 	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-	<PackageReference Include="RestSharp" Version="110.2.0" />
+	<PackageReference Include="RestSharp" Version="109.0.1" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
     <Reference Include="PresentationCore" />
