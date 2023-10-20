@@ -84,7 +84,13 @@ namespace Dynamo.Controls
         private bool isPSSCalledOnViewModelNoCancel = false;
         private readonly DispatcherTimer _workspaceResizeTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 500), IsEnabled = false };
         private ViewLoadedParams sharedViewExtensionLoadedParams;
+        /// <summary>
+        /// keeps the width right menu of the ShourtcutBar
+        /// </summary>
         private double toolBarRightMenuWidth = 0;
+        /// <summary>
+        /// Keeps the additional Width based on the paddings and margins from the shorcutBar controls to calculate the whole Width
+        /// </summary>
         private double additionalWidth = 50;
 
         /// <summary>
@@ -103,6 +109,9 @@ namespace Dynamo.Controls
             get { return preferencesWindow; }
         }
 
+        /// <summary>
+        /// Keeps the default value of the Window's MinWidth to calculate it again later
+        /// </summary>
         internal double DefaultMinWidth = 0;
 
         /// <summary>
@@ -1067,7 +1076,7 @@ namespace Dynamo.Controls
         internal double GetSumOfControlsWidth()
         {
             List<TabItem> tabItems = WpfUtilities.ChildrenOfType<TabItem>(WorkspaceTabs).ToList();
-            double tabItemsWidth = tabItems.Count > 0 ? tabItems[0].Width * tabItems.Count : 0;
+            double tabItemsWidth = tabItems.Count > 0 ? (double.IsNaN(tabItems[0].Width) ? 0 : tabItems[0].Width) * tabItems.Count : 0;
             return Convert.ToDouble(dynamoViewModel.LibraryWidth) + tabItemsWidth + toolBarRightMenuWidth + additionalWidth;
         }
 

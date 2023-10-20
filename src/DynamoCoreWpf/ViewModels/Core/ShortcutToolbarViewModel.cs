@@ -82,6 +82,9 @@ namespace Dynamo.Wpf.ViewModels.Core
             }
         }
 
+        /// <summary>
+        /// Indicates if a MenuItem display its text or not (only Icon)
+        /// </summary>
         public bool ShowMenuItemText
         {
             get
