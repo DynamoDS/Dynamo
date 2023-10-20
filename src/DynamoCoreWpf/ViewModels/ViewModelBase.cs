@@ -1,9 +1,5 @@
 using System;
-#if NETFRAMEWORK
-using NotificationObject = Microsoft.Practices.Prism.ViewModel.NotificationObject;
-#else
 using NotificationObject = Dynamo.Core.NotificationObject;
-#endif
 using Newtonsoft.Json;
 
 namespace Dynamo.ViewModels

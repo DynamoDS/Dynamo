@@ -184,19 +184,6 @@
       <HintPath>..\..\extern\Microsoft.Xaml.Behaviors\$(TargetFramework)\Dynamo.Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-    <Reference Include="PresentationFramework" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="WindowsBase" />
-    <Reference Include="Microsoft.Practices.Prism">
-        <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-        <Private>false</Private>
-    </Reference>
-  </ItemGroup>
   <ItemGroup>
     <Page Include="Views\LibraryView.xaml">
       <Generator>MSBuild:Compile</Generator>

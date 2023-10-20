@@ -475,7 +475,7 @@ namespace Dynamo.Models
         public bool CLIMode { get; internal set; }
 
         /// <summary>
-        /// The Autodesk CrashReport tool location on disk (directory that contains the "senddmp.exe")
+        /// The Autodesk CrashReport tool location on disk (directory that contains the "cer.dll")
         /// </summary>
         public string CERLocation { get; internal set; }
 
@@ -681,6 +681,13 @@ namespace Dynamo.Models
             PreferenceSettings = (PreferenceSettings)CreateOrLoadPreferences(config.Preferences);
             if (PreferenceSettings != null)
             {
+                // Setting the locale for Dynamo from loaded Preferences only when
+                // In a non-in-process integration case (when HostAnalyticsInfo.HostName is unspecified)
+                // Language is specified, otherwise Default setting means following host locale
+                if (string.IsNullOrEmpty(HostAnalyticsInfo.HostName) || !PreferenceSettings.Locale.Equals(Configuration.Configurations.SupportedLocaleList.First()))
+                {
+                    SetUICulture(PreferenceSettings.Locale);
+                }
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
                 PreferenceSettings.MessageLogged += LogMessage;
             }
@@ -2697,6 +2704,15 @@ namespace Dynamo.Models
         #endregion
 
         #region public methods
+
+        /// <summary>
+        /// Set UI culture based on preferences
+        /// </summary>
+        public static void SetUICulture(string locale)
+        {
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo(locale == "Default" ? "en-US" : locale);
+            Thread.CurrentThread.CurrentCulture = new CultureInfo(locale == "Default" ? "en-US" : locale);
+        }
 
         /// <summary>
         ///     Add a new HomeWorkspace and set as current
