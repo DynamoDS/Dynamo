@@ -3644,4 +3644,7 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="ElementBindingWarningTitle" xml:space="preserve">
     <value>Element Binding Warning</value>
   </data>
+  <data name="ElementBindingDesc" xml:space="preserve">
+    <value>Element Binding allows a two-way interaction between Dynamo and the host application like Revit or Civil3D where a user can select an element in the host document and have Dynamo "bind" that element to a node in the workspace.</value>
+  </data>
 </root>

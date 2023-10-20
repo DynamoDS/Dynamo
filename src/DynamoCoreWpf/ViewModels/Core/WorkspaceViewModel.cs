@@ -636,7 +636,7 @@ namespace Dynamo.ViewModels
                         {
                             var result = DynamoMessageBox.Show(Wpf.Properties.Resources.ElementBindingWarningMessage,
                                 Wpf.Properties.Resources.ElementBindingWarningTitle, MessageBoxButton.OKCancel,
-                                MessageBoxImage.Warning);
+                                MessageBoxImage.Warning, Wpf.Properties.Resources.ElementBindingDesc);
 
                             if (result == MessageBoxResult.Cancel)
                             {
