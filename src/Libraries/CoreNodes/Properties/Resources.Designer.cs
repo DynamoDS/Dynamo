@@ -133,6 +133,24 @@ namespace DSCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The stored data can not be rebuilt..
+        /// </summary>
+        internal static string Exception_Deserialize_Unsupported_Type {
+            get {
+                return ResourceManager.GetString("Exception_Deserialize_Unsupported_Type", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot store data for this input..
+        /// </summary>
+        internal static string Exception_Serialize_Unsupported_Type {
+            get {
+                return ResourceManager.GetString("Exception_Serialize_Unsupported_Type", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use Data.ExportCSV node instead.
         /// </summary>
         internal static string ExportToCSVObsolete {

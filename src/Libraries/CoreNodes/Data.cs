@@ -390,7 +390,15 @@ namespace DSCore
                 //If a previous cache exists, de-serialize and return
                 if (cachedJson != "")
                 {
-                    var cachedObject = ParseJSON(cachedJson);
+                    object cachedObject = null;
+                    try
+                    {
+                        cachedObject = ParseJSON(cachedJson);
+                    }
+                    catch
+                    {
+                        throw new NotSupportedException(Properties.Resources.Exception_Deserialize_Unsupported_Type);
+                    }
 
                     return new Dictionary<string, object>
                     {
@@ -408,8 +416,16 @@ namespace DSCore
             }
 
             //Try to serialize the inputs and return
-            var newCachedJson = StringifyJSON(inputObject);
-
+            string newCachedJson;
+            try
+            {
+                newCachedJson = StringifyJSON(inputObject);
+            }
+            catch(Exception ex)
+            {
+                throw new NotSupportedException(Properties.Resources.Exception_Serialize_Unsupported_Type);
+            }
+            
             return new Dictionary<string, object>
             {
                 { ">", inputObject },

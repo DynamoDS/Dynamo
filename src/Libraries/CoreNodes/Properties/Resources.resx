@@ -141,6 +141,12 @@
   <data name="EnumDateOfWeekWednesday" xml:space="preserve">
     <value>Wednesday</value>
   </data>
+  <data name="Exception_Deserialize_Unsupported_Type" xml:space="preserve">
+    <value>The stored data can not be rebuilt.</value>
+  </data>
+  <data name="Exception_Serialize_Unsupported_Type" xml:space="preserve">
+    <value>Cannot store data for this input.</value>
+  </data>
   <data name="ExportToCSVObsolete" xml:space="preserve">
     <value>Use Data.ExportCSV node instead</value>
   </data>
