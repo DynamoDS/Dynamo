@@ -529,10 +529,6 @@ Magick.NET-Q8-AnyCPU v7.24.1:
 https://imagemagick.org/script/license.php
 Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization dedicated to making software imaging solutions freely available.   
 
-
-Microsoft 2015 C Runtime DLLs, msvcp140.dll, msvcr140.dll
-https://docs.microsoft.com/en-us/visualstudio/productinfo/2015-redistribution-vs
-
 Open XML SDK
 https://github.com/OfficeDev/Open-XML-SDK
 https://github.com/OfficeDev/Open-XML-SDK/blob/main/LICENSE
