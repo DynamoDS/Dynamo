@@ -475,7 +475,7 @@ namespace Dynamo.Models
         public bool CLIMode { get; internal set; }
 
         /// <summary>
-        /// The Autodesk CrashReport tool location on disk (directory that contains the "senddmp.exe")
+        /// The Autodesk CrashReport tool location on disk (directory that contains the "cer.dll")
         /// </summary>
         public string CERLocation { get; internal set; }
 
