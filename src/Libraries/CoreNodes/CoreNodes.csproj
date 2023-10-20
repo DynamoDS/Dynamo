@@ -19,7 +19,7 @@
     <Compile Remove="GeometryColor.cs" />
   </ItemGroup>
   <ItemGroup Label="Common dependencies">
-    <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="3.0.0.2767" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="3.0.0.2855" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
