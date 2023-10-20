@@ -10,11 +10,7 @@ using NUnit.Framework;
     {
         private AssemblyHelper assemblyHelper;
 
-#if NETFRAMEWORK
-        [SetUp]
-#elif NET6_0_OR_GREATER
         [OneTimeSetUp]
-#endif
         public void SetUp()
         {
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
@@ -32,11 +28,7 @@ using NUnit.Framework;
             AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssembly;
         }
 
-#if NETFRAMEWORK
-        [TearDown]
-#elif NET6_0_OR_GREATER
         [OneTimeTearDown]
-#endif
         public void TearDown()
         {
             AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssembly;

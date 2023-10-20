@@ -6,11 +6,7 @@ using System.Windows.Media.Imaging;
 using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
-#if NETFRAMEWORK
-using NotificationObject = Microsoft.Practices.Prism.ViewModel.NotificationObject;
-#else
 using NotificationObject = Dynamo.Core.NotificationObject;
-#endif
 using Greg.AuthProviders;
 using System.Linq;
 using System.Windows;
