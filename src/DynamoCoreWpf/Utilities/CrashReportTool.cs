@@ -187,91 +187,75 @@ namespace Dynamo.Wpf.Utilities
                 var cerDir = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), "DynamoCER_Report_" +
                     DateTime.Now.ToUniversalTime().ToString("yyyy-MM-dd-HH-mm-ss")));
 
-                using (Scheduler.Disposable.Create(() => {
-                    try
-                    {
-                        // Cleanup
-                        foreach (FileInfo file in cerDir.EnumerateFiles())
-                            file.Delete();
-                        foreach (DirectoryInfo dir in cerDir.EnumerateDirectories())
-                            dir.Delete(true);
-                    }
-                    catch (Exception ex)
-                    {
-                        model?.Logger?.LogError($"Failed to cleanup the CER directory at {cerDir.FullName} : {ex.Message}");
-                    }
-                }))
+                var filesToSend = new List<string>();
+                if (args.SendLogFile && model != null)
                 {
-                    var filesToSend = new List<string>();
-                    if (args.SendLogFile && model != null)
-                    {
-                        string logFile = Path.Combine(cerDir.FullName, "DynamoLog.log");
+                    string logFile = Path.Combine(cerDir.FullName, "DynamoLog.log");
 
-                        File.Copy(model.Logger.LogPath, logFile);
-                        // might be usefull to dump all loaded Packages into
-                        // the log at this point.
-                        filesToSend.Add(logFile);
-                    }
-
-                    if (args.SendSettingsFile && model != null)
-                    {
-                        string settingsFile = Path.Combine(cerDir.FullName, "DynamoSettings.xml");
-                        File.Copy(model.PathManager.PreferenceFilePath, settingsFile);
-
-                        filesToSend.Add(settingsFile);
-                    }
-
-                    if (args.HasDetails())
-                    {
-                        var stackTracePath = Path.Combine(cerDir.FullName, "StackTrace.log");
-                        File.WriteAllText(stackTracePath, args.Details);
-                        filesToSend.Add(stackTracePath);
-                    }
-
-                    if (args.SendRecordedCommands && viewModel != null)
-                    {
-                        filesToSend.Add(viewModel.DumpRecordedCommands());
-                    }
-
-                    string appConfig = "";
-                    if (model != null)
-                    {
-                        var appName = GetHostAppName(model);
-                        appConfig = $"<ProductInformation name=\"{appName}\" build_version=\"{model.Version}\" " +
-                                    $"registry_version=\"{model.Version}\" registry_localeID=\"{CultureInfo.CurrentCulture.LCID}\" uptime=\"0\" " +
-                                    $"session_start_count=\"0\" session_clean_close_count=\"0\" current_session_length=\"0\" />";
-                    }
-
-                    string dynName = viewModel?.Model.CurrentWorkspace.Name;
-
-                    var miniDumpFilePath = CreateMiniDumpFile(cerDir.FullName);
-                    var upiConfigFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "upiconfig.xml");
-
-                    using (var cerDLL = new CerDLL(cerToolPath)) 
-                    {
-                        cerDLL.ToggleCER(true);
-                        cerDLL.RegisterUPI(upiConfigFilePath);
-
-                        if (!string.IsNullOrEmpty(dynName))
-                        {
-                            cerDLL.SetStringParam(ReportStringParamKey.StringKeyDwg, dynName);
-                        }
-
-                        foreach (var file in filesToSend)
-                        {
-                            cerDLL.SetMultiStringParam(ReportMultiStringParamKey.MultiStringKeyExtraFile, file, filesToSend.Count + 1);
-                        }
-
-                        cerDLL.SetMultiStringParam(ReportMultiStringParamKey.MultiStringKeyAppXML, appConfig, 1);
-                        cerDLL.SetBoolParam(ReportBoolParamKey.BoolKeyUseExceptionTrace, true);
-                        var success = cerDLL.SendReportWithDump(miniDumpFilePath, true);
-                        model?.Logger?.LogError(success
-                            ? $"Successfully sent CER error report"
-                            : $"Failed to send CER error report");
-                    }
-                    
-                    return true;
+                    File.Copy(model.Logger.LogPath, logFile);
+                    // might be usefull to dump all loaded Packages into
+                    // the log at this point.
+                    filesToSend.Add(logFile);
                 }
+
+                if (args.SendSettingsFile && model != null)
+                {
+                    string settingsFile = Path.Combine(cerDir.FullName, "DynamoSettings.xml");
+                    File.Copy(model.PathManager.PreferenceFilePath, settingsFile);
+
+                    filesToSend.Add(settingsFile);
+                }
+
+                if (args.HasDetails())
+                {
+                    var stackTracePath = Path.Combine(cerDir.FullName, "StackTrace.log");
+                    File.WriteAllText(stackTracePath, args.Details);
+                    filesToSend.Add(stackTracePath);
+                }
+
+                if (args.SendRecordedCommands && viewModel != null)
+                {
+                    filesToSend.Add(viewModel.DumpRecordedCommands());
+                }
+
+                string appConfig = "";
+                if (model != null)
+                {
+                    var appName = GetHostAppName(model);
+                    appConfig = $"<ProductInformation name=\"{appName}\" build_version=\"{model.Version}\" " +
+                                $"registry_version=\"{model.Version}\" registry_localeID=\"{CultureInfo.CurrentCulture.LCID}\" uptime=\"0\" " +
+                                $"session_start_count=\"0\" session_clean_close_count=\"0\" current_session_length=\"0\" />";
+                }
+
+                string dynName = viewModel?.Model.CurrentWorkspace.Name;
+
+                var miniDumpFilePath = CreateMiniDumpFile(cerDir.FullName);
+                var upiConfigFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "upiconfig.xml");
+
+                using (var cerDLL = new CerDLL(cerToolPath)) 
+                {
+                    cerDLL.ToggleCER(true);
+                    cerDLL.RegisterUPI(upiConfigFilePath);
+
+                    if (!string.IsNullOrEmpty(dynName))
+                    {
+                        cerDLL.SetStringParam(ReportStringParamKey.StringKeyDwg, dynName);
+                    }
+
+                    foreach (var file in filesToSend)
+                    {
+                        cerDLL.SetMultiStringParam(ReportMultiStringParamKey.MultiStringKeyExtraFile, file, filesToSend.Count);
+                    }
+
+                    cerDLL.SetMultiStringParam(ReportMultiStringParamKey.MultiStringKeyAppXML, appConfig, 1);
+                    cerDLL.SetBoolParam(ReportBoolParamKey.BoolKeyUseExceptionTrace, true);
+                    var success = cerDLL.SendReportWithDump(miniDumpFilePath, true);
+                    model?.Logger?.LogError(success
+                        ? $"Successfully sent CER error report"
+                        : $"Failed to send CER error report");
+                }
+                
+                return true;
             }
             catch(Exception ex)
             {
