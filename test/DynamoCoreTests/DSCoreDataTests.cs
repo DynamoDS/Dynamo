@@ -1,7 +1,9 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Dynamo.Graph.Nodes;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
@@ -240,16 +242,15 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("UnitTests")]
+        [Category("Failure")]
         public void RoundTripForArcReturnsSameResult()
         {
             // Load test graph
             string path = Path.Combine(TestDirectory, @"core\json\Curve_Arc_JSONParsing.dyn");
             OpenModel(path);
 
-            // TODO waiting on fix from LibG
             // Verify objects match when serializing / de-serializing geometry type
-            //AssertPreviewValue("71efc8c5c0c74189901707c30e6d5903", true);
+            AssertPreviewValue("71efc8c5c0c74189901707c30e6d5903", true);
 
             // Verify current failure cases are all false
             AssertPreviewValue("82304dd5025948f8a5644a84a32d58d4", true);
@@ -331,6 +332,152 @@ namespace Dynamo.Tests
 
             // Verify objects match when serializing / de-serializing geometry type
             AssertPreviewValue("423356e2c8f84e00aa6c50e9bdb72c98", true);
+        }
+
+        [Test]
+        [Category("Failure")]
+        public void RoundTripForPolyCurveReturnsSameResult()
+        {
+            // Load test graph
+            string path = Path.Combine(TestDirectory, @"core\json\Curve_PolyCurve_JSONParsing.dyn");
+            OpenModel(path);
+
+            // Verify objects match when serializing / de-serializing geometry type
+            AssertPreviewValue("423356e2c8f84e00aa6c50e9bdb72c98", true);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void RoundTripForPolygonReturnsSameResult()
+        {
+            // Load test graph
+            string path = Path.Combine(TestDirectory, @"core\json\Curve_Polygon_JSONParsing.dyn");
+            OpenModel(path);
+
+            // Verify objects match when serializing / de-serializing geometry type
+            AssertPreviewValue("015f80f917374031b345b46b5a8d54ca", true);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void RoundTripForRectangleReturnsSameResult()
+        {
+            // Load test graph
+            string path = Path.Combine(TestDirectory, @"core\json\Curve_Rectangle_JSONParsing.dyn");
+            OpenModel(path);
+
+            // Verify objects match when serializing / de-serializing geometry type
+            AssertPreviewValue("9754cbd66d4842419a6899f372a80aee", true);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void RoundTripForPointReturnsSameResult()
+        {
+            // Load test graph
+            string path = Path.Combine(TestDirectory, @"core\json\Point_JSONParsing.dyn");
+            OpenModel(path);
+
+            // Verify objects match when serializing / de-serializing geometry type
+            AssertPreviewValue("71efc8c5c0c74189901707c30e6d5903", true);
+        }
+
+        [Test]
+        [Category("Failure")]
+        public void RoundTripForCylinderReturnsSameResult()
+        {
+            // Load test graph
+            string path = Path.Combine(TestDirectory, @"core\json\Solid_Cylinder_JSONParsing.dyn");
+            OpenModel(path);
+
+            // Verify objects match when serializing / de-serializing geometry type
+            AssertPreviewValue("07366adaf0954529b1ed39b240192c96", true);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void CanObjectBeCachedRejectsNull()
+        {
+            var canCacheNull = DSCore.Data.CanObjectBeCached(null);
+            Assert.IsFalse(canCacheNull);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void CanObjectBeCachedRejectsNullString()
+        {
+            var canCacheStringNull = DSCore.Data.CanObjectBeCached("null");
+            Assert.IsFalse(canCacheStringNull);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void CanObjectBeCachedRejectsEmptyString()
+        {
+            var canCacheEmptyList = DSCore.Data.CanObjectBeCached(new ArrayList() { });
+            Assert.IsFalse(canCacheEmptyList);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void RememberRestoresFromCacheWhenPassedUnsupportedInputAndValidCacheJson()
+        {
+            var validCachedJson = "2";
+            object unsupportedInput = null;
+            var dict = DSCore.Data.Remember(unsupportedInput, validCachedJson);
+
+            var returnObject = dict[">"];
+            var returnCacheJson = dict["Cache"];
+
+            Assert.AreEqual(2, returnObject);
+            Assert.AreEqual(validCachedJson, returnCacheJson);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void RememberReturnUnsupportedInputWhenPassedUnsupportedInputAndEmptyCacheJson()
+        {
+            var emptyCachedJson = "";
+            object unsupportedInput = null;
+            var dict = DSCore.Data.Remember(unsupportedInput, emptyCachedJson);
+
+            var returnObject = dict[">"];
+            var returnCacheJson = dict["Cache"];
+
+            Assert.AreEqual(unsupportedInput, returnObject);
+            Assert.AreEqual("", returnCacheJson);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void RememberWillUpdateCacheWhenPassedSupportedInputAndValidCacheJson()
+        {
+            var validCachedJson = "2";
+            var newInputObject = true;
+            var dict = DSCore.Data.Remember(newInputObject, validCachedJson);
+
+            var returnObject = dict[">"];
+            var returnCacheJson = dict["Cache"];
+
+            Assert.AreEqual(returnObject.GetType(), typeof(Boolean));
+            Assert.AreEqual(newInputObject, returnObject);
+            Assert.AreEqual("true", returnCacheJson);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void RememberWillUpdateCacheWhenPassedSupportedInputAndEmptyCacheJson()
+        {
+            var emptyCachedJson = "";
+            var newInputObject = true;
+            var dict = DSCore.Data.Remember(newInputObject, emptyCachedJson);
+
+            var returnObject = dict[">"];
+            var returnCacheJson = dict["Cache"];
+
+            Assert.AreEqual(returnObject.GetType(), typeof(Boolean));
+            Assert.AreEqual(newInputObject, returnObject);
+            Assert.AreEqual("true", returnCacheJson);
         }
     }
 }
