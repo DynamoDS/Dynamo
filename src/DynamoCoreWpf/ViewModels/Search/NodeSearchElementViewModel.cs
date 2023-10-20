@@ -13,11 +13,7 @@ using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.ViewModels;
 using FontAwesome5;
-#if NETFRAMEWORK
-using Microsoft.Practices.Prism.Commands;
-#else
 using Prism.Commands;
-#endif
 
 namespace Dynamo.Wpf.ViewModels
 {
