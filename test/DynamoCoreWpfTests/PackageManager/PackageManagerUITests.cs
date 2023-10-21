@@ -1,12 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using Dynamo.Core;
 using Dynamo.Extensions;
 using Dynamo.PackageManager;
@@ -22,6 +13,15 @@ using Greg.Requests;
 using Greg.Responses;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using SystemTestServices;
 
 namespace DynamoCoreWpfTests.PackageManager
@@ -1612,6 +1612,46 @@ namespace DynamoCoreWpfTests.PackageManager
 
             AssertWindowOwnedByDynamoView<PackageManagerView>();
             AssertWindowClosedWithDynamoView<PackageManagerView>();
+        }
+
+
+        [Test]
+        public void SearchInactiveOnSubsequentWindowOpened()
+        {
+            ViewModel.OnRequestPackageManagerDialog(null, null);
+
+            var windows = GetWindowEnumerable(View.OwnedWindows);
+            var packageManagerView = windows.First(x => x is PackageManagerView) as PackageManagerView;
+
+            Assert.IsNotNull(packageManagerView);
+
+            var searchBox = LogicalTreeHelper.FindLogicalNode(packageManagerView, "SearchBox") as UserControl;
+            Assert.IsNotNull(searchBox);
+            Assert.IsFalse(searchBox.IsEnabled);
+
+            packageManagerView.PackageManagerViewModel.PackageSearchViewModel.InitialResultsLoaded = true;
+            Assert.IsTrue(searchBox.IsEnabled);
+
+            packageManagerView.Close();
+
+            ViewModel.OnRequestPackageManagerDialog(null, null);
+
+            windows = GetWindowEnumerable(View.OwnedWindows);
+            packageManagerView = windows.First(x => x is PackageManagerView) as PackageManagerView;
+
+            Assert.IsNotNull(packageManagerView);
+
+            searchBox = LogicalTreeHelper.FindLogicalNode(packageManagerView, "SearchBox") as UserControl;
+            Assert.IsNotNull(searchBox);
+            Assert.IsFalse(searchBox.IsEnabled);
+        }
+
+        [Test]
+        public void PackageManagerDialogDoesNotThrowExceptions()
+        {
+            Assert.DoesNotThrow(() => ViewModel.OnRequestPackageManagerDialog(null, null), "Package Manager View did not open without exceptions");
+
+            AssertWindowOwnedByDynamoView<PackageManagerView>();
         }
 
         /// <summary>

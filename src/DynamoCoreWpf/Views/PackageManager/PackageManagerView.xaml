@@ -255,7 +255,7 @@
                                                                           DataContext="{Binding PackageManagerViewModel}"
                                                                           VerticalAlignment="Stretch"
                                                                           Height="650"
-                                                                          Visibility="{Binding PackageManagerViewModel.LocalPackages, Converter={StaticResource ListHasMoreThanNItemsToVisibilityConverter}}" />
+                                                                          Visibility="{Binding Path=PackageManagerViewModel.LocalPackages, ElementName=PackageManagerWindow,Converter={StaticResource ListHasMoreThanNItemsToVisibilityConverter}}" />
 
 
                                     <!--Empty list screen-->
@@ -309,7 +309,7 @@
                                         <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
                                     <!--Loading screen-->
-                                    <local:PackageManagerPackageAnimationControl x:Name="loadingScreen"
+                                    <local:PackageManagerPackageAnimationControl x:Name="loadingAnimationScreen"
                                                                                  Visibility="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.InitialResultsLoaded,
                                                                                                 ElementName=PackageManagerWindow, 
                                                                                                 Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter},

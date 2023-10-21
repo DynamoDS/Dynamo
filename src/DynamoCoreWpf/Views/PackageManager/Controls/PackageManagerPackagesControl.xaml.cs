@@ -1,9 +1,9 @@
+using Dynamo.PackageManager.ViewModels;
+using Dynamo.Utilities;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using Dynamo.PackageManager.ViewModels;
-using Dynamo.Utilities;
 
 namespace Dynamo.PackageManager.UI
 {
@@ -122,14 +122,6 @@ namespace Dynamo.PackageManager.UI
             PkgSearchVM.IsDetailPackagesExtensionOpened = true;
             PkgSearchVM?.ViewPackageDetailsCommand.Execute(packageManagerSearchElementViewModel.Model);
         }
-
-        private void DropDownInstallButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            ContextMenu cm = this.FindResource("installContextMenu") as ContextMenu;
-            cm.PlacementTarget = sender as Button;
-            cm.IsOpen = true;
-        }
-
 
 
         /// <summary>

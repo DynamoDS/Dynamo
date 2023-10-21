@@ -43,18 +43,18 @@ namespace Dynamo.PackageManager.UI
                 new FrameworkPropertyMetadata("0"));
 
         // The Value of the numerical up/down control. Bind to this property
-        public int Value
+        public string Value
         {
-            get { return (int)GetValue(ValueProperty); }
+            get { return (string)GetValue(ValueProperty); }
             set { SetValue(ValueProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for Value. 
         public static readonly DependencyProperty ValueProperty =
             DependencyProperty.Register("Value",
-                typeof(int),
+                typeof(string),
                 typeof(NumericUpDownControl),
-                new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, new PropertyChangedCallback(OnValuePropertyChanged)));
+                new FrameworkPropertyMetadata("0", FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, new PropertyChangedCallback(OnValuePropertyChanged)));
 
         // Setting the input TextBox 
         private static void OnValuePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -79,11 +79,11 @@ namespace Dynamo.PackageManager.UI
         #region UI utility functions
         private void spinnerUp_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(   inputField.Text))
+            if (string.IsNullOrEmpty(inputField.Text))
             {
                 if (Int32.TryParse(watermarkLabel.Content as string, out int watermarkValue))
                 {
-                    Value = ++watermarkValue;
+                    Value = (++watermarkValue).ToString();
                     return;
                 }
                 else
@@ -93,7 +93,7 @@ namespace Dynamo.PackageManager.UI
             }
             if (Int32.TryParse(inputField.Text, out int value))
             {
-                Value = ++value;
+                Value = (++value).ToString();
             };
         }
 
@@ -103,7 +103,7 @@ namespace Dynamo.PackageManager.UI
             {
                 if (Int32.TryParse(watermarkLabel.Content as string, out int watermarkValue))
                 {
-                    Value = --watermarkValue;
+                    Value = (--watermarkValue).ToString();
                     return;
                 }
                 else
@@ -114,8 +114,8 @@ namespace Dynamo.PackageManager.UI
             if (Int32.TryParse(inputField.Text, out int value))
             {
                 // Allows positive whole numbers
-                if (value <= 0) return;
-                Value = --value;
+                if (value < 0) return;
+                Value = (--value).ToString();
             };
         }
 
@@ -133,7 +133,7 @@ namespace Dynamo.PackageManager.UI
         {
             if (Int32.TryParse(inputField.Text, out int value))
             {
-                Value = value;
+                Value = value.ToString();
             };
         }
 

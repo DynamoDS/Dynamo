@@ -22,16 +22,6 @@
             <controls:ListHasMoreThanNItemsToVisibilityConverter x:Key="ListHasMoreThanNItemsToVisibilityConverter" />
             <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
 
-
-            <ContextMenu x:Key="installContextMenu"
-                         Style="{StaticResource ContextMenuStyle}">
-                <MenuItem Header="{x:Static p:Resources.PackageSearchViewInstallLatestVersionTo}"
-                          Command="{Binding DownloadLatestToCustomPathCommand}"
-                          CommandParameter="{Binding Path=Model.LatestVersion}"
-                          MinHeight="30"
-                          MinWidth="60" />
-            </ContextMenu>
-
             <Style x:Key="RectangleStyle"
                    TargetType="Rectangle">
                 <Setter Property="Opacity"
@@ -288,13 +278,22 @@
                                                                         DockPanel.Dock="Right"
                                                                         Visibility="{Binding CanInstall,
                                                                                              Converter={StaticResource BoolToVisibilityCollapsedConverter}}"
-                                                                        Click="DropDownInstallButton_OnClick"
                                                                         BorderThickness="0"
                                                                         Cursor="Hand"
                                                                         Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
                                                                     <Image Source=" /DynamoCoreWpf;component/UI/Images/caret_drop_down.png"
                                                                            Width="7"
                                                                            Height="5" />
+                                                                    <Button.ContextMenu>
+                                                                        <ContextMenu x:Name="installContextMenu"
+                                                                                      Style="{StaticResource ContextMenuStyle}">
+                                                                            <MenuItem Header="{x:Static p:Resources.PackageSearchViewInstallLatestVersionTo}"
+                                                                                  Command="{Binding DownloadLatestToCustomPathCommand}"
+                                                                                  CommandParameter="{Binding Path=Model.LatestVersion}"
+                                                                                  MinHeight="30"
+                                                                                  MinWidth="60" />
+                                                                        </ContextMenu>
+                                                                    </Button.ContextMenu>
                                                                 </Button>
 
                                                                 <TextBlock Name="textBlock"

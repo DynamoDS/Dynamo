@@ -1,13 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Timers;
-using System.Windows;
-using System.Windows.Input;
 using Dynamo.Configuration;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
@@ -24,6 +14,16 @@ using Lucene.Net.Index;
 using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
 using Prism.Commands;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Timers;
+using System.Windows;
+using System.Windows.Input;
 using NotificationObject = Dynamo.Core.NotificationObject;
 
 namespace Dynamo.PackageManager
@@ -1569,15 +1569,13 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// Clear after closing down
+        /// Only suspend the elements associated with the view
         /// </summary>
-        internal void Close()
+        internal void PackageManagerViewClose()
         {
             TimedOut = false;   // reset the timedout screen 
             InitialResultsLoaded = false;   // reset the loading screen settings
-            RequestShowFileDialog -= OnRequestShowFileDialog;
-            nonHostFilter.ForEach(f => f.PropertyChanged -= filter_PropertyChanged);
-            LuceneUtility.DisposeAll();
+            SearchText = String.Empty; // reset the search field
         }
     }
 }

@@ -1,14 +1,14 @@
-using System;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
 using Dynamo.Controls;
 using Dynamo.Logging;
 using Dynamo.UI;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Utilities;
 using DynamoUtilities;
+using System;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Dynamo.PackageManager.UI
 {
@@ -124,7 +124,7 @@ namespace Dynamo.PackageManager.UI
         {
             this.packageManagerPublish.Dispose();
             this.PackageManagerViewModel.PackageSearchViewModel.RequestShowFileDialog -= OnRequestShowFileDialog;
-            this.PackageManagerViewModel.PackageSearchViewModel.Close();
+            this.PackageManagerViewModel.PackageSearchViewModel.PackageManagerViewClose();
         }
 
         private void SearchForPackagesButton_Click(object sender, RoutedEventArgs e)
