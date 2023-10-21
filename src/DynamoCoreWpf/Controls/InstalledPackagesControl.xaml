@@ -82,7 +82,7 @@
                              RelativeSource="{RelativeSource  Mode=FindAncestor, AncestorType=UserControl}" />
                     <Binding>
                         <Binding.Source>
-                            <sys:Double>-40.0</sys:Double>
+                            <sys:Double>0</sys:Double>
                         </Binding.Source>
                     </Binding>
                 </MultiBinding>
