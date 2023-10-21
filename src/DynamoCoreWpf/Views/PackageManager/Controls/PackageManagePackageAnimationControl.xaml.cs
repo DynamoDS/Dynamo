@@ -5,7 +5,7 @@ using System.Windows.Controls;
 namespace Dynamo.PackageManager.UI
 {
     /// <summary>
-    /// Interaction logic for PackageManagerPackagesControl.xaml
+    /// Interaction logic for PackageManagerPackageAnimationControl.xaml
     /// </summary>
     public partial class PackageManagerPackageAnimationControl : UserControl
     {

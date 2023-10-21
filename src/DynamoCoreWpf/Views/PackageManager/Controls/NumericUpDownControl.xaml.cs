@@ -61,6 +61,7 @@ namespace Dynamo.PackageManager.UI
         {
             var numericUpDownControl = d as NumericUpDownControl;
             numericUpDownControl.inputField.Text = e.NewValue.ToString();
+            if (String.IsNullOrEmpty(e.NewValue.ToString())) return;
             if (numericUpDownControl.watermarkLabel.Visibility == Visibility.Visible)
             {
                 numericUpDownControl.watermarkLabel.Visibility = Visibility.Collapsed;
@@ -91,17 +92,13 @@ namespace Dynamo.PackageManager.UI
                     inputField.Text = "0"; // increment from 0 if Watermark is anyhting else but integer
                 }
             }
-            if (Int32.TryParse(inputField.Text, out int value))
-            {
-                Value = (++value).ToString();
-            };
         }
 
         private void spinnerDown_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrEmpty(inputField.Text))
             {
-                if (Int32.TryParse(watermarkLabel.Content as string, out int watermarkValue))
+                if (Int32.TryParse(watermarkLabel.Content as string, out int watermarkValue) && watermarkValue > 0)
                 {
                     Value = (--watermarkValue).ToString();
                     return;
@@ -111,12 +108,6 @@ namespace Dynamo.PackageManager.UI
                     inputField.Text = "0"; // decrement from 0 if Watermark is anyhting else but integer
                 }
             }
-            if (Int32.TryParse(inputField.Text, out int value))
-            {
-                // Allows positive whole numbers
-                if (value < 0) return;
-                Value = (--value).ToString();
-            };
         }
 
         // validate data before changing the text (only allow numbers)

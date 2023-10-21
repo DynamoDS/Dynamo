@@ -9,6 +9,7 @@
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              xmlns:local="clr-namespace:Dynamo.PackageManager.UI"
              mc:Ignorable="d"
+             Name="LoadingAnimationControl"
              d:DesignHeight="450"
              d:DesignWidth="800" >
     <UserControl.Resources>
@@ -28,10 +29,9 @@
     </UserControl.Resources>
 
     <Grid Background="Transparent">
-        <ListBox Name="myPackagesListBox"
-                 Background="{StaticResource PackageManagerTabBackgroundColor}"
+        <ListBox Background="{StaticResource PackageManagerTabBackgroundColor}"
                  BorderThickness="0"
-                 ItemsSource="{Binding DummySearchResults}"
+                 ItemsSource="{Binding DummySearchResults, ElementName=LoadingAnimationControl}"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  ScrollViewer.VerticalScrollBarVisibility="Disabled"
                  VirtualizingPanel.ScrollUnit="Pixel">
@@ -52,29 +52,29 @@
             <!--  The template for all package search results  -->
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Grid Name="resultItemTemplate"
+                    <Grid 
                           VerticalAlignment="Center"
                           Margin="0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="40px" />
-                            <RowDefinition Height="20px" />
+                            <RowDefinition Height="20px" /> 
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
                         <!--  Top Row  -->
-                        <DockPanel Name="resultTopRow"
+                        <DockPanel 
                                    Grid.Row="0"
                                    Margin="15,10,22,0"
                                    LastChildFill="False">
 
                             <!--  View Details Button  -->
-                            <local:LoadingAnimationStripeControl  x:Name="viewDetailsRectangle"
+                            <local:LoadingAnimationStripeControl  
                                                                   Width="70"
                                                                   Height="15"
                                                                   Margin="20 0 0 0"
                                                                   DockPanel.Dock="Right" />
                             <!--  Install Button  -->
-                            <local:LoadingAnimationStripeControl  x:Name="installRectangle"
+                            <local:LoadingAnimationStripeControl  
                                                                   Width="70"
                                                                   Height="15"
                                                                   DockPanel.Dock="Right" />
@@ -83,7 +83,7 @@
                             <Grid Margin="0,0,0,0"
                                   DockPanel.Dock="Left">
 
-                                <local:LoadingAnimationStripeControl  x:Name="packageNameRectangle"
+                                <local:LoadingAnimationStripeControl  
                                                                       Grid.Column="0"
                                                                       VerticalAlignment="Center"
                                                                       Width="250"
@@ -92,13 +92,13 @@
                         </DockPanel>
 
                         <!--  Middle Row  -->
-                        <DockPanel Name="requirementsRow"
+                        <DockPanel 
                                    Grid.Row="1"
                                    Margin="15,0,22,8"
                                    VerticalAlignment="Center"
                                    LastChildFill="False">
 
-                            <local:LoadingAnimationStripeControl  x:Name="requirementsRectangle"
+                            <local:LoadingAnimationStripeControl  
                                                                   Width="150"
                                                                   Height="8"
                                                                   Margin="0,0,0,1"
@@ -107,7 +107,7 @@
                         </DockPanel>
 
                         <!--  Bottom Row  -->
-                        <DockPanel Name="resultBottomRow"
+                        <DockPanel 
                                    Grid.Row="2"
                                    Margin="15,5,22,15"
                                    VerticalAlignment="Bottom">
@@ -145,7 +145,7 @@
                         </DockPanel>
 
                         <!--  A 1px bar that separates List Items  -->
-                        <Rectangle Name="separator"
+                        <Rectangle 
                                    Grid.Row="2"
                                    Height="1"
                                    VerticalAlignment="Bottom"
