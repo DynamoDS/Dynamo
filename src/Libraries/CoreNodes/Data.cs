@@ -262,7 +262,7 @@ namespace DSCore
 
             public override bool CanConvert(Type objectType)
             {
-                return typeof(DesignScriptEntity).IsAssignableFrom(objectType) && !typeof(Mesh).IsAssignableFrom(objectType) && !typeof(IndexGroup).IsAssignableFrom(objectType);
+                return typeof(DesignScriptEntity).IsAssignableFrom(objectType);
             }
         }
 
