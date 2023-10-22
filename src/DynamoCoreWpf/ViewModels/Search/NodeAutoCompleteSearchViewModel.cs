@@ -45,7 +45,7 @@ namespace Dynamo.ViewModels
         private const string nodeAutocompleteMLEndpoint = "MLNodeAutocomplete";
 
         // Lucene search utility to perform indexing operations just for NodeAutocomplete.
-        private LuceneSearchUtility LuceneUtility
+        internal LuceneSearchUtility LuceneUtility
         {
             get
             {
@@ -157,12 +157,13 @@ namespace Dynamo.ViewModels
         internal void ResetAutoCompleteSearchViewState()
         {
             DisplayAutocompleteMLStaticPage = false;
-            DisplayLowConfidence = false;
+            DisplayLowConfidence = PreferenceSettings.Instance.HideNodesBelowSpecificConfidenceLevel;
             AutocompleteMLMessage = string.Empty;
             AutocompleteMLTitle = string.Empty;
             FilteredResults = new List<NodeSearchElementViewModel>();
             FilteredHighConfidenceResults = new List<NodeSearchElementViewModel>();
             FilteredLowConfidenceResults = new List<NodeSearchElementViewModel>();
+            searchElementsCache = new List<NodeSearchElementViewModel>();
         }
 
         private void InitializeDefaultAutoCompleteCandidates()
@@ -410,10 +411,10 @@ namespace Dynamo.ViewModels
                     }
                 }
 
-                // Show low confidence section if there are some results under threshold.
-                DisplayLowConfidence = FilteredLowConfidenceResults.Count() > 0;
+                // Show low confidence section if there are some results under threshold and feature enabled
+                DisplayLowConfidence = FilteredLowConfidenceResults.Any() && PreferenceSettings.Instance.HideNodesBelowSpecificConfidenceLevel;
 
-                if (FilteredHighConfidenceResults.Count() == 0)
+                if (!FilteredHighConfidenceResults.Any())
                 {
                     DisplayAutocompleteMLStaticPage = true;
                     AutocompleteMLTitle = Resources.AutocompleteLowConfidenceTitle;
@@ -422,7 +423,7 @@ namespace Dynamo.ViewModels
                 }
 
                 // By default, show only the results which are above the threshold
-                FilteredResults = FilteredHighConfidenceResults;
+                FilteredResults = PreferenceSettings.Instance.HideNodesBelowSpecificConfidenceLevel? FilteredHighConfidenceResults : results    ;
             }
         }
 
@@ -682,16 +683,13 @@ namespace Dynamo.ViewModels
                 }
                 else
                 {
-                    LuceneSearch.LuceneUtilityNodeAutocomplete = new LuceneSearchUtility(dynamoViewModel.Model);
-
-                    //The dirName parameter doesn't matter because we are using RAMDirectory indexing and no files are created
-                    LuceneUtility.InitializeLuceneConfig(string.Empty, LuceneSearchUtility.LuceneStorage.RAM);
+                    LuceneSearch.LuceneUtilityNodeAutocomplete = new LuceneSearchUtility(dynamoViewModel.Model, LuceneSearchUtility.DefaultStartConfig);
 
                     //Memory indexing process for Node Autocomplete (indexing just the nodes returned by the NodeAutocomplete service so we limit the scope of the query search)
                     foreach (var node in searchElementsCache.Select(x => x.Model))
                     {
                         var doc = LuceneUtility.InitializeIndexDocumentForNodes();
-                        AddNodeTypeToSearchIndex(node, doc);
+                        LuceneUtility.AddNodeTypeToSearchIndex(node, doc);
                     }
 
                     //Write the Lucene documents to memory
@@ -720,24 +718,6 @@ namespace Dynamo.ViewModels
                     LuceneUtility.DisposeWriter();
                 }
             }
-        }
-
-        /// <summary>
-        /// Add node information to Lucene index
-        /// </summary>
-        /// <param name="node">node info that will be indexed</param>
-        /// <param name="doc">Lucene document in which the node info will be indexed</param>
-        private void AddNodeTypeToSearchIndex(NodeSearchElement node, Document doc)
-        {
-            if (LuceneUtility.addedFields == null) return;
-
-            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName), node.FullCategoryName);
-            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), node.Name);
-            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Description), node.Description);
-            if (node.SearchKeywords.Count > 0) LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords), node.SearchKeywords.Aggregate((x, y) => x + " " + y), true, true);
-            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Parameters), node.Parameters ?? string.Empty);
-
-            LuceneUtility.writer?.AddDocument(doc);
         }
 
         /// <summary>

@@ -6,7 +6,7 @@ jobs:
   runs-on: windows-latest
   steps:
     - name: Checkout Dynamo Repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         path: Dynamo
         repository: DynamoDS/Dynamo
@@ -31,3 +31,24 @@ jobs:
         cd "$Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Release"
         echo "***Locating DynamoCLI for Windows!***"
         test ".\DynamoCLI.exe" && echo "DynamoCLI exists!"
+    - name: Set artifact name
+      run: |
+        if ("${{ github.event_name }}" -eq 'pull_request') {
+          echo "ARTIFACT_NAME=DynamoSandbox-${{ github.event.pull_request.number }}" >> $env:GITHUB_ENV
+        } else {
+          echo "ARTIFACT_NAME=DynamoSandbox-$(git rev-parse --short HEAD)" >> $env:GITHUB_ENV
+        }
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.ARTIFACT_NAME }}
+        path: ${{ github.workspace }}\Dynamo\bin\AnyCPU\Release
+        if-no-files-found: warn
+        retention-days: 3
+    - name: Repository Dispatch
+      uses: peter-evans/repository-dispatch@v2
+      with:
+        token: ${{ secrets.DYNAMO_TESTS_TOKEN }}
+        repository: DynamoDS/TestCompleteTests
+        event-type: build-completed
+        client-payload: '{"artifact_name": "${{ env.ARTIFACT_NAME }}", "run_id": "${{ github.run_id }}"}'

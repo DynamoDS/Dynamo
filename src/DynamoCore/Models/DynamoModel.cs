@@ -475,7 +475,7 @@ namespace Dynamo.Models
         public bool CLIMode { get; internal set; }
 
         /// <summary>
-        /// The Autodesk CrashReport tool location on disk (directory that contains the "senddmp.exe")
+        /// The Autodesk CrashReport tool location on disk (directory that contains the "cer.dll")
         /// </summary>
         public string CERLocation { get; internal set; }
 
@@ -681,6 +681,13 @@ namespace Dynamo.Models
             PreferenceSettings = (PreferenceSettings)CreateOrLoadPreferences(config.Preferences);
             if (PreferenceSettings != null)
             {
+                // Setting the locale for Dynamo from loaded Preferences only when
+                // In a non-in-process integration case (when HostAnalyticsInfo.HostName is unspecified)
+                // Language is specified, otherwise Default setting means following host locale
+                if (string.IsNullOrEmpty(HostAnalyticsInfo.HostName) || !PreferenceSettings.Locale.Equals(Configuration.Configurations.SupportedLocaleList.First()))
+                {
+                    SetUICulture(PreferenceSettings.Locale);
+                }
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
                 PreferenceSettings.MessageLogged += LogMessage;
             }
@@ -921,16 +928,7 @@ namespace Dynamo.Models
 
             CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager, LibraryServices);
 
-            LuceneSearch.LuceneUtilityNodeSearch = new LuceneSearchUtility(this);
-
-            if (IsTestMode)
-            {
-                LuceneUtility.InitializeLuceneConfig(string.Empty, LuceneSearchUtility.LuceneStorage.RAM);
-            }
-            else
-            {
-                LuceneUtility.InitializeLuceneConfig(LuceneConfig.NodesIndexingDirectory);
-            }
+            LuceneSearch.LuceneUtilityNodeSearch = new LuceneSearchUtility(this, LuceneSearchUtility.DefaultNodeIndexStartConfig);
 
             InitializeCustomNodeManager();
 
@@ -1013,6 +1011,13 @@ namespace Dynamo.Models
             TraceReconciliationProcessor = this;
 
             State = DynamoModelState.StartedUIless;
+            // Write index to disk only once
+            LuceneUtility.CommitWriterChanges();
+            //Disposed writer if it is in file system mode so that the index files can be used by other processes (potentially a second Dynamo session)
+            if (LuceneUtility.startConfig.StorageType == LuceneSearchUtility.LuceneStorage.FILE_SYSTEM)
+            {
+                LuceneUtility.DisposeWriter();
+            }
             // This event should only be raised at the end of this method.
             DynamoReady(new ReadyParams(this));
         }
@@ -1403,12 +1408,8 @@ namespace Dynamo.Models
                 PreferenceSettings.MessageLogged -= LogMessage;
             }
 
-            //The writer have to be disposed at DynamoModel level due that we could index package-nodes as new packages are installed
-            LuceneUtility.DisposeWriter();
-
             // Lucene disposals (just if LuceneNET was initialized)
-            LuceneUtility.indexDir?.Dispose();
-            LuceneUtility.dirReader?.Dispose();
+            LuceneUtility.DisposeAll();
 
 #if DEBUG
             CurrentWorkspace.NodeAdded -= CrashOnDemand.CurrentWorkspace_NodeAdded;
@@ -1472,10 +1473,8 @@ namespace Dynamo.Models
                 var iDoc = LuceneUtility.InitializeIndexDocumentForNodes();
                 if (searchElement != null)
                 {
-                    AddNodeTypeToSearchIndex(searchElement, iDoc);
+                    LuceneUtility.AddNodeTypeToSearchIndex(searchElement, iDoc);
                 }
-
-                LuceneUtility.CommitWriterChanges();
 
                 Action<CustomNodeInfo> infoUpdatedHandler = null;
                 infoUpdatedHandler = newInfo =>
@@ -1543,7 +1542,7 @@ namespace Dynamo.Models
 
             var cnbNode = new CodeBlockNodeSearchElement(cbnData, LibraryServices);
             SearchModel?.Add(cnbNode);
-            AddNodeTypeToSearchIndex(cnbNode, iDoc);
+            LuceneUtility.AddNodeTypeToSearchIndex(cnbNode, iDoc);
 
             var symbolSearchElement = new NodeModelSearchElement(symbolData)
             {
@@ -1562,10 +1561,10 @@ namespace Dynamo.Models
             };
 
             SearchModel?.Add(symbolSearchElement);
-            AddNodeTypeToSearchIndex(symbolSearchElement, iDoc);
+            LuceneUtility.AddNodeTypeToSearchIndex(symbolSearchElement, iDoc);
 
             SearchModel?.Add(outputSearchElement);
-            AddNodeTypeToSearchIndex(outputSearchElement, iDoc);
+            LuceneUtility.AddNodeTypeToSearchIndex(outputSearchElement, iDoc);
 
         }
 
@@ -1652,12 +1651,6 @@ namespace Dynamo.Models
             }
 
             CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.CommonDefinitions, IsTestMode);
-
-            // Initialize searcher, if the applyAllDeletes is true all buffered deletes on documents will be applied (made visible) in the returned reader
-            // When running parallel tests several are trying to write in the AppData folder then the job
-            // is failing and in a wrong state so we prevent to initialize Lucene index writer during test mode.
-            // Without the index files on disk, the dirReader cant be initialized correctly. So does the searcher.
-            LuceneUtility.CommitWriterChanges();
         }
 
         /// <summary>
@@ -1725,7 +1718,7 @@ namespace Dynamo.Models
                     // TODO: get search element some other way
                     if (ele != null)
                     {
-                        AddNodeTypeToSearchIndex(ele, iDoc);
+                        LuceneUtility.AddNodeTypeToSearchIndex(ele, iDoc);
                     }
                 }
                 catch (Exception e)
@@ -1947,11 +1940,12 @@ namespace Dynamo.Models
         /// execution mode specified in the file and set manual mode</param>
         public void OpenFileFromPath(string filePath, bool forceManualExecutionMode = false)
         {
-            XmlDocument xmlDoc;
-            Exception ex;
-            if (DynamoUtilities.PathHelper.isValidXML(filePath, out xmlDoc, out ex))
+            
+            Exception ex;            
+            string fileContents;
+            if (DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents, out ex))
             {
-                OpenXmlFileFromPath(xmlDoc, filePath, forceManualExecutionMode);
+                OpenJsonFileFromPath(fileContents, filePath, forceManualExecutionMode);
                 return;
             }
             else
@@ -1961,24 +1955,20 @@ namespace Dynamo.Models
                 {
                     throw ex;
                 }
-                if (ex is System.Xml.XmlException)
-                {
-                    // XML opening failure can indicate that this file is corrupted XML or Json
-                    string fileContents;
 
-                    if (DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents, out ex))
-                    {
-                        OpenJsonFileFromPath(fileContents, filePath, forceManualExecutionMode);
-                        return;
-                    }
-                    else
-                    {
-                        // When Json opening also failed, either this file is corrupted or there
-                        // are other kind of failures related to Json de-serialization
-                        throw ex;
-                    }
+                XmlDocument xmlDoc;
+
+                // When Json opening failed, either this file is corrupted or file might be XML
+                if (ex is JsonReaderException && DynamoUtilities.PathHelper.isValidXML(filePath, out xmlDoc, out ex))
+                {
+                    OpenXmlFileFromPath(xmlDoc, filePath, forceManualExecutionMode);
+                    return;
                 }
-            }
+                else
+                {
+                    throw ex;
+                }                
+            }            
         }
 
         /// <summary>
@@ -1988,11 +1978,12 @@ namespace Dynamo.Models
         /// <param name="forceManualExecutionMode"></param>
         public void InsertFileFromPath(string filePath, bool forceManualExecutionMode = false)
         {
-            XmlDocument xmlDoc;
             Exception ex;
-            if (DynamoUtilities.PathHelper.isValidXML(filePath, out xmlDoc, out ex))
+            string fileContents;
+
+            if (DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents, out ex))
             {
-                InsertXmlFileFromPath(xmlDoc, filePath, forceManualExecutionMode);
+                InsertJsonFileFromPath(fileContents, filePath, forceManualExecutionMode);
                 return;
             }
             else
@@ -2002,24 +1993,20 @@ namespace Dynamo.Models
                 {
                     throw ex;
                 }
-                if (ex is System.Xml.XmlException)
-                {
-                    // XML opening failure can indicate that this file is corrupted XML or Json
-                    string fileContents;
 
-                    if (DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents, out ex))
+                if (ex is JsonReaderException)
+                {
+                    XmlDocument xmlDoc;
+                    if (DynamoUtilities.PathHelper.isValidXML(filePath, out xmlDoc, out ex))
                     {
-                        InsertJsonFileFromPath(fileContents, filePath, forceManualExecutionMode);
+                        InsertXmlFileFromPath(xmlDoc, filePath, forceManualExecutionMode);
                         return;
                     }
-                    else
-                    {
-                        // When Json opening also failed, either this file is corrupted or there
-                        // are other kind of failures related to Json de-serialization
-                        throw ex;
-                    }
                 }
-
+                else
+                {
+                    throw ex;
+                }
             }
         }
 
@@ -2719,6 +2706,15 @@ namespace Dynamo.Models
         #region public methods
 
         /// <summary>
+        /// Set UI culture based on preferences
+        /// </summary>
+        public static void SetUICulture(string locale)
+        {
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo(locale == "Default" ? "en-US" : locale);
+            Thread.CurrentThread.CurrentCulture = new CultureInfo(locale == "Default" ? "en-US" : locale);
+        }
+
+        /// <summary>
         ///     Add a new HomeWorkspace and set as current
         /// </summary>
         /// <api_stability>1</api_stability>
@@ -3232,24 +3228,6 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Add node information to Lucene index
-        /// </summary>
-        /// <param name="node">node info that will be indexed</param>
-        /// <param name="doc">Lucene document in which the node info will be indexed</param>
-        internal void AddNodeTypeToSearchIndex(NodeSearchElement node, Document doc)
-        {
-            if (LuceneUtility.addedFields == null) return;
-
-            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName), node.FullCategoryName);
-            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), node.Name);
-            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Description), node.Description);
-            if (node.SearchKeywords.Count > 0) LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords), node.SearchKeywords.Aggregate((x, y) => x + " " + y), true, true);
-            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Parameters), node.Parameters ?? string.Empty);
-
-            LuceneUtility.writer?.AddDocument(doc);
-        }
-
-        /// <summary>
         /// Remove node information from Lucene indexing.
         /// </summary>
         /// <param name="node">node info that needs to be removed.</param>
@@ -3308,7 +3286,7 @@ namespace Dynamo.Models
             {
                 var ele = new ZeroTouchSearchElement(functionDescriptor);
                 SearchModel?.Add(ele);
-                AddNodeTypeToSearchIndex(ele, iDoc);
+                LuceneUtility.AddNodeTypeToSearchIndex(ele, iDoc);
             }
         }
 

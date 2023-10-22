@@ -22,19 +22,6 @@
             <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
     </ItemGroup>
-  
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-        <PackageReference Include="NUnit" Version="2.6.3" />
-        <PackageReference Include="NUnitTestAdapter" Version="2.3.0" ExcludeAssets="all" />
-        <Reference Include="System" />
-        <Reference Include="System.Core" />
-        <Reference Include="System.Web" />
-        <Reference Include="System.Xml.Linq" />
-        <Reference Include="System.Data.DataSetExtensions" />
-        <Reference Include="Microsoft.CSharp" />
-        <Reference Include="System.Data" />
-        <Reference Include="System.Xml" />
-    </ItemGroup>
 
     <!--net6.0 net8.0 etc-->
     <ItemGroup Condition=" '$(TargetFramework)' != 'net48' ">
