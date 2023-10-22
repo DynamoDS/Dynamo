@@ -9,6 +9,7 @@ using System.Drawing;
 using System.IO;
 using System.Drawing.Imaging;
 using System.Collections;
+using System.Runtime.Versioning;
 
 namespace DSCore
 {
