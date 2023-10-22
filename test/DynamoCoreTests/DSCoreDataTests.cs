@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
 using Dynamo.Graph.Nodes;
+using DynamoUnits;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 
@@ -392,6 +394,50 @@ namespace Dynamo.Tests
 
             // Verify objects match when serializing / de-serializing geometry type
             AssertPreviewValue("07366adaf0954529b1ed39b240192c96", true);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void RoundTripForColorReturnsSameResult()
+        {
+            var color = DSCore.Color.ByARGB(25, 30, 35, 40);
+            var json = DSCore.Data.StringifyJSON(color);
+            var color2 = (DSCore.Color)DSCore.Data.ParseJSON(json);
+
+            Assert.AreEqual(color.Red, color2.Red);
+            Assert.AreEqual(color.Green, color2.Green);
+            Assert.AreEqual(color.Blue, color2.Blue);
+            Assert.AreEqual(color.Alpha, color2.Alpha);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void RoundTripForLocationReturnsSameResult()
+        {
+            var location = DynamoUnits.Location.ByLatitudeAndLongitude(43.6606, 73.0357, "Dynamo");
+            var json = DSCore.Data.StringifyJSON(location);
+            var location2 = (DynamoUnits.Location)DSCore.Data.ParseJSON(json);
+
+            Assert.AreEqual(location.Latitude, location2.Latitude);
+            Assert.AreEqual(location.Longitude, location2.Longitude);
+            Assert.AreEqual(location.Name, location2.Name);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void RoundTripForImageReturnsSameResult()
+        {
+            string path = Path.Combine(TestDirectory, @"core\json\TestColor.bmp");
+            Bitmap bitmap1 = new Bitmap(path);
+            var json = DSCore.Data.StringifyJSON(bitmap1);
+            var bitmap2 = (Bitmap)DSCore.Data.ParseJSON(json);
+
+            Assert.AreEqual(bitmap1.Width, bitmap2.Width);
+            Assert.AreEqual(bitmap1.Height, bitmap2.Height);
+            Assert.AreEqual(bitmap1.GetPixel(5, 5), bitmap2.GetPixel(5, 5));
+            Assert.AreEqual(bitmap1.GetPixel(195, 5), bitmap2.GetPixel(195, 5));
+            Assert.AreEqual(bitmap1.GetPixel(195, 95), bitmap2.GetPixel(195, 95));
+            Assert.AreEqual(bitmap1.GetPixel(5, 95), bitmap2.GetPixel(5, 95));
         }
 
         [Test]
