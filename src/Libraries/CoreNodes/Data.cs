@@ -114,7 +114,7 @@ namespace DSCore
                         (int)jObject["R"],
                         (int)jObject["G"],
                         (int)jObject["B"]);
-
+#if _WINDOWS
                     case "dynamo.graphics:png-1.0.0":
                         jObject.TryGetValue(ImageFormat.Png.ToString(), out var value);
 
@@ -128,6 +128,7 @@ namespace DSCore
 
                             return bitmap;
                         }
+#endif
 
                         return null;
 
@@ -141,7 +142,7 @@ namespace DSCore
                         return null;
                 }
             }
-
+             
             if (jObject.ContainsKey("typeid"))
             {
                 var typeid = jObject["typeid"].ToString();
@@ -168,7 +169,9 @@ namespace DSCore
                     new DesignScriptGeometryConverter(),
                     new ColorConveter(),
                     new LocationConverter(),
-                    new ImageConverter()
+#if _WINDOWS
+                    new ImageConverter(),
+#endif
                 });
         }
 
@@ -318,6 +321,9 @@ namespace DSCore
             }
         }
 
+#if NET6_0_OR_GREATER
+        [SupportedOSPlatform("windows")]
+#endif
         private class ImageConverter : JsonConverter
         {
             public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
