@@ -26,7 +26,6 @@ namespace CoreNodeModels
     [DynamoServices.RegisterForTrace]
     public class Remember : NodeModel
     {
-        private bool _deactivateNode;
         private string _cache = "";
         private string _updatedToolTipText = "";
 
@@ -102,12 +101,6 @@ namespace CoreNodeModels
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            // Check that node can run
-            if (_deactivateNode)
-            {
-                return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()) };
-            }
-
             var resultAst = new List<AssociativeNode>();
 
             var funtionInputs = new List<AssociativeNode> { inputAstNodes[0], AstFactory.BuildStringNode(Cache) };
