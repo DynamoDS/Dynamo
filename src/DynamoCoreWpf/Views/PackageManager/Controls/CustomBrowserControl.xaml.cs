@@ -1,3 +1,5 @@
+using Dynamo.Utilities;
+using Lucene.Net.Util;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,8 +12,6 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-using Dynamo.Utilities;
-using Lucene.Net.Util;
 
 namespace Dynamo.PackageManager.UI
 {
@@ -244,11 +244,14 @@ namespace Dynamo.PackageManager.UI
         #endregion
 
         /// <summary>
-        /// Updates the current files DataGrid preview based on the folder selection
+        /// Updates the currently displayed files based on which folder is selected
+        /// This method is invoked in 2 ways:
+        /// 1. As ItemSelectionChange event of the customTreeView element
+        /// 2. On Page navigation (each Page displays different section of the PreviewPackageContents)        /// 
         /// Will not fire if the Page that's triggering it is not currently enabled
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender">The TreeView element. We are interested in the currently SelectedItem.</param>
+        /// <param name="e">Arguments</param>
         internal void customTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             var customTree = sender as TreeView;
@@ -259,10 +262,11 @@ namespace Dynamo.PackageManager.UI
 
             var selectedItem = customTree.SelectedItem as PackageItemRootViewModel;
 
+            var viewModel = this.DataContext as PublishPackageViewModel;
+            viewModel.RootContents.Clear();
+
             if (selectedItem != null)
             {
-                var viewModel = this.DataContext as PublishPackageViewModel;
-                viewModel.RootContents.Clear();
                 viewModel.RootContents.AddRange(new ObservableCollection<PackageItemRootViewModel> (selectedItem.ChildItems
                     .OrderBy(x => x.DependencyType.Equals(DependencyType.Folder) ? 0 : 1)
                     .ThenBy(x => x.DisplayName)

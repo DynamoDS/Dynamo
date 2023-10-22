@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Windows;
 using Dynamo;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
@@ -12,6 +7,11 @@ using Dynamo.Tests;
 using Dynamo.Wpf.Utilities;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Windows;
 
 namespace DynamoCoreWpfTests
 {
@@ -262,7 +262,6 @@ namespace DynamoCoreWpfTests
         }
 
 
-
         [Test]
         public void AssertGetExistingRootItemViewModelReturnsCorrectItem()
         {
@@ -296,6 +295,59 @@ namespace DynamoCoreWpfTests
 
             Assert.AreEqual(foldersCount, testFoldersCount);
             Assert.AreEqual(filesCount, testFilesCount);
+        }
+                
+
+        [Test]
+        public void RemoveFilesUpdatesPerviewContentItem()
+        {
+            // Arrange
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder\\PackageWithNodeDocumentation");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
+            var vm = new PublishPackageViewModel(this.ViewModel);
+
+            ViewModel.OnRequestPackagePublishDialog(vm);
+
+            vm.AddAllFilesAfterSelection(allFiles);
+
+            // Act
+            Assert.AreEqual(1, vm.PackageContents.Count);
+            Assert.AreEqual(1, vm.PreviewPackageContents.Count);
+            var rootItem = vm.PackageContents.First();
+
+
+            // Assert
+            vm.RemoveItemCommand.Execute(rootItem);
+            Assert.AreEqual(0, vm.PackageContents.Count);
+            Assert.AreEqual(0, vm.PreviewPackageContents.Count);
+        }
+
+
+        [Test]
+        public void RemoveAllChildrenFilesUpdatesContentItem()
+        {
+            // Arrange
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder\\PackageWithNodeDocumentation");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
+            var vm = new PublishPackageViewModel(this.ViewModel);
+
+            ViewModel.OnRequestPackagePublishDialog(vm);
+
+            vm.AddAllFilesAfterSelection(allFiles);
+
+            // Act
+            Assert.AreEqual(1, vm.PackageContents.Count);
+            Assert.AreEqual(1, vm.PreviewPackageContents.Count);
+            var childItems = vm.PackageContents.First().ChildItems;
+
+            // Assert
+            foreach(var child in childItems)
+            {
+                vm.RemoveItemCommand.Execute(child);
+            }
+
+            Assert.AreEqual(0, vm.PackageContents.Count);
+            Assert.AreEqual(0, vm.PreviewPackageContents.Count);
         }
 
 

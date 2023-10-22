@@ -2092,12 +2092,6 @@ namespace Dynamo.PackageManager
             {
                 var unqualifiedFiles = GetAllUnqualifiedFiles();
 
-                // if the unqualified files are bigger than 0, error message is triggered.
-                // At the same time, as unqualified files existed, 
-                // files returned from BuildPackage() is 0.
-                // This is caused by the package file is not existed or it has already been in a package.
-                // files.Count() is also checking for the exception that was caught in BuildPackage().
-                // The scenario can be user trying to publish unsaved workspace.
                 if (files == null || files.Count() < 1 || unqualifiedFiles.Count() > 0)
                 {
                     string filesCannotBePublished = null;
@@ -2187,7 +2181,7 @@ namespace Dynamo.PackageManager
                     var assembly = Assemblies.FirstOrDefault(x => x.Name.Equals(Path.GetFileNameWithoutExtension(fileName)));
                     if (assembly == null)
                     {
-                        var extra = new PackageItemRootViewModel(new FileInfo(Path.Combine(extraDir, fileName)));
+                        var extra = new PackageItemRootViewModel(new FileInfo(Path.Combine(binDir, fileName)));
                         extraItemPreview.AddChild(extra);
                     }
                     else
@@ -2206,7 +2200,7 @@ namespace Dynamo.PackageManager
             foreach(var docFile in MarkdownFiles)
             {
                 var fileName = Path.GetFileName(docFile);
-                var doc = new PackageItemRootViewModel(new FileInfo(Path.Combine(binDir, fileName)));
+                var doc = new PackageItemRootViewModel(new FileInfo(Path.Combine(docDir, fileName)));
                 docItemPreview.AddChild(doc);
             }
 
