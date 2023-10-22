@@ -15,7 +15,6 @@
         <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.2485" />
         <PackageReference Include="Greg" Version="2.5.0.6325" />
         <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="3.0.0.2855" />
-        <PackageReference Include="Greg" Version="2.5.0.5076" />
         <PackageReference Include="Magick.NET.Core" Version="7.0.1" />
         <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="7.24.1" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
