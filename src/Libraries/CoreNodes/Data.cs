@@ -94,13 +94,13 @@ namespace DSCore
                     case "autodesk.geometry:boundingbox3d-1.0.0":
                         return BoundingBox.FromJson(jObject.ToString());
 
-                    case "dynamo.goemetry:mesh-1.0.0":
+                    case "dynamo.geometry:mesh-1.0.0":
                         return Mesh.FromJson(jObject.ToString());
 
                     //types supported by Goemetry.FromJson
                     case "autodesk.math:point3d-1.0.0":
                     case "dynamo.geometry:sab-1.0.0":
-                    case "dynamo.goemetry:tsm-1.0.0":
+                    case "dynamo.geometry:tsm-1.0.0":
                     case "dynamo.geometry:rectangle-1.0.0":
                     case "dynamo.geometry:cuboid-1.0.0":
                     case "dynamo.geometry:solid-1.0.0":
