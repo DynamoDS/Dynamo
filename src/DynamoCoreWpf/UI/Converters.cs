@@ -1,15 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Media;
 using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
@@ -25,6 +13,18 @@ using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels;
 using DynamoUnits;
 using FontAwesome5;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Data;
+using System.Windows.Media;
 using Color = System.Windows.Media.Color;
 using FlowDirection = System.Windows.FlowDirection;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
@@ -1500,7 +1500,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (!(value is PackageManagerSearchElement packageManagerSearchElement)) return Visibility.Collapsed;
+            if (!(value is Dynamo.PackageManager.PackageManagerSearchElement packageManagerSearchElement)) return String.Empty;
             if (packageManagerSearchElement.IsDeprecated) return Resources.PackageManagerPackageDeprecated;
 
             DateTime.TryParse(packageManagerSearchElement.LatestVersionCreated, out DateTime dateLastUpdated);

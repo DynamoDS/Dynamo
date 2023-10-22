@@ -331,7 +331,7 @@
                                         <!--My Packages control-->
                                         <local:PackageManagerPackagesControl x:Name="packageManagerMyPackages"
                                                                              DataContext="{Binding Path=PackageManagerViewModel.PackageSearchViewModel, ElementName=PackageManagerWindow}"
-                                                                             SearchItems="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.SearchMyResults, ElementName=PackageManagerWindow}"
+                                                                             SearchItemsCollection="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.SearchMyResults, ElementName=PackageManagerWindow}"
                                                                              Visibility="{Binding Path=PackageManagerViewModel.PackageSearchViewModel.InitialResultsLoaded,
                                                                                                 ElementName=PackageManagerWindow, 
                                                                                                 Converter={StaticResource BoolToVisibilityCollapsedConverter},

@@ -21,37 +21,37 @@ namespace Dynamo.PackageManager.UI
         /// <summary>
         ///     Allows different collections of SearchItems to be assigned per instance of the PackageManagerPackagesControl
         /// </summary>
-        public IEnumerable<PackageManagerSearchElementViewModel> SearchItems
+        public IEnumerable<PackageManagerSearchElementViewModel> SearchItemsCollection
         {
             get
             {
-                return (IEnumerable<PackageManagerSearchElementViewModel>)GetValue(SearchItemsProperty);
+                return (IEnumerable<PackageManagerSearchElementViewModel>)GetValue(SearchItemsCollectionProperty);
             }
             set
             {
                 if (value == null)
                     return;
 
-                SetValue(SearchItemsProperty, value);
-                SelectedItem = value.FirstOrDefault();
+                SetValue(SearchItemsCollectionProperty, value);
+                CurrentItem = value.FirstOrDefault();
             }
         }
 
         /// <summary>
         ///     Returns the currently selected SearchItems
         /// </summary>
-        public PackageManagerSearchElementViewModel SelectedItem
+        public PackageManagerSearchElementViewModel CurrentItem
         {
-            get { return (PackageManagerSearchElementViewModel)GetValue(SelectedItemProperty); }
-            private set { SetValue(SelectedItemProperty, value); }
+            get { return (PackageManagerSearchElementViewModel)GetValue(CurrentItemProperty); }
+            private set { SetValue(CurrentItemProperty, value); }
         }
 
         #endregion
 
         #region Dependency properties
 
-        public static readonly DependencyProperty SearchItemsProperty =
-            DependencyProperty.Register("SearchItems", typeof(IEnumerable<PackageManagerSearchElementViewModel>),
+        public static readonly DependencyProperty SearchItemsCollectionProperty =
+            DependencyProperty.Register("SearchItemsCollection", typeof(IEnumerable<PackageManagerSearchElementViewModel>),
               typeof(PackageManagerPackagesControl), new PropertyMetadata(null, SearchItemsPropertyChanged));
 
         private static void SearchItemsPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
@@ -66,12 +66,12 @@ namespace Dynamo.PackageManager.UI
             var searchItems = (IEnumerable<PackageManagerSearchElementViewModel>)newValue;
             if(searchItems != null)
             {
-                myPackagesListBox.ItemsSource = searchItems;
+                this.packagesListBox.ItemsSource = searchItems;
             }
         }
 
-        public static readonly DependencyProperty SelectedItemProperty =
-            DependencyProperty.Register("SelectedItem", typeof(PackageManagerSearchElementViewModel),
+        public static readonly DependencyProperty CurrentItemProperty =
+            DependencyProperty.Register("CurrentItem", typeof(PackageManagerSearchElementViewModel),
               typeof(PackageManagerPackagesControl), new PropertyMetadata(null));
 
         #endregion
@@ -99,7 +99,7 @@ namespace Dynamo.PackageManager.UI
                 var parent = WpfUtilities.FindUpVisualTree<PackageManagerSearchControl>(this) as PackageManagerSearchControl;
                 if (parent == null) return;
 
-                packageManagerSearchElementViewModel.Model.UIParent = parent.packageDetailsGrid;
+                packageManagerSearchElementViewModel.SearchElementModel.UIParent = parent.packageDetailsGrid;
                 if (parent.packageDetailsGrid.Width.Value <= 1.0)
                 {
                     var width = (parent.packageDetailsGrid.Parent as Grid).ActualWidth * 0.5;
@@ -111,7 +111,7 @@ namespace Dynamo.PackageManager.UI
                 var parent = WpfUtilities.FindUpVisualTree<PackageManagerView>(this) as PackageManagerView;
                 if (parent == null) return;
 
-                packageManagerSearchElementViewModel.Model.UIParent = parent.packageDetailsGrid;
+                packageManagerSearchElementViewModel.SearchElementModel.UIParent = parent.packageDetailsGrid;
                 if (parent.packageDetailsGrid.Width.Value <= 1.0)
                 {
                     var width = (parent.packageDetailsGrid.Parent as Grid).ActualWidth * 0.5;
@@ -120,7 +120,7 @@ namespace Dynamo.PackageManager.UI
             }
 
             PkgSearchVM.IsDetailPackagesExtensionOpened = true;
-            PkgSearchVM?.ViewPackageDetailsCommand.Execute(packageManagerSearchElementViewModel.Model);
+            PkgSearchVM?.ViewPackageDetailsCommand.Execute(packageManagerSearchElementViewModel.SearchElementModel);
         }
 
 
