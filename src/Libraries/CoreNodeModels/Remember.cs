@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using VMDataBridge;
+using System.Collections.Specialized;
 
 namespace CoreNodeModels
 {
@@ -26,19 +27,19 @@ namespace CoreNodeModels
     [DynamoServices.RegisterForTrace]
     public class Remember : NodeModel
     {
-        private string _cache = "";
-        private string _updatedToolTipText = "";
+        private string cache = "";
+        private string updatedMessage = "";
 
         [JsonProperty("Cache")]
         public string Cache
         {
-            get { return _cache; }
+            get { return cache; }
             set
             {
                 var valueToSet = value == null ? "" : value;
-                if (valueToSet != _cache)
+                if (valueToSet != cache)
                 {
-                    _cache = valueToSet;
+                    cache = valueToSet;
                     MarkNodeAsModified();
                 }
             }
@@ -48,12 +49,14 @@ namespace CoreNodeModels
         private Remember(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             PropertyChanged += OnPropertyChanged;
+            Infos.CollectionChanged += ProcessInfos;
         }
 
         public Remember()
         {
             RegisterAllPorts();
             PropertyChanged += OnPropertyChanged;
+            Infos.CollectionChanged += ProcessInfos;
         }
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -67,20 +70,37 @@ namespace CoreNodeModels
                     }
                     break;
 
-                case "ToolTipText":
-                    if (State == ElementState.Warning && ToolTipText != _updatedToolTipText)
-                    {
-                        string[] errorMessages =
-                            ToolTipText.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
-                        _updatedToolTipText = errorMessages.Last();
-                        ToolTipText = _updatedToolTipText;
-                    }
-
-                    break;
-
                 default:
                     // Nothing to handle
                     break;
+            }
+        }
+
+        /// <summary>
+        /// Handle updating the error message to remove the non-pointer message. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ProcessInfos(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if(Infos.Count == 0  || State != ElementState.Warning) return;
+            if(Infos.Any(x => x.State == ElementState.Warning && x.Message != updatedMessage))
+            {
+                var infos = new List<Info> { };
+                foreach (var info in Infos)
+                {
+                    if (info.State == ElementState.Warning)
+                    {
+                        string[] errorMessages =
+                            info.Message.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+                        updatedMessage = errorMessages.Last();
+    
+                        infos.Add(new Info(updatedMessage, ElementState.Warning));
+                    }
+                }
+
+                Infos.RemoveWhere(x => x.State == ElementState.Warning);
+                Infos.AddRange(infos);
             }
         }
 
@@ -92,6 +112,8 @@ namespace CoreNodeModels
 
         public override void Dispose()
         {
+            PropertyChanged -= OnPropertyChanged;
+            Infos.CollectionChanged -= ProcessInfos;
             base.Dispose();
             DataBridge.Instance.UnregisterCallback(GUID.ToString());
         }

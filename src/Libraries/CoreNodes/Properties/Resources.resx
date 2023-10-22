@@ -145,7 +145,7 @@
     <value>The stored data can not be rebuilt.</value>
   </data>
   <data name="Exception_Serialize_Unsupported_Type" xml:space="preserve">
-    <value>Cannot store data for this input.</value>
+    <value>Cannot store data of type {0}.</value>
   </data>
   <data name="ExportToCSVObsolete" xml:space="preserve">
     <value>Use Data.ExportCSV node instead</value>

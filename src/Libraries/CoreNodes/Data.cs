@@ -430,7 +430,7 @@ namespace DSCore
             }
             catch(Exception ex)
             {
-                throw new NotSupportedException(Properties.Resources.Exception_Serialize_Unsupported_Type);
+                throw new NotSupportedException(string.Format(Properties.Resources.Exception_Serialize_Unsupported_Type, inputObject.GetType().FullName));
             }
             
             return new Dictionary<string, object>

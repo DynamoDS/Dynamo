@@ -142,7 +142,7 @@ namespace DSCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot store data for this input..
+        ///   Looks up a localized string similar to Cannot store data of type {0}..
         /// </summary>
         internal static string Exception_Serialize_Unsupported_Type {
             get {
