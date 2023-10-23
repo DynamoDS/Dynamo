@@ -46,7 +46,7 @@ jobs:
         if-no-files-found: warn
         retention-days: 3
     - name: Repository Dispatch
-      if: ${{ github.event_name == 'push' || github.event.pull_request.merged == true }}
+      if: github.event.pull_request.merged == true
       uses: peter-evans/repository-dispatch@v2
       with:
         token: ${{ secrets.DYNAMO_TESTS_TOKEN }}
