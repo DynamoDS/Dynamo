@@ -5,12 +5,7 @@ using ProtoCore.AST.AssociativeAST;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using VMDataBridge;
-using System.Collections.Specialized;
 
 namespace CoreNodeModels
 {
@@ -28,7 +23,6 @@ namespace CoreNodeModels
     public class Remember : NodeModel
     {
         private string cache = "";
-        private string updatedMessage = "";
 
         [JsonProperty("Cache")]
         public string Cache
@@ -49,14 +43,12 @@ namespace CoreNodeModels
         private Remember(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             PropertyChanged += OnPropertyChanged;
-            Infos.CollectionChanged += ProcessInfos;
         }
 
         public Remember()
         {
             RegisterAllPorts();
             PropertyChanged += OnPropertyChanged;
-            Infos.CollectionChanged += ProcessInfos;
         }
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -76,34 +68,6 @@ namespace CoreNodeModels
             }
         }
 
-        /// <summary>
-        /// Handle updating the error message to remove the non-pointer message. 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ProcessInfos(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if(Infos.Count == 0  || State != ElementState.Warning) return;
-            if(Infos.Any(x => x.State == ElementState.Warning && x.Message != updatedMessage))
-            {
-                var infos = new List<Info> { };
-                foreach (var info in Infos)
-                {
-                    if (info.State == ElementState.Warning)
-                    {
-                        string[] errorMessages =
-                            info.Message.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
-                        updatedMessage = errorMessages.Last();
-    
-                        infos.Add(new Info(updatedMessage, ElementState.Warning));
-                    }
-                }
-
-                Infos.RemoveWhere(x => x.State == ElementState.Warning);
-                Infos.AddRange(infos);
-            }
-        }
-
         protected override void OnBuilt()
         {
             base.OnBuilt();
@@ -113,7 +77,6 @@ namespace CoreNodeModels
         public override void Dispose()
         {
             PropertyChanged -= OnPropertyChanged;
-            Infos.CollectionChanged -= ProcessInfos;
             base.Dispose();
             DataBridge.Instance.UnregisterCallback(GUID.ToString());
         }
