@@ -36,7 +36,7 @@ jobs:
         if ("${{ github.event_name }}" -eq 'pull_request') {
           echo "ARTIFACT_NAME=DynamoSandbox-${{ github.event.pull_request.number }}" >> $env:GITHUB_ENV
         } else {
-          echo "ARTIFACT_NAME=DynamoSandbox-$(git rev-parse --short HEAD)" >> $env:GITHUB_ENV
+          echo "ARTIFACT_NAME=DynamoSandbox-$(git -C ./Dynamo rev-parse --short HEAD)" >> $env:GITHUB_ENV
         }
     - name: Upload Artifact
       uses: actions/upload-artifact@v3
@@ -49,6 +49,6 @@ jobs:
       uses: peter-evans/repository-dispatch@v2
       with:
         token: ${{ secrets.DYNAMO_TESTS_TOKEN }}
-        repository: DynamoDS/TestCompleteTests
+        repository: DynamoDS/DynamoTestCompleteTests
         event-type: build-completed
         client-payload: '{"artifact_name": "${{ env.ARTIFACT_NAME }}", "run_id": "${{ github.run_id }}"}'
