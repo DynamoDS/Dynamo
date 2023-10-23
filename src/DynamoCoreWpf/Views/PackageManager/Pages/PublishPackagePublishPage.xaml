@@ -624,7 +624,10 @@
                              <!--  Top Row: Buttons and Label  -->
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
                                         Margin="30"
-                                        Visibility="{Binding PreviewPackageContents, Converter={StaticResource EmptyListToVisibilityConverter}}">
+                                        Visibility="{Binding PreviewPackageContents,                                
+                                                             UpdateSourceTrigger=PropertyChanged,
+                                                             Mode=TwoWay,
+                                                             Converter={StaticResource EmptyListToVisibilityConverter}}">
                             
                                 <!--  Add Files  -->
                                 <Button Click="NavigationButton_Click"
@@ -658,15 +661,17 @@
                                         <ToolTip Content="{x:Static p:Resources.PublishPackageViewAddDirectoryButtonTooltip}"
                                                  Style="{StaticResource GenericToolTipLight}"></ToolTip>
                                     </Button.ToolTip>
-                                </Button>
-
-                    
+                                </Button>                    
                             </StackPanel>
+                            
                             <local:CustomBrowserControl x:Name="previewBrowserControl"
                                                         Loaded="previewBrowserControl_Loaded"
                                                         IsEnabled="False"
                                                         Root="{Binding PreviewPackageContents, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
-                                                        Visibility="{Binding PreviewPackageContents, Converter={StaticResource ListHasMoreThanNItemsToVisibilityConverter}}"/>
+                                                        Visibility="{Binding PreviewPackageContents,
+                                                                             UpdateSourceTrigger=PropertyChanged,
+                                                                             Mode=TwoWay,
+                                                                             Converter={StaticResource ListHasMoreThanNItemsToVisibilityConverter}}"/>
                         </Grid>
 
                     </Border>

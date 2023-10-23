@@ -348,7 +348,7 @@
 
             <!-- Main navigation frame hosting the pages -->
             <Frame x:Name="mainFrame"
-                   Grid.Row="1"
+                   Grid.Row="1" 
                    NavigationUIVisibility="Hidden"
                    Navigated="mainFrame_Navigated"/>
 
@@ -360,6 +360,18 @@
                 <StackPanel DockPanel.Dock="Right"
                             x:Name="PublishPageButtonStack"
                             Orientation="Horizontal">
+
+                    <!--  Cancel  -->
+                    <Button Command="{Binding Path=CancelCommand}"
+                            Content="{x:Static p:Resources.CancelButton}"
+                            DockPanel.Dock="Right"
+                            Background="Transparent"
+                            Foreground="White"
+                            BorderBrush="{StaticResource DetailsButtonBorderColorBrush}"
+                            Margin="0,0,8,0"
+                            Style="{StaticResource CtaButtonStyle}"
+                            TabIndex="20" />
+                    
                     <!--  Publish Online  -->
                     <Button Command="{Binding Path=SubmitCommand}"
                             Content="{x:Static p:Resources.PublishPackage}"
@@ -367,7 +379,7 @@
                             Background="#0696D7"
                             Foreground="White"
                             BorderBrush="#0696D7"
-                            Margin="0,0,-5,0"
+                            Margin="0,0,8,0"
                             Style="{StaticResource CtaButtonStyle}"
                             TabIndex="20" />
 
@@ -397,7 +409,7 @@
                             Background="Transparent"
                             Foreground="White"
                             BorderBrush="{StaticResource DetailsButtonBorderColorBrush}"
-                            Margin="0,0,-5,0"
+                            Margin="0,0,8,0"
                             Style="{StaticResource CtaButtonStyle}"
                             TabIndex="20" />
                     
@@ -427,10 +439,10 @@
                             Background="Transparent"
                             Foreground="White"
                             BorderBrush="{StaticResource DetailsButtonBorderColorBrush}"
-                            Margin="0,0,-5,0"
+                            Margin="0,0,8,0"
                             Style="{StaticResource CtaButtonStyle}"
                             TabIndex="20" />
-
+    
                     <!--  Finish  -->
                     <Button Content="Finish"
                             Tag="Next"

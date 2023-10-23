@@ -351,6 +351,33 @@ namespace DynamoCoreWpfTests
         }
 
 
+        [Test]
+        public void CancelCommandClearsAllData()
+        {
+            // Arrange
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder\\PackageWithNodeDocumentation");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
+            var vm = new PublishPackageViewModel(this.ViewModel);
+
+            Assert.AreEqual(0, vm.PackageContents.Count);
+            Assert.AreEqual(0, vm.PreviewPackageContents.Count);
+
+            ViewModel.OnRequestPackagePublishDialog(vm);
+
+            vm.AddAllFilesAfterSelection(allFiles);
+
+            // Act
+            Assert.AreEqual(1, vm.PackageContents.Count);
+            Assert.AreEqual(1, vm.PreviewPackageContents.Count);
+            
+            vm.CancelCommand.Execute();
+
+            // Assert
+            Assert.AreEqual(0, vm.PackageContents.Count);
+            Assert.AreEqual(0, vm.PreviewPackageContents.Count);
+        }
+
+
         [Test, Category("Failure")]
         public void NewPackageVersionUpload_DoesNotThrowExceptionWhenDLLIsLoadedSeveralTimes()
         {

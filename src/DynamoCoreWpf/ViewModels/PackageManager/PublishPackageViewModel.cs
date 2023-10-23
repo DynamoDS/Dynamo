@@ -570,6 +570,12 @@ namespace Dynamo.PackageManager
         public DelegateCommand SubmitCommand { get; private set; }
 
         /// <summary>
+        /// CancelCommand property </summary>
+        /// <value>
+        /// A command which will clear the user interface and all underlaying data</value>
+        public DelegateCommand CancelCommand { get; private set; }
+
+        /// <summary>
         /// PublishLocallyCommand property </summary>
         /// <value>
         /// A command which, when executed, publish the current package to a local folder</value>
@@ -795,6 +801,7 @@ namespace Dynamo.PackageManager
             SelectDirectoryAndAddFilesRecursivelyCommand = new DelegateCommand(SelectDirectoryAndAddFilesRecursively);
             SelectMarkdownDirectoryCommand = new DelegateCommand(SelectMarkdownDirectory);
             ClearMarkdownDirectoryCommand = new DelegateCommand(ClearMarkdownDirectory);
+            CancelCommand = new DelegateCommand(Cancel);
             RemoveItemCommand = new Dynamo.UI.Commands.DelegateCommand(RemoveItem);
             ToggleMoreCommand = new DelegateCommand(() => MoreExpanded = !MoreExpanded, () => true);
             Dependencies.CollectionChanged += DependenciesOnCollectionChanged;
@@ -997,8 +1004,6 @@ namespace Dynamo.PackageManager
             this.UploadHandle = null;
             this.IsNewVersion = false;
             this.MoreExpanded = false;
-            this.ClearPackageContents();
-            this.ClearMarkdownDirectory();
             this.UploadState = PackageUploadHandle.State.Ready;
             this.AdditionalFiles = new ObservableCollection<string>();
             this.Dependencies = new ObservableCollection<PackageDependency>();
@@ -1007,6 +1012,8 @@ namespace Dynamo.PackageManager
             this.SelectedHostsString = string.Empty;
             this.copyrightHolder = string.Empty;
             this.copyrightYear = string.Empty;
+            this.ClearMarkdownDirectory();
+            this.ClearPackageContents();
         }
 
         private void ClearPackageContents()
@@ -1014,8 +1021,19 @@ namespace Dynamo.PackageManager
             //  this method clears the package contents in the publish package dialog
 
             this.Package = null;
-            this.CustomNodeDefinitions = new List<CustomNodeDefinition>();
-            RaisePropertyChanged("PackageContents");
+            //System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            //{
+                // Make changes to your ObservableCollection or other UI-bound collection here.
+                this.PackageContents.Clear();
+                this.PreviewPackageContents.Clear();
+                this.RootContents.Clear();
+
+                RaisePropertyChanged(nameof(PackageContents));
+                RaisePropertyChanged(nameof(PreviewPackageContents));
+                RaisePropertyChanged(nameof(RootContents));
+                    
+                this.CustomNodeDefinitions = new List<CustomNodeDefinition>();
+            //});
         }
 
         private void ThisPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -1524,8 +1542,18 @@ namespace Dynamo.PackageManager
 
             RemoveItemRecursively(packageItemRootViewModel);    
             RefreshPackageContents();
+            RaisePropertyChanged(nameof(PackageContents));
+            RaisePropertyChanged(nameof(PreviewPackageContents));
 
             return;
+        }
+
+        /// <summary>
+        /// The Cancel command to clear all package data and user interface
+        /// </summary>
+        private void Cancel()
+        {
+            this.ClearAllEntries();
         }
 
         private void RemoveItemRecursively(PackageItemRootViewModel packageItemRootViewModel)
@@ -1813,7 +1841,6 @@ namespace Dynamo.PackageManager
 
                     if (dialogResult == MessageBoxResult.Yes)
                     { 
-                        this.ClearAllEntries();
                         Uploading = false;
                         UploadState = PackageUploadHandle.State.Ready;
                     }
@@ -1828,6 +1855,9 @@ namespace Dynamo.PackageManager
                         },
                             null, 1200, System.Threading.Timeout.Infinite);
                     }
+
+                    // Clear the entries regardless of this choice. What is this chice for anyways?
+                    this.ClearAllEntries();
                 }
             }
             catch (Exception e)
@@ -2182,7 +2212,7 @@ namespace Dynamo.PackageManager
                     if (assembly == null)
                     {
                         var extra = new PackageItemRootViewModel(new FileInfo(Path.Combine(binDir, fileName)));
-                        extraItemPreview.AddChild(extra);
+                        binItemPreview.AddChild(extra);
                     }
                     else
                     {
