@@ -23,7 +23,7 @@
             <SolidColorBrush x:Key="GridLineColorBrush" Color="#FFFFFF" Opacity="0.1"/>
             <local:DependencyTypeToImageSourceConverter x:Key="DependencyTypeToImageSourceConverter" />
             <local:DependencyTypeToVisibilityConverter x:Key="DependencyTypeToVisibilityConverter" />
-            
+
             <!--#region CheckBox Style-->
             <!--CheckBox Style-->
             <Style x:Key="FocusVisual">
@@ -181,6 +181,11 @@
                                            VerticalAlignment="Center">
                                     <CheckBox IsThreeState="False"
                                               VerticalAlignment="Center"
+                                              DataContext="{Binding ElementName=PublishPackagePage}"
+                                              IsChecked="{Binding 
+                                                                  Path=AllItemsSelected,
+                                                                  UpdateSourceTrigger=PropertyChanged,
+                                                                  Mode=TwoWay}"
                                               Click="SelectDeselectButton_Click"
                                               Margin="18 0 10 0">
                                         <CheckBox.Style>

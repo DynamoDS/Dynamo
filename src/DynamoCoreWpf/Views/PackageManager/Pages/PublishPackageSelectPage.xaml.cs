@@ -1,26 +1,48 @@
+using Dynamo.Utilities;
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using Dynamo.Utilities;
 
 namespace Dynamo.PackageManager.UI
 {
     /// <summary>
     /// Interaction logic for PublishPackageSelectPage.xaml
     /// </summary>
-    public partial class PublishPackageSelectPage : Page
+    public partial class PublishPackageSelectPage : Page, INotifyPropertyChanged
     {
         private PublishPackageViewModel PublishPackageViewModel;
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
         /// A selection of PackageItemRootViewModel keeping track of currently seleted items
         /// Used for removing files and folders from the current Package contents
         /// </summary>
         public ObservableCollection<PackageItemRootViewModel> ItemSelection { get; set; } = new ObservableCollection<PackageItemRootViewModel>();
+
+        private bool _allItemsSelected;
+
+        public bool AllItemsSelected
+        {
+            get { return _allItemsSelected; }
+            set
+            {
+                if (_allItemsSelected != value)
+                {
+                    _allItemsSelected = value;
+                    RaisePropertyChanged(nameof(AllItemsSelected));
+                }
+            }
+        }
+        protected virtual void RaisePropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         public PublishPackageSelectPage()
         {
@@ -73,6 +95,7 @@ namespace Dynamo.PackageManager.UI
             }
 
             ItemSelection.Clear();
+            AllItemsSelected = false;
         }
 
         // Adds/removes (selects/deselects) item to the ItemSelection collection
@@ -97,6 +120,12 @@ namespace Dynamo.PackageManager.UI
                 item.IsSelected = false;
                 ItemSelection.Remove(item);
             }
+
+            if(ItemSelection.Count == PublishPackageViewModel.RootContents.Count)
+            {
+                AllItemsSelected = true;
+            }
+            else { AllItemsSelected = false; }
         }
 
         // Clears the current item selection
@@ -106,6 +135,7 @@ namespace Dynamo.PackageManager.UI
                          .ForEach(item => { item.IsSelected = false; });
 
             ItemSelection.Clear();
+            AllItemsSelected = false;
         }
 
         // Selects/deselects all items inside the current RootContents collection
@@ -127,7 +157,6 @@ namespace Dynamo.PackageManager.UI
             }
         }
     }
-
 
     public class DependencyTypeToImageSourceConverter : IValueConverter
     {
