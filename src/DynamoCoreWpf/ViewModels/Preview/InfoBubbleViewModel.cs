@@ -1088,7 +1088,7 @@ namespace Dynamo.ViewModels
 
             // return the text without the link or identifier
             string[] split = text.Split(new string[] { externalLinkIdentifier }, StringSplitOptions.None);
-            return split[0];
+            return String.Concat(split);
         }
 
         private static Uri ParseLinkFromText(string text)
