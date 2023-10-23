@@ -58,9 +58,11 @@
     <None Remove="UI\Images\add-file-16px.png" />
     <None Remove="UI\Images\add-folder-16px.png" />
     <None Remove="UI\Images\Canvas\canvas-button-geometry-scaling.png" />
+    <None Remove="UI\Images\checkmark_16px.png" />
     <None Remove="UI\Images\close_16px.png" />
     <None Remove="UI\Images\caret_drop_down.png" />
     <None Remove="UI\Images\file-generic-16px.png" />
+    <None Remove="UI\Images\finished_checkmark_30px.png" />
     <None Remove="UI\Images\folder-generic-16px.png" />
     <None Remove="UI\Images\help-16px.png" />
     <None Remove="UI\Images\NodeStates\package-64px.png" />
@@ -838,6 +840,7 @@
     <Resource Include="UI\Images\caret_drop_down.png" />
     <Resource Include="UI\Images\caret_up.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\ArtifaktElement-Regular.woff" />
+    <Resource Include="UI\Images\checkmark_16px.png" />
     <Resource Include="UI\Images\close_16px.png" />
     <Resource Include="UI\Images\cursors.psd" />
     <Resource Include="UI\Images\cursors1.psd" />
@@ -972,6 +975,7 @@
     <Resource Include="UI\Images\closetab_normal.png" />
     <Resource Include="UI\Images\dynamonotext.png" />
     <Resource Include="UI\Images\file-generic-16px.png" />
+    <Resource Include="UI\Images\finished_checkmark_30px.png" />
     <Resource Include="UI\Images\folder-generic-16px.png" />
     <Resource Include="UI\Images\help-16px.png" />
     <Resource Include="UI\Images\maximize_16px_blue.png" />

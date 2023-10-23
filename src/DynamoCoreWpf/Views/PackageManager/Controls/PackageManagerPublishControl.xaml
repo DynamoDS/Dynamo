@@ -354,11 +354,11 @@
 
             <!--  Bottom Section: Publish Buttons + Status Label    -->
             <DockPanel VerticalAlignment="Center"
-                           Grid.Row="2"
-                           Margin="25,0">
+                       Grid.Row="2"
+                       x:Name="PublishPageButtonStack"
+                       Margin="25,0">
 
                 <StackPanel DockPanel.Dock="Right"
-                            x:Name="PublishPageButtonStack"
                             Orientation="Horizontal">
 
                     <!--  Cancel  -->
@@ -375,6 +375,7 @@
                     <!--  Publish Online  -->
                     <Button Command="{Binding Path=SubmitCommand}"
                             Content="{x:Static p:Resources.PublishPackage}"
+                            x:Name="publishButton"
                             DockPanel.Dock="Right"
                             Background="#0696D7"
                             Foreground="White"
@@ -394,12 +395,40 @@
                             Style="{StaticResource CtaButtonStyle}"
                             TabIndex="19" />
                 </StackPanel>
-                        
-                <StackPanel DockPanel.Dock="Right"
-                        x:Name="SelectPageButtonStack"
-                        Orientation="Horizontal"
-                        Visibility="Collapsed">
 
+                <!--  Status Label  -->
+                <Image Width="18px"
+                        Height="18px"
+                        Margin="5,0"
+                        UseLayoutRounding="True"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Visibility="{Binding ElementName=publishButton, Path=IsEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Source="/DynamoCoreWpf;component/UI/Images/checkmark_16px.png" />
+                <TextBlock Margin="0,4,0,0"
+                            VerticalAlignment="Center"
+                            x:Name="statusLabel"
+                            FontFamily="{StaticResource ArtifaktElementRegular}"
+                            Style="{StaticResource LabelStyle}"
+                            Text="{Binding ErrorString, UpdateSourceTrigger=PropertyChanged}"
+                            TextTrimming="CharacterEllipsis">
+                    <TextBlock.ToolTip>
+                        <ToolTip Content="{Binding ErrorString, UpdateSourceTrigger=PropertyChanged}"
+                                    Style="{StaticResource GenericToolTipLight}" />
+                    </TextBlock.ToolTip>
+                </TextBlock>  
+                
+            </DockPanel>
+
+            <!-- Select --> 
+            <DockPanel VerticalAlignment="Center"
+                       Grid.Row="2"
+                       x:Name="SelectPageButtonStack"
+                       Visibility="Collapsed"
+                       Margin="25,0">
+
+                <StackPanel DockPanel.Dock="Right"
+                        Orientation="Horizontal">
 
                     <!--  Back to Details -->
                     <Button Content="Back to Package Details"
@@ -412,7 +441,7 @@
                             Margin="0,0,8,0"
                             Style="{StaticResource CtaButtonStyle}"
                             TabIndex="20" />
-                    
+
                     <!--  Next  -->
                     <Button Content="Next"
                             Tag="Next"
@@ -425,11 +454,26 @@
                             Style="{StaticResource CtaButtonStyle}"
                             TabIndex="19" />
                 </StackPanel>
+                
+                <TextBlock Margin="0,4,0,0"
+                            VerticalAlignment="Center"
+                            FontFamily="{StaticResource ArtifaktElementRegular}"
+                            Style="{StaticResource LabelStyle}"
+                            Text="{x:Static p:Resources.PublishPackageSelectPackageContentsMessage}"
+                            TextTrimming="CharacterEllipsis">
+                </TextBlock>
+
+            </DockPanel>
+
+            <!--  Preview  -->
+            <DockPanel VerticalAlignment="Center"
+                       Grid.Row="2"
+                       x:Name="PreviewPageButtonStack"
+                       Visibility="Collapsed"
+                       Margin="25,0">
 
                 <StackPanel DockPanel.Dock="Right"
-                            x:Name="PreviewPageButtonStack"
-                            Orientation="Horizontal"
-                            Visibility="Collapsed">
+                            Orientation="Horizontal">
 
                     <!--  Back to Selection -->
                     <Button Content="Back to File Selection"
@@ -442,10 +486,10 @@
                             Margin="0,0,8,0"
                             Style="{StaticResource CtaButtonStyle}"
                             TabIndex="20" />
-    
+
                     <!--  Finish  -->
                     <Button Content="Finish"
-                            Tag="Next"
+                            Tag="Finish"
                             Click="BreadcrumbButton_Click"
                             DockPanel.Dock="Right"
                             Margin="0,0,2,0"
@@ -456,21 +500,47 @@
                             TabIndex="19" />
                 </StackPanel>
 
+
                 <!--  Status Label  -->
+                <Image Width="18px"
+                        Height="18px"
+                        Margin="5,0"
+                        UseLayoutRounding="True"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Source="/DynamoCoreWpf;component/UI/Images/info.png" />
                 <TextBlock Margin="0,4,0,0"
                             VerticalAlignment="Center"
                             FontFamily="{StaticResource ArtifaktElementRegular}"
                             Style="{StaticResource LabelStyle}"
-                            Text="{Binding ErrorString, UpdateSourceTrigger=PropertyChanged}"
+                            Text="{x:Static p:Resources.PublishPackagePreviewPackageContentsMessage}"
                             TextTrimming="CharacterEllipsis">
-                    <TextBlock.ToolTip>
-                        <ToolTip Content="{Binding ErrorString, UpdateSourceTrigger=PropertyChanged}"
-                                    Style="{StaticResource GenericToolTipLight}" />
-                    </TextBlock.ToolTip>
                 </TextBlock>
             </DockPanel>
 
-            
+            <!--  Done  -->
+            <DockPanel VerticalAlignment="Center"
+                       Grid.Row="2"                       
+                       x:Name="FinishPageButtonStack"
+                       Visibility="Collapsed"
+                       LastChildFill="False"
+                       Margin="25,0">
+
+                <StackPanel DockPanel.Dock="Right"
+                            Orientation="Horizontal">
+                    <Button Content="Done"
+                            Tag="Done"
+                            Click="BreadcrumbButton_Click"
+                            DockPanel.Dock="Right"
+                            Margin="0,0,2,0"
+                            Background="#0696D7"
+                            Foreground="White"
+                            BorderBrush="#0696D7"
+                            Style="{StaticResource CtaButtonStyle}"
+                            TabIndex="19" />
+                </StackPanel>
+            </DockPanel>
+
         </Grid>
     </Border>
 </UserControl>

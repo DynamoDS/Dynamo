@@ -2211,6 +2211,12 @@ Do you want to install the latest Dynamo update?</value>
     <value>Move the selected path upward</value>
     <comment>Tool-tip for up arrow</comment>
   </data>
+  <data name="PackageManagerFinishedPackagePackagePath" xml:space="preserve">
+    <value>Package Path</value>
+  </data>
+  <data name="PackageManagerFinishedPackageFilesUploadedMessage" xml:space="preserve">
+    <value> files uploaded</value>
+  </data>
   <data name="PackagePathAutoAddNotificationTitle" xml:space="preserve">
     <value>Package Path Added</value>
   </data>
@@ -2249,6 +2255,12 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="PublishPackageLocally" xml:space="preserve">
     <value>Publish Locally</value>
+  </data>
+  <data name="PublishPackageSelectPackageContentsMessage" xml:space="preserve">
+    <value>Select package contents</value>
+  </data>
+  <data name="PublishPackagePreviewPackageContentsMessage" xml:space="preserve">
+    <value>Preview package contents (read only)</value>
   </data>
   <data name="BackgroundPreviewName" xml:space="preserve">
     <value>_Background Preview</value>
@@ -2322,6 +2334,9 @@ Do you want to install the latest Dynamo update?</value>
     <value>Please, load assembly just one time.
 Next assemblies were loaded several times:
 </value>
+  </data>
+  <data name="PackageManagerReadyToPublish" xml:space="preserve">
+    <value>Ready to publish</value>
   </data>
   <data name="MessageFailedToAddFile" xml:space="preserve">
     <value>Failed to add file: {0}</value>

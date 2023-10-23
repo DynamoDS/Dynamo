@@ -790,6 +790,21 @@ namespace Dynamo.PackageManager
             }
         }
 
+
+        private string _rootFolder;
+        /// <summary>
+        /// The publish folder for the current package
+        /// </summary>
+        public string RootFolder
+        {
+            get { return _rootFolder; }
+            set
+            {
+                _rootFolder = value;
+                RaisePropertyChanged(nameof(RootFolder));
+            }
+        }
+
         #endregion
 
         internal PublishPackageViewModel()
@@ -839,11 +854,11 @@ namespace Dynamo.PackageManager
 
             var items = new Dictionary<string, PackageItemRootViewModel>();
 
-            if(!String.IsNullOrEmpty(rootFolder))
+            if(!String.IsNullOrEmpty(RootFolder))
             {
-                var root = new PackageItemRootViewModel(rootFolder);
-                items[rootFolder] = root;
-                rootFolder = String.Empty;
+                var root = new PackageItemRootViewModel(RootFolder);
+                items[RootFolder] = root;
+                RootFolder = String.Empty;
             }
 
             foreach (var item in itemsToAdd)
@@ -1012,6 +1027,7 @@ namespace Dynamo.PackageManager
             this.SelectedHostsString = string.Empty;
             this.copyrightHolder = string.Empty;
             this.copyrightYear = string.Empty;
+            this.RootFolder = string.Empty;
             this.ClearMarkdownDirectory();
             this.ClearPackageContents();
         }
@@ -1386,7 +1402,6 @@ namespace Dynamo.PackageManager
 
         private string _errorString = "";
         private string dependencyNames;
-        private string rootFolder;
 
         public string ErrorString
         {
@@ -1468,7 +1483,7 @@ namespace Dynamo.PackageManager
         /// <param name="filePaths"></param>
         internal void AddAllFilesAfterSelection(List<string> filePaths, string rootFolder = null)
         {
-            this.rootFolder = rootFolder ?? string.Empty;
+            this.RootFolder = rootFolder ?? string.Empty;
 
             UploadState = PackageUploadHandle.State.Ready;
 
@@ -1836,28 +1851,29 @@ namespace Dynamo.PackageManager
                 // whether user wants to continue uploading another file or not.
                 if (UploadState == PackageUploadHandle.State.Uploaded)
                 {
-                    // For test mode, presume the dialog input to be No and proceed.
-                    MessageBoxResult dialogResult = DynamoModel.IsTestMode ? MessageBoxResult.No : MessageBoxService.Show(Resources.PublishPackageMessage, Resources.PublishPackageDialogCaption, MessageBoxButton.YesNo, MessageBoxImage.Information); ;
+                    //// For test mode, presume the dialog input to be No and proceed.
+                    //MessageBoxResult dialogResult = DynamoModel.IsTestMode ? MessageBoxResult.No : MessageBoxService.Show(Resources.PublishPackageMessage, Resources.PublishPackageDialogCaption, MessageBoxButton.YesNo, MessageBoxImage.Information); ;
 
-                    if (dialogResult == MessageBoxResult.Yes)
-                    { 
-                        Uploading = false;
-                        UploadState = PackageUploadHandle.State.Ready;
-                    }
-                    else
-                    {
-                        Uploading = true;
-                        System.Threading.Timer timer = null;
-                        timer = new System.Threading.Timer((obj) =>
-                        {
-                            OnPublishSuccess();
-                            timer.Dispose();
-                        },
-                            null, 1200, System.Threading.Timeout.Infinite);
-                    }
+                    //if (dialogResult == MessageBoxResult.Yes)
+                    //{ 
+                    //    Uploading = false;
+                    //    UploadState = PackageUploadHandle.State.Ready;
+                    //}
+                    //else
+                    //{
+                    //    Uploading = true;
+                    //    System.Threading.Timer timer = null;
+                    //    timer = new System.Threading.Timer((obj) =>
+                    //    {
+                    //        timer.Dispose();
+                    //    },
+                    //        null, 1200, System.Threading.Timeout.Infinite);
+                    //}
 
-                    // Clear the entries regardless of this choice. What is this chice for anyways?
-                    this.ClearAllEntries();
+                    
+                    OnPublishSuccess();
+
+                    ClearAllEntries();
                 }
             }
             catch (Exception e)
@@ -2001,6 +2017,7 @@ namespace Dynamo.PackageManager
 
             }
 
+            RootFolder = folder;
             return folder;
         }
 
@@ -2090,6 +2107,7 @@ namespace Dynamo.PackageManager
 
             if (Uploading) return false;
 
+            this.ErrorString = Resources.PackageManagerReadyToPublish;
             return true;
         }
 
@@ -2110,7 +2128,7 @@ namespace Dynamo.PackageManager
 
             if (PackageContents?.Count == 0) return;
 
-            var publishPath = !String.IsNullOrEmpty(rootFolder) ? rootFolder : new FileInfo("Publish Path").FullName;
+            var publishPath = !String.IsNullOrEmpty(RootFolder) ? RootFolder : new FileInfo("Publish Path").FullName;
             if (string.IsNullOrEmpty(publishPath))
                 return;
 

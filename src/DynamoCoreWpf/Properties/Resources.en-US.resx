@@ -1488,6 +1488,9 @@ To avoid unintended behavior, uninstall the conflicting loaded package(s), resta
 Next assemblies were loaded several times:
 </value>
   </data>
+  <data name="PackageManagerReadyToPublish" xml:space="preserve">
+    <value>Ready to publish</value>
+  </data>
   <data name="OnlyTitle" xml:space="preserve">
     <value>only</value>
   </data>
@@ -1575,6 +1578,12 @@ Next assemblies were loaded several times:
   <data name="PackagePathViewToolTipUp" xml:space="preserve">
     <value>Move the selected path upward</value>
     <comment>Tool-tip for up arrow</comment>
+  </data>
+  <data name="PackageManagerFinishedPackagePackagePath" xml:space="preserve">
+    <value>Package Path</value>
+  </data>
+  <data name="PackageManagerFinishedPackageFilesUploadedMessage" xml:space="preserve">
+    <value> files uploaded</value>
   </data>
   <data name="PackagePathAutoAddNotificationTitle" xml:space="preserve">
     <value>Package Path Added</value>
@@ -1797,6 +1806,12 @@ Next assemblies were loaded several times:
   </data>
   <data name="PublishPackageDialogCaption" xml:space="preserve">
     <value>Published Successfully</value>
+  </data>
+  <data name="PublishPackageSelectPackageContentsMessage" xml:space="preserve">
+    <value>Select package contents</value>
+  </data>
+  <data name="PublishPackagePreviewPackageContentsMessage" xml:space="preserve">
+    <value>Preview package contents (read only)</value>
   </data>
   <data name="PublishPackageLocally" xml:space="preserve">
     <value>Publish Locally</value>
