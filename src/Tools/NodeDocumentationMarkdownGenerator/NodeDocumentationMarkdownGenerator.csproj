@@ -12,7 +12,6 @@
   </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="CommandLineParser" Version="2.8.0" />
-        <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="3.0.0.2767" />
         <PackageReference Include="Greg" Version="3.0.0.2926" />
         <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="3.0.0.2855" />
         <PackageReference Include="Magick.NET.Core" Version="7.0.1" />
