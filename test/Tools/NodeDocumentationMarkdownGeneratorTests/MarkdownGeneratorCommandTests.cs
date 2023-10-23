@@ -45,11 +45,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
 
         private DirectoryInfo tempDirectory = null;
 
-#if NET6_0_OR_GREATER
         [OneTimeSetUp]
-#elif NETFRAMEWORK
-        [TestFixtureSetUp]
-#endif
         public void FixtureSetup()
         {
             try
@@ -64,11 +60,8 @@ namespace NodeDocumentationMarkdownGeneratorTests
                 Console.WriteLine(e.StackTrace);
             }
         }
-#if NET6_0_OR_GREATER
+
         [OneTimeTearDown]
-#elif NETFRAMEWORK
-        [TestFixtureTearDown]
-#endif
         public void FixtureTearDown()
         {
             AppDomain.CurrentDomain.AssemblyResolve -= CurrentDomain_AssemblyResolve;

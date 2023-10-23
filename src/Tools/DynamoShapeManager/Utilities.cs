@@ -593,7 +593,6 @@ namespace DynamoShapeManager
             var ASMFilePath = Directory.GetFiles(asmPath, searchPattern, SearchOption.TopDirectoryOnly).FirstOrDefault();
             if (ASMFilePath != null && File.Exists(ASMFilePath))
             {
-#if NET6_0_OR_GREATER
                 if (!OperatingSystem.IsWindows())
                 {
                     string fileName = Path.GetFileNameWithoutExtension(ASMFilePath);
@@ -609,7 +608,6 @@ namespace DynamoShapeManager
                     }
                     return new Version($"{version}.0.0");
                 }
-#endif
                 var asmVersion = FileVersionInfo.GetVersionInfo(ASMFilePath);
                 var libGversion = new Version(asmVersion.FileMajorPart, asmVersion.FileMinorPart, asmVersion.FileBuildPart);
                 return libGversion;

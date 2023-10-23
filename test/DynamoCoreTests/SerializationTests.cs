@@ -293,12 +293,7 @@ namespace Dynamo.Tests
                     // When values are geometry, sometimes the creation
                     // of the string representation for forming this message
                     // fails.
-#if NET6_0_OR_GREATER
                     Assert.That(valueA, Is.EqualTo(valueB).Using<Dictionary>(DynamoDictionaryEquality),
-
-#elif NETFRAMEWORK
-                    Assert.That(valueA, Is.EqualTo(valueB),
-#endif
                     string.Format("Node Type:{0} value, {1} is not equal to {2}",
                     a.NodeTypeMap[kvp.Key], valueA, valueB));
                 }
@@ -410,12 +405,8 @@ namespace Dynamo.Tests
                     // When values are geometry, sometimes the creation
                     // of the string representation for forming this message
                     // fails.
-#if NET6_0_OR_GREATER
                     Assert.That(valueA, Is.EqualTo(valueB).Using<Dictionary>(DynamoDictionaryEquality),
 
-#elif NETFRAMEWORK
-                    Assert.That(valueA, Is.EqualTo(valueB),
-#endif
                     string.Format("Node Type:{0} value, {1} is not equal to {2}",
                     a.NodeTypeMap[kvp.Key], valueA, valueB));
                 }
@@ -608,11 +599,7 @@ namespace Dynamo.Tests
             base.GetLibrariesToPreload(libraries);
         }
 
-#if NETFRAMEWORK
-        [TestFixtureSetUp]
-#elif NET6_0_OR_GREATER
         [OneTimeSetUp]
-#endif
         public void FixtureSetup()
         {
             ExecutionEvents.GraphPostExecution += ExecutionEvents_GraphPostExecution;
@@ -651,11 +638,7 @@ namespace Dynamo.Tests
             }
         }
 
-#if NETFRAMEWORK
-        [TestFixtureTearDown]
-#elif NET6_0_OR_GREATER
         [OneTimeTearDown]
-#endif
         public void TearDown()
         {
             ExecutionEvents.GraphPostExecution -= ExecutionEvents_GraphPostExecution;

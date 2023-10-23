@@ -2,11 +2,7 @@ using System;
 using CoreNodeModels;
 using Dynamo.Controls;
 using Dynamo.Wpf;
-#if NETFRAMEWORK
-using Microsoft.Practices.Prism.Commands;
-#else
 using Prism.Commands;
-#endif
 
 namespace CoreNodeModelsWpf.Nodes
 {
