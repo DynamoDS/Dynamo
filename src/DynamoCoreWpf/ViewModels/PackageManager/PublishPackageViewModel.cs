@@ -806,7 +806,7 @@ namespace Dynamo.PackageManager
         }
 
         #endregion
-
+                
         internal PublishPackageViewModel()
         {
             customNodeDefinitions = new List<CustomNodeDefinition>();
@@ -920,11 +920,6 @@ namespace Dynamo.PackageManager
                         parent.Value.AddChild(child.Value);
                         child.Value.isChild = true;
                     }
-                    //if (IsSubPathOf(parent.Value.DirectoryName, child.Value.DirectoryName))
-                    //{
-                    //    child.Value.isChild = true;
-                    //    parent.Value.ChildItems.Add(child.Value);
-                    //}
                 }
             }
 
@@ -1031,6 +1026,34 @@ namespace Dynamo.PackageManager
             this.ClearMarkdownDirectory();
             this.ClearPackageContents();
         }
+
+        /// <summary>
+        /// Decides if any user changes have been made in the current packge publish session
+        /// </summary>
+        /// <returns>true if any changes have been made, otehrwise false</returns>
+        internal bool AnyUserChanges()
+        {             
+            if(!String.IsNullOrEmpty(this.Name)) return true;
+            if(!String.IsNullOrEmpty(this.RepositoryUrl)) return true;       
+            if(!String.IsNullOrEmpty(this.SiteUrl)) return true;
+            if(!String.IsNullOrEmpty(this.License)) return true;
+            if(!String.IsNullOrEmpty(this.Keywords)) return true;
+            if(!String.IsNullOrEmpty(this.Description)) return true;
+            if(!String.IsNullOrEmpty(this.Group)) return true;
+            if(!String.IsNullOrEmpty(this.MajorVersion) && !(this.MajorVersion.Equals("0"))) return true;
+            if(!String.IsNullOrEmpty(this.MinorVersion) && !(this.MinorVersion.Equals("0"))) return true;
+            if(!String.IsNullOrEmpty(this.BuildVersion) && !(this.BuildVersion.Equals("0"))) return true;
+            if(this.AdditionalFiles.Any()) return true;
+            if(this.Dependencies.Any()) return true;
+            if(this.Assemblies.Any()) return true;
+            if(this.SelectedHosts.Any()) return true;
+            if(!String.IsNullOrEmpty(this.SelectedHostsString)) return true;
+            if(!String.IsNullOrEmpty(this.copyrightHolder)) return true;
+            if(!String.IsNullOrEmpty(this.copyrightYear)) return true;
+            if(!String.IsNullOrEmpty(this.RootFolder)) return true;
+
+            return false;
+    }
 
         private void ClearPackageContents()
         {
@@ -1567,7 +1590,7 @@ namespace Dynamo.PackageManager
         /// The Cancel command to clear all package data and user interface
         /// </summary>
         private void Cancel()
-        {
+        {          
             this.ClearAllEntries();
         }
 

@@ -105,7 +105,7 @@
                                 <Thumb x:Name="PART_RightHeaderGripper"
                                        Width="1"
                                        HorizontalAlignment="Right"
-                                       BorderBrush="#5E5E5E"
+                                       BorderBrush="Transparent"
                                        BorderThickness="1,0,0,0"
                                        Cursor="SizeWE" />
                             </Grid>
@@ -139,7 +139,7 @@
                                 <Thumb x:Name="PART_RightHeaderGripper"
                                        Width="1"
                                        HorizontalAlignment="Right"
-                                       BorderBrush="#5E5E5E"
+                                       BorderBrush="Transparent"
                                        BorderThickness="1,0,0,0"
                                        Cursor="SizeWE" />
                             </Grid>
@@ -174,8 +174,7 @@
                 <Setter Property="CellStyle" Value="{DynamicResource DataGridCellStyle}" />
                 <Setter Property="RowStyle" Value="{DynamicResource DataGridRowStyle}" />
                 <Setter Property="HeadersVisibility" Value="Column" />
-                <Setter Property="GridLinesVisibility" Value="Vertical" />
-                <Setter Property="VerticalGridLinesBrush" Value="{StaticResource GridLineColorBrush}" />
+                <Setter Property="GridLinesVisibility" Value="None" />
                 <Setter Property="SelectionMode" Value="Extended" />
                 <Setter Property="HorizontalScrollBarVisibility" Value="Visible" />
                 <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
@@ -467,5 +466,14 @@
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
+        <Rectangle Stroke="{StaticResource GridLineColorBrush}"
+                   StrokeThickness="1"
+                   Margin="295 0 0 0"
+                   Width="1"
+                   Height="{Binding ElementName=rootContentsDataGrid, Path=ActualHeight}"
+                   Grid.Column="1"
+                   Grid.Row="1">
+            
+        </Rectangle>
     </Grid>
 </Page>

@@ -3299,6 +3299,12 @@ Try placing the highlighted **ByOrigin** node.</value>
   <data name="FileTrustWarningPopupNoCloseFile" xml:space="preserve">
     <value>No, close file</value>
   </data>
+  <data name="DiscardChangesWarningPopupCaption" xml:space="preserve">
+    <value>Discard changes?</value>
+  </data>
+  <data name="DiscardChangesWarningPopupMessage" xml:space="preserve">
+    <value>Your changes will be lost if you navigate away from the package upload screen.</value>
+  </data>
   <data name="FileTrustWarningPopupSettings" xml:space="preserve">
     <value>Settings</value>
   </data>

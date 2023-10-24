@@ -1289,6 +1289,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Discard changes?.
+        /// </summary>
+        public static string DiscardChangesWarningPopupCaption {
+            get {
+                return ResourceManager.GetString("DiscardChangesWarningPopupCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your changes will be lost if you navigate away from the package upload screen..
+        /// </summary>
+        public static string DiscardChangesWarningPopupMessage {
+            get {
+                return ResourceManager.GetString("DiscardChangesWarningPopupMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Download Warning.
         /// </summary>
         public static string DownloadWarningMessageBoxTitle {

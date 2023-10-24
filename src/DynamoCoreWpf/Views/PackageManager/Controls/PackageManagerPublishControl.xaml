@@ -362,7 +362,7 @@
                             Orientation="Horizontal">
 
                     <!--  Cancel  -->
-                    <Button Command="{Binding Path=CancelCommand}"
+                    <Button Click="CancelButton_Click"
                             Content="{x:Static p:Resources.CancelButton}"
                             DockPanel.Dock="Right"
                             Background="Transparent"
