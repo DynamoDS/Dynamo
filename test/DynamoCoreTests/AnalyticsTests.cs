@@ -100,9 +100,6 @@ namespace Dynamo.Tests
 
             e = Analytics.TrackFileOperationEvent(this.TempFolder, Actions.Read, 5);
             clientMoq.Verify(c => c.TrackFileOperationEvent(this.TempFolder, Actions.Read, 5, ""), times);
-
-            Analytics.LogPiiInfo("tag", "data");
-            clientMoq.Verify(c => c.LogPiiInfo("tag", "data"), times);
         }
 
         [Test]

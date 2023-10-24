@@ -271,10 +271,6 @@ namespace Dynamo.Logging
         {
             lock (this.guardMutex)
             {
-                //Don't overwhelm the logging system
-                if (debugSettings.VerboseLogging)
-                    Analytics.LogPiiInfo("LogMessage-" + level.ToString(), message);
-
                 // In test mode, write the logs only to std out. 
                 if (testMode && !cliMode)
                 {

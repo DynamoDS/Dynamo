@@ -541,12 +541,5 @@ namespace Dynamo.Logging
         /// <param name="description">Event description</param>
         /// <returns>Event as IDisposable</returns>
         IDisposable TrackFileOperationEvent(string filepath, Actions operation, int size, string description);
-
-        /// <summary>
-        /// Logs usage data
-        /// </summary>
-        /// <param name="tag">Usage tag</param>
-        /// <param name="data">Usage data</param>
-        void LogPiiInfo(string tag, string data);
     }
 }
