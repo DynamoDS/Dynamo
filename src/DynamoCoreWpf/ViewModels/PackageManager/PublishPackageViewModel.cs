@@ -1799,7 +1799,8 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// Delegate used to publish the element to a local folder</summary>
+        /// Delegate used to publish the element to a local folder
+        /// </summary>
         private void PublishLocally()
         {
             var publishPath = GetPublishFolder();
@@ -1840,39 +1841,39 @@ namespace Dynamo.PackageManager
 
                 UploadState = PackageUploadHandle.State.Copying;
                 Uploading = true;
-                // begin publishing to local directory
-                var remapper = new CustomNodePathRemapper(DynamoViewModel.Model.CustomNodeManager,
-                    DynamoModel.IsTestMode);
-                var builder = new PackageDirectoryBuilder(new MutatingFileSystem(), remapper);
-                builder.BuildDirectory(Package, publishPath, files, MarkdownFiles);
-                UploadState = PackageUploadHandle.State.Uploaded;
 
-                // Once upload is successful, a display message will appear to ask
-                // whether user wants to continue uploading another file or not.
+                if(RetainFolderStructureOverride)
+                {
+
+                    var updatedFiles = files.Select(file =>
+                    {
+                        if (Assemblies.Any(x => x.Name.Equals(Path.GetFileNameWithoutExtension(file))))
+                        {
+                            return Assemblies.First(x => x.Name.Equals(Path.GetFileNameWithoutExtension(file))).LocalFilePath;
+                        }
+                        return file;
+                    }).ToList();
+
+                    // begin publishing to local directory retaining the folder structure
+                    var remapper = new CustomNodePathRemapper(DynamoViewModel.Model.CustomNodeManager,
+                        DynamoModel.IsTestMode);
+                    var builder = new PackageDirectoryBuilder(new MutatingFileSystem(), remapper);
+                    builder.BuildRetainDirectory(Package, publishPath, updatedFiles, MarkdownFiles);
+                    UploadState = PackageUploadHandle.State.Uploaded;
+                }
+                else
+                {
+                    // begin publishing to local directory
+                    var remapper = new CustomNodePathRemapper(DynamoViewModel.Model.CustomNodeManager,
+                        DynamoModel.IsTestMode);
+                    var builder = new PackageDirectoryBuilder(new MutatingFileSystem(), remapper);
+                    builder.BuildDirectory(Package, publishPath, files, MarkdownFiles);
+                    UploadState = PackageUploadHandle.State.Uploaded;
+                }
+
                 if (UploadState == PackageUploadHandle.State.Uploaded)
                 {
-                    //// For test mode, presume the dialog input to be No and proceed.
-                    //MessageBoxResult dialogResult = DynamoModel.IsTestMode ? MessageBoxResult.No : MessageBoxService.Show(Resources.PublishPackageMessage, Resources.PublishPackageDialogCaption, MessageBoxButton.YesNo, MessageBoxImage.Information); ;
-
-                    //if (dialogResult == MessageBoxResult.Yes)
-                    //{ 
-                    //    Uploading = false;
-                    //    UploadState = PackageUploadHandle.State.Ready;
-                    //}
-                    //else
-                    //{
-                    //    Uploading = true;
-                    //    System.Threading.Timer timer = null;
-                    //    timer = new System.Threading.Timer((obj) =>
-                    //    {
-                    //        timer.Dispose();
-                    //    },
-                    //        null, 1200, System.Threading.Timeout.Infinite);
-                    //}
-
-                    
                     OnPublishSuccess();
-
                     ClearAllEntries();
                 }
             }
@@ -2226,17 +2227,8 @@ namespace Dynamo.PackageManager
                 }
                 else if (file.EndsWith(".dll") || PackageDirectoryBuilder.IsXmlDocFile(file, files) || PackageDirectoryBuilder.IsDynamoCustomizationFile(file, files))
                 {
-                    var assembly = Assemblies.FirstOrDefault(x => x.Name.Equals(Path.GetFileNameWithoutExtension(fileName)));
-                    if (assembly == null)
-                    {
-                        var extra = new PackageItemRootViewModel(new FileInfo(Path.Combine(binDir, fileName)));
-                        binItemPreview.AddChild(extra);
-                    }
-                    else
-                    {
-                        var dll = new PackageItemRootViewModel(new FileInfo(Path.Combine(binDir, fileName)));
-                        binItemPreview.AddChild(dll);
-                    }
+                    var dll = new PackageItemRootViewModel(new FileInfo(Path.Combine(binDir, fileName)));
+                    binItemPreview.AddChild(dll);
                 }
                 else
                 {
