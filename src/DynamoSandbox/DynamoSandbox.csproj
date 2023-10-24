@@ -17,7 +17,9 @@
     <!-- Specify runtimeIdentifier to get around error NETSDK1047: Assets file 'obj\project.assets.json' doesn't have a target for 'net48/win7-x64'-->
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
-
+    <ItemGroup>
+        <PackageReference Include="System.Text.Json" Version="7.0.3" />
+    </ItemGroup>
   <PropertyGroup>
     <ApplicationIcon>logo_square_32x32.ico</ApplicationIcon>
   </PropertyGroup>
