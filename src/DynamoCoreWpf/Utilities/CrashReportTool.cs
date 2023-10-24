@@ -125,16 +125,23 @@ namespace Dynamo.Wpf.Utilities
 
             try
             {
-                string rootFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                var assemblyPath = Path.Combine(Path.Combine(rootFolder, "DynamoInstallDetective.dll"));
-                if (!File.Exists(assemblyPath))
-                    throw new FileNotFoundException(assemblyPath);
 
-                var assembly = Assembly.LoadFrom(assemblyPath);
+                // Try to directly get the type for the detective class
+                // (this will in many cases also load the assembly)
+                var type = Type.GetType("DynamoInstallDetective.Utilities, DynamoInstallDetective", false);
+                if (type == null)
+                {
+                    // fallback, load the assembly and get the type using LoadFrom
+                    string rootFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                    var assemblyPath = Path.Combine(rootFolder, "DynamoInstallDetective.dll");
+                    if (!File.Exists(assemblyPath))
+                        throw new FileNotFoundException(assemblyPath);
 
-                var type = assembly.GetType("DynamoInstallDetective.Utilities");
+                    var assembly = Assembly.LoadFrom(assemblyPath);
+                    type = assembly.GetType("DynamoInstallDetective.Utilities");
+                }
 
-                var installationsMethod = type.GetMethod(
+                var installationsMethod = type.GetMethod(   
                     "FindMultipleProductInstallations",
                     BindingFlags.Public | BindingFlags.Static);
 
