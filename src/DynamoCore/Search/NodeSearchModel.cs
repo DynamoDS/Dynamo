@@ -282,6 +282,7 @@ namespace Dynamo.Search
                         }
                     }
                 }
+                luceneSearchUtility.dirReader.Dispose();
                 return candidates;
             }
             return null;
