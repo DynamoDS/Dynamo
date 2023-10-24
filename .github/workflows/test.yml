@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v4
         with:
             repository: DynamoDS/DynamoTestCompleteTests
-            token: ${{ sectrets.DYNAMO_TESTS_TOKEN }}
+            token: ${{ secrets.DYNAMO_TESTS_TOKEN }}
       - name: Download TestExecute
         run: Invoke-WebRequest -Uri "${{ env.TEST_EXECUTE_DOWNLOAD_URL }}" -OutFile ".\TE.exe"
       - name: Install TestExecute
