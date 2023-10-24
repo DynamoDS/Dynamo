@@ -77,22 +77,6 @@ namespace Dynamo.Graph.Workspaces
             return codeBlockNode;
         }
 
-        
-
-        [Obsolete("This constructor will be removed in Dynamo 3.0, please use new NodeReadConverter constructor with additional parameters to support node migration.")]
-        public NodeReadConverter(CustomNodeManager manager, LibraryServices libraryServices, bool isTestMode = false)
-        {
-            this.manager = manager;
-            this.libraryServices = libraryServices;
-            this.isTestMode = isTestMode;
-            // We only do this in test mode because it should not be required-
-            // see comment below in NodeReadConverter.ReadJson - and it could be slow.
-            if (this.isTestMode)
-            {
-                this.loadedAssemblies = this.buildMapOfLoadedAssemblies();
-            }
-        }
-
         public NodeReadConverter(CustomNodeManager manager, LibraryServices libraryServices, NodeFactory nodeFactory, bool isTestMode = false)
         {
             this.manager = manager;
