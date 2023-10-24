@@ -66,13 +66,9 @@ namespace Dynamo.Core
         public const string ViewExtensionsDirectoryName = "viewExtensions";
         public const string DefinitionsDirectoryName = "definitions";
         public const string SamplesDirectoryName = "samples";
-        [Obsolete("This property will be removed in Dynamo 3.0")]
-        public const string GalleryDirectoryName = "gallery";
         public const string BackupDirectoryName = "backup";
         public const string PreferenceSettingsFileName = "DynamoSettings.xml";
         public const string PythonTemplateFileName = "PythonTemplate.py";
-        [Obsolete("This property will be removed in Dynamo 3.0")]
-        public const string GalleryContentsFileName = "GalleryContents.xml";
 
         private readonly int majorFileVersion;
         private readonly int minorFileVersion;
@@ -253,12 +249,6 @@ namespace Dynamo.Core
         public string PythonTemplateFilePath
         {
             get { return pythonTemplateFilePath; }
-        }
-
-        [Obsolete("This property will be removed in Dynamo 3.0")]
-        public string GalleryFilePath
-        {
-            get;
         }
 
         public IEnumerable<string> NodeDirectories
