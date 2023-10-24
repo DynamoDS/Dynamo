@@ -408,18 +408,6 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Symbol"/> class.
-        /// </summary>
-        [JsonConstructor]
-        [Obsolete("This method will be removed in Dynamo 3.0 - please use the constructor with ElementResolver parameter ")]
-        public Symbol(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts, TypedParameter parameter) : base(inPorts, outPorts)
-        {
-            ArgumentLacing = LacingStrategy.Disabled;
-            InputSymbol = parameter.ToCommentNameString();
-            ElementResolver = new ElementResolver();
-        }
-
-        /// <summary>
         ///     Represents string input. 
         /// </summary>
         [JsonIgnore]
