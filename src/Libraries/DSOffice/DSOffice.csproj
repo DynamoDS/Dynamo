@@ -40,13 +40,13 @@
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
         <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
         <Name>DynamoCore</Name>
-        <Private>False</Private>
+        
     </ProjectReference>
     <ProjectReference Include="..\DSOfficeUtilities\DSOfficeUtilities.csproj" Condition=" '$(RuntimeIdentifier)' == 'win10-x64' " />
     <ProjectReference Include="..\..\NodeServices\DynamoServices.csproj">
         <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
         <Name>DynamoServices</Name>
-        <Private>False</Private>
+        
     </ProjectReference>
     <ProjectReference Include="..\CoreNodes\CoreNodes.csproj">
         <Project>{87550b2b-6cb8-461e-8965-dfafe3aafb5c}</Project>

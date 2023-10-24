@@ -24,22 +24,22 @@
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoCore</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
     <ProjectReference Include="..\..\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
       <Name>DynamoUtilities</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
     <ProjectReference Include="..\..\Engine\ProtoCore\ProtoCore.csproj">
       <Project>{7A9E0314-966F-4584-BAA3-7339CBB849D1}</Project>
       <Name>ProtoCore</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
     <ProjectReference Include="..\VMDataBridge\VMDataBridge.csproj">
       <Project>{CCB6E56B-2DA1-4EBA-A1F9-E8510E129D12}</Project>
       <Name>VMDataBridge</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

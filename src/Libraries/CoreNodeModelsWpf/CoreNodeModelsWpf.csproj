@@ -33,42 +33,42 @@
     <ProjectReference Include="..\..\DynamoCoreWpf\DynamoCoreWpf.csproj">
         <Project>{51bb6014-43f7-4f31-b8d3-e3c37ebedaf4}</Project>
         <Name>DynamoCoreWpf</Name>
-        <Private>False</Private>
+        
     </ProjectReference>
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
         <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
         <Name>DynamoCore</Name>
-        <Private>False</Private>
+        
     </ProjectReference>
     <ProjectReference Include="..\..\DynamoUtilities\DynamoUtilities.csproj">
         <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
         <Name>DynamoUtilities</Name>
-        <Private>False</Private>
+        
     </ProjectReference>
     <ProjectReference Include="..\..\Engine\ProtoCore\ProtoCore.csproj">
         <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
         <Name>ProtoCore</Name>
-        <Private>False</Private>
+        
     </ProjectReference>
     <ProjectReference Include="..\..\NodeServices\DynamoServices.csproj">
         <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
         <Name>DynamoServices</Name>
-        <Private>False</Private>
+        
     </ProjectReference>
     <ProjectReference Include="..\CoreNodeModels\CoreNodeModels.csproj">
         <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>
         <Name>CoreNodeModels</Name>
-        <Private>False</Private>
+        
     </ProjectReference>
     <ProjectReference Include="..\CoreNodes\CoreNodes.csproj">
         <Project>{87550b2b-6cb8-461e-8965-dfafe3aafb5c}</Project>
         <Name>CoreNodes</Name>
-        <Private>False</Private>
+        
     </ProjectReference>
     <ProjectReference Include="..\DynamoConversions\DynamoConversions.csproj">
         <Project>{67cf6cf2-cd6a-442c-babe-864f896dd8ea}</Project>
         <Name>DynamoConversions</Name>
-        <Private>False</Private>
+        
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

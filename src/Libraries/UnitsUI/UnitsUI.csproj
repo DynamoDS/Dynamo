@@ -25,40 +25,40 @@
     <ProjectReference Include="..\..\DynamoCoreWpf\DynamoCoreWpf.csproj">
       <Project>{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}</Project>
       <Name>DynamoCoreWpf</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
     <ProjectReference Include="..\..\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
       <Name>DynamoUtilities</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
     <ProjectReference Include="..\..\Engine\ProtoCore\ProtoCore.csproj">
       <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
       <Name>ProtoCore</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
     <ProjectReference Include="..\CoreNodeModels\CoreNodeModels.csproj">
       <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>
       <Name>CoreNodeModels</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
     <ProjectReference Include="..\CoreNodes\CoreNodes.csproj">
       <Project>{87550b2b-6cb8-461e-8965-dfafe3aafb5c}</Project>
       <Name>CoreNodes</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
     <ProjectReference Include="..\DynamoUnits\UnitsCore.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>Units</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
     <ProjectReference Include="..\UnitsNodeModels\UnitsNodeModels.csproj">
-      <Private>False</Private>
+      
     </ProjectReference>
     <ProjectReference Include="..\VMDataBridge\VMDataBridge.csproj">
       <Project>{ccb6e56b-2da1-4eba-a1f9-e8510e129d12}</Project>
       <Name>VMDataBridge</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

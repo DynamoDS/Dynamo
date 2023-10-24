@@ -25,7 +25,7 @@
     <ProjectReference Include="..\DynamoApplications\DynamoApplications.csproj">
       <Project>{aa782772-fe61-4226-baa4-eb529fa1646b}</Project>
       <Name>DynamoApplications</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
     <ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj">
       <Project>{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}</Project>
@@ -38,12 +38,12 @@
     <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
       <Name>DynamoUtilities</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
     <ProjectReference Include="..\NodeServices\DynamoServices.csproj">
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>DynamoServices</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
     <ProjectReference Include="..\Tools\DynamoInstallDetective\DynamoInstallDetective.csproj">
       <Project>{98692887-b389-4f73-a71a-9fc516738dab}</Project>

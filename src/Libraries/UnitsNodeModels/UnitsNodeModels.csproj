@@ -17,16 +17,16 @@
     </ItemDefinitionGroup>
     <ItemGroup>
       <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
-        <Private>False</Private>
+        
       </ProjectReference>
       <ProjectReference Include="..\..\Engine\ProtoCore\ProtoCore.csproj">
-        <Private>False</Private>
+        
       </ProjectReference>
       <ProjectReference Include="..\CoreNodeModels\CoreNodeModels.csproj">
-        <Private>False</Private>
+        
       </ProjectReference>
       <ProjectReference Include="..\DynamoUnits\UnitsCore.csproj">
-        <Private>False</Private>
+        
       </ProjectReference>
     </ItemGroup>
     <ItemGroup>

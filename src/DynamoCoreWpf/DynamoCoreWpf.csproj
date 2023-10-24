@@ -1522,12 +1522,12 @@
     <ProjectReference Include="..\DynamoPackages\DynamoPackages.csproj">
       <Project>{47533b7c-0e1a-44a4-8511-b438645f052a}</Project>
       <Name>DynamoPackages</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
     <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
       <Name>DynamoUtilities</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
     <ProjectReference Include="..\Engine\GraphLayout\GraphLayout.csproj">
       <Project>{c2595b04-856d-40ae-8b99-4804c7a70708}</Project>
@@ -1540,7 +1540,7 @@
     <ProjectReference Include="..\Libraries\CoreNodeModels\CoreNodeModels.csproj">
       <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>
       <Name>CoreNodeModels</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
     <ProjectReference Include="..\Libraries\DesignScriptBuiltin\DesignScriptBuiltin.csproj">
       <Project>{c0d6dee5-5532-4345-9c66-4c00d7fdb8be}</Project>
@@ -1557,7 +1557,7 @@
     <ProjectReference Include="..\Libraries\PythonNodeModels\PythonNodeModels.csproj">
       <Project>{8872CA17-C10D-43B9-8393-5C5A57065EB0}</Project>
       <Name>PythonNodeModels</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
     <ProjectReference Include="..\Libraries\VMDataBridge\VMDataBridge.csproj">
       <Project>{ccb6e56b-2da1-4eba-a1f9-e8510e129d12}</Project>
@@ -1566,12 +1566,12 @@
     <ProjectReference Include="..\Libraries\Watch3DNodeModels\Watch3DNodeModels.csproj">
       <Project>{31183026-DE70-49CB-BC7C-0DFD0A088F62}</Project>
       <Name>Watch3DNodeModels</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
     <ProjectReference Include="..\NodeServices\DynamoServices.csproj">
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>DynamoServices</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -25,7 +25,7 @@
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
     <ProjectReference Include="..\..\Engine\ProtoCore\ProtoCore.csproj">
       <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
@@ -34,7 +34,7 @@
     <ProjectReference Include="..\..\NodeServices\DynamoServices.csproj">
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>DynamoServices</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
     <ProjectReference Include="..\DesignScriptBuiltin\DesignScriptBuiltin.csproj">
       <Project>{c0d6dee5-5532-4345-9c66-4c00d7fdb8be}</Project>

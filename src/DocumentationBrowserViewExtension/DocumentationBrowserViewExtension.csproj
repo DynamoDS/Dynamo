@@ -20,12 +20,12 @@
     <ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj">
       <Project>{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}</Project>
       <Name>DynamoCoreWpf</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
     <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoCore</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
     <ProjectReference Include="..\DynamoPackages\DynamoPackages.csproj">
       <Project>{47533B7C-0E1A-44A4-8511-B438645F052A}</Project>

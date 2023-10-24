@@ -19,30 +19,30 @@
         <Reference Include="Python.Runtime, Version=2.5.2.4265, Culture=neutral, processorArchitecture=MSIL">
             <SpecificVersion>False</SpecificVersion>
             <HintPath>..\..\extern\Python\Python.Runtime.dll</HintPath>
-            <Private>False</Private>
+            
         </Reference>
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj">
             <Project>{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}</Project>
             <Name>DynamoCoreWpf</Name>
-            <Private>False</Private>
+            
         </ProjectReference>
         <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
             <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
             <Name>DynamoCore</Name>
-            <Private>False</Private>
+            
         </ProjectReference>
         <ProjectReference Include="..\Libraries\DSCPython\DSCPython.csproj" />
         <ProjectReference Include="..\Libraries\PythonNodeModels\PythonNodeModels.csproj">
             <Project>{8872ca17-c10d-43b9-8393-5c5a57065eb0}</Project>
             <Name>PythonNodeModels</Name>
-            <Private>False</Private>
+            
         </ProjectReference>
         <ProjectReference Include="..\NodeServices\DynamoServices.csproj">
             <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
             <Name>DynamoServices</Name>
-            <Private>False</Private>
+            
         </ProjectReference>
     </ItemGroup>
     <ItemGroup>

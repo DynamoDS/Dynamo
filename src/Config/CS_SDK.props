@@ -87,7 +87,7 @@
   </ItemGroup>
   <ItemDefinitionGroup>
     <ProjectReference>
-      <Private>false</Private>
+      <Private>True</Private>
     </ProjectReference>
   </ItemDefinitionGroup>
   <PropertyGroup Condition=" '$(TestProjectDefaults)' == 'true' ">

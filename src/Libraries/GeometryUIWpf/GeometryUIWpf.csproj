@@ -33,37 +33,37 @@
     <ProjectReference Include="..\..\DynamoCoreWpf\DynamoCoreWpf.csproj">
       <Project>{51bb6014-43f7-4f31-b8d3-e3c37ebedaf4}</Project>
       <Name>DynamoCoreWpf</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
     <ProjectReference Include="..\..\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
       <Name>DynamoUtilities</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
     <ProjectReference Include="..\..\NodeServices\DynamoServices.csproj">
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>DynamoServices</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
     <ProjectReference Include="..\CoreNodeModelsWpf\CoreNodeModelsWpf.csproj">
       <Project>{f5932f7d-8e34-4787-80b8-e7f9d996edff}</Project>
       <Name>CoreNodeModelsWpf</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
     <ProjectReference Include="..\DynamoConversions\DynamoConversions.csproj">
       <Project>{67cf6cf2-cd6a-442c-babe-864f896dd8ea}</Project>
       <Name>DynamoConversions</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
     <ProjectReference Include="..\GeometryUI\GeometryUI.csproj">
       <Project>{e674f1a1-be83-475a-9cc9-f55cadbec448}</Project>
       <Name>GeometryUI</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

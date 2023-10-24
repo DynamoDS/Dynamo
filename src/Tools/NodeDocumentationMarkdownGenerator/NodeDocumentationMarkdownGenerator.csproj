@@ -24,22 +24,22 @@
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
     <ProjectReference Include="..\..\DynamoPackages\DynamoPackages.csproj">
       <Project>{47533b7c-0e1a-44a4-8511-b438645f052a}</Project>
       <Name>DynamoPackages</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
     <ProjectReference Include="..\..\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
       <Name>DynamoUtilities</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
     <ProjectReference Include="..\..\Engine\ProtoCore\ProtoCore.csproj">
       <Project>{7A9E0314-966F-4584-BAA3-7339CBB849D1}</Project>
       <Name>ProtoCore</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

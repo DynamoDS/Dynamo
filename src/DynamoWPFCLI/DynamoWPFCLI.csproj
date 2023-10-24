@@ -19,7 +19,7 @@
     <ProjectReference Include="..\DynamoApplications\DynamoApplications.csproj">
       <Project>{aa782772-fe61-4226-baa4-eb529fa1646b}</Project>
       <Name>DynamoApplications</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
     <ProjectReference Include="..\DynamoCLI\DynamoCLI.csproj">
       <Project>{5F9AE581-6781-4A4C-A262-1B06CD27208B}</Project>
@@ -32,17 +32,17 @@
     <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
     <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
       <Name>DynamoUtilities</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
     <ProjectReference Include="..\Engine\ProtoCore\ProtoCore.csproj">
       <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
       <Name>ProtoCore</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
     <ProjectReference Include="..\Libraries\DesignScriptBuiltin\DesignScriptBuiltin.csproj">
       <Project>{c0d6dee5-5532-4345-9c66-4c00d7fdb8be}</Project>
@@ -51,7 +51,7 @@
     <ProjectReference Include="..\NodeServices\DynamoServices.csproj">
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>DynamoServices</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
   </ItemGroup>
 </Project>

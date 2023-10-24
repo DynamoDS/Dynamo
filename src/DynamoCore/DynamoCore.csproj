@@ -12,6 +12,7 @@
     <DocumentationFile>$(OutputPath)\DynamoCore.XML</DocumentationFile>
     <LibGOsToken>windows</LibGOsToken>
     <LibGOsToken Condition="$(Platform.Contains('Linux'))">linux</LibGOsToken>
+    <GenerateDependencyFile>true</GenerateDependencyFile>
   </PropertyGroup>
   <PropertyGroup>
     <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
@@ -19,6 +20,9 @@
     <ItemGroup>
     <Compile Remove="Graph\ConnectorPinModel.cs" />
   </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="System.Text.Json" Version="7.0.3" />
+    </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
@@ -61,7 +65,7 @@
     <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
       <Name>DynamoUtilities</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
     <ProjectReference Include="..\Libraries\DesignScriptBuiltin\DesignScriptBuiltin.csproj">
       <Project>{c0d6dee5-5532-4345-9c66-4c00d7fdb8be}</Project>
@@ -74,7 +78,7 @@
     <ProjectReference Include="..\NodeServices\DynamoServices.csproj">
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>DynamoServices</Name>
-      <Private>False</Private>
+      
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
