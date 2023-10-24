@@ -1083,10 +1083,10 @@ namespace Dynamo.ViewModels
         /// <param name="e"></param>
         void EngineController_AstBuilt(object sender, CompiledEventArgs e)
         {
-            if (e.Node == nodeLogic.GUID)
+            if (e.NodeId == nodeLogic.GUID)
             {
                 var sb = new StringBuilder();
-                sb.AppendLine(string.Format("{0} AST:", e.Node));
+                sb.AppendLine(string.Format("{0} AST:", e.NodeId));
 
                 foreach (var assocNode in e.AstNodes)
                 {
