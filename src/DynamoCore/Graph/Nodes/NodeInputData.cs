@@ -14,7 +14,7 @@ namespace Dynamo.Graph.Nodes
     // So Type2 is not deserialized at all in previous versions of Dynamo.
     // Type's setter limits the possible values to a subset of the enum to avoid clients setting this to a value that would break file
     // deserialization in previous dynamo versions.
-    // TODO We should unify these properties (Type and Type2) when possible (Dynamo 3.x) 
+    // TODO We should unify these properties (Type and Type2) when possible n a future version of dynamo
 
     /// <summary>
     /// Possible graph input types. 
@@ -140,7 +140,7 @@ namespace Dynamo.Graph.Nodes
             {typeof(float),NodeInputTypes.numberInput},
         };
 
-        [Obsolete("To be removed in Dynamo 3.x")]
+        [Obsolete("To be removed in a future version of Dynamo")]
         public static NodeInputTypes getNodeInputTypeFromType(Type type)
         {
             NodeInputTypes output;
