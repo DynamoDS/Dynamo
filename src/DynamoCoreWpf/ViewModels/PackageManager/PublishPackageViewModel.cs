@@ -20,11 +20,11 @@ using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Utilities;
 using DynamoUtilities;
 using Greg.Requests;
+using Prism.Commands;
 using PythonNodeModels;
 using Double = System.Double;
-using String = System.String;
 using NotificationObject = Dynamo.Core.NotificationObject;
-using Prism.Commands;
+using String = System.String;
 
 namespace Dynamo.PackageManager
 {
@@ -1061,10 +1061,12 @@ namespace Dynamo.PackageManager
                 this.PackageContents.Clear();
                 this.PreviewPackageContents.Clear();
                 this.RootContents.Clear();
+                this.CustomDyfFilepaths.Clear();
 
                 RaisePropertyChanged(nameof(PackageContents));
                 RaisePropertyChanged(nameof(PreviewPackageContents));
                 RaisePropertyChanged(nameof(RootContents));
+                RaisePropertyChanged(nameof(CustomDyfFilepaths));
                     
                 this.CustomNodeDefinitions = new List<CustomNodeDefinition>();
             //});
