@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -27,11 +27,11 @@
   </ItemGroup>
   <ItemGroup Label="Common dependencies">
     <PackageReference Include="Autodesk.IDSDK" Version="1.1.6" />
-    <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="3.0.0.2767" GeneratePathProperty="true" />
-    <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.2770" GeneratePathProperty="true" />
-    <PackageReference Include="Greg" Version="2.5.0.5076" />
+    <PackageReference Include="Greg" Version="3.0.0.2955" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="3.0.0.2855" GeneratePathProperty="true" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.2880" GeneratePathProperty="true" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" CopyXML="true" />
-	  <PackageReference Include="RestSharp" Version="106.12.0" CopyXML="true" />
+	  <PackageReference Include="RestSharp" Version="109.0.1" CopyXML="true" />
 	<PackageReference Include="Lucene.Net" Version="4.8.0-beta00016" />
     <PackageReference Include="Lucene.Net.Analysis.Common" Version="4.8.0-beta00016" />
     <PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00016" />
@@ -122,10 +122,10 @@
           <LibG229 Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\LibG_229_0_0\*" />
           <ExternSimplexNoise Include="$(SolutionDir)..\extern\SimplexNoise\*" />
           <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\**\*.*" />
-          <NodeHelpMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.md"/>
-		  <NodeHelpDYNFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.dyn"/>
-		  <NodeHelpTXTFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.txt"/>
-		  <NodeHelpSATFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.sat"/>
+          <NodeHelpMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.md" />
+		  <NodeHelpDYNFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.dyn" />
+		  <NodeHelpTXTFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.txt" />
+		  <NodeHelpSATFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.sat" />
           <NodeHelpJpgImageFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.jpg" />
 		  <NodeHelpPngImageFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.png" />
 		  <NodeHelpGifImageFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.gif" />

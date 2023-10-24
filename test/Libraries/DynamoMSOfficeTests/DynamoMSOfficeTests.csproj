@@ -21,7 +21,8 @@
         </ProjectReference>
     </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2"/>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+    <ProjectReference Include="..\..\..\src\DynamoCoreWpf\DynamoCoreWpf.csproj" />
     <ProjectReference Include="..\..\..\src\DynamoCore\DynamoCore.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoCore</Name>
@@ -37,16 +38,14 @@
       <Name>CoreNodeModels</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\DynamoCoreTests\DynamoCoreTests.csproj">
-      <Project>{472084ED-1067-4B2C-8737-3839A6143EB2}</Project>
-      <Name>DynamoCoreTests</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\src\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
       <Name>DynamoUtilities</Name>
       <Private>False</Private>
-    </ProjectReference> 
+    </ProjectReference>
+    <ProjectReference Include="..\..\DynamoCoreTests\DynamoCoreTests.csproj" />
+    <ProjectReference Include="..\..\DynamoCoreWpfTests\DynamoCoreWpfTests.csproj" />
+    <ProjectReference Include="..\SystemTestServices\SystemTestServices.csproj" />
     <ProjectReference Include="..\TestServices\TestServices.csproj" />
   </ItemGroup>
   <ItemGroup>

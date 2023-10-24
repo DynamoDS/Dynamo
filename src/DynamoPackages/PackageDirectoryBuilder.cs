@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using Dynamo.PackageManager.Interfaces;
 using Dynamo.Utilities;
-using RestSharp.Serialization.Json;
 
 namespace Dynamo.PackageManager
 {
@@ -184,8 +184,7 @@ namespace Dynamo.PackageManager
             var pkgHeader = PackageUploadBuilder.NewRequestBody(package);
 
             // build the package header json, which will be stored with the pkg
-            var jsSer = new JsonSerializer();
-            var pkgHeaderStr = jsSer.Serialize(pkgHeader);
+            var pkgHeaderStr = JsonSerializer.Serialize(pkgHeader);
 
             // write the pkg header to the root directory of the pkg
             var headerPath = Path.Combine(rootDir.FullName, PackageJsonName);

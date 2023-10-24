@@ -23,13 +23,8 @@ using Greg.Requests;
 using PythonNodeModels;
 using Double = System.Double;
 using String = System.String;
-#if NETFRAMEWORK
-using NotificationObject = Microsoft.Practices.Prism.ViewModel.NotificationObject;
-using Microsoft.Practices.Prism.Commands;
-#else
 using NotificationObject = Dynamo.Core.NotificationObject;
 using Prism.Commands;
-#endif
 
 namespace Dynamo.PackageManager
 {

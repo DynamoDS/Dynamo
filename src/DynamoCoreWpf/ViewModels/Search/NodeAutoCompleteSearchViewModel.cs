@@ -157,12 +157,13 @@ namespace Dynamo.ViewModels
         internal void ResetAutoCompleteSearchViewState()
         {
             DisplayAutocompleteMLStaticPage = false;
-            DisplayLowConfidence = false;
+            DisplayLowConfidence = PreferenceSettings.Instance.HideNodesBelowSpecificConfidenceLevel;
             AutocompleteMLMessage = string.Empty;
             AutocompleteMLTitle = string.Empty;
             FilteredResults = new List<NodeSearchElementViewModel>();
             FilteredHighConfidenceResults = new List<NodeSearchElementViewModel>();
             FilteredLowConfidenceResults = new List<NodeSearchElementViewModel>();
+            searchElementsCache = new List<NodeSearchElementViewModel>();
         }
 
         private void InitializeDefaultAutoCompleteCandidates()
@@ -410,10 +411,10 @@ namespace Dynamo.ViewModels
                     }
                 }
 
-                // Show low confidence section if there are some results under threshold.
-                DisplayLowConfidence = FilteredLowConfidenceResults.Count() > 0;
+                // Show low confidence section if there are some results under threshold and feature enabled
+                DisplayLowConfidence = FilteredLowConfidenceResults.Any() && PreferenceSettings.Instance.HideNodesBelowSpecificConfidenceLevel;
 
-                if (FilteredHighConfidenceResults.Count() == 0)
+                if (!FilteredHighConfidenceResults.Any())
                 {
                     DisplayAutocompleteMLStaticPage = true;
                     AutocompleteMLTitle = Resources.AutocompleteLowConfidenceTitle;
@@ -422,7 +423,7 @@ namespace Dynamo.ViewModels
                 }
 
                 // By default, show only the results which are above the threshold
-                FilteredResults = FilteredHighConfidenceResults;
+                FilteredResults = PreferenceSettings.Instance.HideNodesBelowSpecificConfidenceLevel? FilteredHighConfidenceResults : results    ;
             }
         }
 
@@ -431,25 +432,19 @@ namespace Dynamo.ViewModels
             MLNodeAutoCompletionResponse results = null;
             var authProvider = dynamoViewModel.Model.AuthenticationManager.AuthProvider;
 
-            if (authProvider is IOAuth2AuthProvider oauth2AuthProvider)
+            if (authProvider is IOAuth2AuthProvider oauth2AuthProvider && authProvider is IOAuth2AccessTokenProvider tokenprovider)
             {
                 try
                 {
-                    // TODO: We need to implement something like GetToken() on the IOAuth2AuthProvider interface which will be used by all auth providers.
-                    // For now, we are mocking the RestSharpRequest object to set the IDSDK token and then update the header in actual RestRequest with that token.
-                    // LoginRequest() is also not available on RevitOAuth2Provider, so using the SignRequest() which will show the sign-in page when the user is logged out.
-                    RestRequest restSharpRequest = new RestRequest();
-                    RestClient restSharpClient = new RestClient();
-                    oauth2AuthProvider.SignRequest(ref restSharpRequest, restSharpClient);
-
                     var uri = DynamoUtilities.PathHelper.getServiceBackendAddress(this, nodeAutocompleteMLEndpoint);
                     var client = new RestClient(uri);
-                    var request = new RestRequest(Method.POST);
+                    var request = new RestRequest(string.Empty,Method.Post);
 
-                    request.AddHeader("Authorization", restSharpRequest.Parameters.FirstOrDefault(n => n.Name.Equals("Authorization")).Value.ToString());
-                    request = request.AddJsonBody(requestJSON) as RestRequest;
+                    request.AddHeader("Authorization",tokenprovider.GetAccessToken());
+                    request = request.AddJsonBody(requestJSON);
                     request.RequestFormat = DataFormat.Json;
-                    RestResponse response = client.Execute(request) as RestResponse;
+                    RestResponse response = client.Execute(request);
+                    //TODO maybe worth moving to system.text json in phases?
                     results = JsonConvert.DeserializeObject<MLNodeAutoCompletionResponse>(response.Content);
                 }
                 catch (Exception ex)

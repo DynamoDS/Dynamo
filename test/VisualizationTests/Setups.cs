@@ -9,11 +9,7 @@ public class Setup
 {
     private AssemblyHelper assemblyHelper;
 
-#if NETFRAMEWORK
-    [SetUp]
-#elif NET6_0_OR_GREATER
-        [OneTimeSetUp]
-#endif
+    [OneTimeSetUp]
     public void RunBeforeAllTests()
     {
         var assemblyPath = Assembly.GetExecutingAssembly().Location;
@@ -30,11 +26,7 @@ public class Setup
         AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssembly;
     }
 
-#if NETFRAMEWORK
-    [TearDown]
-#elif NET6_0_OR_GREATER
-        [OneTimeTearDown]
-#endif
+    [OneTimeTearDown]
     public void RunAfterAllTests()
     {
         AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssembly;

@@ -88,6 +88,18 @@ namespace Dynamo.UI.Prompts
             }
         }
 
+        /// <summary>
+        /// A tooltip is shown on the message box when this is set to true and if
+        /// Tooltip is non-null and non-empty.  
+        /// </summary>
+        public bool ShowTooltip { get; private set; }
+
+        /// <summary>
+        /// A tooltip is shown on the message box when this is set to a non-empty string
+        /// and ShowTooltip is true.
+        /// </summary>
+        public string Tooltip { get; private set; }
+
         #endregion
 
         /// <summary>
@@ -97,6 +109,8 @@ namespace Dynamo.UI.Prompts
         {
             InitializeComponent();
             DataContext = this;
+            ShowTooltip = false;
+            ToolTip = "";
         }
 
         /// <summary>
@@ -106,16 +120,19 @@ namespace Dynamo.UI.Prompts
         /// <param name="caption"></param>
         /// <param name="button"></param>
         /// <param name="icon"></param>
+        /// <param name="tooltip"></param>
         /// <returns></returns>
         public static MessageBoxResult Show(string messageBoxText, string caption, MessageBoxButton button,
-            MessageBoxImage icon)
+            MessageBoxImage icon, string tooltip = "")
         {
             var dynamoMessageBox = new DynamoMessageBox
             {
                 BodyText = messageBoxText,
                 TitleText = caption,
                 MessageBoxButton = button,
-                MessageBoxImage = icon
+                MessageBoxImage = icon,
+                ShowTooltip = !string.IsNullOrEmpty(tooltip),
+                Tooltip = tooltip
             };
 
             dynamoMessageBox.ConfigureButtons(button);

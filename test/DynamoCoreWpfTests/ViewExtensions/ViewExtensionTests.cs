@@ -20,6 +20,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void OnWorkspaceChangedExtensionIsNotified()
         {
+            this.View.WindowState = WindowState.Maximized;
             RaiseLoadedEvent(this.View);
             var extensionManager = View.viewExtensionManager;
             extensionManager.Add(viewExtension);

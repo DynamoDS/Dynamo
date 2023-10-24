@@ -143,13 +143,13 @@
       <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-      <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="3.0.0.2767" />
+      <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="3.0.0.2855" />
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" CopyXML="true" />
-    <PackageReference Include="Greg" Version="2.5.0.5076" />
+    <PackageReference Include="Greg" Version="3.0.0.2955" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2045.28" />
 	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-	<PackageReference Include="RestSharp" Version="106.12.0" />
+	<PackageReference Include="RestSharp" Version="109.0.1" />
 	<PackageReference Include="Cyotek.Drawing.BitmapFont" Version="2.0.0" />
 	<PackageReference Include="SharpDX" Version="4.2.0" />
 	<PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0">
@@ -246,6 +246,7 @@
       <DependentUpon>InPortContextMenu.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Prompts\PortPropertiesEditPrompt.xaml.cs" />
+    <Compile Include="Utilities\CerDLL.cs" />
     <Compile Include="Utilities\CompactBubbleHandler.cs" />
     <Compile Include="Interfaces\IShellCom.cs" />
     <Compile Include="Rendering\HelixRenderPackage.cs" />

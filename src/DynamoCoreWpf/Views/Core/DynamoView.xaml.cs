@@ -84,6 +84,14 @@ namespace Dynamo.Controls
         private bool isPSSCalledOnViewModelNoCancel = false;
         private readonly DispatcherTimer _workspaceResizeTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 500), IsEnabled = false };
         private ViewLoadedParams sharedViewExtensionLoadedParams;
+        /// <summary>
+        /// keeps the width right menu of the ShourtcutBar
+        /// </summary>
+        private double toolBarRightMenuWidth = 0;
+        /// <summary>
+        /// Keeps the additional Width based on the paddings and margins from the shorcutBar controls to calculate the whole Width
+        /// </summary>
+        private double additionalWidth = 50;
 
         /// <summary>
         /// Extensions currently displayed as windows.
@@ -100,6 +108,11 @@ namespace Dynamo.Controls
         internal PreferencesView PreferencesWindow {
             get { return preferencesWindow; }
         }
+
+        /// <summary>
+        /// Keeps the default value of the Window's MinWidth to calculate it again later
+        /// </summary>
+        internal double DefaultMinWidth = 0;
 
         /// <summary>
         /// Constructor
@@ -228,9 +241,12 @@ namespace Dynamo.Controls
             this.HideOrShowRightSideBar();
 
             this.dynamoViewModel.RequestPaste += OnRequestPaste;
+            this.dynamoViewModel.RequestCloseHomeWorkSpace += OnRequestCloseHomeWorkSpace;
             this.dynamoViewModel.RequestReturnFocusToView += OnRequestReturnFocusToView;
             this.dynamoViewModel.Model.WorkspaceSaving += OnWorkspaceSaving;
             this.dynamoViewModel.Model.WorkspaceOpened += OnWorkspaceOpened;
+            this.dynamoViewModel.Model.WorkspaceAdded += OnWorkspaceAdded;
+            this.dynamoViewModel.Model.WorkspaceHidden += OnWorkspaceHidden;
             this.dynamoViewModel.RequestEnableShortcutBarItems += DynamoViewModel_RequestEnableShortcutBarItems;
             this.dynamoViewModel.RequestExportWorkSpaceAsImage += OnRequestExportWorkSpaceAsImage;
 
@@ -244,8 +260,30 @@ namespace Dynamo.Controls
             {
                 Application.Current.MainWindow = this;
             }
+
+            DefaultMinWidth = MinWidth;
+    }
+
+        private void OnRequestCloseHomeWorkSpace()
+        {
+            CalculateWindowMinWidth();
         }
 
+        private void OnWorkspaceHidden(WorkspaceModel workspace)
+        {            
+            CalculateWindowMinWidth();
+        }
+
+        private void OnWorkspaceAdded(WorkspaceModel workspace)
+        {            
+            CalculateWindowMinWidth();
+        }
+
+        protected override async void OnContentRendered(EventArgs e)
+        {
+            base.OnContentRendered(e);
+            toolBarRightMenuWidth = shortcutBar.RightMenu.ActualWidth;
+        }
         private void OnRequestExportWorkSpaceAsImage(object parameter)
         {
             var workspace = this.ChildOfType<WorkspaceView>();
@@ -1027,6 +1065,43 @@ namespace Dynamo.Controls
             }
 
             UpdateGeometryScalingPopupLocation();
+            
+            CalculateWindowThreshold();
+        }
+
+        /// <summary>
+        /// Returns the sum of the width of the library, the width of the tabs from the workspace and the width of the shortcut toolbar.
+        /// </summary>
+        /// <returns></returns>
+        internal double GetSumOfControlsWidth()
+        {
+            List<TabItem> tabItems = WpfUtilities.ChildrenOfType<TabItem>(WorkspaceTabs).ToList();
+            double tabItemsWidth = tabItems.Count > 0 ? (double.IsNaN(tabItems[0].Width) ? 0 : tabItems[0].Width) * tabItems.Count : 0;
+            return Convert.ToDouble(dynamoViewModel.LibraryWidth) + tabItemsWidth + toolBarRightMenuWidth + additionalWidth;
+        }
+
+        /// <summary>
+        /// Calculates the Window threshold to display the text or only icons in the shortcut toolbar
+        internal void CalculateWindowThreshold()
+        {            
+            dynamoViewModel.OnWindowResized(dynamoViewModel.Model.PreferenceSettings.WindowW <= GetSumOfControlsWidth());            
+        }
+
+        /// <summary>
+        /// Calculates the Window minimum width bearing in mind the width of the controls and the current Window width, it's necessary to avoid the shortcut toolbar (gray) overlap the custom node tab (black)
+        /// </summary>
+        internal void CalculateWindowMinWidth()
+        {
+            if (dynamoViewModel.Model.PreferenceSettings.WindowW > DefaultMinWidth)
+            {
+                MinWidth = GetSumOfControlsWidth();
+            }
+            else
+            {
+                MinWidth = DefaultMinWidth;
+            }
+
+            CalculateWindowThreshold();
         }
 
         private void UpdateGeometryScalingPopupLocation()
@@ -1921,9 +1996,12 @@ namespace Dynamo.Controls
 
             //COMMANDS
             this.dynamoViewModel.RequestPaste -= OnRequestPaste;
+            this.dynamoViewModel.RequestCloseHomeWorkSpace -= OnRequestCloseHomeWorkSpace;
             this.dynamoViewModel.RequestReturnFocusToView -= OnRequestReturnFocusToView;
             this.dynamoViewModel.Model.WorkspaceSaving -= OnWorkspaceSaving;
             this.dynamoViewModel.Model.WorkspaceOpened -= OnWorkspaceOpened;
+            this.dynamoViewModel.Model.WorkspaceAdded -= OnWorkspaceAdded;
+            this.dynamoViewModel.Model.WorkspaceHidden -= OnWorkspaceHidden;
             this.dynamoViewModel.RequestEnableShortcutBarItems -= DynamoViewModel_RequestEnableShortcutBarItems;
             this.dynamoViewModel.RequestExportWorkSpaceAsImage -= OnRequestExportWorkSpaceAsImage;
 
