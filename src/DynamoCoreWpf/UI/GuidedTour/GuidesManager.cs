@@ -475,7 +475,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                         Sequence = jsonStepInfo.Sequence,
                         RatingTextTitle = formattedText.ToString(),
                         StepType = Step.StepTypes.SURVEY,
-                        IsRatingVisible = !Analytics.DisableAnalytics && Analytics.IsEnabled,
+                        IsRatingVisible = !dynamoViewModel.Model.NoNetworkMode && Analytics.IsEnabled,
                         StepContent = new Content()
                         {
                             FormattedText = formattedText,

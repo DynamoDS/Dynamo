@@ -29,10 +29,6 @@ namespace DynamoWPFCLI
                 useConsole = !cmdLineArgs.NoConsole;
                 var locale = StartupUtils.SetLocale(cmdLineArgs);
 
-                if (cmdLineArgs.DisableAnalytics)
-                {
-                    Dynamo.Logging.Analytics.DisableAnalytics = true;
-                }
                 if(cmdLineArgs.ServiceMode)
                 {
                     Console.WriteLine("Starting DynamoWPFCLI in service mode");
@@ -59,7 +55,7 @@ namespace DynamoWPFCLI
                 }
                 else
                 {
-                    var viewModel = StartupDaynamo(cmdLineArgs);
+                    var viewModel = StartupDynamo(cmdLineArgs);
 
                     var runner = new CommandLineRunnerWPF(viewModel);
                     runner.Run(cmdLineArgs);
@@ -89,14 +85,9 @@ namespace DynamoWPFCLI
         /// </summary>
         /// <param name="cmdLineArgs"></param>
         /// <returns></returns>
-        private static DynamoViewModel StartupDaynamo(StartupUtils.CommandLineArguments cmdLineArgs)
+        private static DynamoViewModel StartupDynamo(StartupUtils.CommandLineArguments cmdLineArgs)
         {
-            DynamoModel model;
-            model = Dynamo.Applications.StartupUtils.MakeCLIModel(String.IsNullOrEmpty(cmdLineArgs.ASMPath) ? string.Empty : cmdLineArgs.ASMPath,
-                cmdLineArgs.UserDataFolder,
-                cmdLineArgs.CommonDataFolder,
-                cmdLineArgs.AnalyticsInfo,
-                cmdLineArgs.ServiceMode);
+            var model = StartupUtils.MakeCLIModel(cmdLineArgs);
 
             if (!string.IsNullOrEmpty(cmdLineArgs.CERLocation))
             {
@@ -128,7 +119,7 @@ namespace DynamoWPFCLI
         {
             try
             {
-                StartupDaynamo(cmdLineArgs);
+                StartupDynamo(cmdLineArgs);
 
                 if (!cmdLineArgs.NoConsole)
                 {

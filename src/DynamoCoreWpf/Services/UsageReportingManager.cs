@@ -46,13 +46,10 @@ namespace Dynamo.Services
         /// </summary>
         public bool IsUsageReportingApproved
         {
-            get
-            {
-                return !DynamoModel.IsTestMode
-                    && !Analytics.DisableAnalytics
-                    && (dynamoViewModel != null
-                        && dynamoViewModel.Model.PreferenceSettings.IsUsageReportingApproved);
-            }
+            get =>
+                !DynamoModel.IsTestMode
+                && (dynamoViewModel != null
+                    && !dynamoViewModel.Model.NoNetworkMode && dynamoViewModel.Model.PreferenceSettings.IsUsageReportingApproved);
             private set
             {
                 dynamoViewModel.Model.PreferenceSettings.IsUsageReportingApproved = value;
@@ -96,7 +93,7 @@ namespace Dynamo.Services
                 if (DynamoModel.IsTestMode) // Do not want logging in unit tests.
                     return false;
 
-                if (Analytics.DisableAnalytics)
+                if (dynamoViewModel.Model.NoNetworkMode)
                 {
                     return false;
                 }
@@ -109,7 +106,7 @@ namespace Dynamo.Services
 
             private set
             {
-                if (Analytics.DisableAnalytics)
+                if (dynamoViewModel.Model.NoNetworkMode)
                 {
                     return;// Do not override anything when DisableAnalytics is on
                 }
@@ -162,7 +159,7 @@ namespace Dynamo.Services
             if (dynamoViewModel != null
                 && dynamoViewModel.Model.PreferenceSettings.IsFirstRun
                 && !dynamoViewModel.HideReportOptions
-                && !Analytics.DisableAnalytics
+                && !dynamoViewModel.Model.NoNetworkMode
                 && !DynamoModel.IsTestMode)
             {
                 //Prompt user for detailed reporting

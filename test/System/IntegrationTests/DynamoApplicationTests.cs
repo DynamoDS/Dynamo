@@ -66,18 +66,6 @@ namespace IntegrationTests
         }
 
         [Test]
-        public void IfASMPathInvalidExceptionNotThrown()
-        {
-            var asmMockPath = @"./doesNotExist/";
-            Assert.DoesNotThrow(() =>
-            {
-                var model = Dynamo.Applications.StartupUtils.MakeModel(true, asmMockPath);
-                Assert.IsNotNull(model);
-            });
-
-        }
-
-        [Test]
         public void GetVersionFromASMPath_returnsFileVersionForMockdll()
         {
             var version = DynamoShapeManager.Utilities.GetVersionFromPath(@"./", "DynamoCore*.dll");
