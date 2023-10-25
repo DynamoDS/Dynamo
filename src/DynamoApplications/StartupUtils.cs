@@ -54,7 +54,7 @@ namespace Dynamo.Applications
         public string HostName { get; set; } = String.Empty;
         [Option("DisableAnalytics", Required = false, HelpText = "Disables analytics in Dynamo for the process lifetime.")]
         public bool DisableAnalytics { get; set; }
-        [Option("NoNetworkMode", Required = false, HelpText = "Disables network traffic in Dynamo at startup. Disables some features such as Notifications, and ML Node Autocomplete for process lifetime.")]
+        [Option("NoNetworkMode", Required = false, HelpText = "Disables network traffic in Dynamo at startup. Disables some features such as Notifications, Sign In, and ML Node Autocomplete for process lifetime.")]
         public bool NoNetworkMode { get; set; }
         [Option('p', "ParentId", Required = false, HelpText = "Identify Dynamo host analytics parent id.")]
         public string ParentId { get; set; } = String.Empty;
