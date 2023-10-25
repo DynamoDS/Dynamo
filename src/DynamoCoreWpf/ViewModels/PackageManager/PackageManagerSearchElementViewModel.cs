@@ -1,12 +1,12 @@
-using Dynamo.ViewModels;
-using Dynamo.Wpf.ViewModels;
-using Greg.Responses;
-using Prism.Commands;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
+using Dynamo.ViewModels;
+using Dynamo.Wpf.ViewModels;
+using Greg.Responses;
+using Prism.Commands;
 
 namespace Dynamo.PackageManager.ViewModels
 {
@@ -28,39 +28,39 @@ namespace Dynamo.PackageManager.ViewModels
         /// <summary>
         /// VM IsDeprecated property
         /// </summary>
-        public bool IsDeprecated { get; set; }
+        public bool IsDeprecated { get { return this.SearchElementModel.IsDeprecated; } } 
         /// <summary>
         /// VM Hosts property
         /// </summary>
-        public List<string> Hosts { get; private set; }
+        public List<string> Hosts { get { return this.SearchElementModel.Hosts; } }
         /// <summary>
         /// VM LatestVersionCreated property
         /// </summary>
-        public string LatestVersionCreated { get; private set; }
+        public string LatestVersionCreated { get { return this.SearchElementModel.LatestVersionCreated; } }
         /// <summary>
         /// VM Downloads property
         /// </summary>
-        public int Downloads { get; private set; }
+        public int Downloads { get { return this.SearchElementModel.Downloads; } }
         /// <summary>
         /// VM Votes property
         /// </summary>
-        public int Votes { get; private set; }
+        public int Votes { get { return this.SearchElementModel.Votes; } }
         /// <summary>
         /// VM Package Version property
         /// </summary>
-        public IEnumerable<string> PkgVersion { get; private set; }
+        public IEnumerable<string> PkgVersion { get { return this.SearchElementModel.PackageVersions; } }
         /// <summary>
         /// VM Maintainers property
         /// </summary>
-        public string Maintainers { get; private set; }
+        public string Maintainers { get { return this.SearchElementModel.Maintainers; } }
         /// <summary>
         /// VM LatestVersion property
         /// </summary>
-        public string LatestVersion { get; private set; }
+        public string LatestVersion { get { return this.SearchElementModel.LatestVersion; } }
         /// <summary>
         /// VM Name Property
         /// </summary>
-        public string Name { get; private set; }
+        public string Name { get { return this.SearchElementModel.Name; } }
 
 
         /// <summary>
@@ -101,24 +101,6 @@ namespace Dynamo.PackageManager.ViewModels
                 new DelegateCommand(() => GoToUrl(FormatUrl(SearchElementModel.SiteUrl)), () => !String.IsNullOrEmpty(SearchElementModel.SiteUrl));
             this.VisitRepositoryCommand =
                 new DelegateCommand(() => GoToUrl(FormatUrl(SearchElementModel.RepositoryUrl)), () => !String.IsNullOrEmpty(SearchElementModel.RepositoryUrl));
-
-            SetModelProperties();
-        }
-
-        /// <summary>
-        /// Sets the VM properties to be bound to
-        /// </summary>
-        private void SetModelProperties()
-        {
-            IsDeprecated = this.SearchElementModel.IsDeprecated;
-            Hosts = this.SearchElementModel.Hosts;
-            LatestVersionCreated = this.SearchElementModel.LatestVersionCreated;
-            Downloads = this.SearchElementModel.Downloads;
-            Votes = this.SearchElementModel.Votes;
-            PkgVersion = this.SearchElementModel.PackageVersions;
-            Maintainers = this.SearchElementModel.Maintainers;
-            LatestVersion = this.SearchElementModel.LatestVersion;
-            Name = this.SearchElementModel.Name;
         }
 
         /// <summary>
