@@ -1028,14 +1028,7 @@ namespace Dynamo.PackageManager
 
                     if (!DynamoModel.IsTestMode)
                     {
-                        if (LuceneUtility.writer != null)
-                        {
-                            LuceneUtility.dirReader = LuceneUtility.writer.GetReader(applyAllDeletes: true);
-                        }
-                        else
-                        {
-                            LuceneUtility.dirReader = DirectoryReader.Open(LuceneUtility.indexDir);
-                        }
+                        LuceneUtility.dirReader = LuceneUtility.writer != null ? LuceneUtility.writer.GetReader(applyAllDeletes: true) : DirectoryReader.Open(LuceneUtility.indexDir);
                         LuceneUtility.Searcher = new IndexSearcher(LuceneUtility.dirReader);
 
                         LuceneUtility.CommitWriterChanges();
