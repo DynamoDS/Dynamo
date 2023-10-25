@@ -1,0 +1,47 @@
+name: Test
+
+on:
+  workflow_run:
+    workflows:
+      - DynamoAllNet6.0-Build
+    types:
+      - completed
+
+env:
+  TEST_EXECUTE_DOWNLOAD_URL: https://downloads.smartbear.com/TestExecute1552SLM.exe
+
+jobs:
+  ui_smoke_tests:
+    name: UI Smoke tests
+    timeout-minutes: 60
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+            repository: DynamoDS/DynamoTestCompleteTests
+            token: ${{ secrets.DYNAMO_TESTS_TOKEN }}
+      - name: Download TestExecute
+        run: Invoke-WebRequest -Uri "${{ env.TEST_EXECUTE_DOWNLOAD_URL }}" -OutFile ".\TE.exe"
+      - name: Install TestExecute
+        shell: cmd
+        run: .\TE.exe -SilentInstall
+      - name: Download Artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: ${{ github.event.workflow_run.workflow_id }}
+          path: ${{ github.workspace }}\build
+      - name: Run Tests
+        shell: cmd
+        run: .github\scripts\run_tests.bat ${{ secrets.TEST_EXECUTE_ACCESS_KEY }} Dynamo\Dynamo.pjs DynamoSandbox SmokeTests
+      - name: Test Report
+        uses: dorny/test-reporter@v1.6.0
+        if: always()
+        with:
+          name: UI Smoke Test Report
+          path: reports/report.xml
+          reporter: java-junit
+      - name: Action Summary
+        if: always()
+        run: |
+          type summary.md | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
