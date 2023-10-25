@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Dynamo.Core;
@@ -266,6 +266,8 @@ namespace Dynamo.ViewModels
                 packageLoader.LoadNewCustomNodesAndPackages(newPaths, customNodeManager);
             }
             packagePathsEnabled.Clear();
+            // Dispose Index writer to avoid file lock
+            Search.LuceneSearch.LuceneUtilityNodeSearch.DisposeWriter();
         }
 
         internal void SetPackagesScheduledState(string packagePath, bool packagePathDisabled)

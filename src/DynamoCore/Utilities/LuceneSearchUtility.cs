@@ -439,6 +439,8 @@ namespace Dynamo.Utilities
             {
                 CreateLuceneIndexWriter(OpenMode.CREATE_OR_APPEND);
             }
+            // If the index writer is still null, skip the indexing
+            if (writer == null) return;
 
             SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName), node.FullCategoryName);
             SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), node.Name);

@@ -37,6 +37,7 @@ namespace DynamoUtilities
         {
             try
             {
+                if (string.IsNullOrEmpty(folderPath)) return null;
                 // When network path is access denied, the Directory.Exits however still 
                 // return true.
                 // EnumerateDirectories operation is additional check
