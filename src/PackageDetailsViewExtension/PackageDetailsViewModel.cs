@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Input;
 using Dynamo.Core;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
@@ -140,7 +139,7 @@ namespace Dynamo.PackageDetails
 
         public DelegateCommand OpenDependencyDetailsCommand { get; set; }
         public DelegateCommand TryInstallPackageVersionCommand { get; set; }
-        public ICommand UpvoteCommand { get; set; }
+        public DelegateCommand UpvoteCommand { get; set; }
 
         /// <summary>
         /// Retrieves a package by name and display its details in the PackageDetailsView.
@@ -208,7 +207,7 @@ namespace Dynamo.PackageDetails
                 RaisePropertyChanged(nameof(packageDetailItem.CanInstall));
 
                 // Also update the 'CanExecute' condition for 'UpvoteCommand' which relies on a package being installed
-                ((DelegateCommand)UpvoteCommand).RaiseCanExecuteChanged();  
+                UpvoteCommand.RaiseCanExecuteChanged();  
             }
         }
 

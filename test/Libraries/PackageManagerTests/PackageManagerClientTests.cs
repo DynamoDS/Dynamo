@@ -261,21 +261,6 @@ namespace Dynamo.PackageManager.Tests
             Assert.IsFalse(res);
         }
 
-        //[Test]
-        //public void UserVotes_ReturnType()
-        //{
-        //    var c = new Mock<IGregClient>();
-        //    c.Setup(x =>
-        //        x.ExecuteAndDeserializeWithContent<List<PackageHeader>>(It.IsAny<GetUserVotes>()))
-        //        .Throws(new Exception("Fail!"));
-
-        //    var m = new PackageManagerClient(c.Object, MockMaker.Empty<IPackageUploadBuilder>(), "");
-
-        //    var pl = m.UserVotes();
-
-        //    Assert.IsNotNull(pl);
-        //}
-
         #endregion
 
         #region GetTermsOfUseAcceptanceStatus

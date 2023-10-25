@@ -14,7 +14,6 @@
     <EnableDefaultPageItems>false</EnableDefaultPageItems>
   </PropertyGroup>
   <ItemGroup>
-	<PackageReference Include="Greg" Version="2.5.0.6325" />
 	<PackageReference Include="Greg" Version="3.0.0.2955" />
 	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 	<PackageReference Include="RestSharp" Version="109.0.1" />
