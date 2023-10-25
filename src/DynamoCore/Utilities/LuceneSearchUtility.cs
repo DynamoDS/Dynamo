@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Dynamo.Configuration;
-using Dynamo.Events;
-using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Search.SearchElements;
-using Dynamo.Session;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Br;
 using Lucene.Net.Analysis.Cjk;
@@ -44,7 +41,14 @@ namespace Dynamo.Utilities
         /// <summary>
         /// Lucene Directory Reader
         /// </summary>
-        internal DirectoryReader dirReader;
+        internal DirectoryReader DirReader
+        {
+            get
+            {
+                //The DirectoryReader and IndexSearcher have to be assigned after commiting indexing changes and before executing the Searcher.Search() method, otherwise new indexed info won't be reflected
+                return writer != null ? writer.GetReader(applyAllDeletes: true) : DirectoryReader.Open(indexDir);
+            }
+        }
 
         /// <summary>
         /// Lucene Index Directory, it can be RAMDirectory or FSDirectory
@@ -52,7 +56,7 @@ namespace Dynamo.Utilities
         internal Lucene.Net.Store.Directory indexDir;
 
         /// <summary>
-        /// Lucene Index write
+        /// Lucene Index writer
         /// </summary>
         internal IndexWriter writer;
 
@@ -400,7 +404,7 @@ namespace Dynamo.Utilities
         internal void DisposeAll()
         {
             writer?.Dispose();
-            dirReader?.Dispose();
+            DirReader?.Dispose();
             indexDir?.Dispose();
             Analyzer?.Dispose();
         }

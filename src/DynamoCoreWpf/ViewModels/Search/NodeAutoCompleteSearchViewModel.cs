@@ -621,11 +621,7 @@ namespace Dynamo.ViewModels
         {
             if (LuceneUtility != null)
             {
-                //The DirectoryReader and IndexSearcher have to be assigned after commiting indexing changes and before executing the Searcher.Search() method, otherwise new indexed info won't be reflected
-                LuceneUtility.dirReader = LuceneUtility.writer?.GetReader(applyAllDeletes: true);
-                if (LuceneUtility.dirReader == null) return null;
-
-                LuceneUtility.Searcher = new IndexSearcher(LuceneUtility.dirReader);
+                LuceneUtility.Searcher = new IndexSearcher(LuceneUtility.DirReader);
 
                 string searchTerm = search.Trim();
                 var candidates = new List<NodeSearchElementViewModel>();

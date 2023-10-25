@@ -1028,9 +1028,7 @@ namespace Dynamo.PackageManager
 
                     if (!DynamoModel.IsTestMode)
                     {
-                        LuceneUtility.dirReader = LuceneUtility.writer != null ? LuceneUtility.writer.GetReader(applyAllDeletes: true) : DirectoryReader.Open(LuceneUtility.indexDir);
-                        LuceneUtility.Searcher = new IndexSearcher(LuceneUtility.dirReader);
-
+                        LuceneUtility.Searcher = new IndexSearcher(LuceneUtility.DirReader);
                         LuceneUtility.CommitWriterChanges();
                         LuceneUtility.DisposeWriter();
                     }
@@ -1409,14 +1407,7 @@ namespace Dynamo.PackageManager
                 string searchTerm = searchText.Trim();
                 var packages = new List<PackageManagerSearchElementViewModel>();
 
-                //The DirectoryReader and IndexSearcher have to be assigned after commiting indexing changes and before executing the Searcher.Search() method,otherwise new indexed info won't be reflected
-                LuceneUtility.dirReader = LuceneUtility.writer != null ? LuceneUtility.writer.GetReader(applyAllDeletes: true): DirectoryReader.Open(LuceneUtility.indexDir);
-
-                if (LuceneUtility.Searcher == null && LuceneUtility.dirReader != null)
-                {
-                    LuceneUtility.Searcher = new IndexSearcher(LuceneUtility.dirReader);
-                }
-
+                LuceneUtility.Searcher = new IndexSearcher(LuceneUtility.DirReader);
                 var parser = new MultiFieldQueryParser(LuceneConfig.LuceneNetVersion, LuceneConfig.PackageIndexFields, LuceneUtility.Analyzer)
                 {
                     AllowLeadingWildcard = true,
