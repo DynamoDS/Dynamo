@@ -3,7 +3,7 @@ name: Test
 on:
   workflow_run:
     workflows:
-      - dynamoAllNet6.0_build.yml
+      - DynamoAllNet6.0-Build
     types:
       - completed
 
