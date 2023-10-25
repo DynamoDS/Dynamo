@@ -395,15 +395,6 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        /// Dispose Lucene index read objects and reuse other objects
-        /// </summary>
-        internal void DisposeReader()
-        {
-            dirReader?.Dispose();
-            dirReader = null;
-        }
-
-        /// <summary>
         /// Dispose all the Lucene objects
         /// </summary>
         internal void DisposeAll()
