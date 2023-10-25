@@ -411,6 +411,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
         enum EventsTracked
         {
             Delete,
+            A,
             C,
             V
         }
