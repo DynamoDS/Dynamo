@@ -57,6 +57,9 @@ namespace Dynamo.Extensions
         public LinterManager LinterManager => linterManager;
         private readonly LinterManager linterManager;
 
+        /// <summary>
+        /// True when Dynamo starts up in offline mode.
+        /// </summary>
         public bool NoNetworkMode;
 
         /// <summary>

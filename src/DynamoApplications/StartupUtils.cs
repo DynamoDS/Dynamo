@@ -52,6 +52,8 @@ namespace Dynamo.Applications
         public string CommonDataFolder { get; set; } = String.Empty;
         [Option("HostName", Required = false, HelpText = "Identify Dynamo variation associated with host.")]
         public string HostName { get; set; } = String.Empty;
+        [Option("DisableAnalytics", Required = false, HelpText = "Disables analytics in Dynamo for the process lifetime.")]
+        public bool DisableAnalytics { get; set; }
         [Option("NoNetworkMode", Required = false, HelpText = "Disables network traffic in Dynamo at startup. Disables some features such as Analytics, Notifications, and ML Node Autocomplete for process lifetime.")]
         public bool NoNetworkMode { get; set; }
         [Option('p', "ParentId", Required = false, HelpText = "Identify Dynamo host analytics parent id.")]
@@ -141,6 +143,7 @@ namespace Dynamo.Applications
                         NoConsole = cmdArgs.NoConsole,
                         UserDataFolder = cmdArgs.UserDataFolder,
                         CommonDataFolder = cmdArgs.CommonDataFolder,
+                        DisableAnalytics = cmdArgs.DisableAnalytics,
                         NoNetworkMode = cmdArgs.NoNetworkMode,
                         AnalyticsInfo = new HostAnalyticsInfo() { HostName = cmdArgs.HostName, ParentId = cmdArgs.ParentId, SessionId = cmdArgs.SessionId },
                         CERLocation = cmdArgs.CERLocation,
@@ -163,6 +166,7 @@ namespace Dynamo.Applications
             public string CommonDataFolder { get; set; }
             [Obsolete("This property will be removed in Dynamo 3.0 - please use AnalyticsInfo")]
             public string HostName { get; set; }
+            public bool DisableAnalytics { get; set; }
             public bool NoNetworkMode { get; set; }
             public HostAnalyticsInfo AnalyticsInfo { get; set; }
             public string CERLocation { get; set; }
@@ -377,7 +381,6 @@ namespace Dynamo.Applications
                 ProcessMode = CLImode ? TaskProcessMode.Synchronous : TaskProcessMode.Asynchronous,
                 HostAnalyticsInfo = info,
                 CLIMode = CLImode,
-                //TODO we currently use this like a no network comms flags - work on introducing a new flag or renaming this flag.
                 AuthProvider = CLImode || noNetworkMode ? null : new Core.IDSDKManager(),
                 UpdateManager = CLImode ? null : OSHelper.IsWindows() ? InitializeUpdateManager() : null,
                 StartInTestMode = CLImode,

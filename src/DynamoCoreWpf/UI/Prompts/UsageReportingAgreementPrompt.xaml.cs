@@ -41,7 +41,7 @@ namespace Dynamo.UI.Prompts
             //also disabled below id all analytics disabled.
             configure_adp_button.IsEnabled = AnalyticsService.IsADPAvailable();
 
-            if (dynamoViewModel.Model.NoNetworkMode)
+            if (Analytics.DisableAnalytics)
             {
                 configure_adp_button.IsEnabled = false;
             }

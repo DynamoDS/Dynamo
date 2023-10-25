@@ -3,6 +3,7 @@ using System.Collections;
 using System.IO;
 using System.Reflection;
 using Autodesk.DesignScript.Interfaces;
+using Dynamo.Logging;
 
 namespace ProtoFFI
 {
@@ -168,7 +169,7 @@ namespace ProtoFFI
 
             if (null != extensionApp)
             {
-                extensionApp.StartUp(new ExtensionStartupParams { DisableADP = Dynamo.Logging.Analytics.DisableAnalytics });
+                extensionApp.StartUp(new ExtensionStartupParams { DisableADP = Analytics.DisableAnalytics });
             }
         }
         

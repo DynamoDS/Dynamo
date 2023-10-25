@@ -225,7 +225,10 @@ namespace Dynamo.Models
         /// </summary>
         internal bool IsServiceMode { get; set; }
 
-        internal bool NoNetworkMode { get; private set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        internal bool NoNetworkMode { get; }
 
         /// <summary>
         /// UpdateManager to handle automatic upgrade to higher version.

@@ -5,6 +5,7 @@ using System.Runtime.Versioning;
 #endif
 using System.Threading;
 using Dynamo.Applications;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels.Watch3D;
@@ -29,7 +30,11 @@ namespace DynamoWPFCLI
                 useConsole = !cmdLineArgs.NoConsole;
                 var locale = StartupUtils.SetLocale(cmdLineArgs);
 
-                if(cmdLineArgs.ServiceMode)
+                if (cmdLineArgs.DisableAnalytics)
+                {
+                    Analytics.DisableAnalytics = true;
+                }
+                if (cmdLineArgs.ServiceMode)
                 {
                     Console.WriteLine("Starting DynamoWPFCLI in service mode");
                 }
