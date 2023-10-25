@@ -37,6 +37,8 @@ namespace DynamoUtilities
         {
             try
             {
+                // Do not even try when folder path is null or empty.
+                // This usually happens when system folder dialog is initialized with empty path
                 if (string.IsNullOrEmpty(folderPath)) return null;
                 // When network path is access denied, the Directory.Exits however still 
                 // return true.

@@ -266,7 +266,7 @@ namespace Dynamo.ViewModels
                 packageLoader.LoadNewCustomNodesAndPackages(newPaths, customNodeManager);
             }
             packagePathsEnabled.Clear();
-            // Dispose Index writer to avoid file lock
+            // Dispose node Index writer to avoid file lock after new package path applied and packages loaded.
             Search.LuceneSearch.LuceneUtilityNodeSearch.DisposeWriter();
         }
 
