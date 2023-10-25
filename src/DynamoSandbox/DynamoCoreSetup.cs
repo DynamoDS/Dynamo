@@ -41,7 +41,10 @@ namespace DynamoSandbox
             var locale = StartupUtils.SetLocale(cmdLineArgs);
             _putenv(locale);
 
-            Analytics.DisableAnalytics = cmdLineArgs.DisableAnalytics;
+            if (cmdLineArgs.DisableAnalytics || cmdLineArgs.NoNetworkMode)
+            {
+                Analytics.DisableAnalytics = true;
+            }
 
             if (!string.IsNullOrEmpty(cmdLineArgs.CERLocation))
             {

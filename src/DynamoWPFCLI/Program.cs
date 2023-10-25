@@ -30,7 +30,10 @@ namespace DynamoWPFCLI
                 useConsole = !cmdLineArgs.NoConsole;
                 var locale = StartupUtils.SetLocale(cmdLineArgs);
 
-                Analytics.DisableAnalytics = cmdLineArgs.DisableAnalytics;
+                if (cmdLineArgs.DisableAnalytics || cmdLineArgs.NoNetworkMode)
+                {
+                    Analytics.DisableAnalytics = true;
+                }
 
                 if (cmdLineArgs.ServiceMode)
                 {

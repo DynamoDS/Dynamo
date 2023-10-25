@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using Dynamo.Applications;
+using Dynamo.Logging;
 using Dynamo.Models;
 
 namespace DynamoCLI
@@ -20,7 +21,10 @@ namespace DynamoCLI
                 var cmdLineArgs = StartupUtils.CommandLineArguments.Parse(args);
                 useConsole = !cmdLineArgs.NoConsole;
                 var locale = StartupUtils.SetLocale(cmdLineArgs);
-                Dynamo.Logging.Analytics.DisableAnalytics = cmdLineArgs.DisableAnalytics;
+                if (cmdLineArgs.DisableAnalytics || cmdLineArgs.NoNetworkMode)
+                {
+                    Analytics.DisableAnalytics = true;
+                }
 
                 if (cmdLineArgs.KeepAlive)
                 {

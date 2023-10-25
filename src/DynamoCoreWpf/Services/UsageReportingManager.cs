@@ -49,7 +49,8 @@ namespace Dynamo.Services
             get =>
                 !DynamoModel.IsTestMode
                 && (dynamoViewModel != null
-                    && !Analytics.DisableAnalytics && dynamoViewModel.Model.PreferenceSettings.IsUsageReportingApproved);
+                    && !Analytics.DisableAnalytics
+                    && dynamoViewModel.Model.PreferenceSettings.IsUsageReportingApproved);
             private set
             {
                 dynamoViewModel.Model.PreferenceSettings.IsUsageReportingApproved = value;
