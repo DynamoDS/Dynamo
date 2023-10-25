@@ -1,0 +1,267 @@
+{
+  "Uuid": "a8d6a28e-c57a-44a8-9bb4-0bf447b5ecbc",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "-",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "806cd5c76e714d75aea54bdc72ccda0c",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Type2": "number",
+      "Value": "47.7",
+      "MaximumValue": 100.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "Produces numeric values",
+      "SelectedIndex": 0
+    },
+    {
+      "Id": "c65518244b0b4d31a134cd81b9c3930d",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Type2": "number",
+      "Value": "12.6",
+      "MaximumValue": 100.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "Produces numeric values",
+      "SelectedIndex": 0
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "2cf27987cf884c8c84ce947439e0487a",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "2eede8a05eb6456682abf5325f82bcaf",
+          "Name": "x",
+          "Description": "Integer or double value\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4394823a2cb743c0a9ca2d4fa0b09458",
+          "Name": "y",
+          "Description": "Integer or double value\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "61b6dc56eec443f9bf5f3eecfa18e85e",
+          "Name": "number",
+          "Description": "Result of the y input subtracted from the x input",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "-@var[]..[],var[]..[]",
+      "Replication": "Auto",
+      "Description": "Returns subtraction of x minus y\n\n- (x: var[]..[], y: var[]..[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NumberType": "Double",
+      "MaximumValue": 100.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "Id": "806cd5c76e714d75aea54bdc72ccda0c",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "2d5a21c63052411696e84c9fddba3b08",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Produces numeric values",
+      "InputValue": 47.7
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NumberType": "Double",
+      "MaximumValue": 100.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "Id": "c65518244b0b4d31a134cd81b9c3930d",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "5e834097b390409880d6b1fc481e1557",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Produces numeric values",
+      "InputValue": 12.6
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 50.0,
+      "WatchHeight": 38.0,
+      "Id": "261fe948d36244a8a34c9947be55493c",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "21b73ee36a35401d9df3d8460237b53f",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1e07c5ffa295431bb51f3867f034e178",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "61b6dc56eec443f9bf5f3eecfa18e85e",
+      "End": "21b73ee36a35401d9df3d8460237b53f",
+      "Id": "ece23071c7104e79b6af67c8af4331bc",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "2d5a21c63052411696e84c9fddba3b08",
+      "End": "2eede8a05eb6456682abf5325f82bcaf",
+      "Id": "1eb61c3cd433414cb5d208ceb4e149e5",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "5e834097b390409880d6b1fc481e1557",
+      "End": "4394823a2cb743c0a9ca2d4fa0b09458",
+      "Id": "2b96b34bb55541b5bd577e4af6426e66",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.19",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.19.0.5742",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "2cf27987cf884c8c84ce947439e0487a",
+        "Name": "-",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 538.30000000000007,
+        "Y": 226.8
+      },
+      {
+        "Id": "806cd5c76e714d75aea54bdc72ccda0c",
+        "Name": "Number Slider",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 90.300000000000068,
+        "Y": 169.8
+      },
+      {
+        "Id": "c65518244b0b4d31a134cd81b9c3930d",
+        "Name": "Number Slider",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 90.300000000000068,
+        "Y": 317.8
+      },
+      {
+        "Id": "261fe948d36244a8a34c9947be55493c",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 821.30000000000007,
+        "Y": 226.8
+      }
+    ],
+    "Annotations": [],
+    "X": -61.668181818181893,
+    "Y": 29.619696969696975,
+    "Zoom": 1.0151515151515151
+  }
+}
