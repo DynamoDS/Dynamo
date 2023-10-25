@@ -62,11 +62,6 @@ namespace Dynamo.Utilities
         internal LuceneStartConfig startConfig;
 
         /// <summary>
-        /// Index open mode for Lucene index writer
-        /// </summary>
-        internal OpenMode openMode { get; set; }
-
-        /// <summary>
         /// Default start config for Lucene, it will use RAM storage type and empty directory
         /// </summary>
         internal static readonly LuceneStartConfig DefaultStartConfig = new LuceneStartConfig();
@@ -137,7 +132,7 @@ namespace Dynamo.Utilities
         /// <summary>
         /// Create index writer for followup doc indexing
         /// </summary>
-        /// <param name="mode"></param>
+        /// <param name="mode">Index open mode for Lucene index writer</param>
         internal void CreateLuceneIndexWriter(OpenMode mode = OpenMode.CREATE)
         {
             // Create an index writer
@@ -437,9 +432,9 @@ namespace Dynamo.Utilities
         {
             if (addedFields == null) return;
             // During DynamoModel initialization, the index writer should still be valid here
-            // If the index writer is null and index not locked, it means the index writer has been disposed, most likely due to DynamoView already launched
-            // If the index writer is null and index locked, it means user is in a secondary Dynamo session
-            // Then create a new index writer to amend the index should be safe
+            // If the index writer is null and index not locked, it means the index writer has been disposed, e.g. DynamoModel finished initialization
+            // If the index writer is null and index locked, it means another Dynamo session is currently updating the search index
+            // Try to create a new index writer to amend the index
             if (writer == null && !IndexWriter.IsLocked(this.indexDir))
             {
                 CreateLuceneIndexWriter(OpenMode.CREATE_OR_APPEND);
