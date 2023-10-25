@@ -195,6 +195,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void DependencyRegenCrashingDynamoTest()
         {
+            this.View.WindowState = WindowState.Maximized;
             RaiseLoadedEvent(this.View);
             var extensionManager = View.viewExtensionManager;
             extensionManager.Add(viewExtension);
