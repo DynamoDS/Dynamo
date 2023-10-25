@@ -10,7 +10,7 @@ namespace Dynamo.Utilities
     /// <summary>
     /// Helper Class for removing PII Data from a JSON workspace
     /// </summary>
-    public static class PIIDetector
+    internal static class PIIDetector
     {
         /// <summary>
         /// Removes the PII data from a JSON workspace
@@ -95,13 +95,13 @@ namespace Dynamo.Utilities
             return property.Value;
         }
 
-        public static bool ContainsEmail(string value) { return new Regex(emailPattern).Match(value).Success; }
-        public static bool ContainsWebsite(string value) { return new Regex(websitePattern).Match(value).Success; }
-        public static bool ContainsDirectory(string value) { return new Regex(directoryPattern).Match(value).Success; }
-        public static bool ContainsCreditCard(string value) { return new Regex(creditCardPattern).Match(value).Success; }
-        public static bool ContainsSSN(string value) { return new Regex(ssnPattern).Match(value).Success; }
-        public static bool ContainsIpAddress(string value) { return new Regex(ipPattern).Match(value).Success; }
-        public static bool ContainsDate(string value) { return new Regex(datePattern).Match(value).Success; }
+        internal static bool ContainsEmail(string value) { return new Regex(emailPattern).Match(value).Success; }
+        internal static bool ContainsWebsite(string value) { return new Regex(websitePattern).Match(value).Success; }
+        internal static bool ContainsDirectory(string value) { return new Regex(directoryPattern).Match(value).Success; }
+        internal static bool ContainsCreditCard(string value) { return new Regex(creditCardPattern).Match(value).Success; }
+        internal static bool ContainsSSN(string value) { return new Regex(ssnPattern).Match(value).Success; }
+        internal static bool ContainsIpAddress(string value) { return new Regex(ipPattern).Match(value).Success; }
+        internal static bool ContainsDate(string value) { return new Regex(datePattern).Match(value).Success; }
 
         /// <summary>
         /// Removes the PII data based on the information patterns
