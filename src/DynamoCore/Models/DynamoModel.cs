@@ -226,7 +226,7 @@ namespace Dynamo.Models
         internal bool IsServiceMode { get; set; }
 
         /// <summary>
-        /// 
+        /// True if Dynamo starts up in offline mode.
         /// </summary>
         internal bool NoNetworkMode { get; }
 
@@ -741,7 +741,7 @@ namespace Dynamo.Models
 
             // If user skipped analytics from assembly config, do not try to launch the analytics client
             // or the feature flags client for web traffic reason.
-            if (!IsServiceMode && !areAnalyticsDisabledFromConfig && !config.NoNetworkMode)
+            if (!IsServiceMode && !areAnalyticsDisabledFromConfig && !config.NoNetworkMode && !Analytics.DisableAnalytics)
             {
                 // Start the Analytics service only when a session is not present.
                 // In an integrator host, as splash screen can be closed without shutting down the ViewModel, the analytics service is not stopped.
