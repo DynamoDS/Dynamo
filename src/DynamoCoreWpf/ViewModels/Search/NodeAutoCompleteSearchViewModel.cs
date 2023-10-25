@@ -157,7 +157,7 @@ namespace Dynamo.ViewModels
         internal void ResetAutoCompleteSearchViewState()
         {
             DisplayAutocompleteMLStaticPage = false;
-            DisplayLowConfidence = PreferenceSettings.Instance.HideNodesBelowSpecificConfidenceLevel;
+            DisplayLowConfidence = PreferenceSettings.Instance.HideNodesBelowSpecificConfidenceLevel && PreferenceSettings.Instance.DefaultNodeAutocompleteSuggestion == NodeAutocompleteSuggestion.MLRecommendation;
             AutocompleteMLMessage = string.Empty;
             AutocompleteMLTitle = string.Empty;
             FilteredResults = new List<NodeSearchElementViewModel>();
