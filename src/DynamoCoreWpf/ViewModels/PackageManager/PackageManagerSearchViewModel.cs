@@ -1577,7 +1577,7 @@ namespace Dynamo.PackageManager
             InitialResultsLoaded = false;   // reset the loading screen settings
             RequestShowFileDialog -= OnRequestShowFileDialog;
             nonHostFilter.ForEach(f => f.PropertyChanged -= filter_PropertyChanged);
-            LuceneUtility.DisposeAll();
+            LuceneUtility.DisposeReader();
         }
     }
 }

@@ -153,12 +153,12 @@ namespace Dynamo.Utilities
             {
 
                 DisposeWriter();
-                (ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger) as DynamoLogger).LogError($"LuceneNET LockObtainFailedException {ex}");
+                dynamoModel.Logger.LogError($"LuceneNET LockObtainFailedException {ex}");
 
             }
             catch (Exception ex)
             {
-                (ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger) as DynamoLogger).LogError($"LuceneNET Exception {ex}");
+                dynamoModel.Logger.LogError($"LuceneNET Exception {ex}");
             }
         }
 
@@ -390,10 +390,22 @@ namespace Dynamo.Utilities
             }
         }
 
+        /// <summary>
+        /// Dispose Lucene index write objects and reuse other objects
+        /// </summary>
         internal void DisposeWriter()
         {
             writer?.Dispose();
             writer = null;
+        }
+
+        /// <summary>
+        /// Dispose Lucene index read objects and reuse other objects
+        /// </summary>
+        internal void DisposeReader()
+        {
+            dirReader?.Dispose();
+            dirReader = null;
         }
 
         /// <summary>
