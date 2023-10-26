@@ -328,6 +328,7 @@ namespace Dynamo.PackageDetails
         /// </summary>
         internal void Dispose()
         {
+            if (PackageDetailsViewExtension.PackageManagerExtension.PackageLoader == null) return;
             PackageDetailsViewExtension.PackageManagerExtension.PackageLoader.PackageAdded -= PackageLoaderOnPackageAdded;
         }
     }
