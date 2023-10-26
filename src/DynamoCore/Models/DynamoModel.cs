@@ -212,7 +212,7 @@ namespace Dynamo.Models
         /// <summary>
         /// Name of the Host (i.e. DynamoRevit/DynamoStudio)
         /// </summary>
-        [Obsolete("This property will be removed in Dynamo 3.0 - please use HostAnalyticsInfo")]
+        [Obsolete("This property will be removed in a future version of Dynamo - please use HostAnalyticsInfo")]
         public string HostName { get; set; }
 
         /// <summary>
@@ -578,7 +578,7 @@ namespace Dynamo.Models
             /// <summary>
             /// Disables ADP for the entire process for the lifetime of the process.
             /// </summary>
-            [Obsolete("This property is no longer used and will be removed in Dynamo 3.0 - please use Dynamo.Logging.Analytics.DisableAnalytics instead.")]
+            [Obsolete("This property is no longer used and will be removed in a future version of Dynamo - please use Dynamo.Logging.Analytics.DisableAnalytics instead.")]
             public bool DisableADP { get; set; }
 
             /// <summary>
