@@ -60,7 +60,7 @@ namespace Dynamo.Extensions
         /// <summary>
         /// True when Dynamo starts up in offline mode.
         /// </summary>
-        public bool NoNetworkMode { get; private set; }
+        public bool NoNetworkMode { get; }
 
         /// <summary>
         /// Returns true if ASM/LibG are loaded. May only be valid in sandbox sessions.
