@@ -312,7 +312,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args">Can be called with CrashErrorReportArgs or CrashPromptArgs</param>
-        [Obsolete("Will be removed in Dynamo3.0. Please use 'OnRequestsCrashPrompt(CrashErrorReportArgs args)' instead.")]
+        [Obsolete("Will be removed in a future version of Dynamo. Please use 'OnRequestsCrashPrompt(CrashErrorReportArgs args)' instead.")]
         public void OnRequestsCrashPrompt(object sender, CrashPromptArgs args)
         {
             if (RequestsCrashPrompt != null)
