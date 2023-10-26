@@ -60,12 +60,12 @@ namespace Dynamo.Extensions
         /// <summary>
         /// True when Dynamo starts up in offline mode.
         /// </summary>
-        public bool NoNetworkMode;
+        public bool NoNetworkMode { get; private set; }
 
         /// <summary>
         /// Returns true if ASM/LibG are loaded. May only be valid in sandbox sessions.
         /// </summary>
-        internal bool IsGeometryLibraryLoaded { get; private set; }
+        internal bool IsGeometryLibraryLoaded { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="StartupParams"/> class.
