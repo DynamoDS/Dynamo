@@ -403,7 +403,7 @@ namespace Dynamo.Utilities
         /// </summary>
         internal void DisposeAll()
         {
-            writer?.Dispose();
+            DisposeWriter();
             DirReader?.Dispose();
             indexDir?.Dispose();
             Analyzer?.Dispose();
