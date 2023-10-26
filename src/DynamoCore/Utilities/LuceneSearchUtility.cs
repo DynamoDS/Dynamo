@@ -120,6 +120,8 @@ namespace Dynamo.Utilities
         /// </summary>
         internal void InitializeLuceneConfig()
         {
+            if (DynamoModel.IsHeadless) return;
+
             addedFields = new List<string>();
 
             DirectoryInfo luceneUserDataFolder;
