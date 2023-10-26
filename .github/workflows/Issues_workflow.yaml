@@ -37,7 +37,7 @@ jobs:
 
       #Remove the " character in the issue title and replaced with -
       - name: Remove conflicting chars
-        uses: frabert/replace-string-action@v1.2
+        uses: frabert/replace-string-action@v2.4
         id: remove_quotations
         with:
           pattern: "\""
@@ -113,7 +113,7 @@ jobs:
       - name: Remove conflicting chars
         env:
           ISSUE_BODY: ${{github.event.issue.body}}
-        uses: frabert/replace-string-action@v1.2
+        uses: frabert/replace-string-action@v2.4
         id: remove_quotations
         with:
           pattern: "\""
