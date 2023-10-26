@@ -3,7 +3,7 @@ name: Test
 on:
   workflow_run:
     workflows:
-      - dynamoAllNet6.0_build.yml
+      - DynamoAllNet6.0-Build
     types:
       - completed
 
@@ -21,6 +21,7 @@ jobs:
         with:
             repository: DynamoDS/DynamoTestCompleteTests
             token: ${{ secrets.DYNAMO_TESTS_TOKEN }}
+            ref: master
       - name: Download TestExecute
         run: Invoke-WebRequest -Uri "${{ env.TEST_EXECUTE_DOWNLOAD_URL }}" -OutFile ".\TE.exe"
       - name: Install TestExecute
