@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Dynamo.Models;
 
 namespace Dynamo.Logging
@@ -7,8 +7,7 @@ namespace Dynamo.Logging
     /// Defines analytics session interface. This interface is defined for
     /// internal use and mocking the tests only.
     /// </summary>
-    [Obsolete("Interface should be Internal, do not use.")]
-    public interface IAnalyticsSession : IDisposable
+    internal interface IAnalyticsSession : IDisposable
     {
         /// <summary>
         /// Get unique user id.
