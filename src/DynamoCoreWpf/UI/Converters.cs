@@ -170,26 +170,6 @@ namespace Dynamo.Controls
         }
     }
 
-
-    /// <summary>
-    /// Controls the visibility of tooltip that displays python dependency in Package manager for each package version
-    /// </summary>
-    [Obsolete("This class will be removed in Dynamo 3.0")]
-    public class EmptyDepStringToCollapsedConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter,
-          CultureInfo culture)
-        {
-            return Visibility.Collapsed;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter,
-          CultureInfo culture)
-        {
-            return null;
-        }
-    }
-
     public class PackageSearchStateToStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,
@@ -2152,7 +2132,7 @@ namespace Dynamo.Controls
         }
     }
 
-    [Obsolete("This class will be removed in Dynamo 3.0 - please use the ForgeUnit SDK based methods")]
+    [Obsolete("This class will be removed in a future version of Dynamo - please use the ForgeUnit SDK based methods")]
     public class MeasureConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
