@@ -21,10 +21,8 @@ namespace DynamoCLI
                 var cmdLineArgs = StartupUtils.CommandLineArguments.Parse(args);
                 useConsole = !cmdLineArgs.NoConsole;
                 var locale = StartupUtils.SetLocale(cmdLineArgs);
-                if (cmdLineArgs.DisableAnalytics || cmdLineArgs.NoNetworkMode)
-                {
-                    Analytics.DisableAnalytics = true;
-                }
+
+                cmdLineArgs.SetDisableAnalytics();
 
                 if (cmdLineArgs.KeepAlive)
                 {

@@ -11,6 +11,7 @@ using CommandLine;
 using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Interfaces;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Scheduler;
 using Dynamo.Updates;
@@ -150,6 +151,14 @@ namespace Dynamo.Applications
                         ServiceMode = cmdArgs.ServiceMode
                     };
                 }, errs => new CommandLineArguments());
+            }
+
+            internal void SetDisableAnalytics()
+            {
+                if (DisableAnalytics || NoNetworkMode)
+                {
+                    Analytics.DisableAnalytics = true;
+                }
             }
 
             public string Locale { get; set; }
