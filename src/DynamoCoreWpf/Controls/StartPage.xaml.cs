@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -370,7 +371,7 @@ namespace Dynamo.UI.Controls
             IEnumerable<string> filePaths)
         {
             files.Clear();
-            foreach (var filePath in filePaths)
+            foreach (var filePath in filePaths.Where(x => x != null))
             {
                 try
                 {

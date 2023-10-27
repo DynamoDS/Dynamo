@@ -3,12 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Dynamo.Configuration;
-using Dynamo.Core;
-using Dynamo.Events;
-using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Search.SearchElements;
-using Dynamo.Session;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Br;
 using Lucene.Net.Analysis.Cjk;
@@ -95,6 +91,7 @@ namespace Dynamo.Utilities
         /// <summary>
         /// Constructor for LuceneSearchUtility, it will use the storage type passed as parameter
         /// </summary>
+        /// <param name="model"></param>
         /// <param name="config"></param>
         internal LuceneSearchUtility(DynamoModel model, LuceneStartConfig config)
         {
@@ -134,12 +131,13 @@ namespace Dynamo.Utilities
         /// <summary>
         /// Create index writer for followup doc indexing
         /// </summary>
-        internal void CreateLuceneIndexWriter()
+        /// <param name="mode">Index open mode for Lucene index writer</param>
+        internal void CreateLuceneIndexWriter(OpenMode mode = OpenMode.CREATE)
         {
             // Create an index writer
             IndexWriterConfig indexConfig = new IndexWriterConfig(LuceneConfig.LuceneNetVersion, Analyzer)
             {
-                OpenMode = OpenMode.CREATE
+                OpenMode = mode
             };
             try
             {
@@ -147,19 +145,14 @@ namespace Dynamo.Utilities
             }
             catch (LockObtainFailedException ex)
             {
-                try
-                {
-                    writer = new IndexWriter(new RAMDirectory(), indexConfig);
-                    (ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger) as DynamoLogger).LogError($"LuceneNET LockObtainFailedException {ex}, switching to RAM mode.");
-                }
-                catch(Exception)
-                {
-                    DisposeWriter();
-                }
+
+                DisposeWriter();
+                dynamoModel.Logger.LogError($"LuceneNET LockObtainFailedException {ex}");
+
             }
             catch (Exception ex)
             {
-                (ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger) as DynamoLogger).LogError($"LuceneNET Exception {ex}");
+                dynamoModel.Logger.LogError($"LuceneNET Exception {ex}");
             }
         }
 
@@ -392,6 +385,9 @@ namespace Dynamo.Utilities
             }
         }
 
+        /// <summary>
+        /// Dispose Lucene index write objects and reuse other objects
+        /// </summary>
         internal void DisposeWriter()
         {
             writer?.Dispose();
@@ -403,7 +399,7 @@ namespace Dynamo.Utilities
         /// </summary>
         internal void DisposeAll()
         {
-            writer?.Dispose();
+            DisposeWriter();
             dirReader?.Dispose();
             indexDir?.Dispose();
             Analyzer?.Dispose();
@@ -426,6 +422,16 @@ namespace Dynamo.Utilities
         internal void AddNodeTypeToSearchIndex(NodeSearchElement node, Document doc)
         {
             if (addedFields == null) return;
+            // During DynamoModel initialization, the index writer should still be valid here
+            // If the index writer is null and index not locked, it means the index writer has been disposed, e.g. DynamoModel finished initialization
+            // If the index writer is null and index locked, it means another Dynamo session is currently updating the search index
+            // Try to create a new index writer to amend the index
+            if (writer == null && !IndexWriter.IsLocked(this.indexDir))
+            {
+                CreateLuceneIndexWriter(OpenMode.CREATE_OR_APPEND);
+            }
+            // If the index writer is still null, skip the indexing
+            if (writer == null) return;
 
             SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName), node.FullCategoryName);
             SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), node.Name);

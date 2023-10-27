@@ -18,7 +18,6 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Selection;
-using Dynamo.UI;
 using Dynamo.Wpf.ViewModels.Core;
 using Newtonsoft.Json;
 using Point = System.Windows.Point;

@@ -1014,6 +1014,8 @@ namespace Dynamo.ViewModels
                         }
                     }
                     SetPackageState(packageDownloadHandle, installPath);
+                    // Dispose Index writer to avoid file lock after new package is installed
+                    Search.LuceneSearch.LuceneUtilityNodeSearch.DisposeWriter();
                     Analytics.TrackEvent(Actions.Installed, Categories.PackageManagerOperations, $"{packageDownloadHandle?.Name}");
                 }
                 catch (Exception e)
