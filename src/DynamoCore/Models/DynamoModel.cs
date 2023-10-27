@@ -534,7 +534,7 @@ namespace Dynamo.Models
             /// <summary>
             /// Configuration option to start Dynamo in offline mode.
             /// </summary>
-            bool NoNetworkMode { get; set; }
+            bool NoNetworkMode => false;
         }
 
         /// <summary>
