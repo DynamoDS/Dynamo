@@ -361,7 +361,7 @@ namespace Dynamo.ViewModels
         /// Returns the stringified representation of the connected nodes
         /// </summary>
         [JsonIgnore]
-        public string CheckSum
+        public string Checksum
         {
             get
             {

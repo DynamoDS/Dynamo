@@ -2101,7 +2101,7 @@ namespace Dynamo.ViewModels
                 if (currentWorkspaceViewModel?.IsHomeSpace ?? true && HomeSpace.HasRunWithoutCrash && Model.CurrentWorkspace.IsValidForFDX)
                 {
                     Model.Logger.Log("The Workspace is valid for FDX");
-                    Model.Logger.Log("The Workspace checksum is : " + currentWorkspaceViewModel.CheckSum);
+                    Model.Logger.Log("The Workspace checksum is : " + currentWorkspaceViewModel.Checksum);
                 }
                     
             }
