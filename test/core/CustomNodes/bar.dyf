@@ -1,29 +1,179 @@
-<Workspace Version="1.0.1.1743" X="0" Y="0" zoom="1" Name="bar" Description="" ID="8c81a098-663a-4c0d-8582-39e7e7efaf22" Category="Dyfs">
-  <NamespaceResolutionMap />
-  <Elements>
-    <Dynamo.Graph.Nodes.CustomNodes.Symbol guid="5b906522-aad9-4e24-8ce9-1cded5324865" type="Dynamo.Graph.Nodes.CustomNodes.Symbol" nickname="Input" x="72" y="145.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
-      <Symbol value="x" />
-    </Dynamo.Graph.Nodes.CustomNodes.Symbol>
-    <Dynamo.Graph.Nodes.CustomNodes.Function guid="4a562844-3e52-4abb-b7cf-c67187671e5c" type="Dynamo.Graph.Nodes.CustomNodes.Function" nickname="foo" x="232" y="93.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false">
-      <ID value="f334adb3-084c-42ca-9085-ce6cf7401c4e" />
-      <Name value="foo" />
-      <Description value="" />
-      <Inputs>
-        <Input value="x" />
-      </Inputs>
-      <Outputs>
-        <Output value="r" />
-      </Outputs>
-    </Dynamo.Graph.Nodes.CustomNodes.Function>
-    <Dynamo.Graph.Nodes.CustomNodes.Output guid="9c686856-b82d-46ca-900d-a84553c1c1d1" type="Dynamo.Graph.Nodes.CustomNodes.Output" nickname="Output" x="428" y="187.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false">
-      <Symbol value="" />
-    </Dynamo.Graph.Nodes.CustomNodes.Output>
-  </Elements>
-  <Connectors>
-    <Dynamo.Graph.Connectors.ConnectorModel start="5b906522-aad9-4e24-8ce9-1cded5324865" start_index="0" end="4a562844-3e52-4abb-b7cf-c67187671e5c" end_index="0" portType="0" />
-    <Dynamo.Graph.Connectors.ConnectorModel start="4a562844-3e52-4abb-b7cf-c67187671e5c" start_index="0" end="9c686856-b82d-46ca-900d-a84553c1c1d1" end_index="0" portType="0" />
-  </Connectors>
-  <Notes />
-  <Annotations />
-  <Presets />
-</Workspace>
+{
+  "Uuid": "8c81a098-663a-4c0d-8582-39e7e7efaf22",
+  "IsCustomNode": true,
+  "Category": "Dyfs",
+  "Description": "",
+  "Name": "bar",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore",
+      "Parameter": {
+        "Name": "x",
+        "TypeName": "var",
+        "TypeRank": -1,
+        "DefaultValue": null,
+        "Description": ""
+      },
+      "Id": "5b906522aad94e248ce91cded5324865",
+      "NodeType": "InputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "d73c598554d840e6a1e9e94001989413",
+          "Name": "",
+          "Description": "Input Data",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A function parameter, use with custom nodes.\r\n\r\nYou can specify the type and default value for parameter. E.g.,\r\n\r\ninput : var[]..[]\r\nvalue : bool = false"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionSignature": "f334adb3-084c-42ca-9085-ce6cf7401c4e",
+      "FunctionType": "Graph",
+      "Id": "4a5628443e524abbb7cfc67187671e5c",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "98f39a3d2a5e4705980720b7b8e3d59f",
+          "Name": "x",
+          "Description": "Input #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7f27308f49884638881681735d3b570b",
+          "Name": "r",
+          "Description": "Output #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": ""
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Output, DynamoCore",
+      "Symbol": "",
+      "ElementResolver": null,
+      "Id": "9c686856b82d46ca900da84553c1c1d1",
+      "NodeType": "OutputNode",
+      "Inputs": [
+        {
+          "Id": "9914bd5aad274f2b8e621d763aab1eb5",
+          "Name": "",
+          "Description": "Output Data",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [],
+      "Replication": "Disabled",
+      "Description": "A function output, use with custom nodes"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "d73c598554d840e6a1e9e94001989413",
+      "End": "98f39a3d2a5e4705980720b7b8e3d59f",
+      "Id": "5f43346472f947f08725650c8c122f1c",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "7f27308f49884638881681735d3b570b",
+      "End": "9914bd5aad274f2b8e621d763aab1eb5",
+      "Id": "d87ce53d64c443fb9896128c5ce49370",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [
+    "f334adb3-084c-42ca-9085-ce6cf7401c4e"
+  ],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "foo.dyf",
+      "ReferenceType": "DYFFile",
+      "Nodes": [
+        "4a5628443e524abbb7cfc67187671e5c"
+      ]
+    }
+  ],
+  "Author": "None provided",
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": false,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "3.0.0.5795",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "5b906522aad94e248ce91cded5324865",
+        "Name": "Input",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 72.0,
+        "Y": 145.5
+      },
+      {
+        "Id": "4a5628443e524abbb7cfc67187671e5c",
+        "Name": "foo",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 553.0,
+        "Y": 107.5
+      },
+      {
+        "Id": "9c686856b82d46ca900da84553c1c1d1",
+        "Name": "Output",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 697.0,
+        "Y": 420.5
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

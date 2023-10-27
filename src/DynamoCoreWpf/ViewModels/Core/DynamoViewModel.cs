@@ -2097,8 +2097,13 @@ namespace Dynamo.ViewModels
                 Model.Logger.Log(String.Format(Properties.Resources.SavingInProgress, path));
                 CurrentSpaceViewModel.Save(path, isBackup, Model.EngineController, saveContext);
                 if (!isBackup) AddToRecentFiles(path);
-                if (currentWorkspaceViewModel?.IsHomeSpace ?? true)
-                    Model.Logger.Log("The Workspace is valid for FDX : " + (HomeSpace.HasRunWithoutCrash && Model.CurrentWorkspace.IsValidForFDX).ToString());
+                
+                if (currentWorkspaceViewModel?.IsHomeSpace ?? true && HomeSpace.HasRunWithoutCrash && Model.CurrentWorkspace.IsValidForFDX)
+                {
+                    Model.Logger.Log("The Workspace is valid for FDX");
+                    Model.Logger.Log("The Workspace checksum is : " + currentWorkspaceViewModel.CheckSum);
+                }
+                    
             }
             catch (Exception ex)
             {

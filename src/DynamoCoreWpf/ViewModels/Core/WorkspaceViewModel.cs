@@ -357,6 +357,101 @@ namespace Dynamo.ViewModels
             get { return Model == DynamoViewModel.HomeSpace; }
         }
 
+        /// <summary>
+        /// Returns the stringified representation of the connected nodes
+        /// </summary>
+        [JsonIgnore]
+        public string CheckSum
+        {
+            get
+            {
+                List<string> nodeInfoConnections = new List<string>();
+                JObject jsonWorkspace = GetJsonRepresentation();
+                var nodes = jsonWorkspace["Nodes"];
+
+                List<string> nodeIds = new List<string>();
+                foreach (JObject node in nodes)
+                {
+                    var nodeProperties = node.Children<JProperty>();
+                    JProperty id = nodeProperties.FirstOrDefault(x => x.Name == "Id");
+                    nodeIds.Add(id.Value.ToString());
+                }
+
+                nodeIds.Sort();
+
+                foreach (string nodeId in nodeIds)
+                {
+                    List<string> outputIds = new List<string>();
+                    var node = jsonWorkspace["Nodes"].Where(t => t.Value<string>("Id") == nodeId).Select(t => t).FirstOrDefault();
+                    var outputsProperty = node.Children<JProperty>().FirstOrDefault(x => x.Name == "Outputs");
+                    var outputs = (JArray)outputsProperty.Value;
+                    int outputIndex = 1;
+
+                    foreach (JObject output in outputs)
+                    {
+                        var outputProperties = output.Children<JProperty>();
+                        JProperty outputId = outputProperties.FirstOrDefault(x => x.Name == "Id");
+                        outputIds.Add(outputId.Value.ToString());
+
+                        var connectorsProperty = jsonWorkspace["Connectors"].Where(t => t.Value<string>("Start") == outputId.Value.ToString());
+
+                        foreach (var connector in connectorsProperty)
+                        {
+                            var connectorProperties = connector.Children<JProperty>();
+                            JProperty endProperty = connectorProperties.FirstOrDefault(x => x.Name == "End");
+                            string inputId = (String)endProperty.Value;
+
+                            var outputConnectedNode = GetNodeByInputId(inputId, jsonWorkspace);
+                            nodeInfoConnections.Add(nodeId + "|[" + outputIndex.ToString() + "|" + outputConnectedNode.Item1 + "|" + outputConnectedNode.Item2.ToString() + "]");
+                        }
+                        outputIndex++;
+                    }
+                }
+                return string.Join(",", nodeInfoConnections);
+            }            
+        }
+
+        Tuple<string,int> GetNodeByInputId(string inputId, JObject jsonWorkspace)
+        {
+            var nodes = jsonWorkspace["Nodes"];
+
+            string nodeId = string.Empty;
+            int connectedInputIndex = 1;
+            bool foundNode = false;
+
+            foreach (var node in nodes)
+            {
+                if (!foundNode)
+                {
+                    nodeId = string.Empty;
+                    connectedInputIndex = 1;
+
+                    var nodeProperties = node.Children<JProperty>();
+                    JProperty nodeProperty = nodeProperties.FirstOrDefault(x => x.Name == "Id");
+                    nodeId = (String)nodeProperty.Value;
+
+                    JProperty nodeInputs = nodeProperties.FirstOrDefault(x => x.Name == "Inputs");
+                    var inputs = (JArray)nodeInputs.Value;
+
+                    foreach (JObject input in inputs)
+                    {
+                        var inputProperties = input.Children<JProperty>();
+                        JProperty connectedNodeInputId = inputProperties.FirstOrDefault(x => x.Name == "Id");
+
+                        if ((String)connectedNodeInputId.Value == inputId)
+                        {
+                            string hh = nodeId + "___" + connectedInputIndex.ToString();
+                            foundNode = true;
+                            break;
+                        }
+                        connectedInputIndex++;
+                    }
+                }                
+            }
+
+            return new Tuple<string, int>(nodeId, connectedInputIndex);
+        }
+
         [JsonIgnore]
         public bool HasUnsavedChanges
         {
@@ -589,6 +684,16 @@ namespace Dynamo.ViewModels
             var args = new ZoomEventArgs(-Configurations.ZoomIncrement);
             OnRequestZoomToViewportCenter(this, args);
             ResetFitViewToggle(null);
+        }
+
+        internal JObject GetJsonRepresentation(EngineController engine = null)
+        {
+            // Step 1: Serialize the workspace.
+            var json = Model.ToJson(engine);
+            var json_parsed = JObject.Parse(json);
+
+            // Step 2: Add the View.
+            return AddViewBlockToJSON(json_parsed);
         }
 
         /// <summary>
