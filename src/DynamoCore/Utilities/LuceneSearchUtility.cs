@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Dynamo.Configuration;
-using Dynamo.Events;
-using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Search.SearchElements;
-using Dynamo.Session;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Br;
 using Lucene.Net.Analysis.Cjk;
@@ -400,7 +397,7 @@ namespace Dynamo.Utilities
         internal void DisposeAll()
         {
             DisposeWriter();
-            DirReader?.Dispose();
+            dirReader?.Dispose();
             indexDir?.Dispose();
             Analyzer?.Dispose();
         }
