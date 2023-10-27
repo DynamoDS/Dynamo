@@ -236,7 +236,10 @@ namespace Dynamo.Search
             
             if (luceneSearchUtility != null)
             {
-                luceneSearchUtility.Searcher = new IndexSearcher(luceneSearchUtility.DirReader);
+                //The DirectoryReader and IndexSearcher have to be assigned after commiting indexing changes and before executing the Searcher.Search() method, otherwise new indexed info won't be reflected
+                luceneSearchUtility.dirReader = luceneSearchUtility.writer != null ? luceneSearchUtility.writer.GetReader(applyAllDeletes: true) : DirectoryReader.Open(luceneSearchUtility.indexDir);
+                luceneSearchUtility.Searcher = new IndexSearcher(luceneSearchUtility.dirReader);
+
                 string searchTerm = search.Trim();
                 var candidates = new List<NodeSearchElement>();
                 var parser = new MultiFieldQueryParser(LuceneConfig.LuceneNetVersion, LuceneConfig.NodeIndexFields, luceneSearchUtility.Analyzer)
