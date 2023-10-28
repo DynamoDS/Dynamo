@@ -279,11 +279,6 @@ namespace Dynamo.Controls
             CalculateWindowMinWidth();
         }
 
-        protected override async void OnContentRendered(EventArgs e)
-        {
-            base.OnContentRendered(e);
-            toolBarRightMenuWidth = shortcutBar.RightMenu.ActualWidth;
-        }
         private void OnRequestExportWorkSpaceAsImage(object parameter)
         {
             var workspace = this.ChildOfType<WorkspaceView>();
@@ -1351,6 +1346,8 @@ namespace Dynamo.Controls
             //ABOUT WINDOW
             dynamoViewModel.RequestAboutWindow += DynamoViewModelRequestAboutWindow;
 
+            dynamoViewModel.RequestShorcutToolbarLoaded += onRequestShorcutToolbarLoaded;
+
             LoadNodeViewCustomizations();
             SubscribeNodeViewCustomizationEvents();
 
@@ -1382,6 +1379,15 @@ namespace Dynamo.Controls
                 this.Deactivated += (s, args) => { HidePopupWhenWindowDeactivated(null); };
             }
             loaded = true;
+        }
+
+        /// <summary>
+        /// Assign the value to the toolBarRightMenuWidth when the ShortcutToolbar is loaded
+        /// </summary>
+        /// <param name="rightMenuActualWidth"></param>
+        private void onRequestShorcutToolbarLoaded(double rightMenuActualWidth)
+        {
+            toolBarRightMenuWidth = rightMenuActualWidth;
         }
 
         private void GuideFlowEvents_GuidedTourStart(GuidedTourStateEventArgs args)
@@ -2004,6 +2010,7 @@ namespace Dynamo.Controls
             this.dynamoViewModel.Model.WorkspaceHidden -= OnWorkspaceHidden;
             this.dynamoViewModel.RequestEnableShortcutBarItems -= DynamoViewModel_RequestEnableShortcutBarItems;
             this.dynamoViewModel.RequestExportWorkSpaceAsImage -= OnRequestExportWorkSpaceAsImage;
+            this.dynamoViewModel.RequestShorcutToolbarLoaded -= onRequestShorcutToolbarLoaded;
 
             this.Dispose();
             sharedViewExtensionLoadedParams?.Dispose();
