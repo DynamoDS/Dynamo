@@ -1,3 +1,8 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Windows;
 using Dynamo;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
@@ -7,11 +12,6 @@ using Dynamo.Tests;
 using Dynamo.Wpf.Utilities;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Windows;
 
 namespace DynamoCoreWpfTests
 {
@@ -349,6 +349,108 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, vm.PackageContents.Count);
             Assert.AreEqual(0, vm.PreviewPackageContents.Count);
         }
+
+
+        [Test]
+        public void CanRemoveCustomDefinitionDependencyTypes()
+        {
+            // Arrange
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\AllFileTypesPackageDocs");
+            string dyfPath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\AllFileTypesPackageDocs\\dyf\\3DView by BoundingBox.dyf");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
+            var vm = new PublishPackageViewModel(this.ViewModel);
+
+            ViewModel.OnRequestPackagePublishDialog(vm);
+
+            vm.AddAllFilesAfterSelection(allFiles);
+
+            // Act
+            // One root folder, one custom definition 
+            Assert.AreEqual(2, vm.PackageContents.Count);
+
+            var customDefinition = vm.PackageContents.Where(x => x.DependencyType.Equals(DependencyType.CustomNode));
+            var rootFolder = vm.PackageContents.Where(x => x.DependencyType.Equals(DependencyType.Folder));
+
+            Assert.AreEqual(1, customDefinition.Count());
+            Assert.AreEqual(1, rootFolder.Count());
+
+            var childItems = PackageItemRootViewModel.GetFiles(rootFolder.First());
+            var customPreviewDefinition = childItems.Where(x => x.DependencyType.Equals(DependencyType.CustomNodePreview));
+
+            Assert.AreEqual(1, customPreviewDefinition.Count());
+
+            // Assert
+            // Remove using the custom definition
+            vm.RemoveItemCommand.Execute(customDefinition.First());
+
+            var updatedCustomDefinitionCount = vm.PackageContents.Count(x => x.DependencyType.Equals(DependencyType.CustomNode));
+            var updatedCustomPreviewDefinitionCount = PackageItemRootViewModel.GetFiles(rootFolder.First()).
+                Count(x => x.DependencyType.Equals(DependencyType.CustomNodePreview));
+
+            Assert.AreEqual(0, updatedCustomDefinitionCount, updatedCustomPreviewDefinitionCount);
+
+            // Add 
+            vm.AddAllFilesAfterSelection(new List<string>() { dyfPath });
+
+            updatedCustomDefinitionCount = vm.PackageContents.Count(x => x.DependencyType.Equals(DependencyType.CustomNode));
+            updatedCustomPreviewDefinitionCount = PackageItemRootViewModel.GetFiles(rootFolder.First()).
+                Count(x => x.DependencyType.Equals(DependencyType.CustomNodePreview));
+
+            Assert.AreEqual(1, updatedCustomDefinitionCount, updatedCustomPreviewDefinitionCount);
+
+            // Remove using the preview
+            vm.RemoveItemCommand.Execute(customPreviewDefinition.First());
+
+            updatedCustomDefinitionCount = vm.PackageContents.Count(x => x.DependencyType.Equals(DependencyType.CustomNode));
+            updatedCustomPreviewDefinitionCount = PackageItemRootViewModel.GetFiles(rootFolder.First()).
+                Count(x => x.DependencyType.Equals(DependencyType.CustomNodePreview));
+
+            Assert.AreEqual(0, updatedCustomDefinitionCount, updatedCustomPreviewDefinitionCount);
+        }
+
+        [Test]
+        public void CanRemoveAllDependencyTypes()
+        {
+            // Arrange
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\AllFileTypesPackageDocs");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
+            var vm = new PublishPackageViewModel(this.ViewModel);
+
+            ViewModel.OnRequestPackagePublishDialog(vm);
+
+            vm.AddAllFilesAfterSelection(allFiles);
+
+            // Act
+            var rootFolder = vm.PackageContents.Where(x => x.DependencyType.Equals(DependencyType.Folder));
+
+            Assert.AreEqual(1, rootFolder.Count());
+
+            var childItems = PackageItemRootViewModel.GetFiles(rootFolder.First());
+
+            var files = childItems.Where(x => x.DependencyType.Equals(DependencyType.File));
+            var dllFiles = childItems.Where(x => x.DependencyType.Equals(DependencyType.Assembly));
+            var dyfPreviewFiles = childItems.Where(x => x.DependencyType.Equals(DependencyType.CustomNodePreview));
+            var folders = childItems.Where(x => x.DependencyType.Equals(DependencyType.Folder));
+
+            Assert.AreEqual(5, files.Count());
+            Assert.AreEqual(1, dllFiles.Count());
+            Assert.AreEqual(1, dyfPreviewFiles.Count());
+            Assert.AreEqual(5, folders.Count());
+
+            // Assert
+            Assert.DoesNotThrow(() => vm.RemoveItemCommand.Execute(dllFiles.First()));
+            Assert.DoesNotThrow(() => vm.RemoveItemCommand.Execute(dyfPreviewFiles.First()));
+            Assert.DoesNotThrow(() => vm.RemoveItemCommand.Execute(files.First(x => x.DisplayName.EndsWith(".json"))));
+            Assert.DoesNotThrow(() => vm.RemoveItemCommand.Execute(files.First(x => x.DisplayName.EndsWith(".xml"))));
+
+            rootFolder = vm.PackageContents.Where(x => x.DependencyType.Equals(DependencyType.Folder));
+
+            Assert.AreEqual(2, rootFolder.Count());
+            Assert.DoesNotThrow(() => vm.RemoveItemCommand.Execute(rootFolder.First()));
+            Assert.AreEqual(1, rootFolder.Count());
+            Assert.AreEqual(2, PackageItemRootViewModel.GetFiles(rootFolder.First()).Count());
+        }
+
 
 
         [Test]

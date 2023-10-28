@@ -1285,7 +1285,7 @@ namespace Dynamo.PackageManager
 
             // make sure workspaces are saved
             var unsavedWorkspaceNames =
-                workspaces.Where(ws => ws.HasUnsavedChanges || ws.FileName == null).Select(ws => ws.Name).ToList();
+                workspaces.Where(ws => ws.HasUnsavedChanges || ws.FileName == null).Select( ws => ws.Name).ToList();
             if (unsavedWorkspaceNames.Any())
             {
                 throw new Exception(Wpf.Properties.Resources.MessageUnsavedChanges0 +
@@ -1484,6 +1484,14 @@ namespace Dynamo.PackageManager
 
             string directoryPath = packagePathEventArgs.Path;
 
+            if (!IsDirectoryWritable(directoryPath))
+            {
+                ErrorString = String.Format(Resources.FolderNotWritableError, directoryPath);
+                var ErrorMessage = ErrorString + "\n" + Resources.SolutionToFolderNotWritatbleError;
+                Dynamo.Wpf.Utilities.MessageBoxService.Show(ErrorMessage, Resources.FileNotPublishCaption, MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             List<string> filePaths = Directory
                 .GetFiles
                 (
@@ -1608,13 +1616,14 @@ namespace Dynamo.PackageManager
             }
             else
             {
-                string fileName = packageItemRootViewModel.FileInfo == null ? packageItemRootViewModel.Name : packageItemRootViewModel.FileInfo.FullName;
-                RemoveSingleItem(fileName, fileType);
+                RemoveSingleItem(packageItemRootViewModel, fileType);
             }
         }
 
-        private void RemoveSingleItem(string fileName, DependencyType fileType)
+        private void RemoveSingleItem(PackageItemRootViewModel vm, DependencyType fileType)
         {
+            var fileName = vm.DisplayName;
+
             if (fileName.ToLower().EndsWith(".dll") || fileType.Equals(DependencyType.Assembly))
             {
                 // It is possible that the .dll was external and added as an additional file
@@ -1629,13 +1638,17 @@ namespace Dynamo.PackageManager
                         .First(x => x.Name == Path.GetFileNameWithoutExtension(fileName)));
                 }
             }
-            else if (fileType.Equals(DependencyType.CustomNode))
+            else if (fileType.Equals(DependencyType.CustomNode) || fileType.Equals(DependencyType.CustomNodePreview))
             {
+                fileName = Path.GetFileNameWithoutExtension(fileName);
                 CustomNodeDefinitions.Remove(CustomNodeDefinitions
                     .First(x => x.DisplayName == fileName));
+
+                CustomDyfFilepaths.Remove(fileName + ".dyf");
             }
             else
             {
+                fileName = vm.FilePath;
                 AdditionalFiles.Remove(AdditionalFiles
                     .First(x => x == fileName));
             }
