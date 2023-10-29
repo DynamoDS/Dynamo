@@ -41,6 +41,7 @@ namespace Dynamo.PackageManager.UI
 
             PublishPackageViewModel = this.DataContext as PublishPackageViewModel;
 
+            PublishPackageViewModel.Owner = this.Owner;
             PublishPackageViewModel.PublishSuccess += PackageViewModelOnPublishSuccess;
             PublishPackageViewModel.RequestShowFolderBrowserDialog += OnRequestShowFolderBrowserDialog;
 

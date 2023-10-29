@@ -77,7 +77,7 @@ namespace Dynamo.PackageManager
             }
         }
 
-        public PublishPackageView Owner { get; set; }
+        public Window Owner { get; set; }
 
         /// <summary>
         /// A event called when publishing was a success
@@ -1488,7 +1488,7 @@ namespace Dynamo.PackageManager
             {
                 ErrorString = String.Format(Resources.FolderNotWritableError, directoryPath);
                 var ErrorMessage = ErrorString + "\n" + Resources.SolutionToFolderNotWritatbleError;
-                Dynamo.Wpf.Utilities.MessageBoxService.Show(ErrorMessage, Resources.FileNotPublishCaption, MessageBoxButton.OK, MessageBoxImage.Warning);
+                Dynamo.Wpf.Utilities.MessageBoxService.Show(Owner, ErrorMessage, Resources.FileNotPublishCaption, MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -1555,7 +1555,7 @@ namespace Dynamo.PackageManager
                 ErrorString = String.Format(Resources.FolderNotWritableError, directoryPath);
                 string errorMessage = ErrorString + Environment.NewLine + Resources.SolutionToFolderNotWritatbleError;
                 if (DynamoModel.IsTestMode) return;
-                MessageBoxService.Show(errorMessage, Resources.FileNotPublishCaption, MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBoxService.Show(Owner, errorMessage, Resources.FileNotPublishCaption, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             MarkdownFilesDirectory = directoryPath;
@@ -1624,19 +1624,17 @@ namespace Dynamo.PackageManager
         {
             var fileName = vm.DisplayName;
 
-            if (fileName.ToLower().EndsWith(".dll") || fileType.Equals(DependencyType.Assembly))
+            if (fileType.Equals(DependencyType.Assembly))
             {
-                // It is possible that the .dll was external and added as an additional file
-                if (!Assemblies.Any(x => x.Name.Equals(Path.GetFileNameWithoutExtension(fileName))))
-                {
-                    AdditionalFiles.Remove(AdditionalFiles
-                        .First(x => x == fileName));
-                }
-                else
-                {
-                    Assemblies.Remove(Assemblies
-                        .First(x => x.Name == Path.GetFileNameWithoutExtension(fileName)));
-                }
+                Assemblies.Remove(Assemblies
+                    .First(x => x.Name == fileName));                
+            }
+            else if (fileName.ToLower().EndsWith(".dll"))
+            {
+                fileName = vm.FilePath;
+                AdditionalFiles.Remove(AdditionalFiles
+                    .First(x => x == fileName));
+
             }
             else if (fileType.Equals(DependencyType.CustomNode) || fileType.Equals(DependencyType.CustomNodePreview))
             {
@@ -1741,7 +1739,7 @@ namespace Dynamo.PackageManager
                     // as the existing assembly cannot be modified while Dynamo is active.
                     if (this.Assemblies.Any(x => assemName == x.Assembly.GetName().Name))
                     {
-                        MessageBoxService.Show(string.Format(Resources.PackageDuplicateAssemblyWarning, 
+                        MessageBoxService.Show(Owner, string.Format(Resources.PackageDuplicateAssemblyWarning, 
                                         dynamoViewModel.BrandingResourceProvider.ProductName),
                                         Resources.PackageDuplicateAssemblyWarningTitle, 
                                         MessageBoxButton.OK, 
@@ -1861,7 +1859,7 @@ namespace Dynamo.PackageManager
                     }
                     string FileNotPublishMessage = string.Format(Resources.FileNotPublishMessage, filesCannotBePublished);
                     UploadState = PackageUploadHandle.State.Error;
-                    MessageBoxResult response = DynamoModel.IsTestMode ? MessageBoxResult.OK : MessageBoxService.Show(FileNotPublishMessage, Resources.FileNotPublishCaption, MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBoxResult response = DynamoModel.IsTestMode ? MessageBoxResult.OK : MessageBoxService.Show(Owner, FileNotPublishMessage, Resources.FileNotPublishCaption, MessageBoxButton.OK, MessageBoxImage.Error);
 
                     if (response == MessageBoxResult.OK)
                     {
@@ -2020,7 +2018,7 @@ namespace Dynamo.PackageManager
             {
                 ErrorString = String.Format(Resources.FolderNotWritableError, folder);
                 var ErrorMessage = ErrorString + "\n" + Resources.SolutionToFolderNotWritatbleError;
-                Dynamo.Wpf.Utilities.MessageBoxService.Show(ErrorMessage, Resources.FileNotPublishCaption, MessageBoxButton.OK, MessageBoxImage.Warning);
+                Dynamo.Wpf.Utilities.MessageBoxService.Show(Owner, ErrorMessage, Resources.FileNotPublishCaption, MessageBoxButton.OK, MessageBoxImage.Warning);
                 return string.Empty;
             }
 
@@ -2183,7 +2181,7 @@ namespace Dynamo.PackageManager
                     }
                     string FileNotPublishMessage = string.Format(Resources.FileNotPublishMessage, filesCannotBePublished);
                     UploadState = PackageUploadHandle.State.Error;
-                    MessageBoxResult response = DynamoModel.IsTestMode ? MessageBoxResult.OK : MessageBoxService.Show(FileNotPublishMessage, Resources.FileNotPublishCaption, MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBoxResult response = DynamoModel.IsTestMode ? MessageBoxResult.OK : MessageBoxService.Show(Owner, FileNotPublishMessage, Resources.FileNotPublishCaption, MessageBoxButton.OK, MessageBoxImage.Error);
 
                     return;
                 }
@@ -2224,7 +2222,7 @@ namespace Dynamo.PackageManager
             foreach(var item in PackageContents)
             {
                 item.isChild = true;
-                rootItem.AddChild(item);
+                rootItem.AddChildren(item);
             }
             return rootItem;
         }

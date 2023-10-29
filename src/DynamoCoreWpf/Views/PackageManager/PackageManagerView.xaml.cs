@@ -124,6 +124,7 @@ namespace Dynamo.PackageManager.UI
         private void WindowClosed(object sender, EventArgs e)
         {
             this.packageManagerPublish.Dispose();
+            this.PackageManagerViewModel.PublishPackageViewModel.CancelCommand.Execute();
             this.PackageManagerViewModel.PackageSearchViewModel.RequestShowFileDialog -= OnRequestShowFileDialog;
             this.PackageManagerViewModel.PackageSearchViewModel.Close();
         }

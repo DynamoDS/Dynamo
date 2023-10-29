@@ -324,7 +324,7 @@
                         <ColumnDefinition MinWidth="19" Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="30"/>
+                        <ColumnDefinition Width="20"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="24"/>
@@ -462,6 +462,8 @@
                                FontSize="14"
                                SnapsToDevicePixels="True"
                                UseLayoutRounding="True"
+                               TextTrimming="CharacterEllipsis"
+                               Width="230"
                                FontFamily="{StaticResource ArtifaktElementRegular}"/>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>

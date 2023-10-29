@@ -22,8 +22,7 @@ namespace DynamoCoreWpfTests
 
         [Test, Category("Failure")]
         public void AddingDyfRaisesCanExecuteChangeOnDelegateCommand()
-        {
-            
+        {            
             var vm = new PublishPackageViewModel(ViewModel);
             ViewModel.OnRequestPackagePublishDialog(vm);
 
@@ -44,13 +43,11 @@ namespace DynamoCoreWpfTests
 
             //assert that canExecute changed was fired one time 
             Assert.AreEqual(canExecuteChangedFired, 1);
-
         }
 
         [Test]
         public void SetsErrorState()
-        {
-           
+        {           
             //open a dyf file and modify it
             string packagedirectory = Path.Combine(TestDirectory, "pkgs");
             var packages = Directory.EnumerateDirectories(packagedirectory);
@@ -78,7 +75,6 @@ namespace DynamoCoreWpfTests
             //assert that we have not uploaded the file or indicated that we have
             Assert.AreNotEqual(vm.UploadState,PackageUploadHandle.State.Uploaded);
             Console.WriteLine(vm.ErrorString);
-
         }
 
         [Test]
@@ -98,7 +94,6 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1, vm.CustomNodeDefinitions.Count);
             Assert.DoesNotThrow(() => {vm.GetAllFiles();});
             Assert.AreEqual(nodePath, vm.GetAllFiles().First());
-
         }
 
 
@@ -146,6 +141,31 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(allFilesAndFoldres.Count(i => i.DependencyType.Equals(DependencyType.Assembly)), assemblies.Count);
             Assert.AreEqual(allFilesAndFoldres.Count(i => i.DependencyType.Equals(DependencyType.File)), additionalFiles.Count);
             Assert.AreEqual(allFilesAndFoldres.Count(i => i.DependencyType.Equals(DependencyType.Folder)), allFolders.Count + 1);
+        }
+
+        [Test]
+        public void RemoveMultipleRootItemsCorrectly()
+        {
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder\\PackageWithNodeDocumentation");
+            string duplicateNodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder\\DuplicatePackageWithNodeDocumentation");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
+            var allDuplicateFiles = Directory.GetFiles(duplicateNodePath, "*", SearchOption.AllDirectories).ToList();
+
+            // Arrange
+            var dlgMock = new Mock<MessageBoxService.IMessageBox>();
+            dlgMock.Setup(m => m.Show(It.IsAny<Window>(), It.IsAny<string>(), It.IsAny<string>(),
+                It.Is<MessageBoxButton>(x => x == MessageBoxButton.OKCancel || x == MessageBoxButton.OK), It.IsAny<MessageBoxImage>()))
+                .Returns(MessageBoxResult.OK);
+            MessageBoxService.OverrideMessageBoxDuringTests(dlgMock.Object);
+
+            var vm = new PublishPackageViewModel(this.ViewModel);
+            vm.AddAllFilesAfterSelection(allFiles);
+            vm.AddAllFilesAfterSelection(allDuplicateFiles);
+
+            var packageContents = vm.PackageContents;
+            Assert.AreEqual(packageContents.Count, 2); // We expect 2 separate root item here
+
+            Assert.DoesNotThrow(() => vm.RemoveItemCommand.Execute(packageContents.First()));
         }
 
 
@@ -433,7 +453,7 @@ namespace DynamoCoreWpfTests
             var dyfPreviewFiles = childItems.Where(x => x.DependencyType.Equals(DependencyType.CustomNodePreview));
             var folders = childItems.Where(x => x.DependencyType.Equals(DependencyType.Folder));
 
-            Assert.AreEqual(4, files.Count());
+            Assert.AreEqual(5, files.Count());
             Assert.AreEqual(1, dllFiles.Count());
             Assert.AreEqual(1, dyfPreviewFiles.Count());
             Assert.AreEqual(5, folders.Count());
@@ -443,6 +463,7 @@ namespace DynamoCoreWpfTests
             Assert.DoesNotThrow(() => vm.RemoveItemCommand.Execute(dyfPreviewFiles.First()));
             Assert.DoesNotThrow(() => vm.RemoveItemCommand.Execute(files.First(x => x.DisplayName.EndsWith(".json"))));
             Assert.DoesNotThrow(() => vm.RemoveItemCommand.Execute(files.First(x => x.DisplayName.EndsWith(".xml"))));
+            Assert.DoesNotThrow(() => vm.RemoveItemCommand.Execute(files.First(x => x.DisplayName.EndsWith(".dll"))));
 
             // At this point, only one root item remains, not the original one but the 'doc' folder
             // The original root item no longer contains a file, therefore it was removed
