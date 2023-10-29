@@ -56,7 +56,10 @@ namespace Dynamo.PackageManager
             WritePackageHeader(package, rootDir);
             RemoveUnselectedFiles(contentFiles, rootDir);
             CopyFilesIntoPackageDirectory(contentFiles, markdownFiles, dyfDir, binDir, extraDir, docDir);
-            RemoveDyfFiles(contentFiles, dyfDir);
+            /*
+            // Commentint this out until understanding the function of it
+            RemoveDyfFiles(contentFiles, dyfDir);   // Why do we need to remove the dyf files from the publishing folder?
+            */
             RemapCustomNodeFilePaths(contentFiles, dyfDir.FullName);
 
             return rootDir;
@@ -73,7 +76,10 @@ namespace Dynamo.PackageManager
             WritePackageHeader(package, rootDir);
             RemoveUnselectedFiles(contentFiles, rootDir);
             CopyFilesIntoRetainedPackageDirectory(contentFiles, markdownFiles, rootDir, out dyfFiles);
-            RemoveRetainDyfFiles(contentFiles, dyfFiles);
+            /*
+            // Commentint this out until understanding the function of it
+            RemoveRetainDyfFiles(contentFiles, dyfFiles);   // Why do we need to remove the dyf files from the publishing folder?
+            */
             RemapRetainCustomNodeFilePaths(contentFiles, dyfFiles);
 
             return rootDir;

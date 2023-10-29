@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using Dynamo;
+using Dynamo.Core;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.PackageManager;
@@ -432,7 +433,7 @@ namespace DynamoCoreWpfTests
             var dyfPreviewFiles = childItems.Where(x => x.DependencyType.Equals(DependencyType.CustomNodePreview));
             var folders = childItems.Where(x => x.DependencyType.Equals(DependencyType.Folder));
 
-            Assert.AreEqual(5, files.Count());
+            Assert.AreEqual(4, files.Count());
             Assert.AreEqual(1, dllFiles.Count());
             Assert.AreEqual(1, dyfPreviewFiles.Count());
             Assert.AreEqual(5, folders.Count());
@@ -443,14 +444,16 @@ namespace DynamoCoreWpfTests
             Assert.DoesNotThrow(() => vm.RemoveItemCommand.Execute(files.First(x => x.DisplayName.EndsWith(".json"))));
             Assert.DoesNotThrow(() => vm.RemoveItemCommand.Execute(files.First(x => x.DisplayName.EndsWith(".xml"))));
 
+            // At this point, only one root item remains, not the original one but the 'doc' folder
+            // The original root item no longer contains a file, therefore it was removed
+            // This makes sense as we don't want to try to establish 'common parent' for folders that maybe too far apart in a tree structure
             rootFolder = vm.PackageContents.Where(x => x.DependencyType.Equals(DependencyType.Folder));
-
-            Assert.AreEqual(2, rootFolder.Count());
-            Assert.DoesNotThrow(() => vm.RemoveItemCommand.Execute(rootFolder.First()));
             Assert.AreEqual(1, rootFolder.Count());
-            Assert.AreEqual(2, PackageItemRootViewModel.GetFiles(rootFolder.First()).Count());
-        }
+            Assert.AreEqual(3, PackageItemRootViewModel.GetFiles(rootFolder.First()).Count());
 
+            Assert.DoesNotThrow(() => vm.RemoveItemCommand.Execute(rootFolder.First()));
+            Assert.IsFalse(vm.PackageContents.Any());
+        }
 
 
         [Test]
@@ -477,6 +480,109 @@ namespace DynamoCoreWpfTests
             // Assert
             Assert.AreEqual(0, vm.PackageContents.Count);
             Assert.AreEqual(0, vm.PreviewPackageContents.Count);
+        }
+
+        [Test]
+        public void AssertPreviewPackageDefaultFolderStructureEqualsPublishLocalPackageResults()
+        {
+            var packageName = "SingleFolderPublishPackage";
+            var pathManager = this.ViewModel.Model.PathManager as PathManager;
+            var publishPath = Path.Combine(pathManager.DefaultPackagesDirectory, packageName);
+
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\SingleFolderPublishPackageDocs");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
+
+            //now lets publish this package.
+            var newPkgVm = new PublishPackageViewModel(this.ViewModel);
+
+            ViewModel.OnRequestPackagePublishDialog(newPkgVm);
+
+            newPkgVm.AddAllFilesAfterSelection(allFiles);
+
+            var previewFilesAndFolders = PackageItemRootViewModel.GetFiles(newPkgVm.PreviewPackageContents.ToList());
+            var previewFiles = previewFilesAndFolders.Where(x => !x.DependencyType.Equals(DependencyType.Folder));
+            var previewFolders = previewFilesAndFolders.Where(x => x.DependencyType.Equals(DependencyType.Folder));
+            var prDllFiles = previewFiles.Where(x => x.DisplayName.EndsWith(".dll"));
+            var prDyfFiles = previewFiles.Where(x => x.DependencyType.Equals(DependencyType.CustomNodePreview));
+
+            Assert.IsTrue(prDllFiles.All(x => Path.GetDirectoryName(x.FilePath) == Path.GetDirectoryName(prDllFiles.First().FilePath)));
+            var prDllFolder = Path.GetDirectoryName(prDllFiles.First().FilePath);
+
+            Assert.IsTrue(prDyfFiles.All(x => Path.GetDirectoryName(x.FilePath) == Path.GetDirectoryName(prDyfFiles.First().FilePath)));
+            var prDyfFolder = Path.GetDirectoryName(prDyfFiles.First().FilePath);
+
+            newPkgVm.Name = "SingleFolderPublishPackage";
+            newPkgVm.MajorVersion = "0";
+            newPkgVm.MinorVersion = "0";
+            newPkgVm.BuildVersion = "1";
+            newPkgVm.PublishLocallyCommand.Execute();
+
+            Assert.IsTrue(Directory.Exists(publishPath));
+
+            // Arrange
+            var createdFiles = Directory.GetFiles(publishPath, "*", SearchOption.AllDirectories).ToList();
+            var createdFolders = Directory.GetDirectories(publishPath, "*", SearchOption.AllDirectories).ToList();
+            var crDllFiles = createdFiles.Where(x => x.EndsWith(".dll"));
+            var crDyfFiles = createdFiles.Where(x => x.EndsWith(".dyf"));
+
+            Assert.IsTrue(crDllFiles.All(x => Path.GetDirectoryName(x) == Path.GetDirectoryName(crDllFiles.First())));
+            var crDllFolder = Path.GetDirectoryName(crDllFiles.First());
+
+            Assert.IsTrue(crDyfFiles.All(x => Path.GetDirectoryName(x) == Path.GetDirectoryName(crDyfFiles.First())));
+            var crDyfFolder = Path.GetDirectoryName(crDyfFiles.First());
+
+            // Assert
+            Assert.AreEqual(createdFiles.Count(), previewFiles.Count());
+            Assert.AreEqual(createdFolders.Count(), previewFolders.Count() - 1);  // discount one for the root folder is included
+            Assert.AreEqual(2, crDllFiles.Count(), prDllFiles.Count());  
+            Assert.AreEqual(Path.GetFileName(crDllFolder), Path.GetFileName(prDllFolder));  // check if the dll parent folder is the same
+            Assert.AreEqual(2, crDyfFiles.Count(), prDyfFiles.Count()); 
+            Assert.AreEqual(Path.GetFileName(crDyfFolder), Path.GetFileName(prDyfFolder));  // check if the dyf parent folder is the same
+
+            // Clean up
+            Directory.Delete(publishPath, true);
+        }
+
+        [Test]
+        public void AssertPreviewPackageRetainFolderStructureEqualsPublishLocalPackageResults()
+        {
+            var packageName = "SingleFolderPublishPackage";
+            var pathManager = this.ViewModel.Model.PathManager as PathManager;
+            var publishPath = Path.Combine(pathManager.DefaultPackagesDirectory, packageName);
+
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\SingleFolderPublishPackageDocs");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
+
+            //now lets publish this package.
+            var newPkgVm = new PublishPackageViewModel(this.ViewModel);
+            newPkgVm.RetainFolderStructureOverride = true;
+
+            ViewModel.OnRequestPackagePublishDialog(newPkgVm);
+
+            newPkgVm.AddAllFilesAfterSelection(allFiles);
+
+            var previewFilesAndFolders = PackageItemRootViewModel.GetFiles(newPkgVm.PreviewPackageContents.ToList());
+            var previewFiles = previewFilesAndFolders.Where(x => !x.DependencyType.Equals(DependencyType.Folder));
+            var previewFolders = previewFilesAndFolders.Where(x => x.DependencyType.Equals(DependencyType.Folder));
+
+            newPkgVm.Name = "SingleFolderPublishPackage";
+            newPkgVm.MajorVersion = "0";
+            newPkgVm.MinorVersion = "0";
+            newPkgVm.BuildVersion = "1";
+            newPkgVm.PublishLocallyCommand.Execute();
+
+            Assert.IsTrue(Directory.Exists(publishPath));
+
+            // Arrange
+            var createdFiles = Directory.GetFiles(publishPath, "*", SearchOption.AllDirectories).ToList();
+            var createdFolders = Directory.GetDirectories(publishPath, "*", SearchOption.AllDirectories).ToList();
+
+            // Assert
+            Assert.AreEqual(createdFiles.Count(), previewFiles.Count());
+            Assert.AreEqual(0, createdFolders.Count(), previewFolders.Count() - 1);  // There is only one root folder, no subfolders are created
+
+            // Clean up
+            Directory.Delete(publishPath, true);
         }
 
 
@@ -549,7 +655,7 @@ namespace DynamoCoreWpfTests
 
             Assert.IsNull(GetModel().CustomNodeManager.NodeInfos[cnworkspace.CustomNodeId].PackageInfo);
             Assert.IsFalse(GetModel().CustomNodeManager.NodeInfos[cnworkspace.CustomNodeId].IsPackageMember);
-
+                
             //now lets publish this node as a local package.
             var newPkgVm = new PublishPackageViewModel(ViewModel) { CustomNodeDefinitions = new List<CustomNodeDefinition>(){ cnworkspace.CustomNodeDefinition } };
             newPkgVm.Name = "PublishingACustomNodeSetsPackageInfoCorrectly";

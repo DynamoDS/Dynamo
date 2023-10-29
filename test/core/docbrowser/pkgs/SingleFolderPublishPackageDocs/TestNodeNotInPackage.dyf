@@ -1,0 +1,287 @@
+{
+  "Uuid": "f3da9a01-0cca-428e-901e-982b3e7eac2b",
+  "IsCustomNode": true,
+  "Category": "Layer",
+  "Description": "Test node that does not belong to a package",
+  "Name": "TestNodeNotInPackage",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModelsWpf.Charts.HeatSeriesNodeModel, CoreNodeModelsWpf",
+      "XLabels": null,
+      "YLabels": null,
+      "Values": null,
+      "Colors": null,
+      "Id": "3e92bfd10b2741329bf064f3105ec33a",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "cd7e5a9d53304551a35e1efb0ccb8c16",
+          "Name": "x-labels",
+          "Description": "A list of string labels for the x-axis.\r\n\r\nList<string>",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5bc3791acdf84730bea40a315964458d",
+          "Name": "y-labels",
+          "Description": "A list of string labels for the y-axis.\r\n\r\nList<string>",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e7a2479413ad49cdb9da35472c8e6cfc",
+          "Name": "values",
+          "Description": "A list of lists each containing double values representing items in a column. \r\n\r\nList<List<double>>",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5be2988add6e4e02a6355e16ed188228",
+          "Name": "colors",
+          "Description": "A list of colors for each bar chart category.\r\n\r\nList<color>",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4efd3d7050ac4358aded201fac704947",
+          "Name": "labels:values",
+          "Description": "Dictionary containing label:value key-pairs\r\n\r\nDictionary<string, Dictionary<string, double>>",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Create a heat series plot"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore",
+      "Parameter": {
+        "Name": "",
+        "TypeName": "var",
+        "TypeRank": -1,
+        "DefaultValue": null,
+        "Description": ""
+      },
+      "Id": "5a36168f64a94d01876b5702283e08e9",
+      "NodeType": "InputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "fabbb6cfa45a4ee8b175475230a7024b",
+          "Name": "",
+          "Description": "Input Data",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A function parameter, use with custom nodes.\r\n\r\nYou can specify the type and default value for parameter. E.g.,\r\n\r\ninput : var[]..[]\r\nvalue : bool = false"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore",
+      "Parameter": {
+        "Name": "",
+        "TypeName": "var",
+        "TypeRank": -1,
+        "DefaultValue": null,
+        "Description": ""
+      },
+      "Id": "97e966a1ea16416e9541a7611ace3597",
+      "NodeType": "InputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "a8ff279b2f3748ee92b07fa5adbfe0fa",
+          "Name": "",
+          "Description": "Input Data",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A function parameter, use with custom nodes.\r\n\r\nYou can specify the type and default value for parameter. E.g.,\r\n\r\ninput : var[]..[]\r\nvalue : bool = false"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore",
+      "Parameter": {
+        "Name": "",
+        "TypeName": "var",
+        "TypeRank": -1,
+        "DefaultValue": null,
+        "Description": ""
+      },
+      "Id": "04e5e1bc5e2d40e28132711679536a71",
+      "NodeType": "InputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "cd6378d8f3674ab99984b664283519a2",
+          "Name": "",
+          "Description": "Input Data",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A function parameter, use with custom nodes.\r\n\r\nYou can specify the type and default value for parameter. E.g.,\r\n\r\ninput : var[]..[]\r\nvalue : bool = false"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore",
+      "Parameter": {
+        "Name": "",
+        "TypeName": "var",
+        "TypeRank": -1,
+        "DefaultValue": null,
+        "Description": ""
+      },
+      "Id": "db0e40b3307244a99e1fb5e1d656366b",
+      "NodeType": "InputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "722de9e837a4437a8080e2745caf6423",
+          "Name": "",
+          "Description": "Input Data",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A function parameter, use with custom nodes.\r\n\r\nYou can specify the type and default value for parameter. E.g.,\r\n\r\ninput : var[]..[]\r\nvalue : bool = false"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "fabbb6cfa45a4ee8b175475230a7024b",
+      "End": "cd7e5a9d53304551a35e1efb0ccb8c16",
+      "Id": "f2bd386446044c47bea5dff580e4d67e",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "a8ff279b2f3748ee92b07fa5adbfe0fa",
+      "End": "5bc3791acdf84730bea40a315964458d",
+      "Id": "36eb1d9ecf2d4475b823947070beda6a",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "cd6378d8f3674ab99984b664283519a2",
+      "End": "e7a2479413ad49cdb9da35472c8e6cfc",
+      "Id": "fd58bcf44ad14558bc2207557ba3852f",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "722de9e837a4437a8080e2745caf6423",
+      "End": "5be2988add6e4e02a6355e16ed188228",
+      "Id": "85e34a8bf246458f8dc259e9ac003fae",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Author": "None provided",
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": false,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "3.0.0.5795",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "3e92bfd10b2741329bf064f3105ec33a",
+        "Name": "Heat Series Plot",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 317.0,
+        "Y": 100.5
+      },
+      {
+        "Id": "5a36168f64a94d01876b5702283e08e9",
+        "Name": "Input",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -83.2937961948428,
+        "Y": 97.87315342155568
+      },
+      {
+        "Id": "97e966a1ea16416e9541a7611ace3597",
+        "Name": "Input",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -80.36366573972543,
+        "Y": 223.5315176465121
+      },
+      {
+        "Id": "04e5e1bc5e2d40e28132711679536a71",
+        "Name": "Input",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -80.80801176877969,
+        "Y": 351.1651959809655
+      },
+      {
+        "Id": "db0e40b3307244a99e1fb5e1d656366b",
+        "Name": "Input",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -75.26470074308554,
+        "Y": 484.78653137016744
+      }
+    ],
+    "Annotations": [],
+    "X": 77.44442904692559,
+    "Y": 97.81871570208105,
+    "Zoom": 0.49935774833045776
+  }
+}
