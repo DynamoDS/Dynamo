@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 using DynamoServices;
+using Newtonsoft.Json;
 
 namespace FFITarget
 {
@@ -20,7 +21,7 @@ namespace FFITarget
                 wasTraced = true;
             }
 
-            TraceUtils.SetTraceData(__TEMP_REVIT_TRACE_ID, new DummyDataHolder());
+            TraceUtils.SetTraceData(__TEMP_REVIT_TRACE_ID, JsonConvert.SerializeObject(new DummyDataHolder()));
         }
 
         public bool WasCreatedWithTrace()
@@ -61,7 +62,7 @@ namespace FFITarget
             {
                 wasTraced = true;
 
-                IDHolder idHolder = (IDHolder) retVal;
+                IDHolder idHolder = JsonConvert.DeserializeObject<IDHolder>(retVal);
                 ID = idHolder.ID;
 
             }
@@ -69,7 +70,7 @@ namespace FFITarget
             {
                 nextID++;
                 ID = nextID;
-                TraceUtils.SetTraceData(__TEMP_REVIT_TRACE_ID, new IDHolder() { ID = nextID });
+                TraceUtils.SetTraceData(__TEMP_REVIT_TRACE_ID, JsonConvert.SerializeObject(new IDHolder() { ID = nextID }));
             }
         }
 
@@ -90,7 +91,7 @@ namespace FFITarget
             {
                 wasTraced = true;
 
-                IDHolder idHolder = (IDHolder)retVal;
+                IDHolder idHolder = JsonConvert.DeserializeObject<IDHolder>(retVal);
                 ID = idHolder.ID;
 
             }
@@ -98,7 +99,7 @@ namespace FFITarget
             {
                 nextID++;
                 ID = nextID;
-                TraceUtils.SetTraceData(__TEMP_REVIT_TRACE_ID, new IDHolder() { ID = nextID });
+                TraceUtils.SetTraceData(__TEMP_REVIT_TRACE_ID, JsonConvert.SerializeObject(new IDHolder() { ID = nextID }));
             }
         }
 
@@ -118,34 +119,27 @@ namespace FFITarget
 
 
     [Serializable]
-    internal class IDHolder : ISerializable
+    internal class IDHolder
     {
+        [JsonProperty] 
         public int ID = int.MinValue;
 
         public IDHolder()
         {
                
         }
-
-        public IDHolder(SerializationInfo info, StreamingContext context)
-        {
-            ID = (int) info.GetValue("intID", typeof (int));
-        }
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue("intID", ID);
-        }
     }
 
 
     [Serializable]
-    internal class DummyDataHolder : ISerializable
+    internal class DummyDataHolder
     {
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             throw new NotImplementedException();
         }
+
+        public DummyDataHolder() { }
     }
 
 }

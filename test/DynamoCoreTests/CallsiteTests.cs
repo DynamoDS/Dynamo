@@ -26,7 +26,7 @@ namespace Dynamo.Tests
             ExpectedOrphanCount = expectedOrphanCount;
         }
 
-        public void PostTraceReconciliation(Dictionary<Guid, List<ISerializable>> orphanedSerializables)
+        public void PostTraceReconciliation(Dictionary<Guid, List<string>> orphanedSerializables)
         {
             Assert.AreEqual(orphanedSerializables.SelectMany(kvp=>kvp.Value).Count(), ExpectedOrphanCount);
         }
@@ -154,7 +154,7 @@ namespace Dynamo.Tests
         public void Callsite_ElementBinding()
         {
             // This graph has 2 "WrapperObject" creation nodes that is defined in FFITarget.
-            // The node wraps a static ISerializable ID that increments each time you create a new node.
+            // The node wraps a static string ID that increments each time you create a new node.
             // One of the nodes in the graph is created the 2nd time and the other the 3rd time
             // in the same session. Therefore the ID of the first is 2 and the second is 3 and the graph
             // stores the trace data for each node. This test tests that on reopening the graph the ID's
@@ -330,35 +330,6 @@ namespace Dynamo.Tests
             Assert.Less(sw.Elapsed.Milliseconds, 20000);
             Console.WriteLine(sw.Elapsed);
             AssertPreviewValue("056d9c584f3b42acabec727e64188fae", Enumerable.Range(6,1501).ToList());
-        }
-
-        [Test]
-        public void TraceBinderReturnsCorrectType_WithMatchingVersionAssembly()
-        {
-            var binder = new TraceBinder();
-            var assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x => x.GetName().Name == "FFITarget");
-            Assert.IsNotNull(assembly);
-            var typeName = "FFITarget.IDHolder";
-            var type = binder.BindToType(assembly.FullName, typeName);
-            Assert.IsNotNull(type);
-            Assert.AreEqual(typeName, type.FullName);
-        }
-
-        [Test]
-        public void TraceBinderReturnsCorrectType_WithDifferentVersionAssembly()
-        {
-            var binder = new TraceBinder();
-
-            var fakeAssembly = new AssemblyName();
-            fakeAssembly.Name = "FFITarget";
-            fakeAssembly.Version = new Version(100,100,100);
-
-
-            var typeName = "FFITarget.IDHolder";
-            var type = binder.BindToType(fakeAssembly.FullName, typeName);
-            Assert.IsNotNull(type);
-            Assert.AreEqual(typeName, type.FullName);
-            Assert.AreNotEqual(fakeAssembly.Version, type.Assembly.GetName().Version);
         }
     }
 }

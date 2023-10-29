@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Threading;
@@ -34,14 +34,14 @@ namespace ProtoCore.Lang
         /// Returns a map of TraceID -> Objects
         /// </summary>
         /// <returns></returns>
-        public static Dictionary<String, ISerializable> GetObjectFromTLS()
+        public static Dictionary<String, string> GetObjectFromTLS()
         {
-            Dictionary<String, ISerializable> objs = new Dictionary<String, ISerializable>();
+            Dictionary<String, string> objs = new Dictionary<String, string>();
 
             foreach (String key in TEMP_GetTraceKeys())
             {
                 objs.Add(key, 
-                    (ISerializable)Thread.GetData(Thread.GetNamedDataSlot(key)));
+                    (string)Thread.GetData(Thread.GetNamedDataSlot(key)));
             }
 
             return objs;
@@ -51,7 +51,7 @@ namespace ProtoCore.Lang
         /// Set the data associated with trace
         /// </summary>
         /// <param name="objs"></param>
-        public static void SetObjectToTLS(Dictionary<String, ISerializable> objs)
+        public static void SetObjectToTLS(Dictionary<String, string> objs)
         {
             foreach (String k in objs.Keys)
             {
@@ -69,7 +69,7 @@ namespace ProtoCore.Lang
         /// <param name="key"></param>
         public static void ClearTLSKey(string key)
         {
-            Dictionary<String, ISerializable> objs = new Dictionary<string, ISerializable>();
+            Dictionary<String, string> objs = new Dictionary<string, string>();
             objs.Add(key, null);
             SetObjectToTLS(objs);
             
@@ -81,7 +81,7 @@ namespace ProtoCore.Lang
         /// </summary>
         public static void ClearAllKnownTLSKeys()
         {
-            Dictionary<String, ISerializable> objs = new Dictionary<string, ISerializable>();
+            Dictionary<String, string> objs = new Dictionary<string, string>();
 
             foreach (String key in TEMP_GetTraceKeys())
             {

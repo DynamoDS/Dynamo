@@ -1233,10 +1233,10 @@ namespace Dynamo.Models
         {
             Debug.WriteLine("TRACE RECONCILIATION: {0} total serializables were orphaned.", obj.CallsiteToOrphanMap.SelectMany(kvp => kvp.Value).Count());
 
-            // The orphans will come back here as a dictionary of lists of ISerializables jeyed by their callsite id.
+            // The orphans will come back here as a dictionary of lists of strings jeyed by their callsite id.
             // This dictionary gets redistributed into a dictionary keyed by the workspace id.
 
-            var workspaceOrphanMap = new Dictionary<Guid, List<ISerializable>>();
+            var workspaceOrphanMap = new Dictionary<Guid, List<string>>();
 
             foreach (var ws in Workspaces.OfType<HomeWorkspaceModel>())
             {
@@ -1291,7 +1291,7 @@ namespace Dynamo.Models
         /// Deals with orphaned serializables.
         /// </summary>
         /// <param name="orphanedSerializables">Collection of orphaned serializables.</param>
-        public virtual void PostTraceReconciliation(Dictionary<Guid, List<ISerializable>> orphanedSerializables)
+        public virtual void PostTraceReconciliation(Dictionary<Guid, List<string>> orphanedSerializables)
         {
             // Override in derived classes to deal with orphaned serializables.
         }

@@ -941,13 +941,13 @@ namespace Dynamo.Graph.Workspaces
         #endregion
 
         /// <summary>
-        /// Returns a list of ISerializable items which exist in the preloaded 
+        /// Returns a list of string items which exist in the preloaded 
         /// trace data but do not exist in the current CallSite data.
         /// </summary>
         /// <returns></returns>
-        internal IList<ISerializable> GetOrphanedSerializablesAndClearHistoricalTraceData()
+        internal IList<string> GetOrphanedSerializablesAndClearHistoricalTraceData()
         {
-            var orphans = new List<ISerializable>();
+            var orphans = new List<string>();
 
             if (historicalTraceData == null) return orphans;
 
