@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using DynamoServices;
+using Newtonsoft.Json;
 
 namespace FFITarget
 {
@@ -196,7 +197,7 @@ namespace FFITarget
             if (traceVal != null)
             {
 
-                IDHolder idHolder = (IDHolder)traceVal;
+                IDHolder idHolder = JsonConvert.DeserializeObject<IDHolder>(traceVal);
                 ID = idHolder.ID;
 
             }
@@ -204,7 +205,7 @@ namespace FFITarget
             {
                 nextID++;
                 ID = nextID;
-                TraceUtils.SetTraceData(__TEMP_REVIT_TRACE_ID, new IDHolder() { ID = nextID });
+                TraceUtils.SetTraceData(__TEMP_REVIT_TRACE_ID, JsonConvert.SerializeObject(new IDHolder() { ID = nextID }));
             }
 
 
