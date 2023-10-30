@@ -65,8 +65,9 @@ namespace Dynamo.PackageManager
             return rootDir;
         }
 
-        public IDirectoryInfo BuildRetainDirectory(Package package, string packagesDirectory, IEnumerable<string> contentFiles, IEnumerable<string> markdownFiles)
+        public IDirectoryInfo BuildRetainDirectory(Package package, string packagesDirectory, List<List<String>> contentFiles, IEnumerable<string> markdownFiles)
         {
+            
             var rootPath = Path.Combine(packagesDirectory, package.Name);
             var rootDir = fileSystem.TryCreateDirectory(rootPath);
             package.RootDirectory = rootDir.FullName;
@@ -74,13 +75,15 @@ namespace Dynamo.PackageManager
             var dyfFiles = new List<string>();
 
             WritePackageHeader(package, rootDir);
-            RemoveUnselectedFiles(contentFiles, rootDir);
+
+            RemoveUnselectedFiles(contentFiles.SelectMany(files => files).ToList(), rootDir);
             CopyFilesIntoRetainedPackageDirectory(contentFiles, markdownFiles, rootDir, out dyfFiles);
             /*
             // Commentint this out until understanding the function of it
             RemoveRetainDyfFiles(contentFiles, dyfFiles);   // Why do we need to remove the dyf files from the publishing folder?
             */
-            RemapRetainCustomNodeFilePaths(contentFiles, dyfFiles);
+            RemapRetainCustomNodeFilePaths(contentFiles.SelectMany(files => files).ToList(), dyfFiles);
+
 
             return rootDir;
         }
@@ -202,77 +205,70 @@ namespace Dynamo.PackageManager
             fileSystem.WriteAllText(headerPath, pkgHeaderStr);
         }
 
-        internal void CopyFilesIntoRetainedPackageDirectory(IEnumerable<string> files, IEnumerable<string> markdownFiles, IDirectoryInfo rootDir, out List<string> dyfFiles)
+        internal void CopyFilesIntoRetainedPackageDirectory(List<List<String>> contentFiles, IEnumerable<string> markdownFiles, IDirectoryInfo rootDir, out List<string> dyfFiles)
         {
-            var allFiles = files.Concat(markdownFiles).ToArray();
-            var commonRootPath = GetLongestCommonPrefix(allFiles);
-
             dyfFiles = new List<string>();
 
-            foreach (var file in allFiles.Where(x => x != null))
+            foreach (var files in contentFiles)
             {
-                // If the file doesn't actually exist, don't copy it
-                if (!fileSystem.FileExists(file))
+                var commonPath = GetLongestCommonPrefix(files.ToArray());
+                commonPath = commonPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                var commonRootPath = Path.GetDirectoryName(commonPath);
+                if (commonRootPath == null) commonRootPath = commonPath; // already at the root
+
+                foreach (var file in files.Where(x => x != null))
                 {
-                    continue;
-                }
+                    // If the file doesn't actually exist, don't copy it
+                    if (!fileSystem.FileExists(file))
+                    {
+                        continue;
+                    }
 
-                var relativePath = file.Substring(commonRootPath.Length);
+                    var relativePath = file.Substring(commonRootPath.Length);
 
-                // Ensure the relative path starts with a directory separator.
-                if (!string.IsNullOrEmpty(relativePath) && relativePath[0] != Path.DirectorySeparatorChar)
-                {
-                    relativePath = Path.DirectorySeparatorChar + relativePath;
-                }
+                    // Ensure the relative path starts with a directory separator.
+                    if (!string.IsNullOrEmpty(relativePath) && relativePath[0] != Path.DirectorySeparatorChar)
+                    {
+                        relativePath = Path.DirectorySeparatorChar + relativePath;
+                    }
 
-                var destPath = Path.Combine(rootDir.FullName, relativePath.TrimStart('\\'));
+                    var destPath = Path.Combine(rootDir.FullName, relativePath.TrimStart('\\'));
 
-                // We are already creating the pkg.json file ourselves, so skip it
-                if (destPath.Equals(Path.Combine(rootDir.FullName, "pkg.json")))
-                {
-                    continue;
-                }
+                    // We are already creating the pkg.json file ourselves, so skip it
+                    if (destPath.Equals(Path.Combine(rootDir.FullName, "pkg.json")))
+                    {
+                        continue;
+                    }
 
-                if (fileSystem.FileExists(destPath))
-                {
-                    fileSystem.DeleteFile(destPath);
-                }
+                    if (fileSystem.FileExists(destPath))
+                    {
+                        fileSystem.DeleteFile(destPath);
+                    }
 
-                if (!Directory.Exists(Path.GetDirectoryName(destPath)))
-                {
-                    Directory.CreateDirectory(Path.GetDirectoryName(destPath)); 
-                }
+                    if (!Directory.Exists(Path.GetDirectoryName(destPath)))
+                    {
+                        Directory.CreateDirectory(Path.GetDirectoryName(destPath)); 
+                    }
 
-                fileSystem.CopyFile(file, destPath);
+                    fileSystem.CopyFile(file, destPath);
 
-                if (file.EndsWith(".dyf"))
-                {
-                    dyfFiles.Add(destPath);
+                    if (file.EndsWith(".dyf"))
+                    {
+                        dyfFiles.Add(destPath);
+                    }
                 }
             }
             // All files under Markdown directory do not apply to the rule above,
             // because they may fall into extra folder instead of docs folder,
             // currently there is on obvious way to filter them properly only based on path string.
+            var docDirPath = Path.Combine(rootDir.FullName, DocumentationDirectoryName);
             foreach (var file in markdownFiles.Where(x => x != null))
             {
-                var relativePath = file.Substring(commonRootPath.Length);
-
-                // Ensure the relative path starts with a directory separator.
-                if (!string.IsNullOrEmpty(relativePath) && relativePath[0] != Path.DirectorySeparatorChar)
-                {
-                    relativePath = Path.DirectorySeparatorChar + relativePath;
-                }
-
-                var destPath = Path.Combine(rootDir.FullName, relativePath);
+                var destPath = Path.Combine(docDirPath, Path.GetFileName(file));
 
                 if (fileSystem.FileExists(destPath))
                 {
                     fileSystem.DeleteFile(destPath);
-                }
-
-                if (!Directory.Exists(Path.GetDirectoryName(destPath)))
-                {
-                    Directory.CreateDirectory(Path.GetDirectoryName(destPath));
                 }
 
                 fileSystem.CopyFile(file, destPath);
@@ -320,6 +316,20 @@ namespace Dynamo.PackageManager
                 }
 
                 var destPath = Path.Combine(targetFolder, Path.GetFileName(file));
+
+                if (fileSystem.FileExists(destPath))
+                {
+                    fileSystem.DeleteFile(destPath);
+                }
+
+                fileSystem.CopyFile(file, destPath);
+            }
+            // All files under Markdown directory do not apply to the rule above,
+            // because they may fall into extra folder instead of docs folder,
+            // currently there is on obvious way to filter them properly only based on path string.
+            foreach (var file in markdownFiles.Where(x => x != null))
+            {
+                var destPath = Path.Combine(docDirPath, Path.GetFileName(file));
 
                 if (fileSystem.FileExists(destPath))
                 {

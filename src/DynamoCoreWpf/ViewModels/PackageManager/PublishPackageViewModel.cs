@@ -233,7 +233,7 @@ namespace Dynamo.PackageManager
             {
                 if (_Keywords != value)
                 {
-                    value = value.Replace(',', ' ').ToLower().Trim();
+                    value = value.Replace(',', ' ').ToLower();
                     var options = RegexOptions.None;
                     var regex = new Regex(@"[ ]{2,}", options);
                     value = regex.Replace(value, @" ");
@@ -1779,6 +1779,9 @@ namespace Dynamo.PackageManager
             var contentFiles = BuildPackage();
             try
             {
+                //set the IsNewPackage to true temporarily
+                IsNewVersion = true;
+
                 //if buildPackage() returns no files then the package
                 //is empty so we should return
                 if (contentFiles == null || contentFiles.Count() < 1)
@@ -1874,15 +1877,7 @@ namespace Dynamo.PackageManager
 
                 if(RetainFolderStructureOverride)
                 {
-
-                    var updatedFiles = files.Select(file =>
-                    {
-                        if (Assemblies.Any(x => x.Name.Equals(Path.GetFileNameWithoutExtension(file))))
-                        {
-                            return Assemblies.First(x => x.Name.Equals(Path.GetFileNameWithoutExtension(file))).LocalFilePath;
-                        }
-                        return file;
-                    }).ToList();
+                    var updatedFiles = UpdateFilesForRetainFolderStructre(files);
 
                     // begin publishing to local directory retaining the folder structure
                     var remapper = new CustomNodePathRemapper(DynamoViewModel.Model.CustomNodeManager,
@@ -1913,6 +1908,62 @@ namespace Dynamo.PackageManager
                 ErrorString = e.Message;
                 dynamoViewModel.Model.Logger.Log(e);
             }
+        }
+
+        /// <summary>
+        /// Allocate files in lists by folder
+        /// When we are calling this method, we have chosen the 'retain folder structure' path
+        /// </summary>
+        /// <param name="files"></param>
+        /// <returns></returns>
+        private List<List<String>> UpdateFilesForRetainFolderStructre(IEnumerable<string> files)
+        {
+            if(!files.Any() || !PreviewPackageContents.Any()) { return null; }
+
+            var updatedFiles = files.Select(file =>
+            {
+                if (Assemblies.Any(x => x.Name.Equals(Path.GetFileNameWithoutExtension(file))))
+                {
+                    return Assemblies.First(x => x.Name.Equals(Path.GetFileNameWithoutExtension(file))).LocalFilePath;
+                }
+                return file;
+            }).ToList();
+
+            if(PreviewPackageContents.Count() > 1 )
+            {
+                // we cannot have more than 1 root folder at this stage
+                return null;
+            }
+
+            var updatedFileStructure = new List<List<String>>();
+            var packageFolderItem = PreviewPackageContents.First();
+
+            // For each 
+            foreach(var root in packageFolderItem.ChildItems)
+            {
+                var updatedFolder = new List<String>();
+                if (root.DependencyType.Equals(DependencyType.Folder))
+                {
+                    var folderContents = PackageItemRootViewModel.GetFiles(root);
+                    foreach(var item in folderContents)
+                    {
+                        if (item.DependencyType.Equals(DependencyType.Folder) || item.DependencyType.Equals(DependencyType.CustomNode)) continue;
+                        if (updatedFiles.Contains(item.FilePath))
+                        {
+                            updatedFolder.Add(item.FilePath);
+                        }
+                    }
+                }
+                else if (root.DependencyType.Equals(DependencyType.CustomNode)) { continue; }
+                else
+                {
+                    updatedFolder.Add(root.FilePath);
+                }
+
+                updatedFileStructure.Add(updatedFolder);
+            }
+
+            return updatedFileStructure;
         }
 
         // build the package
@@ -2186,7 +2237,7 @@ namespace Dynamo.PackageManager
                 }
 
                 // Generate the Package Name, either based on the user 'Description', or the root path name, if no 'Description' yet
-                var packageName = !string.IsNullOrEmpty(Description) ? Description : Path.GetFileName(publishPath);
+                var packageName = !string.IsNullOrEmpty(Name) ? Name : Path.GetFileName(publishPath);
                 var rootItemPreview = RetainFolderStructureOverride ?
                     GetExistingRootItemViewModel(publishPath, packageName) :
                     GetPreBuildRootItemViewModel(publishPath, packageName, files);

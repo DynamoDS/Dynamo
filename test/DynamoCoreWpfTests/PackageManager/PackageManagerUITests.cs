@@ -129,6 +129,45 @@ namespace DynamoCoreWpfTests.PackageManager
             AssertWindowClosedWithDynamoView<PublishPackageView>();
 
         }
+
+        [Test]
+        public void PackagePublishKeywordPropertyAllowsSpaces()
+        {
+            // Arrange
+            var singleSpace = " ";
+            var doubleSpace = "  ";
+            var singleWord = "support";
+            var doubleWord = "support mep";
+            var doubleWordMultipleSpaces = "support    mep";
+            var commaDelimetedWords = "support,mep";
+
+            var l = new PublishPackageViewModel(ViewModel);
+
+            // Act/Assert
+            l.Keywords = singleSpace;
+            Assert.AreEqual(singleSpace, l.Keywords);
+            Assert.AreEqual(0, l.KeywordList.Count());
+
+            l.Keywords = doubleSpace;
+            Assert.AreEqual(singleSpace, l.Keywords);
+            Assert.AreEqual(0, l.KeywordList.Count());
+
+            l.Keywords = singleWord;
+            Assert.AreEqual(singleWord, l.Keywords);
+            Assert.AreEqual(1, l.KeywordList.Count());
+
+            l.Keywords = doubleWord;
+            Assert.AreEqual(doubleWord, l.Keywords);
+            Assert.AreEqual(2, l.KeywordList.Count());
+
+            l.Keywords = doubleWordMultipleSpaces;
+            Assert.AreEqual(doubleWord, l.Keywords);
+            Assert.AreEqual(2, l.KeywordList.Count());
+
+            l.Keywords = commaDelimetedWords;
+            Assert.AreEqual(commaDelimetedWords.Replace(',', ' '), l.Keywords);
+            Assert.AreEqual(2, l.KeywordList.Count());
+        }
         #endregion
 
         #region InstalledPackagesControl

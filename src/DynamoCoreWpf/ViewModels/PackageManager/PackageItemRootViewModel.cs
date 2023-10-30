@@ -39,6 +39,10 @@ namespace Dynamo.PackageManager.UI
 
         internal bool isChild;
 
+        /// <summary>
+        /// Custom Node
+        /// </summary>
+        /// <param name="def">custom node definition</param>
         public PackageItemRootViewModel(CustomNodeDefinition def)
         {
             this.Height = 32;
@@ -50,6 +54,10 @@ namespace Dynamo.PackageManager.UI
             this.BuildDependencies(new HashSet<object>());
         }
 
+        /// <summary>
+        /// Assembly
+        /// </summary>
+        /// <param name="assembly">package assembly</param>
         public PackageItemRootViewModel(PackageAssembly assembly)
         {
             this.Height = 32;
@@ -62,6 +70,10 @@ namespace Dynamo.PackageManager.UI
             this.isChild = true;
         }
 
+        /// <summary>
+        /// File
+        /// </summary>
+        /// <param name="fileInfo">file info</param>
         public PackageItemRootViewModel(System.IO.FileInfo fileInfo)
         {
             this.Height = 32;
@@ -74,6 +86,10 @@ namespace Dynamo.PackageManager.UI
             this.isChild = true;
         }
 
+        /// <summary>
+        /// Folder
+        /// </summary>
+        /// <param name="folderName"></param>
         public PackageItemRootViewModel(string folderName)
         {
             this.DependencyType = DependencyType.Folder;
@@ -81,6 +97,11 @@ namespace Dynamo.PackageManager.UI
             this.DirectoryName = folderName;
         }
 
+        /// <summary>
+        /// Custom Node Preview
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="filePath"></param>
         public PackageItemRootViewModel(string fileName, string filePath)
         {
             this.DependencyType = DependencyType.CustomNodePreview;
