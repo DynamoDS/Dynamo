@@ -111,18 +111,6 @@ namespace Dynamo.Configuration
         public bool IsFirstRun { get; set; }
 
         /// <summary>
-        /// Indicates whether usage reporting is approved or not.
-        /// </summary>
-        [Obsolete("Property will be deprecated in Dynamo 3.0")]
-        public bool IsUsageReportingApproved { get { return false; } set { } }
-
-        /// <summary>
-        /// Indicates whether Google analytics reporting is approved or not.
-        /// </summary>
-        [Obsolete("Property will be deprecated in Dynamo 3.0")]
-        public bool IsAnalyticsReportingApproved { get { return false; } set { } }
-
-        /// <summary>
         /// This defines if the user export file path would include timestamp
         /// </summary>
         public bool IsTimeStampIncludedInExportFilePath
@@ -868,7 +856,6 @@ namespace Dynamo.Configuration
 
             // Default Settings
             IsFirstRun = true;
-            IsAnalyticsReportingApproved = true;
             Locale = Configurations.SupportedLocaleDic.FirstOrDefault().Value;
             LibraryWidth = 304;
             ConsoleHeight = 0;
