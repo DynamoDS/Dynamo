@@ -48,14 +48,6 @@ namespace Dynamo.UI.Prompts
            
         }
 
-        private void ToggleIsUsageReportingChecked(object sender, RoutedEventArgs e)
-        {
-            UsageReportingManager.Instance.SetUsageReportingAgreement(
-                AcceptUsageReportingCheck.IsChecked.HasValue &&
-                AcceptUsageReportingCheck.IsChecked.Value);
-            AcceptUsageReportingCheck.IsChecked = UsageReportingManager.Instance.IsUsageReportingApproved;
-        }
-
         private void OnContinueClick(object sender, RoutedEventArgs e)
         {
             Close();
@@ -74,7 +66,7 @@ namespace Dynamo.UI.Prompts
             {
                 handle = new WindowInteropHelper(Owner).Handle;
             }
-            AnalyticsService.ShowADPConsetDialog(handle);
+            AnalyticsService.ShowADPConsentDialog(handle);
         }
 
         private void CloseButton_OnClick(object sender, RoutedEventArgs e)

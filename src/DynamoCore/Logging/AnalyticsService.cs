@@ -13,6 +13,7 @@ namespace Dynamo.Logging
     {
         // Use the Analytics.Core interface so that we do not have to load the ADP assembly at this time.
         private static IAnalyticsUI adpAnalyticsUI;
+
         /// <summary>
         /// Starts the client when DynamoModel is created. This method initializes
         /// the Analytics service and application life cycle start is tracked.
@@ -105,7 +106,7 @@ namespace Dynamo.Logging
         /// Show the ADP dynamic consents dialog.
         /// </summary>
         /// <param name="host">main window</param>
-        internal static void ShowADPConsetDialog(IntPtr? host)
+        internal static void ShowADPConsentDialog(IntPtr? host)
         {
             if (!Analytics.DisableAnalytics && adpAnalyticsUI != null)
             {
