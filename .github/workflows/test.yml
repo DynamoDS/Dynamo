@@ -19,9 +19,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-            repository: DynamoDS/DynamoTestCompleteTests
-            token: ${{ secrets.DYNAMO_TESTS_TOKEN }}
-            ref: master
+          repository: DynamoDS/DynamoTestCompleteTests
+          token: ${{ secrets.DYNAMO_TESTS_TOKEN }}
+          ref: master
       - name: Download TestExecute
         run: Invoke-WebRequest -Uri "${{ env.TEST_EXECUTE_DOWNLOAD_URL }}" -OutFile ".\TE.exe"
       - name: Install TestExecute
@@ -30,6 +30,7 @@ jobs:
       - name: Download Artifact
         uses: dawidd6/action-download-artifact@v2
         with:
+          name: DynamoSandbox
           workflow: ${{ github.event.workflow_run.workflow_id }}
           path: ${{ github.workspace }}\build
       - name: Run Tests
@@ -46,3 +47,5 @@ jobs:
         if: always()
         run: |
           type summary.md | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo ":package: Trigerred by: [${{ github.event.workflow_run.name }}](${{ github.event.workflow_run.html_url }})" >> $env:GITHUB_STEP_SUMMARY
