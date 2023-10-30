@@ -1006,7 +1006,12 @@ namespace Dynamo.PackageManager
             this.BuildVersion = "0";
             this.ErrorString = string.Empty;
             this.Uploading = false;
-            this.UploadHandle = null;
+            // Clearing the UploadHandle when using Submit currently throws - check trheading
+            try
+            {
+                this.UploadHandle = null;
+            }
+            catch { Exception ex; }
             this.IsNewVersion = false;
             this.MoreExpanded = false;
             this.UploadState = PackageUploadHandle.State.Ready;
@@ -1779,9 +1784,6 @@ namespace Dynamo.PackageManager
             var contentFiles = BuildPackage();
             try
             {
-                //set the IsNewPackage to true temporarily
-                IsNewVersion = true;
-
                 //if buildPackage() returns no files then the package
                 //is empty so we should return
                 if (contentFiles == null || contentFiles.Count() < 1)

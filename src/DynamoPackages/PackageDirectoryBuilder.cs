@@ -11,6 +11,7 @@ namespace Dynamo.PackageManager
     public interface IPackageDirectoryBuilder
     {
         IDirectoryInfo BuildDirectory(Package packages, string packagesDirectory, IEnumerable<string> files, IEnumerable<string> markdownfiles);
+        IDirectoryInfo BuildRetainDirectory(Package package, string packagesDirectory, IEnumerable<IEnumerable<string>> contentFiles, IEnumerable<string> markdownFiles);
     }
 
     /// <summary>
@@ -65,7 +66,7 @@ namespace Dynamo.PackageManager
             return rootDir;
         }
 
-        public IDirectoryInfo BuildRetainDirectory(Package package, string packagesDirectory, List<List<String>> contentFiles, IEnumerable<string> markdownFiles)
+        public IDirectoryInfo BuildRetainDirectory(Package package, string packagesDirectory, IEnumerable<IEnumerable<string>> contentFiles, IEnumerable<string> markdownFiles)
         {
             
             var rootPath = Path.Combine(packagesDirectory, package.Name);
@@ -205,7 +206,7 @@ namespace Dynamo.PackageManager
             fileSystem.WriteAllText(headerPath, pkgHeaderStr);
         }
 
-        internal void CopyFilesIntoRetainedPackageDirectory(List<List<String>> contentFiles, IEnumerable<string> markdownFiles, IDirectoryInfo rootDir, out List<string> dyfFiles)
+        internal void CopyFilesIntoRetainedPackageDirectory(IEnumerable<IEnumerable<string>> contentFiles, IEnumerable<string> markdownFiles, IDirectoryInfo rootDir, out List<string> dyfFiles)
         {
             dyfFiles = new List<string>();
 
