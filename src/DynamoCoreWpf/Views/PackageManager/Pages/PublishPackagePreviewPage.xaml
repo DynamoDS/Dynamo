@@ -24,6 +24,7 @@
                              Opacity="0.1" />
             <local:DependencyTypeToImageSourceConverter x:Key="DependencyTypeToImageSourceConverter" />
             <local:DependencyTypeToVisibilityConverter x:Key="DependencyTypeToVisibilityConverter" />
+            <local:AsselmblyPackageItemRootViewModelToVisibilityConverter x:Key="AsselmblyPackageItemRootViewModelToVisibilityConverter" />
 
             <!--  DataGrid  -->
             <Style x:Key="DataGridCellStyle"
@@ -93,8 +94,8 @@
                         <ControlTemplate TargetType="DataGridColumnHeader">
                             <Grid>
                                 <TextBlock Name="DataGridColumnHeader"
-                                           Height="26"
-                                           Padding="40,4,10,0"
+                                           Height="32"
+                                           Padding="40,7,10,0"
                                            VerticalAlignment="Center"
                                            Background="#434343"
                                            FontFamily="{StaticResource ArtifaktElementRegular}"
@@ -127,8 +128,8 @@
                         <ControlTemplate TargetType="DataGridColumnHeader">
                             <Grid>
                                 <TextBlock Name="DataGridColumnHeader"
-                                           Height="26"
-                                           Padding="10,4,10,0"
+                                           Height="32"
+                                           Padding="10,7,10,0"
                                            VerticalAlignment="Center"
                                            Background="#434343"
                                            FontFamily="{StaticResource ArtifaktElementRegular}"
@@ -357,17 +358,19 @@
                                     Grid.Column="0"
                                     Grid.Row="1"
                                     Loaded="customBrowserControl_Loaded"
-                                    Root="{Binding PreviewPackageContents, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
+                                    Root="{Binding PreviewPackageContents, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
+                                    DisableRemove="True"/>
 
         <!--Files-->
         <DataGrid x:Name="rootContentsDataGrid"
                   Grid.Column="1"
                   Grid.Row="1"
-                  Margin="0 0 20 0"
+                  Margin="0 0 20 0" 
                   IsReadOnly="True"
                   VerticalAlignment="Stretch"
                   CanUserReorderColumns="False"
                   CanUserSortColumns="True"
+                  VerticalScrollBarVisibility="Disabled"
                   ItemsSource="{Binding RootContents, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                   Style="{StaticResource DataGrid}">
             <DataGrid.RowStyle>
@@ -449,14 +452,13 @@
                                           IsChecked="{Binding Path=IsNodeLibrary, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                           HorizontalAlignment="Center"
                                           VerticalAlignment="Center"
+                                          IsEnabled="False"
                                           Margin="10 0 10 5">
                                     <CheckBox.Style>
                                         <Style TargetType="CheckBox"
                                                BasedOn="{StaticResource CheckBoxStyle}">
                                             <Setter Property="Visibility"
-                                                    Value="{Binding DependencyType,
-                                                             Converter={StaticResource DependencyTypeToVisibilityConverter},
-                                                             ConverterParameter=Assembly}" />
+                                                    Value="{Binding Converter={StaticResource AsselmblyPackageItemRootViewModelToVisibilityConverter}}" />
                                         </Style>
                                     </CheckBox.Style>
                                 </CheckBox>

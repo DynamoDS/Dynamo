@@ -1,4 +1,3 @@
-using Dynamo.Utilities;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -7,6 +6,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using Dynamo.Utilities;
 
 namespace Dynamo.PackageManager.UI
 {
@@ -26,7 +26,9 @@ namespace Dynamo.PackageManager.UI
         public ObservableCollection<PackageItemRootViewModel> ItemSelection { get; set; } = new ObservableCollection<PackageItemRootViewModel>();
 
         private bool _allItemsSelected;
-
+        /// <summary>
+        /// Indicates if all preview items are currently selected
+        /// </summary>
         public bool AllItemsSelected
         {
             get { return _allItemsSelected; }
@@ -44,6 +46,9 @@ namespace Dynamo.PackageManager.UI
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        /// <summary>
+        ///  Constructor
+        /// </summary>
         public PublishPackageSelectPage()
         {
             InitializeComponent();
@@ -57,19 +62,18 @@ namespace Dynamo.PackageManager.UI
             PublishPackageViewModel = this.DataContext as PublishPackageViewModel;
         }
 
-        public void LoadEvents()
+        
+        internal void LoadEvents()
         {
             this.IsEnabled = true;
 
-            var treeView = this.customBrowserControl.customTreeView;
-
-            var firstItem = (TreeViewItem)treeView.ItemContainerGenerator.ContainerFromIndex(0);
-            if (firstItem != null)
+            if (customBrowserControl != null)
             {
-                firstItem.IsSelected = true;
-            }
+                var treeView = customBrowserControl.customTreeView;
 
-            this.customBrowserControl.customTreeView_SelectedItemChanged(treeView, null);
+                customBrowserControl.RefreshCustomTreeView();
+                customBrowserControl.customTreeView_SelectedItemChanged(treeView, null);
+            }
         }
 
         public void Dispose()
@@ -188,6 +192,36 @@ namespace Dynamo.PackageManager.UI
                 if (dependencyType.ToString() == parameter?.ToString())
                 {
                     // Return visible if the item matches the specified dependency type
+                    return Visibility.Visible;
+                }
+            }
+            // If the item does not match the specified dependency type or value is null, return collapsed
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Assembly can either have an Assembly or File DependencyType. We need to check for both.
+    /// </summary>
+    public class AsselmblyPackageItemRootViewModelToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value != null && value is PackageItemRootViewModel item)
+            {
+                if (item.DependencyType.Equals(DependencyType.Assembly))
+                {
+                    // Return visible if the item is an Assembly
+                    return Visibility.Visible;
+                }
+                if(item.DependencyType.Equals(DependencyType.File) && item.DisplayName.EndsWith(".dll"))
+                {
+                    // Return visible if the item is a dll file
                     return Visibility.Visible;
                 }
             }

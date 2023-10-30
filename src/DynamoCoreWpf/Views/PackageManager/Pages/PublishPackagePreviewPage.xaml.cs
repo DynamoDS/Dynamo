@@ -10,6 +10,9 @@ namespace Dynamo.PackageManager.UI
     {
         private PublishPackageViewModel PublishPackageViewModel;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public PublishPackagePreviewPage()
         {
             InitializeComponent();
@@ -23,21 +26,18 @@ namespace Dynamo.PackageManager.UI
             PublishPackageViewModel = this.DataContext as PublishPackageViewModel;
         }
 
-        public void LoadEvents()
+        internal void LoadEvents()
         {
             this.IsEnabled = true;
 
-            var treeView = this.customBrowserControl.customTreeView;
-
-            var firstItem = (TreeViewItem)treeView.ItemContainerGenerator.ContainerFromIndex(0);
-            if (firstItem != null)
+            if (customBrowserControl != null)
             {
-                firstItem.IsSelected = true;
+                var treeView = customBrowserControl.customTreeView;
+
+                customBrowserControl.RefreshCustomTreeView();
+                customBrowserControl.customTreeView_SelectedItemChanged(treeView, null);
             }
-
-            this.customBrowserControl.customTreeView_SelectedItemChanged(treeView, null);
         }
-
 
         public void Dispose()
         {
@@ -46,10 +46,9 @@ namespace Dynamo.PackageManager.UI
 
         private void customBrowserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            var firstItem = (TreeViewItem)this.customBrowserControl.customTreeView.ItemContainerGenerator.ContainerFromIndex(0);
-            if (firstItem != null)
+            if (customBrowserControl != null)
             {
-                firstItem.IsSelected = true;
+                customBrowserControl.RefreshCustomTreeView();
             }
         }
     }

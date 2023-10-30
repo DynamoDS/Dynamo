@@ -30,15 +30,13 @@ namespace Dynamo.PackageManager.UI
         {
             this.IsEnabled = true;
 
-            var treeView = this.previewBrowserControl.customTreeView;
-
-            var firstItem = (TreeViewItem)treeView.ItemContainerGenerator.ContainerFromIndex(0);
-            if (firstItem != null)
+            if (previewBrowserControl != null)
             {
-                firstItem.IsSelected = true;
-            }
+                var treeView = previewBrowserControl.customTreeView;
 
-            this.previewBrowserControl.customTreeView_SelectedItemChanged(treeView, null);
+                previewBrowserControl.RefreshCustomTreeView();
+                previewBrowserControl.customTreeView_SelectedItemChanged(treeView, null);
+            }
         }
 
         private void HostEntry_CheckStateChanged(object sender, RoutedEventArgs e)
@@ -109,10 +107,9 @@ namespace Dynamo.PackageManager.UI
 
         private void previewBrowserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            var firstItem = (TreeViewItem)this.previewBrowserControl.customTreeView.ItemContainerGenerator.ContainerFromIndex(0);
-            if (firstItem != null)
+            if (previewBrowserControl != null)
             {
-                firstItem.IsSelected = true;
+                previewBrowserControl.RefreshCustomTreeView();
             }
         }
     }

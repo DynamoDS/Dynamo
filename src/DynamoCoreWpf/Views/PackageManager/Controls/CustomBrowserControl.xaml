@@ -354,6 +354,9 @@
                         <Setter Property="Background" TargetName="Bd" Value="#343434"/>
                         <Setter Property="Background" TargetName="SelectionBorder" Value="#343434"/>
                     </Trigger>
+                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DisableRemove}" Value="True">
+                        <Setter Property="Visibility" TargetName="RemoveButton" Value="Hidden"/>
+                    </DataTrigger>
                 </ControlTemplate.Triggers>
             </ControlTemplate>
 
@@ -394,7 +397,7 @@
                                SnapsToDevicePixels="True"
                                UseLayoutRounding="True"
                                TextTrimming="CharacterEllipsis"
-                               Width="180"
+                               MaxWidth="180"
                                FontFamily="{StaticResource ArtifaktElementRegular}"/>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>

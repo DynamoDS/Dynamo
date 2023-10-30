@@ -1750,7 +1750,6 @@ namespace Dynamo.PackageManager
                     Assemblies.Add(new PackageAssembly()
                     {
                         Assembly = assem,
-                        IsNodeLibrary = true, // assume is node library when first added
                         LocalFilePath = filename
                     });
                     RaisePropertyChanged("PackageContents");

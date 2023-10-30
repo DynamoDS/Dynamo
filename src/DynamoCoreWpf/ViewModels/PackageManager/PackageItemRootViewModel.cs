@@ -31,8 +31,11 @@ namespace Dynamo.PackageManager.UI
         /// The file path of this item (if any), regardless of which constructor was used.
         /// </summary>
         public string FilePath { get; }
+
+        /// <summary>
+        /// The folder where this item is located. For CustomNode this is empty
+        /// </summary>
         public string DirectoryName { get; private set; }
-        public string PathName { get; private set; }
 
         internal bool isChild;
 

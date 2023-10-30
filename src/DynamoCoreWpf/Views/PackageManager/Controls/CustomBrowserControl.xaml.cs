@@ -20,6 +20,16 @@ namespace Dynamo.PackageManager.UI
     /// </summary>
     public partial class CustomBrowserControl : UserControl
     {
+
+        public bool DisableRemove
+        {
+            get { return (bool)GetValue(DisableRemoveProperty); }
+            set { SetValue(DisableRemoveProperty, value); }
+        }
+
+        public static readonly DependencyProperty DisableRemoveProperty =
+            DependencyProperty.Register("DisableRemove", typeof(bool), typeof(CustomBrowserControl), new PropertyMetadata(false));
+
         /// <summary>
         /// Binds the ItemsSource of the TreeView
         /// </summary>
@@ -29,10 +39,10 @@ namespace Dynamo.PackageManager.UI
             set { SetValue(RootProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for Root.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty RootProperty =
             DependencyProperty.Register("Root", typeof(ObservableCollection<PackageItemRootViewModel>), typeof(CustomBrowserControl),
                 new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.None, propertyChangedCallback: OnItemsSourceChanged));
+
 
         private static void OnItemsSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -59,15 +69,19 @@ namespace Dynamo.PackageManager.UI
             }));
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public CustomBrowserControl()
         {
             InitializeComponent();
         }
 
-        private void UpdateCustomTreeView(object sender)
+        /// <summary>
+        /// Updates the visuals of the treeview elements once they are rendered
+        /// </summary>
+        internal void RefreshCustomTreeView()
         {
-            if ((sender as ObservableCollection<PackageItemRootViewModel>).Count == 0) return;
-
             var treeView = this.customTreeView;
             treeView.ApplyTemplate();
             treeView.UpdateLayout();
@@ -76,188 +90,84 @@ namespace Dynamo.PackageManager.UI
             if (visualChildren == null || visualChildren.Count() == 0) return;
 
             var root = visualChildren.First();
+            if (root == null) return;
+
+            root.ApplyTemplate();
+            root.IsExpanded = true; 
+            root.UpdateLayout();
 
             var hmarker = FindVisualChild<System.Windows.Shapes.Rectangle>(root, "HorizontalMarker");
             if (hmarker != null) hmarker.Visibility = Visibility.Hidden;
-            
+
             root.IsSelected = true;
 
-
-            //ApplyLastTreeItem(visualChildren);
-
-            // setting the visual styles for each separate 'root' folder
-            //foreach (var item in visualChildren)
-            //{
-            //    var rootItem = item.Header as PackageItemRootViewModel;
-            //    if (rootItem.isChild) continue;
-
-            //    item.ApplyTemplate();
-            //    item.IsExpanded = true;
-            //    item.UpdateLayout();    
-
-
-            //    var hmarker = FindVisualChild<System.Windows.Shapes.Rectangle>(item, "HorizontalMarker");
-            //    if (hmarker != null) hmarker.Visibility = Visibility.Hidden;
-            //    var vmarker = FindVisualChild<System.Windows.Shapes.Rectangle>(item, "VerticalMarker");
-            //    if (vmarker != null) vmarker.Visibility = Visibility.Hidden;
-
-
-            //    //var children = FindVisualChildren<TreeViewItem>(item);
-            //    //if(children != null)
-            //    //{
-            //    //    try
-            //    //    {   
-            //    //        var lastItem = children.Last();
-
-            //    //        lastItem.IsExpanded = true;
-            //    //        lastItem.UpdateLayout();
-            //    //        lastItem.ApplyTemplate();
-
-            //    //        var lmarker = FindVisualChild<System.Windows.Shapes.Rectangle>(lastItem, "LongMarker");
-            //    //        if (lmarker != null) lmarker.Visibility = Visibility.Hidden;
-            //    //    }
-            //    //    catch (Exception) { }
-            //    //}
-            //}
-
-            //visualChildren.First().IsSelected = true;
+            ApplyVisualLogic(visualChildren);
         }
 
-        //private static TreeViewItem FindTreeViewSelectedItemContainer(ItemsControl root, object selection)
-        //{
-        //    var item = root.ItemContainerGenerator.ContainerFromItem(selection) as TreeViewItem;
-        //    if (item == null)
-        //    {
-        //        foreach (var subItem in root.Items)
-        //        {
-        //            item = FindTreeViewSelectedItemContainer((TreeViewItem)root.ItemContainerGenerator.ContainerFromItem(subItem), selection);
-        //            if (item != null)
-        //            {
-        //                break;
-        //            }
-        //        }
-        //    }
-
-        //    return item;
-        //}
-
-        private static void ApplyLastTreeItem(IEnumerable<TreeViewItem> treeViewItems) 
+        private static TreeViewItem GetLastTreeViewItem(TreeViewItem item)
         {
-            foreach (TreeViewItem item in treeViewItems)
-            {
-                item.ApplyTemplate();
-                item.IsExpanded = true;
-                item.UpdateLayout();
+            var parent = FindParent<TreeViewItem>(item);
 
-                var parent = FindParent<TreeViewItem>(item);
-                if (parent == null)
-                {
-                    return;
-                }
-                var children = FindVisualChildren<TreeViewItem>(parent);
-                if (children != null)
-                {
-                    var lastItem = children.Last();
-
-                    if (item == lastItem)
-                    {
-                        lastItem.IsExpanded = true;
-                        lastItem.UpdateLayout();
-                        lastItem.ApplyTemplate();
-
-                        
-                        var marker = FindVisualChild<System.Windows.Shapes.Rectangle>(item, "VerticalMarker");
-                        if (marker != null) marker.Height = 12;
-                        
-                    }
-                }
-            }
-        }
-
-        #region Utility
-
-        private static T FindParent<T>(DependencyObject child) where T : DependencyObject
-        {
-            DependencyObject parentObject = VisualTreeHelper.GetParent(child);
-
-            if (parentObject == null)
-                return null;
-
-            T parent = parentObject as T;
             if (parent != null)
-                return parent;
-
-            return FindParent<T>(parentObject);
-        }
-
-        private static T FindLogicalParent<T>(DependencyObject child) where T : DependencyObject
-        {
-            DependencyObject parentObject = LogicalTreeHelper.GetParent(child);
-
-            if (parentObject == null)
-                return null;
-
-            T parent = parentObject as T;
-            if (parent != null)
-                return parent;
-
-            return FindLogicalParent<T>(parentObject);
-        }
-        
-
-        // Helper method to find visual children in a WPF control
-        private static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
-        {
-            if (depObj != null)
             {
-                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
-                {
-                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
-                    if (child != null && child is T)
-                    {
-                        yield return (T)child;
-                    }
+                parent.ApplyTemplate();
+                parent.IsExpanded = true;
+                parent.UpdateLayout();
 
-                    foreach (T childOfChild in FindVisualChildren<T>(child))
-                    {
-                        yield return childOfChild;
-                    }
-                }
+                var children = FindVisualChildrenShallow<TreeViewItem>(parent);
+                if (children == null) return null;
+
+                // Remove everything but folders
+                children = children.Where(x => (x.Header as PackageItemRootViewModel).DependencyType.Equals(DependencyType.Folder));
+                // For folders containing only file items, return null
+                if (!children.Any()) return null;
+                if (children.Last() == item) return item;
             }
-        }
-
-        private static T FindVisualChild<T>(DependencyObject parent, string name) where T : DependencyObject
-        {
-            if (parent == null)
+            else
             {
-                return null;
-            }
-
-            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
-            {
-                DependencyObject child = VisualTreeHelper.GetChild(parent, i);
-                if (child is T && (child as FrameworkElement).Name == name)
-                {
-                    return child as T;
-                }
-
-                T result = FindVisualChild<T>(child, name);
-                if (result != null)
-                {
-                    return result;
-                }
+                // If the item has no parent, then remove the horizontal marker
+                var hmarker = FindVisualChild<System.Windows.Shapes.Rectangle>(item, "HorizontalMarker");
+                if (hmarker != null) hmarker.Visibility = Visibility.Hidden;
             }
 
             return null;
         }
 
-        #endregion
+        private static void ApplyVisualLogic(IEnumerable<TreeViewItem> treeViewItems)
+        {
+            foreach (object item in treeViewItems)
+            {
+                if (item is TreeViewItem topItem)
+                {
+                    topItem.IsExpanded = true;
+                    topItem.ApplyTemplate();
+
+                    var lastItem = GetLastTreeViewItem(topItem);
+                    if (lastItem != null)
+                    {
+                        var marker = FindVisualChild<System.Windows.Shapes.Rectangle>(topItem, "VerticalMarker");
+                        if (marker != null)
+                        {
+                            marker.Height = 28;
+                            marker.VerticalAlignment = VerticalAlignment.Top;
+                        }
+                    }
+                }
+            }
+        }
+            
+        private void UpdateCustomTreeView(object sender)
+        {
+            if ((sender as ObservableCollection<PackageItemRootViewModel>).Count == 0) return;
+
+            RefreshCustomTreeView();
+        }
 
         /// <summary>
         /// Updates the currently displayed files based on which folder is selected
         /// This method is invoked in 2 ways:
         /// 1. As ItemSelectionChange event of the customTreeView element
-        /// 2. On Page navigation (each Page displays different section of the PreviewPackageContents)        /// 
+        /// 2. On Page navigation (each Page displays different section of the PreviewPackageContents)        
         /// Will not fire if the Page that's triggering it is not currently enabled
         /// </summary>
         /// <param name="sender">The TreeView element. We are interested in the currently SelectedItem.</param>
@@ -306,6 +216,108 @@ namespace Dynamo.PackageManager.UI
                 }));
             }
         }
+
+        #region Utility
+
+        private static T FindParent<T>(DependencyObject child) where T : DependencyObject
+        {
+            DependencyObject parentObject = VisualTreeHelper.GetParent(child);
+
+            if (parentObject == null)
+                return null;
+
+            T parent = parentObject as T;
+            if (parent != null)
+                return parent;
+
+            return FindParent<T>(parentObject);
+        }
+
+        private static T FindLogicalParent<T>(DependencyObject child) where T : DependencyObject
+        {
+            DependencyObject parentObject = LogicalTreeHelper.GetParent(child);
+
+            if (parentObject == null)
+                return null;
+
+            T parent = parentObject as T;
+            if (parent != null)
+                return parent;
+
+            return FindLogicalParent<T>(parentObject);
+        }
+
+
+        // Helper method to find visual children in a WPF control
+        private static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
+        {
+            if (depObj != null)
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+                {
+                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
+                    if (child != null && child is T)
+                    {
+                        yield return (T)child;
+                    }
+
+                    foreach (T childOfChild in FindVisualChildren<T>(child))
+                    {
+                        yield return childOfChild;
+                    }
+                }
+            }
+        }
+
+        private static IEnumerable<T> FindVisualChildrenShallow<T>(DependencyObject depObj) where T : DependencyObject
+        {
+            if (depObj != null)
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+                {
+                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
+                    if (child != null && child is T)
+                    {
+                        yield return (T)child;
+                    }
+                    else if(child != null && child is not T)
+                    {
+                        foreach (T childOfChild in FindVisualChildrenShallow<T>(child))
+                        {
+                            yield return childOfChild;
+                        }
+                    }
+                }
+            }
+        }
+
+
+        private static T FindVisualChild<T>(DependencyObject parent, string name) where T : DependencyObject
+        {
+            if (parent == null)
+            {
+                return null;
+            }
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(parent, i);
+                if (child is T && (child as FrameworkElement).Name == name)
+                {
+                    return child as T;
+                }
+
+                T result = FindVisualChild<T>(child, name);
+                if (result != null)
+                {
+                    return result;
+                }
+            }
+
+            return null;
+        }
+
+        #endregion
     }
 
     #region Helpers

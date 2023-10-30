@@ -23,6 +23,7 @@
             <SolidColorBrush x:Key="GridLineColorBrush" Color="#FFFFFF" Opacity="0.1"/>
             <local:DependencyTypeToImageSourceConverter x:Key="DependencyTypeToImageSourceConverter" />
             <local:DependencyTypeToVisibilityConverter x:Key="DependencyTypeToVisibilityConverter" />
+            <local:AsselmblyPackageItemRootViewModelToVisibilityConverter x:Key="AsselmblyPackageItemRootViewModelToVisibilityConverter" />
 
             <!--#region CheckBox Style-->
             <!--CheckBox Style-->
@@ -201,8 +202,8 @@
                                         </CheckBox.Style>
                                     </CheckBox>
                                     <TextBlock Name="DataGridColumnHeader"
-                                            Height="26"
-                                            Padding="5,4,10,0"
+                                            Height="32"
+                                            Padding="5,7,10,0"
                                             VerticalAlignment="Center"
                                             Background="#434343"
                                             FontFamily="{StaticResource ArtifaktElementRegular}"
@@ -303,8 +304,8 @@
                         <ControlTemplate TargetType="DataGridColumnHeader">
                             <Grid>
                                 <TextBlock Name="DataGridColumnHeader"
-                                           Height="26"
-                                           Padding="10,4,10,0"
+                                           Height="32"
+                                           Padding="10,7,10,0"
                                            VerticalAlignment="Center"
                                            Background="#434343"
                                            FontFamily="{StaticResource ArtifaktElementRegular}"
@@ -337,7 +338,7 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="DataGridColumnHeader">
                             <TextBlock Name="DataGridColumnHeader"
-                                       Height="26"
+                                       Height="32"
                                        Padding="10,8,10,0"
                                        VerticalAlignment="Center"
                                        Background="#434343"
@@ -469,6 +470,7 @@
                   VerticalAlignment="Stretch"
                   CanUserReorderColumns="False"
                   CanUserSortColumns="True"
+                  VerticalScrollBarVisibility="Disabled"
                   ItemsSource="{Binding RootContents, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                   Style="{StaticResource DataGrid}">
             <DataGrid.RowStyle>
@@ -552,9 +554,7 @@
                                         <Style TargetType="CheckBox"
                                                BasedOn="{StaticResource CheckBoxStyle}">
                                             <Setter Property="Visibility"
-                                                    Value="{Binding DependencyType,
-                                                             Converter={StaticResource DependencyTypeToVisibilityConverter},
-                                                             ConverterParameter=Assembly}" />
+                                                    Value="{Binding Converter={StaticResource AsselmblyPackageItemRootViewModelToVisibilityConverter}}" />
                                         </Style>
                                     </CheckBox.Style>
                                 </CheckBox>
