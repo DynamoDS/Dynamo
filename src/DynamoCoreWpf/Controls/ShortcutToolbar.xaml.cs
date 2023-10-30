@@ -38,6 +38,7 @@ namespace Dynamo.UI.Controls
             get { return shortcutBarRightSideItems; }
         }
         private readonly Core.AuthenticationManager authManager;
+        public readonly DynamoViewModel DynamoViewModel;
 
         /// <summary>
         /// Construct a ShortcutToolbar.
@@ -45,6 +46,7 @@ namespace Dynamo.UI.Controls
         /// <param name="dynamoViewModel"></param>
         public ShortcutToolbar(DynamoViewModel dynamoViewModel)
         {
+            DynamoViewModel = dynamoViewModel;
             shortcutBarItems = new ObservableCollection<ShortcutBarItem>();
             shortcutBarRightSideItems = new ObservableCollection<ShortcutBarItem>();
 
@@ -68,6 +70,7 @@ namespace Dynamo.UI.Controls
         {
             IsSaveButtonEnabled = false;
             IsExportMenuEnabled = false;
+            DynamoViewModel.OnRequestShorcutToolbarLoaded(RightMenu.ActualWidth);
         }
 
         private void SignOutHandler(LoginState status)
