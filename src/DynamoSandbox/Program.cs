@@ -3,6 +3,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Windows;
 
 namespace DynamoSandbox
@@ -13,9 +14,8 @@ namespace DynamoSandbox
 
         [STAThread]
         public static void Main(string[] args)
-        {   
-            AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
-
+        {
+            AssemblyLoadContext.Default.Resolving += Default_Resolving;
             //Display a message box and exit the program if Dynamo Core is unresolved.
             if (string.IsNullOrEmpty(DynamoCorePath)) return;
 
@@ -25,6 +25,11 @@ namespace DynamoSandbox
             var setup = new DynamoCoreSetup(args);
             var app = new Application();
             setup.RunApplication(app);
+        }
+
+        private static Assembly Default_Resolving(AssemblyLoadContext arg1, AssemblyName arg2)
+        {
+            return ResolveAssembly(arg1, new ResolveEventArgs(arg2.Name));
         }
 
         /// <summary>
@@ -37,7 +42,7 @@ namespace DynamoSandbox
         /// <param name="sender"></param>
         /// <param name="args"></param>
         /// <returns></returns>
-        public static Assembly ResolveAssembly(object sender, ResolveEventArgs args)
+        public static Assembly ResolveAssembly(AssemblyLoadContext arg1, ResolveEventArgs args)
         {
             var assemblyName = new AssemblyName(args.Name).Name + ".dll";
 
@@ -45,13 +50,13 @@ namespace DynamoSandbox
             {
                 string assemblyPath = Path.Combine(DynamoCorePath, assemblyName);
                 if (File.Exists(assemblyPath))
-                    return Assembly.LoadFrom(assemblyPath);
+                    return arg1.LoadFromAssemblyPath(assemblyPath);
 
                 var assemblyLocation = Assembly.GetExecutingAssembly().Location;
                 var assemblyDirectory = Path.GetDirectoryName(assemblyLocation);
 
                 assemblyPath = Path.Combine(assemblyDirectory, assemblyName);
-                return (File.Exists(assemblyPath) ? Assembly.LoadFrom(assemblyPath) : null);
+                return (File.Exists(assemblyPath) ? arg1.LoadFromAssemblyPath(assemblyPath) : null);
             }
             catch (Exception ex)
             {

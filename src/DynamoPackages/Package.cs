@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using Dynamo.Core;
 using Dynamo.Exceptions;
 using Dynamo.Graph.Nodes.CustomNodes;
@@ -362,7 +363,7 @@ namespace Dynamo.PackageManager
         ///     I.E. Builtin Packages.
         /// </summary>
         /// <returns>The list of all node library assemblies</returns>
-        internal IEnumerable<PackageAssembly> EnumerateAndLoadAssembliesInBinDirectory()
+        internal IEnumerable<PackageAssembly> EnumerateAndLoadAssembliesInBinDirectory(AssemblyLoadContext alc)
         {
             var assemblies = new List<PackageAssembly>();
 
@@ -386,7 +387,7 @@ namespace Dynamo.PackageManager
                 if (shouldLoadFile)
                 {
                     // dll files may be un-managed, skip those
-                    var result = PackageLoader.TryLoadFrom(assemFile.FullName, out assem);
+                    var result = PackageLoader.TryLoadFrom(alc, assemFile.FullName, out assem);
                     if (result)
                     {
                         // IsNodeLibrary may fail, we store the warnings here and then show
