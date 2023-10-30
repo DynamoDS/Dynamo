@@ -1,5 +1,3 @@
-using Dynamo.Utilities;
-using Lucene.Net.Util;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,6 +10,8 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using Dynamo.Utilities;
+using Lucene.Net.Util;
 
 namespace Dynamo.PackageManager.UI
 {
@@ -20,8 +20,6 @@ namespace Dynamo.PackageManager.UI
     /// </summary>
     public partial class CustomBrowserControl : UserControl
     {
-        private PublishPackageViewModel PublishPackageViewModel;
-
         /// <summary>
         /// Binds the ItemsSource of the TreeView
         /// </summary>
@@ -77,42 +75,52 @@ namespace Dynamo.PackageManager.UI
             var visualChildren = FindVisualChildren<TreeViewItem>(treeView);
             if (visualChildren == null || visualChildren.Count() == 0) return;
 
-            ApplyLastTreeItem(visualChildren);
+            var root = visualChildren.First();
+
+            var hmarker = FindVisualChild<System.Windows.Shapes.Rectangle>(root, "HorizontalMarker");
+            if (hmarker != null) hmarker.Visibility = Visibility.Hidden;
+            
+            root.IsSelected = true;
+
+
+            //ApplyLastTreeItem(visualChildren);
 
             // setting the visual styles for each separate 'root' folder
-            foreach(var item in visualChildren)
-            {
-                var rootItem = item.Header as PackageItemRootViewModel;
-                if (rootItem.isChild) continue;
+            //foreach (var item in visualChildren)
+            //{
+            //    var rootItem = item.Header as PackageItemRootViewModel;
+            //    if (rootItem.isChild) continue;
 
-                item.ApplyTemplate();
-                item.IsExpanded = true;
-                item.UpdateLayout();    
+            //    item.ApplyTemplate();
+            //    item.IsExpanded = true;
+            //    item.UpdateLayout();    
 
-                var hmarker = FindVisualChild<System.Windows.Shapes.Rectangle>(item, "HorizontalMarker");
-                if (hmarker != null) hmarker.Visibility = Visibility.Hidden;
-                var vmarker = FindVisualChild<System.Windows.Shapes.Rectangle>(item, "VerticalMarker");
-                if (vmarker != null) vmarker.Visibility = Visibility.Hidden;
 
-                //var children = FindVisualChildren<TreeViewItem>(item);
-                //if(children != null)
-                //{
-                //    try
-                //    {   
-                //        var lastItem = children.Last();
+            //    var hmarker = FindVisualChild<System.Windows.Shapes.Rectangle>(item, "HorizontalMarker");
+            //    if (hmarker != null) hmarker.Visibility = Visibility.Hidden;
+            //    var vmarker = FindVisualChild<System.Windows.Shapes.Rectangle>(item, "VerticalMarker");
+            //    if (vmarker != null) vmarker.Visibility = Visibility.Hidden;
 
-                //        lastItem.IsExpanded = true;
-                //        lastItem.UpdateLayout();
-                //        lastItem.ApplyTemplate();
 
-                //        var lmarker = FindVisualChild<System.Windows.Shapes.Rectangle>(lastItem, "LongMarker");
-                //        if (lmarker != null) lmarker.Visibility = Visibility.Hidden;
-                //    }
-                //    catch (Exception) { }
-                //}
-            }
+            //    //var children = FindVisualChildren<TreeViewItem>(item);
+            //    //if(children != null)
+            //    //{
+            //    //    try
+            //    //    {   
+            //    //        var lastItem = children.Last();
 
-            visualChildren.First().IsSelected = true;
+            //    //        lastItem.IsExpanded = true;
+            //    //        lastItem.UpdateLayout();
+            //    //        lastItem.ApplyTemplate();
+
+            //    //        var lmarker = FindVisualChild<System.Windows.Shapes.Rectangle>(lastItem, "LongMarker");
+            //    //        if (lmarker != null) lmarker.Visibility = Visibility.Hidden;
+            //    //    }
+            //    //    catch (Exception) { }
+            //    //}
+            //}
+
+            //visualChildren.First().IsSelected = true;
         }
 
         //private static TreeViewItem FindTreeViewSelectedItemContainer(ItemsControl root, object selection)
@@ -157,8 +165,10 @@ namespace Dynamo.PackageManager.UI
                         lastItem.UpdateLayout();
                         lastItem.ApplyTemplate();
 
+                        
                         var marker = FindVisualChild<System.Windows.Shapes.Rectangle>(item, "VerticalMarker");
                         if (marker != null) marker.Height = 12;
+                        
                     }
                 }
             }
@@ -319,7 +329,7 @@ namespace Dynamo.PackageManager.UI
 
     public class IndentConverter : IValueConverter
     {
-        private const int IndentSize = 16;  // hard-coded into the XAML template
+        private const int IndentSize = 20;  // hard-coded into the XAML template
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -370,6 +380,28 @@ namespace Dynamo.PackageManager.UI
 
                 // Return the appropriate style based on the presence of children
                 return hasChildren ? Visibility.Hidden : Visibility.Visible;
+            }
+
+            // Default style or value if the input is not a TreeViewItem
+            return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class ChildrenItemsContainsFolderToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is ICollection<PackageItemRootViewModel> children)
+            {
+                bool containsFolders = children.Any(x => x.DependencyType.Equals(DependencyType.Folder));
+
+                // Return visible if there are any folders in this root item's children
+                return containsFolders ? Visibility.Visible : Visibility.Collapsed;
             }
 
             // Default style or value if the input is not a TreeViewItem

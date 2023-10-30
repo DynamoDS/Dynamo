@@ -667,6 +667,7 @@
                             <local:CustomBrowserControl x:Name="previewBrowserControl"
                                                         Loaded="previewBrowserControl_Loaded"
                                                         IsEnabled="False"
+                                                        Margin="0 5"
                                                         Root="{Binding PreviewPackageContents, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
                                                         Visibility="{Binding PreviewPackageContents,
                                                                              UpdateSourceTrigger=PropertyChanged,
