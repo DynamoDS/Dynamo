@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <PlatformTarget >x64</PlatformTarget>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">16.0</VisualStudioVersion>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <FileAlignment>512</FileAlignment>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath> 
@@ -57,13 +57,13 @@
     <DefineConstants>$(DefineConstants);_LINUX</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(UILib)' == 'true' AND $(RuntimeIdentifier.Contains('win'))">
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net7.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
   <!--Temporary configuration to make core test projects load UI packages successfully -->
   <PropertyGroup Condition=" '$(TestProjectDefaults)' == 'true' AND $(RuntimeIdentifier.Contains('win')) ">
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net7.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
@@ -151,7 +151,7 @@
       <!--Remove these properties (SystemDrawingDllPath) and all references to it from all csproj files when we get rid of net48-->
       <SystemDrawingDllPath Condition=" '$(TargetFramework)' == 'net48' ">$(FrameworkAssembliesPath)System.Drawing.dll</SystemDrawingDllPath>
       <!--SystemDrawingDllPath is left empty for net6 because resources will auto resolve to the system.drawing package dll -->
-      <SystemDrawingDllPath Condition=" '$(TargetFramework)' == 'net60' "></SystemDrawingDllPath>
+      <SystemDrawingDllPath Condition=" '$(TargetFramework)' == 'net70' "></SystemDrawingDllPath>
     </PropertyGroup>
   </Target>
   <Choose>
