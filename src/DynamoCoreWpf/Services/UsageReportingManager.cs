@@ -171,6 +171,31 @@ namespace Dynamo.Services
             FirstRun = false;
         }
 
+        [Obsolete("Function will be removed in Dynamo 3.0, please set IsUsageReportingApproved.")]
+        public void ToggleIsUsageReportingApproved(object parameter)
+        {
+            var ownerWindow = parameter as Window;
+            if (ownerWindow == null)
+            {
+                throw new InvalidOperationException(
+                    "DynamoView must be supplied for this command");
+            }
+
+            // If reporting is not currently enabled, then the user should be 
+            // shown the agreement dialog (on which he/she can choose to accept 
+            // or reject the reporting). If the reporting is currently enabled,
+            // then set it to false (user chooses not to accept the reporting).
+            // 
+            if (IsUsageReportingApproved)
+            {
+                IsUsageReportingApproved = false;
+            }
+            else
+            {
+                ShowUsageReportingPrompt(ownerWindow);
+            }
+        }
+
         public void ToggleIsAnalyticsReportingApproved(object parameter)
         {
             var ownerWindow = parameter as Window;
@@ -188,7 +213,7 @@ namespace Dynamo.Services
         /// IsAnalyticsReportingApproved.
         /// </summary>
         /// <param name="approved"></param>
-        [Obsolete("Function will be removed in a future version of Dynamo as Dynamo will no longer support GA instrumentation.")]
+        [Obsolete("Function will be removed in Dynamo 3.0 as Dynamo will no longer support GA instrumentation.")]
         public void SetUsageReportingAgreement(bool approved)
         {
             IsUsageReportingApproved = approved && IsAnalyticsReportingApproved;
