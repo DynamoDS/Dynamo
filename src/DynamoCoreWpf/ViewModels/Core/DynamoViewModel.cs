@@ -2090,20 +2090,55 @@ namespace Dynamo.ViewModels
             return (parameters != null);
         }
 
+        /// <summary>
+        /// Indicates if the graph has been changed substantially bearing in mind the connections of its nodes and store the checksum value of the graph in the preferences to later comparison
+        /// </summary>
+        /// <returns></returns>
+        private bool HasSubstantialCheckSum()
+        {
+            bool substantialChecksum = false;
+            string graphId = currentWorkspaceViewModel.GraphId;
+
+            GraphChecksumItem checksumItem = PreferenceSettings.GraphChecksumItemsList.Where(i => i.GraphId == graphId).FirstOrDefault();
+            if (checksumItem != null)
+            {
+                if (checksumItem.Checksum != currentWorkspaceViewModel.Checksum)
+                {
+                    PreferenceSettings.GraphChecksumItemsList.Remove(checksumItem);
+                    PreferenceSettings.GraphChecksumItemsList.Add(new GraphChecksumItem() { GraphId = graphId, Checksum = currentWorkspaceViewModel.Checksum });
+                    substantialChecksum = true;
+                }
+            }
+            else
+            {
+                PreferenceSettings.GraphChecksumItemsList.Add(new GraphChecksumItem() { GraphId = graphId, Checksum = currentWorkspaceViewModel.Checksum });
+                substantialChecksum = true;
+            }
+            return substantialChecksum;
+        }
+
         private void InternalSaveAs(string path, SaveContext saveContext, bool isBackup = false)
         {
             try
             {
-                Model.Logger.Log(String.Format(Properties.Resources.SavingInProgress, path));
+                Model.Logger.Log(String.Format(Properties.Resources.SavingInProgress, path));                
                 CurrentSpaceViewModel.Save(path, isBackup, Model.EngineController, saveContext);
-                if (!isBackup) AddToRecentFiles(path);
-                
-                if (currentWorkspaceViewModel?.IsHomeSpace ?? true && HomeSpace.HasRunWithoutCrash && Model.CurrentWorkspace.IsValidForFDX)
+
+                if (!isBackup)
                 {
-                    Model.Logger.Log("The Workspace is valid for FDX");
-                    Model.Logger.Log("The Workspace checksum is : " + currentWorkspaceViewModel.Checksum);
-                }
-                    
+                    AddToRecentFiles(path);
+
+                    if (currentWorkspaceViewModel?.IsHomeSpace ?? true && HomeSpace.HasRunWithoutCrash && Model.CurrentWorkspace.IsValidForFDX)
+                    {
+                        Model.Logger.Log("The Workspace is valid for FDX");
+                        if (currentWorkspaceViewModel.Checksum != string.Empty)
+                        {
+                            Model.Logger.Log("The Workspace id is : " + currentWorkspaceViewModel.GraphId);
+                            Model.Logger.Log("The Workspace checksum is : " + currentWorkspaceViewModel.Checksum);
+                            Model.Logger.Log("The Workspace has Substantial checksum : " + HasSubstantialCheckSum().ToString());
+                        }
+                    }
+                }                                    
             }
             catch (Exception ex)
             {

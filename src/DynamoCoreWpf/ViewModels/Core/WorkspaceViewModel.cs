@@ -358,6 +358,18 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Returns the Uuid property of the seralized Workspace
+        /// </summary>
+        [JsonIgnore]
+        internal string GraphId { get; set; }
+
+        /// <summary>
+        /// Returns the Json representation of the current graph
+        /// </summary>
+        [JsonIgnore]
+        internal JObject JsonRepresentation { get; set; }
+
+        /// <summary>
         /// Returns the stringified representation of the connected nodes
         /// </summary>
         [JsonIgnore]
@@ -366,7 +378,7 @@ namespace Dynamo.ViewModels
             get
             {
                 List<string> nodeInfoConnections = new List<string>();
-                JObject jsonWorkspace = GetJsonRepresentation();
+                JObject jsonWorkspace = JsonRepresentation;
                 var nodes = jsonWorkspace["Nodes"];
 
                 List<string> nodeIds = new List<string>();
@@ -407,7 +419,7 @@ namespace Dynamo.ViewModels
                         outputIndex++;
                     }
                 }
-                return string.Join(",", nodeInfoConnections);
+                return nodeInfoConnections.Count > 0 ? string.Join(",", nodeInfoConnections) : string.Empty;
             }            
         }
 
@@ -686,16 +698,6 @@ namespace Dynamo.ViewModels
             ResetFitViewToggle(null);
         }
 
-        internal JObject GetJsonRepresentation(EngineController engine = null)
-        {
-            // Step 1: Serialize the workspace.
-            var json = Model.ToJson(engine);
-            var json_parsed = JObject.Parse(json);
-
-            // Step 2: Add the View.
-            return AddViewBlockToJSON(json_parsed);
-        }
-
         /// <summary>
         /// WorkspaceViewModel's Save method does a two-part serialization. First, it serializes the Workspace,
         /// then adds a View property to serialized Workspace, and sets its value to the serialized ViewModel.
@@ -757,6 +759,10 @@ namespace Dynamo.ViewModels
                 {
                     saveContent = jo.ToString();
                 }
+
+                JsonRepresentation = JObject.Parse(saveContent);
+                GraphId = JsonRepresentation.Properties().First(p => p.Name == "Uuid").Value.ToString();
+
                 File.WriteAllText(filePath, saveContent);
 
                 // Handle Workspace or CustomNodeWorkspace related non-serialization internal logic
