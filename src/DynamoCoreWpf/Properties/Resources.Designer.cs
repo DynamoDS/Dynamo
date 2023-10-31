@@ -8011,6 +8011,19 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to When this setting is enabled, the folder structure of uploaded files will be retained. Otherwise, files will be placed into predefined folders.
+        ///
+        ///Note: Incorrect folder structure may affect the functionality of packages that rely on the correct file organization. When in doubt, leave this setting off.
+        ///15 words or less that describe or define what the tool does.
+        ///Learn more.
+        /// </summary>
+        public static string PublishPackageRetainFolderStructureTooltip {
+            get {
+                return ResourceManager.GetString("PublishPackageRetainFolderStructureTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select Node Libraries.
         /// </summary>
         public static string PublishPackageSelectNodeLibraries {

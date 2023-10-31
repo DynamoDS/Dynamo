@@ -630,7 +630,7 @@
                     <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/help-16px.png" />
                 </Rectangle.Fill>
                 <Rectangle.ToolTip>
-                    <ToolTip Content="Test"
+                    <ToolTip Content="{x:Static p:Resources.PublishPackageRetainFolderStructureTooltip}"
                              Style="{StaticResource GenericToolTipLight}" />
                 </Rectangle.ToolTip>
             </Rectangle>
