@@ -119,13 +119,6 @@ namespace Dynamo.ViewModels
         public InfoBubbleViewModel ErrorBubble { get; set; }
 
         [JsonIgnore]
-        [Obsolete("This property is deprecated and will be removed in a future version of Dynamo.")]
-        public string ToolTipText
-        {
-            get { return nodeLogic.ToolTipText; }
-        }
-
-        [JsonIgnore]
         public ObservableCollection<PortViewModel> InPorts
         {
             get { return inPorts; }
