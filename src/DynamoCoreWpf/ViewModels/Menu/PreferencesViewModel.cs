@@ -962,23 +962,6 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Controls the IsChecked property in the "Hide IronPython alerts" toggle button
-        /// </summary>
-        [Obsolete("This property is deprecated and will be removed in a future version of Dynamo")]
-        public bool HideIronPythonAlertsIsChecked
-        {
-            get
-            {
-                return preferenceSettings.IsIronPythonDialogDisabled;
-            }
-            set
-            {
-                preferenceSettings.IsIronPythonDialogDisabled = value;
-                RaisePropertyChanged(nameof(HideIronPythonAlertsIsChecked));
-            }
-        }
-
-        /// <summary>
         /// Controls the IsChecked property in the "Show Whitespace in Python editor" toggle button
         /// </summary>
         public bool ShowWhitespaceIsChecked
@@ -1867,10 +1850,6 @@ namespace Dynamo.ViewModels
     /// </summary>
     public class GeometryScalingOptions
     {
-        //The Enum values can be Small, Medium, Large or Extra Large
-        [Obsolete("This property is deprecated and will be removed in a future version of Dynamo")]
-        public GeometryScaleSize EnumProperty { get; set; }
-
         /// <summary>
         /// This property will contain the description of each of the radio buttons in the Visual Settings -> Geometry Scaling section
         /// </summary>
