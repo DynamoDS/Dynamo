@@ -122,18 +122,9 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Returns whether this port has a default value that can be used.
-        /// </summary>
-        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortViewModel")]
-        public bool DefaultValueEnabled
-        {
-            get { return port.DefaultValue != null; }
-        }
-        
-        /// <summary>
         /// Returns whether the port is using its default value, or whether this been disabled
         /// </summary>
-        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortViewModel")]
+        [Obsolete("This method will be removed in a future version of Dynamo - please use the InPortViewModel")]
         public bool UsingDefaultValue
         {
             get { return port.UsingDefaultValue; }
@@ -143,7 +134,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        /// <summary>
         /// IsHitTestVisible property gets a value that declares whether 
         /// a Snapping rectangle can possibly be returned as a hit test result.
         /// When FirstActiveConnector is not null, Snapping rectangle handles click events.
@@ -168,7 +158,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// If should display Use Levels popup menu. 
         /// </summary>
-        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortViewModel")]
+        [Obsolete("This method will be removed in a future version of Dynamo - please use the InPortViewModel")]
         public bool ShowUseLevelMenu
         {
             get
@@ -179,56 +169,6 @@ namespace Dynamo.ViewModels
             {
                 showUseLevelMenu = value;
                 RaisePropertyChanged(nameof(ShowUseLevelMenu));
-            }
-        }
-
-        /// <summary>
-        /// If UseLevel is enabled on this port.
-        /// </summary>
-        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortViewModel")]
-        public bool UseLevels
-        {
-            get { return port.UseLevels; }
-        }
-
-        /// <summary>
-        /// If should keep list structure on this port.
-        /// </summary>
-        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortViewModel")]
-        public bool ShouldKeepListStructure
-        {
-            get { return port.KeepListStructure; }
-        }
-
-        /// <summary>
-        /// Levle of list.
-        /// </summary>
-        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortViewModel")]
-        public int Level
-        {
-            get { return port.Level; }
-            set
-            {
-                ChangeLevel(value);
-            }
-        }
-
-        /// <summary>
-        /// The visibility of Use Levels menu.
-        /// </summary>
-        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortViewModel")]
-        public Visibility UseLevelVisibility
-        {
-            get
-            {
-                if (node.ArgumentLacing != LacingStrategy.Disabled)
-                {
-                    return Visibility.Visible;
-                }
-                else
-                {
-                    return Visibility.Collapsed;
-                }
             }
         }
 
@@ -449,7 +389,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// UseLevels command
         /// </summary>
-        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortViewModel")]
+        [Obsolete("This method will be removed in a future version of Dynamo- please use the InPortViewModel")]
         public DelegateCommand UseLevelsCommand
         {
             get
@@ -465,7 +405,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// ShouldKeepListStructure command
         /// </summary>
-        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortViewModel")]
+        [Obsolete("This method will be removed in a future version of Dynamo - please use the InPortViewModel")]
         public DelegateCommand KeepListStructureCommand
         {
             get
@@ -478,15 +418,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        //Todo remove in 2.13
-        private void ChangeLevel(int level)
-        {
-            var command = new DynamoModel.UpdateModelValueCommand(
-                Guid.Empty, node.NodeLogic.GUID, "ChangeLevel", string.Format("{0}:{1}", port.Index, level));
-
-            node.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
-        }
-        
+       
         private void Connect(object parameter)
         {
             DynamoViewModel dynamoViewModel = this.node.DynamoViewModel;
