@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -163,7 +163,7 @@ namespace Dynamo.Scheduler
             // scheduler as soon as this method is invoked. It is important for 
             // this call to be made at the very end of the constructor so we are 
             // sure everything in the scheduler is ready for access.
-            this.schedulerThread.Initialize(this);
+            //this.schedulerThread.Initialize(this);
         }
 
         /// <summary>

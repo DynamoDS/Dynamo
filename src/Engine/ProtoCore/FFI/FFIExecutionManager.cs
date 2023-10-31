@@ -32,7 +32,7 @@ namespace ProtoFFI
 
         public Assembly LoadAssembly(string name)
         {
-            System.Diagnostics.Debug.Write("Trying to load assembly: " + name);
+            System.Console.WriteLine("Trying to load assembly: " + name);
             if (System.IO.File.Exists(name))
             {
                 try

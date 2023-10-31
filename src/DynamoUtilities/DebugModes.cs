@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -95,7 +95,7 @@ namespace Dynamo.Utilities
         static DebugModes()
         {
             RegisterDebugModes();
-            LoadDebugModesStatusFromConfig(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "debug.config"));
+            LoadDebugModesStatusFromConfig(Path.Combine(AppContext.BaseDirectory, "debug.config"));
         }
 
         /// <summary>

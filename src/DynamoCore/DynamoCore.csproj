@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -28,8 +28,8 @@
   <ItemGroup Label="Common dependencies">
     <PackageReference Include="Autodesk.IDSDK" Version="1.1.6" />
     <PackageReference Include="Greg" Version="3.0.0.2955" />
-    <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="3.0.0.2855" GeneratePathProperty="true" />
-    <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.2880" GeneratePathProperty="true" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.665" GeneratePathProperty="true" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_228_0_0" Version="2.18.0.665" GeneratePathProperty="true" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" CopyXML="true" />
 	  <PackageReference Include="RestSharp" Version="109.0.1" CopyXML="true" />
 	<PackageReference Include="Lucene.Net" Version="4.8.0-beta00016" />
@@ -149,8 +149,6 @@
     <Copy SourceFiles="@(LibGProtoGeometryXml)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(LibGProtoGeometryXml)" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="@(LibGProtoGeometryUICulture)" DestinationFolder="$(OutputPath)\$(UICulture)" />
-    <Copy Condition="$(Platform.Contains('Linux'))" SourceFiles="@(LibG229Deps)" DestinationFolder="$(OutputPath)libg_229_0_0\asm_deps\" />
-    <Copy Condition="$(Platform.Contains('Linux'))" SourceFiles="@(LibG230Deps)" DestinationFolder="$(OutputPath)libg_230_0_0\asm_deps\" />
     <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command Copy-Item -Path $(LibGProtoGeometryLibGLocale) -Destination $(OutputPath) -Recurse -Force" />
     <Copy SourceFiles="@(LibG230)" DestinationFolder="$(OutputPath)libg_230_0_0\" />
     <Copy SourceFiles="@(LibG229)" DestinationFolder="$(OutputPath)libg_229_0_0\" />

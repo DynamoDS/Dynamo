@@ -32,7 +32,7 @@ namespace DynamoUnits
         /// </summary>
         internal static void Initialize()
         {
-            var assemblyFilePath = Assembly.GetExecutingAssembly().Location;
+            var assemblyFilePath = AppContext.BaseDirectory;
 
             var config = ConfigurationManager.OpenExeConfiguration(assemblyFilePath);
             var key = config.AppSettings.Settings["schemaPath"];

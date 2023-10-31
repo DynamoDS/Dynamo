@@ -978,6 +978,7 @@ namespace Dynamo.Configuration
         /// </returns>
         public static PreferenceSettings Load(string filePath)
         {
+            return new PreferenceSettings();
             // Constructor will be called anyway in either condition below so no need to initialize now.
             PreferenceSettings settings = null;
 

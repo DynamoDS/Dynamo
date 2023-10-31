@@ -127,7 +127,7 @@ namespace Dynamo.Core
             {
                 if (builtinPackagesDirectory == null)
                 {
-                    builtinPackagesDirectory = Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(typeof(PathManager)).Location), builtinPackagesDirName, @"Packages");
+                    builtinPackagesDirectory = Path.Combine(AppContext.BaseDirectory, builtinPackagesDirName, @"Packages");
                 }
                 return builtinPackagesDirectory;
             }
@@ -345,7 +345,7 @@ namespace Dynamo.Core
                 document = Path.GetFileName(document);
 
                 // Search alongside the main assembly location...
-                var executingAssemblyPathName = Assembly.GetExecutingAssembly().Location;
+                var executingAssemblyPathName = AppContext.BaseDirectory;
                 var rootModuleDirectory = Path.GetDirectoryName(executingAssemblyPathName);
                 document = Path.Combine(rootModuleDirectory, document);
 
@@ -391,8 +391,7 @@ namespace Dynamo.Core
             {
                 // If the caller does not provide an alternative core path, 
                 // use the default folder in which DynamoCore.dll resides.
-                var dynamoCorePath = Assembly.GetExecutingAssembly().Location;
-                corePath = Path.GetDirectoryName(dynamoCorePath);
+                corePath = AppContext.BaseDirectory;
             }
 
             dynamoCoreDir = corePath;
@@ -419,9 +418,8 @@ namespace Dynamo.Core
             minorFileVersion = pathManagerParams.MinorFileVersion;
             if (majorFileVersion == 0 && (minorFileVersion == 0))
             {
-                var v = FileVersionInfo.GetVersionInfo(assemblyPath);
-                majorFileVersion = v.FileMajorPart;
-                minorFileVersion = v.FileMinorPart;
+                majorFileVersion = 3;
+                minorFileVersion = 0;
             }
 
             BuildUserSpecificDirectories();

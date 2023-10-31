@@ -38,7 +38,7 @@ namespace ProtoFFI
             ProtoCore.AST.AssociativeAST.ImportNode node = new ProtoCore.AST.AssociativeAST.ImportNode();
             node.ModuleName = moduleName;
 
-            string modulePathFileName = FileUtils.GetDSFullPathName(moduleName, _coreObj.Options);
+            string modulePathFileName = Path.Combine(AppContext.BaseDirectory, moduleName);//FileUtils.GetDSFullPathName(moduleName, _coreObj.Options);
 
             // Tracking directory paths for all imported DS files during preload assembly stage so that they can be accessed by Graph compiler before execution - pratapa
             if (_coreObj.IsParsingPreloadedAssembly)
@@ -61,7 +61,7 @@ namespace ProtoFFI
 
             if (modulePathFileName == null || !File.Exists(modulePathFileName))
             {
-                System.Diagnostics.Debug.Write(@"Cannot import file: '" + modulePathFileName);
+                System.Console.WriteLine(@"Cannot import file: '" + modulePathFileName);
                 _coreObj.LogWarning(ProtoCore.BuildData.WarningID.FileNotFound, string.Format(Resources.kFileNotFound, modulePathFileName));
                 return null;
             }

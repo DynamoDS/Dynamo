@@ -1,8 +1,8 @@
-<?xml version="1.0"?>
+<?dll version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
     <metadata>
-        <id>DynamoVisualProgramming.ServiceCoreRuntime</id>
-        <version>$Version$</version>
+        <id>DynamoVisualProgramming.Engine</id>
+        <version>1.0.0</version>
         <authors>Autodesk</authors>
         <owners>Autodesk</owners>
         <license type="expression">Apache-2.0</license>
@@ -11,12 +11,80 @@
         <description>Assemblies required to start a DynamoModel and execute DesignScript code bundled along with their dependencies.
             Built targeting linux. </description>
         <copyright>Copyright Autodesk 2023</copyright>
- <dependencies>
+        <dependencies>
             <group targetFramework="net6.0">
+                <dependency id="Autodesk.IDSDK" version="1.1.6" />
+                <dependency id="DynamoVisualProgramming.Analytics" version="4.1.0.2437" />
+                <dependency id="ForgeUnits.NET" version="4.1.1" />
+                <dependency id="ForgeUnits.Schemas" version="1.0.1" />
+                <dependency id="Greg" version="3.0.0.2955" />
+                <dependency id="Lucene.Net" version="4.8.0-beta00016" />
+                <dependency id="Lucene.Net.Analysis.Common" version="4.8.0-beta00016" />
+                <dependency id="Lucene.Net.QueryParser" version="4.8.0-beta00016" />
+                <dependency id="MIConvexHull" version="1.1.17.411" />
+                <dependency id="Microsoft.Win32.Registry" version="4.7.0" />
+                <dependency id="Newtonsoft.Json" version="13.0.1" />
+                <dependency id="RestSharp" version="109.0.1" />
+                <dependency id="SoapFormatter" version="1.0.11" />
+                <dependency id="StarMath" version="2.0.17.1019" />
+                <dependency id="System.CodeDom" version="6.0.0" />
+                <dependency id="System.Configuration.ConfigurationManager" version="5.0.0" />
+                <dependency id="System.Drawing.Common" version="6.0.0" />
             </group>
         </dependencies>
     </metadata>
     <files>
-        <file src="**" target="lib\net6.0\" exclude="en-US\fallback_docs\*"/>
+        <file src="DynamoUtilities.dll" target="lib\net6.0" />
+        <file src="DynamoCore.dll" target="lib\net6.0" />
+        <file src="DynamoCore.customization.dll" target="lib\net6.0" />
+        <file src="GraphLayout.dll" target="lib\net6.0" />
+        <file src="ProtoAssociative.dll" target="lib\net6.0" />
+        <file src="ProtoCore.dll" target="lib\net6.0" />
+        <file src="ProtoImperative.dll" target="lib\net6.0" />
+        <file src="ProtoScript.dll" target="lib\net6.0" />
+        <file src="DSCoreNodes.dll" target="lib\net6.0" />
+        <file src="DSCoreNodes.customization.dll" target="lib\net6.0" />
+        <file src="VMDataBridge.dll" target="lib\net6.0" />
+        <file src="DesignScriptBuiltin.dll" target="lib\net6.0" />
+        <file src="DesignScriptBuiltin.customization.dll" target="lib\net6.0" />
+        <file src="BuiltIn.ds" target="lib\net6.0" />
+        <file src="DynamoServices.dll" target="lib\net6.0" />
+        <file src="DynamoConversions.dll" target="lib\net6.0" />
+        <file src="DSCoreNodes_DynamoCustomization.xml" target="lib\net6.0" />
+        <file src="Analysis.dll" target="lib\net6.0" />
+        <file src="Analysis.customization.dll" target="lib\net6.0" />
+        <file src="GeometryColor.dll" target="lib\net6.0" />
+        <file src="GeometryColor.customization.dll" target="lib\net6.0" />
+        <file src="Tessellation.customization.dll" target="lib\net6.0" />
+        <file src="Tessellation.dll" target="lib\net6.0" />
+        <file src="DynamoUnits.dll" target="lib\net6.0" />
+        <file src="DynamoUnits.customization.dll" target="lib\net6.0" />
+
+        <file src="D:\dev\test projects\c#\DynamoWasm\DynamoVisualProgramming.Engine.1.0.16\lib\net6.0\ProtoGeometry.dll" target="lib\net6.0" />
+        <file src="D:\dev\test projects\c#\DynamoWasm\DynamoVisualProgramming.Engine.1.0.16\lib\net6.0\LibG.Interface.dll" target="lib\net6.0" />
+        <file src="D:\dev\test projects\c#\DynamoWasm\DynamoVisualProgramming.Engine.1.0.16\lib\net6.0\LibG.Managed.dll" target="lib\net6.0" />
+        <file src="D:\dev\test projects\c#\DynamoWasm\DynamoVisualProgramming.Engine.1.0.16\lib\net6.0\LibG.ProtoInterface.dll" target="lib\net6.0" />    
+        <file src="D:\dev\test projects\c#\DynamoWasm\DynamoVisualProgramming.Engine.1.0.16\lib\en-US\ProtoGeometry.resources.dll" target="lib\en-US" />
+
+        <file src="nodes\CoreNodeModels.dll" target="lib\net6.0" />
+        <file src="nodes\CoreNodeModels.customization.dll" target="lib\net6.0" />
+        <file src="nodes\en-US\CoreNodeModels.resources.dll" target="lib\en-US" />
+        <file src="nodes\GeometryUI.dll" target="lib\net6.0" />
+        <file src="nodes\GeometryUI.customization.dll" target="lib\nodes" />
+        <file src="nodes\en-US\GeometryUI.resources.dll" target="lib\en-US" />
+        <file src="nodes\UnitsNodeModels.dll" target="lib\net6.0" />
+        <file src="nodes\UnitsNodeModels.customization.dll" target="lib\net6.0" />
+        <file src="nodes\en-US\UnitsNodeModels.resources.dll" target="lib\en-US" />
+        <file src="nodes\Watch3DNodeModels.customization.dll" target="lib\net6.0" />
+        <file src="nodes\Watch3DNodeModels.dll" target="lib\net6.0" />
+        <file src="nodes\en-US\Watch3DNodeModels.resources.dll" target="lib\en-US" />
+
+        <file src="en-US\DesignScriptBuiltin.resources.dll" target="lib\en-US" />
+        <file src="en-US\DSCoreNodes.resources.dll" target="lib\en-US" />
+        <file src="en-US\DynamoCore.resources.dll" target="lib\en-US" />
+        <file src="en-US\DynamoUtilities.resources.dll" target="lib\en-US" />
+        <file src="en-US\ProtoAssociative.resources.dll" target="lib\en-US" />
+        <file src="en-US\ProtoImperative.resources.dll" target="lib\en-US" />
+        <file src="en-US\ProtoCore.resources.dll" target="lib\en-US" />
     </files>
 </package>

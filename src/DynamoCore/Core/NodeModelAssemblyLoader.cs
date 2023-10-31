@@ -112,8 +112,9 @@ namespace Dynamo.Models
 
             // find all the dlls registered in all search paths
             // and concatenate with all dlls in the current directory
-            var allDynamoAssemblyPaths = nodeDirectories.SelectMany(
-                    path => Directory.GetFiles(path, "*.dll", SearchOption.TopDirectoryOnly));
+            var allDynamoAssemblyPaths = new List<string>();
+            /*nodeDirectories.SelectMany(
+                    path => Directory.GetFiles(path, "*.dll", SearchOption.TopDirectoryOnly));*/
 
             // add the core assembly to get things like code block nodes and watches.
             //allDynamoAssemblyPaths.Add(Path.Combine(DynamoPathManager.Instance.MainExecPath, "DynamoCore.dll"));
@@ -131,19 +132,23 @@ namespace Dynamo.Models
             var result = new List<TypeLoadData>();
             var result2 = new List<TypeLoadData>();
 
-            foreach (var assemblyPath in allDynamoAssemblyPaths)
+            var allAsses = new List<string>
             {
-                var fn = Path.GetFileName(assemblyPath);
+                Path.Combine(AppContext.BaseDirectory, "CoreNodeModels.dll"),
+                Path.Combine(AppContext.BaseDirectory, "GeometryUI.dll"),
+                Path.Combine(AppContext.BaseDirectory, "Migrations.dll"),
+                Path.Combine(AppContext.BaseDirectory, "UnitsNodeModels.dll"),
+                Path.Combine(AppContext.BaseDirectory, "Watch3DNodeModels.dll")
+            };
 
-                if (fn == null)
-                    continue;
-
+            foreach (var assemblyPath in allAsses)
+            {
                 // if the assembly has already been loaded, then
                 // skip it, otherwise cache it.
-                if (LoadedAssemblyNames.Contains(fn))
+                if (LoadedAssemblyNames.Contains(assemblyPath))
                     continue;
 
-                LoadedAssemblyNames.Add(fn);
+                LoadedAssemblyNames.Add(assemblyPath);
 
                 try
                 {

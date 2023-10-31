@@ -558,7 +558,7 @@ namespace Dynamo.Updates
         {
             string location = Assembly.GetExecutingAssembly().Location;
             // ReSharper disable once AssignNullToNotNullAttribute, location is always available
-            filePath = Path.Combine(Path.GetDirectoryName(location), DEFAULT_CONFIG_FILE_S);
+            filePath = Path.Combine(AppContext.BaseDirectory, DEFAULT_CONFIG_FILE_S);
             return File.Exists(filePath);
         }
 
@@ -806,6 +806,7 @@ namespace Dynamo.Updates
         /// </summary>
         public void CheckForProductUpdate(IAsynchronousRequest request)
         {
+            return;
             OnLog(new LogEventArgs("RequestUpdateVersionInfo", LogLevel.File));
             OnLog(new LogEventArgs(Properties.Resources.RequestingVersionUpdate, LogLevel.Console));
 
@@ -941,7 +942,7 @@ namespace Dynamo.Updates
             if (string.IsNullOrEmpty(UpdateFileLocation) || !File.Exists(UpdateFileLocation))
                 return;
 
-            var currDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var currDir = AppContext.BaseDirectory;
             var updater = Path.Combine(currDir, INSTALLUPDATE_EXE);
             
             // Double check that that the updater program exists.

@@ -944,11 +944,7 @@ namespace Dynamo.Models
             }
 
             UpdateManager.Log += UpdateManager_Log;
-            if (!IsTestMode && !IsHeadless && !IsServiceMode)
-            {
-                DefaultUpdateManager.CheckForProductUpdate(UpdateManager);
-            }
-
+    
             Logger.Log(string.Format("Dynamo -- Build {0}",
                                         Assembly.GetExecutingAssembly().GetName().Version));
 
