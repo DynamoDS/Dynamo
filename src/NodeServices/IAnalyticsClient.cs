@@ -456,11 +456,6 @@ namespace Dynamo.Logging
         bool ReportingAnalytics { get; }
 
         /// <summary>
-        /// Checks if detailed usage reporting is ON.
-        /// </summary>
-        bool ReportingUsage { get; }
-
-        /// <summary>
         /// Starts the client when DynamoModel is created. This method initializes
         /// the Analytics service and application life cycle start is tracked.
         /// </summary>

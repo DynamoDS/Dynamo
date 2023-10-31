@@ -55,6 +55,7 @@ namespace Dynamo.PackageDetails
         
         internal void OpenPackageDetails(PackageManagerSearchElement packageManagerSearchElement)
         {
+            PackageDetailsViewModel?.Dispose();
             PackageDetailsViewModel = new PackageDetailsViewModel(this, packageManagerSearchElement);
 
             if (PackageDetailsView == null)
@@ -151,6 +152,7 @@ namespace Dynamo.PackageDetails
 
         public override void Closed()
         {
+            PackageDetailsViewModel?.Dispose();
             PackageDetailsViewModel = null;
             PackageDetailsView = null;
             Grid = null;

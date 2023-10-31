@@ -105,20 +105,6 @@ namespace Dynamo.Logging
         }
 
         /// <summary>
-        /// Return if Analytics Client is allowed to send instrumentation info
-        /// </summary>
-        public bool ReportingUsage
-        {
-            get
-            {
-                return preferences != null
-                  && Service.IsInitialized
-                  && !Analytics.DisableAnalytics
-                  && preferences.IsUsageReportingApproved;
-            }
-        }
-
-        /// <summary>
         /// Constructs DynamoAnalyticsClient with given DynamoModel
         /// </summary>
         /// <param name="dynamoModel">DynamoModel</param>
