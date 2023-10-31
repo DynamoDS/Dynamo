@@ -37,7 +37,7 @@ jobs:
         shell: cmd
         run: .github\scripts\run_tests.bat ${{ secrets.TEST_EXECUTE_ACCESS_KEY }} Dynamo\Dynamo.pjs DynamoSandbox SmokeTests
       - name: UI Smoke Tests Report
-        uses: dorny/test-reporter@v1.6.0
+        uses: dorny/test-reporter@v1.7.0
         if: always()
         with:
           name: UI Smoke Test Report
