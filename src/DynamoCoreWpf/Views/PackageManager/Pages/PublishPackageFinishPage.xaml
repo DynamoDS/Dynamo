@@ -50,7 +50,7 @@
                        Style="{StaticResource FinishedPageTextStyle}"/>
 
 
-            <TextBlock Text="Virus scan in progress. Your package will be searchable in approximately # minutes."
+            <TextBlock Text="{x:Static p:Resources.PackageManagerPublishOnlineFinishedMessage}"
                        Margin="0 3"
                        FontSize="12"
                        Style="{StaticResource FinishedPageTextStyle}"/>

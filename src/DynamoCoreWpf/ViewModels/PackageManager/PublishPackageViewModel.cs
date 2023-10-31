@@ -1877,9 +1877,9 @@ namespace Dynamo.PackageManager
                 UploadState = PackageUploadHandle.State.Copying;
                 Uploading = true;
 
-                if(RetainFolderStructureOverride)
+                if (RetainFolderStructureOverride)
                 {
-                    var updatedFiles = UpdateFilesForRetainFolderStructre(files);
+                    var updatedFiles = UpdateFilesForRetainFolderStructure(files);
 
                     // begin publishing to local directory retaining the folder structure
                     var remapper = new CustomNodePathRemapper(DynamoViewModel.Model.CustomNodeManager,
@@ -1918,9 +1918,12 @@ namespace Dynamo.PackageManager
         /// </summary>
         /// <param name="files"></param>
         /// <returns></returns>
-        private List<List<String>> UpdateFilesForRetainFolderStructre(IEnumerable<string> files)
+        private IEnumerable<IEnumerable<string>> UpdateFilesForRetainFolderStructure(IEnumerable<string> files)
         {
-            if(!files.Any() || !PreviewPackageContents.Any()) { return null; }
+            if (!files.Any() || !PreviewPackageContents.Any())
+            {
+                return Enumerable.Empty<IEnumerable<string>>();
+            }
 
             var updatedFiles = files.Select(file =>
             {
@@ -1931,23 +1934,22 @@ namespace Dynamo.PackageManager
                 return file;
             }).ToList();
 
-            if(PreviewPackageContents.Count() > 1 )
+            if (PreviewPackageContents.Count() > 1)
             {
                 // we cannot have more than 1 root folder at this stage
-                return null;
+                return Enumerable.Empty<IEnumerable<string>>();
             }
 
-            var updatedFileStructure = new List<List<String>>();
+            var updatedFileStructure = new List<IEnumerable<string>>();
             var packageFolderItem = PreviewPackageContents.First();
 
-            // For each 
-            foreach(var root in packageFolderItem.ChildItems)
+            foreach (var root in packageFolderItem.ChildItems)
             {
-                var updatedFolder = new List<String>();
+                var updatedFolder = new List<string>();
                 if (root.DependencyType.Equals(DependencyType.Folder))
                 {
                     var folderContents = PackageItemRootViewModel.GetFiles(root);
-                    foreach(var item in folderContents)
+                    foreach (var item in folderContents)
                     {
                         if (item.DependencyType.Equals(DependencyType.Folder) || item.DependencyType.Equals(DependencyType.CustomNode)) continue;
                         if (updatedFiles.Contains(item.FilePath))
@@ -1956,7 +1958,10 @@ namespace Dynamo.PackageManager
                         }
                     }
                 }
-                else if (root.DependencyType.Equals(DependencyType.CustomNode)) { continue; }
+                else if (root.DependencyType.Equals(DependencyType.CustomNode))
+                {
+                    continue;
+                }
                 else
                 {
                     updatedFolder.Add(root.FilePath);

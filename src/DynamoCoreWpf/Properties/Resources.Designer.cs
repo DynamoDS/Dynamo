@@ -5781,6 +5781,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Virus scan in progress. Your package will be searchable in approximately 15 minutes..
+        /// </summary>
+        public static string PackageManagerPublishOnlineFinishedMessage {
+            get {
+                return ResourceManager.GetString("PackageManagerPublishOnlineFinishedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Publish a Package.
         /// </summary>
         public static string PackageManagerPublishPackageButton {

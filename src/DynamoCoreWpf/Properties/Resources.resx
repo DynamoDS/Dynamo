@@ -1283,6 +1283,9 @@ Don't worry, you'll have the option to save your work.</value>
   <data name="PackageManagerPublishTab" xml:space="preserve">
     <value>Publish a Package</value>
   </data>
+  <data name="PackageManagerPublishOnlineFinishedMessage" xml:space="preserve">
+    <value>Virus scan in progress. Your package will be searchable in approximately 15 minutes.</value>
+  </data>
   <data name="PackageManagerInstalledPackagesTab" xml:space="preserve">
     <value>Installed Packages</value>
   </data>
