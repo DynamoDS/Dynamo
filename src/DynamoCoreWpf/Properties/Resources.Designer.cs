@@ -8002,6 +8002,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Remove from package.
+        /// </summary>
+        public static string PublishPackageRemoveFromPacakgeTooltip {
+            get {
+                return ResourceManager.GetString("PublishPackageRemoveFromPacakgeTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select Node Libraries.
         /// </summary>
         public static string PublishPackageSelectNodeLibraries {

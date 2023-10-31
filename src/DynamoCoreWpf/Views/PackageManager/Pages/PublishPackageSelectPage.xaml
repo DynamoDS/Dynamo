@@ -259,19 +259,30 @@
                                                 Click="RemoveButton_Click"
                                                 Cursor="Hand">
                                             <Button.ToolTip>
-                                                <ToolTip Content="{x:Static p:Resources.PublishPackageViewAddFileButtonTooltip}"
+                                                <ToolTip Content="{x:Static p:Resources.PublishPackageRemoveFromPacakgeTooltip}"
                                                          Style="{StaticResource GenericToolTipLight}" />
                                             </Button.ToolTip>
                                             <Button.Template>
-                                                <ControlTemplate>
-                                                    <Grid>
-                                                        <Rectangle Width="12"
-                                                                   Height="12">
-                                                            <Rectangle.Fill>
-                                                                <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/remove-pk-dark-16px.png" />
-                                                            </Rectangle.Fill>
-                                                        </Rectangle>
-                                                    </Grid>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="Transparent">
+                                                        <Viewbox Width="14"
+                                                                 Height="14"
+                                                                 VerticalAlignment="Center">
+                                                            <Path x:Name="Folder"
+                                                                  Fill="#999999"
+                                                                  Data="M5 2H2V4H14V2H11V0H5V2ZM10 2H6V1.5C6 1.22386 6.22386 1 6.5 1H9.5C9.77614 1 10 1.22386 10 1.5V2ZM13 5H3V16H13V5Z"
+                                                                  StrokeThickness="0">
+                                                            </Path>
+                                                        </Viewbox>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver"
+                                                                 Value="True">
+                                                            <Setter TargetName="Folder"
+                                                                    Property="Fill"
+                                                                    Value="#6AC0E7" />
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
                                                 </ControlTemplate>
                                             </Button.Template>
                                         </Button>
@@ -416,15 +427,25 @@
                              Style="{StaticResource GenericToolTipLight}" />
                 </Button.ToolTip>
                 <Button.Template>
-                    <ControlTemplate>
-                        <Grid>
-                            <Rectangle Width="16"
-                                       Height="16">
-                                <Rectangle.Fill>
-                                    <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/add-folder-16px.png" />
-                                </Rectangle.Fill>
-                            </Rectangle>
-                        </Grid>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="Transparent">
+                            <Viewbox Width="16"
+                                     Height="16"
+                                     VerticalAlignment="Center">
+                                <Path x:Name="Folder"
+                                      Fill="#0696D7"
+                                      Data="M2.00016 6.66667H6.84016L7.8535 6H13.3335V12H14.0002V5.33333H7.86016L6.00016 4H1.3335V14.6667H8.66683V14H2.00016V6.66667ZM2.00016 4.66667H6.00016L7.20016 5.61333L6.66683 6H2.00016V4.66667ZM12.6668 10.6667V12.6667H14.6668V14H12.6668V16H11.3335V14H9.3335V12.6667H11.3335V10.6667H12.6668Z"
+                                      StrokeThickness="0">
+                                </Path>
+                            </Viewbox>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Folder"
+                                        Property="Fill"
+                                        Value="#6AC0E7" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Button.Template>
             </Button>
@@ -443,18 +464,29 @@
                              Style="{StaticResource GenericToolTipLight}" />
                 </Button.ToolTip>
                 <Button.Template>
-                    <ControlTemplate>
-                        <Grid>
-                            <Rectangle Width="16"
-                                       Height="16">
-                                <Rectangle.Fill>
-                                    <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/add-file-16px.png" />
-                                </Rectangle.Fill>
-                            </Rectangle>
-                        </Grid>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="Transparent">
+                            <Viewbox Width="16"
+                                     Height="16"
+                                     VerticalAlignment="Center">
+                                <Path x:Name="Folder"
+                                      Fill="#0696D7"
+                                      Data="M8.66683 12.6667H2.00016V2.66667H8.00016V5.33333H10.6668V9.33333H11.3335V5.33333L8.00016 2H1.3335V13.3333H8.66683V12.6667ZM8.66683 3.60667L9.72683 4.66667H8.66683V3.60667ZM12.6668 12H14.6668V13.3333H12.6668V15.3333H11.3335V13.3333H9.3335V12H11.3335V10H12.6668V12Z"
+                                      StrokeThickness="0">
+                                </Path>
+                            </Viewbox>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Folder"
+                                        Property="Fill"
+                                        Value="#6AC0E7" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Button.Template>
             </Button>
+
         </DockPanel>
         
         <local:CustomBrowserControl x:Name="customBrowserControl"

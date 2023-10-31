@@ -1829,6 +1829,9 @@ Want to publish a different package?</value>
   <data name="PublishPackageViewAddFileButtonTooltip" xml:space="preserve">
     <value>Add file</value>
   </data>
+  <data name="PublishPackageRemoveFromPacakgeTooltip" xml:space="preserve">
+    <value>Remove from package</value>
+  </data>
   <data name="PublishPackageViewContextMenuIsNodeLibrary" xml:space="preserve">
     <value>Is Node Library</value>
   </data>

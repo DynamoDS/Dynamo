@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -829,7 +830,8 @@ namespace Dynamo.PackageManager
         {
             if (Dependencies.Count < 1)
             {
-                DependencyNames = Properties.Resources.NoneString;
+                var textInfo = CultureInfo.CurrentUICulture.TextInfo;
+                DependencyNames = textInfo.ToTitleCase(Properties.Resources.NoneString);
                 return;
             }
             DependencyNames = string.Join(", ", Dependencies.Select(x => x.name));
