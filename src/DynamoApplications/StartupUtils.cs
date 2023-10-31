@@ -163,8 +163,6 @@ namespace Dynamo.Applications
             public bool NoConsole { get; set; }
             public string UserDataFolder { get; set; }
             public string CommonDataFolder { get; set; }
-//            [Obsolete("This property will be removed in next major version of Dynamo - please use AnalyticsInfo")]
-//            public string HostName { get; set; }
             public bool DisableAnalytics { get; set; }
             public HostAnalyticsInfo AnalyticsInfo { get; set; }
             public string CERLocation { get; set; }
