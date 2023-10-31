@@ -14,7 +14,7 @@
     <RootNamespace>IntegrationTests</RootNamespace>
     <AssemblyName>IntegrationTests</AssemblyName>
   </PropertyGroup>
-    <!--net7.0 net8.0 etc-->
+    <!--net6.0 net8.0 etc-->
     <ItemGroup Condition=" '$(TargetFramework)' != 'net48' ">
         <PackageReference Include="NUnit" Version="3.13.3" />
         <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />

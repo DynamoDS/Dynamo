@@ -12,7 +12,7 @@
     <RootNamespace>SystemTestServices</RootNamespace>
     <AssemblyName>SystemTestServices</AssemblyName>
   </PropertyGroup>
-  <!--net7.0 net8.0 etc-->
+  <!--net6.0 net8.0 etc-->
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
   </ItemGroup>
