@@ -8,7 +8,7 @@ namespace DynamoUnits
 {
     [SupressImportIntoVM]
     [IsVisibleInDynamoLibrary(false)]
-    [Obsolete("This enum will be removed in Dynamo 3.0 - please use the Length Quantity type and Quantity.Units property")]
+    [Obsolete("This enum will be removed in a future version of Dynamo - please use the Length Quantity type and Quantity.Units property")]
     public enum LengthUnit
     {
         DecimalInch,
@@ -22,7 +22,7 @@ namespace DynamoUnits
 
     [SupressImportIntoVM]
     [IsVisibleInDynamoLibrary(false)]
-    [Obsolete("This enum will be removed in Dynamo 3.0 - please use the Area Quantity type and Quantity.Units property")]
+    [Obsolete("This enum will be removed in a future version of Dynamo - please use the Area Quantity type and Quantity.Units property")]
     public enum AreaUnit
     {
         SquareInch, 
@@ -34,7 +34,7 @@ namespace DynamoUnits
 
     [SupressImportIntoVM]
     [IsVisibleInDynamoLibrary(false)]
-    [Obsolete("This enum will be removed in Dynamo 3.0 - please use the Volume Quantity type and Quantity.Units property")]
+    [Obsolete("This enum will be removed in a future version of Dynamo - please use the Volume Quantity type and Quantity.Units property")]
     public enum VolumeUnit
     {
         CubicInch,
@@ -46,7 +46,7 @@ namespace DynamoUnits
 
     [SupressImportIntoVM]
     [IsVisibleInDynamoLibrary(false)]
-    [Obsolete("This method will be removed in Dynamo 3.0 - please use the Power Per Area Quantity type and Quantity.Units property")]
+    [Obsolete("This method will be removed in a future version of Dynamo - please use the Power Per Area Quantity type and Quantity.Units property")]
     public enum InsolationUnit
     {
         WattHoursPerMeterSquared,
@@ -55,7 +55,7 @@ namespace DynamoUnits
     }
 
     [SupressImportIntoVM]
-    [Obsolete("This class will be removed in Dynamo 3.0 - please use the ForgeUnit SDK based types")]
+    [Obsolete("This class will be removed in a future version of Dynamo - please use the ForgeUnit SDK based types")]
     public class BaseUnit
     {
         private static double epsilon = 1e-6;
@@ -105,7 +105,7 @@ namespace DynamoUnits
     }
 
     [IsVisibleInDynamoLibrary(false)]
-    [Obsolete("This class will be removed in Dynamo 3.0 - please use the ForgeUnit SDK based methods")]
+    [Obsolete("This class will be removed in a future version of Dynamo - please use the ForgeUnit SDK based methods")]
     public abstract class SIUnit : BaseUnit
     {
         /// <summary>
