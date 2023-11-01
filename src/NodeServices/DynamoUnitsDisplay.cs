@@ -9,7 +9,7 @@ namespace DynamoUnits
     /// <summary>
     /// Data used to set display and formatting preferences for Dynamo UI
     /// </summary>
-    [Obsolete("This type will be removed in Dynamo 3.0, please use PreferenceSettings.NumberFormat instead. ")]
+    [Obsolete("This type will be removed in a future version of Dynamo, please use PreferenceSettings.NumberFormat instead. ")]
     [IsVisibleInDynamoLibrary(false)]
     public class Display
     {
