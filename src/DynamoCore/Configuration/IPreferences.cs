@@ -48,7 +48,7 @@ namespace Dynamo.Interfaces
         /// <summary>
         /// Indicates whether background preview is active or not.
         /// </summary>
-        [Obsolete("Property will be deprecated in Dynamo 3.0, please use BackgroundPreviews")]
+        [Obsolete("Property will be deprecated in a future version of Dynamo, please use BackgroundPreviews")]
         bool IsBackgroundPreviewActive { get; set; }
 
         /// <summary>
