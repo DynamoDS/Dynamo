@@ -19,9 +19,6 @@ namespace Dynamo.PackageManager
     public struct LoadPackageParams
     {
         public IPreferences Preferences { get; set; }
-
-        [Obsolete("Do not use. This will be removed in Dynamo 3.0")]
-        public IPathManager PathManager { get; set; }
     }
 
     public enum AssemblyLoadingState
@@ -73,18 +70,6 @@ namespace Dynamo.PackageManager
         public IEnumerable<Package> LocalPackages { get { return localPackages; } }
 
         /// <summary>
-        /// Returns the default package directory where new packages will be installed
-        /// This is the first non builtin packages directory
-        /// The first entry is the builtin packages.
-        /// </summary>
-        /// <returns>Returns the path to the DefaultPackagesDirectory if found - or null if something has gone wrong.</returns>
-        [Obsolete("This property is redundant, please use the PathManager.DefaultPackagesDirectory property instead.")]
-        public string DefaultPackagesDirectory
-        {
-            get { return pathManager.DefaultPackagesDirectory; }
-        }
-
-        /// <summary>
         /// Combines the extension with the root path and returns it if the path exists. 
         /// If not, the root path is returned unchanged.
         /// </summary>
@@ -110,26 +95,6 @@ namespace Dynamo.PackageManager
 
         private readonly IPathManager pathManager;
 
-        /// <summary>
-        /// This constructor is currently being used for testing and these tests should be updated to use 
-        /// another constructor when this is obsoleted.
-        /// </summary>
-        [Obsolete("This constructor will be removed in Dynamo 3.0 and should not be used any longer. If used, it should be passed parameters from PathManager properties.")]
-        public PackageLoader(string overridePackageDirectory)
-            : this(new[] { overridePackageDirectory })
-        {
-        }
-
-        /// <summary>
-        /// This constructor is currently being used by other constructors that have also been deprecated and by tests,
-        /// which should be updated to use another constructor when this is obsoleted.
-        /// </summary>
-        [Obsolete("This constructor will be removed in Dynamo 3.0 and should not be used any longer. If used, it should be passed parameters from PathManager properties.")]
-        public PackageLoader(IEnumerable<string> packagesDirectories)
-        {
-            InitPackageLoader(packagesDirectories, null);
-        }
-
         internal PackageLoader(IPathManager pathManager)
         {
             this.pathManager = pathManager;
@@ -139,23 +104,6 @@ namespace Dynamo.PackageManager
             {
                 packagesDirectoriesToVerifyCertificates.Add(pathManager.CommonDataDirectory);
             }
-        }
-
-        /// <summary>
-        /// Initialize a new instance of PackageLoader class.
-        /// This constructor is currently being used for testing and these tests should be updated to use 
-        /// another constructor when this is obsoleted.
-        /// </summary>
-        /// <param name="packagesDirectories">Default package directories</param>
-        /// <param name="packageDirectoriesToVerify">Default package directories where node library files require certificate verification before loading</param>
-        [Obsolete("This constructor will be removed in Dynamo 3.0 and should not be used any longer. If used, it should be passed parameters from PathManager properties.")]
-        public PackageLoader(IEnumerable<string> packagesDirectories, IEnumerable<string> packageDirectoriesToVerify)
-            : this(packagesDirectories)
-        {
-            if (packageDirectoriesToVerify == null)
-                throw new ArgumentNullException("packageDirectoriesToVerify");
-
-            packagesDirectoriesToVerifyCertificates.AddRange(packageDirectoriesToVerify);
         }
 
         private void InitPackageLoader(IEnumerable<string> packagesDirectories, string builtinPackagesDir)
@@ -351,21 +299,6 @@ namespace Dynamo.PackageManager
         {
             var handler = ConflictingCustomNodePackageLoaded;
             handler?.Invoke(installed, conflicting);
-        }
-
-        /// <summary>
-        ///     Load the package into Dynamo (including all node libraries and custom nodes)
-        ///     and add to LocalPackages.
-        /// </summary>
-        // TODO: Remove in 3.0 (Refer to PR #9736).
-        [Obsolete("This API will be deprecated in 3.0. Use LoadPackages(IEnumerable<Package> packages) instead.")]
-        public void Load(Package package)
-        {
-            TryLoadPackageIntoLibrary(package);
-
-            var assemblies =
-                LocalPackages.SelectMany(x => x.EnumerateAndLoadAssembliesInBinDirectory().Where(y => y.IsNodeLibrary));
-            PackagesLoaded?.Invoke(assemblies.Select(x => x.Assembly));
         }
 
         /// <summary>
