@@ -37,42 +37,7 @@ namespace PythonNodeModels
         private string engine = string.Empty;
 
         [JsonConverter(typeof(StringEnumConverter))]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
-        // Set the default EngineName value to IronPython2 so that older graphs can show the migration warnings.
-        [DefaultValue("IronPython2")]
-
-        // When removing this property also replace the serialized property in EngineName
-        // (i.e remove XmlIgnore and add [JsonProperty("Engine", DefaultValueHandling = DefaultValueHandling.Populate)]
-        /// <summary>
-        /// Return the user selected python engine enum.
-        /// </summary>
-        [Obsolete("This property will be deprecated in Dynamo 3.0. Please use EngineName instead")]
-        public PythonEngineVersion Engine
-        {
-            get
-            {
-                if (!Enum.TryParse(engine, out PythonEngineVersion engineVersion) ||
-                    engineVersion == PythonEngineVersion.Unspecified)
-                {
-                    //if this is a valid dynamically loaded engine, return unknown, and serialize the name.
-                    if (PythonEngineManager.Instance.AvailableEngines.Any(x=>x.Name == engine))
-                    {
-                        return PythonEngineVersion.Unknown;
-                    }
-                    // This is a first-time case for newly created nodes only
-                    SetEngineByDefault();
-                }
-                return engineVersion;
-            }
-            set
-            {
-                engine = value.ToString();
-                RaisePropertyChanged(nameof(EngineName));
-            }
-        }
-
-        [XmlIgnore]
-        // Set the default EngineName value to IronPython2 so that older graphs can show the migration warnings.
+        [JsonProperty("Engine", DefaultValueHandling = DefaultValueHandling.Populate)]
         [DefaultValue("IronPython2")]
         /// <summary>
         /// Return the user selected python engine enum.
@@ -98,19 +63,6 @@ namespace PythonNodeModels
             }
         }
 
-        /// <summary>
-        /// Available Python engines.
-        /// </summary>
-        [Obsolete(@"This method will be removed in future versions of Dynamo.
-        Please use PythonEngineManager.Instance.AvailableEngines instead")]
-        public static ObservableCollection<PythonEngineVersion> AvailableEngines
-        {
-            get
-            {
-                return new ObservableCollection<PythonEngineVersion>(PythonEngineManager.Instance.AvailableEngines.
-                    Select(x => Enum.TryParse(x.Name, out PythonEngineVersion version) ? version : PythonEngineVersion.Unspecified));
-            }
-        }
 
         /// <summary>
         /// Set the engine to be used by default for this node, based on user and system settings.
