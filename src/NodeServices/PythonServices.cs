@@ -9,21 +9,6 @@ using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.PythonServices.EventHandlers;
 
-namespace PythonNodeModels
-{
-    /// <summary>
-    /// Enum of possible values of python engine versions.
-    /// </summary>
-    [Obsolete("This Enum will be remove in Dynamo 3.0")]
-    public enum PythonEngineVersion
-    {
-        Unspecified,
-        IronPython2,
-        CPython3,
-        Unknown
-    }
-}
-
 namespace Dynamo.PythonServices.EventHandlers
 {
     [SupressImportIntoVM]
