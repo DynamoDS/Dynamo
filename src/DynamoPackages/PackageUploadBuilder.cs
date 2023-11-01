@@ -112,6 +112,17 @@ namespace Dynamo.PackageManager
             return Zip(dir);
         }
 
+        private IFileInfo BuildAndZip(Package package, string packagesDirectory, IEnumerable<IEnumerable<string>> files, IEnumerable<string> markdownFiles, PackageUploadHandle handle)
+        {
+            handle.UploadState = PackageUploadHandle.State.Copying;
+
+            var dir = builder.BuildRetainDirectory(package, packagesDirectory, files, markdownFiles);
+
+            handle.UploadState = PackageUploadHandle.State.Compressing;
+
+            return Zip(dir);
+        }
+
         private IFileInfo Zip(IDirectoryInfo directory)
         {
             IFileInfo info;

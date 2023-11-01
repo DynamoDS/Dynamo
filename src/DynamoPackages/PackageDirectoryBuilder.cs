@@ -57,10 +57,8 @@ namespace Dynamo.PackageManager
             WritePackageHeader(package, rootDir);
             RemoveUnselectedFiles(contentFiles, rootDir);
             CopyFilesIntoPackageDirectory(contentFiles, markdownFiles, dyfDir, binDir, extraDir, docDir);
-            /*
-            // Commentint this out until understanding the function of it
             RemoveDyfFiles(contentFiles, dyfDir);   // Why do we need to remove the dyf files from the publishing folder?
-            */
+
             RemapCustomNodeFilePaths(contentFiles, dyfDir.FullName);
 
             return rootDir;
@@ -79,10 +77,8 @@ namespace Dynamo.PackageManager
 
             RemoveUnselectedFiles(contentFiles.SelectMany(files => files).ToList(), rootDir);
             CopyFilesIntoRetainedPackageDirectory(contentFiles, markdownFiles, rootDir, out dyfFiles);
-            /*
-            // Commentint this out until understanding the function of it
-            RemoveRetainDyfFiles(contentFiles, dyfFiles);   // Why do we need to remove the dyf files from the publishing folder?
-            */
+            RemoveRetainDyfFiles(contentFiles.SelectMany(files => files).ToList(), dyfFiles);   // Why do we need to remove the dyf files from the publishing folder?
+            
             RemapRetainCustomNodeFilePaths(contentFiles.SelectMany(files => files).ToList(), dyfFiles);
 
 
@@ -111,7 +107,19 @@ namespace Dynamo.PackageManager
         {
             foreach (var func in filePaths.Where(x => x.EndsWith(".dyf")))
             {
-                var remapLocation = dyfFiles.First(x => Path.GetDirectoryName(x).Equals(Path.GetDirectoryName(func)));
+                //var remapLocation = dyfFiles.First(x => Path.GetDirectoryName(x).Equals(Path.GetDirectoryName(func)));
+                var remapLocation = dyfFiles.First(x =>
+                {
+                    var p1 = Path.GetFileName(Path.GetDirectoryName(x));
+                    var f1 = Path.GetFileName(x);
+                    var r1 = Path.Combine(p1, f1);
+
+                    var p2 = Path.GetFileName(Path.GetDirectoryName(func));
+                    var f2 = Path.GetFileName(func);
+                    var r2 = Path.Combine(p2, f2);
+
+                    return r1.Equals(r2);
+                });
                 pathRemapper.SetPath(func, remapLocation);
             }
         }
@@ -212,7 +220,9 @@ namespace Dynamo.PackageManager
 
             foreach (var files in contentFiles)
             {
-                var commonPath = GetLongestCommonPrefix(files.ToArray());
+                // We expect that files are bundled in root folders
+                // For single files, just get its folder
+                var commonPath = files.Count() > 1 ? GetLongestCommonPrefix(files.ToArray()) : Path.GetDirectoryName(files.First());
                 commonPath = commonPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
                 var commonRootPath = Path.GetDirectoryName(commonPath);
                 if (commonRootPath == null) commonRootPath = commonPath; // already at the root
