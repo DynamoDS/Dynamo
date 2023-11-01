@@ -16,13 +16,6 @@
   <ItemGroup>
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="WindowsBase" />
-    <Reference Include="System.Xaml" />
-  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MimeMapping" Version="2.0.0" />
   </ItemGroup>

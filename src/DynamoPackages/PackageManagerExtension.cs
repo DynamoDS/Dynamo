@@ -42,6 +42,8 @@ namespace Dynamo.PackageManager
         /// </summary>
         private Dictionary<string, List<PackageInfo>> NodePackageDictionary;
 
+        private bool noNetworkMode;
+
         public string Name { get { return "DynamoPackageManager"; } }
 
         public string UniqueId
@@ -159,6 +161,7 @@ namespace Dynamo.PackageManager
                 uploadBuilder, packageUploadDirectory);
 
             LoadPackages(startupParams.Preferences, startupParams.PathManager);
+            noNetworkMode = startupParams.NoNetworkMode;
         }
 
         private PackageInfo handleCustomNodeOwnerQuery(Guid customNodeFunctionID)
@@ -339,10 +342,9 @@ namespace Dynamo.PackageManager
             var containsPackagesThatTargetOtherHosts = false;
             //fallback list of hosts as of 9/8/23
             IEnumerable<string> knownHosts =  new List<string> { "Revit", "Civil 3D", "Alias", "Advance Steel", "FormIt" };
-            //if analytics is disabled, treat this as network black out
-            //and don't ask dpm for known hosts.
-            //TODO we currently use this like a no network comms flags - work on introducing a new flag or renaming this flag.
-            if (!Dynamo.Logging.Analytics.DisableAnalytics)
+
+            //we don't ask dpm for known hosts in offline mode.
+            if (!noNetworkMode)
             {
                 // Known hosts
                 knownHosts = PackageManagerClient.GetKnownHosts();

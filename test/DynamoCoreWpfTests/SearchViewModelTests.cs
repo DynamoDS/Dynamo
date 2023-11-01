@@ -803,7 +803,7 @@ namespace Dynamo.Tests
             var iDoc = ViewModel.Model.LuceneUtility.InitializeIndexDocumentForNodes();
             if (element != null)
             {
-                ViewModel.Model.AddNodeTypeToSearchIndex(element, iDoc);
+                ViewModel.Model.LuceneUtility.AddNodeTypeToSearchIndex(element, iDoc);
             }
 
 

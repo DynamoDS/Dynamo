@@ -2603,7 +2603,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Show Grid.
+        ///   Looks up a localized string similar to _Show Helpers.
         /// </summary>
         public static string DynamoViewViewMenuShowGrid {
             get {
@@ -2684,7 +2684,16 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A Save As command will create a workspace which is treated as a completely new file by Dynamo and existing element binding data will be lost. New element binding data will created as normal as you run this file. Use the Save command instead if you wish to preserve element binding with the host document..
+        ///   Looks up a localized string similar to Element Binding allows a two-way interaction between Dynamo and the host application like Revit or Civil3D where a user can select an element in the host document and have Dynamo &quot;bind&quot; that element to a node in the workspace..
+        /// </summary>
+        public static string ElementBindingDesc {
+            get {
+                return ResourceManager.GetString("ElementBindingDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A Save As command will create a workspace which is treated as a completely new file by Dynamo and existing element binding data will be lost. New element binding data will be created as normal as you run this file. Use the Save command instead if you wish to preserve element binding with the host document..
         /// </summary>
         public static string ElementBindingWarningMessage {
             get {
@@ -3494,24 +3503,6 @@ namespace Dynamo.Wpf.Properties {
         public static string HideClassicNodeLibrary {
             get {
                 return ResourceManager.GetString("HideClassicNodeLibrary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hide nodes below a specified confidence level.
-        /// </summary>
-        public static string HideNodesBelowSpecificConfidenceLevel {
-            get {
-                return ResourceManager.GetString("HideNodesBelowSpecificConfidenceLevel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Confidence level appears next to each recommended node and represents estimated probability that the node is a good choice. When toggled on, this setting hides recommended nodes that don’t meet the specified confidence level. You can click the Low Confidence header to show the nodes..
-        /// </summary>
-        public static string HideNodesBelowSpecificConfidenceLevelInfo {
-            get {
-                return ResourceManager.GetString("HideNodesBelowSpecificConfidenceLevelInfo", resourceCulture);
             }
         }
         
@@ -7688,6 +7679,24 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesWindowShowPreviewBubblesTooltip {
             get {
                 return ResourceManager.GetString("PreferencesWindowShowPreviewBubblesTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preferred confidence level.
+        /// </summary>
+        public static string PreferredConfidenceLevel {
+            get {
+                return ResourceManager.GetString("PreferredConfidenceLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confidence level appears next to each recommended node and represents estimated probability that the node is a good choice. When toggled on, this setting hides recommended nodes that don’t meet the specified confidence level. You can click the Low Confidence header to show the nodes..
+        /// </summary>
+        public static string PreferredConfidenceLevelInfo {
+            get {
+                return ResourceManager.GetString("PreferredConfidenceLevelInfo", resourceCulture);
             }
         }
         

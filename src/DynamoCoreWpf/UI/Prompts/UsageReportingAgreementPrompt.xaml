@@ -188,23 +188,6 @@
 
                     <Rectangle Style="{StaticResource DividerRectangleStyle}" Margin="-15 15 -15 0"/>
 
-                    <!--The instrumentation checkbox will be hidden and unchecked by default-->
-                    <CheckBox x:Name="AcceptUsageReportingCheck"
-                              Click="ToggleIsUsageReportingChecked"
-                              Visibility="Collapsed"
-                              Margin="-2 -10 0 15"
-                              VerticalAlignment="Center"
-                              FontSize="13.333"
-                              Background="White">
-                        <TextBlock FontWeight="SemiBold"
-                                   FontSize="12"
-                                   Foreground="{StaticResource DarkThemeInputBoxBackgroundBrush}" 
-                                   TextWrapping="Wrap"
-                                   Visibility="Collapsed"
-                                   Text="Test"
-                                   Name="AcceptUsageReportingTextBlock"/>
-                    </CheckBox>
-
                 </StackPanel>
                 <!--Configure ADP Consent-->
                 <Button Grid.Row="3"

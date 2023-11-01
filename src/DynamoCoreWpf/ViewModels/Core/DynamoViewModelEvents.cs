@@ -162,6 +162,24 @@ namespace Dynamo.ViewModels
             }
         }
 
+        internal event Action RequestCloseHomeWorkSpace;
+        private void OnRequestCloseHomeWorkSpace()
+        {
+            if (RequestCloseHomeWorkSpace != null)
+            {
+                RequestCloseHomeWorkSpace();
+            }
+        }
+
+        internal event Action<double> RequestShorcutToolbarLoaded;
+        public void OnRequestShorcutToolbarLoaded(double rightMenuActualWidth)
+        {
+            if (RequestShorcutToolbarLoaded != null)
+            {
+                RequestShorcutToolbarLoaded(rightMenuActualWidth);
+            }
+        }
+
         internal event Action <object> RequestExportWorkSpaceAsImage;
         private void OnRequestExportWorkSpaceAsImage(object parameter)
         {

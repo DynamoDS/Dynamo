@@ -6,7 +6,7 @@ jobs:
   runs-on: windows-latest
   steps:
     - name: Checkout Dynamo Repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         path: Dynamo
         repository: DynamoDS/Dynamo
@@ -31,3 +31,10 @@ jobs:
         cd "$Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Release"
         echo "***Locating DynamoCLI for Windows!***"
         test ".\DynamoCLI.exe" && echo "DynamoCLI exists!"
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: DynamoSandbox
+        path: ${{ github.workspace }}\Dynamo\bin\AnyCPU\Release
+        if-no-files-found: warn
+        retention-days: 3

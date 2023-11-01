@@ -10,9 +10,6 @@
     <AssemblyName>DynamoPackages</AssemblyName>
       <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-    <Reference Include="System.Configuration" />
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
@@ -33,9 +30,9 @@
     <Content Include="PackageManagerExtension_ExtensionDefinition.xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Greg" Version="2.5.0.5076" />
+    <PackageReference Include="Greg" Version="3.0.0.2955" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="RestSharp" Version="106.12.0" />
+    <PackageReference Include="RestSharp" Version="109.0.1" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">

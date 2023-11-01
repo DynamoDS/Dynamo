@@ -6,7 +6,7 @@ jobs:
   runs-on: windows-latest
   steps:
     - name: Checkout Dynamo Repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         path: net60_Win_Dynamo
         repository: DynamoDS/Dynamo
@@ -40,7 +40,7 @@ jobs:
   runs-on: windows-latest
   steps:
     - name: Checkout Dynamo Repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         ref: master
         path: master_net60_Win_Dynamo

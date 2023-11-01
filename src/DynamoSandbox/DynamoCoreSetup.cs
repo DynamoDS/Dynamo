@@ -24,6 +24,7 @@ namespace DynamoSandbox
         private readonly string CERLocation;
         private readonly string ASMPath;
         private readonly HostAnalyticsInfo analyticsInfo;
+        private readonly bool noNetworkMode;
         private const string sandboxWikiPage = @"https://github.com/DynamoDS/Dynamo/wiki/How-to-Utilize-Dynamo-Builds";
         private DynamoViewModel viewModel = null;
 
@@ -40,10 +41,7 @@ namespace DynamoSandbox
             var locale = StartupUtils.SetLocale(cmdLineArgs);
             _putenv(locale);
 
-            if (cmdLineArgs.DisableAnalytics)
-            {
-                Analytics.DisableAnalytics = true;
-            }
+            cmdLineArgs.SetDisableAnalytics();
 
             if (!string.IsNullOrEmpty(cmdLineArgs.CERLocation))
             {
@@ -53,6 +51,7 @@ namespace DynamoSandbox
             commandFilePath = cmdLineArgs.CommandFilePath;
             ASMPath = cmdLineArgs.ASMPath;
             analyticsInfo = cmdLineArgs.AnalyticsInfo;
+            noNetworkMode = cmdLineArgs.NoNetworkMode;
         }
 
         public void RunApplication(Application app)
@@ -134,7 +133,7 @@ namespace DynamoSandbox
         private void LoadDynamoView()
         {
             DynamoModel model;
-            model = StartupUtils.MakeModel(false, ASMPath ?? string.Empty, analyticsInfo);
+            model = StartupUtils.MakeModel(false, noNetworkMode, ASMPath ?? string.Empty, analyticsInfo);
             model.CERLocation = CERLocation;
 
             viewModel = DynamoViewModel.Start(

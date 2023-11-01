@@ -29,6 +29,8 @@ namespace Dynamo.PackageDetails
             }
         }
 
+        private int numberVotes;
+        private bool hasVoted;
         #endregion
 
         #region Public Properties
@@ -77,7 +79,15 @@ namespace Dynamo.PackageDetails
         /// <summary>
         /// How many votes this package has received.
         /// </summary>
-        public int NumberVotes { get; }
+        public int NumberVotes
+        {
+            get => numberVotes;
+            set
+            {
+                if (value != numberVotes) { numberVotes = value; }
+                RaisePropertyChanged(nameof(NumberVotes));
+            }
+        }
 
         /// <summary>
         /// How many times this package has been downloaded.
@@ -110,12 +120,26 @@ namespace Dynamo.PackageDetails
         /// </summary>
         public bool IsEnabledForInstall { get; private set; }
 
+        /// <summary>
+        /// Shows if the current user has voted for this package
+        /// </summary>
+        public bool HasVoted
+        {
+            get => hasVoted;
+            set
+            {
+                if (value != hasVoted) { hasVoted = value; }
+                RaisePropertyChanged(nameof(HasVoted));
+            }
+        }
+
         #endregion
 
         #region Commands
 
         public DelegateCommand OpenDependencyDetailsCommand { get; set; }
         public DelegateCommand TryInstallPackageVersionCommand { get; set; }
+        public DelegateCommand UpvoteCommand { get; set; }
 
         /// <summary>
         /// Retrieves a package by name and display its details in the PackageDetailsView.
@@ -147,6 +171,29 @@ namespace Dynamo.PackageDetails
         }
 
         /// <summary>
+        /// Upvotes a packge
+        /// </summary>
+        /// <param name="obj"></param>
+        private void UpvotePackage(object obj)
+        {
+            PackageManagerSearchElement packageManagerSearchElement = GetPackageByName(this.PackageName);
+            packageManagerSearchElement?.Upvote();
+
+            HasVoted = true;
+            NumberVotes = ++NumberVotes;
+        }
+
+
+        private bool CanUpvotePackage(object obj)
+        {
+            // If any version of the package has been installed locally, 
+            // and if the user has not voted for this package before
+            // then we allow voting
+            return PackageDetailItems.Any(x => !x.CanInstall) && !this.HasVoted;
+        }
+
+
+        /// <summary>
         /// After installing a package version, this method sets the CanInstall flag to false for
         /// that specific version only. A dynamic check would be better, but the package has not been
         /// added to PackageLoader.LocalPackages by the end of the DownloadAndInstallPackage method.
@@ -158,6 +205,9 @@ namespace Dynamo.PackageDetails
                 if (packageDetailItem.PackageVersion.version != versionName) continue;
                 packageDetailItem.CanInstall = false;
                 RaisePropertyChanged(nameof(packageDetailItem.CanInstall));
+
+                // Also update the 'CanExecute' condition for 'UpvoteCommand' which relies on a package being installed
+                UpvoteCommand.RaiseCanExecuteChanged();  
             }
         }
 
@@ -226,6 +276,7 @@ namespace Dynamo.PackageDetails
             License = packageManagerSearchElement.Header.license;
             PackageSiteURL = packageManagerSearchElement.SiteUrl;
             PackageRepositoryURL = packageManagerSearchElement.RepositoryUrl;
+            HasVoted = packageManagerSearchElement.HasUpvote;
 
             if (!Models.DynamoModel.IsTestMode)
             {
@@ -234,6 +285,7 @@ namespace Dynamo.PackageDetails
 
             OpenDependencyDetailsCommand = new DelegateCommand(OpenDependencyDetails);
             TryInstallPackageVersionCommand = new DelegateCommand(TryInstallPackageVersion);
+            UpvoteCommand = new DelegateCommand(UpvotePackage, CanUpvotePackage);
         }
 
         private void PackageLoaderOnPackageAdded(Package obj)
@@ -276,6 +328,7 @@ namespace Dynamo.PackageDetails
         /// </summary>
         internal void Dispose()
         {
+            if (PackageDetailsViewExtension.PackageManagerExtension.PackageLoader == null) return;
             PackageDetailsViewExtension.PackageManagerExtension.PackageLoader.PackageAdded -= PackageLoaderOnPackageAdded;
         }
     }
