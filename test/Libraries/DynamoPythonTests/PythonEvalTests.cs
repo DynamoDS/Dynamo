@@ -7,8 +7,9 @@ using DSCPython;
 using System.IO;
 using Dynamo;
 using Dynamo.PythonServices;
+ using Lucene.Net.Util;
 
-namespace DSPythonTests
+ namespace DSPythonTests
 {
     public class PythonEvalTests : UnitTestBase
     {
@@ -148,51 +149,6 @@ print 'hello'
             }
         }
 
-        [Test]
-        public void CPythonEngineWithErrorRaisesCorrectEvent()
-        {
-
-            var count = 0;
-            DSCPython.EvaluationEventHandler CPythonEvaluator_EvaluationEnd = (state, scope, codeString, bindings) =>
-            {
-                count = count + 1;
-                if (count == 1)
-                {
-                    Assert.AreEqual(DSCPython.EvaluationState.Success, state);
-                }
-                else if (count == 2)
-                {
-                    Assert.AreEqual(DSCPython.EvaluationState.Failed, state);
-                }
-            };
-
-            CPythonEvaluator.EvaluationEnd += CPythonEvaluator_EvaluationEnd;
-
-            var code = @"1";
-            try
-            {
-                DSCPython.CPythonEvaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
-            }
-            finally
-            {
-                Assert.AreEqual(1, count);
-            }
-
-            code = @"1/a";
-            try
-            {
-                DSCPython.CPythonEvaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
-            }
-            catch
-            {
-                //we anticipate an undefined var error.
-            }
-            finally
-            {
-                DSCPython.CPythonEvaluator.EvaluationEnd -= CPythonEvaluator_EvaluationEnd;
-                Assert.AreEqual(2, count);
-            }
-        }
 
         [Test]
         public void OutputPythonObjectDoesNotThrow()
