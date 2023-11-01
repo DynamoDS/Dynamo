@@ -389,8 +389,9 @@
             </DockPanel>
 
 
-            <local:PackageManagerPackageAnimationControl x:Name="loadingScreen"
+            <local:PackageManagerPackageAnimationControl x:Name="loadingAnimationSearchControlScreen"
                                                          Grid.Row="2"
+                                                         DataContext="{Binding DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
                                                          Visibility="{Binding Path=InitialResultsLoaded, UpdateSourceTrigger=PropertyChanged,
                                                                 Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}" />
 

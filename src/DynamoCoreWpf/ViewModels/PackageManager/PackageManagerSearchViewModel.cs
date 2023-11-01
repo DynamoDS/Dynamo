@@ -304,8 +304,14 @@ namespace Dynamo.PackageManager
             get { return _SearchText; }
             set
             {
-                _SearchText = value;
-                RaisePropertyChanged("SearchText");
+                if(_SearchText!= value)
+                {
+                    _SearchText = value;
+
+                    // do not raise property changed if the results are not loaded
+                    if (!InitialResultsLoaded) return;
+                    RaisePropertyChanged("SearchText");
+                }
             }
         }
 
@@ -458,6 +464,7 @@ namespace Dynamo.PackageManager
             get { return _initialResultsLoaded; }
             set
             {
+                if (value == _initialResultsLoaded) return;
                 _initialResultsLoaded = value;
                 RaisePropertyChanged(nameof(InitialResultsLoaded));
             }
@@ -1347,6 +1354,7 @@ namespace Dynamo.PackageManager
                 list.Reverse();
             }
 
+            // TODO - should we be unsubsribing somewhere?
             foreach (var x in list)
                 x.RequestShowFileDialog += OnRequestShowFileDialog;
 
@@ -1568,8 +1576,8 @@ namespace Dynamo.PackageManager
         {
             TimedOut = false;   // reset the timedout screen 
             InitialResultsLoaded = false;   // reset the loading screen settings
-            RequestShowFileDialog -= OnRequestShowFileDialog;
-            nonHostFilter.ForEach(f => f.PropertyChanged -= filter_PropertyChanged);
+            SearchText = String.Empty;  // reset the search text property
+            
         }
     }
 }

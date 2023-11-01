@@ -116,8 +116,7 @@
                             HorizontalAlignment="Stretch"
                             IsEnabled="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=IsEnabled}"
                             TextChanged="SearchTextBox_OnTextChanged"
-                            IsKeyboardFocusWithinChanged="SearchTextBox_OnKeyboardFocusWithinChanged"
-                            Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                            IsKeyboardFocusWithinChanged="SearchTextBox_OnKeyboardFocusWithinChanged"></TextBox>
                         
                         <!-- Clear Search -->
 

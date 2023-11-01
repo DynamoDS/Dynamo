@@ -1,5 +1,3 @@
-using Dynamo.PackageManager;
-using HelixToolkit.Wpf.SharpDX;
 using System;
 using System.Globalization;
 using System.Windows;
@@ -17,27 +15,26 @@ namespace Dynamo.PackageManager.UI
     {
         private DispatcherTimer delayTimer;
 
-        // set delay for event 500ms
-        private static int delayTime = 500;
+        // set delay for event 250ms
+        private static int delayTime = 250;
         /// <summary>
         /// Constructor
         /// </summary>
         public SearchBoxControl()
         {
             InitializeComponent();
-        }
-        private static DispatcherTimer Debounce(DispatcherTimer dispatcher, TimeSpan interval, Action action)
-        {
-            dispatcher?.Stop();
-            dispatcher = null;
-            dispatcher = new DispatcherTimer(interval,  DispatcherPriority.ApplicationIdle, (s, e) =>
-            {
-                dispatcher?.Stop();
-                action.Invoke();
-            }, Dispatcher.CurrentDispatcher);
-            dispatcher?.Start();
 
-            return dispatcher;
+            delayTimer = new DispatcherTimer();
+            delayTimer.Interval = TimeSpan.FromMilliseconds(delayTime);
+            delayTimer.Tick += DelayTimer_Tick;
+        }
+            
+        private void DelayTimer_Tick(object sender, EventArgs e)
+        {
+            delayTimer.Stop();
+            var textBox = this.SearchTextBox;
+            if (textBox == null) return;
+            (this.DataContext as PackageManagerSearchViewModel)?.SearchAndUpdateResults(textBox.Text);
         }
 
         /// <summary>
@@ -48,15 +45,11 @@ namespace Dynamo.PackageManager.UI
         /// <exception cref="NotImplementedException"></exception>
         private void SearchTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-
-            Debounce(delayTimer, TimeSpan.FromMilliseconds(delayTime), () =>
-            {
-                var textBox = sender as TextBox;
-                if (textBox == null) return;
-                (this.DataContext as PackageManagerSearchViewModel)?.SearchAndUpdateResults(textBox.Text);
-                textBox.Focus();
-            });
+            // When text changes, restart the timer
+            delayTimer.Stop();
+            delayTimer.Start();
         }
+
         private void OnSearchClearButtonClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             this.SearchTextBox.Clear();
