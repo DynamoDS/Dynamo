@@ -1367,7 +1367,7 @@ namespace Dynamo.Tests
             //assert that package has been loaded.
             var foundPackage = loader.LocalPackages.Where(x => x.Name == "PackageThatWillBeModified").FirstOrDefault();
             Assert.IsNotNull(package);
-            Assert.IsTrue(package.Loaded);
+            Assert.IsTrue(package.LoadState.State == PackageLoadState.StateTypes.Loaded);
             //find our custom node
             var customNodeInfo = this.ViewModel.Model.CustomNodeManager.NodeInfos.Where(x => x.Value.Name == "ANodeToModify").FirstOrDefault();
             Assert.IsNotNull(customNodeInfo);

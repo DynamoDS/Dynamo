@@ -178,7 +178,7 @@ namespace DynamoCoreWpfTests
             newPkgVm.PublishLocallyCommand.Execute();
 
             Assert.IsTrue(GetModel().GetPackageManagerExtension().PackageLoader.LocalPackages.Any
-                (x => x.Name == "PublishingACustomNodeSetsPackageInfoCorrectly" && x.Loaded == true && x.LoadedCustomNodes.Count ==1));
+                (x => x.Name == "PublishingACustomNodeSetsPackageInfoCorrectly" && x.LoadState.State == PackageLoadState.StateTypes.Loaded && x.LoadedCustomNodes.Count ==1));
 
 
             Assert.AreEqual(new PackageInfo("PublishingACustomNodeSetsPackageInfoCorrectly", new Version(0,0,1))
