@@ -212,13 +212,15 @@ namespace Dynamo.DocumentationBrowser
             {
                 GroupInsertedGraph(existingGroups, e.Name);
             });
+            //we want to wait for the new group to be inserted and actually rendered, so we add the layout command
+            //as a background priority task on the ui dispatcher.
             Dispatcher.CurrentDispatcher.BeginInvoke(() =>
             {
                 // We have selected all the nodes and notes from the inserted graph
                 // Now is the time to auto layout the inserted nodes
                 this.DynamoViewModel.GraphAutoLayoutCommand.Execute(null);
                 this.DynamoViewModel.FitViewCommand.Execute(false);
-            });
+            },DispatcherPriority.Background);
         }
 
 

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Web;
 using System.Windows;
+using System.Windows.Documents;
 using Dynamo.Core;
 using Dynamo.DocumentationBrowser.Properties;
 using Dynamo.Logging;
@@ -86,23 +87,20 @@ namespace Dynamo.DocumentationBrowser
         private Uri link;
         private string graphPath;
         private string content;
-        private string currentPackageName;
 
 
         /// <summary>
-        /// Package Name
+        /// Package Name of the current node for docs display, if this node is from a package.
         /// </summary>
-        internal string CurrentPackageName
-        {
-            get
-            {
-                return currentPackageName;
-            }
-            set
-            {
-                currentPackageName = value;
-            }
-        }
+        internal string CurrentPackageName { get; set; }
+        /// <summary>
+        /// True if the current node for docs display is owned by a package.
+        /// </summary>
+        internal bool IsOwnedByPackage { get; set; }
+        /// <summary>
+        /// Name of the current node's sample dyn for docs display, this is the currently always the node name.
+        /// </summary>
+        internal string CurrentGraphName { get; set; }
 
         private MarkdownHandler MarkdownHandlerInstance => markdownHandler ?? (markdownHandler = new MarkdownHandler());
         public bool HasContent => !string.IsNullOrWhiteSpace(this.content);
@@ -202,9 +200,12 @@ namespace Dynamo.DocumentationBrowser
             try
             {
                 string targetContent;
-                string graph;
+                string graphPath;
                 string graphName;
+                bool ownedByPackage = false;
+                string packageName = string.Empty;
                 Uri link;
+
                 switch (e)
                 {
                     case OpenNodeAnnotationEventArgs openNodeAnnotationEventArgs:
@@ -213,14 +214,16 @@ namespace Dynamo.DocumentationBrowser
                             openNodeAnnotationEventArgs.PackageName);
 
                         link = string.IsNullOrEmpty(mdLink) ? new Uri(String.Empty, UriKind.Relative) : new Uri(mdLink);
-                        graph = GetGraphLinkFromMDLocation(link);
+                        graphPath = GetGraphLinkFromMDLocation(link);
                         targetContent = CreateNodeAnnotationContent(openNodeAnnotationEventArgs);
                         graphName = openNodeAnnotationEventArgs.MinimumQualifiedName;
+                        packageName = openNodeAnnotationEventArgs.PackageName;
+                        ownedByPackage = !string.IsNullOrEmpty(openNodeAnnotationEventArgs.PackageName);
                         break;
 
                     case OpenDocumentationLinkEventArgs openDocumentationLink:
                         link = openDocumentationLink.Link;
-                        graph = GetGraphLinkFromMDLocation(link);
+                        graphPath = GetGraphLinkFromMDLocation(link);
                         targetContent = ResourceUtilities.LoadContentFromResources(openDocumentationLink.Link.ToString(), GetType().Assembly);
                         graphName = null;
                         break;
@@ -228,7 +231,7 @@ namespace Dynamo.DocumentationBrowser
                     default:
                         // Navigate to unsupported 
                         targetContent = null;
-                        graph = null;
+                        graphPath = null;
                         link = null;
                         graphName = null;
                         break;
@@ -241,8 +244,10 @@ namespace Dynamo.DocumentationBrowser
                 else
                 {
                     this.content = targetContent;
-                    this.graphPath = graph;
-                    this.currentPackageName = graphName;
+                    this.graphPath = graphPath;
+                    IsOwnedByPackage = ownedByPackage;
+                    CurrentPackageName = packageName;
+                    CurrentGraphName = graphName;
                     this.Link = link;                   
                 }
             }
@@ -429,7 +434,7 @@ namespace Dynamo.DocumentationBrowser
             {
                 if (graphPath != null)
                 {
-                    var graphName = this.currentPackageName ?? Path.GetFileNameWithoutExtension(graphPath);
+                    var graphName = CurrentPackageName ?? Path.GetFileNameWithoutExtension(graphPath);
                     raiseInsertGraph(this, new InsertDocumentationLinkEventArgs(graphPath, graphName));
                 }
                 else
