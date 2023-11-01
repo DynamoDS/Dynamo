@@ -371,7 +371,7 @@ namespace DynamoUnits
     /// is stored as meters to make algorithms simpler.
     /// </summary>
     [IsVisibleInDynamoLibrary(false)]
-    [Obsolete("This class will be removed in Dynamo 3.0 - please use the Length Quantity type and Utilities.ConvertByUnits methods")]
+    [Obsolete("This class will be removed in a future version of Dynamo - please use the Length Quantity type and Utilities.ConvertByUnits methods")]
     public class Length : SIUnit, IComparable, IEquatable<Length>
     {
         //length conversions
