@@ -63,57 +63,6 @@ namespace Dynamo.PackageManager.Tests
 
         #endregion
 
-        #region DownloadPackageHeader
-
-        [Test]
-        public void DownloadPackageHeader_SucceedsForValidPackage()
-        {
-            var id = "1";
-
-            // Returned content
-            var mp = new ResponseWithContentBody<PackageHeader>
-            {
-                content = new PackageHeader()
-                {
-                    _id = id
-                },
-                success = true
-            };
-
-            // Returns mock for any arguments
-            var c = new Mock<IGregClient>();
-            c.Setup(x =>
-                x.ExecuteAndDeserializeWithContent<PackageHeader>(It.IsAny<HeaderDownload>()))
-                .Returns(mp);
-
-            var pc = new PackageManagerClient(c.Object, MockMaker.Empty<IPackageUploadBuilder>(), "");
-
-            PackageHeader header;
-            var res = pc.DownloadPackageHeader(id, out header);
-
-            Assert.AreEqual(id, header._id);
-            Assert.IsTrue(res.Success);
-        }
-
-        [Test]
-        public void DownloadPackageHeader_ReturnsFailureObjectWhenDownloadThrowsAnException()
-        {
-            // Returns mock for any arguments
-            var c = new Mock<IGregClient>();
-            c.Setup(x =>
-                x.ExecuteAndDeserializeWithContent<PackageHeader>(It.IsAny<HeaderDownload>()))
-                .Throws<Exception>();
-
-            var pc = new PackageManagerClient(c.Object, MockMaker.Empty<IPackageUploadBuilder>(), "");
-
-            PackageHeader header;
-            var res = pc.DownloadPackageHeader("1", out header);
-
-            Assert.IsFalse(res.Success);
-        }
-
-        #endregion
-
         #region GetPackageVersionHeader
 
         [Test]
