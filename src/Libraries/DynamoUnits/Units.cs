@@ -771,7 +771,7 @@ namespace DynamoUnits
     /// An area stored in square meters.
     /// </summary>
     [IsVisibleInDynamoLibrary(false)]
-    [Obsolete("This class will be removed in Dynamo 3.0 - please use the Area Quantity type and Utilities.ConvertByUnits methods")]
+    [Obsolete("This class will be removed in a future version of Dynamo - please use the Area Quantity type and Utilities.ConvertByUnits methods")]
     public class Area : SIUnit, IComparable, IEquatable<Area>
     {
         //area conversions
@@ -1135,7 +1135,7 @@ namespace DynamoUnits
     /// A volume stored in cubic meters.
     /// </summary>
     [IsVisibleInDynamoLibrary(false)]
-    [Obsolete("This class will be removed in Dynamo 3.0 - please use the Volume Quantity type and Utilities.ConvertByUnits methods")]
+    [Obsolete("This class will be removed in a future version of Dynamo - please use the Volume Quantity type and Utilities.ConvertByUnits methods")]
     public class Volume : SIUnit, IComparable, IEquatable<Volume>
     {
         //volume conversions
@@ -1489,7 +1489,7 @@ namespace DynamoUnits
     /// An insolation stored in killowatt hours per meter squared.
     /// </summary>
     [IsVisibleInDynamoLibrary(false)]
-    [Obsolete("This class will be removed in Dynamo 3.0 - - please use the Power Per Area Quantity type and Utilities.ConvertByUnits methods")]
+    [Obsolete("This class will be removed in a future version of Dynamo - please use the Power Per Area Quantity type and Utilities.ConvertByUnits methods")]
     public class Insolation : SIUnit, IComparable, IEquatable<Insolation>
     {
         //insolation converstions
@@ -1695,7 +1695,7 @@ namespace DynamoUnits
     }
 
     [SupressImportIntoVM]
-    [Obsolete("This class will be removed in Dynamo 3.0 - - please use the Quantity and Unit types and associated methods")]
+    [Obsolete("This class will be removed in a future version of Dynamo - please use the Quantity and Unit types and associated methods")]
     public static class UnitExtensions
     {
         public static bool AlmostEquals(this double double1, double double2, double precision)
@@ -1723,7 +1723,7 @@ namespace DynamoUnits
     /// Utility class for operating on units of measure.
     /// </summary>
     [SupressImportIntoVM]
-    [Obsolete("This class will be removed in Dynamo 3.0 - - please use the Unit.Utilities class and associated methods")]
+    [Obsolete("This class will be removed in a future version of Dynamo - please use the Unit.Utilities class and associated methods")]
     public class Utils
     {
         private const int ROUND_DIGITS = 5;
@@ -2072,7 +2072,7 @@ namespace DynamoUnits
     }
 
     [SupressImportIntoVM]
-    [Obsolete("This exception will be removed in Dynamo 3.0 - please use the Unit.Utilities class and associated methods")]
+    [Obsolete("This exception will be removed in a future version of Dynamo - please use the Unit.Utilities class and associated methods")]
     public class MathematicalArgumentException : Exception
     {
         public MathematicalArgumentException() : base("The result could not be computed given the provided inputs.") { }
@@ -2080,14 +2080,14 @@ namespace DynamoUnits
     }
 
     [SupressImportIntoVM]
-    [Obsolete("This exception will be removed in Dynamo 3.0 - please use the Unit.Utilities class and associated methods")]
+    [Obsolete("This exception will be removed in a future version of Dynamo - please use the Unit.Utilities class and associated methods")]
     public class UnitsException : MathematicalArgumentException
     {
         public UnitsException(Type a, Type b) : base(string.Format("{0} and {1} are incompatible for this operation.", a, b)) { }
     }
 
     [SupressImportIntoVM]
-    [Obsolete("This interface will be removed in Dynamo 3.0 - please use the ForgeUnit SDK based methods")]
+    [Obsolete("This interface will be removed in a future version of Dynamo - please use the ForgeUnit SDK based methods")]
     public interface IUnitInput
     {
         double ConvertToHostUnits();
