@@ -187,14 +187,17 @@ namespace Dynamo.PythonMigration
 
         private void UnSubscribeWorkspaceEvents()
         {
-            CurrentWorkspace.RequestPackageDependencies -= PythonDependencies.AddPythonPackageDependency;
-            CurrentWorkspace.NodeAdded -= OnNodeAdded;
-            CurrentWorkspace.NodeRemoved -= OnNodeRemoved;
-            CurrentWorkspace.Nodes
-                .Where(n => n is PythonNode)
-                .Cast<PythonNode>()
-                .ToList()
-                .ForEach(n => UnSubscribePythonNodeEvents(n));
+            if (CurrentWorkspace != null)
+            {
+                CurrentWorkspace.RequestPackageDependencies -= PythonDependencies.AddPythonPackageDependency;
+                CurrentWorkspace.NodeAdded -= OnNodeAdded;
+                CurrentWorkspace.NodeRemoved -= OnNodeRemoved;
+                CurrentWorkspace.Nodes
+                    .Where(n => n is PythonNode)
+                    .Cast<PythonNode>()
+                    .ToList()
+                    .ForEach(n => UnSubscribePythonNodeEvents(n));
+            }
         }
 
         private void UnsubscribeEvents()

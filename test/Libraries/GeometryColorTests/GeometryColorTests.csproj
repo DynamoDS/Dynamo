@@ -10,7 +10,7 @@
     <AssemblyName>DisplayTests</AssemblyName>
   </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="3.0.0.2855"/>
+        <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.2965" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
     </ItemGroup>
     <!--net6.0 net8.0 etc-->

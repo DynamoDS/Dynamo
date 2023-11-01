@@ -41,3 +41,4 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("DynamoPlayer.Extension")]
 [assembly: InternalsVisibleTo("DynamoPlayer.Workflows")]
 [assembly: InternalsVisibleTo("DynamoPlayer.WorkflowsUi")]
+[assembly: InternalsVisibleTo("DynamoApplications")]
