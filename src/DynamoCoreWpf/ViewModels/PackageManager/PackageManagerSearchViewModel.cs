@@ -461,7 +461,6 @@ namespace Dynamo.PackageManager
             get { return _initialResultsLoaded; }
             set
             {
-                if (value == _initialResultsLoaded) return;
                 _initialResultsLoaded = value;
                 RaisePropertyChanged(nameof(InitialResultsLoaded));
             }
