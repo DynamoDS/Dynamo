@@ -2,6 +2,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
+using Dynamo.Controls;
 using Dynamo.PackageManager.ViewModels;
 
 namespace Dynamo.PackageManager.UI
@@ -23,6 +24,18 @@ namespace Dynamo.PackageManager.UI
         private void InitializeContext(object sender, RoutedEventArgs e)
         {
             PkgSearchVM = this.DataContext as PackageManagerSearchViewModel;
+
+            if (PkgSearchVM != null)
+            {
+                // Create the binding once the DataContext is available
+                var binding = new Binding("InitialResultsLoaded")
+                {
+                    Source = PkgSearchVM,
+                    Converter = new InverseBooleanToVisibilityCollapsedConverter()
+                };
+
+                this.loadingAnimationSearchControlScreen.SetBinding(UIElement.VisibilityProperty, binding);
+            }
         }
 
 

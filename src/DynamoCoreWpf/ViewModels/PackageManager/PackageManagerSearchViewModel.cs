@@ -307,9 +307,6 @@ namespace Dynamo.PackageManager
                 if(_SearchText!= value)
                 {
                     _SearchText = value;
-
-                    // do not raise property changed if the results are not loaded
-                    if (!InitialResultsLoaded) return;
                     RaisePropertyChanged("SearchText");
                 }
             }
@@ -1066,19 +1063,24 @@ namespace Dynamo.PackageManager
             }
         }
 
+        private System.Timers.Timer aTimer;
+
         private void StartTimer()
         {
-            var aTimer = new System.Timers.Timer();
+            if(aTimer == null) 
+                aTimer = new System.Timers.Timer();
+
             aTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
             aTimer.Interval = MAX_LOAD_TIME;
             aTimer.AutoReset = false;
             aTimer.Enabled = true;
+            aTimer.Start();
         }
 
         private void OnTimedEvent(object sender, ElapsedEventArgs e)
         {
             var aTimer = (System.Timers.Timer)sender;
-            aTimer.Dispose();
+            aTimer.Stop();
 
             // If we have managed to get all the results
             // Simply dispose of the timer
@@ -1574,10 +1576,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         internal void Close()
         {
-            TimedOut = false;   // reset the timedout screen 
-            InitialResultsLoaded = false;   // reset the loading screen settings
-            SearchText = String.Empty;  // reset the search text property
-            
+            SearchAndUpdateResults(String.Empty); // reset the search text property
         }
     }
 }

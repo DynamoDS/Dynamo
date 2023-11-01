@@ -388,19 +388,16 @@
                         Visibility="{Binding IsAnyFilterOn, Converter={StaticResource BoolToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}" />
             </DockPanel>
 
-
             <local:PackageManagerPackageAnimationControl x:Name="loadingAnimationSearchControlScreen"
                                                          Grid.Row="2"
-                                                         DataContext="{Binding DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
-                                                         Visibility="{Binding Path=InitialResultsLoaded, UpdateSourceTrigger=PropertyChanged,
-                                                                Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}" />
+                                                         Visibility="Visible" />
 
             <local:PackageManagerPackagesControl x:Name="packageManagerSearchPackages"
                                                  Grid.Row="2"
                                                  SearchItems="{Binding Path=SearchResults}"
                                                  Visibility="{Binding Path=InitialResultsLoaded, UpdateSourceTrigger=PropertyChanged,
                                                                       Converter={StaticResource BoolToVisibilityCollapsedConverter}}" />
-
+            
 
         </Grid>
 

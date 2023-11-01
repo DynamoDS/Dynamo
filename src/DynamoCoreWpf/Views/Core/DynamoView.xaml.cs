@@ -1486,6 +1486,7 @@ namespace Dynamo.Controls
         private PackageManagerSearchView _searchPkgsView;
         private PackageManagerSearchViewModel _pkgSearchVM;
         private PackageManagerViewModel _pkgVM;
+        private bool _initialSearch = false;
 
         private void DynamoViewModelRequestShowPackageManagerSearch(object s, EventArgs e)
         {
@@ -2274,8 +2275,13 @@ namespace Dynamo.Controls
             {
                 packageManagerWindow.Navigate((e as OpenPackageManagerEventArgs).Tab);
             }
-            _pkgSearchVM.RefreshAndSearchAsync();
+            if (!_initialSearch)
+            {
+                _initialSearch = true;
+                _pkgSearchVM.RefreshAndSearchAsync();
+            }
         }
+
 
         internal void EnableEnvironment(bool isEnabled)
         {

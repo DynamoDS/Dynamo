@@ -14,9 +14,9 @@ namespace Dynamo.PackageManager.UI
     public partial class SearchBoxControl : UserControl
     {
         private DispatcherTimer delayTimer;
+        private string userSearchInput = ""; // Store user's input separately
+        private static int delayTime = 100;  // set delay for event 100ms
 
-        // set delay for event 250ms
-        private static int delayTime = 250;
         /// <summary>
         /// Constructor
         /// </summary>
@@ -34,7 +34,8 @@ namespace Dynamo.PackageManager.UI
             delayTimer.Stop();
             var textBox = this.SearchTextBox;
             if (textBox == null) return;
-            (this.DataContext as PackageManagerSearchViewModel)?.SearchAndUpdateResults(textBox.Text);
+            (this.DataContext as PackageManagerSearchViewModel)?.SearchAndUpdateResults(userSearchInput);
+            textBox.Focus();
         }
 
         /// <summary>
@@ -45,6 +46,11 @@ namespace Dynamo.PackageManager.UI
         /// <exception cref="NotImplementedException"></exception>
         private void SearchTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
         {
+            var textBox = sender as TextBox;
+            if (textBox == null) return;
+
+            userSearchInput = textBox.Text;
+
             // When text changes, restart the timer
             delayTimer.Stop();
             delayTimer.Start();
@@ -99,7 +105,7 @@ namespace Dynamo.PackageManager.UI
                 else
                 {
                     if (value != null && string.IsNullOrWhiteSpace(value.ToString()))
-                    {
+                    {   
                         textVisible = true; // If the textbox has no text, we can show the Control..
                     }
                     else
