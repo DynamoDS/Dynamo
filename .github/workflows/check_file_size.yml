@@ -11,8 +11,10 @@ jobs:
       - name: Get changed files
         id: get_changed_files
         uses: tj-actions/changed-files@v40
+        with:
+          write_output_files: true
       - name: Check file size
         run: |
-            for file in ${{ steps.get_changed_files.outputs.all_changed_files }}; do
-              [[ -n $(find ${file} -type f -size +50M) ]] && { echo "❌ $file exceeds file size limit"; exit 1; } || echo "✅ $file"
-            done
+          for file in $(cat .github/outputs/all_changed_files.txt); do
+            [[ -n $(find "${file}" -type f -size +50M) ]] && { echo "❌ $file exceeds file size limit"; exit 1; } || echo "✅ $file"
+          done
