@@ -335,7 +335,8 @@
                     <!--  Search Bar  -->
                     <local:SearchBoxControl x:Name="SearchBox"
                                             DockPanel.Dock="Left"
-                                            Margin="0 5 0 0" />
+                                            Margin="0 5 0 0"
+                                            IsEnabled="{Binding Path=InitialResultsLoaded, UpdateSourceTrigger=PropertyChanged}" />
 
                 </DockPanel>
             </Border>
