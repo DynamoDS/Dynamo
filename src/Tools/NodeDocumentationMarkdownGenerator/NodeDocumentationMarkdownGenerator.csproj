@@ -12,12 +12,12 @@
   </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="CommandLineParser" Version="2.8.0" />
-        <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="3.0.0.2855" />
-        <PackageReference Include="Greg" Version="2.5.0.5076" />
+        <PackageReference Include="Greg" Version="3.0.0.2955" />
+        <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.2965" />
         <PackageReference Include="Magick.NET.Core" Version="7.0.1" />
         <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="7.24.1" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-        <PackageReference Include="RestSharp" Version="106.12.0" />
+        <PackageReference Include="RestSharp" Version="109.0.1" />
         <PackageReference Include="System.Drawing.Common" Version="6.0.0" Condition=" '$(TargetFramework)' == 'net6.0' " />
     </ItemGroup>
   <ItemGroup>
