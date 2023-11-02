@@ -1573,9 +1573,18 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// Clear after closing down
         /// </summary>
-        internal void Close()
+        internal void PackageManagerViewClose()
         {
             SearchAndUpdateResults(String.Empty); // reset the search text property
+        }
+
+        /// <summary>
+        /// Remove PackageManagerSearchViewModel resources
+        /// </summary>
+        internal void Dispose()
+        {
+             nonHostFilter?.ForEach(f => f.PropertyChanged -= filter_PropertyChanged);
+             aTimer.Elapsed -= new ElapsedEventHandler(OnTimedEvent);
         }
     }
 }

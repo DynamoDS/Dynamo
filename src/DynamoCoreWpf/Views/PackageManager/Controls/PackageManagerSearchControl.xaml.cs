@@ -28,7 +28,7 @@ namespace Dynamo.PackageManager.UI
             if (PkgSearchVM != null)
             {
                 // Create the binding once the DataContext is available
-                var binding = new Binding("InitialResultsLoaded")
+                var binding = new Binding(nameof(PackageManagerSearchViewModel.InitialResultsLoaded))
                 {
                     Source = PkgSearchVM,
                     Converter = new InverseBooleanToVisibilityCollapsedConverter()

@@ -75,6 +75,11 @@ namespace Dynamo.PackageManager.UI
                 SearchTextBoxWatermark.Visibility = Visibility.Collapsed;
             }
         }
+
+        internal void Dispose()
+        {
+            delayTimer.Tick -= DelayTimer_Tick;
+        }
     }
 
     /// <summary>
