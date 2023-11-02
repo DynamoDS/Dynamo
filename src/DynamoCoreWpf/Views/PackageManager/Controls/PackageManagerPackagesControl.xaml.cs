@@ -66,7 +66,7 @@ namespace Dynamo.PackageManager.UI
             var searchItems = (IEnumerable<PackageManagerSearchElementViewModel>)newValue;
             if(searchItems != null)
             {
-                myPackagesListBox.ItemsSource = searchItems;
+                packagesListBox.ItemsSource = searchItems;
             }
         }
 
@@ -81,7 +81,7 @@ namespace Dynamo.PackageManager.UI
             InitializeComponent();
         }
 
-        /// <summary>
+        /// <summary>   
         ///     Executes a command that opens the package details view extension.
         /// </summary>
         /// <param name="sender"></param>
@@ -99,7 +99,7 @@ namespace Dynamo.PackageManager.UI
                 var parent = WpfUtilities.FindUpVisualTree<PackageManagerSearchControl>(this) as PackageManagerSearchControl;
                 if (parent == null) return;
 
-                packageManagerSearchElementViewModel.Model.UIParent = parent.packageDetailsGrid;
+                packageManagerSearchElementViewModel.SearchElementModel.UIParent = parent.packageDetailsGrid;
                 if (parent.packageDetailsGrid.Width.Value <= 1.0)
                 {
                     var width = (parent.packageDetailsGrid.Parent as Grid).ActualWidth * 0.5;
@@ -111,7 +111,7 @@ namespace Dynamo.PackageManager.UI
                 var parent = WpfUtilities.FindUpVisualTree<PackageManagerView>(this) as PackageManagerView;
                 if (parent == null) return;
 
-                packageManagerSearchElementViewModel.Model.UIParent = parent.packageDetailsGrid;
+                packageManagerSearchElementViewModel.SearchElementModel.UIParent = parent.packageDetailsGrid;
                 if (parent.packageDetailsGrid.Width.Value <= 1.0)
                 {
                     var width = (parent.packageDetailsGrid.Parent as Grid).ActualWidth * 0.5;
@@ -120,16 +120,8 @@ namespace Dynamo.PackageManager.UI
             }
 
             PkgSearchVM.IsDetailPackagesExtensionOpened = true;
-            PkgSearchVM?.ViewPackageDetailsCommand.Execute(packageManagerSearchElementViewModel.Model);
+            PkgSearchVM?.ViewPackageDetailsCommand.Execute(packageManagerSearchElementViewModel.SearchElementModel);
         }
-
-        private void DropDownInstallButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            ContextMenu cm = this.FindResource("installContextMenu") as ContextMenu;
-            cm.PlacementTarget = sender as Button;
-            cm.IsOpen = true;
-        }
-
 
 
         /// <summary>
