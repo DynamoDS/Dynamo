@@ -4,6 +4,7 @@
   </ImportGroup>
   <PropertyGroup>
     <OutputType>Exe</OutputType>
+	<RollForward>Major</RollForward>
     <OutputPath>$(OutputPath)\DynamoFeatureFlags\</OutputPath>
   </PropertyGroup>
 
