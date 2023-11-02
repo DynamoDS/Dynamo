@@ -20,22 +20,6 @@
     <PackageReference Include="NUnit" Version="3.13.3" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-    <PackageReference Include="NUnit" Version="2.6.3" />
-    <PackageReference Include="NUnitTestAdapter" Version="2.3.0" ExcludeAssets="all" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="WindowsBase">
-        <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Practices.Prism">
-        <HintPath>..\..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-        <Private>False</Private>
-    </Reference>
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\DynamoCoreWpf\DynamoCoreWpf.csproj">
       <Project>{51bb6014-43f7-4f31-b8d3-e3c37ebedaf4}</Project>

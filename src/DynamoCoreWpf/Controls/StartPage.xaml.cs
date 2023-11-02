@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -14,11 +15,7 @@ using Dynamo.Logging;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
-#if NETFRAMEWORK
-using NotificationObject = Microsoft.Practices.Prism.ViewModel.NotificationObject;
-#else
 using NotificationObject = Dynamo.Core.NotificationObject;
-#endif
 
 namespace Dynamo.UI.Controls
 {
@@ -370,7 +367,7 @@ namespace Dynamo.UI.Controls
             IEnumerable<string> filePaths)
         {
             files.Clear();
-            foreach (var filePath in filePaths)
+            foreach (var filePath in filePaths.Where(x => x != null))
             {
                 try
                 {

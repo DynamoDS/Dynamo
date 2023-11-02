@@ -58,9 +58,14 @@ namespace Dynamo.Extensions
         private readonly LinterManager linterManager;
 
         /// <summary>
+        /// True when Dynamo starts up in offline mode.
+        /// </summary>
+        public bool NoNetworkMode { get; }
+
+        /// <summary>
         /// Returns true if ASM/LibG are loaded. May only be valid in sandbox sessions.
         /// </summary>
-        internal bool IsGeometryLibraryLoaded { get; private set; }
+        internal bool IsGeometryLibraryLoaded { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="StartupParams"/> class.
@@ -111,14 +116,15 @@ namespace Dynamo.Extensions
         /// </summary>
         internal StartupParams(DynamoModel dynamoModel)
         {
-            this.authProvider = dynamoModel.AuthenticationManager?.AuthProvider;
-            this.pathManager = dynamoModel.PathManager;
-            this.libraryLoader = new ExtensionLibraryLoader(dynamoModel);
-            this.customNodeManager = dynamoModel.CustomNodeManager;
-            this.dynamoVersion = new Version(dynamoModel.Version);
-            this.preferences = dynamoModel.PreferenceSettings;
-            this.linterManager = dynamoModel.LinterManager;
-            this.IsGeometryLibraryLoaded = dynamoModel.IsASMLoaded;
+            authProvider = dynamoModel.AuthenticationManager?.AuthProvider;
+            pathManager = dynamoModel.PathManager;
+            libraryLoader = new ExtensionLibraryLoader(dynamoModel);
+            customNodeManager = dynamoModel.CustomNodeManager;
+            dynamoVersion = new Version(dynamoModel.Version);
+            preferences = dynamoModel.PreferenceSettings;
+            linterManager = dynamoModel.LinterManager;
+            IsGeometryLibraryLoaded = dynamoModel.IsASMLoaded;
+            NoNetworkMode = dynamoModel.NoNetworkMode;
         }
 
     }

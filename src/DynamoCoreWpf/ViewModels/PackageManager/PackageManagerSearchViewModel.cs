@@ -20,15 +20,11 @@ using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Utilities;
 using Greg.Responses;
 using Lucene.Net.Documents;
+using Lucene.Net.Index;
 using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
-#if NETFRAMEWORK
-using Microsoft.Practices.Prism.Commands;
-using NotificationObject = Microsoft.Practices.Prism.ViewModel.NotificationObject;
-#else
 using Prism.Commands;
 using NotificationObject = Dynamo.Core.NotificationObject;
-#endif
 
 namespace Dynamo.PackageManager
 {
@@ -592,7 +588,7 @@ namespace Dynamo.PackageManager
             LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), package.Name);
             LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Description), package.Description);
 
-            if (package.Keywords.Count() > 0)
+            if (package.Keywords.Length > 0)
             {
                 LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords), package.Keywords);
             }
@@ -620,15 +616,7 @@ namespace Dynamo.PackageManager
         {
             if(LuceneUtility == null)
             {
-                LuceneSearch.LuceneUtilityPackageManager = new LuceneSearchUtility(PackageManagerClientViewModel.DynamoViewModel.Model);
-            }
-            if (DynamoModel.IsTestMode)
-            {
-                LuceneUtility.InitializeLuceneConfig(string.Empty, LuceneSearchUtility.LuceneStorage.RAM);
-            }
-            else
-            {
-                LuceneUtility.InitializeLuceneConfig(LuceneConfig.PackagesIndexingDirectory);
+                LuceneSearch.LuceneUtilityPackageManager = new LuceneSearchUtility(PackageManagerClientViewModel.DynamoViewModel.Model, LuceneSearchUtility.DefaultPkgIndexStartConfig);
             }
         }
         
@@ -1040,7 +1028,7 @@ namespace Dynamo.PackageManager
 
                     if (!DynamoModel.IsTestMode)
                     {
-                        LuceneUtility.dirReader = LuceneUtility.writer?.GetReader(applyAllDeletes: true);
+                        LuceneUtility.dirReader = LuceneUtility.writer != null ? LuceneUtility.writer.GetReader(applyAllDeletes: true) : DirectoryReader.Open(LuceneUtility.indexDir);
                         LuceneUtility.Searcher = new IndexSearcher(LuceneUtility.dirReader);
 
                         LuceneUtility.CommitWriterChanges();
@@ -1422,7 +1410,7 @@ namespace Dynamo.PackageManager
                 var packages = new List<PackageManagerSearchElementViewModel>();
 
                 //The DirectoryReader and IndexSearcher have to be assigned after commiting indexing changes and before executing the Searcher.Search() method,otherwise new indexed info won't be reflected
-                LuceneUtility.dirReader = LuceneUtility.writer?.GetReader(applyAllDeletes: true);
+                LuceneUtility.dirReader = LuceneUtility.writer != null ? LuceneUtility.writer.GetReader(applyAllDeletes: true): DirectoryReader.Open(LuceneUtility.indexDir);
 
                 if (LuceneUtility.Searcher == null && LuceneUtility.dirReader != null)
                 {

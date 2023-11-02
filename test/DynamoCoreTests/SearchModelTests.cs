@@ -565,7 +565,7 @@ namespace Dynamo.Tests
             var iDoc = CurrentDynamoModel.LuceneUtility.InitializeIndexDocumentForNodes();
             if (element != null)
             {
-                CurrentDynamoModel.AddNodeTypeToSearchIndex(element, iDoc);
+                CurrentDynamoModel.LuceneUtility.AddNodeTypeToSearchIndex(element, iDoc);
             }
         }
 

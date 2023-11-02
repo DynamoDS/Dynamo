@@ -1534,16 +1534,16 @@ If the toggle is off custom packages that are not already loaded will load once 
   </data>
   <data name="PackageFilterByStatus" xml:space="preserve">
     <value>STATUS</value>
-  </data>    
+  </data>
   <data name="PackageFilterNewTooltip" xml:space="preserve">
     <value>Published in the last 30 days</value>
-  </data>    
+  </data>
   <data name="PackageFilterUpdatedTooltip" xml:space="preserve">
     <value>Updated in the last 30 days</value>
   </data>
   <data name="PackageFilterDeprecatedTooltip" xml:space="preserve">
     <value>Discontinued packages</value>
-  </data>    
+  </data>
   <data name="PackageFilterHasDependenciesTooltip" xml:space="preserve">
     <value>Packages that require other packages to be installed</value>
   </data>
@@ -3437,10 +3437,10 @@ You can manage this in Preferences -&gt; Security.</value>
     <value>Node Autocomplete</value>
     <comment>Preferences | Features | Node Autocomplete</comment>
   </data>
-  <data name="HideNodesBelowSpecificConfidenceLevel" xml:space="preserve">
-    <value>Hide nodes below a specified confidence level</value>
+  <data name="PreferredConfidenceLevel" xml:space="preserve">
+    <value>Preferred confidence level</value>
   </data>
-  <data name="HideNodesBelowSpecificConfidenceLevelInfo" xml:space="preserve">
+  <data name="PreferredConfidenceLevelInfo" xml:space="preserve">
     <value>Confidence level appears next to each recommended node and represents estimated probability that the node is a good choice. When toggled on, this setting hides recommended nodes that don’t meet the specified confidence level. You can click the Low Confidence header to show the nodes.</value>
   </data>
   <data name="MLRecommendationNumberOfResults" xml:space="preserve">
@@ -3751,5 +3751,8 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   </data>
   <data name="ElementBindingWarningTitle" xml:space="preserve">
     <value>Element Binding Warning</value>
+  </data>
+  <data name="ElementBindingDesc" xml:space="preserve">
+    <value>Element Binding allows a two-way interaction between Dynamo and the host application like Revit or Civil3D where a user can select an element in the host document and have Dynamo "bind" that element to a node in the workspace.</value>
   </data>
 </root>

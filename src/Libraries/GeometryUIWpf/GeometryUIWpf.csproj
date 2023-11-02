@@ -21,13 +21,7 @@
 	</ReferenceCopyLocalPaths>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="2.18.0.2485" />
-  </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="WindowsBase" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.2965" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\ExportWithUnitsControl.xaml">
