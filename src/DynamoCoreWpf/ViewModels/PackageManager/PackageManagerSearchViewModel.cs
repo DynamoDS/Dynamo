@@ -1355,7 +1355,6 @@ namespace Dynamo.PackageManager
                 list.Reverse();
             }
 
-            // TODO - should we be unsubsribing somewhere?
             foreach (var x in list)
                 x.RequestShowFileDialog += OnRequestShowFileDialog;
 
