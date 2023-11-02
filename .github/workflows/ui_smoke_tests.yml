@@ -44,10 +44,10 @@ jobs:
           name: UI Smoke Test Report
           path: reports/report.xml
           reporter: java-junit
-      - name: Action Summary
+      - name: Summary
         if: always()
         run: |
           type summary.md | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
-          echo "Actor: @${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
-          echo "Workflow: [${{ github.event.workflow_run.name }}](${{ github.event.workflow_run.html_url }})" >> $env:GITHUB_STEP_SUMMARY
+          echo "Actor: @${{ github.actor }}" >> $env:GITHUB_STEP_SUMMARY
+          echo "Workflow Run: [${{ github.event.workflow_run.name }}](${{ github.event.workflow_run.html_url }})" >> $env:GITHUB_STEP_SUMMARY
           echo "Pull Request: [${{ github.event.workflow_run.pull_requests[0].number }}](${{ github.event.workflow_run.pull_requests[0].html_url }})" >> $env:GITHUB_STEP_SUMMARY
