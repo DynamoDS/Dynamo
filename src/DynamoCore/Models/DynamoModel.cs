@@ -535,6 +535,8 @@ namespace Dynamo.Models
             /// Configuration option to start Dynamo in offline mode.
             /// </summary>
             bool NoNetworkMode => false;
+
+            HostAnalyticsInfo HostAnalyticsInfo { get; set; }
         }
 
         /// <summary>
@@ -592,10 +594,6 @@ namespace Dynamo.Models
             [Obsolete("This property is no longer used and will be removed in Dynamo 3.0 - please use Dynamo.Logging.Analytics.DisableAnalytics instead.")]
             public bool DisableADP { get; set; }
 
-            /// <summary>
-            /// Host analytics info
-            /// TODO: Move this to IStartConfiguration in Dynamo 3.0
-            /// </summary>
             public HostAnalyticsInfo HostAnalyticsInfo { get; set; }
 
             /// <summary>
@@ -665,6 +663,7 @@ namespace Dynamo.Models
             IsTestMode = config.StartInTestMode;
             IsHeadless = config.IsHeadless;
             NoNetworkMode = config.NoNetworkMode;
+            HostAnalyticsInfo = config.HostAnalyticsInfo;
 
             DebugSettings = new DebugSettings();
             Logger = new DynamoLogger(DebugSettings, pathManager.LogDirectory, IsTestMode, CLIMode, IsServiceMode);
@@ -702,11 +701,6 @@ namespace Dynamo.Models
                 }
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
                 PreferenceSettings.MessageLogged += LogMessage;
-            }
-
-            if (config is DefaultStartConfiguration defaultStartConfiguration)
-            {
-                HostAnalyticsInfo = defaultStartConfiguration.HostAnalyticsInfo;
             }
 
             UpdateManager = config.UpdateManager ?? new DefaultUpdateManager(null);
