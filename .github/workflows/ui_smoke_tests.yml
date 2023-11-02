@@ -1,4 +1,5 @@
-name: Test
+name: UI Smoke Tests
+run-name: UI Smoke Tests - ${{ github.event.workflow_run.head_commit.message }}
 
 on:
   workflow_run:
@@ -33,7 +34,7 @@ jobs:
           name: DynamoSandbox
           workflow: ${{ github.event.workflow_run.workflow_id }}
           path: ${{ github.workspace }}\build
-      - name: Run Tests
+      - name: Run UI Smoke Tests
         shell: cmd
         run: .github\scripts\run_tests.bat ${{ secrets.TEST_EXECUTE_ACCESS_KEY }} Dynamo\Dynamo.pjs DynamoSandbox SmokeTests
       - name: UI Smoke Tests Report
@@ -47,5 +48,6 @@ jobs:
         if: always()
         run: |
           type summary.md | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo ":package: Trigerred by: [${{ github.event.workflow_run.name }}](${{ github.event.workflow_run.html_url }})" >> $env:GITHUB_STEP_SUMMARY
+          echo "Actor: @${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+          echo "Workflow: [${{ github.event.workflow_run.name }}](${{ github.event.workflow_run.html_url }})" >> $env:GITHUB_STEP_SUMMARY
+          echo "Pull Request: [${{ github.event.workflow_run.pull_requests[0].number }}](${{ github.event.workflow_run.pull_requests[0].html_url }})" >> $env:GITHUB_STEP_SUMMARY
