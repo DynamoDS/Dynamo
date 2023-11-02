@@ -12,59 +12,67 @@ namespace Dynamo.Utilities
     /// </summary>
     internal static class PIIDetector
     {
+        const string Nodes = "Nodes";
+        const string InputValue = "InputValue";
+        const string HintPath = "HintPath";
+        const string Code = "Code";
+        const string View = "View";
+        const string Annotations = "Annotations";
+        const string Title = "Title";
+
         /// <summary>
-        /// Removes the PII data from a JSON workspace
+        /// Removes the PII data from a JSON workspace indicating the status of the result
         /// </summary>
         /// <param name="jsonObject"></param>
         /// <returns></returns>
-        public static JObject RemovePIIData(JObject jsonObject)
+        public static Tuple<JObject,bool> RemovePIIData(JObject jsonObject)
         {
             JObject jObjectResult = jsonObject;
+            bool removeResult = true;
 
-            foreach (var properties in jObjectResult.Properties())
+            try
             {
-                if (properties.Name == "Nodes")
+                foreach (var properties in jObjectResult.Properties())
                 {
-                    if (properties.Value.Type == JTokenType.Array)
+                    if (properties.Name == Nodes)
                     {
                         var nodes = (JArray)properties.Value;
                         foreach (JObject node in nodes)
                         {
-                            var nodeProperties = node.Children<JProperty>();
-
-                            JProperty inputValue = nodeProperties.FirstOrDefault(x => x.Name == "InputValue");
-                            JProperty hintPath = nodeProperties.FirstOrDefault(x => x.Name == "HintPath");
-                            JProperty code = nodeProperties.FirstOrDefault(x => x.Name == "Code");
-
-                            if (inputValue != null) { inputValue.Value = RemovePIIData((string)inputValue.Value); }
-                            if (hintPath != null) { hintPath.Value = RemovePIIData((string)hintPath.Value); }
-                            if (code != null) { code.Value = RemovePIIData((string)code.Value); }
+                            node.Children<JProperty>().ToList().ForEach(property =>
+                            {
+                                if (property.Name == InputValue || property.Name == HintPath || property.Name == Code)
+                                {
+                                    property.Value = RemovePIIData((string)property.Value);
+                                }
+                            });
                         }
                     }
-                }
-                else if (properties.Name == "View")
-                {
-                    var view = (JObject)properties.Value;
-                    var viewProperties = view.Children<JProperty>();
-                    var annotations = viewProperties.FirstOrDefault(x => x.Name == "Annotations");
-
-                    if (annotations != null)
+                    else if (properties.Name == View)
                     {
-                        if (annotations.Value.Type == JTokenType.Array)
-                        {
-                            var annotationsList = (JArray)annotations.Value;
+                        var view = (JObject)properties.Value;
+                        var viewProperties = view.Children<JProperty>();
 
-                            foreach (JObject annotation in annotationsList)
+                        var annotations = (JArray)viewProperties.FirstOrDefault(x => x.Name == Annotations).Value;
+                        foreach (JObject annotation in annotations)
+                        {
+                            annotation.Children<JProperty>().ToList().ForEach(property =>
                             {
-                                var annotationProperties = annotation.Children<JProperty>();
-                                JProperty title = annotationProperties.FirstOrDefault(x => x.Name == "Title");
-                                if (title != null) { title.Value = RemovePIIData((string)title.Value); }
-                            }
+                                if (property.Name == Title)
+                                {
+                                    property.Value = RemovePIIData((string)property.Value);
+                                }
+                            });
                         }
                     }
                 }
             }
-            return jObjectResult;
+            catch
+            {
+                removeResult = false;
+            }
+
+            return new Tuple<JObject, bool>(jObjectResult, removeResult);
         }
 
         static string emailPattern = @"\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*";
