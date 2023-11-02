@@ -2,7 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using Dynamo.PackageManager.ViewModels;
+using Dynamo.UI;
 using Dynamo.Utilities;
 
 namespace Dynamo.PackageManager.UI
@@ -146,5 +148,45 @@ namespace Dynamo.PackageManager.UI
             }
             return;
         }
+
+       
+
+        private void DropDownInstallButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            if (button == null) { return; }
+                       
+            var contextMenu = new ContextMenu();
+            var commandBinding = new Binding("DownloadLatestToCustomPathCommand");
+            commandBinding.Source = button.DataContext;
+            var commandParameterBinding = new Binding("LatestVersion");
+            commandParameterBinding.Source = button.DataContext;
+
+            var contextMenuStyle = new Style(typeof(ContextMenu));
+            contextMenuStyle.BasedOn = (Style)SharedDictionaryManager.DynamoModernDictionary["ContextMenuStyle"];
+
+            //Apply the Style to the ContextMenu
+            contextMenu.Style = contextMenuStyle;
+            contextMenu.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(60, 60, 60));
+
+            // Create and add menu items to the ContextMenu
+            var menuItem = new MenuItem 
+            {
+                Header = Dynamo.Wpf.Properties.Resources.PackageSearchViewInstallLatestVersionTo,
+                MinWidth = 60,
+                MinHeight = 30,
+                Cursor = System.Windows.Input.Cursors.Hand
+            };
+
+            contextMenu.Items.Add(menuItem);
+            BindingOperations.SetBinding(menuItem, MenuItem.CommandProperty, commandBinding);
+            BindingOperations.SetBinding(menuItem, MenuItem.CommandParameterProperty, commandParameterBinding);
+                
+            // Attach the ContextMenu to the button
+            button.ContextMenu = contextMenu;
+
+            // Open the context menu when the left mouse button is pressed
+            contextMenu.IsOpen = true;            
+        }   
     }
 }

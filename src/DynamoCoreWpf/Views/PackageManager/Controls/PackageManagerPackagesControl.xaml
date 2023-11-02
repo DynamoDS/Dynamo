@@ -273,26 +273,15 @@
                                                                 <!-- The drop-down context menu arrow button -->
                                                                 <Button Name="dropDownInstallButton"
                                                                         DockPanel.Dock="Right"
-                                                                        Visibility="{Binding CanInstall,
-                                                                                             Converter={StaticResource BoolToVisibilityCollapsedConverter}}"
+                                                                        Visibility="{Binding CanInstall, Converter={StaticResource BoolToVisibilityCollapsedConverter}}"
                                                                         BorderThickness="0"
                                                                         Cursor="Hand"
+                                                                        Click="DropDownInstallButton_OnClick"
                                                                         Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
                                                                     <Image Source=" /DynamoCoreWpf;component/UI/Images/caret_drop_down.png"
                                                                            Width="7"
                                                                            Height="5" />
-                                                                    <Button.ContextMenu>
-                                                                        <ContextMenu x:Name="installContextMenu"
-                                                                                      Style="{StaticResource ContextMenuStyle}">
-                                                                            <MenuItem Header="{x:Static p:Resources.PackageSearchViewInstallLatestVersionTo}"
-                                                                                  Command="{Binding DownloadLatestToCustomPathCommand}"
-                                                                                  CommandParameter="{Binding Path=LatestVersion}"
-                                                                                  MinHeight="30"
-                                                                                  MinWidth="60" />
-                                                                        </ContextMenu>
-                                                                    </Button.ContextMenu>
                                                                 </Button>
-
                                                                 <TextBlock Name="textBlock"
                                                                            Padding="4,4,4,3"
                                                                            VerticalAlignment="Center"
