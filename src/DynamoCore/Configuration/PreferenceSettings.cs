@@ -68,6 +68,7 @@ namespace Dynamo.Configuration
         private bool isTimeStampIncludedInExportFilePath;
         private bool isCreatedFromValidFile = true;
         private string backupLocation;
+        private readonly int defaultTimeOut;
 
         #region Constants
         /// <summary>
@@ -430,6 +431,14 @@ namespace Dynamo.Configuration
                 backupLocation = value;
                 RaisePropertyChanged(nameof(BackupLocation));
             }
+        }
+
+        /// <summary>
+        /// Backup files path
+        /// </summary>
+        public int DefaultTimeOut
+        {
+            get { return defaultTimeOut; }
         }
 
         /// <summary>
@@ -908,6 +917,7 @@ namespace Dynamo.Configuration
             ReadNotificationIds = new List<string>();
             DynamoPlayerFolderGroups = new List<DynamoPlayerFolderGroup>();
             backupLocation = string.Empty;
+            defaultTimeOut = 100;
         }
 
         /// <summary>
