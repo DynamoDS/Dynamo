@@ -1576,6 +1576,8 @@ namespace Dynamo.PackageManager
         internal void PackageManagerViewClose()
         {
             SearchAndUpdateResults(String.Empty); // reset the search text property
+            InitialResultsLoaded = false;
+            TimedOut = false;
         }
 
         /// <summary>
