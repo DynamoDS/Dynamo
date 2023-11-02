@@ -671,19 +671,20 @@ namespace Dynamo.Tests
             var valueWithDirectory2 = PIIDetector.GetNodeValue(workspaceWithPIIData, nodeWithDirectoryId, "HintPath");
             var valueWithCreditCards = PIIDetector.GetNoteValue(workspaceWithPIIData, noteWithCreditCardsId);
             var valueWithSSNs = PIIDetector.GetNoteValue(workspaceWithPIIData, noteWithSSNsId);
-            var valueWithIPAddress = PIIDetector.GetNodeValue(workspaceWithPIIData, nodeWithIPAddressId,"InputValue");
+            var valueWithIPAddress = PIIDetector.GetNodeValue(workspaceWithPIIData, nodeWithIPAddressId, "InputValue");
             var valueWithDates = PIIDetector.GetNodeValue(workspaceWithPIIData, nodeWithDatesId, "InputValue");
 
-            JObject  workspaceWithoutPIIData = PIIDetector.RemovePIIData(ViewModel.CurrentSpaceViewModel.GetJsonRepresentation());
+            Tuple<JObject, bool> workspaceWithoutPIIDataResult = PIIDetector.RemovePIIData(ViewModel.CurrentSpaceViewModel.GetJsonRepresentation());
+            Assert.IsTrue(workspaceWithoutPIIDataResult.Item2);
 
-            var valueWithoutEmail = PIIDetector.GetNoteValue(workspaceWithoutPIIData, noteWithEmailId);
-            var valueWithoutWebPage = PIIDetector.GetNodeValue(workspaceWithoutPIIData, nodeWithWebPageId, "Code");
-            var valueWithoutDirectory = PIIDetector.GetNodeValue(workspaceWithoutPIIData, nodeWithDirectoryId, "InputValue");
-            var valueWithoutDirectory2 = PIIDetector.GetNodeValue(workspaceWithoutPIIData, nodeWithDirectoryId, "HintPath");
-            var valueWithoutCreditCards = PIIDetector.GetNoteValue(workspaceWithoutPIIData, noteWithCreditCardsId);
-            var valueWithoutSSNs = PIIDetector.GetNoteValue(workspaceWithoutPIIData, noteWithSSNsId);
-            var valueWithoutIPAddress = PIIDetector.GetNodeValue(workspaceWithoutPIIData, nodeWithIPAddressId, "InputValue");
-            var valueWithoutDates = PIIDetector.GetNodeValue(workspaceWithoutPIIData, nodeWithDatesId, "InputValue");
+            var valueWithoutEmail = PIIDetector.GetNoteValue(workspaceWithoutPIIDataResult.Item1, noteWithEmailId);
+            var valueWithoutWebPage = PIIDetector.GetNodeValue(workspaceWithoutPIIDataResult.Item1, nodeWithWebPageId, "Code");
+            var valueWithoutDirectory = PIIDetector.GetNodeValue(workspaceWithoutPIIDataResult.Item1, nodeWithDirectoryId, "InputValue");
+            var valueWithoutDirectory2 = PIIDetector.GetNodeValue(workspaceWithoutPIIDataResult.Item1, nodeWithDirectoryId, "HintPath");
+            var valueWithoutCreditCards = PIIDetector.GetNoteValue(workspaceWithoutPIIDataResult.Item1, noteWithCreditCardsId);
+            var valueWithoutSSNs = PIIDetector.GetNoteValue(workspaceWithoutPIIDataResult.Item1, noteWithSSNsId);
+            var valueWithoutIPAddress = PIIDetector.GetNodeValue(workspaceWithoutPIIDataResult.Item1, nodeWithIPAddressId, "InputValue");
+            var valueWithoutDates = PIIDetector.GetNodeValue(workspaceWithoutPIIDataResult.Item1, nodeWithDatesId, "InputValue");
 
             Assert.IsTrue(PIIDetector.ContainsEmail((string)valueWhitEmail));
             Assert.IsTrue(PIIDetector.ContainsWebsite((string)valueWithWebPage));
@@ -694,7 +695,7 @@ namespace Dynamo.Tests
             Assert.IsTrue(PIIDetector.ContainsIpAddress((string)valueWithIPAddress));
             Assert.IsTrue(PIIDetector.ContainsDate((string)valueWithDates));
 
-            Assert.IsFalse(PIIDetector.ContainsEmail((string)valueWithoutEmail));            
+            Assert.IsFalse(PIIDetector.ContainsEmail((string)valueWithoutEmail));
             Assert.IsFalse(PIIDetector.ContainsWebsite((string)valueWithoutWebPage));
             Assert.IsFalse(PIIDetector.ContainsDirectory((string)valueWithoutDirectory));
             Assert.IsFalse(PIIDetector.ContainsDirectory((string)valueWithoutDirectory2));
