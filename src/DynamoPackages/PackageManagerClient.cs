@@ -74,7 +74,7 @@ namespace Dynamo.PackageManager
                 return pkgResponse.content;
             }, null);
 
-            return votes.has_upvoted;
+            return votes?.has_upvoted;
         }
 
         internal PackageManagerResult DownloadPackage(string packageId, string version, out string pathToPackage)

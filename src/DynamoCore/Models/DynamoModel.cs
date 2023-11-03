@@ -226,6 +226,11 @@ namespace Dynamo.Models
         internal bool IsServiceMode { get; set; }
 
         /// <summary>
+        /// True if Dynamo starts up in offline mode.
+        /// </summary>
+        internal bool NoNetworkMode { get; }
+
+        /// <summary>
         /// UpdateManager to handle automatic upgrade to higher version.
         /// </summary>
         public IUpdateManager UpdateManager { get; private set; }
@@ -525,6 +530,16 @@ namespace Dynamo.Models
             /// No update checks or analytics collection should be done.
             /// </summary>
             bool IsHeadless { get; set; }
+
+            /// <summary>
+            /// Configuration option to start Dynamo in offline mode.
+            /// </summary>
+            bool NoNetworkMode => false;
+
+            /// <summary>
+            /// Configuration object that contains host information like Host name, version and session id.
+            /// </summary>
+            HostAnalyticsInfo HostAnalyticsInfo { get; set; }
         }
 
         /// <summary>
@@ -568,6 +583,7 @@ namespace Dynamo.Models
             public IEnumerable<IExtension> Extensions { get; set; }
             public TaskProcessMode ProcessMode { get; set; }
             public bool IsHeadless { get; set; }
+            public bool NoNetworkMode { get; set; }
             public bool IsServiceMode { get; set; }
             public string PythonTemplatePath { get; set; }
             /// <summary>
@@ -581,10 +597,6 @@ namespace Dynamo.Models
             [Obsolete("This property is no longer used and will be removed in Dynamo 3.0 - please use Dynamo.Logging.Analytics.DisableAnalytics instead.")]
             public bool DisableADP { get; set; }
 
-            /// <summary>
-            /// Host analytics info
-            /// TODO: Move this to IStartConfiguration in Dynamo 3.0
-            /// </summary>
             public HostAnalyticsInfo HostAnalyticsInfo { get; set; }
 
             /// <summary>
@@ -653,6 +665,8 @@ namespace Dynamo.Models
             Context = config.Context;
             IsTestMode = config.StartInTestMode;
             IsHeadless = config.IsHeadless;
+            NoNetworkMode = config.NoNetworkMode;
+            HostAnalyticsInfo = config.HostAnalyticsInfo;
 
             DebugSettings = new DebugSettings();
             Logger = new DynamoLogger(DebugSettings, pathManager.LogDirectory, IsTestMode, CLIMode, IsServiceMode);
@@ -692,11 +706,6 @@ namespace Dynamo.Models
                 PreferenceSettings.MessageLogged += LogMessage;
             }
 
-            if (config is DefaultStartConfiguration defaultStartConfiguration)
-            {
-                HostAnalyticsInfo = defaultStartConfiguration.HostAnalyticsInfo;
-            }
-
             UpdateManager = config.UpdateManager ?? new DefaultUpdateManager(null);
 
             if (UpdateManager != null)
@@ -729,7 +738,7 @@ namespace Dynamo.Models
 
             // If user skipped analytics from assembly config, do not try to launch the analytics client
             // or the feature flags client for web traffic reason.
-            if (!IsServiceMode && !areAnalyticsDisabledFromConfig && !Dynamo.Logging.Analytics.DisableAnalytics)
+            if (!IsServiceMode && !areAnalyticsDisabledFromConfig && !Analytics.DisableAnalytics)
             {
                 // Start the Analytics service only when a session is not present.
                 // In an integrator host, as splash screen can be closed without shutting down the ViewModel, the analytics service is not stopped.
@@ -944,7 +953,7 @@ namespace Dynamo.Models
             }
 
             UpdateManager.Log += UpdateManager_Log;
-            if (!IsTestMode && !IsHeadless && !IsServiceMode)
+            if (!IsTestMode && !IsHeadless && !IsServiceMode && !config.NoNetworkMode)
             {
                 DefaultUpdateManager.CheckForProductUpdate(UpdateManager);
             }

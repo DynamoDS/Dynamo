@@ -1,0 +1,24 @@
+name: Close stale issues
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  close_stale_issues:
+    name: Close stale issues
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close Issues
+        id: close_issues
+        uses: actions/stale@v8
+        with:
+          days-before-stale: 30
+          days-before-close: 0
+          only-labels: needs more info
+          close-issue-message: Given that there has been no additional information added, this issue will be closed for now. Please reopen and provide additional information if you wish the Dynamo team to investigate further.
+      - name: Summary
+        run: |
+          echo "# Closed Issues" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.close_issues.outputs.closed-issues-prs }}" >> $GITHUB_STEP_SUMMARY
