@@ -551,7 +551,7 @@ namespace DynamoCoreWpfTests
             var nodeName = "Package.Hello";
             var nodeRename = "New node name";
             var expectedNodeDocumentationTitle = $"<h1>{nodeRename}</h1>";
-            var expectedNodeDocumentationNamespace = $"<p><i>Package.{nodeName}</i></p>";
+            var expectedNodeDocumentationNamespace = $"<p><i>PackageWithDocs.{nodeName}</i></p>";
             var expectedAddtionalNodeDocumentationHeader = @"<h1 id=""hello-dynamo"">Hello Dynamo!</h1>";
             var expectedAddtionalNodeDocumentationImage = String.Format(@"<img id='drag--img' class='resizable--img'  src=""http://appassets/{0}"" alt=""Dynamo Icon image"" />", Path.GetFileName(localImagePath));
 
@@ -592,7 +592,7 @@ namespace DynamoCoreWpfTests
         {
             // Arrange
             var packageName = "Package";
-            var nodeWithDocumentation = "Package.Package.Hello";
+            var nodeWithDocumentation = "PackageWithDocs.Package.Hello";
             var nodeWithoutDocumentation = "Package.Package.Package";
 
             // Assert
