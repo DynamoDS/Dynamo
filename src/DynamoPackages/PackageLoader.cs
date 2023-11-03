@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Dynamo.Configuration;
+using System.Runtime.Loader;
 using Dynamo.Core;
 using Dynamo.Exceptions;
 using Dynamo.Extensions;
@@ -777,7 +777,7 @@ namespace Dynamo.PackageManager
         {
             try
             {
-                assem = Assembly.LoadFrom(filename);
+                assem = alc.LoadFromAssemblyPath(filename);
                 return true;
             }
             catch (FileLoadException e)
