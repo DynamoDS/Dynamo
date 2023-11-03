@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -21,4 +21,5 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("PythonNodeModelsWpf")]
 [assembly: InternalsVisibleTo("PythonMigrationViewExtension")]
 [assembly: InternalsVisibleTo("DynamoCoreWpf")]
+[assembly: TypeForwardedTo(typeof(PythonNodeModels.PythonEngineVersion))]
 
