@@ -358,12 +358,6 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Returns the Uuid property of the seralized Workspace
-        /// </summary>
-        [JsonIgnore]
-        internal string GraphId { get; set; }
-
-        /// <summary>
         /// Returns the Json representation of the current graph
         /// </summary>
         [JsonIgnore]
@@ -452,7 +446,6 @@ namespace Dynamo.ViewModels
 
                         if ((String)connectedNodeInputId.Value == inputId)
                         {
-                            string hh = nodeId + "___" + connectedInputIndex.ToString();
                             foundNode = true;
                             break;
                         }
@@ -752,8 +745,7 @@ namespace Dynamo.ViewModels
                             }
                         }
                     }
-
-                    saveContent = GuidUtility.UpdateWorkspaceGUIDs(jo.ToString());
+                    saveContent = GuidUtility.UpdateWorkspaceGUIDs(jo.ToString());                    
                 }
                 else
                 {
@@ -761,7 +753,7 @@ namespace Dynamo.ViewModels
                 }
 
                 JsonRepresentation = JObject.Parse(saveContent);
-                GraphId = JsonRepresentation.Properties().First(p => p.Name == "Uuid").Value.ToString();
+                DynamoViewModel.Model.CurrentWorkspace.Guid = new Guid(JsonRepresentation.Properties().First(p => p.Name == "Uuid").Value.ToString());
 
                 File.WriteAllText(filePath, saveContent);
 

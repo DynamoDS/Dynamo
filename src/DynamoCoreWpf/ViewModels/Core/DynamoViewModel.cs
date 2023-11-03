@@ -2097,7 +2097,7 @@ namespace Dynamo.ViewModels
         private bool HasSubstantialCheckSum()
         {
             bool substantialChecksum = false;
-            string graphId = currentWorkspaceViewModel.GraphId;
+            string graphId = Model.CurrentWorkspace.Guid.ToString();
 
             GraphChecksumItem checksumItem = PreferenceSettings.GraphChecksumItemsList.Where(i => i.GraphId == graphId).FirstOrDefault();
             if (checksumItem != null)
@@ -2121,7 +2121,7 @@ namespace Dynamo.ViewModels
         {
             try
             {
-                Model.Logger.Log(String.Format(Properties.Resources.SavingInProgress, path));                
+                Model.Logger.Log(String.Format(Properties.Resources.SavingInProgress, path));
                 CurrentSpaceViewModel.Save(path, isBackup, Model.EngineController, saveContext);
 
                 if (!isBackup)
@@ -2133,7 +2133,7 @@ namespace Dynamo.ViewModels
                         Model.Logger.Log("The Workspace is valid for FDX");
                         if (currentWorkspaceViewModel.Checksum != string.Empty)
                         {
-                            Model.Logger.Log("The Workspace id is : " + currentWorkspaceViewModel.GraphId);
+                            Model.Logger.Log("The Workspace id is : " + currentWorkspaceViewModel.Model.Guid.ToString());
                             Model.Logger.Log("The Workspace checksum is : " + currentWorkspaceViewModel.Checksum);
                             Model.Logger.Log("The Workspace has Substantial checksum : " + HasSubstantialCheckSum().ToString());
                         }

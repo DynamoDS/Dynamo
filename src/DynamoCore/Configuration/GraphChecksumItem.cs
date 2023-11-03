@@ -8,29 +8,10 @@ namespace Dynamo.Configuration
     /// <summary>
     /// Represents the stringified version of the nodes connections from a graph
     /// </summary>
-    public class GraphChecksumItem : NotificationObject
+    public class GraphChecksumItem
     {
-        private string graphId;
-        private string checksum;
+        public string GraphId { get; set; }
 
-        public string GraphId
-        {
-            get { return graphId; }
-            set
-            {
-                graphId = value;
-                RaisePropertyChanged(nameof(GraphId));
-            }
-        }
-
-        public string Checksum
-        {
-            get { return checksum; }
-            set
-            {
-                checksum = value;
-                RaisePropertyChanged(nameof(Checksum));
-            }
-        }
+        public string Checksum { get; set; }   
     }
 }
