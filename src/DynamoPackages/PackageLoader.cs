@@ -777,7 +777,7 @@ namespace Dynamo.PackageManager
         {
             try
             {
-                assem = alc.LoadFromAssemblyPath(filename);
+                assem = Assembly.LoadFrom(filename);
                 return true;
             }
             catch (FileLoadException e)
