@@ -304,7 +304,7 @@ namespace Dynamo.PackageManager
             get { return _SearchText; }
             set
             {
-                if(_SearchText!= value)
+                if(_SearchText != value)
                 {
                     _SearchText = value;
                     RaisePropertyChanged("SearchText");
