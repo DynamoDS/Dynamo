@@ -17,6 +17,7 @@ using Dynamo.Scheduler;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
+using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 
 namespace DynamoCoreWpfTests
@@ -745,20 +746,20 @@ namespace DynamoCoreWpfTests
                 Assert.AreEqual(ViewModel.Model.CurrentWorkspace.Nodes.Count(), 1);
 
                 var node = ViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault();
-                RequestNodeDocs(node);
+               
 
                 // Show the DocumentationBrowser so we can get the DocumentationBrowserViewModel
                 ShowDocsBrowser();
+                RequestNodeDocs(node);
+
                 var docsView = GetDocsTabItem().Content as DocumentationBrowserView;
                 var docsViewModel = docsView.DataContext as DocumentationBrowserViewModel;
-
 
                 docsViewModel.GraphPath = insertDynFilePath;
 
                 //Insert the Graph into the current workspace
                 docsViewModel.InsertGraph();
             }
-   
             //Validates that we have 5 nodes the CurrentWorkspace (after the graph was added)
             //Assert.AreEqual(ViewModel.Model.CurrentWorkspace.Nodes.Count(), 5);         
         }
