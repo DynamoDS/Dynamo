@@ -55,6 +55,8 @@ namespace Dynamo.UI.Views
         /// </summary>
         internal AuthenticationManager authManager;
 
+        internal HostAnalyticsInfo hostAnalyticsInfo;
+
         /// <summary>
         /// Dynamo View Model reference
         /// </summary>
@@ -81,6 +83,7 @@ namespace Dynamo.UI.Views
                 // When view model is closed, we need to close the splash screen if it is displayed.
                 viewModel.RequestClose += SplashScreenRequestClose;
                 authManager = viewModel.Model.AuthenticationManager;
+                hostAnalyticsInfo = viewModel.Model.HostAnalyticsInfo;
             }
         }
 
@@ -478,7 +481,8 @@ namespace Dynamo.UI.Views
         internal void CloseWindow()
         {
             CloseWasExplicit = true;
-            if (Application.Current != null)
+
+            if (string.IsNullOrEmpty(hostAnalyticsInfo.HostName))
             {
                 Application.Current.Shutdown();
                 Analytics.TrackEvent(Actions.Close, Categories.SplashScreenOperations);
