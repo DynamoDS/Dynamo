@@ -484,7 +484,7 @@ namespace Dynamo.UI.Views
 
             if (string.IsNullOrEmpty(hostAnalyticsInfo.HostName))
             {
-                Application.Current.Shutdown();
+                Application.Current?.Shutdown();
                 Analytics.TrackEvent(Actions.Close, Categories.SplashScreenOperations);
             }
             // If Dynamo is launched from an integrator host, user should be able to close the splash screen window.
