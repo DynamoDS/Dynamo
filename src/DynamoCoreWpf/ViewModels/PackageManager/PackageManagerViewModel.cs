@@ -54,8 +54,8 @@ namespace Dynamo.PackageManager
 
             LocalPackages.CollectionChanged += LocalPackages_CollectionChanged;
 
-            // We are forced to make the udpate oureslves if the PreferencesViewModel has not been initialized yet
-            if (String.IsNullOrEmpty(PreferencesViewModel.SelectedPackagePathForInstall))
+            // We are forced to make the update ourselves if the Preferences ViewModel has not been initialized yet
+            if (String.IsNullOrEmpty(PreferencesViewModel?.SelectedPackagePathForInstall))
             {
                 PreferencesViewModel.SelectedPackagePathForInstall = dynamoViewModel.PreferenceSettings.SelectedPackagePathForInstall;
             }
