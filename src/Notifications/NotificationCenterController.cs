@@ -164,7 +164,7 @@ namespace Dynamo.Notifications
             var uri = DynamoUtilities.PathHelper.getServiceBackendAddress(this, "notificationAddress");
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
             request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-            request.Timeout = dynamoViewModel.Model.PreferenceSettings.DefaultTimeOut;
+            request.Timeout = dynamoViewModel.Model.PreferenceSettings.NotificationsDefaultTimeOut;
 
             using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
             using (Stream stream = response.GetResponseStream())
