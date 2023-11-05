@@ -237,6 +237,19 @@ namespace Dynamo.PackageManager
             return packageUploadHandle;
         }
 
+
+        internal PackageUploadHandle PublishRetainAsync(Package package, IEnumerable<IEnumerable<string>> files, IEnumerable<string> markdownFiles, bool isNewVersion)
+        {
+            var packageUploadHandle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(package));
+
+            Task.Factory.StartNew(() =>
+            {
+                PublishRetainFolderStructure(package, files, markdownFiles, isNewVersion, packageUploadHandle);
+            });
+
+            return packageUploadHandle;
+        }
+
         internal void Publish(Package package, IEnumerable<string> files, IEnumerable<string> markdownFiles, bool isNewVersion, PackageUploadHandle packageUploadHandle)
         {
             try
@@ -268,6 +281,45 @@ namespace Dynamo.PackageManager
                     return;
                 }
                
+                packageUploadHandle.Done(null);
+            }
+            catch (Exception e)
+            {
+                packageUploadHandle.Error(e.GetType() + ": " + e.Message);
+            }
+        }
+
+        internal void PublishRetainFolderStructure(Package package, IEnumerable<IEnumerable<string>> files, IEnumerable<string> markdownFiles, bool isNewVersion, PackageUploadHandle packageUploadHandle)
+        {
+            try
+            {
+                ResponseBody ret = null;
+                if (isNewVersion)
+                {
+                    var pkg = uploadBuilder.NewPackageVersionRetainUpload(package, packageUploadDirectory, files, markdownFiles,
+                        packageUploadHandle);
+                    packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
+                    ret = this.client.ExecuteAndDeserialize(pkg);
+                }
+                else
+                {
+                    var pkg = uploadBuilder.NewPackageRetainUpload(package, packageUploadDirectory, files, markdownFiles,
+                        packageUploadHandle);
+                    packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
+                    ret = this.client.ExecuteAndDeserialize(pkg);
+                }
+                if (ret == null)
+                {
+                    packageUploadHandle.Error("Failed to submit.  Try again later.");
+                    return;
+                }
+
+                if (ret != null && !ret.success)
+                {
+                    packageUploadHandle.Error(ret.message);
+                    return;
+                }
+
                 packageUploadHandle.Done(null);
             }
             catch (Exception e)

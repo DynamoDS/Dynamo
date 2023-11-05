@@ -1784,6 +1784,12 @@ namespace Dynamo.PackageManager
                 return;
             }
             var contentFiles = BuildPackage();
+
+            //do not create the updatedFiles used for retain folder route unless needed
+            IEnumerable<IEnumerable<string>> updatedFiles = null;
+            if(RetainFolderStructureOverride)
+                updatedFiles = UpdateFilesForRetainFolderStructure(contentFiles);
+
             try
             {
                 //if buildPackage() returns no files then the package
@@ -1794,7 +1800,9 @@ namespace Dynamo.PackageManager
                 }
                 // begin submission
                 var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
-                var handle = pmExtension.PackageManagerClient.PublishAsync(Package, contentFiles, MarkdownFiles, IsNewVersion);
+                var handle = RetainFolderStructureOverride ?
+                    pmExtension.PackageManagerClient.PublishRetainAsync(Package, updatedFiles, MarkdownFiles, IsNewVersion) :
+                    pmExtension.PackageManagerClient.PublishAsync(Package, contentFiles, MarkdownFiles, IsNewVersion);
 
                 // start upload
                 Uploading = true;
