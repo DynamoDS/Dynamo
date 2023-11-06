@@ -307,6 +307,7 @@ namespace Dynamo.PackageManager
                 if(_SearchText != value)
                 {
                     _SearchText = value;
+                    SearchAndUpdateResults();
                     RaisePropertyChanged("SearchText");
                 }
             }
@@ -1069,7 +1070,7 @@ namespace Dynamo.PackageManager
             if(aTimer == null) 
                 aTimer = new System.Timers.Timer();
 
-            aTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
+            aTimer.Elapsed += OnTimedEvent;
             aTimer.Interval = MAX_LOAD_TIME;
             aTimer.AutoReset = false;
             aTimer.Enabled = true;
@@ -1585,7 +1586,7 @@ namespace Dynamo.PackageManager
         internal void Dispose()
         {
              nonHostFilter?.ForEach(f => f.PropertyChanged -= filter_PropertyChanged);
-             aTimer.Elapsed -= new ElapsedEventHandler(OnTimedEvent);
+             aTimer.Elapsed -= OnTimedEvent;
         }
     }
 }

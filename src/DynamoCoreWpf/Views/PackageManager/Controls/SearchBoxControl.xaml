@@ -115,7 +115,7 @@
                             Cursor="IBeam"
                             HorizontalAlignment="Stretch"
                             IsEnabled="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=IsEnabled}"
-                            TextChanged="SearchTextBox_OnTextChanged"
+                            Text="{Binding SearchText, Delay=100, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             IsKeyboardFocusWithinChanged="SearchTextBox_OnKeyboardFocusWithinChanged"></TextBox>
                         
                         <!-- Clear Search -->

@@ -126,12 +126,6 @@ namespace Dynamo.PackageManager.UI
             this.packageManagerPublish.Dispose();
             this.PackageManagerViewModel.PackageSearchViewModel.RequestShowFileDialog -= OnRequestShowFileDialog;
             this.PackageManagerViewModel.PackageSearchViewModel.PackageManagerViewClose();
-
-            var searchBoxes = this.ChildrenOfType<SearchBoxControl>();
-            foreach(var searchBox in searchBoxes)
-            {
-                searchBox.Dispose();
-            }
         }
 
         private void SearchForPackagesButton_Click(object sender, RoutedEventArgs e)
