@@ -120,7 +120,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         public void Startup(StartupParams startupParams)
         {
-            string url = DynamoUtilities.PathHelper.getServiceBackendAddress(this, "packageManagerAddress");
+            string url = DynamoUtilities.PathHelper.GetServiceBackendAddress(this, "packageManagerAddress");
 
             OnMessageLogged(LogMessage.Info("Dynamo will use the package manager server at : " + url));
 
