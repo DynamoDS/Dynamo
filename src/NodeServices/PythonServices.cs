@@ -14,8 +14,8 @@ namespace PythonNodeModels
     /// <summary>
     /// Enum of possible values of python engine versions.
     /// </summary>
-    [Obsolete("This Enum will be remove in Dynamo 3.0")]
-    public enum PythonEngineVersion
+    [Obsolete("This Enum will be removed in a future version of Dynamo")]
+    internal enum PythonEngineVersion
     {
         Unspecified,
         IronPython2,
