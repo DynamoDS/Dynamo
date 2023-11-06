@@ -69,11 +69,10 @@ namespace Dynamo.PackageManager.UI
         }
 
         /// <summary>
-        /// TODO: mark private in Dynamo 3.0
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void ItemStackPanel_MouseDown(object sender, RoutedEventArgs e)
+        private void ItemStackPanel_MouseDown(object sender, RoutedEventArgs e)
         {
             var lbi = sender as StackPanel;
             if (lbi == null) return;
