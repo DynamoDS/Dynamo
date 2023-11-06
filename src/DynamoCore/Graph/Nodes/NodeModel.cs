@@ -408,7 +408,7 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         [JsonIgnore]
         [Obsolete("This property is deprecated and will be removed in a future version of Dynamo.")]
-        public string ToolTipText
+        internal string ToolTipText
         {
             get 
             {
@@ -492,7 +492,7 @@ namespace Dynamo.Graph.Nodes
         {
             get { return outPorts; }
             [IsObsolete("Property setter will be deprecated in a future version of Dynamo")]
-            set
+            internal set
             {
                 outPorts = value;
                 RaisePropertyChanged("OutPorts");
