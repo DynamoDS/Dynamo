@@ -1585,6 +1585,9 @@ Next assemblies were loaded several times:
   <data name="PackageManagerFinishedPackageFilesUploadedMessage" xml:space="preserve">
     <value> files uploaded</value>
   </data>
+  <data name="PackageManagerFinishedPackageFilesPublishedMessage" xml:space="preserve">
+    <value> files published</value>
+  </data>
   <data name="PackagePathAutoAddNotificationTitle" xml:space="preserve">
     <value>Package Path Added</value>
   </data>

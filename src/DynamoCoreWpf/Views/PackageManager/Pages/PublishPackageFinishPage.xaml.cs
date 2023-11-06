@@ -1,11 +1,11 @@
-using Dynamo.PackageManager;
-using Dynamo.PackageManager.UI;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using Dynamo.PackageManager;
+using Dynamo.PackageManager.UI;
 
 namespace Views.PackageManager.Pages
 {
@@ -26,10 +26,16 @@ namespace Views.PackageManager.Pages
 
         internal void LoadEvents()
         {
+            if ( PublishPackageViewModel == null ) { return; }
+
+            var uploadType = PublishPackageViewModel.UploadType;
             var publishedFiles = PackageItemRootViewModel.GetFiles(PublishPackageViewModel.PackageContents.ToList());
             var count = publishedFiles.Count(x => x.DependencyType != DependencyType.Folder);
+            var message = uploadType.Equals(PackageUploadHandle.UploadType.Local) ?
+                Dynamo.Wpf.Properties.Resources.PackageManagerFinishedPackageFilesPublishedMessage :
+                Dynamo.Wpf.Properties.Resources.PackageManagerFinishedPackageFilesUploadedMessage;
 
-            this.filesUploadedMessage.Text = String.Format("{0} {1}", count.ToString(), Dynamo.Wpf.Properties.Resources.PackageManagerFinishedPackageFilesUploadedMessage);
+            this.filesUploadedMessage.Text = String.Format("{0} {1}", count.ToString(), message);
             this.packagePathTextBlox.Text = PublishPackageViewModel.RootFolder;
         }
 

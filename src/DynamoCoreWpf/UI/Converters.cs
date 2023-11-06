@@ -3856,4 +3856,57 @@ namespace Dynamo.Controls
             return null;
         }
     }
+
+
+    /// <summary>
+    /// Convers PackageUploadHandle UploadType enum value to visibility
+    /// </summary>
+    public class PackageUploadHandleUploadTypeToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is PackageUploadHandle.UploadType uploadType)
+            {
+                if (parameter != null && parameter.ToString().ToLower() == "invert")
+                {
+                    return uploadType != PackageUploadHandle.UploadType.Submit ? Visibility.Visible : Visibility.Hidden;
+                }
+                else
+                {
+                    return uploadType == PackageUploadHandle.UploadType.Submit ? Visibility.Visible : Visibility.Hidden;
+                }
+            }
+
+            return Visibility.Hidden;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// ReadyToPublish message to visibility converter
+    /// </summary>
+    public class ReadyToPublishToVisibilityCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is string errorMessage && errorMessage.Equals(Resources.PackageManagerReadyToPublish))
+            {
+                return Visibility.Visible;
+            }
+
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
 }

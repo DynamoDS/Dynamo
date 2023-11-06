@@ -701,7 +701,43 @@ namespace DynamoCoreWpfTests
         public void PublishingCustomNodeAsNewVersionWorks_SetsPackageInfoCorrectly()
         {
             throw new NotImplementedException();
-
         }
+
+
+        [Test]
+        public void AssertPublishLocalHandleType()
+        {
+            var packageName = "SingleFolderPublishPackage";
+            var pathManager = this.ViewModel.Model.PathManager as PathManager;
+            var publishPath = Path.Combine(pathManager.DefaultPackagesDirectory, packageName);
+
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\SingleFolderPublishPackageDocs");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
+
+            //now lets publish this package.
+            var newPkgVm = new PublishPackageViewModel(this.ViewModel);
+            newPkgVm.RetainFolderStructureOverride = true;
+
+            ViewModel.OnRequestPackagePublishDialog(newPkgVm);
+
+            newPkgVm.AddAllFilesAfterSelection(allFiles);
+
+            var previewFilesAndFolders = PackageItemRootViewModel.GetFiles(newPkgVm.PreviewPackageContents.ToList());
+            var previewFiles = previewFilesAndFolders.Where(x => !x.DependencyType.Equals(DependencyType.Folder));
+            var previewFolders = previewFilesAndFolders.Where(x => x.DependencyType.Equals(DependencyType.Folder));
+
+            newPkgVm.Name = "SingleFolderPublishPackage";
+            newPkgVm.MajorVersion = "0";
+            newPkgVm.MinorVersion = "0";
+            newPkgVm.BuildVersion = "1";
+            newPkgVm.PublishLocallyCommand.Execute();
+
+            // Assert
+            Assert.AreEqual(PackageUploadHandle.UploadType.Local, newPkgVm.UploadType);
+
+            // Clean up
+            Directory.Delete(publishPath, true);
+        }
+
     }
 }

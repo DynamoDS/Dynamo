@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Views.PackageManager.Pages"
+      xmlns:controls="clr-namespace:Dynamo.Controls"
       mc:Ignorable="d" 
       xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
       xmlns:ui="clr-namespace:Dynamo.UI"
@@ -16,12 +17,13 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
-        <Style x:Key="FinishedPageTextStyle" TargetType="TextBlock">
+            <controls:PackageUploadHandleUploadTypeToVisibilityConverter x:Key="PackageUploadHandleUploadTypeToVisibilityConverter" />
+            <Style x:Key="FinishedPageTextStyle" TargetType="TextBlock">
             <Setter Property="Foreground" Value="#F5F5F5"/>
             <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
-            </Style>
+        </Style>
         </ResourceDictionary>
     </Page.Resources>
     <Grid>
@@ -49,14 +51,17 @@
                        FontSize="12"
                        Style="{StaticResource FinishedPageTextStyle}"/>
 
-
             <TextBlock Text="{x:Static p:Resources.PackageManagerPublishOnlineFinishedMessage}"
                        Margin="0 3"
                        FontSize="12"
-                       Style="{StaticResource FinishedPageTextStyle}"/>
+                       Style="{StaticResource FinishedPageTextStyle}"
+                       Visibility="{Binding UploadType, Converter={StaticResource PackageUploadHandleUploadTypeToVisibilityConverter} }"/>
         </StackPanel>
 
-        <StackPanel Grid.Row="1">
+        <StackPanel Grid.Row="1" 
+                    Visibility="{Binding UploadType,
+                                        Converter={StaticResource PackageUploadHandleUploadTypeToVisibilityConverter},
+                                        ConverterParameter=invert }">
 
             <TextBlock Text="{x:Static p:Resources.PackageManagerFinishedPackagePackagePath}"
                        Margin="15 0"
@@ -65,7 +70,7 @@
                        Style="{StaticResource FinishedPageTextStyle}"/>
             <Grid Margin="15 5"
                   Height="36"
-                  Background="Transparent">
+                  Background="Transparent" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />

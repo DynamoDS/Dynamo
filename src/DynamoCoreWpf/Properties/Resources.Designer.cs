@@ -5673,6 +5673,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to  files published.
+        /// </summary>
+        public static string PackageManagerFinishedPackageFilesPublishedMessage {
+            get {
+                return ResourceManager.GetString("PackageManagerFinishedPackageFilesPublishedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to  files uploaded.
         /// </summary>
         public static string PackageManagerFinishedPackageFilesUploadedMessage {

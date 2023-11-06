@@ -107,11 +107,15 @@ namespace Dynamo.PackageManager
                 {
                     _uploading = value;
                     RaisePropertyChanged("Uploading");
-                    BeginInvoke(() =>
-                    {
-                        SubmitCommand.RaiseCanExecuteChanged();
-                        PublishLocallyCommand.RaiseCanExecuteChanged();
-                    });
+                    // Can we try commenting out the can execute?
+                    // The way async works here, when an error is returned from the response
+                    // The Uploadling flag is set back to 'false' before the CanExecute code has reached it,
+                    // as a result the error message is overriden.
+                    //BeginInvoke(() =>
+                    //{
+                    //    SubmitCommand.RaiseCanExecuteChanged();   
+                    //    PublishLocallyCommand.RaiseCanExecuteChanged();
+                    //});
                 }
             }
 
@@ -177,6 +181,25 @@ namespace Dynamo.PackageManager
                 {
                     _uploadState = value;
                     RaisePropertyChanged("UploadState");
+                }
+            }
+        }
+
+        /// <summary>
+        /// UploadType property </summary>
+        /// <value>
+        /// The type of the upload - local or online    
+        /// </value>
+        private PackageUploadHandle.UploadType _uploadType = PackageUploadHandle.UploadType.Local;
+        public PackageUploadHandle.UploadType UploadType
+        {
+            get { return _uploadType; }
+            set
+            {
+                if (_uploadType != value)
+                {
+                    _uploadType = value;
+                    RaisePropertyChanged("UploadType");
                 }
             }
         }
@@ -250,7 +273,7 @@ namespace Dynamo.PackageManager
         /// KeywordList property </summary>
         /// <value>
         /// A list of keywords, usually produced by parsing Keywords</value>
-        public List<string> KeywordList { get; set; }
+        public List<string> KeywordList { get; set; } = new List<string>();
 
         /// <summary>
         /// FullVersion property </summary>
@@ -1010,7 +1033,8 @@ namespace Dynamo.PackageManager
             this.Uploading = false;
             // Clearing the UploadHandle when using Submit currently throws - check trheading
             try
-            {
+            { 
+                this._uploadHandle.PropertyChanged += UploadHandleOnPropertyChanged;
                 this.UploadHandle = null;
             }
             catch { Exception ex; }
@@ -1193,17 +1217,21 @@ namespace Dynamo.PackageManager
 
         private void UploadHandleOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
-            if (propertyChangedEventArgs.PropertyName == "UploadState")
+            if (propertyChangedEventArgs.PropertyName == nameof(PackageUploadHandle.UploadState))
             {
                 UploadState = ((PackageUploadHandle)sender).UploadState;
 
                 if (((PackageUploadHandle)sender).UploadState == PackageUploadHandle.State.Uploaded)
                 {
-                    OnPublishSuccess();
+                    BeginInvoke(() =>
+                    {
+                        OnPublishSuccess();
+                        ClearAllEntries();
+                    });
                 }
-
+                
             }
-            else if (propertyChangedEventArgs.PropertyName == "ErrorString")
+            else if (propertyChangedEventArgs.PropertyName == nameof(PackageUploadHandle.ErrorString))
             {
                 UploadState = PackageUploadHandle.State.Error;
                 ErrorString = ((PackageUploadHandle)sender).ErrorString;
@@ -1435,7 +1463,7 @@ namespace Dynamo.PackageManager
             get { return _errorString; }
             set
             {
-                _errorString = value;
+               _errorString = value;
                 RaisePropertyChanged("ErrorString");
             }
         }
@@ -1783,6 +1811,9 @@ namespace Dynamo.PackageManager
             {
                 return;
             }
+
+            UploadType = PackageUploadHandle.UploadType.Submit;
+
             var contentFiles = BuildPackage();
 
             //do not create the updatedFiles used for retain folder route unless needed
@@ -1851,6 +1882,8 @@ namespace Dynamo.PackageManager
             var publishPath = GetPublishFolder();
             if (string.IsNullOrEmpty(publishPath))
                 return;
+
+            UploadType = PackageUploadHandle.UploadType.Local;
 
             var files = BuildPackage();
 

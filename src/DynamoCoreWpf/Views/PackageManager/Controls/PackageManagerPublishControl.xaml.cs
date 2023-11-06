@@ -79,6 +79,8 @@ namespace Dynamo.PackageManager.UI
             statusLabel.Visibility = Visibility.Collapsed;
 
             currentPage = 3;
+
+            // Trigger load events manually for the Finish Page to get the count of published files
             if (PublishPages[currentPage] is PublishPackageFinishPage)
                 (PublishPages[currentPage] as PublishPackageFinishPage).LoadEvents();
 

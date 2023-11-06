@@ -21,6 +21,7 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
             <controls:EmptyStringToFalseConverter x:Key="EmptyStringToFalseConverter" />
+            <controls:ReadyToPublishToVisibilityCollapsedConverter x:Key="ReadyToPublishToVisibilityCollapsedConverter" />            
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <SolidColorBrush x:Key="DetailsButtonBorderColorBrush" Color="#808080" Opacity="0.5"/>
             <ControlTemplate x:Key="ComboBoxToggleButton"
@@ -401,9 +402,9 @@
                         Height="18px"
                         Margin="5,0"
                         UseLayoutRounding="True"
-                        HorizontalAlignment="Center"
+                        HorizontalAlignment="Center"    
                         VerticalAlignment="Center"
-                        Visibility="{Binding ElementName=publishButton, Path=IsEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Visibility="{Binding ErrorString, Converter={StaticResource ReadyToPublishToVisibilityCollapsedConverter}}"
                         Source="/DynamoCoreWpf;component/UI/Images/checkmark_16px.png" />
                 <TextBlock Margin="0,4,0,0"
                             VerticalAlignment="Center"
