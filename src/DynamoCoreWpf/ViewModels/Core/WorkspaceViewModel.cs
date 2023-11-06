@@ -691,6 +691,16 @@ namespace Dynamo.ViewModels
             ResetFitViewToggle(null);
         }
 
+        internal JObject GetJsonRepresentation(EngineController engine = null)
+        {
+            // Step 1: Serialize the workspace.
+            var json = Model.ToJson(engine);
+            var json_parsed = JObject.Parse(json);
+
+            // Step 2: Add the View.
+            return AddViewBlockToJSON(json_parsed);
+        }
+
         /// <summary>
         /// WorkspaceViewModel's Save method does a two-part serialization. First, it serializes the Workspace,
         /// then adds a View property to serialized Workspace, and sets its value to the serialized ViewModel.
@@ -716,14 +726,11 @@ namespace Dynamo.ViewModels
 
                 //set the name before serializing model.
                 this.Model.setNameBasedOnFileName(filePath, isBackup);
-                // Stage 1: Serialize the workspace.
-                var json = Model.ToJson(engine);
-                var json_parsed = JObject.Parse(json);
 
-                // Stage 2: Add the View.
-                var jo = AddViewBlockToJSON(json_parsed);
+                // Stage 1: Serialize the workspace and the View
+                var jo = GetJsonRepresentation(engine);
 
-                // Stage 3: Save
+                // Stage 2: Save
                 string saveContent;
                 if(saveContext == SaveContext.SaveAs && !isBackup)
                 {
@@ -756,7 +763,7 @@ namespace Dynamo.ViewModels
                 DynamoViewModel.Model.CurrentWorkspace.Guid = new Guid(JsonRepresentation.Properties().First(p => p.Name == "Uuid").Value.ToString());
 
                 File.WriteAllText(filePath, saveContent);
-
+                
                 // Handle Workspace or CustomNodeWorkspace related non-serialization internal logic
                 // Only for actual save, update file path and recent file list
                 if (!isBackup)
