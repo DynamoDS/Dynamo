@@ -533,15 +533,6 @@ namespace Dynamo.PackageManager
             get { return Dependencies.Count > 0; }
         }
 
-        /// <summary>
-        /// This property seems dup with HasDependencies
-        /// TODO: Remove in Dynamo 3.0
-        /// </summary>
-        public bool HasNoDependencies
-        {
-            get { return !HasDependencies; }
-        }
-
         private string markdownFilesDirectory;
 
         /// <summary>
