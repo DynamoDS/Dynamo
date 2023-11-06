@@ -42,10 +42,10 @@ namespace Dynamo.UI.Controls
         public NodeAutoCompleteSearchControl()
         {
             InitializeComponent();
-            if (Application.Current != null)
+            if (string.IsNullOrEmpty(ViewModel.dynamoViewModel.Model.HostAnalyticsInfo.HostName))
             {
                 Application.Current.Deactivated += CurrentApplicationDeactivated;
-                if (Application.Current.MainWindow != null)
+                if (Application.Current?.MainWindow != null)
                 {
                     Application.Current.MainWindow.Closing += NodeAutoCompleteSearchControl_Unloaded;
                 }
@@ -55,10 +55,10 @@ namespace Dynamo.UI.Controls
 
         private void NodeAutoCompleteSearchControl_Unloaded(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (Application.Current != null)
+            if (string.IsNullOrEmpty(ViewModel.dynamoViewModel.Model.HostAnalyticsInfo.HostName))
             {
                 Application.Current.Deactivated -= CurrentApplicationDeactivated;
-                if (Application.Current.MainWindow != null)
+                if (Application.Current?.MainWindow != null)
                 {
                     Application.Current.MainWindow.Closing -= NodeAutoCompleteSearchControl_Unloaded;
                 }

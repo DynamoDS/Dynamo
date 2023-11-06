@@ -314,9 +314,9 @@ namespace Dynamo.Wpf.ViewModels
             RaisePropertyChanged(nameof(RunButtonEnabled));
             RaisePropertyChanged(nameof(RunButtonToolTip));
 
-            if (Application.Current != null)
+            if (string.IsNullOrEmpty(dynamoViewModel.Model.HostAnalyticsInfo.HostName))
             {
-                Application.Current.Dispatcher.Invoke(new Action(() =>
+                Application.Current?.Dispatcher.Invoke(new Action(() =>
                 {
                     dynamoViewModel.ShowOpenDialogAndOpenResultCommand.RaiseCanExecuteChanged();
                     dynamoViewModel.NewHomeWorkspaceCommand.RaiseCanExecuteChanged();
