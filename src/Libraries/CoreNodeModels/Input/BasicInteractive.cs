@@ -71,11 +71,6 @@ namespace CoreNodeModels.Input
             RegisterAllPorts();
         }
 
-        public override string PrintExpression()
-        {
-            return Value.ToString();
-        }
-
         public override bool IsConvertible
         {
             get { return true; }

@@ -76,11 +76,6 @@ namespace UnitsUI
             }
         }
 
-        public override string PrintExpression()
-        {
-            return Value.ToString();
-        }
-
         protected double DeserializeValue(string val)
         {
             try

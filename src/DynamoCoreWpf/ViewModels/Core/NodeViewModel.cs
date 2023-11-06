@@ -1175,10 +1175,6 @@ namespace Dynamo.ViewModels
                 case "ArgumentLacing":
                     RaisePropertyChanged("ArgumentLacing");
                     break;
-                case nameof(NodeModel.ToolTipText):
-                    UpdateBubbleContent();
-                    // TODO Update preview bubble visibility to false
-                    break;
                 case "IsVisible":
                     RaisePropertyChanged("IsVisible");
                     HandleColorOverlayChange();
