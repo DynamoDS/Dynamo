@@ -373,7 +373,7 @@ namespace Dynamo.ViewModels
             {
                 List<string> nodeInfoConnections = new List<string>();
                 JObject jsonWorkspace = JsonRepresentation;
-                var nodes = jsonWorkspace["Nodes"];
+                var nodes = jsonWorkspace["Nodes"];                
 
                 List<string> nodeIds = new List<string>();
                 foreach (JObject node in nodes)
@@ -750,17 +750,21 @@ namespace Dynamo.ViewModels
                 else
                 {
                     saveContent = jo.ToString();
-                }
-
-                JsonRepresentation = JObject.Parse(saveContent);
-                DynamoViewModel.Model.CurrentWorkspace.Guid = new Guid(JsonRepresentation.Properties().First(p => p.Name == "Uuid").Value.ToString());
+                }                
 
                 File.WriteAllText(filePath, saveContent);
 
                 // Handle Workspace or CustomNodeWorkspace related non-serialization internal logic
                 // Only for actual save, update file path and recent file list
+                // The assignation of the JsonRepresentation and Guid is only for the checksum flow, it will grab info only from .dyn files
                 if (!isBackup)
                 {
+                    if (Path.GetExtension(filePath).Equals(".dyn"))
+                    {
+                        JsonRepresentation = JObject.Parse(saveContent);
+                        DynamoViewModel.Workspaces[0].Model.Guid = new Guid(JsonRepresentation.Properties().First(p => p.Name == "Uuid").Value.ToString());
+                    }
+
                     Model.FileName = filePath;
                     Model.OnSaved();
                 }

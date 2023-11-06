@@ -2128,15 +2128,12 @@ namespace Dynamo.ViewModels
                 {
                     AddToRecentFiles(path);
 
-                    if (currentWorkspaceViewModel?.IsHomeSpace ?? true && HomeSpace.HasRunWithoutCrash && Model.CurrentWorkspace.IsValidForFDX)
+                    if ((currentWorkspaceViewModel?.IsHomeSpace ?? true) && HomeSpace.HasRunWithoutCrash && Model.CurrentWorkspace.IsValidForFDX && currentWorkspaceViewModel.Checksum != string.Empty) 
                     {
                         Model.Logger.Log("The Workspace is valid for FDX");
-                        if (currentWorkspaceViewModel.Checksum != string.Empty)
-                        {
-                            Model.Logger.Log("The Workspace id is : " + currentWorkspaceViewModel.Model.Guid.ToString());
-                            Model.Logger.Log("The Workspace checksum is : " + currentWorkspaceViewModel.Checksum);
-                            Model.Logger.Log("The Workspace has Substantial checksum : " + HasSubstantialCheckSum().ToString());
-                        }
+                        Model.Logger.Log("The Workspace id is : " + currentWorkspaceViewModel.Model.Guid.ToString());
+                        Model.Logger.Log("The Workspace checksum is : " + currentWorkspaceViewModel.Checksum);
+                        Model.Logger.Log("The Workspace has Substantial checksum, so is ready to send to FDX : " + HasSubstantialCheckSum().ToString());
                     }
                 }                                    
             }
