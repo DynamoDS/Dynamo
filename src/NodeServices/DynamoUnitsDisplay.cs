@@ -11,7 +11,7 @@ namespace DynamoUnits
     /// </summary>
     [Obsolete("This type will be removed in a future version of Dynamo, please use PreferenceSettings.NumberFormat instead. ")]
     [IsVisibleInDynamoLibrary(false)]
-    public class Display
+    internal class Display
     {
         /// <summary>
         /// Precision format for number of decimals to display within Dynamo UI

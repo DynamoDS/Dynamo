@@ -42,3 +42,4 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("DynamoPlayer.Workflows")]
 [assembly: InternalsVisibleTo("DynamoPlayer.WorkflowsUi")]
 [assembly: InternalsVisibleTo("DynamoApplications")]
+[assembly: InternalsVisibleTo("DynamoUnits")]
