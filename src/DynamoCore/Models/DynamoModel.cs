@@ -591,12 +591,6 @@ namespace Dynamo.Models
             /// </summary>
             public string DefaultPythonEngine { get; set; }
 
-            /// <summary>
-            /// Disables ADP for the entire process for the lifetime of the process.
-            /// </summary>
-            [Obsolete("This property is no longer used and will be removed in a future version of Dynamo - please use Dynamo.Logging.Analytics.DisableAnalytics instead.")]
-            internal bool DisableADP { get; set; }
-
             public HostAnalyticsInfo HostAnalyticsInfo { get; set; }
 
             /// <summary>
