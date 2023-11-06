@@ -795,6 +795,17 @@ namespace Dynamo.ViewModels
                         }
                     }
                     break;
+                case "UseRenderInstancing":
+                    model.PreferenceSettings.UseRenderInstancing = factoryVm.Factory.TessellationParameters.UseRenderInstancing;
+                    // A full regeneration is required to use instancing.
+                    foreach (var vm in Watch3DViewModels)
+                    {
+                        if (vm is HelixWatch3DViewModel) // just need a full regeneration when vm is HelixWatch3DViewModel
+                        {
+                            vm.RegenerateAllPackages();
+                        }
+                    }
+                    break;
                 case "MaxTessellationDivisions":
                     model.PreferenceSettings.RenderPrecision = factoryVm.Factory.TessellationParameters.MaxTessellationDivisions;
                     break;
