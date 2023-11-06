@@ -465,7 +465,7 @@ namespace DynamoUtilities
         /// <param name="serviceKey">Service or feature for which the address is being requested. 
         /// It should match the key specified in the config file.</param>
         /// <returns>Path that will be used to fetch resources</returns>
-        public static string getServiceBackendAddress(object o, string serviceKey)
+        public static string GetServiceBackendAddress(object o, string serviceKey)
         {
             string url = null;
             if (o != null)
