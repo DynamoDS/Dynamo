@@ -277,11 +277,6 @@ namespace Dynamo.Graph.Workspaces
             {
                 node = (NodeModel)obj.ToObject(type);
                 
-                // if node is an customNode input symbol - assign the element resolver.
-                if(node is Nodes.CustomNodes.Symbol)
-                {
-                    (node as Nodes.CustomNodes.Symbol).ElementResolver = ElementResolver;
-                }
                 // We don't need to remap ports for any nodes with json constructors which pass ports
                 remapPorts = false;
             }
