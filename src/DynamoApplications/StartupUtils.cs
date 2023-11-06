@@ -103,19 +103,6 @@ namespace Dynamo.Applications
             public override IEnumerable<string> GetDynamoInstallLocations()
             {
                 throw new NotImplementedException();
-/*
-                int p = (int)Environment.OSVersion.Platform;
-                if ((p == 4) || (p == 6) || (p == 128))
-                {
-                    Console.WriteLine("Running on Unix");
-                }
-                else
-                {
-                    Console.WriteLine("NOT running on Unix");
-                }
-
-                return null;
-*/
             }
         }
 
