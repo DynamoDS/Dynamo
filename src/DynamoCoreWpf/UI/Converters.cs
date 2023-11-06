@@ -2133,7 +2133,7 @@ namespace Dynamo.Controls
     }
 
     [Obsolete("This class will be removed in a future version of Dynamo - please use the ForgeUnit SDK based methods")]
-    public class MeasureConverter : IValueConverter
+    internal class MeasureConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
