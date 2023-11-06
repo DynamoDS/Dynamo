@@ -840,6 +840,11 @@ namespace Dynamo.Configuration
         /// </summary>
         public List<DynamoPlayerFolderGroup> DynamoPlayerFolderGroups { get; set; }
 
+        /// <summary>
+        /// Enable legacy behavior for Dynamo Player to allow renamed Watch nodes to be seen as graph output.
+        /// </summary>
+        public bool EnableDynamoPlayerLegacyBehaviorRenamedWatchAsOutput { get; set; }
+
         #endregion
 
         /// <summary>
@@ -907,6 +912,7 @@ namespace Dynamo.Configuration
             GroupStyleItemsList = new List<GroupStyleItem>();
             ReadNotificationIds = new List<string>();
             DynamoPlayerFolderGroups = new List<DynamoPlayerFolderGroup>();
+            EnableDynamoPlayerLegacyBehaviorRenamedWatchAsOutput = false;
             backupLocation = string.Empty;
         }
 
