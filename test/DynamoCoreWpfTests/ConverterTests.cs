@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
@@ -610,26 +610,6 @@ namespace DynamoCoreWpfTests
             Assert.DoesNotThrow(() => FilePathDisplayConverter.ShortenNestedFilePath(@"\\psf\\Home\somedyn.dyn"));
             Assert.DoesNotThrow(() => FilePathDisplayConverter.ShortenNestedFilePath(@"\\psf\somedyn.dyn"));
             Assert.AreEqual(@"\\psf\Home\Desktop\somedyn.dyn", FilePathDisplayConverter.ShortenNestedFilePath(@"\\psf\Home\Desktop\somedyn.dyn"));
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void ZoomToVisibilityConverterTest()
-        {
-            object visibility;
-            ZoomToVisibilityConverter converter = new ZoomToVisibilityConverter();
-
-            visibility = converter.Convert("1.0", typeof(string), null, new CultureInfo("en-US"));
-            Assert.AreEqual(visibility, Visibility.Visible);
-
-            visibility = converter.Convert("1,0", typeof(string), null, new CultureInfo("de-DE"));
-            Assert.AreEqual(visibility, Visibility.Visible);
-
-            visibility = converter.Convert(1.0, typeof(double), null, new CultureInfo("en-US"));
-            Assert.AreEqual(visibility, Visibility.Visible);
-
-            visibility = converter.Convert(1.0, typeof(double), null, new CultureInfo("de-DE"));
-            Assert.AreEqual(visibility, Visibility.Visible);
         }
 
         [Test]
