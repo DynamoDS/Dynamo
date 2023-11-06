@@ -25,6 +25,7 @@ using Double = System.Double;
 using String = System.String;
 using NotificationObject = Dynamo.Core.NotificationObject;
 using Prism.Commands;
+using System.Runtime.InteropServices;
 
 namespace Dynamo.PackageManager
 {
@@ -865,11 +866,11 @@ namespace Dynamo.PackageManager
             }
         }
 
-        public static PublishPackageViewModel FromLocalPackage(DynamoViewModel dynamoViewModel, Package l)
+        public static PublishPackageViewModel FromLocalPackage(DynamoViewModel dynamoViewModel, Package pkg)
         {
             var defs = new List<CustomNodeDefinition>();
 
-            foreach (var x in l.LoadedCustomNodes)
+            foreach (var x in pkg.LoadedCustomNodes)
             {
                 CustomNodeDefinition def;
                 if (dynamoViewModel.Model.CustomNodeManager.TryGetFunctionDefinition(
@@ -881,44 +882,67 @@ namespace Dynamo.PackageManager
                 }
             }
 
-            var vm = new PublishPackageViewModel(dynamoViewModel)
+            var pkgViewModel = new PublishPackageViewModel(dynamoViewModel)
             {
-                Group = l.Group,
-                Description = l.Description,
-                Keywords = l.Keywords != null ? String.Join(" ", l.Keywords) : "",
+                Group = pkg.Group,
+                Description = pkg.Description,
+                Keywords = pkg.Keywords != null ? String.Join(" ", pkg.Keywords) : "",
                 CustomNodeDefinitions = defs,
-                Name = l.Name,
-                RepositoryUrl = l.RepositoryUrl ?? "",
-                SiteUrl = l.SiteUrl ?? "",
-                Package = l,
-                License = l.License,
-                SelectedHosts = l.HostDependencies as List<string>,
-                CopyrightHolder = l.CopyrightHolder,
-                CopyrightYear = l.CopyrightYear
+                Name = pkg.Name,
+                RepositoryUrl = pkg.RepositoryUrl ?? "",
+                SiteUrl = pkg.SiteUrl ?? "",
+                Package = pkg,
+                License = pkg.License,
+                SelectedHosts = pkg.HostDependencies as List<string>,
+                CopyrightHolder = pkg.CopyrightHolder,
+                CopyrightYear = pkg.CopyrightYear
             };
 
             // add additional files
-            l.EnumerateAdditionalFiles();
-            foreach (var file in l.AdditionalFiles)
+            pkg.EnumerateAdditionalFiles();
+            foreach (var file in pkg.AdditionalFiles)
             {
-                vm.AdditionalFiles.Add(file.Model.FullName);
+                pkgViewModel.AdditionalFiles.Add(file.Model.FullName);
             }
 
-            var nodeLibraryNames = l.Header.node_libraries;
+            var nodeLibraryNames = pkg.Header.node_libraries;
 
             var assembliesLoadedTwice = new List<string>();
             // load assemblies into reflection only context
-            foreach (var file in l.EnumerateAssemblyFilesInBinDirectory())
+
+            //TODO unclear how many MLC there should be - if we want to recreate the behavior from before -
+            //maybe only 1? For now one per package publish.
+
+            // Retrieve the location of the assembly and the referenced assemblies used by the domain
+            var runtimeAssemblies = Directory.GetFiles(RuntimeEnvironment.GetRuntimeDirectory(), "*.dll");
+            // Create the list of assembly paths consisting of runtime assemblies.
+            var assemblyPaths = new List<string>(runtimeAssemblies);
+
+            //and all the package assemblies.
+            foreach (var assemblyFile in pkg.EnumerateAssemblyFilesInPackage())
+            {
+                assemblyPaths.Add(assemblyFile);
+            }
+   
+            // Create PathAssemblyResolver that can resolve assemblies using the created list.
+            var resolver = new PathAssemblyResolver(assemblyPaths);
+            var mlc = new MetadataLoadContext(resolver);
+
+            //TODO for now, we leak the mlc, but it's unlikely users will publish
+            //enough packages in a single Dynamo session for this ever to be an issue.
+            //The assemblies are also long lived so it's not clear we could really clean them up anyway.
+            //using (mlc)
+            foreach (var file in pkg.EnumerateAssemblyFilesInPackage())
             {
                 Assembly assem;
-                var result = PackageLoader.TryReflectionOnlyLoadFrom(file, out assem);
+                var result = PackageLoader.TryMetaDataContextLoad(file, mlc, out assem);
 
                 switch (result)
                 {
                     case AssemblyLoadingState.Success:
                         {
                             var isNodeLibrary = nodeLibraryNames == null || nodeLibraryNames.Contains(assem.FullName);
-                            vm.Assemblies.Add(new PackageAssembly()
+                            pkgViewModel.Assemblies.Add(new PackageAssembly()
                             {
                                 IsNodeLibrary = isNodeLibrary,
                                 Assembly = assem
@@ -928,7 +952,7 @@ namespace Dynamo.PackageManager
                     case AssemblyLoadingState.NotManagedAssembly:
                         {
                             // if it's not a .NET assembly, we load it as an additional file
-                            vm.AdditionalFiles.Add(file);
+                            pkgViewModel.AdditionalFiles.Add(file);
                             break;
                         }
                     case AssemblyLoadingState.AlreadyLoaded:
@@ -940,24 +964,24 @@ namespace Dynamo.PackageManager
             }
 
             //after dependencies are loaded refresh package contents
-            vm.RefreshPackageContents();
-            vm.UpdateDependencies();
+            pkgViewModel.RefreshPackageContents();
+            pkgViewModel.UpdateDependencies();
 
             if (assembliesLoadedTwice.Any())
             {
-                vm.UploadState = PackageUploadHandle.State.Error;
-                vm.ErrorString = Resources.OneAssemblyWasLoadedSeveralTimesErrorMessage + string.Join("\n", assembliesLoadedTwice);
+                pkgViewModel.UploadState = PackageUploadHandle.State.Error;
+                pkgViewModel.ErrorString = Resources.OneAssemblyWasLoadedSeveralTimesErrorMessage + string.Join("\n", assembliesLoadedTwice);
             }
 
-            if (l.VersionName == null) return vm;
+            if (pkg.VersionName == null) return pkgViewModel;
 
-            var parts = l.VersionName.Split('.');
-            if (parts.Count() != 3) return vm;
+            var parts = pkg.VersionName.Split('.');
+            if (parts.Count() != 3) return pkgViewModel;
 
-            vm.MajorVersion = parts[0];
-            vm.MinorVersion = parts[1];
-            vm.BuildVersion = parts[2];
-            return vm;
+            pkgViewModel.MajorVersion = parts[0];
+            pkgViewModel.MinorVersion = parts[1];
+            pkgViewModel.BuildVersion = parts[2];
+            return pkgViewModel;
 
         }
 

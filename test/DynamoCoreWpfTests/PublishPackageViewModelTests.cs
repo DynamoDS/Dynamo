@@ -99,7 +99,7 @@ namespace DynamoCoreWpfTests
         }
 
 
-        [Test, Category("Failure")]
+        [Test]
         public void NewPackageVersionUpload_DoesNotThrowExceptionWhenDLLIsLoadedSeveralTimes()
         {
             string packagesDirectory = Path.Combine(TestDirectory, "pkgs");
@@ -123,7 +123,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(PackageUploadHandle.State.Error, vm.UploadState);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void NewPackageVersionUpload_CanAddAndRemoveFiles()
         {
             string packagesDirectory = Path.Combine(TestDirectory, "pkgs");

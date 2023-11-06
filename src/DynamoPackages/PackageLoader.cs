@@ -748,23 +748,32 @@ namespace Dynamo.PackageManager
         /// <param name="filename">The filename of a DLL</param>
         /// <param name="assem">out Assembly - the passed value does not matter and will only be set if loading succeeds</param>
         /// <returns>Returns Success if success, NotManagedAssembly if BadImageFormatException, AlreadyLoaded if FileLoadException</returns>
-        internal static AssemblyLoadingState TryReflectionOnlyLoadFrom(string filename, out Assembly assem)
+        internal static AssemblyLoadingState TryMetaDataContextLoad(string filename,MetadataLoadContext mlc, out Assembly assem)
         {
-            try
-            {
-                assem = Assembly.ReflectionOnlyLoadFrom(filename);
-                return AssemblyLoadingState.Success;
-            }
-            catch (BadImageFormatException)
-            {
-                assem = null;
-                return AssemblyLoadingState.NotManagedAssembly;
-            }
-            catch (FileLoadException)
-            {
-                assem = null;
-                return AssemblyLoadingState.AlreadyLoaded;
-            }
+
+                try
+                {
+                var assemName = new AssemblyName(filename);
+                //MLC will return assembly if names and mvid match
+                //where reflection only context would throw FileLoadException
+                //we try to maintain that legacy behavior for Dynamo 3.0.
+                if (mlc.GetAssemblies().Select(x => x.GetName() == assemName).Any()) {
+                    throw new FileLoadException(filename);
+                }
+                assem = mlc.LoadFromAssemblyPath(filename);
+                
+                    return AssemblyLoadingState.Success;
+                }
+                catch (BadImageFormatException)
+                {
+                    assem = null;
+                    return AssemblyLoadingState.NotManagedAssembly;
+                }
+                catch (FileLoadException)
+                {
+                    assem = null;
+                    return AssemblyLoadingState.AlreadyLoaded;
+                }
         }
 
         /// <summary>
