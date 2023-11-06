@@ -143,7 +143,6 @@ namespace DynamoCoreWpfTests
 
             // Assert
             Assert.IsTrue(!string.IsNullOrEmpty(browserView.VirtualFolderPath));
-            //TODO this is false because package image loading is now broken.
             Assert.IsTrue(Directory.Exists(browserView.VirtualFolderPath));
             //Check that the virtual folder will be created in the Package/doc folder so images will be loaded correctly
             Assert.IsTrue(browserView.VirtualFolderPath.Contains(packageDocPath));
@@ -761,7 +760,7 @@ namespace DynamoCoreWpfTests
                 docsViewModel.InsertGraph();
             }
             //Validates that we have 5 nodes the CurrentWorkspace (after the graph was added)
-            //Assert.AreEqual(ViewModel.Model.CurrentWorkspace.Nodes.Count(), 5);         
+            Assert.AreEqual(ViewModel.Model.CurrentWorkspace.Nodes.Count(), 5);         
         }
 
         [Test]
@@ -831,7 +830,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(!string.IsNullOrEmpty(graphPathValue));
 
             //check that the path contains "packageWithDocumentation"
-            Assert.That(graphPathValue.Contains("PackageWithNodeDocumentation\\doc"));
+            Assert.That(graphPathValue.Contains(Path.Combine("PackageWithNodeDocumentation","doc",dynFileName)));
         }
 
         #region Helpers
