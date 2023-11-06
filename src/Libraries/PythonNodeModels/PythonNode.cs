@@ -46,8 +46,8 @@ namespace PythonNodeModels
         /// <summary>
         /// Return the user selected python engine enum.
         /// </summary>
-        [Obsolete("This property will be deprecated in Dynamo 3.0. Please use EngineName instead")]
-        public PythonEngineVersion Engine
+        [Obsolete("This property will be deprecated in a future version of Dynamo. Please use EngineName instead")]
+        internal PythonEngineVersion Engine
         {
             get
             {
@@ -103,7 +103,7 @@ namespace PythonNodeModels
         /// </summary>
         [Obsolete(@"This method will be removed in future versions of Dynamo.
         Please use PythonEngineManager.Instance.AvailableEngines instead")]
-        public static ObservableCollection<PythonEngineVersion> AvailableEngines
+        internal static ObservableCollection<PythonEngineVersion> AvailableEngines
         {
             get
             {
