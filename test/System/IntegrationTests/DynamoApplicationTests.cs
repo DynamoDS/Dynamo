@@ -62,7 +62,7 @@ namespace IntegrationTests
         public void DynamoMakeModelWithHostName()
         {
             var model = Dynamo.Applications.StartupUtils.MakeModel(false, string.Empty, "DynamoFormIt");
-            Assert.AreEqual(model.HostName, "DynamoFormIt");
+            Assert.AreEqual(model.HostAnalyticsInfo.HostName, "DynamoFormIt");
         }
 
         [Test]
