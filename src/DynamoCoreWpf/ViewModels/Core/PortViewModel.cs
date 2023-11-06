@@ -125,7 +125,7 @@ namespace Dynamo.ViewModels
         /// Returns whether the port is using its default value, or whether this been disabled
         /// </summary>
         [Obsolete("This method will be removed in a future version of Dynamo - please use the InPortViewModel")]
-        public bool UsingDefaultValue
+        internal bool UsingDefaultValue
         {
             get { return port.UsingDefaultValue; }
             set
@@ -159,7 +159,7 @@ namespace Dynamo.ViewModels
         /// If should display Use Levels popup menu. 
         /// </summary>
         [Obsolete("This method will be removed in a future version of Dynamo - please use the InPortViewModel")]
-        public bool ShowUseLevelMenu
+        internal bool ShowUseLevelMenu
         {
             get
             {
@@ -383,38 +383,6 @@ namespace Dynamo.ViewModels
                 case nameof(UsingDefaultValue):
                     RefreshPortColors();
                     break;
-            }
-        }
-
-        /// <summary>
-        /// UseLevels command
-        /// </summary>
-        [Obsolete("This method will be removed in a future version of Dynamo- please use the InPortViewModel")]
-        public DelegateCommand UseLevelsCommand
-        {
-            get
-            {
-                if (useLevelsCommand == null)
-                {
-                    useLevelsCommand = new DelegateCommand(null, p => true);
-                }
-                return useLevelsCommand;
-            }
-        }
-
-        /// <summary>
-        /// ShouldKeepListStructure command
-        /// </summary>
-        [Obsolete("This method will be removed in a future version of Dynamo - please use the InPortViewModel")]
-        public DelegateCommand KeepListStructureCommand
-        {
-            get
-            {
-                if (keepListStructureCommand == null)
-                {
-                    keepListStructureCommand = new DelegateCommand(null, p => true);
-                }
-                return keepListStructureCommand;
             }
         }
 
