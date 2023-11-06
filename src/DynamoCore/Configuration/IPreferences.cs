@@ -46,12 +46,6 @@ namespace Dynamo.Interfaces
         float GridScaleFactor { get; set; }
 
         /// <summary>
-        /// Indicates whether background preview is active or not.
-        /// </summary>
-        [Obsolete("Property will be deprecated in a future version of Dynamo, please use BackgroundPreviews")]
-        bool IsBackgroundPreviewActive { get; set; }
-
-        /// <summary>
         /// Returns the decimal precision used to display numbers.
         /// </summary>
         string NumberFormat { get; set; }
