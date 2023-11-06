@@ -14,7 +14,7 @@ namespace Dynamo.Wpf.Rendering
     /// A Helix-specific IRenderPackageFactory implementation.
     /// </summary>
     [Obsolete("Do not use! This will be moved to a new project in a future version of Dynamo.")]
-    public class HelixRenderPackageFactory : IRenderPackageFactory
+    internal class HelixRenderPackageFactory : IRenderPackageFactory
     {
         private const int MaxTessellationDivisionsDefault = 128;
 
@@ -38,7 +38,7 @@ namespace Dynamo.Wpf.Rendering
     /// A Helix-specifc IRenderPackage implementation.
     /// </summary>
     [Obsolete("Do not use! This will be moved to a new project in a future version of Dynamo.")]
-    public class HelixRenderPackage : IRenderPackage, ITransformable, IRenderLabels, IRenderPackageSupplement, IInstancingRenderPackage, IRenderInstancedLabels
+    internal class HelixRenderPackage : IRenderPackage, ITransformable, IRenderLabels, IRenderPackageSupplement, IInstancingRenderPackage, IRenderInstancedLabels
     {
         #region private members
 
