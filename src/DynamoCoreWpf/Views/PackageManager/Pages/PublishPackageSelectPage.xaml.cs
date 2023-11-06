@@ -219,11 +219,6 @@ namespace Dynamo.PackageManager.UI
                     // Return visible if the item is an Assembly
                     return Visibility.Visible;
                 }
-                if(item.DependencyType.Equals(DependencyType.File) && item.DisplayName.EndsWith(".dll"))
-                {
-                    // Return visible if the item is a dll file
-                    return Visibility.Visible;
-                }
             }
             // If the item does not match the specified dependency type or value is null, return collapsed
             return Visibility.Collapsed;

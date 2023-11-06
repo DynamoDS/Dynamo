@@ -2358,8 +2358,19 @@ namespace Dynamo.PackageManager
                 }
                 else if (file.EndsWith(".dll") || PackageDirectoryBuilder.IsXmlDocFile(file, files) || PackageDirectoryBuilder.IsDynamoCustomizationFile(file, files))
                 {
-                    var dll = new PackageItemRootViewModel(new FileInfo(Path.Combine(binDir, fileName)));
-                    binItemPreview.AddChild(dll);
+                    // Assemblies carry the information if they are NodeLibrary or not  
+                    if(Assemblies.Any(x => x.Name.Equals(Path.GetFileNameWithoutExtension(fileName))))
+                    {
+                        var packageContents = PackageItemRootViewModel.GetFiles(PackageContents.ToList());
+                        var dll = packageContents.First(x => x.DependencyType.Equals(DependencyType.Assembly) && x.DisplayName.Equals(Path.GetFileNameWithoutExtension(fileName)));
+                        if(dll != null)
+                            binItemPreview.AddChildren(dll);
+                    }
+                    else
+                    {
+                        var dll = new PackageItemRootViewModel(new FileInfo(Path.Combine(binDir, fileName)));
+                        binItemPreview.AddChild(dll);
+                    }
                 }
                 else
                 {
