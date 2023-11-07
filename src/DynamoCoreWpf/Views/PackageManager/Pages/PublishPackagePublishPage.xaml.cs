@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -6,6 +7,21 @@ using System.Windows.Navigation;
 
 namespace Dynamo.PackageManager.UI
 {
+    public class PackageNameLengthValidationRule : ValidationRule
+    {
+        public override ValidationResult Validate(object value, CultureInfo cultureInfo)
+        {
+            if (value is string name && name.Length > 3)
+            {
+                // Validation succeeded
+                return ValidationResult.ValidResult;
+            }
+
+            // Validation failed
+            return new ValidationResult(false, Wpf.Properties.Resources.NameNeedMoreCharacters);
+        }
+    }
+
     /// <summary>
     /// Interaction logic for PublishPackagePublishPage.xaml
     /// </summary>

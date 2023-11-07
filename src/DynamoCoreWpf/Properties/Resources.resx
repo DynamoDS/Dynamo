@@ -1676,7 +1676,7 @@ If the toggle is off custom packages that are not already loaded will load once 
     <value>0</value>
   </data>
   <data name="PublishPackageVersionBuildWatermark" xml:space="preserve">
-    <value>1</value>
+    <value>0</value>
   </data>
   <data name="PublishPackageGroupWatermark" xml:space="preserve">
     <value>Group</value>
@@ -1758,7 +1758,7 @@ Learn more</value>
     <comment>ErrorString</comment>
   </data>
   <data name="NameNeedMoreCharacters" xml:space="preserve">
-    <value>Name must be at least 3 characters.</value>
+    <value>Must be at least 3 characters</value>
     <comment>ErrorString</comment>
   </data>
   <data name="PackageNameCannotContainTheseCharacters" xml:space="preserve">

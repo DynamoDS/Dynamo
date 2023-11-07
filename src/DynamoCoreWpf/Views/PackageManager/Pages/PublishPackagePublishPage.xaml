@@ -293,6 +293,53 @@
                 </Setter>
             </Style>
 
+                <!-- Custom validation adorner style -->
+                <Style x:Key="CustomAdornerInputStyle"
+                       TargetType="{x:Type TextBox}"
+                       BasedOn="{StaticResource InputStyleWithIcon}">
+                    <Setter Property="Margin" Value="0"/>
+                    <Setter Property="Validation.ErrorTemplate">
+                        <Setter.Value>
+                            <ControlTemplate>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Border BorderBrush="#EB5555" BorderThickness="0 0 0 1" Padding="0">
+                                        <AdornedElementPlaceholder/>
+                                    </Border>                                
+                                
+                                    <StackPanel x:Name="errorMessage"
+                                                Grid.Row="1"
+                                                Orientation="Horizontal"
+                                                VerticalAlignment="Center"
+                                                Margin="4 10 0 0">
+                                        <Viewbox Width="20" Height="20" VerticalAlignment="Center">
+                                            <Path x:Name="Folder"
+                                                  Fill="#EB5555"
+                                                  Data="M10 0L0 10L10 20L20 10L10 0ZM1.41 10L10 1.41L18.59 10L10 18.59L1.41 10ZM9 13C9 13.5523 9.44771 14 10 14C10.5523 14 11 13.5523 11 13C11 12.4477 10.5523 12 10 12C9.44771 12 9 12.4477 9 13ZM10.4859 10.8536C10.3862 10.9459 10.2559 10.9981 10.12 11H9.88C9.74412 10.9981 9.61376 10.9459 9.51405 10.8536C9.41434 10.7613 9.35234 10.6353 9.34 10.5L9 6C9 5.73478 9.10536 5.48043 9.29289 5.29289C9.48043 5.10536 9.73478 5 10 5C10.2652 5 10.5196 5.10536 10.7071 5.29289C10.8946 5.48043 11 5.73478 11 6L10.66 10.5C10.6477 10.6353 10.5857 10.7613 10.4859 10.8536Z"
+                                                  StrokeThickness="0">
+                                            </Path>
+                                        </Viewbox>
+                                        <TextBlock VerticalAlignment="Center"
+                                                   Margin="10 5 0 0"                            
+                                                   FontSize="10"
+                                                   FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                   Foreground="{StaticResource TextColorBrush}" 
+                                                   Text="{x:Static p:Resources.NameNeedMoreCharacters}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>   
+
+                    <Style.Triggers>
+                        <Trigger Property="Validation.HasError" Value="true">
+                            <Setter Property="Margin" Value="0 0 0 30"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
         </ResourceDictionary>
     </Page.Resources>
     <Grid>
@@ -329,16 +376,24 @@
                         </TextBlock.ToolTip>
                     </TextBlock>
                     <TextBox Name="packageNameInput"
-                                Style="{StaticResource InputStyleWithIcon}"
-                                Tag="{x:Static p:Resources.PublishPackageViewPackageNameWatermark}"
-                                IsEnabled="{Binding Path=CanEditName}"
-                                Text="{Binding Path=Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                TabIndex="0" />
+                             Tag="{x:Static p:Resources.PublishPackageViewPackageNameWatermark}"
+                             Style="{StaticResource CustomAdornerInputStyle}"
+                             IsEnabled="{Binding Path=CanEditName}"
+                             TabIndex="0" >
+                        <TextBox.Text>
+                            <Binding Path="Name" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                                <Binding.ValidationRules>
+                                    <local:PackageNameLengthValidationRule />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
 
                     <!--  Description  -->
                     <TextBlock Name="descriptionLabel"
-                                Style="{StaticResource LabelStyle}"
-                                Text="{x:Static p:Resources.PublishPackageViewPackageDescription}">
+                               Margin="0 10 0 0"
+                               Style="{StaticResource LabelStyle}"
+                               Text="{x:Static p:Resources.PublishPackageViewPackageDescription}">
                         <TextBlock.ToolTip>
                             <ToolTip Content="{x:Static p:Resources.PublishPackageViewPackageDescriptionTooltip}"
                                         Style="{StaticResource GenericToolTipLight}"></ToolTip>

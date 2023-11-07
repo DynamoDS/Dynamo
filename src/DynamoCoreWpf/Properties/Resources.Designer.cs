@@ -4739,7 +4739,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Name must be at least 3 characters..
+        ///   Looks up a localized string similar to Must be at least 3 characters.
         /// </summary>
         public static string NameNeedMoreCharacters {
             get {
@@ -8051,7 +8051,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 1.
+        ///   Looks up a localized string similar to 0.
         /// </summary>
         public static string PublishPackageVersionBuildWatermark {
             get {
