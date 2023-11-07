@@ -1318,7 +1318,7 @@ namespace DynamoCoreWpfTests.PackageManager
 
         }
 
-        [Test, Category("Failure")]
+        [Test]
         [Description("User tries to download packages that might conflict with an unloaded builtIn package")]
         public void PackageManagerConflictsUnloadedWithBltInPackage()
         {
@@ -1333,7 +1333,7 @@ namespace DynamoCoreWpfTests.PackageManager
             var bltInPackage = pkgLoader.LocalPackages.Where(x => x.Name == "SignedPackage").FirstOrDefault();
             Assert.IsNotNull(bltInPackage);
 
-            string expectedDownloadPath = "download/" + bltInPackage.Name + "/" + bltInPackage.VersionName;
+            string expectedDownloadPath = "download/" + bltInPackage.ID + "/" + bltInPackage.VersionName;
             // Simulate the user downloading the same package from PM
             var mockGreg = new Mock<IGregClient>();
             mockGreg.Setup(x => x.Execute(It.IsAny<PackageDownload>())).Callback((Request x) =>
@@ -1353,8 +1353,7 @@ namespace DynamoCoreWpfTests.PackageManager
             // 1. User downloads the exact version of a builtIn package
             //
             {
-                var id = "test-123";
-                var deps = new List<Dependency>() { new Dependency() { _id = id, name = bltInPackage.Name } };
+                var deps = new List<Dependency>() { new Dependency() { _id = bltInPackage.ID, name = bltInPackage.Name } };
                 var depVers = new List<string>() { bltInPackage.VersionName };
 
                 mockGreg.Setup(m => m.ExecuteAndDeserializeWithContent<PackageVersion>(It.IsAny<Request>()))
@@ -1365,7 +1364,7 @@ namespace DynamoCoreWpfTests.PackageManager
                         version = bltInPackage.VersionName,
                         engine_version = bltInPackage.EngineVersion,
                         name = bltInPackage.Name,
-                        id = id,
+                        id = bltInPackage.ID,
                         full_dependency_ids = deps,
                         full_dependency_versions = depVers
                     },

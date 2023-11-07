@@ -40,26 +40,11 @@ namespace DynamoCoreWpfTests
             libraries.Add("FFITarget.dll");
         }
 
-        public override void Open(string path)
-        {
-            base.Open(path);
-
-            DispatcherUtil.DoEvents();
-        }
-
-        public override void Run()
-        {
-            base.Run();
-
-            DispatcherUtil.DoEvents();
-        }
-
         [Test]
         public void FooterNotificationControlTest()
         {
             // Arrange
             Open(@"UI\ZoomNodeColorStates.dyn");
-
             var workspace = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             Debug.Assert(workspace != null, nameof(workspace) + " != null");
             workspace.Run();
@@ -116,7 +101,6 @@ namespace DynamoCoreWpfTests
             // Open workspace with test mode as false, to verify trust warning.
             DynamoModel.IsTestMode = false;
             Open(@"core\CustomNodes\TestAdd.dyn");
-
             Assert.IsTrue(ViewModel.FileTrustViewModel.ShowWarningPopup);
 
             // Close workspace
@@ -138,7 +122,7 @@ namespace DynamoCoreWpfTests
             var filePath = Path.Combine(GetTestDirectory(ExecutingDirectory), pathInTestsDir);
 
             // Always start with a fresh workspace with no binding data for this test.
-            File.Copy(prebindingPath, filePath);
+            File.Copy(prebindingPath, filePath,true);
             OpenAndRun(pathInTestsDir);
 
             // Assert that the node doesn't have trace data the first time it's run.
@@ -176,7 +160,6 @@ namespace DynamoCoreWpfTests
         {
             var preferencesWindow = new PreferencesView(View);
             preferencesWindow.Show();
-            DispatcherUtil.DoEvents();
             string selectedLanguage = (string)((ComboBox)preferencesWindow.FindName("LanguageCmb")).SelectedItem;
             var english = Configurations.SupportedLocaleDic.FirstOrDefault(x => x.Value == "en-US").Key;
             var spanish = Configurations.SupportedLocaleDic.FirstOrDefault(x => x.Value == "es-ES").Key;
