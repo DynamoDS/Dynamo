@@ -1,5 +1,8 @@
 ## In Depth
-Revit will generate and contour a mesh from a list of supplied points. The points cannot be collinear.
+`PolyCurve.ByPoints` creates joined curves from a set of vertices. This node also enables toggling between a closed and an open shape with the `connectLastToFirst` input.
+
+In the example below, points are created along a circle and are redrawn with a `PolyCurve.ByPoints` node, creating a closed polygon shape.
+
 ___
 ## Example File
 

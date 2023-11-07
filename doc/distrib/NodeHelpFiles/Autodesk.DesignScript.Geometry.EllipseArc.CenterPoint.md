@@ -1,5 +1,8 @@
 ## In Depth
-Center Point will return the center of an input sphere. In the example below, we use a ByBestFit node to create a sphere based on a set of random points. We then use a CenterPoint node to determine the center of the best fit sphere.
+`EllipseArc.CenterPoint` finds the center point of an ellipse arc, which is the same as the center point of the completed ellipse. 
+
+In the example below, we first create an ellipse arc by using the XY plane and a series of number sliders. We then use `EllipseArc.CenterPoint` to extract the center of the ellipse.
+
 ___
 ## Example File
 
