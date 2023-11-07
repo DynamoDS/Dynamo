@@ -83,7 +83,6 @@
     <None Remove="Views\PackageManager\Pages\PublishPackageFinishPage.xaml" />
     <None Remove="Views\PackageManager\Pages\PublishPackagePreviewPage.xaml" />
     <None Remove="Views\PackageManager\Pages\PublishPackagePublishPage.xaml" />
-    <None Remove="Views\PackageManager\Pages\PublishPackageReadyToPublishPage.xaml" />
     <None Remove="Views\PackageManager\Pages\PublishPackageSelectPage.xaml" />
     <None Remove="Views\SplashScreen\WebApp\splashScreenBackground.png" />
   </ItemGroup>
@@ -463,7 +462,6 @@
     <Compile Include="Views\PackageManager\Pages\PublishPackageFinishPage.xaml.cs" />
     <Compile Include="Views\PackageManager\Pages\PublishPackagePreviewPage.xaml.cs" />
     <Compile Include="Views\PackageManager\Pages\PublishPackagePublishPage.xaml.cs" />
-    <Compile Include="Views\PackageManager\Pages\PublishPackageReadyToPublishPage.xaml.cs" />
     <Compile Include="Views\PackageManager\Pages\PublishPackageSelectPage.xaml.cs" />
     <Compile Include="Views\PackageManager\TermsOfUseView.xaml.cs">
       <DependentUpon>TermsOfUseView.xaml</DependentUpon>
@@ -708,10 +706,6 @@
         <Generator>MSBuild:Compile</Generator>
     </Page>   
     <Page Include="Views\PackageManager\Pages\PublishPackagePublishPage.xaml">
-        <SubType>Designer</SubType>
-        <Generator>MSBuild:Compile</Generator>
-    </Page>   
-    <Page Include="Views\PackageManager\Pages\PublishPackageReadyToPublishPage.xaml">
         <SubType>Designer</SubType>
         <Generator>MSBuild:Compile</Generator>
     </Page>   
@@ -1784,9 +1778,6 @@
       <Generator>MSBuild:Compile</Generator>
     </None>
     <None Update="Views\PackageManager\Pages\PublishPackagePublishPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="Views\PackageManager\Pages\PublishPackageReadyToPublishPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
     <None Update="Views\PackageManager\Pages\PublishPackageSelectPage.xaml">
