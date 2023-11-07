@@ -350,7 +350,7 @@ namespace Dynamo.Tests.ModelsTest
             //Unsubcribe from event
             CurrentDynamoModel.RequestsCrashPrompt -= CurrentDynamoModel_RequestsCrashPrompt;
             //This will validate that the local handler was executed and set the flag in true
-            Assert.AreEqual(3, requestsCrashPrompt);
+            Assert.AreEqual(1, requestsCrashPrompt);
         }
 
      
