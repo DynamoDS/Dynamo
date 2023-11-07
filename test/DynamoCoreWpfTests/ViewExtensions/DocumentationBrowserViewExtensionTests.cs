@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo;
@@ -23,6 +24,7 @@ using NUnit.Framework;
 namespace DynamoCoreWpfTests
 {
     [TestFixture]
+    [Apartment(ApartmentState.STA)]
     public class DocumentationBrowserViewExtensionTests : DynamoTestUIBase
     {
         private const string docsTabName = "Documentation Browser";
@@ -712,7 +714,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void AddGraphInSpecificLocationToWorkspace()
+        public async Task AddGraphInSpecificLocationToWorkspace()
         {
             var testDirectory = GetTestDirectory(ExecutingDirectory);
             var tempDynDirectory = Path.Combine(testDirectory, "Temp Test Path");
@@ -746,11 +748,7 @@ namespace DynamoCoreWpfTests
 
                 var node = ViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault();
                
-
-                // Show the DocumentationBrowser so we can get the DocumentationBrowserViewModel
-                ShowDocsBrowser();
                 RequestNodeDocs(node);
-
                 var docsView = GetDocsTabItem().Content as DocumentationBrowserView;
                 var docsViewModel = docsView.DataContext as DocumentationBrowserViewModel;
 
@@ -760,7 +758,18 @@ namespace DynamoCoreWpfTests
                 docsViewModel.InsertGraph();
             }
             //Validates that we have 5 nodes the CurrentWorkspace (after the graph was added)
-            Assert.AreEqual(ViewModel.Model.CurrentWorkspace.Nodes.Count(), 5);         
+            Assert.AreEqual(ViewModel.Model.CurrentWorkspace.Nodes.Count(), 5);
+            //do not remove this dispatch flush call unless you know what you are doing.
+            DispatcherUtil.DoEvents();
+            Console.WriteLine(SynchronizationContext.Current.GetType().FullName);
+
+        //Do not make this test non async, or MTA -
+        //being both async and STA forces Nunit to use a single threaded sync context
+        //which we need so that webview2 is initialized on the same thread that created it.
+        //https://github.com/nunit/nunit/issues/1200
+        //webview2 requires thread affinity.
+        //Ideally we would file a request with nunit to improve this.
+            await Task.Delay(1);
         }
 
         [Test]
