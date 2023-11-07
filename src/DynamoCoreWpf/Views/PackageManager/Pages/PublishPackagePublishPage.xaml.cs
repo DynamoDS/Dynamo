@@ -11,7 +11,7 @@ namespace Dynamo.PackageManager.UI
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
-            if (value is string name && name.Length > 3)
+            if (value is string name && name.Length > 2)
             {
                 // Validation succeeded
                 return ValidationResult.ValidResult;
@@ -19,6 +19,19 @@ namespace Dynamo.PackageManager.UI
 
             // Validation failed
             return new ValidationResult(false, Wpf.Properties.Resources.NameNeedMoreCharacters);
+        }
+    }
+
+    public class NotAllSpacesValidationRule : ValidationRule
+    {
+        public override ValidationResult Validate(object value, CultureInfo cultureInfo)
+        {
+            if (value is string text && (string.IsNullOrWhiteSpace(text) || text.Trim() == ""))
+            {
+                return new ValidationResult(false, "Text cannot be all spaces.");
+            }
+
+            return ValidationResult.ValidResult;
         }
     }
 

@@ -119,13 +119,23 @@ namespace Dynamo.PackageManager.UI
             };
         }
 
+        /// <summary>
+        /// Checks if the input value passes our criteria
+        /// </summary>
+        /// <param name="text">text string to be tested</param>
+        /// <returns></returns>
+        internal bool IsValidInput(string text)
+        {
+            return _numMatch.IsMatch(text);
+        }
+
         // validate data before changing the text (only allow numbers)
         private void inputField_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             var tb = (TextBox)sender;
             var text = tb.Text.Insert(tb.CaretIndex, e.Text);
 
-            e.Handled = !_numMatch.IsMatch(text);
+            e.Handled = !IsValidInput(text);
         }
 
         // Handles the direct input of text (via keyboard)
@@ -166,7 +176,15 @@ namespace Dynamo.PackageManager.UI
             }
 
             mouseClickSelection = true;
-        } 
-        #endregion
+        }
+
+        private void inputField_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Space)
+            {
+                e.Handled = true; // Prevent space from being entered
+            }
+            #endregion
+        }
     }
 }

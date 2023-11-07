@@ -433,6 +433,7 @@
                         <TextBox.Text>
                             <Binding Path="Name" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
                                 <Binding.ValidationRules>
+                                    <local:NotAllSpacesValidationRule />
                                     <local:PackageNameLengthValidationRule />
                                 </Binding.ValidationRules>
                             </Binding>
@@ -450,11 +451,11 @@
                         </TextBlock.ToolTip>
                     </TextBlock>
                     <TextBox Name="descriptionInput"
-                                MinHeight="81px"
-                                Style="{StaticResource InputStyle}"
-                                Tag="{x:Static p:Resources.PublishPackageViewPackageDescription}"
-                                Text="{Binding Path=Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                TabIndex="1" />
+                             MinHeight="81px"
+                             Style="{StaticResource InputStyle}"
+                             Tag="{x:Static p:Resources.PublishPackageViewPackageDescription}"
+                             Text="{Binding Path=Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             TabIndex="1" />
 
                     <!--  Version  -->
                     <TextBlock Name="versionLabel"
