@@ -3909,4 +3909,27 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// Given a string, returns to upper  case
+    /// </summary>
+    public class StringEqualsZeroToVisibilityCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            if (value is string nullOrEmptyString && String.IsNullOrEmpty(nullOrEmptyString)) return Visibility.Visible;
+            if (value is string zeroString && zeroString.Equals("0"))
+            {
+                return Visibility.Visible;
+            }
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
 }
