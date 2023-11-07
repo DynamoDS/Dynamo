@@ -31,7 +31,7 @@ namespace Dynamo.UI.Controls
         public InCanvasSearchControl()
         {
             InitializeComponent();
-            if(string.IsNullOrEmpty(ViewModel.dynamoViewModel.Model.HostAnalyticsInfo.HostName))
+            if (string.IsNullOrEmpty(ViewModel?.dynamoViewModel.Model.HostAnalyticsInfo.HostName) && Application.Current != null)
             {
                 Application.Current.Deactivated += CurrentApplicationDeactivated;
                 Application.Current.MainWindow.Closing += InCanvasSearchControl_Unloaded;
@@ -40,7 +40,7 @@ namespace Dynamo.UI.Controls
 
         private void InCanvasSearchControl_Unloaded(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (string.IsNullOrEmpty(ViewModel.dynamoViewModel.Model.HostAnalyticsInfo.HostName))
+            if (string.IsNullOrEmpty(ViewModel?.dynamoViewModel.Model.HostAnalyticsInfo.HostName) && Application.Current != null)
             {
                 Application.Current.Deactivated -= CurrentApplicationDeactivated;
                 Application.Current.MainWindow.Closing -= InCanvasSearchControl_Unloaded;
