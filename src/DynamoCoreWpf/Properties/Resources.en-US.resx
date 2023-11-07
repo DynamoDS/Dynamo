@@ -3191,12 +3191,14 @@ To install the latest version of a package, click Install. \n
   <data name="PublishPackageViewNodeLibrary" xml:space="preserve">
     <value>Node Library</value>
   </data>
-  <data name="PublishPackageRetainFolderStructureTooltip" xml:space="preserve">
+    <data name="PublishPackageRetainFolderStructureTooltip" xml:space="preserve">
     <value>When this setting is enabled, the folder structure of uploaded files will be retained. Otherwise, files will be placed into predefined folders.
 
 Note: Incorrect folder structure may affect the functionality of packages that rely on the correct file organization. When in doubt, leave this setting off.
-15 words or less that describe or define what the tool does.
-Learn more</value>
+    </value>
+  </data>    
+  <data name="PublishPackageNodeLibraryTooltip" xml:space="preserve">
+    <value>DLL file containing types and methods that Dynamo imports as nodes. Mark ZeroTouch, NodeModel, or NodeViewCustomization DLLs and types you want to import into Dynamo as node libraries.</value>
   </data>
   <data name="NodeTooltipRenamed" xml:space="preserve">
     <value>Renamed from {0}</value>

@@ -7993,6 +7993,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DLL file containing types and methods that Dynamo imports as nodes. Mark ZeroTouch, NodeModel, or NodeViewCustomization DLLs and types you want to import into Dynamo as node libraries..
+        /// </summary>
+        public static string PublishPackageNodeLibraryTooltip {
+            get {
+                return ResourceManager.GetString("PublishPackageNodeLibraryTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Package Contents.
         /// </summary>
         public static string PublishPackagePackageContent {
@@ -8023,8 +8032,7 @@ namespace Dynamo.Wpf.Properties {
         ///   Looks up a localized string similar to When this setting is enabled, the folder structure of uploaded files will be retained. Otherwise, files will be placed into predefined folders.
         ///
         ///Note: Incorrect folder structure may affect the functionality of packages that rely on the correct file organization. When in doubt, leave this setting off.
-        ///15 words or less that describe or define what the tool does.
-        ///Learn more.
+        ///    .
         /// </summary>
         public static string PublishPackageRetainFolderStructureTooltip {
             get {

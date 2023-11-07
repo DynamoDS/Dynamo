@@ -310,18 +310,30 @@
                                 Click="RemoveButton_Click"
                                 Cursor="Hand">
                             <Button.ToolTip>
-                                <ToolTip Content="{x:Static p:Resources.PublishPackageViewAddFileButtonTooltip}"
+                                <ToolTip Content="{x:Static p:Resources.PublishPackageRemoveFromPacakgeTooltip}"
                                          Style="{StaticResource GenericToolTipLight}" />
                             </Button.ToolTip>
                             <Button.Template>
-                                <ControlTemplate>
-                                    <Grid>
-                                        <Rectangle Width="12" Height="12">
-                                            <Rectangle.Fill>
-                                                <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/remove-pk-16px.png" />
-                                            </Rectangle.Fill>
-                                        </Rectangle>
-                                    </Grid>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="Transparent">
+                                        <Viewbox Width="14"
+                                                    Height="14"
+                                                    VerticalAlignment="Center">
+                                            <Path x:Name="Folder"
+                                                    Fill="#999999"
+                                                    Data="M5 2H2V4H14V2H11V0H5V2ZM10 2H6V1.5C6 1.22386 6.22386 1 6.5 1H9.5C9.77614 1 10 1.22386 10 1.5V2ZM13 5H3V16H13V5Z"
+                                                    StrokeThickness="0">
+                                            </Path>
+                                        </Viewbox>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver"
+                                                    Value="True">
+                                            <Setter TargetName="Folder"
+                                                    Property="Fill"
+                                                    Value="#6AC0E7" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
                                 </ControlTemplate>
                             </Button.Template>
                         </Button>

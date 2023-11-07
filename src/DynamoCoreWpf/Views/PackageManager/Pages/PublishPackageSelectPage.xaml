@@ -218,23 +218,34 @@
                                                                      Path=ItemSelection.Count,
                                                                      UpdateSourceTrigger=PropertyChanged,
                                                                      Converter={StaticResource ZeroToVisibilityCollapsedConverter}}">                                      
-                                        <Button Width="16"
-                                                Height="16"
-                                                Margin="10 0"
+                                        <Button Width="14"
+                                                Height="14"
+                                                Margin="10 -2 10 0"
                                                 BorderThickness="0"
                                                 Background="Transparent"
                                                 Click="DeselectButton_Click"
                                                 Cursor="Hand">
                                             <Button.Template>
-                                                <ControlTemplate>
-                                                    <Grid>
-                                                        <Rectangle Width="12"
-                                                                   Height="12">
-                                                            <Rectangle.Fill>
-                                                                <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/close_16px.png" />
-                                                            </Rectangle.Fill>
-                                                        </Rectangle>
-                                                    </Grid>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="Transparent">
+                                                        <Viewbox Width="14"
+                                                                 Height="14"
+                                                                 VerticalAlignment="Center">
+                                                            <Path x:Name="Folder"
+                                                                  Fill="#999999"
+                                                                  Data="M13.3996 3.39998L12.5996 2.59998L7.99961 7.29998L3.39961 2.59998L2.59961 3.39998L7.29961 7.99998L2.59961 12.6L3.39961 13.4L7.99961 8.69998L12.5996 13.4L13.3996 12.6L8.69961 7.99998L13.3996 3.39998Z"
+                                                                  StrokeThickness="0">
+                                                            </Path>
+                                                        </Viewbox>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver"
+                                                                 Value="True">
+                                                            <Setter TargetName="Folder"
+                                                                    Property="Fill"
+                                                                    Value="#6AC0E7" />
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
                                                 </ControlTemplate>
                                             </Button.Template>
                                         </Button>
@@ -250,7 +261,7 @@
                                                 </MultiBinding>
                                             </TextBlock.Text>
                                         </TextBlock>
-                                        <Button Margin="10 0"
+                                        <Button Margin="10 -2 10 0"
                                                 x:Name="RemoveButton"
                                                 BorderThickness="0"
                                                 HorizontalAlignment="Right"
@@ -309,40 +320,6 @@
                 </Setter>
             </Style>
 
-            <Style x:Key="DataGridColumnHeaderText" TargetType="DataGridColumnHeader">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="DataGridColumnHeader">
-                            <Grid>
-                                <TextBlock Name="DataGridColumnHeader"
-                                           Height="32"
-                                           Padding="10,7,10,0"
-                                           VerticalAlignment="Center"
-                                           Background="#434343"
-                                           FontFamily="{StaticResource ArtifaktElementRegular}"
-                                           FontSize="14px"
-                                           FontWeight="Regular"
-                                           Foreground="{StaticResource TextColorBrush}"
-                                           Text="{TemplateBinding Content}" />
-                                <Thumb x:Name="PART_RightHeaderGripper"
-                                       Width="1"
-                                       HorizontalAlignment="Right"
-                                       BorderBrush="Transparent"
-                                       BorderThickness="1,0,0,0"
-                                       Cursor="SizeWE" />
-                            </Grid>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver"
-                                         Value="True">
-                                    <Setter TargetName="DataGridColumnHeader"
-                                            Property="Background"
-                                            Value="#666666" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
             <Style x:Key="DataGridColumnHeaderLast"
                    TargetType="DataGridColumnHeader">
                 <Setter Property="Template">
