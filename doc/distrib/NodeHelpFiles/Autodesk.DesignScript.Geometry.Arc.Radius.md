@@ -1,5 +1,8 @@
 ## In Depth
-Radius will return the center of an input sphere. In the example below, we use a ByBestFit node to create a sphere based on a set of random points. We then use a Radius node to determine the size of the best fit sphere.
+`Arc.Radius` returns the radius value of arc geometry. 
+
+In the example below, we create an arc from 3 randomly generated points, then return its radius point with an `Arc.Radius` node. We can visualize the change in radius as the input points change in the Y direction.
+
 ___
 ## Example File
 
