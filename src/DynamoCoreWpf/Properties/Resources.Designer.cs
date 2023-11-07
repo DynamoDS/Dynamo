@@ -8158,6 +8158,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The package&apos;s copyright holder..
+        /// </summary>
+        public static string PublishPackageViewCopyrightHolderTooltip {
+            get {
+                return ResourceManager.GetString("PublishPackageViewCopyrightHolderTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Author name.
         /// </summary>
         public static string PublishPackageViewCopyrightHolderWatermark {
@@ -8185,6 +8194,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The copyright year for the package..
+        /// </summary>
+        public static string PublishPackageViewCopyrightYearTooltip {
+            get {
+                return ResourceManager.GetString("PublishPackageViewCopyrightYearTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Publishing year.
         /// </summary>
         public static string PublishPackageViewCopyrightYearWatermark {
@@ -8199,6 +8217,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PublishPackageViewFilePath {
             get {
                 return ResourceManager.GetString("PublishPackageViewFilePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GitHub repository link for the package..
+        /// </summary>
+        public static string PublishPackageViewGithubLinkTooltip {
+            get {
+                return ResourceManager.GetString("PublishPackageViewGithubLinkTooltip", resourceCulture);
             }
         }
         
@@ -8392,7 +8419,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A version name helps a submitter keep track of updates to the package.  A new version of a package will be REJECTED if this is not incremeneted..
+        ///   Looks up a localized string similar to A version name helps a submitter keep track of updates to the package. When a new version of a package is added, version number must be increased..
         /// </summary>
         public static string PublishPackageViewPackageVersionTooltip {
             get {
@@ -8424,6 +8451,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PublishPackageViewPublisherWebSite {
             get {
                 return ResourceManager.GetString("PublishPackageViewPublisherWebSite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Website link for the package..
+        /// </summary>
+        public static string PublishPackageViewPublisherWebsiteTooltip {
+            get {
+                return ResourceManager.GetString("PublishPackageViewPublisherWebsiteTooltip", resourceCulture);
             }
         }
         

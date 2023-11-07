@@ -26,9 +26,55 @@
             <controls:ListHasMoreThanNItemsToVisibilityConverter x:Key="ListHasMoreThanNItemsToVisibilityConverter"/>
             <controls:ToTitleCaseStringConverter x:Key="ToTitleCaseStringConverter" />
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <Style x:Key="ComboBoxCheckBoxStyle" TargetType="{x:Type CheckBox}">
+                <Setter Property="SnapsToDevicePixels" Value="true" />
+                <Setter Property="OverridesDefaultStyle" Value="true" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="CheckBox">
+                            <BulletDecorator VerticalAlignment="Center" Background="Transparent">
+                                <BulletDecorator.Bullet>
+                                    <Border x:Name="Border"
+                                            Width="13"
+                                            Height="13"
+                                            Background="Transparent"
+                                            BorderThickness="0">
+                                        <Path x:Name="CheckBoxTick"
+                                               Width="12"
+                                               Height="12"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Visibility="Hidden"
+                                               Data="M5 3.94L2 1C1.7132 0.863026 1.37119 0.921704 1.14645 1.14645C0.921704 1.37119 0.863026 1.7132 1 2L4.5 5.5C4.79282 5.79246 5.26718 5.79246 5.56 5.5L9 2C9.13698 1.7132 9.0783 1.37119 8.85356 1.14645C8.62881 0.921704 8.28681 0.863026 8 1L5 3.94Z"
+                                               Fill="#38ABDF" />
+                                    </Border>
+                                </BulletDecorator.Bullet>
+
+                                <ContentPresenter x:Name="contentPresent"
+                                          Margin="5,0,5,0"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          TextBlock.FontSize="14px"
+                                          TextBlock.Foreground="#bbbbbb" />
+                            </BulletDecorator>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsChecked" Value="true">
+                                    <Setter TargetName="CheckBoxTick" Property="Visibility" Value="Visible" />
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="True">
+                                    <Setter TargetName="contentPresent" Property="TextBlock.Foreground" Value="#bbbbbb" />
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="contentPresent" Property="TextBlock.Foreground" Value="#444444" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
             <ControlTemplate x:Key="ComboBoxToggleButton"
                              TargetType="{x:Type ToggleButton}">
-                <Grid Height="29px"
+                <Grid Height="38px"
                       HorizontalAlignment="Stretch"
                       VerticalAlignment="Top">
                     <Grid.ColumnDefinitions>
@@ -42,6 +88,7 @@
                             Grid.Column="1" />
                     <Border Grid.Column="0"
                             Grid.ColumnSpan="2"
+                            Background="#343434"
                             BorderBrush="#8F8F8F"
                             BorderThickness="0,0,0,1" />
                     <Rectangle x:Name="BlueUnderline"
@@ -53,7 +100,7 @@
                           Grid.Column="1"
                           HorizontalAlignment="Center"
                           VerticalAlignment="Center"
-                          Data="M0,0 L3.5,4 L7,0"
+                          Data="M5 3.94L2 1C1.7132 0.863026 1.37119 0.921704 1.14645 1.14645C0.921704 1.37119 0.863026 1.7132 1 2L4.5 5.5C4.79282 5.79246 5.26718 5.79246 5.56 5.5L9 2C9.13698 1.7132 9.0783 1.37119 8.85356 1.14645C8.62881 0.921704 8.28681 0.863026 8 1L5 3.94Z"
                           Fill="White" />
                 </Grid>
                 <ControlTemplate.Triggers>
@@ -70,7 +117,7 @@
                                 Value="#6AC0E7" />
                         <Setter TargetName="Arrow"
                                 Property="Data"
-                                Value="M0,4 L3.5,0 L7,4" />
+                                Value="M 5 2.56 L 8 5.5 C 8.2868 5.637 8.6288 5.5783 8.8535 5.3536 C 9.0783 5.1288 9.137 4.7868 9 4.5 L 5.5 1 C 5.2072 0.7075 4.7328 0.7075 4.44 1 L 1 4.5 C 0.863 4.7868 0.9217 5.1288 1.1464 5.3536 C 1.3712 5.5783 1.7132 5.637 2 5.5 L 5 2.56 Z" />
                         <Setter TargetName="BlueUnderline"
                                 Property="Fill"
                                 Value="#6AC0E7" />
@@ -97,9 +144,10 @@
                 <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
                 <Setter Property="ScrollViewer.CanContentScroll" Value="true" />
                 <Setter Property="Margin" Value="-6,0,0,0" />
-                <Setter Property="Height" Value="29px" />
                 <Setter Property="Foreground" Value="#DCDCDC" />
+                <Setter Property="Background" Value="#353535" />
                 <Setter Property="FontSize" Value="12px" />
+                <Setter Property="Padding" Value="5" />
                 <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
                 <Setter Property="Template">
                     <Setter.Value>
@@ -458,25 +506,26 @@
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
                                     <CheckBox Name="HostEntry"
-                                                Checked="HostEntry_CheckStateChanged"
-                                                Content="{Binding HostName}"
-                                                IsChecked="{Binding IsSelected, Mode=TwoWay}"
-                                                Tag="{RelativeSource FindAncestor,
-                                                                AncestorType={x:Type ComboBox}}"
-                                                Unchecked="HostEntry_CheckStateChanged" />
+                                              Checked="HostEntry_CheckStateChanged"
+                                              Content="{Binding HostName}"
+                                              IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                              Style="{StaticResource ComboBoxCheckBoxStyle}"
+                                              Tag="{RelativeSource FindAncestor,
+                                                            AncestorType={x:Type ComboBox}}"
+                                              Unchecked="HostEntry_CheckStateChanged" />
                                 </StackPanel>
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                         <ComboBox.Template>
                             <ControlTemplate TargetType="ComboBox">
-                                <Grid>
+                                <Grid Height="38px">
                                     <ToggleButton Name="ToggleButton"
                                                     ClickMode="Press"
                                                     Focusable="false"
                                                     IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                                     Template="{StaticResource ComboBoxToggleButton}" />
                                     <ContentPresenter Name="ContentSite"
-                                                        Margin="3,3,23,3"
+                                                        Margin="10,3,23,3"
                                                         HorizontalAlignment="Left"
                                                         VerticalAlignment="Center"
                                                         Content="{Binding Path=SelectedHostsString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
@@ -514,22 +563,7 @@
                             </ControlTemplate>
                         </ComboBox.Template>
                     </ComboBox>
-
-                    <!--  Group  -->
-                    <TextBlock Name="groupLabel"
-                                Style="{StaticResource LabelStyle}"
-                                Text="{x:Static p:Resources.PublishPackageViewPackageGroup}">
-                        <TextBlock.ToolTip>
-                            <ToolTip Content="{x:Static p:Resources.PublishPackageViewPackageGroupTooltip}"
-                                        Style="{StaticResource GenericToolTipLight}"></ToolTip>
-                        </TextBlock.ToolTip>
-                    </TextBlock>
-                    <TextBox Name="groupInput"
-                                Style="{StaticResource InputStyle}"
-                                Text="{Binding Path=Group, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                Tag="{x:Static p:Resources.PublishPackageGroupWatermark}"
-                                TabIndex="6" />
-
+                    
                     <!--  Keywords  -->
                     <TextBlock Name="keywordsLabel"
                                 Style="{StaticResource LabelStyle}"
@@ -547,7 +581,24 @@
                         <TextBox.InputBindings>
                             <KeyBinding Command="{Binding SetKeywordsCommand}" Key="Return" />
                         </TextBox.InputBindings>
-                    </TextBox>                    
+                    </TextBox>
+                    
+                    <!--  Group  -->
+                    <TextBlock Name="groupLabel"
+                                Style="{StaticResource LabelStyle}"
+                                Text="{x:Static p:Resources.PublishPackageViewPackageGroup}">
+                        <TextBlock.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.PublishPackageViewPackageGroupTooltip}"
+                                        Style="{StaticResource GenericToolTipLight}"></ToolTip>
+                        </TextBlock.ToolTip>
+                    </TextBlock>
+                    <TextBox Name="groupInput"
+                                Style="{StaticResource InputStyle}"
+                                Text="{Binding Path=Group, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                Tag="{x:Static p:Resources.PublishPackageGroupWatermark}"
+                                TabIndex="6" />
+
+                
                     <!-- Bar containing all active fitlers -->
                     <ItemsControl x:Name="KeywordsItemControl">
                         <ItemsControl.Resources>
@@ -584,7 +635,12 @@
                             <!--  Website URL  -->
                             <TextBlock Name="websiteUrlLabel"
                                         Style="{StaticResource LabelStyle}"
-                                        Text="{x:Static p:Resources.PublishPackageViewPublisherWebSite}" />
+                                        Text="{x:Static p:Resources.PublishPackageViewPublisherWebSite}" >
+                                <TextBlock.ToolTip>
+                                    <ToolTip Content="{x:Static p:Resources.PublishPackageViewPublisherWebsiteTooltip}"
+                                        Style="{StaticResource GenericToolTipLight}"></ToolTip>
+                                </TextBlock.ToolTip>
+                            </TextBlock>
                             <TextBox Name="websiteUrlInput"
                                         Style="{StaticResource InputStyle}"
                                         Text="{Binding SiteUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -594,7 +650,12 @@
                             <!--  Repository URL  -->
                             <TextBlock Name="repositoryUrlLabel"
                                         Style="{StaticResource LabelStyle}"
-                                        Text="{x:Static p:Resources.PublishPackageViewRepositoryUrl}" />
+                                        Text="{x:Static p:Resources.PublishPackageViewRepositoryUrl}">
+                                <TextBlock.ToolTip>
+                                    <ToolTip Content="{x:Static p:Resources.PublishPackageViewGithubLinkTooltip}"
+                                        Style="{StaticResource GenericToolTipLight}"></ToolTip>
+                                </TextBlock.ToolTip>
+                            </TextBlock>
                             <TextBox Name="repositoryUrlInput"
                                         Style="{StaticResource InputStyle}"
                                         Text="{Binding RepositoryUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -635,7 +696,12 @@
                             <!--  Copyright Holder  -->
                             <TextBlock Name="copyrightHolderLabel"
                                         Style="{StaticResource LabelStyle}"
-                                        Text="{x:Static p:Resources.PublishPackageViewCopyrightHolder}" />
+                                        Text="{x:Static p:Resources.PublishPackageViewCopyrightHolder}" >
+                                <TextBlock.ToolTip>
+                                    <ToolTip Content="{x:Static p:Resources.PublishPackageViewCopyrightHolderTooltip}"
+                                        Style="{StaticResource GenericToolTipLight}"></ToolTip>
+                                </TextBlock.ToolTip>
+                            </TextBlock>
                             <TextBlock Name="copyrightHolderSubLabel"
                                         Style="{StaticResource SubLabelStyle}"
                                         Text="{x:Static p:Resources.PublishPackageViewCopyrightHolderSubLabel}" />
@@ -648,7 +714,12 @@
                             <!--  Copyright Year  -->
                             <TextBlock Name="copyrightYearLabel"
                                         Style="{StaticResource LabelStyle}"
-                                        Text="{x:Static p:Resources.PublishPackageViewCopyrightYear}" />
+                                        Text="{x:Static p:Resources.PublishPackageViewCopyrightYear}" >
+                                <TextBlock.ToolTip>
+                                    <ToolTip Content="{x:Static p:Resources.PublishPackageViewCopyrightYearTooltip}"
+                                        Style="{StaticResource GenericToolTipLight}"></ToolTip>
+                                </TextBlock.ToolTip>
+                            </TextBlock>
                             <TextBlock Name="copyrightYearSubLabel"
                                         Style="{StaticResource SubLabelStyle}"
                                         Text="{x:Static p:Resources.PublishPackageViewCopyrightYearSubLabel}" />
