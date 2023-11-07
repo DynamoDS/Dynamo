@@ -543,7 +543,33 @@
                                 Style="{StaticResource InputStyle}"
                                 Text="{Binding Keywords, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 Tag="{x:Static p:Resources.PublishPackageKeywordsWatermark}"
-                                TabIndex="7" />
+                                TabIndex="7">
+                        <TextBox.InputBindings>
+                            <KeyBinding Command="{Binding SetKeywordsCommand}" Key="Return" />
+                        </TextBox.InputBindings>
+                    </TextBox>                    
+                    <!-- Bar containing all active fitlers -->
+                    <ItemsControl x:Name="KeywordsItemControl">
+                        <ItemsControl.Resources>
+                            <CollectionViewSource x:Key="KeywordItems" Source="{Binding KeywordsCollection}" />
+                        </ItemsControl.Resources>
+                        <ItemsControl.ItemsSource>
+                            <CompositeCollection>
+                                <CollectionContainer Collection="{Binding Source={StaticResource KeywordItems}}" />
+                            </CompositeCollection>
+                        </ItemsControl.ItemsSource>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type local:FilterTagControl}">
+                                <local:FilterTagControl TagName="{Binding Name}"
+                                                    IsFilterOn="{Binding OnChecked, Mode=TwoWay}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
 
                     <!--  More  -->
                     <Expander x:Name="detailsExpander"

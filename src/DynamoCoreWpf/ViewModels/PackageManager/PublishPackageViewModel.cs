@@ -31,6 +31,42 @@ namespace Dynamo.PackageManager
 {
     public delegate void PublishSuccessHandler(PublishPackageViewModel sender);
 
+
+    /// <summary>
+    /// Keyword tag displaying under the keyword input text box
+    /// </summary>
+    public class KeywordTag : NotificationObject
+    {
+        /// <summary>
+        /// Name of the host
+        /// </summary>
+        public string Name { get; set; }
+
+        private bool _onChecked;
+        /// <summary>
+        /// Triggers the remove action
+        /// </summary>
+        public bool OnChecked
+        {
+            get { return _onChecked; }
+            set
+            {
+                _onChecked = value;
+
+                RaisePropertyChanged(nameof(OnChecked));
+            }
+        }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param Name="name">Keyword name</param>
+        public KeywordTag(string name)
+        {
+            Name = name;
+        }
+    }
+
     /// <summary>
     /// The ViewModel for Package publishing </summary>
     public class PublishPackageViewModel : NotificationObject
@@ -266,6 +302,22 @@ namespace Dynamo.PackageManager
                     RaisePropertyChanged("Keywords");
                     KeywordList = value.Split(' ').Where(x => x.Length > 0).ToList();
                 }
+            }
+        }
+
+        private ObservableCollection<KeywordTag> keywordsCollection = new ObservableCollection<KeywordTag>();
+
+        /// <summary>
+        /// A collection of dynamic non-hosted filters
+        /// such as New, Updated, Deprecated, Has/HasNoDependencies
+        /// </summary>
+        public ObservableCollection<KeywordTag> KeywordsCollection
+        {
+            get { return keywordsCollection; }
+            set
+            {
+                keywordsCollection = value;
+                RaisePropertyChanged(nameof(KeywordsCollection));
             }
         }
 
@@ -636,6 +688,11 @@ namespace Dynamo.PackageManager
         public DelegateCommand ToggleMoreCommand { get; private set; }
 
         /// <summary>
+        /// Sets the keywords tags based on the current KeywordList items
+        /// </summary>
+        public DelegateCommand SetKeywordsCommand { get; private set; }
+
+        /// <summary>
         /// The package used for this submission
         /// </summary>
         public Package Package { get; set; }
@@ -838,6 +895,7 @@ namespace Dynamo.PackageManager
             CancelCommand = new DelegateCommand(Cancel);
             RemoveItemCommand = new Dynamo.UI.Commands.DelegateCommand(RemoveItem);
             ToggleMoreCommand = new DelegateCommand(() => MoreExpanded = !MoreExpanded, () => true);
+            SetKeywordsCommand = new DelegateCommand(SetKeywords, CanSetKeywords);
             Dependencies.CollectionChanged += DependenciesOnCollectionChanged;
             Assemblies = new List<PackageAssembly>();
             MarkdownFiles = new List<string>();
@@ -948,19 +1006,6 @@ namespace Dynamo.PackageManager
             return updatedItems;
         }
 
-        private bool IsSubPathOf(string path1, string path2)
-        {
-            var di1 = new DirectoryInfo(path1);
-            var di2 = new DirectoryInfo(path2);
-
-            if (di2.Parent == null) return false;
-            if (di2.Parent.FullName == di1.FullName)
-            {
-                return true;
-            }
-            return false;            
-        }
-
         /// <summary>
         /// Test if path2 is subpath of path1
         /// If it is, make sure all the intermediate file paths are created as separte PackageItemRootViewModel
@@ -1034,7 +1079,7 @@ namespace Dynamo.PackageManager
             // Clearing the UploadHandle when using Submit currently throws - check trheading
             try
             { 
-                this._uploadHandle.PropertyChanged += UploadHandleOnPropertyChanged;
+                this._uploadHandle.PropertyChanged -= UploadHandleOnPropertyChanged;
                 this.UploadHandle = null;
             }
             catch { Exception ex; }
@@ -1110,6 +1155,29 @@ namespace Dynamo.PackageManager
                 CanSubmit();
                SubmitCommand.RaiseCanExecuteChanged();
                PublishLocallyCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+        private bool CanSetKeywords()
+        {
+            return KeywordList.Count() > 0;
+        }
+        private void SetKeywords()
+        {
+            KeywordsCollection = KeywordList.Select(x => new KeywordTag(x)).ToObservableCollection();
+            foreach (var keyword in KeywordsCollection)
+            {
+                keyword.PropertyChanged += Keyword_PropertyChanged;
+            }
+        }
+
+        private void Keyword_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (!(sender is KeywordTag keyword)) return;
+            if (e.PropertyName == nameof(KeywordTag.OnChecked))
+            {
+                keyword.PropertyChanged -= Keyword_PropertyChanged;
+                KeywordsCollection.Remove(keyword);
             }
         }
 
