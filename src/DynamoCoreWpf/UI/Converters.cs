@@ -2093,6 +2093,28 @@ namespace Dynamo.Controls
         }
     }
 
+    public sealed class NullOrEmptyStringToVisibiltyCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            bool invert = parameter as string == "invert";
+
+            if (String.IsNullOrEmpty((string)value))
+            {
+                return invert ? Visibility.Visible : Visibility.Collapsed;
+            }
+            else
+            {
+                return invert ? Visibility.Collapsed : Visibility.Visible;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public sealed class NullToPinWidthConverter : IValueConverter
     {
         public const double PIN_WIDTH = 4;
