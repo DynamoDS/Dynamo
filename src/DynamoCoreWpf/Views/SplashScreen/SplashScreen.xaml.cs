@@ -234,7 +234,7 @@ namespace Dynamo.UI.Views
             Close();
             dynamoView?.Show();
             dynamoView?.Activate();
-        }
+        }        
 
         /// <summary>
         /// Once main window is initialized, Dynamic Splash screen should finish loading
@@ -390,6 +390,17 @@ namespace Dynamo.UI.Views
             {
                 await webView.CoreWebView2.ExecuteScriptAsync("window.setSignInStatus({" +               
                 $"signInStatus: \"" + status + "\"})");
+            }
+        }
+        /// <summary>
+        /// Enable or not the SignIn button on the fly.
+        /// </summary>
+        /// <param name="enabled"></param>
+        internal async void SetSignInEnable(bool enabled)
+        {
+            if (webView?.CoreWebView2 != null)
+            {
+                await webView.CoreWebView2.ExecuteScriptAsync("window.setEnableSignInButton({" + $"enable: \"" + enabled + "\"})");
             }
         }
 
