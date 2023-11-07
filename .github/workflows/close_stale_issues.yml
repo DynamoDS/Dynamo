@@ -4,9 +4,6 @@ on:
   schedule:
     - cron: '0 0 * * *'
 
-env:
-  GITHUB_ISSUES_URL: ${{ format('{0}/{1}/issues', github.server_url, github.repository) }}
-
 jobs:
   close_stale_issues:
     name: Close stale issues
@@ -20,8 +17,10 @@ jobs:
           days-before-close: 0
           only-labels: needs more info
           close-issue-message: Given that there has been no additional information added, this issue will be closed for now. Please reopen and provide additional information if you wish the Dynamo team to investigate further.
-      - name: Summary
-        if: ${{ steps.close_issues.outputs.closed-issues-prs }} != '[]'
+      - name: Summary # Print markdown list of closed issues or "No Issues" message if no issues were closed
+        env:
+          ISSUES_URL: ${{ format('{0}/{1}/issues', github.server_url, github.repository) }}
+          CLOSED_ISSUES: ${{ steps.close_issues.outputs.closed-issues-prs }}
         run: |
           echo '# Closed Issues' >> $GITHUB_STEP_SUMMARY
-          echo '${{ steps.close_issues.outputs.closed-issues-prs }}' | jq --raw-output '.[] | "- [#\(.number) - \(.title)](\(${{ env.GITHUB_ISSUES_URL }})/\(.number))"' >> $GITHUB_STEP_SUMMARY
+          echo '${{ env.CLOSED_ISSUES }}' | jq --raw-output ' if (. == []) then "- No Issues." else .[] | "- \(.title) - [#\(.number)](\(${{ env.ISSUES_URL }})/\(.number))" end' >> $GITHUB_STEP_SUMMARY
