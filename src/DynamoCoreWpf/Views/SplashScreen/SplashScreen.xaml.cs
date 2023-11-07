@@ -234,7 +234,7 @@ namespace Dynamo.UI.Views
             Close();
             dynamoView?.Show();
             dynamoView?.Activate();
-        }        
+        }
 
         /// <summary>
         /// Once main window is initialized, Dynamic Splash screen should finish loading
