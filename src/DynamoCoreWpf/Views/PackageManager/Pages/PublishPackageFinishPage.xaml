@@ -75,37 +75,47 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                    <TextBox Grid.Column="0"
-                             x:Name="packagePathTextBlox"
-                             Margin="0"
-                             HorizontalAlignment="Stretch"
-                             Background="#343434"
-                             IsHitTestVisible="False"
-                             IsReadOnly="True"
-                             Style="{StaticResource InputStyle}"/>
-                    <Button Name="uploadFilesDirectoryButton"
-                                Grid.Column="1"
-                                Width="20"  
-                                Height="20"
-                                Margin="5,10,10,10" 
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Top"
-                                BorderThickness="0"
-                                Click="uploadFilesDirectoryButton_Click"
-                                Cursor="Hand"
-                                IsEnabled="True"
-                                IsHitTestVisible="True">
-                        <Button.Template>
-                            <ControlTemplate>
-                                <Rectangle Width="16" Height="16">
-                                    <Rectangle.Fill>
-                                        <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Folder.png" />
-                                    </Rectangle.Fill>
-                                </Rectangle>
-                            </ControlTemplate>
-                        </Button.Template>
-                    </Button>
+                <TextBox Grid.Column="0"
+                            x:Name="packagePathTextBlox"
+                            Margin="0"
+                            HorizontalAlignment="Stretch"
+                            Background="#343434"
+                            IsHitTestVisible="False"
+                            IsReadOnly="True"
+                            Style="{StaticResource InputStyle}"/>
+                <Button Name="uploadFilesDirectoryButton"
+                            Grid.Column="1"
+                            Width="16"  
+                            Height="16"
+                            Margin="10,9,10,10" 
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            BorderThickness="0"
+                            Click="uploadFilesDirectoryButton_Click"
+                            Cursor="Hand"
+                            IsEnabled="True"
+                            IsHitTestVisible="True">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="Transparent">
+                                <Viewbox Width="16" Height="16" VerticalAlignment="Center">
+                                    <Path x:Name="Folder"
+                                          Fill="#F5F5F5"
+                                          Data="M12.3807 13.3333H1.34863V2.66663H5.83292L7.85591 3.99996H13.4866V5.99996H14.6262L12.3807 13.3333ZM2.82532 12.6666H11.895L13.6955 6.66663H4.62578L2.82532 12.6666ZM2.02296 3.33329V12.6666H2.11737L4.14036 5.99996H12.8122V4.66663H7.65361L5.63063 3.33329H2.02296Z"
+                                          StrokeThickness="0">
+                                    </Path>
+                                </Viewbox>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">   
+                                    <Setter TargetName="Folder" Property="Fill" Value="#6AC0E7" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
             </Grid>
         </StackPanel>
     </Grid>
 </Page>
+

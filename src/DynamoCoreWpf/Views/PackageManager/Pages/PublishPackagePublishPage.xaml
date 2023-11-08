@@ -427,13 +427,13 @@
                     </TextBlock>
                     <TextBox Name="packageNameInput"
                              Tag="{x:Static p:Resources.PublishPackageViewPackageNameWatermark}"
-                             Style="{StaticResource CustomAdornerInputStyle}"
+                             Style="{StaticResource CustomAdornerInputStyle}"                             
+                             PreviewKeyDown="textBoxInput_PreviewKeyDown"
                              IsEnabled="{Binding Path=CanEditName}"
                              TabIndex="0" >
                         <TextBox.Text>
                             <Binding Path="Name" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
                                 <Binding.ValidationRules>
-                                    <local:NotAllSpacesValidationRule />
                                     <local:PackageNameLengthValidationRule />
                                 </Binding.ValidationRules>
                             </Binding>
@@ -453,6 +453,7 @@
                     <TextBox Name="descriptionInput"
                              MinHeight="81px"
                              Style="{StaticResource InputStyle}"
+                             PreviewKeyDown="textBoxInput_PreviewKeyDown"
                              Tag="{x:Static p:Resources.PublishPackageViewPackageDescription}"
                              Text="{Binding Path=Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              TabIndex="1" />
@@ -603,17 +604,19 @@
                         </TextBlock.ToolTip>
                     </TextBlock>
                     <TextBox Name="keywordsInput"
-                                Style="{StaticResource InputStyle}"
-                                Text="{Binding Keywords, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                Tag="{x:Static p:Resources.PublishPackageKeywordsWatermark}"
-                                TabIndex="7">
+                             Margin="0 5"                           
+                             PreviewKeyDown="textBoxInput_PreviewKeyDown"
+                             Style="{StaticResource InputStyle}"
+                             Text="{Binding Keywords, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             Tag="{x:Static p:Resources.PublishPackageKeywordsWatermark}"
+                             TabIndex="7">
                         <TextBox.InputBindings>
                             <KeyBinding Command="{Binding SetKeywordsCommand}" Key="Return" />
                         </TextBox.InputBindings>
                     </TextBox>
 
                     <!-- Bar containing all keywords -->
-                    <ItemsControl x:Name="KeywordsItemControl">
+                    <ItemsControl x:Name="KeywordsItemControl" Margin="0 0 0 2">
                         <ItemsControl.Resources>
                             <CollectionViewSource x:Key="KeywordItems" Source="{Binding KeywordsCollection}" />
                         </ItemsControl.Resources>
@@ -644,11 +647,12 @@
                                         Style="{StaticResource GenericToolTipLight}"></ToolTip>
                         </TextBlock.ToolTip>
                     </TextBlock>
-                    <TextBox Name="groupInput"
-                                Style="{StaticResource InputStyle}"
-                                Text="{Binding Path=Group, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                Tag="{x:Static p:Resources.PublishPackageGroupWatermark}"
-                                TabIndex="6" />
+                    <TextBox Name="groupInput"                           
+                             PreviewKeyDown="textBoxInput_PreviewKeyDown"
+                             Style="{StaticResource InputStyle}"
+                             Text="{Binding Path=Group, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             Tag="{x:Static p:Resources.PublishPackageGroupWatermark}"
+                             TabIndex="6" />
 
 
                     <!--  More  -->
@@ -663,18 +667,19 @@
 
                             <!--  Website URL  -->
                             <TextBlock Name="websiteUrlLabel"
-                                        Style="{StaticResource LabelStyle}"
-                                        Text="{x:Static p:Resources.PublishPackageViewPublisherWebSite}" >
+                                       Style="{StaticResource LabelStyle}"
+                                       Text="{x:Static p:Resources.PublishPackageViewPublisherWebSite}" >
                                 <TextBlock.ToolTip>
                                     <ToolTip Content="{x:Static p:Resources.PublishPackageViewPublisherWebsiteTooltip}"
                                         Style="{StaticResource GenericToolTipLight}"></ToolTip>
                                 </TextBlock.ToolTip>
                             </TextBlock>
-                            <TextBox Name="websiteUrlInput"
-                                        Style="{StaticResource InputStyle}"
-                                        Text="{Binding SiteUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                        Tag="{x:Static p:Resources.PublishPackageViewPublisherURLWatermark}"
-                                        TabIndex="9" />
+                            <TextBox Name="websiteUrlInput"                           
+                                     PreviewKeyDown="textBoxInput_PreviewKeyDown"
+                                     Style="{StaticResource InputStyle}"
+                                     Text="{Binding SiteUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                     Tag="{x:Static p:Resources.PublishPackageViewPublisherURLWatermark}"
+                                     TabIndex="9" />
 
                             <!--  Repository URL  -->
                             <TextBlock Name="repositoryUrlLabel"
@@ -685,24 +690,26 @@
                                         Style="{StaticResource GenericToolTipLight}"></ToolTip>
                                 </TextBlock.ToolTip>
                             </TextBlock>
-                            <TextBox Name="repositoryUrlInput"
-                                        Style="{StaticResource InputStyle}"
-                                        Text="{Binding RepositoryUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                        Tag="{x:Static p:Resources.PublishPackageViewPublisherURLWatermark}"
-                                        TabIndex="10" />
+                            <TextBox Name="repositoryUrlInput"   
+                                     PreviewKeyDown="textBoxInput_PreviewKeyDown"
+                                     Style="{StaticResource InputStyle}"
+                                     Text="{Binding RepositoryUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                     Tag="{x:Static p:Resources.PublishPackageViewPublisherURLWatermark}"
+                                     TabIndex="10" />
 
                             <!--  License  -->
-                            <TextBlock Name="licenseLabel"
-                                        Style="{StaticResource LabelStyle}"
-                                        Text="{x:Static p:Resources.PublishPackageViewLicense}" />
+                            <TextBlock Name="licenseLabel"                           
+                                       PreviewKeyDown="textBoxInput_PreviewKeyDown"
+                                       Style="{StaticResource LabelStyle}"
+                                       Text="{x:Static p:Resources.PublishPackageViewLicense}" />
                             <TextBlock Name="licenseSubLabel"
                                         Style="{StaticResource SubLabelStyle}"
                                         TextWrapping="Wrap">
                             <Run Text="{x:Static p:Resources.PublishPackageViewLicenseSubLabel}" />
                             <Hyperlink Cursor="Hand"
-                                        NavigateUri="https://opensource.org/licenses/MIT"
-                                        RequestNavigate="Hyperlink_RequestNavigate"
-                                        KeyboardNavigation.TabIndex="11">
+                                       NavigateUri="https://opensource.org/licenses/MIT"
+                                       RequestNavigate="Hyperlink_RequestNavigate"
+                                       KeyboardNavigation.TabIndex="11">
                                 MIT
                                 <Hyperlink.Style>
                                     <Style TargetType="Hyperlink">
@@ -716,16 +723,17 @@
                                 </Hyperlink.Style>
                             </Hyperlink>
                             </TextBlock>
-                            <TextBox Name="licenseInput"
-                                        Text="{Binding License, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                        Style="{StaticResource InputStyle}"
-                                        Tag="{x:Static p:Resources.PublishPackageViewLicenseWatermark}"
-                                        TabIndex="12" />
+                            <TextBox Name="licenseInput"                           
+                                     PreviewKeyDown="textBoxInput_PreviewKeyDown"
+                                     Text="{Binding License, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                     Style="{StaticResource InputStyle}"
+                                     Tag="{x:Static p:Resources.PublishPackageViewLicenseWatermark}"
+                                     TabIndex="12" />
 
                             <!--  Copyright Holder  -->
                             <TextBlock Name="copyrightHolderLabel"
-                                        Style="{StaticResource LabelStyle}"
-                                        Text="{x:Static p:Resources.PublishPackageViewCopyrightHolder}" >
+                                       Style="{StaticResource LabelStyle}"
+                                       Text="{x:Static p:Resources.PublishPackageViewCopyrightHolder}" >
                                 <TextBlock.ToolTip>
                                     <ToolTip Content="{x:Static p:Resources.PublishPackageViewCopyrightHolderTooltip}"
                                         Style="{StaticResource GenericToolTipLight}"></ToolTip>
@@ -734,30 +742,32 @@
                             <TextBlock Name="copyrightHolderSubLabel"
                                         Style="{StaticResource SubLabelStyle}"
                                         Text="{x:Static p:Resources.PublishPackageViewCopyrightHolderSubLabel}" />
-                            <TextBox Name="CopyrightHolder"
-                                        Style="{StaticResource InputStyle}"
-                                        Text="{Binding CopyrightHolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                        Tag="{x:Static p:Resources.PublishPackageViewCopyrightHolderWatermark}"
-                                        TabIndex="13" />
+                            <TextBox Name="CopyrightHolder"                           
+                                     PreviewKeyDown="textBoxInput_PreviewKeyDown"
+                                     Style="{StaticResource InputStyle}"
+                                     Text="{Binding CopyrightHolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                     Tag="{x:Static p:Resources.PublishPackageViewCopyrightHolderWatermark}"
+                                     TabIndex="13" />
 
                             <!--  Copyright Year  -->
                             <TextBlock Name="copyrightYearLabel"
-                                        Style="{StaticResource LabelStyle}"
-                                        Text="{x:Static p:Resources.PublishPackageViewCopyrightYear}" >
+                                       Style="{StaticResource LabelStyle}"
+                                       Text="{x:Static p:Resources.PublishPackageViewCopyrightYear}" >
                                 <TextBlock.ToolTip>
                                     <ToolTip Content="{x:Static p:Resources.PublishPackageViewCopyrightYearTooltip}"
                                         Style="{StaticResource GenericToolTipLight}"></ToolTip>
                                 </TextBlock.ToolTip>
                             </TextBlock>
                             <TextBlock Name="copyrightYearSubLabel"
-                                        Style="{StaticResource SubLabelStyle}"
-                                        Text="{x:Static p:Resources.PublishPackageViewCopyrightYearSubLabel}" />
-                            <TextBox Name="CopyrightYear"
-                                        Margin="0,0,0,-20"
-                                        Style="{StaticResource InputStyle}"
-                                        Text="{Binding CopyrightYear, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                        Tag="{x:Static p:Resources.PublishPackageViewCopyrightYearWatermark}"
-                                        TabIndex="14" />
+                                       Style="{StaticResource SubLabelStyle}"
+                                       Text="{x:Static p:Resources.PublishPackageViewCopyrightYearSubLabel}" />
+                            <TextBox Name="CopyrightYear"                           
+                                     PreviewKeyDown="textBoxInput_PreviewKeyDown"
+                                     Margin="0,0,0,-20"
+                                     Style="{StaticResource InputStyle}"
+                                     Text="{Binding CopyrightYear, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                     Tag="{x:Static p:Resources.PublishPackageViewCopyrightYearWatermark}"
+                                     TabIndex="14" />
                         </StackPanel>
                     </Expander>
                 </StackPanel>

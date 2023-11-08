@@ -11,7 +11,7 @@ namespace Dynamo.PackageManager.UI
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
-            if (value is string name && name.Length > 2)
+            if (value is string name && name.TrimEnd().Length > 2)
             {
                 // Validation succeeded
                 return ValidationResult.ValidResult;
@@ -22,18 +22,6 @@ namespace Dynamo.PackageManager.UI
         }
     }
 
-    public class NotAllSpacesValidationRule : ValidationRule
-    {
-        public override ValidationResult Validate(object value, CultureInfo cultureInfo)
-        {
-            if (value is string text && (string.IsNullOrWhiteSpace(text) || text.Trim() == ""))
-            {
-                return new ValidationResult(false, "Text cannot be all spaces.");
-            }
-
-            return ValidationResult.ValidResult;
-        }
-    }
 
     /// <summary>
     /// Interaction logic for PublishPackagePublishPage.xaml
@@ -139,6 +127,18 @@ namespace Dynamo.PackageManager.UI
             if (previewBrowserControl != null)
             {
                 previewBrowserControl.RefreshCustomTreeView();
+            }
+        }
+
+        private void textBoxInput_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            if (textBox == null) return;
+
+            // Prevents text starting with a space
+            if (e.Key == System.Windows.Input.Key.Space && string.IsNullOrWhiteSpace(textBox.Text))
+            {
+                e.Handled = true; 
             }
         }
     }

@@ -340,7 +340,7 @@ namespace Dynamo.PackageManager
         /// MinorVersion property </summary>
         /// <value>
         /// The second element of the version</value>
-        private string _MinorVersion = "";
+        private string _MinorVersion = "0";
         public string MinorVersion
         {
             get { return _MinorVersion; }
@@ -366,7 +366,7 @@ namespace Dynamo.PackageManager
         /// BuildVersion property </summary>
         /// <value>
         /// The third element of the version</value>
-        private string _BuildVersion = "";
+        private string _BuildVersion = "0";
         public string BuildVersion
         {
             get { return _BuildVersion; }

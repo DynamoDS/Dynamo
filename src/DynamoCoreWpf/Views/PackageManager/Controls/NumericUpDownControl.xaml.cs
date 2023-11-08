@@ -184,7 +184,8 @@ namespace Dynamo.PackageManager.UI
             {
                 e.Handled = true; // Prevent space from being entered
             }
-            #endregion
         }
+
+        #endregion
     }
 }
