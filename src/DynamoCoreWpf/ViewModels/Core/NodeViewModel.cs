@@ -18,7 +18,6 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Selection;
-using Dynamo.UI;
 using Dynamo.Wpf.ViewModels.Core;
 using Newtonsoft.Json;
 using Point = System.Windows.Point;
@@ -1349,7 +1348,7 @@ namespace Dynamo.ViewModels
 
             /*
                 Priorities seem to be:
-                Error > Warning > Info ; Frozen > Preview > None
+                Error > Warning > Info ; Frozen > Package > Preview > None
                 Pass through all possible states in reverse order 
                 to assign icon values for each possible scenario
             */
@@ -1358,14 +1357,6 @@ namespace Dynamo.ViewModels
 
             if (this.NodeModel == null) return result;
 
-            if (this.NodeModel.IsCustomFunction)
-            {
-                result = nodeCustomColor;
-                if(result != null)
-                {
-                    ImgGlyphOneSource = packageGlyph;
-                }
-            }
             if (!this.IsVisible)
             {
                 result = nodePreviewColor;
@@ -1374,6 +1365,24 @@ namespace Dynamo.ViewModels
                     ImgGlyphOneSource = previewGlyph;
                 } 
             }
+
+            if (this.NodeModel.IsCustomFunction)
+            {
+                result = nodeCustomColor;
+                if(result != null)
+                {
+                    if (ImgGlyphOneSource == null)
+                    {
+                        ImgGlyphOneSource = packageGlyph;
+                    }
+                    else
+                    {
+                        ImgGlyphOneSource = packageGlyph;
+                        ImgGlyphTwoSource = previewGlyph;
+                    }
+                }
+            }
+
             if (this.IsFrozen)
             {
                 result = nodeFrozenOverlayColor;
@@ -1382,7 +1391,7 @@ namespace Dynamo.ViewModels
                     if (ImgGlyphOneSource == null)
                     {
                         ImgGlyphOneSource = frozenGlyph;
-                    }
+                    }   
                     else
                     {
                         ImgGlyphOneSource = frozenGlyph;

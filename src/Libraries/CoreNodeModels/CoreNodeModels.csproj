@@ -23,11 +23,6 @@
   <ItemGroup>
     <None Remove="CoreNodeModelsImages.resources" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-      <Reference Include="System.Web" />
-      <Reference Include="System.Windows" />
-      <Reference Include="System.Xaml" />
-  </ItemGroup>
   <ItemGroup>
 	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">

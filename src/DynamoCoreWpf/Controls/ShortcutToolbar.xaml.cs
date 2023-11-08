@@ -6,11 +6,7 @@ using System.Windows.Media.Imaging;
 using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
-#if NETFRAMEWORK
-using NotificationObject = Microsoft.Practices.Prism.ViewModel.NotificationObject;
-#else
 using NotificationObject = Dynamo.Core.NotificationObject;
-#endif
 using Greg.AuthProviders;
 using System.Linq;
 using System.Windows;
@@ -42,6 +38,7 @@ namespace Dynamo.UI.Controls
             get { return shortcutBarRightSideItems; }
         }
         private readonly Core.AuthenticationManager authManager;
+        public readonly DynamoViewModel DynamoViewModel;
 
         /// <summary>
         /// Construct a ShortcutToolbar.
@@ -49,6 +46,7 @@ namespace Dynamo.UI.Controls
         /// <param name="dynamoViewModel"></param>
         public ShortcutToolbar(DynamoViewModel dynamoViewModel)
         {
+            DynamoViewModel = dynamoViewModel;
             shortcutBarItems = new ObservableCollection<ShortcutBarItem>();
             shortcutBarRightSideItems = new ObservableCollection<ShortcutBarItem>();
 
@@ -72,6 +70,7 @@ namespace Dynamo.UI.Controls
         {
             IsSaveButtonEnabled = false;
             IsExportMenuEnabled = false;
+            DynamoViewModel.OnRequestShorcutToolbarLoaded(RightMenu.ActualWidth);
         }
 
         private void SignOutHandler(LoginState status)

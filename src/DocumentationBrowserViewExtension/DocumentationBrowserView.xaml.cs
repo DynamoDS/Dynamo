@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Web;
 using System.Windows;
 using System.Windows.Controls;
@@ -26,6 +27,8 @@ namespace Dynamo.DocumentationBrowser
 
         internal string WebBrowserUserDataFolder { get; set; }
         internal string FallbackDirectoryName { get; set; }
+        //This folder will be used to store images and dyn files previosuly located in /rootDirectory/en-US/fallback_docs so we don't need to copy all those files per each language
+        internal static readonly string SharedDocsDirectoryName = "NodeHelpSharedDocs";
 
         //Path in which the virtual folder for loading images will be created
         internal string VirtualFolderPath { get; set; }
@@ -130,12 +133,24 @@ namespace Dynamo.DocumentationBrowser
             VirtualFolderPath = string.Empty;
             try
             {
-                if (viewModel.Link != null && !string.IsNullOrEmpty(viewModel.CurrentPackageName))
+                //if this node is from a package then we set the virtual host path to the packages docs directory.
+                if (viewModel.Link != null && !string.IsNullOrEmpty(viewModel.CurrentPackageName) && viewModel.IsOwnedByPackage)
                 {
                     VirtualFolderPath = Path.GetDirectoryName(HttpUtility.UrlDecode(viewModel.Link.AbsolutePath));
                 }
+                //if the node is not from a package, then set the virtual host path to the shared docs folder.
+                else if (viewModel.Link != null && !viewModel.IsOwnedByPackage)
+                {
+                    VirtualFolderPath = Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName, SharedDocsDirectoryName);
+                }
+                //unclear what would cause this.
                 else
+                {
                     VirtualFolderPath = FallbackDirectoryName;
+                }
+                //TODO - the above will not handle the case that a package's images/dyns are located in the shared folder
+                //we may have to do some inspection of the package docs folder and decide to fallback in some cases, or mark the package
+                //in some way.
             }
             catch (Exception ex)
             {

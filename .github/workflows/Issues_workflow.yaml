@@ -17,7 +17,7 @@ jobs:
     outputs:
       result: ${{env.content_analysis_response}}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       #Detect if the issue_title follows the regex expression
       - name: Check Issue Title
@@ -37,7 +37,7 @@ jobs:
 
       #Remove the " character in the issue title and replaced with -
       - name: Remove conflicting chars
-        uses: frabert/replace-string-action@v1.2
+        uses: frabert/replace-string-action@v2.4
         id: remove_quotations
         with:
           pattern: "\""
@@ -107,13 +107,13 @@ jobs:
       acceptable_missing_info: 1
     steps:
       #Checkout the repo
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       #Removes conflicting characters before using the issue content as a script parameter
       - name: Remove conflicting chars
         env:
           ISSUE_BODY: ${{github.event.issue.body}}
-        uses: frabert/replace-string-action@v1.2
+        uses: frabert/replace-string-action@v2.4
         id: remove_quotations
         with:
           pattern: "\""

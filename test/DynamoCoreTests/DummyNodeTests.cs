@@ -115,11 +115,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DummyNode>().Count());
             var dummyNode = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DummyNode>().First();
             //runtime behavior has changed for assembly resolve handlers that throw exceptions.
-#if NET6_0_OR_GREATER
             Assert.AreEqual(2, exceptionCount);
-#elif NETFRAMEWORK
-            Assert.AreEqual(1, exceptionCount);
-#endif
             AppDomain.CurrentDomain.AssemblyResolve -= handler;
         }
 

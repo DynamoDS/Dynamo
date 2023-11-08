@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Dynamo.Graph.Workspaces;
 using Greg;
 using Greg.Requests;
 using Greg.Responses;
-using System.Linq;
 
 namespace Dynamo.PackageManager
 {
@@ -63,6 +63,18 @@ namespace Dynamo.PackageManager
                 var pkgResponse = this.client.ExecuteAndDeserialize(new Upvote(packageId));
                 return pkgResponse.success;
             }, false);
+        }
+
+        internal List<string> UserVotes()
+        {
+            var votes = FailFunc.TryExecute(() =>
+            {
+                var nv = new GetUserVotes();
+                var pkgResponse = this.client.ExecuteAndDeserializeWithContent<UserVotes>(nv);
+                return pkgResponse.content;
+            }, null);
+
+            return votes?.has_upvoted;
         }
 
         internal PackageManagerResult DownloadPackage(string packageId, string version, out string pathToPackage)

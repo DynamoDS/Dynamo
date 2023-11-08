@@ -573,6 +573,7 @@ namespace Dynamo.ViewModels
             Errors.Clear();
             Annotations.Clear();
             InCanvasSearchViewModel?.Dispose();
+            NodeAutoCompleteSearchViewModel.LuceneUtility?.DisposeAll();
             NodeAutoCompleteSearchViewModel?.Dispose();
         }
 
@@ -588,6 +589,16 @@ namespace Dynamo.ViewModels
             var args = new ZoomEventArgs(-Configurations.ZoomIncrement);
             OnRequestZoomToViewportCenter(this, args);
             ResetFitViewToggle(null);
+        }
+
+        internal JObject GetJsonRepresentation(EngineController engine = null)
+        {
+            // Step 1: Serialize the workspace.
+            var json = Model.ToJson(engine);
+            var json_parsed = JObject.Parse(json);
+
+            // Step 2: Add the View.
+            return AddViewBlockToJSON(json_parsed);
         }
 
         /// <summary>
@@ -615,14 +626,11 @@ namespace Dynamo.ViewModels
 
                 //set the name before serializing model.
                 this.Model.setNameBasedOnFileName(filePath, isBackup);
-                // Stage 1: Serialize the workspace.
-                var json = Model.ToJson(engine);
-                var json_parsed = JObject.Parse(json);
 
-                // Stage 2: Add the View.
-                var jo = AddViewBlockToJSON(json_parsed);
+                // Stage 1: Serialize the workspace and the View
+                var jo = GetJsonRepresentation(engine);
 
-                // Stage 3: Save
+                // Stage 2: Save
                 string saveContent;
                 if(saveContext == SaveContext.SaveAs && !isBackup)
                 {
@@ -636,7 +644,7 @@ namespace Dynamo.ViewModels
                         {
                             var result = DynamoMessageBox.Show(Wpf.Properties.Resources.ElementBindingWarningMessage,
                                 Wpf.Properties.Resources.ElementBindingWarningTitle, MessageBoxButton.OKCancel,
-                                MessageBoxImage.Warning);
+                                MessageBoxImage.Warning, Wpf.Properties.Resources.ElementBindingDesc);
 
                             if (result == MessageBoxResult.Cancel)
                             {
@@ -652,7 +660,7 @@ namespace Dynamo.ViewModels
                     saveContent = jo.ToString();
                 }
                 File.WriteAllText(filePath, saveContent);
-
+                
                 // Handle Workspace or CustomNodeWorkspace related non-serialization internal logic
                 // Only for actual save, update file path and recent file list
                 if (!isBackup)

@@ -1,11 +1,7 @@
-using Dynamo.Controls;
-using Dynamo.ViewModels;
-#if NETFRAMEWORK
-using NotificationObject = Microsoft.Practices.Prism.ViewModel.NotificationObject;
-#else
-using NotificationObject = Dynamo.Core.NotificationObject;
-#endif
+using System;
 using System.Collections.ObjectModel;
+using Dynamo.ViewModels;
+using NotificationObject = Dynamo.Core.NotificationObject;
 
 namespace Dynamo.PackageManager
 {
@@ -57,6 +53,12 @@ namespace Dynamo.PackageManager
             PkgSearchVM.RegisterTransientHandlers();
 
             LocalPackages.CollectionChanged += LocalPackages_CollectionChanged;
+
+            // We are forced to make the update ourselves if the Preferences ViewModel has not been initialized yet
+            if (String.IsNullOrEmpty(PreferencesViewModel?.SelectedPackagePathForInstall))
+            {
+                PreferencesViewModel.SelectedPackagePathForInstall = dynamoViewModel.PreferenceSettings.SelectedPackagePathForInstall;
+            }
         }
 
         private void LocalPackages_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

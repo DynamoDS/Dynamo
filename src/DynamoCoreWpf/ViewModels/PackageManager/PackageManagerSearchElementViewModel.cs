@@ -6,11 +6,7 @@ using System.Windows.Input;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels;
 using Greg.Responses;
-#if NETFRAMEWORK
-using Microsoft.Practices.Prism.Commands;
-#else
 using Prism.Commands;
-#endif
 
 namespace Dynamo.PackageManager.ViewModels
 {

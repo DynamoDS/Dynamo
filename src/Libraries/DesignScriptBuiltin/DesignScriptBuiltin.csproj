@@ -15,15 +15,6 @@
   <PropertyGroup>
     <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
   </PropertyGroup>
-  <ItemGroup Label="System.Collections.Immutable@portable-net45+win8+wp8+wpa81" Condition=" '$(TargetFramework)' == 'net48' ">
-    <PackageReference Include="System.Collections.Immutable" Version="5.0.0">
-      <GeneratePathProperty>true</GeneratePathProperty>
-      <IncludeAssets>none</IncludeAssets>
-    </PackageReference>
-    <Reference Include="System.Collections.Immutable">
-      <HintPath>$(PkgSystem_Collections_Immutable)\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
-    </Reference>
-  </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
     <PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
     <PackageReference Include="System.Resources.Extensions" Version="5.0.0" />

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Xml;
+using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
@@ -1970,6 +1971,53 @@ namespace Dynamo.Graph.Workspaces
         {
             this.currentPasteOffset = (this.currentPasteOffset + PasteOffsetStep) % PasteOffsetMax;
         }
+
+        #region [Nodes Info]
+
+        /// <summary>
+        /// Boolean indicates if the workspace run with warnings
+        /// </summary>
+        internal bool HasWarnings
+        {
+            get { return Nodes.Any(n => n.State == ElementState.Warning || n.State == ElementState.PersistentWarning); }
+        }
+
+        /// <summary>
+        /// Boolean indicates if the workspace run with warnings with no Geometry
+        /// </summary>
+        internal bool HasNoneGeometryRelatedWarnings
+        {
+            get { return Nodes.Any(n => (n.State == ElementState.Warning || n.State == ElementState.PersistentWarning) && !n.Category.StartsWith("Geometry.")); }
+        }
+
+        /// <summary>
+        /// Boolean indicates if workspace run with errors
+        /// </summary>
+        internal bool HasErrors
+        {
+            get { return Nodes.Any(n => n.State == ElementState.Error); }
+        }
+
+        /// <summary>
+        /// Boolean indicates if home workspace is displayed with infos
+        /// </summary>
+        internal bool HasInfos
+        {
+            get { return Nodes.Any(n => n.State == ElementState.Info); }
+        }
+
+        /// <summary>
+        /// Indicates if the workspace is valid for sending to the FDX
+        /// </summary>
+        internal bool IsValidForFDX
+        {
+            get
+            {
+                return !HasErrors && !HasNoneGeometryRelatedWarnings;
+            }
+        }
+
+        #endregion
 
         #endregion
 

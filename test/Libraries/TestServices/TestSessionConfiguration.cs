@@ -18,8 +18,8 @@ namespace TestServices
         private const string CONFIG_FILE_NAME = "TestServices.dll.config";
         private  List<Version> supportedLibGVersions = new List<Version>
                 {
+                    new Version(230,0,0),
                     new Version(229,0,0),
-                    new Version(228,6,0),
                 };
 
         public string DynamoCorePath { get; private set; }
@@ -31,7 +31,7 @@ namespace TestServices
         /// If the key is not present in the config file a default value will be selected.
         /// </summary>
         public Version RequestedLibraryVersion2 { get; private set; }
-  
+
         /// <summary>
         /// This constructor does not read configuration from a config file, the configuration properties are
         /// set directly by the parameters passed to this constructor. 
@@ -98,13 +98,6 @@ namespace TestServices
             if (Version.TryParse(versionStr, out version))
             {
                 RequestedLibraryVersion2 = version;
-            }
-            // else try to load the older one and convert it to a known precise version.
-            else if (Enum.TryParse<LibraryVersion>(versionStrOld, out libVersion))
-            {
-                var realVersion = Preloader.MapLibGVersionEnumToFullVersion(libVersion);
-                RequestedLibraryVersion2 = realVersion;
-
             }
             // find an installed ASM version if we could not find a specified version in the config file.
             else

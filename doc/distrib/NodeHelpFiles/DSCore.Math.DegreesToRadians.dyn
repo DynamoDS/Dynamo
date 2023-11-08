@@ -1,21 +1,205 @@
-<Workspace Version="1.0.0.1180" X="-75.5763111926638" Y="-55.2416774723163" zoom="1.37758335255866" Name="Home" Description="" RunType="Automatic" RunPeriod="1000" HasRunWithoutCrash="True">
-  <NamespaceResolutionMap />
-  <Elements>
-    <CoreNodeModels.Input.DoubleSlider guid="91c8bf14-ac0b-404f-b763-a943e73e0cee" type="CoreNodeModels.Input.DoubleSlider" nickname="Number Slider" x="125.269140195627" y="111.407862570168" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
-      <System.Double>155</System.Double>
-      <Range min="-360" max="360" step="1" />
-    </CoreNodeModels.Input.DoubleSlider>
-    <CoreNodeModels.Watch guid="07b2c47e-75cb-4523-b2fa-8fc560738ce6" type="CoreNodeModels.Watch" nickname="Watch" x="641.01168115557" y="111.407862570168" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" />
-    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="28399666-6028-4a84-a09d-7ae08e1cf6b1" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="Math.DegreesToRadians" x="459.940410675598" y="111.407862570168" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.Math.DegreesToRadians@double" />
-  </Elements>
-  <Connectors>
-    <Dynamo.Graph.Connectors.ConnectorModel start="91c8bf14-ac0b-404f-b763-a943e73e0cee" start_index="0" end="28399666-6028-4a84-a09d-7ae08e1cf6b1" end_index="0" portType="0" />
-    <Dynamo.Graph.Connectors.ConnectorModel start="28399666-6028-4a84-a09d-7ae08e1cf6b1" start_index="0" end="07b2c47e-75cb-4523-b2fa-8fc560738ce6" end_index="0" portType="0" />
-  </Connectors>
-  <Notes />
-  <Annotations />
-  <Presets />
-  <Cameras>
-    <Camera Name="Background Preview" eyeX="-17" eyeY="24" eyeZ="50" lookX="12" lookY="-13" lookZ="-58" upX="0" upY="1" upZ="0" />
-  </Cameras>
-</Workspace>
+{
+  "Uuid": "7c5db70a-bea9-4345-acda-c04d1818bd27",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "DSCore.Math.DegreesToRadians",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "8e88ef6c86a04caba5aeea2153a47fa8",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Type2": "number",
+      "Value": "155",
+      "MaximumValue": 360.0,
+      "MinimumValue": -360.0,
+      "StepValue": 1.0,
+      "NumberType": "Double",
+      "Description": "Produces numeric values",
+      "SelectedIndex": 0
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NumberType": "Double",
+      "MaximumValue": 360.0,
+      "MinimumValue": -360.0,
+      "StepValue": 1.0,
+      "Id": "8e88ef6c86a04caba5aeea2153a47fa8",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "8d5eb95a380748f9a6f8591e35c14cef",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Produces numeric values",
+      "InputValue": 155.0
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 140.0,
+      "WatchHeight": 38.4,
+      "Id": "10f73eade31d4fecb3f445b0fac57c33",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "1fb5db4e51df4177b8ea676ea523a934",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "bc13be189a784130ac16616874afebaf",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "030083c4e19b42e5b4d0d89d649aa3dc",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "94084ad0eb30456c9cc77cb752651d23",
+          "Name": "degrees",
+          "Description": "Angle in degrees.\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "12d95ace33ca4d95a6affd04c0788558",
+          "Name": "radians",
+          "Description": "Angle in radians.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.Math.DegreesToRadians@double",
+      "Replication": "Auto",
+      "Description": "Converts an angle in degrees to an angle in radians.\n\nMath.DegreesToRadians (degrees: double): double"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "8d5eb95a380748f9a6f8591e35c14cef",
+      "End": "94084ad0eb30456c9cc77cb752651d23",
+      "Id": "6a7bd68864b84fe7b20d399c227b247c",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "12d95ace33ca4d95a6affd04c0788558",
+      "End": "1fb5db4e51df4177b8ea676ea523a934",
+      "Id": "dae7bddfea294d879daac7ab243a9ac6",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.19",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.19.0.5742",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "8e88ef6c86a04caba5aeea2153a47fa8",
+        "Name": "Number Slider",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -17.859589324401497,
+        "Y": 111.40786257016799
+      },
+      {
+        "Id": "10f73eade31d4fecb3f445b0fac57c33",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 784.14041067559856,
+        "Y": 111.40786257016799
+      },
+      {
+        "Id": "030083c4e19b42e5b4d0d89d649aa3dc",
+        "Name": "Math.DegreesToRadians",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 430.1404106755985,
+        "Y": 111.40786257016799
+      }
+    ],
+    "Annotations": [],
+    "X": 279.33177978444246,
+    "Y": 298.57806713722005,
+    "Zoom": 0.61706301636209127
+  }
+}
