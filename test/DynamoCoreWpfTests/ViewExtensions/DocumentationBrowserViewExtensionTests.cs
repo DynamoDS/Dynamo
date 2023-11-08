@@ -764,7 +764,6 @@ namespace DynamoCoreWpfTests
             }
             //Validates that we have 5 nodes the CurrentWorkspace (after the graph was added)
             Assert.AreEqual(ViewModel.Model.CurrentWorkspace.Nodes.Count(), 5);
-            //do not remove this dispatch flush call unless you know what you are doing.
             DispatcherUtil.DoEvents();
         }
 
