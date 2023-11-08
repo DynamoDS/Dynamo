@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -714,8 +715,15 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public async Task AddGraphInSpecificLocationToWorkspace()
+        public void AddGraphInSpecificLocationToWorkspace()
         {
+
+            //https://github.com/nunit/nunit/issues/1200
+            //use single threaded sync context to force webview2 async initalization on this thread.
+            DocumentationBrowserViewExtensionContentTests.SingleThreadedSynchronizationContext.Await(async () =>
+            {
+             
+
             var testDirectory = GetTestDirectory(ExecutingDirectory);
             var tempDynDirectory = Path.Combine(testDirectory, "Temp Test Path");
             var dynFileName = Path.Combine(testDirectory, @"UI\BasicAddition.dyn");
@@ -761,15 +769,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(ViewModel.Model.CurrentWorkspace.Nodes.Count(), 5);
             //do not remove this dispatch flush call unless you know what you are doing.
             DispatcherUtil.DoEvents();
-            Console.WriteLine(SynchronizationContext.Current.GetType().FullName);
-
-        //Do not make this test non async, or MTA -
-        //being both async and STA forces Nunit to use a single threaded sync context
-        //which we need so that webview2 is initialized on the same thread that created it.
-        //https://github.com/nunit/nunit/issues/1200
-        //webview2 requires thread affinity.
-        //Ideally we would file a request with nunit to improve this.
-            await Task.Delay(1);
+            });
         }
 
         [Test]
@@ -966,6 +966,38 @@ namespace DynamoCoreWpfTests
             var docsDirectory = Path.Combine(directory.Parent.Parent.Parent.FullName, @"src\DocumentationBrowserViewExtension\Docs");
 
             return Directory.GetFiles(docsDirectory, wildcard);
+        }
+
+        public sealed class SingleThreadedSynchronizationContext : SynchronizationContext
+        {
+            private readonly BlockingCollection<(SendOrPostCallback d, object state)> queue = new BlockingCollection<(SendOrPostCallback, object)>();
+
+            public override void Post(SendOrPostCallback d, object state)
+            {
+                queue.Add((d, state));
+            }
+
+            public static void Await(Func<Task> taskinvoker)
+            {
+                var originalContext = Current;
+                try
+                {
+                    var context = new SingleThreadedSynchronizationContext();
+                    SetSynchronizationContext(context);
+
+                    var task = taskinvoker.Invoke();
+                    task.ContinueWith(_ => context.queue.CompleteAdding());
+
+                    while (context.queue.TryTake(out var work, Timeout.Infinite))
+                        work.d.Invoke(work.state);
+
+                    task.GetAwaiter().GetResult();
+                }
+                finally
+                {
+                    SetSynchronizationContext(originalContext);
+                }
+            }
         }
 
         #endregion
