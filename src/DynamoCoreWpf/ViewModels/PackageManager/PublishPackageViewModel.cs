@@ -392,7 +392,7 @@ namespace Dynamo.PackageManager
         /// MajorVersion property </summary>
         /// <value>
         /// The first element of the version</value>
-        private string _MajorVersion = "";
+        private string _MajorVersion = "0";
         public string MajorVersion
         {
             get { return _MajorVersion; }
@@ -2261,6 +2261,37 @@ namespace Dynamo.PackageManager
                 IsWarningEnabled = false;
             }
 
+            if(Name.Length <= 0 && !PackageContents.Any())
+            {
+                ErrorString = Resources.PackageManagerProvidePackageNameAndFiles;
+                return false;
+            }
+            else if (Name.Length <= 0 && Double.Parse(BuildVersion) + Double.Parse(MinorVersion) + Double.Parse(MajorVersion) <= 0)
+            {
+                ErrorString = Resources.PackageManagerProvidePackageNameAndVersion;
+                return false;
+            }
+            else if (!PackageContents.Any() && Double.Parse(BuildVersion) + Double.Parse(MinorVersion) + Double.Parse(MajorVersion) <= 0)
+            {
+                ErrorString = Resources.PackageManagerProvideVersionAndFiles;
+                return false;
+            }
+            else if (Name.Length <= 0)
+            {
+                ErrorString = Resources.PackageManagerProvidePackageName;
+                return false;
+            }
+            else if (Double.Parse(BuildVersion) + Double.Parse(MinorVersion) + Double.Parse(MajorVersion) <= 0)
+            {
+                ErrorString = Resources.PackageManagerProvideVersion;
+                return false;
+            }
+            else if (!PackageContents.Any())
+            {
+                ErrorString = Resources.PackageManagerProvideFiles;
+                return false;
+            }
+
             if (Name.Length < 3)
             {
                 ErrorString = Resources.NameNeedMoreCharacters;
@@ -2282,12 +2313,6 @@ namespace Dynamo.PackageManager
             if (BuildVersion.Length <= 0)
             {
                 ErrorString = Resources.BuildVersionNonNegative;
-                return false;
-            }
-
-            if (Double.Parse(BuildVersion) + Double.Parse(MinorVersion) + Double.Parse(MajorVersion) <= 0)
-            {
-                ErrorString = Resources.VersionValueGreaterThan0;
                 return false;
             }
 

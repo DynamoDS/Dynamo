@@ -5790,6 +5790,60 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Provide file(s).
+        /// </summary>
+        public static string PackageManagerProvideFiles {
+            get {
+                return ResourceManager.GetString("PackageManagerProvideFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Provide package name.
+        /// </summary>
+        public static string PackageManagerProvidePackageName {
+            get {
+                return ResourceManager.GetString("PackageManagerProvidePackageName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Provide package name and file(s).
+        /// </summary>
+        public static string PackageManagerProvidePackageNameAndFiles {
+            get {
+                return ResourceManager.GetString("PackageManagerProvidePackageNameAndFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Provide package name and version number.
+        /// </summary>
+        public static string PackageManagerProvidePackageNameAndVersion {
+            get {
+                return ResourceManager.GetString("PackageManagerProvidePackageNameAndVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Provide version number.
+        /// </summary>
+        public static string PackageManagerProvideVersion {
+            get {
+                return ResourceManager.GetString("PackageManagerProvideVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Provide version number and file(s).
+        /// </summary>
+        public static string PackageManagerProvideVersionAndFiles {
+            get {
+                return ResourceManager.GetString("PackageManagerProvideVersionAndFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Virus scan in progress. Your package will be searchable in approximately 15 minutes..
         /// </summary>
         public static string PackageManagerPublishOnlineFinishedMessage {

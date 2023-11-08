@@ -1775,6 +1775,30 @@ Note: Incorrect folder structure may affect the functionality of packages that r
     <value>Must be at least 3 characters</value>
     <comment>ErrorString</comment>
   </data>
+  <data name="PackageManagerProvidePackageName" xml:space="preserve">
+    <value>Provide package name</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="PackageManagerProvidePackageNameAndFiles" xml:space="preserve">
+    <value>Provide package name and file(s)</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="PackageManagerProvidePackageNameAndVersion" xml:space="preserve">
+    <value>Provide package name and version number</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="PackageManagerProvideVersion" xml:space="preserve">
+    <value>Provide version number</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="PackageManagerProvideVersionAndFiles" xml:space="preserve">
+    <value>Provide version number and file(s)</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="PackageManagerProvideFiles" xml:space="preserve">
+    <value>Provide file(s)</value>
+    <comment>ErrorString</comment>
+  </data>
   <data name="PackageNameCannotContainTheseCharacters" xml:space="preserve">
     <value>The name of the package cannot contain</value>
     <comment>ErrorString</comment>

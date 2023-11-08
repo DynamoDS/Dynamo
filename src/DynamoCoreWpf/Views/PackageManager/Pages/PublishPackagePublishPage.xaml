@@ -452,6 +452,7 @@
                     </TextBlock>
                     <TextBox Name="descriptionInput"
                              MinHeight="81px"
+                             VerticalContentAlignment="Top"
                              Style="{StaticResource InputStyle}"
                              PreviewKeyDown="textBoxInput_PreviewKeyDown"
                              Tag="{x:Static p:Resources.PublishPackageViewPackageDescription}"
