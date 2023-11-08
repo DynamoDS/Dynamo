@@ -717,13 +717,10 @@ namespace DynamoCoreWpfTests
         [Test,Category("Failure")]
         public void AddGraphInSpecificLocationToWorkspace()
         {
-
+            //TODO see this issue:
             //https://github.com/nunit/nunit/issues/1200
-            //use single threaded sync context to force webview2 async initalization on this thread.
-            DocumentationBrowserViewExtensionContentTests.SingleThreadedSynchronizationContext.Await(async () =>
-            {
-             
-
+            //we somehow need use single threaded sync context to force webview2 async initalization on this thread.
+            //unfortunately it passes locally but then still fails on master-15.
             var testDirectory = GetTestDirectory(ExecutingDirectory);
             var tempDynDirectory = Path.Combine(testDirectory, "Temp Test Path");
             var dynFileName = Path.Combine(testDirectory, @"UI\BasicAddition.dyn");
@@ -769,7 +766,6 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(ViewModel.Model.CurrentWorkspace.Nodes.Count(), 5);
             //do not remove this dispatch flush call unless you know what you are doing.
             DispatcherUtil.DoEvents();
-            });
         }
 
         [Test]
@@ -966,38 +962,6 @@ namespace DynamoCoreWpfTests
             var docsDirectory = Path.Combine(directory.Parent.Parent.Parent.FullName, @"src\DocumentationBrowserViewExtension\Docs");
 
             return Directory.GetFiles(docsDirectory, wildcard);
-        }
-
-        public sealed class SingleThreadedSynchronizationContext : SynchronizationContext
-        {
-            private readonly BlockingCollection<(SendOrPostCallback d, object state)> queue = new BlockingCollection<(SendOrPostCallback, object)>();
-
-            public override void Post(SendOrPostCallback d, object state)
-            {
-                queue.Add((d, state));
-            }
-
-            public static void Await(Func<Task> taskinvoker)
-            {
-                var originalContext = Current;
-                try
-                {
-                    var context = new SingleThreadedSynchronizationContext();
-                    SetSynchronizationContext(context);
-
-                    var task = taskinvoker.Invoke();
-                    task.ContinueWith(_ => context.queue.CompleteAdding());
-
-                    while (context.queue.TryTake(out var work, Timeout.Infinite))
-                        work.d.Invoke(work.state);
-
-                    task.GetAwaiter().GetResult();
-                }
-                finally
-                {
-                    SetSynchronizationContext(originalContext);
-                }
-            }
         }
 
         #endregion
