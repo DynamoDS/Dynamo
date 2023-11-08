@@ -18,20 +18,21 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
-            </ResourceDictionary.MergedDictionaries>
+            </ResourceDictionary.MergedDictionaries> 
             <SolidColorBrush x:Key="GridLineColorBrush"
                              Color="#FFFFFF"
                              Opacity="0.1" />
             <local:DependencyTypeToImageSourceConverter x:Key="DependencyTypeToImageSourceConverter" />
             <local:DependencyTypeToVisibilityConverter x:Key="DependencyTypeToVisibilityConverter" />
             <local:AsselmblyPackageItemRootViewModelToVisibilityConverter x:Key="AsselmblyPackageItemRootViewModelToVisibilityConverter" />
+            <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter" />
 
             <!--  DataGrid  -->
             <Style x:Key="DataGridCellStyle"
                    TargetType="DataGridCell">
                 <Setter Property="Padding"
                         Value="6,0" />
-                <Setter Property="Template">
+                <Setter Property="Template">    
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type DataGridCell}">
                             <Border Padding="{TemplateBinding Padding}"
@@ -45,10 +46,6 @@
                                                   TextElement.FontWeight="Regular"
                                                   TextElement.Foreground="Blue"
                                                   ToolTipService.ShowDuration="30000">
-                                    <ContentPresenter.ToolTip>
-                                        <ToolTip Content="{Binding RelativeSource={RelativeSource Self}, Path=Content.Text}"
-                                                 Style="{StaticResource GenericToolTipLight}"></ToolTip>
-                                    </ContentPresenter.ToolTip>
                                 </ContentPresenter>
                             </Border>
                         </ControlTemplate>
@@ -397,7 +394,8 @@
                                            TextTrimming="CharacterEllipsis">
                                     <TextBlock.ToolTip>
                                         <ToolTip Content="{Binding FilePath}"
-                                                 Style="{StaticResource GenericToolTipLight}" />
+                                                 Style="{StaticResource GenericToolTipLight}" 
+                                                 Visibility="{Binding FilePath, Converter={StaticResource EmptyStringToCollapsedConverter}}"/>
                                     </TextBlock.ToolTip>
                                 </TextBlock>
                             </StackPanel>

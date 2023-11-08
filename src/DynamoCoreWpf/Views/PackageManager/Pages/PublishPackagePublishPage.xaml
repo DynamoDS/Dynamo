@@ -702,7 +702,12 @@
                             <TextBlock Name="licenseLabel"                           
                                        PreviewKeyDown="textBoxInput_PreviewKeyDown"
                                        Style="{StaticResource LabelStyle}"
-                                       Text="{x:Static p:Resources.PublishPackageViewLicense}" />
+                                       Text="{x:Static p:Resources.PublishPackageViewLicense}" >
+                                <TextBlock.ToolTip>
+                                    <ToolTip Content="{x:Static p:Resources.PublishPackageViewLicenceTooltip}"
+                                        Style="{StaticResource GenericToolTipLight}"></ToolTip>
+                                </TextBlock.ToolTip>
+                            </TextBlock>
                             <TextBlock Name="licenseSubLabel"
                                         Style="{StaticResource SubLabelStyle}"
                                         TextWrapping="Wrap">
@@ -764,7 +769,7 @@
                                        Text="{x:Static p:Resources.PublishPackageViewCopyrightYearSubLabel}" />
                             <TextBox Name="CopyrightYear"                           
                                      PreviewKeyDown="textBoxInput_PreviewKeyDown"
-                                     Margin="0,0,0,-20"
+                                     Margin="0,0,0,0"
                                      Style="{StaticResource InputStyle}"
                                      Text="{Binding CopyrightYear, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      Tag="{x:Static p:Resources.PublishPackageViewCopyrightYearWatermark}"

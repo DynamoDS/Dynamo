@@ -8284,6 +8284,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The package&apos;s licence..
+        /// </summary>
+        public static string PublishPackageViewLicenceTooltip {
+            get {
+                return ResourceManager.GetString("PublishPackageViewLicenceTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to License (optional).
         /// </summary>
         public static string PublishPackageViewLicense {

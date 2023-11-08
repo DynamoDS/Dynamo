@@ -1677,6 +1677,9 @@ If the toggle is off custom packages that are not already loaded will load once 
   </data>
   <data name="PublishPackageViewCopyrightHolderTooltip" xml:space="preserve">
     <value>The package's copyright holder.</value>
+  </data>    
+  <data name="PublishPackageViewLicenceTooltip" xml:space="preserve">
+    <value>The package's licence.</value>
   </data>
   <data name="PublishPackageViewCopyrightYearTooltip" xml:space="preserve">
     <value>The copyright year for the package.</value>

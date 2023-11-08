@@ -24,6 +24,7 @@
             <local:DependencyTypeToImageSourceConverter x:Key="DependencyTypeToImageSourceConverter" />
             <local:DependencyTypeToVisibilityConverter x:Key="DependencyTypeToVisibilityConverter" />
             <local:AsselmblyPackageItemRootViewModelToVisibilityConverter x:Key="AsselmblyPackageItemRootViewModelToVisibilityConverter" />
+            <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter" />
 
             <!--#region CheckBox Style-->
             <!--CheckBox Style-->
@@ -134,10 +135,6 @@
                                                   TextElement.FontWeight="Regular"
                                                   TextElement.Foreground="Blue"
                                                   ToolTipService.ShowDuration="30000">
-                                    <ContentPresenter.ToolTip>
-                                        <ToolTip Content="{Binding RelativeSource={RelativeSource Self}, Path=Content.Text}"
-                                                 Style="{StaticResource GenericToolTipLight}"></ToolTip>
-                                    </ContentPresenter.ToolTip>
                                 </ContentPresenter>
                             </Border>
                         </ControlTemplate>
@@ -537,7 +534,8 @@
                                             TextTrimming="CharacterEllipsis">
                                     <TextBlock.ToolTip>
                                         <ToolTip Content="{Binding FilePath}"
-                                                    Style="{StaticResource GenericToolTipLight}" />
+                                                 Style="{StaticResource GenericToolTipLight}"
+                                                 Visibility="{Binding FilePath, Converter={StaticResource EmptyStringToCollapsedConverter}}"/>
                                     </TextBlock.ToolTip>
                                 </TextBlock>  
                             </StackPanel>    
