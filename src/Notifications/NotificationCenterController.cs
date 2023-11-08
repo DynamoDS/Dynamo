@@ -17,6 +17,7 @@ using Dynamo.Wpf.ViewModels.Core;
 using Newtonsoft.Json;
 using Microsoft.Web.WebView2.Wpf;
 using Dynamo.Utilities;
+using Dynamo.Configuration;
 
 namespace Dynamo.Notifications
 {
@@ -164,7 +165,7 @@ namespace Dynamo.Notifications
             var uri = DynamoUtilities.PathHelper.getServiceBackendAddress(this, "notificationAddress");
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
             request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-            request.Timeout = dynamoViewModel.Model.PreferenceSettings.NotificationsDefaultTimeOut;
+            request.Timeout = Configurations.NotificationsDefaultTimeOut;
 
             using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
             using (Stream stream = response.GetResponseStream())

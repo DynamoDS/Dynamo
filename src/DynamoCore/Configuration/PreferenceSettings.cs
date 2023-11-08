@@ -433,11 +433,6 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
-        /// Notifications request timeOut.
-        /// </summary>
-        public int NotificationsDefaultTimeOut { get; }
-
-        /// <summary>
         /// A list of backup file paths.
         /// </summary>
         public List<string> BackupFiles { get; set; }
@@ -913,7 +908,6 @@ namespace Dynamo.Configuration
             ReadNotificationIds = new List<string>();
             DynamoPlayerFolderGroups = new List<DynamoPlayerFolderGroup>();
             backupLocation = string.Empty;
-            NotificationsDefaultTimeOut = 10000;
         }
 
         /// <summary>
