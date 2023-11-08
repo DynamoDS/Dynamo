@@ -67,7 +67,7 @@ namespace Dynamo.Graph.Nodes
         /// The type of input this node is.
         /// </summary>
         [Obsolete("Obsolete, this member has been replaced by Type2, which may contain new input types.")]
-        internal NodeInputTypes Type
+        public NodeInputTypes Type
         {
             get => type;
             set
