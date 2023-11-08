@@ -913,7 +913,7 @@ namespace Dynamo.Configuration
             ReadNotificationIds = new List<string>();
             DynamoPlayerFolderGroups = new List<DynamoPlayerFolderGroup>();
             backupLocation = string.Empty;
-            NotificationsDefaultTimeOut = 300;
+            NotificationsDefaultTimeOut = 10000;
         }
 
         /// <summary>
