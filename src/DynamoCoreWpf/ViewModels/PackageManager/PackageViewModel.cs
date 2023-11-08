@@ -12,8 +12,8 @@ using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Utilities;
-using NotificationObject = Dynamo.Core.NotificationObject;
 using Prism.Commands;
+using NotificationObject = Dynamo.Core.NotificationObject;
 
 namespace Dynamo.ViewModels
 {
@@ -149,7 +149,7 @@ namespace Dynamo.ViewModels
 
         public bool HasCustomNodes
         {
-            get { return Model.LoadedCustomNodes.Any();  }
+            get { return Model.LoadedCustomNodes.Any(); }
         }
 
         public bool HasAssemblies
@@ -183,7 +183,7 @@ namespace Dynamo.ViewModels
 
             ToggleTypesVisibleInManagerCommand = new DelegateCommand(() => { }, () => true);
             GetLatestVersionCommand = new DelegateCommand(() => { }, () => false);
-            PublishNewPackageVersionCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackageVersion), () => CanPublish);
+            PublishNewPackageVersionCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackageVersion), CanDeprecate);
             PublishNewPackageCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackage), () => CanPublish);
             UninstallCommand = new DelegateCommand(Uninstall, CanUninstall);
             UnmarkForUninstallationCommand = new DelegateCommand(UnmarkForUninstallation, CanUnmarkForUninstallation);

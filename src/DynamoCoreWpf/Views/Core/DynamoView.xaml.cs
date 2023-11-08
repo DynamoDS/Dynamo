@@ -1467,20 +1467,26 @@ namespace Dynamo.Controls
         private void DynamoViewModelRequestRequestPackageManagerPublish(PublishPackageViewModel model)
         {
             var cmd = Analytics.TrackCommandEvent("PublishPackage");
-            if (_pubPkgView == null)
+
+            if (packageManagerWindow == null)
             {
-                _pubPkgView = new PublishPackageView(model)
+                packageManagerWindow = new PackageManagerView(this, _pkgVM)
                 {
                     Owner = this,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
-                _pubPkgView.Closed += (sender, args) => { _pubPkgView = null; cmd.Dispose(); };
-                _pubPkgView.Show();
 
-                if (_pubPkgView.IsLoaded && IsLoaded) _pubPkgView.Owner = this;
+                // setting the owner to the packageManagerWindow will centralize promts originating from the Package Manager
+                dynamoViewModel.Owner = packageManagerWindow;
+
+                packageManagerWindow.Closed += (sender, args) => { packageManagerWindow = null; cmd.Dispose(); };
+                packageManagerWindow.Show();
+
+                if (packageManagerWindow.IsLoaded && IsLoaded) packageManagerWindow.Owner = this;
             }
 
-            _pubPkgView.Focus();
+            packageManagerWindow.Focus();
+            packageManagerWindow.Navigate(Wpf.Properties.Resources.PackageManagerPublishTab);
         }
 
         private PackageManagerSearchView _searchPkgsView;
