@@ -1,4 +1,4 @@
-name: Test
+name: UI Smoke Tests
 
 on:
   workflow_run:
@@ -9,6 +9,12 @@ on:
 
 env:
   TEST_EXECUTE_DOWNLOAD_URL: https://downloads.smartbear.com/TestExecute1552SLM.exe
+  ACTOR: ${{ github.actor }}
+  WORKFLOW_ID: ${{ github.event.workflow_run.workflow_id }}
+  RUN_NAME: ${{ github.event.workflow_run.name }}
+  RUN_URL: ${{ github.event.workflow_run.html_url }}
+  PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
+  PR_URL: ${{ github.event.workflow_run.pull_requests[0].html_url }}
 
 jobs:
   ui_smoke_tests:
@@ -31,9 +37,9 @@ jobs:
         uses: dawidd6/action-download-artifact@v2
         with:
           name: DynamoSandbox
-          workflow: ${{ github.event.workflow_run.workflow_id }}
+          workflow: ${{ env.WORKFLOW_ID }}
           path: ${{ github.workspace }}\build
-      - name: Run Tests
+      - name: Run UI Smoke Tests
         shell: cmd
         run: .github\scripts\run_tests.bat ${{ secrets.TEST_EXECUTE_ACCESS_KEY }} Dynamo\Dynamo.pjs DynamoSandbox SmokeTests
       - name: UI Smoke Tests Report
@@ -43,9 +49,10 @@ jobs:
           name: UI Smoke Test Report
           path: reports/report.xml
           reporter: java-junit
-      - name: Action Summary
+      - name: Summary
         if: always()
         run: |
-          type summary.md | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo ":package: Trigerred by: [${{ github.event.workflow_run.name }}](${{ github.event.workflow_run.html_url }})" >> $env:GITHUB_STEP_SUMMARY
+          Get-Content summary.md >> $env:GITHUB_STEP_SUMMARY
+          Write-Output "Actor: @${{ env.ACTOR }}" >> $env:GITHUB_STEP_SUMMARY
+          Write-Output "Workflow Run: [${{ env.RUN_NAME }}](${{ env.RUN_URL }})" >> $env:GITHUB_STEP_SUMMARY
+          Write-Output "Pull Request: [${{ env.PR_NUMBER }}](${{ env.PR_URL }})" >> $env:GITHUB_STEP_SUMMARY

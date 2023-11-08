@@ -651,10 +651,24 @@ namespace Dynamo.PackageManager
             var pkgs = PackageManagerClientViewModel.CachedPackageList.Where(x => x.Maintainers != null && x.Maintainers.Contains(name)).ToList();
             foreach(var pkg in pkgs)
             {
-                myPackages.Add(new PackageManagerSearchElementViewModel(pkg, false));
+                var p = new PackageManagerSearchElementViewModel(pkg, false);
+                p.RequestDownload += this.PackageOnExecuted;
+
+                myPackages.Add(p);
             }
     
             SearchMyResults = new ObservableCollection<PackageManagerSearchElementViewModel>(myPackages);
+        }
+
+        private void ClearMySearchResults()
+        {
+            if (this.SearchMyResults == null) return;
+            foreach (var ele in this.SearchMyResults)
+            {
+                ele.RequestDownload -= PackageOnExecuted;
+            }
+
+            this.SearchMyResults = null;
         }
 
         /// <summary>
@@ -1125,7 +1139,6 @@ namespace Dynamo.PackageManager
             {
                 ele.RequestDownload -= PackageOnExecuted;
             }
-
             this.SearchResults.Clear();
         }
 
@@ -1585,8 +1598,13 @@ namespace Dynamo.PackageManager
         /// </summary>
         internal void Dispose()
         {
-             nonHostFilter?.ForEach(f => f.PropertyChanged -= filter_PropertyChanged);
-             aTimer.Elapsed -= OnTimedEvent;
+            nonHostFilter?.ForEach(f => f.PropertyChanged -= filter_PropertyChanged);
+            aTimer.Elapsed -= OnTimedEvent;
+
+            TimedOut = false;   // reset the timedout screen 
+            InitialResultsLoaded = false;   // reset the loading screen settings
+
+            ClearMySearchResults();
         }
     }
 }
