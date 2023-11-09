@@ -15,7 +15,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     /// https://docs.microsoft.com/en-us/windows/win32/direct3dgetstarted/work-with-shaders-and-shader-resources
     /// </summary>
     [Obsolete("Do not use! This will be moved to a new project in a future version of Dynamo.")]
-    internal class DynamoEffectsManager : DefaultEffectsManager
+    public class DynamoEffectsManager : DefaultEffectsManager
     {
         internal static readonly string DynamoMeshShaderName = "DynamoMeshShader";
         internal static readonly string DynamoPointShaderName = "DynamoPointShader";
