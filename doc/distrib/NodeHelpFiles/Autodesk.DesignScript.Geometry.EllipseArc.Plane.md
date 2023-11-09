@@ -1,5 +1,8 @@
 ## In Depth
-Sketch planes are used in the creation of 2D and 3D geometry in Revit.
+`EllipseArc.Plane` finds the plane of an ellipse arc, which is the same as the plane of the completed ellipse. 
+
+In the example below, we first create an ellipse arc by using the XY plane and a series of number sliders. We then use `EllipseArc.Plane` to extract the plane of the ellipse.
+
 ___
 ## Example File
 

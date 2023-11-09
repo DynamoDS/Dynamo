@@ -1,5 +1,8 @@
 ## In Depth
-Plane by Three Points will create a plane that passes through the three input points. The points must not be co-linear. In the example below, we use three code blocks to define the three initial points, then use ByThreePoints to create a plane.
+`Circle.ByThreePoints` receives 3 point inputs and creates a circle that passes through each point.
+
+In the example below, we use 3 randomly generated points on the Z-plane to create a circle.
+
 ___
 ## Example File
 
