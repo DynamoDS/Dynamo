@@ -836,14 +836,15 @@ namespace Dynamo.Configuration
         #region Dynamo Player and Generative Design settings
 
         /// <summary>
+        /// Enable legacy behavior for Dynamo Player to allow renamed Watch nodes to be seen as graph output.
+        /// This flag is for use in the 2024 product release year and can removed for 2025
+        /// </summary>
+        public bool EnableDynamoPlayerRenamedWatchAsOutput { get; set; }
+
+        /// <summary>
         /// Collections of folders used by individual Dynamo Player or Generative Design as entry points.
         /// </summary>
         public List<DynamoPlayerFolderGroup> DynamoPlayerFolderGroups { get; set; }
-
-        /// <summary>
-        /// Enable legacy behavior for Dynamo Player to allow renamed Watch nodes to be seen as graph output.
-        /// </summary>
-        public bool EnableDynamoPlayerLegacyBehaviorRenamedWatchAsOutput { get; set; }
 
         #endregion
 
@@ -911,8 +912,8 @@ namespace Dynamo.Configuration
             ViewExtensionSettings = new List<ViewExtensionSettings>();
             GroupStyleItemsList = new List<GroupStyleItem>();
             ReadNotificationIds = new List<string>();
+            EnableDynamoPlayerRenamedWatchAsOutput = false;
             DynamoPlayerFolderGroups = new List<DynamoPlayerFolderGroup>();
-            EnableDynamoPlayerLegacyBehaviorRenamedWatchAsOutput = false;
             backupLocation = string.Empty;
         }
 
