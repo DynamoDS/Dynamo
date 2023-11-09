@@ -8,4 +8,4 @@ In the example below, a cuboid is converted into a Solid Def. Copy the contents 
 ___
 ## Example File
 
-![Geometry.Translate](./Autodesk.DesignScript.Geometry.Geometry.Translate(direction,%20distance)_img.jpg)
+![Geometry.Translate](./Autodesk.DesignScript.Geometry.Geometry.Translate(geometry,%20direction,%20distance)_img.jpg)
