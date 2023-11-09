@@ -267,6 +267,12 @@ namespace ProtoCore
         /// <param name="serializedTraceData">The data to load</param>
         public void LoadSerializedDataIntoTraceCache(string serializedTraceData)
         {
+            if (serializedTraceData == null)
+            {
+                beforeFirstRunSerializables = new List<string>();
+                return;
+            }
+
             List<SingleRunTraceData> newTraceData = null;
             try
             {
@@ -1872,6 +1878,11 @@ namespace ProtoCore
         public static IList<string> GetAllSerializablesFromSingleRunTraceData(
             RawTraceData callSiteData)
         {
+            if (callSiteData.Data == null)
+            {
+                return new List<string>();
+            }
+
             List<SingleRunTraceData> traceData = null;
             try
             {
