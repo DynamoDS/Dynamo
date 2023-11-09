@@ -183,12 +183,12 @@ namespace Dynamo.ViewModels
 
             ToggleTypesVisibleInManagerCommand = new DelegateCommand(() => { }, () => true);
             GetLatestVersionCommand = new DelegateCommand(() => { }, () => false);
-            PublishNewPackageVersionCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackageVersion), CanDeprecate);
+            PublishNewPackageVersionCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackageVersion), IsOwner);
             PublishNewPackageCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackage), () => CanPublish);
             UninstallCommand = new DelegateCommand(Uninstall, CanUninstall);
             UnmarkForUninstallationCommand = new DelegateCommand(UnmarkForUninstallation, CanUnmarkForUninstallation);
             LoadCommand = new DelegateCommand(Load, CanLoad);
-            DeprecateCommand = new DelegateCommand(Deprecate, CanDeprecate);
+            DeprecateCommand = new DelegateCommand(Deprecate, IsOwner);
             UndeprecateCommand = new DelegateCommand(Undeprecate, CanUndeprecate);
             GoToRootDirectoryCommand = new DelegateCommand(GoToRootDirectory, () => true);
 
@@ -408,7 +408,7 @@ namespace Dynamo.ViewModels
             packageManagerClient.Deprecate(Model.Name);
         }
 
-        private bool CanDeprecate()
+        private bool IsOwner()
         {
             if (!CanPublish) return false;
             return packageManagerClient.DoesCurrentUserOwnPackage(Model, dynamoModel.AuthenticationManager.Username);

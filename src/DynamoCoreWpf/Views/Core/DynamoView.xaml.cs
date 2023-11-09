@@ -1308,7 +1308,7 @@ namespace Dynamo.Controls
 
             #region Package manager
 
-            dynamoViewModel.RequestPackagePublishDialog += DynamoViewModelRequestRequestPackageManagerPublish;
+            dynamoViewModel.RequestPackagePublishDialog += DynamoViewModelRequestPackageManager;
             dynamoViewModel.RequestPackageManagerSearchDialog += DynamoViewModelRequestShowPackageManagerSearch;
             dynamoViewModel.RequestPackageManagerDialog += DynamoViewModelRequestShowPackageManager;
 
@@ -1464,7 +1464,7 @@ namespace Dynamo.Controls
 
         private PublishPackageView _pubPkgView;
 
-        private void DynamoViewModelRequestRequestPackageManagerPublish(PublishPackageViewModel model)
+        private void DynamoViewModelRequestPackageManager(PublishPackageViewModel model)
         {
             var cmd = Analytics.TrackCommandEvent("PublishPackage");
 
@@ -1946,7 +1946,7 @@ namespace Dynamo.Controls
             dynamoViewModel.RequestViewOperation -= DynamoViewModelRequestViewOperation;
 
             //PACKAGE MANAGER
-            dynamoViewModel.RequestPackagePublishDialog -= DynamoViewModelRequestRequestPackageManagerPublish;
+            dynamoViewModel.RequestPackagePublishDialog -= DynamoViewModelRequestPackageManager;
             dynamoViewModel.RequestPackageManagerSearchDialog -= DynamoViewModelRequestShowPackageManagerSearch;
 
             //FUNCTION NAME PROMPT
