@@ -743,28 +743,38 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        ///     Attempt to load a managed assembly in to ReflectionOnlyLoadFrom context. 
+        ///     Attempt to load a managed assembly in to MetaDataLoad context. 
         /// </summary>
         /// <param name="filename">The filename of a DLL</param>
+        /// <param name="mlc">The MetaDataLoadContext to load the package assemblies into for inspection.</param>
         /// <param name="assem">out Assembly - the passed value does not matter and will only be set if loading succeeds</param>
         /// <returns>Returns Success if success, NotManagedAssembly if BadImageFormatException, AlreadyLoaded if FileLoadException</returns>
-        internal static AssemblyLoadingState TryReflectionOnlyLoadFrom(string filename, out Assembly assem)
+        internal static AssemblyLoadingState TryMetaDataContextLoad(string filename,MetadataLoadContext mlc, out Assembly assem)
         {
-            try
-            {
-                assem = Assembly.ReflectionOnlyLoadFrom(filename);
-                return AssemblyLoadingState.Success;
-            }
-            catch (BadImageFormatException)
-            {
-                assem = null;
-                return AssemblyLoadingState.NotManagedAssembly;
-            }
-            catch (FileLoadException)
-            {
-                assem = null;
-                return AssemblyLoadingState.AlreadyLoaded;
-            }
+                try
+                {
+                    var mlcAssemblies = mlc.GetAssemblies();
+                    assem = mlc.LoadFromAssemblyPath(filename);
+                    var mlcAssemblies2 = mlc.GetAssemblies();
+                    //if loading the assembly did not actually add a new assembly to the MLC
+                    //then we've loaded it already, and our current behavior is to
+                    //disable publish when a package contains the same assembly twice.
+                    if (mlcAssemblies2.Count() == mlcAssemblies.Count())
+                    {
+                        throw new FileLoadException(filename);
+                    }
+                    return AssemblyLoadingState.Success;
+                }
+                catch (BadImageFormatException)
+                {
+                    assem = null;
+                    return AssemblyLoadingState.NotManagedAssembly;
+                }
+                catch (FileLoadException)
+                {
+                    assem = null;
+                    return AssemblyLoadingState.AlreadyLoaded;
+                }
         }
 
         /// <summary>
