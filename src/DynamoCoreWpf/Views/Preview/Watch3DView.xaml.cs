@@ -31,7 +31,7 @@ namespace Dynamo.Controls
         #region public properties
 
         [Obsolete("Do not use! This will change its type in a future version of Dynamo.")]
-        internal Viewport3DX View
+        public Viewport3DX View
         {
             get { return watch_view; }
         }
