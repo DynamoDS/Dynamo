@@ -141,7 +141,7 @@ namespace Dynamo.Graph.Nodes
         };
 
         [Obsolete("To be removed in a future version of Dynamo")]
-        internal static NodeInputTypes getNodeInputTypeFromType(Type type)
+        internal static NodeInputTypes GetNodeInputTypeFromType(Type type)
         {
             NodeInputTypes output;
             if (dotNetTypeToNodeInputType.TryGetValue(type, out output))
