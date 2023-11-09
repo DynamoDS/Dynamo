@@ -739,6 +739,22 @@ namespace Dynamo.PackageManager
             }
         }
 
+        private static MetadataLoadContext sharedMetaDataLoadContext = null;
+        /// <summary>
+        /// A shared MetaDataLoadContext that is used for assembly inspection during package publishing.
+        /// This member is shared so the behavior is similar to the ReflectionOnlyLoadContext this is replacing.
+        /// TODO - eventually it would be good to move to separate publish load contexts that are cleaned up at the appropriate time(?).
+        /// </summary>
+        private static MetadataLoadContext SharedPublishLoadContext
+        {
+            get
+            {
+                sharedMetaDataLoadContext ??= InitSharedPublishLoadContext();
+                return sharedMetaDataLoadContext;
+            }
+        }
+
+
         #endregion
 
         internal PublishPackageViewModel()
@@ -908,34 +924,10 @@ namespace Dynamo.PackageManager
             var nodeLibraryNames = pkg.Header.node_libraries;
 
             var assembliesLoadedTwice = new List<string>();
-            // load assemblies into reflection only context
-
-            //TODO unclear how many MLC there should be - if we want to recreate the behavior from before -
-            //maybe only 1? For now one per package publish.
-
-            // Retrieve the location of the assembly and the referenced assemblies used by the domain
-            var runtimeAssemblies = Directory.GetFiles(RuntimeEnvironment.GetRuntimeDirectory(), "*.dll");
-            // Create the list of assembly paths consisting of runtime assemblies.
-            var assemblyPaths = new List<string>(runtimeAssemblies);
-
-            //and all the package assemblies.
-            foreach (var assemblyFile in pkg.EnumerateAssemblyFilesInPackage())
-            {
-                assemblyPaths.Add(assemblyFile);
-            }
-   
-            // Create PathAssemblyResolver that can resolve assemblies using the created list.
-            var resolver = new PathAssemblyResolver(assemblyPaths);
-            var mlc = new MetadataLoadContext(resolver);
-
-            //TODO for now, we leak the mlc, but it's unlikely users will publish
-            //enough packages in a single Dynamo session for this ever to be an issue.
-            //The assemblies are also long lived so it's not clear we could really clean them up anyway.
-            //using (mlc)
             foreach (var file in pkg.EnumerateAssemblyFilesInPackage())
             {
                 Assembly assem;
-                var result = PackageLoader.TryMetaDataContextLoad(file, mlc, out assem);
+                var result = PackageLoader.TryMetaDataContextLoad(file, SharedPublishLoadContext, out assem);
 
                 switch (result)
                 {
@@ -1891,6 +1883,15 @@ namespace Dynamo.PackageManager
         {
             CurrentWarningMessage = warningMessage;
             IsWarningEnabled = true;
+        }
+
+        private static MetadataLoadContext InitSharedPublishLoadContext()
+        {
+            // Retrieve the location of the assembly and the referenced assemblies used by the domain
+            var runtimeAssemblies = Directory.GetFiles(RuntimeEnvironment.GetRuntimeDirectory(), "*.dll");
+            // Create PathAssemblyResolver that can resolve assemblies using the created list.
+            var resolver = new PathAssemblyResolver(runtimeAssemblies);
+             return new MetadataLoadContext(resolver);
         }
     }
 }
