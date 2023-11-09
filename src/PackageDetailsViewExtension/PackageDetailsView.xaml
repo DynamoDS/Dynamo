@@ -24,12 +24,16 @@
             <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
             <controls:PrettyDateConverter x:Key="PrettyDateConverter" />
             <controls:EmptyStringToHiddenConverter x:Key="EmptyStringToHiddenConverter" />
+            <SolidColorBrush x:Key="ForegroundGrayBrush" Color="#D8D8D8" />
+            <SolidColorBrush x:Key="HoverBorderGrayBrush" Color="#6d6d6d" />
+            <SolidColorBrush x:Key="PressedBorderGrayBrush" Color="#7e7e7e" />
+            <SolidColorBrush x:Key="HasVotedBlueBrush" Color="#84D7CE" />     
             <Style x:Key="LabelStyle" TargetType="TextBlock">
                 <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementBold}" />
                 <Setter Property="FontWeight" Value="Bold" />
                 <Setter Property="FontSize" Value="14px" />
                 <Setter Property="MinWidth" Value="200px" />
-                <Setter Property="Foreground" Value="#D8D8D8" />
+                <Setter Property="Foreground" Value="{StaticResource ForegroundGrayBrush}" />
                 <Setter Property="HorizontalAlignment" Value="Left" />
                 <Setter Property="Margin" Value="0,0,0,5" />
                 <Setter Property="TextWrapping" Value="Wrap" />
@@ -58,6 +62,76 @@
                 <Setter Property="Padding" Value="8,0" />
                 <Setter Property="Height" Value="22px" />
             </Style>
+            <Style TargetType="{x:Type Hyperlink}">
+                <Setter Property="Foreground"
+                        Value="{StaticResource Blue300Brush}" />
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver"
+                             Value="True">
+                        <Setter Property="Foreground"
+                                Value="{StaticResource Blue400Brush}" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style x:Key="ImageButton" TargetType="{x:Type Button}">
+                <Setter Property="UseLayoutRounding" Value="True" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Border Style="{StaticResource BorderStyle}"
+                                    x:Name="buttonBorder"
+                                    BorderBrush="{StaticResource ExtensionButtonBackgroundColor}"
+                                    BorderThickness="2">
+                                <Grid x:Name="container">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Viewbox Width="12"
+                                                 Height="12"
+                                                 VerticalAlignment="Center">    
+                                            <Path x:Name="heartIcon"
+                                                  Data="M13.91,6.75c-1.17,2.25-4.3,5.31-6.07,6.94c-0.1903,0.1718-0.4797,0.1718-0.67,0C5.39,12.06,2.26,9,1.09,6.75&#xA;&#x9;C-1.48,1.8,5-1.5,7.5,3.45C10-1.5,16.48,1.8,13.91,6.75z"
+                                                  Stroke="{StaticResource ForegroundGrayBrush}"
+                                                  StrokeThickness="1"
+                                                  VerticalAlignment="Center"/>
+                                        </Viewbox>
+                                        <TextBlock Name="VotesLabel"
+                                                   Margin="5,2,0,0"
+                                                   VerticalAlignment="Center"
+                                                   Style="{StaticResource BodyTextStyle}"
+                                                   Text="{Binding Path=Content, RelativeSource={RelativeSource TemplatedParent}}" />
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="heartIcon"
+                                            Property="Stroke"
+                                            Value="{StaticResource HasVotedBlueBrush}" />
+                                    <Setter TargetName="buttonBorder"
+                                            Property="BorderBrush"
+                                            Value="{StaticResource HoverBorderGrayBrush}" />
+                                </Trigger>
+                                <Trigger Property="Button.IsPressed" Value="true">
+                                    <Setter TargetName="heartIcon"
+                                            Property="Stroke"
+                                            Value="{StaticResource ForegroundGrayBrush}" />
+                                    <Setter TargetName="buttonBorder"
+                                            Property="BorderBrush"
+                                            Value="{StaticResource PressedBorderGrayBrush}" />
+                                </Trigger>
+                                <DataTrigger Binding="{Binding Path=HasVoted}" Value="True">
+                                    <Setter TargetName="heartIcon"
+                                            Property="Fill"
+                                            Value="{StaticResource HasVotedBlueBrush}" />
+                                    <Setter TargetName="heartIcon"
+                                            Property="Stroke"
+                                            Value="{StaticResource HasVotedBlueBrush}" />
+                                </DataTrigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
             <!--  DataGrid  -->
             <Style x:Key="DataGridCellStyle" TargetType="DataGridCell">
@@ -75,7 +149,7 @@
                                            FontFamily="{StaticResource ArtifaktElementRegular}"
                                            FontSize="14px"
                                            FontWeight="Regular"
-                                           Foreground="#D8D8D8"
+                                           Foreground="{StaticResource ForegroundGrayBrush}"
                                            Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content.Text}"
                                            TextWrapping="Wrap"
                                            ToolTipService.ShowDuration="30000">
@@ -228,20 +302,9 @@
                             Orientation="Horizontal">
 
                     <!--  Votes  -->
-                    <Border Style="{StaticResource BorderStyle}">
-                        <StackPanel Orientation="Horizontal">
-                            <Rectangle Width="10" Height="10">
-                                <Rectangle.Fill>
-                                    <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Favorite.png" />
-                                </Rectangle.Fill>
-                            </Rectangle>
-                            <TextBlock Name="VotesLabel"
-                                       Margin="5,2,0,0"
-                                       VerticalAlignment="Center"
-                                       Style="{StaticResource BodyTextStyle}"
-                                       Text="{Binding NumberVotes, Converter={StaticResource NegativeIntToZeroConverter}}" />
-                        </StackPanel>
-                    </Border>
+                    <Button Style="{StaticResource ImageButton}"
+                            Content="{Binding NumberVotes, Converter={StaticResource NegativeIntToZeroConverter}}"
+                            Command="{Binding UpvoteCommand}" />
 
                     <!--  Downloads  -->
                     <Border Style="{StaticResource BorderStyle}">
@@ -333,7 +396,7 @@
                                                 <Grid Background="{StaticResource ExtensionBackgroundColor}" IsHitTestVisible="True">
                                                     <StackPanel Margin="12,8,10,5">
                                                         <TextBlock HorizontalAlignment="Left"
-                                                                   Foreground="#D8D8D8"
+                                                                   Foreground="{StaticResource ForegroundGrayBrush}"
                                                                    Text="{Binding PackageVersionNumber}" />
                                                         <Button Name="installButton"
                                                                 Command="{Binding ElementName=PackageDetailsWindow, Path=DataContext.TryInstallPackageVersionCommand}"
@@ -417,7 +480,7 @@
                                                                         </Trigger>
                                                                         <DataTrigger Binding="{Binding ElementName=PackageDetailsWindow, Path=DataContext.IsPackageDeprecated}" Value="True">
                                                                             <Setter Property="TextBlock.Opacity" Value="0.5" />
-                                                                            <Setter Property="TextBlock.Foreground" Value="#84D7CE" />
+                                                                            <Setter Property="TextBlock.Foreground" Value="{StaticResource HasVotedBlueBrush}"  />
                                                                             <Setter Property="ToolTip" Value="{x:Static p:Resources.PackageDeprecatedTooltip}" />
                                                                         </DataTrigger>
                                                                         <DataTrigger Binding="{Binding Path=CanInstall, UpdateSourceTrigger=PropertyChanged}" Value="False">
@@ -435,7 +498,7 @@
                                                                                 <Condition Binding="{Binding ElementName=PackageDetailsWindow, Path=DataContext.IsEnabledForInstall}" Value="True" />
                                                                             </MultiDataTrigger.Conditions>
                                                                             <Setter Property="TextBlock.Opacity" Value="1" />
-                                                                            <Setter Property="TextBlock.Foreground" Value="#84D7CE" />
+                                                                            <Setter Property="TextBlock.Foreground" Value="{StaticResource HasVotedBlueBrush}" />
                                                                         </MultiDataTrigger>
                                                                     </ControlTemplate.Triggers>
                                                                 </ControlTemplate>

@@ -95,8 +95,7 @@ namespace Dynamo.Notifications
 
             // If user turns on the feature, they will need to restart Dynamo to see the count
             // This ensures no network traffic when Notification center feature is turned off
-            //TODO we currently use DisableAnalytics like a no network comms flags - work on introducing a new flag or renaming this flag.
-            if (dynamoViewModel.PreferenceSettings.EnableNotificationCenter && !Dynamo.Logging.Analytics.DisableAnalytics ) 
+            if (dynamoViewModel.PreferenceSettings.EnableNotificationCenter && !dynamoViewModel.Model.NoNetworkMode ) 
             {               
                 InitializeBrowserAsync();
                 RequestNotifications();
@@ -162,7 +161,7 @@ namespace Dynamo.Notifications
 
         private void RequestNotifications()
         {
-            var uri = DynamoUtilities.PathHelper.getServiceBackendAddress(this, "notificationAddress");
+            var uri = DynamoUtilities.PathHelper.GetServiceBackendAddress(this, "notificationAddress");
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
             request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
 
@@ -311,7 +310,7 @@ namespace Dynamo.Notifications
                 InvokeJS(@"window.RequestNotifications('" + url + "');");
             }
             else {
-                InvokeJS(@"window.RequestNotifications('" + DynamoUtilities.PathHelper.getServiceBackendAddress(this, "notificationAddress") + "');");
+                InvokeJS(@"window.RequestNotifications('" + DynamoUtilities.PathHelper.GetServiceBackendAddress(this, "notificationAddress") + "');");
             }
         }
     }

@@ -463,14 +463,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public bool IsUsageReportingApproved
-        {
-            get
-            {
-                return UsageReportingManager.Instance.IsUsageReportingApproved;
-            }
-        }
-
         private ObservableCollection<string> recentFiles =
             new ObservableCollection<string>();
         public ObservableCollection<string> RecentFiles

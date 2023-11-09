@@ -647,10 +647,24 @@ namespace Dynamo.PackageManager
             var pkgs = PackageManagerClientViewModel.CachedPackageList.Where(x => x.Maintainers != null && x.Maintainers.Contains(name)).ToList();
             foreach(var pkg in pkgs)
             {
-                myPackages.Add(new PackageManagerSearchElementViewModel(pkg, false));
+                var p = new PackageManagerSearchElementViewModel(pkg, false);
+                p.RequestDownload += this.PackageOnExecuted;
+
+                myPackages.Add(p);
             }
     
             SearchMyResults = new ObservableCollection<PackageManagerSearchElementViewModel>(myPackages);
+        }
+
+        private void ClearMySearchResults()
+        {
+            if (this.SearchMyResults == null) return;
+            foreach (var ele in this.SearchMyResults)
+            {
+                ele.RequestDownload -= PackageOnExecuted;
+            }
+
+            this.SearchMyResults = null;
         }
 
         /// <summary>
@@ -1028,14 +1042,7 @@ namespace Dynamo.PackageManager
 
                     if (!DynamoModel.IsTestMode)
                     {
-                        if (LuceneUtility.writer != null)
-                        {
-                            LuceneUtility.dirReader = LuceneUtility.writer.GetReader(applyAllDeletes: true);
-                        }
-                        else
-                        {
-                            LuceneUtility.dirReader = DirectoryReader.Open(LuceneUtility.indexDir);
-                        }
+                        LuceneUtility.dirReader = LuceneUtility.writer != null ? LuceneUtility.writer.GetReader(applyAllDeletes: true) : DirectoryReader.Open(LuceneUtility.indexDir);
                         LuceneUtility.Searcher = new IndexSearcher(LuceneUtility.dirReader);
 
                         LuceneUtility.CommitWriterChanges();
@@ -1123,7 +1130,6 @@ namespace Dynamo.PackageManager
             {
                 ele.RequestDownload -= PackageOnExecuted;
             }
-
             this.SearchResults.Clear();
         }
 
@@ -1417,7 +1423,7 @@ namespace Dynamo.PackageManager
                 var packages = new List<PackageManagerSearchElementViewModel>();
 
                 //The DirectoryReader and IndexSearcher have to be assigned after commiting indexing changes and before executing the Searcher.Search() method,otherwise new indexed info won't be reflected
-                LuceneUtility.dirReader = LuceneUtility.writer?.GetReader(applyAllDeletes: true);
+                LuceneUtility.dirReader = LuceneUtility.writer != null ? LuceneUtility.writer.GetReader(applyAllDeletes: true): DirectoryReader.Open(LuceneUtility.indexDir);
 
                 if (LuceneUtility.Searcher == null && LuceneUtility.dirReader != null)
                 {
@@ -1577,7 +1583,8 @@ namespace Dynamo.PackageManager
             InitialResultsLoaded = false;   // reset the loading screen settings
             RequestShowFileDialog -= OnRequestShowFileDialog;
             nonHostFilter.ForEach(f => f.PropertyChanged -= filter_PropertyChanged);
-            LuceneUtility.DisposeAll();
+
+            ClearMySearchResults();
         }
     }
 }
