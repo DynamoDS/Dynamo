@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Dynamo;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
@@ -17,7 +18,7 @@ namespace DynamoCoreWpfTests
     public class PublishPackageViewModelTests: DynamoViewModelUnitTest
     {
 
-        [Test, Category("Failure")]
+        [Test]
         public void AddingDyfRaisesCanExecuteChangeOnDelegateCommand()
         {
             
@@ -98,6 +99,33 @@ namespace DynamoCoreWpfTests
 
         }
 
+
+        [Test]
+        public void NewPackageDoesNotThrow_NativeBinaryIsAddedAsAdditionalFile_NotBinary()
+        {
+            string packagesDirectory = Path.Combine(TestDirectory, "pkgs");
+
+            var pathManager = new Mock<Dynamo.Interfaces.IPathManager>();
+            pathManager.SetupGet(x => x.PackagesDirectories).Returns(() => new List<string> { packagesDirectory });
+
+            var loader = new PackageLoader(pathManager.Object);
+            loader.LoadAll(new LoadPackageParams
+            {
+                Preferences = ViewModel.Model.PreferenceSettings
+            });
+
+            PublishPackageViewModel vm = null;
+            var package = loader.LocalPackages.FirstOrDefault(x => x.Name == "package with native assembly");
+            Assert.DoesNotThrow(() =>
+            {
+                vm = PublishPackageViewModel.FromLocalPackage(ViewModel, package);
+            });
+            
+            Assert.AreEqual(1, vm.AdditionalFiles.Count);
+            Assert.AreEqual(0, vm.Assemblies.Count);
+
+            Assert.AreEqual(PackageUploadHandle.State.Ready, vm.UploadState);
+        }
 
         [Test]
         public void NewPackageVersionUpload_DoesNotThrowExceptionWhenDLLIsLoadedSeveralTimes()
