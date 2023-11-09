@@ -10,7 +10,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     /// A Dynamo point class which supports the RenderCustom technique.
     /// </summary>
     [Obsolete("Do not use! This will be moved to a new project in a future version of Dynamo.")]
-    internal class DynamoPointGeometryModel3D : PointGeometryModel3D
+    public class DynamoPointGeometryModel3D : PointGeometryModel3D
     {
         protected override SceneNode OnCreateSceneNode()
         {
