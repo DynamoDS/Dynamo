@@ -25,6 +25,7 @@ using Double = System.Double;
 using String = System.String;
 using NotificationObject = Dynamo.Core.NotificationObject;
 using Prism.Commands;
+using System.Runtime.Loader;
 
 namespace Dynamo.PackageManager
 {
@@ -1453,7 +1454,7 @@ namespace Dynamo.PackageManager
             {
                 // we're not sure if this is a managed assembly or not
                 // we try to load it, if it fails - we add it as an additional file
-                var result = PackageLoader.TryLoadFrom(filename, out Assembly assem);
+                var result = PackageLoader.TryLoadFrom(AssemblyLoadContext.Default, filename, out Assembly assem);
                 if (result)
                 {
                     var assemName = assem.GetName().Name;

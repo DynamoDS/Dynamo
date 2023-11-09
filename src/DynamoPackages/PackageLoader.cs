@@ -13,6 +13,9 @@ using Dynamo.Utilities;
 using DynamoPackages.Properties;
 using DynamoUtilities;
 using Dynamo.Models;
+using Dynamo.Scheduler;
+using System.Runtime.Loader;
+using DynamoPackages;
 
 namespace Dynamo.PackageManager
 {
@@ -246,11 +249,20 @@ namespace Dynamo.PackageManager
 
             List<Assembly> loadedNodeLibs = new List<Assembly>();
             List<Assembly> failedNodeLibs = new List<Assembly>();
+
+
+            AssemblyLoadContext pkgLoadContext = AssemblyLoadContext.Default;
+            if (package.Header.node_libraries.Any())
+            {
+                var entryPoint = new AssemblyName(package.Header.node_libraries.First()).Name + ".dll";
+                pkgLoadContext = new PkgAssemblyLoadContext(package.Name + "@" + package.VersionName, Path.Combine(package.BinaryDirectory, entryPoint));
+            }
+
             try
             {
                 List<Assembly> blockedAssemblies = new List<Assembly>();
                 // Try to load node libraries from all assemblies
-                foreach (var assem in package.EnumerateAndLoadAssembliesInBinDirectory())
+                foreach (var assem in package.EnumerateAndLoadAssembliesInBinDirectory(pkgLoadContext))
                 {
                     if (assem.IsNodeLibrary)
                     {
@@ -327,6 +339,7 @@ namespace Dynamo.PackageManager
                     localPackages.FirstOrDefault(x => x.CustomNodeDirectory == e.InstalledPath);
                 OnConflictingPackageLoaded(originalPackage, package);
 
+                pkgLoadContext.Unload();
                 package.LoadState.SetAsError(e.Message);
             }
             catch (Exception e)
@@ -337,6 +350,8 @@ namespace Dynamo.PackageManager
                     DynamoServices.LoadLibraryEvents.OnLoadLibraryFailure(failureMessage, Properties.Resources.LibraryLoadFailureMessageBoxTitle);
                 }
                 package.LoadState.SetAsError(e.Message);
+                pkgLoadContext.Unload();
+
                 Log("Exception when attempting to load package " + package.Name + " from " + package.RootDirectory);
                 Log(e.GetType() + ": " + e.Message);
             }
@@ -364,7 +379,7 @@ namespace Dynamo.PackageManager
             TryLoadPackageIntoLibrary(package);
 
             var assemblies =
-                LocalPackages.SelectMany(x => x.EnumerateAndLoadAssembliesInBinDirectory().Where(y => y.IsNodeLibrary));
+                LocalPackages.SelectMany(x => x.EnumerateAndLoadAssembliesInBinDirectory(AssemblyLoadContext.Default).Where(y => y.IsNodeLibrary));
             PackagesLoaded?.Invoke(assemblies.Select(x => x.Assembly));
         }
 
@@ -773,11 +788,11 @@ namespace Dynamo.PackageManager
         /// <param name="filename">The filename of a DLL</param>
         /// <param name="assem">out Assembly - the passed value does not matter and will only be set if loading succeeds</param>
         /// <returns>Returns true if success, false if BadImageFormatException (i.e. not a managed assembly)</returns>
-        internal static bool TryLoadFrom(string filename, out Assembly assem)
+        internal static bool TryLoadFrom(AssemblyLoadContext alc, string filename, out Assembly assem)
         {
             try
             {
-                assem = Assembly.LoadFrom(filename);
+                assem = alc.LoadFromAssemblyPath(filename);
                 return true;
             }
             catch (FileLoadException e)
