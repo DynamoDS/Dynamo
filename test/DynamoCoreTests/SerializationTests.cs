@@ -285,6 +285,11 @@ namespace Dynamo.Tests
                     Assert.AreEqual("CoreNodeModels.Input.IntegerSlider64Bit", b.NodeTypeMap[kvp.Key].FullName);
                     continue;
                 }
+                //ignore file name - the result is dependent on where the graph is.
+                if (a.NodeTypeMap[kvp.Key].FullName == "CoreNodeModels.Input.Filename")
+                {
+                    continue;
+                }
 
                 Assert.AreEqual(a.NodeTypeMap[kvp.Key], b.NodeTypeMap[kvp.Key]);
 
