@@ -2711,7 +2711,7 @@ namespace ProtoCore.AST.AssociativeAST
         /// <param name="value"></param>
         /// <returns></returns>
         [Obsolete("The DS language supports 64 bit integers since Dynamo 2.0. This method will be removed in a future version of Dynamo.")]
-        internal static IntNode BuildIntNode(int value)
+        public static IntNode BuildIntNode(int value)
         {
             return new IntNode(value);
         }
