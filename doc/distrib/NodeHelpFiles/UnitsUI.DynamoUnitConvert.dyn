@@ -1,0 +1,189 @@
+{
+  "Uuid": "c2de8914-4390-497c-aae0-ca98f8354a1c",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "UnitsUI.DynamoUnitConvert",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "UnitsUI.DynamoUnitConvert, UnitsNodeModels",
+      "MeasurementType": "autodesk.unit.quantity:temperature-1.0.1",
+      "FromConversion": "autodesk.unit.unit:fahrenheit-1.0.1",
+      "ToConversion": "autodesk.unit.unit:celsius-1.0.1",
+      "Id": "7405540740b44e3f961d2b541b5ab98a",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "2759f4127d0541f780e97011f58b3015",
+          "Name": "",
+          "Description": "A value to convert",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "117581dd66d24c0e83161912f06bee8b",
+          "Name": "",
+          "Description": "Converted value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Converts a value between selected unit systems"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "c1df148f06ad4f998ded0983db0bb0d8",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "30c0e397389143d18ea347409b15a111",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "90;"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 140.0,
+      "WatchHeight": 38.4,
+      "Id": "b337b59ce96243d480a5ccb01c363588",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "8300026c883f42c28e54f55a0066dd84",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "a3991246bc014b40830575cb3cd640e9",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "117581dd66d24c0e83161912f06bee8b",
+      "End": "8300026c883f42c28e54f55a0066dd84",
+      "Id": "4bd2d101bace41f6a21853a6e910af4a",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "30c0e397389143d18ea347409b15a111",
+      "End": "2759f4127d0541f780e97011f58b3015",
+      "Id": "a7b75fbfe290467f9f84db27bcd5da3e",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.19",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.19.0.5742",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "7405540740b44e3f961d2b541b5ab98a",
+        "Name": "Convert By Units",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 395.0,
+        "Y": 360.0
+      },
+      {
+        "Id": "c1df148f06ad4f998ded0983db0bb0d8",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 163.0,
+        "Y": 363.0
+      },
+      {
+        "Id": "b337b59ce96243d480a5ccb01c363588",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 958.0,
+        "Y": 363.0
+      }
+    ],
+    "Annotations": [],
+    "X": 14.977696290559891,
+    "Y": -31.8897607754692,
+    "Zoom": 0.79608347779774036
+  }
+}

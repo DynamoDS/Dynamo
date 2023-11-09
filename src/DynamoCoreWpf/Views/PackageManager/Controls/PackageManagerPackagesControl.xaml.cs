@@ -134,7 +134,7 @@ namespace Dynamo.PackageManager.UI
         private void CloseToastButton_OnClick(object sender, RoutedEventArgs e)
         {
             var PkgSearchVM = this.DataContext as PackageManagerSearchViewModel;
-            if (PkgSearchVM != null) { return; }
+            if (PkgSearchVM == null) { return; }
 
             Button button = sender as Button;
 
