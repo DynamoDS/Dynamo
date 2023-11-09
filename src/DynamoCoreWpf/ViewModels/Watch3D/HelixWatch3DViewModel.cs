@@ -2870,7 +2870,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     /// 6. All text.
     /// </summary>
     [Obsolete("Do not use! This will be moved to a new project in a future version of Dynamo.")]
-    internal class Element3DComparer : IComparer<Element3D>
+    public class Element3DComparer : IComparer<Element3D>
     {
         private readonly Vector3 cameraPosition;
 
