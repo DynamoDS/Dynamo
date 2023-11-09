@@ -46,7 +46,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     /// A Dynamo mesh class which supports sending data to our custom shader.
     /// </summary>
     [Obsolete("Do not use! This will be moved to a new project in a future version of Dynamo.")]
-    internal class DynamoGeometryModel3D : MaterialGeometryModel3D
+    public class DynamoGeometryModel3D : MaterialGeometryModel3D
     {
         protected override SceneNode OnCreateSceneNode()
         {
@@ -84,7 +84,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     /// these are essentially the same.
     /// </summary>
     [Obsolete("Do not use! This will be moved to a new project in a future version of Dynamo.")]
-    internal class DynamoMeshNode : MeshNode
+    public class DynamoMeshNode : MeshNode
     {
    
         protected override RenderCore OnCreateRenderCore()
