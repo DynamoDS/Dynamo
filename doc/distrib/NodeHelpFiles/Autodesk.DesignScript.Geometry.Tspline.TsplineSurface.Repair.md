@@ -1,7 +1,8 @@
 ## In Depth
-Repair will attempt to repair the vertices on the `TSplinesSurface` using simple layout rules.
+In the example below, a T-Spline surface becomes invalid, which can be observed by noticing overlapping faces in background preview. The fact that the surface is invalid can be confirmed by failure in activating smooth mode using the `TSplineSurface.EnableSmoothMode` node. Another clue is `TSplineSurface.IsInBoxMode` node returning `true`, even if the surface has initially activated smooth mode. 
 
-In general, you should not need to use this functionality on geometry you create in Dynamo, only on geometry from external sources. If you find that is not the case, please report a bug to the Dynamo team github!
+To repair the surface, it is passed through `TSplineSurface.Repair` node. The result is a valid surface, which can be confirmed by successfully enabling smooth preview mode. 
 ___
+## Example File
 
-
+![TSplineSurface.Repair](./Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.Repair_img.jpg)
