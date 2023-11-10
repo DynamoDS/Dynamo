@@ -1,5 +1,4 @@
-﻿using System;
-using Dynamo.Models;
+using System;
 
 namespace Dynamo.Logging
 {
@@ -21,11 +20,10 @@ namespace Dynamo.Logging
         string SessionId { get; }
         
         /// <summary>
-        /// Starts the session for the given DynamoModel. 
+        /// Starts the session.
         /// The Session is closed when Dispose() is called.
         /// </summary>
-        /// <param name="model">DynamoModel</param>
-        void Start(DynamoModel model);
+        void Start();
         /// <summary>
         /// Returns a logger to record usage.
         /// </summary>

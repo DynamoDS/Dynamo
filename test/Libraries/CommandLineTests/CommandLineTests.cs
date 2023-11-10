@@ -95,7 +95,7 @@ namespace Dynamo.Tests
             string commandstring = $"-o {openpath} --HostName {hostName}";
 
             runner.Run(CommandstringToArgs(commandstring));
-            Assert.AreEqual(this.CurrentDynamoModel.HostAnalyticsInfo.HostName, "DynamoFormIt");
+            Assert.AreEqual(Dynamo.Models.DynamoModel.HostAnalyticsInfo.HostName, "DynamoFormIt");
         }
 
         [Test]
@@ -107,7 +107,7 @@ namespace Dynamo.Tests
             string commandstring = $"-o {openpath} -p {parentId}";
 
             runner.Run(CommandstringToArgs(commandstring));
-            Assert.AreEqual(this.CurrentDynamoModel.HostAnalyticsInfo.ParentId, "RVT&2022&MUI64&22.0.2.392");
+            Assert.AreEqual(Dynamo.Models.DynamoModel.HostAnalyticsInfo.ParentId, "RVT&2022&MUI64&22.0.2.392");
         }
 
         [Test]
@@ -119,7 +119,7 @@ namespace Dynamo.Tests
             string commandstring = $"-o {openpath} -s {sessionId}";
 
             runner.Run(CommandstringToArgs(commandstring));
-            Assert.AreEqual(this.CurrentDynamoModel.HostAnalyticsInfo.SessionId, "ABCDEFG");
+            Assert.AreEqual(Dynamo.Models.DynamoModel.HostAnalyticsInfo.SessionId, "ABCDEFG");
         }
 
         [Test]

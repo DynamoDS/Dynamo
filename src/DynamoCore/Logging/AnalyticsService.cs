@@ -9,40 +9,33 @@ namespace Dynamo.Logging
     /// <summary>
     /// Utility class to support analytics tracking.
     /// </summary>
-    class AnalyticsService
+    internal class AnalyticsService
     {
         // Use the Analytics.Core interface so that we do not have to load the ADP assembly at this time.
         private static IAnalyticsUI adpAnalyticsUI;
 
         /// <summary>
-        /// Starts the client when DynamoModel is created. This method initializes
+        /// Indicates that it is the Host's responsibility to shut down Analytics.
+        /// Sometimes we want to keep Analytics service running even when we don't have a DynamoModel started.
+        /// </summary>
+        internal static bool ShutDownByHost { get; set; }
+
+        /// <summary>
+        /// Starts the Analytics client. This method initializes
         /// the Analytics service and application life cycle start is tracked.
         /// </summary>
-        /// <param name="model">DynamoModel</param>
-        /// <param name="isHeadless">Analytics won't be started if IsHeadless, but ADP may be loaded to be disabled.</param>
-        /// <param name="isTestMode">Analytics won't be started if isTestMode, ADP will not be loaded.</param>
-        internal static void Start(DynamoModel model, bool isHeadless, bool isTestMode)
+        internal static void Start()
         {
-            if (isTestMode)
-            {
-                if (Analytics.DisableAnalytics)
-                {
-                    model.Logger.Log("Incompatible configuration: [IsTestMode] and [Analytics disabled] ");
-                }
-                return;
-            }
-
-            if (isHeadless)
-            {
-                return;
-            }
-
             // Initialize the concrete class only when we initialize the Service.
             // This will also load the Analytics.Net.ADP assembly
             // We must initialize the ADPAnalyticsUI instance before the Analytics.Start call.
             adpAnalyticsUI = new ADPAnalyticsUI();
 
-            Analytics.Start(new DynamoAnalyticsClient(model));
+            Analytics.Start(new DynamoAnalyticsClient(DynamoModel.HostAnalyticsInfo));
+        }
+
+        internal static void AddModelEvents(DynamoModel model)
+        {
             model.WorkspaceAdded += OnWorkspaceAdded;
         }
 
@@ -113,6 +106,7 @@ namespace Dynamo.Logging
                 adpAnalyticsUI.ShowOptInDialog(System.Threading.Thread.CurrentThread.CurrentUICulture.Name, false, host);
             }
         }
+
         internal static string GetUserIDForSession()
         {
             if (Analytics.client is DynamoAnalyticsClient dac)
