@@ -3743,20 +3743,4 @@ namespace Dynamo.Controls
             return value;
         }
     }
-
-    public class SumConverter : IMultiValueConverter
-    {
-        /// <summary>
-        /// Calculates and returns the sum of the values provided
-        /// </summary>
-        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
-        {
-            return values.Cast<double>().Sum();
-        }
-
-        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
-        {
-            return null;
-        }
-    }
 }
