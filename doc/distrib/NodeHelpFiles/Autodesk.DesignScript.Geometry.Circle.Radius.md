@@ -1,5 +1,8 @@
 ## In Depth
-Radius will return the center of an input sphere. In the example below, we use a ByBestFit node to create a sphere based on a set of random points. We then use a Radius node to determine the size of the best fit sphere.
+`Circle.Radius` finds the radius of a given circle.
+
+In the example below, we create a circle using `Circle.ByBestFitThroughPoints` and then extract the radius of the circle.
+
 ___
 ## Example File
 
