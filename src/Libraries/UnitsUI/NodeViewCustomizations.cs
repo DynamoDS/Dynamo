@@ -108,6 +108,36 @@ namespace UnitsUI
         }
     }
 
+    [Obsolete("This class will be removed in a future version of Dynamo - please use the StringInputNodeViewCustomization")]
+    public class LengthFromStringNodeViewCustomization : MeasurementInputBaseNodeViewCustomization,
+                                                        INodeViewCustomization<LengthFromString>
+    {
+        public void CustomizeView(LengthFromString model, NodeView nodeView)
+        {
+            base.CustomizeView(model, nodeView);
+        }
+    }
+
+    [Obsolete("This class will be removed in a future version of Dynamo - please use the StringInputNodeViewCustomization")]
+    public class AreaFromStringNodeViewCustomization : MeasurementInputBaseNodeViewCustomization,
+                                                 INodeViewCustomization<AreaFromString>
+    {
+        public void CustomizeView(AreaFromString model, NodeView nodeView)
+        {
+            base.CustomizeView(model, nodeView);
+        }
+    }
+
+    [Obsolete("This class will be removed in a future version of Dynamo - please use the StringInputNodeViewCustomization")]
+    public class VolumeFromStringNodeViewCustomization : MeasurementInputBaseNodeViewCustomization,
+                                               INodeViewCustomization<VolumeFromString>
+    {
+        public void CustomizeView(VolumeFromString model, NodeView nodeView)
+        {
+            base.CustomizeView(model, nodeView);
+        }
+    }
+
     /// <summary>
     /// View customization class for the Unit Input node.  Provides the String input field and Drop down ComboBox for Unit selection. 
     /// </summary>
