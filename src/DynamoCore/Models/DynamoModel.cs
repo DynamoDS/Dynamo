@@ -453,7 +453,7 @@ namespace Dynamo.Models
             ShutDownCore(shutdownHost);
             PostShutdownCore(shutdownHost);
 
-            if (!AnalyticsService.ShutDownByHost)
+            if (!AnalyticsService.KeepAlive)
             {
                 AnalyticsService.ShutDown();
             }

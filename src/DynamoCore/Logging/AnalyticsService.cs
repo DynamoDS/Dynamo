@@ -15,10 +15,10 @@ namespace Dynamo.Logging
         private static IAnalyticsUI adpAnalyticsUI;
 
         /// <summary>
-        /// Indicates that it is the Host's responsibility to shut down Analytics.
+        /// Indicates that we don't want to shut down analytics when DynamoModel shuts down.
         /// Sometimes we want to keep Analytics service running even when we don't have a DynamoModel started.
         /// </summary>
-        internal static bool ShutDownByHost { get; set; }
+        internal static bool KeepAlive { get; set; }
 
         /// <summary>
         /// Starts the Analytics client. This method initializes
