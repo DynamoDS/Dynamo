@@ -92,6 +92,16 @@ Copyright (c) 2022 Fonticons, Inc. (https://fontawesome.com)
 
 In the Font Awesome Free download, the CC BY 4.0 license applies to all icons packaged as SVG and JS file types.
 
+Icons: CC BY 4.0 License (https://creativecommons.org/licenses/by/4.0/):  The Font Awesome Free download is licensed under a Creative Commons Attribution 4.0 International License and applies to all icons packaged as SVG and JS file types.
+
+Fonts: SIL OFL 1.1 License
+In the Font Awesome Free download, the SIL OFL license applies to all icons packaged as web and desktop font files.
+Copyright (c) 2023 Fonticons, Inc. (https://fontawesome.com)
+with Reserved Font Name: "Font Awesome".
+This Font Software is licensed under the SIL Open Font License, Version 1.1. 
+This license can be found at: http://scripts.sil.org/OFL
+
+
 Cyotek.Drawing.BitmapFont v.2.0.0:
 https://github.com/cyotek/Cyotek.Drawing.BitmapFont
 https://github.com/cyotek/Cyotek.Drawing.BitmapFont/blob/master/LICENSE.txt
