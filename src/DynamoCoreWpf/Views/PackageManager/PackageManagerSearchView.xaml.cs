@@ -81,7 +81,7 @@ namespace Dynamo.PackageManager.UI
             var viewModel = lbi.DataContext as PackageManagerSearchElementViewModel;
             if (viewModel == null) return;
 
-            viewModel.Model.IsExpanded = !viewModel.Model.IsExpanded;
+            viewModel.SearchElementModel.IsExpanded = !viewModel.SearchElementModel.IsExpanded;
         }
 
         private void OnShowContextMenuFromLeftClicked(object sender, RoutedEventArgs e)
@@ -190,7 +190,7 @@ namespace Dynamo.PackageManager.UI
             if (!(sender is Button button)) return;
             if (!(button.DataContext is PackageManagerSearchElementViewModel packageManagerSearchElementViewModel)) return;
 
-            ViewModel.ViewPackageDetailsCommand.Execute(packageManagerSearchElementViewModel.Model);
+            ViewModel.ViewPackageDetailsCommand.Execute(packageManagerSearchElementViewModel.SearchElementModel);
         }
 
         /// <summary>
