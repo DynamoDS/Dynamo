@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Threading;
 using System.Windows.Input;
 using Dynamo.Selection;
 using DynamoCoreWpfTests.Utility;
@@ -172,6 +174,7 @@ namespace DynamoCoreWpfTests
 
             var noteModel = noteView.ViewModel.Model;
             var nodeModel = nodeView.ViewModel.NodeModel;
+
             Assert.AreEqual(noteModel.CenterX, nodeModel.CenterX);
             Assert.AreEqual(noteModel.CenterY, nodeModel.CenterY - (nodeModel.Height * 0.5) - (noteModel.Height * 0.5) - distanceToNode);
         }
@@ -203,7 +206,7 @@ namespace DynamoCoreWpfTests
             noteView.ViewModel.PinToNodeCommand.Execute(null);
 
             //Assert that distance to node adjusts to error state
-            var distanceToNode = 36;
+            var distanceToNode = 64;
             Assert.AreEqual(noteModel.CenterX, nodeModel.CenterX);
             Assert.AreEqual(noteModel.CenterY, nodeModel.CenterY - (nodeModel.Height * 0.5) - (noteModel.Height * 0.5) - distanceToNode);
         }
@@ -244,6 +247,57 @@ namespace DynamoCoreWpfTests
             noteAView.ViewModel.PinToNodeCommand.Execute(null);
             var canPinNodsToNotes = noteBView.ViewModel.PinToNodeCommand.CanExecute(null);
             Assert.IsFalse(canPinNodesToANote);
+        }
+
+        /// <summary>
+        /// Check that workspace model is aware that changes were made 
+        /// when a node is pinned to a note.
+        /// </summary>
+        [Test]
+        public void HasUnsavedChangesWhenPinToNode()
+        {
+            // Open document and get node and note view
+            Open(@"UI\UI_PinNodeToNote.dyn");
+            var nodeAGUID = "cf46488c-6631-458e-bba0-25098e2273f5";
+            var noteAGUID = "c589c7ff-a481-4a21-bb18-ac01ed9486fc";
+            var nodeAView = NodeViewWithGuid(nodeAGUID);
+            var noteAView = NoteViewWithGuid(noteAGUID);
+
+            //Assert that workspace doesn't have unsaved changes
+            var workspace = nodeAView.ViewModel.WorkspaceViewModel;
+            Assert.IsFalse(workspace.HasUnsavedChanges);
+
+            // Select node, note and pin
+            DynamoSelection.Instance.Selection.AddUnique(nodeAView.ViewModel.NodeModel);
+            DynamoSelection.Instance.Selection.AddUnique(noteAView.ViewModel.Model);
+            noteAView.ViewModel.PinToNodeCommand.Execute(null);
+
+            //Assert that workspace has unsaved changes
+            Assert.IsTrue(nodeAView.ViewModel.WorkspaceViewModel.HasUnsavedChanges);
+        }
+
+        [Test]
+        public void UndoPinNode()
+        {
+            // Open document and get node and note view
+            Open(@"UI\UINotes.dyn");
+            var nodeGUID = "bbc16882-75c2-4a50-a4e4-5e50e191af8f";
+            var noteGUID = "4677e999-d5f5-4bb2-9706-a97bf3a86711";
+            var nodeView = NodeViewWithGuid(nodeGUID);
+            var noteView = NoteViewWithGuid(noteGUID);
+
+            // Add node to selection and pin note to node
+            DynamoSelection.Instance.Selection.AddUnique(nodeView.ViewModel.NodeModel);
+            noteView.ViewModel.PinToNodeCommand.Execute(null);
+
+            // Assert that node was pinned
+            var pinnedNode = noteView.ViewModel.Model.PinnedNode;
+            Assert.IsNotNull(pinnedNode);
+            Assert.AreEqual(pinnedNode.GUID.ToString(), nodeGUID);
+
+            //Undo the pinned node
+            this.Model.CurrentWorkspace.Undo();
+            Assert.IsNull(noteView.ViewModel.Model.PinnedNode);
         }
     }
 }

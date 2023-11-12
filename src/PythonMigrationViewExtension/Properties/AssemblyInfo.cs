@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -12,5 +12,5 @@ using System.Runtime.InteropServices;
 [assembly: Guid("10af430d-0d3a-49ce-a63d-848912959745")]
 
 // Visible to DynamoCoreWpfTests dll for unit testing
-[assembly: InternalsVisibleTo("DynamoCoreWpfTests")]
-[assembly: InternalsVisibleTo("DynamoCoreTests")]
+[assembly: InternalsVisibleTo("IronPythonTests")]
+[assembly: InternalsVisibleTo("DynamoPythonTests")]

@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 
 using Dynamo.Updates;
+using Dynamo.Wpf.Utilities;
 
 namespace DynamoCore.UI.Controls
 {
@@ -21,9 +22,10 @@ namespace DynamoCore.UI.Controls
             var um = DataContext as IUpdateManager;
             if (um == null) return;
 
-            var result = MessageBox.Show(Dynamo.Wpf.Properties.Resources.UpdateMessage, 
+            var result = MessageBoxService.Show(Dynamo.Wpf.Properties.Resources.UpdateMessage, 
                 Dynamo.Wpf.Properties.Resources.InstallMessageCaption, 
-                MessageBoxButton.OKCancel);
+                MessageBoxButton.OKCancel,
+                MessageBoxImage.None);
 
             if (result == MessageBoxResult.OK)
             {

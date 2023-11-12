@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
@@ -54,12 +55,14 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <returns></returns>
         private static FlowDocument GetCustomDocument(string Text)
         {
-            FlowDocument document = new FlowDocument();
-            BlockUIContainer imageContainer = new BlockUIContainer();
-            List bulletedItemsList = null;
+            //This will remove the space between each paragraph
+            FlowDocument document = new FlowDocument()
+            {
+                PagePadding = new Thickness(0)
+            };
 
-            Paragraph para = new Paragraph();
-            para.Margin = new Thickness(0); // remove indent between paragraphs
+            //This will get a list of all the paragraphs in the text (each paragraph is identified by '\n')
+            List<string> paragraphsList = Text.Replace("\r", "").Split('\n').ToList();
 
             bool bBoldActive = false;
             bool bImageActive = false;
@@ -69,113 +72,124 @@ namespace Dynamo.Wpf.UI.GuidedTour
             string imageName = string.Empty;
             string hyperlinkName = string.Empty;
 
-            //This iteration is just for words in a paragraph if the text provided has several paragraphs then an additional foreach cycle needs to be added for iterating paragraphs
-            foreach (string word in Text.Split(' ').ToList())
+            //This will iterate each paragraph ()
+            foreach (string paragraph in paragraphsList)
             {
-                //A format for bold text was found
-                if (word.StartsWith("**"))
+                Paragraph para = new Paragraph()
                 {
-                    bBoldActive = true;
-                }
+                    Margin = new Thickness(0) // remove indent between paragraphs
+                };
+                BlockUIContainer imageContainer = new BlockUIContainer();
+                List bulletedItemsList = null;
 
-                //A format for inserting a image between text was found
-                if (word.StartsWith("%"))
+                //This iteration is just for words in a paragraph if the text provided has several paragraphs 
+                foreach (string word in paragraph.Split(' ').ToList())
                 {
-                    bImageActive = true;
-                }
-
-                //A format for inserting bullet points was found (consider that for now we are just supporting bullet points ONLY at the end of the text)
-                if (word.StartsWith("-"))
-                {
-                    if (bulletedItemsList == null && bBulletListActive == false)
-                        bulletedItemsList = new List();
-
-                    bBulletListActive = true;
-                }
-
-                //A format for inserting a hyperlink between text was found              
-                if (word.StartsWith("#"))
-                {
-                    bHyperlinkActive = true;
-                }
-
-                if (bHyperlinkActive)
-                {
-                    //Finding the end character that indicates the hyperlink is complete (no empty spaces are allowed in hyperlink URL just in the name)
-                    if (word.Contains("="))
+                    //A format for bold text was found
+                    if (word.Trim().StartsWith("**"))
                     {
-                        string linkURL = word.Split('=')[1];
-                        hyperlinkName += word.Split('=')[0];
-
-                        Run run3 = new Run(hyperlinkName.Replace("#", ""));
-                        Hyperlink link = new Hyperlink(run3);
-                        link.IsEnabled = true;
-                        link.NavigateUri = new Uri(linkURL);
-                        link.RequestNavigate += (sender, args) => Process.Start(args.Uri.ToString());
-                        para.Inlines.Add(link);
-                        bHyperlinkActive = false;
+                        bBoldActive = true;
                     }
-                    //The hyperlink name is the next word followed by the # char (empty spaces are allowed) and the URL value is the one followed after the = char
+
+                    //A format for inserting a image between text was found
+                    if (word.StartsWith("%"))
+                    {
+                        bImageActive = true;
+                    }
+
+                    //A format for inserting bullet points was found (it can be added between paragraphs but at the end of each paragraph).
+                    if (word.StartsWith("-"))
+                    {
+                        if (bulletedItemsList == null && bBulletListActive == false)
+                            bulletedItemsList = new List();
+
+                        bBulletListActive = true;
+                    }
+
+                    //A format for inserting a hyperlink between text was found              
+                    if (word.StartsWith("#"))
+                    {
+                        bHyperlinkActive = true;
+                    }
+
+                    if (bHyperlinkActive)
+                    {
+                        //Finding the end character that indicates the hyperlink is complete (no empty spaces are allowed in hyperlink URL just in the name)
+                        if (word.Contains("="))
+                        {
+                            string linkURL = word.Split('=')[1];
+                            hyperlinkName += word.Split('=')[0];
+
+                            Run run3 = new Run(hyperlinkName.Replace("#", ""));
+                            Hyperlink link = new Hyperlink(run3);
+                            link.IsEnabled = true;
+                            link.NavigateUri = new Uri(linkURL);
+                            link.RequestNavigate += (sender, args) => Process.Start(new ProcessStartInfo(args.Uri.ToString()) { UseShellExecute = true });
+                            para.Inlines.Add(link);
+                            bHyperlinkActive = false;
+                        }
+                        //The hyperlink name is the next word followed by the # char (empty spaces are allowed) and the URL value is the one followed after the = char
+                        else
+                            hyperlinkName += word.Replace("#", "") + " ";
+                    }
+                    else if (bBoldActive)
+                    {
+                        string boldText = word;
+                        boldText = boldText.Replace("**", string.Empty);
+                        para.Inlines.Add(new Bold(new Run(boldText)));
+                    }
+                    else if (bImageActive)
+                    {
+                        //this will contatenate each word so at the end we will have the full image path
+                        imageName += word;
+                    }
+                    else if (bBulletListActive == true)
+                    {
+                        //Due that we are using the method Split(' ') for getting each word, then we need to add it back otherwise the words will be all together
+                        bulletEntryText += (word + " ");
+                    }
                     else
-                        hyperlinkName += word.Replace("#", "") + " ";
-                }
-                else if (bBoldActive)
-                {
-                    string boldText = word;
-                    boldText = boldText.Replace("**", "");
-                    para.Inlines.Add(new Bold(new Run(boldText)));
-                }
-                else if (bImageActive)
-                {
-                    //this will contatenate each word so at the end we will have the full image path
-                    imageName += word;
-                }
-                else if (bBulletListActive == true)
-                {
-                    bulletEntryText += (word + " ");
-                }
-                else
-                {
-                    para.Inlines.Add(word);
-                }
+                    {
+                        para.Inlines.Add(word);
+                    }
 
-                //End of the text with bold formatting.
-                if (word.EndsWith("**"))
-                {
-                    bBoldActive = false;
-                }
-                //End of the image between text formatting.
-                if (word.EndsWith("%"))
-                {
-                    bImageActive = false;
+                    //End of the text with bold formatting.
+                    if (word.Trim().EndsWith("**"))
+                    {
+                        bBoldActive = false;
+                    }
+                    //End of the image between text formatting.
+                    if (word.EndsWith("%"))
+                    {
+                        bImageActive = false;
 
-                    var tmpImage = new Image();
-                    tmpImage.Source = new BitmapImage(new Uri(imageName.Replace("%", ""), UriKind.RelativeOrAbsolute));
-                    imageContainer.Child = tmpImage;
-                    Figure imageFig = new Figure(imageContainer);
-                    imageFig.Width = new FigureLength(30);
-                    imageFig.Height = new FigureLength(30);
-                    para.Inlines.Add(imageFig);
+                        var tmpImage = new Image();
+                        tmpImage.Source = new BitmapImage(new Uri(imageName.Replace("%", ""), UriKind.RelativeOrAbsolute));
+                        imageContainer.Child = tmpImage;
+                        Figure imageFig = new Figure(imageContainer);
+                        imageFig.Width = new FigureLength(30);
+                        imageFig.Height = new FigureLength(30);
+                        para.Inlines.Add(imageFig);
+                    }
+                    //End of the Bullet Items formatting
+                    if (word.EndsWith("-") && bulletedItemsList != null)
+                    {
+                        bBulletListActive = false;
+                        bulletedItemsList.ListItems.Add(new ListItem(new Paragraph(new Run(bulletEntryText.Replace("-", "")))));
+                        bulletEntryText = string.Empty;
+                    }
+                    //Due that we are using the method Split(' ') for getting each word, then we need to add it back otherwise the words will be all together
+                    para.Inlines.Add(" ");
                 }
-                //End fo the Bullet Items formatting
-                if (word.EndsWith("-"))
-                {
-                    bBulletListActive = false;
-                    bulletedItemsList.ListItems.Add(new ListItem(new Paragraph(new Run(bulletEntryText.Replace("-", "")))));
-                    bulletEntryText = string.Empty;
-                }
+                document.Blocks.Add(para);
 
-                para.Inlines.Add(" ");
+                //Not all the tooltips contain bullet point when we insert the bullet points only if it was set
+                if (bulletedItemsList != null)
+                {
+                    document.Blocks.Add(bulletedItemsList);
+                    bulletedItemsList = null;
+                }
             }
-            document.Blocks.Add(para);
-
-            //Not all the tooltips contain bullet point when we insert the bullet points only if it was set
-            if (bulletedItemsList != null)
-            {
-                document.Blocks.Add(bulletedItemsList);
-                bulletedItemsList = null;
-            }
-
             return document;
         }
     }

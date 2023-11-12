@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 
@@ -32,6 +32,18 @@ namespace Dynamo.ViewModels
                 RequestPackageManagerSearchDialog(this, e);
             }
         }
+
+
+        public event EventHandler RequestPackageManagerDialog;
+        public virtual void OnRequestPackageManagerDialog(Object sender, EventArgs e)
+        {
+            if (RequestPackageManagerDialog != null)
+            {
+                RequestPackageManagerDialog(this, e);
+            }
+        }
+
+
         [Obsolete("This event will be removed, do not use. It does nothing.")]
         public event EventHandler RequestPackagePathsDialog;
         [Obsolete("This method will be removed do not use. It does nothing.")]
@@ -109,15 +121,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public event RequestShowHideGalleryHandler RequestShowHideGallery;
-        public virtual void OnRequestShowHideGallery(bool showGallery)
-        {
-            if (RequestShowHideGallery != null)
-            {
-                RequestShowHideGallery(showGallery);
-            }
-        }
-
         public event RequestOpenDocumentationLinkHandler RequestOpenDocumentationLink;
         public virtual void OnRequestOpenDocumentationLink(OpenDocumentationLinkEventArgs e)
         {
@@ -159,11 +162,45 @@ namespace Dynamo.ViewModels
             }
         }
 
+        internal event Action RequestCloseHomeWorkSpace;
+        private void OnRequestCloseHomeWorkSpace()
+        {
+            if (RequestCloseHomeWorkSpace != null)
+            {
+                RequestCloseHomeWorkSpace();
+            }
+        }
+
+        internal event Action<double> RequestShorcutToolbarLoaded;
+        public void OnRequestShorcutToolbarLoaded(double rightMenuActualWidth)
+        {
+            if (RequestShorcutToolbarLoaded != null)
+            {
+                RequestShorcutToolbarLoaded(rightMenuActualWidth);
+            }
+        }
+
+        internal event Action <object> RequestExportWorkSpaceAsImage;
+        private void OnRequestExportWorkSpaceAsImage(object parameter)
+        {
+            if (RequestExportWorkSpaceAsImage != null)
+            {
+                RequestExportWorkSpaceAsImage(parameter);
+            }
+        }
+
         internal event Action RequestReturnFocusToView;
         internal void OnRequestReturnFocusToView()
         {
             if (RequestReturnFocusToView != null)
                 RequestReturnFocusToView();
+        }
+
+        public event Action<bool> RequestEnableShortcutBarItems;
+        public virtual void OnEnableShortcutBarItems(bool enable)
+        {
+            if (RequestEnableShortcutBarItems != null)
+                RequestEnableShortcutBarItems(enable);
         }
 
         /// <summary>
@@ -185,6 +222,15 @@ namespace Dynamo.ViewModels
         internal void OnViewExtensionOpenRequest(string extensionName)
         {
             ViewExtensionOpenRequest?.Invoke(extensionName);
+        }
+
+        /// <summary>
+        /// Event raised when there's a request to open the view extension in the side panel.
+        /// </summary>
+        internal event Action<string, object> ViewExtensionOpenWithParameterRequest;
+        internal void OnViewExtensionOpenWithParameterRequest(string extensionIdentification, object obj)
+        {
+            ViewExtensionOpenWithParameterRequest?.Invoke(extensionIdentification, obj);
         }
     }
 }

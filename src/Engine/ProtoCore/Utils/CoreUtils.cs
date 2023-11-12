@@ -7,6 +7,9 @@ namespace ProtoCore.Utils
 {
     public static class CoreUtils
     {
+        public static readonly string FunctionObjectClass = "Function";        
+        public static readonly string FunctionObjectLibrary = "FunctionObject.ds";
+
         public static void InsertPredefinedAndBuiltinMethods(Core core, CodeBlockNode root)
         {
             if (DSASM.InterpreterMode.Normal == core.Options.RunMode)
@@ -476,7 +479,7 @@ namespace ProtoCore.Utils
         /// Given: A.B[0].C
         ///     Return: "A.B[0].C"
         /// </summary>
-        /// <param name="identList"></param>
+        /// <param name="node"></param>
         /// <returns></returns>
         public static string GetIdentifierStringUntilFirstParenthesis(AST.Node node)
         {
@@ -784,7 +787,7 @@ namespace ProtoCore.Utils
         /// Parses designscript code and outputs ProtoAST
         /// </summary>
         /// <param name="core"></param>
-        /// <param name="code"></param>
+        /// <param name="codeList"></param>
         /// <returns></returns>
         public static List<AssociativeNode> BuildASTList(Core core, List<string> codeList)
         {
@@ -923,6 +926,7 @@ namespace ProtoCore.Utils
         /// </summary>
         /// <param name="sv1"></param>
         /// <param name="sv2"></param>
+        /// <param name="runtimeCore"></param>
         /// <returns></returns>
         public static StackValue AddStackValueString(StackValue sv1, StackValue sv2, RuntimeCore runtimeCore)
         {
@@ -950,6 +954,52 @@ namespace ProtoCore.Utils
                     return StringUtils.ConcatString(sv2, newSV, runtimeCore);
                 }
             }
+            return StackValue.BuildNull();
+        }
+
+        /// <summary>
+        /// Checks if an AST node is a primitive
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        public static bool IsPrimitiveASTNode(AssociativeNode node)
+        {
+            if (node is IntNode
+                || node is DoubleNode
+                || node is BooleanNode
+                || node is StringNode
+                || node is NullNode)
+            {
+                return true;
+            }
+            return false;
+        }
+
+
+        public static StackValue BuildStackValueForPrimitive(AssociativeNode node, RuntimeCore rt)
+        {
+            Validity.Assert(IsPrimitiveASTNode(node) == true);
+
+            if (node is IntNode)
+            {
+                return StackValue.BuildInt((node as IntNode).Value);
+            }
+
+            if (node is DoubleNode)
+            {
+                return StackValue.BuildDouble((node as DoubleNode).Value);
+            }
+
+            if (node is BooleanNode)
+            {
+                return StackValue.BuildBoolean((node as BooleanNode).Value);
+            }
+
+            if (node is StringNode)
+            {
+                return StackValue.BuildString((node as StringNode).Value, rt.Heap);
+            }
+
             return StackValue.BuildNull();
         }
     }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Graph.Workspaces;
@@ -23,7 +23,13 @@ namespace Dynamo.PackageManager.Tests
             {
                 content = new List<PackageHeader>()
                 {
-                    new PackageHeader()
+                    new PackageHeader(){
+                        versions = new List<PackageVersion>(){
+                            new PackageVersion(){
+                                url="test.zip"
+                            }
+                        }
+                    }
                 },
                 success = true
             };
@@ -130,7 +136,7 @@ namespace Dynamo.PackageManager.Tests
             Assert.AreEqual(result.version, version);
         }
 
-        [Test, ExpectedException(typeof(ApplicationException), ExpectedMessage = "The package does not exist")]
+        [Test]
         public void FailureOnGetPackageVersionHeaderByPackageId()
         {
             var mockGreg = new Mock<IGregClient>();
@@ -142,7 +148,11 @@ namespace Dynamo.PackageManager.Tests
                 });
 
             var client = new PackageManagerClient(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
-            client.GetPackageVersionHeader(new PackageInfo(string.Empty, new Version()));
+            var e = Assert.Throws<ApplicationException>(() =>
+            {
+                client.GetPackageVersionHeader(new PackageInfo(string.Empty, new Version()));
+            });
+            Assert.AreEqual("The package does not exist", e.Message);
         }
 
         [Test]
@@ -165,7 +175,7 @@ namespace Dynamo.PackageManager.Tests
             Assert.AreEqual(result.version, version);
         }
 
-        [Test, ExpectedException(typeof(ApplicationException), ExpectedMessage = "The package does not exist")]
+        [Test]
         public void FailureOnGetPackageVersionHeaderByPackageName()
         {
             var mockGreg = new Mock<IGregClient>();
@@ -177,7 +187,12 @@ namespace Dynamo.PackageManager.Tests
                 });
 
             var client = new PackageManagerClient(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
-            client.GetPackageVersionHeader(string.Empty, string.Empty);
+            var e = Assert.Throws<ApplicationException>(() =>
+            {
+                client.GetPackageVersionHeader(string.Empty, string.Empty);
+            });
+            Assert.AreEqual("The package does not exist",e.Message);
+
         }
 
         #endregion
@@ -363,7 +378,7 @@ namespace Dynamo.PackageManager.Tests
             var pkg = new Package("", "Package", "0.1.0", "MIT");
 
             var handle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(pkg));
-            pc.Publish(pkg, Enumerable.Empty<string>(), false, handle);
+            pc.Publish(pkg, Enumerable.Empty<string>(), Enumerable.Empty<string>(), false, handle);
 
             Assert.AreEqual(PackageUploadHandle.State.Uploaded, handle.UploadState);
         }
@@ -383,7 +398,7 @@ namespace Dynamo.PackageManager.Tests
             var pkg = new Package("", "Package", "0.1.0", "MIT");
 
             var handle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(pkg));
-            pc.Publish(pkg, Enumerable.Empty<string>(), false, handle);
+            pc.Publish(pkg, Enumerable.Empty<string>(), Enumerable.Empty<string>(), false, handle);
 
             Assert.AreEqual(PackageUploadHandle.State.Uploaded, handle.UploadState);
         }
@@ -399,7 +414,7 @@ namespace Dynamo.PackageManager.Tests
             var pkg = new Package("", "Package", "0.1.0", "MIT");
 
             var handle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(pkg));
-            pc.Publish(pkg, Enumerable.Empty<string>(), false, handle);
+            pc.Publish(pkg, Enumerable.Empty<string>(), Enumerable.Empty<string>(), false, handle);
 
             Assert.AreEqual(PackageUploadHandle.State.Error, handle.UploadState);
         }
@@ -418,7 +433,7 @@ namespace Dynamo.PackageManager.Tests
             var pkg = new Package("", "Package", "0.1.0", "MIT");
 
             var handle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(pkg));
-            pc.Publish(pkg, Enumerable.Empty<string>(), true, handle);
+            pc.Publish(pkg, Enumerable.Empty<string>(), Enumerable.Empty<string>(), true, handle);
 
             Assert.AreEqual(PackageUploadHandle.State.Error, handle.UploadState);
         }

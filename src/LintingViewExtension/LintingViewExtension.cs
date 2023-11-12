@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,7 +14,6 @@ namespace Dynamo.LintingViewExtension
 {
     public class LintingViewExtension : ViewExtensionBase
     {
-        private const string EXTENSION_NAME = "Graph Status";
         private const string EXTENSION_GUID = "3467481b-d20d-4918-a454-bf19fc5c25d7";
 
         private LinterManager linterManager;
@@ -25,7 +24,7 @@ namespace Dynamo.LintingViewExtension
 
         public override string UniqueId { get { return EXTENSION_GUID; } }
 
-        public override string Name { get { return EXTENSION_NAME; } }
+        public override string Name => Resources.ExtensionName;
 
         public override void Startup(ViewStartupParams viewStartupParams)
         {
@@ -49,9 +48,9 @@ namespace Dynamo.LintingViewExtension
             this.linterManager.PropertyChanged += OnLinterManagerPropertyChange;
         }
 
-        private void OnViewExtensionOpenRequest(string extensionName)
+        private void OnViewExtensionOpenRequest(string extensionId)
         {
-            if (extensionName != Name)
+            if (string.IsNullOrEmpty(extensionId) || !extensionId.Equals(UniqueId))
             {
                 return;
             }
@@ -72,10 +71,18 @@ namespace Dynamo.LintingViewExtension
 
         public override void Dispose()
         {
-            this.linterMenuItem.Checked -= MenuItemCheckHandler;
-            this.linterMenuItem.Unchecked -= MenuItemUnCheckedHandler;
-            if (linterManager != null) linterManager.PropertyChanged -= OnLinterManagerPropertyChange;
-            viewLoadedParamsReference.ViewExtensionOpenRequest -= OnViewExtensionOpenRequest;
+            if (linterMenuItem != null)
+            {
+                linterMenuItem.Checked -= MenuItemCheckHandler;
+                linterMenuItem.Unchecked -= MenuItemUnCheckedHandler;
+            }
+            if (linterManager != null){
+                linterManager.PropertyChanged -= OnLinterManagerPropertyChange;
+            }
+            if (viewLoadedParamsReference != null)
+            {
+                viewLoadedParamsReference.ViewExtensionOpenRequest -= OnViewExtensionOpenRequest;
+            }
         }
 
         public override void Closed()

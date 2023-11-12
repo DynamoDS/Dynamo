@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows.Media.Imaging;
@@ -211,12 +211,13 @@ namespace Dynamo.GraphMetadata
 
         private void OpenGraphStatusExecute(object obj)
         {
-            viewLoadedParams.OpenViewExtension("Graph Status");
+            //Open Graph Status view extension            
+            viewLoadedParams.OpenViewExtension("3467481b-d20d-4918-a454-bf19fc5c25d7");
         }
 
         private void AddCustomPropertyExecute(object obj)
         {
-            var propName = $"Custom Property {CustomProperties.Count + 1}";
+            var propName = Properties.Resources.CustomPropertyControl_CustomPropertyDefault + " " + (CustomProperties.Count + 1);
             AddCustomProperty(propName, string.Empty);
         }
 
@@ -265,6 +266,7 @@ namespace Dynamo.GraphMetadata
         public void Dispose()
         {
             this.viewLoadedParams.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
+            this.viewLoadedParams.CurrentWorkspaceCleared -= OnCurrentWorkspaceChanged;
             if (linterManager != null)
             {
                 linterManager.PropertyChanged -= OnLinterManagerPropertyChange;

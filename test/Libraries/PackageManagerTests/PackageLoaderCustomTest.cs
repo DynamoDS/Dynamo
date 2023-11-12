@@ -11,7 +11,8 @@ namespace Dynamo.PackageManager.Tests
         [SetUp]
         public override void Setup()
         {
-            base.Setup();
+            SetupDirectories();
+
             var settings = new PreferenceSettings();
             var parentFolder = Path.Combine(TestDirectory, "pkgs", "multiple_locations");
             settings.CustomPackageFolders = new List<string>

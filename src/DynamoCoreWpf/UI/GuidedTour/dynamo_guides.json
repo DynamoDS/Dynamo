@@ -1,6 +1,8 @@
 [
 	{
-		"Name": "Get Started",
+		"Name": "User Interface Tour",
+		"SequenceOrder": 1,
+		"GuideNameResource": "GetStartedGuide",
 		"GuideSteps": [
 			{
 				"Sequence": 0,
@@ -35,14 +37,18 @@
 					"PopupPlacement": "right",
 					"HostUIElementString": "sidebarGrid",
 					"VerticalPopupOffset": 100,
-					"HorizontalPopupOffset": 50
+					"HorizontalPopupOffset": 50,
+					"CutOffRectArea": {
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 0
+					}
 				}
 			},
 			{
 				"Sequence": 2,
 				"Name": "run status",
 				"Type": "tooltip",
-				"TooltipPointerDirection": "bottom_left",
+				"TooltipPointerDirection": "bottom_down",
 				"Width": 480,
 				"Height": 260,
 				"StepContent": {
@@ -50,10 +56,14 @@
 					"FormattedText": "GetStartedGuideRunStatusBarText"
 				},
 				"HostPopupInfo": {
-					"PopupPlacement": "bottom",
+					"PopupPlacement": "top",
 					"HostUIElementString": "bottomBarGrid",
-					"VerticalPopupOffset": 50,
-					"HorizontalPopupOffset": 320
+					"VerticalPopupOffset": 0,
+					"HorizontalPopupOffset": 320,
+					"CutOffRectArea": {
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 0
+					}
 				}
 			},
 			{
@@ -62,7 +72,7 @@
 				"Type": "tooltip",
 				"TooltipPointerDirection": "top_left",
 				"Width": 480,
-				"Height": 230,
+				"Height": 245,
 				"StepContent": {
 					"Title": "GetStartedGuideToolbarTitle",
 					"FormattedText": "GetStartedGuideToolbarText"
@@ -70,9 +80,17 @@
 				"HostPopupInfo": {
 					"PopupPlacement": "bottom",
 					"HostUIElementString": "shortcutsBarGrid",
-					"HighlightColor": "#ef9362",
 					"VerticalPopupOffset": -60,
-					"HorizontalPopupOffset": 225
+					"HorizontalPopupOffset": 225,
+					"HighlightRectArea": {
+						"HighlightColor": "#EF9362",
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 0
+					},
+					"CutOffRectArea": {
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 0
+					}
 				}
 			},
 			{
@@ -81,7 +99,7 @@
 				"Type": "tooltip",
 				"TooltipPointerDirection": "top_left",
 				"Width": 480,
-				"Height": 190,
+				"Height": 205,
 				"StepContent": {
 					"Title": "GetStartedGuidePreferencesTitle",
 					"FormattedText": "GetStartedGuidePreferencesText"
@@ -89,17 +107,28 @@
 				"HostPopupInfo": {
 					"PopupPlacement": "right",
 					"HostUIElementString": "dynamoMenu",
-					"VerticalPopupOffset": 50,
+					"VerticalPopupOffset": 100,
 					"HighlightColor": "#EF9362",
-					"HorizontalPopupOffset": 230,
-					"HeightBoxDelta": 3
+					"HorizontalPopupOffset": 10,
+					"HighlightRectArea": {
+						"HighlightColor": "#EF9362",
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 3
+					},
+					"CutOffRectArea": {
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 3
+					}
 				},
-				"UIAutomation": {
-					"Sequence": 1,
-					"ControlType": "MenuItem",
-					"Name": "dynamoMenu",
-					"Action": "open"
-				}
+				"UIAutomation": [
+					{
+						"Sequence": 1,
+						"ControlType": "MenuItem",
+						"Name": "dynamoMenu",
+						"Action": "open",
+						"UpdatePlacementTarget": true
+					}
+				]
 			},
 			{
 				"Sequence": 5,
@@ -116,16 +145,26 @@
 					"PopupPlacement": "right",
 					"HostUIElementString": "HelpMenu",
 					"VerticalPopupOffset": 20,
-					"HorizontalPopupOffset": 170,
-					"HighlightColor": "#EF9362",
-					"HeightBoxDelta": 3
+					"HorizontalPopupOffset": 10,
+					"HighlightRectArea": {
+						"HighlightColor": "#EF9362",
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 3
+					},
+					"CutOffRectArea": {
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 3
+					}
 				},
-				"UIAutomation": {
-					"Sequence": 1,
-					"ControlType": "MenuItem",
-					"Name": "HelpMenu",
-					"Action": "open"
-				}
+				"UIAutomation": [
+					{
+						"Sequence": 1,
+						"ControlType": "MenuItem",
+						"Name": "HelpMenu",
+						"Action": "open",
+						"UpdatePlacementTarget": true
+					}
+				]
 			},
 			{
 				"Sequence": 6,
@@ -151,5 +190,1015 @@
 				}
 			}
 		]
+	},
+	{
+		"Name": "Packages",
+		"SequenceOrder": 3,
+		"GuideNameResource": "PackagesGuide",
+		"GuideSteps": [
+			{
+				"Sequence": 1,
+				"Name": "packages",
+				"Type": "tooltip",
+				"TooltipPointerDirection": "top_left",
+				"PointerVerticalOffset": -50,
+				"Width": 480,
+				"Height": 512,
+				"StepContent": {
+					"Title": "PackagesGuideLearnAbout",
+					"FormattedText": "PackagesGuideLearnAboutText"
+				},
+				"HostPopupInfo": {
+					"PopupPlacement": "relative",
+					"HostUIElementString": "PackageManagerMenu",
+					"VerticalPopupOffset": -20,
+					"HorizontalPopupOffset": 150,
+					"HtmlPage": {
+						"FileName": "learnPackages.html",
+						"Resources": {
+							"#DynamoPackages_1_1": "DynamoPackages_1_1.png"
+						}
+					},
+					"HighlightRectArea": {
+						"HighlightColor": "#EF9362",
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 3
+					},
+					"CutOffRectArea": {
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 3
+					}
+				},
+				"UIAutomation": [
+					{
+						"Sequence": 1,
+						"ControlType": "button",
+						"WindowName": "PopupWindow",
+						"Name": "BackButton",
+						"Action": "disable"
+					}
+				]
+			},
+			{
+				"Sequence": 2,
+				"Name": "find package",
+				"Type": "tooltip",
+				"TooltipPointerDirection": "top_left",
+				"Width": 480,
+				"Height": 250,
+				"StepContent": {
+					"Title": "PackagesGuideFindPackageTitle",
+					"FormattedText": "PackagesGuideFindPackageText"
+				},
+				"HostPopupInfo": {
+					"PopupPlacement": "right",
+					"HostUIElementString": "PackageManagerMenu",
+					"VerticalPopupOffset": 0,
+					"HorizontalPopupOffset": 10,
+					"HighlightRectArea": {
+						"HighlightColor": "#EF9362",
+						"UIElementTypeString": "MenuItem",
+						"WindowElementNameString": "showPMSearch",
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 3
+					},
+					"CutOffRectArea": {
+						"WindowElementNameString": "showPMSearch",
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 3
+					}
+				},
+				"UIAutomation": [
+					{
+						"Sequence": 1,
+						"ControlType": "MenuItem",
+						"Name": "PackageManagerMenu",
+						"Action": "open",
+						"UpdatePlacementTarget": true
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "function",
+						"Name": "SubscribeSearchForPackagesOption",
+						"Action": "execute",
+						"UpdatePlacementTarget": true,
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "showPMSearch",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "SearchForPackage_Click"
+							}
+						]
+					}
+				]
+			},
+			{
+				"Sequence": 3,
+				"Name": "terms of service",
+				"Type": "tooltip",
+				"TooltipPointerDirection": "top_left",
+				"Width": 480,
+				"Height": 260,
+				"ExitGuide": {
+					"Height": 273,
+					"Width": 480,
+					"Title": "PackagesGuideExitTitle",
+					"FormattedText": "PackagesGuideExitAcceptTerms"
+				},
+				"StepContent": {
+					"Title": "PackagesGuideTermsOfServiceTitle",
+					"FormattedText": "PackagesGuideTermsOfServiceText"
+				},
+				"HostPopupInfo": {
+					"PopupPlacement": "right",
+					"WindowName": "TermsOfUseWindow",
+					"DynamicHostWindow": true,
+					"HostUIElementString": "AcceptTermsOfUseButton",
+					"VerticalPopupOffset": 300,
+					"HorizontalPopupOffset": 0,
+					"HighlightRectArea": {
+						"HighlightColor": "#EF9362",
+						"UIElementTypeString": "Button",
+						"UIElementGridContainer": "bordersGrid",
+						"WindowName": "TermsOfUseWindow",
+						"WindowElementNameString": "AcceptTermsOfUseButton",
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 0
+					}
+				},
+				"PreValidation": {
+					"ReturnType": "boolean",
+					"ControlType": "visibility",
+					"FuncName": "AcceptedTermsOfUse",
+					"ExpectedValue": false
+				},
+				"UIAutomation": [
+					{
+						"Sequence": 2,
+						"ControlType": "function",
+						"Name": "ExecuteTermsOfServiceFlow",
+						"Action": "execute",
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "AcceptTermsOfUseButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "AcceptButton_Click"
+							},
+							{
+								"HandlerElement": "DeclineTermsOfUseButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "DeclineButton_Click"
+							}
+						],
+						"UpdatePlacementTarget": true
+					}
+				]
+			},
+			{
+				"Sequence": 3,
+				"Name": "third-party packages",
+				"Type": "tooltip",
+				"TooltipPointerDirection": "top_left",
+				"Width": 480,
+				"Height": 260,
+				"StepContent": {
+					"Title": "PackagesGuideThirdPartyTitle",
+					"FormattedText": "PackagesGuideThirdPartyText"
+				},
+				"HostPopupInfo": {
+					"PopupPlacement": "right",
+					"WindowName": "PackageSearch",
+					"DynamicHostWindow": true,
+					"HostUIElementString": "PackageSearch",
+					"VerticalPopupOffset": 150,
+					"HorizontalPopupOffset": 0
+				},
+				"PreValidation": {
+					"ReturnType": "boolean",
+					"ControlType": "visibility",
+					"FuncName": "AcceptedTermsOfUse",
+					"ExpectedValue": true
+				},
+				"UIAutomation": [
+					{
+						"Sequence": 1,
+						"ControlType": "function",
+						"Name": "ExecutePackageSearch",
+						"ExecuteCleanUpForward": false,
+						"ExecuteCleanUpBackward": true,
+						"ElementName": "NextButton",
+						"Action": "execute",
+						"UpdatePlacementTarget": true
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "function",
+						"Name": "ExecuteClosePackagesSearch",
+						"Action": "execute",
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "closeButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "CloseButton_Click"
+							}
+						],
+						"UpdatePlacementTarget": true
+					}
+				]
+			},
+			{
+				"Sequence": 4,
+				"Name": "search-filter-sort",
+				"Type": "tooltip",
+				"TooltipPointerDirection": "top_left",
+				"Width": 480,
+				"Height": 470,
+				"StepContent": {
+					"Title": "PackagesGuideSearchFilterTitle",
+					"FormattedText": "PackagesGuideSearchFilterText"
+				},
+				"HostPopupInfo": {
+					"PopupPlacement": "relative",
+					"WindowName": "PackageSearch",
+					"DynamicHostWindow": true,
+					"HostUIElementString": "PackageSearch",
+					"VerticalPopupOffset": 40,
+					"ElementName": "NextButton",
+					"HorizontalPopupOffset": 470,
+					"HtmlPage": {
+						"FileName": "searchPackages.html",
+						"Resources": {
+							"#SearchPackages": "SearchPackages.gif",
+							"#filterIcon": "filterIcon.png",
+							"#sortIcon": "sortIcon.png"
+						}
+					}
+				},
+				"UIAutomation": [
+					{
+						"Sequence": 0,
+						"ControlType": "function",
+						"Name": "ExecutePackageSearch",
+						"ExecuteCleanUpForward": false,
+						"ExecuteCleanUpBackward": false,
+						"ElementName": "NextButton",
+						"Action": "execute",
+						"UpdatePlacementTarget": true
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "function",
+						"Name": "ExecuteClosePackagesSearch",
+						"Action": "execute",
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "closeButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "CloseButton_Click"
+							}
+						],
+						"UpdatePlacementTarget": true
+					},
+					{
+						"Sequence": 1,
+						"ControlType": "button",
+						"WindowName": "PopupWindow",
+						"Name": "NextButton",
+						"Action": "disable"
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "function",
+						"Name": "EnableNextButton",
+						"ElementName": "NextButton",
+						"Action": "execute"
+					}
+				]
+			},
+			{
+				"Sequence": 5,
+				"Name": "search-results",
+				"Type": "tooltip",
+				"TooltipPointerDirection": "top_left",
+				"Width": 480,
+				"Height": 260,
+				"StepContent": {
+					"Title": "PackagesGuideSearchResultsTitle",
+					"FormattedText": "PackagesGuideSearchResultsText"
+				},
+				"HostPopupInfo": {
+					"PopupPlacement": "right",
+					"WindowName": "PackageSearch",
+					"DynamicHostWindow": true,
+					"HostUIElementString": "PackageSearch",
+					"VerticalPopupOffset": 150,
+					"HorizontalPopupOffset": 0,
+					"HighlightRectArea": {
+						"HighlightColor": "#EF9362",
+						"UIElementTypeString": "Button",
+						"WindowName": "PackageSearch",
+						"UIElementGridContainer": "viewDetailsGrid",
+						"WindowElementNameString": "viewDetailsButton",
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 0
+					}
+				},
+				"UIAutomation": [
+					{
+						"Sequence": 1,
+						"ControlType": "function",
+						"Name": "ExecutePackageSearch",
+						"ExecuteCleanUpForward": false,
+						"ExecuteCleanUpBackward": false,
+						"Action": "execute",
+						"UpdatePlacementTarget": true
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "function",
+						"Name": "SubscribeViewDetailsEvent",
+						"ExecuteCleanUpForward": false,
+						"ExecuteCleanUpBackward": false,
+						"Action": "execute",
+						"UpdatePlacementTarget": true
+					},
+					{
+						"Sequence": 3,
+						"ControlType": "function",
+						"Name": "ExecuteClosePackagesSearch",
+						"Action": "execute",
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "closeButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "CloseButton_Click"
+							}
+						],
+						"UpdatePlacementTarget": true
+					}
+				]
+			},
+			{
+				"Sequence": 6,
+				"Name": "package-dependencies",
+				"Type": "tooltip",
+				"TooltipPointerDirection": "top_right",
+				"Width": 480,
+				"Height": 260,
+				"StepContent": {
+					"Title": "PackagesGuideDependenciesTitle",
+					"FormattedText": "PackagesGuideDependenciesText"
+				},
+				"HostPopupInfo": {
+					"PopupPlacement": "left",
+					"DynamicHostWindow": true,
+					"HostUIElementString": "PackageDetailsWindow",
+					"VerticalPopupOffset": 0,
+					"HorizontalPopupOffset": 0,
+					"CutOffRectArea": {
+						"WindowElementNameString": "PackageDetailsWindow",
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 3
+					}
+				},
+				"UIAutomation": [
+					{
+						"Sequence": 1,
+						"ControlType": "function",
+						"Name": "ExecuteViewDetailsSideBar",
+						"ExecuteCleanUpForward": false,
+						"ExecuteCleanUpBackward": false,
+						"Action": "execute",
+						"UpdatePlacementTarget": true
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "function",
+						"Name": "ExecuteClosePackagesSearch",
+						"Action": "execute",
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "closeButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "CloseButton_Click"
+							}
+						],
+						"UpdatePlacementTarget": true
+					}
+				]
+			},
+			{
+				"Sequence": 7,
+				"Name": "package installed",
+				"Type": "tooltip",
+				"TooltipPointerDirection": "top_left",
+				"Width": 480,
+				"Height": 320,
+				"StepContent": {
+					"Title": "PackagesGuideInstallAPackageTitle",
+					"FormattedText": "PackagesGuideInstalledPackageText"
+				},
+				"UIAutomation": [
+					{
+						"Sequence": 1,
+						"ControlType": "function",
+						"Name": "ExecutePackageSearch",
+						"ExecuteCleanUpForward": true,
+						"ExecuteCleanUpBackward": false,
+						"Action": "execute",
+						"UpdatePlacementTarget": true
+					},
+
+					{
+						"Sequence": 2,
+						"ControlType": "function",
+						"Name": "ExecuteClosePackagesSearch",
+						"Action": "execute",
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "closeButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "CloseButton_Click"
+							}
+						],
+						"UpdatePlacementTarget": true
+					}
+				],
+				"HostPopupInfo": {
+					"PopupPlacement": "relative",
+					"WindowName": "PackageSearch",
+					"DynamicHostWindow": true,
+					"HostUIElementString": "PackageSearch",
+					"VerticalPopupOffset": 100,
+					"HorizontalPopupOffset": 480,
+					"HtmlPage": {
+						"FileName": "installedPackage.html",
+						"Resources": {
+							"#successIcon": "successIcon.png"
+						}
+					}
+				},
+				"PreValidation": {
+					"ReturnType": "boolean",
+					"ControlType": "visibility",
+					"FuncName": "IsPackageInstalled",
+					"ExpectedValue": true
+				}
+			},
+			{
+				"Sequence": 7,
+				"Name": "install a package",
+				"Type": "tooltip",
+				"TooltipPointerDirection": "top_left",
+				"Width": 480,
+				"Height": 263,
+				"StepContent": {
+					"Title": "PackagesGuideInstallAPackageTitle",
+					"FormattedText": "PackagesGuideInstallAPackageText"
+				},
+				"HostPopupInfo": {
+					"PopupPlacement": "right",
+					"WindowName": "PackageSearch",
+					"DynamicHostWindow": true,
+					"HostUIElementString": "installButton",
+					"VerticalPopupOffset": 120,
+					"HorizontalPopupOffset": 0,
+					"HighlightRectArea": {
+						"HighlightColor": "#EF9362",
+						"UIElementTypeString": "Button",
+						"WindowName": "PackageSearch",
+						"UIElementGridContainer": "installPackageGrid",
+						"WindowElementNameString": "installButton",
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 0
+					}
+				},
+				"PreValidation": {
+					"ReturnType": "boolean",
+					"ControlType": "visibility",
+					"FuncName": "IsPackageInstalled",
+					"ExpectedValue": false
+				},
+				"UIAutomation": [
+					{
+						"Sequence": 1,
+						"ControlType": "button",
+						"WindowName": "PopupWindow",
+						"Name": "NextButton",
+						"Action": "disable"
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "function",
+						"Name": "ExecuteInstallPackagesFlow",
+						"ExecuteCleanUpForward": true,
+						"ExecuteCleanUpBackward": false,
+						"Action": "execute",
+						"UpdatePlacementTarget": true
+					},
+					{
+						"Sequence": 3,
+						"ControlType": "function",
+						"Name": "ExecuteClosePackagesSearch",
+						"Action": "execute",
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "closeButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "CloseButton_Click"
+							}
+						],
+						"UpdatePlacementTarget": true
+					}
+				]
+			},
+			{
+				"Sequence": 8,
+				"Name": "navigate-to-packages",
+				"Type": "tooltip",
+				"TooltipPointerDirection": "bottom_left",
+				"Width": 480,
+				"Height": 250,
+				"ShowLibrary": true,
+				"StepContent": {
+					"Title": "PackagesGuideNavigatePackagesTitle",
+					"FormattedText": "PackagesGuideNavigatePackagesText"
+				},
+				"HostPopupInfo": {
+					"PopupPlacement": "right",
+					"HostUIElementString": "sidebarGrid",
+					"WindowName": "LibraryView",
+					"VerticalPopupOffset": -70,
+					"HorizontalPopupOffset": -30,
+					"HighlightRectArea": {
+						"HighlightColor": "#EF9362",
+						"UIElementTypeString": "WebBrowser",
+						"UIElementGridContainer": "sidebarGrid",
+						"WindowElementNameString": "SampleLibraryUI",
+						"WindowName": "LibraryView"
+					}
+				},
+				"UIAutomation": [
+					{
+						"Sequence": 1,
+						"ControlType": "function",
+						"WindowName": "PopupWindow",
+						"Name": "SubscribeNextButtonClickEvent",
+						"Action": "execute",
+						"JSFunctionName": "collapseExpandPackage",
+						"JSParameters": [ "SampleLibraryUI", "LibraryItemText" ],
+						"AutomaticHandlers": [
+							{
+								"HandlerElement": "NextButton",
+								"HandlerElementEvent": "Click",
+								"ExecuteMethod": "ExecuteAutomaticPackage_Click"
+							}
+						]
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "JSFunction",
+						"Name": "InvokeJSFunction",
+						"JSFunctionName": "setOverlay",
+						"JSParameters": [],
+						"Action": "execute"
+					},
+					{
+						"Sequence": 3,
+						"ControlType": "JSFunction",
+						"Name": "InvokeJSFunction",
+						"JSFunctionName": "subscribePackageClickedEvent",
+						"JSParameters": [ "SampleLibraryUI" ],
+						"Action": "execute"
+					},
+					{
+						"Sequence": 4,
+						"ControlType": "JSFunction",
+						"Name": "InvokeJSFunction",
+						"JSFunctionName": "getDocumentClientRect",
+						"JSParameters": [ "SampleLibraryUI" ],
+						"Action": "execute"
+					},
+					{
+						"Sequence": 5,
+						"ControlType": "function",
+						"Name": "LibraryScrollToBottom",
+						"JSFunctionName": "scrollToBottom",
+						"JSParameters": [],
+						"Action": "execute"
+					},
+					{
+						"Sequence": 6,
+						"ControlType": "function",
+						"Name": "CalculateLibraryItemLocation",
+						"JSFunctionName": "getDocumentClientRect",
+						"JSParameters": [ "SampleLibraryUI" ],
+						"Action": "execute"
+					}
+				]
+			},
+			{
+				"Sequence": 9,
+				"Name": "use-package-nodes",
+				"Type": "tooltip",
+				"TooltipPointerDirection": "top_left",
+				"Width": 480,
+				"Height": 400,
+				"ShowLibrary": true,
+				"StepContent": {
+					"Title": "PackagesGuidePackagesNodeTitle",
+					"FormattedText": "PackagesGuideInstalledPackageText"
+				},
+				"HostPopupInfo": {
+					"PopupPlacement": "relative",
+					"DynamicHostWindow": true,
+					"HostUIElementString": "sidebarGrid",
+					"WindowName": "LibraryView",
+					"VerticalPopupOffset": 450,
+					"HorizontalPopupOffset": 320,
+					"HtmlPage": {
+						"FileName": "nodePackage.html",
+						"Resources": {
+							"#PackageNodes": "PackageNodes.gif"
+						}
+					}
+				},
+				"UIAutomation": [
+					{
+						"Sequence": 0,
+						"ControlType": "JSFunction",
+						"Name": "InvokeJSFunction",
+						"JSFunctionName": "setOverlay",
+						"JSParameters": [],
+						"Action": "execute"
+					},
+					{
+						"Sequence": 1,
+						"ControlType": "JSFunction",
+						"Name": "InvokeJSFunction",
+						"Action": "execute",
+						"JSFunctionName": "collapseExpandPackage",
+						"JSParameters": [ "SampleLibraryUI", "LibraryItemText" ]
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "JSFunction",
+						"Name": "InvokeJSFunction",
+						"Action": "execute",
+						"JSFunctionName": "collapseExpandPackage",
+						"JSParameters": [ "Examples", "LibraryItemGroupText" ]
+					},
+					{
+						"Sequence": 3,
+						"ControlType": "function",
+						"Name": "LibraryScrollToBottom",
+						"JSFunctionName": "scrollToBottom",
+						"JSParameters": [],
+						"Action": "execute"
+					}
+				]
+			},
+			{
+				"Sequence": 10,
+				"Name": "survey",
+				"Type": "survey",
+				"Width": 400,
+				"Height": 450,
+				"StepContent": {
+					"Title": "PackagesGuideSurveyTitle",
+					"FormattedText": "PackagesGuideSurveyText"
+				},
+				"ExtraContent": [
+					{
+						"Property": "RatingTextTitle",
+						"Value": "GetStartedGuideRatingTextTitle"
+					}
+				],
+				"HostPopupInfo": {
+					"PopupPlacement": "center",
+					"HostUIElementString": "WorkspaceTabs",
+					"VerticalPopupOffset": 0
+				}
+			}
+		]
+	},
+	{
+		"Name": "Getting Started",
+		"SequenceOrder": 2,
+		"GuideNameResource": "OnboardingGuide",
+		"GuideSteps": [
+			{
+				"Sequence": 0,
+				"Name": "welcome",
+				"Type": "welcome",
+				"ShowLibrary": false,
+				"Width": 480,
+				"Height": 180,
+				"StepContent": {
+					"Title": "OnboardingGuideWelcomeTitle",
+					"FormattedText": "OnboardingGuideWelcomeText"
+				},
+				"HostPopupInfo": {
+					"PopupPlacement": "center",
+					"VerticalPopupOffset": 0,
+					"HorizontalPopupOffset": 0
+				}
+			},
+			{
+				"Sequence": 1,
+				"Name": "library",
+				"Type": "tooltip",
+				"ShowLibrary": false,
+				"TooltipPointerDirection": "none",
+				"Width": 480,
+				"Height": 280,
+				"StepContent": {
+					"Title": "OnboardingWorkspaceTitle",
+					"FormattedText": "OnboardingWorkspaceText"
+				},
+				"HostPopupInfo": {
+					"VerticalPopupOffset": 300,
+					"HorizontalPopupOffset": 100,
+					"PopupPlacement": "bottom",
+					"HostUIElementString": "background_grid",
+					"HighlightRectArea": {
+						"HighlightColor": "#EF9362"
+					},
+					"CutOffRectArea": {
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 0
+					}
+				}
+			},
+			{
+				"Sequence": 2,
+				"Name": "nodes",
+				"Type": "tooltip",
+				"ShowLibrary": false,
+				"TooltipPointerDirection": "none",
+				"Width": 480,
+				"Height": 300,
+				"StepContent": {
+					"Title": "OnboardingNodesTitle",
+					"FormattedText": "OnboardingNodesText"
+				},
+				"HostPopupInfo": {
+					"HostUIElementString": "background_grid",
+					"PopupPlacement": "bottom",
+					"VerticalPopupOffset": 300,
+					"HorizontalPopupOffset": 100,
+					"CutOffRectArea": {
+						"NodeId": "11c70bfa5ebc4d6c899bad7c0ddc48a0",
+						"XPosOffset": -30,
+						"YPosOffset": -20,
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 0
+					}
+				},
+				"UIAutomation": [
+					{
+						"Sequence": 1,
+						"ControlType": "function",
+						"Name": "HighlightPort",
+						"Parameters": [ "#EF9362", "inputPortControl", "11c70bfa5ebc4d6c899bad7c0ddc48a0", "fromCoordinateSystem" ],
+						"Action": "execute"
+					}
+				]
+			},
+			{
+				"Sequence": 3,
+				"Name": "placeNode",
+				"Type": "tooltip",
+				"ShowLibrary": true,
+				"TooltipPointerDirection": "none",
+				"Width": 480,
+				"Height": 248,
+				"StepContent": {
+					"Title": "OnboardingPlaceNodeTitle",
+					"FormattedText": "OnboardingPlaceNodeText"
+				},
+				"HostPopupInfo": {
+					"VerticalPopupOffset": 300,
+					"HorizontalPopupOffset": 100,
+					"PopupPlacement": "right",
+					"HostUIElementString": "sidebarGrid",
+					"WindowName": "LibraryView",
+					"HighlightRectArea": {
+						"HighlightColor": "#EF9362",
+						"UIElementTypeString": "WebBrowser",
+						"UIElementGridContainer": "sidebarGrid",
+						"WindowElementNameString": "ByOrigin",
+						"WindowName": "LibraryView"
+					},
+					"CutOffRectArea": {
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 0
+					}
+				},
+				"UIAutomation": [
+					{
+						"Sequence": 0,
+						"ControlType": "JSFunction",
+						"WindowName": "LibraryView",
+						"Name": "InvokeJSFunction",
+						"Action": "execute",
+						"JSFunctionName": "collapseExpandPackage",
+						"JSParameters": [ "Geometry", "LibraryItemText" ]
+					},
+					{
+						"Sequence": 1,
+						"ControlType": "JSFunction",
+						"WindowName": "LibraryView",
+						"Name": "InvokeJSFunction",
+						"Action": "execute",
+						"JSFunctionName": "collapseExpandPackage",
+						"JSParameters": [ "Abstract", "LibraryItemGroupText" ]
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "JSFunction",
+						"WindowName": "LibraryView",
+						"Name": "InvokeJSFunction",
+						"Action": "execute",
+						"JSFunctionName": "collapseExpandPackage",
+						"JSParameters": [ "CoordinateSystem", "LibraryItemGroupText" ]
+					},
+					{
+						"Sequence": 4,
+						"ControlType": "JSFunction",
+						"Name": "InvokeJSFunction",
+						"JSFunctionName": "getDocumentClientRect",
+						"JSParameters": [ "ByCenterPointRadius" ],
+						"Action": "execute"
+					},
+					{
+						"Sequence": 5,
+						"ControlType": "button",
+						"WindowName": "PopupWindow",
+						"Name": "NextButton",
+						"JSFunctionName": "",
+						"Action": "disable"
+					},
+					{
+						"Sequence": 3,
+						"ControlType": "function",
+						"Name": "CreateNode",
+						"JSFunctionName": "",
+						"JSParameters": [ "CoordinateSystem.ByOrigin" ],
+						"Action": "execute",
+						"NodePosition": {
+							"X": 1390.2043220875935,
+							"Y": 1000.94462405707634
+						},
+						"ExecuteCleanUpForward": false,
+						"ExecuteCleanUpBackward": true
+					}
+				]
+			},
+			{
+				"Sequence": 4,
+				"Name": "connectNodes",
+				"Type": "tooltip",
+				"ShowLibrary": false,
+				"TooltipPointerDirection": "top_right",
+				"Width": 480,
+				"Height": 380,
+				"StepContent": {
+					"Title": "OnboardingGuideConnectNodesTitle",
+					"FormattedText": "OnboardingGuideConnectNodesText"
+				},
+				"HostPopupInfo": {
+					"VerticalPopupOffset": 250,
+					"HorizontalPopupOffset": 50,
+					"PopupPlacement": "relative",
+					"HostUIElementString": "background_grid",
+					"HtmlPage": {
+						"FileName": "connectTheNodes.html",
+						"Resources": {
+							"#ConnectTheNodes": "ConnectTheNode.gif"
+						}
+					},
+					"CutOffRectArea": {
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 0
+					}
+				},
+				"UIAutomation": [
+					{
+						"Sequence": 1,
+						"ControlType": "function",
+						"Name": "HighlightPort",
+						"Parameters": [ "#EF9362", "outputPortControl", "", "CoordinateSystem" ],
+						"Action": "execute"
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "function",
+						"Name": "ManagePortConnectionEvents",
+						"Parameters": [ "NextButton", "outputPortControl", "CoordinateSystem.ByOrigin" ],
+						"Action": "execute"
+					},
+					{
+						"Sequence": 3,
+						"ControlType": "function",
+						"Name": "RemovePortConnector",
+						"Parameters": [ "NextButton", "outputPortControl", "CoordinateSystem.ByOrigin" ],
+						"Action": "execute"
+					}
+				]
+			},
+			{
+				"Sequence": 5,
+				"Name": "runGraph",
+				"Type": "tooltip",
+				"TooltipPointerDirection": "none",
+				"ShowLibrary": false,
+				"Width": 480,
+				"Height": 233,
+				"StepContent": {
+					"Title": "OnboardingGuideRunGraphTitle",
+					"FormattedText": "OnboardingGuideRunGraphText"
+				},
+				"HostPopupInfo": {
+					"PopupPlacement": "top",
+					"HostUIElementString": "RunButton",
+					"VerticalPopupOffset": -100,
+					"HorizontalPopupOffset": 100,
+					"HighlightRectArea": {
+						"HighlightColor": "#EF9362",
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 15
+					},
+					"CutOffRectArea": {
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 15
+					}
+				},
+				"UIAutomation": [
+					{
+						"Sequence": 1,
+						"ControlType": "button",
+						"WindowName": "PopupWindow",
+						"Name": "NextButton",
+						"Action": "disable"
+					},
+					{
+						"Sequence": 1,
+						"ControlType": "function",
+						"Name": "SubscribeRunButtonNextStep",
+						"Parameters": [
+							"RunButton"
+						],
+						"Action": "execute"
+					}
+				]
+			},
+			{
+				"Sequence": 6,
+				"Name": "success",
+				"Type": "tooltip",
+				"ShowLibrary": false,
+				"TooltipPointerDirection": "none",
+				"Width": 480,
+				"Height": 280,
+				"StepContent": {
+					"Title": "OnboardingSuccessTitle",
+					"FormattedText": "OnboardingSuccessText"
+				},
+				"HostPopupInfo": {
+					"VerticalPopupOffset": 300,
+					"HorizontalPopupOffset": 100,
+					"PopupPlacement": "bottom",
+					"HostUIElementString": "background_grid",
+					"CutOffRectArea": {
+						"WidthBoxDelta": 0,
+						"HeightBoxDelta": 0
+					}
+				}
+			},
+			{
+				"Sequence": 7,
+				"Name": "survey",
+				"Type": "survey",
+				"Width": 400,
+				"Height": 450,
+				"StepContent": {
+					"Title": "PackagesGuideSurveyTitle",
+					"FormattedText": "OnboardingGuideSurveyText"
+				},
+				"ExtraContent": [
+					{
+						"Property": "RatingTextTitle",
+						"Value": "GetStartedGuideRatingTextTitle"
+					}
+				],
+				"HostPopupInfo": {
+					"PopupPlacement": "center",
+					"HostUIElementString": "WorkspaceTabs",
+					"VerticalPopupOffset": 0
+				}
+			}
+		]
 	}
+
 ]

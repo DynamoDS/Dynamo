@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Diagnostics;
 using Dynamo.Models;
 
 namespace Dynamo.ViewModels
@@ -29,7 +30,7 @@ namespace Dynamo.ViewModels
                 if (string.IsNullOrEmpty(xmlFilePath) == false)
                 {
                     if (System.IO.File.Exists(xmlFilePath))
-                        System.Diagnostics.Process.Start(xmlFilePath);
+                        System.Diagnostics.Process.Start(new ProcessStartInfo(xmlFilePath) { UseShellExecute = true });
                 }
             }
         }
@@ -58,6 +59,15 @@ namespace Dynamo.ViewModels
                 return false;
 
             return (automationSettings.CurrentState == AutomationSettings.State.Recording);
+        }
+
+        /// <summary>
+        /// Saves all recorded commands on disk (%TMP%/Commands-{0:yyyyMMdd-hhmmss}.xml)
+        /// </summary>
+        /// <returns>The path to the commands file</returns>
+        internal string DumpRecordedCommands()
+        {
+            return automationSettings.SaveRecordedCommands();
         }
 
         #endregion
@@ -103,9 +113,20 @@ namespace Dynamo.ViewModels
                     var dragC = command as DynamoModel.DragSelectionCommand;
 
                     if (DynamoModel.DragSelectionCommand.Operation.BeginDrag == dragC.DragOperation)
-                        CurrentSpaceViewModel.BeginDragSelection(dragC.MouseCursor);
+                    {
+                        try
+                        {
+                            CurrentSpaceViewModel.BeginDragSelection(dragC.MouseCursor);
+                        }
+                        catch (Exception ex)
+                        {
+                            model.Logger.Log(ex.Message);
+                        }
+                    }
                     else
+                    {
                         CurrentSpaceViewModel.EndDragSelection(dragC.MouseCursor);
+                    }
                     break;
 
                 case "DeleteModelCommand":
@@ -124,6 +145,7 @@ namespace Dynamo.ViewModels
                 case "AddModelToGroupCommand":
                 case "CreateAndConnectNodeCommand":
                 case "AddGroupToGroupCommand":
+                case "InsertFileCommand":
                     RaiseCanExecuteUndoRedo();
                     break;
 
@@ -139,6 +161,7 @@ namespace Dynamo.ViewModels
                 case "CreateCustomNodeCommand":
                 case "AddPresetCommand":
                 case "ApplyPresetCommand":
+                case "OpenFileFromJsonCommand":
                     // for this commands there is no need
                     // to do anything after execution
                     break;
@@ -147,7 +170,7 @@ namespace Dynamo.ViewModels
                     throw new InvalidOperationException("Unhandled command name");
             }
 
-            if (Dynamo.Logging.Analytics.ReportingAnalytics && !command.IsInPlaybackMode)
+            if (Logging.Analytics.ReportingAnalytics && !command.IsInPlaybackMode)
             {
                 command.TrackAnalytics();
             }
@@ -167,6 +190,8 @@ namespace Dynamo.ViewModels
                     break;
 
                 case "OpenFileCommand":
+                case "OpenFileFromJsonCommand":
+                case "InsertFileCommand":
                 case "RunCancelCommand":
                 case "ForceRunCancelCommand":
                 case "CreateNodeCommand":

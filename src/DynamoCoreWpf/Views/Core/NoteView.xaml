@@ -56,7 +56,7 @@
             <RowDefinition Height="{Binding Path=PinnedNode, Converter={StaticResource nullToPinWidthConverter }, UpdateSourceTrigger=PropertyChanged}"/>
         </Grid.RowDefinitions>
         <Grid.ContextMenu>
-            <ContextMenu>               
+            <ContextMenu Style="{StaticResource ContextMenuStyle}" Width="200">               
                 <MenuItem Name="deleteItem" Header="{x:Static p:Resources.NoteViewContextMenuDelete}" Click="OnDeleteItemClick"  />               
                 <MenuItem Name="editItem" Header="{x:Static p:Resources.NoteViewContextMenuEdit}" Click="OnEditItemClick" />
                 <MenuItem Name="createGroup_cm"
@@ -71,8 +71,19 @@
                 <MenuItem Name="pinToNode"
                           Header="{x:Static p:Resources.ContextPinToNode}" 
                           Command="{Binding Path=PinToNodeCommand}"
-                          ToolTip="Select a node to pin to this note" ToolTipService.ShowOnDisabled="True"/>
-
+                          ToolTipService.ShowOnDisabled="True">
+                    <MenuItem.ToolTip>
+                        <ToolTip Content="{x:Static p:Resources.ContextPinToNodeTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                    </MenuItem.ToolTip>
+                </MenuItem>
+                <MenuItem Name="UnpinToNode"
+                          Header="{x:Static p:Resources.ContextUnpinFromNode}" 
+                          Command="{Binding Path=UnpinFromNodeCommand}"
+                          ToolTipService.ShowOnDisabled="True">
+                    <MenuItem.ToolTip>
+                        <ToolTip Content="{x:Static p:Resources.UnpinNodeTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                    </MenuItem.ToolTip>
+                </MenuItem>
             </ContextMenu>
         </Grid.ContextMenu>
         <Canvas Background="{x:Null}">
@@ -132,7 +143,7 @@
             Visibility="{Binding Path=PinnedNode, Converter={StaticResource nullToVisibiltyConverter }, UpdateSourceTrigger=PropertyChanged}"
             >
             <Image
-                Source="/DynamoCoreWpf;component/UI/Images/Pin_NoBackground_16_16.png"
+                Source="/DynamoCoreWpf;component/UI/Images/Pin_NoBackground_16px.png"
                 Width="10"
                 />
         </Button>

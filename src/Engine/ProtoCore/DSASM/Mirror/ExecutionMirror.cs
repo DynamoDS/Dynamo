@@ -30,12 +30,12 @@ namespace ProtoCore.DSASM.Mirror
         private readonly ProtoCore.RuntimeCore runtimeCore;
         public Executive MirrorTarget { get; private set; }
         private OutputFormatParameters formatParams;
-        private Dictionary<string, List<string>> propertyFilter;
 
         /// <summary>
         /// Create a mirror for a given executive
         /// </summary>
         /// <param name="exec"></param>
+        /// <param name="coreObj"></param>
         public ExecutionMirror(ProtoCore.DSASM.Executive exec, ProtoCore.RuntimeCore coreObj)
         {
             Validity.Assert(exec != null, "Can't mirror a null executive");
@@ -296,9 +296,9 @@ namespace ProtoCore.DSASM.Mirror
 
             if (runtimeCore.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.FepRun))
             {
-                ci = runtimeCore.watchClassScope = rmem.CurrentStackFrame.ClassScope;
-                functionIndex = rmem.CurrentStackFrame.FunctionScope;
-                functionBlock = rmem.CurrentStackFrame.FunctionBlock;
+                ci = runtimeCore.watchClassScope = rmem.CurrentStackFrameClassScope;
+                functionIndex = rmem.CurrentStackFrameFunctionScope;
+                functionBlock = rmem.CurrentStackFrameFunctionBlock;
             }
 
             // TODO Jun: 'block' is incremented only if there was no other block provided by the programmer
@@ -773,6 +773,9 @@ namespace ProtoCore.DSASM.Mirror
         /// Do the recursive unpacking of the data structure into mirror objects
         /// </summary>
         /// <param name="val"></param>
+        /// <param name="heap"></param>
+        /// <param name="runtimeCore"></param>
+        /// <param name="type"></param>
         /// <returns></returns>
         public static Obj Unpack(StackValue val, Heap heap, RuntimeCore runtimeCore, int type = (int)PrimitiveType.Pointer) 
         {

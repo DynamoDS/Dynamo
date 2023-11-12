@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Dynamo.Logging
 {
@@ -48,6 +48,11 @@ namespace Dynamo.Logging
         Preferences,
 
         /// <summary>
+        /// Events Category related to the Package Manager
+        /// </summary>
+        PackageManager,
+
+        /// <summary>
         /// Events Category related to Dynamo upgrade
         /// </summary>
         Upgrade,
@@ -91,6 +96,46 @@ namespace Dynamo.Logging
         /// Events Category related to Note operations
         /// </summary>
         NoteOperations,
+
+        /// <summary>
+        /// Events Category related to Workspace References Operations
+        /// </summary>
+        WorkspaceReferencesOperations,
+
+        /// <summary>
+        /// Events Category related to saved Workspace References
+        /// </summary>
+        WorkspaceReferences,
+
+        /// <summary>
+        /// Events Category related to Groups
+        /// </summary>
+        GroupOperations,
+
+        /// <summary>
+        /// Events Category related to Node context menu
+        /// </summary>
+        NodeContextMenuOperations,
+
+        /// <summary>
+        /// Events Category related to connectors
+        /// </summary>
+        ConnectorOperations,
+
+        /// <summary>
+        /// Events Category related to group styles
+        /// </summary>
+        GroupStyleOperations,
+
+        /// <summary>
+        /// Events Category related to guided tours
+        /// </summary>
+        GuidedTourOperations,
+
+        /// <summary>
+        /// Events Category related to the splash screen
+        /// </summary>
+        SplashScreenOperations,
     }
 
     /// <summary>
@@ -169,9 +214,9 @@ namespace Dynamo.Logging
         EngineFailure,
 
         /// <summary>
-        /// Search Filter Button Clicked event
+        /// Filter event, e.g. when package filter is active
         /// </summary>
-        FilterButtonClicked,
+        Filter,
 
         /// <summary>
         /// Unresolved Node found event
@@ -228,6 +273,7 @@ namespace Dynamo.Logging
         /// </summary>
         Rate,
 
+        /// <summary>
         /// Pin event, such as pinning a note to a node
         /// </summary>
         Pin,
@@ -236,6 +282,166 @@ namespace Dynamo.Logging
         /// Unpin event, such as unpinning a note from a node
         /// </summary>
         Unpin,
+
+        /// <summary>
+        /// Download new event, such as downloading a new package in package reference section by user
+        /// </summary>
+        DownloadNew,
+
+        /// <summary>
+        /// KeepOld event, e.g. choosing to keep the old package in package reference section by user
+        /// </summary>
+        KeepOld,
+
+        /// <summary>
+        /// PackageReferences event, when a package reference is saved in a workspace
+        /// </summary>
+        PackageReferences,
+
+        /// <summary>
+        /// KeepOldPackage event, when a local reference is saved in a workspace
+        /// </summary>
+        LocalReferences,
+
+        /// <summary>
+        /// KeepOldPackage event, when an external reference is saved in a workspace
+        /// </summary>
+        ExternalReferences,
+
+        /// <summary>
+        /// Ungroup event, when an group is Ungrouped
+        /// </summary>
+        Ungroup,
+
+        /// <summary>
+        /// Expand event, when an group is Expanded
+        /// </summary>
+        Expanded,
+
+        /// <summary>
+        /// Collapse event, when an group is Collapsed
+        /// </summary>
+        Collapsed,
+
+        /// <summary>
+        /// AddedTo event, when a node is added to the group
+        /// </summary>
+        AddedTo,
+
+        /// <summary>
+        /// RemovedFrom event, when a node is removed from the group
+        /// </summary>
+        RemovedFrom,
+
+        /// <summary>
+        /// Preview event, when a node is Previewed
+        /// </summary>
+        Preview,
+
+        /// <summary>
+        /// Freeze event, when a node is Freezed
+        /// </summary>
+        Freeze,
+
+        /// <summary>
+        /// Rename event, when a node is Renamed
+        /// </summary>
+        Rename,
+
+        /// <summary>
+        /// Show event, when user wants to toggle display.
+        /// </summary>
+        Show,
+
+        /// <summary>
+        /// Set event, when user wants to set a property.
+        /// </summary>
+        Set,
+
+        /// <summary>
+        /// Dismiss event, e.g. to dismiss node alerts.
+        /// </summary>
+        Dismiss,
+
+        /// <summary>
+        /// Undismiss event, to show dismissed alerts.
+        /// </summary>
+        Undismiss,
+
+        /// <summary>
+        /// Break event, e.g. when a connection is broken by user choice
+        /// </summary>
+        Break,
+
+        /// <summary>
+        /// Hide event, e.g when a connection is hidden by user choice
+        /// </summary>
+        Hide,
+
+        /// <summary>
+        /// When a package conflict is encountered which involves at least one built-in package.
+        /// </summary>
+        BuiltInPackageConflict,
+
+        /// <summary>
+        /// Sort event, when user wants to sort some information
+        /// </summary>
+        Sort,
+
+        /// <summary>
+        /// View event, when user wants to see some information
+        /// </summary>
+        View,
+
+        /// <summary>
+        /// Show event, when user wants to view Documentation.
+        /// </summary>
+        ViewDocumentation,
+
+        /// <summary>
+        /// Cancel operation, e.g. cancel adding a new group style 
+        /// </summary>
+        Cancel,
+
+        /// <summary>
+        /// Completed event, e.g. when a user completes a guided tour
+        /// </summary>
+        Completed,
+
+        /// <summary>
+        /// Next event, e.g. when a user clicks next on a guided tour
+        /// </summary>
+        Next,
+
+        /// <summary>
+        /// Previous event, e.g. when a user goes back on a guided tour
+        /// </summary>
+        Previous,
+
+        /// <summary>
+        /// TimeElapsed event, e.g. tracks the time elapsed since an event
+        /// </summary>
+        TimeElapsed,
+
+        /// <summary>
+        /// SignIn event, e.g. tracks the SignIn event
+        /// </summary>
+        SignIn,
+
+        /// <summary>
+        /// SignOut event, e.g. tracks the SignOut event
+        /// </summary>
+        SignOut,
+
+        /// <summary>
+        /// Import event, e.g. tracks the ImportSettings event
+        /// </summary>
+        Import,
+
+        /// <summary>
+        /// Export event, e.g. tracks the ExportSettings event
+        /// </summary>
+        Export
     }
 
     /// <summary>
@@ -248,11 +454,6 @@ namespace Dynamo.Logging
         /// Checks if analytics reporting is ON.
         /// </summary>
         bool ReportingAnalytics { get; }
-
-        /// <summary>
-        /// Checks if detailed usage reporting is ON.
-        /// </summary>
-        bool ReportingUsage { get; }
 
         /// <summary>
         /// Starts the client when DynamoModel is created. This method initializes

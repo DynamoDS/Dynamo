@@ -1,9 +1,14 @@
-﻿using Dynamo.Logging;
 using System;
 using System.Diagnostics;
+using System.IO;
+using System.Reflection;
+using System.Web;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Navigation;
+using Dynamo.Logging;
+using Dynamo.Utilities;
+using Microsoft.Web.WebView2.Core;
+using Microsoft.Web.WebView2.Wpf;
 
 namespace Dynamo.DocumentationBrowser
 {
@@ -14,6 +19,19 @@ namespace Dynamo.DocumentationBrowser
     {
         private const string ABOUT_BLANK_URI = "about:blank";
         private readonly DocumentationBrowserViewModel viewModel;
+        private const string VIRTUAL_FOLDER_MAPPING = "appassets";
+        static readonly string HTML_IMAGE_PATH_PREFIX = @"http://";
+        private bool hasBeenInitialized;
+        private ScriptingObject comScriptingObject;
+        private string fontStylePath = "Dynamo.Wpf.Views.GuidedTour.HtmlPages.Resources.ArtifaktElement-Regular.woff";
+
+        internal string WebBrowserUserDataFolder { get; set; }
+        internal string FallbackDirectoryName { get; set; }
+        //This folder will be used to store images and dyn files previosuly located in /rootDirectory/en-US/fallback_docs so we don't need to copy all those files per each language
+        internal static readonly string SharedDocsDirectoryName = "NodeHelpSharedDocs";
+
+        //Path in which the virtual folder for loading images will be created
+        internal string VirtualFolderPath { get; set; }
 
         /// <summary>
         /// Construct a new DocumentationBrowserView given an appropriate viewmodel.
@@ -28,10 +46,9 @@ namespace Dynamo.DocumentationBrowser
             // subscribe to the link changed event on the view model
             // so we know when to navigate to a new documentation page/document
             viewModel.LinkChanged += NavigateToPage;
-
             // handle browser component events & disable certain features that are not needed
             this.documentationBrowser.AllowDrop = false;
-            this.documentationBrowser.Navigating += ShouldAllowNavigation;
+            this.documentationBrowser.NavigationStarting += ShouldAllowNavigation;
             this.documentationBrowser.DpiChanged += DocumentationBrowser_DpiChanged;
         }
 
@@ -41,7 +58,7 @@ namespace Dynamo.DocumentationBrowser
             {
                 // it's possible we're trying to invoke this before the adaptDPI function is
                 // injected into the script scope, wrap this in a try catch.
-                documentationBrowser.InvokeScript("adaptDPI()");
+                documentationBrowser.ExecuteScriptAsync("adaptDPI()");
             }
             catch (Exception e)
             {
@@ -53,12 +70,11 @@ namespace Dynamo.DocumentationBrowser
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ShouldAllowNavigation(object sender, NavigatingCancelEventArgs e)
+        private void ShouldAllowNavigation(object sender, CoreWebView2NavigationStartingEventArgs e)
         {
-            // do not allow refreshes, back or forward navigation
-            if (e.NavigationMode != NavigationMode.New)
+            // if is not an URL then we should return otherwise it will crash when trying to open the URL in the default Web Browser
+            if(!e.Uri.StartsWith(HTML_IMAGE_PATH_PREFIX.Substring(0,4)))
             {
-                e.Cancel = true;
                 return;
             }
 
@@ -68,7 +84,7 @@ namespace Dynamo.DocumentationBrowser
 
             // we want to cancel navigation when a clicked link would navigate 
             // away from the page the ViewModel wants to display
-            var isAboutBlankLink = e.Uri.OriginalString.Equals(ABOUT_BLANK_URI);
+            var isAboutBlankLink = e.Uri.ToString().Equals(ABOUT_BLANK_URI);
             var isRemoteLinkFromLocalDocument = !e.Uri.Equals(this.viewModel.Link);
 
             if (isAboutBlankLink || isRemoteLinkFromLocalDocument)
@@ -76,7 +92,7 @@ namespace Dynamo.DocumentationBrowser
                 // in either of these two cases, cancel the navigation 
                 // and redirect it to a new process that starts the default OS browser
                 e.Cancel = true;
-                Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+                Process.Start(new ProcessStartInfo(e.Uri) { UseShellExecute = true });
             }
         }
 
@@ -88,17 +104,21 @@ namespace Dynamo.DocumentationBrowser
         /// <param name="link"></param>
         public void NavigateToPage(Uri link)
         {
-            Dispatcher.BeginInvoke(new Action(() =>
-            {
-                this.documentationBrowser.NavigateToString(this.viewModel.GetContent());
-            }));
+            InitializeAsync();
         }
 
         protected virtual void Dispose(bool disposing)
         {
             // Cleanup
             this.viewModel.LinkChanged -= NavigateToPage;
-            this.documentationBrowser.Navigating -= ShouldAllowNavigation;
+            this.documentationBrowser.NavigationStarting -= ShouldAllowNavigation;
+            this.documentationBrowser.DpiChanged -= DocumentationBrowser_DpiChanged;
+
+            if (this.documentationBrowser.CoreWebView2 != null)
+            {
+                this.documentationBrowser.CoreWebView2.WebMessageReceived -= CoreWebView2OnWebMessageReceived;
+            }
+
             // Note to test writers
             // Disposing the document browser will cause future tests
             // that uses the Browser component to crash
@@ -106,9 +126,84 @@ namespace Dynamo.DocumentationBrowser
             {
                 this.documentationBrowser.Dispose();
             }
-            this.documentationBrowser.DpiChanged -= DocumentationBrowser_DpiChanged;
         }
 
+        async void InitializeAsync()
+        {
+            VirtualFolderPath = string.Empty;
+            try
+            {
+                //if this node is from a package then we set the virtual host path to the packages docs directory.
+                if (viewModel.Link != null && !string.IsNullOrEmpty(viewModel.CurrentPackageName) && viewModel.IsOwnedByPackage)
+                {
+                    VirtualFolderPath = Path.GetDirectoryName(HttpUtility.UrlDecode(viewModel.Link.AbsolutePath));
+                }
+                //if the node is not from a package, then set the virtual host path to the shared docs folder.
+                else if (viewModel.Link != null && !viewModel.IsOwnedByPackage)
+                {
+                    VirtualFolderPath = Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName, SharedDocsDirectoryName);
+                }
+                //unclear what would cause this.
+                else
+                {
+                    VirtualFolderPath = FallbackDirectoryName;
+                }
+                //TODO - the above will not handle the case that a package's images/dyns are located in the shared folder
+                //we may have to do some inspection of the package docs folder and decide to fallback in some cases, or mark the package
+                //in some way.
+            }
+            catch (Exception ex)
+            {
+                VirtualFolderPath = string.Empty;
+                Log(ex.Message);
+            }
+
+            // Only initialize once 
+            if (!hasBeenInitialized)
+            {
+                if (!string.IsNullOrEmpty(WebBrowserUserDataFolder))
+                {
+                    //This indicates in which location will be created the WebView2 cache folder
+                    documentationBrowser.CreationProperties = new CoreWebView2CreationProperties()
+                    {
+                        UserDataFolder = WebBrowserUserDataFolder
+                    };
+                }
+                //Initialize the CoreWebView2 component otherwise we can't navigate to a web page
+                await documentationBrowser.EnsureCoreWebView2Async();
+                
+           
+                this.documentationBrowser.CoreWebView2.WebMessageReceived += CoreWebView2OnWebMessageReceived;
+                comScriptingObject = new ScriptingObject(this.viewModel);
+                //register the interop object into the browser.
+                this.documentationBrowser.CoreWebView2.AddHostObjectToScript("bridge", comScriptingObject);
+
+                this.documentationBrowser.CoreWebView2.Settings.IsZoomControlEnabled = true;
+                this.documentationBrowser.CoreWebView2.Settings.AreDevToolsEnabled = true;
+
+                hasBeenInitialized = true;
+            }
+
+            if(Directory.Exists(VirtualFolderPath))
+                //Due that the Web Browser(WebView2 - Chromium) security CORS is blocking the load of resources like images then we need to create a virtual folder in which the image are located.
+                this.documentationBrowser.CoreWebView2.SetVirtualHostNameToFolderMapping(VIRTUAL_FOLDER_MAPPING, VirtualFolderPath, CoreWebView2HostResourceAccessKind.DenyCors);
+
+            string htmlContent = this.viewModel.GetContent();
+
+            htmlContent = ResourceUtilities.LoadResourceAndReplaceByKey(htmlContent, "#fontStyle", fontStylePath);
+
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                this.documentationBrowser.NavigateToString(htmlContent);
+            }));
+        }
+
+        private void CoreWebView2OnWebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs e)
+        {
+            var message = e.TryGetWebMessageAsString();
+            comScriptingObject.Notify(message);
+        }
+        
         /// <summary>
         /// Dispose function for DocumentationBrowser
         /// </summary>
@@ -117,5 +212,12 @@ namespace Dynamo.DocumentationBrowser
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
+        #region ILogSource Implementation
+        private void Log(string message)
+        {
+            viewModel.MessageLogged?.Invoke(LogMessage.Info(message));
+        }
+        #endregion
     }
 }

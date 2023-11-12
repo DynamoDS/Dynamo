@@ -1,4 +1,4 @@
-﻿<UserControl x:Name="thisPreviewControl"
+<UserControl x:Name="thisPreviewControl"
              x:Class="Dynamo.UI.Controls.PreviewControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -9,7 +9,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:ui="clr-namespace:Dynamo.UI"
-             xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:fa="clr-namespace:FontAwesome5;assembly=FontAwesome5.Net"
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              mc:Ignorable="d"  Canvas.Top="-20"
@@ -20,6 +20,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
                 <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
 
@@ -68,12 +69,13 @@
               VerticalAlignment="Top"
               Background="Transparent">
             <Grid.ContextMenu>
-                <ContextMenu>
+                <ContextMenu Style="{StaticResource ContextMenuStyle}">
                     <MenuItem Header="{x:Static p:Resources.ContextMenuCopy}" Click="OnCopyToClipboardClick"/>
                 </ContextMenu>
             </Grid.ContextMenu>
-            <Border Background="White"
-                    BorderThickness="1"
+            <Border Background="{StaticResource DarkerGreyBrush}"
+                    CornerRadius="2"
+                    BorderThickness="0"
                     BorderBrush="{StaticResource BubblePreviewBorderColor}" />
             <!--bubbleTools is a pin icon which expands large preview bubble on mouse hover -->
             <Border Name="bubbleTools"
@@ -82,23 +84,35 @@
                     Padding="3"
                     Visibility="Collapsed"
                     Panel.ZIndex="1">
-                <Border BorderThickness="1"
-                            CornerRadius="4"
-                            BorderBrush="{StaticResource BubblePreviewBorderColor}"
-                            MouseLeftButtonDown="OnMapPinMouseClick">
+                <Border x:Name="pinIconBorder"
+                        CornerRadius="4"
+                        MouseLeftButtonDown="OnMapPinMouseClick">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock VerticalAlignment="Bottom" Margin="4,0,0,4" Text="..."
-                            Foreground="{Binding RelativeSource={RelativeSource FindAncestor, 
-                                                 AncestorType={x:Type uicontrols:PreviewControl}}, 
-                                                 Path=StaysOpen,
-                                                 Converter={StaticResource PinIconForegroundConverter}}"/>
-
-                        <fa:ImageAwesome Name="PinnIcon" Icon="ThumbTack" Height="12" Width="9" Margin="4" 
-                            Foreground="{Binding RelativeSource={RelativeSource FindAncestor, 
-                                                 AncestorType={x:Type uicontrols:PreviewControl}}, 
-                                                 Path=StaysOpen,
-                                                 Converter={StaticResource PinIconForegroundConverter}}"/>
+                        <TextBlock VerticalAlignment="Bottom" 
+                                   Margin="4,0,0,4" 
+                                   Text="..."
+                                   Foreground="{Binding RelativeSource={RelativeSource FindAncestor, 
+                                                        AncestorType={x:Type uicontrols:PreviewControl}}, 
+                                                        Path=StaysOpen,
+                                                        Converter={StaticResource PinIconForegroundConverter}}"/>
+                        <fa:ImageAwesome Name="PinnIcon" 
+                                         Icon="Solid_Thumbtack" 
+                                         Height="12" 
+                                         Width="9" 
+                                         Margin="4"                                       
+                                         Foreground="{Binding RelativeSource={RelativeSource FindAncestor, 
+                                                              AncestorType={x:Type uicontrols:PreviewControl}}, 
+                                                              Path=StaysOpen,
+                                                              Converter={StaticResource PinIconForegroundConverter}}"/>
                     </StackPanel>
+                    <Border.Resources>
+                        <Storyboard x:Key="PinIconAnimation">
+                            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)">
+                                <DiscreteColorKeyFrame KeyTime="0:0:0" 
+                                                       Value="{StaticResource PinnedIconBackgroundColorAnimation}" />
+                            </ColorAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </Border.Resources>
                     <Border.Style>
                         <Style TargetType="Border">
                             <Style.Triggers>
@@ -116,7 +130,16 @@
                                 <Trigger Property="IsMouseOver" Value="True">
                                     <Setter Property="Background"
                                             Value="{StaticResource PinnedIconHoverBackgroundColor}" />
+                                    <Setter Property="BorderBrush"
+                                            Value="{StaticResource PinnedIconHoverBorderBrushColor}" />
+                                    <Setter Property="BorderThickness"
+                                            Value="2" />
                                 </Trigger>
+                                <EventTrigger RoutedEvent="Border.PreviewMouseDown">
+                                    <EventTrigger.Actions>
+                                        <BeginStoryboard x:Name="BeginStory" Storyboard="{StaticResource PinIconAnimation}"/>
+                                    </EventTrigger.Actions>
+                                </EventTrigger>
                             </Style.Triggers>
                         </Style>
                     </Border.Style>

@@ -1,0 +1,4 @@
+﻿<ViewExtensionDefinition>
+	<AssemblyPath>..\GraphNodeManagerViewExtension.dll</AssemblyPath>
+	<TypeName>Dynamo.GraphNodeManager.GraphNodeManagerViewExtension</TypeName>
+</ViewExtensionDefinition>

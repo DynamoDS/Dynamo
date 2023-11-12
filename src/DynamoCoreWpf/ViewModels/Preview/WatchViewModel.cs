@@ -1,16 +1,24 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
+using Dynamo.Wpf.Properties;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
-using Microsoft.Practices.Prism.ViewModel;
+using NotificationObject = Dynamo.Core.NotificationObject;
+using Dynamo.Configuration;
+using CoreNodeModels;
 
 namespace Dynamo.ViewModels
 {
     public class WatchViewModel : NotificationObject
     {
+        // Formats double value into string. E.g. 1054.32179 => "1054.32179"
+        // For more info: https://msdn.microsoft.com/en-us/library/kfsatb94(v=vs.110).aspx
+        private const string numberFormat = "g";
+
         #region Events
 
         public event Action Clicked;
@@ -29,14 +37,17 @@ namespace Dynamo.ViewModels
         public const string EMPTY_DICTIONARY = "Empty Dictionary";
         public const string DICTIONARY = "Dictionary";
 
-        private ObservableCollection<WatchViewModel> _children = new ObservableCollection<WatchViewModel>();
-        private string _label;
-        private string _link;
-        private bool _showRawData;
-        private string _path = "";
-        private bool _isOneRowContent;
+        internal Watch WatchNode { get; set; }
+
+        private ObservableCollection<WatchViewModel> children = new ObservableCollection<WatchViewModel>();
+        private string label;
+        private string link;
+        private bool showRawData;
+        private string path = "";
+        private bool isOneRowContent;
         private readonly Action<string> tagGeometry;
         private bool isCollection;
+        private string valueType;
 
         // Instance variable for the number of items in the list 
         private int numberOfItems;
@@ -54,10 +65,10 @@ namespace Dynamo.ViewModels
         /// </summary>
         public ObservableCollection<WatchViewModel> Children
         {
-            get { return _children; }
+            get { return children; }
             set
             {
-                _children = value;
+                children = value;
                 RaisePropertyChanged("Children");
             }
         }
@@ -67,10 +78,10 @@ namespace Dynamo.ViewModels
         /// </summary>
         public string NodeLabel
         {
-            get { return _label; }
+            get { return label; }
             set
             {
-                _label = value;
+                label = value;
                 RaisePropertyChanged("NodeLabel");
             }
         }
@@ -80,10 +91,10 @@ namespace Dynamo.ViewModels
         /// </summary>
         public string Link
         {
-            get { return _link; }
+            get { return link; }
             set
             {
-                _link = value;
+                link = value;
                 RaisePropertyChanged("Link");
             }
         }
@@ -96,7 +107,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                var splits = _path.Split(':');
+                var splits = Path.Split(':');
                 if (splits.Count() == 1)
                     return string.Empty;
                 return splits.Any() ? string.Format(NodeLabel == LIST ? "{0}" : " {0} ", splits.Last()) : string.Empty;
@@ -112,10 +123,10 @@ namespace Dynamo.ViewModels
         /// </summary>
         public string Path
         {
-            get { return _path; }
+            get { return path; }
             set
             {
-                _path = value;
+                path = value;
                 RaisePropertyChanged("Path");
             }
         }
@@ -128,10 +139,10 @@ namespace Dynamo.ViewModels
         /// </summary>
         public bool ShowRawData
         {
-            get { return _showRawData; }
+            get { return showRawData; }
             set
             {
-                _showRawData = value;
+                showRawData = value;
                 RaisePropertyChanged("ShowRawData");
             }
         }
@@ -145,10 +156,10 @@ namespace Dynamo.ViewModels
         /// </summary>
         public bool IsOneRowContent
         {
-            get { return _isOneRowContent; }
+            get { return isOneRowContent; }
             set
             {
-                _isOneRowContent = value;
+                isOneRowContent = value;
                 RaisePropertyChanged("IsOneRowContent");
             }
         }
@@ -198,22 +209,110 @@ namespace Dynamo.ViewModels
         /// </summary>
         public bool IsTopLevel { get; set; }
 
+        /// <summary>
+        /// The type of the output value,
+        /// used to display value type labels on previews
+        /// </summary>
+        public string ValueType
+        {
+            get { return valueType; }
+            set { valueType = value; RaisePropertyChanged(nameof(ValueType)); }
+        }
+
         #endregion
 
         public WatchViewModel(Action<string> tagGeometry) : this(null, null, tagGeometry, true) { }
 
+        /// <summary>
+        /// This is added to set the Type identifier for the watch data. 
+        /// It calls the base constructor internally.
+        /// </summary> 
+        public WatchViewModel(object obj, string path, Action<string> tagGeometry, bool expanded = false) : this(GetStringFromObject(obj), path, tagGeometry, expanded)
+        {
+            ValueType = GetDisplayType(obj);
+        }
+
         public WatchViewModel(string label, string path, Action<string> tagGeometry, bool expanded = false)
         {
             FindNodeForPathCommand = new DelegateCommand(FindNodeForPath, CanFindNodeForPath);
-            _path = path;
-            _label = label;
+            Path = path;
+            NodeLabel = label;
             IsNodeExpanded = expanded;
             this.tagGeometry = tagGeometry;
-            numberOfItems = 0;
+            NumberOfItems = 0;
             maxListLevel = 0;
-            isCollection = label == WatchViewModel.LIST || label == WatchViewModel.DICTIONARY;
+            IsCollection = label == WatchViewModel.LIST || label == WatchViewModel.DICTIONARY;
         }
 
+        private static string GetStringFromObject(object obj)
+        {
+            if (obj == null)
+                return Resources.NullString;
+
+            TypeCode type = Type.GetTypeCode(obj.GetType());
+            switch (type)
+            {
+                case TypeCode.Boolean:
+                    return ObjectToLabelString(obj);
+                case TypeCode.Double:
+                    return ((double)obj).ToString(numberFormat, CultureInfo.InvariantCulture);
+                //!!!!carefully consider the consequences of this change before uncommenting.
+                //TODO: uncomment this once https://jira.autodesk.com/browse/DYN-5101 is complete
+                //return ((double)obj).ToString(ProtoCore.Mirror.MirrorData.PrecisionFormat, CultureInfo.InvariantCulture);
+                case TypeCode.Int32:
+                    return ((int)obj).ToString(CultureInfo.InvariantCulture);
+                case TypeCode.Int64:
+                    return ((long)obj).ToString(CultureInfo.InvariantCulture);
+                case TypeCode.DateTime:
+                    return ((DateTime)obj).ToString(PreferenceSettings.DefaultDateFormat, CultureInfo.InvariantCulture);
+                case TypeCode.Object:
+                    return ObjectToLabelString(obj);
+                default:
+                    return (string)obj;
+            };
+        }
+
+        private static string ObjectToLabelString(object obj)
+        {
+            if (obj == null)
+                return Resources.NullString;
+
+            else if (obj is bool)
+                return obj.ToString().ToLower();
+
+            else if (obj is double)
+                return ((double)obj).ToString(CultureInfo.InvariantCulture);
+
+            return obj.ToString();
+        }
+
+        private string GetDisplayType(object obj)
+        {
+            if (obj == null)
+                return Resources.NullString;
+
+            TypeCode typeCode = Type.GetTypeCode(obj.GetType());
+            // returning a customized user friendly string instead of just returning the name of the type 
+            switch (typeCode)
+            {
+                case TypeCode.Boolean:
+                    return nameof(TypeCode.Boolean);
+                case TypeCode.Double:
+                    return nameof(TypeCode.Double);
+                case TypeCode.Int64:
+                    return nameof(TypeCode.Int64);
+                case TypeCode.Int32:
+                    return nameof(TypeCode.Int32);
+                case TypeCode.Object:
+                    return nameof(TypeCode.Object);
+                case TypeCode.String:
+                    return nameof(TypeCode.String);
+                case TypeCode.Empty:
+                    return String.Empty;
+                default:
+                    return String.Empty;
+            }
+        }
         private bool CanFindNodeForPath(object obj)
         {
             return !string.IsNullOrEmpty(obj.ToString());
@@ -237,7 +336,7 @@ namespace Dynamo.ViewModels
             var listLevelAndItemCount = GetMaximumDepthAndItemNumber(this);
             maxListLevel = listLevelAndItemCount.Item1;
             NumberOfItems = listLevelAndItemCount.Item2;
-            IsCollection = maxListLevel > 1;
+            IsCollection = maxListLevel > 1 || (Children.Count > 0 && (Children[0].NodeLabel == LIST || Children[0].NodeLabel == DICTIONARY));
         }
 
         private Tuple<int, int> GetMaximumDepthAndItemNumber(WatchViewModel wvm)

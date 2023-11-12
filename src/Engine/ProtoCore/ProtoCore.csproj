@@ -1,264 +1,61 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="Microsoft.NET.Sdk">
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(SolutionDir)Config\CS_SDK.props" />
+  </ImportGroup>
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{7A9E0314-966F-4584-BAA3-7339CBB849D1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>ProtoCore</RootNamespace>
     <AssemblyName>ProtoCore</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <ImportGroup Label="PropertySheets">
-    <Import Project="$(SolutionDir)Config\CS.props" />
-  </ImportGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <DefineConstants>DEBUG, _USE_FREE_LIST</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
-    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRuleSetDirectories>;C:\VS2010\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
-    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
-    <CodeAnalysisRuleDirectories>;C:\VS2010\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
-    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <Optimize>true</Optimize>
-    <PlatformTarget>x64</PlatformTarget>
-    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
-    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRuleSetDirectories>;C:\VS2010\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
-    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
-    <CodeAnalysisRuleDirectories>;C:\VS2010\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
-    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
-    <DefineConstants>_USE_FREE_LIST</DefineConstants>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <DebugSymbols>true</DebugSymbols>
-    <DefineConstants>DEBUG</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
-    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRuleSetDirectories>;C:\VS2010\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
-    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
-    <CodeAnalysisRuleDirectories>;C:\VS2010\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
-    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <DefineConstants>_USE_FREE_LIST</DefineConstants>
-    <Optimize>true</Optimize>
-    <PlatformTarget>x86</PlatformTarget>
-    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
-    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRuleSetDirectories>;C:\VS2010\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
-    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
-    <CodeAnalysisRuleDirectories>;C:\VS2010\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
-    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup>
     <SignAssembly>false</SignAssembly>
+    <AssemblyOriginatorKeyFile>ProtoCore.snk</AssemblyOriginatorKeyFile>
+      <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>ProtoCore.snk</AssemblyOriginatorKeyFile>
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
-    <Prefer32Bit>false</Prefer32Bit>
-    <NoWarn>CS3008, CS3003</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <DefineConstants>TRACE</DefineConstants>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Compile Include="..\..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
-      <Link>Properties\AssemblySharedInfo.cs</Link>
-    </Compile>
-    <Compile Include="AssociativeGraph.cs" />
-    <Compile Include="DSASM\DSArray.cs" />
-    <Compile Include="DSASM\DSObject.cs" />
-    <Compile Include="DSASM\DSString.cs" />
-    <Compile Include="FFI\CLRObjectMarshaler.cs" />
-    <Compile Include="Lang\InternalAttributes.cs" />
-    <Compile Include="Lang\Replication\ArgumentAtLevel.cs" />
-    <Compile Include="AttributeEntry.cs" />
-    <Compile Include="BuildStatus.cs" />
-    <Compile Include="CodeBlock.cs" />
-    <Compile Include="CodeGen.cs" />
-    <Compile Include="CodeFile.cs" />
-    <Compile Include="CodeGenDS.cs" />
-    <Compile Include="CodePoint.cs" />
-    <Compile Include="Compiler.cs" />
-    <Compile Include="CompilerOptions.cs" />
-    <Compile Include="MigrationRewriter.cs" />
-    <Compile Include="Parser\DictionaryBuilder.cs" />
-    <Compile Include="SyntaxAnalysis\AssociativeAstVisitor.cs" />
-    <Compile Include="SyntaxAnalysis\AstVisitor.cs" />
-    <Compile Include="SyntaxAnalysis\Interface\Associative.cs" />
-    <Compile Include="SyntaxAnalysis\Interface\Imperative.cs" />
-    <Compile Include="SyntaxAnalysis\ImperativeAstVisitor.cs" />
-    <Compile Include="Utils\CompilerUtils.cs" />
-    <Compile Include="Core.cs" />
-    <Compile Include="ClassTable.cs" />
-    <Compile Include="DebuggerProperties.cs" />
-    <Compile Include="DSASM\Defs.cs" />
-    <Compile Include="DSASM\Interpreter.cs" />
-    <Compile Include="DSASM\Executable.cs" />
-    <Compile Include="DSASM\Executive.cs" />
-    <Compile Include="DSASM\Heap.cs" />
-    <Compile Include="DSASM\IExecutive.cs" />
-    <Compile Include="DSASM\InstructionSet.cs" />
-    <Compile Include="DSASM\Mirror\ExecutionMirror.cs" />
-    <Compile Include="Exceptions\CompilerInternalException.cs" />
-    <Compile Include="Exceptions\ReplicationException.cs" />
-    <Compile Include="FFI\ContextData.cs" />
-    <Compile Include="FFI\ContextDataManager.cs" />
-    <Compile Include="FFI\ExtensionAppLoader.cs" />
-    <Compile Include="FFI\FFIExecutionManager.cs" />
-    <Compile Include="FunctionPointerTable.cs" />
-    <Compile Include="Lang\BuiltInFunctionEndPoint.cs" />
-    <Compile Include="Lang\BuiltInMethods.cs" />
-    <Compile Include="Lang\ContinuationStructure.cs" />
-    <Compile Include="Lang\FunctionPointerEvaluator.cs" />
-    <Compile Include="Lang\Replication\ReplicationInstruction.cs" />
-    <Compile Include="Lang\Replication\Replicator.cs" />
-    <Compile Include="Lang\TraceUtils.cs" />
-    <Compile Include="Namespace\ElementRewriter.cs" />
-    <Compile Include="Namespace\ElementResolver.cs" />
-    <Compile Include="Namespace\SymbolTable.cs" />
-    <Compile Include="Utils\ParserUtils.cs" />
-    <Compile Include="Properties\Resources.en-US.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.en-US.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Reflection\GraphicDataProvider.cs" />
-    <Compile Include="Reflection\Mirror.cs" />
-    <Compile Include="Reflection\MirrorData.cs" />
-    <Compile Include="Reflection\Reflection.cs" />
-    <Compile Include="RuntimeContext.cs" />
-    <Compile Include="RuntimeCore.cs" />
-    <Compile Include="RuntimeData.cs" />
-    <Compile Include="RuntimeMemory.cs" />
-    <Compile Include="RuntimeStatus.cs" />
-    <Compile Include="DSDefinitions.cs" />
-    <Compile Include="DynamicFunctionTable.cs" />
-    <Compile Include="Exceptions\DebugHalting.cs" />
-    <Compile Include="FFI\CLRFFIFunctionPointer.cs" />
-    <Compile Include="FFI\ImportModuleHandler.cs" />
-    <Compile Include="Parser\AssociativeAST.cs" />
-    <Compile Include="Parser\AST.cs" />
-    <Compile Include="Parser\ImperativeAST.cs" />
-    <Compile Include="Parser\Parser.cs" />
-    <Compile Include="Parser\Scanner.cs" />
-    <Compile Include="ProcedureTable.cs" />
-    <Compile Include="DSASM\Stack.cs" />
-    <Compile Include="Exceptions\CompileErrorsOccured.cs" />
-    <Compile Include="Executive.cs" />
-    <Compile Include="Context.cs" />
-    <Compile Include="FFI\CLRDLLModule.cs" />
-    <Compile Include="FFI\FFICppFunction.cs" />
-    <Compile Include="FFI\FFIHandler.cs" />
-    <Compile Include="FFI\PInvokeFFI.cs" />
-    <Compile Include="Lang\FFIFunctionEndPoint.cs" />
-    <Compile Include="Lang\FunctionTable.cs" />
-    <Compile Include="Lang\JILFunctionEndPoint.cs" />
-    <Compile Include="Lang\Obj.cs" />
-    <Compile Include="Lang\Type.cs" />
-    <Compile Include="Lang\CallSite.cs" />
-    <Compile Include="Lang\FunctionEndPoint.cs" />
-    <Compile Include="Lang\FunctionGroup.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
+    <ProjectReference Include="..\..\DynamoUtilities\DynamoUtilities.csproj" />
+    <ProjectReference Include="..\..\Libraries\DesignScriptBuiltin\DesignScriptBuiltin.csproj" />
+    <ProjectReference Include="..\..\NodeServices\DynamoServices.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+    <PackageReference Include="System.CodeDom" Version="6.0.0" />
+    <PackageReference Include="SoapFormatter" Version="1.0.11" />
+    <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
+  </ItemGroup>
+  <ItemGroup>
+      <Compile Remove="LexUtils.cs" />
+    <Compile Remove="Parser\AssociativeGraph.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="StringTable.cs" />
-    <Compile Include="Utils\ArrayUtils.cs" />
-    <Compile Include="Utils\ClassUtils.cs" />
-    <Compile Include="Utils\CoreUtils.cs" />
-    <Compile Include="Utils\FileUtils.cs" />
-    <Compile Include="Utils\MathUtils.cs" />
-    <Compile Include="SymbolTable.cs" />
-    <Compile Include="Utils\NodeUtils.cs" />
-    <Compile Include="Utils\StringUtils.cs" />
-    <Compile Include="Utils\Validity.cs" />
+    <Compile Update="Properties\Resources.en-US.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.en-US.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
-    <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ExtendedLibraries\BuiltIn.ds" />
-    <None Include="ExtendedLibraries\FunctionObject.ds" />
-    <None Include="Parser\atg\Associative.atg" />
-    <None Include="Parser\atg\End.atg" />
-    <None Include="Parser\atg\Imperative.atg" />
-    <None Include="Parser\atg\Start.atg" />
-    <None Include="Parser\GenerateParser.bat" />
-    <None Include="Parser\Parser.frame" />
-    <None Include="Parser\Scanner.frame" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
+    <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.en-US.resx">
+    <EmbeddedResource Update="Properties\Resources.en-US.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\DesignScriptBuiltin\DesignScriptBuiltin.csproj">
-      <Project>{c0d6dee5-5532-4345-9c66-4c00d7fdb8be}</Project>
-      <Name>DesignScriptBuiltin</Name>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\NodeServices\DynamoServices.csproj">
-      <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
-      <Name>DynamoServices</Name>
-      <Private>False</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <Target Name="AfterBuild">
+  <Target Name="CopyDSFiles" AfterTargets="Build">
     <ItemGroup>
       <ExtendedLibraries Include="$(ProjectDir)ExtendedLibraries\*.ds" />
     </ItemGroup>
-    <Copy SourceFiles="@(ExtendedLibraries)" DestinationFolder="$(OutputPath)" />
+      <Copy SourceFiles="@(ExtendedLibraries)" DestinationFolder="$(OutputPath)" />
   </Target>
 </Project>

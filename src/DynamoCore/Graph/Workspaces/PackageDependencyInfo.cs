@@ -102,27 +102,27 @@ namespace Dynamo.Graph.Workspaces
     }
 
     /// <summary>
-    /// Class containing info about a LocalDefinition
+    /// Class containing info about a LocalDefinition or an External File
     /// </summary>
-    internal class LocalDefinitionInfo: INodeLibraryDependencyInfo
+    internal class DependencyInfo: INodeLibraryDependencyInfo
     {
         /// <summary>
-        /// Name of the LocalDefinition
+        /// Name of the Dependency
         /// </summary>
         public string Name { get; private set; }
 
         /// <summary>
-        /// Path of the LocalDefinition
+        /// Path of the Dependency
         /// </summary>
         public string Path { get; internal set; }
 
         /// <summary>
-        /// Size of the LocalDefinition
+        /// Size of the Dependency
         /// </summary>
         public string Size { get; internal set; }
 
         /// <summary>
-        /// ReferenceType of the LocalDefinition
+        /// ReferenceType of the Dependency
         /// </summary>
         public ReferenceType ReferenceType { get; internal set; }
 
@@ -136,7 +136,7 @@ namespace Dynamo.Graph.Workspaces
         public Version Version { get; internal set; }
 
         /// <summary>
-        /// Indicates whether this LocalDefinition is loaded in the current session
+        /// Indicates whether this Dependency is loaded in the current session
         /// </summary>
         [Obsolete("This property is obsolete", false)]
         public bool IsLoaded { get; set; }
@@ -144,11 +144,11 @@ namespace Dynamo.Graph.Workspaces
         public PackageDependencyState State { get; internal set; }
 
         /// <summary>
-        /// Create a LocalDefinition info object from the package Name and Path
+        /// Create a Dependency info object from the Name and Path
         /// </summary>
         /// <param name="name"></param>
         /// <param name="path"></param>
-        internal LocalDefinitionInfo(string name, string path)
+        internal DependencyInfo(string name, string path)
         {
             Name = name;
             Path = path;
@@ -156,11 +156,25 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Create a LocalDefinition info object from the package Name and ReferenceType
+        /// Create a Dependency info object from the Name, Path and ReferenceType
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="path"></param>
+        /// <param name="referenceType"></param>
+        internal DependencyInfo(string name, string path, ReferenceType referenceType)
+        {
+            Name = name;
+            Path = path;
+            ReferenceType = referenceType;
+            nodes = new HashSet<Guid>();
+        }
+
+        /// <summary>
+        /// Create a Dependency info object from the Name and ReferenceType
         /// </summary>
         /// <param name="name"></param>
         /// <param name="referenceType"></param>
-        internal LocalDefinitionInfo(string name, ReferenceType referenceType)
+        internal DependencyInfo(string name, ReferenceType referenceType)
         {
             Name = name;
             ReferenceType = referenceType;
@@ -168,18 +182,18 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Create a LocalDefinition info object from the package name
+        /// Create a Dependency info object from the name
         /// </summary>
         /// <param name="name"></param>
-        internal LocalDefinitionInfo(string name)
+        internal DependencyInfo(string name)
         {
             Name = name;
             nodes = new HashSet<Guid>();
         }
 
         /// <summary>
-        /// Checks whether two LocalDefinitionInfo's are equal
-        /// They are equal if their Name and Versions are equal
+        /// Checks whether two Dependency's are equal
+        /// They are equal if their Name, Path and ReferenceType are equal
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
@@ -189,13 +203,13 @@ namespace Dynamo.Graph.Workspaces
             {
                 return false;
             }
-            if (!(obj is LocalDefinitionInfo))
+            if (!(obj is DependencyInfo))
             {
                 return false;
             }
 
-            var other = obj as LocalDefinitionInfo;
-            if (other.Name == this.Name && other.Path == this.Path)
+            var other = obj as DependencyInfo;
+            if (other.Name == this.Name && other.Path == this.Path && other.ReferenceType == this.ReferenceType)
             {
                 return true;
             }
@@ -232,11 +246,9 @@ namespace Dynamo.Graph.Workspaces
         Package,
         ZeroTouch,
         DSFile,
-        //TODO - This is already covered by the older Dependencies property
-        DYFFile
+        DYFFile,
+        External
     }
-
-
 
     /// <summary>
     /// An interface that describes a dependency a workspace can have on other code.

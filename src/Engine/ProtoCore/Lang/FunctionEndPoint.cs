@@ -63,7 +63,7 @@ namespace ProtoCore
                     }
                     else if (arrayTypes.Count > 1)
                     {
-                        ClassNode commonBaseType = ArrayUtils.GetGreatestCommonSubclassForArray(formalParameters[i], runtimeCore);
+                        ClassNode commonBaseType = ArrayUtils.GetGreatestCommonSubclassForArrayInternal(arrayTypes, runtimeCore);
 
                         if (commonBaseType == null)
                             throw new ProtoCore.Exceptions.ReplicationCaseNotCurrentlySupported(
@@ -154,6 +154,9 @@ namespace ProtoCore
         /// Note that this method returns int[] -> char[] as an exact match
         /// </summary>
         /// <param name="args"></param>
+        /// <param name="classTable"></param>
+        /// <param name="runtimeCore"></param>
+        /// <param name="allowArrayPromotion"></param>
         /// <returns></returns>
         public int ComputeTypeDistance(List<StackValue> args, ProtoCore.DSASM.ClassTable classTable, RuntimeCore runtimeCore, bool allowArrayPromotion = false)
         {
@@ -272,6 +275,7 @@ namespace ProtoCore
         /// Convert the parameters passed to the types specified in this fep
         /// </summary>
         /// <param name="formalParameters"></param>
+        /// <param name="runtimeCore"></param>
         /// <returns></returns>
         public List<StackValue> CoerceParameters(List<StackValue> formalParameters, RuntimeCore runtimeCore)
         {

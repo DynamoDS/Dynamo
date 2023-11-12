@@ -1,0 +1,79 @@
+﻿<Popup x:Class="Dynamo.Notifications.View.NotificationUI"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+       xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+       xmlns:controls="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
+       xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf" 
+       xmlns:fa="http://schemas.fontawesome.io/icons/" 
+       xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+       mc:Ignorable="d" 
+       AllowsTransparency="True"
+       StaysOpen="False"
+       Opacity="0.5"
+       Width="340"
+       Height="598">
+    <Popup.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            <controls:PointsToPathConverter x:Key="PointsToPathConverter"/>
+        </ResourceDictionary>
+    </Popup.Resources>
+    <Canvas Background="Transparent"
+            Name="RootLayout" >
+        <Path x:Name="PopupPathRectangle" 
+              Style="{StaticResource PoupPathRectangleStyle}">
+            <Path.Data>
+                <RectangleGeometry x:Name="BackgroundRectangle">
+                </RectangleGeometry>
+            </Path.Data>
+            <!--This effect will show a 4px shadow of 20% of tranparency with a angle of 135 grades-->
+            <Path.Effect>
+                <DropShadowEffect Opacity="0.2" 
+                                  Color="Black"
+                                  ShadowDepth="4"
+                                  BlurRadius="4"
+                                  Direction="135"/>
+            </Path.Effect>
+        </Path>
+
+        <Path x:Name="PopupPathRectangleShadow"   
+              Style="{StaticResource PoupPathRectangleStyle}">
+            <Path.Data>
+                <RectangleGeometry Rect="{Binding ElementName=BackgroundRectangle, Path=Rect}">
+                </RectangleGeometry>
+            </Path.Data>
+            <!--This effect will show a 4px shadow of 20% of tranparency with a angle of 315 grades-->
+            <Path.Effect>
+                <DropShadowEffect Opacity="0.2" 
+                                  Color="Black"
+                                  ShadowDepth="4"
+                                  BlurRadius="4"
+                                  Direction="315"/>
+            </Path.Effect>
+        </Path>
+
+        <!--This Path will draw on the Canvas the pointer (a triangle)-->
+        <Path  x:Name="TooltipPointer"
+               Data="{Binding Path=TooltipPointerPoints, Converter={StaticResource PointsToPathConverter}}"
+               Style="{StaticResource PoupPathPointerStyle}">
+            <Path.Effect>
+                <DropShadowEffect Opacity="0.2" 
+                                  Color="Black"
+                                  ShadowDepth="4"
+                                  BlurRadius="4"
+                                  Direction="{Binding Path=ShadowTooltipDirection}"/>
+            </Path.Effect>
+        </Path>
+
+        <Grid  x:Name="mainPopupGrid" Background="White"                
+               Width="{Binding PopupRectangleWidth}">
+            <wv2:WebView2 Name="webView" ></wv2:WebView2>
+        </Grid>
+    </Canvas>
+</Popup>

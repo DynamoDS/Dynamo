@@ -50,7 +50,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
         }
 
         /// <summary>
-        /// This methos is executed when the Close button in the RealTimeInfo window is pressed, so we clean the subscriptions to events
+        /// This method is executed when the Close button in the RealTimeInfo window is pressed, so we clean the subscriptions to events
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>

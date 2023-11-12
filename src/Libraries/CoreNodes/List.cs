@@ -1,12 +1,11 @@
-﻿#region
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Runtime;
 using DSCore.Properties;
+using ProtoCore.Utils;
 
-#endregion
 
 namespace DSCore
 {
@@ -56,7 +55,6 @@ namespace DSCore
             {
                 if (obj is IList) result = result || Contains((IList)obj, item);
             }
-
             // After checking all sublists, check if the current list contains the item
             return result || (IndexInList(list, item) >= 0);
         }
@@ -1209,7 +1207,7 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Creates a new list by concatenining copies of a given list.
+        ///     Creates a new list by concatenating copies of a given list.
         /// </summary>
         /// <param name="list">List to repeat.</param>
         /// <param name="amount">Number of times to repeat.</param>
@@ -1348,7 +1346,7 @@ namespace DSCore
             if (list == null)
                 return new List<int> { }; 
 
-            var indices = Enumerable.Range(0, list.Count).Where(i => list[i].Equals(item)).ToList();
+            var indices = Enumerable.Range(0, list.Count).Where(i => list[i] != null ? list[i].Equals(item) : item == null).ToList();
             return indices;
         }
 
@@ -1386,6 +1384,11 @@ namespace DSCore
         {
             for (int index = 0; index < list.Count; index++)
             {
+                if (MathUtils.IsNumber(list[index]) && MathUtils.IsNumber(item))
+                {
+                    if (MathUtils.Equals(Convert.ToDouble(list[index]), Convert.ToDouble(item)))
+                        return index;
+                }
                 if (list[index] is ArrayList && item is ArrayList)
                 {
                     if (((ArrayList)list[index]).Cast<object>().SequenceEqual<object>(((ArrayList)item).Cast<object>())) return index;

@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using Dynamo.Graph.Nodes;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Views;
@@ -31,7 +32,7 @@ namespace DynamoCoreWpfTests
         //Execute(InitialRun)
         //Update the value from 10 to 0
         //Execute(SecondRun)
-        [Test, RequiresSTA]
+        [Test, Apartment(ApartmentState.STA)]
         public void CodeBlockNode_ReassignInput()
         {
             RunCommandsFromFile("CodeBlockNode_ReassignInput.xml", (commandTag) =>
@@ -59,7 +60,7 @@ namespace DynamoCoreWpfTests
         //Execute(SecondRun)
         //Update the CBN to Math.Sin(3)
         //Execute(ThirdRun)
-        [Test, RequiresSTA]
+        [Test, Apartment(ApartmentState.STA)]
         public void CodeBlockNode_ReassignInput_2()
         {
             RunCommandsFromFile("CodeBlockNode_ReassignInput_2.xml", (commandTag) =>
@@ -85,7 +86,7 @@ namespace DynamoCoreWpfTests
         // warning is turned off and the values are evaluated properly.
         // Create another cyclic chain of two nodes, and verify the same behavior.
         //
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, Apartment(ApartmentState.STA), Category("Failure")]
         public void CodeBlockNode_ReassignCyclic()
         {
             RunCommandsFromFile("CodeBlockNode_ReassignCyclic.xml", (commandTag) =>
@@ -169,7 +170,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
-        [Test, RequiresSTA]
+        [Test, Apartment(ApartmentState.STA)]
         public void TestFunctionMultipleBlocksDefaultParametersDeleteFirst()
         {
             RunCommandsFromFile("DeleteCrashCommands.xml", (commandTag) =>

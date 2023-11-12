@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -28,6 +28,7 @@ using System.Windows;
 [assembly: InternalsVisibleTo("DynamoCoreTests")]
 [assembly: InternalsVisibleTo("DynamoCoreWpfTests")]
 [assembly: InternalsVisibleTo("DynamoMSOfficeTests")]
+[assembly: InternalsVisibleTo("PackageManagerSearchElementViewModelTests")]
 [assembly: InternalsVisibleTo("CoreNodeModelsWpf")]
 [assembly: InternalsVisibleTo("DynamoSandbox")]
 [assembly: InternalsVisibleTo("WpfVisualizationTests")]
@@ -44,6 +45,17 @@ using System.Windows;
 [assembly: InternalsVisibleTo("PythonNodeModelsWpf")]
 [assembly: InternalsVisibleTo("LintingViewExtension")]
 [assembly: InternalsVisibleTo("GraphMetadataViewExtension")]
+[assembly: InternalsVisibleTo("PackageDetailsViewExtension")]
+[assembly: InternalsVisibleTo("Notifications")]
+[assembly: InternalsVisibleTo("LibraryViewExtensionWebView2")]
+[assembly: InternalsVisibleTo("PythonNodeModelsWpf")]
+[assembly: InternalsVisibleTo("IronPythonTests")]
+[assembly: InternalsVisibleTo("DynamoPackagesWPF")]
+[assembly: InternalsVisibleTo("DynamoPlayerExtension")]
+[assembly: InternalsVisibleTo("DynamoPlayer.Extension")]
+[assembly: InternalsVisibleTo("DynamoPlayer.Workflows")]
+[assembly: InternalsVisibleTo("DynamoPlayer.WorkflowsUi")]
+
 
 [assembly: TypeForwardedTo(typeof(Dynamo.Wpf.Interfaces.LayoutSpecification))]
 [assembly: TypeForwardedTo(typeof(Dynamo.Wpf.Interfaces.LayoutSection))]

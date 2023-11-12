@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Xml;
 using Dynamo.Applications;
 using Dynamo.ViewModels;
@@ -79,7 +80,7 @@ namespace Dynamo.Tests
             string openpath = Path.Combine(TestDirectory, @"core\math\Add.dyn");
 
             var runner = new DynamoCLI.CommandLineRunner(this.CurrentDynamoModel);
-            string commandstring = "/o" + " " + openpath;
+            string commandstring = "-o" + " " + openpath;
 
             runner.Run(CommandstringToArgs(commandstring));
             AssertPreviewValue("4c5889ac-7b91-4fb5-aaad-a2128b533279", 4.0);
@@ -91,7 +92,7 @@ namespace Dynamo.Tests
             var openpath = Path.Combine(TestDirectory, @"core\math\Add.dyn");
             var hostName = "DynamoFormIt";
             var runner = new DynamoCLI.CommandLineRunner(this.CurrentDynamoModel);
-            string commandstring = $"/o {openpath} /hn {hostName}";
+            string commandstring = $"-o {openpath} --HostName {hostName}";
 
             runner.Run(CommandstringToArgs(commandstring));
             Assert.AreEqual(this.CurrentDynamoModel.HostAnalyticsInfo.HostName, "DynamoFormIt");
@@ -103,7 +104,7 @@ namespace Dynamo.Tests
             var openpath = Path.Combine(TestDirectory, @"core\math\Add.dyn");
             var parentId = "RVT&2022&MUI64&22.0.2.392";
             var runner = new DynamoCLI.CommandLineRunner(this.CurrentDynamoModel);
-            string commandstring = $"/o {openpath} /pi {parentId}";
+            string commandstring = $"-o {openpath} -p {parentId}";
 
             runner.Run(CommandstringToArgs(commandstring));
             Assert.AreEqual(this.CurrentDynamoModel.HostAnalyticsInfo.ParentId, "RVT&2022&MUI64&22.0.2.392");
@@ -115,7 +116,7 @@ namespace Dynamo.Tests
             var openpath = Path.Combine(TestDirectory, @"core\math\Add.dyn");
             var sessionId = "ABCDEFG";
             var runner = new DynamoCLI.CommandLineRunner(this.CurrentDynamoModel);
-            string commandstring = $"/o {openpath} /si {sessionId}";
+            string commandstring = $"-o {openpath} -s {sessionId}";
 
             runner.Run(CommandstringToArgs(commandstring));
             Assert.AreEqual(this.CurrentDynamoModel.HostAnalyticsInfo.SessionId, "ABCDEFG");
@@ -129,7 +130,7 @@ namespace Dynamo.Tests
             var importPath = Path.Combine(ExecutingDirectory, "FFITarget.dll");
 
             var runner = new DynamoCLI.CommandLineRunner(this.CurrentDynamoModel);
-            string commandstring = $"/o {openpath} /i {importPath}";
+            string commandstring = $"-o {openpath} -i {importPath}";
 
             runner.Run(CommandstringToArgs(commandstring));
             //assert that the FFITarget dummy point node is created with correct properties.
@@ -152,7 +153,7 @@ namespace Dynamo.Tests
             var importPath = Path.Combine(ExecutingDirectory, "FFITarget.dll");
 
             var runner = new DynamoCLI.CommandLineRunner(this.CurrentDynamoModel);
-            string commandstring = $"/o {openpath} /i {importPath}";
+            string commandstring = $"-o {openpath} -i {importPath}";
 
             runner.Run(CommandstringToArgs(commandstring));
             //assert that the FFITarget dummy point node is created with correct properties.
@@ -170,7 +171,7 @@ namespace Dynamo.Tests
             var importPath2 = Path.Combine(TestDirectory,"pkgs", "Dynamo Samples","bin" ,"SampleLibraryZeroTouch.dll");
 
             var runner = new DynamoCLI.CommandLineRunner(this.CurrentDynamoModel);
-            string commandstring = $"/o {openpath} /i {importPath1} /i \"{importPath2}\"";
+            string commandstring = $"-o {openpath} -i {importPath1} \"{importPath2}\"";
 
             runner.Run(CommandstringToArgs(commandstring));
             //assert that this node from the samples ZT dll produces a correct result.
@@ -183,7 +184,7 @@ namespace Dynamo.Tests
         {
             string openpath = Path.Combine(TestDirectory, @"core\commandline\simplelists.dyn");
             var newpath = GetNewFileNameOnTempPath("xml");
-            string commandstring = "/o" + " " + openpath + " " + "/v" + " " + newpath;
+            string commandstring = "-o" + " " + openpath + " " + "-v" + " " + newpath;
 
             DynamoCLI.Program.Main(CommandStringToStringArray(commandstring));
             var output = new XmlDocument();
@@ -200,7 +201,7 @@ namespace Dynamo.Tests
         {
             string openpath = Path.Combine(TestDirectory, @"core\commandline\simpleDict.dyn");
             var newpath = GetNewFileNameOnTempPath("xml");
-            string commandstring = "/o" + " " + openpath + " " + "/v" + " " + newpath;
+            string commandstring = "-o" + " " + openpath + " " + "-v" + " " + newpath;
 
             DynamoCLI.Program.Main(CommandStringToStringArray(commandstring));
             var output = new XmlDocument();
@@ -221,7 +222,9 @@ namespace Dynamo.Tests
         //
         // DynamoWPFCLI Tests
         //
-        [Test, RequiresSTA]
+
+        [Test]
+        [Apartment(ApartmentState.STA)]
         public void CanOpenAndRunDynamoModelWithWPFCommandLineRunner()
         {
             string openpath = Path.Combine(TestDirectory, @"core\math\Add.dyn");
@@ -238,18 +241,19 @@ namespace Dynamo.Tests
                 });
 
             var runner = new DynamoWPFCLI.CommandLineRunnerWPF(viewModel);
-            string commandstring = "/o" + " " + openpath;
+            string commandstring = "-o" + " " + openpath;
 
             runner.Run(CommandstringToArgs(commandstring));
             AssertPreviewValue("4c5889ac-7b91-4fb5-aaad-a2128b533279", 4.0);
         }
 
-        [Test, RequiresSTA]
+        [Test]
+        [Apartment(ApartmentState.STA)]
         public void CanOpenAndRunFileWihtListsCorrectlyToOutputFileFromDynamoWPFCLIexe()
         {
             string openpath = Path.Combine(TestDirectory, @"core\commandline\simplelists.dyn");
             var newpath = GetNewFileNameOnTempPath("xml");
-            string commandstring = "/o" + " " + openpath + " " + "/v" + " " + newpath;
+            string commandstring = "-o" + " " + openpath + " " + "-v" + " " + newpath;
 
             DynamoWPFCLI.Program.Main(CommandStringToStringArray(commandstring));
             var output = new XmlDocument();
@@ -261,12 +265,13 @@ namespace Dynamo.Tests
                 output);
         }
 
-        [Test, RequiresSTA]
+        [Test]
+        [Apartment(ApartmentState.STA)]
         public void CanOpenAndRunFileWithDictionaryCorrectlyToOutputFileFromDynamoWPFCLIexe()
         {
             string openpath = Path.Combine(TestDirectory, @"core\commandline\simpleDict.dyn");
             var newpath = GetNewFileNameOnTempPath("xml");
-            string commandstring = "/o" + " " + openpath + " " + "/v" + " " + newpath;
+            string commandstring = "-o" + " " + openpath + " " + "-v" + " " + newpath;
 
             DynamoWPFCLI.Program.Main(CommandStringToStringArray(commandstring));
             var output = new XmlDocument();
@@ -284,13 +289,14 @@ namespace Dynamo.Tests
                 }, output);
         }
 
-        [Test, RequiresSTA]
+        [Test]
+        [Apartment(ApartmentState.STA)]
         public void CanOpenAndRunFileWithCustomNodeAndOutputGeometryFromDynamoWPFCLIexe()
         {
             string openpath = Path.Combine(TestDirectory, @"core\commandline\GeometryTest.dyn");
             var newpath = GetNewFileNameOnTempPath("json");
             string geometrypath = Path.Combine(TestDirectory, @"core\commandline\GeometryTest.json");
-            string commandstring = "/o" + " " + openpath + " " + "/g" + " " + newpath;
+            string commandstring = "-o" + " " + openpath + " " + "-g" + " " + newpath;
 
             DynamoWPFCLI.Program.Main(CommandStringToStringArray(commandstring));
 
@@ -304,10 +310,12 @@ namespace Dynamo.Tests
                     Assert.IsNotNull(newFile);
                     var newGeometry = newFile.ReadToEnd();
 
-                    Assert.IsNotNullOrEmpty(geometry);
+                    Assert.IsNotNull(geometry);
+                    Assert.IsNotEmpty(geometry);
                     var geometryJson = JsonConvert.DeserializeObject(geometry) as JArray;
 
-                    Assert.IsNotNullOrEmpty(newGeometry);
+                    Assert.IsNotNull(newGeometry);
+                    Assert.IsNotEmpty(newGeometry);
                     var newGeometryJson = JsonConvert.DeserializeObject(newGeometry) as JArray;
 
                     Assert.IsNotNull(geometryJson);

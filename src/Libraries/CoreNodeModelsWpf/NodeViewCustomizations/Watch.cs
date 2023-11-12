@@ -5,6 +5,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Media;
 using System.Windows.Threading;
 using CoreNodeModels;
 using Dynamo.Configuration;
@@ -38,29 +39,43 @@ namespace CoreNodeModelsWpf.Nodes
             this.watch = nodeModel;
             this.syncContext = new DispatcherSynchronizationContext(nodeView.Dispatcher);
 
-            var watchTree = new WatchTree();
+            // make empty watchViewModel
+            rootWatchViewModel = new WatchViewModel(dynamoViewModel.BackgroundPreviewViewModel.AddLabelForPath);
+
+            var watchTree = new WatchTree(rootWatchViewModel);
+
+            rootWatchViewModel.WatchNode = watch;
+            watchTree.BorderThickness = new Thickness(1, 1, 1, 1);
+            watchTree.BorderBrush = new SolidColorBrush(Color.FromRgb(220,220,220));
 
             watchTree.SetWatchNodeProperties();
 
-            // make empty watchViewModel
-            rootWatchViewModel = new WatchViewModel(dynamoViewModel.BackgroundPreviewViewModel.AddLabelForPath);
+            nodeView.SizeChanged += (sender, args) =>
+                nodeModel.SetSize(args.NewSize.Width, args.NewSize.Height);
+
+            watchTree.SizeChanged += (sender, args) =>
+                nodeModel.SetWatchSize(args.NewSize.Width, args.NewSize.Height);
 
             nodeView.PresentationGrid.Children.Add(watchTree);
             nodeView.PresentationGrid.Visibility = Visibility.Visible;
             // disable preview control
             nodeView.TogglePreviewControlAllowance();
 
+            ResetWatch();
+
+            watchTree.Width = nodeModel.WatchWidth == 0 ? watchTree.Width : nodeModel.WatchWidth;
+            watchTree.Height = nodeModel.WatchHeight == 0 ? watchTree.Height : nodeModel.WatchHeight;
+            
+            //Store width and height info of the node in the dictionary.
+            Watch.NodeSizes[watch.GUID] = new Tuple<double, double>(nodeModel.WatchWidth, nodeModel.WatchHeight);
+
             Bind(watchTree, nodeView);
 
             Subscribe();
-            ResetWatch();
         }
 
         private void Bind(WatchTree watchTree, NodeView nodeView)
         {
-            // The WatchTree Control is bound to the WatchViewModel
-            watchTree.DataContext = rootWatchViewModel;
-
             // Add binding for TreeView
             var sourceBinding = new Binding("Children")
             {
@@ -131,6 +146,9 @@ namespace CoreNodeModelsWpf.Nodes
         private void OnPortConnected(PortModel port, ConnectorModel connectorModel)
         {
             Tuple<int, NodeModel> input;
+
+            //set default width and height when a new connection is made to the watch node.
+            watch.SetWatchSize(WatchTree.DefaultWidthSize, WatchTree.DefaultHeightSize);
 
             if (!watch.TryGetInput(watch.InPorts.IndexOf(connectorModel.End), out input)
                 || astBeingComputed == null) return;

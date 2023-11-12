@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CoreNodeModels;
@@ -396,6 +396,14 @@ namespace Dynamo.Tests
             RunModel(testFilePath);
             AssertPreviewValue("f8767579-f7c1-475f-980e-7cd6a42684c8", 123521);
         }
+        [Test]
+        public void TestStringGetNumberFileInput()
+        {
+            string testFilePath = Path.Combine(localDynamoStringTestFolder, "TestStringGetNumber_normal.dyn");
+
+            RunModel(testFilePath);
+            AssertPreviewValue("09c8d5ba431a442e886fe234922c6e3c", "123521");
+        }
 
         [Test]
         public void TestStringToNumberFunctionInput()
@@ -492,7 +500,7 @@ namespace Dynamo.Tests
 
         #region to string test cases  
 
-        [Ignore]
+        [Ignore("unknown reason")]
         public void TestToStringEmptyInput()
         {
             string testFilePath = Path.Combine(localDynamoStringTestFolder, "TestToString_emptyString.dyn");
@@ -502,7 +510,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Ignore]
+        [Ignore("unknown reason")]
         public void TestToStringFileInput()
         {
             string testFilePath = Path.Combine(localDynamoStringTestFolder, "TestToString_fromFile.dyn");
@@ -512,7 +520,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Ignore]
+        [Ignore("unknown reason")]
         public void TestToStringFunctionInput()
         {
             string testFilePath = Path.Combine(localDynamoStringTestFolder, "TestToString_fromFunction.dyn");
@@ -522,7 +530,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Ignore]
+        [Ignore("unknown reason")]
         public void TestToStringNormalInput()
         {
             string testFilePath = Path.Combine(localDynamoStringTestFolder, "TestToString_normal.dyn");

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -30,7 +30,7 @@ namespace Dynamo.PackageManager.Tests
 
             var pkgsDir = @"C:\dynamopackages";
 
-            db.BuildDirectory(pkg, pkgsDir, files);
+            db.BuildDirectory(pkg, pkgsDir, files, Enumerable.Empty<string>());
 
             Assert.AreEqual(5, fs.DirectoriesCreated.Count());
             Assert.AreEqual(2, fs.CopiedFiles.Count());
@@ -50,7 +50,7 @@ namespace Dynamo.PackageManager.Tests
 
             var pkgsDir = @"C:\dynamopackages";
 
-            db.BuildDirectory(pkg, pkgsDir, files);
+            db.BuildDirectory(pkg, pkgsDir, files, Enumerable.Empty<string>());
 
             var rootDir = Path.Combine(pkgsDir, pkg.Name);
             var binDir = Path.Combine(pkgsDir, pkg.Name, PackageDirectoryBuilder.BinaryDirectoryName);
@@ -79,7 +79,7 @@ namespace Dynamo.PackageManager.Tests
             var pkgsDir = @"C:\dynamopackages";
 
             // where the magic happens...
-            db.BuildDirectory(pkg, pkgsDir, files);
+            db.BuildDirectory(pkg, pkgsDir, files, Enumerable.Empty<string>());
 
             var rootDir = Path.Combine(pkgsDir, pkg.Name);
 
@@ -109,7 +109,7 @@ namespace Dynamo.PackageManager.Tests
 
             var pkgsDir = @"C:\dynamopackages";
 
-            db.BuildDirectory(pkg, pkgsDir, files);
+            db.BuildDirectory(pkg, pkgsDir, files, Enumerable.Empty<string>());
 
             var dyfDir = Path.Combine(pkgsDir, pkg.Name, PackageDirectoryBuilder.CustomNodeDirectoryName);
 
@@ -130,7 +130,7 @@ namespace Dynamo.PackageManager.Tests
 
             var pkgsDir = @"C:\dynamopackages";
 
-            db.BuildDirectory(pkg, pkgsDir, files);
+            db.BuildDirectory(pkg, pkgsDir, files, Enumerable.Empty<string>());
 
             var rootDir = Path.Combine(pkgsDir, pkg.Name);
             var binDir = Path.Combine(pkgsDir, pkg.Name, PackageDirectoryBuilder.BinaryDirectoryName);
@@ -160,7 +160,7 @@ namespace Dynamo.PackageManager.Tests
 
             var pkgsDir = @"C:\dynamopackages";
 
-            db.BuildDirectory(pkg, pkgsDir, files);
+            db.BuildDirectory(pkg, pkgsDir, files, Enumerable.Empty<string>());
 
             var dyfDir = Path.Combine(pkgsDir, pkg.Name, PackageDirectoryBuilder.CustomNodeDirectoryName);
 
@@ -170,6 +170,33 @@ namespace Dynamo.PackageManager.Tests
 
             Assert.IsTrue(fs.CopiedFiles.Any(x => ComparePaths(x.Item2, Path.Combine(dyfDir, "file1.dyf"))));
             Assert.IsTrue(fs.CopiedFiles.Any(x => ComparePaths(x.Item2, Path.Combine(dyfDir, "file2.dyf"))));
+        }
+
+        [Test]
+        public void BuildPackageDirectory_CopiesMarkDownFiles()
+        {
+            var files = new[] { @"C:\file1.dyn", @"C:\file2.dyn" };
+            var markdownFiles = new[] { @"C:\file1.md", @"C:\file2.md", @"C:\image\file3.jpg" };
+            var pkg = new Package(@"C:\pkg", "Foo", "0.1.0", "MIT");
+
+            var fs = new RecordedFileSystem((fn) => files.Contains(fn));
+
+            var pr = new Mock<IPathRemapper>();
+            var db = new PackageDirectoryBuilder(fs, pr.Object);
+
+            var pkgsDir = @"C:\dynamopackages";
+
+            db.BuildDirectory(pkg, pkgsDir, files, markdownFiles);
+
+            var mdDir = Path.Combine(pkgsDir, pkg.Name, PackageDirectoryBuilder.DocumentationDirectoryName);
+
+            Assert.AreEqual(5, fs.CopiedFiles.Count());
+            Assert.AreEqual(0, fs.DeletedFiles.Count());
+            Assert.AreEqual(0, fs.DeletedDirectories.Count());
+
+            Assert.IsTrue(fs.CopiedFiles.Any(x => ComparePaths(x.Item2, Path.Combine(mdDir, "file1.md"))));
+            Assert.IsTrue(fs.CopiedFiles.Any(x => ComparePaths(x.Item2, Path.Combine(mdDir, "file2.md"))));
+            Assert.IsTrue(fs.CopiedFiles.Any(x => ComparePaths(x.Item2, Path.Combine(mdDir, "file3.jpg"))));
         }
 
         [Test]
@@ -186,7 +213,7 @@ namespace Dynamo.PackageManager.Tests
 
             var pkgsDir = @"C:\dynamopackages";
 
-            db.BuildDirectory(pkg, pkgsDir, files);
+            db.BuildDirectory(pkg, pkgsDir, files, Enumerable.Empty<string>());
 
             // The original files are moved
 
@@ -217,7 +244,7 @@ namespace Dynamo.PackageManager.Tests
 
             var db = new PackageDirectoryBuilder(fs, MockMaker.Empty<IPathRemapper>());
             var pkgsDir = @"C:\dynamopackages";
-            db.BuildDirectory(pkg, pkgsDir, files);
+            db.BuildDirectory(pkg, pkgsDir, files, Enumerable.Empty<string>());
 
             Assert.AreEqual(5, fs.DirectoriesCreated.Count());
             Assert.AreEqual(4, fs.CopiedFiles.Count());
@@ -252,7 +279,7 @@ namespace Dynamo.PackageManager.Tests
             var doc = new Mock<IDirectoryInfo>();
             doc.SetupGet((i) => i.FullName).Returns(() => "C:/foo/doc");
 
-            f.CopyFilesIntoPackageDirectory(files, dyf.Object, bin.Object, extra.Object, doc.Object);
+            f.CopyFilesIntoPackageDirectory(files, Enumerable.Empty<string>(), dyf.Object, bin.Object, extra.Object, doc.Object);
 
             // no files should be copied, they are all already within their intended directory
             Assert.IsEmpty(fs.CopiedFiles);

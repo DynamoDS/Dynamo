@@ -1,333 +1,41 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<!--
-Copyright © Autodesk, Inc. 2012. All rights reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
--->
-<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
-    <Import Project="$(SolutionDir)/Config/CS.props" />
-    <Import Project="$(SolutionDir)Config/Cleanup.targets" />
+    <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dynamo</RootNamespace>
     <AssemblyName>DynamoCore</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <DocumentationFile>$(OutputPath)\DynamoCore.XML</DocumentationFile>
+    <LibGOsToken>windows</LibGOsToken>
+    <LibGOsToken Condition="$(Platform.Contains('Linux'))">linux</LibGOsToken>
   </PropertyGroup>
   <PropertyGroup>
-    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>$(OutputPath)</OutputPath>
-    <DefineConstants>TRACE;DEBUG;USE_DSENGINE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <Prefer32Bit>false</Prefer32Bit>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <DocumentationFile>..\..\bin\AnyCPU\Debug\DynamoCore.XML</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>$(OutputPath)</OutputPath>
-    <DefineConstants>TRACE;USE_DSENGINE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DebugSymbols>true</DebugSymbols>
-    <Prefer32Bit>false</Prefer32Bit>
-    <DocumentationFile>..\..\bin\AnyCPU\Release\DynamoCore.XML</DocumentationFile>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(ExecutionEngine)' != 'FScheme' ">
-    <DefineConstants>$(DefineConstants);USE_DSENGINE</DefineConstants>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Analytics.Net.ADP, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\Analytics.NET\Analytics.Net.ADP.dll</HintPath>
-    </Reference>
-    <Reference Include="Analytics.NET.Core">
-      <HintPath>..\..\extern\Analytics.NET\Analytics.NET.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Analytics.NET.Google">
-      <HintPath>..\..\extern\Analytics.NET\Analytics.NET.Google.dll</HintPath>
-    </Reference>
-    <Reference Include="Greg, Version=2.0.7843.19074, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Greg.2.0.7843.19074\lib\net48\Greg.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="ProtoGeometry, Version=2.12.0.6216, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\DynamoVisualProgramming.LibG_227_0_0.2.12.0.6216\lib\net48\ProtoGeometry.dll</HintPath>
-    </Reference>
-    <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RestSharp.105.2.3\lib\net46\RestSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
+    <ItemGroup>
+    <Compile Remove="Graph\ConnectorPinModel.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
-      <Link>Properties\AssemblySharedInfo.cs</Link>
-    </Compile>
-    <Compile Include="Configuration\ExecutionSession.cs" />
-    <Compile Include="Configuration\ViewExtensionSettings.cs" />
-    <Compile Include="Core\CrashPromptArgs.cs" />
-    <Compile Include="Configuration\DebugSettings.cs" />
-    <Compile Include="Configuration\Context.cs" />
-    <Compile Include="Core\DynamoMigrator.cs" />
-    <Compile Include="Engine\CodeGeneration\CompilationContext.cs" />
-    <Compile Include="Engine\CodeGeneration\CompiledEventArgs.cs" />
-    <Compile Include="Engine\CodeGeneration\CompilingEventArgs.cs" />
-    <Compile Include="Engine\CodeGeneration\IAstNodeContainer.cs" />
-    <Compile Include="Engine\Profiling\IProfilingExecutionTimeData.cs" />
-    <Compile Include="Engine\Profiling\NodeProfilingData.cs" />
-    <Compile Include="Engine\Profiling\ProfilingData.cs" />
-    <Compile Include="Engine\Profiling\ProfilingSession.cs" />
-    <Compile Include="Engine\ShortestQualifiedNameReplacer.cs" />
-    <Compile Include="Exceptions\CustomNodePackageLoadException.cs" />
-    <Compile Include="Exceptions\LibraryLoadFailedException.cs" />
-    <Compile Include="Extensions\ExtensionData.cs" />
-    <Compile Include="Extensions\IExtensionStorageAccess.cs" />
-    <Compile Include="Extensions\LinterExtensionBase.cs" />
-    <Compile Include="Graph\Annotations\AnnotationModelExtensions.cs" />
-    <Compile Include="Graph\Connectors\ConnectorPinModel.cs" />
-    <Compile Include="Graph\Workspaces\PackageDependencyInfo.cs" />
-    <Compile Include="Graph\Nodes\NodeOutputData.cs" />
-    <Compile Include="Graph\Nodes\NodeInputData.cs" />
-    <Compile Include="Graph\Workspaces\LayoutExtensions.cs" />
-    <Compile Include="Graph\Workspaces\NodesToCodeExtensions.cs" />
-    <Compile Include="Graph\Workspaces\PresetExtensions.cs" />
-    <Compile Include="Graph\Workspaces\SerializationConverters.cs" />
-    <Compile Include="Graph\Workspaces\SerializationExtensions.cs" />
-    <Compile Include="Graph\Workspaces\UndoRedo.cs" />
-    <Compile Include="Extensions\IServiceManager.cs" />
-    <Compile Include="Interfaces\ILibraryViewCustomization.cs" />
-    <Compile Include="Interfaces\LayoutSpecification.cs" />
-    <Compile Include="Linting\Interfaces\RuleEvaluationStatusEnum.cs" />
-    <Compile Include="Linting\Interfaces\IRuleEvaluationResult.cs" />
-    <Compile Include="Linting\Interfaces\SeverityCodesEnum.cs" />
-    <Compile Include="Linting\LinterExtensionDescriptor.cs" />
-    <Compile Include="Linting\LinterManager.cs" />
-    <Compile Include="Linting\Rules\GraphLinterRule.cs" />
-    <Compile Include="Linting\Rules\GraphRuleEvaluationResult.cs" />
-    <Compile Include="Linting\Rules\LinterRule.cs" />
-    <Compile Include="Linting\Rules\NodeLinterRule.cs" />
-    <Compile Include="Linting\Rules\NodeRuleEvaluationResult.cs" />
-    <Compile Include="Logging\AnalyticsService.cs" />
-    <Compile Include="Logging\DynamoAnalyticsClient.cs" />
-    <Compile Include="Logging\IAnalyticsSession.cs" />
-    <Compile Include="Logging\NotificationMessage.cs" />
-    <Compile Include="Scheduler\Disposable.cs" />
-    <Compile Include="Engine\LinkedListOfList.cs" />
-    <Compile Include="Extensions\EnumExtension.cs" />
-    <Compile Include="Extensions\ExtensionCommandExecutive.cs" />
-    <Compile Include="Extensions\ExtensionLibraryLoader.cs" />
-    <Compile Include="Extensions\ICommandExecutive.cs" />
-    <Compile Include="Graph\Nodes\CustomNodes\ICustomNodeManager.cs" />
-    <Compile Include="Core\PulseMaker.cs" />
-    <Compile Include="Graph\NodeGraph.cs" />
-    <Compile Include="Extensions\ExtensionLoader.cs" />
-    <Compile Include="Extensions\ExtensionManager.cs" />
-    <Compile Include="Interfaces\IDynamoModel.cs" />
-    <Compile Include="Library\ILibraryLoader.cs" />
-    <Compile Include="Graph\Workspaces\ICustomNodeWorkspaceModel.cs" />
-    <Compile Include="Visualization\DefaultGraphicPrimitives.cs" />
-    <Compile Include="Visualization\GeometryHolder.cs" />
-    <Compile Include="Visualization\IRenderPackageSource.cs" />
-    <Compile Include="Graph\Workspaces\IWorkspaceModel.cs" />
-    <Compile Include="Logging\LogMessage.cs" />
-    <Compile Include="Logging\LogSource.cs" />
-    <Compile Include="Graph\Nodes\NodeLoaders\InputNodeLoader.cs" />
-    <Compile Include="Graph\Nodes\Attributes.cs" />
-    <Compile Include="Visualization\DefaultRenderPackageFactory.cs" />
-    <Compile Include="Extensions\ExtensionDefinition.cs" />
-    <Compile Include="Extensions\IExtensionLoader.cs" />
-    <Compile Include="Extensions\IExtensionManager.cs" />
-    <Compile Include="Extensions\IExtension.cs" />
-    <Compile Include="Extensions\ReadyParams.cs" />
-    <Compile Include="Extensions\StartupParams.cs" />
-    <Compile Include="Visualization\IRenderPackageFactory.cs" />
-    <Compile Include="Graph\Annotations\AnnotationModel.cs" />
-    <Compile Include="Configuration\PathManager.cs" />
-    <Compile Include="Graph\Presets\PresetModel.cs" />
-    <Compile Include="Library\MemberDocumentNode.cs" />
-    <Compile Include="Models\RunSettings.cs" />
-    <Compile Include="Scheduler\AsyncTaskExtensions.cs" />
-    <Compile Include="Configuration\IPathResolver.cs" />
-    <Compile Include="Search\ISearchCategory.cs" />
-    <Compile Include="Search\ISearchEntry.cs" />
-    <Compile Include="Search\NodeSearchModel.cs" />
-    <Compile Include="Search\SearchElements\CodeBlockNodeSearchElement.cs" />
-    <Compile Include="Search\SearchElements\CustomNodeSearchElement.cs" />
-    <Compile Include="Search\SearchElements\NodeModelSearchElement.cs" />
-    <Compile Include="Search\SearchElements\NodeModelSearchElementBase.cs" />
-    <Compile Include="Search\SearchElements\NodeSearchElement.cs" />
-    <Compile Include="Search\SearchElements\ZeroTouchSearchElement.cs" />
-    <Compile Include="Core\AuthenticationManager.cs" />
-    <Compile Include="Graph\Nodes\NodeModelExtensions.cs" />
-    <Compile Include="Search\ISource.cs" />
-    <Compile Include="Models\RecordableCommands.cs" />
-    <Compile Include="Properties\Resources.en-US.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.en-US.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Graph\Nodes\DummyNode.cs" />
-    <Compile Include="Properties\Annotations.cs" />
-    <Compile Include="Graph\Nodes\CustomNodes\ICustomNodeSource.cs" />
-    <Compile Include="Search\SearchLibrary.cs" />
-    <Compile Include="Graph\Nodes\CodeBlockUtils.cs" />
-    <Compile Include="Search\SearchElements\SearchElementGroup.cs" />
-    <Compile Include="Core\NotificationObject.cs" />
-    <Compile Include="Scheduler\PreviewGraphAsyncTask.cs" />
-    <Compile Include="Scheduler\UpdateRenderPackageAsyncTask.cs" />
-    <Compile Include="Engine\CodeCompletion\CodeCompletionServices.cs" />
-    <Compile Include="Models\DynamoModelCommands.cs" />
-    <Compile Include="Scheduler\AsyncTask.cs" />
-    <Compile Include="Scheduler\CompileCustomNodeAsyncTask.cs" />
-    <Compile Include="Scheduler\DelegateBasedAsyncTask.cs" />
-    <Compile Include="Scheduler\DynamoScheduler.cs" />
-    <Compile Include="Scheduler\DynamoSchedulerInternals.cs" />
-    <Compile Include="Scheduler\SchedulerThread.cs" />
-    <Compile Include="Scheduler\SetTraceDataAsyncTask.cs" />
-    <Compile Include="Scheduler\TimeStampGenerator.cs" />
-    <Compile Include="Scheduler\UpdateGraphAsyncTask.cs" />
-    <Compile Include="Core\UndoRedoRecorder.cs" />
-    <Compile Include="Engine\SyncDataManager.cs" />
-    <Compile Include="Scheduler\ISchedulerThread.cs" />
-    <Compile Include="Library\DocumentationServices.cs" />
-    <Compile Include="Library\FunctionDescriptor.cs" />
-    <Compile Include="Library\FunctionGroup.cs" />
-    <Compile Include="Library\LibraryCustomization.cs" />
-    <Compile Include="Library\LibraryServices.cs" />
-    <Compile Include="Library\TypedParameter.cs" />
-    <Compile Include="Library\XmlDocumentationExtensions.cs" />
-    <Compile Include="Logging\ILogger.cs" />
-    <Compile Include="Configuration\IPreferences.cs" />
-    <Compile Include="Models\DynamoModelEventArgs.cs" />
-    <Compile Include="Models\DynamoModelDelegates.cs" />
-    <Compile Include="Models\DynamoModelEvents.cs" />
-    <Compile Include="Graph\Nodes\NodeLoaders\NodeFactory.cs" />
-    <Compile Include="Graph\Nodes\TypeLoadData.cs" />
-    <Compile Include="Graph\Workspaces\WorkspaceInfo.cs" />
-    <Compile Include="Graph\Nodes\ScopedNodeModel.cs" />
-    <Compile Include="Graph\Nodes\CustomNodes\CustomNodeController.cs" />
-    <Compile Include="Graph\Nodes\VariableInputNode.cs" />
-    <Compile Include="Graph\Nodes\ZeroTouch\DSVarArgFunction.cs" />
-    <Compile Include="Graph\Nodes\ZeroTouch\DSFunctionBase.cs" />
-    <Compile Include="Graph\Nodes\FunctionCallNodeController.cs" />
-    <Compile Include="Graph\Nodes\FunctionCallBase.cs" />
-    <Compile Include="Graph\Nodes\ZeroTouch\UnresolvedFunctionException.cs" />
-    <Compile Include="Search\BrowserItem.cs" />
-    <Compile Include="Logging\StabilityTracking.cs" />
-    <Compile Include="Engine\CodeGeneration\AstBuilder.cs" />
-    <Compile Include="Library\FunctionType.cs" />
-    <Compile Include="Engine\EngineController.cs" />
-    <Compile Include="Engine\LiveRunnerServices.cs" />
-    <Compile Include="Graph\Workspaces\CustomNodeWorkspaceModel.cs" />
-    <Compile Include="Graph\Workspaces\HomeWorkspaceModel.cs" />
-    <Compile Include="Graph\Nodes\CodeBlockNode.cs" />
-    <Compile Include="Engine\NodeToCode\NodeToCode.cs" />
-    <Compile Include="Migration\WorkspaceMigrations.cs" />
-    <Compile Include="Graph\Nodes\ZeroTouch\DSFunction.cs" />
-    <Compile Include="Migration\Migration.cs" />
-    <Compile Include="Core\CustomNodeDefinition.cs" />
-    <Compile Include="Configuration\PreferenceSettings.cs" />
-    <Compile Include="Logging\DynamoLogger.cs" />
-    <Compile Include="Core\DynamoSelection.cs" />
-    <Compile Include="Logging\Heartbeat.cs" />
-    <Compile Include="Logging\Log.cs" />
-    <Compile Include="Models\DynamoModel.cs" />
-    <Compile Include="Updates\BinaryVersion.cs" />
-    <Compile Include="Updates\UpdateManager.cs" />
-    <Compile Include="Graph\ModelBase.cs" />
-    <Compile Include="Graph\Notes\NoteModel.cs" />
-    <Compile Include="Graph\Nodes\PortModel.cs" />
-    <Compile Include="Configuration\Configurations.cs" />
-    <Compile Include="Migration\MigrationReport.cs" />
-    <Compile Include="Search\BrowserInternalElement.cs" />
-    <Compile Include="Core\CustomNodeManager.cs" />
-    <Compile Include="Core\NodeModelAssemblyLoader.cs" />
-    <Compile Include="Graph\Nodes\NodeCategories.cs" />
-    <Compile Include="Graph\Connectors\ConnectorModel.cs" />
-    <Compile Include="Graph\Nodes\CustomNodes\Function.cs" />
-    <Compile Include="Graph\Nodes\NodeModel.cs" />
-    <Compile Include="Graph\Workspaces\WorkspaceModel.cs" />
-    <Compile Include="Graph\Nodes\NodeLoaders\CodeBlockNodeLoader.cs" />
-    <Compile Include="Graph\Nodes\NodeLoaders\CustomNodeLoader.cs" />
-    <Compile Include="Graph\Nodes\NodeLoaders\ZeroTouchNodeLoader.cs" />
-    <Compile Include="Search\SearchElements\SearchElementBase.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <Compile Include="Search\SearchDictionary.cs" />
-    <Compile Include="Utilities\ResourceLoader.cs" />
-    <Compile Include="Visualization\RenderPackageCache.cs" />
-    <EmbeddedResource Include="BuiltInAndOperators\BuiltInImages.resx">
-      <LastGenOutput>OperatorsImages.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="BuiltInAndOperators\OperatorsImages.resx">
-      <LastGenOutput>OperatorsImages.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="DynamoCoreImages.resx" />
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.en-US.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <None Include="App.config" />
-    <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <AppDesigner Include="Properties\" />
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
+    <!--The System.Drawing package is only included in DynamoCore (and not in all projects that have image resources) for simplicity-->
+    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+  </ItemGroup>
+  <ItemGroup Label="Common dependencies">
+    <PackageReference Include="Autodesk.IDSDK" Version="1.1.6" />
+    <PackageReference Include="Greg" Version="3.0.0.2955" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_229_0_0" Version="3.0.0.2916" GeneratePathProperty="true" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.2965" GeneratePathProperty="true" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" CopyXML="true" />
+	  <PackageReference Include="RestSharp" Version="109.0.1" CopyXML="true" />
+	<PackageReference Include="Lucene.Net" Version="4.8.0-beta00016" />
+    <PackageReference Include="Lucene.Net.Analysis.Common" Version="4.8.0-beta00016" />
+    <PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00016" />
+    <PackageReference Include="DynamoVisualProgramming.Analytics" Version="4.1.0.2437" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\GraphLayout\GraphLayout.csproj">
@@ -359,10 +67,6 @@ limitations under the License.
       <Project>{c0d6dee5-5532-4345-9c66-4c00d7fdb8be}</Project>
       <Name>DesignScriptBuiltin</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Libraries\DynamoUnits\Units.csproj">
-      <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
-      <Name>Units</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Libraries\VMDataBridge\VMDataBridge.csproj">
       <Project>{ccb6e56b-2da1-4eba-a1f9-e8510e129d12}</Project>
       <Name>VMDataBridge</Name>
@@ -385,89 +89,95 @@ limitations under the License.
   <ItemGroup>
     <Resource Include="BuiltInAndOperators\BuiltIn.Migrations.xml" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Choose>
-    <When Condition=" '$(OS)' != 'Unix' ">
-      <PropertyGroup>
-        <PowerShellCommand>powershell.exe</PowerShellCommand>
-      </PropertyGroup>
-    </When>
-    <Otherwise>
-      <PropertyGroup>
-        <PowerShellCommand>pwsh</PowerShellCommand>
-      </PropertyGroup>
-    </Otherwise>
-  </Choose>
-  <Target Name="BeforeBuild">
-    <PropertyGroup>
-      <LibGProtoGeometryLibGLocale>$(SolutionDir)\packages\DynamoVisualProgramming.LibG_227_0_0*\tools\net48\libg_locale</LibGProtoGeometryLibGLocale>
-    </PropertyGroup>
     <ItemGroup>
-      <LibGInterface Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_227_0_0*\tools\net48\LibG.Interface.dll" />
-      <LibGProtoGeometryXml Include="$(solutiondir)\packages\dynamovisualprogramming.libg_227_0_0*\lib\net48\protogeometry.xml" />
-      <LibGProtoGeometryUICulture Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_227_0_0*\tools\net48\$(UICulture)\*" />
-      <LibG225 Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_225_0_0*\tools\net48\LibG_225_0_0\*" />
-      <LibG226 Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_226_0_0*\tools\net48\LibG_226_0_0\*" />
-      <LibG227 Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_227_0_0*\tools\net48\LibG_227_0_0\*" />
-      <ExternSimplexNoise Include="$(SolutionDir)..\extern\SimplexNoise\*" />
-      <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\**\*.*" />
-      <GalleryFiles Include="$(SolutionDir)..\extern\gallery\**\*.*" />
-      <LocalizedResources Include="$(SolutionDir)..\extern\Localized\**\*.*" />
-      <ExternAnalytics Include="$(SolutionDir)..\extern\Analytics.NET\*.*" />
-      <LegacyBinariesToBinFolder Include="$(SolutionDir)..\extern\legacy_remove_me\bin\*" />
-      <LegacyBinariesToEn-USFolder Include="$(SolutionDir)..\extern\legacy_remove_me\en-US\*" />
-      <LegacyBinariesToNodesFolder Include="$(SolutionDir)..\extern\legacy_remove_me\nodes\*" />
-    </ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+    <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\Resources.en-US.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <Target Name="BeforeBuildOps" BeforeTargets="Build">
+    <PropertyGroup>
+      <LibGProtoGeometryLibGLocale>$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\libg_locale</LibGProtoGeometryLibGLocale>
+    </PropertyGroup>
+      <ItemGroup>
+          <LibGInterface Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\LibG.Interface.dll" />
+          <LibGProtoGeometryDLL Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\ProtoGeometry.dll" />
+          <LibGProtoGeometryXML Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\ProtoGeometry.XML" />
+          <LibG229Deps Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\asm_deps.csproj" />
+          <LibG230Deps Include="$(PkgDynamoVisualProgramming_LibG_230_0_0)\tools\netstandard2.0\$(LibGOsToken)\asm_deps.csproj" />
+          <LibGProtoGeometryUICulture Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\$(UICulture)\*" />
+          <LibG230 Include="$(PkgDynamoVisualProgramming_LibG_230_0_0)\tools\netstandard2.0\$(LibGOsToken)\LibG_230_0_0\*" />
+          <LibG229 Include="$(PkgDynamoVisualProgramming_LibG_229_0_0)\tools\netstandard2.0\$(LibGOsToken)\LibG_229_0_0\*" />
+          <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\**\*.*" />
+          <NodeHelpMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.md" />
+		  <NodeHelpDYNFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.dyn" />
+		  <NodeHelpTXTFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.txt" />
+		  <NodeHelpSATFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.sat" />
+          <NodeHelpJpgImageFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.jpg" />
+		  <NodeHelpPngImageFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.png" />
+		  <NodeHelpGifImageFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.gif" />
+          <OpenSourceLicenses Include="$(SolutionDir)..\doc\distrib\Open Source Licenses\**\*.*" />
+          <LocalizedResources Include="$(SolutionDir)..\extern\Localized\**\*.*" />
+      </ItemGroup>
     <Copy SourceFiles="$(SolutionDir)..\README.md" DestinationFiles="$(OutputPath)README.txt" />
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\License.rtf" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\TermsOfUse.rtf" DestinationFolder="$(OutputPath)" />
-    <Copy SourceFiles="$(SolutionDir)..\doc\distrib\GoogleAnalyticsConsent.rtf" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\InstrumentationConsent.rtf" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\ADPAnalyticsConsent.rtf" DestinationFolder="$(OutputPath)" />
+    <Copy SourceFiles="@(NodeHelpMDFiles)" DestinationFolder="$(OutputPath)\en-US\fallback_docs\" />
+	<Copy SourceFiles="@(NodeHelpDYNFiles)" DestinationFolder="$(OutputPath)\NodeHelpSharedDocs\" />
+	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\en-US\fallback_docs\" />
+	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\en-US\fallback_docs\" />
+    <Copy SourceFiles="@(NodeHelpJpgImageFiles)" DestinationFolder="$(OutputPath)\NodeHelpSharedDocs\" />
+	<Copy SourceFiles="@(NodeHelpPngImageFiles)" DestinationFolder="$(OutputPath)\NodeHelpSharedDocs\" />
+	<Copy SourceFiles="@(NodeHelpGifImageFiles)" DestinationFolder="$(OutputPath)\NodeHelpSharedDocs\" />
+    <Copy SourceFiles="@(OpenSourceLicenses)" DestinationFolder="$(OutputPath)Open Source Licenses\" />
     <Copy SourceFiles="@(LibGInterface)" DestinationFolder="$(OutputPath)" />
+    <Copy SourceFiles="@(LibGProtoGeometryDLL)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(LibGProtoGeometryXml)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(LibGProtoGeometryXml)" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="@(LibGProtoGeometryUICulture)" DestinationFolder="$(OutputPath)\$(UICulture)" />
+    <Copy Condition="$(Platform.Contains('Linux'))" SourceFiles="@(LibG229Deps)" DestinationFolder="$(OutputPath)libg_229_0_0\asm_deps\" />
+    <Copy Condition="$(Platform.Contains('Linux'))" SourceFiles="@(LibG230Deps)" DestinationFolder="$(OutputPath)libg_230_0_0\asm_deps\" />
     <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command Copy-Item -Path $(LibGProtoGeometryLibGLocale) -Destination $(OutputPath) -Recurse -Force" />
-    <Copy SourceFiles="@(LibG225)" DestinationFolder="$(OutputPath)libg_225_0_0\" />
-    <Copy SourceFiles="@(LibG226)" DestinationFolder="$(OutputPath)libg_226_0_0\" />
-    <Copy SourceFiles="@(LibG227)" DestinationFolder="$(OutputPath)libg_227_0_0\" />
-    <Copy SourceFiles="@(ExternSimplexNoise)" DestinationFolder="$(OutputPath)" />
-    <Copy SourceFiles="@(ExternAnalytics)" DestinationFolder="$(OutputPath)" />
+    <Copy SourceFiles="@(LibG230)" DestinationFolder="$(OutputPath)libg_230_0_0\" />
+    <Copy SourceFiles="@(LibG229)" DestinationFolder="$(OutputPath)libg_229_0_0\" />
     <Copy SourceFiles="@(SampleFiles)" DestinationFolder="$(OutputPath)samples\%(RecursiveDir)" />
-    <Copy SourceFiles="@(GalleryFiles)" DestinationFolder="$(OutputPath)gallery\%(RecursiveDir)" />
     <Copy SourceFiles="@(LocalizedResources)" DestinationFolder="$(OutputPath)%(RecursiveDir)" />
     <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\Operators.xml" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\BuiltIn.xml" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\BuiltIn.Migrations.xml" DestinationFolder="$(OutputPath)" />
-    <!--Remove these copy steps at the next launch of host products-->
-    <Copy SourceFiles="@(LegacyBinariesToBinFolder)" DestinationFolder="$(OutputPath)\" />
-    <Copy SourceFiles="@(LegacyBinariesToEn-USFolder)" DestinationFolder="$(OutputPath)\en-US\" />
-    <Copy SourceFiles="@(LegacyBinariesToNodesFolder)" DestinationFolder="$(OutputPath)\nodes\" />
+    <Copy SourceFiles="$(SolutionDir)Config\upiconfig.xml" DestinationFolder="$(OutputPath)" /> 
   </Target>
-  <Target Name="AfterBuild" Condition=" '$(OS)' != 'Unix' ">
+  <Target Name="AfterBuildOps" AfterTargets="ResolveSateliteResDeps">
     <ItemGroup>
       <ASMLibG Include="$(SolutionDir)..\extern\LibG_*\*" />
       <ExternProtoGeometry Include="$(SolutionDir)..\extern\ProtoGeometry\*" />
     </ItemGroup>
     <Copy SourceFiles="@(ASMLibG)" DestinationFolder="$(OutputPath)\%(RecursiveDir)" />
     <Copy SourceFiles="@(ExternProtoGeometry)" DestinationFolder="$(OutputPath)" />
-    <!-- Get System.Drawing.dll -->
-    <GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=$(ResourceGeneration_FrameworkVersion)">
-      <Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
-    </GetReferenceAssemblyPaths>
-    <!-- Get DynamoCore -->
-    <GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
-      <Output TaskParameter="Assemblies" ItemName="DynamoCoreInfo" />
-    </GetAssemblyIdentity>
-    <!-- Generate customization dll for DynamoCore -->
-    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)DynamoCoreImages.resx" OutputResources="$(ProjectDir)DynamoCoreImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
-    <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)DynamoCoreImages.resources" OutputAssembly="$(OutDir)DynamoCore.customization.dll" Version="%(DynamoCoreInfo.Version)" />
-    <!-- Generate customization dll for Operators -->
-    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)/BuiltInAndOperators/OperatorsImages.resx" OutputResources="$(ProjectDir)/BuiltInAndOperators/OperatorsImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
-    <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)/BuiltInAndOperators/OperatorsImages.resources" OutputAssembly="$(OutDir)Operators.customization.dll" Version="%(DynamoCoreInfo.Version)" />
-    <!-- Generate customization dll for BuiltIn -->
-    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resx" OutputResources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
-    <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resources" OutputAssembly="$(OutDir)BuiltIn.customization.dll" Version="%(DynamoCoreInfo.Version)" />
   </Target>
+    <Target AfterTargets="AfterBuildOps" Name="gen_resources" Condition=" '$(OS)' != 'Unix' ">
+        <!-- Generate customization dll for DynamoCore -->
+        <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)DynamoCoreImages.resx" OutputResources="$(ProjectDir)DynamoCoreImages.resources" References="$(SystemDrawingDllPath)" />
+        <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)DynamoCoreImages.resources" OutputAssembly="$(OutDir)DynamoCore.customization.dll" Version="%(AssemblyInfo.Version)" />
+        <!-- Generate customization dll for Operators -->
+        <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)/BuiltInAndOperators/OperatorsImages.resx" OutputResources="$(ProjectDir)/BuiltInAndOperators/OperatorsImages.resources" References="$(SystemDrawingDllPath)" />
+        <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)/BuiltInAndOperators/OperatorsImages.resources" OutputAssembly="$(OutDir)Operators.customization.dll" Version="%(AssemblyInfo.Version)" />
+        <!-- Generate customization dll for BuiltIn -->
+        <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resx" OutputResources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resources" References="$(SystemDrawingDllPath)" />
+        <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resources" OutputAssembly="$(OutDir)BuiltIn.customization.dll" Version="%(AssemblyInfo.Version)" />
+    </Target>
 </Project>

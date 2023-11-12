@@ -134,6 +134,8 @@ namespace Dynamo.Tests
                     Watch3DViewModel = new DefaultWatch3DViewModel(null, watch3DViewParams)
                 });
 
+            Assert.AreEqual(ViewModel.Model.State, DynamoModel.DynamoModelState.StartedUIless);
+
             this.ViewModel.RequestUserSaveWorkflow += RequestUserSaveWorkflow;
         }
 

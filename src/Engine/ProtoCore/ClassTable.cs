@@ -495,6 +495,16 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
+        /// Retreive the ClassNode at the index.  
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns>ClassNode if found, else null value</returns>
+        internal ClassNode GetClassNodeAtIndex(int index)
+        {
+            return index >= 0 && index < classNodes.Count ? classNodes[index] : null;
+        }
+
+        /// <summary>
         /// Find a matching class for given partial class name.
         /// </summary>
         /// <param name="partialName">Partial class name for lookup.</param>
@@ -595,7 +605,7 @@ namespace ProtoCore.DSASM
         /// </summary>
         /// <param name="status">BuildStatus to log the warnings if
         /// multiple symbol found.</param>
-        /// /// <param name="guid">Guid of node to which warning corresponds</param>
+        /// <param name="graphNode"></param>
         public void AuditMultipleDefinition(BuildStatus status, AssociativeGraph.GraphNode graphNode)
         {
             var names = symbolTable.GetAllSymbolNames();

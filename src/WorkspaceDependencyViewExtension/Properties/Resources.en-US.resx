@@ -118,32 +118,42 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="CSVIcon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
+        EgAACxIB0t1+/AAAAQhJREFUSEvlkzEKwjAUhj2CRyiewCN4G1ePUHBxcOgkdOsFvIOLINTBU4iTiKJ1
+        i/9fXstL0NKkqKDDx8tLXvo1L23PGPNWrCTP8xjswKolN5DpZ7hYCYopGOm5JkSSNUmsJEQg8aXESkIF
+        Mn4qsZIQgeyp4P3NdI27wVcwZL1iAmJd427wEriI5LuCBPCyqp76wr2JfqYrYNHnWoTxFNxBAebgKvka
+        pFKDUNd7CxDqMT/BhYxZtwVjcFA17QWIA3BUa8x5go3kBixBeRKZCz+B5H2wB5RduA4itR50B+z/CbD3
+        Z1C2BDEFRVUrc34CX9oIfuw/8OV/BF0vuVEQAb5FF+ofzxjTewCZc6SqMOfFngAAAABJRU5ErkJggg==
+</value>
+  </data>
   <data name="CustomNodeReferenceIcon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        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
-        hNk9+B+uRbqv2tzfLgAAAABJRU5ErkJggg==
+        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
+        AAAAAElFTkSuQmCC
 </value>
   </data>
   <data name="DependencyViewExtensionErrorTemplate" xml:space="preserve">
@@ -164,11 +174,67 @@
   <data name="DetailsMessageWarning" xml:space="preserve">
     <value>Some nodes in this graph were originally created with {0} v{1}, which you do not have installed. You may have a different version of {0} installed, or you may have a different package which resolves these nodes.</value>
   </data>
+  <data name="DWGIcon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
+        EgAACxIB0t1+/AAAARpJREFUSEvlk70NwjAQRjMCbBBlAkZgASZgACQqRohEQ0GRli4LUDEANFRpaCgo
+        aSgRFT+V+b7oDLYFkR0UIUHxdDnnfO9iK5FSqlGspCiKFGzAypMzyM0eLlaCYgq65loVIsmrJFZSRyDx
+        rcRK6grk+aXESuoIZI+G9zcxa9wNoYIO6w1GIDVr3A1BAheRfFeQAV6WPtNQuDcze7oCFjV/RGALLkCB
+        GaO8Zz4AazAFY3ACV3nvLTiCRNbYlPQllkLQYnT21xLweQn24AB2gF+XAL4bAq63QZgAlFMCPTWPh3Eh
+        9QiPIVjvLeCUbMRJec495lJzA2UTxDnQd+X/BeZaCD6CH/kPzLUQ/kfw6SVXCmLAKT4hfvZU0R2iVKYM
+        ytoQlAAAAABJRU5ErkJggg==
+</value>
+  </data>
+  <data name="ExcelIcon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
+        EgAACxIB0t1+/AAAAQJJREFUSEvlk7ENwjAQRTMCIyAmYAT2YABaRkhJmQqJLqNQIqVhAOoIUaRAAkFl
+        /kdncbYgyjkCJCie7HPu7uEcyZxzbyUIqqrKwRasO3IGpe4REwRIpmCiz9oQSdkmCYIUgawvJUGQKpD9
+        U0kQpAikxsP5LXROXGAVjJmvmINc58QFJkGMSL4rKACH5d+pFdYWumcsYNJnXhHWKTgBDtKBEajlGYfJ
+        Z5eo3jYD7Pm3Y/MVoKBR50ufp/LNAsbY3vdawD1vsPG5cm4W7MABBDeQZwNQ81ydmWYwA2zORn4GXBtw
+        BUewj+ptN7DSRfBD30EK/yPoO+RWwRDwV/Rh+OjpshtvyqH6Lkv6lQAAAABJRU5ErkJggg==
+</value>
+  </data>
   <data name="ExtensionName" xml:space="preserve">
     <value>Workspace References</value>
   </data>
+  <data name="ExternalFileIcon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
+        EgAACxIB0t1+/AAAAJJJREFUSEvtlcENgCAMRRmFERzBkRyBo2MwincuTuMVW1Nj2wgIxpMcXuCTto+E
+        AybG+CkihBAcsALLQzbA8xkaEaAYBSM/y0ESn5OI0CKgNSkRoVVA+1uJCC0C6jnB95t5jW6oFQxYz5gA
+        x2t0Q5VAQ5IuSNMFRbqgSBcU+Y8AfyZcWzh6+UwtsADe4g32mhnNDlF2oU3McFpBAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="ExternalFilesHeaderText" xml:space="preserve">
+    <value>External Files</value>
+  </data>
+  <data name="ExternalFilesToolTip" xml:space="preserve">
+    <value>External files are external documents in the graph space, such as images or text files. These are computed when the graph is run or by clicking the refresh icon incase the graph is already executed.</value>
+  </data>
+  <data name="ImageIcon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
+        EgAACxIB0t1+/AAAAPlJREFUSEvlkz8OgjAUxjmCRyCewMQLeCQT487o4MDKRryIzrK4eAXiYNz8s9Xv
+        I4/42mhDS9REh1/aV76+H1BIjDFvxSqqqsrADmw6cgGl7uFiFQhTMNFrPkRS+iRWESOQ8aXEKmIFMn8q
+        sYoYgexp4fktdMbdECoYMa+Ygkxn3A1BAheRfFeQAx5W+05D4d5c93QFDH32FaGuwRgYcAZz4QSuYKWy
+        UQI2Gso4A/wUKRvonGR7C5Zgzbm6VqhslOAGKOBd7wG//eYJQCNW2TAB5kdwAGxUq/UCUEL5Vq2HP0EI
+        XQQ/+B+E8D+CvofsFaSAd9GH9NHTJHeX5KMAbU+iJwAAAABJRU5ErkJggg==
+</value>
+  </data>
   <data name="InstallButtonText" xml:space="preserve">
     <value>Install Specified Version</value>
+  </data>
+  <data name="JsonIcon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
+        EgAACxIB0t1+/AAAARtJREFUSEvlkzEKwjAUhnsEjyCewBOI1/AWHqHg4uDQSXDrBZy8gKNQQQ8guBUH
+        6SCodYr/X14xCVqaFBV0+Ehe3sv7TGIDpdRbMYIkSUKwBcuaXECs97AxAhRT0NfXqhBJXCUxAh+BjC8l
+        RuArkPlTiRH4CGRPCd9vrNfYG1wFXdZrDEGo19gbnAQ2IvmuIAJ8rPJOXeHeSO9pC1j0mSvCmAI+2hnk
+        sjYCN8BcDyjAh+7ImpMgA/zbTbU8hmKcgDVjwBoKWO8s4EaeYCXzTHIDwOas2YGFzJ0EOWDTFuDxOUeq
+        yJUnYNPyquoLwBEcwAacOJf8DFwB86xLZX0O9rJW7wQ+1BH80Hfgw/8Imj5ypaAN+Cua0H70VMEdoU2m
+        NuEAcaQAAAAASUVORK5CYII=
+</value>
   </data>
   <data name="KeepLocalButtonText" xml:space="preserve">
     <value>Keep Installed Version</value>
@@ -176,8 +242,11 @@
   <data name="LocalDefinitionsHeaderText" xml:space="preserve">
     <value>Local Definitions</value>
   </data>
+  <data name="LocalDefinitionsToolTip" xml:space="preserve">
+    <value>Local definitions are Dynamo-specific files corresponding to local custom nodes and local packages. These are computed when the graph is saved or by clicking the refresh icon.</value>
+  </data>
   <data name="MenuItemString" xml:space="preserve">
-    <value>Show Workspace References</value>
+    <value>Show _Workspace References</value>
   </data>
   <data name="NameHeader" xml:space="preserve">
     <value>Name</value>
@@ -399,8 +468,21 @@
   <data name="PackageHeaderText" xml:space="preserve">
     <value>Packages</value>
   </data>
+  <data name="PackagesToolTip" xml:space="preserve">
+    <value>Packages extend Dynamo's core functionality and are available in the Package Manager. These are computed when the graph is saved or by clicking the refresh icon.</value>
+  </data>
   <data name="PathHeader" xml:space="preserve">
     <value>Path</value>
+  </data>
+  <data name="PDFIcon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
+        EgAACxIB0t1+/AAAAP1JREFUSEvlkz0OgkAQRjmC3oBwAo/gBbyLiaEnsbGwoKXjJtrT2Fh4AUs7tVy/
+        j8zG2Y0SdvEn0eKFnd2ZecBAYox5K07QNE0BdmDbkwuodQ8fJ0AyBVO914VI6i6JE8QI5PpU4gSxAlk/
+        lDhBjEBqLJzfSuf4BaGCCfMVc1DoHL8gSOAjku8KSsBh2XcaCmtL3dMXMOkzrwjXMTDgDHJwAFfZq0Am
+        6xPIpSZIwAYsXgB+flxncsbG7blXHyVYg42sraBdA/sEM9kPFrDBHvB7t01H4GVPcFRnnAEbcw5L4JxL
+        Tn9BDH0EP/QfxPA/gqFD7hSkgHcxhPTe0yQ3hv2gyR8J8jYAAAAASUVORK5CYII=
+</value>
   </data>
   <data name="ProvideFeedbackButton" xml:space="preserve">
     <value>Provide Feedback</value>
@@ -422,28 +504,27 @@
   </data>
   <data name="ZeroTouchNodeReferenceIcon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAAFgAAABjCAYAAAAfKMdaAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAALiMAAC4jAXilP3YAAASFSURBVHhe7Z09ThxBEIV9BHwD5BMg+QIOuIJzIsfOSAm5
-        gjNiIuckHIAAW4BxYMmBA0e2b7B+Zc2Yp9br2d2ie35qOvgk9nVVTc/HahbB7PJis9kMcnf/cA02C+Mn
-        OFDnMzYyZLDRxQh++PKVH9+CySXLkMEml/gM7rlV5zQmMmSwySULNi7UeY2FDBlsMBV8Ad7MDLsc8B5T
-        JpMsQwabSwWfqbopEXtUTCJZhgw2tkTBH5PHPaNLliGDTS1R8Bk4SbKeUSXLkMGGFim4y98nec9okmXI
-        YDOLFdyt2Ysyr/WMIlmGDDayaMHdek5y9XORIYNNLF5wV5OTfJLWlkSGDDYQQnBXN7pkGTI4eBjBBtZG
-        lSxDBgcOJdjA+miSZcjgoOEEG6gZRbIMGRwwpGADdbnfYRSTLEMGB4ss+ABUlSxDBgcKK9hAbU7yH3Ck
-        evZBhgwOElqwgfpqkmXI4ADhBRvoqSJZhgyGr0Kwgb7ikmXIYPBqBBvoLSpZhgyGrkqwgf5ikmXIYODq
-        BBuYcQRMKM819pIsQwbDVinYwJwhyYeqJ0WGDAatVrCBWTnJdgnZemOLDBkMWaLgsThX+2FkyGBIE5xw
-        //DYf73VhQwZDGmC8zTBlVmNYHshUrdUlSb92XgdgsfC40KGjGdoVDwuZMh4hkbF40KGjGdoVDwuZMh4
-        hkbF40KGjGdoVDwuZMh4hkbF40KGjGdoVDwuZMh4hkbF40KGjGdoVDwuZMh4hkbF40KGjGdoVDwuZMh4
-        hkbF40KGjGdoVDwuZMh4hkbF40KGjGdoVDwuZMh4hkbF40KGjGdoVDwuZMh4hkbF40KGjGdoVDwurOnQ
-        Cgf4DnioHUTVRcTeUD70R097Iw2vpxyaYPuCmxrlONtZMN3NsnqSD18aYnfBDRdZwXadTfkBfoNHyqKj
-        7qrcBy04fSVs7Abc2TeFXTbBJYG7JrgmcDeu4E+f7zYZvoFL8Fb1MdSDh7omxdNTAribjWDGRL9U/QbX
-        pms5PD0lgLtJBZ8SJpXXLlW/wXXpWg5PTwngbjrBYu01+EU1x2lNV5edkcPTUwK4m49gA7k9m/uaD5ma
-        wRkKT08J4G52gu1Z3NfcZGoGZyg8PSWAu3kJNrbVbFtXeHpKAHdNcE3grgmuCdw1wTWBuya4JnDXBNcE
-        7uYlGPkx1VxlagZnKDw9JYC72Qk+p5rTTM3gDIWnpwRwNx/ByN7xOniV1nR12Rk5PD0lgLvpBAP+Zc9N
-        l/1fU/1GWpfjuT0lgLtJBecYPFFRL3luTwngbjaCr4Bdf+VlgaGeQZ7bUwK4G1fw2oC7JrgmcNcE1wTu
-        muCawN1ugoG609D+P5ANsDsK1foasHM3B+ZCrad3omYFN8qwu+B2d+UTe7hoz+DK/BNsH4ll15Uc6R2G
-        dp1RdWsgvcaaG1XXcyJfDZmukIeu+T0a9kLGLq5VHSNDxoYkQ5vgJ5rgkti5Jy6a4JLYuScumuCS2Lkn
-        Lprgkti5Jy6a4JLYuScuqghuPNEEV6YJrkwTXJkigsf6+O4lsuU/wmxe/AV8tbn2KMM22QAAAABJRU5E
-        rkJggg==
+        iVBORw0KGgoAAAANSUhEUgAAAFgAAABjCAYAAAAfKMdaAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAu
+        IwAALiMBeKU/dgAABIVJREFUeF7tnT1OHEEQhX0EfAPkEyD5Ag64gnMix85ICbmCM2Ii5yQcgABbgHFg
+        yYEDR7ZvsH5lzZin1uvZ3aJ7fmo6+CT2dVVNz8dqFsHs8mKz2Qxyd/9wDTYL4yc4UOczNjJksNHFCH74
+        8pUf34LJJcuQwSaX+AzuuVXnNCYyZLDJJQs2LtR5jYUMGWwwFXwB3swMuxzwHlMmkyxDBptLBZ+puikR
+        e1RMIlmGDDa2RMEfk8c9o0uWIYNNLVHwGThJsp5RJcuQwYYWKbjL3yd5z2iSZchgM4sV3K3ZizKv9Ywi
+        WYYMNrJowd16TnL1c5Ehg00sXnBXk5N8ktaWRIYMNhBCcFc3umQZMjh4GMEG1kaVLEMGBw4l2MD6aJJl
+        yOCg4QQbqBlFsgwZHDCkYAN1ud9hFJMsQwYHiyz4AFSVLEMGBwor2EBtTvIfcKR69kGGDA4SWrCB+mqS
+        ZcjgAOEFG+ipIlmGDIavQrCBvuKSZchg8GoEG+gtKlmGDIauSrCB/mKSZchg4OoEG5hxBEwozzX2kixD
+        BsNWKdjAnCHJh6onRYYMBq1WsIFZOcl2Cdl6Y4sMGQxZouCxOFf7YWTIYEgTnHD/8Nh/vdWFDBkMaYLz
+        NMGVWY1geyFSt1SVJv3ZeB2Cx8LjQoaMZ2hUPC5kyHiGRsXjQoaMZ2hUPC5kyHiGRsXjQoaMZ2hUPC5k
+        yHiGRsXjQoaMZ2hUPC5kyHiGRsXjQoaMZ2hUPC5kyHiGRsXjQoaMZ2hUPC5kyHiGRsXjQoaMZ2hUPC5k
+        yHiGRsXjQoaMZ2hUPC5kyHiGRsXjQoaMZ2hUPC5kyHiGRsXjQoaMZ2hUPC6s6dAKB/gOeKgdRNVFxN5Q
+        PvRHT3sjDa+nHJpg+4KbGuU421kw3c2yepIPXxpid8ENF1nBdp1N+QF+g0fKoqPuqtwHLTh9JWzsBtzZ
+        N4VdNsElgbsmuCZwN67gT5/vNhm+gUvwVvUx1IOHuibF01MCuJuNYMZEv1T9Btemazk8PSWAu0kFnxIm
+        ldcuVb/BdelaDk9PCeBuOsFi7TX4RTXHaU1Xl52Rw9NTAribj2ADuT2b+5oPmZrBGQpPTwngbnaC7Vnc
+        19xkagZnKDw9JYC7eQk2ttVsW1d4ekoAd01wTeCuCa4J3DXBNYG7JrgmcNcE1wTu5iUY+THVXGVqBmco
+        PD0lgLvZCT6nmtNMzeAMhaenBHA3H8HI3vE6eJXWdHXZGTk8PSWAu+kEA/5lz02X/V9T/UZal+O5PSWA
+        u0kF5xg8UVEveW5PCeBuNoKvgF1/5WWBoZ5BnttTArgbV/DagLsmuCZw1wTXBO6a4JrA3W6CgbrT0P4/
+        kA2wOwrV+hqwczcH5kKtp3eiZgU3yrC74HZ35RN7uGjP4Mr8E2wfiWXXlRzpHYZ2nVF1ayC9xpobVddz
+        Il8Nma6Qh675PRr2QsYurlUdI0PGhiRDm+AnmuCS2LknLprgkti5Jy6a4JLYuScumuCS2LknLprgkti5
+        Jy6qCG480QRXpgmuTBNcmSKCx/r47iWy5T/CbF78BXy1ufYowzbZAAAAAElFTkSuQmCC
 </value>
   </data>
 </root>

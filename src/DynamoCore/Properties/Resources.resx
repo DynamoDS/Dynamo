@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -499,9 +499,6 @@ Sorry about that.</value>
   <data name="ToolTipOutput" xml:space="preserve">
     <value>Output #</value>
   </data>
-  <data name="ToolTipSymbol" xml:space="preserve">
-    <value>Symbol</value>
-  </data>
   <data name="WarningCannotFindType" xml:space="preserve">
     <value>Cannot find type '{0}'</value>
   </data>
@@ -671,13 +668,15 @@ value : bool = false</value>
     <comment>The default name of home workspace</comment>
   </data>
   <data name="UnresolvedNodesWarningMessage" xml:space="preserve">
-    <value>This graph currently contains some unresolved nodes, and cannot be saved until the nodes are resolved. If the graph is saved using SaveAs - the unresolved nodes will be removed from the file.</value>
+    <value>This may be caused by a missing package, incompatible package version, or missing host program. If you Save As, the unresolved nodes will be removed.
+
+Resolve or remove the unresolved nodes and try again.</value>
   </data>
   <data name="UnresolvedNodesWarningShortMessage" xml:space="preserve">
-    <value>This graph cannot be saved until unresolved nodes are removed or resolved.</value>
+    <value>The graph has unresolved nodes and cannot be saved.</value>
   </data>
   <data name="UnresolvedNodesWarningTitle" xml:space="preserve">
-    <value>Graph Contains Unresolved Nodes and Cannot Be Saved.</value>
+    <value>Unable to save graph</value>
   </data>
   <data name="CodeBlockTempIdentifierOutputLabel" xml:space="preserve">
     <value>Value of expression at line {0}</value>
@@ -787,10 +786,10 @@ This package is loaded and ready to be used.</value>
 This package has not been loaded because another conflicting package was loaded before it.</value>
   </data>
   <data name="GroupDefaultText" xml:space="preserve">
-    <value>&lt;Double click here to edit group description&gt;</value>
+    <value>Description &lt;Double click here to edit group description&gt;</value>
   </data>
   <data name="GroupNameDefaultText" xml:space="preserve">
-    <value>&lt;Double click here to edit group title&gt;</value>
+    <value>Title &lt;Double click here to edit group title&gt;</value>
   </data>
   <data name="NodeInformationalStateShowAllErrors" xml:space="preserve">
     <value>Show all errors</value>
@@ -812,5 +811,104 @@ This package has not been loaded because another conflicting package was loaded 
   </data>
   <data name="NodeUnhandledMsg" xml:space="preserve">
     <value>Unhandled 'DummyNode.NodeNature' value: {0}</value>
+  </data>
+  <data name="CoreLibraryLoadFailureForBlockedAssembly" xml:space="preserve">
+    <value>{0}
+
+This assembly is likely blocked. Try restarting Dynamo after unblocking this assembly and all other core assemblies that might be blocked. If you are running a downloaded DynamoSandbox build that is extracted from a .zip file, try using 7zip to extract the Dynamo binaries and try again.</value>
+  </data>
+  <data name="LibraryLoadFailureForBlockedAssembly" xml:space="preserve">
+    <value>{0}
+
+This assembly is likely blocked. Try importing it again after unblocking the assembly.</value>
+  </data>
+  <data name="PackageLoadFailureForBlockedAssembly" xml:space="preserve">
+    <value>{0}
+
+This package likely contains an assembly that is blocked. You will need to load the package again after unblocking the assembly. Restart Dynamo to reload the package.</value>
+  </data>
+  <data name="CoreLibraryLoadFailureMessageBoxTitle" xml:space="preserve">
+    <value>Core library load failure</value>
+  </data>
+  <data name="LibraryLoadFailureMessageBoxTitle" xml:space="preserve">
+    <value>Library load failure</value>
+  </data>
+  <data name="FileLoadFailureMessageBoxTitle" xml:space="preserve">
+    <value>File load failure</value>
+  </data>
+  <data name="GroupStyleDefaultActions" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="GroupStyleDefaultActionsColor" xml:space="preserve">
+    <value>B9F9E1</value>
+  </data>
+  <data name="GroupStyleDefaultInputs" xml:space="preserve">
+    <value>Inputs</value>
+  </data>
+  <data name="GroupStyleDefaultInputsColor" xml:space="preserve">
+    <value>FFB8D8</value>
+  </data>
+  <data name="GroupStyleDefaultOutputs" xml:space="preserve">
+    <value>Outputs</value>
+  </data>
+  <data name="GroupStyleDefaultOutputsColor" xml:space="preserve">
+    <value>FFC999</value>
+  </data>
+  <data name="GroupStyleDefaultReview" xml:space="preserve">
+    <value>Review</value>
+  </data>
+  <data name="GroupStyleDefaultReviewColor" xml:space="preserve">
+    <value>A4E1FF</value>
+  </data>
+  <data name="ToolTipInputData" xml:space="preserve">
+    <value>Input Data</value>
+  </data>
+  <data name="ToolTipOutputData" xml:space="preserve">
+    <value>Output Data</value>
+  </data>
+  <data name="SplashScreenInitPreferencesSettings" xml:space="preserve">
+    <value>Initializing preferences...</value>
+  </data>
+  <data name="SplashScreenLoadNodeLibrary" xml:space="preserve">
+    <value>Loading Node Library...</value>
+  </data>
+  <data name="AutocompleteNoRecommendationsTitle" xml:space="preserve">
+    <value>No recommendations</value>
+  </data>
+  <data name="AutocompleteLowConfidenceTitle" xml:space="preserve">
+    <value>Low confidence</value>
+  </data>
+  <data name="AutocompleteNoRecommendationsMessage" xml:space="preserve">
+    <value>There are no recommendations yet. You can try switching to node type match autocomplete.</value>
+  </data>
+  <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
+    <value>All recommendations are below the specified confidence level. You can try them or adjust the confidence settings in Preferences.</value>
+  </data>
+  <data name="AutocompleteLowConfidenceTooltip" xml:space="preserve">
+    <value>Show Recommendations that are below the confidence level.</value>
+  </data>
+  <data name="LoginNeededTitle" xml:space="preserve">
+    <value>Not authenticated</value>
+  </data>
+  <data name="LoginNeededMessage" xml:space="preserve">
+    <value>You need to login to your account to get recommendations. Please log in or switch to node type match autocomplete.</value>
+  </data>
+  <data name="FailedInsertFileNodeExistNotification" xml:space="preserve">
+    <value>Failed to insert the file as some of the nodes already exist in the current worspace.</value>
+  </data>
+  <data name="InsertDialogBoxText" xml:space="preserve">
+    <value>Insert Dynamo Definition...</value>
+  </data>
+  <data name="InsertGraphRunModeNotificationText" xml:space="preserve">
+    <value>Example file added to workspace. Run mode changed to Manual.</value>
+  </data>
+  <data name="DynamoLanguages_noxlate" xml:space="preserve">
+    <value>Default,English,Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文</value>
+  </data>
+  <data name="FormulaDSConversionFailure" xml:space="preserve">
+    <value>Formula failed to convert to DesignScript code. Please edit the formula manually to use it in a CodeBlock node.</value>
+  </data>
+  <data name="FormulaMigrated" xml:space="preserve">
+    <value>Formula node has been deprecated. It has been automatically migrated to a CodeBlock node. Note that results may vary after the migration depending on lacing options selected on the original Formula node. Appropriate replication guides might need to be applied to the CodeBlock node script.</value>
   </data>
 </root>

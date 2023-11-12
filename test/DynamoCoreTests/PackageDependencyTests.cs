@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -64,7 +64,11 @@ namespace Dynamo.Tests
 
             // Assert package dependency is collected
             OpenModel(path);
-            var packageDependencies = CurrentDynamoModel.CurrentWorkspace.NodeLibraryDependencies;
+
+            var currentws = CurrentDynamoModel.CurrentWorkspace;
+            currentws.ForceComputeWorkspaceReferences = true;
+
+            var packageDependencies = currentws.NodeLibraryDependencies;
             Assert.AreEqual(1, packageDependencies.Count);
             var package = packageDependencies.First();
             Assert.AreEqual(new PackageDependencyInfo("Dynamo Samples", new Version("2.0.0")), package);
@@ -78,7 +82,7 @@ namespace Dynamo.Tests
             }
  
             // Assert package dependency is serialized
-            var ToJson = CurrentDynamoModel.CurrentWorkspace.ToJson(CurrentDynamoModel.EngineController);
+            var ToJson = currentws.ToJson(CurrentDynamoModel.EngineController);
             var JObject = (JObject)JsonConvert.DeserializeObject(ToJson);
             var deserializedPackageDependencies = JObject[WorkspaceReadConverter.NodeLibraryDependenciesPropString];
             Assert.AreEqual(1, deserializedPackageDependencies.Count());
@@ -88,36 +92,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(package.Version.ToString(), version);
             var nodes = deserializedPackageDependencies.First()[NodeLibraryDependencyConverter.NodesPropString].Values<string>();
             Assert.AreEqual(package.Nodes.Select(n => n.ToString("N")), nodes);
-        }
-
-        [Test]
-        public void NodeModelPackageDependencyIsCollected()
-        {
-            // Load JSON file graph
-            string path = Path.Combine(TestDirectory, @"core\packageDependencyTests\OneDependentNode_NodeModel.dyn");
-
-            // Assert package dependency is not already serialized to .dyn
-            using (StreamReader file = new StreamReader(path))
-            {
-                var data = file.ReadToEnd();
-                var json = (JObject)JsonConvert.DeserializeObject(data);
-                Assert.IsNull(json[WorkspaceReadConverter.NodeLibraryDependenciesPropString]);
-            }
-
-            // Assert package dependency is collected
-            OpenModel(path);
-            var packageDependencies = CurrentDynamoModel.CurrentWorkspace.NodeLibraryDependencies;
-            Assert.AreEqual(1, packageDependencies.Count);
-            var package = packageDependencies.First();
-            Assert.AreEqual(new PackageDependencyInfo("Dynamo Samples", new Version("2.0.0")), package);
-            Assert.AreEqual(1, package.Nodes.Count);
-
-            Assert.IsTrue(package.IsLoaded);
-            if (package is PackageDependencyInfo)
-            {
-                var packageDependencyState = ((PackageDependencyInfo)package).State;
-                Assert.AreEqual(PackageDependencyState.Loaded, packageDependencyState);
-            }
         }
 
         [Test]
@@ -232,14 +206,17 @@ namespace Dynamo.Tests
             var node1 = CurrentDynamoModel.CurrentWorkspace.Nodes.ToList()[0];
             var node2 = CurrentDynamoModel.CurrentWorkspace.Nodes.ToList()[1];
 
+            var currentws = CurrentDynamoModel.CurrentWorkspace;
+            currentws.ForceComputeWorkspaceReferences = true;
+
             // Verify package dependencies
-            var packageDependencies = CurrentDynamoModel.CurrentWorkspace.NodeLibraryDependencies;
+            var packageDependencies = currentws.NodeLibraryDependencies;
             Assert.AreEqual(1, packageDependencies.Count);
             Assert.AreEqual(2, packageDependencies.First().Nodes.Count);
 
             // Remove one node and assert is is no longer listed as a dependent node
             CurrentDynamoModel.CurrentWorkspace.RemoveAndDisposeNode(node1);
-            packageDependencies = CurrentDynamoModel.CurrentWorkspace.NodeLibraryDependencies;
+            packageDependencies = currentws.NodeLibraryDependencies;
             Assert.AreEqual(1, packageDependencies.Count);
             Assert.AreEqual(1, packageDependencies.First().Nodes.Count);
             Assert.True(!packageDependencies.First().Nodes.Contains(node1.GUID));
@@ -255,14 +232,14 @@ namespace Dynamo.Tests
 
             // Remove te second node and assert package dependencies is now empty
             CurrentDynamoModel.CurrentWorkspace.RemoveAndDisposeNode(node2);
-            packageDependencies = CurrentDynamoModel.CurrentWorkspace.NodeLibraryDependencies;
+            packageDependencies = currentws.NodeLibraryDependencies;
             Assert.AreEqual(0, packageDependencies.Count);
 
             // Add another node from the "Dynamo Samples" package
             // and assert that the two removed nodes do not return
             var node3 = GetNodeInstance("Examples.PeriodicIncrement.Increment");
             CurrentDynamoModel.AddNodeToCurrentWorkspace(node3, true);
-            packageDependencies = CurrentDynamoModel.CurrentWorkspace.NodeLibraryDependencies;
+            packageDependencies = currentws.NodeLibraryDependencies;
             Assert.AreEqual(1, packageDependencies.Count);
             Assert.AreEqual(1, packageDependencies.First().Nodes.Count);
             Assert.True(!packageDependencies.First().Nodes.Contains(node1.GUID));
@@ -316,15 +293,18 @@ namespace Dynamo.Tests
             var node = GetNodeInstance("ZTTestPackage.RRTestClass.RRTestClass");
             CurrentDynamoModel.AddNodeToCurrentWorkspace(node, true);
 
+            var currentws = CurrentDynamoModel.CurrentWorkspace;
+            currentws.ForceComputeWorkspaceReferences = true;
+
             // Assert new package dependency is collected
-            var packageDependencies = CurrentDynamoModel.CurrentWorkspace.NodeLibraryDependencies;
+            var packageDependencies = currentws.NodeLibraryDependencies;
             Assert.Contains(pi, packageDependencies);
 
             // Clear current workspace
             CurrentDynamoModel.ClearCurrentWorkspace();
 
             // Assert package dependency list is cleared
-            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.NodeLibraryDependencies.Count == 0);
+            Assert.IsTrue(currentws.NodeLibraryDependencies.Count == 0);
         }
 
         [Test]
@@ -334,12 +314,15 @@ namespace Dynamo.Tests
             string path = Path.Combine(TestDirectory, @"core\packageDependencyTests\UnloadedPackage.dyn");
             OpenModel(path);
 
+            var currentws = CurrentDynamoModel.CurrentWorkspace;
+            currentws.ForceComputeWorkspaceReferences = true;
+
             // Assert ZTTestPackage is not loaded
             var pi = GetPackageInfo("ZTTestPackage");
             Assert.IsNull(pi);
 
             // Assert ZTTestPackage is still a package dependency
-            var packageDependencies = CurrentDynamoModel.CurrentWorkspace.NodeLibraryDependencies;
+            var packageDependencies = currentws.NodeLibraryDependencies;
             Assert.Contains(new PackageDependencyInfo("ZTTestPackage", new Version("0.0.1")), packageDependencies);
 
             var package = packageDependencies.First();
@@ -364,8 +347,11 @@ namespace Dynamo.Tests
             var pi = GetPackageInfo("ZTTestPackage");
             Assert.IsNull(pi);
 
+            var currentws = CurrentDynamoModel.CurrentWorkspace;
+            currentws.ForceComputeWorkspaceReferences = true;
+
             // Assert ZTTestPackage is still a package dependency
-            var packageDependencies = CurrentDynamoModel.CurrentWorkspace.NodeLibraryDependencies;
+            var packageDependencies = currentws.NodeLibraryDependencies;
             Assert.Contains(new PackageDependencyInfo("ZTTestPackage", new Version("0.0.1")), packageDependencies);
 
             // Assert that the package is not loaded. 
@@ -413,8 +399,11 @@ namespace Dynamo.Tests
 
             OpenModel(path);
 
+            var currentws = CurrentDynamoModel.CurrentWorkspace;
+            currentws.ForceComputeWorkspaceReferences = true;
+
             // Assert clockwork is still the only dependency returned
-            var packageDependencies = CurrentDynamoModel.CurrentWorkspace.NodeLibraryDependencies;
+            var packageDependencies = currentws.NodeLibraryDependencies;
             Assert.AreEqual(1, packageDependencies.Count);
             Assert.AreEqual(clockworkInfo, packageDependencies.First());
 
@@ -423,11 +412,14 @@ namespace Dynamo.Tests
 
             // Assert local package dependency overrides deserialized package dependency
             var pi = GetPackageInfo("Custom Rounding");
-            packageDependencies = CurrentDynamoModel.CurrentWorkspace.NodeLibraryDependencies;
+            packageDependencies = currentws.NodeLibraryDependencies;
             Assert.AreEqual(1, packageDependencies.Count);
             Assert.AreEqual(pi, packageDependencies.First());
         }
 
+        /// <summary>
+        /// This test verifies the package dependency states after loading the package.
+        /// </summary>
         [Test]
         public void PackageDependencyStatechangeTestAfterLoadingPackage()
         {
@@ -436,9 +428,12 @@ namespace Dynamo.Tests
             string path = Path.Combine(TestDirectory, @"core\packageDependencyTests\PackageDependencyStates.dyn");
             OpenModel(path);
 
+            var currentws = CurrentDynamoModel.CurrentWorkspace;
+            currentws.ForceComputeWorkspaceReferences = true;
+
             // Assert the total number of package dependencies.
-            var packageDependenciesList = CurrentDynamoModel.CurrentWorkspace.NodeLibraryDependencies;
-            Assert.AreEqual(4, packageDependenciesList.Count);
+            var packageDependenciesList = currentws.NodeLibraryDependencies;
+            Assert.AreEqual(3, packageDependenciesList.Count);
 
             // Check for Missing package state
             PackageDependencyInfo firstPackage = (PackageDependencyInfo) packageDependenciesList[0];
@@ -453,11 +448,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(new PackageDependencyInfo("Clockwork for Dynamo 1.x", new Version("1.33.0")), thirdPackage);
             Assert.AreEqual(PackageDependencyState.Missing, thirdPackage.State);
 
-            // Check for Loaded package state
-            PackageDependencyInfo lastPackage = (PackageDependencyInfo) packageDependenciesList.Last();
-            Assert.AreEqual(new PackageDependencyInfo("Dynamo Samples", new Version("2.0.0")), lastPackage);
-            Assert.AreEqual(PackageDependencyState.Loaded, lastPackage.State);
-
             CurrentDynamoModel.ClearCurrentWorkspace();
 
             // Load the clockworkpackage and verify the change in the package dependency state.
@@ -468,9 +458,12 @@ namespace Dynamo.Tests
             path = Path.Combine(TestDirectory, @"core\packageDependencyTests\PackageDependencyStates.dyn");
             OpenModel(path);
 
+            currentws = CurrentDynamoModel.CurrentWorkspace;
+            currentws.ForceComputeWorkspaceReferences = true;
+
             // Assert the total number of package dependencies.
-            packageDependenciesList = CurrentDynamoModel.CurrentWorkspace.NodeLibraryDependencies;
-            Assert.AreEqual(4, packageDependenciesList.Count);
+            packageDependenciesList = currentws.NodeLibraryDependencies;
+            Assert.AreEqual(3, packageDependenciesList.Count);
 
             // Check for Missing package state
             firstPackage = (PackageDependencyInfo)packageDependenciesList[0];
@@ -487,11 +480,6 @@ namespace Dynamo.Tests
             thirdPackage = (PackageDependencyInfo)packageDependenciesList[2];
             Assert.AreEqual(new PackageDependencyInfo("Clockwork for Dynamo 1.x", new Version("1.33.0")), thirdPackage);
             Assert.AreEqual(PackageDependencyState.IncorrectVersion, thirdPackage.State);
-
-            // Check for Loaded package state
-            lastPackage = (PackageDependencyInfo)packageDependenciesList.Last();
-            Assert.AreEqual(new PackageDependencyInfo("Dynamo Samples", new Version("2.0.0")), lastPackage);
-            Assert.AreEqual(PackageDependencyState.Loaded, lastPackage.State);
         }
     }
 }

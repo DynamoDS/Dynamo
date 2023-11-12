@@ -1,4 +1,4 @@
-﻿
+
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -217,40 +217,116 @@ namespace DynamoCoreWpfTests
         [Test]
         public void InstalledPackagesContainsCorrectNumberOfPackages()
         {
-            var pathManager = new Mock<IPathManager>();
-            pathManager.SetupGet(x => x.PackagesDirectories).Returns(
-                () => new List<string> { PackagesDirectory });
-
-            var loader = new PackageLoader(pathManager.Object);
+            var setting = new PreferenceSettings()
+            {
+                CustomPackageFolders = { PackagesDirectory }
+            };
+            var vm = CreatePackagePathViewModel(setting);
             var libraryLoader = new ExtensionLibraryLoader(ViewModel.Model);
 
-            loader.PackagesLoaded += libraryLoader.LoadPackages;
-            loader.RequestLoadNodeLibrary += libraryLoader.LoadLibraryAndSuppressZTSearchImport;
+            vm.packageLoader.PackagesLoaded += libraryLoader.LoadPackages;
+            vm.packageLoader.RequestLoadNodeLibrary += libraryLoader.LoadLibraryAndSuppressZTSearchImport;
 
             var packagesLoaded = false;
 
             Action<IEnumerable<Assembly>> pkgsLoadedDelegate = (x) => { packagesLoaded = true; };
-            loader.PackagesLoaded += pkgsLoadedDelegate;
+            vm.packageLoader.PackagesLoaded += pkgsLoadedDelegate;
 
-            ViewModel.Model.PreferenceSettings.CustomPackageFolders = new List<string>();
-            var loadPackageParams = new LoadPackageParams
-            {
-                Preferences = ViewModel.Model.PreferenceSettings,
-
-            };
-            loader.LoadAll(loadPackageParams);
-            Assert.AreEqual(19, loader.LocalPackages.Count());
+            vm.packageLoader.LoadAll(vm.loadPackageParams);
+            Assert.AreEqual(20, vm.packageLoader.LocalPackages.Count());
             Assert.AreEqual(true, packagesLoaded);
 
-            var installedPackagesViewModel = new InstalledPackagesViewModel(ViewModel, loader);
-            Assert.AreEqual(19, installedPackagesViewModel.LocalPackages.Count);
+            var installedPackagesViewModel = new InstalledPackagesViewModel(ViewModel, vm.packageLoader);
+            Assert.AreEqual(20, installedPackagesViewModel.LocalPackages.Count);
 
             var installedPackagesView = new Dynamo.Wpf.Controls.InstalledPackagesControl();
             installedPackagesView.DataContext = installedPackagesViewModel;
             DispatcherUtil.DoEvents();
 
-            Assert.AreEqual(19, installedPackagesView.SearchResultsListBox.Items.Count);
+            Assert.AreEqual(20, installedPackagesView.SearchResultsListBox.Items.Count);
             Assert.AreEqual(2, installedPackagesView.Filters.Items.Count);
+
+            vm.packageLoader.PackagesLoaded -= libraryLoader.LoadPackages;
+            vm.packageLoader.RequestLoadNodeLibrary -= libraryLoader.LoadLibraryAndSuppressZTSearchImport;
+        }
+
+        [Test]
+        public void RemoveAddPackagePathChangesInstalledPackageState()
+        {
+            var setting = new PreferenceSettings()
+            {
+                CustomPackageFolders = { PackagesDirectory }
+            };
+
+            var vm = CreatePackagePathViewModel(setting);
+            var libraryLoader = new ExtensionLibraryLoader(ViewModel.Model);
+
+            vm.packageLoader.PackagesLoaded += libraryLoader.LoadPackages;
+            vm.packageLoader.RequestLoadNodeLibrary += libraryLoader.LoadLibraryAndSuppressZTSearchImport;
+
+            // Load packages in package path.
+            vm.packageLoader.LoadAll(vm.loadPackageParams);
+
+            Assert.AreEqual(20, vm.packageLoader.LocalPackages.Count());
+            // Remove package path.
+            vm.DeletePathCommand.Execute(0);
+
+            foreach(var pkg in vm.packageLoader.LocalPackages)
+            {
+                Assert.True(pkg.LoadState.State == PackageLoadState.StateTypes.Loaded);
+                Assert.True(pkg.LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForUnload);
+            }
+
+            var path = string.Empty;
+            vm.RequestShowFileDialog += (sender, args) => { args.Path = path; };
+            path = Path.Combine(GetTestDirectory(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)), "pkgs");
+
+            //Add the path back.
+            vm.AddPathCommand.Execute(null);
+
+            foreach (var pkg in vm.packageLoader.LocalPackages)
+            {
+                Assert.True(pkg.LoadState.State == PackageLoadState.StateTypes.Loaded);
+                Assert.True(pkg.LoadState.ScheduledState == PackageLoadState.ScheduledTypes.None);
+            }
+
+            vm.packageLoader.PackagesLoaded -= libraryLoader.LoadPackages;
+            vm.packageLoader.RequestLoadNodeLibrary -= libraryLoader.LoadLibraryAndSuppressZTSearchImport;
+        }
+
+        [Test]
+        public void EnableCustomPackagePathsLoadsPackagesOnClosingPreferences()
+        {
+            var setting = new PreferenceSettings()
+            {
+                CustomPackageFolders = { PackagesDirectory }
+            };
+
+            var vm = CreatePackagePathViewModel(setting);
+            var libraryLoader = new ExtensionLibraryLoader(ViewModel.Model);
+
+            vm.packageLoader.PackagesLoaded += libraryLoader.LoadPackages;
+            vm.packageLoader.RequestLoadNodeLibrary += libraryLoader.LoadLibraryAndSuppressZTSearchImport;
+
+            (setting as IDisablePackageLoadingPreferences).DisableCustomPackageLocations = true;
+
+            // Load packages in package path.
+            vm.packageLoader.LoadAll(vm.loadPackageParams);
+
+            Assert.AreEqual(0, vm.packageLoader.LocalPackages.Count());
+
+            // simulate turning off "disable custom package paths" toggle.
+            (setting as IDisablePackageLoadingPreferences).DisableCustomPackageLocations = false;
+            vm.SetPackagesScheduledState(setting.CustomPackageFolders.First(), false);
+
+            // simulate closing preferences dialog by saving changes to packagepathviewmodel 
+            vm.SaveSettingCommand.Execute(null);
+
+            // packages are expected to load from 'PackagesDirectory' above when toggle is turned off
+            Assert.AreEqual(20, vm.packageLoader.LocalPackages.Count());
+
+            vm.packageLoader.PackagesLoaded -= libraryLoader.LoadPackages;
+            vm.packageLoader.RequestLoadNodeLibrary -= libraryLoader.LoadLibraryAndSuppressZTSearchImport;
         }
 
         [Test]
@@ -306,19 +382,13 @@ namespace DynamoCoreWpfTests
             {
                 CustomPackageFolders = {@"Z:\" }
             };
-            var pathManager = new Mock<IPathManager>();
-            pathManager.SetupGet(x => x.PackagesDirectories).Returns(
-                () => setting.CustomPackageFolders);
-
-            PackageLoader loader = new PackageLoader(pathManager.Object);
-            loader.PackagesLoaded += Loader_PackagesLoaded;
+            var vm = CreatePackagePathViewModel(setting);
+            vm.packageLoader.PackagesLoaded += Loader_PackagesLoaded;
 
             LoadPackageParams loadParams = new LoadPackageParams
             {
                 Preferences = setting,
             };
-            CustomNodeManager customNodeManager = Model.CustomNodeManager;
-            var vm= new PackagePathViewModel(loader, loadParams, customNodeManager);
 
             vm.SaveSettingCommand.Execute(null);
 
@@ -346,7 +416,7 @@ namespace DynamoCoreWpfTests
             {
                 count = count + obj.Count();
             }
-            loader.PackagesLoaded -= Loader_PackagesLoaded;
+            vm.packageLoader.PackagesLoaded -= Loader_PackagesLoaded;
         }
 
         [Test]
@@ -371,16 +441,18 @@ namespace DynamoCoreWpfTests
 
         #endregion
         #region Setup methods
-        private PackagePathViewModel CreatePackagePathViewModel(PreferenceSettings setting)
+        private PackagePathViewModel CreatePackagePathViewModel(PreferenceSettings settings)
         {
-            var pathManager = new Mock<IPathManager>();
-            pathManager.SetupGet(x => x.PackagesDirectories).Returns(
-                () => setting.CustomPackageFolders);
+            var pathManager = new PathManager(new PathManagerParams { })
+            {
+                Preferences = settings
+            };
 
-            PackageLoader loader = new PackageLoader(pathManager.Object);
+            PackageLoader loader = new PackageLoader(pathManager);
+            
             LoadPackageParams loadParams = new LoadPackageParams
             {
-                Preferences = setting,
+                Preferences = settings,
             };
             CustomNodeManager customNodeManager = Model.CustomNodeManager;
             return new PackagePathViewModel(loader, loadParams, customNodeManager);

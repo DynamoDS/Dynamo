@@ -1,0 +1,403 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "DayOfYear",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "2006;",
+      "Id": "ef798129ae36476898fb576b32ad0958",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "9f2b6f6a5672495e8572bf4f9b406104",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "8;",
+      "Id": "e7776d3a0df0421fb100b5caead8c5d1",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "17cb3c59b7ef48238dd98e2c2d0c6cad",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "24a8b5ecbae94670a6126866cf966c41",
+      "Inputs": [
+        {
+          "Id": "74e5b3fa5f844f068449c2b47f0b8a79",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c4277cec74614c0c88c552bc141d5470",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "8;",
+      "Id": "a7e69ddef276489d8b30e39587d1aab8",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "c55d9128402c4c9cbad06f5ac822dcdc",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.DateTime.ByDateAndTime@int,int,int,int,int,int,int",
+      "Id": "482d9de01eb34598b38d241c1b3c1ad0",
+      "Inputs": [
+        {
+          "Id": "f77c9da99519454881f03446bea0b837",
+          "Name": "year",
+          "Description": "Exact year (1-9999)\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0cae96f1365c4a739526945befe318da",
+          "Name": "month",
+          "Description": "Exact month (1-12)\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "788ba6de7d2e4575b853f5b9916bc56d",
+          "Name": "day",
+          "Description": "Exact day (1-[days in month])\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "79ea3c527dca4635bcdc63099f3e23b0",
+          "Name": "hour",
+          "Description": "Exact hour (0-23)\n\nint\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "95664a63f33e4d02b3f2f4ed5449c18d",
+          "Name": "minute",
+          "Description": "Exact minute (0-59)\n\nint\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "34b32eb4236b47abb1cd27aa53ea4695",
+          "Name": "second",
+          "Description": "Exact second (0-59)\n\nint\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7059136c06df46e189f862e63922cff4",
+          "Name": "millisecond",
+          "Description": "Exact millisecond (0-999)\n\nint\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ec2fd706db6249ec9295709d1c02020c",
+          "Name": "dateTime",
+          "Description": "DateTime",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Creates a new DateTime at an exact date and time.\n\nDateTime.ByDateAndTime (year: int, month: int, day: int, hour: int = 0, minute: int = 0, second: int = 0, millisecond: int = 0): var"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "16;",
+      "Id": "e398892937d840f0983355ae9660e4b7",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "12025ac63fcc409a8daf53a9b9a98008",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "24;",
+      "Id": "3221440ec68340d383f8dc9c0937d4cd",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "9c9eba5f2a504315a3470a0587546078",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.DateTime.DayOfYear@var",
+      "Id": "6387b8bb0c544a279eae0e2ac44e1543",
+      "Inputs": [
+        {
+          "Id": "48e87317f81743079ea9323d12b7803b",
+          "Name": "dateTime",
+          "Description": "A DateTime.\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e5396c00c3664e3884925cef3e074579",
+          "Name": "int",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns the day of the year (0-366)\n\nDateTime.DayOfYear (dateTime: var): int"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "9f2b6f6a5672495e8572bf4f9b406104",
+      "End": "f77c9da99519454881f03446bea0b837",
+      "Id": "a9d3fa2174b644c7b6d8dffb246ffe94"
+    },
+    {
+      "Start": "17cb3c59b7ef48238dd98e2c2d0c6cad",
+      "End": "0cae96f1365c4a739526945befe318da",
+      "Id": "f25ecce8600a47b3b5ddf4da4da4f03e"
+    },
+    {
+      "Start": "c55d9128402c4c9cbad06f5ac822dcdc",
+      "End": "788ba6de7d2e4575b853f5b9916bc56d",
+      "Id": "0bee705fa3e64602af2fe8085629c349"
+    },
+    {
+      "Start": "ec2fd706db6249ec9295709d1c02020c",
+      "End": "48e87317f81743079ea9323d12b7803b",
+      "Id": "35e2a397d63945b2afd6caab934f36f5"
+    },
+    {
+      "Start": "12025ac63fcc409a8daf53a9b9a98008",
+      "End": "79ea3c527dca4635bcdc63099f3e23b0",
+      "Id": "83bc244cd27543c18649bf222fef4562"
+    },
+    {
+      "Start": "9c9eba5f2a504315a3470a0587546078",
+      "End": "95664a63f33e4d02b3f2f4ed5449c18d",
+      "Id": "50246a3c476e4d0e857b98a1e3ab1c03"
+    },
+    {
+      "Start": "e5396c00c3664e3884925cef3e074579",
+      "End": "74e5b3fa5f844f068449c2b47f0b8a79",
+      "Id": "1dd02fe70b5148a8a557c04a703a2c17"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -10.351632118225098,
+      "EyeY": 13.915582656860352,
+      "EyeZ": 16.000629425048828,
+      "LookX": 16.128910064697266,
+      "LookY": -8.1650753021240234,
+      "LookZ": -20.504016876220703,
+      "UpX": 0.053885128349065781,
+      "UpY": 0.99619466066360474,
+      "UpZ": -0.068501941859722137
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "ef798129ae36476898fb576b32ad0958",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -254.40142643965203,
+        "Y": 2571.1877743681553
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "e7776d3a0df0421fb100b5caead8c5d1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -254.40142643965203,
+        "Y": 2679.1877743681553
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "24a8b5ecbae94670a6126866cf966c41",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 561.598573560348,
+        "Y": 2730.9744410348221
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "a7e69ddef276489d8b30e39587d1aab8",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -254.40142643965203,
+        "Y": 2787.1877743681553
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "DateTime.ByDateAndTime",
+        "Id": "482d9de01eb34598b38d241c1b3c1ad0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -75.401426439652028,
+        "Y": 2730.9744410348221
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "e398892937d840f0983355ae9660e4b7",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -254.40142643965203,
+        "Y": 2895.1877743681553
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "3221440ec68340d383f8dc9c0937d4cd",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -254.40142643965203,
+        "Y": 3003.1877743681553
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "DateTime.DayOfYear",
+        "Id": "6387b8bb0c544a279eae0e2ac44e1543",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 269.598573560348,
+        "Y": 2730.9744410348221
+      }
+    ],
+    "Annotations": [],
+    "X": 185.25056133181704,
+    "Y": -3472.04936606465,
+    "Zoom": 1.34249425219329
+  }
+}

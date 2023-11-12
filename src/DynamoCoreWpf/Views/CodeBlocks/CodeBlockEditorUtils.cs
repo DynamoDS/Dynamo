@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
 using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Engine;
+using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using ICSharpCode.AvalonEdit.Rendering;
@@ -132,19 +133,30 @@ namespace Dynamo.Wpf.Views
             var stream = typeof(CodeHighlightingRuleFactory).Assembly.GetManifestResourceStream(
                             "Dynamo.Wpf.UI.Resources." + Configurations.HighlightingFile);
 
+            // Hyperlink color
+            editor.TextArea.TextView.LinkTextForegroundBrush = new SolidColorBrush(Color.FromArgb(255, 106, 192, 231));
+
             editor.SyntaxHighlighting = HighlightingLoader.Load(
                 new XmlTextReader(stream), HighlightingManager.Instance);
 
+            AddCommonHighlighingRules(editor, controller);
+        }
+
+        // Assigning custom highlighting rules moved to a separate method
+        // So we can reuse for both design script and python script
+        // Allows each individual eidtor to have their own set of rules, and aligns the common ones
+        internal static void AddCommonHighlighingRules(TextEditor editor, EngineController controller)
+        {
             // Highlighting Digits
             var rules = editor.SyntaxHighlighting.MainRuleSet.Rules;
 
             rules.Add(CodeHighlightingRuleFactory.CreateNumberHighlightingRule());
-            
+
             var classRule = CodeHighlightingRuleFactory.CreateClassHighlightRule(controller);
-            if(classRule != null) rules.Add(classRule);
+            if (classRule != null) rules.Add(classRule);
 
             var methodRule = CodeHighlightingRuleFactory.CreateMethodHighlightRule(controller);
-            if(methodRule != null) rules.Add(methodRule);
+            if (methodRule != null) rules.Add(methodRule);
         }
     }
 }

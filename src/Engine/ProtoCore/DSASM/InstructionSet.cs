@@ -10,6 +10,7 @@ namespace ProtoCore.DSASM
     public enum Registers
     {
         RX,
+        LX,
     }
 
     public enum AddressType: int 
@@ -962,8 +963,7 @@ namespace ProtoCore.DSASM
         /// <summary>
         /// Returns an array's next key
         /// </summary>
-        /// <param name="key"></param>
-        /// <param name="core"></param>
+        /// <param name="runtimeCore"></param>
         /// <returns></returns>
         public StackValue GetNextKey(RuntimeCore runtimeCore)
         {
@@ -1000,7 +1000,7 @@ namespace ProtoCore.DSASM
         /// Convert StackValue to boolean typed StackValue. Returns 
         /// StackValue.Null if not able to do conversion.
         /// </summary>
-        /// <param name="core"></param>
+        /// <param name="runtimeCore"></param>
         /// <returns></returns>
         public StackValue ToBoolean(RuntimeCore runtimeCore)
         {
@@ -1013,7 +1013,7 @@ namespace ProtoCore.DSASM
                     return BuildBoolean(opdata != 0);
 
                 case AddressType.Null:
-                    return StackValue.Null; 
+                    return BuildBoolean(false); 
 
                 case AddressType.Double:
                     bool b = !Double.IsNaN(DoubleValue) && !DoubleValue.Equals(0.0);

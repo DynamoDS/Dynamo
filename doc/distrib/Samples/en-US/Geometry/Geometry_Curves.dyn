@@ -1,7 +1,7 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "",
+  "Description": "Dynamo Geometry Sample",
   "Name": "Geometry_Curves",
   "ElementResolver": {
     "ResolutionMap": {}
@@ -18,7 +18,7 @@
         {
           "Id": "7e4ecb613da44ca096e01392bc76cb9a",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -27,7 +27,7 @@
         {
           "Id": "71d831bf6e164d7ba43a8a5e620956e9",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -36,7 +36,7 @@
         {
           "Id": "643d9297ac474b36affa5bf4a97000ce",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -47,7 +47,7 @@
         {
           "Id": "84830109d30f46f19ae4ee0abf993f6f",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -66,7 +66,7 @@
         {
           "Id": "792a8e92696d4784ba634c5c58445feb",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -75,7 +75,7 @@
         {
           "Id": "2c87aff610e94f9fb20e0bb9a0f40e35",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -84,7 +84,7 @@
         {
           "Id": "81f82d1becc84afda4aae302076ef4ed",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -95,7 +95,7 @@
         {
           "Id": "6b94b48be9fc4c8c851a52aa9565b0cf",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -114,7 +114,7 @@
         {
           "Id": "bc23b06d3147480693728d866bfd3102",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -123,7 +123,7 @@
         {
           "Id": "7b010d41d65a49e685d54a57366419ba",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -132,7 +132,7 @@
         {
           "Id": "0ccd412574e94dc6936d1649ffc21811",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -143,7 +143,7 @@
         {
           "Id": "d55937f018e744279d94882a59fb8409",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -162,7 +162,7 @@
         {
           "Id": "c919e25fda2943c7bd5c704caa87cc90",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -171,7 +171,7 @@
         {
           "Id": "2d77c81d684845dcaea3eea68c1aa545",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -180,7 +180,7 @@
         {
           "Id": "cfeaf1818800471a9fe122fd398d366e",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -191,7 +191,7 @@
         {
           "Id": "fa1c20952f814e918726af8d7a24b380",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -330,7 +330,7 @@
         {
           "Id": "4c0b08d86c4d4da588f9f239b69c99c7",
           "Name": "startPoint",
-          "Description": "Point",
+          "Description": "Line start point\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -339,7 +339,7 @@
         {
           "Id": "342125800dc54022ae6a8424e7dee0d2",
           "Name": "endPoint",
-          "Description": "Point",
+          "Description": "Line end point\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -350,7 +350,7 @@
         {
           "Id": "bef7f3aa735746e2b0ef4c466c72bfd1",
           "Name": "Line",
-          "Description": "Line",
+          "Description": "Line from start and end point",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -369,7 +369,7 @@
         {
           "Id": "609698e1619f46078fbb750b1d926960",
           "Name": "points",
-          "Description": "Point[]",
+          "Description": "Points for nurbs curve\n\nPoint[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -380,7 +380,7 @@
         {
           "Id": "72d79541a1fb4ee49ac85053f914fe10",
           "Name": "NurbsCurve",
-          "Description": "NurbsCurve",
+          "Description": "Nurbscurve created from points",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -408,7 +408,7 @@
         {
           "Id": "e30de962998a472a91c08689973f18de",
           "Name": "connectLastToFirst",
-          "Description": "make close or open polycurve\n\nbool\nDefault value : false",
+          "Description": "True to connect last point to first point, false to leave open\n\nbool\nDefault value : false",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -419,7 +419,7 @@
         {
           "Id": "ca9bee947bd14dd892b213bec464fd0d",
           "Name": "PolyCurve",
-          "Description": "PolyCurve",
+          "Description": "Polycurve created by points",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -457,7 +457,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "The total arc length of the curve\n\nCurve.Length: double"
+      "Description": "Returns the total arc length of the curve\n\nCurve.Length: double"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
@@ -488,7 +488,7 @@
         {
           "Id": "bf9fb50678ac44aebbb9bd32cafa6887",
           "Name": "points",
-          "Description": "Point[]",
+          "Description": "Points for nurbs curve\n\nPoint[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -517,7 +517,7 @@
         {
           "Id": "689da248fa3e452797be31dedccbb9b5",
           "Name": "NurbsCurve",
-          "Description": "NurbsCurve",
+          "Description": "Nurbscurve created from points",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -591,97 +591,132 @@
     {
       "Start": "84830109d30f46f19ae4ee0abf993f6f",
       "End": "c8862e8999b6408e9fb83b49aee89c81",
-      "Id": "93c4ce34c3244fddb513da92714e83de"
+      "Id": "93c4ce34c3244fddb513da92714e83de",
+      "IsHidden": "False"
     },
     {
       "Start": "84830109d30f46f19ae4ee0abf993f6f",
       "End": "4c0b08d86c4d4da588f9f239b69c99c7",
-      "Id": "dd4af268735e44d6800b6490c372df65"
+      "Id": "dd4af268735e44d6800b6490c372df65",
+      "IsHidden": "False"
     },
     {
       "Start": "6b94b48be9fc4c8c851a52aa9565b0cf",
       "End": "4a7cadcb642846ec90e5182218e07f60",
-      "Id": "e38cb5ddb22248fcb85db0d84862f2a6"
+      "Id": "e38cb5ddb22248fcb85db0d84862f2a6",
+      "IsHidden": "False"
     },
     {
       "Start": "d55937f018e744279d94882a59fb8409",
       "End": "b936454956f84afcb7867ffb8c2a802a",
-      "Id": "53b9731bef1b4d54802f2a38f587678e"
+      "Id": "53b9731bef1b4d54802f2a38f587678e",
+      "IsHidden": "False"
     },
     {
       "Start": "d55937f018e744279d94882a59fb8409",
       "End": "342125800dc54022ae6a8424e7dee0d2",
-      "Id": "759ee3e354664180b2523c6f3655af79"
+      "Id": "759ee3e354664180b2523c6f3655af79",
+      "IsHidden": "False"
     },
     {
       "Start": "fa1c20952f814e918726af8d7a24b380",
       "End": "b96b38b8a5cb4044b9a8c57b0d4249b0",
-      "Id": "31758f6f490148fd9d7b7e4c7620e70d"
+      "Id": "31758f6f490148fd9d7b7e4c7620e70d",
+      "IsHidden": "False"
     },
     {
       "Start": "66423edb3392482abf506fb0b1a42da6",
       "End": "792a8e92696d4784ba634c5c58445feb",
-      "Id": "deb923112a61429395579a3d41eb7212"
+      "Id": "deb923112a61429395579a3d41eb7212",
+      "IsHidden": "False"
     },
     {
       "Start": "66423edb3392482abf506fb0b1a42da6",
       "End": "2c87aff610e94f9fb20e0bb9a0f40e35",
-      "Id": "ce7784b9e7d74ee8afb3161f78974896"
+      "Id": "ce7784b9e7d74ee8afb3161f78974896",
+      "IsHidden": "False"
     },
     {
       "Start": "2b4d785d54914443a0a4b0c7d29375f7",
       "End": "c919e25fda2943c7bd5c704caa87cc90",
-      "Id": "4c7f0d4cc66940a3a5e5a96ae91ef086"
+      "Id": "4c7f0d4cc66940a3a5e5a96ae91ef086",
+      "IsHidden": "False"
     },
     {
       "Start": "9968220c1c844b169e48ccf6eac42f34",
       "End": "7b010d41d65a49e685d54a57366419ba",
-      "Id": "f3140d120b884ec6b8c09c25d6ad312c"
+      "Id": "f3140d120b884ec6b8c09c25d6ad312c",
+      "IsHidden": "False"
     },
     {
       "Start": "a1ad401e993b43cb8fa2496e74270a8f",
       "End": "609698e1619f46078fbb750b1d926960",
-      "Id": "a953f7f494374541ba4c705ab6966fa9"
+      "Id": "a953f7f494374541ba4c705ab6966fa9",
+      "IsHidden": "False"
     },
     {
       "Start": "a1ad401e993b43cb8fa2496e74270a8f",
       "End": "048ff454c3374fcab7b871d07c3e04ff",
-      "Id": "d241d3cff58642e1ada83840f9609113"
+      "Id": "d241d3cff58642e1ada83840f9609113",
+      "IsHidden": "False"
     },
     {
       "Start": "a1ad401e993b43cb8fa2496e74270a8f",
       "End": "bf9fb50678ac44aebbb9bd32cafa6887",
-      "Id": "cfdda51d0318409f8f28a0d60131a0a7"
+      "Id": "cfdda51d0318409f8f28a0d60131a0a7",
+      "IsHidden": "False"
     },
     {
       "Start": "bef7f3aa735746e2b0ef4c466c72bfd1",
       "End": "81c2397aa6ea4052b24fa213262493a5",
-      "Id": "6e28016e1b0c46948c5477a83c94228c"
+      "Id": "6e28016e1b0c46948c5477a83c94228c",
+      "IsHidden": "False"
     },
     {
       "Start": "ca9bee947bd14dd892b213bec464fd0d",
       "End": "136d1188d65f450689f307ac78c13b9c",
-      "Id": "eea8b9495d9842b7b7e93660dbd3880d"
+      "Id": "eea8b9495d9842b7b7e93660dbd3880d",
+      "IsHidden": "False"
     },
     {
       "Start": "f144a3b531ca4fbbb6d657c5b82159dc",
       "End": "4a2381071b1541c8b27a188890efb64f",
-      "Id": "cf22c20d031c4eddaad5301957e47d5c"
+      "Id": "cf22c20d031c4eddaad5301957e47d5c",
+      "IsHidden": "False"
     },
     {
       "Start": "6fdede1d9c484cc68c374e6587b19347",
       "End": "7cbf19c2ba694767a68367f3999e2fef",
-      "Id": "e904aa1649164f9597d1064e15af073b"
+      "Id": "e904aa1649164f9597d1064e15af073b",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": null,
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.13",
+      "Data": {}
+    }
+  ],
+  "Author": "Dynamo Team",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
   "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.0.1.4357",
+      "Version": "2.13.0.3265",
       "RunType": "Automatic",
       "RunPeriod": "100"
     },
@@ -697,6 +732,7 @@
       "UpY": 1.0,
       "UpZ": 0.0
     },
+    "ConnectorPins": [],
     "NodeViews": [
       {
         "ShowGeometry": true,
@@ -705,8 +741,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -24471.4286892823,
-        "Y": -20038.7078255326
+        "X": -24468.511125547997,
+        "Y": -20076.636154078536
       },
       {
         "ShowGeometry": true,
@@ -715,8 +751,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -24471.4286892823,
-        "Y": -19740.8597671717
+        "X": -24474.346253016603,
+        "Y": -19689.802401821406
       },
       {
         "ShowGeometry": true,
@@ -725,8 +761,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -24470.1390765397,
-        "Y": -19888.415696243
+        "X": -24471.597858406854,
+        "Y": -19882.580568774392
       },
       {
         "ShowGeometry": true,
@@ -735,8 +771,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -24469.5492826162,
-        "Y": -19598.9498803032
+        "X": -24479.76075568626,
+        "Y": -19504.129058938364
       },
       {
         "ShowGeometry": true,
@@ -745,8 +781,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -24609.192097963,
-        "Y": -19704.0311350431
+        "X": -24683.589973187718,
+        "Y": -19705.48991691025
       },
       {
         "ShowGeometry": true,
@@ -755,8 +791,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -24609.192097963,
-        "Y": -19586.6763754658
+        "X": -24685.048755054868,
+        "Y": -19572.088556794286
       },
       {
         "ShowGeometry": true,
@@ -765,8 +801,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -24609.192097963,
-        "Y": -19857.4950514135
+        "X": -24683.589973187718,
+        "Y": -19854.5774876792
       },
       {
         "ShowGeometry": true,
@@ -775,8 +811,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -24180.0283403342,
-        "Y": -19861.4432371731
+        "X": -24162.52295792838,
+        "Y": -19851.231764103042
       },
       {
         "ShowGeometry": true,
@@ -785,8 +821,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -23755.1545802998,
-        "Y": -20044.7180525039
+        "X": -23772.659962705617,
+        "Y": -20027.212670098084
       },
       {
         "ShowGeometry": true,
@@ -795,8 +831,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -23753.2993692271,
-        "Y": -19749.5634852303
+        "X": -23773.72231536722,
+        "Y": -19637.237281459649
       },
       {
         "ShowGeometry": true,
@@ -805,8 +841,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -23758.4578201975,
-        "Y": -19648.9736913069
+        "X": -23774.504420736164,
+        "Y": -19492.884031521709
       },
       {
         "ShowGeometry": true,
@@ -815,8 +851,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -23167.7427863276,
-        "Y": -19987.0611419685
+        "X": -23176.827588625423,
+        "Y": -20020.605027375859
       },
       {
         "ShowGeometry": true,
@@ -825,8 +861,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -23930.9783744459,
-        "Y": -19851.6236889259
+        "X": -23986.412085397653,
+        "Y": -19743.673830756707
       },
       {
         "ShowGeometry": true,
@@ -835,8 +871,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -23754.5915986248,
-        "Y": -19921.0404200555
+        "X": -23770.638199163463,
+        "Y": -19851.018890432235
       },
       {
         "ShowGeometry": true,
@@ -845,8 +881,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -23180.3194152019,
-        "Y": -19793.7458270855
+        "X": -23181.018246147887,
+        "Y": -19775.57622248985
       },
       {
         "ShowGeometry": true,
@@ -855,31 +891,42 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -23325.7070393249,
-        "Y": -19700.2562560531
+        "X": -23411.775169486828,
+        "Y": -19695.879910451647
       }
     ],
     "Annotations": [
       {
         "Id": "1c567ac9581049f59bc06b2c100c053a",
         "Title": "Curves, Polycurves (collections of Curves), Nurbs, and Lines all derive from \"Curves\", and so all Curve \"Actions\" and \"Queries\" can be done to all of them",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": -23240.3161700635,
-        "Top": -19873.7297569865,
+        "HasNestedGroups": false,
+        "Left": -23201.018246147887,
+        "Top": -19854.57622248985,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "2c8d0d140440438cb81cdcdeefc1b77e"
       },
       {
         "Id": "724635231cea4135b320176e240209a5",
         "Title": "Multiple creation methods exist for most curves.  ",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": -23755.3612463271,
-        "Top": -20085.2107041965,
+        "HasNestedGroups": false,
+        "Left": -23781.619319935824,
+        "Top": -20069.164103657833,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -889,8 +936,8 @@
         "Background": "#FFC1D676"
       }
     ],
-    "X": 9534.3388320651775,
-    "Y": 7929.5614209150963,
-    "Zoom": 0.38621092452896444
+    "X": 18182.094523388703,
+    "Y": 14926.896247319197,
+    "Zoom": 0.73534772823455
   }
 }

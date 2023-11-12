@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Engine;
@@ -112,12 +112,14 @@ namespace Dynamo.Scheduler
             {
                 BuildWarnings = new Dictionary<Guid, List<WarningEntry>>();
                 RuntimeWarnings = new Dictionary<Guid, List<ProtoCore.Runtime.WarningEntry>>();
+                RuntimeInfos = new Dictionary<Guid, List<ProtoCore.Runtime.InfoEntry>>();
             }
             else
             {
                 // Retrieve warnings in the context of ISchedulerThread.
                 BuildWarnings = engineController.GetBuildWarnings();
                 RuntimeWarnings = engineController.GetRuntimeWarnings();
+                RuntimeInfos = engineController.GetRuntimeInfos();
 
                 // Mark all modified nodes as being updated (if the task has been 
                 // successfully scheduled, executed and completed, it is expected 
@@ -139,13 +141,25 @@ namespace Dynamo.Scheduler
                         executedNodes.Add(node);
                     }
                 }
-
                 foreach (var node in executedNodes)
                 {
                     node.WasInvolvedInExecution = true;
                     node.WasRenderPackageUpdatedAfterExecution = false;
+                    // Clear node warning or info messages because if node is involved in new graph execution, message should be refreshed
                     if (node.State == ElementState.Warning)
-                        node.ClearErrorsAndWarnings();
+                    {
+                        using (node.PropertyChangeManager.SetPropsToSuppress(nameof(NodeModel.ToolTipText), nameof(NodeModel.Infos), nameof(NodeModel.State)))
+                        {
+                            node.ClearErrorsAndWarnings();
+                        }
+                    }
+                    if (node.State == ElementState.Info)
+                    {
+                        using (node.PropertyChangeManager.SetPropsToSuppress(nameof(NodeModel.ToolTipText), nameof(NodeModel.Infos), nameof(NodeModel.State)))
+                        {
+                            node.ClearInfoMessages();
+                        }
+                    }
                 }
 
                 engineController.RemoveRecordedAstGuidsForSession(graphSyncData.SessionID);
@@ -216,6 +230,7 @@ namespace Dynamo.Scheduler
         internal WorkspaceModel TargetedWorkspace { get; private set; }
         internal IDictionary<Guid, List<WarningEntry>> BuildWarnings { get; private set; }
         internal IDictionary<Guid, List<ProtoCore.Runtime.WarningEntry>> RuntimeWarnings { get; private set; }
+        internal IDictionary<Guid, List<ProtoCore.Runtime.InfoEntry>> RuntimeInfos { get; private set; }
 
         #endregion
 

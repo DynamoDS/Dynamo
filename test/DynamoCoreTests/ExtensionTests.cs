@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -20,7 +20,7 @@ namespace Dynamo.Tests
         DynamoModel model;
         ICommandExecutive executive;
         int cmdExecutionState = -1;
-        private  Logging.NotificationMessage message;
+        private  NotificationMessage message;
 
         [SetUp]
         public void Init()
@@ -89,7 +89,7 @@ namespace Dynamo.Tests
             executive = ready.CommandExecutive;
             Assert.IsTrue(ready.WorkspaceModels.Any());
             Assert.IsNotNull(ready.CurrentWorkspaceModel);
-            ready.NotificationRecieved += (Logging.NotificationMessage obj) => message = obj;
+            ready.NotificationRecieved += (NotificationMessage obj) => message = obj;
         }
 
         [Test]
@@ -115,7 +115,7 @@ namespace Dynamo.Tests
             var cmd = new ThrowExceptionCommand();
             Assert.Throws<System.NotImplementedException>(() => cmd.Execute(model));
             Assert.DoesNotThrow(() => executive.ExecuteCommand(cmd, "TestRecordable", "ExtensionTests"));
-            Assert.AreEqual(Logging.WarningLevel.Error, model.Logger.WarningLevel);
+            Assert.AreEqual(WarningLevel.Error, model.Logger.WarningLevel);
         }
 
         void OnCommandCompleted(DynamoModel.RecordableCommand command)
@@ -246,7 +246,7 @@ namespace Dynamo.Tests
             var libraryLoader = new ExtensionLibraryLoader(model);
             libraryLoader.LoadNodeLibrary(assembly);
 
-            var entries = model.SearchModel.SearchEntries.ToList();
+            var entries = model.SearchModel.Entries.ToList();
             var nodesInLib = entries.Where(x => x.Assembly.Contains("SampleLibraryZeroTouch")).Select(y => y.FullName).ToList();
             Assert.AreEqual(12, nodesInLib.Count());
             Assert.IsTrue(entries.Count(x => x.FullName == "SampleLibraryZeroTouch.Examples.TransformableExample.TransformObject") == 1);

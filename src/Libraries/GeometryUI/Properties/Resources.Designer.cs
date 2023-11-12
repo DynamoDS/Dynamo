@@ -19,10 +19,10 @@ namespace GeometryUI.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace GeometryUI.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("GeometryUI.Properties.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace GeometryUI.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,9 +61,9 @@ namespace GeometryUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Exports the specified geometry to the given SAT  file path..
+        ///   Looks up a localized string similar to Exports the given geometry to the given SAT file path.
         /// </summary>
-        internal static string ExportToSATDescripiton {
+        public static string ExportToSATDescripiton {
             get {
                 return ResourceManager.GetString("ExportToSATDescripiton", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace GeometryUI.Properties {
         /// <summary>
         ///   Looks up a localized string similar to File to export the geometry to..
         /// </summary>
-        internal static string ExportToSatFilePathDescription {
+        public static string ExportToSatFilePathDescription {
             get {
                 return ResourceManager.GetString("ExportToSatFilePathDescription", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace GeometryUI.Properties {
         /// <summary>
         ///   Looks up a localized string similar to The file path of the exported file. Note this may change from the input in it contains non-ASCII characters..
         /// </summary>
-        internal static string ExportToSatFilePathOutputDescription {
+        public static string ExportToSatFilePathOutputDescription {
             get {
                 return ResourceManager.GetString("ExportToSatFilePathOutputDescription", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace GeometryUI.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Geometry to export into a SAT file..
         /// </summary>
-        internal static string ExportToSatGeometryInputDescription {
+        public static string ExportToSatGeometryInputDescription {
             get {
                 return ResourceManager.GetString("ExportToSatGeometryInputDescription", resourceCulture);
             }
@@ -99,9 +99,63 @@ namespace GeometryUI.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Export;SAT.
         /// </summary>
-        internal static string ExportWithUnitsSearchTags {
+        public static string ExportWithUnitsSearchTags {
             get {
                 return ResourceManager.GetString("ExportWithUnitsSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SAB byte array..
+        /// </summary>
+        public static string ImportSABByteArrayDesc {
+            get {
+                return ResourceManager.GetString("ImportSABByteArrayDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A forge unit length, if left null, geometry will be imported as unitless..
+        /// </summary>
+        public static string ImportSATDynamoUnitDesc {
+            get {
+                return ResourceManager.GetString("ImportSATDynamoUnitDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filepath or File object to import .SAT from..
+        /// </summary>
+        public static string ImportSATFilePathDesc {
+            get {
+                return ResourceManager.GetString("ImportSATFilePathDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Imports geometry from SAB byte array. Set the dynamoUnit input to match how you are interpreting the other numbers in your Dynamo file..
+        /// </summary>
+        public static string ImportToSABUnitsDesc {
+            get {
+                return ResourceManager.GetString("ImportToSABUnitsDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Imports geometry from SAT filepath. Set the dynamoUnit input to match how you are interpreting the other numbers in your Dynamo file..
+        /// </summary>
+        public static string ImportToSATUnitsDesc {
+            get {
+                return ResourceManager.GetString("ImportToSATUnitsDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loaded geometry.
+        /// </summary>
+        public static string SABSATGeoDesc {
+            get {
+                return ResourceManager.GetString("SABSATGeoDesc", resourceCulture);
             }
         }
     }

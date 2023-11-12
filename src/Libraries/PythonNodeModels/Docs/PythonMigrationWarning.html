@@ -1,4 +1,4 @@
-﻿<!--
+<!--
     There are two versions of this HTML file. One that is part of the Dynamo Dictionary
     codebase and one that is part of the Dynamo codebase, used for displaying additional
     error information in the Dynamo side panel.
@@ -175,73 +175,49 @@
     <form action="https://forum.dynamobim.com/t/new-feature-preview-python-3-support-issue-thread/51649">
         <input type="submit" class="button" value="Report Python 3 node issue" style="font-size:medium;" />
     </form>
+    <h2>Python 2 to Python 3 conversion</h2>
     <p>
-        Since the introduction of Python 3 in 2008, Python 2 and 3 have been supported side-by-side by the Python
-        Software Foundation (PSF) and the broader Python Community.
+        The Python Software Foundation (PSF) officially ended support for Python 2 on January 1, 2020. Since version 2.7, Dynamo has switched to CPython3, a Python engine that provides access to Python 3 inside of Dynamo.
     </p>
+   
+    <h3>Why did we change the Python version?</h3>
     <p>
-        This stopped on January 1st 2020, when Python 2 support from the PSF officially ended.
+        Dynamo, like many other C#-based environments, uses a tool called IronPython to move data between .NET objects and Python scripts. As IronPython has not been updated to Python 3, Dynamo has transitioned to use CPython, the standard native Python interpreter.
     </p>
+    <p>Moving Dynamo to Python 3 allows Dynamo users to access popular modern libraries and continue to access new platform features, essential maintenance, and security patches. In addition, Dynamo graphs can benefit from Python libraries with native extensions that were previously not accessible, such as NumPy, SciPy, and Pandas.</p>
 
-    <h3>Backwards Compatibility</h3>
+    <h3>Backwards compatibility</h3>
     <p>
-        Dynamo 2.7 introduces a new Python engine, CPython3, that provides access to Python 3 inside of Dynamo. There 
-        is no guarantee that any code written in the CPython3 environment will work in previous versions of Dynamo. 
-        Code authors should ensure backwards compatibility with both the IronPython2 and CPython3 versions as desired.
+        There is no guarantee that any code written in the CPython3 environment will work in previous versions of Dynamo. Code authors should ensure backwards compatibility with both the IronPython2 and CPython3 versions as desired.
     </p>
-
-    <h3>Why did we need to change the Python version</h3>
-    <p>
-        Dynamo, and many other C#-based environments, uses a tool called IronPython to move data between .NET objects
-        and Python scripts.
-        Unfortunately, IronPython has not been updated to Python 3, so Dynamo is now transitioning to use the standard
-        native Python interpreter (aka CPython.)
-    </p>
-    <p>
-        In addition, this means it will be possible for Dynamo graphs to benefit from Python libraries that include
-        native extensions that were not accessible
-        in IronPython, such as NumPy, SciPy, and Pandas.
-    </p>
-    <p>
-        Moving Dynamo to Python 3 will allow Dynamo users to access popular modern libraries and continue to access new
-        platform features, essential maintenance, and security patches.
-    </p>
-
+    
     <h3>What does this mean for you and your Python-containing graphs?</h3>
     <p>
-        If you are not the author of the particular graph you are using (or the Python nodes it contains), please
-        contact the author and let them know about these changes so they can make the appropriate changes where
-        necessary.
+        If you are not the author of the graph or the Python nodes it contains, please contact the author and let them know about these changes so they can make changes where necessary.
     </p>
     <p>
-        If you are the author of the graph, please continue to read the guidance below to understand how these changes
-        may affect your Python nodes and how to make any changes.
+        If you are the graph author, read the guidance below to understand how these changes may affect your Python nodes and how to make updates.
     </p>
 
     <p>
-        Python 3 is fundamentally the same language as Python 2, but there have been changes to syntax and the core
-        library to make Python more consistent and learnable, and to have improved Unicode support.
+        Python 3 is fundamentally the same language as Python 2, with changes to syntax and the core library to make Python more consistent and learnable, and to provide improved Unicode support.
     </p>
     <p>
-        Some Python 2 programs will run as normal on Python 3, but a lot of common constructs will require small
-        changes, including the print statement. Luckily, many of these can be automated.
+        Some Python 2 programs will run as normal on Python 3, but a lot of common constructs will require small changes, including the print statement. Luckily, many of these can be automated.
     </p>
 
-    <h3>How to make changes to your Python nodes for Python 3 </h3>
+    <h3>How to update your Python nodes for Python 3 </h3>
     <p>
-        Typically, Python scripts can run using either the IronPython2 or CPython3 engines. For any cases where your 
-        script contains syntax that has changed between versions, we have made it easier for you to update your script 
-        by including an automatic code converter in the Python node called the <em>Migration Assistant</em>.
+        Typically, Python scripts can run using either the IronPython2 or CPython3 engines. For any cases where your script contains syntax that has changed between versions, we have made it easier for you to update your script by including an automatic code converter in the Python node called the Migration Assistant.
     </p>
     <p>
-        Using the migration assistant, all you need to do is switch to the CPython3 engine and click on the 2->3 icon and Dynamo 
-        will let you know which changes are needed and will give you the option to decline or accept the conversion.
+        To update your script with the Migration Assistant, open the Python Node editor, switch to the CPython3 engine using the drop-down, and click the 2->3 icon. Dynamo will let you know which changes are needed and give you the option to decline or accept the conversion.
     </p>
     <p>
-        As the Python Script From String node simply executes the Python code input into it, rather than providing a text editor 
-        environment, it does not have access to the Migration Assistant. If you wish to use this feature you will need to copy 
-        and paste your code into a Python node temporarily before copy and pasting it back into your code block node.
+        As the Python Script From String node simply executes the Python code input into it and does not provide a text editor environment, it does not have access to the Migration Assistant. If you wish to use this feature, you will need to copy and paste your code into a Python node temporarily before copying and pasting it back into your code block node.
     </p>
+
+    <h3>Learn more</h3>
     <p>
         If you are curious about diving deeper into the differences between the two Python versions, here are two
         external links to get you started:
@@ -257,9 +233,7 @@
 
     <h3>Key syntax changes in Python 3</h3>
     <p>
-        Below, you can find a list that includes some of the key syntax changes between Python 2 and Python 3. Please
-        note that this is by no means an exhaustive list but instead a selection of some of the most widely used
-        features that have been affected.
+        The list below explains some of the key syntax changes between Python 2 and Python 3. This is selection of some of the most widely used features that have been affected, not an exhaustive list.
     </p>
 
 

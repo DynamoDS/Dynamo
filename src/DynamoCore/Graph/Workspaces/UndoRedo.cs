@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -200,6 +200,7 @@ namespace Dynamo.Graph.Workspaces
             // to are deleted. We will have to delete the connectors first
             // before
 
+            using (BeginDelayedGraphExecution())// Delayed execution
             using (undoRecorder.BeginActionGroup()) // Start a new action group.
             {
                 foreach (var model in models)
@@ -212,6 +213,19 @@ namespace Dynamo.Graph.Workspaces
                     }
                     else if (model is AnnotationModel)
                     {
+                        // If the AnnotationModel is nested
+                        // we should record the modifications 
+                        // to the parent in this ActionGroup
+                        // to ensure that a single Undo will
+                        // revert everything.
+                        var parentGroup = this.Annotations
+                            .FirstOrDefault(x => x.ContainsModel(model));
+
+                        if (parentGroup != null)
+                        {
+                            undoRecorder.RecordModificationForUndo(parentGroup);
+                        }
+
                         undoRecorder.RecordDeletionForUndo(model);
                         RemoveAnnotation(model as AnnotationModel);
                     }
@@ -285,9 +299,6 @@ namespace Dynamo.Graph.Workspaces
                         HasUnsavedChanges = true;
                     }
                 }
-
-                RequestRun();
-
             } // Conclude the deletion.
         }
 
@@ -366,7 +377,7 @@ namespace Dynamo.Graph.Workspaces
             }
             else if (model is ConnectorPinModel connectorPin)
             {
-                ///The equivalent of 'deleting' a connectorPin
+                // The equivalent of 'deleting' a connectorPin
                 var matchingConnector = Connectors.FirstOrDefault(connector => connector.GUID == connectorPin.ConnectorId);
                 if (matchingConnector is null)
                 {
@@ -498,7 +509,7 @@ namespace Dynamo.Graph.Workspaces
                     //this note "was" in a group
                     if (annotation.DeletedModelBases.Any(m => m.GUID == noteModel.GUID))
                     {
-                        annotation.AddToSelectedModels(noteModel);
+                        annotation.AddToTargetAnnotationModel(noteModel);
                     }
                 }
             }
@@ -537,7 +548,7 @@ namespace Dynamo.Graph.Workspaces
                     //this node "was" in a group
                     if (annotation.DeletedModelBases.Any(m => m.GUID == nodeModel.GUID))
                     {
-                        annotation.AddToSelectedModels(nodeModel);
+                        annotation.AddToTargetAnnotationModel(nodeModel);
                     }
                 }
             }

@@ -6,104 +6,278 @@
         xmlns:local="clr-namespace:Dynamo.Notifications"
         xmlns:p="clr-namespace:Dynamo.Notifications.Properties"
         xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+        xmlns:notifications="clr-namespace:Dynamo.Logging;assembly=DynamoCore"
         Title="{x:Static p:Resources.ExtensionName}"
         Height="450"
-        Width="400"
-        Background="#555"
+        Width="450"
+        MinHeight="300"
         MinWidth="400"
-        MaxWidth="400"
+        MaxWidth="450"
+        x:Name="notificationsWindow"
         d:DataContext="{d:DesignInstance Type = local:NotificationsViewExtension}"
         mc:Ignorable="d">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="32" />
+    </WindowChrome.WindowChrome>
 
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ResourceDictionary Source="Styles/DynamoModern.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <!--Base style for title bar buttons-->
+            <Style x:Key="CaptionButtonStyle"
+                   TargetType="Button">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Grid x:Name="LayoutRoot"
+                                  Background="Transparent"
+                                  Width="44"
+                                  Height="30">
+                                <TextBlock x:Name="txt"
+                                           Text="{TemplateBinding Content}"
+                                           FontFamily="Segoe MDL2 Assets"
+                                           FontSize="12"
+                                           Foreground="{StaticResource DefaultFontColorBrush}"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           RenderOptions.ClearTypeHint="Auto"
+                                           TextOptions.TextRenderingMode="Aliased"
+                                           TextOptions.TextFormattingMode="Display" />
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver"
+                                         Value="True">
+                                    <Setter TargetName="txt"
+                                            Property="Foreground"
+                                            Value="White" />
+                                    <Setter TargetName="txt"
+                                            Property="FontWeight"
+                                            Value="Bold" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            
+            <!--Notification Toast-->
+            <DataTemplate x:Key="NotificationToast"
+                          DataType="{x:Type notifications:NotificationMessage}">
+                <Border CornerRadius="4"
+                        BorderThickness="0"
+                        Background="#4E4E4E"
+                        Margin="11 11 22 11">
+                    <Border.Effect>
+                        <DropShadowEffect ShadowDepth="0"
+                                          Color="{StaticResource DarkMidGrey}"
+                                          Opacity="1"
+                                          BlurRadius="6" />
+                    </Border.Effect>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Border Grid.Column="0"
+                                CornerRadius="4 0 0 4"
+                                Background="{StaticResource YellowOrange500Brush}" />
+
+                        <Grid Grid.Column="1"
+                              Margin="0 16 14 0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0"
+                                   Height="16"
+                                   Margin="16,0,16,0"
+                                   VerticalAlignment="Top"
+                                   Source="/DynamoCoreWpf;component/UI/Images/alert_2.png" />
+                            <Grid Grid.Column="1">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="11" />
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="{Binding Title}"
+                                           Grid.Row="0"
+                                           TextWrapping="Wrap"
+                                           FontSize="14"
+                                           Foreground="{StaticResource DefaultFontColorBrush}"
+                                           FontFamily="{StaticResource ArtifaktElementBold}"
+                                           Margin="0 0 0 18" />
+                                <TextBlock Text="{Binding ShortMessage}"
+                                           Grid.Row="1"
+                                           TextWrapping="Wrap"
+                                           FontSize="12"
+                                           Foreground="{StaticResource DefaultFontColorBrush}"
+                                           FontFamily="{StaticResource ArtifaktElementRegular}"
+                                           Margin="0 0 0 18" />
+                                <Border x:Name="Details"
+                                        Grid.Row="2"
+                                        CornerRadius="4"
+                                        BorderBrush="{StaticResource YellowOrange500Brush}"
+                                        BorderThickness="1"
+                                        Margin="0 0 0 25"
+                                        Visibility="Collapsed">
+                                    <TextBlock Text="{Binding DetailedMessage}"
+                                               TextWrapping="Wrap"
+                                               FontSize="12"
+                                               Foreground="{StaticResource DefaultFontColorBrush}"
+                                               Margin="10"/>
+                                </Border>
+                                <Grid Grid.Row="3"
+                                      Margin="0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Button Content="{x:Static p:Resources.ButtonDetails}"
+                                            Background="Transparent"
+                                            Foreground="{StaticResource Blue300Brush}"
+                                            FontSize="12"
+                                            Grid.Column="0"
+                                            HorizontalContentAlignment="Left"
+                                            VerticalContentAlignment="Center"
+                                            Cursor="Hand"
+                                            Click="ShowDetails_ButtonClick"
+                                            Tag="{Binding ElementName=Details}">
+                                        <Button.Style>
+                                            <Style TargetType="{x:Type Button}">
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="{x:Type Button}">
+                                                            <ContentPresenter VerticalAlignment="Center" />
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                    <Button Content="{x:Static p:Resources.ButtonOK}"
+                                            Grid.Column="1"
+                                            Style="{StaticResource CtaButtonStyle}"
+                                            HorizontalAlignment="Right"
+                                            Background="{StaticResource PreferencesWindowButtonColor}"
+                                            Foreground="{StaticResource DefaultFontColorBrush}"
+                                            Width="Auto"
+                                            Click="OKButton_Click" />
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Border>
+            </DataTemplate>
         </ResourceDictionary>
     </Window.Resources>
 
-    <Grid Background="Black">
+    <Window.Background>
+        <SolidColorBrush Color="{StaticResource DarkMidGrey}" />
+    </Window.Background>
 
+    <!--Title bar button commands-->
+    <Window.CommandBindings>
+        <CommandBinding Command="{x:Static SystemCommands.CloseWindowCommand}"
+                        CanExecute="CommandBinding_CanExecute"
+                        Executed="CommandBinding_Executed_Close" />
+        <CommandBinding Command="{x:Static SystemCommands.MaximizeWindowCommand}"
+                        CanExecute="CommandBinding_CanExecute"
+                        Executed="CommandBinding_Executed_Maximize" />
+        <CommandBinding Command="{x:Static SystemCommands.MinimizeWindowCommand}"
+                        CanExecute="CommandBinding_CanExecute"
+                        Executed="CommandBinding_Executed_Minimize" />
+        <CommandBinding Command="{x:Static SystemCommands.RestoreWindowCommand}"
+                        CanExecute="CommandBinding_CanExecute"
+                        Executed="CommandBinding_Executed_Restore" />
+    </Window.CommandBindings>
+
+
+    <Grid x:Name="MainContainer">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <ListBox Name="NotificationList"
-                 Grid.Row="0"
-                 ItemsSource="{Binding Path=Notifications}"
-                 Background= "Black"
-                 HorizontalContentAlignment="Stretch"
-                 ScrollViewer.VerticalScrollBarVisibility="Auto"
-                 ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                 VirtualizingPanel.ScrollUnit="Pixel"
-                 Padding="0">
+        <StackPanel Orientation="Vertical" 
+                    Grid.Row="0"
+                    VerticalAlignment="Top">
+            <Grid IsHitTestVisible="True">
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center">
+                    <TextBlock Text="{x:Static p:Resources.ExtensionName}"
+                               FontFamily="{StaticResource ArtifaktElementRegular}"
+                               Foreground="{StaticResource DefaultFontColorBrush}"
+                               FontSize="20"
+                               Margin="20 16 0 16" />
+                </StackPanel>
 
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="ListBoxItem">
-                    <Style.Resources>
-                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
-                                         Color="#000" />
-                        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
-                                         Color="#000" />
-                    </Style.Resources>
-                    <Setter Property="Padding"
-                            Value="0,0,0,10" />
-                </Style>
+                <!--Caption buttons-->
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Right">
+                    <Button Style="{StaticResource MinimizeButtonStyle}"
+                            Margin="0,0,25,0"
+                            WindowChrome.IsHitTestVisibleInChrome="True"
+                            Command="{x:Static SystemCommands.MinimizeWindowCommand}" />
+                    <Button x:Name="RestoreButton"
+                            Visibility="Collapsed"
+                            Margin="0,0,25,0"
+                            Style="{DynamicResource RestoreButtonStyle}"
+                            Command="{x:Static SystemCommands.RestoreWindowCommand}"
+                            WindowChrome.IsHitTestVisibleInChrome="True"/>
 
-            </ListBox.ItemContainerStyle>
+                    <Button x:Name="MaximizeButton"
+                            Visibility="Visible"
+                            Margin="0,0,25,0"
+                            Style="{DynamicResource MaximizeButtonStyle}"
+                            Command="{x:Static SystemCommands.MaximizeWindowCommand}"
+                            WindowChrome.IsHitTestVisibleInChrome="True" />
+                    <Button Style="{DynamicResource CloseButtonStyle}"
+                            Margin="0,0,20,0"
+                            WindowChrome.IsHitTestVisibleInChrome="True"
+                            Command="{x:Static SystemCommands.CloseWindowCommand}" />
+                </StackPanel>
+            </Grid>
 
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-
-                    <StackPanel MinWidth="380" MaxWidth="390">
-                        <StackPanel.Background>
-                            <SolidColorBrush Color="{DynamicResource ResourceKey=BorderDarkColor}"></SolidColorBrush>
-                        </StackPanel.Background>
-
-                        <StackPanel Margin="10,10,20,10">
-                            <TextBox Style="{DynamicResource ResourceKey =SDarkTextBox }" Name="Title" Text="{Binding Path=Title, Mode=OneWay}" FontWeight="Bold" IsReadOnly="True" TextWrapping="Wrap" Visibility="Visible" Grid.Row="0" Grid.Column="0" ></TextBox>
-                            <TextBox Style="{DynamicResource ResourceKey =SDarkTextBox }" Name="ShortErrorMessage" Text="{Binding Path= ShortMessage,Mode=OneWay}" FontSize="11" IsReadOnly="True" TextWrapping="Wrap" Visibility="Visible" Grid.Row="0" Grid.Column="0" ></TextBox>
-                        </StackPanel>
-
-                        <Border BorderThickness="1" BorderBrush="Black">
-                            <StackPanel Orientation="Horizontal">
-                                <StackPanel.Background>
-                                    <SolidColorBrush Color="{DynamicResource ResourceKey=BorderDarkColor}"></SolidColorBrush>
-                                </StackPanel.Background>
-                                <Button Margin="20,20,20,20"
-                                        Style="{DynamicResource ResourceKey=STextButton}"
-                                        Tag="{Binding ElementName=Details}"
-                                        Click="ShowDetails_ButtonClick"
-                                        Content="{x:Static p:Resources.ButtonDetails}">
-                                </Button>
-                                <Button Margin="50,20,20,20"
-                                        HorizontalAlignment="Right"
-                                        Style="{DynamicResource ResourceKey=STextButton}"
-                                        Click="OKButton_Click"
-                                        Content="{x:Static p:Resources.ButtonOK}">
-                                </Button>
-                            </StackPanel>
-                        </Border>
-                        <StackPanel Margin="0,0,20,0">
-
-                            <StackPanel.Background>
-                                <SolidColorBrush Color="{DynamicResource ResourceKey=BorderMediumColor}"></SolidColorBrush>
-                            </StackPanel.Background>
-                            <TextBox Style="{DynamicResource ResourceKey =SDarkTextBox }" FontSize="10" IsReadOnly="True" Text="{Binding Path=DetailedMessage,Mode=OneWay}" Name="Details" TextWrapping="Wrap" Background="WhiteSmoke"  Visibility="Collapsed"></TextBox>
-                        </StackPanel>
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-
-        </ListBox>
-
-        <StackPanel Orientation="Horizontal"
-                    FlowDirection="RightToLeft"
-                    Grid.Row="1"
-                    Background="#333">
+            <Separator BorderThickness="1"
+                       BorderBrush="#40FFFFFF" />
         </StackPanel>
 
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <ListBox Name="NotificationList"
+                     Grid.Row="0"
+                     ItemsSource="{Binding Path=Notifications}"
+                     Background="Transparent"
+                     HorizontalContentAlignment="Stretch"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                     ItemTemplate="{StaticResource NotificationToast}"
+                     VirtualizingPanel.ScrollUnit="Pixel"
+                     BorderThickness="0">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListBoxItem}">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                    <ContentPresenter Width="{Binding ElementName=notificationsWindow, Path=Width }"/>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+            </ListBox>
+        </Grid>
     </Grid>
 </Window>

@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
@@ -10,7 +11,7 @@ using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
-    [TestFixture, RequiresSTA]
+    [TestFixture, Apartment(ApartmentState.STA)]
     public class GraphLayoutTests : DynamoViewModelUnitTest
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
@@ -361,6 +362,7 @@ namespace Dynamo.Tests
         {
             OpenModel(GetDynPath("GraphLayoutComplex.dyn"));
             IEnumerable<NodeModel> nodes = ViewModel.CurrentSpace.Nodes;
+            nodes.ToList().ForEach(node => node.ReportPosition());
             var subgraphs = ViewModel.CurrentSpace.DoGraphAutoLayout();
 
             Assert.AreEqual(ViewModel.CurrentSpace.Nodes.Count(), 82);

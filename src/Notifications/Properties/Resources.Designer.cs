@@ -70,6 +70,15 @@ namespace Dynamo.Notifications.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hide Details.
+        /// </summary>
+        public static string ButtonHideDetails {
+            get {
+                return ResourceManager.GetString("ButtonHideDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to OK.
         /// </summary>
         public static string ButtonOK {
@@ -102,6 +111,33 @@ namespace Dynamo.Notifications.Properties {
         public static string ExtensionName {
             get {
                 return ResourceManager.GetString("ExtensionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notification Center feature is disabled. Enable it in preference panel to see latest news..
+        /// </summary>
+        public static string NotificationCenterDisabledMsg {
+            get {
+                return ResourceManager.GetString("NotificationCenterDisabledMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mark all as read.
+        /// </summary>
+        public static string NotificationsCenterBottomButtonText {
+            get {
+                return ResourceManager.GetString("NotificationsCenterBottomButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notifications.
+        /// </summary>
+        public static string NotificationsCenterTitle {
+            get {
+                return ResourceManager.GetString("NotificationsCenterTitle", resourceCulture);
             }
         }
     }

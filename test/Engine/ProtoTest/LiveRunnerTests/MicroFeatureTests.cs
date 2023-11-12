@@ -3553,15 +3553,15 @@ r = __Equals(x, [41, 42]);
         {
             List<string> codes = new List<string>() 
             {
-                @"import(""DSIronPython.dll"");",
-                @"x = IronPythonEvaluator.EvaluateIronPythonScript(""# Default imports
+                @"import(""DSCPython.dll"");",
+                @"x = CPythonEvaluator.EvaluatePythonScript(""# Default imports
 
 #The inputs to this node will be stored as a list in the IN variable.
 dataEnteringNode = IN
 
 #Assign your output to the OUT variable
 OUT = 1"", [""IN""], [[]]); x = x;",
-                            @"x = IronPythonEvaluator.EvaluateIronPythonScript(""# Default imports
+                            @"x = CPythonEvaluator.EvaluatePythonScript(""# Default imports
 
 #The inputs to this node will be stored as a list in the IN variable.
 dataEnteringNode = IN

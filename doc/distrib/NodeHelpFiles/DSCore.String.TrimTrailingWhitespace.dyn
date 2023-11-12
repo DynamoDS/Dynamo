@@ -1,0 +1,424 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "TrimTrailingWhitespace",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "8f335c73856340f8ab161a8c0eda22f1",
+      "Name": "String",
+      "Type": "string",
+      "Value": "      Hello World      ",
+      "Description": "Creates a string."
+    },
+    {
+      "Id": "24871ef33add48ad900f966cd111f948",
+      "Name": "String",
+      "Type": "string",
+      "Value": "      Hello World      ",
+      "Description": "Creates a string."
+    },
+    {
+      "Id": "db4fa711bcad4540b651497094d1cd87",
+      "Name": "String",
+      "Type": "string",
+      "Value": "      Hello World      ",
+      "Description": "Creates a string."
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "      Hello World      ",
+      "Id": "8f335c73856340f8ab161a8c0eda22f1",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "917ee58d35ef46ab99f9637b06aaea43",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "1f79f9e394fc4650ad0f49067625f89a",
+      "Inputs": [
+        {
+          "Id": "487c69eba7a84c4d9ba4ce3b040f8dfa",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "3f0c15b337c74bbb955f6906ab4926d0",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.String.TrimLeadingWhitespace@string",
+      "Id": "0cc7aa14c583441fbabead29afcadd55",
+      "Inputs": [
+        {
+          "Id": "89033bd057f04e0bb44787ac6e1e1e16",
+          "Name": "str",
+          "Description": "String to trim.\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "16dc97f9e1fb445582b10be51d86df3b",
+          "Name": "str",
+          "Description": "String with leading white spaces removed.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Removes all whitespace from the start of the given string.\n\nString.TrimLeadingWhitespace (str: string): string"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "98211bd58a2d4b33893f783cb6c576fe",
+      "Inputs": [
+        {
+          "Id": "1888d91e370a4ff1a36babcd0e87df3c",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f2e2e75249ec49afb7b8a8e7818c7300",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "      Hello World      ",
+      "Id": "24871ef33add48ad900f966cd111f948",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "7d58f2c04ba24061bf276786b4df47a6",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.String.TrimTrailingWhitespace@string",
+      "Id": "145ae66f2a834d938211cae025474776",
+      "Inputs": [
+        {
+          "Id": "e84e901cc20d44f1b0a44e652be0f49a",
+          "Name": "str",
+          "Description": "String to trim.\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "df14b375d17143fe97ddd77e0e36b9da",
+          "Name": "str",
+          "Description": "String with white spaces at end removed.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Removes all whitespace from the end of the given string.\n\nString.TrimTrailingWhitespace (str: string): string"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "e15f5303c7014486bfe61fa9ff028c2c",
+      "Inputs": [
+        {
+          "Id": "a9d204488d1444cebe659c43f5cad5f6",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d2b70ee1b1e847da8beed17a5871d410",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "      Hello World      ",
+      "Id": "db4fa711bcad4540b651497094d1cd87",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "64be362ff52a44f1a146179b03ba4ef9",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.String.TrimWhitespace@string",
+      "Id": "acbc2b59789f42bd9366d59f9662559b",
+      "Inputs": [
+        {
+          "Id": "90a686c7791e498ea06c26a2db0eac36",
+          "Name": "str",
+          "Description": "String to trim.\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e7bb78da19034778a268bdea4dd39722",
+          "Name": "str",
+          "Description": "String with beginning and ending whitespaces removed.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Removes all whitespace from the start and end of the given string.\n\nString.TrimWhitespace (str: string): string"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "917ee58d35ef46ab99f9637b06aaea43",
+      "End": "89033bd057f04e0bb44787ac6e1e1e16",
+      "Id": "f8aeb1ab448f433aa716dbe39fb6b2a9"
+    },
+    {
+      "Start": "16dc97f9e1fb445582b10be51d86df3b",
+      "End": "487c69eba7a84c4d9ba4ce3b040f8dfa",
+      "Id": "159b5fa566ca4769b82fd7ca22187775"
+    },
+    {
+      "Start": "7d58f2c04ba24061bf276786b4df47a6",
+      "End": "e84e901cc20d44f1b0a44e652be0f49a",
+      "Id": "76aa30bcf1bc4c4d8465e74a3eb34cf1"
+    },
+    {
+      "Start": "df14b375d17143fe97ddd77e0e36b9da",
+      "End": "1888d91e370a4ff1a36babcd0e87df3c",
+      "Id": "a0332a8608284e87a60d90578fb4be5c"
+    },
+    {
+      "Start": "64be362ff52a44f1a146179b03ba4ef9",
+      "End": "90a686c7791e498ea06c26a2db0eac36",
+      "Id": "661a404b62684fdca58a1350bfd5dc31"
+    },
+    {
+      "Start": "e7bb78da19034778a268bdea4dd39722",
+      "End": "a9d204488d1444cebe659c43f5cad5f6",
+      "Id": "729214b89e934e9c9d5829a02e70384c"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "String",
+        "Id": "8f335c73856340f8ab161a8c0eda22f1",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 201.93865096527395,
+        "Y": 192.512168429258
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "1f79f9e394fc4650ad0f49067625f89a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 737.938650965274,
+        "Y": 192.512168429258
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "String.TrimLeadingWhitespace",
+        "Id": "0cc7aa14c583441fbabead29afcadd55",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 435.93865096527395,
+        "Y": 192.512168429258
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "98211bd58a2d4b33893f783cb6c576fe",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 737.400141333573,
+        "Y": 350.305170147733
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "String",
+        "Id": "24871ef33add48ad900f966cd111f948",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 204.40014133357295,
+        "Y": 350.305170147733
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "String.TrimTrailingWhitespace",
+        "Id": "145ae66f2a834d938211cae025474776",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 438.40014133357295,
+        "Y": 350.305170147733
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "e15f5303c7014486bfe61fa9ff028c2c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 714.589688610743,
+        "Y": 496.546131749348
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "String",
+        "Id": "db4fa711bcad4540b651497094d1cd87",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 228.589688610743,
+        "Y": 496.546131749348
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "String.TrimWhitespace",
+        "Id": "acbc2b59789f42bd9366d59f9662559b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 462.589688610743,
+        "Y": 496.546131749348
+      }
+    ],
+    "Annotations": [],
+    "X": -37.0041620296557,
+    "Y": -105.118775399184,
+    "Zoom": 1.10476425630303
+  }
+}

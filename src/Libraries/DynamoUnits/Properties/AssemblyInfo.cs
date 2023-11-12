@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
@@ -9,3 +10,10 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("2a29d5d1-ece3-4802-a758-562fec421051")]
+[assembly:InternalsVisibleTo("DynamoCoreTests")]
+[assembly: InternalsVisibleTo("DynamoCoreWpfTests")]
+[assembly: InternalsVisibleTo("UnitsNodeModels")]
+
+
+//move DynamoUnits.Display to DynamoServices.dll
+[assembly: TypeForwardedTo(typeof(DynamoUnits.Display))]

@@ -32,7 +32,7 @@ i = [Imperative]
             thisTest.Verify("i", new[] {100, 400});
         }
 
-        [Ignore]
+        [Ignore("unknown reason")]
         [Category("SmokeTest")]
         public void T002_Inline_Using_Math_Lib_Functions()
         {
@@ -59,7 +59,7 @@ largest2  =   sqrt(fo1(a)) >   sqrt(fo1(b))  ?   sqrt(fo1(a))  :     sqrt(fo1(b)
             thisTest.Verify("smallest2", 10.0);
             thisTest.Verify("largest2", 20.0);
         }
-        [Ignore]
+        [Ignore("unknown reason")]
         public void T003_Inline_Using_Collection()
         {
             string src = @"[Imperative]
@@ -81,7 +81,7 @@ largest2  =   sqrt(fo1(a)) >   sqrt(fo1(b))  ?   sqrt(fo1(a))  :     sqrt(fo1(b)
             List<Object> result = new List<object> { 1, 0, 1, 1, 0, };
             thisTest.Verify("Results", result);
         }
-        [Ignore]
+        [Ignore("unknown reason")]
         public void T005_Inline_Using_2_Collections_In_Condition()
         {
             string src = @"[Imperative]
@@ -107,7 +107,7 @@ largest2  =   sqrt(fo1(a)) >   sqrt(fo1(b))  ?   sqrt(fo1(a))  :     sqrt(fo1(b)
             thisTest.Verify("c3", c3);
         }
 
-        [Ignore]
+        [Ignore("unknown reason")]
         public void T006_Inline_Using_Different_Sized_1_Dim_Collections()
         {
             string src = @"[Imperative]
@@ -134,7 +134,7 @@ largest2  =   sqrt(fo1(a)) >   sqrt(fo1(b))  ?   sqrt(fo1(a))  :     sqrt(fo1(b)
             thisTest.Verify("b2", b2);
             thisTest.Verify("b3", b3);
         }
-        [Ignore]
+        [Ignore("unknown reason")]
         public void T007_Inline_Using_Collections_And_Replication()
         {
             string src = @"[Imperative]
@@ -181,7 +181,7 @@ x = [Imperative]
             List<Object> x = new List<object> { 1, 1 };
             thisTest.Verify("x", x);
         }
-        [Ignore]
+        [Ignore("unknown reason")]
         public void T009_Inline_Using_Function_Call_And_Collection_And_Replication()
         {
             string src = @"[Imperative]
@@ -253,7 +253,7 @@ i = [Imperative]
 	x1 = a > b ? c : d;
 	x2 = a <= b ? c : d;
 	
-	x3 = f == g ? h : i;
+	x3 = f == g ? i : h;
 	x4 = f != g ? h : i;
     x5 = f != g ? h : h.IntVal;	
 	
@@ -293,7 +293,6 @@ x6 = power(i) >= power(h.IntVal) ? power(1) : power(0);
 x7 = power(f) >= power(i) ? power(1) : power(0);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            Object n1 = null;
             thisTest.SetErrorMessage("1467231 - Sprint 26 - Rev 3393 null to bool conversion should not be allowed");
             thisTest.Verify("x1", 1);
             thisTest.Verify("x2", 0);

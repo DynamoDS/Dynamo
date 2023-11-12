@@ -7,7 +7,7 @@
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="300">
-    <MenuItem Name="MenuItem">
+    <MenuItem Name="MenuItem" Tag="NoDownArrow">
         <MenuItem.Header>
             <Grid MinWidth="25"
                   Width="Auto">
@@ -21,14 +21,13 @@
                        Grid.Column="0"
                        Grid.Row="0"></Image>
                 <Grid Name="BadgeGrid"
+                      Margin="5,0,0,0"
                       Grid.Column="1"
                       VerticalAlignment="Stretch"
-                      MaxHeight="50"
-                      MinWidth="15">
-                    <Border CornerRadius="80"
-                            BorderThickness="0"
-                            BorderBrush="LightGreen"
-                            Background="LightGreen"
+                      Height="22"
+                      MinWidth="22">
+                    <Border CornerRadius="15"
+                            Background="#23A597"
                             VerticalAlignment="Center"
                             HorizontalAlignment="Stretch">
                         <TextBlock HorizontalAlignment="Center"

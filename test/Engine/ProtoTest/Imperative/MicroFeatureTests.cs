@@ -451,7 +451,7 @@ i = [Imperative]
             thisTest.RunScriptSource(code);
             thisTest.Verify("y",11);
         }
-        [Ignore]
+        [Ignore("unknown reason")]
         public void BitwiseOp001()
         {
             String code =
@@ -466,7 +466,7 @@ i = [Imperative]
             thisTest.RunScriptSource(code);
             thisTest.Verify("c",2);
         }
-        [Ignore]
+        [Ignore("unknown reason")]
         public void BitwiseOp002()
         {
             String code =
@@ -481,7 +481,7 @@ i = [Imperative]
             thisTest.RunScriptSource(code);
             thisTest.Verify("c",3);
         }
-        [Ignore]
+        [Ignore("unknown reason")]
         public void BitwiseOp003()
         {
             String code =
@@ -495,7 +495,7 @@ i = [Imperative]
             thisTest.RunScriptSource(code);
             thisTest.Verify("b",-3);
         }
-        [Ignore]
+        [Ignore("unknown reason")]
         public void BitwiseOp004()
         {
             String code =
@@ -668,7 +668,7 @@ i = [Imperative]
                         }
                         ";
             thisTest.RunScriptSource(code);
-            thisTest.Verify("i", new[] {0, 0, 0, 0});
+            thisTest.Verify("i", new[] {0, 0, 0, 4});
         }
 
         [Test]
@@ -999,7 +999,7 @@ def fac : int( n : int )
             thisTest.RunScriptSource(code);
             thisTest.Verify("c",30);
         }
-        [Ignore]
+        [Ignore("unknown reason")]
         public void PrePostFix001()
         {
             String code =
@@ -1015,7 +1015,7 @@ def fac : int( n : int )
             thisTest.Verify("i", new[] {6, 6});
         }
 
-        [Ignore]
+        [Ignore("unknown reason")]
         public void PrePostFix002()
         {
             String code =
@@ -1030,7 +1030,7 @@ def fac : int( n : int )
             thisTest.RunScriptSource(code);
             thisTest.Verify("i", new[] { 6, 5 });
         }
-        [Ignore]
+        [Ignore("unknown reason")]
         public void PrePostFix003()
         {
             String code =

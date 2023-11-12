@@ -1,37 +1,42 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Reflection;
+using System.Windows.Threading;
 using Dynamo.Utilities;
 using NUnit.Framework;
 
-namespace DynamoCoreWpfTests
-{
+
     [SetUpFixture]
     public class Setup
     {
         private AssemblyHelper assemblyHelper;
 
-        [SetUp]
+        [OneTimeSetUp]
         public void RunBeforeAllTests()
         {
+            var dispatcher = Dispatcher.CurrentDispatcher;
+            Assert.IsNotNull(dispatcher);
+
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
-            var moduleRootFolder = Path.GetDirectoryName(assemblyPath);
+            var moduleRootFolder = new DirectoryInfo(assemblyPath).Parent;
 
             var resolutionPaths = new[]
             {
                 // These tests need "CoreNodeModelsWpf.dll" under "nodes" folder.
-                Path.Combine(moduleRootFolder, "nodes")
+                Path.Combine(moduleRootFolder.FullName, "nodes"),
+                Path.Combine(moduleRootFolder.Parent.Parent.Parent.FullName, "test", "test_dependencies")
+
             };
 
-            assemblyHelper = new AssemblyHelper(moduleRootFolder, resolutionPaths);
+            assemblyHelper = new AssemblyHelper(moduleRootFolder.FullName, resolutionPaths);
             AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssembly;
         }
 
-        [TearDown]
+        [OneTimeTearDown]
         public void RunAfterAllTests()
         {
             AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssembly;
             assemblyHelper = null;
+            Dispatcher.CurrentDispatcher.InvokeShutdown();
         }
     }
-}

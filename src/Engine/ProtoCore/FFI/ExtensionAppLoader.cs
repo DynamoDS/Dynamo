@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.IO;
 using System.Reflection;
 using Autodesk.DesignScript.Interfaces;
+using Dynamo.Logging;
 
 namespace ProtoFFI
 {
@@ -10,6 +11,7 @@ namespace ProtoFFI
     {
         System.Collections.Hashtable mAssemblies = new System.Collections.Hashtable();
         System.Collections.Hashtable mExtensionApps = new System.Collections.Hashtable();
+
         string mProtoInterface = string.Empty;
 
         // http://csharpindepth.com/articles/general/singleton.aspx
@@ -25,6 +27,7 @@ namespace ProtoFFI
             mProtoInterface = assembly.GetName().Name;
             //Let's resolve ProtoInterface, with the assembly implementing IExtensionApplication i.e. DynamoServices
             mAssemblies.Add("ProtoInterface", assembly);
+
             Initialize();
         }
 
@@ -154,46 +157,21 @@ namespace ProtoFFI
             if (null == appType)
                 return;
 
-            IExtensionApplication extesionApp = null;
+            IExtensionApplication extensionApp = null;
             lock (mAssemblies)
             {
                 if (!mAssemblies.ContainsKey(assembly))
                 {
-                    extesionApp = (IExtensionApplication)Activator.CreateInstance(appType, true);
-                    mExtensionApps.Add(appType, extesionApp);
+                    extensionApp = (IExtensionApplication)Activator.CreateInstance(appType, true);
+                    mExtensionApps.Add(appType, extensionApp);
                 }
             }
 
-            if (null != extesionApp)
-                extesionApp.StartUp();
-        }
-
-        /// <summary>
-        /// For nunit-setup
-        /// </summary>
-        internal void ForceStartUpAllApps()
-        {
-            IDictionaryEnumerator i = mExtensionApps.GetEnumerator();
-            while (i.MoveNext())
+            if (null != extensionApp)
             {
-                IExtensionApplication app = i.Value as IExtensionApplication;
-                if (null != app)
-                    app.StartUp();
+                extensionApp.StartUp(new ExtensionStartupParams { DisableADP = Analytics.DisableAnalytics });
             }
         }
-
-        /// <summary>
-        /// For nunit-teardown
-        /// </summary>
-        internal void ForceShutDownAllApps()
-        {
-            IDictionaryEnumerator i = mExtensionApps.GetEnumerator();
-            while (i.MoveNext())
-            {
-                IExtensionApplication app = i.Value as IExtensionApplication;
-                if (null != app)
-                    app.ShutDown();
-            }
-        }
+        
     }
 }

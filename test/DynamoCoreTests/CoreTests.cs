@@ -315,7 +315,7 @@ namespace Dynamo.Tests
             var elementResolver = CurrentDynamoModel.CurrentWorkspace.ElementResolver;
             codeBlockNode.SetCodeContent("--", elementResolver); // Invalid numeric value.
             Assert.AreEqual(ElementState.Error, codeBlockNode.State);
-            Assert.IsNotEmpty(codeBlockNode.ToolTipText); // Error tooltip text.
+            Assert.IsTrue(codeBlockNode.Infos.Any(x => x.State == ElementState.Error)); 
 
             // Ensure the number node is not selected now.
             Assert.AreEqual(false, codeBlockNode.IsSelected);
@@ -324,18 +324,18 @@ namespace Dynamo.Tests
             CurrentDynamoModel.AddToSelection(codeBlockNode);
             Assert.AreEqual(true, codeBlockNode.IsSelected);
             Assert.AreEqual(ElementState.Error, codeBlockNode.State);
-            Assert.IsNotEmpty(codeBlockNode.ToolTipText); // Error tooltip text.
+            Assert.IsTrue(codeBlockNode.Infos.Any(x => x.State == ElementState.Error));
 
             // Deselect the node and ensure its error state isn't cleared.
             DynamoSelection.Instance.Selection.Remove(codeBlockNode);
             Assert.AreEqual(false, codeBlockNode.IsSelected);
             Assert.AreEqual(ElementState.Error, codeBlockNode.State);
-            Assert.IsNotEmpty(codeBlockNode.ToolTipText); // Error tooltip text.
+            Assert.IsTrue(codeBlockNode.Infos.Any(x => x.State == ElementState.Error));
 
             // Update to valid numeric value, should cause the node to be active.
             codeBlockNode.SetCodeContent("1234;", elementResolver);
             Assert.AreEqual(ElementState.Active, codeBlockNode.State);
-            Assert.IsEmpty(codeBlockNode.ToolTipText); // Error tooltip is gone.
+            Assert.IsTrue(codeBlockNode.Infos.Count == 0); // Error tooltip is gone.
         }
 
         [Test]
@@ -431,7 +431,8 @@ namespace Dynamo.Tests
             CurrentDynamoModel.CurrentWorkspace.RemoveAndDisposeNode(addNode);
 
             var command = new DynCmd.UpdateModelValueCommand(Guid.Empty, addNode.GUID, "Code", "");
-            Assert.Throws<InvalidOperationException>(() => CurrentDynamoModel.ExecuteCommand(command));
+            Assert.Throws<InvalidOperationException>(() => CurrentDynamoModel.CurrentWorkspace.UpdateModelValue(command.ModelGuids,
+                    command.Name, command.Value));
         }
 
         [Test]
@@ -439,7 +440,8 @@ namespace Dynamo.Tests
         public void UpdateModelValue_EmptyList_ThrowsException()
         {
             var command = new DynCmd.UpdateModelValueCommand(Guid.Empty, new Guid[] { }, "", "");
-            Assert.Throws<ArgumentNullException>(() => CurrentDynamoModel.ExecuteCommand(command));
+            Assert.Throws<ArgumentNullException>(() => CurrentDynamoModel.CurrentWorkspace.UpdateModelValue(command.ModelGuids,
+                    command.Name, command.Value));
         }
 
         [Test]
@@ -1219,6 +1221,24 @@ namespace Dynamo.Tests
             Assert.AreEqual(2, portCountBefore);
             Assert.AreEqual(3, portCountAfterAdd);
             Assert.AreEqual(2, portCountAfterRemove);
+        }
+
+        [Test]
+        public void TestBooleanCoercion()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\BooleanCoercion.dyn");
+            OpenModel(openPath);
+            RunCurrentModel();
+
+            var node = GetModel().CurrentWorkspace.NodeFromWorkspace("265a1b106dac45c79df90ceb419c0e65");
+            Assert.IsNotNull(node);
+            var val = node.AstIdentifierBase;
+            AssertValue(val, false);
+
+            node = GetModel().CurrentWorkspace.NodeFromWorkspace("13d48579c53e4e71898b68625f50a8c9");
+            Assert.IsNotNull(node);
+            val = node.GetAstIdentifierForOutputIndex(0).Value;
+            AssertValue(val, false);
         }
     }
 }

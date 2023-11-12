@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,7 +8,6 @@ using CoreNodeModels.Input;
 using Dynamo.Engine;
 using Dynamo.Events;
 using Dynamo.Graph;
-using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
@@ -21,8 +20,10 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Watch3D;
+using Moq;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+using TestUINodes;
 using DoubleSlider = CoreNodeModels.Input.DoubleSlider;
 
 namespace DynamoCoreWpfTests
@@ -261,38 +262,6 @@ namespace DynamoCoreWpfTests
 
         }
 
-
-        [Test]
-        [Category("UnitTests")]
-        public void TestFormula()
-        {
-            var formulaNode = new Formula { FormulaString = "x+y", X = 400 };
-
-            //To check if base Serialization method is being called
-
-            //Assert initial values
-            Assert.AreEqual(400, formulaNode.X);
-            Assert.AreEqual("x+y", formulaNode.FormulaString);
-            Assert.AreEqual(2, formulaNode.InPorts.Count);
-
-            //Serialize node and then change values
-            XmlDocument xmlDoc = new XmlDocument();
-            XmlElement serializedEl = formulaNode.Serialize(xmlDoc, SaveContext.Undo);
-            formulaNode.X = 250;
-            formulaNode.FormulaString = "x+y+z";
-
-            //Assert new changes
-            Assert.AreEqual(250, formulaNode.X);
-            Assert.AreEqual(3, formulaNode.InPorts.Count);
-            Assert.AreEqual("x+y+z", formulaNode.FormulaString);
-
-            //Deserialize and aasert old values
-            formulaNode.Deserialize(serializedEl, SaveContext.Undo);
-            Assert.AreEqual(400, formulaNode.X);
-            Assert.AreEqual("x+y", formulaNode.FormulaString);
-            Assert.AreEqual(2, formulaNode.InPorts.Count);
-        }
-
         [Test]
         public void TestFunctionNode()
         {
@@ -431,6 +400,77 @@ namespace DynamoCoreWpfTests
 
             // Dummy node should be serialized to its original node
             Assert.AreEqual(element.Name, "Dynamo.Nodes.DSFunction");
+        }
+
+        [Test]
+        public void NodeViewSerializationPropertiesTest()
+        {
+            var serializationNodeViewModelFile = Path.Combine(TestDirectory, @"core\serialization\serializationNodeViewModel.dyn");
+            OpenModel(serializationNodeViewModelFile);
+
+            var workSpaceJobject = JObject.Parse(ViewModel.CurrentSpaceViewModel.ToJson());
+            JObject nodeViewModelJobject = JObject.Parse(workSpaceJobject["NodeViews"][0].ToString());
+
+            Assert.AreEqual(8, nodeViewModelJobject.Properties().Count(), "The number of Serialized properties is not the expected");
+
+            bool explicitOrder =
+                nodeViewModelJobject.Properties().ElementAt(0).Name == GetJsonPropertydName<NodeViewModel>(nameof(NodeViewModel.Id)) &&
+                nodeViewModelJobject.Properties().ElementAt(1).Name == GetJsonPropertydName<NodeViewModel>(nameof(NodeViewModel.Name)) &&
+                nodeViewModelJobject.Properties().ElementAt(2).Name == GetJsonPropertydName<NodeViewModel>(nameof(NodeViewModel.IsSetAsInput)) &&
+                nodeViewModelJobject.Properties().ElementAt(3).Name == GetJsonPropertydName<NodeViewModel>(nameof(NodeViewModel.IsSetAsOutput)) &&
+                nodeViewModelJobject.Properties().ElementAt(4).Name == GetJsonPropertydName<NodeViewModel>(nameof(NodeViewModel.IsFrozenExplicitly)) &&
+                nodeViewModelJobject.Properties().ElementAt(5).Name == GetJsonPropertydName<NodeViewModel>(nameof(NodeViewModel.IsVisible)) &&
+                nodeViewModelJobject.Properties().ElementAt(6).Name == GetJsonPropertydName<NodeViewModel>(nameof(NodeViewModel.X)) &&
+                nodeViewModelJobject.Properties().ElementAt(7).Name == GetJsonPropertydName<NodeViewModel>(nameof(NodeViewModel.Y));
+
+            Assert.IsTrue(explicitOrder, "The order of the properties is not the expected");
+        }
+
+        [Test]
+        public void NodeModelSerializationPropertiesTest()
+        {
+            var openPath = Path.Combine(TestDirectory, @"core\serialization\serializationNodeModel.dyn");
+
+            var jsonText = File.ReadAllText(openPath);
+            var jobject1 = JObject.Parse(jsonText);
+           
+            JObject firstNodeModelObject = JObject.Parse(jobject1["Nodes"][0].ToString());
+
+            bool firstNodeExplicitOrder =
+                firstNodeModelObject.Properties().ElementAt(0).Name == "ConcreteType" &&
+                firstNodeModelObject.Properties().ElementAt(1).Name == GetJsonPropertydName<NodeModel>(nameof(NodeModel.GUID)) &&
+                firstNodeModelObject.Properties().ElementAt(2).Name == GetJsonPropertydName<NodeModel>(nameof(NodeModel.NodeType)) &&
+                firstNodeModelObject.Properties().ElementAt(3).Name == GetJsonPropertydName<NodeModel>(nameof(NodeModel.InPorts)) &&
+                firstNodeModelObject.Properties().ElementAt(4).Name == GetJsonPropertydName<NodeModel>(nameof(NodeModel.OutPorts)) &&                
+                firstNodeModelObject.Properties().ElementAt(5).Name == GetJsonPropertydName<NodeModel>(nameof(NodeModel.ArgumentLacing)) &&
+                firstNodeModelObject.Properties().ElementAt(6).Name == GetJsonPropertydName<NodeModel>(nameof(NodeModel.Description)) &&
+                firstNodeModelObject.Properties().ElementAt(7).Name == GetJsonPropertydName<CodeBlockNodeModel>(nameof(CodeBlockNodeModel.Code));
+
+            Assert.IsTrue(firstNodeExplicitOrder, "The first serialized Node doesn't have the expected order");
+
+            JObject secondNodeModelObject = JObject.Parse(jobject1["Nodes"][1].ToString());
+
+            bool secondNodeExplicitOrder =
+                secondNodeModelObject.Properties().ElementAt(0).Name == "ConcreteType" &&
+                secondNodeModelObject.Properties().ElementAt(1).Name == GetJsonPropertydName<NodeModel>(nameof(NodeModel.GUID)) &&
+                secondNodeModelObject.Properties().ElementAt(2).Name == GetJsonPropertydName<NodeModel>(nameof(NodeModel.NodeType)) &&
+                secondNodeModelObject.Properties().ElementAt(3).Name == GetJsonPropertydName<NodeModel>(nameof(NodeModel.InPorts)) &&
+                secondNodeModelObject.Properties().ElementAt(4).Name == GetJsonPropertydName<NodeModel>(nameof(NodeModel.OutPorts)) &&
+                secondNodeModelObject.Properties().ElementAt(5).Name == GetJsonPropertydName<NodeModel>(nameof(NodeModel.ArgumentLacing)) &&
+                secondNodeModelObject.Properties().ElementAt(6).Name == GetJsonPropertydName<NodeModel>(nameof(NodeModel.Description)) &&
+                secondNodeModelObject.Properties().ElementAt(7).Name == GetJsonPropertydName<FileSystemBrowser>(nameof(FileSystemBrowser.HintPath)) &&
+                secondNodeModelObject.Properties().ElementAt(8).Name == GetJsonPropertydName<BasicInteractive<object>>(nameof(BasicInteractive<object>.Value));
+            
+
+            Assert.IsTrue(secondNodeExplicitOrder, "The second serialized Node doesn't have the expected order");
+        }
+
+        public string GetJsonPropertydName<T>(string propertyName)
+        {
+            System.Reflection.PropertyInfo t = typeof(T).GetProperty(propertyName);
+            var attr = t.GetCustomAttributes(typeof(Newtonsoft.Json.JsonPropertyAttribute), true).FirstOrDefault() as Newtonsoft.Json.JsonPropertyAttribute;
+
+            return attr.PropertyName ?? propertyName;
         }
 
         [Test]
@@ -721,8 +761,8 @@ namespace DynamoCoreWpfTests
             var token = JToken.Parse(viewModel.CurrentSpaceViewModel.ToJson());
             jo.Add("View", token);
 
-            Assert.IsNotNullOrEmpty(jsonModel);
-            Assert.IsNotNullOrEmpty(jo.ToString());
+            Assert.IsFalse(string.IsNullOrEmpty(jsonModel));
+            Assert.IsFalse(string.IsNullOrEmpty(jo.ToString()));
 
             var tempPath = Path.GetTempPath();
             var jsonFolder = Path.Combine(tempPath, jsonFolderName);
@@ -757,7 +797,7 @@ namespace DynamoCoreWpfTests
 
             json = serializationTestUtils.replaceModelIdsWithNonGuids(json, model.CurrentWorkspace ,modelsGuidToIdMap);
 
-            Assert.IsNotNullOrEmpty(json);
+            Assert.IsFalse(string.IsNullOrEmpty(json));
 
             // Call structured copy function for CoGS testing, see QNTM-2973
             // Only called for CoreWPFTests nonGuids
@@ -865,7 +905,7 @@ namespace DynamoCoreWpfTests
             }
         }
 
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void FixtureSetup()
         {
             ExecutionEvents.GraphPostExecution += ExecutionEvents_GraphPostExecution;
@@ -904,7 +944,7 @@ namespace DynamoCoreWpfTests
             }
         }
 
-        [TestFixtureTearDown]
+        [OneTimeTearDown]
         public void TearDown()
         {
             ExecutionEvents.GraphPostExecution -= ExecutionEvents_GraphPostExecution;
@@ -922,7 +962,7 @@ namespace DynamoCoreWpfTests
         /// </summary>
         /// <param name="filePath">The path to a .dyn file. This parameter is supplied
         /// by the test framework.</param>
-        [Test, TestCaseSource("FindWorkspaces"), Category("JsonTestExclude")]
+        [Test, TestCaseSource(nameof(FindWorkspaces)), Category("JsonTestExclude")]
         public void SerializationTest(string filePath)
         {
             DoWorkspaceOpenAndCompareView(filePath,
@@ -941,7 +981,7 @@ namespace DynamoCoreWpfTests
         /// </summary>
         /// <param name="filePath">The path to a .dyn file. This parameter is supplied
         /// by the test framework.</param>
-        [Test, TestCaseSource("FindWorkspaces"), Category("JsonTestExclude")]
+        [Test, TestCaseSource(nameof(FindWorkspaces)), Category("JsonTestExclude")]
         public void SerializationNonGuidIdsTest(string filePath)
         {
             modelsGuidToIdMap.Clear();
@@ -1004,26 +1044,22 @@ namespace DynamoCoreWpfTests
         [Test]
         public void NewCustomNodeSaveAndLoadPt2()
         {
-            this.ViewModel.Model.PreferenceSettings.CustomPackageFolders = new List<string>() { Path.Combine(Path.GetTempPath(), "NewCustomNodeSaveAndLoad") };
+            var newPaths = new List<string> { Path.Combine(Path.GetTempPath(), "NewCustomNodeSaveAndLoad") };
+            ViewModel.Model.PreferenceSettings.CustomPackageFolders = newPaths;
 
-            var loader = this.ViewModel.Model.GetPackageManagerExtension().PackageLoader;
-            var loadPackageParams = new LoadPackageParams
-            {
-                Preferences = this.ViewModel.Model.PreferenceSettings,
-                NewPaths = new List<string>() { }
-            };
-            loader.LoadCustomNodesAndPackages(loadPackageParams, this.ViewModel.Model.CustomNodeManager);
+            var loader = ViewModel.Model.GetPackageManagerExtension().PackageLoader;
+            loader.LoadNewCustomNodesAndPackages(newPaths, ViewModel.Model.CustomNodeManager);
             // This unit test is a follow-up of NewCustomNodeSaveAndLoadPt1 test to make sure the newly created
             // custom node will be loaded once DynamoCore restarted
             var funcguid = GuidUtility.Create(GuidUtility.UrlNamespace, "NewCustomNodeSaveAndLoad");
             var functionnode =
-                this.ViewModel.Model.CustomNodeManager.CreateCustomNodeInstance(funcguid, "testnode", true);
+                ViewModel.Model.CustomNodeManager.CreateCustomNodeInstance(funcguid, "testnode", true);
             Assert.IsTrue(functionnode.IsCustomFunction);
             Assert.IsFalse(functionnode.IsInErrorState);
             Assert.AreEqual(functionnode.OutPorts.Count, 2);
 
-            this.ViewModel.CurrentSpace.AddAndRegisterNode(functionnode);
-            var nodeingraph = this.ViewModel.CurrentSpace.Nodes.FirstOrDefault();
+            ViewModel.CurrentSpace.AddAndRegisterNode(functionnode);
+            var nodeingraph = ViewModel.CurrentSpace.Nodes.FirstOrDefault();
             Assert.NotNull(nodeingraph);
             Assert.IsTrue(nodeingraph.State == ElementState.Active);
             //remove custom node from definitions folder
@@ -1061,7 +1097,51 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(numXMLAnnotations, numJsonAnnotations);
         }
 
-        public object[] FindWorkspaces()
+        [Test]
+        public void DropDownsHaveCorrectInputDataTypes()
+        {
+            var dropnode = new EnumAsStringConcrete();
+            var data = dropnode.InputData;
+            Assert.AreEqual(NodeInputTypes.selectionInput, data.Type);
+            Assert.AreEqual(NodeInputTypes.dropdownSelection, data.Type2);
+        }
+        [Test]
+        public void SelectionNodesHaveCorrectInputDataTypes()
+        {
+            var selectNode = new SelectionConcrete(SelectionType.One, SelectionObjectType.None, "", "");
+            var data = selectNode.InputData;
+            Assert.AreEqual(NodeInputTypes.selectionInput, data.Type);
+            Assert.AreEqual(NodeInputTypes.hostSelection, data.Type2);
+        }
+        [Test]
+        public void SelectionNodeInputDataSerializationTest()
+        {
+            // Arrange
+            var filePath = Path.Combine(TestDirectory, @"core\NodeInputOutputData\selectionNodeInputData.dyn");
+            if (!File.Exists(filePath))
+            {
+                var savePath = Path.ChangeExtension(filePath, null);
+                var selectionHelperMock = new Mock<IModelSelectionHelper<ModelBase>>(MockBehavior.Strict);
+                var selectionNode = new SelectionConcrete(SelectionType.Many, SelectionObjectType.Element, "testMessage", "testPrefix", selectionHelperMock.Object);
+                selectionNode.Name = "selectionTestName";
+                selectionNode.IsSetAsInput = true;
+
+                ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(selectionNode);
+                ConvertCurrentWorkspaceViewToJsonAndSave(ViewModel, savePath);
+            }
+
+            // Act
+            // Assert
+            DoWorkspaceOpenAndCompareView(
+                filePath,
+                jsonFolderName,
+                ConvertCurrentWorkspaceViewToJsonAndSave,
+                //TODO(MJK) potentially just use compareworkspacedata if test fails.
+                CompareWorkspaceViews,
+                serializationTestUtils.SaveWorkspaceComparisonData);
+        }
+
+        public static object[] FindWorkspaces()
         {
             var di = new DirectoryInfo(TestDirectory);
             var fis = new string[] { "*.dyn", "*.dyf" }

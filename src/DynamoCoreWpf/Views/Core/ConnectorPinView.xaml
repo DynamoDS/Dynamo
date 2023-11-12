@@ -3,41 +3,42 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Dynamo.Wpf.Views.Preview"
              xmlns:props="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
              mc:Ignorable="d" 
-             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:ui="clr-namespace:Dynamo.UI"
              MouseLeftButtonDown="OnPinMouseDown"
-             PreviewMouseLeftButtonDown="OnPreviewMouseLeftButtonDown"
-             MouseLeave="OnPinViewMouseLeave">
+             PreviewMouseLeftButtonDown="OnPreviewMouseLeftButtonDown">
 
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
 
     <Canvas Left="{Binding Left, Mode=TwoWay}" Top="{Binding Top, Mode=TwoWay}">
         <Canvas.ContextMenu>
-                <ContextMenu>
+            <ContextMenu Style="{StaticResource ContextMenuStyle}" Background="{StaticResource NodeContextMenuBackground}">
                     <MenuItem Header="{x:Static props:Resources.ConnectorContextMenuHeaderUnpinConnector}" Command="{Binding UnpinConnectorCommand}"/>
                 </ContextMenu>
             </Canvas.ContextMenu>
 
         <Grid  x:Name="PinBtn"  Background="Transparent">
-            <Image Width="{Binding Model.Width}" Height="{Binding Model.Width}">
+            <Image Width="{Binding Model.Width}" Height="{Binding Model.Width}"
+                    Visibility="{Binding IsCollapsed, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}"
+                   MouseRightButtonDown="OnPinRightMouseButtonDown"
+                   MouseRightButtonUp ="OnPinRightMouseButtonUp">
                 <Image.Style>
                     <Style TargetType="Image">
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Path=IsCollapsed, Mode=OneWay}" Value="True">
+                            <DataTrigger Binding="{Binding Path=IsHidden, Mode=OneWay}" Value="True">
                                 <Setter Property="Opacity" Value="0.0"/>
                                 <Setter Property="ToolTipService.IsEnabled" Value="False"/>
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding Path=IsCollapsed, Mode=OneWay}" Value="False">
-                                <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/pin_48_48.png"/>
+                            <DataTrigger Binding="{Binding Path=IsHidden, Mode=OneWay}" Value="False">
+                                <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/pin_default_48_48.png"/>
                                 <Setter Property="ToolTipService.IsEnabled" Value="True"/>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding Path=IsSelected, Mode=OneWay}" Value="True">
@@ -56,7 +57,7 @@
                                 </MultiDataTrigger.Conditions>
                                 <MultiDataTrigger.Setters>
                                     <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/pin_selected_48_48.png"/>
-                                    <Setter Property="Opacity" Value="0.6"/>
+                                    <Setter Property="Opacity" Value="0.4"/>
                                     <Setter Property="ToolTipService.IsEnabled" Value="True"/>
                                 </MultiDataTrigger.Setters>
                             </MultiDataTrigger>

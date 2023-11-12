@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using System.Diagnostics;
-using Analytics.NET.Google;
-using Analytics.NET.ADP;
+using Autodesk.Analytics.ADP;
 using Autodesk.Analytics.Core;
 using Autodesk.Analytics.Events;
 using Dynamo.Interfaces;
@@ -12,9 +11,6 @@ namespace Dynamo.Logging
 {
     class DynamoAnalyticsSession : IAnalyticsSession
     {
-        private Heartbeat heartbeat;
-        private UsageLog logger;
-
         public DynamoAnalyticsSession()
         {
             UserId = GetUserID();
@@ -24,10 +20,6 @@ namespace Dynamo.Logging
         public void Start(DynamoModel model)
         {
             StabilityCookie.Startup();
-
-            heartbeat = Heartbeat.GetInstance(model);
-
-            logger = new UsageLog("Dynamo", UserId, SessionId);
         }
 
         public void Dispose()
@@ -37,24 +29,13 @@ namespace Dynamo.Logging
                 StabilityCookie.WriteCrashingShutdown();
             else
                 StabilityCookie.WriteCleanShutdown();
-            
-            if (null != heartbeat)
-                Heartbeat.DestroyInstance();
-            heartbeat = null;
-
-            if (null != logger)
-                logger.Dispose();
-            logger = null;
-        }
-
-        public ILogger Logger
-        {
-            get { return logger; }
         }
 
         public string UserId { get; private set; }
 
         public string SessionId { get; private set; }
+        [Obsolete("Do not use, will be removed, was only used by legacy instrumentation.")]
+        public ILogger Logger => throw new NotImplementedException();
 
         public static String GetUserID()
         {
@@ -114,50 +95,15 @@ namespace Dynamo.Logging
         public virtual IAnalyticsSession Session { get; private set; }
 
         /// <summary>
-        /// Return if Analytics Client is allowed to send any analytics information (Google, ADP etc.)
+        /// Return if Analytics Client is allowed to send any analytics information
         /// </summary>
         public bool ReportingAnalytics
         {
             get
             {
-                return Service.IsInitialized && (ReportingGoogleAnalytics || ReportingADPAnalytics);
+                return !Analytics.DisableAnalytics &&
+                    Service.IsInitialized;
             }
-        }
-
-        /// <summary>
-        /// Return if Google Analytics Client is allowed to send analytics info
-        /// </summary>
-        private bool ReportingGoogleAnalytics
-        {
-            get
-            {
-                return preferences != null
-                    && Service.IsInitialized
-                    && preferences.IsAnalyticsReportingApproved;
-            }
-        }
-
-        /// <summary>
-        /// Return if ADP Analytics Client is allowed to send analytics info
-        /// </summary>
-        private bool ReportingADPAnalytics
-        {
-            get 
-            {
-                return preferences != null
-                    && Service.IsInitialized
-                    && preferences.IsADPAnalyticsReportingApproved; 
-            }
-        }
-
-        /// <summary>
-        /// Return if Analytics Client is allowed to send instrumentation info
-        /// </summary>
-        public bool ReportingUsage
-        {
-            get { return preferences != null
-                    && Service.IsInitialized
-                    && preferences.IsUsageReportingApproved; }
         }
 
         /// <summary>
@@ -172,12 +118,12 @@ namespace Dynamo.Logging
 
             if (Session == null) Session = new DynamoAnalyticsSession();
 
-            //Setup Analytics service, StabilityCookie, Heartbeat and UsageLog.
+            //Setup Analytics service, and StabilityCookie.
             Session.Start(dynamoModel);
 
             //Dynamo app version.
             var appversion = dynamoModel.AppVersion;
-            
+
             var hostName = string.IsNullOrEmpty(dynamoModel.HostName) ? "Dynamo" : dynamoModel.HostName;
 
             hostInfo = new HostContextInfo() { ParentId = dynamoModel.HostAnalyticsInfo.ParentId, SessionId = dynamoModel.HostAnalyticsInfo.SessionId };
@@ -191,24 +137,15 @@ namespace Dynamo.Logging
             product = new ProductInfo() { Id = "DYN", Name = hostName, VersionString = appversion, AppVersion = appversion, BuildId = buildId, ReleaseId = releaseId };
         }
 
-        private void RegisterGATracker(Service service)
-        {
-            //Some clients such as Revit may allow start/close Dynamo multiple times
-            //in the same session so register only if the factory is not registered.
-            if (service.GetTrackerFactory(GATrackerFactory.Name) == null)
-                service.Register(new GATrackerFactory(ANALYTICS_PROPERTY));
-
-            Service.Instance.AddTrackerFactoryFilter(GATrackerFactory.Name, () => ReportingGoogleAnalytics);
-        }
-
         private void RegisterADPTracker(Service service)
         {
             //Some clients such as Revit may allow start/close Dynamo multiple times
             //in the same session so register only if the factory is not registered.
             if (service.GetTrackerFactory(ADPTrackerFactory.Name) == null)
+            {
                 service.Register(new ADPTrackerFactory());
-
-            Service.Instance.AddTrackerFactoryFilter(ADPTrackerFactory.Name, () => ReportingADPAnalytics);
+                service.AddTrackerFactoryFilter(ADPTrackerFactory.Name, () => ReportingAnalytics);
+            }
         }
 
         /// <summary>
@@ -217,27 +154,21 @@ namespace Dynamo.Logging
         /// </summary>
         public void Start()
         {
-            if (preferences != null && 
-                (preferences.IsAnalyticsReportingApproved || preferences.IsADPAnalyticsReportingApproved))
+            // Start Analytics service regardless of optin status.
+            // Each track event will be enabled/disabled based on the corresponding optin status.
+            // Ex. ADP will manage optin status internally
+            if (preferences != null && !Analytics.DisableAnalytics)
             {
                 //Register trackers
                 var service = Service.Instance;
 
-                // Use separate functions to avoid loading the tracker dlls if they are not opted in (as an extra safety measure).
-                // ADP will be loaded because opt-in/opt-out is handled/serialized exclusively by the ADP module.
-                
-                // Register Google Tracker only if the user is opted in.
-                if (preferences.IsAnalyticsReportingApproved)
-                    RegisterGATracker(service);
-
-                // Register ADP Tracker only if the user is opted in.
-                if (preferences.IsADPAnalyticsReportingApproved)
-                    RegisterADPTracker(service);
+                // Always register ADP Tracker.
+                // ADP manages opt in status internally.
+                RegisterADPTracker(service);
 
                 //If not ReportingAnalytics, then set the idle time as infinite so idle state is not recorded.
                 Service.StartUp(product, new UserInfo(Session.UserId), hostInfo, TimeSpan.FromMinutes(30));
                 TrackPreferenceInternal("ReportingAnalytics", "", ReportingAnalytics ? 1 : 0);
-                TrackPreferenceInternal("ReportingADPAnalytics", "", ReportingADPAnalytics ? 1 : 0);
             }
         }
 
@@ -363,12 +294,6 @@ namespace Dynamo.Logging
         [Obsolete("Function will be removed in Dynamo 3.0 as Dynamo will no longer support GA instrumentation.")]
         public void LogPiiInfo(string tag, string data)
         {
-            if (!ReportingUsage) return;
-
-            if (Session != null && Session.Logger != null)
-            {
-                Session.Logger.Log(tag, data);
-            }
         }
 
         public void Dispose()

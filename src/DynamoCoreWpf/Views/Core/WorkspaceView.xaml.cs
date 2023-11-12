@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -20,6 +21,7 @@ using Dynamo.Models;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.UI;
+using Dynamo.UI.Controls;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.UI;
@@ -31,7 +33,7 @@ namespace Dynamo.Views
     /// <summary>
     /// Interaction logic for WorkspaceView.xaml
     /// </summary>
-    public partial class WorkspaceView
+    public partial class WorkspaceView: IDisposable
     {
         public enum CursorState
         {
@@ -79,6 +81,8 @@ namespace Dynamo.Views
             }
         }
 
+        internal GeometryScalingPopup GeoScalingPopup { get; set; }
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -124,15 +128,17 @@ namespace Dynamo.Views
         private void RemoveViewModelsubscriptions(WorkspaceViewModel ViewModel)
         {
             ViewModel.RequestShowInCanvasSearch -= ShowHideInCanvasControl;
+            ViewModel.RequestHideAllPopup -= HideAllPopUp;
             ViewModel.RequestNodeAutoCompleteSearch -= ShowHideNodeAutoCompleteControl;
+            ViewModel.RequestPortContextMenu -= ShowHidePortContextMenu;
             ViewModel.DynamoViewModel.PropertyChanged -= ViewModel_PropertyChanged;
-           
+
             ViewModel.ZoomChanged -= vm_ZoomChanged;
             ViewModel.RequestZoomToViewportCenter -= vm_ZoomAtViewportCenter;
             ViewModel.RequestZoomToViewportPoint -= vm_ZoomAtViewportPoint;
             ViewModel.RequestZoomToFitView -= vm_ZoomToFitView;
             ViewModel.RequestCenterViewOnElement -= CenterViewOnElement;
-         
+
             ViewModel.RequestAddViewToOuterCanvas -= vm_RequestAddViewToOuterCanvas;
             ViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
             ViewModel.RequestSelectionBoxUpdate -= VmOnRequestSelectionBoxUpdate;
@@ -150,7 +156,9 @@ namespace Dynamo.Views
         private void AttachViewModelsubscriptions(WorkspaceViewModel ViewModel)
         {
             ViewModel.RequestShowInCanvasSearch += ShowHideInCanvasControl;
+            ViewModel.RequestHideAllPopup += HideAllPopUp;
             ViewModel.RequestNodeAutoCompleteSearch += ShowHideNodeAutoCompleteControl;
+            ViewModel.RequestPortContextMenu += ShowHidePortContextMenu;
             ViewModel.DynamoViewModel.PropertyChanged += ViewModel_PropertyChanged;
 
             ViewModel.ZoomChanged += vm_ZoomChanged;
@@ -170,8 +178,14 @@ namespace Dynamo.Views
         }
 
         private void ShowHideNodeAutoCompleteControl(ShowHideFlags flag)
-        {            
+        {
             ShowHidePopup(flag, NodeAutoCompleteSearchBar);
+        }
+
+        private void ShowHidePortContextMenu(ShowHideFlags flag, PortViewModel portViewModel)
+        {
+            PortContextMenu.DataContext = portViewModel;
+            ShowHidePopup(flag, PortContextMenu);
         }
 
         private void ShowHideInCanvasControl(ShowHideFlags flag)
@@ -182,6 +196,12 @@ namespace Dynamo.Views
         private void ShowHideContextMenu(ShowHideFlags flag)
         {
             ShowHidePopup(flag, ContextMenuPopup);
+        }
+
+        private void ShowHideGeoScalingPopup(ShowHideFlags flag)
+        {
+            if (GeoScalingPopup != null)
+                ShowHidePopup(flag, GeoScalingPopup);
         }
 
         private void ShowHidePopup(ShowHideFlags flag, Popup popup)
@@ -195,19 +215,54 @@ namespace Dynamo.Views
                 case ShowHideFlags.Show:
                     // Show InCanvas search just in case, when mouse is over workspace.
                     var displayPopup = DynamoModel.IsTestMode || IsMouseOver;
-                    if (displayPopup && popup == NodeAutoCompleteSearchBar)
+
+                    if (displayPopup)
                     {
-                        if (ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel == null) return;
-                        // Force the Child visibility to change here because
-                        // 1. Popup isOpen change does not necessarily update the child control before it take effect
-                        // 2. Dynamo rely on child visibility change hander to setup Node AutoComplete control
-                        // 3. This should not be set to in canvas search control
-                        popup.Child.Visibility = Visibility.Collapsed;
-                        ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.SetupNodeAutocompleteWindowPlacement(popup);
+                        if (popup == NodeAutoCompleteSearchBar)
+                        {
+                            if (ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel == null) return;
+                            // Force the Child visibility to change here because
+                            // 1. Popup isOpen change does not necessarily update the child control before it take effect
+                            // 2. Dynamo rely on child visibility change hander to setup Node AutoComplete control
+                            // 3. This should not be set to in canvas search control
+                            popup.Child.Visibility = Visibility.Collapsed;
+                            ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.SetupNodeAutocompleteWindowPlacement(popup);
+                        }
+
+                        else if (popup == PortContextMenu)
+                        {
+                            popup.Child.Visibility = Visibility.Hidden;
+                            if (!(PortContextMenu.DataContext is PortViewModel portViewModel)) return;
+
+                            if (portViewModel is OutPortViewModel outPortViewModel)
+                            {
+                                outPortViewModel.RefreshHideWiresState();
+
+                                if (portViewModel.NodeViewModel.NodeModel is PythonNodeModels.PythonNode)
+                                {
+                                    outPortViewModel.EnableRenamePort();
+                                }
+                            }
+
+
+                            portViewModel.SetupPortContextMenuPlacement(popup);
+                        }
                     }
-                    popup.Child.Visibility = Visibility.Visible;
-                    popup.IsOpen = displayPopup;
-                    popup.CustomPopupPlacementCallback = null;
+
+                    // We need to use the dispatcher here to make sure that
+                    // the popup is fully updated before we show it.
+                    // This was mainly an issue with the PortContextMenu as
+                    // it uses a DataTemplate bound to the WorkspaceViewModel
+                    // to display the correct content.
+                    // If the dispatcher is not used in this scenario when switching
+                    // from inputPort context menu to Output port context menu,
+                    // the popup will display before the new content is fully rendered
+                    this.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, new Action(() => {
+                        popup.Child.Visibility = Visibility.Visible;
+                        popup.Child.UpdateLayout();
+                        popup.IsOpen = displayPopup;
+                        popup.CustomPopupPlacementCallback = null;
+                    }));
 
                     ViewModel.InCanvasSearchViewModel.SearchText = string.Empty;
                     ViewModel.InCanvasSearchViewModel.InCanvasSearchPosition = inCanvasSearchPosition;
@@ -216,14 +271,29 @@ namespace Dynamo.Views
         }
 
         /// <summary>
-        /// Hides Context Menu as well as InCanvasControl (Right Click PopUp)
+        /// Hides all popups in the view, the amount of popup hidden will be different depending on
+        /// if the hide view command is triggered on node level or workspace level
         /// </summary>
-        public void HidePopUp()
+        public void HideAllPopUp(object sender)
         {
+            // First make sure workspace level popups are hidden
             if (InCanvasSearchBar.IsOpen || ContextMenuPopup.IsOpen)
             {
                 ShowHideContextMenu(ShowHideFlags.Hide);
                 ShowHideInCanvasControl(ShowHideFlags.Hide);
+            }
+
+            var imageButtonGeoScalingPopup = Mouse.DirectlyOver as ImageRepeatButton;
+            //When imageButtonGeoScalingPopup is null means that the user is clicking the Geometry Scaling button so we should not close the Popup
+            if (imageButtonGeoScalingPopup == null && GeoScalingPopup != null && GeoScalingPopup.IsOpen)
+            {
+                ShowHideGeoScalingPopup(ShowHideFlags.Hide);
+            }
+            // If triggered on node level, make sure node popups are also hidden
+            if(sender is NodeView && (PortContextMenu.IsOpen || NodeAutoCompleteSearchBar.IsOpen) )
+            {
+                ShowHidePopup(ShowHideFlags.Hide, PortContextMenu);
+                ShowHidePopup(ShowHideFlags.Hide, NodeAutoCompleteSearchBar);
             }
         }
 
@@ -244,83 +314,114 @@ namespace Dynamo.Views
             return new Rect(topLeft, bottomRight);
         }
 
-        internal void SaveWorkspaceAsImage(string path)
+        private RenderTargetBitmap GetRender()
         {
-            var initialized = false;
-            var bounds = new Rect();
-
-            double minX = 0.0, minY = 0.0;
-            var dragCanvas = WpfUtilities.ChildOfType<DragCanvas>(this);
-            var childrenCount = VisualTreeHelper.GetChildrenCount(dragCanvas);
-            for (int index = 0; index < childrenCount; ++index)
+            RenderTargetBitmap rtb;
+            try
             {
-                var child = VisualTreeHelper.GetChild(dragCanvas, index);
-                var firstChild = VisualTreeHelper.GetChild(child, 0);
+                var initialized = false;
+                var bounds = new Rect();
 
-                switch (firstChild.GetType().Name)
+                double minX = 0.0, minY = 0.0;
+                var dragCanvas = WpfUtilities.ChildOfType<DragCanvas>(this);
+                var childrenCount = VisualTreeHelper.GetChildrenCount(dragCanvas);
+                for (int index = 0; index < childrenCount; ++index)
                 {
-                    case "NodeView":
-                    case "NoteView":
-                    case "AnnotationView":
-                        break;
+                    ContentPresenter contentPresenter = VisualTreeHelper.GetChild(dragCanvas, index) as ContentPresenter;
+                    if (contentPresenter.Children().Count() < 1) continue;
 
-                    // Until we completely removed InfoBubbleView (or fixed its broken 
-                    // size calculation), we will not be including it in our size 
-                    // calculation here. This means that the info bubble, if any, will 
-                    // still go beyond the boundaries of the final PNG file. I would 
-                    // prefer not to add this hack here as it introduces multiple issues 
-                    // (including NaN for Grid inside the view and the fix would be too 
-                    // ugly to type in). Suffice to say that InfoBubbleView is not 
-                    // included in the size calculation for screen capture (work-around 
-                    // should be obvious).
+                    var firstChild = VisualTreeHelper.GetChild(contentPresenter, 0);
+
+                    switch (firstChild.GetType().Name)
+                    {
+                        case "NodeView":
+                        case "NoteView":
+                        case "AnnotationView":
+                            break;
+
+                        // Until we completely removed InfoBubbleView (or fixed its broken 
+                        // size calculation), we will not be including it in our size 
+                        // calculation here. This means that the info bubble, if any, will 
+                        // still go beyond the boundaries of the final PNG file. I would 
+                        // prefer not to add this hack here as it introduces multiple issues 
+                        // (including NaN for Grid inside the view and the fix would be too 
+                        // ugly to type in). Suffice to say that InfoBubbleView is not 
+                        // included in the size calculation for screen capture (work-around 
+                        // should be obvious).
+                        // 
+                        // case "InfoBubbleView":
+                        //     child = WpfUtilities.ChildOfType<Grid>(child);
+                        //     break;
+
+                        // We do not take anything other than those above 
+                        // into consideration when the canvas size is measured.
+                        default:
+                            continue;
+                    }
+
+                    // Determine the smallest corner of all given visual elements on the 
+                    // graph. This smallest top-left corner value will be useful in making 
+                    // the offset later on.
                     // 
-                    // case "InfoBubbleView":
-                    //     child = WpfUtilities.ChildOfType<Grid>(child);
-                    //     break;
+                    var childBounds = VisualTreeHelper.GetDescendantBounds(contentPresenter as Visual);
+                    minX = childBounds.X < minX ? childBounds.X : minX;
+                    minY = childBounds.Y < minY ? childBounds.Y : minY;
+                    childBounds.X = (double)(contentPresenter as Visual).GetValue(Canvas.LeftProperty);
+                    childBounds.Y = (double)(contentPresenter as Visual).GetValue(Canvas.TopProperty);
 
-                    // We do not take anything other than those above 
-                    // into consideration when the canvas size is measured.
-                    default:
-                        continue;
+                    if (initialized)
+                    {
+                        bounds.Union(childBounds);
+                    }
+                    else
+                    {
+                        initialized = true;
+                        bounds = childBounds;
+                    }
                 }
 
-                // Determine the smallest corner of all given visual elements on the 
-                // graph. This smallest top-left corner value will be useful in making 
-                // the offset later on.
-                // 
-                var childBounds = VisualTreeHelper.GetDescendantBounds(child as Visual);
-                minX = childBounds.X < minX ? childBounds.X : minX;
-                minY = childBounds.Y < minY ? childBounds.Y : minY;
-                childBounds.X = (double)(child as Visual).GetValue(Canvas.LeftProperty);
-                childBounds.Y = (double)(child as Visual).GetValue(Canvas.TopProperty);
+                // Nothing found in the canvas, bail out.
+                if (!initialized) return null;
 
-                if (initialized)
-                {
-                    bounds.Union(childBounds);
-                }
-                else
-                {
-                    initialized = true;
-                    bounds = childBounds;
-                }
+                // Add padding to the edge and make them multiples of two (pad 10px on each side).
+                bounds.Width = 20 + ((((int)Math.Ceiling(bounds.Width)) + 1) & ~0x01);
+                bounds.Height = 20 + ((((int)Math.Ceiling(bounds.Height)) + 1) & ~0x01);
+
+                var currentTransformGroup = WorkspaceElements.RenderTransform as TransformGroup;
+                WorkspaceElements.RenderTransform = new TranslateTransform(10.0 - bounds.X - minX, 10.0 - bounds.Y - minY);
+                WorkspaceElements.UpdateLayout();
+
+                rtb = new RenderTargetBitmap(((int)bounds.Width),
+                    ((int)bounds.Height), 96, 96, PixelFormats.Default);
+
+                rtb.Render(WorkspaceElements);
+                WorkspaceElements.RenderTransform = currentTransformGroup;
             }
+            catch (Exception)
+            {
+                throw;
+            }
+            return rtb;
+        }
 
-            // Nothing found in the canvas, bail out.
-            if (!initialized) return;
+        /// <summary>
+        /// Function to validate if the Workspace is valid for export as image / save it as image
+        /// </summary>
+        /// <param name="validating"></param>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        [HandleProcessCorruptedStateExceptions]
+        internal ExportImageResult IsWorkSpaceRenderValidAsImage(bool validating, string path = null)
+        {
+            ExportImageResult result = ExportImageResult.EmptyDrawing;
+            RenderTargetBitmap workSpaceRender = GetRender();
+            if (workSpaceRender == null) return result;
 
-            // Add padding to the edge and make them multiples of two (pad 10px on each side).
-            bounds.Width = 20 + ((((int)Math.Ceiling(bounds.Width)) + 1) & ~0x01);
-            bounds.Height = 20 + ((((int)Math.Ceiling(bounds.Height)) + 1) & ~0x01);
-
-            var currentTransformGroup = WorkspaceElements.RenderTransform as TransformGroup;
-            WorkspaceElements.RenderTransform = new TranslateTransform(10.0 - bounds.X - minX, 10.0 - bounds.Y - minY);
-            WorkspaceElements.UpdateLayout();
-
-            var rtb = new RenderTargetBitmap(((int)bounds.Width),
-                ((int)bounds.Height), 96, 96, PixelFormats.Default);
-
-            rtb.Render(WorkspaceElements);
-            WorkspaceElements.RenderTransform = currentTransformGroup;
+            result = ExportImageResult.IsValidAsImage;
+            if (validating)
+            {
+                path = $"{ViewModel.DynamoViewModel.PreferencesViewModel.BackupLocation}\\{System.DateTime.Now.Ticks.ToString()}.png";
+            }            
 
             try
             {
@@ -328,13 +429,32 @@ namespace Dynamo.Views
                 {
                     // Encode as PNG format
                     var pngEncoder = new PngBitmapEncoder();
-                    pngEncoder.Frames.Add(BitmapFrame.Create(rtb));
+                    pngEncoder.Frames.Add(BitmapFrame.Create(workSpaceRender));
                     pngEncoder.Save(stm);
                 }
             }
+            catch (AccessViolationException)
+            {
+                result = ExportImageResult.NotValidAsImage;
+            }
             catch (Exception)
             {
+                result = ExportImageResult.NotValidAsImage;
             }
+            // The current way of validate if a Workspace is ok for exporting as image is trying to create it in a temporal place, whatever the result we need to remove it.
+            if (validating && System.IO.File.Exists(path))
+            {
+                System.IO.File.Delete(path);
+            }
+
+            return result;
+        }
+
+        internal enum ExportImageResult
+        {
+            EmptyDrawing,
+            IsValidAsImage,
+            NotValidAsImage
         }
 
         void OnSelectionCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -512,6 +632,7 @@ namespace Dynamo.Views
         void vm_ZoomChanged(object sender, EventArgs e)
         {
             zoomBorder.SetZoom((e as ZoomEventArgs).Zoom);
+            if (PortContextMenu.IsOpen) DestroyPortContextMenu();
         }
 
         void vm_ZoomAtViewportCenter(object sender, EventArgs e)
@@ -660,8 +781,17 @@ namespace Dynamo.Views
         {
             ContextMenuPopup.IsOpen = false;
             InCanvasSearchBar.IsOpen = false;
+            if (GeoScalingPopup != null)
+                GeoScalingPopup.IsOpen = false;
+            
+            if(PortContextMenu.IsOpen) DestroyPortContextMenu();
         }
 
+        /// <summary>
+        /// Closes the port's context menu and sets its references to null.
+        /// </summary>
+        private void DestroyPortContextMenu() => PortContextMenu.IsOpen = false;
+        
         private void OnMouseRelease(object sender, MouseButtonEventArgs e)
         {
             if (e == null) return; // in certain bizarre cases, e can be null
@@ -675,12 +805,18 @@ namespace Dynamo.Views
 
             ViewModel.HandleMouseRelease(workBench, e);
             ContextMenuPopup.IsOpen = false;
+            if (GeoScalingPopup != null)
+                GeoScalingPopup.IsOpen = false;
             if (returnToSearch)
             {
                 ViewModel.DynamoViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.OnRequestFocusSearch();
             }
             else if (e.ChangedButton == MouseButton.Right && e.OriginalSource == zoomBorder)
             {
+                // Setting the focus back to workspace explicitly as the workspace-focus is lost after interacting with a WebView2 component.
+                this.Focusable = true;
+                this.Focus();
+
                 // open if workspace is right-clicked itself 
                 // (not node, note, not buttons from viewControlPanel such as zoom, pan and so on)
                 ContextMenuPopup.IsOpen = true;
@@ -986,6 +1122,22 @@ namespace Dynamo.Views
                 InCanvasSearchBar.IsOpen = false;
             }
             ViewModel.InCanvasSearchViewModel.SearchText = string.Empty;
+        }
+
+        private void OnGeometryScaling_Click(object sender, RoutedEventArgs e)
+        {
+            if (GeoScalingPopup == null)
+            {
+                GeoScalingPopup = new GeometryScalingPopup(ViewModel.DynamoViewModel);
+                GeoScalingPopup.Placement = PlacementMode.Bottom;
+                GeoScalingPopup.PlacementTarget = geometryScalingButton;
+            }
+            GeoScalingPopup.IsOpen = true;
+        }
+
+        public void Dispose()
+        {
+            RemoveViewModelsubscriptions(ViewModel);
         }
     }
 }

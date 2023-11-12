@@ -1,0 +1,119 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Identity",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.CoordinateSystem.Identity",
+      "Id": "9fae28d9717c407886add5ea0c83cf3a",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "6ee6c945eb6a41b4a454bd33130ef4ea",
+          "Name": "CoordinateSystem",
+          "Description": "CoordinateSystem",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Creates a CoordinateSystem as the World Coordinate System: origin at 0, 0, 0; x axis at 1, 0, 0; y axis at 0, 1, 0; z axis at 0, 0, 1\n\nCoordinateSystem.Identity ( ): CoordinateSystem"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "7dc2e2c56b8b4c969ccab4dd74d0476d",
+      "Inputs": [
+        {
+          "Id": "274cf35d0d1b4a00b7dff65970dd58ca",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "a83acaaed0844c889a02e0bb46c576a0",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "6ee6c945eb6a41b4a454bd33130ef4ea",
+      "End": "274cf35d0d1b4a00b7dff65970dd58ca",
+      "Id": "6c6ebac587e3477b89c44118a63ebb81"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -8.3436689376831055,
+      "EyeY": 6.9886860847473145,
+      "EyeZ": 8.8846864700317383,
+      "LookX": 12.983955383300781,
+      "LookY": -5.8967127799987793,
+      "LookZ": -15.98281192779541,
+      "UpX": 0.039591424167156219,
+      "UpY": 0.99802666902542114,
+      "UpZ": -0.04873570054769516
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "CoordinateSystem.Identity",
+        "Id": "9fae28d9717c407886add5ea0c83cf3a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 393.467632969043,
+        "Y": 291.59244206003353
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "7dc2e2c56b8b4c969ccab4dd74d0476d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 586.593616280178,
+        "Y": 292.305333287875
+      }
+    ],
+    "Annotations": [],
+    "X": -366.785163077025,
+    "Y": -44.24785717651298,
+    "Zoom": 1.40273853983008
+  }
+}

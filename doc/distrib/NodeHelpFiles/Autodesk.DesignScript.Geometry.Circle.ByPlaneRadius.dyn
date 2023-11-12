@@ -1,0 +1,180 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "ByPlaneRadius",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "d913351149a94d3886dad2e2e71595df",
+      "Name": "Number Slider",
+      "Type": "number",
+      "Value": "1.5",
+      "MaximumValue": 10.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.ByPlaneRadius@Autodesk.DesignScript.Geometry.Plane,double",
+      "Id": "a2b3b8d3d977478c9e7efbe8b23708b1",
+      "Inputs": [
+        {
+          "Id": "6d29d45984404842a0dea84b995eaff9",
+          "Name": "plane",
+          "Description": "Plane\nDefault value : Autodesk.DesignScript.Geometry.Plane.XY() (disabled)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d2ab9c37af28472aba9e953126f8cbf5",
+          "Name": "radius",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "cb3791ce5d1e425b8e3f2857009dc21f",
+          "Name": "Circle",
+          "Description": "Circle",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a Circle centered at the input Plane origin (root), lying in the input Plane, with given radius.\n\nCircle.ByPlaneRadius (plane: Plane = Autodesk.DesignScript.Geometry.Plane.XY(), radius: double = 1): Circle"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 10.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 1.5,
+      "Id": "d913351149a94d3886dad2e2e71595df",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "768aa9c4cd4e41dd9fd045b226f306b5",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Plane.YZ",
+      "Id": "773ddb098bb14575835f27bb30c208b9",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "a58a96dc94944a6aacfaffccc88237a9",
+          "Name": "Plane",
+          "Description": "Plane",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Creates a plane in the world YZ\n\nPlane.YZ ( ): Plane"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "768aa9c4cd4e41dd9fd045b226f306b5",
+      "End": "d2ab9c37af28472aba9e953126f8cbf5",
+      "Id": "972c1abaeb4d4a33b229777c2874be6f"
+    },
+    {
+      "Start": "a58a96dc94944a6aacfaffccc88237a9",
+      "End": "6d29d45984404842a0dea84b995eaff9",
+      "Id": "ebbc2f8a902b4223adde089784d74ea2"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -2.5940642356872559,
+      "EyeY": 5.44261360168457,
+      "EyeZ": 5.123988151550293,
+      "LookX": 2.9485023021698,
+      "LookY": -2.6569583415985107,
+      "LookZ": -5.7397847175598145,
+      "UpX": 0.079345569014549255,
+      "UpY": 0.98480772972106934,
+      "UpZ": -0.15446026623249054
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Circle.ByPlaneRadius",
+        "Id": "a2b3b8d3d977478c9e7efbe8b23708b1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 820.338958153813,
+        "Y": 1300.1045882504
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "d913351149a94d3886dad2e2e71595df",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 390.096960292752,
+        "Y": 1376.99394682752
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Plane.YZ",
+        "Id": "773ddb098bb14575835f27bb30c208b9",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 602.943573980593,
+        "Y": 1285.36479200555
+      }
+    ],
+    "Annotations": [],
+    "X": 435.015975954865,
+    "Y": -1133.49180353194,
+    "Zoom": 1.10123741706302
+  }
+}

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
@@ -8,11 +8,14 @@ using Dynamo.Models;
 using CoreNodeModels;
 using Dynamo.UI.Commands;
 using System;
+using Dynamo.Graph.Connectors;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Graph;
+using Dynamo.Logging;
 
 namespace Dynamo.ViewModels
 {
-    public class ConnectorAnchorViewModel: NotificationObject
+    public class ConnectorAnchorViewModel: ViewModelBase
     {
         #region Properties 
         private Point currentPosition;
@@ -32,7 +35,7 @@ namespace Dynamo.ViewModels
         private Dispatcher Dispatcher { get; set; }
 
         /// <summary>
-        /// The size of the Watch Icon (x & y dimensions).
+        /// The size of the Watch Icon (x &amp; y dimensions).
         /// </summary>
         public double MarkerSize { get; set; } = 30;
         public double AnchorSize { get; set; } = 15;
@@ -214,9 +217,34 @@ namespace Dynamo.ViewModels
 
         private void PlaceWatchNodeCommandExecute(object param)
         {
+           //Collect previous pin locations
             var pinLocations = ViewModel.CollectPinLocations();
-            ViewModel.DiscardAllConnectorPinModels();
-            PlaceWatchNode(pinLocations);
+            List<ModelBase> AllDeletedModels = new List<ModelBase>();
+            ViewModel.DiscardAllConnectorPinModels(AllDeletedModels);
+            List<ModelBase> AllCreatedModels = PlaceWatchNode(ViewModel.ConnectorModel, pinLocations, AllDeletedModels);
+
+            // Log analytics of creation of watch node
+            Logging.Analytics.TrackEvent(
+                Actions.Create,
+                Categories.ConnectorOperations,
+                "Watch Node");
+            RecordUndoModels(DynamoModel.CurrentWorkspace, AllCreatedModels, AllDeletedModels);
+        }
+
+        private void RecordUndoModels(WorkspaceModel workspace, List<ModelBase> undoItems, List<ModelBase> deletedItems)
+        {
+                var userActionDictionary = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();
+                //Add models that were newly created
+                foreach (var undoItem in undoItems)
+                {
+                    userActionDictionary.Add(undoItem, UndoRedoRecorder.UserAction.Creation);
+                }
+                //Add models that were newly deleted
+                foreach (var deletedItem in deletedItems)
+                {
+                    userActionDictionary.Add(deletedItem, UndoRedoRecorder.UserAction.Deletion);
+                }
+                WorkspaceModel.RecordModelsForUndo(userActionDictionary, workspace.UndoRecorder);
         }
 
         /// <summary>
@@ -226,6 +254,9 @@ namespace Dynamo.ViewModels
         private void PinConnectorCommandExecute(object parameters)
         {
             ViewModel.PinConnectorCommand.Execute(null);
+            Logging.Analytics.TrackEvent(
+                    Actions.Pin,
+                    Categories.ConnectorOperations);
         }
 
         private void InitCommands()
@@ -235,7 +266,7 @@ namespace Dynamo.ViewModels
         }
         #endregion
 
-        internal void DisposeViewModel()
+        internal void RequestDisposeViewModel()
         {
             OnRequestDispose(this, EventArgs.Empty);
         }
@@ -244,7 +275,7 @@ namespace Dynamo.ViewModels
         /// Constructor
         /// </summary>
         /// <param name="connectorViewModel"></param>
-        /// <param name="dynamoModel"></param>
+        /// <param name="dynamoViewModel"></param>
         /// <param name="tooltipText"></param>
         public ConnectorAnchorViewModel(ConnectorViewModel connectorViewModel,
            DynamoViewModel dynamoViewModel,
@@ -263,11 +294,12 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Dispose function
+        /// Dispose this.
         /// </summary>
-        public void Dispose()
+        public override void Dispose()
         {
             ViewModel.PropertyChanged -= OnConnectorViewModelPropertyChanged;
+            base.Dispose();
         }
 
         private void OnConnectorViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -280,8 +312,10 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Places watch node at the midpoint of the connector
         /// </summary>
-        internal void PlaceWatchNode(IEnumerable<Point> connectorPinLocations)
+        internal List<ModelBase> PlaceWatchNode(ConnectorModel connector, IEnumerable<Point> connectorPinLocations, List<ModelBase> allDeletedModels)
         {
+            var createdModels = new List<ModelBase>();
+
             NodeModel startNode = ViewModel.ConnectorModel.Start.Owner;
             NodeModel endNode = ViewModel.ConnectorModel.End.Owner;
             this.Dispatcher.Invoke(() =>
@@ -290,8 +324,11 @@ namespace Dynamo.ViewModels
                 var nodeX = CurrentPosition.X - (watchNode.Width / 2);
                 var nodeY = CurrentPosition.Y - (watchNode.Height / 2);
                 DynamoModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(watchNode, nodeX, nodeY, false, false));
-                WireNewNode(DynamoModel, startNode, endNode, watchNode, connectorPinLocations);
+                createdModels.Add(watchNode);
+                WireNewNode(DynamoModel, startNode, endNode, watchNode, connector, connectorPinLocations, createdModels, allDeletedModels);
             });
+
+            return createdModels;
         }
 
         /// <summary>
@@ -301,61 +338,73 @@ namespace Dynamo.ViewModels
         /// <param name="startNode"></param>
         /// <param name="endNode"></param>
         /// <param name="watchNodeModel"></param>
-        private void WireNewNode(DynamoModel dynamoModel, NodeModel startNode, NodeModel endNode, NodeModel watchNodeModel,
-            IEnumerable<Point> connectorPinLocations)
+        /// <param name="connector"></param>
+        /// <param name="connectorPinLocations"></param>
+        /// <param name="allCreatedModels"></param>
+        /// <param name="allDeletedModels"></param>
+        private void WireNewNode(
+            DynamoModel dynamoModel, 
+            NodeModel startNode,
+            NodeModel endNode, 
+            NodeModel watchNodeModel,
+            ConnectorModel connector,
+            IEnumerable<Point> connectorPinLocations,
+            List<ModelBase> allCreatedModels,
+            List<ModelBase> allDeletedModels)
         {
-            (List<int> startIndex, List<int> endIndex) = GetPortIndex(startNode, endNode);
+            (int startIndex, int endIndex) = GetPortIndex(connector);
 
             // Connect startNode and watch node
-            foreach (var idx in startIndex)
-            {
-                dynamoModel.ExecuteCommand(new DynamoModel.MakeConnectionCommand(startNode.GUID, idx, PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin));
-                dynamoModel.ExecuteCommand(new DynamoModel.MakeConnectionCommand(watchNodeModel.GUID, 0, PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End));
-            }
+            dynamoModel.ExecuteCommand(new DynamoModel.MakeConnectionCommand(startNode.GUID, startIndex, PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin));
+            dynamoModel.ExecuteCommand(new DynamoModel.MakeConnectionCommand(watchNodeModel.GUID, 0, PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End));
 
             // Connect watch node and endNode
-            foreach (var idx in endIndex)
-            {
-                dynamoModel.ExecuteCommand(new DynamoModel.MakeConnectionCommand(watchNodeModel.GUID, 0, PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin));
-                dynamoModel.ExecuteCommand(new DynamoModel.MakeConnectionCommand(endNode.GUID, idx, PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End));
-            }
+            dynamoModel.ExecuteCommand(new DynamoModel.MakeConnectionCommand(watchNodeModel.GUID, 0, PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin));
+            dynamoModel.ExecuteCommand(new DynamoModel.MakeConnectionCommand(endNode.GUID, endIndex, PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End));
 
-            PlacePinsOnWires(startNode, watchNodeModel, connectorPinLocations);
+            PlacePinsOnWires(startNode, watchNodeModel, connector, connectorPinLocations, allCreatedModels, allDeletedModels);
         }
 
-        private void PlacePinsOnWires(NodeModel startNode, NodeModel watchNodeModel, IEnumerable<Point> connectorPinLocations)
+        private void PlacePinsOnWires(NodeModel startNode, 
+            NodeModel watchNodeModel, 
+            ConnectorModel connector, 
+            IEnumerable<Point> connectorPinLocations,
+            List<ModelBase> allCreatedModels,
+            List<ModelBase> allDeletedModels)
         {
             // Collect ports & connectors of newly connected nodes
             // so that old pins (that need to remain) can be transferred over correctly.
-            PortModel startNodePort = startNode.OutPorts[0];
+            PortModel startNodePort = startNode.OutPorts.FirstOrDefault(p => p.GUID == connector.Start.GUID);
             PortModel watchNodePort = watchNodeModel.OutPorts[0];
             Graph.Connectors.ConnectorModel[] connectors = new Graph.Connectors.ConnectorModel[2];
-            connectors[0] = startNodePort.Connectors[0];
-            connectors[1] = watchNodePort.Connectors[0];
+
+            connectors[0] = startNodePort.Connectors.FirstOrDefault(c => c.End.Owner.GUID == watchNodeModel.GUID && c.GUID != connector.GUID);
+            connectors[1] = watchNodePort.Connectors.FirstOrDefault(c => c.Start.Owner.GUID == watchNodeModel.GUID && c.GUID != connector.GUID);
+
+            if (connectors.Any(c => c is null))
+            {
+                return;
+            }
+
+            allCreatedModels.AddRange(connectors);
+            allDeletedModels.Add(connector);
+
+            if (connectorPinLocations.Count()<1)
+            {
+                return;
+            }
+
             // Place each pin where required on the newly connected connectors.
             foreach (var connectorPinLocation in connectorPinLocations)
             {
                 int wireIndex = ConnectorSegmentIndex(CurrentPosition, connectorPinLocation);
-                ViewModel.PinConnectorPlacementFromWatchNode(connectors, wireIndex, connectorPinLocation);
+                ViewModel.PinConnectorPlacementFromWatchNode(connectors, wireIndex, connectorPinLocation, allCreatedModels);
             }
         }
 
-        private static (List<int> StartIndex, List<int> EndIndex) GetPortIndex(NodeModel startNode, NodeModel endNode)
+        private (int StartIndex, int EndIndex) GetPortIndex(ConnectorModel connector)
         {
-            var connectors = startNode.AllConnectors;
-            var filter = connectors.Where(c => c.End.Owner.GUID == endNode.GUID);
-
-            var startIndex = filter
-                .Select(c => c.Start.Index)
-                .Distinct()
-                .ToList();
-
-            var endIndex = filter
-                .Select(c => c.End.Index)
-                .Distinct()
-                .ToList();
-
-            return (startIndex, endIndex);
+            return (connector.Start.Index, connector.End.Index);
         }
 
 

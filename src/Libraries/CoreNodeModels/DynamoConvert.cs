@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml;
+using Autodesk.DesignScript.Runtime;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Utilities;
@@ -18,6 +19,7 @@ namespace CoreNodeModels
     [OutPortTypes("number")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.DynamoConvert")]
+    [NodeDeprecated]
     public class DynamoConvert : NodeModel
     {
         private ConversionUnit selectedFromConversion;
@@ -133,6 +135,7 @@ namespace CoreNodeModels
             SelectedMetricConversion = ConversionMetricUnit.Length;
             ShouldDisplayPreviewCore = true;
             IsSelectionFromBoxEnabled = true;
+            Warning("Convert Between Units " + Properties.Resources.ConversionNodeObsoleteMessage, true);
         }
 
         public DynamoConvert()
@@ -145,6 +148,7 @@ namespace CoreNodeModels
             ShouldDisplayPreviewCore = true;
             IsSelectionFromBoxEnabled = true;
             RegisterAllPorts();
+            Warning("Convert Between Units " + Properties.Resources.ConversionNodeObsoleteMessage, true);
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(

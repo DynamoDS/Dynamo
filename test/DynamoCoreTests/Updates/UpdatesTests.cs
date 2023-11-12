@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Dynamo.Logging;
@@ -151,7 +151,7 @@ namespace Dynamo.Tests
             //UpdateFileLocation
             _ = new UpdateManager(new UpdateManagerConfiguration());
             //  For a new UpdateManager, the UpdateFileLocation property is not initialized.
-            Assert.IsNullOrEmpty(updateManager.UpdateFileLocation);
+            Assert.That(updateManager.UpdateFileLocation, Is.Null.Or.Empty);
         }
 
         [Test]

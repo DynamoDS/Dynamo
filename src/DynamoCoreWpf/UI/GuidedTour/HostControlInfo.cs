@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls.Primitives;
 using Newtonsoft.Json;
 
@@ -10,12 +11,32 @@ namespace Dynamo.Wpf.UI.GuidedTour
     public class HostControlInfo
     {
         private string name;
-        private string hostClass;
         private UIElement hostUIElement;
         private double verticalPopupOffSet;
         private double horizontalPopupOffSet;
-        private double widthBoxDelta;
-        private double heightBoxDelta;
+        private HtmlPage htmlPage;
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        internal HostControlInfo() { }
+
+        /// <summary>
+        /// Copy Constructor
+        /// </summary>
+        /// <param name="copyInstance"></param>
+        /// <param name="MainWindow"></param>
+        internal HostControlInfo(HostControlInfo copyInstance, UIElement MainWindow)
+        {
+            PopupPlacement = copyInstance.PopupPlacement;
+            HostUIElementString = copyInstance.HostUIElementString;
+            HostUIElement = MainWindow;
+            VerticalPopupOffSet = copyInstance.VerticalPopupOffSet;
+            HorizontalPopupOffSet = copyInstance.HorizontalPopupOffSet;
+            HtmlPage = copyInstance.HtmlPage;
+            WindowName = copyInstance.WindowName;
+            DynamicHostWindow = copyInstance.DynamicHostWindow;
+        }
 
         /// <summary>
         /// Host Name, this property will contain the name of the host control located in the TreeView
@@ -60,12 +81,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
         public PlacementMode PopupPlacement { get; set; }
 
         /// <summary>
-        /// This property will highlight the clickable area if its set to true
-        /// </summary>
-        [JsonProperty("HighlightColor")]
-        public string HighlightColor { get; set; }
-
-        /// <summary>
         /// Once the popup host control and placecement is set we can use this property for moving the popup location Vertically (by specifying an offset) 
         /// </summary>
         [JsonProperty("VerticalPopupOffset")]
@@ -98,14 +113,51 @@ namespace Dynamo.Wpf.UI.GuidedTour
         }
 
         /// <summary>
-        /// Since the box that highlights the elements has its size fixed, this variable applies a value to fix its Width
+        /// Property that represents the highlight rectangle that will be shown over the Overlay
         /// </summary>
-        [JsonProperty("WidthBoxDelta")]
-        public double WidthBoxDelta { get => widthBoxDelta; set => widthBoxDelta = value; }
+        [JsonProperty("HighlightRectArea")]
+        internal HighlightArea HighlightRectArea { get; set; }
+
         /// <summary>
-        /// Since the box that highlights the elements has its size fixed, this variable applies a value to fix its Height
+        /// Property that represents the cut off section that will be removed from the Overlay
         /// </summary>
-        [JsonProperty("HeightBoxDelta")]
-        public double HeightBoxDelta { get => heightBoxDelta; set => heightBoxDelta = value; }
+        [JsonProperty("CutOffRectArea")]
+        internal CutOffArea CutOffRectArea { get; set; }
+
+        /// <summary>
+        /// The html page that is going to be rendered inside the popup
+        /// </summary>
+        [JsonProperty("HtmlPage")]
+        public HtmlPage HtmlPage { get => htmlPage; set => htmlPage = value; }
+
+        /// <summary>
+        /// This property will contain the WPF Window Name for the cases when the Popup need to be located in a different Window than DynamoView
+        /// </summary>
+        [JsonProperty(nameof(WindowName))]
+        internal string WindowName { get; set; }
+
+        /// <summary>
+        /// This property will decide if the Popup.PlacementTarget needs to be calculated again or not (probably after UI Automation a new Window was opened)
+        /// </summary>
+        [JsonProperty(nameof(DynamicHostWindow))]
+        internal bool DynamicHostWindow { get; set; }
+    }
+
+    public class HtmlPage
+    {
+        private string fileName;
+        private Dictionary<string,string> resources;
+
+        /// <summary>
+        /// A dictionary containing the key word to be replaced in page and the filename as values
+        /// </summary>
+        [JsonProperty("Resources")]
+        public Dictionary<string, string> Resources { get => resources; set => resources = value; }
+
+        /// <summary>
+        /// Filename of the HTML page
+        /// </summary>
+        [JsonProperty("FileName")]
+        public string FileName { get => fileName; set => fileName = value; }
     }
 }

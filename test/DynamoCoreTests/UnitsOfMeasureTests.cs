@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using DynamoUnits;
@@ -9,9 +9,9 @@ namespace Dynamo.Tests
     internal class UnitsOfMeasureTests : UnitTestBase
     {
         [SetUp]
-        public void Setup()
+        public override void Setup()
         {
-            BaseUnit.NumberFormat = "f4";
+            Display.PrecisionFormat = "f4";
         }
 
         [Test]
@@ -726,32 +726,347 @@ namespace Dynamo.Tests
             var volume = Volume.FromDouble(1.0, VolumeUnit.CubicFoot);
             Assert.AreEqual(volume.UnitValue, Volume.ToCubicFoot);
         }
+
+
+
+        internal class ViewModelUnitsOfMeasureDynTests : DynamoModelTestBase
+        {
+            protected override void GetLibrariesToPreload(List<string> libraries)
+            {
+                libraries.Add("FunctionObject.ds");
+                libraries.Add("DynamoUnits.dll");
+                base.GetLibrariesToPreload(libraries);
+            }
+
+            [Test, Category("Failure")]
+            public void CanMapOverUnits()
+            {
+                var length = Enumerable.Range(1, 5).Select(x => Length.FromDouble(x)).ToList();
+                var area = Enumerable.Range(1, 5).Select(x => Area.FromDouble(x)).ToList();
+                var volume = Enumerable.Range(1, 5).Select(x => Volume.FromDouble(x)).ToList();
+
+                RunModel(@"core\units\map-numbers-to-units.dyn");
+
+                AssertPreviewValue("97fdd4df-e9dd-4f7f-9494-b2adabfdbdeb", length);
+                AssertPreviewValue("4e830faa-d358-4086-ba4c-9b7e70f96681", area);
+                AssertPreviewValue("e6ae471f-9cd8-4cbb-bb83-ecdf1785c35f", volume);
+                AssertPreviewValue("178b5d28-fbbd-459c-9340-0739fa4946b6", length);
+                AssertPreviewValue("6c321ba2-754d-4165-bc9d-59fc27d34014", area);
+                AssertPreviewValue("4aa8240b-29cd-420d-8e3f-9d699e6bedd0", volume);
+            }
+        }
     }
-
-    internal class ViewModelUnitsOfMeasureDynTests : DynamoModelTestBase
+    internal class ForgeUnitsTests : UnitTestBase
     {
-        protected override void GetLibrariesToPreload(List<string> libraries)
+        [SetUp]
+        public override void Setup()
         {
-            libraries.Add("FunctionObject.ds");
-            libraries.Add("DynamoUnits.dll");
-            base.GetLibrariesToPreload(libraries);
+
         }
 
-        [Test, Category("Failure")]
-        public void CanMapOverUnits()
+        const string milimeters = "autodesk.unit.unit:millimeters";
+        const string meters = "autodesk.unit.unit:meters";
+
+        #region units
+        [Test, Category("UnitTests")]
+        public void CanCreateForgeUnitType_FromLoadedTypeString()
         {
-            var length = Enumerable.Range(1, 5).Select(x => Length.FromDouble(x)).ToList();
-            var area = Enumerable.Range(1, 5).Select(x => Area.FromDouble(x)).ToList();
-            var volume = Enumerable.Range(1, 5).Select(x => Volume.FromDouble(x)).ToList();
-
-            RunModel(@"core\units\map-numbers-to-units.dyn");
-
-            AssertPreviewValue("97fdd4df-e9dd-4f7f-9494-b2adabfdbdeb", length);
-            AssertPreviewValue("4e830faa-d358-4086-ba4c-9b7e70f96681", area);
-            AssertPreviewValue("e6ae471f-9cd8-4cbb-bb83-ecdf1785c35f", volume);
-            AssertPreviewValue("178b5d28-fbbd-459c-9340-0739fa4946b6", length);
-            AssertPreviewValue("6c321ba2-754d-4165-bc9d-59fc27d34014", area);
-            AssertPreviewValue("4aa8240b-29cd-420d-8e3f-9d699e6bedd0", volume);
+            var unitType = Unit.ByTypeID($"{milimeters}-1.0.1");
+            Assert.NotNull(unitType);
+            Assert.AreEqual("Millimeters", unitType.Name);
+            Assert.AreEqual($"{milimeters}-1.0.1", unitType.TypeId);
         }
+        [Test, Category("UnitTests")]
+        public void CanCreateForgeUnitType_FromFutureTypeString()
+        {
+            var unitType = Unit.ByTypeID($"{milimeters}-1.0.2");
+            Assert.NotNull(unitType);
+            Assert.AreEqual("Millimeters", unitType.Name);
+            Assert.AreEqual($"{milimeters}-1.0.1", unitType.TypeId);
+        }
+        [Test, Category("UnitTests")]
+        public void CanCreateForgeUnitType_FromPastTypeString()
+        {
+            var unitType = Unit.ByTypeID($"{milimeters}-1.0.0");
+            Assert.NotNull(unitType);
+            Assert.AreEqual("Millimeters", unitType.Name);
+            Assert.AreEqual($"{milimeters}-1.0.1", unitType.TypeId);
+        }
+        [Test, Category("UnitTests")]
+        public void ForgeUnitEquality()
+        {
+            var unitType = Unit.ByTypeID($"{milimeters}-1.0.1");
+            var unitType2 = Unit.ByTypeID($"{milimeters}-1.0.1");
+            var unitType3 = Unit.ByTypeID($"{meters}-1.0.0");
+            Assert.NotNull(unitType);
+            Assert.NotNull(unitType2);
+            Assert.NotNull(unitType3);
+
+            Assert.True(unitType.Equals(unitType2));
+            Assert.True(unitType2.Equals(unitType));
+            Assert.False(unitType.Equals(unitType3));
+            Assert.False(unitType3.Equals(unitType));
+
+            Assert.True(unitType == unitType2);
+            Assert.True(unitType2 == unitType);
+            Assert.False(unitType == unitType3);
+            Assert.False(unitType3 == unitType);
+
+            Assert.False(unitType != unitType2);
+            Assert.False(unitType2 != unitType);
+            Assert.True(unitType != unitType3);
+            Assert.True(unitType3 != unitType);
+
+            var dictionary = new Dictionary<Unit, string>();
+            dictionary.Add(unitType, "0");
+            dictionary[unitType2] = "1";
+            dictionary.Add(unitType3, "2");
+            Assert.AreEqual(2, dictionary.Count);
+            Assert.AreEqual(dictionary[unitType],"1");
+            Assert.AreEqual(dictionary[unitType2], "1");
+            Assert.AreEqual(dictionary[unitType3], "2");
+
+        }
+
+        [Test, Category("UnitTests")]
+        public void ForgeUnitReturnsSomeConvertibleUnits()
+        {
+            var unitType = Unit.ByTypeID($"{milimeters}-1.0.1");
+            var convertibleUnits = unitType.ConvertibleUnits;
+            Assert.IsTrue(convertibleUnits.Any());
+            Assert.IsTrue(convertibleUnits.Distinct().Count() == convertibleUnits.Count());
+        }
+
+        [Test, Category("UnitTests")]
+        public void ForgeUnitReturnsSomeQuantitiesContaingUnit()
+        {
+            var unitType = Unit.ByTypeID($"{milimeters}-1.0.1");
+            var quantities = unitType.QuantitiesContainingUnit;
+            Assert.IsTrue(quantities.Any());
+            Assert.IsTrue(quantities.Distinct().Count() == quantities.Count());
+        }
+
+        [Test, Category("UnitTests")]
+        public void UnitToString_IncludesName()
+        {
+            var unitType = Unit.ByTypeID($"{milimeters}-1.0.1");
+            Assert.IsTrue(unitType.ToString().Contains(unitType.Name));
+        }
+        #endregion
+        #region symbols
+
+        [Test, Category("UnitTests")]
+        public void CanCreateForgeSymbol_FromLoadedTypeId()
+        {
+            var symbolType = Symbol.ByTypeID("autodesk.unit.symbol:mm-1.0.1");
+            Assert.IsTrue(symbolType.ToString().Contains(symbolType.Text));
+        }
+        [Test, Category("UnitTests")]
+        public void CanCreateForgeSymbol_FromOldTypeId()
+        {
+            var symbolType = Symbol.ByTypeID("autodesk.unit.symbol:mm-1.0.0");
+            Assert.IsTrue(symbolType.ToString().Contains(symbolType.Text));
+        }
+        [Test, Category("UnitTests")]
+        public void CanCreateForgeSymbol_FromFutureTypeId()
+        {
+            var symbolType = Symbol.ByTypeID("autodesk.unit.symbol:mm-1.0.2");
+            Assert.IsTrue(symbolType.ToString().Contains(symbolType.Text));
+        }
+
+        [Test, Category("UnitTests")]
+        public void CanCreateForgeSymbol_FromUnit()
+        {
+            var unitType = Unit.ByTypeID($"{milimeters}-1.0.1");
+            var symbolType = Symbol.SymbolsByUnit(unitType);
+            Assert.AreEqual(1, symbolType.Count());
+            Assert.AreEqual("mm", symbolType.FirstOrDefault().Text);
+        }
+
+        [Test, Category("UnitTests")]
+        public void SymbolDataIsCorrect()
+        {
+            var unitType = Unit.ByTypeID($"{milimeters}-1.0.1");
+            var symbolType = Symbol.SymbolsByUnit(unitType).FirstOrDefault();
+            Assert.IsTrue(symbolType.Space);
+            Assert.AreEqual(symbolType.Unit, unitType);
+        }
+        [Test, Category("UnitTests")]
+        public void SymbolDataFormatDecimalIsCorrect()
+        {
+            var unitType = Unit.ByTypeID($"{milimeters}-1.0.1");
+            var symbolType = Symbol.SymbolsByUnit(unitType).FirstOrDefault();
+            Assert.AreEqual("100.00 mm",Symbol.StringifyDecimal(100.00, 2, symbolType, false));
+            Assert.AreEqual("100.0000 mm", Symbol.StringifyDecimal(100.00, 4, symbolType, false));
+            Assert.AreEqual("100 mm", Symbol.StringifyDecimal(100.00, 2, symbolType, true));
+            Assert.AreEqual("0 mm", Symbol.StringifyDecimal(0.00, 2, symbolType, true));
+
+        }
+        [Test, Category("UnitTests")]
+        public void SymbolDataFormatFractionCorrect()
+        {
+            var unitType = Unit.ByTypeID($"{milimeters}-1.0.1");
+            var symbolType = Symbol.SymbolsByUnit(unitType).FirstOrDefault();
+            Assert.AreEqual("1/2 mm", Symbol.StringifyFraction(.5, 2, symbolType));
+            Assert.AreEqual("11/16 mm", Symbol.StringifyFraction(.666, 4, symbolType));
+            Assert.AreEqual("1 11/16 mm", Symbol.StringifyFraction(1.666, 4, symbolType));
+            Assert.AreEqual("0 mm", Symbol.StringifyFraction(.01, 1, symbolType));
+            Assert.AreEqual("0 mm", Symbol.StringifyFraction(.01, 2, symbolType));
+            Assert.AreEqual("0 mm", Symbol.StringifyFraction(.01, 3, symbolType));
+            Assert.AreEqual("0 mm", Symbol.StringifyFraction(.01, 4, symbolType));
+            Assert.AreEqual("1/128 mm", Symbol.StringifyFraction(.01, 7, symbolType));
+            //does not support 1/1024
+            Assert.That(() =>
+            {
+                Assert.AreEqual("1/128 mm", Symbol.StringifyFraction(.01, 10, symbolType));
+            },Throws.Exception);
+        }
+
+        [Test, Category("UnitTests")]
+        public void Symbol_ToStringCorrect()
+        {
+            var unitType = Unit.ByTypeID($"{milimeters}-1.0.1");
+            var symbolType = Symbol.SymbolsByUnit(unitType).FirstOrDefault();
+            Assert.AreEqual("Symbol(Text = mm)", symbolType.ToString());
+        }
+
+        [Test, Category("UnitTests")]
+        public void Symbol_Equality()
+        {
+            var unitType = Unit.ByTypeID($"{milimeters}-1.0.1");
+            var symbolType = Symbol.SymbolsByUnit(unitType).FirstOrDefault();
+            var symbolType2 = Symbol.SymbolsByUnit(unitType).FirstOrDefault();
+            Assert.AreEqual(symbolType.Text, symbolType2.Text);
+            Assert.AreEqual(symbolType,symbolType2);
+        }
+        #endregion
+        #region quantity
+        [Test, Category("UnitTests")]
+        public void CanCreateForgeQuantity_FromLoadedTypeId()
+        {
+            var unitType = Unit.ByTypeID($"{milimeters}-1.0.1");
+            var quantityType = Quantity.ByTypeID("autodesk.unit.quantity:length-1.0.4");
+            Assert.IsTrue(quantityType.Units.Contains(unitType));
+        }
+        [Test, Category("UnitTests")]
+        public void CanCreateForgeQuantity_FromOldTypeId()
+        {
+            var unitType = Unit.ByTypeID($"{milimeters}-1.0.1");
+            var quantityType = Quantity.ByTypeID("autodesk.unit.quantity:length-1.0.3");
+            Assert.IsTrue(quantityType.Units.Contains(unitType));
+        }
+        [Test, Category("UnitTests")]
+        public void CanCreateForgeQuantity_FromFutureTypeId()
+        {
+            var unitType = Unit.ByTypeID($"{milimeters}-1.0.1");
+            var quantityType = Quantity.ByTypeID("autodesk.unit.quantity:length-1.0.5");
+            Assert.IsTrue(quantityType.Units.Contains(unitType));
+        }
+
+        [Test, Category("UnitTests")]
+        public void ForgeQuantityContainsMultipleUnits()
+        {
+            var quantityType = Quantity.ByTypeID("autodesk.unit.quantity:length-1.0.5");
+            Assert.GreaterOrEqual(16,quantityType.Units.Count());
+        }
+        [Test, Category("UnitTests")]
+        public void ForgeQuantityEquality()
+        {
+            var quantityType = Quantity.ByTypeID("autodesk.unit.quantity:length-1.0.4");
+            var quantityType2 = Quantity.ByTypeID("autodesk.unit.quantity:length-1.0.4");
+            var quantityType3 = Quantity.ByTypeID("autodesk.unit.quantity:volume-1.0.1");
+            Assert.NotNull(quantityType);
+            Assert.NotNull(quantityType2);
+            Assert.NotNull(quantityType3);
+
+            Assert.True(quantityType.Equals(quantityType2));
+            Assert.True(quantityType2.Equals(quantityType));
+            Assert.False(quantityType.Equals(quantityType3));
+            Assert.False(quantityType3.Equals(quantityType));
+
+            Assert.True(quantityType == quantityType2);
+            Assert.True(quantityType2 == quantityType);
+            Assert.False(quantityType == quantityType3);
+            Assert.False(quantityType3 == quantityType);
+
+            Assert.False(quantityType != quantityType2);
+            Assert.False(quantityType2 != quantityType);
+            Assert.True(quantityType != quantityType3);
+            Assert.True(quantityType3 != quantityType);
+
+            var dictionary = new Dictionary<Quantity, string>();
+            dictionary.Add(quantityType, "0");
+            dictionary[quantityType2] = "1";
+            dictionary.Add(quantityType3, "2");
+            Assert.AreEqual(2, dictionary.Count);
+            Assert.AreEqual(dictionary[quantityType], "1");
+            Assert.AreEqual(dictionary[quantityType2], "1");
+            Assert.AreEqual(dictionary[quantityType3], "2");
+        }
+        #endregion
+        #region unit utils
+        [Test, Category("UnitTests")]
+        public void ConvertByunitsSameQuantity()
+        {
+            var unitType1 = Unit.ByTypeID($"{milimeters}-1.0.1");
+            var unitType2 = Unit.ByTypeID($"{meters}-1.0.0");
+            Assert.AreEqual(.1,DynamoUnits.Utilities.ConvertByUnits(100, unitType1, unitType2));
+            Assert.AreEqual(100000, DynamoUnits.Utilities.ConvertByUnits(100, unitType2, unitType1));
+        }
+        [Test, Category("UnitTests")]
+        public void ConvertByunitsIncompatible()
+        {
+            var unitType1 = Unit.ByTypeID($"{milimeters}-1.0.1");
+            var unitType2 = Unit.ByTypeID("autodesk.unit.unit:calories-1.0.1");
+            Assert.That(()=> { DynamoUnits.Utilities.ConvertByUnits(100, unitType1, unitType2); },Throws.Exception);
+        }
+        [Test, Category("UnitTests")]
+        public void ParseUnitExpression()
+        {
+            var unitType2 = Unit.ByTypeID($"{meters}-1.0.0");
+            var unitType3 = Unit.ByTypeID("autodesk.unit.unit:squareMeters-1.0.1");
+            Assert.AreEqual(3.2, DynamoUnits.Utilities.ParseExpressionByUnit(unitType2,"100 mm + 100mm + 1m + 2 m"));
+            Assert.AreEqual(3.0002, DynamoUnits.Utilities.ParseExpressionByUnit(unitType3, "100 mm^2 + 100mm^2 + 1m^2 + 2 m^2"));
+        }
+        [Test, Category("UnitTests")]
+        public void ParseUnitExpressionIncompatible()
+        {
+            var unitType2 = Unit.ByTypeID($"{meters}-1.0.0");
+            Assert.That(() => Assert.AreEqual(3.2, DynamoUnits.Utilities.ParseExpressionByUnit(unitType2, "100 mm + 100mm + 1m + 2 m^2")),Throws.Exception);
+        }
+        [Test, Category("UnitTests")]
+        public void ParseExpression()
+        {
+            Assert.AreEqual(6.5, DynamoUnits.Utilities.ParseExpression("3 + 3 + 1/2"));
+        }
+        [Test, Category("UnitTests")]
+        public void ParseExpressionIncompatible()
+        {
+            Assert.That(() => { DynamoUnits.Utilities.ParseExpression("3mm"); }, Throws.Exception);
+        }
+        [Test, Category("UnitTests"), Category("FailureNET6")]
+        public void GetAll ()
+        {
+            Assert.Greater(DynamoUnits.Utilities.GetAllUnits().Count(), 0);
+            Assert.Greater(DynamoUnits.Utilities.GetAllQuantities().Count(), 0);
+            Assert.Greater(DynamoUnits.Utilities.GetAllSymbols().Count(), 0);
+
+            Assert.AreEqual(DynamoUnits.Utilities.GetAllUnits().Distinct().Count() , DynamoUnits.Utilities.GetAllUnits().Count());
+            Assert.AreEqual(DynamoUnits.Utilities.GetAllQuantities().Distinct().Count(), DynamoUnits.Utilities.GetAllQuantities().Count());
+            Assert.AreEqual(DynamoUnits.Utilities.GetAllSymbols().Distinct().Count(), DynamoUnits.Utilities.GetAllSymbols().Count());
+        }
+
+        [Test, Category("UnitTests")]
+        public void PointToBadSchemaDirectory_DoesNotThrow()
+        {
+           Assert.DoesNotThrow(()=> { DynamoUnits.Utilities.SetTestEngine(@"C:\BadPath"); });
+            //this should throw an exception about not loading schemas
+           Assert.Throws<Exception>(() => { DynamoUnits.Utilities.GetAllUnits(); });
+           //reset engine.
+          DynamoUnits.Utilities.Initialize();
+        }
+        #endregion unit utils
+
     }
 }
+

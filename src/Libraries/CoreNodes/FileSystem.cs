@@ -1,12 +1,18 @@
-﻿using System.Collections;
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using Autodesk.DesignScript.Runtime;
+using Dynamo.Events;
 using Dynamo.Graph.Nodes;
+using Dynamo.Logging;
+using Dynamo.Session;
 using Path = System.IO.Path;
 using Rectangle = System.Drawing.Rectangle;
 
@@ -105,7 +111,7 @@ namespace DSCore.IO
         {
             try
             {
-                if (Path.GetDirectoryName(destinationPath) != string.Empty && FileExtension(destinationPath) != string.Empty) 
+                if (Path.GetDirectoryName(destinationPath) != string.Empty) 
                 {
                     file.CopyTo(destinationPath, overwrite);
                 }
@@ -114,9 +120,11 @@ namespace DSCore.IO
                     throw new FileNotFoundException(Properties.Resources.InvalidDestinationPathErrorMessage, destinationPath);
                 }
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
+#pragma warning disable CA2200 // Rethrow to preserve stack details
                 throw ex;
+#pragma warning restore CA2200 // Rethrow to preserve stack details
             }
             return true;
             
@@ -331,7 +339,9 @@ namespace DSCore.IO
 
         #region Obsolete Methods
 
-
+#if NET6_0_OR_GREATER
+        [SupportedOSPlatform("windows")]
+#endif
         [NodeObsolete("ReadImageObsolete", typeof(Properties.Resources))]
         public static Color[] ReadImage(string path, int xSamples, int ySamples)
         {
@@ -340,6 +350,9 @@ namespace DSCore.IO
             return Image.Pixels(image, xSamples, ySamples).SelectMany(x => x).ToArray();
         }
 
+#if NET6_0_OR_GREATER
+        [SupportedOSPlatform("windows")]
+#endif
         [NodeObsolete("LoadImageFromPathObsolete", typeof(Properties.Resources))]
         public static Bitmap LoadImageFromPath(string path)
         {
@@ -352,6 +365,9 @@ namespace DSCore.IO
             return ReadText(FileFromPath(path));
         }
 
+#if NET6_0_OR_GREATER
+        [SupportedOSPlatform("windows")]
+#endif
         [NodeObsolete("WriteImageObsolete", typeof(Properties.Resources))]
         public static bool WriteImage(string filePath, string fileName, Bitmap image)
         {
@@ -371,6 +387,9 @@ namespace DSCore.IO
     /// <summary>
     ///     Methods for operating on Image Bitmaps.
     /// </summary>
+#if NET6_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+#endif
     public static class Image
     {
         /// <summary>
@@ -440,6 +459,13 @@ namespace DSCore.IO
 
         private static Bitmap FromPixelsHelper(IEnumerable<Color> colors, int width, int height)
         {
+            //if the color data is larger than will fit in the bitmap buffer
+            //then this can cause an access violation - so we'll throw an exception.
+            if(colors?.Count() > width * height)
+            {
+                throw new ArgumentOutOfRangeException("colors", Properties.Resources.BitmapOverflowError);
+            }
+            
             var bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
             var data = bitmap.LockBits(
                 new Rectangle(0, 0, width, height),

@@ -191,5 +191,19 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(ConversionUnit.SquareMeter, converterNode.SelectedToConversion);
             AssertPreviewValue("54435965-3778-49cd-8306-f116b3f73bde", 10000.0);
         }
+
+        [Test]
+        public void ConvertBetweenAreaUnits()
+        {
+            var model = ViewModel.Model;
+            string openPath = Path.Combine(TestDirectory, @"core\units\UnitsConversionArea.dyn");
+            RunModel(openPath);
+
+            var converterNode =
+               model.CurrentWorkspace.NodeFromWorkspace("efbcafaf0e2546508f2f8eee448d46ad") as DynamoConverter;
+            Assert.AreEqual(ConversionUnit.SquareFoot, converterNode.SelectedFromConversion);
+            Assert.AreEqual(ConversionUnit.SquareMeter, converterNode.SelectedToConversion);
+            AssertPreviewValue("efbcafaf0e2546508f2f8eee448d46ad", 92.90304);
+        }
     }
 }

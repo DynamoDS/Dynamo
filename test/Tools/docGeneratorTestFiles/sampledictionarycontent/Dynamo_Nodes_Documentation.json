@@ -2993,6 +2993,12 @@
     "folderPath": "Input/Basic/Action",
     "inDepth": "Output will create an output port for a custom node. The syntax for an output node is simply its name, along with an optional custom comment. In the example below, an output named Percentage is created with a custom comment. It is important to note that this node is only available while creating a custom node."
 }, {
+    "Name": "Custom Selection",
+    "imageFile": ["Custom Selection"],
+    "dynFile": ["Custom Selection"],
+    "folderPath": "Input/Basic/Action",
+    "inDepth": "This node allows you to pre-define a dropdown menu with with an arbitrary number of custom items. Each item consists of a label and a value. The label is always a string, while the value can be an integer, a number or a string"
+}, {
     "Name": "String",
     "imageFile": ["String"],
     "dynFile": ["String"],

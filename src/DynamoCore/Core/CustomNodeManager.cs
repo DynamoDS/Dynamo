@@ -684,18 +684,18 @@ namespace Dynamo.Core
             Exception ex;
             try
             {
-                if (DynamoUtilities.PathHelper.isValidXML(path, out xmlDoc, out ex))
+                if (DynamoUtilities.PathHelper.isValidJson(path, out jsonDoc, out ex))
                 {
-                    if (!WorkspaceInfo.FromXmlDocument(xmlDoc, path, isTestMode, false, AsLogger(), out header))
+                    if (!WorkspaceInfo.FromJsonDocument(jsonDoc, path, isTestMode, false, AsLogger(), out header))
                     {
                         Log(String.Format(Properties.Resources.FailedToLoadHeader, path));
                         info = null;
                         return false;
                     }
                 }
-                else if (DynamoUtilities.PathHelper.isValidJson(path, out jsonDoc, out ex))
+                else if (DynamoUtilities.PathHelper.isValidXML(path, out xmlDoc, out ex))
                 {
-                    if (!WorkspaceInfo.FromJsonDocument(jsonDoc, path, isTestMode, false, AsLogger(), out header))
+                    if (!WorkspaceInfo.FromXmlDocument(xmlDoc, path, isTestMode, false, AsLogger(), out header))
                     {
                         Log(String.Format(Properties.Resources.FailedToLoadHeader, path));
                         info = null;
@@ -854,7 +854,14 @@ namespace Dynamo.Core
                 XmlDocument xmlDoc;
                 string strInput;
                 Exception ex;
-                if (DynamoUtilities.PathHelper.isValidXML(path, out xmlDoc, out ex))
+
+                if (DynamoUtilities.PathHelper.isValidJson(path, out strInput, out ex))
+                {
+                    WorkspaceInfo.FromJsonDocument(strInput, path, isTestMode, false, AsLogger(), out info);
+                    info.ID = functionId.ToString();
+                    return InitializeCustomNode(info, null, out workspace);
+                }
+                else if (DynamoUtilities.PathHelper.isValidXML(path, out xmlDoc, out ex))
                 {
                     if (WorkspaceInfo.FromXmlDocument(xmlDoc, path, isTestMode, false, AsLogger(), out info))
                     {
@@ -864,13 +871,6 @@ namespace Dynamo.Core
                             return InitializeCustomNode(info, xmlDoc, out workspace);
                         }
                     }
-                }
-                else if (DynamoUtilities.PathHelper.isValidJson(path, out strInput, out ex))
-                {
-                    // TODO: Skip Json migration for now
-                    WorkspaceInfo.FromJsonDocument(strInput, path, isTestMode, false, AsLogger(), out info);
-                    info.ID = functionId.ToString();
-                    return InitializeCustomNode(info, null, out workspace);
                 }
                 else throw ex;
                 Log(string.Format(Properties.Resources.CustomNodeCouldNotBeInitialized, customNodeInfo.Name));
@@ -1112,7 +1112,14 @@ namespace Dynamo.Core
                     currentWorkspace.RemoveGroup(group);
 
                     group.GUID = Guid.NewGuid();
-                    group.Nodes = group.DeletedModelBases;
+                    group.Nodes = group.Nodes.Concat(group.DeletedModelBases);
+                    //for nested groups
+                    //if any of the previously added annotations has a DeletedModelBases with the same group as the current one, then add it to the Nodes
+                    var nestedGroup = newAnnotations.FirstOrDefault(x => x.DeletedModelBases.OfType<AnnotationModel>().Any(y => y.GUID == group.GUID));
+                    if (nestedGroup != null)
+                    {
+                        nestedGroup.Nodes = nestedGroup.Nodes.Append(group);
+                    }
                     newAnnotations.Add(group);
                 }
 

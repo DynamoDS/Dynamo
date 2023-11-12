@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -108,6 +108,17 @@ namespace DSCoreNodesTests
             Assert.IsTrue(List.Contains(new ArrayList { 1, 2, 3, 4, 5 }, 4));
             Assert.IsTrue(List.Contains(new ArrayList { 1, new ArrayList { 2, 3 }, 4, 5 }, 2));
             Assert.IsFalse(List.Contains(new ArrayList (), 0));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void ListContainsNumbers()
+        {
+            var list = new[] { 1, 2, 3, 4, 5 };
+            foreach(var l in list)
+            {
+                Assert.IsTrue(List.Contains(list, (double)(l / 3.0) * 3));
+            }
         }
 
         [Test]
@@ -935,6 +946,25 @@ namespace DSCoreNodesTests
 
             indices = List.AllIndicesOf(input, 21).Cast<int>();
             Assert.IsEmpty(indices);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void AllIndicesOfNullTest()
+        {
+            var input = new List<object> { true, false, null };
+
+            var indices = List.AllIndicesOf(input, true);
+            Assert.True(indices.Count == 1);
+            Assert.AreEqual(0, indices[0]);
+
+            indices = List.AllIndicesOf(input, false);
+            Assert.True(indices.Count == 1);
+            Assert.AreEqual(1, indices[0]);
+
+            indices = List.AllIndicesOf(input, null);
+            Assert.True(indices.Count == 1);
+            Assert.AreEqual(2, indices[0]);
         }
 
         [Test]

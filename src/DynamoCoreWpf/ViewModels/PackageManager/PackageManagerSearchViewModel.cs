@@ -1,19 +1,30 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Input;
+using Dynamo.Configuration;
+using Dynamo.Interfaces;
+using Dynamo.Logging;
+using Dynamo.Models;
 using Dynamo.PackageManager.ViewModels;
 using Dynamo.Search;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
+using Dynamo.Wpf.Utilities;
 using Greg.Responses;
-using Microsoft.Practices.Prism.Commands;
-using Microsoft.Practices.Prism.ViewModel;
+using Lucene.Net.Documents;
+using Lucene.Net.Index;
+using Lucene.Net.QueryParsers.Classic;
+using Lucene.Net.Search;
+using Prism.Commands;
+using NotificationObject = Dynamo.Core.NotificationObject;
 
 namespace Dynamo.PackageManager
 {
@@ -28,7 +39,8 @@ namespace Dynamo.PackageManager
             Syncing,
             Searching,
             NoResults,
-            Results
+            Results,
+            Retry
         };
 
         /// <summary>
@@ -39,8 +51,9 @@ namespace Dynamo.PackageManager
             Name,
             Downloads,
             Votes,
-            Maintainers,
-            LastUpdate
+            Maintainers,    
+            LastUpdate,
+            Search
         };
 
         /// <summary>
@@ -56,12 +69,22 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// Package Manager filter entry, binded to the host filter context menu
         /// </summary>
-        public class FilterEntry
+        public class FilterEntry : NotificationObject
         {
             /// <summary>
             /// Name of the host
             /// </summary>
             public string FilterName { get; set; }
+
+            /// <summary>
+            /// The context sub-menu name the filter belongs to
+            /// </summary>
+            public string GroupName { get; set; }
+
+            /// <summary>
+            /// The tooltip associated with the filter entry
+            /// </summary>
+            public string Tooltip { get; set; }
 
             /// <summary>
             /// Filter entry click command, notice this is a dynamic command
@@ -70,11 +93,22 @@ namespace Dynamo.PackageManager
             /// </summary>
             public DelegateCommand<object> FilterCommand { get; set; }
 
+            private bool _onChecked;
             /// <summary>
             /// Boolean indicates if the Filter entry is checked, data binded to
             /// is checked property of each filter
             /// </summary>
-            public bool OnChecked { get; set; }
+            public bool OnChecked
+            {
+                get { return _onChecked; }
+                set
+                {
+                    _onChecked = value;
+
+                    RaisePropertyChanged(nameof(OnChecked));
+                    pmSearchViewModel.SetFilterChange();
+                }
+            }
 
             /// <summary>
             /// Private reference of PackageManagerSearchViewModel,
@@ -86,10 +120,12 @@ namespace Dynamo.PackageManager
             /// Constructor
             /// </summary>
             /// <param name="filterName">Filter name, same as host name</param>
-            /// <param name="pmSearchViewModel">a reference of the PackageManagerSearchViewModel</param>
-            public FilterEntry(string filterName, PackageManagerSearchViewModel packageManagerSearchViewModel)
+            /// <param name="packageManagerSearchViewModel">a reference of the PackageManagerSearchViewModel</param>
+            public FilterEntry(string filterName, string groupName, string tooltip, PackageManagerSearchViewModel packageManagerSearchViewModel)
             {
                 FilterName = filterName;
+                GroupName = groupName;
+                Tooltip = tooltip;
                 FilterCommand = new DelegateCommand<object>(SetFilterHosts, CanSetFilterHosts);
                 pmSearchViewModel = packageManagerSearchViewModel;
                 OnChecked = false;
@@ -112,13 +148,21 @@ namespace Dynamo.PackageManager
             /// <param name="obj"></param>
             private void SetFilterHosts(object obj)
             {
-                if (OnChecked)
+                if(GroupName.Equals(Resources.PackageFilterByHost))
                 {
-                    pmSearchViewModel.SelectedHosts.Add(obj as string);
-                }
-                else
-                {
-                    pmSearchViewModel.SelectedHosts.Remove(obj as string);
+                    if (OnChecked)
+                    {
+                        pmSearchViewModel.SelectedHosts.Add(obj as string);
+                    }
+                    else
+                    {
+                        pmSearchViewModel.SelectedHosts.Remove(obj as string);
+                    }
+                    // Send filter event with what host filter user using
+                    Dynamo.Logging.Analytics.TrackEvent(
+                        Actions.Filter,
+                        Categories.PackageManagerOperations,
+                        string.Join(",", pmSearchViewModel.SelectedHosts));
                 }
                 pmSearchViewModel.SearchAndUpdateResults();
                 return;
@@ -126,9 +170,24 @@ namespace Dynamo.PackageManager
         }
 
         #region Properties & Fields
+        // Lucene search utility to perform indexing operations.
+        internal LuceneSearchUtility LuceneUtility
+        {
+            get
+            {
+                return LuceneSearch.LuceneUtilityPackageManager;
+            }
+        }
+
+        private ObservableCollection<PackageManagerSearchElementViewModel> searchMyResults;
 
         // The results of the last synchronization with the package manager server
         public List<PackageManagerSearchElement> LastSync { get; set; }
+
+        /// <summary>
+        /// Stores a list of latest infected package versions published by the current user, if any.
+        /// </summary>
+        public ObservableCollection<PackageManagerSearchElement> InfectedPackages { get; set; }
 
         /// <summary>
         ///     SortingKey property
@@ -149,7 +208,6 @@ namespace Dynamo.PackageManager
 
         private List<FilterEntry> hostFilter;
 
-
         /// <summary>
         /// Dynamic Filter for package hosts, should include all Dynamo known hosts from PM backend
         ///  e.g. "Advance Steel", "Alias", "Civil 3D", "FormIt", "Revit"
@@ -161,6 +219,23 @@ namespace Dynamo.PackageManager
             {
                 hostFilter = value;
                 RaisePropertyChanged("HostFilter");
+            }
+        }
+
+
+        private List<FilterEntry> nonHostFilter;
+
+        /// <summary>
+        /// A collection of dynamic non-hosted filters
+        /// such as New, Updated, Deprecated, Has/HasNoDependencies
+        /// </summary>
+        public List<FilterEntry> NonHostFilter
+        {
+            get { return nonHostFilter; }
+            set
+            {
+                nonHostFilter = value;
+                RaisePropertyChanged("NonHostFilter");
             }
         }
 
@@ -229,8 +304,12 @@ namespace Dynamo.PackageManager
             get { return _SearchText; }
             set
             {
-                _SearchText = value;
-                RaisePropertyChanged("SearchText");
+                if(_SearchText != value)
+                {
+                    _SearchText = value;
+                    SearchAndUpdateResults();
+                    RaisePropertyChanged("SearchText");
+                }
             }
         }
 
@@ -239,8 +318,9 @@ namespace Dynamo.PackageManager
         /// </summary>
         /// <value>
         ///     This is the currently selected element in the UI.
+        ///     No initially selected item by setting to -1
         /// </value>
-        private int _selectedIndex;
+        private int _selectedIndex = -1;
         public int SelectedIndex
         {
             get { return _selectedIndex; }
@@ -263,10 +343,26 @@ namespace Dynamo.PackageManager
         public ObservableCollection<PackageManagerSearchElementViewModel> SearchResults { get; internal set; }
 
         /// <summary>
+        /// Returns a new filtered collection of packages based on the current user
+        /// </summary>
+        public ObservableCollection<PackageManagerSearchElementViewModel> SearchMyResults
+        {
+            set
+            {                
+                searchMyResults = value;
+                RaisePropertyChanged(nameof(SearchMyResults));                
+            }
+            get
+            {
+                return searchMyResults;
+            }
+        }
+
+        /// <summary>
         ///     MaxNumSearchResults property
         /// </summary>
         /// <value>
-        ///     Internal limit on the number of search results returned by SearchDictionary
+        ///     Internal limit on the number of search results returned by EntryDictionary
         /// </value>
         public int MaxNumSearchResults { get; set; }
 
@@ -280,6 +376,60 @@ namespace Dynamo.PackageManager
             get { return this.SearchResults.Count == 0; }
         }
 
+        private bool isAnyFilterOn;
+        /// <summary>
+        /// Returns true if any filter is currently active (set to `true`)
+        /// </summary>  
+        public bool IsAnyFilterOn
+        {
+            get
+            {
+                return isAnyFilterOn;
+            }
+            set
+            {
+                if(isAnyFilterOn != value) isAnyFilterOn = value;
+                RaisePropertyChanged(nameof(IsAnyFilterOn));
+            }
+        }
+
+        private void SetFilterChange()
+        {
+            IsAnyFilterOn = HostFilter.Any(f => f.OnChecked) || NonHostFilter.Any(f => f.OnChecked);
+        }
+
+        /// <summary>
+        /// Checks if the package can be installed.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        internal bool CanInstallPackage(string name)
+        {
+            // Return true if there are no matching non built-in packages
+            return !PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.LocalPackages
+                .Any(x => (x.Name == name) && !x.BuiltInPackage);
+        }
+
+        /// <summary>
+        /// Checks if the package corresponding to the PackageDownloadHandle can be installed.
+        /// </summary>
+        /// <param name="dh"></param>
+        /// <returns></returns>
+        internal bool CanInstallPackage(PackageDownloadHandle dh)
+        {
+            switch (dh.DownloadState)
+            {
+                case PackageDownloadHandle.State.Uninitialized:
+                case PackageDownloadHandle.State.Error:
+                    return true;// Allowed if Download/Install not yet begun or if in Error state.
+                case PackageDownloadHandle.State.Downloaded:
+                case PackageDownloadHandle.State.Downloading:
+                case PackageDownloadHandle.State.Installing:
+                    return false;
+                default:
+                    return CanInstallPackage(dh.Name);// All other states need to check with PackageLoader's LocalPackages
+            }
+        }
 
         public PackageSearchState _searchState; // TODO: Set private for 3.0.
 
@@ -295,6 +445,25 @@ namespace Dynamo.PackageManager
                 RaisePropertyChanged(nameof(this.SearchState));
                 RaisePropertyChanged(nameof(this.SearchBoxPrompt));
                 RaisePropertyChanged(nameof(this.ShowSearchText));
+
+                if (value == PackageSearchState.Results && !this.InitialResultsLoaded)
+                {
+                    this.InitialResultsLoaded = true;
+                }
+            }
+        }
+
+        private bool _initialResultsLoaded = false;
+        /// <summary>
+        /// Will only be set to true once after the initial search has been finished.
+        /// </summary>
+        public bool InitialResultsLoaded
+        {
+            get { return _initialResultsLoaded; }
+            set
+            {
+                _initialResultsLoaded = value;
+                RaisePropertyChanged(nameof(InitialResultsLoaded));
             }
         }
 
@@ -311,17 +480,22 @@ namespace Dynamo.PackageManager
         /// </summary>
         public List<string> SelectedHosts { get; set; }
 
-        private SearchDictionary<PackageManagerSearchElement> SearchDictionary;
-
+        private EntryDictionary<PackageManagerSearchElement> EntryDictionary;
+        
         /// <summary>
         ///     Command to clear the completed package downloads
         /// </summary>
         public DelegateCommand ClearCompletedCommand { get; set; }
 
         /// <summary>
-        ///     Sort the search results
+        ///     Sort the default results
         /// </summary>
         public DelegateCommand SortCommand { get; set; }
+
+        /// <summary>
+        ///     Sort the search results
+        /// </summary>
+        public DelegateCommand<object> SearchSortCommand { get; set; }
 
         /// <summary>
         ///     Set the sorting key for search results and resort
@@ -334,6 +508,28 @@ namespace Dynamo.PackageManager
         public DelegateCommand<object> SetSortingDirectionCommand { get; set; }
 
         /// <summary>
+        /// Opens the Package Details ViewExtension
+        /// </summary>
+        public DelegateCommand<object> ViewPackageDetailsCommand { get; set; }
+
+        /// <summary>
+        /// Clears the search text box and resets the search
+        /// </summary>
+        public DelegateCommand<object> ClearSearchTextBoxCommand { get; set; }
+
+        /// <summary>
+        /// When the user downloads new package via the package search manager, a toast notification
+        /// appears at the base of the window. This command fires when the user clicks to dismiss
+        /// one of these toast notifications.
+        /// </summary>
+        public DelegateCommand<object> ClearToastNotificationCommand { get; set; }
+
+        /// <summary>
+        /// Clears all filters, setting them to `false`
+        /// </summary>
+        public DelegateCommand<object> ClearFiltersCommand { get; set; }
+
+        /// <summary>
         ///     Current downloads
         /// </summary>
         public ObservableCollection<PackageDownloadHandle> Downloads
@@ -341,23 +537,72 @@ namespace Dynamo.PackageManager
             get { return PackageManagerClientViewModel.Downloads; }
         }
 
+        public IPreferences Preferences
+        {
+            get { return PackageManagerClientViewModel.DynamoViewModel.PreferenceSettings; }
+        }
+
+        private bool isDetailPackagesExtensionOpened;
+        public bool IsDetailPackagesExtensionOpened
+        {
+            get { return isDetailPackagesExtensionOpened; }
+            set
+            {
+                if (isDetailPackagesExtensionOpened != value)
+                {
+                    isDetailPackagesExtensionOpened = value;
+                    RaisePropertyChanged(nameof(IsDetailPackagesExtensionOpened));
+                }
+            }
+        }
         #endregion Properties & Fields
 
         internal PackageManagerSearchViewModel()
         {
             SearchResults = new ObservableCollection<PackageManagerSearchElementViewModel>();
+            InfectedPackages = new ObservableCollection<PackageManagerSearchElement>();
             MaxNumSearchResults = 35;
-            SearchDictionary = new SearchDictionary<PackageManagerSearchElement>();
+            EntryDictionary = new EntryDictionary<PackageManagerSearchElement>();
             ClearCompletedCommand = new DelegateCommand(ClearCompleted, CanClearCompleted);
             SortCommand = new DelegateCommand(Sort, CanSort);
+            SearchSortCommand = new DelegateCommand<object>(Sort, CanSort);
             SetSortingKeyCommand = new DelegateCommand<object>(SetSortingKey, CanSetSortingKey);
             SetSortingDirectionCommand = new DelegateCommand<object>(SetSortingDirection, CanSetSortingDirection);
-            SearchResults.CollectionChanged += SearchResultsOnCollectionChanged;
+            ViewPackageDetailsCommand = new DelegateCommand<object>(ViewPackageDetails);
+            ClearSearchTextBoxCommand = new DelegateCommand<object>(ClearSearchTextBox);
+            ClearToastNotificationCommand = new DelegateCommand<object>(ClearToastNotification);
+            ClearFiltersCommand = new DelegateCommand<object>(ClearAllFilters);
             SearchText = string.Empty;
             SortingKey = PackageSortingKey.LastUpdate;
-            SortingDirection = PackageSortingDirection.Ascending;
+            SortingDirection = PackageSortingDirection.Descending;
             HostFilter = new List<FilterEntry>();
+            NonHostFilter = new List<FilterEntry>();
             SelectedHosts = new List<string>();
+        }
+
+        /// <summary>
+        /// Add package information to Lucene index
+        /// </summary>
+        /// <param name="package">package info that will be indexed</param>
+        /// <param name="doc">Lucene document in which the package info will be indexed</param>
+        internal void AddPackageToSearchIndex(PackageManagerSearchElement package, Document doc)
+        {
+            if (LuceneUtility.addedFields == null) return;
+
+            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), package.Name);
+            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Description), package.Description);
+
+            if (package.Keywords.Length > 0)
+            {
+                LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.SearchKeywords), package.Keywords);
+            }
+
+            if (package.Hosts != null && string.IsNullOrEmpty(package.Hosts.ToString()))
+            {
+                LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Hosts), package.Hosts.ToString(), true, true);
+            }
+
+            LuceneUtility.writer?.AddDocument(doc);
         }
 
         /// <summary>
@@ -365,15 +610,69 @@ namespace Dynamo.PackageManager
         /// </summary>
         public PackageManagerSearchViewModel(PackageManagerClientViewModel client) : this()
         {
-            this.PackageManagerClientViewModel = client;
+            PackageManagerClientViewModel = client;
             HostFilter = InitializeHostFilter();
-            PackageManagerClientViewModel.Downloads.CollectionChanged += DownloadsOnCollectionChanged;
-            PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.ConflictingCustomNodePackageLoaded += 
-                ConflictingCustomNodePackageLoaded;
+            NonHostFilter = InitializeNonHostFilter();
+            InitializeLuceneForPackageManager();
+        }
+
+        internal void InitializeLuceneForPackageManager()
+        {
+            if(LuceneUtility == null)
+            {
+                LuceneSearch.LuceneUtilityPackageManager = new LuceneSearchUtility(PackageManagerClientViewModel.DynamoViewModel.Model, LuceneSearchUtility.DefaultPkgIndexStartConfig);
+            }
         }
         
         /// <summary>
-        /// Sort the search results
+        /// Populates SearchMyResults collection containing all packages by current user
+        /// </summary>
+        private void PopulateMyPackages()
+        {
+            // First, clear already existing results to prevent stacking 
+            if (SearchMyResults != null) return;
+            // We should have already populated the CachedPackageList by this step
+            if (PackageManagerClientViewModel.CachedPackageList == null ||
+                !PackageManagerClientViewModel.CachedPackageList.Any()) return;
+            // We need the user to be logged in, otherwise there is no point in runnig this routine
+            if (PackageManagerClientViewModel.LoginState != Greg.AuthProviders.LoginState.LoggedIn) return;
+
+            List<PackageManagerSearchElementViewModel> myPackages = new List<PackageManagerSearchElementViewModel>();
+
+            // We need the user to be logged in, otherwise there is no point in runnig this routine
+            if (PackageManagerClientViewModel.LoginState != Greg.AuthProviders.LoginState.LoggedIn)
+            {
+                SearchMyResults = new ObservableCollection<PackageManagerSearchElementViewModel>(myPackages);
+                return;
+            }
+
+            // Check if any of the maintainers corresponds to the current logged in username
+            var name = PackageManagerClientViewModel.Username;
+            var pkgs = PackageManagerClientViewModel.CachedPackageList.Where(x => x.Maintainers != null && x.Maintainers.Contains(name)).ToList();
+            foreach(var pkg in pkgs)
+            {
+                var p = new PackageManagerSearchElementViewModel(pkg, false);
+                p.RequestDownload += this.PackageOnExecuted;
+
+                myPackages.Add(p);
+            }
+    
+            SearchMyResults = new ObservableCollection<PackageManagerSearchElementViewModel>(myPackages);
+        }
+
+        private void ClearMySearchResults()
+        {
+            if (this.SearchMyResults == null) return;
+            foreach (var ele in this.SearchMyResults)
+            {
+                ele.RequestDownload -= PackageOnExecuted;
+            }
+
+            this.SearchMyResults = null;
+        }
+
+        /// <summary>
+        /// Sort the default package results in the view based on the sorting key and sorting direction.
         /// </summary>
         public void Sort()
         {
@@ -400,6 +699,35 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
+        /// Sort the package search results in the view based on the closest hit to the search key.
+        /// </summary>
+        private void Sort(object searchQuery = null)
+        {
+            if (searchQuery == null)
+            {
+                this.Sort();
+            }
+            else
+            {
+                var list = this.SearchResults.AsEnumerable().ToList();
+                Sort(list, PackageSortingKey.Search, searchQuery.ToString());
+
+                // temporarily hide binding
+                var temp = this.SearchResults;
+                this.SearchResults = null;
+
+                temp.Clear();
+
+                foreach (var ele in list)
+                {
+                    temp.Add(ele);
+                }
+
+                this.SearchResults = temp;
+            }
+        }
+
+        /// <summary>
         /// Based on the known hosts received from Package Manager server,
         /// initialize the host filter in Dynamo
         /// </summary>
@@ -408,17 +736,73 @@ namespace Dynamo.PackageManager
             var hostFilter = new List<FilterEntry>();
             foreach (var host in PackageManagerClientViewModel.Model.GetKnownHosts())
             {
-                hostFilter.Add(new FilterEntry(host, this));
+                hostFilter.Add(new FilterEntry(host, Resources.PackageFilterByHost, Resources.PackageHostDependencyFilterContextItem, this));
             }
 
             return hostFilter;
         }
 
+        private List<FilterEntry> InitializeNonHostFilter()
+        {
+            var nonHostFilter = new List<FilterEntry>() { new FilterEntry(Resources.PackageManagerPackageNew, Resources.PackageFilterByStatus, Resources.PackageFilterNewTooltip, this),
+                                                          new FilterEntry(Resources.PackageManagerPackageUpdated, Resources.PackageFilterByStatus, Resources.PackageFilterUpdatedTooltip, this),
+                                                          new FilterEntry(Resources.PackageSearchViewContextMenuFilterDeprecated, Resources.PackageFilterByStatus, Resources.PackageFilterDeprecatedTooltip, this),
+                                                          new FilterEntry(Resources.PackageSearchViewContextMenuFilterDependencies, Resources.PackageFilterByDependency, Resources.PackageFilterHasDependenciesTooltip, this),
+                                                          new FilterEntry(Resources.PackageSearchViewContextMenuFilterNoDependencies, Resources.PackageFilterByDependency, Resources.PackageFilterHasNoDependenciesTooltip, this)
+            } ;
+
+            nonHostFilter.ForEach(f => f.PropertyChanged += filter_PropertyChanged);
+
+            return nonHostFilter;
+
+        }
+
         /// <summary>
-        /// Can search be performed.  Used by the associated command
+        /// Toggles `dependecy` and `no dependecy` filters so that both cannot be 'ON' at the same time.
+        /// We need both filters to function individually in their 'OFF' states (it's not a simple toggle state switch)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        internal void filter_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            var filter = sender as FilterEntry;
+            switch (filter.FilterName)
+            {
+                case var name when name.Equals( Resources.PackageSearchViewContextMenuFilterDependencies ):
+                    if(!filter.OnChecked)
+                        break;
+                    var negateFilter = NonHostFilter.First(x => x.FilterName.Equals(Resources.PackageSearchViewContextMenuFilterNoDependencies));
+                    if (!negateFilter.OnChecked)
+                        break;
+                    negateFilter.OnChecked = false;
+                    break;
+                case var name when name.Equals(Resources.PackageSearchViewContextMenuFilterNoDependencies):
+                    if (!filter.OnChecked)
+                        break;
+                    negateFilter = NonHostFilter.First(x => x.FilterName.Equals(Resources.PackageSearchViewContextMenuFilterDependencies));
+                    if (!negateFilter.OnChecked)
+                        break;
+                    negateFilter.OnChecked = false;
+                    break;
+
+            }
+        }
+
+
+        /// <summary>
+        /// Can search be performed.  Used by the associated command : SortCommand
         /// </summary>
         /// <returns></returns>
         public bool CanSort()
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Can search be performed.  Used by the associated command : SearchSortCommand
+        /// </summary>
+        /// <returns></returns>
+        private bool CanSort(object s)
         {
             return true;
         }
@@ -452,12 +836,92 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
+        /// Set the sorting direction.  Used by the associated command.
+        /// </summary>
+        /// <param name="obj"></param>
+        public void ViewPackageDetails(object obj)
+        {
+            if (!(obj is PackageManagerSearchElement packageManagerSearchElement)) return;
+
+            PackageManagerClientViewModel
+                .DynamoViewModel
+                .OnViewExtensionOpenWithParameterRequest("C71CA1B9-BF9F-425A-A12C-53DF56770406", packageManagerSearchElement);
+
+            Analytics.TrackEvent(Actions.View, Categories.PackageManagerOperations, $"{packageManagerSearchElement?.Name}");
+        }
+
+        /// <summary>
+        /// Clears the search text box and resets the search.
+        /// </summary>
+        public void ClearSearchTextBox(object obj)
+        {
+            SearchText = string.Empty;
+        }
+
+        /// <summary>
+        /// When the user downloads new package via the package search manager, a toast notification
+        /// appears at the base of the window. This command fires when the user clicks to dismiss
+        /// one of these toast notifications.
+        /// </summary>
+        /// <param name="obj"></param>
+        public void ClearToastNotification(object obj)
+        {
+            if (obj is PackageDownloadHandle packageDownloadHandle)
+            {
+
+                PackageDownloadHandle packageDownloadHandleToRemove = PackageManagerClientViewModel.Downloads
+                    .FirstOrDefault(x => x.Id == packageDownloadHandle.Id);
+
+                if (packageDownloadHandleToRemove == null) return;
+
+                PackageManagerClientViewModel.Downloads.Remove(packageDownloadHandleToRemove);
+                RaisePropertyChanged(nameof(Downloads));
+            }
+            else if (obj is PackageManagerSearchElement packageSearchElement)
+            {
+                PackageManagerSearchElement packageInfectedToRemove = this.InfectedPackages
+                    .FirstOrDefault(x => x.InfectedPackageName == packageSearchElement.InfectedPackageName);
+
+                this.InfectedPackages.Remove(packageInfectedToRemove);
+                RaisePropertyChanged(nameof(InfectedPackages));
+            }
+            return;
+        }
+        
+        /// <summary>
         /// Set the associated key
         /// </summary>
         /// <returns></returns>
         public bool CanSetSortingDirection(object par)
         {
             return true;
+        }
+
+        /// <summary>
+        /// Sets all current filetrs to false
+        /// </summary>
+        /// <param name="obj"></param>
+        private void ClearAllFilters(object obj)
+        {
+            foreach (var filter in HostFilter)
+            {
+                if (filter.OnChecked)
+                {
+                    filter.OnChecked = false;
+                    filter.FilterCommand.Execute(filter.FilterName);
+                }
+            }
+
+            foreach (var filter in NonHostFilter)
+            {
+                if (filter.OnChecked)
+                {
+                    filter.OnChecked = false;
+                    filter.FilterCommand.Execute(filter.FilterName);
+                }
+            }
+
+            RaisePropertyChanged(nameof(IsAnyFilterOn));
         }
 
         /// <summary>
@@ -497,6 +961,8 @@ namespace Dynamo.PackageManager
                 this.SortingKey = (PackageSortingKey)sortingKey;
             }
 
+            Analytics.TrackEvent(Actions.Sort, Categories.PackageManagerOperations, $"{sortingKey}");
+
             this.Sort();
         }
 
@@ -510,6 +976,7 @@ namespace Dynamo.PackageManager
         }
 
         public event EventHandler<PackagePathEventArgs> RequestShowFileDialog;
+        public event EventHandler<PackagePathEventArgs> RequestDisableTextSearch;
         public virtual void OnRequestShowFileDialog(object sender, PackagePathEventArgs e)
         {
             if (RequestShowFileDialog != null)
@@ -528,15 +995,17 @@ namespace Dynamo.PackageManager
             pkgs.Sort((e1, e2) => e1.Name.ToLower().CompareTo(e2.Name.ToLower()));
             LastSync = pkgs;
 
-            SearchDictionary = new SearchDictionary<PackageManagerSearchElement>();
+            EntryDictionary = new EntryDictionary<PackageManagerSearchElement>();
 
             foreach (var pkg in pkgs)
             {
-                SearchDictionary.Add(pkg, pkg.Name);
-                SearchDictionary.Add(pkg, pkg.Description);
-                SearchDictionary.Add(pkg, pkg.Maintainers);
-                SearchDictionary.Add(pkg, pkg.Keywords);
+                EntryDictionary.Add(pkg, pkg.Name);
+                EntryDictionary.Add(pkg, pkg.Description);
+                EntryDictionary.Add(pkg, pkg.Maintainers);
+                EntryDictionary.Add(pkg, pkg.Keywords);
             }
+
+            PopulateMyPackages();   // adding 
         }
 
         /// <summary>
@@ -546,13 +1015,18 @@ namespace Dynamo.PackageManager
         public IEnumerable<PackageManagerSearchElementViewModel> RefreshAndSearch()
         {
             Refresh();
-            return Search(SearchText);
+            PopulateMyPackages();  
+            return GetAllPackages();
         }
 
         public void RefreshAndSearchAsync()
         {
+            StartTimer();   // Times out according to MAX_LOAD_TIME
+
             this.ClearSearchResults();
             this.SearchState = PackageSearchState.Syncing;
+
+            var iDoc = LuceneUtility.InitializeIndexDocumentForPackages();
 
             Task<IEnumerable<PackageManagerSearchElementViewModel>>.Factory.StartNew(RefreshAndSearch).ContinueWith((t) =>
             {
@@ -561,32 +1035,114 @@ namespace Dynamo.PackageManager
                     ClearSearchResults();
                     foreach (var result in t.Result)
                     {
+                        if (result.SearchElementModel != null)
+                        {
+                            AddPackageToSearchIndex(result.SearchElementModel, iDoc);
+                        }   
                         this.AddToSearchResults(result);
                     }
                     this.SearchState = HasNoResults ? PackageSearchState.NoResults : PackageSearchState.Results;
+                    TimedOut = false;
+
+                    if (!DynamoModel.IsTestMode)
+                    {
+                        LuceneUtility.dirReader = LuceneUtility.writer != null ? LuceneUtility.writer.GetReader(applyAllDeletes: true) : DirectoryReader.Open(LuceneUtility.indexDir);
+                        LuceneUtility.Searcher = new IndexSearcher(LuceneUtility.dirReader);
+
+                        LuceneUtility.CommitWriterChanges();
+                        LuceneUtility.DisposeWriter();
+                    }
                 }
+                RefreshInfectedPackages();
             }
             , TaskScheduler.FromCurrentSynchronizationContext()); // run continuation in ui thread
-
         }
 
-        private void AddToSearchResults(PackageManagerSearchElementViewModel element)
+        #region Time Out
+
+        // maximum loading time for packages - 30 seconds
+        // if exceeded will trigger `timed out` event and failure screen
+        internal int MAX_LOAD_TIME = 30 * 1000;
+        private bool _timedOut;
+        /// <summary>
+        /// Will trigger timed out event
+        /// </summary>
+        public bool TimedOut
+        {
+            get { return _timedOut; }
+            set
+            {
+                _timedOut = value;
+                RaisePropertyChanged(nameof(TimedOut));
+            }
+        }
+
+        private System.Timers.Timer aTimer;
+
+        private void StartTimer()
+        {
+            if(aTimer == null) 
+                aTimer = new System.Timers.Timer();
+
+            aTimer.Elapsed += OnTimedEvent;
+            aTimer.Interval = MAX_LOAD_TIME;
+            aTimer.AutoReset = false;
+            aTimer.Enabled = true;
+            aTimer.Start();
+        }
+
+        private void OnTimedEvent(object sender, ElapsedEventArgs e)
+        {
+            var aTimer = (System.Timers.Timer)sender;
+            aTimer.Stop();
+
+            // If we have managed to get all the results
+            // Simply dispose of the timer
+            // Otherwise act 
+            if (this.SearchState != PackageSearchState.Results)
+            {
+                TimedOut = true;
+            }
+        }
+
+        #endregion
+
+        internal void RefreshInfectedPackages()
+        {
+            //do not call a protected route, if user is not logged in already.
+            if (PackageManagerClientViewModel.LoginState !=  Greg.AuthProviders.LoginState.LoggedIn) return;
+
+            var infectedPkgs = PackageManagerClientViewModel.GetInfectedPackages();
+            infectedPkgs.Sort((e1, e2) => e1.InfectedPackageCreationDate.CompareTo(e2.InfectedPackageCreationDate));
+
+            this.InfectedPackages.Clear();
+            foreach (var pkg in infectedPkgs) {
+                this.InfectedPackages.Add(pkg);
+
+                // Limiting the infected packages list to 3. As the packages are resolved other unresolved packages will be displayed.
+                if (this.InfectedPackages.Count() == 3) 
+                { 
+                    break; 
+                }
+            }
+        }
+
+        internal void AddToSearchResults(PackageManagerSearchElementViewModel element)
         {
             element.RequestDownload += this.PackageOnExecuted;
             this.SearchResults.Add(element);
         }
 
-        private void ClearSearchResults()
+        internal void ClearSearchResults()
         {
             foreach (var ele in this.SearchResults)
             {
                 ele.RequestDownload -= PackageOnExecuted;
             }
-
             this.SearchResults.Clear();
         }
 
-        private void PackageOnExecuted(PackageManagerSearchElement element, PackageVersion version, string downloadPath)
+        internal void PackageOnExecuted(PackageManagerSearchElement element, PackageVersion version, string downloadPath)
         {
             this.PackageManagerClientViewModel.ExecutePackageDownload(element.Name, version, downloadPath);
         }
@@ -604,7 +1160,7 @@ namespace Dynamo.PackageManager
             var message = string.Format(Resources.MessageUninstallCustomNodeToContinue,
                 installed.Name + " " + installed.VersionName, conflicting.Name + " " + conflicting.VersionName);
 
-            var dialogResult = MessageBox.Show(message,
+            var dialogResult = MessageBoxService.Show(message,
                 Resources.CannotDownloadPackageMessageBoxTitle,
                 MessageBoxButton.YesNo, MessageBoxImage.Error);
 
@@ -618,22 +1174,49 @@ namespace Dynamo.PackageManager
 
         private void DownloadsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
         {
-            if (args.NewItems != null)
+            void canExecuteHandler(object o, PropertyChangedEventArgs eArgs)
+                => ClearCompletedCommand.RaiseCanExecuteChanged();
+
+            void canInstallHandler(object o, PropertyChangedEventArgs eArgs)
+            {
+                var handle = o as PackageDownloadHandle;
+                // Hooking into propertyChanged works only if each download handle is added to
+                // the Downloads collection before Download/Install begins.
+                if (eArgs.PropertyName == nameof(PackageDownloadHandle.DownloadState))
+                {
+                    PackageManagerSearchElementViewModel sr = SearchResults.FirstOrDefault(x => x.SearchElementModel.Name == handle.Name);
+                    if (sr == null) return;
+
+                    sr.CanInstall = CanInstallPackage(o as PackageDownloadHandle);
+                }
+            }
+
+            if (args.Action == NotifyCollectionChangedAction.Add)
             {
                 foreach (var item in args.NewItems)
                 {
                     var handle = (PackageDownloadHandle)item;
-                    handle.PropertyChanged += (o, eventArgs) => this.ClearCompletedCommand.RaiseCanExecuteChanged();
+                    // Update CanInstall property every time the download handle's state changes
+                    handle.PropertyChanged += canInstallHandler;
+                    handle.PropertyChanged += canExecuteHandler;
+                }
+            } 
+            else if (args.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (var item in args.OldItems)
+                {
+                    var handle = (PackageDownloadHandle)item;
+                    handle.PropertyChanged -= canInstallHandler;
+                    handle.PropertyChanged -= canExecuteHandler;
                 }
             }
 
             if (PackageManagerClientViewModel.Downloads.Count == 0)
             {
-                this.ClearCompletedCommand.RaiseCanExecuteChanged();
+                ClearCompletedCommand.RaiseCanExecuteChanged();
             }
 
-            this.RaisePropertyChanged("HasDownloads");
-
+            RaisePropertyChanged(nameof(HasDownloads));
         }
 
         private void SearchResultsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
@@ -664,9 +1247,19 @@ namespace Dynamo.PackageManager
             // if last sync isn't populated, we can't search
             if (LastSync == null) return;
 
+            IEnumerable<PackageManagerSearchElementViewModel> results;
             this.SearchText = query;
 
-            var results = Search(query);
+            // If the search query is empty, just call regular search API
+            // If the search query is not empty, then call Lucene search API
+            if (string.IsNullOrEmpty(query))
+            {
+                results = GetAllPackages();
+            }
+            else
+            {
+                results = Search(query, true);
+            }
 
             this.ClearSearchResults();
 
@@ -674,6 +1267,8 @@ namespace Dynamo.PackageManager
             {
                 this.AddToSearchResults(result);
             }
+
+            this.Sort(query);
 
             SearchState = HasNoResults ? PackageSearchState.NoResults : PackageSearchState.Results;
         }
@@ -701,9 +1296,16 @@ namespace Dynamo.PackageManager
             SelectedIndex = SelectedIndex - 1;
         }
 
-        internal void UnregisterHandlers()
+        internal void RegisterTransientHandlers()
         {
-            RequestShowFileDialog -= OnRequestShowFileDialog;
+            SearchResults.CollectionChanged += SearchResultsOnCollectionChanged;
+            PackageManagerClientViewModel.Downloads.CollectionChanged += DownloadsOnCollectionChanged;
+            PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.ConflictingCustomNodePackageLoaded +=
+                ConflictingCustomNodePackageLoaded;
+        }
+
+        internal void UnregisterTransientHandlers()
+        {
             SearchResults.CollectionChanged -= SearchResultsOnCollectionChanged;
             PackageManagerClientViewModel.Downloads.CollectionChanged -= DownloadsOnCollectionChanged;
             PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.ConflictingCustomNodePackageLoaded -=
@@ -729,41 +1331,42 @@ namespace Dynamo.PackageManager
             // No need to filter by host if nothing selected
             if (SelectedHosts.Count == 0) return list;
             IEnumerable<PackageManagerSearchElementViewModel> filteredList = null;
-            foreach (var host in SelectedHosts)
-            {
-                filteredList = (filteredList ?? Enumerable.Empty<PackageManagerSearchElementViewModel>()).Union(
-                    list.Where(x => x.Model.Hosts != null && x.Model.Hosts.Contains(host)) ?? Enumerable.Empty<PackageManagerSearchElementViewModel>());
-            }
+
+            filteredList = filteredList ??
+                           list.Where(x => x.SearchElementModel.Hosts != null && SelectedHosts.Intersect(x.SearchElementModel.Hosts).Count() == SelectedHosts.Count()) ?? Enumerable.Empty<PackageManagerSearchElementViewModel>();
+
             return filteredList;
         }
 
-        /// <summary>
-        ///     Performs a search using the given string as query, but does not update
-        ///     the SearchResults object.
+        /// <summary>   
+        ///     Get all the package results in the package manager.
         /// </summary>
         /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
-        /// <param name="query"> The search query </param>
-        internal IEnumerable<PackageManagerSearchElementViewModel> Search(string query)
+        internal IEnumerable<PackageManagerSearchElementViewModel> GetAllPackages()
         {
             if (LastSync == null) return new List<PackageManagerSearchElementViewModel>();
 
-            var canLogin = PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider;
             List<PackageManagerSearchElementViewModel> list = null;
 
-            if (!String.IsNullOrEmpty(query))
+            var isEnabledForInstall = !(Preferences as IDisablePackageLoadingPreferences).DisableCustomPackageLocations;
+
+            // Filter based on user preference
+            // A package has depndencies if the number of direct_dependency_ids is more than 1
+            list = Filter(LastSync.Where(x => NonHostFilter.First(f => f.FilterName.Equals(Resources.PackageSearchViewContextMenuFilterDeprecated)).OnChecked ? x.IsDeprecated : !x.IsDeprecated)
+                                  .Where(x => NonHostFilter.First(f => f.FilterName.Equals(Resources.PackageManagerPackageNew)).OnChecked ? IsNewPackage(x) : true)
+                                  .Where(x => NonHostFilter.First(f => f.FilterName.Equals(Resources.PackageManagerPackageUpdated)).OnChecked ? IsUpdatedPackage(x) : true)
+                                  .Where(x => !NonHostFilter.First(f => f.FilterName.Equals(Resources.PackageSearchViewContextMenuFilterDependencies)).OnChecked ? true : PackageHasDependencies(x))
+                                  .Where(x => !NonHostFilter.First(f => f.FilterName.Equals(Resources.PackageSearchViewContextMenuFilterNoDependencies)).OnChecked ? true : !PackageHasDependencies(x))
+                                  ?.Select(x => new PackageManagerSearchElementViewModel(x,
+                                                   PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider,
+                                                   CanInstallPackage(x.Name), isEnabledForInstall)))
+                                  .ToList();
+
+            Sort(list, this.SortingKey);
+
+            if (SortingDirection == PackageSortingDirection.Descending)
             {
-                list = Filter(SearchDictionary.Search(query)
-                    .Select(x => new PackageManagerSearchElementViewModel(x, canLogin))
-                    .Take(MaxNumSearchResults))
-                    .ToList();
-            }
-            else
-            {
-                // with null query, don't show deprecated packages
-                list = Filter(LastSync.Where(x => !x.IsDeprecated)
-                    .Select(x => new PackageManagerSearchElementViewModel(x, canLogin)))
-                    .ToList();
-                Sort(list, this.SortingKey);
+                list.Reverse();
             }
 
             foreach (var x in list)
@@ -773,27 +1376,161 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
+        /// Checks if a package has any dependencies (will always have at least itself as 1 dependency) 
+        /// </summary>
+        /// <param name="package">The package to be filtered</param>
+        /// <returns></returns>
+        private bool PackageHasDependencies(PackageManagerSearchElement package)
+        {
+            return package.Header.versions.First(v => v.version.Equals(package.LatestVersion)).direct_dependency_ids.Count() > 1;
+        }
+
+        /// <summary>
+        /// Follows DateToPackageLabelConverter logic:
+        /// If the package is brand new (only has 1 version) and is less than 30 days it says 'New'.
+        /// </summary>
+        /// <param name="package">The package to be filtered</param>
+        /// <returns></returns>
+        private bool IsNewPackage(PackageManagerSearchElement package)
+        {
+            DateTime.TryParse(package.LatestVersionCreated, out DateTime dateLastUpdated);
+            TimeSpan difference = DateTime.Now - dateLastUpdated;
+            int numberVersions = package.Header.num_versions;
+
+            if(difference.TotalDays >= 30 || numberVersions > 1) return false;
+            return true;
+        }
+
+        /// <summary>
+        /// Follows DateToPackageLabelConverter logic:
+        /// If the package was updated in the last 30 days and has more than 1 version it is 'Updated'.
+        /// </summary>
+        /// <param name="package">The package to be filtered</param>
+        /// <returns></returns>
+        private bool IsUpdatedPackage(PackageManagerSearchElement package)
+        {
+            DateTime.TryParse(package.LatestVersionCreated, out DateTime dateLastUpdated);
+            TimeSpan difference = DateTime.Now - dateLastUpdated;
+            int numberVersions = package.Header.num_versions;
+
+            if (difference.TotalDays >= 30 || numberVersions == 1) return false;
+            return true;
+        }
+
+        /// <summary>
+        /// Performs a search using the given string as query, but does not update
+        /// the SearchResults object.
+        /// </summary>
+        /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
+        /// <param name="searchText"> The search query </param>
+        ///  /// <param name="useLucene"> Temporary flag that will be used for searching using Lucene.NET </param>
+        internal IEnumerable<PackageManagerSearchElementViewModel> Search(string searchText, bool useLucene)
+        {
+            if (useLucene)
+            {
+                string searchTerm = searchText.Trim();
+                var packages = new List<PackageManagerSearchElementViewModel>();
+
+                //The DirectoryReader and IndexSearcher have to be assigned after commiting indexing changes and before executing the Searcher.Search() method,otherwise new indexed info won't be reflected
+                LuceneUtility.dirReader = LuceneUtility.writer != null ? LuceneUtility.writer.GetReader(applyAllDeletes: true): DirectoryReader.Open(LuceneUtility.indexDir);
+
+                if (LuceneUtility.Searcher == null && LuceneUtility.dirReader != null)
+                {
+                    LuceneUtility.Searcher = new IndexSearcher(LuceneUtility.dirReader);
+                }
+
+                var parser = new MultiFieldQueryParser(LuceneConfig.LuceneNetVersion, LuceneConfig.PackageIndexFields, LuceneUtility.Analyzer)
+                {
+                    AllowLeadingWildcard = true,
+                    DefaultOperator = LuceneConfig.DefaultOperator,
+                    FuzzyMinSim = LuceneConfig.MinimumSimilarity
+                };
+
+                Query query = parser.Parse(LuceneUtility.CreateSearchQuery(LuceneConfig.PackageIndexFields, searchTerm));
+
+                //indicate we want the first 50 results
+                TopDocs topDocs = LuceneUtility.Searcher.Search(query, n: LuceneConfig.DefaultResultsCount);
+                for (int i = 0; i < topDocs.ScoreDocs.Length; i++)
+                {
+                    //read back a doc from results
+                    Document resultDoc = LuceneUtility.Searcher.Doc(topDocs.ScoreDocs[i].Doc);
+
+                    // Get the view model of the package element and add it to the results.
+                    string name = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.Name));
+
+                    var foundPackage = GetViewModelForPackageSearchElement(name);
+                    if (foundPackage != null)
+                    {
+                        packages.Add(foundPackage);
+                    }
+                }
+                return packages;
+            }
+            else
+            {
+                return GetAllPackages();
+            }
+        }
+
+        /// <summary>
+        /// To get view model for a package based on its name.
+        /// </summary>s
+        /// <param name="packageName">Name of the package</param>
+        /// <returns></returns>
+        private PackageManagerSearchElementViewModel GetViewModelForPackageSearchElement(string packageName)
+        {
+            var result = PackageManagerClientViewModel.CachedPackageList.Where(e => {
+                if (e.Name.Equals(packageName))
+                {
+                    return true;
+                }
+                return false;
+            });
+
+            if (!result.Any())
+            {
+                return null;
+            }
+
+            return new PackageManagerSearchElementViewModel(result.ElementAt(0), false);
+        }
+
+        /// <summary>
         /// Sort a list of search results by the given key
         /// </summary>
         /// <param name="results"></param>
-        private static void Sort(List<PackageManagerSearchElementViewModel> results, PackageSortingKey key)
+        /// <param name="key"></param>
+        /// <param name="query"></param>
+        private static void Sort(List<PackageManagerSearchElementViewModel> results, PackageSortingKey key, string query = null)
         {
             switch (key)
             {
                 case PackageSortingKey.Name:
-                    results.Sort((e1, e2) => e1.Model.Name.ToLower().CompareTo(e2.Model.Name.ToLower()));
+                    results.Sort((e1, e2) => e1.SearchElementModel.Name.ToLower().CompareTo(e2.SearchElementModel.Name.ToLower()));
                     break;
                 case PackageSortingKey.Downloads:
-                    results.Sort((e1, e2) => e2.Model.Downloads.CompareTo(e1.Model.Downloads));
+                    results.Sort((e1, e2) => e1.SearchElementModel.Downloads.CompareTo(e2.SearchElementModel.Downloads));
                     break;
                 case PackageSortingKey.LastUpdate:
-                    results.Sort((e1, e2) => e2.Versions.Last().Item1.created.CompareTo(e1.Versions.Last().Item1.created));
+                    results.Sort((e1, e2) => e1.Versions.FirstOrDefault().Item1.created.CompareTo(e2.Versions.FirstOrDefault().Item1.created));
                     break;
                 case PackageSortingKey.Votes:
-                    results.Sort((e1, e2) => e2.Model.Votes.CompareTo(e1.Model.Votes));
+                    results.Sort((e1, e2) => e1.SearchElementModel.Votes.CompareTo(e2.SearchElementModel.Votes));
                     break;
                 case PackageSortingKey.Maintainers:
-                    results.Sort((e1, e2) => e1.Model.Maintainers.ToLower().CompareTo(e2.Model.Maintainers.ToLower()));
+                    results.Sort((e1, e2) => e1.SearchElementModel.Maintainers.ToLower().CompareTo(e2.SearchElementModel.Maintainers.ToLower()));
+                    break;
+                //This sorting key is applied to search results when user submits a search query on package manager search window,
+                //it sorts in the following order: Not Deprecated Packages > search query in Name > Recently Updated
+                case PackageSortingKey.Search:
+                    results.Sort((e1, e2) => {
+                        int ret = e1.SearchElementModel.IsDeprecated.CompareTo(e2.SearchElementModel.IsDeprecated);
+                        int i1 = e1.SearchElementModel.Name.ToLower().IndexOf(query.ToLower(), StringComparison.InvariantCultureIgnoreCase);
+                        int i2 = e2.SearchElementModel.Name.ToLower().IndexOf(query.ToLower(), StringComparison.InvariantCultureIgnoreCase);
+                        ret = ret != 0 ? ret : ((i1 == -1) ? int.MaxValue : i1).CompareTo((i2 == -1) ? int.MaxValue : i2);
+                        ret = ret != 0 ? ret : -e1.Versions.FirstOrDefault().Item1.created.CompareTo(e2.Versions.FirstOrDefault().Item1.created);
+                        return ret;
+                    });
                     break;
             }
         }
@@ -832,8 +1569,42 @@ namespace Dynamo.PackageManager
             if (SearchResults.Count <= SelectedIndex)
                 return;
 
-            SearchResults[SelectedIndex].Model.Execute();
+            SearchResults[SelectedIndex].SearchElementModel.Execute();
         }
 
+        /// <summary>
+        /// Once the sample package is filled in the textbox search we rise the event to the view to disable the actions to change it , filter and sort it.
+        /// </summary>
+        public void DisableSearchTextBox()
+        {
+            if (RequestDisableTextSearch != null)
+            {
+                RequestDisableTextSearch(null, null);
+            }
+        }
+
+        /// <summary>
+        /// Clear after closing down
+        /// </summary>
+        internal void PackageManagerViewClose()
+        {
+            SearchAndUpdateResults(String.Empty); // reset the search text property
+            InitialResultsLoaded = false;
+            TimedOut = false;
+        }
+
+        /// <summary>
+        /// Remove PackageManagerSearchViewModel resources
+        /// </summary>
+        internal void Dispose()
+        {
+            nonHostFilter?.ForEach(f => f.PropertyChanged -= filter_PropertyChanged);
+            aTimer.Elapsed -= OnTimedEvent;
+
+            TimedOut = false;   // reset the timedout screen 
+            InitialResultsLoaded = false;   // reset the loading screen settings
+
+            ClearMySearchResults();
+        }
     }
 }

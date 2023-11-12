@@ -1,10 +1,16 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Dynamo.UI.Commands;
-using Dynamo.Updates;
 using Dynamo.ViewModels;
-using Microsoft.Practices.Prism.ViewModel;
+using Dynamo.Wpf.ViewModels.Core;
+using NotificationObject = Dynamo.Core.NotificationObject;
+using Greg.AuthProviders;
+using System.Linq;
+using System.Windows;
+using System.Collections.Generic;
 
 namespace Dynamo.UI.Controls
 {
@@ -31,18 +37,191 @@ namespace Dynamo.UI.Controls
         {
             get { return shortcutBarRightSideItems; }
         }
+        private readonly Core.AuthenticationManager authManager;
+        public readonly DynamoViewModel DynamoViewModel;
 
         /// <summary>
         /// Construct a ShortcutToolbar.
         /// </summary>
-        /// <param name="updateManager"></param>
-        public ShortcutToolbar(IUpdateManager updateManager)
+        /// <param name="dynamoViewModel"></param>
+        public ShortcutToolbar(DynamoViewModel dynamoViewModel)
         {
+            DynamoViewModel = dynamoViewModel;
             shortcutBarItems = new ObservableCollection<ShortcutBarItem>();
-            shortcutBarRightSideItems = new ObservableCollection<ShortcutBarItem>();    
+            shortcutBarRightSideItems = new ObservableCollection<ShortcutBarItem>();
 
             InitializeComponent();
-            UpdateControl.DataContext = updateManager;
+
+            var shortcutToolbar = new ShortcutToolbarViewModel(dynamoViewModel);
+            DataContext = shortcutToolbar;
+            authManager = dynamoViewModel.Model.AuthenticationManager;
+            if (authManager.IsLoggedInInitial())
+            {
+                authManager.LoginStateChanged += SignOutHandler;
+            }
+            else {
+                logoutOption.Visibility = Visibility.Collapsed;
+            }
+
+            this.Loaded += ShortcutToolbar_Loaded;
+        }
+
+        private void ShortcutToolbar_Loaded(object sender, RoutedEventArgs e)
+        {
+            IsSaveButtonEnabled = false;
+            IsExportMenuEnabled = false;
+            DynamoViewModel.OnRequestShorcutToolbarLoaded(RightMenu.ActualWidth);
+        }
+
+        private void SignOutHandler(LoginState status)
+        {
+            if (status == LoginState.LoggedOut)
+            {
+                LoginButton.ToolTip = Wpf.Properties.Resources.SignInButtonContentToolTip;
+                txtSignIn.Text = Wpf.Properties.Resources.SignInButtonText;
+                logoutOption.Visibility = Visibility.Collapsed;
+                authManager.LoginStateChanged -= SignOutHandler;
+            }
+        }
+
+        private void exportMenu_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            this.HeaderText.FontFamily = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
+            this.Icon.Source = new BitmapImage(new System.Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/image-icon.png"));
+        }
+
+        private void exportMenu_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            this.HeaderText.FontFamily = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
+            this.Icon.Source = new BitmapImage(new System.Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/image-icon-default.png"));
+        }
+
+        private void LoginButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (authManager.LoginState == LoginState.LoggedIn)
+            {
+                var button = (Button)sender;
+                MenuItem mi = button.Parent as MenuItem;
+                if (mi != null)
+                {
+                    mi.IsSubmenuOpen = !mi.IsSubmenuOpen;
+                }
+            }
+            else if (authManager.LoginState == LoginState.LoggedOut)
+            {
+                authManager.ToggleLoginState(null);
+                if (authManager.IsLoggedIn()) {
+                    var tb = (((sender as Button).Content as StackPanel).Children.OfType<TextBlock>().FirstOrDefault() as TextBlock);
+                    tb.Text = authManager.Username;
+                    logoutOption.Visibility = Visibility.Visible;
+                    LoginButton.ToolTip = null;
+                    authManager.LoginStateChanged += SignOutHandler;
+                }
+            }
+        }
+
+        public List<Control> AllChildren(DependencyObject parent)
+        {
+            var _list = new List<Control> { };
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                var _child = VisualTreeHelper.GetChild(parent, i);
+                if (_child is Control)
+                {
+                    _list.Add(_child as Control);
+                    _list.AddRange(AllChildren(_child));
+                }
+            }
+            return _list;
+        }
+
+        private Button GetButton(string shortcutName)
+        {
+            if (this.shortcutBarItems.Count > 1)
+            {
+                try
+                {
+                    int buttonIndex = ShortcutBarItems.ToList().FindIndex(item => item.Name.ToUpper() == shortcutName);
+                    var _container = ShortcutItemsControl.ItemContainerGenerator.ContainerFromIndex(buttonIndex);
+                    var _children = AllChildren(_container);
+                    var _control = (Button)_children.First();
+                    return _control;
+                }
+                catch (System.Exception)
+                {
+                    return null;
+                }                
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        internal bool IsNewButtonEnabled
+        {
+            set
+            {
+                Button saveButton = GetButton("NEW");
+                if (saveButton != null)
+                {
+                    saveButton.IsEnabled = value;
+                    saveButton.Opacity = value ? 1 : 0.5;
+                }
+            }
+        }
+
+        internal bool IsOpenButtonEnabled
+        {
+            set
+            {
+                Button saveButton = GetButton("OPEN");
+                if (saveButton != null)
+                {
+                    saveButton.IsEnabled = value;
+                    saveButton.Opacity = value ? 1 : 0.5;
+                }
+            }
+        }
+
+        internal bool IsSaveButtonEnabled
+        {
+            set
+            {
+                Button saveButton = GetButton("SAVE");
+                if (saveButton != null)
+                {
+                    saveButton.IsEnabled = value;
+                    saveButton.Opacity = value ? 1 : 0.5;
+                }
+            }
+        }
+
+        internal bool IsLoginMenuEnabled
+        {
+            set
+            {
+                this.loginMenu.IsEnabled = value;
+                this.loginMenu.Opacity = value ? 1 : 0.5;
+            }
+        }
+
+        internal bool IsExportMenuEnabled
+        {
+            set
+            {
+                this.exportMenu.IsEnabled = value;
+                this.exportMenu.Opacity = value ? 1 : 0.5;
+            }
+        }
+
+        internal bool IsNotificationCenterEnabled
+        {
+            set
+            {
+                this.NotificationCenter.IsEnabled = value;
+                this.NotificationCenter.Opacity = value ? 1 : 0.5;
+            }
         }
     }
 
@@ -86,6 +265,11 @@ namespace Dynamo.UI.Controls
             get { return shortcutToolTip; }
             set { shortcutToolTip = value; }
         }
+
+        /// <summary>
+        /// The Name of the shortcut
+        /// </summary>
+        public string Name { get; set; }
     }
 
     internal partial class ImageExportShortcutBarItem : ShortcutBarItem

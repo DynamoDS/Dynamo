@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Dynamo.Logging
 {
@@ -8,6 +8,11 @@ namespace Dynamo.Logging
     public static class Analytics
     {
         /// <summary>
+        /// Disables all analytics collection for the lifetime of the process.
+        /// </summary>
+        public static bool DisableAnalytics { get; internal set; }
+
+        /// <summary>
         /// A dummy IDisposable class
         /// </summary>
         class Dummy : IDisposable
@@ -15,7 +20,7 @@ namespace Dynamo.Logging
             public void Dispose() { }
         }
 
-        private static IAnalyticsClient client = null;
+        internal static IAnalyticsClient client;
         
         /// <summary>
         /// Starts analytics client
@@ -48,9 +53,10 @@ namespace Dynamo.Logging
         }
 
         /// <summary>
-        /// Returns if any analytics reporting is ON (Google, ADP etc.)
+        /// Returns if any analytics reporting is ON
         /// </summary>
         public static bool ReportingAnalytics { get { return client != null && client.ReportingAnalytics; } }
+
 
         /// <summary>
         /// Tracks application startup time

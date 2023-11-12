@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -55,6 +55,7 @@ namespace CoreNodeModels.Input
                     Id = this.GUID,
                     Name = this.Name,
                     Type = NodeInputTypes.numberInput,
+                    Type2 = NodeInputTypes.numberInput,
                     Description = this.Description,
                     Value = Value.ToString(CultureInfo.InvariantCulture),
 
@@ -250,6 +251,7 @@ namespace CoreNodeModels.Input
                     Id = this.GUID,
                     Name = this.Name,
                     Type = NodeInputTypes.numberInput,
+                    Type2 = NodeInputTypes.numberInput,
                     Description = this.Description,
                     Value = Value.ToString(CultureInfo.InvariantCulture),
 
@@ -321,7 +323,8 @@ namespace CoreNodeModels.Input
                     return true; // UpdateValueCore handled.
                 case nameof(Value):
                 case "ValueText":
-                    Value = ConvertStringToInt64(value);                   
+                    UpdateNodeInfo(value);
+                    Value = ConvertStringToInt64(value);
                     return true; // UpdateValueCore handled.
                 case nameof(Step):
                 case "StepText":
@@ -330,6 +333,18 @@ namespace CoreNodeModels.Input
             }
 
             return base.UpdateValueCore(updateValueParams);
+        }
+
+        private void UpdateNodeInfo(string value)
+        {
+            if (IsValueInt64(value))
+            {
+                ClearInfoMessages();
+            }
+            else
+            {
+                Info(Resources.IntegerSliderInfoMessage, true);
+            }
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)

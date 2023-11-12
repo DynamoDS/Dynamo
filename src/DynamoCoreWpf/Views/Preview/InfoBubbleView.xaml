@@ -1,81 +1,942 @@
 ﻿<UserControl x:Class="Dynamo.Controls.InfoBubbleView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:core="clr-namespace:Dynamo.Core"
-             mc:Ignorable="d"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+             xmlns:ui="clr-namespace:Dynamo.UI"
              Name="InfoBubbleWindowUserControl"
-             Loaded="InfoBubbleWindowUserControl_Loaded">
+             Loaded="InfoBubbleWindowUserControl_Loaded"
+             mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
-            <Storyboard x:Key="fadeInStoryBoard" Name="fadeInStoryBoard" TargetName="mainGrid" Storyboard.TargetProperty="Opacity">
-                <DoubleAnimation Name ="countUpDoubleAnimation" From="0" To="0.95" Duration="0:0:.25" FillBehavior="HoldEnd" Completed="CountUpDoubleAnimation_Completed"/>
+            <Storyboard x:Key="fadeInStoryBoard"
+                        Name="fadeInStoryBoard"
+                        TargetName="mainGrid"
+                        Storyboard.TargetProperty="Opacity">
+                <DoubleAnimation Name="countUpDoubleAnimation"
+                                 Completed="CountUpDoubleAnimation_Completed"
+                                 FillBehavior="HoldEnd"
+                                 From="0"
+                                 To="0.95"
+                                 Duration="0:0:.25" />
             </Storyboard>
-            <Storyboard x:Key="fadeOutStoryBoard" Name="fadeOutStoryBoard" TargetName="mainGrid" Storyboard.TargetProperty="Opacity">
-                <DoubleAnimation Name ="countDownDoubleAnimation" From="0.95" To="0" Duration="0:0:.25" FillBehavior="HoldEnd" Completed="CountDownDoubleAnimation_Completed"/>
+            <Storyboard x:Key="fadeOutStoryBoard"
+                        Name="fadeOutStoryBoard"
+                        TargetName="mainGrid"
+                        Storyboard.TargetProperty="Opacity">
+                <DoubleAnimation Name="countDownDoubleAnimation"
+                                 Completed="CountDownDoubleAnimation_Completed"
+                                 FillBehavior="HoldEnd"
+                                 From="0.95"
+                                 To="0"
+                                 Duration="0:0:.25" />
             </Storyboard>
         </ResourceDictionary>
-        
+
     </UserControl.Resources>
+    <Canvas x:Name="mainCanvas">
+        <Grid x:Name="mainGrid" Margin="10">
+            <Grid.Resources>
+                <ResourceDictionary>
+                    <ResourceDictionary.MergedDictionaries>
+                        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+                        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                    </ResourceDictionary.MergedDictionaries>
+                </ResourceDictionary>
+            </Grid.Resources>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
 
-    <Grid x:Name="mainGrid" Background="Transparent" HorizontalAlignment="Left" VerticalAlignment="Top"
-           MouseLeave="InfoBubble_MouseLeave" MouseMove="MainGrid_MouseMove" MouseWheel="InfoBubble_MouseWheel">
+            <DockPanel Name="nodeInformationalStateDockPanel"
+                       Grid.Row="0"
+                       Width="{Binding BubbleWidth, UpdateSourceTrigger=PropertyChanged}"
+                       MinWidth="{Binding BubbleWidth, UpdateSourceTrigger=PropertyChanged}"
+                       MaxWidth="{Binding BubbleWidth, UpdateSourceTrigger=PropertyChanged}"
+                       MaxHeight="900"
+                       Margin="-10,-900,0,8"
+                       HorizontalAlignment="Left"
+                       LastChildFill="False"
+                       Visibility="{Binding DoesNodeDisplayMessages, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
 
-        <Polygon Name="backgroundPolygon" Margin="0, 0, 0, 0" 
-                 MouseEnter="InfoBubble_MouseEnter"
-                 RenderOptions.EdgeMode="Aliased">
-        </Polygon>
+                <!--  Little Chevron Icon  -->
+                <Path Name="ChevronIcon"
+                      Margin="10,-6,0,0"
+                      Canvas.ZIndex="1"
+                      Data="M 0,0 L 2.5,5 L 5,0"
+                      DockPanel.Dock="Bottom"
+                      Fill="White"
+                      SnapsToDevicePixels="True"
+                      Stroke="#666666"
+                      Visibility="{Binding DoesNodeDisplayMessages, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
 
-        <StackPanel Name="ContentContainer" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                    MouseEnter="ContentContainer_MouseEnter">
-            <StackPanel.Resources>
-                <Style x:Key="{x:Type ScrollBar}" TargetType="{x:Type ScrollBar}">
-                    <Setter Property="Stylus.IsFlicksEnabled" Value="false" />
-                    <Setter Property="Foreground" Value="Gray" />
-                    <Setter Property="Background" Value="WhiteSmoke" />
-                    <Setter Property="Width" Value="5" />
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type ScrollBar}">
-                                <Grid x:Name="GridRoot" Width="5" Background="{TemplateBinding Background}">
-                                    <Track x:Name="PART_Track" Grid.Row="0" IsDirectionReversed="true" Focusable="false">
-                                        <Track.Thumb>
-                                            <Thumb x:Name="Thumb" Background="{TemplateBinding Foreground}" Style="{DynamicResource ScrollThumbs}" />
-                                        </Track.Thumb>
-                                        <Track.IncreaseRepeatButton>
-                                            <RepeatButton x:Name="PageUp" Command="ScrollBar.PageDownCommand" Opacity="0" Focusable="false" />
-                                        </Track.IncreaseRepeatButton>
-                                        <Track.DecreaseRepeatButton>
-                                            <RepeatButton x:Name="PageDown" Command="ScrollBar.PageUpCommand" Opacity="0" Focusable="false" />
-                                        </Track.DecreaseRepeatButton>
-                                    </Track>
+                <!--  Errors  -->
+                <Border Name="ErrorsBorder"
+                        MaxHeight="300"
+                        Margin="0,0,0,5"
+                        HorizontalAlignment="Left"
+                        Background="White"
+                        BorderBrush="#666666"
+                        BorderThickness="1"
+                        CornerRadius="2"
+                        DockPanel.Dock="Bottom"
+                        MouseLeave="Border_OnMouseLeave"
+                        MouseEnter="Border_OnMouseEnter"
+                        Visibility="{Binding NodeErrorsVisible, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                    <!--  Main Grid  -->
+                    <Grid Margin="10,10,10,10">
+                        <Grid Grid.Row="0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="25" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <!--  Error Header  -->
+                            <Grid Grid.Row="0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="25" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="25" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <!--  Error Icon  -->
+                                <Grid Grid.Row="0"
+                                      Grid.Column="0"
+                                      Width="25"
+                                      Height="25"
+                                      HorizontalAlignment="Left"
+                                      VerticalAlignment="Top">
+                                    <Image Source="/DynamoCoreWpf;component/UI/Images/Error.png" />
                                 </Grid>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-                <Style x:Key="ScrollThumbs" TargetType="{x:Type Thumb}">
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type Thumb}">
-                                <Grid x:Name="Grid">
-                                    <Rectangle HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="Auto" Height="Auto" Fill="Transparent" />
-                                    <Border x:Name="Rectangle1" CornerRadius="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="Auto" Height="Auto"  Background="{TemplateBinding Background}" />
-                                </Grid>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="Tag" Value="Horizontal">
-                                        <Setter TargetName="Rectangle1" Property="Width" Value="Auto" />
-                                        <Setter TargetName="Rectangle1" Property="Height" Value="7" />
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </StackPanel.Resources>
-        </StackPanel>
+                                <!--  Error Header Message  -->
+                                <TextBlock Grid.Row="0"
+                                           Grid.Column="1"
+                                           Margin="10,0,0,0"
+                                           HorizontalAlignment="Left"
+                                           VerticalAlignment="Center"
+                                           FontFamily="{StaticResource ArtifaktElementBold}"
+                                           FontSize="15"
+                                           Foreground="Black"
+                                           Text="{x:Static p:Resources.InfoBubbleError}"
+                                           Visibility="{Binding NodeErrorsSectionExpanded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                            </Grid>
+                            <!--  Error Info  -->
+                            <ScrollViewer Grid.Row="1"
+                                          MaxHeight="200"
+                                          PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"
+                                          VerticalScrollBarVisibility="Auto">
+                                <ListBox Margin="0,5,0,0"
+                                         Background="Transparent"
+                                         BorderThickness="0"
+                                         FontFamily="{StaticResource ArtifaktElementRegular}"
+                                         FontSize="12px"
+                                         Foreground="Black"
+                                         ItemsSource="{Binding NodeErrorsToDisplay, UpdateSourceTrigger=PropertyChanged}"
+                                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                         Visibility="{Binding NodeErrorsSectionExpanded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                    <ListBox.Style>
+                                        <Style>
+                                            <!--  Because empty runs have a (read-only) non-zero width, we need to switch out the DataTemplate dynamically  -->
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path=NodeErrorsIteratorVisible, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                                    <Setter Property="ListBox.ItemTemplate">
+                                                        <Setter.Value>
+                                                            <DataTemplate>
+                                                                <StackPanel Background="Transparent">
+                                                                    <Border Name="Separator"
+                                                                            Height="1"
+                                                                            Margin="0,8,0,10"
+                                                                            BorderBrush="#D9D9D9"
+                                                                            BorderThickness="1"
+                                                                            SnapsToDevicePixels="True"
+                                                                            UseLayoutRounding="True" />
+                                                                    <Grid>
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="*" />
+                                                                            <ColumnDefinition Width="30" />
+                                                                        </Grid.ColumnDefinitions>
+                                                                        <!--  Displays the warning message  -->
+                                                                        <TextBlock LineHeight="14px" TextWrapping="Wrap">
+                                                                            <TextBlock.Inlines>
+                                                                                <Run FontFamily="{StaticResource ArtifaktElementBold}" Text="{Binding MessageNumber, UpdateSourceTrigger=PropertyChanged}" />
+                                                                                <Run Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}" />
+                                                                            </TextBlock.Inlines>
+                                                                        </TextBlock>
+                                                                    </Grid>
+                                                                    <Button Name="LearnMoreErrorsButton"
+                                                                            Margin="-2,4,0,0"
+                                                                            HorizontalAlignment="Left"
+                                                                            Background="Transparent"
+                                                                            BorderThickness="0"
+                                                                            Command="{Binding ElementName=InfoBubbleWindowUserControl, Path=DataContext.OpenDocumentationLinkCommand}"
+                                                                            CommandParameter="{Binding .}"
+                                                                            Content="{x:Static p:Resources.LearnMore}"
+                                                                            DockPanel.Dock="Left"
+                                                                            Foreground="#0696D7">
+                                                                        <Button.Style>
+                                                                            <Style>
+                                                                                <Setter Property="Button.Visibility" Value="Visible" />
+                                                                                <Style.Triggers>
+                                                                                    <DataTrigger Binding="{Binding LinkText, UpdateSourceTrigger=PropertyChanged}" Value="">
+                                                                                        <Setter Property="Button.Visibility" Value="Collapsed" />
+                                                                                    </DataTrigger>
+                                                                                </Style.Triggers>
+                                                                            </Style>
+                                                                        </Button.Style>
+                                                                    </Button>
+                                                                    <!--  Grey border between ListBoxItems  -->
+                                                                </StackPanel>
+                                                                <DataTemplate.Triggers>
+                                                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource PreviousData}}" Value="{x:Null}">
+                                                                        <Setter TargetName="Separator" Property="Border.Visibility" Value="Collapsed" />
+                                                                    </DataTrigger>
+                                                                </DataTemplate.Triggers>
+                                                            </DataTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path=NodeErrorsIteratorVisible, UpdateSourceTrigger=PropertyChanged}" Value="False">
+                                                    <Setter Property="ListBox.ItemTemplate">
+                                                        <Setter.Value>
+                                                            <DataTemplate>
+                                                                <StackPanel Background="Transparent">
+                                                                    <Border Name="Separator"
+                                                                            Height="1"
+                                                                            Margin="0,8,0,10"
+                                                                            BorderBrush="#D9D9D9"
+                                                                            BorderThickness="1"
+                                                                            SnapsToDevicePixels="True"
+                                                                            UseLayoutRounding="True" />
+                                                                    <Grid>
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="*" />
+                                                                            <ColumnDefinition Width="30" />
+                                                                        </Grid.ColumnDefinitions>
+                                                                        <!--  Displays the warning message  -->
+                                                                        <TextBlock LineHeight="14px" TextWrapping="Wrap">
+                                                                            <TextBlock.Inlines>
+                                                                                <Run Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}" />
+                                                                            </TextBlock.Inlines>
+                                                                        </TextBlock>
+                                                                    </Grid>
+                                                                    <Button Name="LearnMoreErrorsButton"
+                                                                            Margin="-2,4,0,0"
+                                                                            HorizontalAlignment="Left"
+                                                                            Background="Transparent"
+                                                                            BorderThickness="0"
+                                                                            Command="{Binding ElementName=InfoBubbleWindowUserControl, Path=DataContext.OpenDocumentationLinkCommand}"
+                                                                            CommandParameter="{Binding .}"
+                                                                            Content="{x:Static p:Resources.LearnMore}"
+                                                                            DockPanel.Dock="Left"
+                                                                            Foreground="#0696D7">
+                                                                        <Button.Style>
+                                                                            <Style>
+                                                                                <Setter Property="Button.Visibility" Value="Visible" />
+                                                                                <Style.Triggers>
+                                                                                    <DataTrigger Binding="{Binding LinkText, UpdateSourceTrigger=PropertyChanged}" Value="">
+                                                                                        <Setter Property="Button.Visibility" Value="Collapsed" />
+                                                                                    </DataTrigger>
+                                                                                </Style.Triggers>
+                                                                            </Style>
+                                                                        </Button.Style>
+                                                                    </Button>
+                                                                    <!--  Grey border between ListBoxItems  -->
+                                                                </StackPanel>
+                                                                <DataTemplate.Triggers>
+                                                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource PreviousData}}" Value="{x:Null}">
+                                                                        <Setter TargetName="Separator" Property="Border.Visibility" Value="Collapsed" />
+                                                                    </DataTrigger>
+                                                                </DataTemplate.Triggers>
+                                                            </DataTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ListBox.Style>
+                                </ListBox>
+                            </ScrollViewer>
+                            <Border Grid.Row="2"
+                                    Height="1"
+                                    Margin="-10,-20,-10,10"
+                                    HorizontalAlignment="Stretch"
+                                    BorderBrush="#D9D9D9"
+                                    BorderThickness="1"
+                                    Visibility="{Binding NodeErrorsShowMoreButtonVisible, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                            <!--  Panel-wide buttons such as Dismiss All and Show All  -->
+                            <StackPanel Grid.Row="2"
+                                        Margin="0,10,0,0"
+                                        HorizontalAlignment="Right"
+                                        FlowDirection="RightToLeft"
+                                        Orientation="Horizontal"
+                                        Visibility="{Binding NodeErrorsShowMoreButtonVisible, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                <Button Name="ShowAllErrorsButton"
+                                        Margin="0,0,10,0"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Bottom"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Click="ShowAllErrorsButton_Click"
+                                        Foreground="#0696D7"
+                                        Visibility="{Binding NodeErrorsShowMoreButtonVisible, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding NodeErrorsShowLessMessageVisible, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                                    <Setter Property="Content" Value="{x:Static p:Resources.NodeInformationalStateShowLess}" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding NodeErrorsShowLessMessageVisible, UpdateSourceTrigger=PropertyChanged}" Value="False">
+                                                    <Setter Property="Content" Value="{x:Static p:Resources.NodeInformationalStateShowAllErrors}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </Border>
 
-    </Grid>
+                <!--  Warnings  -->
+                <Border Name="WarningsBorder"
+                        MaxHeight="300"
+                        Margin="0,0,0,5"
+                        HorizontalAlignment="Left"
+                        Background="White"
+                        BorderBrush="#666666"
+                        BorderThickness="1"
+                        CornerRadius="2"
+                        DockPanel.Dock="Bottom"
+                        MouseEnter="Border_OnMouseEnter"
+                        MouseLeave="Border_OnMouseLeave"
+                        Visibility="{Binding NodeWarningsVisible, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                    <!--  Main Grid  -->
+                    <Grid Margin="10,10,10,10">
+                        <Grid Grid.Row="0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="25" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <!--  Warning Header  -->
+                            <Grid Grid.Row="0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="20" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="25" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <!--  Warning Icon  -->
+                                <Grid Grid.Row="0"
+                                      Grid.Column="0"
+                                      Width="25"
+                                      Height="26"
+                                      HorizontalAlignment="Left"
+                                      VerticalAlignment="Center">
+                                    <Image Source="/DynamoCoreWpf;component/UI/Images/Warning.png" />
+                                </Grid>
+                                <!--  Warning Header Message  -->
+                                <TextBlock Grid.Row="0"
+                                           Grid.Column="1"
+                                           Margin="10,0,0,0"
+                                           HorizontalAlignment="Left"
+                                           VerticalAlignment="Center"
+                                           FontFamily="{StaticResource ArtifaktElementBold}"
+                                           FontSize="15"
+                                           Foreground="Black"
+                                           Text="{x:Static p:Resources.InfoBubbleWarning}"
+                                           Visibility="{Binding NodeWarningsSectionExpanded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                            </Grid>
+
+                            <!--  Warning Info  -->
+                            <ScrollViewer Grid.Row="1"
+                                          MaxHeight="200"
+                                          PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"
+                                          VerticalScrollBarVisibility="Auto">
+                                <ListBox Name="WarningsListBox"
+                                         Margin="0,5,0,0"
+                                         BorderThickness="0"
+                                         FontFamily="{StaticResource ArtifaktElementRegular}"
+                                         FontSize="12px"
+                                         Foreground="Black"
+                                         ItemsSource="{Binding NodeWarningsToDisplay, UpdateSourceTrigger=PropertyChanged}"
+                                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                         Visibility="{Binding NodeWarningsSectionExpanded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                    <ListBox.Style>
+                                        <Style>
+                                            <!--  Because empty runs have a (read-only) non-zero width, we need to switch out the DataTemplate dynamically  -->
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path=NodeWarningsIteratorVisible, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                                    <Setter Property="ListBox.ItemTemplate">
+                                                        <Setter.Value>
+                                                            <DataTemplate>
+                                                                <StackPanel Background="Transparent">
+                                                                    <Border Name="Separator"
+                                                                            Height="1"
+                                                                            Margin="0,8,0,10"
+                                                                            BorderBrush="#D9D9D9"
+                                                                            BorderThickness="1"
+                                                                            SnapsToDevicePixels="True"
+                                                                            UseLayoutRounding="True" />
+                                                                    <Grid>
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="*" />
+                                                                            <ColumnDefinition Width="30" />
+                                                                        </Grid.ColumnDefinitions>
+                                                                        <!--  Displays the warning message  -->
+                                                                        <TextBlock LineHeight="14px" TextWrapping="Wrap">
+                                                                            <TextBlock.Inlines>
+                                                                                <Run FontFamily="{StaticResource ArtifaktElementBold}" Text="{Binding MessageNumber, UpdateSourceTrigger=PropertyChanged}" />
+                                                                                <Run Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}" />
+                                                                            </TextBlock.Inlines>
+                                                                        </TextBlock>
+                                                                        <Button Name="DismissMessageButton"
+                                                                                Grid.Column="1"
+                                                                                Width="13"
+                                                                                Height="13"
+                                                                                HorizontalAlignment="Right"
+                                                                                VerticalAlignment="Top"
+                                                                                BorderThickness="0"
+                                                                                Command="{Binding ElementName=InfoBubbleWindowUserControl, Path=DataContext.DismissMessageCommand}"
+                                                                                CommandParameter="{Binding .}"
+                                                                                DockPanel.Dock="Right"
+                                                                                Style="{StaticResource DismissButtonStyle}">
+                                                                            <Button.ToolTip>
+                                                                                <ToolTip Content="{x:Static p:Resources.NodeInfoDismissButtonToolTip}" Style="{StaticResource GenericToolTipLight}" />
+                                                                            </Button.ToolTip>
+                                                                        </Button>
+                                                                    </Grid>
+                                                                    <Button Name="LearnMoreWarningsButton"
+                                                                            Margin="-2,4,0,0"
+                                                                            HorizontalAlignment="Left"
+                                                                            Background="Transparent"
+                                                                            BorderThickness="0"
+                                                                            Command="{Binding ElementName=InfoBubbleWindowUserControl, Path=DataContext.OpenDocumentationLinkCommand}"
+                                                                            CommandParameter="{Binding .}"
+                                                                            Content="{x:Static p:Resources.LearnMore}"
+                                                                            DockPanel.Dock="Left"
+                                                                            Foreground="#0696D7">
+                                                                        <Button.Style>
+                                                                            <Style>
+                                                                                <Setter Property="Button.Visibility" Value="Visible" />
+                                                                                <Style.Triggers>
+                                                                                    <DataTrigger Binding="{Binding LinkText, UpdateSourceTrigger=PropertyChanged}" Value="">
+                                                                                        <Setter Property="Button.Visibility" Value="Collapsed" />
+                                                                                    </DataTrigger>
+                                                                                </Style.Triggers>
+                                                                            </Style>
+                                                                        </Button.Style>
+                                                                    </Button>
+                                                                    <!--  Grey border between ListBoxItems  -->
+                                                                </StackPanel>
+                                                                <DataTemplate.Triggers>
+                                                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource PreviousData}}" Value="{x:Null}">
+                                                                        <Setter TargetName="Separator" Property="Border.Visibility" Value="Collapsed" />
+                                                                    </DataTrigger>
+                                                                </DataTemplate.Triggers>
+                                                            </DataTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path=NodeWarningsIteratorVisible, UpdateSourceTrigger=PropertyChanged}" Value="False">
+                                                    <Setter Property="ListBox.ItemTemplate">
+                                                        <Setter.Value>
+                                                            <DataTemplate>
+                                                                <StackPanel Background="Transparent">
+                                                                    <Border Name="Separator"
+                                                                            Height="1"
+                                                                            Margin="0,5,0,10"
+                                                                            BorderBrush="#D9D9D9"
+                                                                            BorderThickness="1"
+                                                                            SnapsToDevicePixels="True"
+                                                                            UseLayoutRounding="True" />
+                                                                    <Grid>
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="*" />
+                                                                            <ColumnDefinition Width="30" />
+                                                                        </Grid.ColumnDefinitions>
+                                                                        <!--  Displays the warning message  -->
+                                                                        <TextBlock LineHeight="14px" TextWrapping="Wrap">
+                                                                            <TextBlock.Inlines>
+                                                                                <Run Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}" />
+                                                                            </TextBlock.Inlines>
+                                                                        </TextBlock>
+                                                                        <Button Name="DismissMessageButton"
+                                                                                Grid.Column="1"
+                                                                                Width="13"
+                                                                                Height="13"
+                                                                                HorizontalAlignment="Right"
+                                                                                VerticalAlignment="Top"
+                                                                                BorderThickness="0"
+                                                                                Command="{Binding ElementName=InfoBubbleWindowUserControl, Path=DataContext.DismissMessageCommand}"
+                                                                                CommandParameter="{Binding .}"
+                                                                                DockPanel.Dock="Right"
+                                                                                Style="{StaticResource DismissButtonStyle}">
+                                                                            <Button.ToolTip>
+                                                                                <ToolTip Content="{x:Static p:Resources.NodeWarningDismissButtonToolTip}" Style="{StaticResource GenericToolTipLight}" />
+                                                                            </Button.ToolTip>
+                                                                        </Button>
+                                                                    </Grid>
+                                                                    <Button Name="LearnMoreWarningsButton"
+                                                                            Margin="-2,4,0,0"
+                                                                            HorizontalAlignment="Left"
+                                                                            Background="Transparent"
+                                                                            BorderThickness="0"
+                                                                            Command="{Binding ElementName=InfoBubbleWindowUserControl, Path=DataContext.OpenDocumentationLinkCommand}"
+                                                                            CommandParameter="{Binding .}"
+                                                                            Content="{x:Static p:Resources.LearnMore}"
+                                                                            DockPanel.Dock="Left"
+                                                                            Foreground="#0696D7">
+                                                                        <Button.Style>
+                                                                            <Style>
+                                                                                <Setter Property="Button.Visibility" Value="Visible" />
+                                                                                <Style.Triggers>
+                                                                                    <DataTrigger Binding="{Binding LinkText, UpdateSourceTrigger=PropertyChanged}" Value="">
+                                                                                        <Setter Property="Button.Visibility" Value="Collapsed" />
+                                                                                    </DataTrigger>
+                                                                                </Style.Triggers>
+                                                                            </Style>
+                                                                        </Button.Style>
+                                                                    </Button>
+                                                                    <!--  Grey border between ListBoxItems  -->
+                                                                </StackPanel>
+                                                                <DataTemplate.Triggers>
+                                                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource PreviousData}}" Value="{x:Null}">
+                                                                        <Setter TargetName="Separator" Property="Border.Visibility" Value="Collapsed" />
+                                                                    </DataTrigger>
+                                                                </DataTemplate.Triggers>
+                                                            </DataTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ListBox.Style>
+                                </ListBox>
+                            </ScrollViewer>
+                            <Border Grid.Row="2"
+                                    Height="1"
+                                    Margin="-10,-17,-9,10"
+                                    HorizontalAlignment="Stretch"
+                                    BorderBrush="#D9D9D9"
+                                    BorderThickness="1"
+                                    Visibility="{Binding NodeWarningsSectionExpanded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                            <!--  Panel-wide buttons such as Dismiss All and Show All  -->
+                            <StackPanel Grid.Row="2"
+                                        Margin="0,10,0,0"
+                                        HorizontalAlignment="Right"
+                                        FlowDirection="RightToLeft"
+                                        Orientation="Horizontal"
+                                        Visibility="{Binding NodeWarningsSectionExpanded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                <Button Name="DismissAllWarningsButton"
+                                        Margin="0,0,10,0"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Bottom"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Click="DismissAllWarningsButton_Click"
+                                        Content="{x:Static p:Resources.NodeInformationalStateDismissAll}"
+                                        Foreground="#0696D7"
+                                        Visibility="{Binding ElementName=InfoBubbleWindowUserControl, Path=DataContext.NodeWarningsSectionExpanded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" >
+                                    <Button.ToolTip>
+                                        <ToolTip Content="{x:Static p:Resources.BubbleDismissAllButtonTooltip}" Style="{StaticResource GenericToolTipLight}" />
+                                    </Button.ToolTip>
+                                </Button>
+                                <Button Name="ShowAllWarningsButton"
+                                        Margin="0,0,10,0"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Bottom"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Click="ShowAllWarningsButton_Click"
+                                        Foreground="#0696D7"
+                                        Visibility="{Binding NodeWarningsShowMoreButtonVisible, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding NodeWarningsShowLessMessageVisible, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                                    <Setter Property="Content" Value="{x:Static p:Resources.NodeInformationalStateShowLess}" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding NodeWarningsShowLessMessageVisible, UpdateSourceTrigger=PropertyChanged}" Value="False">
+                                                    <Setter Property="Content" Value="{x:Static p:Resources.NodeInformationalStateShowAllWarnings}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </Border>
+
+                <!--  Info  -->
+                <Border Name="InfoBorder"
+                        MaxHeight="300"
+                        Margin="0,0,0,5"
+                        HorizontalAlignment="Left"
+                        Background="White"
+                        BorderBrush="#666666"
+                        BorderThickness="1"
+                        CornerRadius="2"
+                        DockPanel.Dock="Bottom"
+                        MouseEnter="Border_OnMouseEnter"
+                        MouseLeave="Border_OnMouseLeave"
+                        Visibility="{Binding NodeInfoVisible, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                    <!--  Main Grid  -->
+                    <Grid Margin="10,10,10,10">
+                        <Grid Grid.Row="0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="25" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <!--  Info Header  -->
+                            <Grid Grid.Row="0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="25" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="25" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <!--  Info Icon  -->
+                                <Grid Grid.Row="0"
+                                      Grid.Column="0"
+                                      Width="25"
+                                      Height="26"
+                                      HorizontalAlignment="Left"
+                                      VerticalAlignment="Top">
+                                    <Image Width="25"
+                                           Height="25"
+                                           Source="/DynamoCoreWpf;component/UI/Images/Info.png"
+                                           Stretch="UniformToFill" />
+                                </Grid>
+                                <!--  Info Header Message  -->
+                                <TextBlock Grid.Row="0"
+                                           Grid.Column="1"
+                                           Margin="10,0,0,0"
+                                           HorizontalAlignment="Left"
+                                           VerticalAlignment="Center"
+                                           FontFamily="{StaticResource ArtifaktElementBold}"
+                                           FontSize="15"
+                                           Foreground="Black"
+                                           Text="{x:Static p:Resources.InfoBubbleInfo}"
+                                           Visibility="{Binding NodeInfoSectionExpanded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                            </Grid>
+                            <!--  Info Info  -->
+                            <ScrollViewer Grid.Row="1"
+                                          MaxHeight="200"
+                                          PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"
+                                          VerticalScrollBarVisibility="Auto">
+                                <ListBox Margin="0,5,0,0"
+                                         BorderThickness="0"
+                                         FontFamily="{StaticResource ArtifaktElementRegular}"
+                                         FontSize="12px"
+                                         Foreground="Black"
+                                         ItemsSource="{Binding NodeInfoToDisplay, UpdateSourceTrigger=PropertyChanged}"
+                                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                         Visibility="{Binding NodeInfoSectionExpanded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                    <ListBox.Style>
+                                        <Style>
+                                            <!--  Because empty runs have a (read-only) non-zero width, we need to switch out the DataTemplate dynamically  -->
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path=NodeInfoIteratorVisible, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                                    <Setter Property="ListBox.ItemTemplate">
+                                                        <Setter.Value>
+                                                            <DataTemplate>
+                                                                <StackPanel Background="Transparent">
+                                                                    <Border Name="Separator"
+                                                                            Height="1"
+                                                                            Margin="0,5,0,10"
+                                                                            BorderBrush="#D9D9D9"
+                                                                            BorderThickness="1"
+                                                                            SnapsToDevicePixels="True"
+                                                                            UseLayoutRounding="True" />
+                                                                    <Grid>
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="*" />
+                                                                            <ColumnDefinition Width="30" />
+                                                                        </Grid.ColumnDefinitions>
+                                                                        <!--  Displays the warning message  -->
+                                                                        <TextBlock LineHeight="14px" TextWrapping="Wrap">
+                                                                            <TextBlock.Inlines>
+                                                                                <Run FontFamily="{StaticResource ArtifaktElementBold}" Text="{Binding MessageNumber, UpdateSourceTrigger=PropertyChanged}" />
+                                                                                <Run Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}" />
+                                                                            </TextBlock.Inlines>
+                                                                        </TextBlock>
+                                                                        <Button Name="DismissMessageButton"
+                                                                                Grid.Column="1"
+                                                                                Width="13"
+                                                                                Height="13"
+                                                                                HorizontalAlignment="Right"
+                                                                                VerticalAlignment="Top"
+                                                                                BorderThickness="0"
+                                                                                Command="{Binding ElementName=InfoBubbleWindowUserControl, Path=DataContext.DismissMessageCommand}"
+                                                                                CommandParameter="{Binding .}"
+                                                                                DockPanel.Dock="Right"
+                                                                                Style="{StaticResource DismissButtonStyle}" />
+                                                                    </Grid>
+                                                                    <Button Name="LearnMoreInfoButton"
+                                                                            Margin="-2,4,0,0"
+                                                                            HorizontalAlignment="Left"
+                                                                            Background="Transparent"
+                                                                            BorderThickness="0"
+                                                                            Command="{Binding ElementName=InfoBubbleWindowUserControl, Path=DataContext.OpenDocumentationLinkCommand}"
+                                                                            CommandParameter="{Binding .}"
+                                                                            Content="{x:Static p:Resources.LearnMore}"
+                                                                            DockPanel.Dock="Left"
+                                                                            Foreground="#0696D7">
+                                                                        <Button.Style>
+                                                                            <Style>
+                                                                                <Setter Property="Button.Visibility" Value="Visible" />
+                                                                                <Style.Triggers>
+                                                                                    <DataTrigger Binding="{Binding LinkText, UpdateSourceTrigger=PropertyChanged}" Value="">
+                                                                                        <Setter Property="Button.Visibility" Value="Collapsed" />
+                                                                                    </DataTrigger>
+                                                                                </Style.Triggers>
+                                                                            </Style>
+                                                                        </Button.Style>
+                                                                    </Button>
+                                                                    <!--  Grey border between ListBoxItems  -->
+                                                                </StackPanel>
+                                                                <DataTemplate.Triggers>
+                                                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource PreviousData}}" Value="{x:Null}">
+                                                                        <Setter TargetName="Separator" Property="Border.Visibility" Value="Collapsed" />
+                                                                    </DataTrigger>
+                                                                </DataTemplate.Triggers>
+                                                            </DataTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Path=NodeInfoIteratorVisible, UpdateSourceTrigger=PropertyChanged}" Value="False">
+                                                    <Setter Property="ListBox.ItemTemplate">
+                                                        <Setter.Value>
+                                                            <DataTemplate>
+                                                                <StackPanel Background="Transparent">
+                                                                    <Border Name="Separator"
+                                                                            Height="1"
+                                                                            Margin="0,5,0,10"
+                                                                            BorderBrush="#D9D9D9"
+                                                                            BorderThickness="1"
+                                                                            SnapsToDevicePixels="True"
+                                                                            UseLayoutRounding="True" />
+                                                                    <Grid>
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="*" />
+                                                                            <ColumnDefinition Width="30" />
+                                                                        </Grid.ColumnDefinitions>
+                                                                        <!--  Displays the warning message  -->
+                                                                        <TextBlock LineHeight="14px" TextWrapping="Wrap">
+                                                                            <TextBlock.Inlines>
+                                                                                <Run Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}" />
+                                                                            </TextBlock.Inlines>
+                                                                        </TextBlock>
+                                                                        <Button Name="DismissMessageButton"
+                                                                                Grid.Column="1"
+                                                                                Width="13"
+                                                                                Height="13"
+                                                                                HorizontalAlignment="Right"
+                                                                                VerticalAlignment="Top"
+                                                                                BorderThickness="0"
+                                                                                Command="{Binding ElementName=InfoBubbleWindowUserControl, Path=DataContext.DismissMessageCommand}"
+                                                                                CommandParameter="{Binding .}"
+                                                                                DockPanel.Dock="Right"
+                                                                                Style="{StaticResource DismissButtonStyle}" />
+                                                                    </Grid>
+                                                                    <Button Name="LearnMoreInfoButton"
+                                                                            Margin="-2,4,0,0"
+                                                                            HorizontalAlignment="Left"
+                                                                            Background="Transparent"
+                                                                            BorderThickness="0"
+                                                                            Command="{Binding ElementName=InfoBubbleWindowUserControl, Path=DataContext.OpenDocumentationLinkCommand}"
+                                                                            CommandParameter="{Binding .}"
+                                                                            Content="{x:Static p:Resources.LearnMore}"
+                                                                            DockPanel.Dock="Left"
+                                                                            Foreground="#0696D7">
+                                                                        <Button.Style>
+                                                                            <Style>
+                                                                                <Setter Property="Button.Visibility" Value="Visible" />
+                                                                                <Style.Triggers>
+                                                                                    <DataTrigger Binding="{Binding LinkText, UpdateSourceTrigger=PropertyChanged}" Value="">
+                                                                                        <Setter Property="Button.Visibility" Value="Collapsed" />
+                                                                                    </DataTrigger>
+                                                                                </Style.Triggers>
+                                                                            </Style>
+                                                                        </Button.Style>
+                                                                    </Button>
+                                                                    <!--  Grey border between ListBoxItems  -->
+                                                                </StackPanel>
+                                                                <DataTemplate.Triggers>
+                                                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource PreviousData}}" Value="{x:Null}">
+                                                                        <Setter TargetName="Separator" Property="Border.Visibility" Value="Collapsed" />
+                                                                    </DataTrigger>
+                                                                </DataTemplate.Triggers>
+                                                            </DataTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ListBox.Style>
+                                </ListBox>
+                            </ScrollViewer>
+                            <Border Grid.Row="2"
+                                    Height="1"
+                                    Margin="-10,-20,-10,10"
+                                    HorizontalAlignment="Stretch"
+                                    BorderBrush="#D9D9D9"
+                                    BorderThickness="1"
+                                    Visibility="{Binding NodeInfoSectionExpanded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                            <!--  Panel-wide buttons such as Dismiss All and Show All  -->
+                            <StackPanel Grid.Row="2"
+                                        Margin="0,10,0,0"
+                                        HorizontalAlignment="Right"
+                                        FlowDirection="RightToLeft"
+                                        Orientation="Horizontal"
+                                        Visibility="{Binding NodeInfoSectionExpanded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                <Button Name="DismissAllInfoButton"
+                                        Margin="0,0,10,0"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Bottom"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Click="DismissAllInfoButton_Click"
+                                        Content="{x:Static p:Resources.NodeInformationalStateDismissAll}"
+                                        Foreground="#0696D7"
+                                        Visibility="{Binding ElementName=InfoBubbleWindowUserControl, Path=DataContext.NodeInfoSectionExpanded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                                <Button Name="ShowAllInfoButton"
+                                        Margin="0,0,10,0"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Bottom"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Click="ShowAllInfoButton_Click"
+                                        Foreground="#0696D7"
+                                        Visibility="{Binding NodeInfoShowMoreButtonVisible, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding NodeInfoShowLessMessageVisible, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                                    <Setter Property="Content" Value="{x:Static p:Resources.NodeInformationalStateShowLess}" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding NodeInfoShowLessMessageVisible, UpdateSourceTrigger=PropertyChanged}" Value="False">
+                                                    <Setter Property="Content" Value="{x:Static p:Resources.NodeInformationalStateShowAllInfo}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </Border>
+
+                <DockPanel.Resources>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <ContentPresenter Margin="2"
+                                                      Content="{TemplateBinding Content}"
+                                                      ContentTemplate="{TemplateBinding ContentTemplate}" />
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </DockPanel.Resources>
+            </DockPanel>
+
+            <StackPanel Name="ContentContainer"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        MouseEnter="ContentContainer_MouseEnter"
+                        Visibility="Collapsed">
+                <StackPanel.Resources>
+                    <Style x:Key="{x:Type ScrollBar}" TargetType="{x:Type ScrollBar}">
+                        <Setter Property="Stylus.IsFlicksEnabled" Value="false" />
+                        <Setter Property="Foreground" Value="Gray" />
+                        <Setter Property="Background" Value="WhiteSmoke" />
+                        <Setter Property="Width" Value="5" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ScrollBar}">
+                                    <Grid x:Name="GridRoot"
+                                          Width="5"
+                                          Background="{TemplateBinding Background}">
+                                        <Track x:Name="PART_Track"
+                                               Grid.Row="0"
+                                               Focusable="false"
+                                               IsDirectionReversed="true">
+                                            <Track.Thumb>
+                                                <Thumb x:Name="Thumb"
+                                                       Background="{TemplateBinding Foreground}"
+                                                       Style="{DynamicResource ScrollThumbs}" />
+                                            </Track.Thumb>
+                                            <Track.IncreaseRepeatButton>
+                                                <RepeatButton x:Name="PageUp"
+                                                              Command="ScrollBar.PageDownCommand"
+                                                              Focusable="false"
+                                                              Opacity="0" />
+                                            </Track.IncreaseRepeatButton>
+                                            <Track.DecreaseRepeatButton>
+                                                <RepeatButton x:Name="PageDown"
+                                                              Command="ScrollBar.PageUpCommand"
+                                                              Focusable="false"
+                                                              Opacity="0" />
+                                            </Track.DecreaseRepeatButton>
+                                        </Track>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                    <Style x:Key="ScrollThumbs" TargetType="{x:Type Thumb}">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type Thumb}">
+                                    <Grid x:Name="Grid">
+                                        <Rectangle Width="Auto"
+                                                   Height="Auto"
+                                                   HorizontalAlignment="Stretch"
+                                                   VerticalAlignment="Stretch"
+                                                   Fill="Transparent" />
+                                        <Border x:Name="Rectangle1"
+                                                Width="Auto"
+                                                Height="Auto"
+                                                HorizontalAlignment="Stretch"
+                                                VerticalAlignment="Stretch"
+                                                Background="{TemplateBinding Background}"
+                                                CornerRadius="5" />
+                                    </Grid>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="Tag" Value="Horizontal">
+                                            <Setter TargetName="Rectangle1" Property="Width" Value="Auto" />
+                                            <Setter TargetName="Rectangle1" Property="Height" Value="7" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </StackPanel.Resources>
+            </StackPanel>
+
+            <Polygon Name="backgroundPolygon"
+                     Grid.Row="0"
+                     Grid.RowSpan="3"
+                     RenderOptions.EdgeMode="Aliased"
+                     Visibility="Collapsed" />
+        </Grid>
+    </Canvas>
 </UserControl>

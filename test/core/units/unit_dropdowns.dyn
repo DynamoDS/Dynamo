@@ -1,0 +1,419 @@
+{
+  "Uuid": "027298f0-9572-4770-98bf-25ccec5e5669",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "malformed_unit_nodes",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "UnitsUI.Symbols, UnitsUI",
+      "SelectedIndex": 320,
+      "SelectedString": "Millimeters: mm",
+      "NodeType": "ExtensionNode",
+      "Id": "97be2ea4af6141b8837166b938449ad8",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "81bbc31e91914f0e8b4d6fb752e04c84",
+          "Name": "Symbol",
+          "Description": "The selected Symbol",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select a Symbol type"
+    },
+    {
+      "ConcreteType": "UnitsUI.Units, UnitsUI",
+      "SelectedIndex": 218,
+      "SelectedString": "Millimeters",
+      "NodeType": "ExtensionNode",
+      "Id": "2cc49d25d3b447b281a81efd6173c6cf",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "c5c2142d1e6b40b5b2f73fb244daf099",
+          "Name": "Unit",
+          "Description": "The selected Unit",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select a Unit type"
+    },
+    {
+      "ConcreteType": "UnitsUI.Quantities, UnitsUI",
+      "SelectedIndex": 31,
+      "SelectedString": "Force",
+      "NodeType": "ExtensionNode",
+      "Id": "826e97769d8140a7a14dba145a5f9712",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "e0d41bc2c9274a20bd23ffa403ac3923",
+          "Name": "Quantity",
+          "Description": "The selected Quantity",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select a Quantity type"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DynamoUnits.Utilities.ConvertByUnits@double,DynamoUnits.Unit,DynamoUnits.Unit",
+      "Id": "19ab38f624084dec9e7ee2ee56b69f79",
+      "Inputs": [
+        {
+          "Id": "b098a850a7724e4f9ec91034bced140a",
+          "Name": "value",
+          "Description": "Value to convert\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "50ad325752504fb8aca80dfa575557a8",
+          "Name": "fromUnit",
+          "Description": "Unit object\n\nUnit",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "00eb3173ead540ee87904b62c586cc92",
+          "Name": "toUnit",
+          "Description": "Unit object\n\nUnit",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0ddf079a395e4edeb644be4086032692",
+          "Name": "double",
+          "Description": "Converted value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Converts a value from one Unit System to another Unit System\n\nUtilities.ConvertByUnits (value: double, fromUnit: Unit, toUnit: Unit): double"
+    },
+    {
+      "ConcreteType": "UnitsUI.DynamoUnitConvert, UnitsUI",
+      "MeasurementType": "autodesk.unit.quantity:length-1.0.4",
+      "FromConversion": "autodesk.unit.unit:meters-1.0.0",
+      "ToConversion": "autodesk.unit.unit:millimeters-1.0.1",
+      "NodeType": "ExtensionNode",
+      "Id": "f84587c6af6448ca9f722047fdd00c14",
+      "Inputs": [
+        {
+          "Id": "3ad96881af6c4f9586830e1095ea287a",
+          "Name": "",
+          "Description": "A value to convert",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b6dd2a3aa60a4348a72dfb2d6d6cfee1",
+          "Name": "",
+          "Description": "Converted value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Convert a value between selected Unit systems."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "5;",
+      "Id": "134abb086ea342ada4ddf0d903a90b44",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "d62b0fc4d9dd404ca7fca9f2dcbc53fa",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "UnitsUI.Units, UnitsUI",
+      "SelectedIndex": 198,
+      "SelectedString": "Meters",
+      "NodeType": "ExtensionNode",
+      "Id": "b5a071312e4341e286873151dbe396a9",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "b7c62a24359c4dbaa30321aeec919575",
+          "Name": "Unit",
+          "Description": "The selected Unit",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select a Unit type"
+    },
+    {
+      "ConcreteType": "UnitsUI.Units, UnitsUI",
+      "SelectedIndex": 218,
+      "SelectedString": "Millimeters",
+      "NodeType": "ExtensionNode",
+      "Id": "8b3833a7d41740b78c9fc07c5abcc548",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "ac573c2074ec4f858acb9e9f78193f4b",
+          "Name": "Unit",
+          "Description": "The selected Unit",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select a Unit type"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DynamoUnits.Quantity.Units",
+      "Id": "6257235b42dc49a2b3ee998cfd1039c4",
+      "Inputs": [
+        {
+          "Id": "9d40dc7dc81845319956f59083dd0cf7",
+          "Name": "quantity",
+          "Description": "DynamoUnits.Quantity",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "95ae0fc784504374848088970082cef7",
+          "Name": "Unit[]",
+          "Description": "List of Units",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Gets all available Units associated with a Quantity.\n\nQuantity.Units: Unit[]"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "e0d41bc2c9274a20bd23ffa403ac3923",
+      "End": "9d40dc7dc81845319956f59083dd0cf7",
+      "Id": "64ad91d7194942ff89cbfd260a1bf58e",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "d62b0fc4d9dd404ca7fca9f2dcbc53fa",
+      "End": "3ad96881af6c4f9586830e1095ea287a",
+      "Id": "44459ade27b94e24aa1a045dc0ac8161",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "d62b0fc4d9dd404ca7fca9f2dcbc53fa",
+      "End": "b098a850a7724e4f9ec91034bced140a",
+      "Id": "0dee230747b64d7a8e13c445197295ab",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "b7c62a24359c4dbaa30321aeec919575",
+      "End": "50ad325752504fb8aca80dfa575557a8",
+      "Id": "1b050c37867e45b9af5fe7579b43de3c",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "ac573c2074ec4f858acb9e9f78193f4b",
+      "End": "00eb3173ead540ee87904b62c586cc92",
+      "Id": "06bc6c062c354a13a8eb86411083c004",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.13",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.13.0.3196",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "4",
+        "Id": "97be2ea4af6141b8837166b938449ad8",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 441.0,
+        "Y": 530.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "5",
+        "Id": "2cc49d25d3b447b281a81efd6173c6cf",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 442.0,
+        "Y": 708.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "3",
+        "Id": "826e97769d8140a7a14dba145a5f9712",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 443.0,
+        "Y": 360.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "2",
+        "Id": "19ab38f624084dec9e7ee2ee56b69f79",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 36.0,
+        "Y": 340.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "1",
+        "Id": "f84587c6af6448ca9f722047fdd00c14",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 319.0,
+        "Y": 59.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "134abb086ea342ada4ddf0d903a90b44",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 112.0,
+        "Y": 57.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "6",
+        "Id": "b5a071312e4341e286873151dbe396a9",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -252.0,
+        "Y": 309.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "7",
+        "Id": "8b3833a7d41740b78c9fc07c5abcc548",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -253.0,
+        "Y": 496.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "8",
+        "Id": "6257235b42dc49a2b3ee998cfd1039c4",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1074.0,
+        "Y": 351.0
+      }
+    ],
+    "Annotations": [],
+    "X": 269.77720693620176,
+    "Y": 18.3726187499999,
+    "Zoom": 0.70823125000000009
+  }
+}

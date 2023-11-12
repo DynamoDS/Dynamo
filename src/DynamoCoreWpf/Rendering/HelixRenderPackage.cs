@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Visualization;
+using HelixToolkit.SharpDX.Core;
 using HelixToolkit.Wpf.SharpDX;
 using SharpDX;
 using ITransformable = Autodesk.DesignScript.Interfaces.ITransformable;
@@ -37,7 +38,7 @@ namespace Dynamo.Wpf.Rendering
     /// A Helix-specifc IRenderPackage implementation.
     /// </summary>
     [Obsolete("Do not use! This will be moved to a new project in a future version of Dynamo.")]
-    public class HelixRenderPackage : IRenderPackage, ITransformable, IRenderLabels, IRenderPackageSupplement
+    public class HelixRenderPackage : IRenderPackage, ITransformable, IRenderLabels, IRenderPackageSupplement, IInstancingRenderPackage, IRenderInstancedLabels
     {
         #region private members
 
@@ -48,9 +49,9 @@ namespace Dynamo.Wpf.Rendering
         private List<int> lineStripVertexCounts;
         private byte[] colors;
         private int colorStride;
-        private List< byte[]> colorsList = new List<byte[]>();
+        private List<byte[]> colorsList = new List<byte[]>();
         private List<int> colorStrideList = new List<int>();
-        private List<Tuple<int, int>> colorsMeshVerticesRange = new List<Tuple<int, int>>();
+        internal Dictionary<Guid, List<Matrix>> instanceTransforms = new Dictionary<Guid, List<Matrix>>();
 
         #endregion
 
@@ -101,7 +102,7 @@ namespace Dynamo.Wpf.Rendering
             this.Transform = csAsMat.ToArray();
         }
 
-        
+
         /// <summary>
         /// Set the transform that is applied to all geometry in the renderPackage
         /// by computing the matrix that transforms between from and to.
@@ -189,7 +190,7 @@ namespace Dynamo.Wpf.Rendering
             {
                 throw new LegacyRenderPackageMethodException();
             }
-            
+
             this.colors = colors;
         }
 
@@ -215,7 +216,7 @@ namespace Dynamo.Wpf.Rendering
 
             colorsList.Clear();
             colorStrideList.Clear();
-            colorsMeshVerticesRange.Clear();
+            MeshVerticesRangesAssociatedWithTextureMaps.Clear();
         }
 
         /// <summary>
@@ -327,7 +328,7 @@ namespace Dynamo.Wpf.Rendering
             {
                 throw new LegacyRenderPackageMethodException();
             }
-            
+
             if (colors.Count()/4 != points.Positions.Count)
             {
                 throw new Exception("The number of colors specified must be equal to the number of vertices.");
@@ -348,7 +349,7 @@ namespace Dynamo.Wpf.Rendering
             {
                 throw new LegacyRenderPackageMethodException();
             }
-            
+
             if (colors.Count() / 4 != lines.Positions.Count)
             {
                 throw new Exception("The number of colors specified must be equal to the number of vertices.");
@@ -369,7 +370,7 @@ namespace Dynamo.Wpf.Rendering
             {
                 throw new LegacyRenderPackageMethodException();
             }
-            
+
             if (colors.Count() / 4 != mesh.Positions.Count)
             {
                 throw new Exception("The number of colors specified must be equal to the number of vertices.");
@@ -379,12 +380,12 @@ namespace Dynamo.Wpf.Rendering
             mesh.Colors = colors.ToColor4Collection();
         }
 
-        private bool HasValidStartEnd(int startIndex, int endIndex, Geometry3D geom, out string message)
+        private bool ValidateRange<T>(int startIndex, int endIndex, ICollection<T> geomDataCollection, out string message)
         {
             message = string.Empty;
 
-            if (startIndex > geom.Colors.Count ||
-                endIndex > geom.Colors.Count - 1)
+            if (startIndex > geomDataCollection.Count ||
+                endIndex > geomDataCollection.Count - 1)
             {
                 message = "The start and end indices must be within the bounds of the array.";
                 return false;
@@ -416,7 +417,7 @@ namespace Dynamo.Wpf.Rendering
         {
             get
             {
-                var hasData = points.Positions.Count > 0 || 
+                var hasData = points.Positions.Count > 0 ||
                     lines.Positions.Count > 0 ||
                     mesh.Positions.Count > 0;
                 return hasData;
@@ -557,7 +558,7 @@ namespace Dynamo.Wpf.Rendering
                 {
                     list.Add(new Tuple<string, float[]>(tuple.Item1, tuple.Item2.ToArray()));
                 }
-                
+
                 return list;
             }
         }
@@ -574,8 +575,8 @@ namespace Dynamo.Wpf.Rendering
             switch (vertexType)
             {
                 case VertexType.Point:
-                    if (index > points.Positions.Count) {return;}
-                    position = points.Positions[index-1];
+                    if (index > points.Positions.Count) { return; }
+                    position = points.Positions[index - 1];
                     break;
                 case VertexType.Line:
                     if (index > lines.Positions.Count) { return; }
@@ -588,13 +589,53 @@ namespace Dynamo.Wpf.Rendering
                 default:
                     return;
             }
-            LabelPlaces.Add(new Tuple<string, Vector3>(label,position));
+            LabelPlaces.Add(new Tuple<string, Vector3>(label, position));
         }
 
+        /// <summary>
+        /// Adds a label to the render package, but first transforms the label by the transform matrix of the 
+        /// relevant graphicItem.
+        /// </summary>
+        /// <param name="label">label</param>
+        /// <param name="vertexType">type of vertex</param>
+        /// <param name="vertIndex">vertex index for base label position</param>
+        /// <param name="instanceIndex">index to use for transform matrix</param>
+        /// <param name="BaseTessellationId">baseTessellation Id of the item this label belongs to.
+        /// Aids in lookup of the correct transform matrix.</param>
+        void IRenderInstancedLabels.AddInstancedLabel(string label, VertexType vertexType, int vertIndex, int instanceIndex, Guid BaseTessellationId)
+        {
+            Vector3 position = new Vector3();
+            switch (vertexType)
+            {
+                case VertexType.MeshInstance:
+                    //
+                    if (vertIndex > mesh.Positions.Count) { return; }
+                    position = Mesh.Positions[vertIndex - 1];
+                    break;
+                case VertexType.LineInstance:
+                    //
+                    if (vertIndex > Lines.Positions.Count) { return; }
+                    position = Lines.Positions[vertIndex - 1];
+                    break;
+            }
+            if (instanceTransforms.ContainsKey(BaseTessellationId) && instanceIndex <= instanceTransforms[BaseTessellationId].Count)
+            {
+                var transform = instanceTransforms[BaseTessellationId]?[instanceIndex - 1];
+                var transformedLabelPos = transform?.ToMatrix3D().Transform(position.ToPoint3D()).ToVector3();
+                if (transformedLabelPos.HasValue)
+                {
+                    LabelPlaces.Add(new Tuple<string, Vector3>(label, transformedLabelPos.Value));
+                }
+            }
+
+        }
         /// <summary>
         /// Add a label position to the render package.
         /// </summary>
         /// <param name="label">Text to be displayed in the label</param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
         public void AddLabel(string label, double x, double y, double z)
         {
             LabelPlaces.Add(new Tuple<string, Vector3>(label, Vector3ForYUp(x, y, z)));
@@ -644,7 +685,7 @@ namespace Dynamo.Wpf.Rendering
         /// <param name="alpha">byte for the alpha RGB value</param>
         public void UpdatePointVertexColorForRange(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha)
         {
-            if (!HasValidStartEnd(startIndex, endIndex, points, out var message))
+            if (!ValidateRange(startIndex, endIndex, points.Colors, out var message))
             {
                 throw new Exception(message);
             }
@@ -680,7 +721,7 @@ namespace Dynamo.Wpf.Rendering
         /// <param name="alpha">byte for the alpha RGB value</param>
         public void UpdateLineVertexColorForRange(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha)
         {
-            if (!HasValidStartEnd(startIndex, endIndex, lines, out var message))
+            if (!ValidateRange(startIndex, endIndex, lines.Colors, out var message))
             {
                 throw new Exception(message);
             }
@@ -716,7 +757,7 @@ namespace Dynamo.Wpf.Rendering
         /// <param name="alpha">byte for the alpha RGB value</param>
         public void UpdateMeshVertexColorForRange(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha)
         {
-            if (!HasValidStartEnd(startIndex, endIndex, mesh, out var message))
+            if (!ValidateRange(startIndex, endIndex, mesh.Colors, out var message))
             {
                 throw new Exception(message);
             }
@@ -761,10 +802,7 @@ namespace Dynamo.Wpf.Rendering
         /// <summary>
         /// A list of mesh vertices ranges that have associated texture maps
         /// </summary>
-        public List<Tuple<int, int>> MeshVerticesRangesAssociatedWithTextureMaps
-        {
-            get { return colorsMeshVerticesRange; }
-        }
+        public List<Tuple<int, int>> MeshVerticesRangesAssociatedWithTextureMaps { get; } = new List<Tuple<int, int>>();
 
         /// <summary>
         /// Set a color texture map for a specific range of mesh vertices
@@ -775,20 +813,20 @@ namespace Dynamo.Wpf.Rendering
         /// <param name="stride">The size of one dimension of the colors array</param>
         public void AddTextureMapForMeshVerticesRange(int startIndex, int endIndex, byte[] textureMap, int stride)
         {
-            if (!HasValidStartEnd(startIndex, endIndex, mesh, out var message))
+            if (!ValidateRange(startIndex, endIndex, mesh.Colors, out var message))
             {
                 throw new Exception(message);
             }
-            
-            foreach (var r in colorsMeshVerticesRange)
+
+            foreach (var r in MeshVerticesRangesAssociatedWithTextureMaps)
             {
                 if (startIndex >= r.Item1 && startIndex <= r.Item2 || endIndex >= r.Item1 && endIndex <= r.Item2)
                 {
                     throw new Exception("The start and end indices must not overlap previously defined ranges.");
                 }
             }
-            
-            colorsMeshVerticesRange.Add(new Tuple<int, int>(startIndex, endIndex));
+
+            MeshVerticesRangesAssociatedWithTextureMaps.Add(new Tuple<int, int>(startIndex, endIndex));
             colorsList.Add(textureMap);
             colorStrideList.Add(stride);
         }
@@ -796,12 +834,154 @@ namespace Dynamo.Wpf.Rendering
         /// <summary>
         /// Allow legacy usage of the color methods in IRenderPackage
         /// This flag is used by the UpdateRenderPackageAsyncTask implementation to flag
-        /// any third party usage of deprecated color methods in IRenderPackage API
+        /// any third party usage of deprecated color methods in IRenderPackageSupplement.MeshVerticesRangesAssociatedWithTextureMaps
         /// </summary>
         [Obsolete("Do not use! This will be removed in Dynamo 3.0")]
         public bool AllowLegacyColorOperations { get; set; } = true;
 
         #endregion
+
+        /// <summary>
+        /// A list of mesh vertices ranges that have associated instance references
+        /// </summary>
+        internal Dictionary<Guid, (int start, int end)> MeshVertexRangesAssociatedWithInstancing { get; } = new Dictionary<Guid, (int start, int end)>();
+
+        /// <summary>
+        /// Set an instance reference for a specific range of mesh vertices
+        /// </summary>
+        /// <param name="startIndex">The index associated with the first vertex in MeshVertices we want to associate with the instance matrices></param>
+        /// <param name="endIndex">The index associated with the last vertex in MeshVertices we want to associate with the instance matrices></param>
+        /// <param name="id">A unique id associated with this tessellation geometry for instancing</param>
+        public void AddInstanceGuidForMeshVertexRange(int startIndex, int endIndex, Guid id)
+        {
+            if (!ValidateRange(startIndex, endIndex, mesh.Positions, out var message))
+            {
+                throw new Exception(message);
+            }
+
+            if(MeshVertexRangesAssociatedWithInstancing.ContainsKey(id))
+            {
+                throw new Exception("The reference to the mesh range for this ID already exists.");
+            }
+
+            MeshVertexRangesAssociatedWithInstancing.Add(id, (startIndex, endIndex));
+        }
+
+        /// <summary>
+        /// A list of line vertices ranges that have associated instance references
+        /// </summary>
+        internal Dictionary<Guid, (int start, int end)> LineVertexRangesAssociatedWithInstancing { get; } = new Dictionary<Guid, (int start, int end)>();
+
+        /// <summary>
+        /// Set an instance reference for a specific range of line vertices
+        /// </summary>
+        /// <param name="startIndex">The index associated with the first vertex in LineVertices we want to associate with the instance matrices></param>
+        /// <param name="endIndex">The index associated with the last vertex in LineVertices we want to associate with the instance matrices></param>
+        /// <param name="id">A unique id associated with this tessellation geometry for instancing</param>
+        public void AddInstanceGuidForLineVertexRange(int startIndex, int endIndex, Guid id)
+        {
+            if (!ValidateRange(startIndex, endIndex, lines.Positions, out var message))
+            {
+                throw new Exception(message);
+            }
+
+            if (LineVertexRangesAssociatedWithInstancing.ContainsKey(id))
+            {
+                throw new Exception("The reference to the line range for this ID already exists.");
+            }
+
+            LineVertexRangesAssociatedWithInstancing.Add(id, (startIndex, endIndex));
+        }
+
+        /// <summary>
+        /// Set the transform using a series of doubles. The resulting transform is applied to all geometry in the renderPackage.
+        /// Following conventional matrix notation, m11 is the value of the first row and first column, and m12
+        /// is the value of the first row and second column.
+        /// NOTE: This method will set the matrix exactly as described by the caller.
+        /// </summary>
+        /// <param name="m11"></param>
+        /// <param name="m12"></param>
+        /// <param name="m13"></param>
+        /// <param name="m14"></param>
+        /// <param name="m21"></param>
+        /// <param name="m22"></param>
+        /// <param name="m23"></param>
+        /// <param name="m24"></param>
+        /// <param name="m31"></param>
+        /// <param name="m32"></param>
+        /// <param name="m33"></param>
+        /// <param name="m34"></param>
+        /// <param name="m41"></param>
+        /// <param name="m42"></param>
+        /// <param name="m43"></param>
+        /// <param name="m44"></param>
+        /// <param name="id"></param>
+        public void AddInstanceMatrix(float m11, float m12, float m13, float m14,
+            float m21, float m22, float m23, float m24,
+            float m31, float m32, float m33, float m34,
+            float m41, float m42, float m43, float m44, Guid id)
+        {
+            if (!ContainsTessellationId(id))
+            {
+                throw new Exception("The reference to the graphics range(mesh or line) for this ID does not exists.");
+            }
+
+            var transform = new Matrix(m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, m34, m41, m42, m43, m44);
+
+            List<Matrix> transforms;
+            if (instanceTransforms.TryGetValue(id, out transforms))
+            {
+                transforms.Add(transform);
+            }
+            else
+            {
+                instanceTransforms.Add(id, new List<Matrix> {transform});
+            }
+        }
+
+        /// <summary>
+        /// Set the transform as a double array, this transform is applied to all geometry in the renderPackage.
+        /// This matrix should be laid out as follows in row vector order:
+        /// [Xx,Xy,Xz, 0,
+        ///  Yx, Yy, Yz, 0,
+        ///  Zx, Zy, Zz, 0,
+        ///  offsetX, offsetY, offsetZ, W]
+        /// NOTE: The caller of this method should transform the matrix from row vector order to whatever form is needed by the implementation.
+        /// When converting from ProtoGeometry CoordinateSystem form to input matrix, set the first row to the X axis of the CS,
+        /// the second row to the Y axis of the CS, the third row to the Z axis of the CS, and the last row to the CS origin, where W = 1. 
+        /// </summary>
+        /// <param name="matrix"></param>
+        /// <param name="id"></param>
+        public void AddInstanceMatrix(float[] matrix, Guid id)
+        {
+            if (!ContainsTessellationId(id))
+            {
+                throw new Exception("The reference to the graphics range(mesh or line) for this ID does not exists.");
+            }
+
+            var transform = new Matrix(matrix);
+
+            List<Matrix> transforms;
+            if (instanceTransforms.TryGetValue(id, out transforms))
+            {
+                transforms.Add(transform);
+            }
+            else
+            {
+                instanceTransforms.Add(id, new List<Matrix> { transform });
+            }
+        }
+
+        /// <summary>
+        /// Checks if a base tessellation guid has already been registered with this <see cref="IInstancingRenderPackage"/>.
+        /// Both Line and Mesh ids are checked.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public bool ContainsTessellationId(Guid id)
+        {
+            return MeshVertexRangesAssociatedWithInstancing.ContainsKey(id) || LineVertexRangesAssociatedWithInstancing.ContainsKey(id);
+        }
 
         public MeshGeometry3D Mesh
         {
@@ -822,6 +1002,21 @@ namespace Dynamo.Wpf.Rendering
         }
 
         public List<Tuple<string, Vector3>> LabelPlaces { get; } = new List<Tuple<string, Vector3>>();
+
+        /// <summary>
+        /// Number of instances for a particular baseTessellation type(cuboid, sphere etc)
+        /// </summary>
+        /// <param name="baseTessellationID"></param>
+        /// <returns>returns -1 if id cannot be found in package.</returns>
+        int IRenderInstancedLabels.InstanceCount(Guid baseTessellationID) {
+            List<Matrix> res;
+            if (instanceTransforms.TryGetValue(baseTessellationID, out res))
+            {
+                return res.Count;
+            }
+            else
+                return -1;
+    }
 
         internal static LineGeometry3D InitLineGeometry()
         {

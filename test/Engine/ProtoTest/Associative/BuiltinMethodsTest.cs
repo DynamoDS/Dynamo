@@ -226,6 +226,27 @@ t = e[0][0];
         }
 
         [Test]
+        //Test "RemoveIfNot()"
+        public void List_RemoveIfNot_CLRType()
+        {
+            String code =
+@"import(""BuiltIn.ds"");
+a = [""This is "",""a very complex "",""array"",1,2.0,3,false,4.0,5,6.0,true,[2,3.1415926],null,false,'c'];
+b = List.RemoveIfNot(a, ""System.Int64"");
+c = List.RemoveIfNot(a, ""System.Double"");
+d = List.RemoveIfNot(a, ""System.Boolean"");
+e = List.RemoveIfNot(a, ""System.Char"");
+f = List.RemoveIfNot(a, ""System.String"");
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("b", new int[] { 1, 3, 5 });
+            thisTest.Verify("c", new double[] { 2.0, 4.0, 6.0 });
+            thisTest.Verify("d", new bool[] { false, true, false });
+            thisTest.Verify("e", new char[] { 'c' });
+            thisTest.Verify("f", new string[] { "This is ", "a very complex ", "array" });
+        }
+
+        [Test]
         //Test "Reverse()"
         public void BIM11_Reverse()
         {

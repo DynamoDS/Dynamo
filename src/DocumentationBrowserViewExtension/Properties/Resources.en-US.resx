@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -123,6 +123,31 @@
   <data name="ExtensionName" xml:space="preserve">
     <value>Documentation Browser</value>
   </data>
+  <data name="FileNotFoundFailureMessage" xml:space="preserve">
+    <value>File not found</value>
+  </data>
+  <data name="ImageFitToolTip" xml:space="preserve">
+    <value>Zoom to fit</value>
+    <comment>Image Control ToolTip</comment>
+  </data>
+  <data name="ImageInsertToolTip" xml:space="preserve">
+    <value>Add to workspace\n\nAdds the example file to the workspace as a group. To avoid potential issues, run mode will be changed to Manual.</value>
+    <comment>Image Control ToolTip</comment>
+  </data>
+  <data name="ImageZoomInToolTip" xml:space="preserve">
+    <value>Zoom in</value>
+    <comment>Image Control ToolTip</comment>
+  </data>
+  <data name="ImageZoomOutToolTip" xml:space="preserve">
+    <value>Zoom out</value>
+    <comment>Image Control ToolTip</comment>
+  </data>
+  <data name="InsertedGroupSubTitle" xml:space="preserve">
+    <value>Inserted Dynamo graph</value>
+  </data>
+  <data name="InsertGraphContainsNodesAlertMessage" xml:space="preserve">
+    <value>The graph already contains the nodes to be inserted.</value>
+  </data>
   <data name="InternalErrorNoDetailsAvailable" xml:space="preserve">
     <value>No further details available for this error.</value>
   </data>
@@ -130,7 +155,7 @@
     <value>Documentation link is not a valid URI.</value>
   </data>
   <data name="MenuItemText" xml:space="preserve">
-    <value>Show Documentation Browser</value>
+    <value>Show _Documentation Browser</value>
   </data>
   <data name="NodeDocumentationCategory" xml:space="preserve">
     <value>Category</value>
@@ -144,11 +169,17 @@
     <value>Inputs</value>
     <comment>Header in Node Info table</comment>
   </data>
+  <data name="NodeDocumentationInputsAndOutputs" xml:space="preserve">
+    <value>Inputs and Outputs</value>
+  </data>
+  <data name="NodeDocumentationIssueHelp" xml:space="preserve">
+    <value>Node Issue Help</value>
+  </data>
   <data name="NodeDocumentationNodeInfo" xml:space="preserve">
-    <value>Node Info</value>
+    <value>Node Information</value>
     <comment>Header in Node Info table</comment>
   </data>
-  <data name="NodeDocumentationNodeType" xml:space="preserve">
+  <data name="NodeDocumentationOriginalNodeName" xml:space="preserve">
     <value>Node Type</value>
     <comment>Header in Node Info table</comment>
   </data>
@@ -156,7 +187,33 @@
     <value>Outputs</value>
     <comment>Header in Node Info table</comment>
   </data>
+  <data name="NodeInputsDataType" xml:space="preserve">
+    <value>Data type</value>
+    <comment>Input Header</comment>
+  </data>
+  <data name="NodeInputsDescription" xml:space="preserve">
+    <value>Description</value>
+    <comment>Input Header</comment>
+  </data>
+  <data name="NodeInputsName" xml:space="preserve">
+    <value>Name</value>
+    <comment>Input Header</comment>
+  </data>
+  <data name="NodeInputsType" xml:space="preserve">
+    <value>Type</value>
+    <comment>Input Header</comment>
+  </data>
+  <data name="NodeInputsValue" xml:space="preserve">
+    <value>Default value</value>
+    <comment>Input Header</comment>
+  </data>
   <data name="ScriptTagsRemovalWarning" xml:space="preserve">
     <value>Script tags detected in the help document have been removed.</value>
+  </data>
+  <data name="ToastFileNotFoundLocationNotificationText" xml:space="preserve">
+    <value>Example file from {0} could not be found</value>
+  </data>
+  <data name="ToastInsertGraphNotificationText" xml:space="preserve">
+    <value>Example file added to workspace. Run mode changed to Manual.</value>
   </data>
 </root>

@@ -18,7 +18,9 @@
         <Button Content="{Binding Model.Selection, Converter={StaticResource SelectionButtonContentConverter}}" 
                 Command="{Binding SelectCommand}"
                 Grid.Row="0" IsEnabled="{Binding Model.CanSelect}"
-                ToolTipService.ShowOnDisabled="True">
+                ToolTipService.ShowOnDisabled="True"
+                Background="#3c3c3c"
+                Style="{StaticResource SelectionButtonStyle}">
             <Button.ToolTip>
                 <TextBlock Text="{Binding Model.SelectionSuggestion}" />
             </Button.ToolTip>
@@ -28,7 +30,9 @@
                    TextWrapping="Wrap"
                    Grid.Row="1" 
                    Margin="5"
-                   MaxWidth="200" MaxHeight="200">
+                   MaxWidth="200" 
+                   MaxHeight="200"
+                   Foreground="#F5F5F5">
             <TextBlock.ToolTip>
                 <TextBlock Text="{Binding Model.Text}" MaxHeight="200" TextTrimming="WordEllipsis"/>
             </TextBlock.ToolTip>

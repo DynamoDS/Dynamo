@@ -14,6 +14,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand SearchCommand
         {
             get { return search ?? (search = new DelegateCommand(Search, CanSearch)); }
+            internal set { search = value; }// used by tests
         }
 
         private DelegateCommand showSearch;

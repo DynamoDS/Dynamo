@@ -19,7 +19,7 @@ namespace Dynamo.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -85,6 +85,51 @@ namespace Dynamo.Properties {
         public static string Autocomplete {
             get {
                 return ResourceManager.GetString("Autocomplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All recommendations are below the specified confidence level. You can try them or adjust the confidence settings in Preferences..
+        /// </summary>
+        public static string AutocompleteLowConfidenceMessage {
+            get {
+                return ResourceManager.GetString("AutocompleteLowConfidenceMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Low confidence.
+        /// </summary>
+        public static string AutocompleteLowConfidenceTitle {
+            get {
+                return ResourceManager.GetString("AutocompleteLowConfidenceTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Recommendations that are below the confidence level..
+        /// </summary>
+        public static string AutocompleteLowConfidenceTooltip {
+            get {
+                return ResourceManager.GetString("AutocompleteLowConfidenceTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are no recommendations yet. You can try switching to node type match autocomplete..
+        /// </summary>
+        public static string AutocompleteNoRecommendationsMessage {
+            get {
+                return ResourceManager.GetString("AutocompleteNoRecommendationsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No recommendations.
+        /// </summary>
+        public static string AutocompleteNoRecommendationsTitle {
+            get {
+                return ResourceManager.GetString("AutocompleteNoRecommendationsTitle", resourceCulture);
             }
         }
         
@@ -265,6 +310,26 @@ namespace Dynamo.Properties {
         public static string ComposeFunctionPortDataResultToolTip {
             get {
                 return ResourceManager.GetString("ComposeFunctionPortDataResultToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}
+        ///
+        ///This assembly is likely blocked. Try restarting Dynamo after unblocking this assembly and all other core assemblies that might be blocked. If you are running a downloaded DynamoSandbox build that is extracted from a .zip file, try using 7zip to extract the Dynamo binaries and try again..
+        /// </summary>
+        public static string CoreLibraryLoadFailureForBlockedAssembly {
+            get {
+                return ResourceManager.GetString("CoreLibraryLoadFailureForBlockedAssembly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Core library load failure.
+        /// </summary>
+        public static string CoreLibraryLoadFailureMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("CoreLibraryLoadFailureMessageBoxTitle", resourceCulture);
             }
         }
         
@@ -505,6 +570,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Default,English,Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文.
+        /// </summary>
+        public static string DynamoLanguages_noxlate {
+            get {
+                return ResourceManager.GetString("DynamoLanguages_noxlate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dynamo is up to date..
         /// </summary>
         public static string DynamoUpToDate {
@@ -537,6 +611,15 @@ namespace Dynamo.Properties {
         public static string ExceptionEncountered {
             get {
                 return ResourceManager.GetString("ExceptionEncountered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to insert the file as some of the nodes already exist in the current worspace..
+        /// </summary>
+        public static string FailedInsertFileNodeExistNotification {
+            get {
+                return ResourceManager.GetString("FailedInsertFileNodeExistNotification", resourceCulture);
             }
         }
         
@@ -631,11 +714,38 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File load failure.
+        /// </summary>
+        public static string FileLoadFailureMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("FileLoadFailureMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Your file may not open correctly.
         /// </summary>
         public static string FileNotOpenedCorrectly {
             get {
                 return ResourceManager.GetString("FileNotOpenedCorrectly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Formula failed to convert to DesignScript code. Please edit the formula manually to use it in a CodeBlock node..
+        /// </summary>
+        public static string FormulaDSConversionFailure {
+            get {
+                return ResourceManager.GetString("FormulaDSConversionFailure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Formula node has been deprecated. It has been automatically migrated to a CodeBlock node. Note that results may vary after the migration depending on lacing options selected on the original Formula node. Appropriate replication guides might need to be applied to the CodeBlock node script..
+        /// </summary>
+        public static string FormulaMigrated {
+            get {
+                return ResourceManager.GetString("FormulaMigrated", resourceCulture);
             }
         }
         
@@ -703,7 +813,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;Double click here to edit group description&gt;.
+        ///   Looks up a localized string similar to Description &lt;Double click here to edit group description&gt;.
         /// </summary>
         public static string GroupDefaultText {
             get {
@@ -712,11 +822,83 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;Double click here to edit group title&gt;.
+        ///   Looks up a localized string similar to Title &lt;Double click here to edit group title&gt;.
         /// </summary>
         public static string GroupNameDefaultText {
             get {
                 return ResourceManager.GetString("GroupNameDefaultText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Actions.
+        /// </summary>
+        public static string GroupStyleDefaultActions {
+            get {
+                return ResourceManager.GetString("GroupStyleDefaultActions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to B9F9E1.
+        /// </summary>
+        public static string GroupStyleDefaultActionsColor {
+            get {
+                return ResourceManager.GetString("GroupStyleDefaultActionsColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inputs.
+        /// </summary>
+        public static string GroupStyleDefaultInputs {
+            get {
+                return ResourceManager.GetString("GroupStyleDefaultInputs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FFB8D8.
+        /// </summary>
+        public static string GroupStyleDefaultInputsColor {
+            get {
+                return ResourceManager.GetString("GroupStyleDefaultInputsColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Outputs.
+        /// </summary>
+        public static string GroupStyleDefaultOutputs {
+            get {
+                return ResourceManager.GetString("GroupStyleDefaultOutputs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FFC999.
+        /// </summary>
+        public static string GroupStyleDefaultOutputsColor {
+            get {
+                return ResourceManager.GetString("GroupStyleDefaultOutputsColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Review.
+        /// </summary>
+        public static string GroupStyleDefaultReview {
+            get {
+                return ResourceManager.GetString("GroupStyleDefaultReview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A4E1FF.
+        /// </summary>
+        public static string GroupStyleDefaultReviewColor {
+            get {
+                return ResourceManager.GetString("GroupStyleDefaultReviewColor", resourceCulture);
             }
         }
         
@@ -825,6 +1007,24 @@ namespace Dynamo.Properties {
         public static string InputPortAlternativeName {
             get {
                 return ResourceManager.GetString("InputPortAlternativeName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Insert Dynamo Definition....
+        /// </summary>
+        public static string InsertDialogBoxText {
+            get {
+                return ResourceManager.GetString("InsertDialogBoxText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Example file added to workspace. Run mode changed to Manual..
+        /// </summary>
+        public static string InsertGraphRunModeNotificationText {
+            get {
+                return ResourceManager.GetString("InsertGraphRunModeNotificationText", resourceCulture);
             }
         }
         
@@ -945,6 +1145,26 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0}
+        ///
+        ///This assembly is likely blocked. Try importing it again after unblocking the assembly..
+        /// </summary>
+        public static string LibraryLoadFailureForBlockedAssembly {
+            get {
+                return ResourceManager.GetString("LibraryLoadFailureForBlockedAssembly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Library load failure.
+        /// </summary>
+        public static string LibraryLoadFailureMessageBoxTitle {
+            get {
+                return ResourceManager.GetString("LibraryLoadFailureMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot find library path: {0}..
         /// </summary>
         public static string LibraryPathCannotBeFound {
@@ -968,6 +1188,24 @@ namespace Dynamo.Properties {
         public static string LocateInDisk {
             get {
                 return ResourceManager.GetString("LocateInDisk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You need to login to your account to get recommendations. Please log in or switch to node type match autocomplete..
+        /// </summary>
+        public static string LoginNeededMessage {
+            get {
+                return ResourceManager.GetString("LoginNeededMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not authenticated.
+        /// </summary>
+        public static string LoginNeededTitle {
+            get {
+                return ResourceManager.GetString("LoginNeededTitle", resourceCulture);
             }
         }
         
@@ -1250,6 +1488,17 @@ namespace Dynamo.Properties {
         public static string PackageEmpty {
             get {
                 return ResourceManager.GetString("PackageEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}
+        ///
+        ///This package likely contains an assembly that is blocked. You will need to load the package again after unblocking the assembly. Restart Dynamo to reload the package..
+        /// </summary>
+        public static string PackageLoadFailureForBlockedAssembly {
+            get {
+                return ResourceManager.GetString("PackageLoadFailureForBlockedAssembly", resourceCulture);
             }
         }
         
@@ -1676,6 +1925,24 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Initializing preferences....
+        /// </summary>
+        public static string SplashScreenInitPreferencesSettings {
+            get {
+                return ResourceManager.GetString("SplashScreenInitPreferencesSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading Node Library....
+        /// </summary>
+        public static string SplashScreenLoadNodeLibrary {
+            get {
+                return ResourceManager.GetString("SplashScreenLoadNodeLibrary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creates a string..
         /// </summary>
         public static string StringNodeDescription {
@@ -1780,6 +2047,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Input Data.
+        /// </summary>
+        public static string ToolTipInputData {
+            get {
+                return ResourceManager.GetString("ToolTipInputData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Output #.
         /// </summary>
         public static string ToolTipOutput {
@@ -1789,20 +2065,20 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Output Data.
+        /// </summary>
+        public static string ToolTipOutputData {
+            get {
+                return ResourceManager.GetString("ToolTipOutputData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to return value.
         /// </summary>
         public static string ToolTipReturnValue {
             get {
                 return ResourceManager.GetString("ToolTipReturnValue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Symbol.
-        /// </summary>
-        public static string ToolTipSymbol {
-            get {
-                return ResourceManager.GetString("ToolTipSymbol", resourceCulture);
             }
         }
         
@@ -1861,7 +2137,9 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This graph currently contains some unresolved nodes, and cannot be saved until the nodes are resolved. If the graph is saved using SaveAs - the unresolved nodes will be removed from the file..
+        ///   Looks up a localized string similar to This may be caused by a missing package, incompatible package version, or missing host program. If you Save As, the unresolved nodes will be removed.
+        ///
+        ///Resolve or remove the unresolved nodes and try again..
         /// </summary>
         public static string UnresolvedNodesWarningMessage {
             get {
@@ -1870,7 +2148,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This graph cannot be saved until unresolved nodes are removed or resolved..
+        ///   Looks up a localized string similar to The graph has unresolved nodes and cannot be saved..
         /// </summary>
         public static string UnresolvedNodesWarningShortMessage {
             get {
@@ -1879,7 +2157,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Graph Contains Unresolved Nodes and Cannot Be Saved..
+        ///   Looks up a localized string similar to Unable to save graph.
         /// </summary>
         public static string UnresolvedNodesWarningTitle {
             get {

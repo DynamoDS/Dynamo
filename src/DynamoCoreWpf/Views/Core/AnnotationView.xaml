@@ -1,4 +1,4 @@
-﻿<UserControl Name="Group"
+<UserControl Name="Group"
              x:Class="Dynamo.Nodes.AnnotationView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -11,6 +11,8 @@
              xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
              xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:nodes="clr-namespace:Dynamo.Graph.Nodes;assembly=DynamoCore"
+             xmlns:utilities="clr-namespace:Dynamo.Wpf.Utilities"
              mc:Ignorable="d"
              Height="Auto"
              Width="Auto"
@@ -24,10 +26,12 @@
              d:DataContext="{d:DesignInstance Type=viewModels:AnnotationViewModel}">
 
     <UserControl.Resources>
+        <utilities:GroupStyleItemSelector x:Key="GroupStyleItemSelector"/>
+        <controls:StringToBrushColorConverter x:Key="StringToBrushColorConverter"/>
+        <controls:TextForegroundSaturationColorConverter x:Key="TextForegroundSaturationColorConverter"/>
         <CornerRadius x:Key="ExpanderCornerRadius"
                       TopLeft="10"
                       TopRight="10" />
-
         <Style x:Key="ColorSelectorListBox"
                TargetType="ListBox">
             <Setter Property="SnapsToDevicePixels"
@@ -41,13 +45,13 @@
             <Setter Property="ScrollViewer.CanContentScroll"
                     Value="true" />
             <Setter Property="Width"
-                    Value="152" />
+                    Value="150" />
             <Setter Property="Height"
                     Value="54" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ListBox">
-                        <Grid Margin="4,8,4,8">
+                        <Grid Margin="0,13,4,8">
                             <ScrollViewer Margin="0"
                                           Focusable="false">
                                 <WrapPanel IsItemsHost="True" />
@@ -71,7 +75,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ListBoxItem">
-                        <Grid Margin="3,4,3,4"
+                        <Grid Margin="0,0,4,5"
                               SnapsToDevicePixels="true">
                             <Grid.Background>
                                 <SolidColorBrush Color="Transparent" />
@@ -135,20 +139,46 @@
                 </Grid>
             </Border>
             <ControlTemplate.Triggers>
-                <!--Change the icon when toggled-->
-                <Trigger Property="IsChecked"
-                         Value="True">
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="False"/>
+                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}" Value="False"/>
+                    </MultiDataTrigger.Conditions>
+
+                    <Setter Property="Source"
+                            TargetName="sign"
+                            Value="/DynamoCoreWpf;component/UI/Images/caret_down_grey_48px.png" />
+                </MultiDataTrigger>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True"/>
+                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}" Value="False"/>
+                    </MultiDataTrigger.Conditions>
+
+                    <Setter Property="Source"
+                            TargetName="sign"
+                            Value="/DynamoCoreWpf;component/UI/Images/caret_down_hover_48px.png" />
+                </MultiDataTrigger>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="False"/>
+                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}" Value="True"/>
+                    </MultiDataTrigger.Conditions>
+
                     <Setter Property="Source"
                             TargetName="sign"
                             Value="/DynamoCoreWpf;component/UI/Images/caret_up_grey_48px.png" />
-                </Trigger>
+                </MultiDataTrigger>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True"/>
+                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}" Value="True"/>
+                    </MultiDataTrigger.Conditions>
 
-                <!--MouseOver, Pressed behaviors-->
-                <Trigger Property="IsMouseOver"
-                         Value="True">
-                    <Setter Property="Cursor"
-                            Value="Hand" />
-                </Trigger>
+                    <Setter Property="Source"
+                            TargetName="sign"
+                            Value="/DynamoCoreWpf;component/UI/Images/caret_up_hover_48px.png" />
+                </MultiDataTrigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
 
@@ -166,10 +196,24 @@
                                     Grid.Row="0"
                                     CornerRadius="{StaticResource ExpanderCornerRadius}"
                                     Padding="0"
-                                    Margin="0">
+                                    Margin="0"
+                                    ToolTipService.IsEnabled="{TemplateBinding IsExpanded, Converter={StaticResource InverseBooleanConverter}}">
                                 <Border.Background>
                                     <SolidColorBrush Color="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Path=DataContext.Background}"></SolidColorBrush>
                                 </Border.Background>
+                                <Border.ToolTip>
+                                    <dynui:DynamoToolTip AttachmentSide="Top"
+                                                         Style="{DynamicResource ResourceKey=SLightToolTip}"
+                                                         Margin="5,0,0,0">
+                                        <StackPanel Orientation="Vertical"
+                                                    MaxWidth="320">
+                                            <TextBlock Text="{Binding AnnotationText}"
+                                                       Margin="0,0,0,10" />
+                                            <TextBlock Text="{Binding AnnotationDescriptionText}"
+                                                       TextWrapping="WrapWithOverflow" />
+                                        </StackPanel>
+                                    </dynui:DynamoToolTip>
+                                </Border.ToolTip>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
@@ -182,6 +226,27 @@
                                                       RecognizesAccessKey="True"
                                                       HorizontalAlignment="Left">
                                     </ContentPresenter>
+
+                                    <!--  Warning/Error Icon  -->
+                                    <Image Grid.Column="0"
+                                           Width="16px"
+                                           Height="16px"
+                                           VerticalAlignment="Bottom"
+                                           HorizontalAlignment="Right"
+                                           Margin="0,0,2.5,2.5">
+                                        <Image.Style>
+                                            <Style TargetType="Image">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding AnnotationModel.GroupState}" Value="{x:Static nodes:ElementState.Warning}">
+                                                        <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/warning.png"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding AnnotationModel.GroupState}" Value="{x:Static nodes:ElementState.Error}">
+                                                        <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/error.png"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>
 
                                     <!--Expander button-->
                                     <ToggleButton OverridesDefaultStyle="True"
@@ -203,8 +268,38 @@
                                             VerticalAlignment="Bottom"
                                             Click="contextMenu_Click">
                                         <Button.Content>
-                                            <Image  Source="/DynamoCoreWpf;component/UI/Images/menu_grey_48px.png" />
+                                            <Image>
+                                                <Image.Style>
+                                                    <Style TargetType="{x:Type Image}">
+                                                        <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/menu_grey_48px.png"/>
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/menu_hover_48px.png"/>
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Image.Style>
+                                            </Image>
                                         </Button.Content>
+                                        <Button.Style>
+                                            <Style TargetType="{x:Type Button}">
+                                                <Setter Property="OverridesDefaultStyle" Value="True"/>
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="Button">
+                                                            <Border Name="border" BorderThickness="0" Background="{TemplateBinding Background}">
+                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                            </Border>
+                                                            <ControlTemplate.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter Property="Background" Value="{StaticResource HighlightedBrush}"/>
+                                                                </Trigger>
+                                                            </ControlTemplate.Triggers>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </Button.Style>
                                     </Button>
                                 </Grid>
                             </Border>
@@ -227,173 +322,181 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
-        <Style x:Key="InputOutputNodesListViewTemplate"
-               TargetType="{x:Type ListView}">
-            <Setter Property="Background"
-                    Value="Transparent" />
-            <Setter Property="VerticalContentAlignment"
-                    Value="Center" />
-            <Setter Property="VerticalAlignment"
-                    Value="Center" />
-            <Setter Property="HorizontalAlignment"
-                    Value="Center" />
-            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility"
-                    Value="Disabled" />
-            <Setter Property="BorderThickness"
-                    Value="0" />
-            <Setter Property="IsHitTestVisible"
-                    Value="False" />
-
-            <Setter Property="ItemContainerStyle">
-                <Setter.Value>
-                    <Style TargetType="ListViewItem">
-                        <Setter Property="Background"
-                                Value="Transparent" />
-                        <Setter Property="BorderBrush"
-                                Value="Transparent" />
-                        <Setter Property="BorderThickness"
-                                Value="0" />
-                        <Setter Property="Margin"
-                                Value="0" />
-                        <Setter Property="Padding"
-                                Value="0" />
-                    </Style>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="ItemsPanel">
-                <Setter.Value>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Horizontal" />
-                    </ItemsPanelTemplate>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="ItemTemplate">
-                <Setter.Value>
-                    <DataTemplate DataType="{x:Type viewModels:NodeViewModel}">
-                        <Image Width="20"
-                               Source="/DynamoCoreWpf;component/UI/Images/NodeIcon_placeholder.png">
-                            <Image.Clip>
-                                <RectangleGeometry RadiusX="5"
-                                                   RadiusY="5"
-                                                   Rect="0,0,20,20"></RectangleGeometry>
-                            </Image.Clip>
-                        </Image>
-                    </DataTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
     </UserControl.Resources>
 
     <Grid Name="AnnotationGrid"
           Height="Auto"
           IsHitTestVisible="True">
-        <Grid.ToolTip>
-            <dynui:DynamoToolTip AttachmentSide="Top"
-                                 Style="{DynamicResource ResourceKey=SLightToolTip}"
-                                 Margin="5,0,0,0"
-                                 Visibility="{Binding IsExpanded, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}">
-                <StackPanel Orientation="Vertical"
-                            MaxWidth="320">
-                    <TextBlock Text="{Binding AnnotationText}"
-                               Margin="0,0,0,10" />
-                    <TextBlock Text="{Binding AnnotationDescriptionText}"
-                               TextWrapping="WrapWithOverflow" />
-                </StackPanel>
-            </dynui:DynamoToolTip>
-        </Grid.ToolTip>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ContextMenu>
-            <ContextMenu>
-                <MenuItem  Header="{x:Static p:Resources.GroupContextMenuDeleteGroup}"
-                           Name="DeleteAnnotation"
-                           Click="OnDeleteAnnotation" />
-                <MenuItem  Header="{x:Static p:Resources.GroupContextMenuUngroup}"
-                           Name="UngroupAnnotation"
-                           Click="OnUngroupAnnotation" />
-                <MenuItem Header="{x:Static p:Resources.ContextUnGroupFromSelection}"
-                          Name="unGroup_cm"
-                          Command="{Binding Path=RemoveGroupFromGroupCommand}" />
-                <MenuItem Header="{x:Static p:Resources.GroupContextMenuAddGroupToGroup}"
-                          Name="AddGroupToGroup"
-                          Command="{Binding AddGroupToGroupCommand}" />
-                <MenuItem  Header="{x:Static p:Resources.GroupContextMenuGraphLayout}"
-                           Name="GraphLayoutAnnotation"
-                           Click="OnGraphLayoutAnnotation" />
-                <MenuItem  Header="{x:Static p:Resources.GroupContextMenuFont}"
-                           Name="ChangeSize">
-                    <MenuItem Header="14"
-                              Name="FontSize0"
+            <ContextMenu Name="AnnotationContextMenu" 
+                         Background="{StaticResource PreferencesWindowVisualSettingsAddStyleBackground}" 
+                         Style="{StaticResource ContextMenuStyle}">
+                <MenuItem Name="DeleteAnnotation"
+                          Click="OnDeleteAnnotation"
+                          Header="{x:Static p:Resources.GroupContextMenuDeleteGroup}" />
+                <MenuItem Name="UngroupAnnotation"
+                          Click="OnUngroupAnnotation"
+                          Header="{x:Static p:Resources.GroupContextMenuUngroup}" />
+                <MenuItem Name="PreviewAnnotation"
+                          Command="{Binding Path=ToggleIsVisibleGroupCommand}"
+                          Header="{x:Static p:Resources.GroupContextMenuPreview}"
+                          IsCheckable="true"
+                          IsChecked="{Binding Path=AnnotationModel.IsVisible, Mode=OneWay}"/>
+                <MenuItem Name="unGroup_cm"
+                          Command="{Binding Path=RemoveGroupFromGroupCommand}"
+                          Header="{x:Static p:Resources.ContextUnGroupFromSelection}" />
+                <MenuItem Name="AddGroupToGroup"
+                          Command="{Binding AddGroupToGroupCommand}"
+                          Header="{x:Static p:Resources.GroupContextMenuAddGroupToGroup}" />
+                <MenuItem Name="GraphLayoutAnnotation"
+                          Click="OnGraphLayoutAnnotation"
+                          Header="{x:Static p:Resources.GroupContextMenuGraphLayout}" />
+                <MenuItem Name="GroupStyleAnnotation"
+                          ItemsSource="{Binding GroupStyleList}"
+                          Style="{StaticResource MenuItemGroupStyle}"
+                          SubmenuOpened="GroupStyleAnnotation_SubmenuOpened"
+                          Header="{x:Static p:Resources.GroupStyleContextAnnotation}"
+                          ItemContainerStyleSelector="{StaticResource GroupStyleItemSelector}">
+                    <MenuItem.Resources>
+                        <Style x:Key="GroupStyleSeparatorStyle" TargetType="{x:Type MenuItem}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate>
+                                        <Border Height="1"
+                                                Background="{StaticResource PreferencesWindowVisualSettingsAddStyleBackground}">
+                                            <Border Height="1"
+                                                    MaxWidth="150"
+                                                    Background="{StaticResource NodeContextMenuSeparatorColor}">
+                                            </Border>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+
+                        <Style x:Key="GroupStyleItemStyle" TargetType="{x:Type MenuItem}">
+                            <Setter Property="MenuItem.IsChecked"
+                                    Value="{Binding IsChecked}"/>
+                            <EventSetter Event="Click" 
+                                             Handler="GroupStyleCheckmark_Click"/>
+                            <Setter Property="MenuItem.Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type MenuItem}">
+                                        <StackPanel x:Name="groupStyleStackPanel"
+                                                    Orientation="Horizontal"
+                                                    MinWidth="150"
+                                                    Background="{StaticResource PreferencesWindowVisualSettingsAddStyleBackground}">
+                                            <Label x:Name="buttonColorPicker"
+                                                   Margin="5,0,5,0"
+                                                   FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                   FontSize="14px"
+                                                   Background="{Binding HexColorString, Converter={StaticResource StringToBrushColorConverter}}" 
+                                                   Width="15" 
+                                                   Height="15"/>
+                                            <TextBlock Text="{Binding Name}" 
+                                                        TextTrimming="CharacterEllipsis"
+                                                        MaxWidth="148"
+                                                        Margin="5,0,5,0"
+                                                        Foreground="{StaticResource NodeContextMenuForeground}"
+                                                        FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                        FontSize="14px"
+                                                        FontWeight="Medium"/>
+                                        </StackPanel>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="groupStyleStackPanel" Property="Background" Value="{StaticResource NodeContextMenuBackgroundHighlight}" />
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver" Value="False">
+                                                <Setter TargetName="groupStyleStackPanel" Property="Background" Value="{StaticResource NodeContextMenuBackground}" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </MenuItem.Resources>
+                </MenuItem>
+                <MenuItem Name="ColorMenuItem" 
+                          Header="{x:Static p:Resources.GroupContextMenuColor}"
+                          Style="{StaticResource ContextMenuItemFixedWidthStyle}">
+                    <ListBox ItemContainerStyle="{StaticResource ColorSelectorListBoxItem}"
+                             SelectionChanged="OnNodeColorSelectionChanged"
+                             Height="Auto"
+                             Style="{StaticResource ColorSelectorListBox}">
+                        <ListBox.Items>
+                            <Rectangle Fill="#d4b6db" />
+                            <Rectangle Fill="#ffb8d8" />
+                            <Rectangle Fill="#ffc999" />
+                            <Rectangle Fill="#e8f7ad" />
+                            <Rectangle Fill="#b9f9e1" />
+                            <Rectangle Fill="#a4e1ff" />
+                            <Rectangle Fill="#b5b5b5" />
+                            <Rectangle Fill="#FFFFFF" />
+                            <Rectangle Fill="#bb87c6" />
+                            <Rectangle Fill="#ff7bac" />
+                            <Rectangle Fill="#ffaa45" />
+                            <Rectangle Fill="#c1d676" />
+                            <Rectangle Fill="#71c6a8" />
+                            <Rectangle Fill="#48b9ff" />
+                            <Rectangle Fill="#848484" />
+                            <Rectangle Fill="#d8d8d8" />
+                        </ListBox.Items>
+                    </ListBox>
+                </MenuItem>
+                <MenuItem Name="ChangeSize" 
+                          Header="{x:Static p:Resources.GroupContextMenuFont}"
+                          Style="{StaticResource ContextMenuItemFixedWidthStyle}">
+                    <MenuItem Name="FontSize0"
                               Command="{Binding ChangeFontSize}"
                               CommandParameter="14"
-                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=14}"></MenuItem>
-                    <MenuItem Header="18"
-                              Name="FontSize1"
+                              Header="14"
+                              IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=14}" />
+                    <MenuItem Name="FontSize1"
                               Command="{Binding ChangeFontSize}"
                               CommandParameter="18"
-                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=18}"></MenuItem>
-                    <MenuItem Header="24"
-                              Name="FontSize2"
+                              Header="18"
+                              IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=18}" />
+                    <MenuItem Name="FontSize2"
                               Command="{Binding ChangeFontSize}"
                               CommandParameter="24"
-                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=24}"></MenuItem>
-                    <MenuItem Header="30"
-                              Name="FontSize3"
+                              Header="24"
+                              IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=24}" />
+                    <MenuItem Name="FontSize3"
                               Command="{Binding ChangeFontSize}"
                               CommandParameter="30"
-                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=30}"></MenuItem>
-                    <MenuItem Header="36"
-                              Name="FontSize4"
+                              Header="30"
+                              IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=30}" />
+                    <MenuItem Name="FontSize4"
                               Command="{Binding ChangeFontSize}"
                               CommandParameter="36"
-                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=36}"></MenuItem>
-                    <MenuItem Header="48"
-                              Name="FontSize5"
+                              Header="36"
+                              IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=36}" />
+                    <MenuItem Name="FontSize5"
                               Command="{Binding ChangeFontSize}"
                               CommandParameter="48"
-                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=48}"></MenuItem>
-                    <MenuItem Header="60"
-                              Name="FontSize6"
+                              Header="48"
+                              IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=48}" />
+                    <MenuItem Name="FontSize6"
                               Command="{Binding ChangeFontSize}"
                               CommandParameter="60"
-                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=60}"></MenuItem>
-                    <MenuItem Header="72"
-                              Name="FontSize7"
+                              Header="60"
+                              IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=60}" />
+                    <MenuItem Name="FontSize7"
                               Command="{Binding ChangeFontSize}"
                               CommandParameter="72"
-                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=72}"></MenuItem>
-                    <MenuItem Header="96"
-                              Name="FontSize8"
+                              Header="72"
+                              IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=72}" />
+                    <MenuItem Name="FontSize8"
                               Command="{Binding ChangeFontSize}"
                               CommandParameter="96"
-                              IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=96}"></MenuItem>
+                              Header="96"
+                              IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=96}" />
 
                 </MenuItem>
-                <ListBox Style="{StaticResource ColorSelectorListBox}"
-                         ItemContainerStyle="{StaticResource ColorSelectorListBoxItem}"
-                         SelectionChanged="OnNodeColorSelectionChanged">
-                    <ListBox.Items>
-                        <Rectangle Fill="#d4b6db" />
-                        <Rectangle Fill="#ffb8d8" />
-                        <Rectangle Fill="#ffc999" />
-                        <Rectangle Fill="#e8f7ad" />
-                        <Rectangle Fill="#b9f9e1" />
-                        <Rectangle Fill="#a4e1ff" />
-                        <Rectangle Fill="#b5b5b5" />
-                        <Rectangle Fill="#FFFFFF" />
-                        <Rectangle Fill="#bb87c6" />
-                        <Rectangle Fill="#ff7bac" />
-                        <Rectangle Fill="#ffaa45" />
-                        <Rectangle Fill="#c1d676" />
-                        <Rectangle Fill="#71c6a8" />
-                        <Rectangle Fill="#48b9ff" />
-                        <Rectangle Fill="#848484" />
-                        <Rectangle Fill="#d8d8d8" />
-                    </ListBox.Items>
-                </ListBox>
             </ContextMenu>
         </Grid.ContextMenu>
 
@@ -404,6 +507,7 @@
                 CornerRadius="{StaticResource ExpanderCornerRadius}"
                 IsHitTestVisible="False"
                 Canvas.ZIndex="41"
+                Visibility="{Binding Nodes, Converter={StaticResource ListHasMoreThanNItemsToVisibilityConverter}}"
                 Margin="-1">
             <Border.BorderBrush>
                 <SolidColorBrush Color="{Binding Background}" />
@@ -481,21 +585,21 @@
                                     Width="{Binding Width}"
                                     MinHeight="20"
                                     Margin="0,0,0,10">
-                        <Grid>
+                        <Grid Margin="0,0,20,0">
                             <TextBlock x:Name="GroupTextBlock"
                                        Text="{Binding AnnotationText, Converter={StaticResource AnnotationTextConverter}, ConverterParameter='TextBlock'}"
+                                       Foreground="{Binding Background, Converter={StaticResource TextForegroundSaturationColorConverter}}"
                                        FontFamily="Trebuchet"
                                        FontSize="{Binding FontSize}"
                                        LineStackingStrategy="BlockLineHeight"
-                                       TextWrapping="Wrap"
+                                       TextWrapping="WrapWithOverflow"
                                        Visibility="Visible">
                             </TextBlock>
                             <TextBox Name="GroupTextBox"
                                      Grid.Column="0"
-                                     MaxLength="30"
                                      Visibility="Collapsed"
                                      Text="{Binding AnnotationText,Converter={StaticResource AnnotationTextConverter}, ConverterParameter='TextBox'}"
-                                     TextWrapping="Wrap"
+                                     TextWrapping="WrapWithOverflow"
                                      FontFamily="Trebuchet"
                                      FontSize="{Binding FontSize}"
                                      IsVisibleChanged="GroupTextBox_OnIsVisibleChanged"
@@ -510,19 +614,20 @@
                     <ContentControl x:Name="GroupDescriptionControls"
                                     Grid.Row="1"
                                     MinHeight="20"
-                                    Margin="0,-10,30,0">
+                                    Margin="0,-10,30,0"
+                                    SizeChanged="GroupDescriptionControls_SizeChanged"
+                                    IsVisibleChanged="GroupDescriptionTextBlock_IsVisibleChanged">
                         <Grid>
                             <TextBlock x:Name="GroupDescriptionTextBlock"
                                        Text="{Binding AnnotationDescriptionText, Converter={StaticResource AnnotationTextConverter}}"
+                                       Foreground="{Binding Background, Converter={StaticResource TextForegroundSaturationColorConverter}}"
                                        FontFamily="Trebuchet"
                                        FontSize="12"
                                        LineStackingStrategy="BlockLineHeight"
                                        TextWrapping="Wrap"
-                                       Visibility="Visible"
-                                       IsVisibleChanged="GroupDescriptionTextBlock_IsVisibleChanged">
+                                       Visibility="Visible">
                             </TextBlock>
                             <TextBox Name="GroupDescriptionTextBox"
-                                     MaxLength="280"
                                      Visibility="Collapsed"
                                      Text="{Binding AnnotationDescriptionText, Converter={StaticResource AnnotationTextConverter}}"
                                      TextWrapping="Wrap"
@@ -680,7 +785,8 @@
                          Height="{Binding ModelAreaHeight}"
                          IsHitTestVisible="True"
                          Background="Transparent"
-                         Opacity="0.5">
+                         Opacity="0.5"
+                         Visibility="{Binding IsExpanded, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                     <Path Stroke="Transparent"
                           StrokeThickness="0">
                         <Path.Fill>
@@ -693,7 +799,7 @@
                                 </CombinedGeometry.Geometry1>
                                 <CombinedGeometry.Geometry2>
                                     <GeometryGroup FillRule="EvenOdd"
-                                                   Children="{Binding NestedGroupsGeometryCollection}" />
+                                                   Children="{Binding NestedGroupsGeometries}" />
                                 </CombinedGeometry.Geometry2>
                             </CombinedGeometry>
                         </Path.Data>
@@ -724,7 +830,6 @@
                 </Thumb>
             </Grid>
         </Expander>
-
         <!--
         The CollapsedAnnotationRectangle is visible whenever the expander is collapsed. In this state the
         expander header is still visible but will hide the group description text. This border has 3 children
@@ -739,11 +844,14 @@
                 Width="{Binding Width}"
                 Visibility="{Binding ElementName=GroupExpander, Path=IsExpanded, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"
                 Grid.Row="1">
+            <Border.Background>
+                <SolidColorBrush Color="{Binding Background}" Opacity="0.5" />
+            </Border.Background>
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -756,9 +864,8 @@
                               Grid.Row="0"
                               Canvas.ZIndex="20"
                               HorizontalContentAlignment="Left"
-                              Style="{StaticResource InOutPortControlStyle}"
                               ItemsSource="{Binding Path=InPorts}"
-                              Margin="0,10">
+                              Margin="-25,10">
                 </ItemsControl>
 
                 <!--OUTPUT PORTS-->
@@ -767,53 +874,74 @@
                               Grid.Row="0"
                               Canvas.ZIndex="20"
                               HorizontalContentAlignment="Right"
-                              Style="{StaticResource InOutPortControlStyle}"
                               ItemsSource="{Binding Path=OutPorts}"
-                              Margin="0,10">
+                              Margin="-25,10">
                 </ItemsControl>
 
-                <!--Group content icons-->
-                <Grid x:Name="GroupContentIcons"
-                      Grid.Column="1"
+                <Grid x:Name="GroupContent"
                       Grid.Row="1"
-                      Background="Transparent"
-                      HorizontalAlignment="Center"
-                      Margin="10">
+                      Grid.ColumnSpan="3">
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <ListView x:Name="InputPortIcons"
-                              Grid.Column="0"
-                              ItemsSource="{Binding InputNodes}"
-                              Style="{StaticResource InputOutputNodesListViewTemplate}">
-                    </ListView>
+                    <Label x:Name="NestedGroups"
+                           Grid.Column="0"
+                           Content="{Binding NestedGroups, Converter={StaticResource NestedGroupsLabelConverter}}"
+                           Margin="0"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Right"
+                           ToolTipService.ShowOnDisabled="False"
+                           ToolTipService.IsEnabled="{Binding NestedGroups, Converter={StaticResource CollectionHasMoreThanNItemsToBoolConverter}}">
+                        <Label.ToolTip>
+                            <dynui:DynamoToolTip AttachmentSide="Bottom"
+                                                 Style="{DynamicResource ResourceKey=SLightToolTip}"
+                                                 Margin="5,0,0,0">
+                                <ListView ItemsSource="{Binding NestedGroups}">
+                                    <ListView.Resources>
+                                        <DataTemplate x:Key="MultipleItems"
+                                                      DataType="{x:Type viewModels:AnnotationViewModel}">
+                                            <TextBlock Text="{Binding AnnotationText}" />
+                                        </DataTemplate>
+                                    </ListView.Resources>
+                                    <ListView.Style>
+                                        <Style TargetType="{x:Type ListView}">
+                                            <Setter Property="Background"
+                                                    Value="Transparent" />
+                                            <Setter Property="BorderThickness"
+                                                    Value="0" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding NestedGroups, 
+                                                                        Converter={StaticResource CollectionHasMoreThanNItemsToBoolConverter}}"
+                                                             Value="True">
+                                                    <Setter Property="ItemTemplate"
+                                                            Value="{StaticResource MultipleItems}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ListView.Style>
+                                </ListView>
+                            </dynui:DynamoToolTip>
+                        </Label.ToolTip>
+                    </Label>
 
-                    <Border x:Name="AddtionalNodesCount"
+                    <Border x:Name="NodeCount"
                             Grid.Column="1"
-                            VerticalAlignment="Center"
-                            BorderThickness="0.5"
+                            BorderThickness="1"
                             BorderBrush="#FFFFFF"
                             Background="#EEEEEE"
-                            CornerRadius="{Binding Path=ActualHeight, ElementName=AddtionalNodesCount}"
-                            Width="{Binding Path=ActualHeight, ElementName=AddtionalNodesCount}"
-                            Height="20"
-                            Padding="0">
-                        <TextBlock Text="{Binding InbetweenNodesCount, Mode=OneWay, StringFormat='+{0}'}"
+                            CornerRadius="{Binding Path=ActualHeight, ElementName=NodeCount}"
+                            Width="{Binding Path=ActualHeight, ElementName=NodeCount}"
+                            Height="32"
+                            Margin="10">
+                        <TextBlock Text="{Binding NodeContentCount, Mode=OneWay, StringFormat='+{0}'}"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
-                                   FontSize="10" />
+                                   FontSize="14" />
                     </Border>
-
-                    <ListView x:Name="OutputPortIcons"
-                              Grid.Column="2"
-                              ItemsSource="{Binding OutputNodes}"
-                              Style="{StaticResource InputOutputNodesListViewTemplate}">
-                    </ListView>
                 </Grid>
             </Grid>
-
         </Border>
     </Grid>
 </UserControl>

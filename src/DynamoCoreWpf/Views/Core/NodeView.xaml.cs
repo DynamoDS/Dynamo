@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,6 +17,7 @@ using Dynamo.UI.Controls;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Utilities;
 using DynCmd = Dynamo.Models.DynamoModel;
 
 
@@ -61,13 +63,13 @@ namespace Dynamo.Controls
                 if (viewModel.PreviewPinned)
                 {
                     CreatePreview(viewModel);
-                }                
+                }
             }
         }
 
         private void NodeView_MouseLeave(object sender, MouseEventArgs e)
         {
-            if (viewModel!=null && viewModel.OnMouseLeave != null)
+            if (viewModel != null && viewModel.OnMouseLeave != null)
                 viewModel.OnMouseLeave();
         }
 
@@ -114,7 +116,8 @@ namespace Dynamo.Controls
             Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoColorsAndBrushesDictionary);
             Resources.MergedDictionaries.Add(SharedDictionaryManager.DataTemplatesDictionary);
             Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoConvertersDictionary);
-            Resources.MergedDictionaries.Add(SharedDictionaryManager.PortsDictionary);
+            Resources.MergedDictionaries.Add(SharedDictionaryManager.InPortsDictionary);
+            Resources.MergedDictionaries.Add(SharedDictionaryManager.OutPortsDictionary);
 
             InitializeComponent();
 
@@ -136,6 +139,7 @@ namespace Dynamo.Controls
             ViewModel.RequestShowNodeRename -= ViewModel_RequestShowNodeRename;
             ViewModel.RequestsSelection -= ViewModel_RequestsSelection;
             ViewModel.RequestAutoCompletePopupPlacementTarget -= ViewModel_RequestAutoCompletePopupPlacementTarget;
+            ViewModel.RequestPortContextMenuPopupPlacementTarget -= ViewModel_RequestPortContextMenuPlacementTarget;
             ViewModel.NodeLogic.PropertyChanged -= NodeLogic_PropertyChanged;
             ViewModel.NodeModel.ConnectorAdded -= NodeModel_ConnectorAdded;
             MouseLeave -= NodeView_MouseLeave;
@@ -212,6 +216,7 @@ namespace Dynamo.Controls
             ViewModel.RequestShowNodeRename += ViewModel_RequestShowNodeRename;
             ViewModel.RequestsSelection += ViewModel_RequestsSelection;
             ViewModel.RequestAutoCompletePopupPlacementTarget += ViewModel_RequestAutoCompletePopupPlacementTarget;
+            ViewModel.RequestPortContextMenuPopupPlacementTarget += ViewModel_RequestPortContextMenuPlacementTarget;
             ViewModel.NodeLogic.PropertyChanged += NodeLogic_PropertyChanged;
             ViewModel.NodeModel.ConnectorAdded += NodeModel_ConnectorAdded;
             MouseLeave += NodeView_MouseLeave;
@@ -285,6 +290,14 @@ namespace Dynamo.Controls
         }
 
         private void ViewModel_RequestAutoCompletePopupPlacementTarget(Popup popup)
+        {
+            popup.PlacementTarget = this;
+
+            ViewModel.ActualHeight = ActualHeight;
+            ViewModel.ActualWidth = ActualWidth;
+        }
+
+        private void ViewModel_RequestPortContextMenuPlacementTarget(Popup popup)
         {
             popup.PlacementTarget = this;
 
@@ -426,23 +439,69 @@ namespace Dynamo.Controls
                 }
             }
         }
-        
+
         private void NameBlock_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ClickCount == 2)
             {
                 Debug.WriteLine("Name double clicked!");
-                if (ViewModel != null && ViewModel.RenameCommand.CanExecute(null))
+                // If workspace is zoomed-out, open an Edit Name dialog, otherwise rename inline
+                if (viewModel.WorkspaceViewModel.Zoom < Configurations.ZoomDirectEditThreshold)
                 {
-                    ViewModel.RenameCommand.Execute(null);
+                    if (ViewModel != null && ViewModel.RenameCommand.CanExecute(null))
+                    {
+                        ViewModel.RenameCommand.Execute(null);
+                    }
+                }
+                else
+                {
+                    ChangeNameInline();
                 }
                 e.Handled = true;
             }
         }
 
-        #region Preview Control Related Event Handlers
+        /// <summary>
+        /// Edit Node Name directly in the Node Header
+        /// </summary>
+        private void ChangeNameInline()
+        {
+            NameBlock.Visibility = Visibility.Collapsed;
+            EditableNameBox.Visibility = Visibility.Visible;
 
-        private void OnNodeViewMouseEnter(object sender, MouseEventArgs e)
+            EditableNameBox.Focus();
+            if (EditableNameBox.SelectionLength == 0)
+                EditableNameBox.SelectAll();
+        }
+
+        /// <summary>
+        ///  Finalize Inline Rename by hiding the TextBox and showing the TextBlock
+        /// </summary>
+        private void EndInlineRename()
+        {
+            NameBlock.Visibility = Visibility.Visible;
+            EditableNameBox.Visibility = Visibility.Collapsed;
+
+            ViewModel.DynamoViewModel.ExecuteCommand(
+                new DynCmd.UpdateModelValueCommand(
+                    System.Guid.Empty, ViewModel.NodeModel.GUID, nameof(NodeModel.Name), NameBlock.Text));
+        }
+
+        private void EditableNameBox_OnLostFocus(object sender, RoutedEventArgs e)
+        {
+            EndInlineRename();
+        }
+
+        private void EditableNameBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter || e.Key == Key.Escape)
+                EndInlineRename();
+        }
+
+
+    #region Preview Control Related Event Handlers
+
+    private void OnNodeViewMouseEnter(object sender, MouseEventArgs e)
         {
             // if the node is located under "Hide preview bubbles" menu item and the item is clicked,
             // ViewModel.DynamoViewModel.ShowPreviewBubbles will be updated AFTER node mouse enter event occurs
@@ -678,7 +737,8 @@ namespace Dynamo.Controls
                 {
                     PreviewControl.TransitionToState(PreviewControl.State.Condensed);
                     PreviewControl.TransitionToState(PreviewControl.State.Hidden);
-                } else if (PreviewControl.IsCondensed)
+                }
+                else if (PreviewControl.IsCondensed)
                 {
                     PreviewControl.TransitionToState(PreviewControl.State.Hidden);
                 }
@@ -687,27 +747,67 @@ namespace Dynamo.Controls
 
         #endregion
 
-        private void OptionsButton_Click(object sender, RoutedEventArgs e)
-        {
-            Guid nodeGuid = ViewModel.NodeModel.GUID;
-            ViewModel.DynamoViewModel.ExecuteCommand(
-                new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers.AsDynamoType()));
+        /// <summary>
+        /// A dictionary of MenuItems which are added during certain nodes' NodeViewCustomization process.
+        /// </summary>
+        private OrderedDictionary NodeViewCustomizationMenuItems { get; } = new OrderedDictionary();
 
-            viewModel.OnSelected(this, EventArgs.Empty);
-            grid.ContextMenu.DataContext = viewModel;
-            grid.ContextMenu.IsOpen = true;
+        /// <summary>
+        /// Saves a persistent list of unique MenuItems that are added by certain nodes during their NodeViewCustomization process.
+        /// Because nodes' ContextMenus are loaded lazily, and their MenuItems are disposed on closing,
+        /// these custom MenuItems need to be manually re-injected into the context menu whenever it is opened.
+        /// </summary>
+        private void StashNodeViewCustomizationMenuItems()
+        {
+            foreach (var obj in grid.ContextMenu.Items)
+            {
+                if (!(obj is MenuItem menuItem)) continue;
+
+                // We don't stash default MenuItems, such as 'Freeze'.
+                if (NodeContextMenuBuilder.NodeContextMenuDefaultItemNames.Contains(menuItem.Header.ToString())) continue;
+
+                // We don't stash the same MenuItem multiple times.
+                if (NodeViewCustomizationMenuItems.Contains(menuItem.Header.ToString())) continue;
+                
+                // The MenuItem gets stashed.
+                NodeViewCustomizationMenuItems.Add(menuItem.Header.ToString(), menuItem);
+            }
         }
 
-        private void topControl_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        /// <summary>
+        /// A common method to handle the node Options Button being clicked and
+        /// the user right-clicking on the node body to open its ContextMenu.
+        /// </summary>
+        private void DisplayNodeContextMenu(object sender, RoutedEventArgs e)
         {
             Guid nodeGuid = ViewModel.NodeModel.GUID;
+            ViewModel.WorkspaceViewModel.HideAllPopupCommand.Execute(sender);
             ViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers.AsDynamoType()));
 
-            grid.ContextMenu.DataContext = viewModel;
-            grid.ContextMenu.IsOpen = true;
+            var contextMenu = grid.ContextMenu;
+
+            // Stashing any injected MenuItems from the Node View Customization process.
+            if (contextMenu.Items.Count > 0 && NodeViewCustomizationMenuItems.Count < 1)
+            {
+                StashNodeViewCustomizationMenuItems();
+            }
+
+            // Clearing any existing items in the node's ContextMenu.
+            contextMenu.Items.Clear();
+            NodeContextMenuBuilder.Build(contextMenu, viewModel, NodeViewCustomizationMenuItems);
             
+            contextMenu.DataContext = viewModel;
+            contextMenu.IsOpen = true;
+
             e.Handled = true;
         }
+
+        private void MainContextMenu_OnClosed(object sender, RoutedEventArgs e)
+        {
+            grid.ContextMenu.Items.Clear();
+            e.Handled = true;
+        }
+
     }
 }

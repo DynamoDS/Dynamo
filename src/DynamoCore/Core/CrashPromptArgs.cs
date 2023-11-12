@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Dynamo.Core
@@ -17,7 +17,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        ///     Returns <see cref="Dispalyoptions"/> flag which indicates whether args contain default text overriden,
+        ///     Returns <see cref="DisplayOptions"/> flag which indicates whether args contain default text overriden,
         ///     has details or has file path
         /// </summary>
         public DisplayOptions Options { get; private set; }
@@ -102,4 +102,39 @@ namespace Dynamo.Core
         }
     }
 
+    /// <summary>
+    /// Event argument for CER (crash error reporting) tool.
+    /// It contains options on what to send out with the crash report.
+    /// </summary>
+    public sealed class CrashErrorReportArgs : CrashPromptArgs
+    {
+        /// <summary>
+        /// Constructs the options class to customize what CER will collect.
+        /// </summary>
+        /// <param name="e"></param>
+        public CrashErrorReportArgs(Exception e) : base(e)
+        {}
+
+        /// <summary>
+        /// Constructs the options class to customize what CER will collect.
+        /// </summary>
+        /// <param name="details">Crash details</param>
+        internal CrashErrorReportArgs(string details) : base(details)
+        { }
+
+        /// <summary>
+        /// Allow Dynamo to send the log file to the CER system.
+        /// </summary>
+        internal bool SendLogFile { get; set; } = true;
+
+        /// <summary>
+        /// Allow Dynamo to send the settings file to the CER system.
+        /// </summary>
+        internal bool SendSettingsFile { get; set; } = true;
+
+        /// <summary>
+        /// Allow Dynamo to send the recorded commands file to the CER system.
+        /// </summary>
+        public bool SendRecordedCommands { get; set; } = true;
+    }
 }

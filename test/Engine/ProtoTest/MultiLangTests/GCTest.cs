@@ -13,6 +13,42 @@ namespace ProtoTest.MultiLangTests
         }
 
         [Test]
+        public void T00_TestGCEndofForBlk()
+        {
+            string code = @"
+import(""DisposeVerify.ds"");
+v1;
+v2;
+v3;
+[Imperative]
+{
+  
+DisposeVerify.x = 1;
+arr = [ A.A(), A.A(), A.A() ];
+[Associative]
+{
+    [Imperative]
+    {
+        for(i in arr)
+        {
+            mm = i;
+            mm2 = A.A();
+        }
+        v1 = DisposeVerify.x; // 3
+    }
+}
+v2 = DisposeVerify.x; // 4
+arr = null;
+v3 = DisposeVerify.x; // 7
+}
+__GC();
+v4 = DisposeVerify.x;
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code, "", testCasePath);
+            thisTest.Verify("v4", 7);
+        }
+
+        [Test]
         [Category("DSDefinedClass_Ported")]
         public void T01_TestGCArray()
         {

@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Autodesk.DesignScript.Interfaces;
 using ProtoCore;
@@ -34,7 +35,27 @@ namespace ProtoFFI
             System.Diagnostics.Debug.Write("Trying to load assembly: " + name);
             if (System.IO.File.Exists(name))
             {
-                return Assembly.LoadFrom(name);
+                try
+                {
+                    //if the assembly is named system.private.corelib -
+                    //then we can't load it, and it's very likely
+                    //already loaded, just return it.
+                    //https://github.com/dotnet/runtime/issues/89215
+                    if (name.ToLower().Contains("system.private.corelib"))
+                    {
+                        return Assembly.Load(System.IO.Path.GetFileNameWithoutExtension(name));
+                    }
+
+                    return Assembly.LoadFrom(name);
+                }
+                catch(System.IO.FileLoadException e)
+                {
+                    // If the exception is having HRESULT of 0x80131515, then we need to instruct the user to "unblock" the downloaded DLL.
+                    if (e.HResult == unchecked((int)0x80131515))
+                    {
+                        throw new DynamoServices.AssemblyBlockedException(e.Message);
+                    }
+                }
             }
             throw new System.IO.FileNotFoundException();
         }
@@ -103,22 +124,7 @@ namespace ProtoFFI
             session.State = e.ExecutionState;
             mApploader.Notify(session);
         }
-
-        /// <summary>
-        /// For nunit-setup
-        /// </summary>
-        internal static void ForceStartUpAllApps()
-        {
-            Instance.mApploader.ForceStartUpAllApps();
-        }
-
-        /// <summary>
-        /// For nunit-teardown
-        /// </summary>
-        internal static void ForceShutDownAllApps()
-        {
-            Instance.mApploader.ForceShutDownAllApps();
-        }
+        
     }
 
     class FFIExecutionSession : IExecutionSession, IConfiguration, IDisposable

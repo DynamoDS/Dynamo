@@ -30,42 +30,66 @@ namespace Dynamo.Tests.Models
             cbn.Warning("TestPermanent2", true);
 
             Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
-            Assert.AreEqual(string.Join("", new List<string>() { "TestPermanent0", "TestPermanent1", "TestPermanent2" }), cbn.ToolTipText);
+            Assert.AreEqual(3, cbn.Infos.Count);
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestPermanent0") && x.State == ElementState.PersistentWarning));
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestPermanent1") && x.State == ElementState.PersistentWarning));
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestPermanent2") && x.State == ElementState.PersistentWarning));
 
             cbn.Warning("TestTransient0", false);
             Assert.AreEqual(ElementState.Warning, cbn.State);
-            Assert.AreEqual(string.Join("", new List<string>() { "TestPermanent0", "TestPermanent1", "TestPermanent2", "\nTestTransient0" }), cbn.ToolTipText);
+            Assert.AreEqual(4, cbn.Infos.Count);
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestPermanent0") && x.State == ElementState.PersistentWarning));
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestPermanent1") && x.State == ElementState.PersistentWarning));
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestPermanent2") && x.State == ElementState.PersistentWarning));
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestTransient0") && x.State == ElementState.Warning));
 
             cbn.ClearTransientWarning("TestTransientOther");
             Assert.AreEqual(ElementState.Warning, cbn.State);
-            Assert.AreEqual(string.Join("", new List<string>() { "TestPermanent0", "TestPermanent1", "TestPermanent2", "\nTestTransient0" }), cbn.ToolTipText);
+            Assert.AreEqual(4, cbn.Infos.Count);
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestPermanent0") && x.State == ElementState.PersistentWarning));
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestPermanent1") && x.State == ElementState.PersistentWarning));
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestPermanent2") && x.State == ElementState.PersistentWarning));
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestTransient0") && x.State == ElementState.Warning));
 
             cbn.ClearTransientWarning("TestTransient0");
             Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
-            Assert.AreEqual(string.Join("", new List<string>() { "TestPermanent0", "TestPermanent1", "TestPermanent2" }), cbn.ToolTipText);
+            Assert.AreEqual(3, cbn.Infos.Count);
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestPermanent0") && x.State == ElementState.PersistentWarning));
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestPermanent1") && x.State == ElementState.PersistentWarning));
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestPermanent2") && x.State == ElementState.PersistentWarning));
 
             cbn.ClearErrorsAndWarnings();
             Assert.AreEqual(ElementState.Active, cbn.State);
-            Assert.AreEqual("", cbn.ToolTipText);
+            Assert.AreEqual(0, cbn.Infos.Count);
 
             cbn.Warning("TestPermanent0", true);
             cbn.Warning("TestPermanent1", true);
             cbn.Warning("TestPermanent2", true);
 
             Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
-            Assert.AreEqual(string.Join("", new List<string>() { "TestPermanent0", "TestPermanent1", "TestPermanent2" }), cbn.ToolTipText);
+            Assert.AreEqual(3, cbn.Infos.Count);
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestPermanent0") && x.State == ElementState.PersistentWarning));
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestPermanent1") && x.State == ElementState.PersistentWarning));
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestPermanent2") && x.State == ElementState.PersistentWarning));
 
-            cbn.Warning("TestTransient0", false);
+            cbn.Warning("TestTransient0", false);                                                        
             Assert.AreEqual(ElementState.Warning, cbn.State);
-            Assert.AreEqual(string.Join("", new List<string>() { "TestPermanent0", "TestPermanent1", "TestPermanent2", "\nTestTransient0" }), cbn.ToolTipText);
+            Assert.AreEqual(4, cbn.Infos.Count);
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestPermanent0") && x.State == ElementState.PersistentWarning));
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestPermanent1") && x.State == ElementState.PersistentWarning));
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestPermanent2") && x.State == ElementState.PersistentWarning));
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestTransient0") && x.State == ElementState.Warning));
 
-            cbn.ClearTransientWarning();
+            cbn.ClearTransientWarning();                                                                 
             Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
-            Assert.AreEqual(string.Join("", new List<string>() { "TestPermanent0", "TestPermanent1", "TestPermanent2" }), cbn.ToolTipText);
+            Assert.AreEqual(3, cbn.Infos.Count);
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestPermanent0") && x.State == ElementState.PersistentWarning));
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestPermanent1") && x.State == ElementState.PersistentWarning));
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestPermanent2") && x.State == ElementState.PersistentWarning));
 
             cbn.ClearErrorsAndWarnings();
             Assert.AreEqual(ElementState.Active, cbn.State);
-            Assert.AreEqual("", cbn.ToolTipText);
+            Assert.AreEqual(0, cbn.Infos.Count);
         }
 
         /// <summary>
@@ -85,26 +109,33 @@ namespace Dynamo.Tests.Models
             cbn.Warning("TestPermanent0", true);
 
             Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
-            Assert.AreEqual(string.Join("", new List<string>() { "TestPermanent0" }), cbn.ToolTipText);
+            Assert.IsTrue(cbn.Infos.Count == 1);
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestPermanent0") && x.State == ElementState.PersistentWarning));
 
             cbn.Warning("TestTransient0", false);
 
             Assert.AreEqual(ElementState.Warning, cbn.State);
-            Assert.AreEqual(string.Join("", new List<string>() { "TestPermanent0", "\nTestTransient0" }), cbn.ToolTipText);
+            Assert.IsTrue(cbn.Infos.Count == 2);
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestPermanent0") && x.State == ElementState.PersistentWarning));
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestTransient0") && x.State == ElementState.Warning));
 
             cbn.Warning("TestPermanent1", true);
   
             Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
-            Assert.AreEqual(string.Join("", new List<string>() { "TestPermanent0", "TestPermanent1" }), cbn.ToolTipText);
+            Assert.IsTrue(cbn.Infos.Count == 2);
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestPermanent0") && x.State == ElementState.PersistentWarning));
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestPermanent1") && x.State == ElementState.PersistentWarning));
 
             cbn.Warning("TestTransient1", false);
-
+            Assert.IsTrue(cbn.Infos.Count == 3);
             Assert.AreEqual(ElementState.Warning, cbn.State);
-            Assert.AreEqual(string.Join("", new List<string>() { "TestPermanent0", "TestPermanent1", "\nTestTransient1" }), cbn.ToolTipText);
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestPermanent0") && x.State == ElementState.PersistentWarning));
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestPermanent1") && x.State == ElementState.PersistentWarning));
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestTransient1") && x.State == ElementState.Warning));
 
             cbn.ClearErrorsAndWarnings();
             Assert.AreEqual(ElementState.Active, cbn.State);
-            Assert.AreEqual("", cbn.ToolTipText);
+            Assert.AreEqual(0, cbn.Infos.Count);
         }
     }
 }

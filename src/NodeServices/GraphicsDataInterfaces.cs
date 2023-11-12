@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Autodesk.DesignScript.Interfaces
@@ -329,6 +329,9 @@ namespace Autodesk.DesignScript.Interfaces
         /// Add a label position to the render package.
         /// </summary>
         /// <param name="label">Text to be displayed in the label</param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
         void AddLabel(string label, double x, double y, double z);
 
         /// <summary>
@@ -342,11 +345,110 @@ namespace Autodesk.DesignScript.Interfaces
         void ClearLabels();
     }
 
+    /// <summary>
+    /// Internal interface to enable adding labels that are related to an instanceableGraphicItem.
+    /// </summary>
+    internal interface IRenderInstancedLabels
+    {
+        /// <summary>
+        /// Adds a label to the render package, but first transforms the label by the transform matrix of the 
+        /// relevant graphicItem.
+        /// </summary>
+        /// <param name="label">label</param>
+        /// <param name="vertexType">type of vertex</param>
+        /// <param name="vertIndex">vertex index for base label position</param>
+        /// <param name="instanceIndex">index to use for transform matrix</param>
+        /// <param name="BaseTessellationId">baseTessellation Id of the item this label belongs to.
+        /// Aids in lookup of the correct transform matrix.</param>
+        void AddInstancedLabel(string label, VertexType vertexType, int vertIndex, int instanceIndex, Guid BaseTessellationId);
+        /// <summary>
+        /// Number of instances for a particular baseTessellation type(cuboid, sphere etc)
+        /// </summary>
+        /// <param name="baseTessellationID"></param>
+        /// <returns>returns -1 if id cannot be found in package.</returns>
+        int InstanceCount(Guid baseTessellationID);
+    };
+
+    /// <summary>
+    /// Represents instance matrices and references to tessellated geometry in the RenderPackage
+    /// </summary>
+    internal interface IInstancingRenderPackage
+    {
+        /// <summary>
+        /// Checks if a base tessellation guid has already been registered with this <see cref="IInstancingRenderPackage"/>.
+        /// Both Line and Mesh ids are checked.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        bool ContainsTessellationId(Guid id);
+
+        /// <summary>
+        /// Set an instance reference for a specific range of mesh vertices
+        /// </summary>
+        /// <param name="startIndex">The index associated with the first vertex in MeshVertices we want to associate with the instance matrices></param>
+        /// <param name="endIndex">The index associated with the last vertex in MeshVertices we want to associate with the instance matrices></param>
+        /// <param name="id">A unique id associated with this tessellation geometry for instancing</param>
+        void AddInstanceGuidForMeshVertexRange(int startIndex, int endIndex, Guid id);
+
+        /// <summary>
+        /// Set an instance reference for a specific range of line vertices
+        /// </summary>
+        /// <param name="startIndex">The index associated with the first vertex in LineVertices we want to associate with the instance matrices></param>
+        /// <param name="endIndex">The index associated with the last vertex in LineVertices we want to associate with the instance matrices></param>
+        /// <param name="id">A unique id associated with this tessellation geometry for instancing</param>
+        void AddInstanceGuidForLineVertexRange(int startIndex, int endIndex, Guid id);
+
+        /// <summary>
+        /// Set the transform using a series of floats. The resulting transform is applied to the range of geometry specified by the id.
+        /// Following conventional matrix notation, m11 is the value of the first row and first column, and m12
+        /// is the value of the first row and second column.
+        /// NOTE: This method should set the matrix exactly as described by the caller.
+        /// </summary>
+        /// <param name="m11"></param>
+        /// <param name="m12"></param>
+        /// <param name="m13"></param>
+        /// <param name="m14"></param>
+        /// <param name="m21"></param>
+        /// <param name="m22"></param>
+        /// <param name="m23"></param>
+        /// <param name="m24"></param>
+        /// <param name="m31"></param>
+        /// <param name="m32"></param>
+        /// <param name="m33"></param>
+        /// <param name="m34"></param>
+        /// <param name="m41"></param>
+        /// <param name="m42"></param>
+        /// <param name="m43"></param>
+        /// <param name="m44"></param>
+        /// <param name="id"></param>
+        void AddInstanceMatrix(float m11, float m12, float m13, float m14,
+           float m21, float m22, float m23, float m24,
+           float m31, float m32, float m33, float m34,
+           float m41, float m42, float m43, float m44, Guid id);
+
+        /// <summary>
+        /// Set the transform as a float array, The resulting transform is applied to the range of geometry specified by the id.
+        /// This matrix should be laid out as follows in row vector order:
+        /// [Xx,Xy,Xz, 0,
+        ///  Yx, Yy, Yz, 0,
+        ///  Zx, Zy, Zz, 0,
+        ///  offsetX, offsetY, offsetZ, W]
+        /// NOTE: This method should transform the matrix from row vector order to whatever form is needed by the implementation.
+        /// When converting from ProtoGeometry CoordinateSystem form to input matrix, set the first row to the X axis of the CS,
+        /// the second row to the Y axis of the CS, the third row to the Z axis of the CS, and the last row to the CS origin, where W = 1. 
+        /// </summary>
+        /// <param name="matrix"></param>
+        /// <param name="id"></param>
+        void AddInstanceMatrix(float[] matrix, Guid id);
+    }
+
     public enum VertexType
     {
         Point,
         Line,
-        Mesh
+        Mesh,
+        MeshInstance,
+        LineInstance,
     }
 
     /// <summary>
@@ -421,6 +523,40 @@ namespace Autodesk.DesignScript.Interfaces
         /// <param name="matrix"></param>
         void SetTransform(double[] matrix);
         
+    }
+
+    /// <summary>
+    /// An interface that defines items whose graphics are defined by a single base tessellation and instance transforms defined by 4x4 transformation matrices.
+    /// </summary>
+    internal interface IInstanceableGraphicItem
+    {
+        /// <summary>
+        /// A Guid used to reference the base tessellation geometry that will be transformed for all related instances
+        /// </summary>
+        Guid BaseTessellationGuid { get; }
+
+        /// <summary>
+        /// A flag used to indicate if the current geometrical configuration of an item has instance information.
+        /// </summary>
+        bool InstanceInfoAvailable { get; }
+
+        /// <summary>
+        /// Adds the base graphics/tesselation data in given render package object.
+        /// </summary>
+        /// <param name="package">The render package, where base tessellation will be
+        /// pushed.</param>
+        /// <param name="parameters">tessellation parameters for the instance. Can be used to generate the
+        /// correct shared base tessellation</param>
+        void AddBaseTessellation(IInstancingRenderPackage package, TessellationParameters parameters);
+
+        /// <summary>
+        /// Adds an instance matrix for this geometry.
+        /// </summary>
+        /// <param name="package">The render package, where instance will be
+        /// pushed.</param>
+        /// <param name="parameters">tessellation parameters for the instance, only scale factor is generally applicable.</param>
+        /// <param name="labelKey">the strig label key that specifices which result this instance represents in a node's output.</param>
+        void AddInstance(IInstancingRenderPackage package, TessellationParameters parameters, string labelKey);
     }
 
 

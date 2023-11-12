@@ -7,6 +7,7 @@
        xmlns:ui="clr-namespace:Dynamo.UI"
        xmlns:customcontrols="clr-namespace:Dynamo.Wpf.Views.GuidedTour"
        xmlns:localui="clr-namespace:Dynamo.Wpf.UI.GuidedTour"
+       xmlns:prop="clr-namespace:Dynamo.Wpf.Properties"
        mc:Ignorable="d" 
        d:DesignHeight="450" 
        d:DesignWidth="400">
@@ -59,7 +60,8 @@
                     </Grid.RowDefinitions>
 
                     <!--Check Mark Symbol-->
-                    <Canvas HorizontalAlignment="Center"
+                    <Canvas Name="CheckMark"
+                            HorizontalAlignment="Center"
                             Grid.Row="0"
                             Width="30"
                             Height="30"
@@ -84,8 +86,8 @@
 
                 <!--Learn more-->
                 <localui:CustomRichTextBox x:Name="LearnMoreRichTextBox" 
-                                           Margin="0,0,0,10"
-                                           Width="{Binding ContentWidth}"
+                                           Margin="30,10,0,50"
+                                           MaxWidth="300"
                                            IsDocumentEnabled="True"                                       
                                            Grid.Row="2"
                                            HorizontalContentAlignment="Center"
@@ -119,7 +121,33 @@
 
                     </Grid>
                 </Border>
-                <!--Link to Next Guide-->
+
+                <!-- This grid represents the link that redirects to the next guide -->
+                <Grid
+                    Grid.Row="5" 
+                    Name="NextGuideLink"
+                    HorizontalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock                           
+                            Name="NextGuidelabel"
+                            Grid.Column="0"
+                            Text="{x:Static prop:Resources.NextGuideText}"      
+                            FontSize="14px"
+                            TextAlignment="Center"                        
+                            FontFamily="{StaticResource ArtifaktElementRegular}"
+                            HorizontalAlignment="Right">
+                    </TextBlock>
+                    <Button 
+                        x:Name="NextGuideNameButton"
+                        Grid.Column="1"
+                        Click="GetStartedButton_Click"
+                        Style="{StaticResource TextButtonLink}">
+                    </Button>
+                </Grid>
+                
                 <!--For the first release this RichTextBox will be hidden-->
                 <localui:CustomRichTextBox x:Name="NextGuideRichTextBox" 
                                            IsDocumentEnabled="True"       
@@ -127,7 +155,7 @@
                                            Grid.Row="5"
                                            Width="150"
                                            HorizontalContentAlignment="Center"
-                                           HorizontalAlignment="Center"
+                                           HorizontalAlignment="Center"                                           
                                            CustomText="{Binding LinkNexGuide}"
                                            Style="{StaticResource CustomRichTextBoxStyle}">
                 </localui:CustomRichTextBox>

@@ -1,7 +1,7 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "",
+  "Description": "Dynamo Core Sample",
   "Name": "Core_PassingFunctions",
   "ElementResolver": {
     "ResolutionMap": {}
@@ -18,7 +18,7 @@
         {
           "Id": "be69d661778e4c1d84d339692dfbcbde",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -27,7 +27,7 @@
         {
           "Id": "7a43a26abd594c6093f4b00bfa7c7543",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -36,7 +36,7 @@
         {
           "Id": "15f303388372444aa67d3960b6c2033c",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -47,7 +47,7 @@
         {
           "Id": "01d0926dfc6a4fd2991b7ff2f07f91a9",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -86,7 +86,7 @@
         {
           "Id": "5eadd9bbefc34795b56a27e728549180",
           "Name": "centerPoint",
-          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0) (disabled)",
+          "Description": "Center point of circle\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0) (disabled)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -95,7 +95,7 @@
         {
           "Id": "421bcb15b8df4f02bd376fb80a804a73",
           "Name": "radius",
-          "Description": "double\nDefault value : 1",
+          "Description": "Radius\n\ndouble\nDefault value : 1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -106,7 +106,7 @@
         {
           "Id": "59d25654ab5848778f8bc1bcc7c55411",
           "Name": "Circle",
-          "Description": "Circle",
+          "Description": "Circle created with center point and radius",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -163,7 +163,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualize the output of node."
+      "Description": "Visualize the node's output"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -409,7 +409,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualize the output of node."
+      "Description": "Visualize the node's output"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -438,7 +438,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualize the output of node."
+      "Description": "Visualize the node's output"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -484,87 +484,120 @@
     {
       "Start": "01d0926dfc6a4fd2991b7ff2f07f91a9",
       "End": "c5bb5cdfbb5145afb702b0f0f7619072",
-      "Id": "df462f12573145f68a6cba50e53290cf"
+      "Id": "df462f12573145f68a6cba50e53290cf",
+      "IsHidden": "False"
     },
     {
       "Start": "5a4d1fc054444cd79041aa5839900d81",
       "End": "be69d661778e4c1d84d339692dfbcbde",
-      "Id": "7a1dd110a3f942f499d1a3cd59ba1bcc"
+      "Id": "7a1dd110a3f942f499d1a3cd59ba1bcc",
+      "IsHidden": "False"
     },
     {
       "Start": "59d25654ab5848778f8bc1bcc7c55411",
       "End": "98e77cd75f0d49648bf4f07876db2826",
-      "Id": "64f73d32baaf4764ae0cb7831993a478"
+      "Id": "64f73d32baaf4764ae0cb7831993a478",
+      "IsHidden": "False"
     },
     {
       "Start": "59d25654ab5848778f8bc1bcc7c55411",
       "End": "d8103928f0224c6692b45f7759c6c6c3",
-      "Id": "f399e6b0212e4eb68b457abe6c5f38d3"
+      "Id": "f399e6b0212e4eb68b457abe6c5f38d3",
+      "IsHidden": "False"
     },
     {
       "Start": "a423d771c20046a7857a0c4eec27afc1",
       "End": "421bcb15b8df4f02bd376fb80a804a73",
-      "Id": "43b2999ee81f4bd1b07ee0eea9ab760c"
+      "Id": "43b2999ee81f4bd1b07ee0eea9ab760c",
+      "IsHidden": "False"
     },
     {
       "Start": "41db25070e7f441090ff83bbd0a156c7",
       "End": "5eadd9bbefc34795b56a27e728549180",
-      "Id": "ce89977263a945be94addc4ec560a4ba"
+      "Id": "ce89977263a945be94addc4ec560a4ba",
+      "IsHidden": "False"
     },
     {
       "Start": "ecba4073e59e4f4fb331fa8ef61116f0",
       "End": "daee6fcffa0d4c9b812c395683805e65",
-      "Id": "eb41941d945f4e349f5bed1f0c60da74"
+      "Id": "eb41941d945f4e349f5bed1f0c60da74",
+      "IsHidden": "False"
     },
     {
       "Start": "0aa2eaff181046c4af8e3417c47beb5f",
       "End": "6613c40a0b2140e6b77ae55a7b8aee02",
-      "Id": "cced920cec3247b2b70e227c40b31318"
+      "Id": "cced920cec3247b2b70e227c40b31318",
+      "IsHidden": "False"
     },
     {
       "Start": "bb1419d9aea848febf15f66460d1d619",
       "End": "2feea261acd24dd9981df50000af5b86",
-      "Id": "e4b180bcd8a74d18a28f12feb13f76ba"
+      "Id": "e4b180bcd8a74d18a28f12feb13f76ba",
+      "IsHidden": "False"
     },
     {
       "Start": "d914cf4778f641c89bb1386499ad8af2",
       "End": "97e626ec0e2643bfb7d47a8a59667d75",
-      "Id": "3cd3708ff3064647ae97af4791e30761"
+      "Id": "3cd3708ff3064647ae97af4791e30761",
+      "IsHidden": "False"
     },
     {
       "Start": "16b138a948b442e4a550be025748a05a",
       "End": "5f172c652c6a4ed79e1d70c4390e2e33",
-      "Id": "604cef90abab4256a777d6516fd0a845"
+      "Id": "604cef90abab4256a777d6516fd0a845",
+      "IsHidden": "False"
     },
     {
       "Start": "08216214f98e4c578b9a9b880d1d65b6",
       "End": "7a43a26abd594c6093f4b00bfa7c7543",
-      "Id": "80299265a13941d0a57377836b6db0b3"
+      "Id": "80299265a13941d0a57377836b6db0b3",
+      "IsHidden": "False"
     },
     {
       "Start": "cb7a6461ecef4223b6fa786edb4a5176",
       "End": "09d9499dfdb948af90e03bef5ab89b62",
-      "Id": "05021fdfdce04fbdb3ba7be1acf98c4f"
+      "Id": "05021fdfdce04fbdb3ba7be1acf98c4f",
+      "IsHidden": "False"
     },
     {
       "Start": "c9b161bd7f8e44a0baff7a914c6078e5",
       "End": "5aacca33836b466e8d024511d121fc67",
-      "Id": "fe3eb123f15c4cefbf51af0cc01d5dc1"
+      "Id": "fe3eb123f15c4cefbf51af0cc01d5dc1",
+      "IsHidden": "False"
     },
     {
       "Start": "f077a59d2ba7456dabbe7d8050bae9ec",
       "End": "71ffe50cede9462b847ff9dfd277ecab",
-      "Id": "4f6b5f77ecdb4ac8ac2b28809b2fd26c"
+      "Id": "4f6b5f77ecdb4ac8ac2b28809b2fd26c",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": null,
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.13",
+      "Data": {}
+    }
+  ],
+  "Author": "Dynamo Team",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
   "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.0.0.2821",
+      "Version": "2.13.0.3265",
       "RunType": "Automatic",
       "RunPeriod": "100"
     },
@@ -580,6 +613,7 @@
       "UpY": 1.0,
       "UpZ": 0.0
     },
+    "ConnectorPins": [],
     "NodeViews": [
       {
         "ShowGeometry": true,
@@ -588,8 +622,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 3581.10710930312,
-        "Y": 749.084618781856
+        "X": 3491.6635096260934,
+        "Y": 762.99806762050468
       },
       {
         "ShowGeometry": true,
@@ -598,8 +632,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 3425.74325370254,
-        "Y": 734.524619497286
+        "X": 3274.6829520257838,
+        "Y": 728.561712852151
       },
       {
         "ShowGeometry": true,
@@ -618,8 +652,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 4102.98967768923,
-        "Y": 812.585109543448
+        "X": 4037.3977045927436,
+        "Y": 945.75669128479876
       },
       {
         "ShowGeometry": true,
@@ -628,8 +662,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 3779.5373297572,
-        "Y": 750.676336564008
+        "X": 3747.7351609831458,
+        "Y": 748.68870101562959
       },
       {
         "ShowGeometry": true,
@@ -648,8 +682,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 4759.77754366835,
-        "Y": 590.679975502263
+        "X": 4710.7105165922476,
+        "Y": 676.2327406605956
       },
       {
         "ShowGeometry": true,
@@ -658,8 +692,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 5558.31513988697,
-        "Y": 568.829548498671
+        "X": 5669.0304830330479,
+        "Y": 570.08767739805819
       },
       {
         "ShowGeometry": true,
@@ -668,8 +702,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 5453.15882294258,
-        "Y": 643.882970629645
+        "X": 5504.7421078174566,
+        "Y": 734.4682513855264
       },
       {
         "ShowGeometry": true,
@@ -678,8 +712,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 5466.78169030257,
-        "Y": 1042.86315052899
+        "X": 5444.1353701135995,
+        "Y": 1109.5439821965138
       },
       {
         "ShowGeometry": true,
@@ -688,8 +722,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 5571.93800724695,
-        "Y": 967.809728398021
+        "X": 5647.4257412101842,
+        "Y": 961.51908390108474
       },
       {
         "ShowGeometry": true,
@@ -698,8 +732,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 4667.59276850354,
-        "Y": 1028.6902860704
+        "X": 4588.3306478421437,
+        "Y": 1022.3996415734637
       },
       {
         "ShowGeometry": true,
@@ -708,8 +742,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 3424.23038263875,
-        "Y": 832.432412380937
+        "X": 3275.1577165103722,
+        "Y": 868.20985225174763
       },
       {
         "ShowGeometry": true,
@@ -718,8 +752,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 5121.06508856184,
-        "Y": 562.841475446039
+        "X": 5209.1341115189471,
+        "Y": 555.29270204971556
       },
       {
         "ShowGeometry": true,
@@ -728,8 +762,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 5122.23309903771,
-        "Y": 964.620617369044
+        "X": 5124.7493568364853,
+        "Y": 994.81571095433787
       },
       {
         "ShowGeometry": true,
@@ -738,113 +772,160 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 4812.67328573054,
-        "Y": 970.738645055032
+        "X": 4815.1895435293136,
+        "Y": 987.09432074706626
       }
     ],
     "Annotations": [
       {
         "Id": "47dbdf18de6349289289c36b8f6c7642",
         "Title": "This list of points is organized in a hierarchical structure--it's a list of lists.  The grid was made with 8 points in the X-direction and 5 in the Y-direction.  This list represents 8 lists of 5 things, or lists of columns of points.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 3782.72863726522,
-        "Top": 637.804900116234,
+        "HasNestedGroups": false,
+        "Left": 3736.2351609831458,
+        "Top": 640.68870101562959,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "25f3149e726844fab231ffc053f2335d"
       },
       {
         "Id": "3fe4d0f6585f4d9fbdb37c3d956d805d",
         "Title": "Draw a circle around each point.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 4168.85852609423,
-        "Top": 698.253535453535,
+        "HasNestedGroups": false,
+        "Left": 4244.32721617242,
+        "Top": 700.612368956374,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "f2067c8e4288455ebbebe0118a8a74f6"
       },
       {
         "Id": "a73f9174f32148a798915a2f54c6fb6a",
         "Title": "From the nested list of circles, items {1,2} are chosen.  Dynamo nodes will always act on a list \"from the outside in,\" or from the highest level to the lowest level.\r\n\r\nSelecting items 1 and 2 from the list will return list #1 and list #2 from the original nested list structure.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 4773.4193233943,
-        "Top": 424.510541559189,
+        "HasNestedGroups": false,
+        "Left": 4863.58748475413,
+        "Top": 424.577398027748,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "d69a177ba50b4b3f9f79bca36df5e1d5"
       },
       {
         "Id": "f43283699ca24aa69623b15e019f7672",
         "Title": "Rather than taking the first two lists from the node's output, the List@Level feature allows the #1 and #2 item from EACH list to be taken, by selecting L2 at the input port of List.GetItemAtIndex.\r\n\r\nNote that this feature resolves the functionality of List.Map, a method used to access the inner levels of input lists in the previous versions of Dynamo.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 4762.7627639318,
-        "Top": 823.04775206711,
+        "HasNestedGroups": false,
+        "Left": 4777.1895435293136,
+        "Top": 836.09432074706638,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "4d54421b6fae4eef83c8f89c547c86a7"
       },
       {
         "Id": "53e0aab7870a4afb84a16229adb40b57",
         "Title": "The selected data still exists in the same structure it did before I selected it by mapping.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 5117.03169281953,
-        "Top": 493.377001777663,
+        "HasNestedGroups": false,
+        "Left": 5197.6341115189471,
+        "Top": 490.29270204971556,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "05749e6332cb4b22b5bced1c347cd9cb"
       },
       {
         "Id": "ddfbbe5196964150a648974b3759653b",
         "Title": "This list of circles is extruded up.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 5485.25419747392,
-        "Top": 514.17074321697,
+        "HasNestedGroups": false,
+        "Left": 5681.0304830330479,
+        "Top": 520.08767739805819,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "2abb7d976b234b2691afc11407503a66"
       },
       {
         "Id": "cd5d3035911c496698419148363be864",
         "Title": "This list of circles is extruded down.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 5475.79639710157,
-        "Top": 915.044178564507,
+        "HasNestedGroups": false,
+        "Left": 5651.9257412101842,
+        "Top": 911.51908390108474,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "44b197d925e24afe96d2badc82b0e37d"
       },
       {
         "Id": "64a021eb7d024f83af81e726b1172932",
         "Title": "PASSING FUNCTIONS\r\n\r\nDynamo is a functional language, which means that ACTIONS can be treated in the same way that OBJECTS are.  Most nodes in Dynamo can be turned into a function and used in a very precise way on a set of data.  \r\n\r\nMaking a function and passing a function is like speaking the command \"Run for 20 minutes!\" but specifying later on who you are talking to.\r\n\r\nIn this example, a grid of circles is represented in a complex structure.  The command to select a set of circles is used directly, and then the command is passed instead as a function to lower levels of data for a different result.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
+        "HasNestedGroups": false,
         "Left": 3427.2604599744,
         "Top": 337.124829832297,
         "Width": 0.0,
@@ -856,8 +937,8 @@
         "Background": "#FFC1D676"
       }
     ],
-    "X": -1818.8069553531554,
-    "Y": -16.560334112063458,
-    "Zoom": 0.55561804000025361
+    "X": -1606.4972069739567,
+    "Y": 37.473044391759743,
+    "Zoom": 0.49974218296815182
   }
 }

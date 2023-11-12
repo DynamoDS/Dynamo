@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -181,6 +181,12 @@ namespace Dynamo.PackageManager
         /// </summary>
         public IEnumerable<string> HostDependencies { get { return hostDependencies; } set { hostDependencies = value; RaisePropertyChanged("HostDependencies"); } }
 
+        private string copyrightHolder = "";
+        public string CopyrightHolder { get { return copyrightHolder; } set { copyrightHolder = value; RaisePropertyChanged("CopyrightHolder"); } }
+
+        private string copyrightYear = "";
+        public string CopyrightYear { get { return copyrightYear; } set { copyrightYear = value; RaisePropertyChanged("CopyrightYear"); } }
+
         internal bool BuiltInPackage
         {
             get { return RootDirectory.StartsWith(PathManager.BuiltinPackagesDirectory); }
@@ -283,6 +289,8 @@ namespace Dynamo.PackageManager
                     SiteUrl = body.site_url,
                     RepositoryUrl = body.repository_url,
                     HostDependencies = body.host_dependencies,
+                    CopyrightHolder = body.copyright_holder,
+                    CopyrightYear = body.copyright_year,
                     Header = body
                 };
                 
@@ -319,7 +327,8 @@ namespace Dynamo.PackageManager
             AdditionalFiles.AddRange(nonDyfDllFiles);
         }
 
-        public IEnumerable<string> EnumerateAssemblyFilesInBinDirectory()
+        //TODO can we make this internal?
+        public IEnumerable<string> EnumerateAssemblyFilesInPackage()
         {
             if (String.IsNullOrEmpty(RootDirectory) || !Directory.Exists(RootDirectory)) 
                 return new List<string>();
@@ -365,7 +374,7 @@ namespace Dynamo.PackageManager
             // In earlier packages, this field could be null, which is correctly handled by IsNodeLibrary
             var nodeLibraries = Header.node_libraries;
             
-            foreach (var assemFile in (new System.IO.DirectoryInfo(BinaryDirectory)).EnumerateFiles("*.dll"))
+            foreach (var assemFile in new DirectoryInfo(BinaryDirectory).EnumerateFiles("*.dll"))
             {
                 Assembly assem;
                 //TODO when can we make this false. 3.0?
@@ -462,7 +471,7 @@ namespace Dynamo.PackageManager
                         return true;
                     }
                 }
-                catch (Exception _)
+                catch (Exception)
                 {
                     if (messages != null)
                     {
@@ -480,10 +489,12 @@ namespace Dynamo.PackageManager
             return Directory.EnumerateFiles(RootDirectory, "*", SearchOption.AllDirectories).Any(s => s == path);
         }
 
+        // Checks if the package is used in the Dynamo model.
+        // The check does not take into account the package load state.
         internal bool InUse(DynamoModel dynamoModel)
         {
             return (LoadedAssemblies.Any() || IsWorkspaceFromPackageOpen(dynamoModel) || 
-                IsCustomNodeFromPackageInUse(dynamoModel)) && LoadState.State == PackageLoadState.StateTypes.Loaded;
+                IsCustomNodeFromPackageInUse(dynamoModel));
         }
 
         private bool IsCustomNodeFromPackageInUse(DynamoModel dynamoModel)
@@ -509,10 +520,16 @@ namespace Dynamo.PackageManager
                     .Any(guids.Contains);
         }
 
+        /// <summary>
+        /// Marks built-in package for unload.
+        /// Any other custom package will be marked for deletion.
+        /// </summary>
+        /// <param name="prefs"></param>
         internal void MarkForUninstall(IPreferences prefs)
         {
             if (BuiltInPackage) 
             {
+                Analytics.TrackEvent(Actions.BuiltInPackageConflict, Categories.PackageManagerOperations, $"{Name } {versionName} marked to be unloaded");
                 LoadState.SetScheduledForUnload();
             } 
             else
@@ -527,6 +544,12 @@ namespace Dynamo.PackageManager
             RaisePropertyChanged(nameof(LoadState));
         }
 
+        /// <summary>
+        /// Resets scheduled state to 'None' for given package.
+        /// Custom package will no longer be uninstalled.
+        /// Package load state will remain unaffected.
+        /// </summary>
+        /// <param name="prefs"></param>
         internal void UnmarkForUninstall(IPreferences prefs)
         {
             LoadState.ResetScheduledState();
@@ -535,14 +558,25 @@ namespace Dynamo.PackageManager
             RaisePropertyChanged(nameof(LoadState));
         }
 
-        internal void MarkForLoad(IPreferences prefs)
+        /// <summary>
+        /// Marks any given package for unload.
+        /// The package will not be marked for deletion.
+        /// </summary>
+        internal void MarkForUnload()
         {
-            if (BuiltInPackage)
-            {
-                LoadState.SetAsLoaded();
-                prefs.PackageDirectoriesToUninstall.Remove(RootDirectory);
-                RaisePropertyChanged(nameof(LoadState));
-            }
+            LoadState.SetScheduledForUnload();
+            RaisePropertyChanged(nameof(LoadState));
+        }
+
+        /// <summary>
+        /// Resets scheduled state to 'None' for given package.
+        /// Package will no longer be unloaded.
+        /// Package load state will remain unaffected.
+        /// </summary>
+        internal void UnmarkForUnload()
+        {
+            LoadState.ResetScheduledState();
+            RaisePropertyChanged(nameof(LoadState));
         }
 
         internal void SetAsLoaded()
@@ -565,6 +599,8 @@ namespace Dynamo.PackageManager
                 if (BuiltInPackage)
                 {
                     LoadState.SetAsUnloaded();
+                    Analytics.TrackEvent(Actions.BuiltInPackageConflict, Categories.PackageManagerOperations, $"{Name } {versionName} set unloaded");
+
                     RaisePropertyChanged(nameof(LoadState));
 
                     if (!prefs.PackageDirectoriesToUninstall.Contains(RootDirectory))

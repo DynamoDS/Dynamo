@@ -7,6 +7,7 @@ namespace Dynamo.Logging
     /// Defines analytics session interface. This interface is defined for
     /// internal use and mocking the tests only.
     /// </summary>
+    [Obsolete("Interface should be Internal, do not use.")]
     public interface IAnalyticsSession : IDisposable
     {
         /// <summary>
@@ -25,7 +26,6 @@ namespace Dynamo.Logging
         /// </summary>
         /// <param name="model">DynamoModel</param>
         void Start(DynamoModel model);
-
         /// <summary>
         /// Returns a logger to record usage.
         /// </summary>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -113,7 +113,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void GetInstalledASMVersions2_ASMVersionFallback()
+        public void GetInstalledASMVersions2_OnlyLoadMatchingOrHigherVersions()
         {
             var versions = new List<Version>()
             {
@@ -155,46 +155,98 @@ namespace Dynamo.Tests
             var foundVersion = DynamoShapeManager.Utilities.GetInstalledAsmVersion2(
                 versions, ref foundPath, rootFolder, (path) => { return mockedInstalledASMs; });
 
-            // The found version in this case is a fallback of lowest version within same major which should be 225.0.0
+            // The found version in this case is the 224.4 version - 225.0 does is not compatible with a supported version of 225.4.
             Assert.AreNotEqual(newestASM, foundVersion);
-            Assert.AreEqual("revit2020_InstallLocation", foundPath);
+            Assert.AreEqual("revit2019.2_InstallLocation", foundPath);
             //cleanup
             libG22440path.Delete(true);
             libG22500path.Delete(true);
         }
-
         [Test]
-        public void GetLibGPreloaderLocation_libGVersionFallback()
+        public void GetInstalledASMVersions2_OnlyLoadMatchingOrHigherVersions228()
         {
             var versions = new List<Version>()
             {
-                    new Version(225,4,0)
+                    new Version(228,5,0)
+            };
+          
+            var mockedInstalledASMs = new Dictionary<string, Tuple<int, int, int, int>>()
+            {
+
+                {"revit2023_InstallLocation" ,Tuple.Create<int,int,int,int>(228,1,0,0)},
+                {"revit2024_InstallLocation" ,Tuple.Create<int,int,int,int>(228,6,0,0)},
+
+            };
+
+            //mock a folder with libASMLibVersionToVersionG folders with correct names
+            var foundPath = "";
+            var rootFolder = Path.Combine(Path.GetTempPath(), "LibGTest");
+            //both versions of libG exist
+            var libG228path = System.IO.Directory.CreateDirectory(Path.Combine(rootFolder, "LibG_228_0_0"));
+            var libG2270path = System.IO.Directory.CreateDirectory(Path.Combine(rootFolder, "LibG_227_0_0"));
+
+
+            var foundVersion = DynamoShapeManager.Utilities.GetInstalledAsmVersion2(
+                versions, ref foundPath, rootFolder, (path) => { return mockedInstalledASMs; });
+
+            // The found version in this case is the 228.6 version, 228.1 is not >= than 228.6
+            Assert.AreEqual(new Version(228, 6, 0), foundVersion);
+            Assert.AreEqual("revit2024_InstallLocation", foundPath);
+            //cleanup
+            libG228path.Delete(true);
+            libG2270path.Delete(true);
+        }
+
+        [Test]
+        public void GetInstalledASMVersions2_WillLoadASMFromLibGFolder_EvenWhenOlderASMInstallFound()
+        {
+            var versions = new List<Version>()
+            {
+                    new Version(228,6,0)
             };
 
             var mockedInstalledASMs = new Dictionary<string, Tuple<int, int, int, int>>()
             {
 
-                {"revit_Prerelease_InstallLocation" ,Tuple.Create<int,int,int,int>(225,3,0,0)},
+                {"revit2023_InstallLocation" ,Tuple.Create<int,int,int,int>(228,1,0,0)},
+
             };
 
-            var targetVersion = new Version(225, 3, 0);
-
-            // mock a folder with libASMLibVersionToVersionG folders with correct names
+            //mock a folder with libASMLibVersionToVersionG folders with correct names
             var foundPath = "";
+            var rootFolder = Path.Combine(Path.GetTempPath(), "LibGTest");
+            //both versions of libG exist
+            var libG228path = System.IO.Directory.CreateDirectory(Path.Combine(rootFolder, "LibG_228_0_0"));
+            var libG2270path = System.IO.Directory.CreateDirectory(Path.Combine(rootFolder, "LibG_227_0_0"));
+
+            //put a mock asm dll in the libg228 mock foler.
+            var asmdll = File.Create(Path.Combine(libG228path.FullName, "ASMAHL228A.dll"));
+            asmdll.Close();
+            
+            var foundVersion = DynamoShapeManager.Utilities.GetInstalledAsmVersion2(
+                versions, ref foundPath, rootFolder, (path) => { return mockedInstalledASMs; });
+
+            // The found version in this case is the 228.6 version from the libg folder,
+            // 228.1 is not >= than 228.6 so it's ignored even though it's an install version.
+            Assert.AreEqual(new Version(228,6, 0), foundVersion);
+            Assert.AreEqual(libG228path.FullName.ToLowerInvariant(), foundPath.ToLowerInvariant());
+            //cleanup
+            libG228path.Delete(true);
+            libG2270path.Delete(true);
+        }
+
+        [Test]
+        public void GetLibGPreloaderLocation_libGVersionFallback()
+        {
+        
+            // mock a folder with libASMLibVersionToVersionG folders with correct names
             var rootFolder = Path.Combine(Path.GetTempPath(), "LibGTest");
             // both versions of libG exist
             var libG22440path = System.IO.Directory.CreateDirectory(Path.Combine(rootFolder, "LibG_224_4_0"));
             var libG22500path = System.IO.Directory.CreateDirectory(Path.Combine(rootFolder, "LibG_225_0_0"));
 
-            var foundVersion = DynamoShapeManager.Utilities.GetInstalledAsmVersion2(
-                versions, ref foundPath, rootFolder, (path) => { return mockedInstalledASMs; });
-
-            // The found ASM version in this case is a fallback of lowest version within same major which should be 225.3.0
-            Assert.AreEqual(targetVersion, foundVersion);
-            Assert.AreEqual("revit_Prerelease_InstallLocation", foundPath);
-
             // The found libG preloader version in this case is another fallback of closest version below 225.3.0
-            Assert.AreEqual(libG22500path.FullName.ToLower(), DynamoShapeManager.Utilities.GetLibGPreloaderLocation(foundVersion, rootFolder).ToLower());
+            Assert.AreEqual(libG22500path.FullName.ToLower(), DynamoShapeManager.Utilities.GetLibGPreloaderLocation(new Version(225,3,0,0), rootFolder).ToLower());
             // cleanup
             libG22440path.Delete(true);
             libG22500path.Delete(true);
@@ -377,26 +429,6 @@ namespace Dynamo.Tests
             libG22401path.Delete(true);
         }
 
-        [Test]
-        public void GetGeometryFactoryPath_CalledFromOldClient_ShouldGetNewVersion()
-        {
-            var rootFolder = Path.Combine(Path.GetTempPath(), "LibGTest");
-
-            //setup some mock libG folders with protoInterface.dll nested.
-            var libG22440path = System.IO.Directory.CreateDirectory(Path.Combine(rootFolder, "LibG_224_4_0"));
-            File.WriteAllText(Path.Combine(libG22440path.FullName, DynamoShapeManager.Utilities.GeometryFactoryAssembly), "someText");
-            var libG22401path = System.IO.Directory.CreateDirectory(Path.Combine(rootFolder, "LibG_224_0_1"));
-            File.WriteAllText(Path.Combine(libG22401path.FullName, DynamoShapeManager.Utilities.GeometryFactoryAssembly), "someText");
-
-            //look for old version of libG 224 from old client
-            var foundGeoPath = DynamoShapeManager.Utilities.GetGeometryFactoryPath(rootFolder, LibraryVersion.Version224);
-
-            var expectedDirectoryInfo = new DirectoryInfo(Path.Combine(libG22401path.FullName, DynamoShapeManager.Utilities.GeometryFactoryAssembly));
-            Assert.AreEqual(expectedDirectoryInfo, new DirectoryInfo(foundGeoPath));
-            //cleanup
-            libG22440path.Delete(true);
-            libG22401path.Delete(true);
-        }
 
         [Test]
         public void GetGeometryFactoryPath2_CalledFromNewClient_ShouldGetCorrectVersion()
@@ -420,27 +452,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void LoadASMFromPathShouldWorkWithOldPath()
-        {
-            var oldPath = Path.Combine("C", "Dynamo", "Extern", "FakePath", "LibG_223");
-            var newPath = DynamoShapeManager.Utilities.RemapOldLibGPathToNewVersionPath(oldPath);
-            Assert.AreEqual(new DirectoryInfo(Path.Combine("C", "Dynamo", "Extern", "FakePath", "LibG_223_0_1")), new DirectoryInfo(newPath));
-        }
-        [Test]
-        public void RemapPathShouldReturnEmptyStringForNewPath()
-        {
-            var oldPath = Path.Combine("C", "Dynamo", "Extern", "FakePath", "LibG_223_0_1");
-            var newPath = DynamoShapeManager.Utilities.RemapOldLibGPathToNewVersionPath(oldPath);
-            Assert.AreEqual(String.Empty, newPath);
-        }
-        [Test]
-        public void RemapPathShouldReturnEmptyStringForNullPath()
-        {
-            string oldPath = null;
-            var newPath = DynamoShapeManager.Utilities.RemapOldLibGPathToNewVersionPath(oldPath);
-            Assert.AreEqual(string.Empty, newPath);
-        }
-        [Test]
         public void PreloaderThatDoesNotFindASMDoesNotThrow()
         {
             Assert.DoesNotThrow(() =>
@@ -450,24 +461,24 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void ASM227InstallationsAreValidated()
+        public void ASM229InstallationsAreValidated()
         {
-            var incomplete227List = LoadListFromCsv("incomplete227List.csv");
-            Assert.IsFalse(DynamoShapeManager.Utilities.IsASMInstallationComplete(incomplete227List, 227));
+            var incomplete229List = LoadListFromCsv("incomplete229List.csv");
+            Assert.IsFalse(DynamoShapeManager.Utilities.IsASMInstallationComplete(incomplete229List, 229));
             // Add missing DLLs. Now the the installation should be valid.
-            incomplete227List.Add("tsplines9A.dll");
-            Assert.IsTrue(DynamoShapeManager.Utilities.IsASMInstallationComplete(incomplete227List, 227));
+            incomplete229List.Add("tsplines11.dll");
+            incomplete229List.Add("mmsdk.dll");
+            Assert.IsTrue(DynamoShapeManager.Utilities.IsASMInstallationComplete(incomplete229List, 229));
         }
 
         [Test]
-        public void ASM226InstallationsAreValidated()
+        public void ASM230InstallationsAreValidated()
         {
-            var incomplete226List = LoadListFromCsv("incomplete226List.csv");
-            Assert.IsFalse(DynamoShapeManager.Utilities.IsASMInstallationComplete(incomplete226List, 226));
+            var incomplete230List = LoadListFromCsv("incomplete230List.csv");
+            Assert.IsFalse(DynamoShapeManager.Utilities.IsASMInstallationComplete(incomplete230List, 230));
             // Add missing DLLs. Now the the installation should be valid.
-            incomplete226List.Add("tsplines8A.dll");
-            incomplete226List.Add("AdpSDKUI.dll");
-            Assert.IsTrue(DynamoShapeManager.Utilities.IsASMInstallationComplete(incomplete226List, 226));
+            incomplete230List.Add("tsplines12.dll");
+            Assert.IsTrue(DynamoShapeManager.Utilities.IsASMInstallationComplete(incomplete230List, 230));
         }
 
         [Test]

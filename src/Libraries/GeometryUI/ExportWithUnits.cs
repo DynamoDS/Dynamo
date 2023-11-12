@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Xml;
-using Autodesk.DesignScript.Geometry;
+﻿using Autodesk.DesignScript.Geometry;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Utilities;
@@ -9,6 +6,9 @@ using DynamoConversions;
 using GeometryUI.Properties;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
+using System;
+using System.Collections.Generic;
+using System.Xml;
 
 namespace GeometryUI
 {

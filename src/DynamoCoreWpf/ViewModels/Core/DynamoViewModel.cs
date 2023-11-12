@@ -9,7 +9,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Forms;
+using System.Windows.Media;
 using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Engine;
@@ -22,6 +24,7 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.PackageManager;
+using Dynamo.PackageManager.UI;
 using Dynamo.Scheduler;
 using Dynamo.Selection;
 using Dynamo.Services;
@@ -34,11 +37,15 @@ using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.UI;
 using Dynamo.Wpf.UI.GuidedTour;
+using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Core.Converters;
+using Dynamo.Wpf.ViewModels.FileTrust;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoUtilities;
+using ICSharpCode.AvalonEdit;
+using PythonNodeModels;
 using ISelectable = Dynamo.Selection.ISelectable;
 using WpfResources = Dynamo.Wpf.Properties.Resources;
 
@@ -52,18 +59,48 @@ namespace Dynamo.ViewModels
     public partial class DynamoViewModel : ViewModelBase, IDynamoViewModel
     {
         #region properties
-
+        public Window Owner { get; set; }
         private readonly DynamoModel model;
         private Point transformOrigin;
         private bool showStartPage = false;
         private PreferencesViewModel preferencesViewModel;
 
+        // Can the user run the graph
+        private bool CanRunGraph => HomeSpace.RunSettings.RunEnabled && !HomeSpace.GraphRunInProgress;
         private ObservableCollection<DefaultWatch3DViewModel> watch3DViewModels = new ObservableCollection<DefaultWatch3DViewModel>();
+        private ObservableCollection<TabItem> sideBarTabItems = new ObservableCollection<TabItem>();
 
         /// <summary>
-        /// An observable collection of workspace view models which tracks the model
+        /// An observable collection of workspace view models which tracks the model.
         /// </summary>
         private ObservableCollection<WorkspaceViewModel> workspaces = new ObservableCollection<WorkspaceViewModel>();
+
+        /// <summary>
+        /// Set of node window id's that are currently docked in right side sidebar.
+        /// </summary>
+        internal HashSet<string> DockedNodeWindows { get; set; } = new HashSet<string>();
+
+        /// <summary>
+        ///  Node window's state, either DockRight or FloatingWindow.
+        /// </summary>
+        internal Dictionary<string, ViewExtensionDisplayMode> NodeWindowsState { get; set; } = new Dictionary<string, ViewExtensionDisplayMode>();
+
+        /// <summary>
+        /// Collection of Right SideBar tab items: view extensions and docked windows.
+        /// </summary>
+        public ObservableCollection<TabItem> SideBarTabItems
+        {
+            get
+            {
+                return sideBarTabItems;
+            }
+            set
+            {
+                sideBarTabItems = value;
+                RaisePropertyChanged(nameof(SideBarTabItems));
+            }
+        }
+
         public ObservableCollection<WorkspaceViewModel> Workspaces
         {
             get { return workspaces; }
@@ -91,6 +128,8 @@ namespace Dynamo.ViewModels
                 return preferencesViewModel;
             }
         }
+
+       
 
         /// <summary>
         /// Guided Tour Manager
@@ -144,6 +183,7 @@ namespace Dynamo.ViewModels
             get { return Workspaces.FirstOrDefault(w => w.Model is HomeWorkspaceModel); }
         }
 
+
         public EngineController EngineController { get { return Model.EngineController; } }
 
         public WorkspaceModel CurrentSpace
@@ -171,8 +211,14 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("WorkspaceActualWidth");
         }
 
+        /// <summary>
+        /// This property is the ViewModel that will be passed to the File Trust Warning popup when is created.
+        /// </summary>
+        internal FileTrustWarningViewModel FileTrustViewModel { get; set; }
+
         private WorkspaceViewModel currentWorkspaceViewModel;
         private string filePath;
+        private string fileContents;
         /// <summary>
         /// The index in the collection of workspaces of the current workspace.
         /// This property is bound to the SelectedIndex property in the workspaces tab control
@@ -209,7 +255,8 @@ namespace Dynamo.ViewModels
 
                     // Keep DynamoModel.CurrentWorkspace update-to-date
                     int modelIndex = model.Workspaces.IndexOf(currentWorkspaceViewModel.Model);
-                    this.ExecuteCommand(new DynamoModel.SwitchTabCommand(modelIndex));
+                    ExecuteCommand(new DynamoModel.SwitchTabCommand(modelIndex));                   
+                    (HomeSpaceViewModel as HomeWorkspaceViewModel)?.UpdateRunStatusMsgBasedOnStates();
                 }
             }
         }
@@ -263,6 +310,12 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("ShowStartPage");
                 if (DisplayStartPageCommand != null)
                     DisplayStartPageCommand.RaiseCanExecuteChanged();
+
+                if (DisplayInteractiveGuideCommand != null)
+                    DisplayInteractiveGuideCommand.RaiseCanExecuteChanged();
+
+                if(ShowInsertDialogAndInsertResultCommand != null)
+                    ShowInsertDialogAndInsertResultCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -319,11 +372,11 @@ namespace Dynamo.ViewModels
             }
         }
 
-        [Obsolete("This was moved to PreferencesViewModel.cs")]
         /// <summary>
         /// Indicates whether to make T-Spline nodes (under ProtoGeometry.dll) discoverable
         /// in the node search library.
         /// </summary>
+        [Obsolete("This was moved to PreferencesViewModel.cs")]
         public bool EnableTSpline
         {
             get
@@ -406,16 +459,7 @@ namespace Dynamo.ViewModels
             set
             {
                 model.ConnectorType = value;
-
                 RaisePropertyChanged("ConnectorType");
-            }
-        }
-
-        public bool IsUsageReportingApproved
-        {
-            get
-            {
-                return UsageReportingManager.Instance.IsUsageReportingApproved;
             }
         }
 
@@ -548,23 +592,6 @@ namespace Dynamo.ViewModels
 
         public bool HideReportOptions { get; internal set; }
 
-        /// <summary>
-        /// Indicates if whether the Iron Python dialog box should be displayed before each new session.
-        /// </summary>
-        public bool IsIronPythonDialogDisabled
-        {
-            get
-            {
-                return model.PreferenceSettings.IsIronPythonDialogDisabled;
-            }
-            set
-            {
-                model.PreferenceSettings.IsIronPythonDialogDisabled = value;
-                RaisePropertyChanged(nameof(IsIronPythonDialogDisabled));
-            }
-        }
-
-
         private DynamoPythonScriptEditorTextOptions editTextOptions = new DynamoPythonScriptEditorTextOptions();
         /// <summary>
         /// Gets/Sets the text editor options for python script editor.
@@ -596,10 +623,10 @@ namespace Dynamo.ViewModels
             }
         }
 
-        [Obsolete ("This was moved to PreferencesViewModel.cs")]
         /// <summary>
         /// Engine used by default for new Python script and string nodes. If not empty, this takes precedence over any system settings.
         /// </summary>
+        [Obsolete ("This was moved to PreferencesViewModel.cs")]
         public string DefaultPythonEngine
         {
             get { return model.PreferenceSettings.DefaultPythonEngine; }
@@ -637,7 +664,7 @@ namespace Dynamo.ViewModels
 
         public static DynamoViewModel Start(StartConfiguration startConfiguration = new StartConfiguration())
         {
-            if(startConfiguration.DynamoModel == null) 
+            if (startConfiguration.DynamoModel == null) 
                 startConfiguration.DynamoModel = DynamoModel.Start();
 
             if(startConfiguration.WatchHandler == null)
@@ -668,7 +695,12 @@ namespace Dynamo.ViewModels
             UsageReportingManager.Instance.InitializeCore(this);
             this.WatchHandler = startConfiguration.WatchHandler;
             var pmExtension = model.GetPackageManagerExtension();
-            this.PackageManagerClientViewModel = new PackageManagerClientViewModel(this, pmExtension.PackageManagerClient);
+
+            if (pmExtension != null)
+            {
+                this.PackageManagerClientViewModel = new PackageManagerClientViewModel(this, pmExtension.PackageManagerClient);
+            }
+
             this.SearchViewModel = null;
 
             // Start page should not show up during test mode.
@@ -720,8 +752,16 @@ namespace Dynamo.ViewModels
             WatchHandler.RequestSelectGeometry += BackgroundPreviewViewModel.AddLabelForPath;
             RegisterWatch3DViewModel(BackgroundPreviewViewModel, RenderPackageFactoryViewModel.Factory);
             model.ComputeModelDeserialized += model_ComputeModelDeserialized;
+            model.RequestNotification += model_RequestNotification;
 
-            preferencesViewModel = new PreferencesViewModel(this);
+            preferencesViewModel = new PreferencesViewModel(this);            
+
+            if (!DynamoModel.IsTestMode && !DynamoModel.IsHeadless)
+            {
+                model.State = DynamoModel.DynamoModelState.StartedUI;
+            }
+
+            FileTrustViewModel = new FileTrustWarningViewModel();
         }
 
         /// <summary>
@@ -775,8 +815,28 @@ namespace Dynamo.ViewModels
                     {
                         // Return focus back to Dynamo View
                         OnRequestReturnFocusToView();
+                        // Reset state machine
+                        CurrentSpaceViewModel.CancelActiveState();
                     }
                     break;
+            }
+        }
+
+        internal event EventHandler WindowRezised;
+        internal void OnWindowResized(object underThreshold)
+        {
+            if(WindowRezised != null)
+            {
+                WindowRezised(underThreshold, new EventArgs());
+            }
+        }
+
+        internal event EventHandler PreferencesWindowChanged;
+        internal void OnPreferencesWindowChanged(object preferencesView)
+        {
+            if (PreferencesWindowChanged != null)
+            {
+                PreferencesWindowChanged(preferencesView, new EventArgs());
             }
         }
 
@@ -849,6 +909,8 @@ namespace Dynamo.ViewModels
             model.RequestBugReport += ReportABug;
             model.RequestDownloadDynamo += DownloadDynamo;
             model.Preview3DOutage += Disable3DPreview;
+
+            DynamoServices.LoadLibraryEvents.LoadLibraryFailure += LoadLibraryEvents_LoadLibraryFailure;
         }
 
         private void UnsubscribeModelUiEvents()
@@ -856,6 +918,8 @@ namespace Dynamo.ViewModels
             model.RequestBugReport -= ReportABug;
             model.RequestDownloadDynamo -= DownloadDynamo;
             model.Preview3DOutage -= Disable3DPreview;
+
+            DynamoServices.LoadLibraryEvents.LoadLibraryFailure -= LoadLibraryEvents_LoadLibraryFailure;
         }
 
         private void SubscribeModelCleaningUpEvent()
@@ -982,7 +1046,7 @@ namespace Dynamo.ViewModels
             // launching the process using explorer.exe will format the URL incorrectly
             // and Github will not recognise the query parameters in the URL
             // so launch with default operating system web browser
-            Process.Start(new ProcessStartInfo(urlWithParameters));
+            Process.Start(new ProcessStartInfo(urlWithParameters) { UseShellExecute = true });
         }
 
         public static void ReportABug()
@@ -992,7 +1056,7 @@ namespace Dynamo.ViewModels
 
         internal static void DownloadDynamo()
         {
-            Process.Start(new ProcessStartInfo("explorer.exe", Configurations.DynamoDownloadLink));
+            Process.Start(new ProcessStartInfo("explorer.exe", Configurations.DynamoDownloadLink) { UseShellExecute = true });
         }
 
         private void Disable3DPreview()
@@ -1045,7 +1109,7 @@ namespace Dynamo.ViewModels
 
         private void SelectionOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            PublishSelectedNodesCommand.RaiseCanExecuteChanged();
+            PublishSelectedNodesCommand?.RaiseCanExecuteChanged();
             AlignSelectedCommand.RaiseCanExecuteChanged();
             DeleteCommand.RaiseCanExecuteChanged();
             UngroupModelCommand.RaiseCanExecuteChanged();
@@ -1081,12 +1145,22 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("IsPanning");
                     RaisePropertyChanged("IsOrbiting");
                     //RaisePropertyChanged("RunEnabled");
+                    if (!DynamoModel.IsTestMode)
+                    {
+                        ExitGuidedTourIfOpened();
+                    }
                     break;
 
                 case "EnablePresetOptions":
                     RaisePropertyChanged("EnablePresetOptions");
                     break;
             }
+        }
+
+        private void ExitGuidedTourIfOpened()
+        {
+            if (GuideFlowEvents.IsAnyGuideActive)
+                MainGuideManager.ExitTour();
         }
 
         // TODO(Sriram): This method is currently not used, but it should really 
@@ -1184,8 +1258,8 @@ namespace Dynamo.ViewModels
         internal bool CanAddAnnotation(object parameter)
         {
             var groups = Model.CurrentWorkspace.Annotations;
-            //Create Group should be disabled when a group is selected
-            if (groups.Any(x => x.IsSelected))
+            // Create Group should be disabled when a group is among selection and come with nested group inside
+            if (groups.Any(x => x.IsSelected && x.HasNestedGroups))
             {
                 return false;
             }
@@ -1222,6 +1296,20 @@ namespace Dynamo.ViewModels
             //Check for multiple groups - Delete the group and not the nodes.
             foreach (var group in DynamoSelection.Instance.Selection.OfType<AnnotationModel>().ToList())
             {
+                if (!group.IsExpanded)
+                {
+                    // If the group is not expanded we expanded
+                    // and show the group content before deleting 
+                    // the group.
+                    var viewModel = this.CurrentSpaceViewModel.Annotations
+                        .FirstOrDefault(x => x.AnnotationModel == group);
+
+                    if (viewModel is null) continue;
+
+                    viewModel.IsExpanded = true;
+                    viewModel.ShowGroupContents();
+                }
+
                 var command = new DynamoModel.DeleteModelCommand(group.GUID);
                 this.ExecuteCommand(command);
             }            
@@ -1257,7 +1345,19 @@ namespace Dynamo.ViewModels
             {
                 if (!(modelb is AnnotationModel))
                 {
-                    var command = new DynamoModel.UngroupModelCommand(modelb.GUID);
+                    var guids = new List<Guid> { modelb.GUID };
+                    if (modelb is NodeModel node)
+                    {
+                        var pinnedNotes = CurrentSpaceViewModel.Notes
+                            .Where(x => x.PinnedNode?.NodeModel == node)
+                            .Select(x => x.Model.GUID);
+
+                        if (pinnedNotes.Any())
+                        {
+                            guids.AddRange(pinnedNotes);
+                        }
+                    }
+                    var command = new DynamoModel.UngroupModelCommand(guids);
                     this.ExecuteCommand(command);
                 }
             }  
@@ -1284,7 +1384,8 @@ namespace Dynamo.ViewModels
             //Check for multiple groups - Delete the group and not the nodes.
             foreach (var modelb in DynamoSelection.Instance.Selection.OfType<ModelBase>())
             {
-                if (!(modelb is AnnotationModel))
+                if (!(modelb is AnnotationModel) && 
+                    !CurrentSpace.Annotations.ContainsModel(modelb)) 
                 {
                     var command = new DynamoModel.AddModelToGroupCommand(modelb.GUID);
                     this.ExecuteCommand(command);
@@ -1300,14 +1401,10 @@ namespace Dynamo.ViewModels
                 throw new ArgumentException(message, "parameters");
             }
             //Check for multiple groups - Delete the group and not the nodes.
-            foreach (var annotationModel in DynamoSelection.Instance.Selection.OfType<AnnotationModel>())
-            {
-                if (!(annotationModel.GUID == hostGroupId))
-                {
-                    var command = new DynamoModel.AddGroupToGroupCommand(annotationModel.GUID, hostGroupId);
-                    this.ExecuteCommand(command);
-                }
-            }
+            var command = new DynamoModel.AddGroupToGroupCommand(
+                DynamoSelection.Instance.Selection.OfType<AnnotationModel>().Where(x => x.GUID != hostGroupId).Select(x => x.GUID),
+                hostGroupId);
+            this.ExecuteCommand(command);
         }
 
         private void WorkspaceAdded(WorkspaceModel item)
@@ -1334,7 +1431,7 @@ namespace Dynamo.ViewModels
                 Exception ex;
                 if (DynamoUtilities.PathHelper.isValidJson(newVm.Model.FileName, out fileContents, out ex))
                 {
-                    ExtraWorkspaceViewInfo viewInfo = WorkspaceViewModel.ExtraWorkspaceViewInfoFromJson(fileContents);
+                    ExtraWorkspaceViewInfo viewInfo = ExtraWorkspaceViewInfo.ExtraWorkspaceViewInfoFromJson(fileContents);
                     newVm.Model.UpdateWithExtraWorkspaceViewInfo(viewInfo);
                 }
                 workspaces.Add(newVm);
@@ -1376,6 +1473,61 @@ namespace Dynamo.ViewModels
             }
         }
 
+        // Get the nodemodel if a node is present in any open workspace.
+        internal NodeModel GetDockedWindowNodeModel(string tabId)
+        {
+            var workspaces = Model.Workspaces;
+            NodeModel nodeModel = null;
+
+            foreach (WorkspaceModel workspace in workspaces)
+            {
+                nodeModel = workspace.Nodes.FirstOrDefault(x => x.GUID.ToString() == tabId);
+                if (nodeModel != null)
+                {
+                    return nodeModel;
+                }
+            }
+            return nodeModel;
+        }
+
+        /// <summary>
+        /// Closes any docked python script windows if there are no unsaved changes.
+        /// Show warning message on the script editor if it has unsaved changes.
+        /// </summary>
+        /// <param name="nodes">Nodes in the workspace</param>
+        internal bool CanCloseDockedNodeWindows(ObservableCollection<NodeViewModel> nodes)
+        {
+            foreach (var node in nodes)
+            {
+                var id = node.NodeModel.GUID.ToString();
+                if (DockedNodeWindows.Contains(id))
+                {
+                    var tabItem = SideBarTabItems.OfType<TabItem>().SingleOrDefault(n => n.Uid.ToString() == id);
+
+                    if (tabItem != null)
+                    {
+                        NodeModel nodeModel = GetDockedWindowNodeModel(tabItem.Uid);
+
+                        if (nodeModel is PythonNode pythonNode)
+                        {
+                            var editor = (tabItem.Content as Grid).ChildOfType<TextEditor>();
+                            if (editor != null && editor.IsModified)
+                            {
+                                pythonNode.OnWarnUserScript();
+                                tabItem.Focus();
+                                return false;
+                            }
+                            pythonNode.Dispose();
+                        }
+
+                        SideBarTabItems.Remove(tabItem);
+                        DockedNodeWindows.Remove(id);
+                    }
+                }
+            }
+            return true;
+        }
+
         /// <summary>
         /// Returns the file-save dialog with customized file types of Dynamo.
         /// </summary>
@@ -1410,12 +1562,47 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Attempts to open a file using the Json content passed to OpenFromJsonCommand, but wraps
+        /// the call with a check to make sure no unsaved changes to the HomeWorkspace are lost.
+        /// </summary>
+        /// <param name="openCommand"> <see cref="DynamoModel.OpenFileFromJsonCommand"/> </param>
+        private void OpenFromJsonIfSaved(object openCommand)
+        {
+            filePath = string.Empty;
+            fileContents = string.Empty;
+
+            var command = openCommand as DynamoModel.OpenFileFromJsonCommand;
+            if (command == null)
+            {
+                return;
+            }
+
+            if (HomeSpace != null && HomeSpace.HasUnsavedChanges)
+            {
+                if (AskUserToSaveWorkspaceOrCancel(HomeSpace))
+                {
+                    fileContents = command.FileContents;
+                    ExecuteCommand(command);
+                    ShowStartPage = false;
+                }
+            }
+            else
+            {
+                OpenFromJsonCommand.Execute(new Tuple<string, bool>(command.FileContents, command.ForceManualExecutionMode));
+                ShowStartPage = false;
+            }
+        }
+
+        /// <summary>
         /// Attempts to open a file using the passed open command, but wraps the call
         /// with a check to make sure no unsaved changes to the HomeWorkspace are lost.
         /// </summary>
         /// <param name="openCommand"> <see cref="DynamoModel.OpenFileCommand"/> </param>
         private void OpenIfSaved(object openCommand)
         {
+            fileContents = string.Empty;
+            filePath = string.Empty;
+
             var command = openCommand as DynamoModel.OpenFileCommand;
             if (command == null)
             {
@@ -1426,36 +1613,98 @@ namespace Dynamo.ViewModels
             {
                 if (AskUserToSaveWorkspaceOrCancel(HomeSpace))
                 {
-                    this.filePath = command.FilePath;
-                    this.ExecuteCommand(command);
-                    this.ShowStartPage = false;
+                    filePath = command.FilePath;                    
+                    ExecuteCommand(command);
+                    ShowStartPage = false;
                 }
             }
             else
             {
-                this.OpenCommand.Execute(new Tuple<string,bool>(command.FilePath, command.ForceManualExecutionMode));
-                this.ShowStartPage = false;
+                OpenCommand.Execute(new Tuple<string,bool>(command.FilePath, command.ForceManualExecutionMode));
+                ShowStartPage = false;
             }
         }
 
         /// <summary>
         /// Open a definition or workspace.
+        /// For most cases, parameters variable refers to the Json content file to open
+        /// However, when this command is used in OpenFileDialog, the variable is
+        /// a Tuple{string,bool} instead. The boolean flag is used to override the
+        /// RunSetting of the workspace.
         /// </summary>
         /// <param name="parameters"></param>
+        private void OpenFromJson(object parameters)
+        {
+            // try catch for exceptions thrown while opening files, say from a future version, 
+            // that can't be handled reliably
+            filePath = string.Empty;
+            fileContents = string.Empty;
+            bool forceManualMode = false;
+            try
+            {
+                var packedParams = parameters as Tuple<string, bool>;
+                if (packedParams != null)
+                {
+                    fileContents = packedParams.Item1;
+                    forceManualMode = packedParams.Item2;
+                }
+                else
+                {
+                    fileContents = parameters as string;
+                }
+                ExecuteCommand(new DynamoModel.OpenFileFromJsonCommand(fileContents, forceManualMode));
+            }
+            catch (Exception e)
+            {
+                if (!DynamoModel.IsTestMode)
+                {
+                    string commandString = String.Format(Resources.MessageErrorOpeningFileGeneral);
+                    string errorMsgString;
+                    if (e is Newtonsoft.Json.JsonReaderException)
+                    {
+                        errorMsgString = String.Format(Resources.MessageFailedToOpenCorruptedFile, "Json file content");
+                    }
+                    else
+                    {
+                        errorMsgString = String.Format(Resources.MessageUnkownErrorOpeningFile, "Json file content");
+                    }
+                    model.Logger.LogNotification("Dynamo", commandString, errorMsgString, e.ToString());
+                    MessageBoxService.Show(
+                        Owner,
+                        errorMsgString, 
+                        Properties.Resources.FileLoadFailureMessageBoxTitle, 
+                        MessageBoxButton.OK, 
+                        MessageBoxImage.Exclamation);
+                }
+                else
+                {
+#pragma warning disable CA2200 // Rethrow to preserve stack details
+                    throw e;
+#pragma warning restore CA2200 // Rethrow to preserve stack details
+                }
+                return;
+            }
+            this.ShowStartPage = false; // Hide start page if there's one.
+        }
+
+        /// <summary>
+        /// Open a definition or workspace.
         /// For most cases, parameters variable refers to the file path to open
         /// However, when this command is used in OpenFileDialog, the variable is
-        /// a Tuple<string, bool> instead. The boolean flag is used to override the
+        /// a Tuple{string, bool} instead. The boolean flag is used to override the
         /// RunSetting of the workspace.
+        /// </summary>
+        /// <param name="parameters"></param>
         private void Open(object parameters)
         {
             // try catch for exceptions thrown while opening files, say from a future version, 
             // that can't be handled reliably
             filePath = string.Empty;
+            fileContents = string.Empty;
             bool forceManualMode = false; 
             try
             {
-                var packedParams = parameters as Tuple<string, bool>;
-                if (packedParams != null)
+                if (parameters is Tuple<string, bool> packedParams)
                 {
                     filePath = packedParams.Item1;
                     forceManualMode = packedParams.Item2;
@@ -1464,7 +1713,27 @@ namespace Dynamo.ViewModels
                 {
                     filePath = parameters as string;
                 }
+
+                var directoryName = Path.GetDirectoryName(filePath);
+
+                // Display trust warning when file is not among trust location and warning feature is on
+                bool displayTrustWarning = !PreferenceSettings.IsTrustedLocation(directoryName)
+                    && !filePath.EndsWith("dyf")
+                    && !DynamoModel.IsTestMode
+                    && !PreferenceSettings.DisableTrustWarnings
+                    && FileTrustViewModel != null;
+                RunSettings.ForceBlockRun = displayTrustWarning;
+                // Execute graph open command
                 ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode));
+                // Only show trust warning popop when current opened workspace is homeworkspace and not custom node workspace
+                if (displayTrustWarning && (currentWorkspaceViewModel?.IsHomeSpace ?? false))
+                {
+                    // Skip these when opening dyf
+                    FileTrustViewModel.DynFileDirectoryName = directoryName;
+                    FileTrustViewModel.ShowWarningPopup = true;
+                    (HomeSpaceViewModel as HomeWorkspaceViewModel).UpdateRunStatusMsgBasedOnStates();
+                    FileTrustViewModel.AllowOneTimeTrust = false;
+                }
             }
             catch (Exception e)
             {
@@ -1486,15 +1755,112 @@ namespace Dynamo.ViewModels
                         errorMsgString = String.Format(Resources.MessageUnkownErrorOpeningFile, filePath);
                     }
                     model.Logger.LogNotification("Dynamo", commandString, errorMsgString, e.ToString());
-                    System.Windows.MessageBox.Show(errorMsgString);
+                    MessageBoxService.Show(
+                        Owner,
+                        errorMsgString,
+                        commandString,
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
                 }
                 else
                 {
-                    throw (e);
+#pragma warning disable CA2200 // Rethrow to preserve stack details
+                    throw e;
+#pragma warning restore CA2200 // Rethrow to preserve stack details
                 }
                 return;
             }
             this.ShowStartPage = false; // Hide start page if there's one.
+        }
+
+        /// <summary>
+        /// Insert a definition or a custom node.
+        /// For most cases, parameters variable refers to the file path to open
+        /// However, when this command is used in InsertFileDialog, the variable is
+        /// a Tuple&lt;string, bool&gt; instead. The boolean flag is used to override the
+        /// RunSetting of the workspace.
+        /// </summary>
+        /// <param name="parameters"></param>
+        private void Insert(object parameters)
+        {
+            // try catch for exceptions thrown while opening files, say from a future version, 
+            // that can't be handled reliably
+            filePath = string.Empty;
+            fileContents = string.Empty;
+            bool forceManualMode = true;
+            try
+            {
+                if (parameters is Tuple<string, bool> packedParams)
+                {
+                    filePath = packedParams.Item1;
+                    forceManualMode = packedParams.Item2;
+                }
+                else
+                {
+                    filePath = parameters as string;
+                }
+
+                var directoryName = Path.GetDirectoryName(filePath);
+
+                // Display trust warning when file is not among trust location and warning feature is on
+                bool displayTrustWarning = !PreferenceSettings.IsTrustedLocation(directoryName)
+                    && !filePath.EndsWith("dyf")
+                    && !DynamoModel.IsTestMode
+                    && !PreferenceSettings.DisableTrustWarnings
+                    && FileTrustViewModel != null;
+                RunSettings.ForceBlockRun = displayTrustWarning;
+                // Execute graph open command
+                ExecuteCommand(new DynamoModel.InsertFileCommand(filePath, forceManualMode));
+
+                this.FitViewCommand.Execute(null); 
+
+                // Only show trust warning popup when current opened workspace is homeworkspace and not custom node workspace
+                if (displayTrustWarning && (currentWorkspaceViewModel?.IsHomeSpace ?? false))
+                {
+                    // Skip these when opening dyf
+                    FileTrustViewModel.DynFileDirectoryName = directoryName;
+                    FileTrustViewModel.ShowWarningPopup = true;
+                    (HomeSpaceViewModel as HomeWorkspaceViewModel).UpdateRunStatusMsgBasedOnStates();
+                    FileTrustViewModel.AllowOneTimeTrust = false;
+                }
+            }
+            catch (Exception e)
+            {
+                if (!DynamoModel.IsTestMode)
+                {
+                    string commandString = String.Format(Resources.MessageErrorOpeningFileGeneral);
+                    string errorMsgString;
+                    // Catch all the IO exceptions and file access here. The message provided by .Net is clear enough to indicate the problem in this case.
+                    if (e is IOException || e is UnauthorizedAccessException)
+                    {
+                        errorMsgString = String.Format(e.Message, filePath);
+                    }
+                    else if (e is System.Xml.XmlException || e is Newtonsoft.Json.JsonReaderException)
+                    {
+                        errorMsgString = String.Format(Resources.MessageFailedToOpenCorruptedFile, filePath);
+                    }
+                    else
+                    {
+                        errorMsgString = String.Format(Resources.MessageUnkownErrorOpeningFile, filePath);
+                    }
+                    model.Logger.LogNotification("Dynamo", commandString, errorMsgString, e.ToString());
+                    MessageBoxService.Show(errorMsgString, commandString, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else
+                {
+#pragma warning disable CA2200 // Rethrow to preserve stack details
+                    throw e;
+#pragma warning restore CA2200 // Rethrow to preserve stack details
+                }
+                return;
+            }
+            this.ShowStartPage = false; // Hide start page if there's one.
+        }
+
+        internal void OpenOnboardingGuideFile()
+        {  
+            var jsonDynFile = ResourceUtilities.LoadContentFromResources(GuidesManager.OnboardingGuideWorkspaceEmbeededResource, Assembly.GetExecutingAssembly(), false, false);
+            OpenFromJson(new Tuple<string, bool>(jsonDynFile, true));
         }
 
         private bool CanOpen(object parameters)
@@ -1503,28 +1869,47 @@ namespace Dynamo.ViewModels
             return PathHelper.IsValidPath(filePath);
         }
 
+        private bool CanOpenFromJson(object parameters)
+        {
+            string fileContents = parameters as string;
+            return PathHelper.isFileContentsValidJson(fileContents, out _);
+        }
+
         /// <summary>
         /// Read the contents of the file and set the view parameters for that current workspace
         /// </summary>
         private void model_ComputeModelDeserialized()
-        {
-            if (filePath == String.Empty) return;
-            string fileContents = File.ReadAllText(filePath);
+        {            
             try
             {
+                string fileContentsInUse = String.IsNullOrEmpty(filePath) ? fileContents : File.ReadAllText(filePath);
+                if (string.IsNullOrEmpty(fileContentsInUse))
+                {
+                    return;
+                }
+
                 // This call will fail in the case of an XML file
-                ExtraWorkspaceViewInfo viewInfo = WorkspaceViewModel.ExtraWorkspaceViewInfoFromJson(fileContents);
+                ExtraWorkspaceViewInfo viewInfo = ExtraWorkspaceViewInfo.ExtraWorkspaceViewInfoFromJson(fileContentsInUse);
 
                 Model.CurrentWorkspace.UpdateWithExtraWorkspaceViewInfo(viewInfo);
                 Model.OnWorkspaceOpening(viewInfo);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 this.ShowStartPage = false; // Hide start page if there's one.
                 return;
             }
 
             // TODO: Finish initialization of the WorkspaceViewModel
+        }
+
+        /// <summary>
+        /// Create a toast notification with a notification sent by the DynamoModel
+        /// </summary>
+        /// <param name="notification"></param>
+        private void model_RequestNotification(string notification)
+        {
+            this.MainGuideManager.CreateRealTimeInfoWindow(notification);
         }
 
         /// <summary>
@@ -1581,9 +1966,69 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private bool CanShowOpenDialogAndOpenResultCommand(object parameter)
+        private bool CanShowOpenDialogAndOpenResultCommand(object parameter) => CanRunGraph;
+
+
+        /// <summary>
+        /// Present the open dialog and open the workspace that is selected.
+        /// </summary>
+        /// <param name="parameter"></param>
+        private void ShowInsertDialogAndInsertResult(object parameter)
         {
-            return HomeSpace.RunSettings.RunEnabled;
+            var currentWorkspaceModelType = Model.CurrentWorkspace.GetType();
+            var fileExtensions = currentWorkspaceModelType == typeof(CustomNodeWorkspaceModel) ? "*.dyf" : "*.dyn";
+
+            DynamoOpenFileDialog _fileDialog = new DynamoOpenFileDialog(this, false)
+            {
+                Filter = string.Format(Resources.FileDialogDynamoDefinitions,
+                         BrandingResourceProvider.ProductName, fileExtensions) + "|" +
+                         string.Format(Resources.FileDialogAllFiles, "*.*"),
+                Title = string.Format(Properties.Resources.InsertDialogBoxText, BrandingResourceProvider.ProductName)
+            };
+
+            // if you've got the current space path, use it as the inital dir
+            if (!string.IsNullOrEmpty(Model.CurrentWorkspace.FileName))
+            {
+                string path = Model.CurrentWorkspace.FileName;
+                if (File.Exists(path))
+                {
+                    var fi = new FileInfo(Model.CurrentWorkspace.FileName);
+                    _fileDialog.InitialDirectory = fi.DirectoryName;
+                }
+                else
+                {
+                    _fileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer);
+                }
+            }
+            else // use the samples directory, if it exists
+            {
+                Assembly dynamoAssembly = Assembly.GetExecutingAssembly();
+                string location = Path.GetDirectoryName(dynamoAssembly.Location);
+                string UICulture = CultureInfo.CurrentUICulture.Name;
+                string path = Path.Combine(location, "samples", UICulture);
+
+                if (Directory.Exists(path))
+                    _fileDialog.InitialDirectory = path;
+            }
+
+            if (_fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                if (CanOpen(_fileDialog.FileName))
+                {
+                    Insert(new Tuple<string, bool>(_fileDialog.FileName, _fileDialog.RunManualMode));
+
+                    if (HomeSpace.RunSettings.RunType != RunType.Manual)
+                    {
+                        MainGuideManager.CreateRealTimeInfoWindow(Properties.Resources.InsertGraphRunModeNotificationText);
+                        HomeSpace.RunSettings.RunType = RunType.Manual;
+                    }
+                }
+            }
+        }
+
+        private bool CanShowInsertDialogAndInsertResultCommand(object parameter)
+        {
+            return CanRunGraph && !this.showStartPage;
         }
 
         private void OpenRecent(object path)
@@ -1599,7 +2044,7 @@ namespace Dynamo.ViewModels
 
         private bool CanOpenRecent(object path)
         {
-            return HomeSpace.RunSettings.RunEnabled;
+            return CanRunGraph;
         }
 
         /// <summary>
@@ -1652,6 +2097,8 @@ namespace Dynamo.ViewModels
                 Model.Logger.Log(String.Format(Properties.Resources.SavingInProgress, path));
                 CurrentSpaceViewModel.Save(path, isBackup, Model.EngineController, saveContext);
                 if (!isBackup) AddToRecentFiles(path);
+                if (currentWorkspaceViewModel?.IsHomeSpace ?? true)
+                    Model.Logger.Log("The Workspace is valid for FDX : " + (HomeSpace.HasRunWithoutCrash && Model.CurrentWorkspace.IsValidForFDX).ToString());
             }
             catch (Exception ex)
             {
@@ -1659,7 +2106,12 @@ namespace Dynamo.ViewModels
                 Model.Logger.Log(ex.StackTrace);
 
                 if (ex is IOException || ex is UnauthorizedAccessException)
-                    System.Windows.MessageBox.Show(String.Format(ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Warning));
+                    MessageBoxService.Show(
+                        Owner,
+                        ex.Message,
+                        Resources.UnsavedChangesMessageBoxTitle,
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
             }
         }
 
@@ -1716,7 +2168,12 @@ namespace Dynamo.ViewModels
                 Model.Logger.Log(ex.StackTrace);
 
                 if (ex is IOException || ex is UnauthorizedAccessException)
-                    System.Windows.MessageBox.Show(String.Format(ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Warning));
+                    MessageBoxService.Show(
+                        Owner,
+                        ex.Message,
+                        string.Empty,
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
             }
         }
 
@@ -1765,9 +2222,27 @@ namespace Dynamo.ViewModels
             OnRequestPackageManagerSearchDialog(this, EventArgs.Empty);
         }
 
+        internal void ShowPackageManager(object parameters)
+        {
+            if (parameters == null)
+            {
+                OnRequestPackageManagerDialog(this, EventArgs.Empty);
+            }
+            else
+            {
+                var param = (string)parameters;
+                OnRequestPackageManagerDialog(this, new OpenPackageManagerEventArgs(param));
+            }
+        }
+
         internal bool CanShowPackageManagerSearch(object parameters)
         {
-            return true;
+            return !model.IsServiceMode;
+        }
+
+        internal bool CanShowPackageManager(object parameters)
+        {
+            return !model.IsServiceMode;
         }
 
         /// <summary>
@@ -1789,9 +2264,15 @@ namespace Dynamo.ViewModels
             }
         }
 
-        internal void ShowElement(NodeModel e)
+        /// <summary>
+        /// Attempts to find a NodeModel and focuses the view around it
+        /// Default boolean introduced to allow for this method to be used in Automatic mode
+        /// </summary>
+        /// <param name="e"></param>
+        /// <param name="forceShowElement"></param>
+        internal void ShowElement(NodeModel e, bool forceShowElement = true)
         {
-            if (HomeSpace.RunSettings.RunType == RunType.Automatic)
+            if (HomeSpace.RunSettings.RunType == RunType.Automatic && forceShowElement)
                 return;
 
             if (!model.CurrentWorkspace.Nodes.Contains(e))
@@ -1839,6 +2320,9 @@ namespace Dynamo.ViewModels
                 this.ExecuteCommand(new DynamoModel.CreateCustomNodeCommand(Guid.NewGuid(),
                     args.Name, args.Category, args.Description, true));
                 this.ShowStartPage = false;
+
+                SetDefaultScaleFactor(Workspaces.FirstOrDefault(viewModels => viewModels.Model is CustomNodeWorkspaceModel));
+                OnEnableShortcutBarItems(true);
             }
         }
 
@@ -1962,7 +2446,8 @@ namespace Dynamo.ViewModels
                     _fileDialog.InitialDirectory = fi.DirectoryName;
                     _fileDialog.FileName = fi.Name;
                 }
-                else if (vm.Model.CurrentWorkspace is CustomNodeWorkspaceModel)
+
+                if (vm.Model.CurrentWorkspace is CustomNodeWorkspaceModel)
                 {
                     var pathManager = vm.model.PathManager;
                     _fileDialog.InitialDirectory = pathManager.DefaultUserDefinitions;
@@ -2027,7 +2512,8 @@ namespace Dynamo.ViewModels
             if (args.ClickedButtonId == (int)DynamoModel.ButtonId.Cancel ||
                 args.ClickedButtonId == 0)
             {
-                OnViewExtensionOpenRequest("Graph Status");
+                //Open Graph Status view extension
+                OnViewExtensionOpenRequest("3467481b-d20d-4918-a454-bf19fc5c25d7");
                 return false;
             }
 
@@ -2063,7 +2549,24 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Updates grapic helpers (grid) inside the background preview VM
+        /// </summary>
+        /// <param name="parameter"></param>
+        public void UpdateGraphicHelpersScale(object parameter)
+        {
+            if (BackgroundPreviewViewModel == null) return;
+
+            BackgroundPreviewViewModel.GridScale = PreferenceSettings.GridScaleFactor;
+            BackgroundPreviewViewModel.UpdateHelpers();
+        }
+
         internal bool CanToggleBackgroundGridVisibility(object parameter)
+        {
+            return true;
+        }
+
+        internal bool CanUpdateGraphicHelpersScale(object parameter)
         {
             return true;
         }
@@ -2144,18 +2647,18 @@ namespace Dynamo.ViewModels
         public void MakeNewHomeWorkspace(object parameter)
         {
             if (ClearHomeWorkspaceInternal())
-            {
+            {   
                 var t = new DelegateBasedAsyncTask(model.Scheduler, () => model.ResetEngine());
                 model.Scheduler.ScheduleForExecution(t);
 
                 ShowStartPage = false; // Hide start page if there's one.
+
+                SetDefaultScaleFactor(Workspaces.FirstOrDefault());
+                OnEnableShortcutBarItems(true);
             }
         }
 
-        internal bool CanMakeNewHomeWorkspace(object parameter)
-        {
-            return HomeSpace.RunSettings.RunEnabled;
-        }
+        internal bool CanMakeNewHomeWorkspace(object parameter) => CanRunGraph;
 
         private void CloseHomeWorkspace(object parameter)
         {
@@ -2164,12 +2667,15 @@ namespace Dynamo.ViewModels
                 // If after closing the HOME workspace, and there are no other custom 
                 // workspaces opened at the time, then we should show the start page.
                 this.ShowStartPage = (Model.Workspaces.Count() <= 1);
+                RunSettings.ForceBlockRun = false;
+                OnEnableShortcutBarItems(false);
+                OnRequestCloseHomeWorkSpace();
             }
         }
 
         private bool CanCloseHomeWorkspace(object parameter)
         {
-            return HomeSpace.RunSettings.RunEnabled;
+            return CanRunGraph || RunSettings.ForceBlockRun;
         }
 
         /// <summary>
@@ -2185,7 +2691,7 @@ namespace Dynamo.ViewModels
         /// <returns>Returns true if the home workspace has been saved and 
         /// cleared, or false otherwise.</returns>
         /// 
-        private bool ClearHomeWorkspaceInternal()
+        internal bool ClearHomeWorkspaceInternal()
         {
             // if the workspace is unsaved, prompt to save
             // otherwise overwrite the home workspace with new workspace
@@ -2194,6 +2700,11 @@ namespace Dynamo.ViewModels
                 Model.CurrentWorkspace = HomeSpace;
 
                 model.ClearCurrentWorkspace();
+
+                var defaultWorkspace = Workspaces.FirstOrDefault();
+                //Every time that a new workspace is created we have to assign the Default Geometry Scaling value defined in Preferences
+                if (defaultWorkspace !=null && defaultWorkspace.GeoScalingViewModel != null && preferencesViewModel != null)
+                    defaultWorkspace.GeoScalingViewModel.ScaleSize = preferencesViewModel.DefaultGeometryScaling;
 
                 return true;
             }
@@ -2220,6 +2731,7 @@ namespace Dynamo.ViewModels
         /// Requests a message box asking the user to save the workspace and allows saving.
         /// </summary>
         /// <param name="workspace">The workspace for which to show the dialog</param>
+        /// <param name="allowCancel"></param>
         /// <returns>False if the user cancels, otherwise true</returns>
         public bool AskUserToSaveWorkspaceOrCancel(WorkspaceModel workspace, bool allowCancel = true)
         {
@@ -2283,7 +2795,7 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        public void ShowSaveImageDialogAndSaveResult(object parameter)
+        public void ShowSaveImageDialogAndSave(object parameter)
         {
             FileDialog _fileDialog = null;
 
@@ -2302,7 +2814,7 @@ namespace Dynamo.ViewModels
             if (!string.IsNullOrEmpty(model.CurrentWorkspace.FileName))
             {
                 var fi = new FileInfo(model.CurrentWorkspace.FileName);
-                var snapshotName = PathHelper.GetScreenCaptureNameFromPath(fi.FullName);
+                var snapshotName = PathHelper.GetScreenCaptureNameFromPath(fi.FullName, preferencesViewModel.IsTimeStampIncludedInExportFilePath);
                 _fileDialog.InitialDirectory = fi.DirectoryName;
                 _fileDialog.FileName = snapshotName;
             }
@@ -2337,7 +2849,12 @@ namespace Dynamo.ViewModels
             }
         }
 
-        internal bool CanShowSaveImageDialogAndSaveResult(object parameter)
+        public void ValidateWorkSpaceBeforeToExportAsImage(object parameter)
+        {
+            OnRequestExportWorkSpaceAsImage(parameter);       
+        }
+
+        internal bool CanValidateWorkSpaceBeforeToExportAsImage(object parameter)
         {
             return true;
         }
@@ -2407,14 +2924,7 @@ namespace Dynamo.ViewModels
 
         public void SetConnectorType(object parameters)
         {
-            if (parameters.ToString() == "BEZIER")
-            {
-                ConnectorType = ConnectorType.BEZIER;
-            }
-            else
-            {
-                ConnectorType = ConnectorType.POLYLINE;
-            }
+            ConnectorType = ConnectorType.BEZIER;
         }
 
         internal bool CanSetConnectorType(object parameters)
@@ -2429,7 +2939,7 @@ namespace Dynamo.ViewModels
 
         public void GoToWiki(object parameter)
         {
-            Process.Start(new ProcessStartInfo("explorer.exe", Configurations.DynamoWikiLink));
+            Process.Start(new ProcessStartInfo("explorer.exe", Configurations.DynamoWikiLink) { UseShellExecute = true });
         }
 
         internal bool CanGoToWiki(object parameter)
@@ -2439,7 +2949,7 @@ namespace Dynamo.ViewModels
 
         public void GoToSourceCode(object parameter)
         {
-            Process.Start(new ProcessStartInfo("explorer.exe", Configurations.GitHubDynamoLink));
+            Process.Start(new ProcessStartInfo("explorer.exe", Configurations.GitHubDynamoLink) { UseShellExecute = true });
         }
 
         internal bool CanGoToSourceCode(object parameter)
@@ -2449,7 +2959,7 @@ namespace Dynamo.ViewModels
 
         public void GoToDictionary(object parameter)
         {
-            Process.Start(new ProcessStartInfo("explorer.exe", Configurations.DynamoDictionary));
+            Process.Start(new ProcessStartInfo("explorer.exe", Configurations.DynamoDictionary) { UseShellExecute = true });
         }
 
         internal bool CanGoToDictionary(object parameter)
@@ -2465,6 +2975,34 @@ namespace Dynamo.ViewModels
         private bool CanDisplayStartPage(object parameter)
         {
             return !this.ShowStartPage;
+        }
+
+        private bool CanDisplayInteractiveGuide(object parameter)
+        {
+            return !this.ShowStartPage;
+        }
+
+        private void StartGettingStartedGuide(object parameter)
+        {
+            try
+            {
+                if (ClearHomeWorkspaceInternal())
+                {
+                    OpenOnboardingGuideFile();
+                    MainGuideManager.LaunchTour(GuidesManager.OnboardingGuideName);
+                }
+            }
+            catch (Exception ex)
+            {
+                Model.Logger.Log(ex.Message);
+                Model.Logger.Log(ex.StackTrace);
+            }
+        }
+
+        private bool CanStartGettingStartedGuide(object parameter)
+        {
+            // Disable Getting Started guided tour when ASM is not loaded
+            return Model.IsASMLoaded;
         }
 
         internal void Pan(object parameter)
@@ -2520,6 +3058,24 @@ namespace Dynamo.ViewModels
             OnRequestOpenDocumentationLink((OpenDocumentationLinkEventArgs)parameter);
         }
 
+        internal void ShowNodeDocumentation(object parameter)
+        {
+            var node = DynamoSelection.Instance.Selection.OfType<NodeModel>().LastOrDefault();
+
+            var nodeAnnotationEventArgs = new OpenNodeAnnotationEventArgs(node, this);
+            OpenDocumentationLink(nodeAnnotationEventArgs);
+        }
+        internal bool CanShowNodeDocumentation(object parameter)
+        {
+            var node = DynamoSelection.Instance.Selection.OfType<NodeModel>().LastOrDefault();
+
+            if (node == null || !(node is NodeModel))
+            {
+                return false;
+            }
+            return true;
+        }
+
         private bool CanZoomIn(object parameter)
         {
             return CurrentSpaceViewModel.CanZoomIn;
@@ -2553,12 +3109,22 @@ namespace Dynamo.ViewModels
                 return;
             }
 
+            if (parameter is bool)
+            {
+                CurrentSpaceViewModel.FitViewInternal((bool)parameter);
+                return;
+            }
             CurrentSpaceViewModel.FitViewInternal();
         }
 
         private bool CanFitView(object parameter)
         {
             return true;
+        }
+
+        private static void LoadLibraryEvents_LoadLibraryFailure(string failureMessage, string messageBoxTitle)
+        {
+            Wpf.Utilities.MessageBoxService.Show(failureMessage, messageBoxTitle, MessageBoxButton.OK, MessageBoxImage.Exclamation);
         }
 
         public void ImportLibrary(object parameter)
@@ -2597,7 +3163,22 @@ namespace Dynamo.ViewModels
                 }
                 catch(LibraryLoadFailedException ex)
                 {
-                    System.Windows.MessageBox.Show(String.Format(ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Warning));
+                    Wpf.Utilities.MessageBoxService.Show(
+                        Owner,
+                        $"{ex.Message}-{WpfResources.LibraryLoadFailureMessageSuffix}"  ,
+                        Properties.Resources.LibraryLoadFailureMessageBoxTitle,
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Exclamation);
+                }
+                catch(DynamoServices.AssemblyBlockedException ex)
+                {
+                    var failureMessage = string.Format(Properties.Resources.LibraryLoadFailureForBlockedAssembly, ex.Message);
+                    Wpf.Utilities.MessageBoxService.Show(
+                        Owner,
+                        failureMessage,
+                        Properties.Resources.LibraryLoadFailureMessageBoxTitle,
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Exclamation);
                 }
             }
         }
@@ -2611,6 +3192,35 @@ namespace Dynamo.ViewModels
         {
             CurrentSpaceViewModel.CancelActiveState();
             BackgroundPreviewViewModel.RefreshState();
+        }
+
+        /// <summary>
+        /// Checking if a custom Group style has been updated, if so it will update the styling of the existing groups
+        /// </summary>
+        /// <param name="originalCustomGroupStyles"></param>
+        public void CheckCustomGroupStylesChanges(List<GroupStyleItem> originalCustomGroupStyles)
+        {
+            foreach (var originalCustomGroupStyle in originalCustomGroupStyles)
+            {
+                var currentCustomGroupStyle = PreferenceSettings.GroupStyleItemsList.Where(
+                    groupStyle => !groupStyle.GroupStyleId.Equals(Guid.Empty) && groupStyle.GroupStyleId.Equals(originalCustomGroupStyle.GroupStyleId)).FirstOrDefault();
+
+                if (currentCustomGroupStyle != null)
+                {
+                    if (!originalCustomGroupStyle.HexColorString.Equals(currentCustomGroupStyle.HexColorString)
+                        || !originalCustomGroupStyle.FontSize.Equals(currentCustomGroupStyle.FontSize))
+                    {
+                        foreach (var annotation in CurrentSpaceViewModel.Annotations)
+                        {
+                            if (annotation.GroupStyleId.Equals(currentCustomGroupStyle.GroupStyleId))
+                            {
+                                annotation.FontSize = currentCustomGroupStyle.FontSize;
+                                annotation.Background = (Color)ColorConverter.ConvertFromString("#" + currentCustomGroupStyle.HexColorString);
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         internal bool CanEscape(object parameter)
@@ -2649,6 +3259,45 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Hide or show file trust warning popup for the current workspace when preference settings are updated.
+        /// </summary>
+        internal void ShowHideFileTrustWarningIfCurrentWorkspaceTrusted()
+        {
+            if (FileTrustViewModel == null || DynamoModel.IsTestMode) return;
+            if ((FileTrustViewModel.ShowWarningPopup
+                && model.PreferenceSettings.IsTrustedLocation(FileTrustViewModel.DynFileDirectoryName))
+                || model.PreferenceSettings.DisableTrustWarnings)
+            {
+                FileTrustViewModel.ShowWarningPopup = false;
+                RunSettings.ForceBlockRun = false;
+                Model.CurrentWorkspace.RequestRun();
+                return;
+            }
+
+            var targetPath = string.Empty;
+            if (String.IsNullOrEmpty(FileTrustViewModel.DynFileDirectoryName))
+            {
+                if(!String.IsNullOrEmpty(currentWorkspaceViewModel.FileName))
+                    targetPath = Path.GetDirectoryName(currentWorkspaceViewModel.FileName);
+            }
+            else
+            {
+                targetPath = FileTrustViewModel.DynFileDirectoryName;
+            }
+            if (!FileTrustViewModel.ShowWarningPopup
+                && !model.PreferenceSettings.IsTrustedLocation(targetPath)
+                && (currentWorkspaceViewModel?.IsHomeSpace ?? false) && !ShowStartPage
+                && !FileTrustViewModel.AllowOneTimeTrust
+                && !model.PreferenceSettings.DisableTrustWarnings
+                && !string.IsNullOrWhiteSpace(currentWorkspaceViewModel.FileName))
+            {
+                FileTrustViewModel.ShowWarningPopup = true;
+                RunSettings.ForceBlockRun = true;
+                (HomeSpaceViewModel as HomeWorkspaceViewModel).UpdateRunStatusMsgBasedOnStates();
+            }
+        }
+
         internal bool CanExportToSTL(object parameter)
         {
             return true;
@@ -2672,6 +3321,15 @@ namespace Dynamo.ViewModels
         private bool CanSetNumberFormat(object parameter)
         {
             return true;
+        }
+
+        private void SetDefaultScaleFactor(WorkspaceViewModel defaultWorkspace)
+        {
+            if (defaultWorkspace != null)
+            {
+                defaultWorkspace.GeoScalingViewModel.ScaleValue = PreferenceSettings.DefaultScaleFactor;
+                defaultWorkspace.GeoScalingViewModel.UpdateGeometryScale(PreferenceSettings.DefaultScaleFactor);
+            }
         }
 
         #region Shutdown related methods
@@ -2765,6 +3423,11 @@ namespace Dynamo.ViewModels
 
 
             BackgroundPreviewViewModel.Dispose();
+            foreach (var wsvm in workspaces)
+            {
+                wsvm.Dispose();
+            }
+            MainGuideManager?.CloseRealTimeInfoWindow();
 
             model.ShutDown(shutdownParams.ShutdownHost);
             if (shutdownParams.ShutdownHost)
@@ -2778,6 +3441,7 @@ namespace Dynamo.ViewModels
             BackgroundPreviewViewModel.PropertyChanged -= Watch3DViewModelPropertyChanged;
             WatchHandler.RequestSelectGeometry -= BackgroundPreviewViewModel.AddLabelForPath;
             model.ComputeModelDeserialized -= model_ComputeModelDeserialized;
+            model.RequestNotification -= model_RequestNotification;            
 
             return true;
         }
@@ -2813,6 +3477,24 @@ namespace Dynamo.ViewModels
                     return false;
             }
             return true;
+        }
+
+        /// <summary>
+        /// Check if the current file is located in a Trusted Location in order to display to the User the proper message
+        /// </summary>
+        public void CheckCurrentFileInTrustedLocation()
+        {
+            PreferenceSettings.AskForTrustedLocationResult askToTheUser =
+                PreferenceSettings.AskForTrustedLocation(CurrentSpaceViewModel.FileName.Length > 0,
+                CurrentSpaceViewModel.FileName.Length > 0 ? PreferenceSettings.IsTrustedLocation(Path.GetDirectoryName(CurrentSpaceViewModel.FileName)) : false,
+                (currentWorkspaceViewModel?.IsHomeSpace ?? false),
+                ShowStartPage,
+                model.PreferenceSettings.DisableTrustWarnings);
+
+            if (askToTheUser == PreferenceSettings.AskForTrustedLocationResult.Ask) {
+
+                FileTrustViewModel.AllowOneTimeTrust = false;
+            }
         }
 
         #endregion

@@ -1,0 +1,207 @@
+{
+  "Uuid": "93d7251f-6ed2-46b8-a188-00a0d7d9d6ae",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "DSCore.IO.FileSystem.AppendText_img",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Math": {
+        "Key": "DSCore.Math",
+        "Value": "DSCoreNodes.dll"
+      },
+      "Color": {
+        "Key": "DSCore.Color",
+        "Value": "DSCoreNodes.dll"
+      },
+      "UV": {
+        "Key": "Autodesk.DesignScript.Geometry.UV",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "C:\\Temp\\Sample.txt",
+      "InputValue": "..\\..\\..\\..\\..\\..\\..\\..\\..\\..\\Temp\\Sample.txt",
+      "NodeType": "ExtensionNode",
+      "Id": "cac819b397984ed5a333535b8c1227d1",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "5042529b5ea942068a95a69c7f18875e",
+          "Name": "",
+          "Description": "File Path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system and returns its file path"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"textToAppend\";",
+      "Id": "be16f73312a94167b8d73720fc718792",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "fa8341fa13664808825f403e98e3905d",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.IO.FileSystem.AppendText@string,string",
+      "Id": "344f1036231d47ce94d3acd93871e7cd",
+      "Inputs": [
+        {
+          "Id": "a37c978490a04f5893d5ec935692b356",
+          "Name": "filePath",
+          "Description": "Path to write to\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d9fa8d3a75834162a821bf321f31a870",
+          "Name": "text",
+          "Description": "Text content\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "af5fc3e916124fd09bb05dfb53af3f0e",
+          "Name": "void",
+          "Description": "Node performs a task, doesn’t produce an output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Append the text content to a file specified by the path\n\nFileSystem.AppendText (filePath: string, text: string): void"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "5042529b5ea942068a95a69c7f18875e",
+      "End": "a37c978490a04f5893d5ec935692b356",
+      "Id": "5861da9f562f4d3eb5f374c587286be5",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "fa8341fa13664808825f403e98e3905d",
+      "End": "d9fa8d3a75834162a821bf321f31a870",
+      "Id": "1b5d7b1385be4a5ab612393514727f1d",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "Sample.txt",
+      "ReferenceType": "External",
+      "Nodes": [
+        "cac819b397984ed5a333535b8c1227d1"
+      ]
+    }
+  ],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.17",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.17.0.3255",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -5.22369384765625,
+      "EyeY": 13.961121559143066,
+      "EyeZ": 14.827668190002441,
+      "LookX": 12.657733917236328,
+      "LookY": -14.124775886535645,
+      "LookZ": -24.96122932434082,
+      "UpX": 0.11247330158948898,
+      "UpY": 0.96858382225036621,
+      "UpZ": -0.2218000739812851
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "File Path",
+        "ShowGeometry": true,
+        "Id": "cac819b397984ed5a333535b8c1227d1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2501.000233693389,
+        "Y": 2779.9828084720853
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "be16f73312a94167b8d73720fc718792",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2501.6838540145495,
+        "Y": 2991.6848216893436
+      },
+      {
+        "Name": "FileSystem.AppendText",
+        "ShowGeometry": true,
+        "Id": "344f1036231d47ce94d3acd93871e7cd",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2847.5856983814433,
+        "Y": 2820.7842468706563
+      }
+    ],
+    "Annotations": [],
+    "X": -2610.354544691364,
+    "Y": -2520.7862609884733,
+    "Zoom": 1.1032344159043261
+  }
+}

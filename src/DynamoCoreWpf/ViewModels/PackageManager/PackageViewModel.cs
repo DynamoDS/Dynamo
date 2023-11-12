@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -6,14 +6,14 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using Dynamo.Configuration;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Utilities;
-using Microsoft.Practices.Prism.Commands;
-using Microsoft.Practices.Prism.ViewModel;
+using NotificationObject = Dynamo.Core.NotificationObject;
+using Prism.Commands;
 
 namespace Dynamo.ViewModels
 {
@@ -36,7 +36,21 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Specifies whether or not this Package's LoadState is set to Unloaded.
+        /// Specifies whether or not this Package's LoadState is Loaded with no scheduled operation.
+        /// </summary>
+        public bool LoadedWithNoScheduledOperation
+        {
+            get
+            {
+                return Model.BuiltInPackage ?
+                    Model.LoadState.State != PackageLoadState.StateTypes.Unloaded &&
+                    Model.LoadState.ScheduledState != PackageLoadState.ScheduledTypes.ScheduledForUnload :
+                    Model.LoadState.ScheduledState != PackageLoadState.ScheduledTypes.ScheduledForDeletion;
+            }
+        }
+
+        /// <summary>
+        /// Specifies whether or not this Package's LoadState is set to Unloaded
         /// </summary>
         public bool Unloaded
         {
@@ -99,7 +113,23 @@ namespace Dynamo.ViewModels
 
         public string PackageViewContextMenuUninstallTooltip
         {
-            get { return Model.BuiltInPackage ? Resources.PackageContextMenuUnloadPackageTooltip : Resources.PackageContextMenuDeletePackageTooltip; }
+            get
+            {
+                // Built in package
+                if (Model.BuiltInPackage)
+                {
+                    return Resources.PackageContextMenuUnloadPackageTooltip;
+                }
+
+                // Package with custom nodes that are in use
+                if (!CanUninstall())
+                {
+                    return Resources.PackageContextMenuDeletePackageCustomNodesInUseTooltip;
+                }
+
+                // Package that can be uninstalled
+                return Resources.PackageContextMenuDeletePackageTooltip;
+            }
         }
 
         public string PackageViewContextMenuUnmarkUninstallText
@@ -240,21 +270,21 @@ namespace Dynamo.ViewModels
             if (Model.LoadedAssemblies.Any())
             {
                 var resAssem =
-                    MessageBoxService.Show(string.Format(MessageNeedToRestart,
+                    MessageBoxService.Show(dynamoViewModel.Owner,string.Format(MessageNeedToRestart,
                         dynamoViewModel.BrandingResourceProvider.ProductName),
                         MessageNeedToRestartTitle,
                         MessageBoxButton.OKCancel,
                         MessageBoxImage.Exclamation);
-                if (resAssem == MessageBoxResult.Cancel) return;
+                if (resAssem == MessageBoxResult.Cancel || resAssem == MessageBoxResult.None) return;
             }
 
             if (!Model.BuiltInPackage)
             {
-                var res = MessageBoxService.Show(String.Format(Resources.MessageConfirmToDeletePackage, this.Model.Name),
+                var res = MessageBoxService.Show(dynamoViewModel.Owner,String.Format(Resources.MessageConfirmToDeletePackage, this.Model.Name),
                     Resources.MessageNeedToRestartAfterDeleteTitle,
                     MessageBoxButton.YesNo, MessageBoxImage.Question);
 
-                if (res == MessageBoxResult.No) return;
+                if (res == MessageBoxResult.No || res == MessageBoxResult.None) return;
             }
 
 
@@ -266,7 +296,7 @@ namespace Dynamo.ViewModels
             }
             catch (Exception)
             {
-                MessageBoxService.Show(string.Format(MessageFailedToDeleteOrUnload,
+                MessageBoxService.Show(dynamoViewModel.Owner,string.Format(MessageFailedToDeleteOrUnload,
                     dynamoViewModel.BrandingResourceProvider.ProductName),
                     MessageFailedToDeleteOrUnloadTitle,
                     MessageBoxButton.OK, MessageBoxImage.Error);
@@ -281,10 +311,7 @@ namespace Dynamo.ViewModels
         {
             if (!Model.InUse(dynamoModel) || Model.LoadedAssemblies.Any())
             {
-                return Model.BuiltInPackage ?
-                    Model.LoadState.State != PackageLoadState.StateTypes.Unloaded &&
-                    Model.LoadState.ScheduledState != PackageLoadState.ScheduledTypes.ScheduledForUnload :
-                    Model.LoadState.ScheduledState != PackageLoadState.ScheduledTypes.ScheduledForDeletion;
+                return LoadedWithNoScheduledOperation;
             }
             return false;
         }
@@ -317,7 +344,7 @@ namespace Dynamo.ViewModels
                         MessageBoxImage.Exclamation);
 
                 // Proceed only if we have the user's consent.
-                if (dialogResult == MessageBoxResult.Cancel) return;
+                if (dialogResult == MessageBoxResult.Cancel || dialogResult == MessageBoxResult.None ) return;
             }
 
             try
@@ -357,22 +384,23 @@ namespace Dynamo.ViewModels
                 (Model.LoadState.State == PackageLoadState.StateTypes.Unloaded);
         }
 
-    private void GoToRootDirectory()
+        private void GoToRootDirectory()
         {
             // Check for the existance of RootDirectory
             if (Directory.Exists(Model.RootDirectory))
             {
-                Process.Start(Model.RootDirectory);
+                Process.Start(new ProcessStartInfo(Model.RootDirectory) { UseShellExecute = true });
+                Analytics.TrackEvent(Actions.Open, Categories.PackageManagerOperations, $"{Model?.Name}");
             }
             else
             {
-                System.Windows.Forms.MessageBox.Show(Wpf.Properties.Resources.PackageNotExisted, Wpf.Properties.Resources.DirectoryNotFound, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                MessageBoxService.Show(Wpf.Properties.Resources.PackageNotExisted, Wpf.Properties.Resources.DirectoryNotFound, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void Deprecate()
         {
-            var res = MessageBox.Show(String.Format(Resources.MessageToDeprecatePackage, this.Model.Name),
+            var res = MessageBoxService.Show(String.Format(Resources.MessageToDeprecatePackage, this.Model.Name),
                                       Resources.DeprecatingPackageMessageBoxTitle, 
                                       MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (res == MessageBoxResult.No) return;
@@ -388,7 +416,7 @@ namespace Dynamo.ViewModels
 
         private void Undeprecate()
         {
-            var res = MessageBox.Show(String.Format(Resources.MessageToUndeprecatePackage, this.Model.Name),
+            var res = MessageBoxService.Show(String.Format(Resources.MessageToUndeprecatePackage, this.Model.Name),
                                       Resources.UndeprecatingPackageMessageBoxTitle, 
                                       MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (res == MessageBoxResult.No) return;

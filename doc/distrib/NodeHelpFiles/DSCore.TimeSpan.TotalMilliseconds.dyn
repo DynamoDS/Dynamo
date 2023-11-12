@@ -1,0 +1,359 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "TotalMilliseconds",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "12247a152dc74bbd8532e5e836e0f451",
+      "Inputs": [
+        {
+          "Id": "b4c04d707f20474e955572634f62b670",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1abf3f23b94a44cda234fea181832aa4",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.TimeSpan.Create@double,double,double,double,double",
+      "Id": "ef3b1ecf5e2a4162ad74cbfc40c1f276",
+      "Inputs": [
+        {
+          "Id": "3d486895efde42658e5a6ec7b79e1f07",
+          "Name": "days",
+          "Description": "Days spanned.\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7ed0ece737f34a0d8bd2a2be5b76654f",
+          "Name": "hours",
+          "Description": "Hours spanned.\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "665d9ce721394ef98940729805eff82c",
+          "Name": "minutes",
+          "Description": "Minutes spanned.\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "bb9abd53fc274d939b7f88c4f0e06566",
+          "Name": "seconds",
+          "Description": "Seconds spanned.\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b27cf024d05145d68f580c55f2e65324",
+          "Name": "milliseconds",
+          "Description": "Milliseconds spanned.\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b1addb79488a41218b223299fcb1705f",
+          "Name": "timeSpan",
+          "Description": "TimeSpan",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Creates a new TimeSpan from a span of time.\n\nTimeSpan.Create (days: double = 0, hours: double = 0, minutes: double = 0, seconds: double = 0, milliseconds: double = 0): var"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "2;",
+      "Id": "16180c4a9eb04dd49bbdfe479d943809",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "77f05a0c64764aa9b25b75eaf1f09033",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "3;",
+      "Id": "7932e18f4954498491ccbed3e849556d",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "9e30b8ebb7bc499b8686da38e261d37a",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "30;",
+      "Id": "b3bc7d51923f40248d588dfb536d39eb",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "814015084fa04ce3a18e5538dcb77a5f",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.TimeSpan.TotalMilliseconds@var",
+      "Id": "7f3875cc1dd24dfb9982b91408e7947e",
+      "Inputs": [
+        {
+          "Id": "49a2eda4b00c41dba90f00c2e0ba77fe",
+          "Name": "timeSpan",
+          "Description": "A TimeSpan.\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0a28f077aa9d4b0e95f3af04818ec73b",
+          "Name": "double",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Converts the total amount of time represented by a TimeSpan to an inexact number of milliseconds.\n\nTimeSpan.TotalMilliseconds (timeSpan: var): double"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "6fa5674647054e28bd48e3361192bcd2",
+      "Inputs": [
+        {
+          "Id": "1854714c331e446aac8501e1d6b2da01",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "bc308bc330e946d0a6ae0aa5f2a85d42",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "b1addb79488a41218b223299fcb1705f",
+      "End": "1854714c331e446aac8501e1d6b2da01",
+      "Id": "efbf2a1b4a7f410fb6ec6f3c94239acd"
+    },
+    {
+      "Start": "77f05a0c64764aa9b25b75eaf1f09033",
+      "End": "3d486895efde42658e5a6ec7b79e1f07",
+      "Id": "d17325b6c53843f19a7fa8b600aa6257"
+    },
+    {
+      "Start": "9e30b8ebb7bc499b8686da38e261d37a",
+      "End": "7ed0ece737f34a0d8bd2a2be5b76654f",
+      "Id": "8aea3742caf944a38a3eb4493a4d478e"
+    },
+    {
+      "Start": "814015084fa04ce3a18e5538dcb77a5f",
+      "End": "665d9ce721394ef98940729805eff82c",
+      "Id": "d1d9cf640d804f50911bda49588c261e"
+    },
+    {
+      "Start": "0a28f077aa9d4b0e95f3af04818ec73b",
+      "End": "b4c04d707f20474e955572634f62b670",
+      "Id": "47ca59b894564639b44c33eb290efa85"
+    },
+    {
+      "Start": "bc308bc330e946d0a6ae0aa5f2a85d42",
+      "End": "49a2eda4b00c41dba90f00c2e0ba77fe",
+      "Id": "ae0412b3de2b42ad9dcf757c99af914b"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -10.351632118225098,
+      "EyeY": 13.915582656860352,
+      "EyeZ": 16.000629425048828,
+      "LookX": 16.128910064697266,
+      "LookY": -8.1650753021240234,
+      "LookZ": -20.504016876220703,
+      "UpX": 0.053885128349065781,
+      "UpY": 0.99619466066360474,
+      "UpZ": -0.068501941859722137
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "12247a152dc74bbd8532e5e836e0f451",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 754.61904497505543,
+        "Y": 2770.4482032938067
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "TimeSpan.Create",
+        "Id": "ef3b1ecf5e2a4162ad74cbfc40c1f276",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -124.38095502494451,
+        "Y": 2770.4482032938067
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "16180c4a9eb04dd49bbdfe479d943809",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -303.38095502494451,
+        "Y": 2692.66153662714
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "7932e18f4954498491ccbed3e849556d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -303.38095502494451,
+        "Y": 2800.66153662714
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "b3bc7d51923f40248d588dfb536d39eb",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -303.38095502494451,
+        "Y": 2908.66153662714
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "TimeSpan.TotalMilliseconds",
+        "Id": "7f3875cc1dd24dfb9982b91408e7947e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 435.61904497505549,
+        "Y": 2770.4482032938067
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "6fa5674647054e28bd48e3361192bcd2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 227.61904497505549,
+        "Y": 2770.4482032938067
+      }
+    ],
+    "Annotations": [],
+    "X": -232.334282692228,
+    "Y": -4757.59406900225,
+    "Zoom": 1.78921269716459
+  }
+}

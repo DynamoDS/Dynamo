@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Dynamo.Core;
@@ -23,7 +23,8 @@ namespace Dynamo.ViewModels
     public sealed class PathEnabledConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
-        {   if(values != null && values.Length > 1)
+        {   
+            if(values != null && values.Length > 1)
             {
                 if(values[0] is PackagePathViewModel vm && values[1] is string stringPath)
                 {
@@ -67,13 +68,17 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private IPreferences setting
+        /// <summary>
+        /// Returns the preference settings.
+        /// </summary>
+        public IPreferences PreferenceSettings
         {
             get { return loadPackageParams.Preferences; }
         }
-        private readonly PackageLoader packageLoader;
-        private LoadPackageParams loadPackageParams;
+        internal readonly PackageLoader packageLoader;
+        internal LoadPackageParams loadPackageParams;
         private readonly CustomNodeManager customNodeManager;
+        private readonly List<string> packagePathsEnabled = new List<string>();
 
         public DelegateCommand AddPathCommand { get; private set; }
         public DelegateCommand DeletePathCommand { get; private set; }
@@ -88,10 +93,10 @@ namespace Dynamo.ViewModels
             this.loadPackageParams = loadParams;
             this.customNodeManager = customNodeManager;
             InitializeRootLocations();
-            InitializeComands();
+            InitializeCommands();
         }
 
-        private void InitializeComands()
+        private void InitializeCommands()
         {
             AddPathCommand = new DelegateCommand(p => InsertPath());
             DeletePathCommand = new DelegateCommand(p => RemovePathAt(ConvertPathToIndex(p)), p => CanDelete(ConvertPathToIndex(p)));
@@ -108,7 +113,7 @@ namespace Dynamo.ViewModels
         public PackagePathViewModel(IPreferences setting)
         {
             InitializeRootLocations();
-            InitializeComands();
+            InitializeCommands();
         }
 
         private int ConvertPathToIndex(object path)
@@ -173,9 +178,9 @@ namespace Dynamo.ViewModels
         private int GetIndexOfDefaultAppDataPackagePath()
         {
             var index = -1;
-            if (setting is PreferenceSettings preferenceSettings)
+            if (PreferenceSettings is PreferenceSettings prefs)
             {
-                var appDataPath = preferenceSettings.OnRequestUserDataFolder();
+                var appDataPath = prefs.OnRequestUserDataFolder();
                 index = RootLocations.IndexOf(appDataPath);
             }
 
@@ -205,7 +210,7 @@ namespace Dynamo.ViewModels
                 return;
 
             RootLocations.Insert(RootLocations.Count, args.Path);
-
+            SetPackagesScheduledState(args.Path, packagePathDisabled: false);
             RaiseCanExecuteChanged();
         }
 
@@ -234,6 +239,8 @@ namespace Dynamo.ViewModels
 
         private void RemovePathAt(int index)
         {
+            var pathToRemove = RootLocations[index];
+            SetPackagesScheduledState(pathToRemove, packagePathDisabled: true);
             RootLocations.RemoveAt(index);
             RaiseCanExecuteChanged();
         }
@@ -241,27 +248,63 @@ namespace Dynamo.ViewModels
         private void CommitChanges(object param)
         {
             var newpaths = CommitRootLocations();
+            IEnumerable<string> additionalPaths = new List<string>();
             //if paths are modified, reload packages and update prefs.
-            if (!setting.CustomPackageFolders.SequenceEqual(newpaths))
+            if (!PreferenceSettings.CustomPackageFolders.SequenceEqual(newpaths))
             {
-                loadPackageParams.NewPaths = newpaths.Except(setting.CustomPackageFolders);
-                setting.CustomPackageFolders = newpaths;
+                additionalPaths = newpaths.Except(PreferenceSettings.CustomPackageFolders);
+                PreferenceSettings.CustomPackageFolders = newpaths;
                 if (packageLoader != null)
                 {
-                    packageLoader.LoadCustomNodesAndPackages(loadPackageParams, customNodeManager);
+                    packageLoader.LoadNewCustomNodesAndPackages(additionalPaths, customNodeManager);
+                }
+            }
+            // Load packages from paths enabled by disable-path toggles if they are not already loaded.
+            if (packageLoader != null && packagePathsEnabled.Any())
+            {
+                var newPaths = packagePathsEnabled.Except(additionalPaths);
+                packageLoader.LoadNewCustomNodesAndPackages(newPaths, customNodeManager);
+            }
+            packagePathsEnabled.Clear();
+            // Dispose node Index writer to avoid file lock after new package path applied and packages loaded.
+            Search.LuceneSearch.LuceneUtilityNodeSearch.DisposeWriter();
+        }
+
+        internal void SetPackagesScheduledState(string packagePath, bool packagePathDisabled)
+        {
+            var loadedPackages = packageLoader.LocalPackages.Where(x => x.LoadState.State == PackageLoadState.StateTypes.Loaded);
+            var packagesInPath = loadedPackages.Where(x => x.RootDirectory.StartsWith(packagePath));
+
+            // If there are no packages loaded from packagePath and the toggle is turned off
+            // packages need to be loaded from packagePath once preferences dialog is closed.
+            if (!packagesInPath.Any() && !packagePathDisabled)
+            {
+                packagePathsEnabled.Add(packagePath);
+            }
+
+            foreach (var pkg in packagesInPath)
+            {
+                if (packagePathDisabled)
+                {
+                    pkg.MarkForUnload();
+                }
+                else
+                {
+                    pkg.UnmarkForUnload();
                 }
             }
         }
 
         internal void InitializeRootLocations()
         {
-            RootLocations = new ObservableCollection<string>(setting.CustomPackageFolders);
+            RootLocations = new ObservableCollection<string>(PreferenceSettings.CustomPackageFolders);
             var index = RootLocations.IndexOf(DynamoModel.BuiltInPackagesToken);
 
             if (index != -1)
             {
                 RootLocations[index] = Resources.PackagePathViewModel_BuiltInPackages;
             }
+            RaisePropertyChanged(string.Empty);
         }
 
         private List<string> CommitRootLocations()
@@ -279,18 +322,19 @@ namespace Dynamo.ViewModels
 
         internal bool IsPathCurrentlyDisabled(string path)
         {
-            if(setting is IDisablePackageLoadingPreferences disablePrefs)
+            if (!(PreferenceSettings is IDisablePackageLoadingPreferences disablePrefs))
             {
-                //disabled if builtinpackages disabled and path is builtinpackages
-                if ((disablePrefs.DisableBuiltinPackages && path == Resources.PackagePathViewModel_BuiltInPackages)
-                    //or if custompaths disabled and path is custom path
-                    || (disablePrefs.DisableCustomPackageLocations && setting.CustomPackageFolders.Contains(path))
-                    //or if custompaths disabled and path is known path that is not builtinpackages - needed because new paths that are not commited
-                    //will not be added to customPackagePaths yet.
-                    || (disablePrefs.DisableCustomPackageLocations && RootLocations.Contains(path) && path != Resources.PackagePathViewModel_BuiltInPackages)) 
-                {
-                    return true;
-                }
+                return false;
+            }
+            //disabled if builtinpackages disabled and path is builtinpackages
+            if ((disablePrefs.DisableBuiltinPackages && path == Resources.PackagePathViewModel_BuiltInPackages)
+                //or if custompaths disabled and path is custom path
+                || (disablePrefs.DisableCustomPackageLocations && PreferenceSettings.CustomPackageFolders.Contains(path))
+                //or if custompaths disabled and path is known path that is not builtinpackages - needed because new paths that are not committed
+                //will not be added to customPackagePaths yet.
+                || (disablePrefs.DisableCustomPackageLocations && RootLocations.Contains(path) && path != Resources.PackagePathViewModel_BuiltInPackages))
+            {
+                return true;
             }
 
             return false;

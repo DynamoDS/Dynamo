@@ -1,37 +1,35 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Reflection;
 using Dynamo.Utilities;
 using NUnit.Framework;
 
-namespace Dynamo.Tests
-{
     [SetUpFixture]
     public class Setup
     {
         private AssemblyHelper assemblyHelper;
 
-        [SetUp]
+        [OneTimeSetUp]
         public void RunBeforeAllTests()
         {
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
-            var moduleRootFolder = Path.GetDirectoryName(assemblyPath);
+            var moduleRootFolder = new DirectoryInfo(assemblyPath).Parent;
 
             var resolutionPaths = new[]
             {
                 // These tests need "CoreNodeModels.dll" under "nodes" folder.
-                Path.Combine(moduleRootFolder, "nodes")
+                Path.Combine(moduleRootFolder.FullName, "nodes"),
+                Path.Combine(moduleRootFolder.Parent.Parent.Parent.FullName, "test", "test_dependencies")
             };
 
-            assemblyHelper = new AssemblyHelper(moduleRootFolder, resolutionPaths);
+            assemblyHelper = new AssemblyHelper(moduleRootFolder.FullName, resolutionPaths);
             AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssembly;
         }
 
-        [TearDown]
+        [OneTimeTearDown]
         public void RunAfterAllTests()
         {
             AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssembly;
             assemblyHelper = null;
         }
     }
-}

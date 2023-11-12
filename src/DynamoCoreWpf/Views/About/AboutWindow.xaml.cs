@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
-
+using System.Windows.Media;
 using Dynamo.ViewModels;
 
 namespace Dynamo.UI.Views
@@ -24,7 +24,8 @@ namespace Dynamo.UI.Views
             PreviewKeyDown += new KeyEventHandler(HandleEsc);
             DataContext = dynamoViewModel;
 
-            Title = string.Format(Dynamo.Wpf.Properties.Resources.AboutWindowTitle,dynamoViewModel.BrandingResourceProvider.ProductName);
+            TitleTextBlock.Text = string.Format(Dynamo.Wpf.Properties.Resources.AboutWindowTitle, dynamoViewModel.BrandingResourceProvider.ProductName);
+            Title = string.Format(Dynamo.Wpf.Properties.Resources.AboutWindowTitle, dynamoViewModel.BrandingResourceProvider.ProductName);
             DynamoWebsiteButton.Content = string.Format(Dynamo.Wpf.Properties.Resources.AboutWindowDynamoWebsiteButton, dynamoViewModel.BrandingResourceProvider.ProductName);
         }
 
@@ -43,7 +44,66 @@ namespace Dynamo.UI.Views
 
         private void OnClickLink(object sender, RoutedEventArgs e)
         {
-            Process.Start("http://dynamobim.org/");
+            Process.Start(new ProcessStartInfo("http://dynamobim.org/") { UseShellExecute = true });
+        }
+        
+        private void CloseButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void MinimizeButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            this.WindowState = WindowState.Minimized;
+        }
+
+        private void MaximizeButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            if ((sender as Button).Name.Equals("MaximizeButton"))
+            {
+                this.WindowState = WindowState.Maximized;
+                ToggleButtons(true);
+            }
+            else
+            {
+                this.WindowState = WindowState.Normal;
+                ToggleButtons(false);
+            }
+        }
+
+        /// <summary>
+        /// Toggles between the Maximize and Normalize buttons on the window
+        /// </summary>
+        /// <param name="toggle"></param>
+        private void ToggleButtons(bool toggle)
+        {
+            if (toggle)
+            {
+                this.MaximizeButton.Visibility = Visibility.Collapsed;
+                this.NormalizeButton.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                this.MaximizeButton.Visibility = Visibility.Visible;
+                this.NormalizeButton.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        /// <summary>
+        /// Lets the user drag this window around with their left mouse button.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void UIElement_OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton != MouseButton.Left) return;
+            DragMove();
+        }
+
+        // ESC Button pressed triggers Window close        
+        private void OnCloseExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 
@@ -62,7 +122,7 @@ namespace Dynamo.UI.Views
                 Hyperlink link = inArgs.Source as Hyperlink;
                 if (link != null)
                 {
-                    Process.Start(link.NavigateUri.ToString());
+                    Process.Start(new ProcessStartInfo(link.NavigateUri.ToString()) { UseShellExecute = true });
                     inArgs.Handled = true;
                 }
             }
@@ -91,6 +151,7 @@ namespace Dynamo.UI.Views
         }
         #endregion
 
+
         #region Functions
         private static void ReadFile(string inFilename, FlowDocument inFlowDocument)
         {
@@ -100,6 +161,10 @@ namespace Dynamo.UI.Views
                 FileStream fStream = new FileStream(inFilename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 
                 range.Load(fStream, DataFormats.Rtf);
+                // Set text Foreground color on the actual range
+                range.ApplyPropertyValue(TextElement.ForegroundProperty, (SolidColorBrush)new BrushConverter().ConvertFrom("#3C3C3C"));    
+                range.ApplyPropertyValue(TextElement.FontSizeProperty, 12.0);
+
                 fStream.Close();
             }
         }

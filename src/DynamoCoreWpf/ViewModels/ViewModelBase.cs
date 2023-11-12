@@ -1,6 +1,5 @@
-﻿using System;
-using Dynamo.Configuration;
-using Microsoft.Practices.Prism.ViewModel;
+using System;
+using NotificationObject = Dynamo.Core.NotificationObject;
 using Newtonsoft.Json;
 
 namespace Dynamo.ViewModels

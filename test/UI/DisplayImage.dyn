@@ -1,0 +1,239 @@
+{
+  "Uuid": "1f5822e6-f571-49f3-b3d0-1563463dd413",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "DisplayImage",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "Id": "5a424eaa78c84cffaef5469c034de703",
+      "NodeType": "ExtensionNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "9df84a67c8d847cd9c818d6f0091d009",
+          "Name": "",
+          "Description": "File Path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system and returns its file path",
+      "HintPath": "itdoesnotexist.PNG",
+      "InputValue": ".\\itdoesnotexist.PNG"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.FileObject, CoreNodeModels",
+      "Id": "eeeadd2b09294b5fbe3ea2668b99777a",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "60510ef2339b432ba5b22000927716d7",
+          "Name": "path",
+          "Description": "Path to the file.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "a3b7e85ec31a411abe7d95bdac28aebc",
+          "Name": "file",
+          "Description": "File object",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a file object from the given path"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "8d82e3934d0e464cb810ddc7389ab0ae",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "811aee997ed343aa858171a49bc73e3d",
+          "Name": "file",
+          "Description": "File object to load image from\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7023d4943db8442ab181d252c7b05831",
+          "Name": "image",
+          "Description": "Image object from file",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.IO.Image.ReadFromFile@var",
+      "Replication": "Auto",
+      "Description": "Loads the file as a bitmap.\n\nImage.ReadFromFile (file: var): var"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.WatchImageCore, CoreNodeModels",
+      "Id": "2aaf0ef3f7e04f0fb9b8b01ae48b60d6",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "d72318275ee84c649cc8eb450501ac5e",
+          "Name": "image",
+          "Description": "Image for visualization",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "238c79fd3de247ca8218a53cb2ab1cc0",
+          "Name": "image",
+          "Description": "Image for visualization",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Previews an image"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "9df84a67c8d847cd9c818d6f0091d009",
+      "End": "60510ef2339b432ba5b22000927716d7",
+      "Id": "9fbbd1b6a983440ebbafb4bbc8a1fda3",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "a3b7e85ec31a411abe7d95bdac28aebc",
+      "End": "811aee997ed343aa858171a49bc73e3d",
+      "Id": "038a6fed7465486a8c9b253cdb9e8b1b",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "7023d4943db8442ab181d252c7b05831",
+      "End": "d72318275ee84c649cc8eb450501ac5e",
+      "Id": "67f785414dc74426bb8901bce334112c",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "Bricks.PNG",
+      "ReferenceType": "External",
+      "Nodes": [
+        "5a424eaa78c84cffaef5469c034de703"
+      ]
+    }
+  ],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.18",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.18.0.4326",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "5a424eaa78c84cffaef5469c034de703",
+        "Name": "File Path",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 148.5,
+        "Y": 396.0
+      },
+      {
+        "Id": "eeeadd2b09294b5fbe3ea2668b99777a",
+        "Name": "File From Path",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 452.5,
+        "Y": 394.0
+      },
+      {
+        "Id": "8d82e3934d0e464cb810ddc7389ab0ae",
+        "Name": "Image.ReadFromFile",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 749.5,
+        "Y": 390.0
+      },
+      {
+        "Id": "2aaf0ef3f7e04f0fb9b8b01ae48b60d6",
+        "Name": "Watch Image",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1087.5,
+        "Y": 391.0
+      }
+    ],
+    "Annotations": [],
+    "X": 677.747002299156,
+    "Y": 207.86594408547023,
+    "Zoom": 0.43202951305004778
+  }
+}

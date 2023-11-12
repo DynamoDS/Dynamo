@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -29,6 +29,44 @@ using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
 
 namespace Dynamo.Graph.Nodes
 {
+    public class Info
+    {
+        public string Message;
+        public Nodes.ElementState State;
+        internal Info(string message, ElementState state = ElementState.Active)
+        {
+            Message = message;
+            State =  state;
+        }
+
+        public override bool Equals(object other)
+        {
+            if (other == null) return false;
+
+            if (other is Info otherInfo)
+            {
+                return Message == otherInfo.Message && State == otherInfo.State;
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 17;
+                hash = hash * 23 + Message == null ? 0 : Message.GetHashCode();
+                hash = hash * 23 + State.GetHashCode();
+                return hash;
+            }
+        }
+
+        public override string ToString()
+        {
+            return $"State: {State}, Message: {Message}";
+        }
+    }
+
     public abstract class NodeModel : ModelBase, IRenderPackageSource<NodeModel>, IDisposable
     {
         #region private members
@@ -41,13 +79,9 @@ namespace Dynamo.Graph.Nodes
         private bool canUpdatePeriodically;
         private string name;
         private ElementState state;
-        private string toolTipText = string.Empty;
+        private readonly ObservableHashSet<Info> infos = new ObservableHashSet<Info>();
         private string description;
-        private string persistentWarning = string.Empty;
-        private string transientWarning = string.Empty;
 
-        private bool areInputPortsRegistered;
-        private bool areOutputPortsRegistered;
 
         ///A flag indicating whether the node has been explicitly frozen.
         internal bool isFrozenExplicitly;
@@ -68,10 +102,10 @@ namespace Dynamo.Graph.Nodes
 
         private readonly Dictionary<int, Tuple<int, NodeModel>> inputNodes;
         private readonly Dictionary<int, HashSet<Tuple<int, NodeModel>>> outputNodes;
-
         #endregion
 
         internal const double HeaderHeight = 46;
+        internal static string ExtensionNode = "ExtensionNode";
 
         #region public members
 
@@ -98,11 +132,12 @@ namespace Dynamo.Graph.Nodes
         /// server type for the node. This property should only be
         /// used for serialization.
         /// </summary>
+        [JsonProperty(Order = 2)]
         public virtual string NodeType
         {
             get
             {
-                return "ExtensionNode";
+                return ExtensionNode;
             }
         }
 
@@ -146,6 +181,32 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public event Action<NodeModel> NodeExecutionBegin;
 
+        /// <summary>
+        /// Event triggered whenever the node re-executes to clear its warnings and errors.
+        /// </summary>
+        public event Action<NodeModel> NodeMessagesClearing;
+
+        /// <summary>
+        /// Fires on each node that is modified when the graph executes.
+        /// </summary>
+        internal void OnNodeMessagesClearing()
+        {
+            NodeMessagesClearing?.Invoke(this);
+        }
+
+        /// <summary>
+        /// Event triggered whenever the node re-executes to clear its info messages
+        /// </summary>
+        public event Action<NodeModel> NodeInfoMessagesClearing;
+
+        /// <summary>
+        /// Fires on each node that is modified to clear info messages, when the graph executes.
+        /// </summary>
+        internal void OnNodeInfoMessagesClearing()
+        {
+            NodeInfoMessagesClearing?.Invoke(this);
+        }
+
         internal void OnNodeExecutionBegin()
         {
             NodeExecutionBegin?.Invoke(this);
@@ -168,7 +229,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Id for this node, must be unique within the graph.
         /// </summary>
-        [JsonProperty("Id")]
+        [JsonProperty("Id",Order = 1)]
         [JsonConverter(typeof(IdToGuidConverter))]
         public override Guid GUID
         {
@@ -312,15 +373,15 @@ namespace Dynamo.Graph.Nodes
             get { return state; }
             set
             {
-                if (value != ElementState.Error && value != ElementState.AstBuildBroken)
-                    ClearTooltipText();
+                if (value != ElementState.Error && value != ElementState.Info && value != ElementState.PersistentInfo && value != ElementState.AstBuildBroken)
+                    ClearTransientWarningsAndErrors();
 
                 // Check before settings and raising
                 // a notification.
                 if (state == value) return;
 
                 state = value;
-                RaisePropertyChanged("State");
+                RaisePropertyChanged(nameof(State));
             }
         }
 
@@ -346,13 +407,51 @@ namespace Dynamo.Graph.Nodes
         ///     Text that is displayed as this Node's tooltip.
         /// </summary>
         [JsonIgnore]
+        [Obsolete("This property is deprecated and will be removed in a future version of Dynamo.")]
         public string ToolTipText
         {
-            get { return toolTipText; }
+            get 
+            {
+                var builder = new System.Text.StringBuilder();
+                foreach(var info in Infos)
+                {
+                    builder.AppendLine(info.ToString());
+                }
+                return builder.ToString();
+            }
             set
             {
-                toolTipText = value;
-                RaisePropertyChanged("ToolTipText");
+                RaisePropertyChanged(nameof(ToolTipText));
+            }
+        }
+
+        /// <summary>
+        /// Collection of warnings, errors and info items applied to the NodeModel.
+        /// </summary>
+        internal ObservableHashSet<Info> Infos
+        {
+            get { return infos; }
+        }
+
+
+        /// <summary>
+        /// A publicly accessible collector of all Info/Warning/Error data
+        /// </summary>
+        [JsonIgnore]
+        public List<Info> NodeInfos
+        {
+            get
+            {
+                List<Info> infos = new List<Info>();
+
+                if (Infos.Count == 0) return infos;
+
+                foreach (Info info in Infos)
+                {
+                    infos.Add(new Info(info.Message, info.State));
+                }
+
+                return infos;
             }
         }
 
@@ -373,7 +472,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Collection of PortModels representing all Input ports.
         /// </summary>
-        [JsonProperty("Inputs")]
+        [JsonProperty("Inputs", Order = 3)]
         public ObservableCollection<PortModel> InPorts
         {
             get { return inPorts; }
@@ -388,7 +487,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Collection of PortModels representing all Output ports.
         /// </summary>
-        [JsonProperty("Outputs")]
+        [JsonProperty("Outputs", Order = 4)]
         public ObservableCollection<PortModel> OutPorts
         {
             get { return outPorts; }
@@ -415,7 +514,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         ///     Control how arguments lists of various sizes are laced.
         /// </summary>
-        [JsonProperty("Replication"), JsonConverter(typeof(StringEnumConverter))]
+        [JsonProperty("Replication", Order = 6), JsonConverter(typeof(StringEnumConverter))]
         public LacingStrategy ArgumentLacing
         {
             get
@@ -699,10 +798,11 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
-        [JsonConverter(typeof(DescriptionConverter))]
         /// <summary>
         ///     Description of this Node.
         /// </summary>
+        [JsonConverter(typeof(DescriptionConverter))]
+        [JsonProperty(Order = 7)]
         public string Description
         {
             get
@@ -811,6 +911,34 @@ namespace Dynamo.Graph.Nodes
         public bool IsPartiallyApplied //TODO(Steve): Move to Graph level -- MAGN-5710
         {
             get { return !inPorts.All(p => p.IsConnected); }
+        }
+
+        /// <summary>
+        ///     Are all the outputs of this node connected?
+        /// </summary>
+        [JsonIgnore]
+        public bool AreAllOutputsConnected
+        {
+            get { 
+                return 
+                    outPorts != null &&
+                    outPorts.Count > 0 &&
+                    outPorts.All(p => p.IsConnected); 
+            }
+        }
+
+        /// <summary>
+        ///     Are all the inputs of this node disconnected?
+        /// </summary>
+        [JsonIgnore]
+        internal bool AreAllInputsDisconnected
+        {
+            get { 
+                return 
+                    inPorts != null &&
+                    inPorts.Count > 0 &&
+                    inPorts.All(p => !p.IsConnected); 
+            }
         }
 
         /// <summary>
@@ -953,6 +1081,33 @@ namespace Dynamo.Graph.Nodes
                     Description = this.Description,
                     InitialValue = returnValue
                 };
+            }
+        }
+        
+        /// A collection of error/warning/info messages, dismissed via a sub-menu in the node Context Menu.
+        [JsonIgnore]
+        public ObservableCollection<string> DismissedAlerts { get; set; } = new ObservableCollection<string>();
+
+
+        private int dismissedAlertsCount;
+        /// <summary>
+        ///     Returns the number of dismissed error/warning/info messages.
+        /// </summary>
+        [JsonIgnore]
+        public int DismissedAlertsCount
+        {
+            get
+            {
+                return dismissedAlertsCount;
+            }
+
+            internal set // Private setter, see "ArgumentLacing" for details.
+            {
+                if (dismissedAlertsCount != value)
+                {
+                    dismissedAlertsCount = value;
+                    RaisePropertyChanged(nameof(DismissedAlertsCount));
+                }
             }
         }
 
@@ -1559,28 +1714,42 @@ namespace Dynamo.Graph.Nodes
 
         #region UI Framework
 
-        private void ClearTooltipText()
+        private void ClearTransientWarningsAndErrors()
         {
-            ToolTipText = "";
-        }
-
-        private void ClearPersistentWarning()
-        {
-            persistentWarning = String.Empty;
+            infos.RemoveWhere(x => x.State == ElementState.Warning || x.State == ElementState.Error);
         }
 
         /// <summary>
-        /// Clears the errors/warnings that are generated when running the graph,
-        /// the State will be set to ElementState.Dead.
+        /// Clears the errors/warnings that are generated when running the graph.
         /// </summary>
         public virtual void ClearErrorsAndWarnings()
         {
             State = ElementState.Dead;
-            ClearPersistentWarning();
-            transientWarning = string.Empty;
+            infos.RemoveWhere(x => x.State == ElementState.PersistentWarning);
 
             SetNodeStateBasedOnConnectionAndDefaults();
-            ClearTooltipText();
+            ClearTransientWarningsAndErrors();
+            OnNodeMessagesClearing();
+        }
+
+        /// <summary>
+        /// Clears the info messages that are generated when running the graph,
+        /// the State will be set to ElementState.Active.
+        /// </summary>
+        public virtual void ClearInfoMessages()
+        {
+            // It is very unlikely a node could be in both info state and persistent info state from the current design
+            // If that exception happens, we should redesign this function or have particular node override the behavior
+            if (State == ElementState.Info)
+            {
+                infos.RemoveWhere(x => x.State == ElementState.Info);
+            }
+            else if (State == ElementState.PersistentInfo)
+            {
+                infos.RemoveWhere(x => x.State == ElementState.PersistentInfo);
+            }
+            State = ElementState.Active;
+            OnNodeInfoMessagesClearing();
         }
 
         /// <summary>
@@ -1591,22 +1760,37 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         internal void ClearTransientWarning(string t = null)
         {
-            if (State == ElementState.Warning)
+            if (State != ElementState.Warning) return;
+
+            bool cond = false;
+            infos.RemoveWhere(x =>
             {
-                if (string.IsNullOrEmpty(t) || string.Compare(t, transientWarning) == 0)
-                {// Called with null (or empty argument) or argument matched the existing transient warning
-                    transientWarning = string.Empty;// Reset the transient warning
-                    if (!string.IsNullOrEmpty(persistentWarning))
-                    {// Still have persistent warnings then switch to the PersistentWarning state
-                        State = ElementState.PersistentWarning;
-                        ToolTipText = persistentWarning;
+                if (string.IsNullOrEmpty(t) && x.State == ElementState.Warning)
+                {
+                    cond = true;
+                }
+                else if (!string.IsNullOrEmpty(t))
+                {
+                    if (x.Message == t && x.State == ElementState.Warning)
+                    {
+                        cond = true;
                     }
-                    else
-                    {// No persistent warnings, go to default
-                        State = ElementState.Dead;
-                        ClearErrorsAndWarnings();
-                    }
-                } 
+                }
+                return cond;
+            });
+            if (cond)
+            {
+                if (Infos.Any(x => x.State == ElementState.PersistentWarning))
+                {
+                    // Still have persistent warnings then switch to the PersistentWarning state
+                    State = ElementState.PersistentWarning;
+                }
+                else
+                {
+                    // No persistent warnings, go to default
+                    State = ElementState.Dead;
+                    ClearErrorsAndWarnings();
+                }
             }
         }
 
@@ -1661,7 +1845,7 @@ namespace Dynamo.Graph.Nodes
 
             if (State == ElementState.PersistentWarning) return;
 
-            if (!string.IsNullOrEmpty(persistentWarning))
+            if (Infos.Any(x => x.State == ElementState.PersistentWarning || x.State == ElementState.MigratedFormula))
             {
                 State = ElementState.PersistentWarning;
                 return;
@@ -1683,7 +1867,42 @@ namespace Dynamo.Graph.Nodes
         public void Error(string p)
         {
             State = ElementState.Error;
-            ToolTipText = p;
+            infos.Add(new Info(p, ElementState.Error));
+        }
+
+        /// <summary>
+        /// Set an info on a node.
+        /// </summary>
+        /// <param name="p">The info text.</param>
+        [Obsolete("Info(string p) is deprecated, please use Info(string p, bool isPersistent = false) instead.")]
+
+        public void Info(string p)
+        {
+            State = ElementState.Info;
+            infos.Add(new Info(p, ElementState.Info));
+        }
+
+        /// <summary>
+        /// Set an info on a node.
+        /// </summary>
+        /// <param name="p">The info text.</param>
+        /// <param name="isPersistent">Is the info persistent? If true, the info will not be
+        /// cleared when the node is next evaluated. If false, the info will be cleared on the next evaluation.</param>
+        public void Info(string p, bool isPersistent = false)
+        {
+            if (isPersistent)
+            {
+                if (!Infos.Any(x => x.Message.Equals(p) && x.State == ElementState.PersistentInfo))
+                {
+                    State = ElementState.PersistentInfo;
+                    infos.Add(new Info(p, ElementState.PersistentInfo));
+                }
+            }
+            else
+            {
+                State = ElementState.Info;
+                infos.Add(new Info(p, ElementState.Info));
+            }
         }
 
         /// <summary>
@@ -1698,17 +1917,21 @@ namespace Dynamo.Graph.Nodes
             if (isPersistent)
             {
                 State = ElementState.PersistentWarning;
-                if (!string.Equals(persistentWarning, p))
+                if(!Infos.Any(x => x.Message.Equals(p) && x.State == ElementState.PersistentWarning))
                 {
-                    persistentWarning += p;
+                    var texts = p.Split(new[] { "\n" }, StringSplitOptions.None);
+                    var infoList = new List<Info>();
+                    foreach (var text in texts)
+                    {
+                        infoList.Add(new Info(text, State));
+                    }
+                    infos.AddRange(infoList);
                 }
-                ToolTipText = persistentWarning;
             }
             else
             {
                 State = ElementState.Warning;
-                transientWarning = p;
-                ToolTipText = string.IsNullOrEmpty(persistentWarning) ? p : string.IsNullOrEmpty(p) ? persistentWarning : $"{persistentWarning}\n{p}";
+                infos.Add(new Info(p, State));
             }
         }
 
@@ -1720,7 +1943,7 @@ namespace Dynamo.Graph.Nodes
         public void NotifyAstBuildBroken(string p)
         {
             State = ElementState.AstBuildBroken;
-            ToolTipText = p;
+            infos.Add(new Info(p, ElementState.AstBuildBroken));
         }
 
         #endregion
@@ -1925,7 +2148,6 @@ namespace Dynamo.Graph.Nodes
             }
 
             RaisesModificationEvents = true;
-            areInputPortsRegistered = true;
         }
 
         /// <summary>
@@ -2295,6 +2517,7 @@ namespace Dynamo.Graph.Nodes
             helper.SetAttribute("isSelectedOutput", IsSetAsOutput.ToString());
             helper.SetAttribute("IsFrozen", isFrozenExplicitly);
             helper.SetAttribute("isPinned", PreviewPinned);
+            helper.SetAttribute(nameof(IsSelected), IsSelected);
 
             var portIndexTuples = inPorts.Select((port, index) => new { port, index });
 
@@ -2356,6 +2579,12 @@ namespace Dynamo.Graph.Nodes
             IsSetAsOutput = helper.ReadBoolean("isSelectedOutput", false);
             IsFrozen = helper.ReadBoolean("IsFrozen", false);
             PreviewPinned = helper.ReadBoolean("isPinned", false);
+            IsSelected = helper.ReadBoolean(nameof(IsSelected), IsSelected);
+
+            if (IsSelected)
+                DynamoSelection.Instance.Selection.Add(this);
+            else
+                DynamoSelection.Instance.Selection.Remove(this);
 
             var portInfoProcessed = new HashSet<int>();
 
@@ -2517,6 +2746,25 @@ namespace Dynamo.Graph.Nodes
         public virtual bool RequestVisualUpdateAsync(IScheduler scheduler,
             EngineController engine, IRenderPackageFactory factory, bool forceUpdate = false)
         {
+            return RequestVisualUpdateAsync(scheduler, engine, factory, forceUpdate, false);
+        }
+
+        /// <summary>
+        /// Call this method to asynchronously regenerate render package for
+        /// this node. This method accesses core properties of a NodeModel and
+        /// therefore is typically called on the main/UI thread.
+        /// </summary>
+        /// <param name="scheduler">An IScheduler on which the task will be scheduled.</param>
+        /// <param name="engine">The EngineController which will be used to get MirrorData for the node.</param>
+        /// <param name="factory">An IRenderPackageFactory which will be used to generate IRenderPackage objects.</param>
+        /// <param name="forceUpdate">Normally, render packages are only generated when the node's IsUpdated parameter is true.
+        /// By setting forceUpdate to true, the render packages will be updated.</param>
+        /// <param name="ignoreIsVisible">Normally, render packages are only generated when the node's IsVisible parameter is true.
+        /// By setting ignore to true, the render package will be updated.</param>
+        /// <returns>Flag which indicates if geometry update has been scheduled</returns>
+        public virtual bool RequestVisualUpdateAsync(IScheduler scheduler,
+            EngineController engine, IRenderPackageFactory factory, bool forceUpdate, bool ignoreIsVisible = false)
+        {
             var initParams = new UpdateRenderPackageParams()
             {
                 Node = this,
@@ -2524,11 +2772,20 @@ namespace Dynamo.Graph.Nodes
                 EngineController = engine,
                 DrawableIdMap = GetDrawableIdMap(),
                 PreviewIdentifierName = AstIdentifierForPreview.Name,
-                ForceUpdate = forceUpdate
+                ForceUpdate = forceUpdate,
+                IgnoreIsVisible = ignoreIsVisible
             };
 
             var task = new UpdateRenderPackageAsyncTask(scheduler);
-            if (!task.Initialize(initParams)) return false;
+            try
+            {
+                if (!task.Initialize(initParams)) return false;
+            }
+            catch (ArgumentNullException e)
+            {
+                Log(e.ToString());
+                return false;
+            }
 
             task.Completed += OnRenderPackageUpdateCompleted;
             scheduler.ScheduleForExecution(task);
@@ -2692,7 +2949,10 @@ namespace Dynamo.Graph.Nodes
         Warning,
         PersistentWarning,
         Error,
-        AstBuildBroken
+        AstBuildBroken,
+        Info,
+        PersistentInfo,
+        MigratedFormula
     };
 
     /// <summary>

@@ -1,0 +1,415 @@
+<UserControl x:Class="Dynamo.PackageManager.UI.PackageManagerSearchControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Dynamo.PackageManager.UI"
+             xmlns:ui="clr-namespace:Dynamo.UI"
+             xmlns:ViewModels="clr-namespace:Dynamo.PackageManager.ViewModels"
+             xmlns:controls="clr-namespace:Dynamo.Controls"
+             xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+             mc:Ignorable="d"
+             x:Name="PackageSearchControl"
+             d:DesignHeight="450"
+             d:DesignWidth="800"
+             d:DataContext="{d:DesignInstance ViewModels:PackageManagerSearchElementViewModel, IsDesignTimeCreatable=False}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
+            <controls:InverseBooleanToVisibilityCollapsedConverter x:Key="InverseBooleanToVisibilityCollapsedConverter" />
+            <!-- Button Style -->
+            <Style x:Key="TextOnlyButtonStyle" TargetType="{x:Type Button}">
+                <Setter Property="Foreground" Value="{StaticResource DarkThemeBodyMediumBrush}"></Setter>
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderThickness" Value="0"></Setter>
+                <Setter Property="FontSize" Value="12"></Setter>
+                <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}"></Setter>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Border Background="{TemplateBinding Background}">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center" />
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Foreground" Value="{StaticResource Blue400Brush}" />
+                    </Trigger>
+                    <Trigger Property="IsPressed" Value="True">
+                        <Setter Property="Foreground" Value="{StaticResource MidLightBlueBrush}" />
+                    </Trigger>
+                    <Trigger Property="Visibility"
+                             Value="Visible">
+                        <Trigger.EnterActions>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                     From="0.0"
+                                                     To="1.0"
+                                                     Duration="0:0:0.3" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </Trigger.EnterActions>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            <SolidColorBrush x:Key="ContextMenuHeaderForegroundColorBrush" Color="#8c8c8c"/>
+            <!--  Separator Header Style  -->
+            <Style x:Key="SeparatorHeaderTextStyle" TargetType="{x:Type TextBlock}">
+                <Setter Property="Margin" Value="10 5"/>
+                <Setter Property="FontSize" Value="11"/>
+                <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementBold}"/>
+                <Setter Property="Foreground" Value="{StaticResource ContextMenuHeaderForegroundColorBrush}"/>
+                <Setter Property="UseLayoutRounding" Value="True"/>
+            </Style>
+            <Style x:Key="SeparatorLineStyle" TargetType="{x:Type Rectangle}">
+                <Setter Property="Height" Value="1"/>
+                <Setter Property="Margin" Value="0 3"/>
+                <Setter Property="Fill" Value="#4d4d4d"/>
+            </Style>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid x:Name="searchPackagesGrid" UseLayoutRounding="True"   >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="2" />
+            <ColumnDefinition Width="0"
+                              MinWidth="1"
+                              x:Name="packageDetailsGrid" />
+        </Grid.ColumnDefinitions>
+        <Grid Background="Transparent">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="77" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+
+            <!--  Contains the search bar, sort and filter buttons  -->
+            <Border Name="searchBar"
+                    Grid.Row="0"
+                    Padding="16 16 25 8"
+                    BorderBrush="#7E7E7E"
+                    BorderThickness="0">
+                <DockPanel>
+                    <!--  Sort Button  -->
+                    <Button Name="sortResultsButton"
+                            Width="20"
+                            Height="20"
+                            Margin="10,0,0,0"
+                            Background="{StaticResource PrimaryCharcoal300Brush}"
+                            BorderThickness="0"
+                            Click="OnSortButtonClicked"
+                            Cursor="Hand"
+                            DockPanel.Dock="Right"
+                            IsEnabled="{Binding Path=InitialResultsLoaded, UpdateSourceTrigger=PropertyChanged}">
+                        <Button.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.PackageSortToolTip}"
+                                     Style="{StaticResource GenericToolTipLight}" />
+                        </Button.ToolTip>
+                        <Button.Template>
+                            <ControlTemplate>
+                                <Grid>
+                                    <local:LoadingAnimationStripeControl  Width="16"
+                                                                          Height="16"
+                                                                          VerticalAlignment="Center"
+                                                                          Visibility="{Binding Path=InitialResultsLoaded, UpdateSourceTrigger=PropertyChanged,
+                                                                                               Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}" />
+                                    <Rectangle Width="16"
+                                               Height="16"
+                                               Visibility="{Binding Path=InitialResultsLoaded, UpdateSourceTrigger=PropertyChanged,
+                                                                    Converter={StaticResource BoolToVisibilityCollapsedConverter}}">
+                                        <Rectangle.Fill>
+                                            <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/sort.png" />
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                </Grid>
+                            </ControlTemplate>
+                        </Button.Template>
+
+                        <!--  When clicked, the sort button displays a ContextMenu of options to the user  -->
+                        <Button.ContextMenu>
+                            <ContextMenu MinWidth="180"
+                                         Width="Auto"
+                                         Background="{StaticResource GenericBorderBackgroundColorBrush}"
+                                         Style="{StaticResource ContextMenuStyle}">
+
+                                <!--  Sub-Title 'SORT BY'  -->
+                                <Separator>
+                                    <Separator.Template>
+                                        <ControlTemplate TargetType="Separator">
+                                            <StackPanel>
+                                                <TextBlock Style="{StaticResource SeparatorHeaderTextStyle}"
+                                                           Text="{x:Static p:Resources.PackageSearchSortBy}" />
+                                            </StackPanel>
+                                        </ControlTemplate>
+                                    </Separator.Template>
+                                </Separator>
+
+                                <!--  Sort By Package Name  -->
+                                <MenuItem Command="{Binding Path=SetSortingKeyCommand}"
+                                          CommandParameter="Name"
+                                          Header="{x:Static p:Resources.PackageSearchViewContextMenuSortByName}"
+                                          IsCheckable="True"
+                                          IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Name, Mode=TwoWay}" />
+
+                                <!--  Sort By Most Recent Update  -->
+                                <MenuItem Command="{Binding Path=SetSortingKeyCommand}"
+                                          CommandParameter="LastUpdate"
+                                          Header="{x:Static p:Resources.PackageSearchViewContextMenuSortyByUpdate}"
+                                          IsCheckable="True"
+                                          IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=LastUpdate, Mode=TwoWay}" />
+
+                                <!--  Sort By Number of Downloads  -->
+                                <MenuItem Command="{Binding Path=SetSortingKeyCommand}"
+                                          CommandParameter="Downloads"
+                                          Header="{x:Static p:Resources.PackageSearchViewContextMenuSortByDownloads}"
+                                          IsCheckable="True"
+                                          IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Downloads, Mode=TwoWay}" />
+
+                                <!--  Sort By Number Of Votes  -->
+                                <MenuItem Command="{Binding Path=SetSortingKeyCommand}"
+                                          CommandParameter="Votes"
+                                          Header="{x:Static p:Resources.PackageSearchViewContextMenuSortByVotes}"
+                                          IsCheckable="True"
+                                          IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Votes, Mode=TwoWay}" />
+
+                                <!--  Sort By Author Name  -->
+                                <MenuItem Command="{Binding Path=SetSortingKeyCommand}"
+                                          CommandParameter="Maintainers"
+                                          Header="{x:Static p:Resources.PackageSearchViewContextMenuSortByAuthor}"
+                                          IsCheckable="True"
+                                          IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Maintainers, Mode=TwoWay}" />
+
+
+                                <!--  Sub-Title 'ORDER'  -->
+                                <Separator>
+                                    <Separator.Template>
+                                        <ControlTemplate TargetType="Separator">
+                                            <StackPanel>
+                                                <Rectangle Style="{StaticResource SeparatorLineStyle}" />
+                                                <TextBlock Style="{StaticResource SeparatorHeaderTextStyle}"
+                                                           Text="{x:Static p:Resources.PackageSearchOrder}" />
+                                            </StackPanel>
+                                        </ControlTemplate>
+                                    </Separator.Template>
+                                </Separator>
+
+                                <!--  Sort Ascending  -->
+                                <MenuItem Command="{Binding Path=SetSortingDirectionCommand}"
+                                          CommandParameter="Ascending"
+                                          Header="{x:Static p:Resources.PackageSearchViewContextMenuOrderAscending}"
+                                          IsCheckable="True"
+                                          IsChecked="{Binding Path=SortingDirection, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Ascending, Mode=TwoWay}" />
+
+                                <!--  Sort Descending  -->
+                                <MenuItem Command="{Binding Path=SetSortingDirectionCommand}"
+                                          CommandParameter="Descending"
+                                          Header="{x:Static p:Resources.PackageSearchViewContextMenuOrderDescending}"
+                                          IsCheckable="True"
+                                          IsChecked="{Binding Path=SortingDirection, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Descending, Mode=TwoWay}" />
+                            </ContextMenu>
+                        </Button.ContextMenu>
+                    </Button>
+
+                    <!--  Filter Button  -->
+                    <Button Name="filterResultsButton"
+                            Width="20"
+                            Height="20"
+                            Margin="25,0,0,0"
+                            Background="{StaticResource PrimaryCharcoal300Brush}"
+                            BorderThickness="0"
+                            Click="OnFilterButtonClicked"
+                            Cursor="Hand"
+                            DockPanel.Dock="Right"
+                            IsEnabled="{Binding Path=InitialResultsLoaded, UpdateSourceTrigger=PropertyChanged}">
+                        <Button.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.PackageHostDependencyFilter}"
+                                     Style="{StaticResource GenericToolTipLight}" />
+                        </Button.ToolTip>
+                        <Button.Template>
+                            <ControlTemplate>
+                                <Grid>
+                                    <local:LoadingAnimationStripeControl  Width="16"
+                                                                          Height="16"
+                                                                          VerticalAlignment="Center"
+                                                                          Visibility="{Binding Path=InitialResultsLoaded, UpdateSourceTrigger=PropertyChanged,
+                                                                                               Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}" />
+                                    <Rectangle Width="16"
+                                               Height="16"
+                                               Visibility="{Binding Path=InitialResultsLoaded, UpdateSourceTrigger=PropertyChanged,
+                                                                    Converter={StaticResource BoolToVisibilityCollapsedConverter}}">
+                                        <Rectangle.Fill>
+                                            <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Filter.png" />
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                </Grid>
+                            </ControlTemplate>
+                        </Button.Template>
+
+                        <!--  When clicked, the filter button displays a ContextMenu of options to the user  -->
+                        <Button.ContextMenu>
+                            <ContextMenu Name="HostFilter"
+                                         Width="180"
+                                         Background="{StaticResource GenericBorderBackgroundColorBrush}"
+                                         DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Mode=Self}}"
+                                         DisplayMemberPath="FilterName"
+                                         StaysOpen="True"
+                                         Style="{StaticResource ContextMenuStyle}">
+                                <ContextMenu.Resources>
+                                    <Style BasedOn="{StaticResource ContextMenuItemStyle}"
+                                           TargetType="{x:Type MenuItem}">
+                                        <Setter Property="IsCheckable" Value="True" />
+                                        <Setter Property="StaysOpenOnClick" Value="True"/>
+                                        <Setter Property="Command" Value="{Binding FilterCommand}" />
+                                        <Setter Property="CommandParameter" Value="{Binding FilterName}" />
+                                        <Setter Property="IsChecked" Value="{Binding OnChecked, UpdateSourceTrigger=PropertyChanged}" />
+                                        <Setter Property="ToolTip">
+                                            <Setter.Value>
+                                                <ToolTip Content="{Binding Tooltip}"
+                                                         Style="{StaticResource GenericToolTipLight}"/>
+                                            </Setter.Value>
+                                        </Setter> 
+                                    </Style>
+                                    <CollectionViewSource x:Key="MenuItems" Source="{Binding HostFilter}" />
+                                    <CollectionViewSource x:Key="StatusItems" Source="{Binding NonHostFilter}" Filter="StatusItem_OnFilter" />
+                                    <CollectionViewSource x:Key="DependencyItems" Source="{Binding NonHostFilter}" Filter="DependencyItem_OnFilter" />
+                                </ContextMenu.Resources>
+                                <ContextMenu.ItemsSource>   
+                                    <CompositeCollection>
+                                        <!--  Sub-Title 'FILTER BY HOST'  -->
+                                        <Separator>
+                                            <Separator.Template>
+                                                <ControlTemplate TargetType="Separator">
+                                                    <StackPanel>
+                                                        <TextBlock Style="{StaticResource SeparatorHeaderTextStyle}"
+                                                                   Text="{x:Static p:Resources.PackageFilterByHost}" />
+                                                    </StackPanel>
+                                                </ControlTemplate>
+                                            </Separator.Template>
+                                        </Separator>
+                                        <CollectionContainer Collection="{Binding Source={StaticResource MenuItems}}" />
+
+                                        <!--  Sub-Title 'FILTER BY STATUS'  -->
+                                        <Separator>
+                                            <Separator.Template>
+                                                <ControlTemplate TargetType="Separator">
+                                                    <StackPanel>
+                                                        <Rectangle Style="{StaticResource SeparatorLineStyle}" />
+                                                        <TextBlock Style="{StaticResource SeparatorHeaderTextStyle}"
+                                                                   Text="{x:Static p:Resources.PackageFilterByStatus}" />
+                                                    </StackPanel>
+                                                </ControlTemplate>
+                                            </Separator.Template>
+                                        </Separator>
+                                        <CollectionContainer Collection="{Binding Source={StaticResource StatusItems}}" />
+
+                                        <!--  Sub-Title 'FILTER BY DEPENDENCY'  -->
+                                        <Separator>
+                                            <Separator.Template>
+                                                <ControlTemplate TargetType="Separator">
+                                                    <StackPanel>
+                                                        <Rectangle Style="{StaticResource SeparatorLineStyle}" />
+                                                        <TextBlock Style="{StaticResource SeparatorHeaderTextStyle}"
+                                                                   Text="{x:Static p:Resources.PackageFilterByDependency}" />
+                                                    </StackPanel>
+                                                </ControlTemplate>
+                                            </Separator.Template>
+                                        </Separator>
+                                        <CollectionContainer Collection="{Binding Source={StaticResource DependencyItems}}" />
+
+                                    </CompositeCollection>
+                                </ContextMenu.ItemsSource>
+                            </ContextMenu>
+                        </Button.ContextMenu>
+                    </Button>
+
+                    <!--  Search Bar  -->
+                    <local:SearchBoxControl x:Name="SearchBox"
+                                            DockPanel.Dock="Left"
+                                            Margin="0 5 0 0"
+                                            IsEnabled="{Binding Path=InitialResultsLoaded, UpdateSourceTrigger=PropertyChanged}" />
+
+                </DockPanel>
+            </Border>
+
+            <DockPanel Grid.Row="1"
+                       Margin="12 0 12 5"
+                       Visibility="{Binding Path=InitialResultsLoaded, UpdateSourceTrigger=PropertyChanged,
+                                                                      Converter={StaticResource BoolToVisibilityCollapsedConverter}}">
+
+                <!-- Bar containing all active fitlers -->
+                <ItemsControl x:Name="FilterItemControl">
+                    <ItemsControl.Resources>
+                        <CollectionViewSource x:Key="FilterItems" Source="{Binding HostFilter}" />
+                        <CollectionViewSource x:Key="StatusItems" Source="{Binding NonHostFilter}" Filter="StatusItem_OnFilter" />
+                        <CollectionViewSource x:Key="DependencyItems" Source="{Binding NonHostFilter}" Filter="DependencyItem_OnFilter" />
+                    </ItemsControl.Resources>
+                    <ItemsControl.ItemsSource>
+                        <CompositeCollection>
+                            <CollectionContainer Collection="{Binding Source={StaticResource FilterItems}}" />
+                            <CollectionContainer Collection="{Binding Source={StaticResource StatusItems}}" />
+                            <CollectionContainer Collection="{Binding Source={StaticResource DependencyItems}}" />
+                        </CompositeCollection>
+                    </ItemsControl.ItemsSource>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type local:FilterTagControl}">
+                            <local:FilterTagControl TagName="{Binding FilterName}"
+                                                    IsFilterOn="{Binding OnChecked, Mode=TwoWay}"
+                                                    FilterCommand="{Binding FilterCommand}"
+                                                    Visibility="{Binding OnChecked,
+                                                        Converter={StaticResource BoolToVisibilityCollapsedConverter}}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+
+                <!-- Clear Filter Button -->
+                <Button x:Name="ClearFiltersButton"
+                        DockPanel.Dock="Right"
+                        Content="{x:Static p:Resources.PackageManagerClearAllButtonText}"
+                        Margin="0 3 5 15"
+                        Width="60"
+                        HorizontalAlignment="Right"
+                        Style="{StaticResource TextOnlyButtonStyle}"
+                        Command="{Binding ClearFiltersCommand}"
+                        Visibility="{Binding IsAnyFilterOn, Converter={StaticResource BoolToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}" />
+            </DockPanel>
+
+            <local:PackageManagerPackageAnimationControl x:Name="loadingAnimationSearchControlScreen"
+                                                         Grid.Row="2"
+                                                         Visibility="Visible" />
+
+            <local:PackageManagerPackagesControl x:Name="packageManagerSearchPackages"
+                                                 Grid.Row="2"
+                                                 SearchItems="{Binding Path=SearchResults}"
+                                                 Visibility="{Binding Path=InitialResultsLoaded, UpdateSourceTrigger=PropertyChanged,
+                                                                      Converter={StaticResource BoolToVisibilityCollapsedConverter}}" />
+            
+
+        </Grid>
+
+        <GridSplitter Grid.Column="1"
+                      Grid.Row="2"
+                      Grid.RowSpan="1"
+                      VerticalAlignment="Stretch"
+                      HorizontalAlignment="Center"
+                      Background="{StaticResource PackageManagerTabBackgroundColor}"
+                      Width="3"
+                      Visibility="{Binding Path=IsDetailPackagesExtensionOpened,
+                                            UpdateSourceTrigger=PropertyChanged,
+                                            Converter={StaticResource BoolToVisibilityCollapsedConverter}}" />
+    </Grid>
+</UserControl>

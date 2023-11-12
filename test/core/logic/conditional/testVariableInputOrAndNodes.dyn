@@ -1,0 +1,216 @@
+{
+  "Uuid": "668db107-6918-4122-8992-266f93acfa1f",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "testVariableInputOrAndNodes",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "[true, false];",
+      "Id": "66752755005d4f2d888423285d9a5421",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "ef68501ff4354f819555534dbde104ee",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Logic.Or, CoreNodeModels",
+      "VariableInputPorts": true,
+      "NodeType": "ExtensionNode",
+      "Id": "335560d5034e49e5b2bb8b2cc0ef6cf7",
+      "Inputs": [
+        {
+          "Id": "08873d746fe84cdea1e00fa9129eb15a",
+          "Name": "bool0",
+          "Description": "Boolean #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e196ed5e4df7474f9237cf4daa09d4ab",
+          "Name": "bool1",
+          "Description": "Boolean #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0bd51514b9fc4b08ba3d1ec839e16eff",
+          "Name": "bool",
+          "Description": "Result block produced",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "CrossProduct",
+      "Description": "Boolean OR: Returns true if either of the inputs are true. If neither are true, returns false."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Logic.And, CoreNodeModels",
+      "VariableInputPorts": true,
+      "NodeType": "ExtensionNode",
+      "Id": "a610eb8b577a40cd875f903404db7bc1",
+      "Inputs": [
+        {
+          "Id": "4f64098115d645879b74de2b7b8ca89e",
+          "Name": "bool0",
+          "Description": "Boolean #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "86c1aaa9bf6142078ef880de238862de",
+          "Name": "bool1",
+          "Description": "Boolean #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "01d1e6078f6643b186b2fe389f77a59d",
+          "Name": "bool",
+          "Description": "Result block produced",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "CrossProduct",
+      "Description": "Boolean AND: Returns true only if both of the inputs are true. If either is false, returns false."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "ef68501ff4354f819555534dbde104ee",
+      "End": "08873d746fe84cdea1e00fa9129eb15a",
+      "Id": "14165d3692ee4e9081a5d4194118cd1f",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "ef68501ff4354f819555534dbde104ee",
+      "End": "e196ed5e4df7474f9237cf4daa09d4ab",
+      "Id": "9b7e2f17b091459b94dd1113c053b644",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "ef68501ff4354f819555534dbde104ee",
+      "End": "4f64098115d645879b74de2b7b8ca89e",
+      "Id": "4119582cf4564f98a7837e085fcf844f",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "ef68501ff4354f819555534dbde104ee",
+      "End": "86c1aaa9bf6142078ef880de238862de",
+      "Id": "5be0d9e9b3294f0b87064c16bf201e54",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.14",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.14.0.3891",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "66752755005d4f2d888423285d9a5421",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 262.8,
+        "Y": 187.60000000000002
+      },
+      {
+        "Name": "Or",
+        "ShowGeometry": true,
+        "Id": "335560d5034e49e5b2bb8b2cc0ef6cf7",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 664.4,
+        "Y": 30.000000000000014
+      },
+      {
+        "Name": "And",
+        "ShowGeometry": true,
+        "Id": "a610eb8b577a40cd875f903404db7bc1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 444.40000000000009,
+        "Y": 354.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

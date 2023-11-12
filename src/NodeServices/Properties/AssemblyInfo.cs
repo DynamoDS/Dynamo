@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -22,4 +22,23 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("ProtoTest")]
 [assembly: InternalsVisibleTo("IntegrationTests")]
 [assembly: InternalsVisibleTo("DSIronPython")]
+[assembly: InternalsVisibleTo("DSCPython")]
 [assembly: InternalsVisibleTo("PythonNodeModelsWpf")]
+[assembly: InternalsVisibleTo("PythonNodeModels")]
+[assembly: InternalsVisibleTo("DynamoCoreWpf")]
+[assembly: InternalsVisibleTo("PythonMigrationViewExtension")]
+[assembly: InternalsVisibleTo("IronPythonExtension")]
+[assembly: InternalsVisibleTo("DynamoPythonTests")]
+[assembly: InternalsVisibleTo("IronPythonTests")]
+[assembly: InternalsVisibleTo("DynamoCoreWpfTests")]
+[assembly: InternalsVisibleTo("DynamoPackages")]
+[assembly: InternalsVisibleTo("DynamoSandbox")]
+[assembly: InternalsVisibleTo("PackageDetailsViewExtension")]
+[assembly: InternalsVisibleTo("DynamoCoreWpfTests")]
+[assembly: InternalsVisibleTo("DSCoreNodes")]
+[assembly: InternalsVisibleTo("FFITarget")]
+[assembly: InternalsVisibleTo("DynamoPlayerExtension")]
+[assembly: InternalsVisibleTo("DynamoPlayer.Extension")]
+[assembly: InternalsVisibleTo("DynamoPlayer.Workflows")]
+[assembly: InternalsVisibleTo("DynamoPlayer.WorkflowsUi")]
+[assembly: InternalsVisibleTo("DynamoApplications")]

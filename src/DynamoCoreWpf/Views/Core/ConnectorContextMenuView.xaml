@@ -1,0 +1,59 @@
+<UserControl x:Class="Dynamo.Controls.ConnectorContextMenuView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:ui="clr-namespace:Dynamo.UI"
+             xmlns:props="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
+             mc:Ignorable="d"
+             MouseLeave="OnMouseLeave">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Canvas Canvas.Top="0"
+            Canvas.Left="0">
+        <Button Canvas.Top="{Binding CurrentPosition.Y}"
+            Canvas.Left="{Binding CurrentPosition.X}" Height="2" Width="2" Visibility="Hidden">
+            <Button.ContextMenu>
+            <ContextMenu Name="MainContextMenu"
+                         Style="{StaticResource ContextMenuStyle}"
+                         Background="#666666"
+                         MinWidth="110"
+                         Width="Auto"
+                         MouseLeave="OnMouseLeaveContextMenu"
+                         ContextMenuClosing="OnContextMenuClosing">
+                    <MenuItem x:Name="BreakItem" Header="{x:Static props:Resources.ConnectorContextMenuHeaderBreakConnection}" 
+                          Command="{Binding BreakConnectionsSurrogateCommand}"/>
+                    <MenuItem x:Name="SelectItem" Header="{x:Static props:Resources.ConnectorContextMenuHeaderSelectConnected}" 
+                          Command="{Binding SelectConnectedSurrogateCommand}"/>
+                    <MenuItem x:Name="PinItem" Header="{x:Static props:Resources.ConnectorContextMenuHeaderPinConnector}" 
+                              Command="{Binding PinConnectedSurrogateCommand}"/>
+                    <MenuItem x:Name="HideItem" Command="{Binding HideConnectorSurrogateCommand}">
+                        <MenuItem.Style>
+                            <Style TargetType="MenuItem" BasedOn="{StaticResource ContextMenuItemStyle}">
+                                <Setter Property="IsChecked" Value="False"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsCollapsed}" Value="False">
+                                        <Setter Property="Header" Value="{x:Static props:Resources.ConnectorContextMenuHeaderHideConnector}"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsCollapsed}" Value="True">
+                                        <Setter Property="Header" Value="{x:Static props:Resources.ConnectorContextMenuHeaderShowConnector}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </MenuItem.Style>
+                    </MenuItem>
+                    <MenuItem x:Name="StartNode" Header="{x:Static props:Resources.ConnectorContextMenuHeaderStartNode}" 
+                              Command="{Binding GoToStartNodeCommand}"/>
+                    <MenuItem x:Name="EndNode" Header="{x:Static props:Resources.ConnectorContextMenuHeaderEndNode}" 
+                              Command="{Binding GoToEndNodeCommand}"/>
+                </ContextMenu>
+        </Button.ContextMenu>
+        </Button>
+    </Canvas>
+</UserControl>

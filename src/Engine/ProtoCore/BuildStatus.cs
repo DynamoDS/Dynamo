@@ -73,6 +73,9 @@ namespace ProtoCore
         }
     }
 
+    /// <summary>
+    /// VM print out message
+    /// </summary>
     public class OutputMessage
     {
         public enum MessageType { Info, Warning, Error }
@@ -95,6 +98,16 @@ namespace ProtoCore
             FilePath = filePath;
             Line = line;
             Column = column;
+        }
+
+        // A constructor for info messages without line and colume.
+        internal OutputMessage(MessageType type, string message, string filePath)
+        {
+            Type = type;
+            Message = message;
+            FilePath = filePath;
+            Line = -1;
+            Column = -1;
         }
 
         public MessageType Type { get; private set; }
@@ -606,8 +619,8 @@ namespace ProtoCore
         /// Logs the warning where the usage of a symbol (symbolName) cannot be 
         /// resolved because it collides with multiple symbols(collidingSymbolNames) 
         /// </summary>
-        /// <param name="symbolUsage"></param>
-        /// <param name="duplicateSymbolNames"></param>
+        /// <param name="symbolName"></param>
+        /// <param name="collidingSymbolNames"></param>
         public void LogSymbolConflictWarning(string symbolName, string[] collidingSymbolNames)
         {
             string message = string.Format(Resources.kMultipleSymbolFoundFromName, symbolName, "");

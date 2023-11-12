@@ -61,4 +61,11 @@ namespace Dynamo.Logging
         /// </summary>
         event Action<ILogMessage> MessageLogged;
     }
+    internal interface INotificationSource
+    {
+        /// <summary>
+        ///     Emits Notifications.
+        /// </summary>
+        event Action<NotificationMessage> NotificationLogged;
+    }
 }

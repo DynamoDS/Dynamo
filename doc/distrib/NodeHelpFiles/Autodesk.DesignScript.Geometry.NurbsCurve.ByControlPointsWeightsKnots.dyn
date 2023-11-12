@@ -1,0 +1,813 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "ByControlPointsWeightsKnots",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Math.RandomList@int",
+      "Id": "b9aca73284ba499dad6440bddeb31d6f",
+      "Inputs": [
+        {
+          "Id": "58885644e8394228a778e46371097802",
+          "Name": "amount",
+          "Description": "Amount of random numbers the result list will contain.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "250ff4975bf04807a100adcc2bec04e9",
+          "Name": "number",
+          "Description": "List of random numbers between 0 and 1.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Produces a list containing the given amount of random doubles in the range of [0, 1).\n\nMath.RandomList (amount: int): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.List.Sort@var[]",
+      "Id": "a7abb2c2aaa24b738d2359372630efd5",
+      "Inputs": [
+        {
+          "Id": "e35fe34b2c014204a44774880ca9bb57",
+          "Name": "list",
+          "Description": "The list of items to be sorted.\n\nvar[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4164a4e2062d46a890faf2bc3ef47419",
+          "Name": "newList",
+          "Description": "The indices of the items in the sorted list.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Sorts a list by the items and return their indices.\n\nList.Sort (list: var[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "9;",
+      "Id": "29bc04d898d74653b0153af3e0955d0f",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "43fb0d9012a54ff8a8328774e83272e8",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Math.RandomList@int",
+      "Id": "23f7afef460d4da6897ad516fef40028",
+      "Inputs": [
+        {
+          "Id": "42d2f9a6e5c640a0b85c23c468756a72",
+          "Name": "amount",
+          "Description": "Amount of random numbers the result list will contain.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e1c62ee47ccf45628defde559229b688",
+          "Name": "number",
+          "Description": "List of random numbers between 0 and 1.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Produces a list containing the given amount of random doubles in the range of [0, 1).\n\nMath.RandomList (amount: int): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.List.Sort@var[]",
+      "Id": "7946aac105cf437e9925a034505896eb",
+      "Inputs": [
+        {
+          "Id": "4d1a8467c3bd406cb0a8607e72861e3b",
+          "Name": "list",
+          "Description": "The list of items to be sorted.\n\nvar[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "12d3b0adc1a1467793b524c93ca45020",
+          "Name": "newList",
+          "Description": "The indices of the items in the sorted list.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Sorts a list by the items and return their indices.\n\nList.Sort (list: var[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double",
+      "Id": "0ddb047a6f4f48f7af6c1080fcd44715",
+      "Inputs": [
+        {
+          "Id": "47777326a7c94c078e220174e3845fb4",
+          "Name": "x",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "295a3a389c7340a897c015fc2bff9f22",
+          "Name": "y",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f84912bc2caa4833985334db7857f0f1",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Form a Point in the XY plane given two 2 cartesian coordinates. The Z component is 0.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.ByPoints@Autodesk.DesignScript.Geometry.Point[]",
+      "Id": "10d526ed93f143c595a416bde2e141ec",
+      "Inputs": [
+        {
+          "Id": "9d95cabd15164238b2b8b0d7ece3070d",
+          "Name": "points",
+          "Description": "Point[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0c4a7313e7d14db18d2e1671b7b922df",
+          "Name": "NurbsCurve",
+          "Description": "NurbsCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a BSplineCurve by interpolating between points.\n\nNurbsCurve.ByPoints (points: Point[]): NurbsCurve"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Formula, CoreNodeModels",
+      "Formula": "x*20",
+      "NodeType": "FormulaNode",
+      "Id": "4eeb36a3975347b59d382101c596371e",
+      "Inputs": [
+        {
+          "Id": "8d395af0aec744b7aa2415c38918b94f",
+          "Name": "x",
+          "Description": "variable",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5ac1c78025d24bc884109c7ce0de4400",
+          "Name": "",
+          "Description": "Result of math computation",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Evaluates mathematical formulas. Uses NCalc: http://ncalc.codeplex.com/"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Formula, CoreNodeModels",
+      "Formula": "y*20",
+      "NodeType": "FormulaNode",
+      "Id": "5ce0a877dce3404c824375d74dbeda3c",
+      "Inputs": [
+        {
+          "Id": "fd51a95e4baf491a94e5cfaebd50c435",
+          "Name": "y",
+          "Description": "variable",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0ff74bda510148868bbdc6c960cb6865",
+          "Name": "",
+          "Description": "Result of math computation",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Evaluates mathematical formulas. Uses NCalc: http://ncalc.codeplex.com/"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPointsWeightsKnots@Autodesk.DesignScript.Geometry.Point[],double[],double[],int",
+      "Id": "ff0e4e20da6d4f169f1f8165cda80a2d",
+      "Inputs": [
+        {
+          "Id": "7fa11d087ff440cbaf15aa87374ee287",
+          "Name": "points",
+          "Description": "Point[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "822451296f9d46359e5182b20033df83",
+          "Name": "weights",
+          "Description": "double[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "89d65b3cc27c47b08f527da0ab33f743",
+          "Name": "knots",
+          "Description": "double[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "023b0c77a7864d5080ad9d27458b3388",
+          "Name": "degree",
+          "Description": "int\nDefault value : 3",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b3ed502b9fb2467091dacddc56260b4f",
+          "Name": "NurbsCurve",
+          "Description": "NurbsCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a BSplineCurve by from control vertices, weights, and knots. FROM ASM DOCS: Degree: Should be greater than 1 (piecewise-linear spline) and less than 26 (the maximum B-spline basis degree supported by ASM). Weights: All weight values (if supplied) should be strictly positive. Weights smaller than 1e-11 will be rejected and the function will fail. Knots: The knot vector should be a non-decreasing sequence. Interior knot multiplicity should be no larger than degree + 1 at the start/end knot and degree at an internal knot (this allows curves with G1 discontinuities to be represented). Note that non-clamped knot vectors are supported, but will be converted to clamped ones, with the corresponding changes applied to the control point/weight data. knot array: the array size must be num_control_points + degree + 1\n\nNurbsCurve.ByControlPointsWeightsKnots (points: Point[], weights: double[], knots: double[], degree: int = 3): NurbsCurve"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.Weights",
+      "Id": "3c83f82e46c94ed6bab5188742a22bc8",
+      "Inputs": [
+        {
+          "Id": "8403ec149ead40e0afe63d86f3904371",
+          "Name": "nurbsCurve",
+          "Description": "Autodesk.DesignScript.Geometry.NurbsCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "665d1395f0904b66a481c69ca84bdc60",
+          "Name": "double[]",
+          "Description": "double[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "The weights of the control vertices of the curve. These define the magnitude of influence of the control vertices.\n\nNurbsCurve.Weights ( ): double[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.Knots",
+      "Id": "625061c3a4e64f3680ae83a5ac085f7f",
+      "Inputs": [
+        {
+          "Id": "f29506c76f3b478f900434bf906517db",
+          "Name": "nurbsCurve",
+          "Description": "Autodesk.DesignScript.Geometry.NurbsCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c46a7af1e99d4d1bb31563d8b78a1f42",
+          "Name": "double[]",
+          "Description": "double[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "The knots of the Curve. These, along with the Degree, define the domain of the Curve where a particular control vertex acts.\n\nNurbsCurve.Knots ( ): double[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "3;",
+      "Id": "254282a1e6b64c6aab65711ad068b7aa",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "72545d6c545c48f2bde84b20c8da9ecd",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.List.ReplaceItemAtIndex@var[]..[],int,var[]..[]",
+      "Id": "2dcf11e40add4fc7a20a84c362de9868",
+      "Inputs": [
+        {
+          "Id": "cfb140a1e3f247c19fdea5826dc56e5d",
+          "Name": "list",
+          "Description": "List to replace an item in.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "748de07221744032a80ab0a92cfc2f27",
+          "Name": "index",
+          "Description": "Index of the item to be replaced.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f60a181574144ae99af17c69c46c6440",
+          "Name": "item",
+          "Description": "The item to insert.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "a2e99b15077249b6be216b040dae8aca",
+          "Name": "list",
+          "Description": "A new list with the item replaced.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Replace an item from the given list that's located at the specified index.\n\nList.ReplaceItemAtIndex (list: var[]..[], index: int, item: var[]..[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "2;\n10;",
+      "Id": "fc729e2b74d840288bf8bc4613161435",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "e195cee80cc1430d866e42ff815c4096",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "89092ad26e5044788d38716606a19a99",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.ControlPoints",
+      "Id": "9a93e3a6b9624b82b5d8ff1cde88d6b0",
+      "Inputs": [
+        {
+          "Id": "eec696d549a64281b860cfc8e3499559",
+          "Name": "nurbsCurve",
+          "Description": "Autodesk.DesignScript.Geometry.NurbsCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "3c92d4f85c35462a87a6a629586c0660",
+          "Name": "Point[]",
+          "Description": "An Array of Points",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Get the control points of the NurbsCurve. These are the points that the curve interpolates.\n\nNurbsCurve.ControlPoints ( ): Point[]"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "250ff4975bf04807a100adcc2bec04e9",
+      "End": "fd51a95e4baf491a94e5cfaebd50c435",
+      "Id": "46c272c698444f1b911c0dc9899a890b"
+    },
+    {
+      "Start": "4164a4e2062d46a890faf2bc3ef47419",
+      "End": "295a3a389c7340a897c015fc2bff9f22",
+      "Id": "927a9ae13d6749f9862e8419895994ee"
+    },
+    {
+      "Start": "43fb0d9012a54ff8a8328774e83272e8",
+      "End": "58885644e8394228a778e46371097802",
+      "Id": "1ce417e376e843729974bc9f27530a60"
+    },
+    {
+      "Start": "43fb0d9012a54ff8a8328774e83272e8",
+      "End": "42d2f9a6e5c640a0b85c23c468756a72",
+      "Id": "3b78f0f830f6462c8e2e6be8eb198b91"
+    },
+    {
+      "Start": "e1c62ee47ccf45628defde559229b688",
+      "End": "8d395af0aec744b7aa2415c38918b94f",
+      "Id": "0039b50a68664214b6ffcaa1cbee189c"
+    },
+    {
+      "Start": "12d3b0adc1a1467793b524c93ca45020",
+      "End": "47777326a7c94c078e220174e3845fb4",
+      "Id": "7464ad9ccda9419d958c73e9fd44131c"
+    },
+    {
+      "Start": "f84912bc2caa4833985334db7857f0f1",
+      "End": "9d95cabd15164238b2b8b0d7ece3070d",
+      "Id": "649e6375e6bc444a9f2b97f147015f31"
+    },
+    {
+      "Start": "0c4a7313e7d14db18d2e1671b7b922df",
+      "End": "8403ec149ead40e0afe63d86f3904371",
+      "Id": "d9a94837951e4cc0895ed7f2da276022"
+    },
+    {
+      "Start": "0c4a7313e7d14db18d2e1671b7b922df",
+      "End": "f29506c76f3b478f900434bf906517db",
+      "Id": "c0aa4e9e678a43d3bfc1b0ffc3b4af93"
+    },
+    {
+      "Start": "0c4a7313e7d14db18d2e1671b7b922df",
+      "End": "eec696d549a64281b860cfc8e3499559",
+      "Id": "bae209183ff249ef9384aea0ab8197f6"
+    },
+    {
+      "Start": "5ac1c78025d24bc884109c7ce0de4400",
+      "End": "4d1a8467c3bd406cb0a8607e72861e3b",
+      "Id": "de2f3ac2d1144ae5893099d057e7b3ff"
+    },
+    {
+      "Start": "0ff74bda510148868bbdc6c960cb6865",
+      "End": "e35fe34b2c014204a44774880ca9bb57",
+      "Id": "e4b11c0b798e4cdcb3d869d07c4a71bd"
+    },
+    {
+      "Start": "665d1395f0904b66a481c69ca84bdc60",
+      "End": "cfb140a1e3f247c19fdea5826dc56e5d",
+      "Id": "462fd9a4829345f7bdb8059cd0db2c23"
+    },
+    {
+      "Start": "c46a7af1e99d4d1bb31563d8b78a1f42",
+      "End": "89d65b3cc27c47b08f527da0ab33f743",
+      "Id": "8b6670b8c7d6426e836f06c2f9f97ab9"
+    },
+    {
+      "Start": "72545d6c545c48f2bde84b20c8da9ecd",
+      "End": "023b0c77a7864d5080ad9d27458b3388",
+      "Id": "10d47c47126447b0b590a141fa9700f9"
+    },
+    {
+      "Start": "a2e99b15077249b6be216b040dae8aca",
+      "End": "822451296f9d46359e5182b20033df83",
+      "Id": "a30bed178ad647b095f846bd47ca1075"
+    },
+    {
+      "Start": "e195cee80cc1430d866e42ff815c4096",
+      "End": "748de07221744032a80ab0a92cfc2f27",
+      "Id": "34906cb538624891984910a035ad924c"
+    },
+    {
+      "Start": "89092ad26e5044788d38716606a19a99",
+      "End": "f60a181574144ae99af17c69c46c6440",
+      "Id": "1cbaaaca0d234078ab5e5fc4972cb990"
+    },
+    {
+      "Start": "3c92d4f85c35462a87a6a629586c0660",
+      "End": "7fa11d087ff440cbaf15aa87374ee287",
+      "Id": "0bd8bf74bcfb490186af4ce693fa5a4d"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -3.6169897507021815,
+      "EyeY": 16.257049419406634,
+      "EyeZ": 14.12544955633976,
+      "LookX": 9.0462978181149865,
+      "LookY": -15.616384971828559,
+      "LookZ": -13.829792209559422,
+      "UpX": 0.28193591445638072,
+      "UpY": 0.85716731507886068,
+      "UpZ": -0.43101781908479408
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": false,
+        "Name": "Math.RandomList",
+        "Id": "b9aca73284ba499dad6440bddeb31d6f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -1039.0976826150086,
+        "Y": 436.30741291356776
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "List.Sort",
+        "Id": "a7abb2c2aaa24b738d2359372630efd5",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -490.09768261500858,
+        "Y": 436.30741291356776
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Code Block",
+        "Id": "29bc04d898d74653b0153af3e0955d0f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -1218.0976826150086,
+        "Y": 386.52074624690107
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Math.RandomList",
+        "Id": "23f7afef460d4da6897ad516fef40028",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -1039.0976826150086,
+        "Y": 328.30741291356776
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "List.Sort",
+        "Id": "7946aac105cf437e9925a034505896eb",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -490.09768261500858,
+        "Y": 328.30741291356776
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Point.ByCoordinates",
+        "Id": "0ddb047a6f4f48f7af6c1080fcd44715",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -208.09768261500858,
+        "Y": 369.30741291356776
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "NurbsCurve.ByPoints",
+        "Id": "10d526ed93f143c595a416bde2e141ec",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 49.90231738499142,
+        "Y": 369.30741291356776
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Formula",
+        "Id": "4eeb36a3975347b59d382101c596371e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -723.09768261500858,
+        "Y": 328.30741291356776
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Formula",
+        "Id": "5ce0a877dce3404c824375d74dbeda3c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -723.09768261500858,
+        "Y": 436.30741291356776
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "NurbsCurve.ByControlPointsWeightsKnots",
+        "Id": "ff0e4e20da6d4f169f1f8165cda80a2d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1061.9023173849914,
+        "Y": 446.30741291356776
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "NurbsCurve.Weights",
+        "Id": "3c83f82e46c94ed6bab5188742a22bc8",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 379.90231738499142,
+        "Y": 369.30741291356776
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "NurbsCurve.Knots",
+        "Id": "625061c3a4e64f3680ae83a5ac085f7f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 720.90231738499142,
+        "Y": 566.30741291356776
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "254282a1e6b64c6aab65711ad068b7aa",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 720.90231738499142,
+        "Y": 674.52074624690113
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "List.ReplaceItemAtIndex",
+        "Id": "2dcf11e40add4fc7a20a84c362de9868",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 720.90231738499142,
+        "Y": 406.30741291356776
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "fc729e2b74d840288bf8bc4613161435",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 379.90231738499142,
+        "Y": 477.73407958023444
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "NurbsCurve.ControlPoints",
+        "Id": "9a93e3a6b9624b82b5d8ff1cde88d6b0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 720.90231738499142,
+        "Y": 298.30741291356776
+      }
+    ],
+    "Annotations": [],
+    "X": 740.58171609244,
+    "Y": -31.029291307818994,
+    "Zoom": 0.586682329445151
+  }
+}

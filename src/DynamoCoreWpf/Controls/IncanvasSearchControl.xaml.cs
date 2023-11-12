@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -33,47 +33,33 @@ namespace Dynamo.UI.Controls
             InitializeComponent();
             if (Application.Current != null)
             {
-                Application.Current.Deactivated += currentApplicationDeactivated;
+                Application.Current.Deactivated += CurrentApplicationDeactivated;
+                Application.Current.MainWindow.Closing += InCanvasSearchControl_Unloaded;
             }
-            Unloaded += InCanvasSearchControl_Unloaded;
-
         }
 
-        private void InCanvasSearchControl_Unloaded(object sender, RoutedEventArgs e)
+        private void InCanvasSearchControl_Unloaded(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (Application.Current != null)
             {
-                Application.Current.Deactivated -= currentApplicationDeactivated;
+                Application.Current.Deactivated -= CurrentApplicationDeactivated;
+                Application.Current.MainWindow.Closing -= InCanvasSearchControl_Unloaded;
             }
         }
 
-        private void currentApplicationDeactivated(object sender, EventArgs e)
+        private void CurrentApplicationDeactivated(object sender, EventArgs e)
         {
             OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
         }
 
         private void OnRequestShowInCanvasSearch(ShowHideFlags flags)
         {
-            if (RequestShowInCanvasSearch != null)
-            {
-                RequestShowInCanvasSearch(flags);
-            }
-        }
-
-        private void OnSearchTextBoxTextChanged(object sender, TextChangedEventArgs e)
-        {
-            BindingExpression binding = ((TextBox)sender).GetBindingExpression(TextBox.TextProperty);
-            if (binding != null)
-                binding.UpdateSource();
-
-            if (ViewModel != null)
-                ViewModel.SearchCommand.Execute(null);
+            RequestShowInCanvasSearch?.Invoke(flags);
         }
 
         private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            var listBoxItem = sender as ListBoxItem;
-            if (listBoxItem == null || e.OriginalSource is Thumb) return;
+            if (!(sender is ListBoxItem listBoxItem) || e.OriginalSource is Thumb) return;
 
             ExecuteSearchElement(listBoxItem);
             OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
@@ -86,7 +72,7 @@ namespace Dynamo.UI.Controls
             if (searchElement != null)
             {
                 searchElement.Position = ViewModel.InCanvasSearchPosition;
-                searchElement.ClickedCommand.Execute(null);
+                searchElement.ClickedCommand?.Execute(null);
                 Analytics.TrackEvent(
                 Dynamo.Logging.Actions.Select,
                 Dynamo.Logging.Categories.InCanvasSearchOperations,
@@ -96,15 +82,16 @@ namespace Dynamo.UI.Controls
 
         private void OnMouseEnter(object sender, MouseEventArgs e)
         {
-            FrameworkElement fromSender = sender as FrameworkElement;
-            if (fromSender == null) return;
+            if (!(sender is FrameworkElement fromSender)) return;
 
+            HighlightedItem.IsSelected = false;
             toolTipPopup.DataContext = fromSender.DataContext;
             toolTipPopup.IsOpen = true;
         }
 
         private void OnMouseLeave(object sender, MouseEventArgs e)
         {
+            HighlightedItem.IsSelected = true;
             toolTipPopup.DataContext = null;
             toolTipPopup.IsOpen = false;
         }

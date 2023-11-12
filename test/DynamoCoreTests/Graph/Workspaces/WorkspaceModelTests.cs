@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -270,12 +270,12 @@ namespace Dynamo.Tests
             //Case: Empty Guid list
             var ex1 = Assert.Throws<ArgumentNullException>(() => workspace.UpdateModelValue(new List<Guid>(), "property name", "value"));
             //Checks that not only the exception type is correct but also the message
-            Assert.AreEqual(string.Format(Resources.ArgumentNullException,"modelGuids"), ex1.Message);
+            Assert.AreEqual(new ArgumentNullException("modelGuids").Message, ex1.Message);
             
             //Case: Null Guid list
             var ex2 = Assert.Throws<ArgumentNullException>(() => workspace.UpdateModelValue(null, "property name", "value"));
             //Checks that not only the exception type is correct but also the message
-            Assert.AreEqual(string.Format(Resources.ArgumentNullException, "modelGuids"), ex2.Message);
+            Assert.AreEqual(new ArgumentNullException("modelGuids").Message, ex2.Message);
 
             //Case: No model found in workspace with given Guids
             var guidList = new List<Guid>{ Guid.NewGuid() };
@@ -318,6 +318,17 @@ namespace Dynamo.Tests
 
             // Assert
             Assert.IsNull(hws.Thumbnail);
+        }
+
+        [Test]
+        public void ScaleFactorTest()
+        {
+            // Set scale factor to extra large
+            this.CurrentDynamoModel.CurrentWorkspace.ScaleFactor = 10000;
+            this.CurrentDynamoModel.ClearCurrentWorkspace();
+
+            // Assert scale factor did not got reset after workspace clear
+            Assert.AreEqual(this.CurrentDynamoModel.CurrentWorkspace.ScaleFactor, 10000);
         }
     }
 }

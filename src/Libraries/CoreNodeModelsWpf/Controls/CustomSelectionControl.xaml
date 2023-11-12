@@ -1,0 +1,115 @@
+<UserControl x:Class="CoreNodeModelsWpf.Controls.CustomSelectionControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:localProperties="clr-namespace:Dynamo.Wpf.Properties"
+             xmlns:core="clr-namespace:Dynamo.Nodes;assembly=DynamoCoreWpf"
+             xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+             xmlns:model="clr-namespace:CoreNodeModelsWpf"
+             mc:Ignorable="d"
+             d:DesignHeight="200" d:DesignWidth="300"
+             d:DataContext="{d:DesignInstance Type=model:CustomSelectionViewModel, IsDesignTimeCreatable=True}"
+             Width="250">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="EnumItemsListItemStyle"  TargetType="{x:Type ListBoxItem}">
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                            <Border Name="Border" SnapsToDevicePixels="true" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}">
+                                <ContentPresenter />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="true">
+                                    <Setter TargetName="Border" Property="Background" Value="Transparent" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="ThinLabel" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
+                <Setter Property="FontWeight" Value="Medium" />
+                <Setter Property="Foreground" Value="{StaticResource PrimaryCharcoal300Brush}" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Expander
+        Margin="0,-1,0,0"
+        IsExpanded="False"
+        IsHitTestVisible="True"
+        Template="{StaticResource ExpanderTemplate}">
+        <DockPanel Margin="-20,50,0,0" Grid.IsSharedSizeScope="True">
+            <Grid DockPanel.Dock="Top" Margin="2,0,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="105" SharedSizeGroup="display" />
+                    <ColumnDefinition Width="105" SharedSizeGroup="value" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0"
+                           Text="{x:Static localProperties:CoreNodeModelWpfResources.LblDisplay}"
+                           Style="{StaticResource ThinLabel}" />
+                <TextBlock Grid.Column="1"
+                           Text="{x:Static localProperties:CoreNodeModelWpfResources.LblValue}"
+                           Style="{StaticResource ThinLabel}" />
+            </Grid>
+
+            <core:DynamoNodeButton Style="{StaticResource SingleCharButton}"
+                                   Margin="0,11,1,0"
+                                   DockPanel.Dock="Bottom"
+                                   Command="{Binding AddCommand}"
+                                   HorizontalAlignment="Right"
+                                   Content="+" />
+
+            <ListBox x:Name="EnumItemsListbox"
+                     Margin="0,4,0,0"
+                     Background="Transparent"
+                     ItemsSource="{Binding Model.Items}"
+                     BorderThickness="0"
+                     PreviewKeyDown="EnumItemsListbox_PreviewKeyDown"
+                     KeyboardNavigation.TabNavigation="None"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     ItemContainerStyle="{StaticResource EnumItemsListItemStyle}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0,8,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition SharedSizeGroup="display" />
+                                <ColumnDefinition SharedSizeGroup="value" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBox Grid.Column="0" Style="{StaticResource InputStyle}" Margin="0,0,5,0" Text="{Binding Name}" LostFocus="ItemNameChanged" />
+                            <TextBox Grid.Column="1" Style="{StaticResource InputStyle}" Margin="0,0,0,0" Text="{Binding Item}" LostFocus="ItemValueChanged" />
+
+                            <core:DynamoNodeButton Grid.Column="2"
+                                                   x:Name="RemoveButton"
+                                                   Style="{StaticResource SingleCharButton}"
+                                                   HorizontalAlignment="Right"
+                                                   Command="{Binding ElementName=EnumItemsListbox, Path=DataContext.RemoveCommand}"
+                                                   CommandParameter="{Binding}"
+                                                   Content="-" />
+                        </Grid>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding Path=DataContext.Model.Items.Count, ElementName=EnumItemsListbox}" Value="1">
+                                <Setter TargetName="RemoveButton" Property="Visibility" Value="Hidden" />
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </DockPanel>
+    </Expander>
+</UserControl>

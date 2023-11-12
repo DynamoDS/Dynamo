@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Controls;
 using System.Collections.Generic;
 using Dynamo.Extensions;
@@ -12,7 +12,6 @@ namespace Dynamo.GraphMetadata
 {
     public class GraphMetadataViewExtension : ViewExtensionBase, IExtensionStorageAccess
     {
-        internal static string extensionName = "Properties";
         internal GraphMetadataViewModel viewModel;
         private GraphMetadataView graphMetadataView;
         private ViewLoadedParams viewLoadedParamsReference;
@@ -20,13 +19,11 @@ namespace Dynamo.GraphMetadata
 
         public override string UniqueId => "28992e1d-abb9-417f-8b1b-05e053bee670";
 
-        public override string Name => extensionName;
+        public override string Name => Resources.ExtensionName;
 
         public override void Loaded(ViewLoadedParams viewLoadedParams)
         {
-            if (viewLoadedParams == null) throw new ArgumentNullException(nameof(viewLoadedParams));
-
-            this.viewLoadedParamsReference = viewLoadedParams;
+            this.viewLoadedParamsReference = viewLoadedParams ?? throw new ArgumentNullException(nameof(viewLoadedParams));
             this.viewModel = new GraphMetadataViewModel(viewLoadedParams, this);
             this.graphMetadataView = new GraphMetadataView();
             graphMetadataView.DataContext = viewModel;
@@ -45,6 +42,11 @@ namespace Dynamo.GraphMetadata
 
         private void MenuItemCheckHandler(object sender, RoutedEventArgs e)
         {
+            AddToSidebar();
+        }
+
+        private void AddToSidebar()
+        {
             // Dont allow the extension to show in anything that isnt a HomeWorkspaceModel
             if (!(this.viewLoadedParamsReference.CurrentWorkspaceModel is HomeWorkspaceModel))
             {
@@ -53,6 +55,12 @@ namespace Dynamo.GraphMetadata
             }
 
             this.viewLoadedParamsReference?.AddToExtensionsSideBar(this, this.graphMetadataView);
+        }
+
+        public override void ReOpen()
+        {
+            AddToSidebar();
+            this.graphMetadataMenuItem.IsChecked = true;
         }
 
         #region Storage Access implementation
@@ -102,10 +110,12 @@ namespace Dynamo.GraphMetadata
 
         protected virtual void Dispose(bool disposing)
         {
-            viewModel.Dispose();
-
-            this.graphMetadataMenuItem.Checked -= MenuItemCheckHandler;
-            this.graphMetadataMenuItem.Unchecked -= MenuItemUnCheckedHandler;
+            viewModel?.Dispose();
+            if (graphMetadataMenuItem != null)
+            {
+                graphMetadataMenuItem.Checked -= MenuItemCheckHandler;
+                graphMetadataMenuItem.Unchecked -= MenuItemUnCheckedHandler;
+            }
         }
 
         public override void Dispose()

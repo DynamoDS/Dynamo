@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.Serialization;
@@ -8,6 +8,17 @@ using Newtonsoft.Json.Converters;
 
 namespace Dynamo.Graph.Nodes
 {
+    // NodeInputTypes is now serialized twice as NodeInputData.Type and NodeInputData.Type2.
+    // This enables us to add new values to the enum while allowing previous dynamo versions to successfully
+    // load new files with those new types. This is the case because by default json.net ignores missing properties.
+    // So Type2 is not deserialized at all in previous versions of Dynamo.
+    // Type's setter limits the possible values to a subset of the enum to avoid clients setting this to a value that would break file
+    // deserialization in previous dynamo versions.
+    // TODO We should unify these properties (Type and Type2) when possible (Dynamo 3.x) 
+
+    /// <summary>
+    /// Possible graph input types. 
+    /// </summary>
     [JsonConverter(typeof(StringEnumConverter))]
     public enum NodeInputTypes
     {
@@ -21,15 +32,20 @@ namespace Dynamo.Graph.Nodes
         colorInput,
         [EnumMember(Value = "date")]
         dateInput,
-        [Obsolete("Use hostSelection or dropdownSelection instead")]
+        [Obsolete()]
         [EnumMember(Value = "selection")]
         selectionInput,
+        /// <summary>
+        /// Should not be used when setting NodeInputData.Type, use selection instead, can be used with Type2.
+        /// </summary>
         [EnumMember(Value = "hostSelection")]
         hostSelection,
+        /// <summary>
+        /// Should not be used when setting NodeInputData.Type, use selection instead, can be used with Type2.
+        /// </summary>
         [EnumMember(Value = "dropdownSelection")]
         dropdownSelection
     };
-
 
     /// <summary>
     /// Represents a node which acts as a UI input for the graph
@@ -46,10 +62,29 @@ namespace Dynamo.Graph.Nodes
         /// Display name of the input node.
         /// </summary>
         public string Name { get; set; }
+        private NodeInputTypes type;
         /// <summary>
         /// The type of input this node is.
         /// </summary>
-        public NodeInputTypes Type { get; set; }
+        [Obsolete("Obsolete, this member has been replaced by Type2, which may contain new input types.")]
+        public NodeInputTypes Type
+        {
+            get => type;
+            set
+            {
+                // we don't allow setting Type to these enum values as they cause old versions of dynamo to fail to load files.
+                // use NodeInputData.Type2 instead.
+                if (value is NodeInputTypes.dropdownSelection || value is NodeInputTypes.hostSelection)
+                {
+                    type = NodeInputTypes.selectionInput;
+                }
+                else { type = value; }
+            }
+        }
+        /// <summary>
+        /// The type of input this node is.
+        /// </summary>
+        public NodeInputTypes Type2 { get; set; }
         /// <summary>
         /// The value of the input when the graph was saved.
         /// This should always be a string for all types.
@@ -104,6 +139,8 @@ namespace Dynamo.Graph.Nodes
             { typeof(Int64),NodeInputTypes.numberInput},
             {typeof(float),NodeInputTypes.numberInput},
         };
+
+        [Obsolete("To be removed in Dynamo 3.x")]
         public static NodeInputTypes getNodeInputTypeFromType(Type type)
         {
             NodeInputTypes output;
@@ -121,12 +158,12 @@ namespace Dynamo.Graph.Nodes
         {
             var converted = obj as NodeInputData;
 
-            var valNumberComparison = false;
+            bool valNumberComparison;
             try
             {
                 valNumberComparison = Math.Abs(Convert.ToDouble(this.Value, CultureInfo.InvariantCulture) - Convert.ToDouble(converted.Value, CultureInfo.InvariantCulture)) < .000001;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //this just stays false.
                 valNumberComparison = false;
@@ -143,9 +180,9 @@ namespace Dynamo.Graph.Nodes
                 this.NumberType == converted.NumberType &&
                 this.StepValue == converted.StepValue &&
                 this.Type == converted.Type &&
+                this.Type2 == converted.Type2 &&
                 //check if the value is the same or if the value is a number check is it similar
                 ((this.Value == converted.Value) || valNumberComparison || this.Value.ToString() == converted.Value.ToString());
         }
     }
-
 }

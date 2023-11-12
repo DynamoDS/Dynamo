@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Markup;
 using System.Xml;
 using Dynamo.Core;
@@ -32,6 +33,7 @@ namespace Dynamo.Nodes.Prompts
 
             productName = dynamoViewModel.BrandingResourceProvider.ProductName;
             Title = string.Format(Wpf.Properties.Resources.CrashPromptDialogTitle, productName);
+            TitleTextBlock.Text = string.Format(Wpf.Properties.Resources.CrashPromptDialogTitle, productName);
             txtOverridingText.Text = string.Format(Wpf.Properties.Resources.CrashPromptDialogCrashMessage, productName);
         }
 
@@ -41,6 +43,7 @@ namespace Dynamo.Nodes.Prompts
             this.CrashDetailsContent.Text = "Unknown error";
             productName = dynamoViewModel.BrandingResourceProvider.ProductName;
             Title = string.Format(Wpf.Properties.Resources.CrashPromptDialogTitle, productName);
+            TitleTextBlock.Text = string.Format(Wpf.Properties.Resources.CrashPromptDialogTitle, productName);
             txtOverridingText.Text = string.Format(Wpf.Properties.Resources.CrashPromptDialogCrashMessage, productName);
         }
 
@@ -53,6 +56,7 @@ namespace Dynamo.Nodes.Prompts
 
             productName = dynamoViewModel.BrandingResourceProvider.ProductName;
             Title = string.Format(Wpf.Properties.Resources.CrashPromptDialogTitle, productName);
+            TitleTextBlock.Text = string.Format(Wpf.Properties.Resources.CrashPromptDialogTitle, productName);
             txtOverridingText.Text = string.Format(Wpf.Properties.Resources.CrashPromptDialogCrashMessage, productName);
 
             if (args.HasDetails())
@@ -106,6 +110,8 @@ namespace Dynamo.Nodes.Prompts
 
         private void Details_Click(object sender, RoutedEventArgs e)
         {
+            this.Height = this.ActualHeight + 250;
+            this.ResizeMode = ResizeMode.CanResizeWithGrip;
             this.btnDetails.Visibility = Visibility.Collapsed;
             this.CrashDetailsContent.Visibility = Visibility.Visible;
             this.btnCopy.Visibility = Visibility.Visible;
@@ -125,9 +131,30 @@ namespace Dynamo.Nodes.Prompts
                 return;
 
             // Catch for exception, for cases where the directory does not exist
-            try { Process.Start(@folderPath); }
+            try { Process.Start(new ProcessStartInfo(@folderPath) { UseShellExecute = true }); }
             catch { }
         }
 
+        private void CloseButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        /// <summary>
+        /// Lets the user drag this window around with their left mouse button.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void UIElement_OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton != MouseButton.Left) return;
+            DragMove();
+        }
+
+        // ESC Button pressed triggers Window close        
+        private void OnCloseExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.Close();
+        }
     }
 }

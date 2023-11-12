@@ -1,15 +1,17 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using Dynamo.Graph.Nodes;
 using Dynamo.Wpf.ViewModels.Watch3D;
+using HelixToolkit.SharpDX.Core;
 using HelixToolkit.Wpf.SharpDX;
 using NUnit.Framework;
 using SystemTestServices;
 
 namespace AnalysisTests
 {
-    [TestFixture, RequiresSTA]
+    [TestFixture, Apartment(ApartmentState.STA)]
     class LabelTests : SystemTestBase
     {
         protected void OpenVisualizationTest(string fileName)
@@ -34,7 +36,7 @@ namespace AnalysisTests
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("ProtoGeometry.dll");
-            libraries.Add("DSIronPython.dll");
+            libraries.Add("DSCPython.dll");
             libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("GeometryColor.dll");
@@ -119,7 +121,7 @@ namespace AnalysisTests
             //It will have warnings due that the graph is not compiling
             Assert.IsTrue(hasWarnings);
             //Due that the parameters passed to the Label.ByPointAndString method are invalid it will raise an exception (that cannot be catched) but is recorded in the ToolTipText parameter
-            Assert.That(cbn.ToolTipText, Is.StringContaining("ArgumentNullException"));
+            Assert.That(cbn.Infos.Any(x => x.Message.Contains("ArgumentNullException")));
         }
     }
 }

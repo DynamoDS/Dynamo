@@ -1,0 +1,487 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "ByPoints",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "8f6778a9193546a199ccd63269004345",
+      "Name": "Number",
+      "Type": "number",
+      "Value": "5",
+      "NumberType": "Double",
+      "Description": "Creates a number."
+    },
+    {
+      "Id": "87f9443181a6442cb7e7e520eda16fb1",
+      "Name": "Integer Slider",
+      "Type": "number",
+      "Value": "9",
+      "MaximumValue": 15.0,
+      "MinimumValue": 3.0,
+      "StepValue": 1.0,
+      "NumberType": "Integer",
+      "Description": "A slider that produces integer values."
+    },
+    {
+      "Id": "3744bfef54b844c3b50f8425f2d04d13",
+      "Name": "Boolean",
+      "Type": "boolean",
+      "Value": "false",
+      "Description": "Selection between a true and false."
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "InputValue": 5.0,
+      "Id": "8f6778a9193546a199ccd63269004345",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "7a854ae43f98400b96b724eee4ef8731",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.IntegerSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Integer",
+      "InputValue": 9,
+      "MaximumValue": 15,
+      "MinimumValue": 3,
+      "StepValue": 1,
+      "Id": "87f9443181a6442cb7e7e520eda16fb1",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "c215a5e850804a30abd10a808c635e2b",
+          "Name": "",
+          "Description": "Int32",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces integer values."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "1;\n3;",
+      "Id": "c29f38b5f96f45728464f9671ee3fd3c",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "433b611868e74d5f8026821df24cef50",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "18e07998d1a245009db1a2006ed081a8",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double",
+      "Id": "a43d32f948864571bfbb313a6d9dcf30",
+      "Inputs": [
+        {
+          "Id": "b878eef267c34e7d9361b49b1e774831",
+          "Name": "x",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3252c53bfb6b4eb09a041607f6016b05",
+          "Name": "y",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "739681f0340d4d9ea94c9a0a5bc6c65a",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Form a Point in the XY plane given two 2 cartesian coordinates. The Z component is 0.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "0..1..#a;",
+      "Id": "8b17f91d34594345bb920c00ac40ca27",
+      "Inputs": [
+        {
+          "Id": "4d92b25c8bac4a34a70b5d6ca3fd2cd9",
+          "Name": "a",
+          "Description": "a",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "acfe2b2c66024e29b13505c2f363aabe",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Curve.PointAtParameter@double",
+      "Id": "efe526fc8cbb4538ab81c1df83d68b05",
+      "Inputs": [
+        {
+          "Id": "9b7176d84a9545babe0066c2838bac6d",
+          "Name": "curve",
+          "Description": "Autodesk.DesignScript.Geometry.Curve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "bee6141f90014e14a972e1912248ef1f",
+          "Name": "param",
+          "Description": "The parameter at which to evaluate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1ee38ed083dc4b40ac23d61e2a0c0562",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Get a Point on the Curve at a specified parameter between StartParameter() and EndParameter()\n\nCurve.PointAtParameter (param: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
+      "Id": "602537d0d77d4246bf5605261d4639ae",
+      "Inputs": [
+        {
+          "Id": "83771eeee9244e6aa8d9a32dbcb81aa3",
+          "Name": "centerPoint",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d3fca91162a8469698e5ce47af6beb54",
+          "Name": "radius",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "855bf3935d3d4289ab9eabf274ade069",
+          "Name": "Circle",
+          "Description": "Circle",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Creates a Circle with input center Point and radius in the world XY plane, with world Z as normal.\n\nCircle.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Circle"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "NodeType": "BooleanInputNode",
+      "InputValue": false,
+      "Id": "3744bfef54b844c3b50f8425f2d04d13",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "82df66950a3c442aaa6217c8bb708274",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Selection between a true and false."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.PolyCurve.ByPoints@Autodesk.DesignScript.Geometry.Point[],bool",
+      "Id": "86d2818c43e0495e94d3242a29069bb1",
+      "Inputs": [
+        {
+          "Id": "3886e826e0e2451a8a95816f32e5e9a2",
+          "Name": "points",
+          "Description": "Points to make polycurve\n\nPoint[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2edfa8913182465698c24408c89ebd4a",
+          "Name": "connectLastToFirst",
+          "Description": "make close or open polycurve\n\nbool\nDefault value : false (disabled)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "10f5f2aa5f8e4f0083c55381b278b9d0",
+          "Name": "PolyCurve",
+          "Description": "PolyCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Make PolyCurve by connecting points. Set the 'connectLastToFirst' input to true to close the PolyCurve.\n\nPolyCurve.ByPoints (points: Point[], connectLastToFirst: bool = false): PolyCurve"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "7a854ae43f98400b96b724eee4ef8731",
+      "End": "d3fca91162a8469698e5ce47af6beb54",
+      "Id": "8a01632647cc4abda6990bdb98440f72"
+    },
+    {
+      "Start": "c215a5e850804a30abd10a808c635e2b",
+      "End": "4d92b25c8bac4a34a70b5d6ca3fd2cd9",
+      "Id": "70953ec938634d30bcd76911f2f9c5d5"
+    },
+    {
+      "Start": "433b611868e74d5f8026821df24cef50",
+      "End": "b878eef267c34e7d9361b49b1e774831",
+      "Id": "659e83fc46c04ee980577892a4a7317d"
+    },
+    {
+      "Start": "18e07998d1a245009db1a2006ed081a8",
+      "End": "3252c53bfb6b4eb09a041607f6016b05",
+      "Id": "b7d6c7886b604a33a07b731e7db33b33"
+    },
+    {
+      "Start": "739681f0340d4d9ea94c9a0a5bc6c65a",
+      "End": "83771eeee9244e6aa8d9a32dbcb81aa3",
+      "Id": "6d690168f6aa4faebfa758dce82aa987"
+    },
+    {
+      "Start": "acfe2b2c66024e29b13505c2f363aabe",
+      "End": "bee6141f90014e14a972e1912248ef1f",
+      "Id": "86f90c4648dc4fd1b5f12d3872f8a919"
+    },
+    {
+      "Start": "1ee38ed083dc4b40ac23d61e2a0c0562",
+      "End": "3886e826e0e2451a8a95816f32e5e9a2",
+      "Id": "8fff7b0a475b4ec28ede505fbf1666ec"
+    },
+    {
+      "Start": "855bf3935d3d4289ab9eabf274ade069",
+      "End": "9b7176d84a9545babe0066c2838bac6d",
+      "Id": "44a7c73f7f1549e1814c76a02754f861"
+    },
+    {
+      "Start": "82df66950a3c442aaa6217c8bb708274",
+      "End": "2edfa8913182465698c24408c89ebd4a",
+      "Id": "53a6098e50b94483a171eb721384ccbe"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.1.5055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -0.51998394727706909,
+      "EyeY": 9.5583667755126953,
+      "EyeZ": 4.9149680137634277,
+      "LookX": 3.300147533416748,
+      "LookY": -5.7156438827514648,
+      "LookZ": -6.5646471977233887,
+      "UpX": 0.1933654397726059,
+      "UpY": 0.90258526802062988,
+      "UpZ": -0.38464218378067017
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": false,
+        "Name": "Number",
+        "Id": "8f6778a9193546a199ccd63269004345",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -282.308488457856,
+        "Y": 1445.1011780495351
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Integer Slider",
+        "Id": "87f9443181a6442cb7e7e520eda16fb1",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -282.308488457856,
+        "Y": 1528.1011780495351
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Code Block",
+        "Id": "c29f38b5f96f45728464f9671ee3fd3c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -461.308488457856,
+        "Y": 1319.5278447162018
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Point.ByCoordinates",
+        "Id": "a43d32f948864571bfbb313a6d9dcf30",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -282.308488457856,
+        "Y": 1311.1011780495351
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Code Block",
+        "Id": "8b17f91d34594345bb920c00ac40ca27",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 116.69151154214399,
+        "Y": 1510.3145113828684
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Curve.PointAtParameter",
+        "Id": "efe526fc8cbb4538ab81c1df83d68b05",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 439.691511542144,
+        "Y": 1428.1011780495351
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Circle.ByCenterPointRadius",
+        "Id": "602537d0d77d4246bf5605261d4639ae",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 116.69151154214399,
+        "Y": 1376.1011780495351
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Boolean",
+        "Id": "3744bfef54b844c3b50f8425f2d04d13",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 439.691511542144,
+        "Y": 1562.1011780495351
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "PolyCurve.ByPoints",
+        "Id": "86d2818c43e0495e94d3242a29069bb1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 730.691511542144,
+        "Y": 1482.1011780495351
+      }
+    ],
+    "Annotations": [],
+    "X": 658.103212542235,
+    "Y": -625.768537383112,
+    "Zoom": 0.693978861030433
+  }
+}

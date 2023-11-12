@@ -1,37 +1,78 @@
 name: Move issue by labels
-on: 
+# This workflow transfers or moves issues based upon assigned labels.
+
+# DynamoIssues project https://github.com/orgs/DynamoDS/projects/4
+# Built-in workflow https://github.com/orgs/DynamoDS/projects/4/workflows
+
+# The built-in workflow
+#   - adds any new issues to DynamoIssues project
+#   - sets status as 'Triage' when an item is added to the project
+#   - sets status as 'Backlog' when an item is reopened
+#   - sets status as 'Done' when an item is closed
+
+# This workflow complements the built in workflow and
+#   - moves issues labeled as 'Revit' to 'DynamoDS/DynamoRevit' repository
+#   - moves issues labeled as 'Advance-Steel' to 'DynamoDS/Dynamo-Advance-Steel' repository
+#   - moves issues labeled as 'Wishlist' to 'DynamoDS/DynamoWishlist' repository
+#   - moves issues labeled as 'tracked' to 'Todo' column in the project
+
+on:
   issues:
     types: [labeled]
-jobs: 
-  gitIssueTransfer:
-    env:
-      bot_comment: "FYI: @DynamoDS/dynamo"
-    strategy:
-      matrix: 
-        include: 
-          - label: 'Revit'
-            repoName: 'DynamoRevit'
-          - label: 'Advance-Steel'
-            repoName: 'Dynamo-Advance-Steel'
-          - label: 'Wishlist'
-            repoName: 'DynamoWishlist'
-    name: Move issues to corresponding repository
+
+env:
+  gh_organization: DynamoDS
+  gh_token: ${{ secrets.DYNAMO_ISSUES_TOKEN }}
+  project_id: 4
+  project_name: 'Dynamo Issues'
+
+jobs:
+  issue_labeled_as_revit:
+    name: Transfer issue labeled as 'Revit'
     runs-on: ubuntu-latest
+    if: github.event.label.name == 'Revit'
     steps:
-      - uses: actions/checkout@v2
-
-      #Adds a comment to the issue before moving it
-      - name: Add comment
-        if: (github.event.label.name == matrix.label)
-        uses: ben-z/actions-comment-on-issue@1.0.2
-        with:
-          message: ${{ env.bot_comment }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      #Move the issue depending on its labels
-      - name: (Label ${{ matrix.label }}) Move to ${{ matrix.repoName }}
-        if: (github.event.label.name == matrix.label)
-        run: hub issue transfer ${{github.event.issue.number}} ${{matrix.repoName}}
+      - uses: actions/checkout@v4
+      - name: Transfer issue to DynamoRevit Repository
+        run: |
+            gh issue edit ${{ github.event.issue.number }} --remove-project "${{ env.project_name }}"
+            gh issue transfer ${{ github.event.issue.number }} DynamoDS/DynamoRevit
         env:
-          #Uses DYNAMOBOTTOKEN to allow interaction between repos
-          GITHUB_TOKEN: ${{ secrets.DYNAMOBOTTOKEN }}
+          GITHUB_TOKEN: ${{ env.gh_token }}
+  issue_labeled_as_dynamo_advance_steel:
+    name: Transfer issue labeled as 'Advance-Steel'
+    runs-on: ubuntu-latest
+    if: github.event.label.name == 'Advance-Steel'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Transfer issue to Dynamo-Advance-Steel Repository
+        run: |
+            gh issue edit ${{ github.event.issue.number }} --remove-project "${{ env.project_name }}"
+            gh issue transfer ${{ github.event.issue.number }} DynamoDS/Dynamo-Advance-Steel
+        env:
+          GITHUB_TOKEN: ${{ env.gh_token }}
+  issue_labeled_as_wishlist:
+    name: Transfer issue labeled as 'Wishlist'
+    runs-on: ubuntu-latest
+    if: github.event.label.name == 'Wishlist'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Transfer issue to DynamoWishlist Repository
+        run: |
+            gh issue edit ${{ github.event.issue.number }} --remove-project "${{ env.project_name }}"
+            gh issue transfer ${{ github.event.issue.number }} DynamoDS/DynamoWishlist
+        env:
+          GITHUB_TOKEN: ${{ env.gh_token }}
+  issue_labeled_as_tracked:
+    name: Move issue labeled as 'tracked'
+    runs-on: ubuntu-latest
+    if: github.event.label.name == 'tracked'
+    steps:
+      - name: Move tracked issue to Todo
+        uses: leonsteinhaeuser/project-beta-automations@v2.2.1
+        with:
+          gh_token: ${{ env.gh_token }}
+          organization: ${{ env.gh_organization }}
+          project_id: ${{ env.project_id }}
+          resource_node_id: ${{ github.event.issue.node_id }}
+          status_value: Todo

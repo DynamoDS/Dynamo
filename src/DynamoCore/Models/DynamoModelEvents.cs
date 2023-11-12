@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using Dynamo.Annotations;
 using Dynamo.Core;
@@ -23,8 +23,7 @@ namespace Dynamo.Models
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged(string propertyName)
         {
-            var handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>
@@ -65,11 +64,22 @@ namespace Dynamo.Models
                 action();
         }
 
-        internal static event SettingsMigrationHandler RequestMigrationStatusDialog;
-        internal static void OnRequestMigrationStatusDialog(SettingsMigrationEventArgs args)
+        /// <summary>
+        /// Event to throw for Splash Screen to update Dynamo launching tasks
+        /// </summary>
+        internal static event SplashScreenLoadingHandler RequestUpdateLoadBarStatus;
+        internal static void OnRequestUpdateLoadBarStatus(SplashScreenLoadEventArgs args)
         {
-            if (RequestMigrationStatusDialog != null)
-                RequestMigrationStatusDialog(args);
+            RequestUpdateLoadBarStatus?.Invoke(args);
+        }
+
+        /// <summary>
+        /// Event to throw for Splash Screen to display the content in the proper language
+        /// </summary>
+        internal static event SplashScreenLanguageDetected LanguageDetected;
+        internal static void OnDetectLanguage()
+        {
+            LanguageDetected?.Invoke();
         }
 
         /// <summary>
@@ -294,7 +304,28 @@ namespace Dynamo.Models
         // TODO(Ben): Obsolete CrashPrompt and make use of GenericTaskDialog.
         public delegate void CrashPromptHandler(object sender, CrashPromptArgs e);
         public event CrashPromptHandler RequestsCrashPrompt;
+
+        /// <summary>
+        /// Shows the crash error reporting window.
+        /// This method will always try to show the Autodesk CER UI first (if the CER tool is found on disk). 
+        /// If the CER tool is not found, the Dynamo in-house crash prompt will be shown.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args">Can be called with CrashErrorReportArgs or CrashPromptArgs</param>
+        [Obsolete("Will be removed in Dynamo3.0. Please use 'OnRequestsCrashPrompt(CrashErrorReportArgs args)' instead.")]
         public void OnRequestsCrashPrompt(object sender, CrashPromptArgs args)
+        {
+            if (RequestsCrashPrompt != null)
+                RequestsCrashPrompt(this, args);
+        }
+
+        /// <summary>
+        /// Shows the crash error reporting window.
+        /// This method will always try to show the Autodesk CER UI first (if the CER tool is found on disk). 
+        /// If the CER tool is not found, the Dynamo in-house crash prompt will be shown.
+        /// </summary>
+        /// <param name="args">CER options</param>
+        public void OnRequestsCrashPrompt(CrashErrorReportArgs args)
         {
             if (RequestsCrashPrompt != null)
                 RequestsCrashPrompt(this, args);
@@ -505,6 +536,18 @@ namespace Dynamo.Models
                 ResetEngine(true);
             }
 
+        }
+
+        /// <summary>
+        /// This event is used to raise a toast notification from the DynamoViewModel 
+        /// </summary>
+        internal event Action<string> RequestNotification;
+        internal void OnRequestNotification(string notification)
+        {
+            if (RequestNotification != null)
+            {
+                RequestNotification(notification);
+            }
         }
 
         #endregion

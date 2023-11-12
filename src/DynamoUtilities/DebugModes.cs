@@ -34,6 +34,12 @@ namespace Dynamo.Utilities
             public bool IsEnabled;
         }
 
+        /// <summary>
+        /// Adds a debug mode
+        /// </summary>
+        /// <param name="name">Name of the debug mode</param>
+        /// <param name="description">Name about the debug mode</param>
+        /// /// <param name="isEnabled">Sets if the debug mode should be enabled on startup</param>
         internal static void AddDebugMode(string name, string description, bool isEnabled = false)
         {
             debugModes[name] = new DebugMode()
@@ -47,12 +53,14 @@ namespace Dynamo.Utilities
         private static void RegisterDebugModes()
         {
             // Register app wide new debug modes here.
-            AddDebugMode("DynamoPreferencesMenuDebugMode", "Enable/Disable the Preferences Panel new features in the Dynamo menu.", false);
             AddDebugMode("DumpByteCode", "Dumps bytecode to a log file in a folder called ByteCodeLogs located in the current working dirrectory.", false);
+            AddDebugMode("CrashOnNewNodeModel", "Crash when creating a new NodeModel. Works only on Debug builds", false);
         }
 
         internal static void LoadDebugModesStatusFromConfig(string configPath)
         {
+            if (!File.Exists(configPath)) return;
+
             try
             {
                 XmlDocument xmlDoc;

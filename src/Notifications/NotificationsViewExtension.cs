@@ -1,14 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using Dynamo.Controls;
 using Dynamo.Logging;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
-using Microsoft.Practices.Prism;
+using Dynamo.Utilities;
 
 namespace Dynamo.Notifications
 {
@@ -18,6 +18,7 @@ namespace Dynamo.Notifications
         private Action<Logging.NotificationMessage> notificationHandler;
         private ObservableCollection<Logging.NotificationMessage> notifications;
         private bool disposed;
+        private NotificationCenterController notificationCenterController;
         /// <summary>
         /// Notifications data collection. PropertyChanged event is raised to help dealing WPF bind dispose.
         /// </summary>
@@ -26,7 +27,7 @@ namespace Dynamo.Notifications
             get { return notifications; }
             private set
             {
-                if(notifications != value)
+                if (notifications != value)
                     notifications = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Notifications)));
             }
@@ -61,8 +62,11 @@ namespace Dynamo.Notifications
             {
                 UnregisterEventHandlers();
                 //for some reason the menuItem was not being gc'd in tests without manually removing it
-                viewLoadedParams.dynamoMenu.Items.Remove(notificationsMenuItem.MenuItem);
-                BindingOperations.ClearAllBindings(notificationsMenuItem.CountLabel);
+                viewLoadedParams?.dynamoMenu.Items.Remove(notificationsMenuItem.MenuItem);
+                if (notificationsMenuItem != null)
+                {
+                    BindingOperations.ClearAllBindings(notificationsMenuItem.CountLabel);
+                }
                 notificationsMenuItem = null;
                 disposed = true;
             }
@@ -70,8 +74,14 @@ namespace Dynamo.Notifications
 
         private void UnregisterEventHandlers()
         {
-            viewLoadedParams.NotificationRecieved -= notificationHandler;
-            Notifications.CollectionChanged -= notificationsMenuItem.NotificationsChangeHandler;
+            if (viewLoadedParams != null)
+            {
+                viewLoadedParams.NotificationRecieved -= notificationHandler;
+            }
+            if (notificationsMenuItem != null)
+            {
+                Notifications.CollectionChanged -= notificationsMenuItem.NotificationsChangeHandler;
+            }
         }
 
         public void Loaded(ViewLoadedParams viewStartupParams)
@@ -82,7 +92,7 @@ namespace Dynamo.Notifications
             logger = viewModel.Model.Logger;
 
             Notifications = new ObservableCollection<Logging.NotificationMessage>();
-            
+
             notificationHandler = (notificationMessage) =>
             {
                 Notifications.Add(notificationMessage);
@@ -98,6 +108,14 @@ namespace Dynamo.Notifications
             (notificationsMenuItem.MenuItem.Parent as ContentControl).Content = null;
             //place the menu into the DynamoMenu
             viewStartupParams.dynamoMenu.Items.Add(notificationsMenuItem.MenuItem);
+
+            LoadNotificationCenter();
+        }
+
+        private void LoadNotificationCenter()
+        {
+            var dynamoView = viewLoadedParams.DynamoWindow as DynamoView;
+            notificationCenterController = new NotificationCenterController(dynamoView, logger);
         }
 
         internal void AddNotifications()
@@ -108,12 +126,12 @@ namespace Dynamo.Notifications
 
         public void Shutdown()
         {
-           // Do nothing for now
+            // Do nothing for now
         }
 
         public void Startup(ViewStartupParams viewStartupParams)
         {
-           // Do nothing for now
+            // Do nothing for now
         }
     }
 }

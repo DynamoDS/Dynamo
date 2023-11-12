@@ -1,20 +1,20 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using CefSharp;
 using Dynamo;
 using Dynamo.Extensions;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Interfaces;
-using Dynamo.LibraryUI;
-using Dynamo.LibraryUI.Handlers;
+using Dynamo.LibraryViewExtensionWebView2;
+using Dynamo.LibraryViewExtensionWebView2.Handlers;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Moq;
+using Newtonsoft.Json;
 using NUnit.Framework;
 
 namespace ViewExtensionLibraryTests
@@ -39,7 +39,7 @@ namespace ViewExtensionLibraryTests
     public class LibraryResourceProviderTests : UnitTestBase
     {
         private const string EventX = "X";
-
+        /*
         [Test]
         [Category("UnitTests"), Category("Failure")]
         public void EventControllerCallback()
@@ -232,9 +232,40 @@ namespace ViewExtensionLibraryTests
             var binaryPath = Path.Combine(packagePath, "bin", "Package.dll");
             Assert.AreEqual($"http://localhost/icons/{name}.Small?path={binaryPath}", url.Url);
         }
+        */
+        private static Mock<NodeSearchElement> MockNodeSearchElement(string fullname, string creationName)
+        {
+            var moq = new Mock<NodeSearchElement>() { CallBase = true };
+            moq.Setup(e => e.FullName).Returns(fullname);
+            moq.Setup(e => e.CreationName).Returns(creationName);
+            return moq;
+        }
 
         [Test]
-        [Category("UnitTests"), Category("Failure")]
+        public void BuiltInPackagedNodeSearchElementLoadedType()
+        {
+            var category = "abc.xyz.somepackage";
+            var name = "My Node";
+            var creationName = "create abc xyz";
+            var expectedQualifiedName = "bltinpkg://abc.xyz.somepackage.My Node";
+            var path = @"C:\temp\packages\test.dll";
+            var moq = new Mock<TestNodeSearchElement>(category, name, ElementTypes.Packaged|ElementTypes.BuiltIn, path) { CallBase = true };
+            var element = moq.Object;
+            moq.Setup(e => e.CreationName).Returns(creationName);
+
+            var provider = new NodeItemDataProvider(new NodeSearchModel());
+            var item = provider.CreateLoadedTypeItem<LoadedTypeItem>(element);
+            Assert.AreEqual(expectedQualifiedName, item.fullyQualifiedName);
+            Assert.AreEqual(creationName, item.contextData);
+            Assert.AreEqual("abc, xyz, somepackage", item.keywords);
+
+            var url = new IconUrl(new Uri(item.iconUrl));
+            Assert.AreEqual("My%20Node.Small", url.Name);
+            Assert.AreEqual(path, url.Path);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void NodeSearchElementLoadedType()
         {
             var fullname = "abc.xyz.something";
@@ -249,7 +280,7 @@ namespace ViewExtensionLibraryTests
         }
 
         [Test]
-        [Category("UnitTests"), Category("Failure")]
+        [Category("UnitTests")]
         public void PackagedNodeSearchElementLoadedType()
         {
             var category = "abc.xyz.somepackage";
@@ -273,7 +304,7 @@ namespace ViewExtensionLibraryTests
         }
 
         [Test]
-        [Category("UnitTests"), Category("Failure")]
+        [Category("UnitTests")]
         public void CustomNodeSearchElementLoadedType()
         {
             var category = "abc.xyz.somepackage";
@@ -295,9 +326,19 @@ namespace ViewExtensionLibraryTests
             Assert.AreEqual(IconUrl.DefaultIcon, url.Name);
             Assert.AreEqual(IconUrl.DefaultPath, url.Path);
         }
+     
+
+        private LoadedTypeData<LoadedTypeItem> GetLoadedTypesFromJson(Stream stream)
+        {
+            using (var sr = new StreamReader(stream))
+            {
+                var serializer = new JsonSerializer();
+                return (LoadedTypeData<LoadedTypeItem>)serializer.Deserialize(sr, typeof(LoadedTypeData<LoadedTypeItem>));
+            }
+        }
 
         [Test]
-        [Category("UnitTests"), Category("Failure")]
+        [Category("UnitTests")]
         public void PackagedCustomNodeSearchElementLoadedType()
         {
             var category = "abc.xyz.somepackage";
@@ -318,6 +359,8 @@ namespace ViewExtensionLibraryTests
             Assert.AreEqual(url.Url, item.iconUrl);
         }
 
+
+        /*
         [Test]
         [Category("UnitTests"), Category("Failure")]
         public void CustomNodePropertiesWindowValidateCategories()
@@ -616,12 +659,7 @@ namespace ViewExtensionLibraryTests
             Assert.IsTrue(result.IsCompleted);
         }
 
-        private static Mock<NodeSearchElement> MockNodeSearchElement(string fullname, string creationName)
-        {
-            var moq = new Mock<NodeSearchElement>() { CallBase = true };
-            moq.Setup(e => e.FullName).Returns(fullname);
-            moq.Setup(e => e.CreationName).Returns(creationName);
-            return moq;
-        }
+        
+        */
     }
 }

@@ -67,7 +67,9 @@ namespace SystemTestServices
             if (assemblyResolver == null)
             {
                 assemblyResolver = new AssemblyResolver();
-                assemblyResolver.Setup(testConfig.DynamoCorePath);
+                assemblyResolver.Setup(testConfig.DynamoCorePath, new [] {
+                    Path.Combine(testConfig.DynamoCorePath, "nodes")
+                });
             }
 
             SetupCore();
@@ -139,7 +141,7 @@ namespace SystemTestServices
             }
         }
 
-        [TestFixtureTearDown]
+        [OneTimeTearDown]
         public virtual void FinalTearDown()
         {
             // Fix for COM exception on close
@@ -147,7 +149,7 @@ namespace SystemTestServices
             //Dispatcher.CurrentDispatcher.InvokeShutdown();
         }
 
-        #endregion
+#endregion
 
         #region protected methods
 

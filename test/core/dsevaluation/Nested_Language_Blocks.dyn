@@ -1,0 +1,411 @@
+{
+  "Uuid": "c949f97e-1c66-4ddf-899a-a52e85add143",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Nested_Language_Blocks",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "a = 1;\nb = 0..4;\n\ni = [Imperative]\n{\n\tc=0;\n    while(a < 2)\n    {\n\n        [Associative]\n        {\n            c = a*b;\n        }\n        a = a+0.5;\n    }\n    return [c,a];\n};",
+      "Id": "02b939a567684f8daac4f6522c005a5e",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "f45272297b4a4104b15f8ad91b56fe96",
+          "Name": "",
+          "Description": "a",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8f42b431ac4f4b9ebfce838a0d5cd946",
+          "Name": "",
+          "Description": "b",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6ede02cbd24643409cb4834a66182672",
+          "Name": "",
+          "Description": "i",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "a = [Associative]\n{\n\treturn [Imperative]\n\t{\n\t\tb = 0..4;\n\t\treturn [Associative]\n\t\t{\n\n\t\t\tv = [Imperative]\n\t\t    {\n\t\t\t\treturn 3;\n\t\t    }\n\t\t    return v*b;\n\t\t}\n\t}\n};",
+      "Id": "25dfbc73c9d44637addd3bcb3549ade2",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "daa802650569464dbe237b341ded0e66",
+          "Name": "",
+          "Description": "a",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "a = 1;\ni = [Imperative]\n{\n\n\tc = 0;\n\tb = 0..4;\n\n    while(a < 2)\n    {\n        [Associative]\n        {\n        \tv = [Imperative]\n            {\n\t\t\t\tz = 3;\n\t\t\t\treturn z;\n            }\n            c = v*b;\n\n        }\n        a = a+0.5;\n    }\n    return [c,a];\n};",
+      "Id": "1e3419525a5d48efa493241ee17215e2",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "2db43b2e8fd84a58978513fe8411f18f",
+          "Name": "",
+          "Description": "a",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f3cbcfd1f8944c038bd3a0abc357de49",
+          "Name": "",
+          "Description": "i",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "a = 1;\n\nc = [Imperative]\n{\n    x = [Associative]\n    {\n    \tb = 0..3;\n        return 2*b;\n    }\n    for(i in x)\n    {\n    \ta = a+i;\n    }\n    return a;\n};",
+      "Id": "41416d89796b4632aeecb0a5240b1162",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "84b712c381ec4d689b2994f684aa9c01",
+          "Name": "",
+          "Description": "a",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5d5727f4afa54610b6b017fc65579739",
+          "Name": "",
+          "Description": "c",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "c = 323;\na = 2+c;\ni = [Imperative]\n{\n\tx = c;\n\tc = [Associative]\n\t{\n\t\tc = 209;\n\t\treturn c+1;\n\t};\n\treturn [x,c,a];\n};",
+      "Id": "63929ed8da1f450289c255c75256b443",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "a2e35839f9c94f2da635197c842c7aaa",
+          "Name": "",
+          "Description": "c",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "dd9c8949f0144ac2892bd72779928ff2",
+          "Name": "",
+          "Description": "a",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "581dcdd6c689494cbc287c9a362d096c",
+          "Name": "",
+          "Description": "i",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "a = 1;\nb = 2;\ni = [Imperative]\n{\n\tc = 0;\n\tb = 0..4;\n\n    while(a < 2)\n    {\n\n        [Associative]\n        {\n\n            c = 2*b;\n        }\n        a = a+0.2;\n    }\n    return [c,a];\n};",
+      "Id": "35fa7e4f00bd4d9186bac070a1aff788",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "40cea2c55b1a40b89c5c6fc65d36e0b8",
+          "Name": "",
+          "Description": "a",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3f0ab0ec0e9b47d7b6ce8be69fd0ac03",
+          "Name": "",
+          "Description": "b",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "00bfc05c5b7c47f4a87ef9696edcc47f",
+          "Name": "",
+          "Description": "i",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "a = 1;\nx = 3;\ni = [Imperative]\n{\n\tc = 0;\n\tb = 0..4;\n\n    while(a < 2)\n    {\n        [Associative]\n        {\n            c = x*b;\n        }\n        a = a+0.2;\n    }\n    return [c,a];\n};",
+      "Id": "791bc14f8d0f467788a9971b142418a3",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "7e7b26dc3cc84702b52d8b06102c1165",
+          "Name": "",
+          "Description": "a",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0b715d0f441844128386d8b33abca50a",
+          "Name": "",
+          "Description": "x",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7a9b5ec57e4c4af496492ed087c4783e",
+          "Name": "",
+          "Description": "i",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "a = 1;\nx = 3;\ni = [Imperative]\n{\n\tc = 0;\n\tb = 0..4;\n\n    while(a < 2)\n    {\n        [Associative]\n        {\n        \tv = [Imperative]\n        \t{\n            \treturn a;\n            }\n            c = v*b;\n        }\n        a = a+0.2;\n    }\n    return [c,a];\n};",
+      "Id": "a4683ee15bf94433a99f198539593f0a",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "f7653bbc325643e58cad21b11254adac",
+          "Name": "",
+          "Description": "a",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "cf445efd6e6c459cb1f43b0e64d791c4",
+          "Name": "",
+          "Description": "x",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "77745832590c48a4887a35eb7dbae82e",
+          "Name": "",
+          "Description": "i",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.14",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.14.0.4185",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Code Block2",
+        "ShowGeometry": true,
+        "Id": "02b939a567684f8daac4f6522c005a5e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 31.0,
+        "Y": 93.0
+      },
+      {
+        "Name": "Code Block3",
+        "ShowGeometry": true,
+        "Id": "25dfbc73c9d44637addd3bcb3549ade2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 290.4,
+        "Y": 104.19999999999999
+      },
+      {
+        "Name": "Code Block4",
+        "ShowGeometry": true,
+        "Id": "1e3419525a5d48efa493241ee17215e2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 601.8,
+        "Y": 95.8
+      },
+      {
+        "Name": "Code Block5",
+        "ShowGeometry": true,
+        "Id": "41416d89796b4632aeecb0a5240b1162",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 902.6,
+        "Y": 102.59999999999997
+      },
+      {
+        "Name": "Code Block6",
+        "ShowGeometry": true,
+        "Id": "63929ed8da1f450289c255c75256b443",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1152.5930198192834,
+        "Y": 103.7641401616936
+      },
+      {
+        "Name": "Code Block7",
+        "ShowGeometry": true,
+        "Id": "35fa7e4f00bd4d9186bac070a1aff788",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1405.9080668937845,
+        "Y": 111.93471810089022
+      },
+      {
+        "Name": "Code Block1",
+        "ShowGeometry": true,
+        "Id": "791bc14f8d0f467788a9971b142418a3",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -229.382642124013,
+        "Y": 85.55494288507461
+      },
+      {
+        "Name": "Code Block8",
+        "ShowGeometry": true,
+        "Id": "a4683ee15bf94433a99f198539593f0a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1089.042304743733,
+        "Y": 451.21998160742464
+      }
+    ],
+    "Annotations": [],
+    "X": 245.03434124844779,
+    "Y": -18.761461992576621,
+    "Zoom": 0.69134779386718748
+  }
+}

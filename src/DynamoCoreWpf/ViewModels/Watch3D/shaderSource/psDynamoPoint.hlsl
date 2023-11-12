@@ -6,7 +6,7 @@
 
 float4 main(PSInputPS input) : SV_Target
 {
-	float4 vSelectionColor = float4(0.0, 0.62, 1.0, 1.0);
+	float4 vSelectionColor = float4(0.023529, 0.588235, 0.843137, 1.0);
 
 	//our flags are packed in this order:
   /*

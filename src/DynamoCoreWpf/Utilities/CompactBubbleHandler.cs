@@ -1,9 +1,10 @@
-﻿using System;
-using System.Linq;
+using System;
+using System.Linq; 
 using Dynamo.Extensions;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using ProtoCore.Mirror;
+ 
 
 namespace Dynamo.Wpf.Utilities
 {
@@ -24,7 +25,9 @@ namespace Dynamo.Wpf.Utilities
         {
             items = 0;
             var viewModel = ProcessThing(value, true);
+            viewModel.SetObjectType(value.Data);
             viewModel.NumberOfItems = items;
+            
             return viewModel;
         }
 

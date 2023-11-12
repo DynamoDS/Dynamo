@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,13 +22,13 @@ namespace Dynamo.Tests
         {
             var model = DynamoModel.Start();
 
-            IEnumerable searchEntries = model.SearchModel.SearchEntries.OfType<NodeSearchElement>();
+            IEnumerable entries = model.SearchModel.Entries.OfType<NodeSearchElement>();
             IconServices iconServices = new IconServices(model.PathManager);
             IconWarehouse currentWarehouse = null;
             var currentWarehouseAssembly = string.Empty;
 
             List<String> missingIcons = new List<string>();
-            foreach (var entry in searchEntries)
+            foreach (var entry in entries)
             {
                 var searchEle = entry as NodeSearchElement;
                 if (String.IsNullOrEmpty(searchEle.IconName))

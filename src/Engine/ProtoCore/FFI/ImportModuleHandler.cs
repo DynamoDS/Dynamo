@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -78,9 +78,9 @@ namespace ProtoFFI
                 return node;
             }
 
-            ProtoCore.AST.AssociativeAST.CodeBlockNode codeNode = null;
+            CodeBlockNode codeNode = null;
             if (importedNode == null)
-                codeNode = new ProtoCore.AST.AssociativeAST.CodeBlockNode();
+                codeNode = new CodeBlockNode();
             else
                 codeNode = importedNode.CodeNode;
 
@@ -88,9 +88,14 @@ namespace ProtoFFI
             {
                 codeNode = ImportCodeBlock(modulePathFileName, typeName, alias, codeNode);
             }
-            catch (System.Exception ex)
+            catch (DynamoServices.AssemblyBlockedException ex)
             {
-                if (ex is System.Reflection.ReflectionTypeLoadException)
+                // this exception is caught upstream after displaying a failed load library warning to the user.
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                if (ex is ReflectionTypeLoadException)
                 {
                     StringBuilder sb = new StringBuilder();
                     var typeLoadException = ex as ReflectionTypeLoadException;
@@ -101,9 +106,7 @@ namespace ProtoFFI
                     }
                     _coreObj.BuildStatus.LogSemanticError(sb.ToString());
                 }
-                if (ex.InnerException != null)
-                    _coreObj.BuildStatus.LogSemanticError(ex.InnerException.Message);
-                _coreObj.BuildStatus.LogSemanticError(ex.Message);
+                _coreObj.BuildStatus.LogSemanticError(ex.ToString());
             }
 
             //Cache the codeblock of root import node.
@@ -247,7 +250,12 @@ namespace ProtoFFI
                 {
                     dllModule = DLLFFIHandler.GetModule(importModuleName);
                 }
-                catch
+                catch (DynamoServices.AssemblyBlockedException ex)
+                {
+                    // this exception is caught upstream after displaying a failed load library warning to the user.
+                    throw ex;
+                }
+                catch (Exception)
                 {
                     _coreObj.LogSemanticError(string.Format(Resources.FailedToImport, importModuleName), _coreObj.CurrentDSFileName, curLine, curCol);
                 }

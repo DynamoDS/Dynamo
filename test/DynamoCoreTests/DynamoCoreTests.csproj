@@ -1,11 +1,8 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
-    <Import Project="$(SolutionDir)Config/CS.props" />
+    <Import Project="$(SolutionDir)Config/CS_SDK.props" />
   </ImportGroup>
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{472084ED-1067-4B2C-8737-3839A6143EB2}</ProjectGuid>
@@ -13,227 +10,51 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dynamo.Tests</RootNamespace>
     <AssemblyName>DynamoCoreTests</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
-    <TargetFrameworkProfile />
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>$(OutputPath)</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>$(OutputPath)</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
-    <Prefer32Bit>false</Prefer32Bit>
+  <PropertyGroup>
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Analytics.NET.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\Analytics.NET\Analytics.NET.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Greg, Version=2.0.7843.19074, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\src\packages\Greg.2.0.7843.19074\lib\net48\Greg.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Moq, Version=4.2.1507.118, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
-      <HintPath>..\..\src\packages\Moq.4.2.1507.0118\lib\net40\Moq.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\src\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <HintPath>..\..\src\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
-    </Reference>
-    <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\src\packages\RestSharp.105.2.3\lib\net46\RestSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.XML" />
+    <Compile Remove="AstBuilderTest.cs" />
+    <Compile Remove="Saving.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
-      <Link>Properties\AssemblySharedInfo.cs</Link>
-    </Compile>
-    <Compile Include="AnalyticsTests.cs" />
-    <Compile Include="Configuration\ContextTests.cs" />
-    <Compile Include="Configuration\DebugModesTests.cs" />
-    <Compile Include="Configuration\ExecutionSessionTests.cs" />
-    <Compile Include="Configuration\PreferenceSettingsTests.cs" />
-    <Compile Include="Core\DynamoSelectionTests.cs" />
-    <Compile Include="Core\AssemblyLoadedEventArgsTests.cs" />
-    <Compile Include="Core\NotificationObjectTests.cs" />
-    <Compile Include="Core\CrashPromptArgsTests.cs" />
-    <Compile Include="DefaultPythonEngineTests.cs" />
-    <Compile Include="DelayedGraphExecutionTests.cs" />
-    <Compile Include="DSCoreDataTests.cs" />
-    <Compile Include="Engine\CodeCompletion\CodeCompletionServicesTest.cs" />
-    <Compile Include="Engine\CodeGeneration\CompilingEventArgsTest.cs" />
-    <Compile Include="Engine\Profiling\ProfilingDataTest.cs" />
-    <Compile Include="Engine\EngineControllerTest.cs" />
-    <Compile Include="Engine\LinkedListOfListTest.cs" />
-    <Compile Include="Engine\LiveRunnerServicesTest.cs" />
-    <Compile Include="Engine\ShortestQualifiedNameReplacerTest.cs" />
-    <Compile Include="Extensions\ExtensionCommandExecutiveTest.cs" />
-    <Compile Include="Extensions\ExtensionLoaderTest.cs" />
-    <Compile Include="Extensions\ExtensionManagerTest.cs" />
-    <Compile Include="Graph\Annotations\AnnotationModelTests.cs" />
-    <Compile Include="Graph\Connectors\ConnectorModelTests.cs" />
-    <Compile Include="Graph\Nodes\NodeAttributesTests.cs" />
-    <Compile Include="Graph\Nodes\NodeModelTests.cs" />
-    <Compile Include="Graph\Workspaces\CustomNodeWorkspaceModelTests.cs" />
-    <Compile Include="Graph\Workspaces\HomeWorkspaceModelTests.cs" />
-    <Compile Include="Graph\Workspaces\IdReferenceResolverTests.cs" />
-    <Compile Include="Graph\Workspaces\WorkspaceModelTests.cs" />
-    <Compile Include="HomgeneousListTests.cs" />
-    <Compile Include="AtLevelTest.cs" />
-    <Compile Include="AttributeTest.cs" />
-    <Compile Include="DummyNodeTests.cs" />
-    <Compile Include="ImperativeClodeBlockTest.cs" />
-    <Compile Include="InheritanceTests.cs" />
-    <Compile Include="InputOutputDataTests.cs" />
-    <Compile Include="libGPreloaderTests.cs" />
-    <Compile Include="Linting\LinterManagerTests.cs" />
-    <Compile Include="ListAtLevelTests.cs" />
-    <Compile Include="Logging\AnalyticsServiceTest.cs" />
-    <Compile Include="Logging\DynamoLoggerTest.cs" />
-    <Compile Include="Logging\HeartBeatTest.cs" />
-    <Compile Include="Logging\LogSourceTests.cs" />
-    <Compile Include="Logging\LogTest.cs" />
-    <Compile Include="Logging\DynamoAnalyticsClientTest.cs" />
-    <Compile Include="Logging\StabilityTrackingTest.cs" />
-    <Compile Include="Migration\MigrationReportTests.cs" />
-    <Compile Include="Migration\MigrationTests.cs" />
-    <Compile Include="Migration\WorkspaceMigrationsTests.cs" />
-    <Compile Include="Models\DynamoModelCommandsTest.cs" />
-    <Compile Include="Models\CreateAndConnectNodeCommandTest.cs" />
-    <Compile Include="Models\CreateCustomNodeCommandTest.cs" />
-    <Compile Include="Models\CreateNodeCommandTest.cs" />
-    <Compile Include="Models\CreateNoteCommandTest.cs" />
-    <Compile Include="Models\CreateProxyNodeCommandTest.cs" />
-    <Compile Include="Models\ForceRunCancelCommandTest.cs" />
-    <Compile Include="Models\GroupModelCommandTests.cs" />
-    <Compile Include="Models\ModelEventCommandTest.cs" />
-    <Compile Include="Models\MutateTestCommandTest.cs" />
-    <Compile Include="Models\NodeModelWarnings.cs" />
-    <Compile Include="Models\OpenFileCommandTest.cs" />
-    <Compile Include="Models\PausePlaybackCommandTest.cs" />
-    <Compile Include="Models\PresetCommandTests.cs" />
-    <Compile Include="Models\RecordableCommandsTest.cs" />
-    <Compile Include="Models\RunSettingsTest.cs" />
-    <Compile Include="Models\SelectModelCommandTest.cs" />
-    <Compile Include="Models\UndoRedoCommandTest.cs" />
-    <Compile Include="Models\UpdateModelValueCommandTest.cs" />
-    <Compile Include="Models\DynamoModelEventArgsTest.cs" />
-    <Compile Include="Models\DynamoModelEventsTest.cs" />
-    <Compile Include="MultiOutputNodeTest.cs" />
-    <Compile Include="NodeExecutionTest.cs" />
-    <Compile Include="AnnotationModelTest.cs" />
-    <Compile Include="AsyncTaskExtensionsTests.cs" />
-    <Compile Include="AuthenticationManagerTests.cs" />
-    <Compile Include="CallsiteTests.cs" />
-    <Compile Include="CrashProtectionTests.cs" />
-    <Compile Include="DefaultArgumentMigrationTests.cs" />
-    <Compile Include="DefaultArgumentTests.cs" />
-    <Compile Include="DSEvaluationUnitTestBase.cs" />
-    <Compile Include="DynamoModelTestBase.cs" />
-    <Compile Include="ExtensionTests.cs" />
-    <Compile Include="MessageLogTests.cs" />
-    <Compile Include="MockMaker.cs" />
-    <Compile Include="NodeConstructionTests.cs" />
-    <Compile Include="Nodes\DictionaryTests.cs" />
-    <Compile Include="Nodes\DropDownTests.cs" />
-    <Compile Include="NodeToCodeTest.cs" />
-    <Compile Include="PackageDependencyTests.cs" />
-    <Compile Include="PresetsTests.cs" />
-    <Compile Include="PeriodicEvaluationTests.cs" />
-    <Compile Include="ProfilingTest.cs" />
-    <Compile Include="PropertiesTests\PropertiesTests.cs" />
-    <Compile Include="PythonMigrationAssistantTests.cs" />
-    <Compile Include="Search\BrowserInternalElementTest.cs" />
-    <Compile Include="Search\BrowserItemTest.cs" />
-    <Compile Include="Search\SearchDictionaryTest.cs" />
-    <Compile Include="Search\SearchElements\CodeBlockNodeSearchElementTest.cs" />
-    <Compile Include="Search\SearchElements\CustomNodeSearchElementTest.cs" />
-    <Compile Include="Search\SearchElements\NodeModelSearchElementTest.cs" />
-    <Compile Include="Search\SearchElements\NodeSearchElementTest.cs" />
-    <Compile Include="Search\SearchElements\SearchElementBaseTest.cs" />
-    <Compile Include="Search\SearchLibraryTest.cs" />
-    <Compile Include="SerializationTests.cs" />
-    <Compile Include="StorageExtensionTests.cs" />
-    <Compile Include="TestZeroTouchClass.cs" />
-    <Compile Include="TypedParametersToStringTests.cs" />
-    <Compile Include="CodeBlockNodeTests.cs" />
-    <Compile Include="CustomNodeWorkspaceOpening.cs" />
-    <Compile Include="DSEvaluationModelTest.cs" />
-    <Compile Include="DSFunctionNodeTest.cs" />
-    <Compile Include="DSLibraryTest.cs" />
-    <Compile Include="DynamoDefects.cs" />
-    <Compile Include="LibraryCustomizationTests.cs" />
-    <Compile Include="LibraryTests.cs" />
-    <Compile Include="MigrationManagerTests.cs" />
-    <Compile Include="MigrationTestFramework.cs" />
-    <Compile Include="NodeMigrationTests.cs" />
-    <Compile Include="Nodes\FormulaTests.cs" />
-    <Compile Include="Nodes\HigherOrder.cs" />
-    <Compile Include="Nodes\IfTest.cs" />
-    <Compile Include="AstBuildFailTest.cs" />
-    <Compile Include="ScopedNodeTest.cs" />
-    <Compile Include="SchedulerTests.cs" />
-    <Compile Include="Setup.cs" />
-    <Compile Include="UnicodeTest.cs" />
-    <Compile Include="UnitTestBase.cs" />
-    <Compile Include="UpdateManagerTests.cs" />
-    <Compile Include="Updates\BinaryVersionTests.cs" />
-    <Compile Include="Updates\UpdatesTests.cs" />
-    <Compile Include="UserDataMigrationTests.cs" />
-    <Compile Include="Utilities\UtilitiesTests.cs" />
-    <Compile Include="VersionUtilitiesTests.cs" />
-    <Compile Include="Visualization\DefaultGraphicPrimitivesTest.cs" />
-    <Compile Include="Visualization\DefaultRenderPackageTest.cs" />
-    <Compile Include="Visualization\RenderPackageCacheTest.cs" />
-    <Compile Include="WorkspaceHeaderTests.cs" />
-    <Compile Include="CoreTests.cs" />
-    <Compile Include="CoreDynTests.cs" />
-    <Compile Include="CustomNodes.cs" />
-    <Compile Include="FileReading.cs" />
-    <Compile Include="Nodes\ListTests.cs" />
-    <Compile Include="Nodes\LogicTests.cs" />
-    <Compile Include="Nodes\StringTests.cs" />
-    <Compile Include="SearchModelTests.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Settings.cs" />
-    <Compile Include="UndoRedoRecorderTests.cs" />
-    <Compile Include="UnitsOfMeasureTests.cs" />
-    <Compile Include="UtilityTests.cs" />
-    <Compile Include="XmlDocumentationTests.cs" />
-    <Compile Include="XmlHelperTests.cs" />
-  </ItemGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' != 'net48' ">
+        <PackageReference Include="NUnit" Version="3.13.3" ExcludeAssets="none" />
+        <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
+        <PackageReference Include="NUnit.Analyzers" Version="3.3.0" />
+        <PackageReference Include="coverlet.collector" Version="3.1.2" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" ExcludeAssets="none" />
+        <PackageReference Include="JunitXml.TestLogger" Version="3.0.124" />
+        <PackageReference Include="DynamoVisualProgramming.Analytics" Version="4.1.0.2437">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Greg" Version="3.0.0.2955">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+
+        <!--moq and deps - copied to test_dependencies folder-->
+        <PackageReference Include="Moq" Version="4.18.4" GeneratePathProperty="true" />
+        <PackageReference Include="Castle.Core" Version=" 5.1.1" GeneratePathProperty="true" />
+
+        <PackageReference Include="JUnitTestLogger" Version="1.1.0" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+        <PackageReference Include="RestSharp" Version="109.0.1">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.Diagnostics.Runtime" Version="2.0.226801" GeneratePathProperty="true" />
+    </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\DynamoCore\DynamoCore.csproj">
       <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
       <Name>DynamoCore</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\DynamoPackages\DynamoPackages.csproj">
+      <ProjectReference Include="..\..\src\DynamoPackages\DynamoPackages.csproj">
       <Project>{47533b7c-0e1a-44a4-8511-b438645f052a}</Project>
       <Name>DynamoPackages</Name>
     </ProjectReference>
@@ -265,11 +86,7 @@
       <Name>CoreNodeModels</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Libraries\DSOffice\DSOffice.csproj">
-      <Project>{9b4fdc96-e2f9-4b8f-894a-4294405d50e7}</Project>
-      <Name>DSOffice</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Libraries\DynamoUnits\Units.csproj">
+    <ProjectReference Include="..\..\src\Libraries\DynamoUnits\UnitsCore.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>Units</Name>
       <Private>False</Private>
@@ -289,11 +106,7 @@
       <Name>DynamoServices</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\PythonMigrationViewExtension\PythonMigrationViewExtension.csproj">
-      <Project>{10AF430D-0D3A-49CE-A63D-848912959745}</Project>
-      <Name>PythonMigrationViewExtension</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Tools\DynamoShapeManager\DynamoShapeManager.csproj">
+      <ProjectReference Include="..\..\src\Tools\DynamoShapeManager\DynamoShapeManager.csproj">
       <Project>{263fa9c1-f81e-4a8e-95e0-8cdae20f177b}</Project>
       <Name>DynamoShapeManager</Name>
     </ProjectReference>
@@ -301,32 +114,34 @@
       <Project>{c70fe632-5500-4c57-b3d6-9b5574137551}</Project>
       <Name>FFITarget</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Libraries\SystemTestServices\SystemTestServices.csproj">
-      <Project>{89563cd0-509b-40a5-8728-9d3ec6fe8410}</Project>
-      <Name>SystemTestServices</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Libraries\TestServices\TestServices.csproj">
+      <ProjectReference Include="..\Libraries\TestServices\TestServices.csproj">
       <Project>{6cd0f0cf-8199-49f9-b0ea-0b9598b44419}</Project>
       <Name>TestServices</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TestUINodes\TestUINodes.csproj">
-      <Project>{ED1EA294-1BA1-45D6-A669-ECD2E24E21A9}</Project>
-      <Name>TestUINodes</Name>
-      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="Crypto\AnAlteredSignature.sig" />
+    <None Include="Crypto\AnImportantFile.sig" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <ItemGroup>
+    <Content Include="Crypto\AnAlteredFile.txt" />
+    <Content Include="Crypto\AnImportantFile.txt" />
+  </ItemGroup>
+<Target Name="CopyDisableADPTestDeps">
+    <!--ms diag runtime + deps -->
+    <Message Importance="High" Text="copying disable adp test deps to test dependencies folder" />
+    <Copy SourceFiles="$(PkgMicrosoft_Diagnostics_Runtime)\lib\netstandard2.0\Microsoft.Diagnostics.Runtime.dll" DestinationFolder="$(TestDependenciesPath)" />
+</Target>
+
+    <Target Name="MoveSomeTestDepsOutOfBin_net60" AfterTargets="Build" Condition=" '$(TargetFramework)' != 'net48' ">
+        <Message Importance="High" Text="copying test dependencies to test dependencies folder" />
+        <CallTarget Targets="CopyDisableADPTestDeps"></CallTarget>
+        <!--moq + deps-->
+        <Copy SourceFiles="$(PkgCastle_Core)\lib\netstandard2.0\Castle.Core.dll" DestinationFolder="$(TestDependenciesPath)" />
+        <Copy SourceFiles="$(PkgMoq)\lib\netstandard2.0\Moq.dll" DestinationFolder="$(TestDependenciesPath)" />
+        <Copy SourceFiles="$(PkgMoq)\lib\netstandard2.0\Moq.dll" DestinationFolder="$(OutputPath)" />
+    </Target>
 </Project>

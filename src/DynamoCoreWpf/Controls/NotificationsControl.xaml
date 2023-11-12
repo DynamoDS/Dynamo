@@ -6,6 +6,7 @@
              xmlns:core="clr-namespace:Dynamo.Wpf.ViewModels.Core"
              xmlns:viewmodels="clr-namespace:Dynamo.ViewModels"
              xmlns:converters="clr-namespace:Dynamo.Controls"
+             xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
              d:DataContext="{d:DesignInstance Type=viewmodels:DynamoViewModel}"
              mc:Ignorable="d"
@@ -13,46 +14,122 @@
              d:DesignWidth="300">
 
     <UserControl.Resources>
-        <core:NotificationLevelToColorConverter x:Key="NotificationLevelToColorConverter"></core:NotificationLevelToColorConverter>
-        <converters:LinterIssueCountToVisibilityConverter x:Key="LinterIssueCountToVisibilityConverter" />
+        <ResourceDictionary>
+            <Style TargetType="{x:Type Border}" x:Key="FooterNotificationItemStyle">
+                <Setter Property="BorderThickness" Value="2"/>
+                <Setter Property="CornerRadius" Value="4"/>
+                <Setter Property="Margin" Value="5 10 0 10"/>
+                <Setter Property="Padding" Value="5 0"/>
+                <Setter Property="SnapsToDevicePixels" Value="True"/>
+                <Setter Property="UseLayoutRounding" Value="True"/>
+                <Setter Property="Height" Value="26"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="Background" Value="{StaticResource DarkMidGreyBrush}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource LightGreyBrush}"/>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="BorderBrush" Value="{StaticResource MidGreyBrush}"></Setter>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            <core:NotificationLevelToColorConverter x:Key="NotificationLevelToColorConverter"></core:NotificationLevelToColorConverter>
+            <core:ZeroToVisibilityCollapsedConverter x:Key="ZeroToVisibilityCollapsedConverter" />
+            <converters:EmptyStringToHiddenConverter x:Key="EmptyStringToHiddenConverter" />
+            <converters:LinterIssueCountToVisibilityConverter x:Key="LinterIssueCountToVisibilityConverter" />
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid HorizontalAlignment="Stretch">
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Center">
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <TextBlock Text="{Binding Path=HomeSpaceViewModel.CurrentNotificationMessage}"
-                   FontStyle="Italic"
-                   FontSize="12"
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Stretch"
-                   TextAlignment="Right"
-                   TextTrimming="WordEllipsis"
-                   Margin="10"
-                   Foreground="{Binding Path=HomeSpaceViewModel.CurrentNotificationLevel, 
-                            Converter={StaticResource NotificationLevelToColorConverter}}">
-            <TextBlock.Triggers>
-                <EventTrigger RoutedEvent="Binding.TargetUpdated">
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(TextBlock.Opacity)">
-                                <LinearDoubleKeyFrame Value="0"
-                                                      KeyTime="0:0:0" />
-                                <LinearDoubleKeyFrame Value="1"
-                                                      KeyTime="0:0:0.35" />
-                                <LinearDoubleKeyFrame Value="1"
-                                                      KeyTime="0:0:5" />
-                                <LinearDoubleKeyFrame Value="0"
-                                                      KeyTime="0:0:5.35" />
-                            </DoubleAnimationUsingKeyFrames>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-            </TextBlock.Triggers>
-        </TextBlock>
+
+        <!-- "Run completed with .." UI element -->
+        <Border Style="{StaticResource FooterNotificationItemStyle}"
+                Grid.Column="0"
+                BorderBrush="{Binding Path=HomeSpaceViewModel.CurrentNotificationLevel, 
+                                Converter={StaticResource NotificationLevelToColorConverter}}"
+                Visibility="{Binding Path=HomeSpaceViewModel.CurrentNotificationMessage, Converter={StaticResource EmptyStringToHiddenConverter}}">
+            <TextBlock x:Name="runNotificationTextBlock"
+                       Text="{Binding Path=HomeSpaceViewModel.CurrentNotificationMessage}"
+                       Visibility="{Binding Path=HomeSpaceViewModel.CurrentNotificationMessage, Converter={StaticResource EmptyStringToHiddenConverter}}"
+                       FontStyle="Italic"
+                       FontSize="12"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Stretch"
+                       TextAlignment="Left"
+                       TextTrimming="WordEllipsis"
+                       Foreground="{StaticResource PrimaryCharcoal200Brush}">
+            </TextBlock>
+        </Border>
+
+        <!-- The footer notification icon 
+        Shows the number of Error/Warning/Info Nodes
+        Interactions - clicking will zoom around affected nodes -->
+        <ItemsControl x:Name="footerIconItemsControl"
+                      VerticalAlignment="Center"
+                      Grid.Column="1"
+                      ItemsSource="{Binding Path=HomeSpaceViewModel.FooterNotificationItems, UpdateSourceTrigger=PropertyChanged}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border Style="{StaticResource FooterNotificationItemStyle}" 
+                            Visibility="{Binding NotificationCount, Converter={StaticResource ZeroToVisibilityCollapsedConverter}}">
+                        <Border.InputBindings>
+                            <MouseBinding MouseAction="LeftClick" 
+                                          Command="{Binding ElementName=footerIconItemsControl, Path=DataContext.HomeSpaceViewModel.SelectIssuesCommand}"
+                                          CommandParameter="{Binding NotificationType}"/>
+                        </Border.InputBindings>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <!-- Create a duplicate of the image in greyscale. 
+                            "Property changes can only occur during object initialization", which prevents us to use a converter.
+                            Source: https://docs.microsoft.com/en-us/dotnet/api/system.windows.media.imaging.formatconvertedbitmap?view=windowsdesktop-6.0 -->
+                            <Image x:Name="footerIconImage" 
+                                   Width="12"
+                                   Source="{Binding NotificationImage, UpdateSourceTrigger=PropertyChanged}" 
+                                   Visibility="{Binding NotificationCount, 
+                                        UpdateSourceTrigger=PropertyChanged, 
+                                        Converter={StaticResource ZeroToVisibilityCollapsedConverter}}">
+                            </Image>
+                            <Image x:Name="footerIconImageGrayScale" 
+                                   Width="12" 
+                                   Visibility="{Binding NotificationCount, 
+                                        UpdateSourceTrigger=PropertyChanged, 
+                                        Converter={StaticResource ZeroToVisibilityCollapsedConverter},
+                                        ConverterParameter=Inverse}">
+                                <Image.Source>
+                                    <FormatConvertedBitmap Source="{Binding NotificationImage, UpdateSourceTrigger=PropertyChanged}"
+                                                           DestinationFormat="Gray8"/>
+                                </Image.Source>
+                                <Image.OpacityMask>
+                                    <ImageBrush ImageSource="{Binding NotificationImage, UpdateSourceTrigger=PropertyChanged}"/>
+                                </Image.OpacityMask>
+                            </Image>
+                            <Label x:Name="footerIconText"
+                                   Content="{Binding NotificationCount}" 
+                                   FontSize="12" Padding="2 3 2 2" 
+                                   Foreground="{StaticResource PrimaryCharcoal200Brush}"/>
+                        </StackPanel>
+                        <Border.ToolTip>
+                            <ToolTip Content="{Binding Path=NotificationToolTip, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource GenericToolTipLightTop}"/>
+                        </Border.ToolTip>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+
         <StackPanel Orientation="Horizontal"
-                    Grid.Column="1"
+                    Grid.Column="2"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
                     Margin="30,0"

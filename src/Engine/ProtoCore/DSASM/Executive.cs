@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ProtoCore.AssociativeGraph;
 using ProtoCore.Exceptions;
 using ProtoCore.Lang.Replication;
 using ProtoCore.Properties;
@@ -36,6 +37,10 @@ namespace ProtoCore.DSASM
         private InstructionStream istream;
         public RuntimeMemory rmem { get; set; }
 
+        // Collection of registers that cache values of input literals that can be modified
+        // and simply accessed in an update execution cycle. 
+        private Dictionary<long, StackValue> updateRegisters = new Dictionary<long, StackValue>();
+
         public StackValue RX { get; set; }
         public StackValue TX { get; set; }
 
@@ -66,7 +71,21 @@ namespace ProtoCore.DSASM
         /// This is updated for every bounce and function call
         /// </summary>
         private List<AssociativeGraph.GraphNode> graphNodesInProgramScope;
-        
+
+        internal void SetAssociativeUpdateRegister(long astID, StackValue sv)
+        {
+            if(updateRegisters.ContainsKey(astID))
+            {
+                updateRegisters[astID] = sv;
+            }
+            else updateRegisters.Add(astID, sv);
+        }
+
+        internal void DeleteUpdateRegister(long astID)
+        {
+            updateRegisters.Remove(astID);
+        }
+
         public Executive(RuntimeCore runtimeCore, bool isFep = false)
         {
             IsExplicitCall = false;
@@ -101,8 +120,8 @@ namespace ProtoCore.DSASM
             int fi = Constants.kInvalidIndex;
             if (!IsGlobalScope())
             {
-                ci = rmem.CurrentStackFrame.ClassScope;
-                fi = rmem.CurrentStackFrame.FunctionScope;
+                ci = rmem.CurrentStackFrameClassScope;
+                fi = rmem.CurrentStackFrameFunctionScope;
             }
             graphNodesInProgramScope = istream.dependencyGraph.GetGraphNodesAtScope(ci, fi);
         }
@@ -114,7 +133,6 @@ namespace ProtoCore.DSASM
         /// </summary>
         /// <param name="exeblock"></param>
         /// <param name="entry"></param>
-        /// <param name="context"></param>
         /// <param name="stackFrame"></param>
         /// <param name="locals"></param>
         /// <param name="exec"></param>
@@ -135,9 +153,9 @@ namespace ProtoCore.DSASM
         /// <summary>
         /// Bounce to an existing executive
         /// </summary>
+        /// <param name="executive"></param>
         /// <param name="exeblock"></param>
         /// <param name="entry"></param>
-        /// <param name="context"></param>
         /// <param name="stackFrame"></param>
         /// <param name="locals"></param>
         /// <param name="fepRun"></param>
@@ -171,8 +189,8 @@ namespace ProtoCore.DSASM
         /// <returns></returns>
         private bool IsGlobalScope()
         {
-            return rmem.CurrentStackFrame == null || 
-                (rmem.CurrentStackFrame.ClassScope == Constants.kInvalidIndex && rmem.CurrentStackFrame.FunctionScope == Constants.kInvalidIndex);
+            return rmem.IsCurrentStackFrameNull || 
+                (rmem.CurrentStackFrameClassScope == Constants.kInvalidIndex && rmem.CurrentStackFrameFunctionScope == Constants.kInvalidIndex);
         }
 
         private void BounceExplicit(int exeblock, int entry, Language language, StackFrame frame, List<Instruction> breakpoints)
@@ -285,16 +303,15 @@ namespace ProtoCore.DSASM
             CallingConvention.CallType callType = sv.CallType;
             IsExplicitCall = CallingConvention.CallType.Explicit == callType || CallingConvention.CallType.ExplicitBase == callType;
 
-            List<bool> execStateRestore = new List<bool>();
             if (!runtimeCore.Options.IDEDebugMode || runtimeCore.Options.RunMode == InterpreterMode.Expression)
             {
                 int localCount = procNode.LocalCount;
                 int paramCount = procNode.ArgumentTypes.Count;
 
-                execStateRestore = RetrieveExecutionStatesFromStack(localCount, paramCount);
+                var execStateRestore = RetrieveExecutionStatesFromStack(localCount, paramCount);
 
                 rmem.FramePointer = (int)rmem.GetAtRelative(StackFrame.FrameIndexFramePointer).IntegerValue;
-                rmem.PopFrame(StackFrame.StackFrameSize + localCount + paramCount + execStateRestore.Count);
+                rmem.PopFrame(StackFrame.StackFrameSize + localCount + paramCount + (execStateRestore?.Count ?? 0));
 
                 if (runtimeCore.Options.RunMode != InterpreterMode.Expression)
                 {
@@ -303,7 +320,7 @@ namespace ProtoCore.DSASM
                     bounceType = (CallingConvention.BounceType)TX.CallType;
                 }
 
-                if (execStateRestore.Any())
+                if (execStateRestore != null)
                 {
                     Validity.Assert(execStateRestore.Count == procNode.GraphNodeList.Count);
                     for (int n = 0; n < execStateRestore.Count; ++n)
@@ -416,14 +433,14 @@ namespace ProtoCore.DSASM
             int fi = Constants.kInvalidIndex;
             if (!IsGlobalScope())
             {
-                ci = rmem.CurrentStackFrame.ClassScope;
-                fi = rmem.CurrentStackFrame.FunctionScope;
+                ci = rmem.CurrentStackFrameClassScope;
+                fi = rmem.CurrentStackFrameFunctionScope;
             }
 
             //  Entering a nested block requires all the nodes of that block to be executed
             if (executingBlock > 0)
             {
-                ProtoCore.AssociativeEngine.Utils.MarkAllGraphNodesDirty(executingBlock, graphNodesInProgramScope);
+                ProtoCore.AssociativeEngine.Utils.MarkAllGraphNodesDirty(graphNodesInProgramScope);
             }
 
             if (fepRun)
@@ -686,13 +703,13 @@ namespace ProtoCore.DSASM
                 {
                     // A member function
                     // Get the this pointer as this class instance would have already been cosntructed
-                    svThisPtr = rmem.CurrentStackFrame.ThisPtr;
+                    svThisPtr = rmem.CurrentStackFrameThisPtr;
                 }
                 else if (fNode.Name.Equals(Constants.kInlineConditionalMethodName))
                 {
                     // The built-in inlinecondition function is global but it is treated as a conditional execution rather than a normal function call
                     // This is why the class scope  needs to be preserved such that the auto-generated language blocks in an inline conditional can still refer to member functions and properties
-                    svThisPtr = rmem.CurrentStackFrame.ThisPtr;
+                    svThisPtr = rmem.CurrentStackFrameThisPtr;
                 }
                 else
                 {
@@ -731,15 +748,14 @@ namespace ProtoCore.DSASM
             CallSite callsite = runtimeCore.RuntimeData.GetCallSite(classIndex, fNode.Name, exe, runtimeCore);
             Validity.Assert(null != callsite);
 
-            List<StackValue> registers = GetRegisters();
-
             // Get the execution states of the current stackframe
             int currentScopeClass = Constants.kInvalidIndex;
             int currentScopeFunction = Constants.kInvalidIndex;
             GetCallerInformation(out currentScopeClass, out currentScopeFunction);
 
             // Handle execution states at the FEP
-            var stackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, runtimeCore.RunningBlock, fepRun ? StackFrameType.Function : StackFrameType.LanguageBlock, StackFrameType.Function, 0, rmem.FramePointer, blockDeclId, registers, 0);
+            var stackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, runtimeCore.RunningBlock, 
+                fepRun ? StackFrameType.Function : StackFrameType.LanguageBlock, StackFrameType.Function, 0, rmem.FramePointer, blockDeclId, GetRegisters(), 0);
             StackValue sv = StackValue.Null;
 
             if (runtimeCore.Options.IDEDebugMode && runtimeCore.Options.RunMode != InterpreterMode.Expression)
@@ -817,6 +833,32 @@ namespace ProtoCore.DSASM
             return sv;
         }
 
+        // cached values for repeated calls of the same object type and dispose function.
+        private int previousClassIndex;
+        private string previousProcedureName;
+        private CallSite callsite;
+
+        internal StackValue CallDispose(ProcedureNode fNode,
+                                StackValue svThisPtr,
+                                int classIndex)
+        {
+            if (null != Properties.executingGraphNode)
+            {
+                exe.ExecutingGraphnode = Properties.executingGraphNode;
+            }
+
+            if (callsite == null || classIndex != previousClassIndex || previousProcedureName != fNode.Name)
+            {
+                previousClassIndex = classIndex;
+                previousProcedureName = fNode.Name;
+                callsite = new CallSite(classIndex, fNode.Name, exe.FunctionTable, runtimeCore.Options.ExecutionMode);
+            }
+
+            Validity.Assert(null != callsite);
+
+            return callsite.DispatchDispose(svThisPtr, runtimeCore);
+        }
+
         private StackValue CallrForMemberFunction(int blockIndex,
                                                   int classIndex,
                                                   int procIndex,
@@ -850,13 +892,12 @@ namespace ProtoCore.DSASM
             if (!isValidThisPointer || (!thisObject.IsPointer && !thisObject.IsArray))
             {
                 runtimeCore.RuntimeStatus.LogWarning(WarningID.DereferencingNonPointer,
-                                              Resources.kDeferencingNonPointer);
+                                              Resources.kDereferencingNonPointer);
                 return StackValue.Null;
             }
 
-            var registers = GetRegisters();
-
-            var stackFrame = new StackFrame(thisObject, classIndex, procIndex, pc + 1, 0, runtimeCore.RunningBlock, fepRun ? StackFrameType.Function : StackFrameType.LanguageBlock, StackFrameType.Function, 0, rmem.FramePointer, 0, registers, 0);
+            var stackFrame = new StackFrame(thisObject, classIndex, procIndex, pc + 1, 0, runtimeCore.RunningBlock, 
+                fepRun ? StackFrameType.Function : StackFrameType.LanguageBlock, StackFrameType.Function, 0, rmem.FramePointer, 0, GetRegisters(), 0);
 
             var callsite = runtimeCore.RuntimeData.GetCallSite(classIndex, procNode.Name, exe, runtimeCore);
 
@@ -1201,9 +1242,7 @@ namespace ProtoCore.DSASM
 
                 if (runtimeCore.Options.IsDeltaExecution)
                 {
-                    // COmment Jun: start from graphnodes whose update blocks are in the range of the entry point
-                    bool inStartRange = graphNode.updateBlock.startpc >= entrypoint;
-                    if (graphNode.isDirty && inStartRange)
+                    if (graphNode.isDirty)
                     {
                         pc = graphNode.updateBlock.startpc;
                         graphNode.isDirty = false;
@@ -1300,21 +1339,23 @@ namespace ProtoCore.DSASM
 
         private int UpdateGraph(int exprUID, bool isSSAAssign)
         {
-            List<AssociativeGraph.GraphNode> reachableGraphNodes = null;
             if (runtimeCore.Options.DirectDependencyExecution)
             {
                 // Data flow execution prototype
                 // Dependency has already been resolved at compile time
                 // Get the reachable nodes directly from the executingGraphNode
-                reachableGraphNodes = new List<AssociativeGraph.GraphNode>(Properties.executingGraphNode.ChildrenNodes);
-            }
-            else
-            {
-                // Find reachable graphnodes
-                reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
-                    Properties.executingGraphNode, this, exprUID, isSSAAssign, runtimeCore.Options.ExecuteSSA, executingBlock, false);
+                return GraphUpdateImpl(Properties.executingGraphNode.ChildrenNodes);
             }
 
+            // Find reachable graphnodes
+            var reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
+                Properties.executingGraphNode, this, exprUID, isSSAAssign, runtimeCore.Options.ExecuteSSA, executingBlock, false);
+
+            return GraphUpdateImpl(reachableGraphNodes);
+        }
+
+        private int GraphUpdateImpl(List<GraphNode> reachableGraphNodes)
+        {
             // Mark reachable nodes as dirty
             Validity.Assert(reachableGraphNodes != null);
             if (reachableGraphNodes.Count > 0)
@@ -1382,6 +1423,7 @@ namespace ProtoCore.DSASM
                 }
                 gnode.isActive = false;
             }
+
             return reachableGraphNodes.Count;
         }
 
@@ -1662,8 +1704,6 @@ namespace ProtoCore.DSASM
         /// <summary>
         /// Pops Debug stackframe, performs coercion and GC and pops stackframe if there's a break inside the function
         /// </summary>
-        /// <param name="exeblock"></param>
-        /// <param name="instructions"></param>
         /// <returns></returns>
         bool RestoreDebugPropsOnReturnFromBuiltIns()
         {
@@ -1778,13 +1818,12 @@ namespace ProtoCore.DSASM
             GetLocalAndParamCount(blockId, ci, fi, out localCount, out paramCount);
 
             // Get execution states
-            List<bool> execStateRestore = new List<bool>();
-            execStateRestore = RetrieveExecutionStatesFromStack(localCount, paramCount);
+            var execStateRestore = RetrieveExecutionStatesFromStack(localCount, paramCount);
 
             // Pop function stackframe as this is not allowed in Ret/Retc in debug mode
             rmem.FramePointer = (int)rmem.GetAtRelative(StackFrame.FrameIndexFramePointer).IntegerValue;
 
-            rmem.PopFrame(StackFrame.StackFrameSize + localCount + paramCount + execStateRestore.Count); 
+            rmem.PopFrame(StackFrame.StackFrameSize + localCount + paramCount + (execStateRestore?.Count ?? 0)); 
 
             ResumeRegistersFromStackExceptRX();
 
@@ -1856,6 +1895,7 @@ namespace ProtoCore.DSASM
         /// <param name="ci"></param>
         /// <param name="fi"></param>
         /// <param name="isReplicating"></param>
+        /// <param name="debugFrame"></param>
         /// <returns></returns>
         private bool DebugReturnFromFunctionCall(int currentPC, ref int exeblock, out int ci, out int fi, out bool isReplicating, out DebugFrame debugFrame)
         {
@@ -2315,6 +2355,13 @@ namespace ProtoCore.DSASM
                 case AddressType.Register:
                     switch (opSymbol.Register)
                     {
+                        case Registers.LX:
+                            if (updateRegisters.TryGetValue(opClass.IntegerValue, out StackValue sv))
+                            {
+                                data = sv;
+                            }
+                            else data = opSymbol;
+                            break;
                         case Registers.RX:
                             data = RX;
                             break;
@@ -2338,7 +2385,7 @@ namespace ProtoCore.DSASM
                     break;
 
                 case AddressType.ThisPtr:
-                    data = rmem.CurrentStackFrame.ThisPtr;
+                    data = rmem.CurrentStackFrameThisPtr;
                     break;
 
                 default:
@@ -2428,6 +2475,13 @@ namespace ProtoCore.DSASM
                         StackValue data = opVal;
                         switch (op1.Register)
                         {
+                            case Registers.LX:
+                                if (updateRegisters.TryGetValue(op2.IntegerValue, out StackValue sv))
+                                {
+                                    opPrev = sv;
+                                }
+                                SetAssociativeUpdateRegister(op2.IntegerValue, data);
+                                break;
                             case Registers.RX:
                                 opPrev = RX;
                                 RX = data;
@@ -2914,7 +2968,7 @@ namespace ProtoCore.DSASM
         public void ReturnSiteGC(int blockId, int classIndex, int functionIndex)
         {
             bool found = exe.CompleteCodeBlockDict.TryGetValue(blockId, out CodeBlock codeBlock);
-            Validity.Assert(found, $"Could find code block with codeBlockId {blockId}");
+            Validity.Assert(found, "Could find code block with codeBlockId provided");
 
             foreach (CodeBlock cb in codeBlock.children)
             {
@@ -3399,7 +3453,7 @@ namespace ProtoCore.DSASM
             //  2. If pointing to a class, just point to the class directly, do not allocate a new pointer
             //==================================================
 
-            StackValue svThis = rmem.CurrentStackFrame.ThisPtr;
+            StackValue svThis = rmem.CurrentStackFrameThisPtr;
             var thisObject = rmem.Heap.ToHeapObject<DSObject>(svThis);
             StackValue svProperty = thisObject.GetValueFromIndex(stackIndex, runtimeCore);
 
@@ -3485,7 +3539,7 @@ namespace ProtoCore.DSASM
             //  2. If pointing to a class, just point to the class directly, do not allocate a new pointer
             //==================================================
 
-            StackValue svThis = rmem.CurrentStackFrame.ThisPtr;
+            StackValue svThis = rmem.CurrentStackFrameThisPtr;
             var thisObject = rmem.Heap.ToHeapObject<DSObject>(svThis);
             StackValue svProperty = thisObject.GetValueFromIndex(stackIndex, runtimeCore);
 
@@ -4072,13 +4126,13 @@ namespace ProtoCore.DSASM
             }
 
             StackValue svThisPtr;
-            if (rmem.CurrentStackFrame == null)
+            if (rmem.IsCurrentStackFrameNull)
             {
                 svThisPtr = StackValue.BuildPointer(Constants.kInvalidPointer);
             }
             else
             {
-                svThisPtr = rmem.CurrentStackFrame.ThisPtr;
+                svThisPtr = rmem.CurrentStackFrameThisPtr;
             }
             int returnAddr = pc + 1;
 
@@ -4228,19 +4282,14 @@ namespace ProtoCore.DSASM
             StackValue svCallConvention = StackValue.BuildCallingConversion((int)CallingConvention.CallType.ExplicitBase);
             TX = svCallConvention;
 
-
-            // On implicit call, the SX is set in JIL Fep
-            // On explicit call, the SX should be directly set here
-
-            List<StackValue> registers = GetRegisters();
-
             // Comment Jun: the depth is always 0 for a function call as we are reseting this for each function call
             // This is only incremented for every language block bounce
             int depth = 0;
 
             StackFrameType type = StackFrameType.Function;
 
-            StackFrame stackFrame = new StackFrame(svThisPointer, ci, fi, pc + 1, blockDecl, blockCaller, callerType, type, depth, rmem.FramePointer, blockDecl, registers, 0);
+            StackFrame stackFrame = new StackFrame(svThisPointer, ci, fi, pc + 1, blockDecl, blockCaller, 
+                callerType, type, depth, rmem.FramePointer, blockDecl, GetRegisters(), 0);
 
             rmem.PushFrameForLocals(fNode.LocalCount);
             rmem.PushStackFrame(stackFrame);
@@ -4436,10 +4485,10 @@ namespace ProtoCore.DSASM
         private List<bool> RetrieveExecutionStatesFromStack(int localSize, int paramSize)
         {
             // Retrieve the execution execution states 
-            List<bool> execStateRestore = new List<bool>();
             int execstates = (int)rmem.GetAtRelative(StackFrame.FrameIndexExecutionStates).IntegerValue;
             if (execstates > 0)
             {
+                List<bool> execStateRestore = new List<bool>();
                 int offset = StackFrame.StackFrameSize + localSize + paramSize;
                 for (int n = 0; n < execstates; ++n)
                 {
@@ -4448,8 +4497,11 @@ namespace ProtoCore.DSASM
                     Validity.Assert(svState.IsBoolean);
                     execStateRestore.Add(svState.BooleanValue);
                 }
+
+                return execStateRestore;
             }
-            return execStateRestore;
+
+            return null;
         }
 
         private void RETURN_Handler()
@@ -4496,6 +4548,20 @@ namespace ProtoCore.DSASM
                 if (opdata1.IsPointer)
                 {
                     pc += 1;
+                }
+                else if (opdata1.IsString)
+                {
+                    Validity.Assert(runtimeCore != null && runtimeCore.Heap != null);
+
+                    var dsString = runtimeCore.Heap.ToHeapObject<DSString>(opdata1);
+                    if (string.IsNullOrEmpty(dsString.Value))
+                    {
+                        pc = instruction.op1.LabelIndex;
+                    }
+                    else
+                    {
+                        pc += 1;
+                    }
                 }
                 else if (0 == opdata1.RawData)
                 {
@@ -4625,7 +4691,7 @@ namespace ProtoCore.DSASM
         /// <summary>
         /// Returns the next graphnode to execute given the current next pc and scope
         /// </summary>
-        /// <param name="pc"></param>
+        /// <param name="nextPC"></param>
         /// <param name="ci"></param>
         /// <param name="fi"></param>
         private AssociativeGraph.GraphNode GetNextGraphNodeToExecute(int nextPC, int ci, int fi)

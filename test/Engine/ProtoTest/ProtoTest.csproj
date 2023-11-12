@@ -1,45 +1,13 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
-    <Import Project="$(SolutionDir)Config\CS.props" />
+    <Import Project="$(SolutionDir)Config/CS_SDK.props" />
   </ImportGroup>
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{6E1177DB-5E4F-4E2E-82E7-902437E56AED}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ProtoTest</RootNamespace>
     <AssemblyName>ProtoTest</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>$(OutputPath)</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <Prefer32Bit>false</Prefer32Bit>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>$(OutputPath)</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DebugSymbols>true</DebugSymbols>
-    <Prefer32Bit>false</Prefer32Bit>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
@@ -48,132 +16,23 @@
     <AssemblyOriginatorKeyFile>ProtoTest.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <HintPath>..\..\..\src\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+    <Compile Remove="ComponentTest\**" />
+    <EmbeddedResource Remove="ComponentTest\**" />
+    <None Remove="ComponentTest\**" />
   </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+    </ItemGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' != 'net48' ">
+        <PackageReference Include="NUnit" Version="3.13.3" />
+        <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
+    </ItemGroup>
+   
   <ItemGroup>
-    <Compile Include="..\..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
-      <Link>Properties\AssemblySharedInfo.cs</Link>
-    </Compile>
-    <Compile Include="Assembler\MicroFeatureTests.cs" />
-    <Compile Include="Associative\BuiltinMethodsTest.cs" />
-    <Compile Include="Associative\FunctionObject.cs" />
-    <Compile Include="Associative\Inheritance.cs" />
-    <Compile Include="Associative\MethodResolution.cs" />
-    <Compile Include="Associative\MethodsFocusTeam.cs" />
-    <Compile Include="Associative\MicroFeatureTests.cs" />
-    <Compile Include="Associative\RedefinitionExpression.cs" />
-    <Compile Include="Associative\ReferenceCount.cs" />
-    <Compile Include="Associative\ReplicatorTest.cs" />
-    <Compile Include="Associative\SSATransformTest.cs" />
-    <Compile Include="Associative\TypeSystemTests.cs" />
-    <Compile Include="Associative\VerificationErrorFormat.cs" />
-    <Compile Include="Associative\VerificationFormatJSON.cs" />
-    <Compile Include="AtLevel\AtLevelTest.cs" />
-    <Compile Include="CompileAndExecute.cs" />
-    <Compile Include="CoreUnitTests\StaticMirrorTest.cs" />
-    <Compile Include="DebugTests\BasicTests.cs" />
-    <Compile Include="DSASM\ProcedureTableTests.cs" />
-    <Compile Include="NamespaceConflictTest.cs" />
-    <Compile Include="DebugTests\RunEqualityTests.cs" />
-    <Compile Include="DebugTests\RunWatchTestsIncluded.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SetValueTests.cs" />
-    <Compile Include="DSASM\ExecutionMirrorTests.cs" />
-    <Compile Include="DSASM\HeapMarkSweepTests.cs" />
-    <Compile Include="DSASM\MemorySafetyTest.cs" />
-    <Compile Include="FFITests\ArgumentMarshalingTests.cs" />
-    <Compile Include="FFITests\ContextInjectionTests.cs" />
-    <Compile Include="FFITests\CSFFIDataMarshalingTest.cs" />
-    <Compile Include="FFITests\CSFFIDispose.cs" />
-    <Compile Include="FFITests\CSFFITest.cs" />
-    <Compile Include="FFITests\ElementRewriterTests.cs" />
-    <Compile Include="FFITests\RegressionAnalysisTests.cs" />
-    <Compile Include="GraphCompiler\NewFrontEndTests.cs" />
-    <Compile Include="Imperative\FromOldTestSuite.cs" />
-    <Compile Include="Imperative\MicroFeatureTests.cs" />
-    <Compile Include="LiveRunnerTests\ChangeSetComputerTests.cs" />
-    <Compile Include="LiveRunnerTests\MemoryConsumptionTests.cs" />
-    <Compile Include="LiveRunnerTests\MicroFeatureTests.cs" />
-    <Compile Include="LiveRunnerTests\PreviewChangeSetTests.cs" />
-    <Compile Include="MinimalClassTests.cs" />
-    <Compile Include="MultiLangTests\AssociativeToImperative.cs" />
-    <Compile Include="MultiLangTests\FunctionPointerTest.cs" />
-    <Compile Include="MultiLangTests\GCTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MultiLangTests\NonExistingFunctionTest.cs" />
-    <Compile Include="MultiLangTests\UnicodeTest.cs" />
-    <Compile Include="NameSpaceTests.cs" />
-    <Compile Include="ParserTest\ParserTest.cs" />
-    <Compile Include="ProtoAST\AstFactoryTest.cs" />
-    <Compile Include="ProtoAST\ProtoASTExecutionTests.cs" />
-    <Compile Include="ProtoAST\RoundTripTests.cs" />
-    <Compile Include="ProtoTestBase.cs" />
-    <Compile Include="TD\Associative\ReplicationGuide.cs" />
-    <Compile Include="TD\DocTests\UserManualTests.cs" />
-    <Compile Include="TD\Imperative\Imperative.cs" />
-    <Compile Include="TD\MultiLangTests\BuiltinFunction_FromOldLang.cs" />
-    <Compile Include="TD\MultiLangTests\Old_Language_Manual_Examples.cs" />
-    <Compile Include="TD\MultiLangTests\Old_Language_test_Cases.cs" />
-    <Compile Include="TD\MultiLangTests\RecursionTest.cs" />
-    <Compile Include="TD\MultiLangTests\StringTest.cs" />
-    <Compile Include="TD\MultiLangTests\TypeSystemTests.cs" />
-    <Compile Include="MultiLanugageBasic.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ProtoScriptTest.cs" />
-    <Compile Include="RegressionTests\ProtoCoreLexerTests.cs" />
-    <Compile Include="TD\Associative\Class.cs" />
-    <Compile Include="TD\Associative\AssocAssignment.cs" />
-    <Compile Include="TD\Associative\Function.cs" />
-    <Compile Include="TD\Associative\InlineCondition.cs" />
-    <Compile Include="TD\Associative\Replication.cs" />
-    <Compile Include="TD\Associative\Update.cs" />
-    <Compile Include="TD\Debugger.cs" />
-    <Compile Include="TD\DefectRegress.cs" />
-    <Compile Include="FFITests\FFITest.cs" />
-    <Compile Include="TD\Imperative\Assignment.cs" />
-    <Compile Include="TD\Imperative\BlockSyntax.cs" />
-    <Compile Include="TD\Imperative\BreakContinue.cs" />
-    <Compile Include="TD\Imperative\InlineCondition.cs" />
-    <Compile Include="TD\MultiLangTests\Builtin_Functions.cs" />
-    <Compile Include="TD\MultiLangTests\CollectionAssgnmt.cs" />
-    <Compile Include="TD\Imperative\ForLoop.cs" />
-    <Compile Include="TD\Imperative\IfElseTest.cs" />
-    <Compile Include="TD\Imperative\TypedAssignment.cs" />
-    <Compile Include="TD\Imperative\WhileTest.cs" />
-    <Compile Include="TD\MultiLangTests\CollectionAssignment.cs" />
-    <Compile Include="TD\MultiLangTests\RangeExpressions.cs" />
-    <Compile Include="TD\MultiLangTests\TestClass.cs" />
-    <Compile Include="TD\MultiLangTests\TestFunction.cs" />
-    <Compile Include="TD\MultiLangTests\TestImport.cs" />
-    <Compile Include="TD\MultiLangTests\TestScope.cs" />
-    <Compile Include="TD\MultiLangTests\TestUpdate.cs" />
-    <Compile Include="TD\MultiLangTests\Tutorial.cs" />
-    <Compile Include="TD\MultiLangTests\TypeSystemTests_Imperative.cs" />
-    <Compile Include="TD\MultiLangTests\UseCaseTesting.cs" />
-    <Compile Include="TD\OtherMiscTests\MiscTest.cs" />
-    <Compile Include="TD\ArrayUtilsTest.cs" />
-    <Compile Include="TD\TraceUtilsTests.cs" />
-    <Compile Include="FFITests\TestCSharpAttribute.cs" />
-    <Compile Include="UtilsTests\AstFactoryTest.cs" />
-    <Compile Include="UtilsTests\AstVisitorTest.cs" />
-    <Compile Include="UtilsTests\ClassUtilsTest.cs" />
-    <Compile Include="UtilsTests\CoreUtilsTest.cs" />
-    <Compile Include="UtilsTests\ImperativeAstVistorTest.cs" />
-    <Compile Include="UtilsTests\TextFxTests.cs" />
-  </ItemGroup>
-  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\DynamoUtilities\DynamoUtilities.csproj">
+      <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
+      <Name>DynamoUtilities</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\src\Engine\ProtoAssociative\ProtoAssociative.csproj">
       <Project>{7318D5E5-9D15-4ABE-8A51-92F58D4F0B85}</Project>
       <Name>ProtoAssociative</Name>
@@ -207,20 +66,7 @@
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!--
-  <PropertyGroup>
-    <PreBuildEvent>C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe ..\..\..\tools\factorial\factorial.sln /property:Configuration=$(Configuration);Platform=$(Platform) /t:rebuild</PreBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Platform)' == 'x86'">
-    <PreBuildEvent>C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe ..\..\..\tools\factorial\factorial.sln /property:Configuration=$(Configuration);Platform=Win32 /t:rebuild</PreBuildEvent>
-  </PropertyGroup>
-  -->
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
+  <Target Name="AfterBuildOps" AfterTargets="ResolveSateliteResDeps">
+    <Copy SourceFiles="..\..\test_support_projects\EmbeddedInterop.dll" DestinationFolder="$(TestDependenciesPath)" />  
   </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

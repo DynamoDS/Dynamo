@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Interfaces;
 using Dynamo.Library;
 using Dynamo.Linting;
+using Dynamo.Models;
 using Greg;
 
 namespace Dynamo.Extensions
@@ -57,6 +58,16 @@ namespace Dynamo.Extensions
         private readonly LinterManager linterManager;
 
         /// <summary>
+        /// True when Dynamo starts up in offline mode.
+        /// </summary>
+        public bool NoNetworkMode { get; }
+
+        /// <summary>
+        /// Returns true if ASM/LibG are loaded. May only be valid in sandbox sessions.
+        /// </summary>
+        internal bool IsGeometryLibraryLoaded { get; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="StartupParams"/> class.
         /// </summary>
         /// <param name="provider"><see cref="IAuthProvider"/> for DynamoModel</param>
@@ -65,7 +76,7 @@ namespace Dynamo.Extensions
         /// <param name="customNodeManager"><see cref="ICustomNodeManager"/> for DynamoModel</param>
         /// <param name="dynamoVersion"><see cref="Version"/> for DynamoModel</param>
         /// <param name="preferences"><see cref="IPreferences"/> for DynamoModel</param>
-        [Obsolete("Use constructor with LinterManager parameter instead")]
+        [Obsolete("Use internal constructor")]
         public StartupParams(IAuthProvider provider, IPathManager pathManager,
             ILibraryLoader libraryLoader, ICustomNodeManager customNodeManager,
             Version dynamoVersion, IPreferences preferences)
@@ -77,7 +88,6 @@ namespace Dynamo.Extensions
             this.dynamoVersion = dynamoVersion;
             this.preferences = preferences;
         }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="StartupParams"/> class.
         /// </summary>
@@ -88,6 +98,7 @@ namespace Dynamo.Extensions
         /// <param name="dynamoVersion"><see cref="Version"/> for DynamoModel</param>
         /// <param name="preferences"><see cref="IPreferences"/> for DynamoModel</param>
         /// <param name="linterManager"><see cref="LinterManager"/> for DynamoModel></param>
+        [Obsolete("Use internal constructor")]
         public StartupParams(IAuthProvider provider, IPathManager pathManager,
             ILibraryLoader libraryLoader, ICustomNodeManager customNodeManager,
             Version dynamoVersion, IPreferences preferences, LinterManager linterManager)
@@ -100,5 +111,21 @@ namespace Dynamo.Extensions
             this.preferences = preferences;
             this.linterManager = linterManager;
         }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StartupParams"/> class.
+        /// </summary>
+        internal StartupParams(DynamoModel dynamoModel)
+        {
+            authProvider = dynamoModel.AuthenticationManager?.AuthProvider;
+            pathManager = dynamoModel.PathManager;
+            libraryLoader = new ExtensionLibraryLoader(dynamoModel);
+            customNodeManager = dynamoModel.CustomNodeManager;
+            dynamoVersion = new Version(dynamoModel.Version);
+            preferences = dynamoModel.PreferenceSettings;
+            linterManager = dynamoModel.LinterManager;
+            IsGeometryLibraryLoaded = dynamoModel.IsASMLoaded;
+            NoNetworkMode = dynamoModel.NoNetworkMode;
+        }
+
     }
 }

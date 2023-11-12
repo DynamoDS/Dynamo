@@ -11,7 +11,7 @@ namespace Dynamo.Tests
             libraries.Add("VMDataBridge.dll");
             libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
-            libraries.Add("DSIronPython.dll");
+            libraries.Add("DSCPython.dll");
             base.GetLibrariesToPreload(libraries);
         }
 

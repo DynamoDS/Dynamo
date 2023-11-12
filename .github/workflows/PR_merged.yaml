@@ -1,0 +1,48 @@
+## Workflow for retrieve Release Notes section from PRs
+
+name: PR_merged
+
+# Controls when the workflow will run
+on:
+   pull_request_target:
+    branches: [master]
+    types: [closed]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  build:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+      
+      # Getting PR information from the commit SHA
+      - name: Getting PR information
+        run: |
+          echo "Installing requirements"
+          sudo apt update
+          sudo apt install jq -y
+          sudo apt install curl -y
+          bash
+          echo "PR number is ${{ github.event.pull_request.number }}"
+          echo "Getting PR URL"
+          curl "https://api.github.com/repos/DynamoDS/Dynamo/pulls/${{ github.event.pull_request.number }}" | jq '._links.html.href' | sed -e 's/"/ /g' | sed 's/ //g' > pr_url_convert.out
+          cat pr_url_convert.out | sed -e 's/\//\\\//g' > pr_url.out
+          prurl=$(cat pr_url.out)
+          echo "Getting Release Notes Section from PR body"
+          curl "https://api.github.com/repos/DynamoDS/Dynamo/pulls/${{ github.event.pull_request.number }}" | jq '.body' | sed -e 's/\\r\\n/ /g' | sed -n -e 's/^.*### Release Notes //p' | sed -n -e 's/### Reviewers.*$//p' > releasenotes.out
+          releasenotes=$(cat releasenotes.out)
+          echo "Building JSON message"
+          cat << EOF > ./slack_message.json
+          curl https://hooks.slack.com/services/${{ secrets.SLACK_WEBHOOK_RELEASE_NOTES }} \
+          --request POST \
+          --header 'Content-type: application/json' \
+          --data '{"text": "PR $prurl merged into master.\n Content of Release Notes section: $releasenotes"}'
+          EOF
+      
+      # Sending slack notification
+      - name: Slack Notification
+        run: |
+          chmod 755 ./slack_message.json
+          sh ./slack_message.json

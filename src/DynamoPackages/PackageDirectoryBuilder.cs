@@ -1,16 +1,16 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using Dynamo.PackageManager.Interfaces;
 using Dynamo.Utilities;
-using RestSharp.Serializers;
 
 namespace Dynamo.PackageManager
 {
     public interface IPackageDirectoryBuilder
     {
-        IDirectoryInfo BuildDirectory(Package packages, string packagesDirectory, IEnumerable<string> files);
+        IDirectoryInfo BuildDirectory(Package packages, string packagesDirectory, IEnumerable<string> files, IEnumerable<string> markdownfiles);
     }
 
     /// <summary>
@@ -34,11 +34,8 @@ namespace Dynamo.PackageManager
         /// <param name="pathRemapper">For modifying custom node paths</param>
         internal PackageDirectoryBuilder(IFileSystem fileSystem, IPathRemapper pathRemapper) 
         {
-            if (fileSystem == null) throw new ArgumentNullException("fileSystem");
-            if (pathRemapper == null) throw new ArgumentNullException("pathRemapper");
-
-            this.fileSystem = fileSystem;
-            this.pathRemapper = pathRemapper;
+            this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
+            this.pathRemapper = pathRemapper ?? throw new ArgumentNullException(nameof(pathRemapper));
         }
 
         #region Public Class Operational Methods
@@ -48,20 +45,19 @@ namespace Dynamo.PackageManager
         /// </summary>
         /// <param name="package">The package to be formed</param>
         /// <param name="packagesDirectory">The parent directory for the parent directory</param>
-        /// <param name="files">The collection of files to be moved</param>
+        /// <param name="contentFiles">The collection of files to be moved</param>
+        /// <param name="markdownFiles"></param>
         /// <returns></returns>
-        public IDirectoryInfo BuildDirectory(Package package, string packagesDirectory, IEnumerable<string> files)
+        public IDirectoryInfo BuildDirectory(Package package, string packagesDirectory, IEnumerable<string> contentFiles, IEnumerable<string> markdownFiles)
         {
-            IDirectoryInfo rootDir, dyfDir, binDir, extraDir, docDir;
-
-            FormPackageDirectory(packagesDirectory, package.Name, out rootDir, out  dyfDir, out binDir, out extraDir, out docDir); // shouldn't do anything for pkg versions
+            FormPackageDirectory(packagesDirectory, package.Name, out IDirectoryInfo rootDir, out IDirectoryInfo dyfDir, out IDirectoryInfo binDir, out IDirectoryInfo extraDir, out IDirectoryInfo docDir); // shouldn't do anything for pkg versions
             package.RootDirectory = rootDir.FullName;
 
             WritePackageHeader(package, rootDir);
-            RemoveUnselectedFiles(files, rootDir);
-            CopyFilesIntoPackageDirectory(files, dyfDir, binDir, extraDir, docDir);
-            RemoveDyfFiles(files, dyfDir);
-            RemapCustomNodeFilePaths(files, dyfDir.FullName);
+            RemoveUnselectedFiles(contentFiles, rootDir);
+            CopyFilesIntoPackageDirectory(contentFiles, markdownFiles, dyfDir, binDir, extraDir, docDir);
+            RemoveDyfFiles(contentFiles, dyfDir);
+            RemapCustomNodeFilePaths(contentFiles, dyfDir.FullName);
 
             return rootDir;
         }
@@ -131,8 +127,7 @@ namespace Dynamo.PackageManager
             var pkgHeader = PackageUploadBuilder.NewRequestBody(package);
 
             // build the package header json, which will be stored with the pkg
-            var jsSer = new JsonSerializer();
-            var pkgHeaderStr = jsSer.Serialize(pkgHeader);
+            var pkgHeaderStr = JsonSerializer.Serialize(pkgHeader);
 
             // write the pkg header to the root directory of the pkg
             var headerPath = Path.Combine(rootDir.FullName, PackageJsonName);
@@ -145,9 +140,9 @@ namespace Dynamo.PackageManager
         }
 
 
-        internal void CopyFilesIntoPackageDirectory(IEnumerable<string> files, IDirectoryInfo dyfDir,
-                                                          IDirectoryInfo binDir, IDirectoryInfo extraDir, 
-                                                          IDirectoryInfo docDir)
+        internal void CopyFilesIntoPackageDirectory(IEnumerable<string> files, IEnumerable<string> markdownFiles,
+                                                    IDirectoryInfo dyfDir, IDirectoryInfo binDir,
+                                                    IDirectoryInfo extraDir, IDirectoryInfo docDir)
         {
             // normalize the paths to ensure correct comparison
             var dyfDirPath = NormalizePath(dyfDir.FullName);
@@ -186,6 +181,20 @@ namespace Dynamo.PackageManager
                 }
 
                 var destPath = Path.Combine(targetFolder, Path.GetFileName(file));
+
+                if (fileSystem.FileExists(destPath))
+                {
+                    fileSystem.DeleteFile(destPath);
+                }
+
+                fileSystem.CopyFile(file, destPath);
+            }
+            // All files under Markdown directory do not apply to the rule above,
+            // because they may fall into extra folder instead of docs folder,
+            // currently there is on obvious way to filter them properly only based on path string.
+            foreach (var file in markdownFiles.Where(x => x != null))
+            {
+                var destPath = Path.Combine(docDirPath, Path.GetFileName(file));
 
                 if (fileSystem.FileExists(destPath))
                 {

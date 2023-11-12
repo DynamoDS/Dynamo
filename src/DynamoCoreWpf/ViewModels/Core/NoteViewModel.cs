@@ -6,6 +6,7 @@ using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Selection;
 using Dynamo.Utilities;
@@ -15,10 +16,10 @@ using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.ViewModels
 {
-    public partial class NoteViewModel: ViewModelBase
+    public partial class NoteViewModel : ViewModelBase
     {
         private int DISTANCE_TO_PINNED_NODE = 16;
-        private int DISTANCE_TO_PINNED_NODE_WITH_WARNING = 36;
+        private int DISTANCE_TO_PINNED_NODE_WITH_WARNING = 64;
 
         #region Events
 
@@ -130,7 +131,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (Model.PinnedNode==null)
+                if (Model.PinnedNode == null)
                 {
                     return null;
                 }
@@ -148,6 +149,7 @@ namespace Dynamo.ViewModels
             this.WorkspaceViewModel = workspaceViewModel;
             _model = model;
             model.PropertyChanged += note_PropertyChanged;
+            model.UndoRequest += note_PinUnpinToNode;
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
             ZIndex = ++StaticZIndex; // places the note on top of all nodes/notes
 
@@ -165,8 +167,35 @@ namespace Dynamo.ViewModels
                 UnsuscribeFromPinnedNode();
             }
             _model.PropertyChanged -= note_PropertyChanged;
+            _model.UndoRequest -= note_PinUnpinToNode;
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
         }
+
+        private void note_PinUnpinToNode(ModelBase obj)
+        {
+            if (Model.UndoRedoAction.Equals(NoteModel.UndoAction.Unpin))
+            {
+                UnpinFromNode(obj);
+                return;
+            }
+            if (Model.UndoRedoAction.Equals(NoteModel.UndoAction.Pin))
+            {
+                NodeModel node = WorkspaceViewModel.Model.Nodes
+                    .Where(x => x.GUID.Equals(Model.PinnedNodeGuid))
+                    .FirstOrDefault();
+
+                if (node == null) return;
+
+                // In case the user has selected a different Node before Undo
+                // We run the risk of pinning to the wrong Node
+                // Therefore clear selection before running
+                DynamoSelection.Instance.ClearSelection();
+                DynamoSelection.Instance.Selection.Add(node);
+                PinToNode(obj);
+                return;
+            }
+        }
+
 
         private void SelectionOnCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
@@ -183,7 +212,8 @@ namespace Dynamo.ViewModels
 
         public void UpdateSizeFromView(double w, double h)
         {
-            this._model.SetSize(w,h);
+            this._model.SetSize(w, h);
+            MoveNoteAbovePinnedNode();
         }
 
         private bool CanSelect(object parameter)
@@ -215,6 +245,7 @@ namespace Dynamo.ViewModels
                 case nameof(NoteModel.PinnedNode):
                     RaisePropertyChanged(nameof(this.PinnedNode));
                     PinToNodeCommand.RaiseCanExecuteChanged();
+                    UnpinFromNodeCommand.RaiseCanExecuteChanged();
                     break;
 
             }
@@ -273,7 +304,8 @@ namespace Dynamo.ViewModels
         private bool CanAddToGroup(object parameters)
         {
             var groups = WorkspaceViewModel.Model.Annotations;
-            if (groups.Any(x => x.IsSelected))
+            if (groups.Any(x => x.IsSelected) &&
+                !groups.All(x => !x.IsExpanded))
             {
                 return !(groups.ContainsModel(Model.GUID));
             }
@@ -292,12 +324,22 @@ namespace Dynamo.ViewModels
                 return;
             }
 
+            WorkspaceModel.RecordModelForModification(Model, WorkspaceViewModel.Model.UndoRecorder);
+
+            var nodeGroup = WorkspaceViewModel.Annotations
+                .FirstOrDefault(x => x.AnnotationModel.ContainsModel(nodeToPin));
+
+            if (nodeGroup != null)
+            {
+                nodeGroup.AnnotationModel.AddToTargetAnnotationModel(this.Model);
+            }
+
             Model.PinnedNode = nodeToPin;
 
             MoveNoteAbovePinnedNode();
-
             SubscribeToPinnedNode();
 
+            WorkspaceViewModel.HasUnsavedChanges = true;
         }
 
         private bool CanPinToNode(object parameters)
@@ -312,7 +354,7 @@ namespace Dynamo.ViewModels
             var noteSelection = DynamoSelection.Instance.Selection
                     .OfType<NoteModel>();
 
-            if (nodeSelection == null || noteSelection == null || 
+            if (nodeSelection == null || noteSelection == null ||
                 nodeSelection.Count() != 1 || noteSelection.Count() != 1)
                 return false;
 
@@ -330,10 +372,25 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        /// <summary>
+        /// This method will be executed for validate if the "Unpin from node" option should be shown or not in the context menu (when clicking right over the note)
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        private bool CanUnpinFromNode(object parameters)
+        {
+            if (PinnedNode != null)
+                return true;
+
+            return false;
+        }
+
         private void UnpinFromNode(object parameters)
         {
             UnsuscribeFromPinnedNode();
+
             Model.PinnedNode = null;
+            WorkspaceViewModel.HasUnsavedChanges = true;
         }
 
         private void SubscribeToPinnedNode()
@@ -411,15 +468,16 @@ namespace Dynamo.ViewModels
             if (PinnedNode == null) return;
 
             var distanceToNode = DISTANCE_TO_PINNED_NODE;
-            if (Model.PinnedNode.State == ElementState.Error ||
-                Model.PinnedNode.State == ElementState.Warning)
+            if ((Model.PinnedNode.State == ElementState.Error ||
+                Model.PinnedNode.State == ElementState.Warning) && Model.PinnedNode.DismissedAlerts.Count == 0)
             {
                 distanceToNode = DISTANCE_TO_PINNED_NODE_WITH_WARNING;
             }
             Model.CenterX = Model.PinnedNode.CenterX;
             Model.CenterY = Model.PinnedNode.CenterY - (Model.PinnedNode.Height * 0.5) - (Model.Height * 0.5) - distanceToNode;
+            Model.ReportPosition();
 
-            ZIndex = Convert.ToInt32(PinnedNode.ErrorBubble.ZIndex - 1);
+            ZIndex = Convert.ToInt32(PinnedNode.ZIndex);
         }
     }
 }

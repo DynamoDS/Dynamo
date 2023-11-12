@@ -1,11 +1,11 @@
-﻿<UserControl x:Class="Dynamo.Controls.NodeView"
+<UserControl x:Class="Dynamo.Controls.NodeView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore"
+             xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
-             xmlns:ui="clr-namespace:Dynamo.UI"
-             xmlns:viewmodels="clr-namespace:Dynamo.ViewModels"
+             xmlns:controls="clr-namespace:Dynamo.Views"
              Name="topControl"
              Width="Auto"
              Height="Auto"
@@ -13,7 +13,7 @@
              MouseEnter="OnNodeViewMouseEnter"
              MouseLeave="OnNodeViewMouseLeave"
              MouseLeftButtonDown="topControl_MouseLeftButtonDown"
-             MouseRightButtonDown="topControl_MouseRightButtonDown"
+             MouseRightButtonDown="DisplayNodeContextMenu"
              PreviewMouseLeftButtonDown="OnPreviewMouseLeftButtonDown"
              PreviewMouseMove="OnNodeViewMouseMove">
 
@@ -21,24 +21,15 @@
           HorizontalAlignment="Left"
           x:FieldModifier="public"
           ContextMenuService.IsEnabled="false"
-          Visibility="{Binding IsCollapsed, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}">
+          Visibility="{Binding IsCollapsed, Converter={StaticResource InverseBoolToVisibilityConverter}}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" MinHeight="24" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <!--  Sets grid to 70% opacity when node is frozen  -->
-        <Grid.Style>
-            <Style>
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding IsFrozen, UpdateSourceTrigger=PropertyChanged}" Value="True">
-                        <Setter Property="Grid.Opacity" Value="0.7" />
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
-        </Grid.Style>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" MinWidth="10" />
@@ -47,12 +38,17 @@
 
         <!--  CONTEXT MENU  -->
         <Grid.ContextMenu>
-            <ContextMenu Name="MainContextMenu" x:FieldModifier="public">
+            <ContextMenu Name="MainContextMenu"
+                         x:FieldModifier="public"
+                         Background="{StaticResource NodeContextMenuBackground}"
+                         Closed="MainContextMenu_OnClosed"
+                         Style="{StaticResource ContextMenuStyle}">
                 <ContextMenu.Resources>
                     <ResourceDictionary>
                         <ResourceDictionary.MergedDictionaries>
                             <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
                             <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                            <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
                         </ResourceDictionary.MergedDictionaries>
                         <Style TargetType="{x:Type MenuItem}">
                             <Setter Property="IsChecked" Value="{DynamicResource IsChecked}" />
@@ -84,7 +80,14 @@
                                                               DockPanel.Dock="Left"
                                                               RecognizesAccessKey="True"
                                                               SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                                              TextBlock.Foreground="{StaticResource NodeContextMenuForeground}" />
+                                                              TextBlock.Foreground="{StaticResource NodeContextMenuForeground}">
+                                                <ContentPresenter.Resources>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="MaxWidth" Value="200"></Setter>
+                                                        <Setter Property="TextTrimming" Value="CharacterEllipsis"></Setter>
+                                                    </Style>
+                                                </ContentPresenter.Resources>
+                                            </ContentPresenter>
                                             <Border x:Name="dismissedAlertsBadge"
                                                     Height="15"
                                                     MinWidth="15"
@@ -128,12 +131,20 @@
                                                     </Style>
                                                 </Label.Style>
                                             </Label>
+                                            <TextBlock x:Name="InputGestureText"
+                                               Margin="0,2,2,2"
+                                               DockPanel.Dock="Right"
+                                               HorizontalAlignment="Right"
+                                               VerticalAlignment="Center"
+                                               Text="{TemplateBinding InputGestureText}"
+                                               TextBlock.FontFamily="{StaticResource ArtifaktElementRegular}"
+                                               TextBlock.FontSize="13px" />
                                             <Popup x:Name="PART_Popup"
                                                    AllowsTransparency="true"
                                                    Focusable="false"
                                                    HorizontalOffset="0"
                                                    IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
-                                                   Placement="Left"
+                                                   Placement="Right"
                                                    VerticalOffset="-2">
                                                 <Border Background="{TemplateBinding Background}"
                                                         BorderBrush="Transparent"
@@ -144,7 +155,6 @@
                                                                                                                 TypeInTargetAssembly={x:Type FrameworkElement}}}">
                                                         <Grid RenderOptions.ClearTypeHint="Enabled">
                                                             <ItemsPresenter x:Name="ItemsPresenter"
-                                                                            Margin="2"
                                                                             Grid.IsSharedSizeScope="true"
                                                                             KeyboardNavigation.DirectionalNavigation="Cycle"
                                                                             KeyboardNavigation.TabNavigation="Cycle"
@@ -165,7 +175,7 @@
                                             <Trigger Property="IsMouseOver" Value="False">
                                                 <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackground}" />
                                             </Trigger>
-                                            <DataTrigger Binding="{Binding ElementName=ContentPresenter, Path=Content}" Value="Dismissed Alerts">
+                                            <DataTrigger Binding="{Binding ElementName=ContentPresenter, Path=Content}" Value="{x:Static p:Resources.NodeInformationalStateDismissedAlerts}">
                                                 <Setter TargetName="dismissedAlertsBadge" Property="Visibility" Value="Visible" />
                                             </DataTrigger>
                                             <Trigger Property="IsChecked" Value="True">
@@ -190,108 +200,6 @@
                         </Style>
                     </ResourceDictionary>
                 </ContextMenu.Resources>
-                <MenuItem Name="deleteElem_cm"
-                          Command="{Binding Path=DeleteCommand}"
-                          Header="{x:Static p:Resources.ContextMenuDelete}"
-                          IsCheckable="False" />
-                <MenuItem Header="{x:Static p:Resources.ContextMenuGroups}" IsCheckable="False">
-                    <MenuItem Name="createGroup_cm"
-                              Command="{Binding Path=CreateGroupCommand}"
-                              Header="{x:Static p:Resources.ContextCreateGroupFromSelection}" />
-                    <MenuItem Name="unGroup_cm"
-                              Command="{Binding Path=UngroupCommand}"
-                              Header="{x:Static p:Resources.ContextUnGroupFromSelection}" />
-                    <MenuItem Name="addtoGroup"
-                              Command="{Binding Path=AddToGroupCommand}"
-                              Header="{x:Static p:Resources.ContextAddGroupFromSelection}" />
-                </MenuItem>
-                <MenuItem Name="isVisible_cm"
-                          Command="{Binding Path=ToggleIsVisibleCommand}"
-                          Header="{x:Static p:Resources.NodeContextMenuPreview}"
-                          IsCheckable="True"
-                          IsChecked="{Binding Path=IsVisible, Mode=OneWay}"
-                          Visibility="{Binding Path=ShowsVisibilityToggles, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
-                <MenuItem Name="nodeIsFrozen"
-                          Command="{Binding Path=ToggleIsFrozenCommand}"
-                          Header="{x:Static p:Resources.NodesRunStatus}"
-                          IsCheckable="True"
-                          IsChecked="{Binding IsFrozenExplicitly, Mode=OneWay}"
-                          IsEnabled="{Binding CanToggleFrozen, Mode=OneWay}" />
-                <MenuItem Name="isDisplayLabelsEnabled_cm"
-                          Header="{x:Static p:Resources.NodeContextMenuShowLabels}"
-                          IsCheckable="True"
-                          IsChecked="{Binding Path=IsDisplayingLabels, Mode=TwoWay}"
-                          IsEnabled="{Binding Path=CanDisplayLabels}" />
-                <MenuItem Name="rename_cm"
-                          Command="{Binding Path=RenameCommand}"
-                          Header="{x:Static p:Resources.NodeContextMenuRenameNode}"
-                          IsCheckable="False" />
-                <MenuItem Header="{x:Static p:Resources.ContextMenuLacing}"
-                          IsCheckable="False"
-                          Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}, Mode=OneWay}">
-                    <MenuItem Command="{Binding Path=SetLacingTypeCommand}"
-                              CommandParameter="Auto"
-                              Header="{x:Static p:Resources.ContextMenuLacingAuto}"
-                              IsCheckable="True"
-                              IsChecked="{Binding Path=ArgumentLacing, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Auto, Mode=OneWay}" />
-                    <MenuItem Command="{Binding Path=SetLacingTypeCommand}"
-                              CommandParameter="Shortest"
-                              Header="{x:Static p:Resources.ContextMenuLacingShortest}"
-                              IsCheckable="True"
-                              IsChecked="{Binding Path=ArgumentLacing, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Shortest, Mode=OneWay}" />
-                    <MenuItem Command="{Binding Path=SetLacingTypeCommand}"
-                              CommandParameter="Longest"
-                              Header="{x:Static p:Resources.ContextMenuLacingLongest}"
-                              IsCheckable="True"
-                              IsChecked="{Binding Path=ArgumentLacing, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Longest, Mode=OneWay}" />
-                    <MenuItem Command="{Binding Path=SetLacingTypeCommand}"
-                              CommandParameter="CrossProduct"
-                              Header="{x:Static p:Resources.ContextMenuLacingCrossProduct}"
-                              IsCheckable="True"
-                              IsChecked="{Binding Path=ArgumentLacing, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=CrossProduct, Mode=OneWay}" />
-                </MenuItem>
-                <MenuItem Name="dismissedAlerts" Header="Dismissed Alerts" />
-                <Separator Visibility="{Binding Path=IsInputOrOutput, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>
-                <MenuItem Name="isInput_cm"
-                          Header="{x:Static p:Resources.NodeContextMenuIsInput}"
-                          IsCheckable="True"
-                          IsChecked="{Binding Path=IsSetAsInput, Mode=TwoWay}"
-                          Visibility="{Binding Path=IsInput, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
-                <MenuItem Name="isOutput_cm"
-                          Header="{x:Static p:Resources.NodeContextMenuIsOutput}"
-                          IsCheckable="True"
-                          IsChecked="{Binding Path=IsSetAsOutput, Mode=TwoWay}"
-                          Visibility="{Binding Path=IsOutput, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
-                <Separator />
-                <MenuItem Name="help_cm"
-                          Command="{Binding Path=ShowHelpCommand}"
-                          Header="{x:Static p:Resources.NodeContextMenuHelp}"
-                          IsCheckable="False" />
-                <ContextMenu.Style>
-                    <Style TargetType="{x:Type ContextMenu}">
-                        <Setter Property="Placement" Value="MousePoint" />
-                        <Setter Property="Foreground" Value="{StaticResource NodeContextMenuForeground}" />
-                        <Setter Property="FontSize" Value="13px" />
-                        <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
-                        <Setter Property="FontWeight" Value="Medium" />
-                        <Setter Property="SnapsToDevicePixels" Value="True" />
-                        <Setter Property="OverridesDefaultStyle" Value="True" />
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type ContextMenu}">
-                                    <Border x:Name="Border"
-                                            Background="{StaticResource NodeContextMenuBackground}"
-                                            BorderThickness="0px">
-                                        <StackPanel Margin="0,10"
-                                                    ClipToBounds="True"
-                                                    IsItemsHost="True"
-                                                    Orientation="Vertical" />
-                                    </Border>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </ContextMenu.Style>
             </ContextMenu>
         </Grid.ContextMenu>
 
@@ -334,9 +242,14 @@
                 Grid.Row="1"
                 Grid.RowSpan="4"
                 Grid.ColumnSpan="3"
-                Background="{StaticResource DarkerGreyBrush}"
                 Canvas.ZIndex="1"
-                CornerRadius="8,8,0,0" />
+                CornerRadius="8,8,0,0">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Background" Value="{StaticResource DarkerGreyBrush}" />
+                </Style>
+            </Border.Style>
+        </Border>
 
         <!--  Node Header Background  -->
         <Border Name="nameBackground"
@@ -344,7 +257,6 @@
                 Grid.Column="0"
                 Grid.ColumnSpan="3"
                 Height="46px"
-                Background="{StaticResource DarkMidGreyBrush}"
                 Canvas.ZIndex="2"
                 CornerRadius="8,8,0,0">
             <Rectangle Fill="Transparent"
@@ -364,6 +276,13 @@
                                         <Run Text="{x:Static p:Resources.NodeTooltipOriginalName}" />
                                         <Run Text="{Binding Path=OriginalName, Mode=OneWay}" />
                                     </TextBlock>
+                                    <TextBlock FontFamily="{StaticResource ArtifaktElementRegular}"
+                                               FontWeight="Light"
+                                               TextWrapping="Wrap"
+                                               Visibility="{Binding IsCustomFunction, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                        <Run Text="{x:Static p:Resources.NodeTooltipPackage}" />
+                                        <Run Text="{Binding Path=PackageName, Mode=OneWay}" />
+                                    </TextBlock>
                                     <TextBlock Text="&#x0a;" />
                                     <TextBlock FontFamily="{StaticResource ArtifaktElementRegular}"
                                                FontWeight="Medium"
@@ -377,6 +296,11 @@
                     </dynui:DynamoToolTip>
                 </Rectangle.ToolTip>
             </Rectangle>
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Background" Value="{StaticResource DarkMidGreyBrush}" />
+                </Style>
+            </Border.Style>
         </Border>
 
         <!--  Displays the node's header content, such as its icon, name and whether it's been renamed  -->
@@ -389,11 +313,11 @@
                    Panel.ZIndex="3"
                    FlowDirection="LeftToRight">
             <!--  The Icon for this Node  -->
-            <Ellipse Name="nodeIcon"
+            <Rectangle Name="nodeIcon"
                      Width="34"
                      Height="34">
-                <Ellipse.Style>
-                    <Style TargetType="Ellipse">
+                <Rectangle.Style>
+                    <Style TargetType="Rectangle">
                         <Setter Property="Fill">
                             <Setter.Value>
                                 <ImageBrush ImageSource="{Binding ImageSource}" Stretch="UniformToFill" />
@@ -410,8 +334,8 @@
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
-                </Ellipse.Style>
-            </Ellipse>
+                </Rectangle.Style>
+            </Rectangle>
 
             <TextBlock Name="NameBlock"
                        Margin="6,3,6,0"
@@ -424,17 +348,33 @@
                        IsHitTestVisible="False"
                        Style="{StaticResource SZoomFadeText}"
                        Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                       Visibility="Visible"
                        TextAlignment="Center" />
+            <TextBox Name="EditableNameBox"
+                     Margin="6,3,6,0"
+                     VerticalAlignment="Center"
+                     Background="{x:Null}"
+                     FontFamily="{StaticResource ArtifaktElementRegular}"
+                     FontSize="16px"
+                     FontWeight="Medium"
+                     Foreground="{StaticResource PrimaryCharcoal200Brush}"
+                     SelectionBrush="{StaticResource NodeSelectionTextColor}" SelectionOpacity="0.2"
+                     IsHitTestVisible="True"
+                     BorderThickness="0"
+                     LostFocus="EditableNameBox_OnLostFocus"
+                     KeyDown="EditableNameBox_KeyDown"
+                     Visibility="Collapsed"
+                     Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
             <!--  Ellipse sits within Grid to increase size of MouseOver/ToolTip area  -->
             <Grid HorizontalAlignment="Right"
                   VerticalAlignment="Center"
-                  Panel.ZIndex="100"
+                  Panel.ZIndex="5"
                   Background="Transparent"
                   DockPanel.Dock="Right">
                 <Ellipse Name="nodeRenamedBlueDot"
                          Width="8"
                          Height="8"
-                         Margin="0,0,6,0"
+                         Margin="0,2,6,0"
                          Fill="{StaticResource Blue300Brush}"
                          Visibility="{Binding IsRenamed, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <Grid.ToolTip>
@@ -444,7 +384,7 @@
                                        FontFamily="{StaticResource ArtifaktElementRegular}"
                                        FontSize="14"
                                        FontWeight="Medium"
-                                       Text="{Binding Path=OriginalName, UpdateSourceTrigger=PropertyChanged, StringFormat='Renamed from {0}'}"
+                                       Text="{Binding Path=OriginalName, UpdateSourceTrigger=PropertyChanged, StringFormat={x:Static p:Resources.NodeTooltipRenamed}}"
                                        TextAlignment="Center"
                                        TextWrapping="Wrap" />
                         </Grid>
@@ -457,10 +397,10 @@
         <ItemsControl Name="inputPortControl"
                       Grid.Row="2"
                       Grid.Column="0"
-                      Margin="0,3,0,0"
+                      Margin="-25,3,0,0"
                       VerticalAlignment="Top"
                       HorizontalContentAlignment="Stretch"
-                      Canvas.ZIndex="4"
+                      Canvas.ZIndex="6"
                       ItemsSource="{Binding Path=InPorts}"
                       Style="{StaticResource InOutPortControlStyle}" />
 
@@ -489,7 +429,6 @@
             </Grid.RowDefinitions>
 
             <!--  INPUT GRID  -->
-
             <Grid Name="inputGrid"
                   MinHeight="{Binding Source={x:Static configuration:Configurations.PortHeightInPixels}}"
                   HorizontalAlignment="Stretch"
@@ -503,14 +442,27 @@
                     Grid.Row="3"
                     Grid.Column="0"
                     Grid.ColumnSpan="3"
-                    Margin="0,0,6,2"
+                    Margin="0,0,2,2"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
                     Canvas.ZIndex="4"
+                    Style="{StaticResource SZoomFadeOutFrameworkElement}"
                     FlowDirection="LeftToRight"
                     Orientation="Horizontal">
-            <Grid x:Name="HiddenEyeGlyph" Visibility="{Binding Path=IsVisible, Converter={StaticResource InverseBoolToVisibilityConverter}, Mode=OneWay}">
-                <Image Width="16px"
+            <Grid x:Name="FrozenGlyph" 
+                  Visibility="{Binding Path=IsFrozen, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay}">
+                <Image x:Name="FrozenImage"
+                       Width="16px"
+                       Height="16px"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Source="/DynamoCoreWpf;component/UI/Images/NodeStates/frozen-64px.png"
+                       Stretch="UniformToFill" />
+            </Grid>
+            <Grid x:Name="HiddenEyeGlyph" 
+                  Visibility="{Binding Path=IsVisible, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}, Mode=OneWay}">
+                <Image x:Name="HiddenEyeImage"
+                       Width="16px"
                        Height="16px"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"
@@ -518,7 +470,7 @@
                        Stretch="UniformToFill" />
             </Grid>
             <Label x:Name="LacingIconGlyph"
-                   Margin="0,1,0,-1"
+                   Margin="0,1,2,-1"
                    HorizontalContentAlignment="Center"
                    VerticalContentAlignment="Center"
                    Content="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToAbbreviationConverter}}"
@@ -526,13 +478,16 @@
                    FontSize="10px"
                    Foreground="{StaticResource NodeLacingGlyphBackground}"
                    Style="{StaticResource SZoomFadeLabel}"
-                   ToolTip="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToTooltipConverter}}"
                    ToolTipService.ShowDuration="30000"
-                   Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}" />
+                   Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}">
+                <Label.ToolTip>
+                    <ToolTip Content="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToTooltipConverter}}" Style="{StaticResource GenericToolTipLight}"/>
+                </Label.ToolTip>
+            </Label>
             <Grid Name="AlertsGlyph"
                   Width="Auto"
                   Height="16">
-                <Border Background="{StaticResource NodeDismissedWarningsGlyphBackground}" CornerRadius="10">
+                <Border Background="{StaticResource NodeDismissedWarningsGlyphBackground}" CornerRadius="8">
                     <Label Padding="3,2,3,0"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center"
@@ -548,7 +503,7 @@
                     <Style TargetType="Grid">
                         <Setter Property="Visibility" Value="Visible" />
                         <Setter Property="MinWidth" Value="16" />
-                        <Setter Property="Margin" Value="3,0,0,0" />
+                        <Setter Property="Margin" Value="0,0,3,0" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding NumberOfDismissedAlerts}" Value="0">
                                 <Setter Property="Grid.MinWidth" Value="0" />
@@ -560,8 +515,10 @@
                 </Grid.Style>
             </Grid>
             <Button x:Name="OptionsButton"
-                    Click="OptionsButton_Click"
-                    ToolTip="{x:Static p:Resources.ContextMenu}">
+                    Click="DisplayNodeContextMenu">
+                <Button.ToolTip>
+                    <ToolTip Content="{x:Static p:Resources.ContextMenu}" Style="{StaticResource GenericToolTipLight}"/>
+                </Button.ToolTip>
                 <Button.Style>
                     <Style TargetType="{x:Type Button}">
                         <Setter Property="Template">
@@ -577,9 +534,9 @@
                                                Width="16px"
                                                Height="16px"
                                                Margin="1.5,0,0,0"
-                                               Stretch="UniformToFill"
                                                HorizontalAlignment="Center"
-                                               VerticalAlignment="Center" />
+                                               VerticalAlignment="Center"
+                                               Stretch="UniformToFill" />
                                     </Grid>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
@@ -601,7 +558,6 @@
 
         <Grid Name="PresentationGrid"
               Grid.Row="2"
-              Grid.RowSpan="2"
               Grid.Column="1"
               Margin="6,6,6,3"
               HorizontalAlignment="Left"
@@ -617,24 +573,105 @@
                 Grid.RowSpan="4"
                 Grid.ColumnSpan="3"
                 Margin="-1"
-                BorderBrush="#F9F9F9"
+                BorderBrush="{StaticResource WorkspaceBackgroundHomeBrush}"
                 BorderThickness="1"
                 Canvas.ZIndex="5"
                 CornerRadius="8,8,0,0"
                 IsHitTestVisible="False"
                 SnapsToDevicePixels="True" />
 
-        <!--  Displays when the node is frozen  -->
-        <Border Name="nodeIsFrozenOverlay"
+        <!--  Displays when the node is Frozen/Warning/Error state and Zoom is above 0.4 -->
+        <Border Name="nodeColorOverlayZoomIn"
                 Grid.Row="1"
                 Grid.RowSpan="4"
                 Grid.ColumnSpan="3"
                 Margin="-8"
-                Background="{StaticResource NodeFrozenOverlayBackground}"
-                Canvas.ZIndex="0"
+                Background="{StaticResource NodeFrozenOverlayColor}"
+                Canvas.ZIndex="6"
                 CornerRadius="8,8,0,0"
-                IsHitTestVisible="True"
-                Visibility="{Binding Path=IsFrozen, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                IsHitTestVisible="False"
+                Opacity="{Binding Path=DataContext.Zoom, 
+                                  RelativeSource={RelativeSource FindAncestor, 
+                                  AncestorType={x:Type controls:WorkspaceView}}, 
+                                  Converter={StaticResource ZoomToOpacityConverter}}"
+                Style="{StaticResource SZoomFadeOutPreview}"
+                Visibility="{Binding Path=IsFrozen, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+
+        <!--  Displays when the node is Frozen/Warning/Error state and Zoom is below 0.4 -->
+        <Border Name="nodeColorOverlayZoomOut"
+                Grid.Row="1"
+                Grid.RowSpan="4"
+                Grid.ColumnSpan="3"
+                Margin="-8"
+                Background="{Binding NodeOverlayColor, UpdateSourceTrigger=PropertyChanged}"
+                Canvas.ZIndex="6"
+                CornerRadius="8,8,0,0"
+                IsHitTestVisible="False"
+                Opacity="0.5"
+                Style="{StaticResource SZoomFadeInPreview}"
+                Visibility="{Binding Path=DataContext.Zoom, 
+                                     RelativeSource={RelativeSource FindAncestor, 
+                                     AncestorType={x:Type controls:WorkspaceView}}, 
+                                     Converter={StaticResource ZoomToVisibilityCollapsedConverter}}" />
+
+        <!-- Grid containing the State overlay Glyphs in Zoomed Out state -->
+        <Grid Name="zoomGlyphsGrid"
+                    Grid.Row="0"
+                    Grid.RowSpan="4"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="3"
+                    Canvas.ZIndex="7" 
+                    IsHitTestVisible="False"
+                    Margin="0 5 0 0"
+                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                    Style="{StaticResource SZoomFadeInFrameworkElement}"                    
+                    Visibility="{Binding Path=DataContext.Zoom, 
+                                         RelativeSource={RelativeSource FindAncestor, 
+                                         AncestorType={x:Type controls:WorkspaceView}}, 
+                                         Converter={StaticResource ZoomToVisibilityCollapsedConverter}}" 
+                    MinWidth="48">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="{Binding ImgGlyphThreeSource, Mode=OneWay, Converter={StaticResource EmptyToZeroLengthConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <UniformGrid  Grid.Row="0"
+                          Margin="0 10 0 -10"
+                          Columns="1" Rows="1" Name="ZoomGlyphRowZero" 
+                          HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                          Visibility="{Binding ImgGlyphThreeSource, Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}">
+                <Image Stretch="Uniform"  HorizontalAlignment="Center" VerticalAlignment="Bottom" 
+                       x:Name="ZoomStateImgOne"
+                       Width="64"
+                       Source="{Binding ImgGlyphThreeSource, UpdateSourceTrigger=PropertyChanged, TargetNullValue={x:Null}}"
+                       Visibility="{Binding ImgGlyphThreeSource,Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+            </UniformGrid>
+            <Grid Grid.Row="1" 
+                  Margin="0 0 0 0"
+                  Name="ZoomGlyphRowOne" 
+                  HorizontalAlignment="Center" VerticalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="{Binding ImgGlyphOneSource, Mode=OneWay, Converter={StaticResource EmptyToZeroLengthConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                    <ColumnDefinition Width="{Binding ImgGlyphTwoSource, Mode=OneWay, Converter={StaticResource EmptyToZeroLengthConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                </Grid.ColumnDefinitions>
+                <Image Grid.Column="0"
+                       x:Name="ZoomStateImgTwo"
+                       Stretch="Uniform" 
+                       HorizontalAlignment="Left" VerticalAlignment="Center"
+                       Margin="5 0 "
+                       Width="64"
+                       Source="{Binding ImgGlyphOneSource, UpdateSourceTrigger=PropertyChanged, TargetNullValue={x:Null}}"
+                       Visibility="{Binding ImgGlyphOneSource, Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+                <Image Grid.Column="1"
+                       x:Name="ZoomStateImgThree"
+                       Stretch="Uniform"  
+                       HorizontalAlignment="Right" VerticalAlignment="Center" 
+                       Margin="5 0"
+                       Width="64"
+                       Source="{Binding ImgGlyphTwoSource, UpdateSourceTrigger=PropertyChanged, TargetNullValue={x:Null}}"
+                       Visibility="{Binding ImgGlyphTwoSource, Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+        </Grid>
+
 
         <!--  Displays when the node is selected  -->
         <Border Name="selectionBorder"
@@ -654,6 +691,30 @@
                          Path="IsSelected"
                          UpdateSourceTrigger="PropertyChanged" />
             </Border.Visibility>
+        </Border>
+
+        <!--
+        If a note is dragged over this group
+        this border is activated, indicating that the node can be dropped into the group.
+        The visibility of this is controlled by the NodeViewModel property 'NodeHoveringState'
+        which is set in the StateMachine.
+        -->
+        <Border x:Name="nodeHoveringStateBorder"
+                Grid.Row="1"
+                Grid.RowSpan="4"
+                Grid.ColumnSpan="3"
+                Margin="-3"
+                Background="Transparent"
+                IsHitTestVisible="False"
+                Canvas.ZIndex="41"
+                CornerRadius="10,10,0,0"
+                BorderBrush="#CCCCCC"
+                BorderThickness="6px"
+                Visibility="{Binding NodeHoveringState,
+                    Converter={StaticResource BooleanToVisibilityConverter},
+                    Mode=OneWay,
+                    UpdateSourceTrigger=PropertyChanged}"
+                >
         </Border>
 
         <!--  DO NOT ERASE. THIS IS FOR DEBUGGING  -->
@@ -678,20 +739,37 @@
             </Rectangle.Visibility>
         </Rectangle>-->
 
+        <!--  Warning Bar: Displays when node is in Info/Warning/Error state  -->
+        <Rectangle Name="warningBar"
+                   Grid.Row="4"
+                   Grid.Column="0"
+                   Grid.ColumnSpan="3"
+                   Height="12"
+                   Canvas.ZIndex="1"
+                   Fill="{Binding WarningBarColor, UpdateSourceTrigger=PropertyChanged}"
+                   Visibility="{Binding NodeWarningBarVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}" />
+
         <Canvas Name="expansionBay"
-                Grid.Row="4"
+                Grid.Row="5"
                 Grid.Column="0"
                 Grid.ColumnSpan="3"
                 Margin="0,4,0,0"
                 HorizontalAlignment="Left"
                 Background="Blue" />
 
-        <Canvas Grid.Row="4"
+        <Canvas Grid.Row="5"
                 Grid.Column="0"
                 Grid.ColumnSpan="3"
                 ClipToBounds="False"
                 Visibility="{Binding ShowDebugASTs, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
             <Label HorizontalContentAlignment="Center" Content="{Binding ASTText}" />
+
+        </Canvas>
+        <Canvas Grid.Row="3" Canvas.ZIndex="51" 
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Visibility="{Binding IsCustomFunction, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+            <Polygon Points="0,-15 15,0 0,0" Fill="#E3E3E3"/>
         </Canvas>
     </Grid>
 </UserControl>

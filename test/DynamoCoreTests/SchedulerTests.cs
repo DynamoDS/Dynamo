@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using CoreNodeModels.Input;
+using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Models;
@@ -419,8 +420,8 @@ namespace Dynamo.Tests
         /// mechanism avoids concurrent calls to DynamoScheduler.NextTimeStamp 
         /// from getting the same time-stamp value.
         /// </summary>
-        /// 
-        [Test, RequiresMTA]
+        ///
+        [Test, Apartment(ApartmentState.MTA)]
         [Category("UnitTests")]
         public void TimeStampGenerator01()
         {
@@ -1150,7 +1151,8 @@ namespace Dynamo.Tests
                     SchedulerThread = schedulerThread,
                     PathResolver = pathResolver,
                     GeometryFactoryPath = preloader.GeometryFactoryPath,
-                    ProcessMode = TaskProcessMode.Asynchronous
+                    ProcessMode = TaskProcessMode.Asynchronous,
+                    Preferences = new PreferenceSettings()
                 });
         }
 

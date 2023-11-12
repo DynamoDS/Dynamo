@@ -1,15 +1,19 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace DynamoUtilities
 {
+#if NET6_0_OR_GREATER
+    [SupportedOSPlatform("Windows")]
+#endif
     internal sealed class WinTrustInterop
     {
         #region WinTrustData struct field enums
@@ -152,6 +156,9 @@ namespace DynamoUtilities
             UntrustedRoot = 0x800B0109          // CERT_E_UNTRUSTEDROOT - A certification chain processed correctly but terminated in a root certificate that is not trusted by the trust provider.
         }
 
+#if NET6_0_OR_GREATER
+        [SupportedOSPlatform("Windows")]
+#endif
         public class WinTrust
         {
             private static readonly IntPtr INVALID_HANDLE_VALUE = new IntPtr(-1);
@@ -165,6 +172,9 @@ namespace DynamoUtilities
                 [In] WinTrustData pWVTData
             );
 
+#if NET6_0_OR_GREATER
+            [SupportedOSPlatform("Windows")]
+#endif
             // call WinTrust.WinVerifyTrust() to check embedded file signature
             public static bool VerifyEmbeddedSignature(string fileName)
             {
@@ -191,6 +201,9 @@ namespace DynamoUtilities
         }
     }
 
+#if NET6_0_OR_GREATER
+    [SupportedOSPlatform("Windows")]
+#endif
     public class CertificateVerification
     {
         /// <summary>

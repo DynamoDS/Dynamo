@@ -1,7 +1,7 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "",
+  "Description": "Dynamo Core Sample",
   "Name": "Core_ListAtLevel",
   "ElementResolver": {
     "ResolutionMap": {
@@ -27,7 +27,7 @@
         {
           "Id": "6ecdb698dc834d9ba209e2c174d41286",
           "Name": "points",
-          "Description": "Point[][]",
+          "Description": "Grid of points for nurbs surface\n\nPoint[][]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -36,7 +36,7 @@
         {
           "Id": "473097cfc3834a9fbdb72a0432ba63c2",
           "Name": "uDegree",
-          "Description": "int\nDefault value : 3",
+          "Description": "Degree in u direction\n\nint\nDefault value : 3",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -45,7 +45,7 @@
         {
           "Id": "927414163b604d36b8873715da24a60c",
           "Name": "vDegree",
-          "Description": "int\nDefault value : 3",
+          "Description": "Degree in v direction\n\nint\nDefault value : 3",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -56,7 +56,7 @@
         {
           "Id": "5ce162ccc880451a921f18504ec5a9c4",
           "Name": "NurbsSurface",
-          "Description": "NurbsSurface",
+          "Description": "Nurbs surface created by points",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -75,7 +75,7 @@
         {
           "Id": "706a3c88e9f14fd3b29b8599397f0202",
           "Name": "bestFitPoints",
-          "Description": "Point[]",
+          "Description": "List of points to best fit line\n\nPoint[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -86,7 +86,7 @@
         {
           "Id": "0339b2ef6c6941b2b0a48b05807444c7",
           "Name": "Line",
-          "Description": "Line",
+          "Description": "Line from fit through points",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -299,7 +299,7 @@
         {
           "Id": "1428df384ae54e31ab72e93e1344528e",
           "Name": "x",
-          "Description": "double\nDefault value : 0",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -308,7 +308,7 @@
         {
           "Id": "6936cba5a58f4526900ae6c7a1331313",
           "Name": "y",
-          "Description": "double\nDefault value : 0",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -317,7 +317,7 @@
         {
           "Id": "3c83696d53834299a00224a22761b4b3",
           "Name": "z",
-          "Description": "double\nDefault value : 0",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -328,7 +328,7 @@
         {
           "Id": "ffb5771c2f4c4e50b47e374e5ece6cf9",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -386,7 +386,7 @@
       "Outputs": [
         {
           "Id": "9f4d155d1b704c86830eafcf6bd28784",
-          "Name": "count",
+          "Name": "int",
           "Description": "List length.",
           "UsingDefaultValue": false,
           "Level": 2,
@@ -416,7 +416,7 @@
       "Outputs": [
         {
           "Id": "578086c068d14cc8a80f2220657252e5",
-          "Name": "count",
+          "Name": "int",
           "Description": "List length.",
           "UsingDefaultValue": false,
           "Level": 2,
@@ -446,7 +446,7 @@
       "Outputs": [
         {
           "Id": "e6f42f796d054f0b8e3d49b7b96fb5eb",
-          "Name": "count",
+          "Name": "int",
           "Description": "List length.",
           "UsingDefaultValue": false,
           "Level": 2,
@@ -474,8 +474,8 @@
         },
         {
           "Id": "18d9db5c5740433fa3ff9b91e9b093ac",
-          "Name": "amt",
-          "Description": "Layers of nesting to remove.\n\nint\nDefault value : -1",
+          "Name": "amount",
+          "Description": "Layers of list nesting to remove (-1 will remove all list nestings)\n\nint\nDefault value : -1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -485,8 +485,8 @@
       "Outputs": [
         {
           "Id": "54dbee27e8a24ff1892812ef1523772d",
-          "Name": "var[]..[]",
-          "Description": "var[]..[]",
+          "Name": "list",
+          "Description": "Flattened list by amount",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -494,94 +494,127 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Flattens a nested list of lists by a certain amount.\n\nList.Flatten (list: var[]..[], amt: int = -1): var[]..[]"
+      "Description": "Flattens a nested list of lists by a certain amount.\n\nList.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
     }
   ],
   "Connectors": [
     {
       "Start": "43dcd7eb0fef4c4bab93791896cfa24f",
       "End": "5e12570c2b7e461eb4e29041de650a6a",
-      "Id": "87084ced4aa94721ba47597a8bacc0cb"
+      "Id": "87084ced4aa94721ba47597a8bacc0cb",
+      "IsHidden": "False"
     },
     {
       "Start": "3a7fa37281304240951782ac4aebf937",
       "End": "6ecdb698dc834d9ba209e2c174d41286",
-      "Id": "e411293dadd5476d9782a460a4ea6b38"
+      "Id": "e411293dadd5476d9782a460a4ea6b38",
+      "IsHidden": "False"
     },
     {
       "Start": "3a7fa37281304240951782ac4aebf937",
       "End": "706a3c88e9f14fd3b29b8599397f0202",
-      "Id": "f29875beb0fb4067b0c2bc08aec3ea2b"
+      "Id": "f29875beb0fb4067b0c2bc08aec3ea2b",
+      "IsHidden": "False"
     },
     {
       "Start": "15561d59d6824d98b0a898c384f7f8f4",
       "End": "a7ac983fdd324844a3cf5bc470127d90",
-      "Id": "76bfbc5a701a4dac9ee91a1a96d6ab23"
+      "Id": "76bfbc5a701a4dac9ee91a1a96d6ab23",
+      "IsHidden": "False"
     },
     {
       "Start": "d9ddac8471224587b2141e57bdfb54ed",
       "End": "eb95679c3317416fa967bec39fd79825",
-      "Id": "a0d196e25c57498ea3f49a0ab3b01be1"
+      "Id": "a0d196e25c57498ea3f49a0ab3b01be1",
+      "IsHidden": "False"
     },
     {
       "Start": "ca8dd243e4924766b55249440deac976",
       "End": "2dd3bee0136647eb840c846f4817bdfe",
-      "Id": "d2f4475af23b49ada944a558a264be00"
+      "Id": "d2f4475af23b49ada944a558a264be00",
+      "IsHidden": "False"
     },
     {
       "Start": "ffb5771c2f4c4e50b47e374e5ece6cf9",
       "End": "aae51590920f4aa7ad9168d6010e6195",
-      "Id": "8d314456b70d417e8dd569676d8b203f"
+      "Id": "8d314456b70d417e8dd569676d8b203f",
+      "IsHidden": "False"
     },
     {
       "Start": "ffb5771c2f4c4e50b47e374e5ece6cf9",
       "End": "58604e56b36b4b80a46c0a40e7c9eb44",
-      "Id": "f115cfac2ff54242b8813583f9a38984"
+      "Id": "f115cfac2ff54242b8813583f9a38984",
+      "IsHidden": "False"
     },
     {
       "Start": "ffb5771c2f4c4e50b47e374e5ece6cf9",
       "End": "0dcf9d732b714b569174be83839e564e",
-      "Id": "2a1f97bd36c642348864faaf8c3a1e66"
+      "Id": "2a1f97bd36c642348864faaf8c3a1e66",
+      "IsHidden": "False"
     },
     {
       "Start": "ffb5771c2f4c4e50b47e374e5ece6cf9",
       "End": "572167b6609242dfac8f42c428f41235",
-      "Id": "6429b871dac2470ca1f3188a32229476"
+      "Id": "6429b871dac2470ca1f3188a32229476",
+      "IsHidden": "False"
     },
     {
       "Start": "ffb5771c2f4c4e50b47e374e5ece6cf9",
       "End": "659232f096bb4756ab30240c339aa0c6",
-      "Id": "7bad6b25a88e481bac67d79c9112a073"
+      "Id": "7bad6b25a88e481bac67d79c9112a073",
+      "IsHidden": "False"
     },
     {
       "Start": "ffb5771c2f4c4e50b47e374e5ece6cf9",
       "End": "29d425608a854a4d9f0b8ee4077cd367",
-      "Id": "3797dabc01d2445a80e725d197390661"
+      "Id": "3797dabc01d2445a80e725d197390661",
+      "IsHidden": "False"
     },
     {
       "Start": "01fe2f20a7d74eecb6cd2a01018ec8ec",
       "End": "1428df384ae54e31ab72e93e1344528e",
-      "Id": "3176bfc551944422bcb444a5db7c190d"
+      "Id": "3176bfc551944422bcb444a5db7c190d",
+      "IsHidden": "False"
     },
     {
       "Start": "30ae98d87c724d02891bfe1faa5866e0",
       "End": "3c83696d53834299a00224a22761b4b3",
-      "Id": "fcb8f07404b84edf9c6faa4246afb99b"
+      "Id": "fcb8f07404b84edf9c6faa4246afb99b",
+      "IsHidden": "False"
     },
     {
       "Start": "30ae98d87c724d02891bfe1faa5866e0",
       "End": "6936cba5a58f4526900ae6c7a1331313",
-      "Id": "cad74efd73264f49a1c9289a31325ced"
+      "Id": "cad74efd73264f49a1c9289a31325ced",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": null,
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.13",
+      "Data": {}
+    }
+  ],
+  "Author": "Dynamo Team",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
   "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.0.0.2821",
+      "Version": "2.13.0.3265",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
@@ -597,6 +630,7 @@
       "UpY": 0.98004049062728882,
       "UpZ": -0.18786582350730896
     },
+    "ConnectorPins": [],
     "NodeViews": [
       {
         "ShowGeometry": true,
@@ -605,8 +639,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 3638.71965002983,
-        "Y": -3320.90411354737
+        "X": 3658.2642450710077,
+        "Y": -3314.8903919962381
       },
       {
         "ShowGeometry": true,
@@ -615,8 +649,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 3657.94900703305,
-        "Y": -2981.25830387159
+        "X": 3654.9421462574846,
+        "Y": -2979.7548734838074
       },
       {
         "ShowGeometry": true,
@@ -625,8 +659,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 3438.45105241264,
-        "Y": -2521.33850428021
+        "X": 3457.9956474538176,
+        "Y": -2519.8350738924273
       },
       {
         "ShowGeometry": true,
@@ -635,7 +669,7 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 3247.34798926348,
+        "X": 3278.9200274069194,
         "Y": -2521.33850428021
       },
       {
@@ -645,8 +679,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 3298.32631909464,
-        "Y": -3194.67101989823
+        "X": 3278.7817240534628,
+        "Y": -3188.6572983470983
       },
       {
         "ShowGeometry": true,
@@ -655,7 +689,7 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 3010.64492611433,
+        "X": 3000.1209133998495,
         "Y": -2521.33850428021
       },
       {
@@ -665,8 +699,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 2867.94186296517,
-        "Y": -2508.13850428021
+        "X": 2821.3355209439014,
+        "Y": -2511.1453650557755
       },
       {
         "ShowGeometry": true,
@@ -675,8 +709,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 3102.42315289156,
-        "Y": -3144.79626601202
+        "X": 2997.1830257467595,
+        "Y": -3102.7002151541
       },
       {
         "ShowGeometry": true,
@@ -705,7 +739,7 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 2177.07556539785,
+        "X": 2176.0614413748162,
         "Y": -2884.77869645618
       },
       {
@@ -715,8 +749,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 2191.64511924494,
-        "Y": -2335.7193431814
+        "X": 2200.4839543511221,
+        "Y": -2406.4300240308548
       },
       {
         "ShowGeometry": true,
@@ -725,8 +759,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 2502.91730267205,
-        "Y": -2335.7193431814
+        "X": 2511.7561377782322,
+        "Y": -2406.4300240308548
       },
       {
         "ShowGeometry": true,
@@ -743,103 +777,133 @@
       {
         "Id": "1bed1efe74bb4a1ca06ff814226a8034",
         "Title": "Replacing List.Map with List@Level",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [
           "bec8996868a44e49b3382bf3894ffc8f",
           "57e785b827884ee296927831eba1362b",
           "3dbb73be1e434b38b336e35a08157589",
-          "f680137a312c4de9881b54f7b9cf8aa2",
           "fa13a54ee7ba4afb970cd9bf671a6050",
           "0e177600e91b4d8b94c01eb5dfd3ad1e",
           "8f9f6b94ee3e4a3e8d6ab211162899a9",
+          "f680137a312c4de9881b54f7b9cf8aa2",
           "aa8b961d72e34ee1b2797c161109af2c"
         ],
-        "Left": 2857.94186296517,
-        "Top": -3437.02900756043,
-        "Width": 724.50918944746991,
-        "Height": 1021.89050328022,
+        "HasNestedGroups": false,
+        "Left": 2811.3355209439014,
+        "Top": -3457.02900756043,
+        "Width": 791.66012650991615,
+        "Height": 1099.1939336680025,
         "FontSize": 30.0,
         "InitialTop": -3391.02900756043,
-        "InitialHeight": 169.026666539488,
-        "TextblockHeight": 36.0,
+        "InitialHeight": 1027.89050328022,
+        "TextblockHeight": 56.0,
         "Background": "#FFA4E1FF"
       },
       {
         "Id": "b94ccab312c940009338190a9c4d373f",
         "Title": " Using \"Keep List Structure\"",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [
           "9fa6f44fa1e54368b4ff207178ea7568",
           "50f2ddc4235d45a4a2365877b09579ab",
           "64bb560e25184efcb68ae42c72abfdbc",
           "6e2ad0ec8d164d2f889ca49975a6b218"
         ],
-        "Left": 2122.24511924494,
-        "Top": -2451.35483573575,
+        "HasNestedGroups": false,
+        "Left": 2131.083954351122,
+        "Top": -2542.0655165852049,
         "Width": 623.27218342710012,
-        "Height": 208.63549255435009,
+        "Height": 267.63549255435009,
         "FontSize": 30.0,
-        "InitialTop": -2405.35483573575,
-        "InitialHeight": 211.432807650001,
-        "TextblockHeight": 36.0,
+        "InitialTop": -2476.0655165852049,
+        "InitialHeight": 214.63549255435009,
+        "TextblockHeight": 56.0,
         "Background": "#FFC1D676"
       },
       {
         "Id": "71d074f3b55544bfadcadd78c591845a",
         "Title": "Inspecting a List with List@Level and Count",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [
           "45fa8a42b13d4d4cbf6d322919856b3d",
           "fa1915d2e9e44dad91659f7e24be4218",
           "5a86a3b5794c42c8aa41e04f6b67a31b"
         ],
-        "Left": 2102.67556539785,
-        "Top": -3133.85218869871,
-        "Width": 317.0,
-        "Height": 342.07349224252994,
+        "HasNestedGroups": false,
+        "Left": 2101.6614413748161,
+        "Top": -3153.85218869871,
+        "Width": 318.80000000000018,
+        "Height": 401.07349224252994,
         "FontSize": 30.0,
         "InitialTop": -3051.85218869871,
-        "InitialHeight": 289.67349224253,
-        "TextblockHeight": 72.0,
+        "InitialHeight": 312.07349224252994,
+        "TextblockHeight": 92.0,
         "Background": "#FFC1D676"
       },
       {
         "Id": "2430763962e347eb8a12eec7c513bbe9",
         "Title": "Creating Geometry",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [
           "e9e562823e244d508095f44acaca0c79",
           "5611100325e8418288bf4a1e6deff214",
           "ac90dfe3800a487ab7ceb591a81b583c"
         ],
-        "Left": 3606.11965002983,
-        "Top": -3436.7120495339,
-        "Width": 310.0,
-        "Height": 548.45374566230976,
+        "HasNestedGroups": false,
+        "Left": 3625.6642450710074,
+        "Top": -3443.1811760438545,
+        "Width": 329.27790118647727,
+        "Height": 595.42630256004713,
         "FontSize": 30.0,
-        "InitialTop": -3390.7120495339,
-        "InitialHeight": 288.235355977618,
-        "TextblockHeight": 36.0,
+        "InitialTop": -3377.1811760438545,
+        "InitialHeight": 554.45374566230976,
+        "TextblockHeight": 56.0,
         "Background": "#FFFFC999"
       },
       {
         "Id": "77efdc5df117499cb0bfbfad13bf6223",
         "Title": "Inspecting a List with List@Level and Flatten",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [
           "340b62dec75547b58ca918c628f2c721",
           "79cc8836a465418b94bcccfaf086b340",
           "ad757908626b43b9b0d820f1e37c8e53"
         ],
+        "HasNestedGroups": false,
         "Left": 2471.87235360353,
-        "Top": -3135.17798751712,
-        "Width": 318.0,
-        "Height": 397.26435246766005,
+        "Top": -3155.17798751712,
+        "Width": 320.40000000000009,
+        "Height": 460.26435246766005,
         "FontSize": 30.0,
         "InitialTop": -3053.17798751712,
-        "InitialHeight": 318.86435246766,
-        "TextblockHeight": 72.0,
+        "InitialHeight": 341.26435246766005,
+        "TextblockHeight": 92.0,
         "Background": "#FFC1D676"
       },
       {
         "Id": "5c3a7719de774ea4904d671f0abb0dca",
         "Title": "The lists exist at different levels, with L1 being the lowest level. The total number of elements produced by this node is 64, as shown at the bottom right.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
+        "HasNestedGroups": false,
         "Left": 2927.54891625344,
         "Top": -2847.30626342554,
         "Width": 0.0,
@@ -853,7 +917,12 @@
       {
         "Id": "f680137a312c4de9881b54f7b9cf8aa2",
         "Title": "In the previous version of Dynamo, List.Map is used to obtain the inner levels of lists. Even though the same result can be achieved using List.Map, it introduces more nodes into the workspace. Here we use List@Level to grab interior points of the grid in a more efficient way. We will use these points to create panels.\r\n\r\nWe also utilized the \"Keep List Structure\" option to maintain the groupings of the initial list and prevent flattening. If \"Keep List Structure\" is disabled, a single NurbsSurface will be created instead of eight.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
+        "HasNestedGroups": false,
         "Left": 3234.55106089349,
         "Top": -3391.02900756043,
         "Width": 0.0,
@@ -867,9 +936,14 @@
       {
         "Id": "a9cd8e77dfc54359b6a145218b7ca761",
         "Title": "We want to create panels in the interior of the grid. To do so, we will need to obtain the points at indexes 1 and 2 of each list in the innermost level. This can easily be done by using the List@Level feature. The grouping of the lists are kept by enabling the option \"Keep list structure\". But, first, let's inspect the list we created with Point.ByCoordinates a bit more to determine which level of the list we want to use.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 2113.55542586876,
-        "Top": -3299.33901862344,
+        "HasNestedGroups": false,
+        "Left": 2114.5695498917935,
+        "Top": -3320.6356231071468,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -881,7 +955,12 @@
       {
         "Id": "0a361063945e455b8e3257cff2642be2",
         "Title": "In this example, we create a 3D list containing a series of points. There are 8 lists at L3, and each list contains another 4 lists (L2). Each of the 4 lists contains 4 points (L1), resulting in a total of 128 points.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
+        "HasNestedGroups": false,
         "Left": 1644.27177911749,
         "Top": -3298.17017654349,
         "Width": 0.0,
@@ -895,8 +974,13 @@
       {
         "Id": "fa1915d2e9e44dad91659f7e24be4218",
         "Title": "The List.Count node returns the number of elements that are present in each list. Depending on the selected level, different values are returned. Try changing the value of L3 by clicking on the arrows beside it.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 2112.67556539785,
+        "HasNestedGroups": false,
+        "Left": 2111.6614413748161,
         "Top": -3051.85218869871,
         "Width": 0.0,
         "Height": 0.0,
@@ -909,8 +993,13 @@
       {
         "Id": "5a86a3b5794c42c8aa41e04f6b67a31b",
         "Title": "There are eight lists at L3, each containing four lists. Hence, selecting L3 implements the List.Count function on the eight lists, giving eight '4' values.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 2114.47556539785,
+        "HasNestedGroups": false,
+        "Left": 2113.4614413748163,
         "Top": -2953.91544257744,
         "Width": 0.0,
         "Height": 0.0,
@@ -923,7 +1012,12 @@
       {
         "Id": "79cc8836a465418b94bcccfaf086b340",
         "Title": "As an additional example, you can easily flatten the nested structure at inner levels of the lists by making use of the List@Level feature, together with the Flatten node. Try changing which level will be flattened by clicking on the arrows beside in the List@Level spinner.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
+        "HasNestedGroups": false,
         "Left": 2481.87235360353,
         "Top": -3053.17798751712,
         "Width": 0.0,
@@ -937,7 +1031,12 @@
       {
         "Id": "ad757908626b43b9b0d820f1e37c8e53",
         "Title": "Selecting L3 converts the eight lists at that level into a 1D array. As each of the eight lists contains four items (which are also lists), this will flatten all of the lists at L3 producing eight lists of 16 points.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
+        "HasNestedGroups": false,
         "Left": 2483.27235360353,
         "Top": -2940.64581128329,
         "Width": 0.0,
@@ -951,7 +1050,12 @@
       {
         "Id": "c2a93eafafd843c38528cb8b83038b45",
         "Title": "LIST@LEVEL\r\nList@Level replaces the functionality of List.Map, by allowing you to directly select the level of list you want to work with.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
+        "HasNestedGroups": false,
         "Left": 1325.60787741468,
         "Top": -3424.14881463484,
         "Width": 0.0,
@@ -965,7 +1069,12 @@
       {
         "Id": "d0db3c96e1bd44089ed5bf7b28d3b6ef",
         "Title": "To change the list level you're working with, click the arrow beside the list input port and enable the \"Use levels\" option.\r\n\r\nWhen List@Level is first enabled on an input port, the list at the second innermost level (L2) is selected to be worked with. ",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
+        "HasNestedGroups": false,
         "Left": 1326.20787741468,
         "Top": -3325.03428225651,
         "Width": 0.0,
@@ -979,9 +1088,14 @@
       {
         "Id": "64bb560e25184efcb68ae42c72abfdbc",
         "Title": "This node returns the number of elements that are present in each list in L2. By default, the results are flattened into a 1D list.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 2132.24511924494,
-        "Top": -2405.35483573575,
+        "HasNestedGroups": false,
+        "Left": 2141.083954351122,
+        "Top": -2476.0655165852049,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -993,9 +1107,14 @@
       {
         "Id": "6e2ad0ec8d164d2f889ca49975a6b218",
         "Title": "To preserve the nested structure of the lists, select the option \"Keep list structure\". \"@@\" indicates how to keep the list structure in Designscript.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 2438.51730267204,
-        "Top": -2405.35483573575,
+        "HasNestedGroups": false,
+        "Left": 2447.3561377782221,
+        "Top": -2476.0655165852049,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -1007,7 +1126,12 @@
       {
         "Id": "aa8b961d72e34ee1b2797c161109af2c",
         "Title": "Below is the List.Map equivalent to applying List@Level which requires additional nodes",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
+        "HasNestedGroups": false,
         "Left": 3284.30575774826,
         "Top": -2580.87255351999,
         "Width": 0.0,
@@ -1021,9 +1145,14 @@
       {
         "Id": "ac90dfe3800a487ab7ceb591a81b583c",
         "Title": "With the sets of points selected, we can now create panels.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 3616.11965002983,
-        "Top": -3390.7120495339,
+        "HasNestedGroups": false,
+        "Left": 3635.6642450710074,
+        "Top": -3377.1811760438545,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -1035,9 +1164,14 @@
       {
         "Id": "1f382490f13d4dabbcfbd57caa09ec7c",
         "Title": "To determine which level of the list you want to work with, look at the bottom of the preview bubble or watch node and follow the lines from the List@Level notation up.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 1632.51168517941,
-        "Top": -2763.09409543869,
+        "HasNestedGroups": false,
+        "Left": 1680.1755142619922,
+        "Top": -2704.274902102738,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -1047,8 +1181,8 @@
         "Background": "#FFC1D676"
       }
     ],
-    "X": -642.69368304007094,
-    "Y": 1835.0371839400393,
-    "Zoom": 0.50935640182919151
+    "X": -630.948054052077,
+    "Y": 1865.3951320107769,
+    "Zoom": 0.49859997463285871
   }
 }

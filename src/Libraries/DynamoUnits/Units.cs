@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -8,6 +8,7 @@ namespace DynamoUnits
 {
     [SupressImportIntoVM]
     [IsVisibleInDynamoLibrary(false)]
+    [Obsolete("This enum will be removed in Dynamo 3.0 - please use the Length Quantity type and Quantity.Units property")]
     public enum LengthUnit
     {
         DecimalInch,
@@ -21,6 +22,7 @@ namespace DynamoUnits
 
     [SupressImportIntoVM]
     [IsVisibleInDynamoLibrary(false)]
+    [Obsolete("This enum will be removed in Dynamo 3.0 - please use the Area Quantity type and Quantity.Units property")]
     public enum AreaUnit
     {
         SquareInch, 
@@ -32,6 +34,7 @@ namespace DynamoUnits
 
     [SupressImportIntoVM]
     [IsVisibleInDynamoLibrary(false)]
+    [Obsolete("This enum will be removed in Dynamo 3.0 - please use the Volume Quantity type and Quantity.Units property")]
     public enum VolumeUnit
     {
         CubicInch,
@@ -43,6 +46,7 @@ namespace DynamoUnits
 
     [SupressImportIntoVM]
     [IsVisibleInDynamoLibrary(false)]
+    [Obsolete("This method will be removed in Dynamo 3.0 - please use the Power Per Area Quantity type and Quantity.Units property")]
     public enum InsolationUnit
     {
         WattHoursPerMeterSquared,
@@ -51,6 +55,7 @@ namespace DynamoUnits
     }
 
     [SupressImportIntoVM]
+    [Obsolete("This class will be removed in Dynamo 3.0 - please use the ForgeUnit SDK based types")]
     public class BaseUnit
     {
         private static double epsilon = 1e-6;
@@ -100,6 +105,7 @@ namespace DynamoUnits
     }
 
     [IsVisibleInDynamoLibrary(false)]
+    [Obsolete("This class will be removed in Dynamo 3.0 - please use the ForgeUnit SDK based methods")]
     public abstract class SIUnit : BaseUnit
     {
         /// <summary>
@@ -365,6 +371,7 @@ namespace DynamoUnits
     /// is stored as meters to make algorithms simpler.
     /// </summary>
     [IsVisibleInDynamoLibrary(false)]
+    [Obsolete("This class will be removed in Dynamo 3.0 - please use the Length Quantity type and Utilities.ConvertByUnits methods")]
     public class Length : SIUnit, IComparable, IEquatable<Length>
     {
         //length conversions
@@ -696,28 +703,28 @@ namespace DynamoUnits
             switch (unit)
             {
                 case LengthUnit.Millimeter:
-                    return (_value * ToMillimeter).ToString(NumberFormat, CultureInfo.InvariantCulture) + MILLIMETERS;
+                    return (_value * ToMillimeter).ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + MILLIMETERS;
 
                 case LengthUnit.Centimeter:
-                    return (_value * ToCentimeter).ToString(NumberFormat, CultureInfo.InvariantCulture) + CENTIMETERS;
+                    return (_value * ToCentimeter).ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + CENTIMETERS;
 
                 case LengthUnit.Meter:
-                    return _value.ToString(NumberFormat, CultureInfo.InvariantCulture) + METERS;
+                    return _value.ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + METERS;
 
                 case LengthUnit.DecimalInch:
-                    return (_value * ToInch).ToString(NumberFormat, CultureInfo.InvariantCulture) + INCHES;
+                    return (_value * ToInch).ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + INCHES;
 
                 case LengthUnit.FractionalInch:
                     return Utils.ToFractionalInches(_value * ToInch);
 
                 case LengthUnit.DecimalFoot:
-                    return (_value * ToFoot).ToString(NumberFormat, CultureInfo.InvariantCulture) + FEET;
+                    return (_value * ToFoot).ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + FEET;
 
                 case LengthUnit.FractionalFoot:
                     return Utils.ToFeetAndDecimalInches(_value * ToFoot);
 
                 default:
-                    return _value.ToString(NumberFormat, CultureInfo.InvariantCulture) + METERS;
+                    return _value.ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + METERS;
             }
         }
 
@@ -764,6 +771,7 @@ namespace DynamoUnits
     /// An area stored in square meters.
     /// </summary>
     [IsVisibleInDynamoLibrary(false)]
+    [Obsolete("This class will be removed in Dynamo 3.0 - please use the Area Quantity type and Utilities.ConvertByUnits methods")]
     public class Area : SIUnit, IComparable, IEquatable<Area>
     {
         //area conversions
@@ -1065,22 +1073,22 @@ namespace DynamoUnits
             switch (unit)
             {
                 case AreaUnit.SquareMillimeter:
-                    return (_value*ToSquareMillimeters).ToString(NumberFormat, CultureInfo.InvariantCulture) + SQUARE_MILLIMETERS;
+                    return (_value*ToSquareMillimeters).ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + SQUARE_MILLIMETERS;
 
                 case AreaUnit.SquareCentimeter:
-                    return (_value*ToSquareCentimeters).ToString(NumberFormat, CultureInfo.InvariantCulture) + SQUARE_CENTIMETERS;
+                    return (_value*ToSquareCentimeters).ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + SQUARE_CENTIMETERS;
 
                 case AreaUnit.SquareMeter:
-                    return _value.ToString(NumberFormat, CultureInfo.InvariantCulture) + SQUARE_METERS;
+                    return _value.ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + SQUARE_METERS;
 
                 case AreaUnit.SquareInch:
-                    return (_value * ToSquareInch).ToString(NumberFormat, CultureInfo.InvariantCulture) + SQUARE_INCHES;
+                    return (_value * ToSquareInch).ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + SQUARE_INCHES;
 
                 case AreaUnit.SquareFoot:
-                    return (_value * ToSquareFoot).ToString(NumberFormat, CultureInfo.InvariantCulture) + SQUARE_FEET;
+                    return (_value * ToSquareFoot).ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + SQUARE_FEET;
 
                 default:
-                    return _value.ToString(NumberFormat, CultureInfo.InvariantCulture) + SQUARE_METERS;
+                    return _value.ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + SQUARE_METERS;
             }
         }
 
@@ -1127,6 +1135,7 @@ namespace DynamoUnits
     /// A volume stored in cubic meters.
     /// </summary>
     [IsVisibleInDynamoLibrary(false)]
+    [Obsolete("This class will be removed in Dynamo 3.0 - please use the Volume Quantity type and Utilities.ConvertByUnits methods")]
     public class Volume : SIUnit, IComparable, IEquatable<Volume>
     {
         //volume conversions
@@ -1418,22 +1427,22 @@ namespace DynamoUnits
             switch (unit)
             {
                 case VolumeUnit.CubicMillimeter:
-                    return (_value * ToCubicMillimeter).ToString(NumberFormat, CultureInfo.InvariantCulture) + CUBIC_MILLIMETERS;
+                    return (_value * ToCubicMillimeter).ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + CUBIC_MILLIMETERS;
 
                 case VolumeUnit.CubicCentimeter:
-                    return (_value * ToCubicCentimeter).ToString(NumberFormat, CultureInfo.InvariantCulture) + CUBIC_CENTIMETERS;
+                    return (_value * ToCubicCentimeter).ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + CUBIC_CENTIMETERS;
 
                 case VolumeUnit.CubicMeter:
-                    return _value.ToString(NumberFormat, CultureInfo.InvariantCulture) + CUBIC_METERS;
+                    return _value.ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + CUBIC_METERS;
 
                 case VolumeUnit.CubicInch:
-                    return (_value * ToCubicInch).ToString(NumberFormat, CultureInfo.InvariantCulture) + CUBIC_INCHES;
+                    return (_value * ToCubicInch).ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + CUBIC_INCHES;
 
                 case VolumeUnit.CubicFoot:
-                    return (_value * ToCubicFoot).ToString(NumberFormat, CultureInfo.InvariantCulture) + CUBIC_FEET;
+                    return (_value * ToCubicFoot).ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + CUBIC_FEET;
 
                 default:
-                    return _value.ToString(NumberFormat, CultureInfo.InvariantCulture) + CUBIC_METERS;
+                    return _value.ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + CUBIC_METERS;
             }
         }
 
@@ -1480,6 +1489,7 @@ namespace DynamoUnits
     /// An insolation stored in killowatt hours per meter squared.
     /// </summary>
     [IsVisibleInDynamoLibrary(false)]
+    [Obsolete("This class will be removed in Dynamo 3.0 - - please use the Power Per Area Quantity type and Utilities.ConvertByUnits methods")]
     public class Insolation : SIUnit, IComparable, IEquatable<Insolation>
     {
         //insolation converstions
@@ -1671,20 +1681,21 @@ namespace DynamoUnits
             switch (InsolationUnit)
             {
                 case InsolationUnit.WattHoursPerMeterSquared:
-                    return _value.ToString(NumberFormat, CultureInfo.InvariantCulture) + WATT_HOURS_PER_SQUARE_METER;
+                    return _value.ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + WATT_HOURS_PER_SQUARE_METER;
 
                 case InsolationUnit.KilowattHoursPerMeterSquared:
-                    return (_value * ToKwhMeter2).ToString(NumberFormat, CultureInfo.InvariantCulture) + KILLOWATT_HOURS_PER_SQUARE_METER;
+                    return (_value * ToKwhMeter2).ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + KILLOWATT_HOURS_PER_SQUARE_METER;
 
                 case InsolationUnit.BTUPerFootSquared:
-                    return (_value * ToBTUFoot2).ToString(NumberFormat, CultureInfo.InvariantCulture) + BTU_PER_SQUARE_FOOT;
+                    return (_value * ToBTUFoot2).ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + BTU_PER_SQUARE_FOOT;
                 default:
-                    return _value.ToString(NumberFormat, CultureInfo.InvariantCulture) + WATT_HOURS_PER_SQUARE_METER;
+                    return _value.ToString(Display.PrecisionFormat, CultureInfo.InvariantCulture) + WATT_HOURS_PER_SQUARE_METER;
             }
         }
     }
 
     [SupressImportIntoVM]
+    [Obsolete("This class will be removed in Dynamo 3.0 - - please use the Quantity and Unit types and associated methods")]
     public static class UnitExtensions
     {
         public static bool AlmostEquals(this double double1, double double2, double precision)
@@ -1712,6 +1723,7 @@ namespace DynamoUnits
     /// Utility class for operating on units of measure.
     /// </summary>
     [SupressImportIntoVM]
+    [Obsolete("This class will be removed in Dynamo 3.0 - - please use the Unit.Utilities class and associated methods")]
     public class Utils
     {
         private const int ROUND_DIGITS = 5;
@@ -1821,7 +1833,7 @@ namespace DynamoUnits
         /// <summary>
         /// Convert from decimal feet to feet and fractional inches
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="decimalFeet"></param>
         /// <returns></returns>
         public static string ToFeetAndFractionalInches(double decimalFeet)
         {
@@ -2060,6 +2072,7 @@ namespace DynamoUnits
     }
 
     [SupressImportIntoVM]
+    [Obsolete("This exception will be removed in Dynamo 3.0 - please use the Unit.Utilities class and associated methods")]
     public class MathematicalArgumentException : Exception
     {
         public MathematicalArgumentException() : base("The result could not be computed given the provided inputs.") { }
@@ -2067,12 +2080,14 @@ namespace DynamoUnits
     }
 
     [SupressImportIntoVM]
+    [Obsolete("This exception will be removed in Dynamo 3.0 - please use the Unit.Utilities class and associated methods")]
     public class UnitsException : MathematicalArgumentException
     {
         public UnitsException(Type a, Type b) : base(string.Format("{0} and {1} are incompatible for this operation.", a, b)) { }
     }
 
     [SupressImportIntoVM]
+    [Obsolete("This interface will be removed in Dynamo 3.0 - please use the ForgeUnit SDK based methods")]
     public interface IUnitInput
     {
         double ConvertToHostUnits();

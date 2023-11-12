@@ -1,152 +1,226 @@
-﻿<Window x:Class="Dynamo.UI.Prompts.UsageReportingAgreementPrompt"
+<Window x:Class="Dynamo.UI.Prompts.UsageReportingAgreementPrompt"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="clr-namespace:Dynamo.UI"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
         xmlns:views="clr-namespace:Dynamo.UI.Views"
-        WindowStyle="SingleBorderWindow"
-        Width="544"
-        Height="640"
+        WindowStyle="None"
+        MinWidth="530"
+        MaxWidth="650"
+        Height="310"
         ResizeMode="NoResize"
         ShowInTaskbar="False"
+        AllowsTransparency="True"
+        Style="{DynamicResource DynamoWindowStyle}"
         WindowStartupLocation="CenterOwner">
+    <Window.Background>
+        <SolidColorBrush Opacity="0" />
+    </Window.Background>
     <Window.Resources>
-        <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="CheckBox">
+                <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
+                <Setter Property="Foreground" Value="{StaticResource DarkGreyBrush}" />
+                <Setter Property="Margin" Value="0" />
+                <Setter Property="FontSize" Value="14px" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type CheckBox}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="20px" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Rectangle x:Name="outerRectangle"
+                                               Grid.Column="0"
+                                               Width="14px"
+                                               Height="14px"
+                                               Stroke="{StaticResource PrimaryCharcoal300Brush}"
+                                               StrokeThickness="1" />
+                                <Rectangle x:Name="highlightRectangle"
+                                               Grid.Column="0"
+                                               Width="14px"
+                                               Height="14px"
+                                               Fill="Transparent"
+                                               Stroke="{StaticResource PrimaryCharcoal300Brush}"
+                                               StrokeThickness="1" />
+                                <Path x:Name="tick"
+                                          Grid.Column="0"
+                                          Width="14px"
+                                          Height="14px"
+                                          Data="M3,7 l3,3 l5,-6"
+                                          Opacity="0"
+                                          Stretch="None"
+                                          Stroke="White"
+                                          StrokeThickness="2" />
+                                <ContentPresenter x:Name="content"
+                                                      Grid.Column="1"
+                                                      Margin="4,0,0,0"
+                                                      HorizontalAlignment="Center"
+                                                      VerticalAlignment="Center"
+                                                      TextBlock.Foreground="{StaticResource DarkGreyBrush}" />
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="highlightRectangle" Property="Fill" Value="LightGray" />
+                                </Trigger>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter TargetName="outerRectangle" Property="Fill" Value="{StaticResource PortUseLevelsCheckBoxColor}" />
+                                    <Setter TargetName="tick" Property="Opacity" Value="1.0" />
+                                </Trigger>
+                                <Trigger Property="IsChecked" Value="False">
+                                    <Setter TargetName="outerRectangle" Property="Fill" Value="Transparent" />
+                                    <Setter TargetName="tick" Property="Opacity" Value="0.0" />
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="highlightRectangle" Property="Stroke" Value="LightGray" />
+                                    <Setter TargetName="content" Property="TextBlock.Foreground" Value="LightGray" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
     </Window.Resources>
-    <Grid Background="#444444">
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="100"></RowDefinition>
-            <RowDefinition Height="160"></RowDefinition>
-            <RowDefinition Height="160"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="85"></RowDefinition>
-            <RowDefinition Height="60"></RowDefinition>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-            <ColumnDefinition Width="auto"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
+    <Grid Background="Transparent" MouseDown="UIElement_OnMouseDown">
+        <Border Name="MainBorder" Style="{StaticResource NoStyleWindowBorderStyle}">
 
-        <!-- The top banner image -->
-        <Rectangle Grid.ColumnSpan="2"
-                   Height="100"
-                   Stroke="Transparent"
-                   VerticalAlignment="Top"
-                   Name="ConsentFormImageRectangle" />
+            <Grid Margin="15 0">
 
-        <ScrollViewer Background="#363636"
-                      Grid.Row="1"
-                      Grid.Column="0"
-                      Grid.ColumnSpan="2"
-                      HorizontalScrollBarVisibility="Disabled"
-                      Margin="8,8,8,0">
-            <views:RichTextFile x:Name="GoogleAnalyticsConsent"
-                                IsReadOnly="True"
-                                IsEnabled="True"
-                                IsDocumentEnabled="True"
-                                FontSize="10"
-                                Foreground="#888888"
-                                Background="Transparent"
-                                OpenLinksInBrowser="True"
-                                BorderThickness="0" />
-        </ScrollViewer>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="145"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="50"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
 
-        <ScrollViewer Background="#363636" 
-                      Grid.Row="2"
-                      Grid.Column="0"
-                      Grid.ColumnSpan="2"
-                      HorizontalScrollBarVisibility="Disabled"
-                      Margin="8,8,8,0">
-            <views:RichTextFile x:Name="ADPAnalyticsConsent"
-                                IsReadOnly="True"
-                                IsEnabled="True"
-                                IsDocumentEnabled="True"
-                                FontSize="10"
-                                Foreground="#888888"
-                                Background="Transparent"
-                                OpenLinksInBrowser="True"
-                                BorderThickness="0" />
-        </ScrollViewer>
 
-        <CheckBox x:Name="AcceptGoogleAnalyticsCheck"
-                  Grid.Row="3"
-                  Grid.Column="0"
-                  Grid.ColumnSpan="2"
-                  Click="ToggleIsGoogleAnalyticsChecked"
-                  Margin="15,16,15,0"
-                  VerticalAlignment="Center"
-                  Foreground="#4790cd"
-                  FontSize="13.333"
-                  Background="White"
-                  IsChecked="True">
-            <TextBlock FontWeight="SemiBold"
-                       Foreground="#4790cd"
-                       TextWrapping="Wrap"
-                       Name="AcceptGoogleAnalyticsTextBlock"
-                       Text="{x:Static p:Resources.ConsentFormGoogleAnalyticsCheckBoxContent}"/>
-        </CheckBox>
+                <!--  Title Bar + Close Button  -->
+                <DockPanel Grid.Row="0"
+                           Grid.ColumnSpan="2"
+                           Margin="0 15"
+                           HorizontalAlignment="Stretch">
 
-        <CheckBox x:Name="AcceptADPAnalyticsCheck"
-                  Grid.Row="4"
-                  Grid.Column="0"
-                  Grid.ColumnSpan="2"
-                  Click="ToggleIsADPAnalyticsChecked"
-                  Visibility="Hidden"
-                  Margin="15,16,15,14"
-                  VerticalAlignment="Center"
-                  Foreground="#4790cd"
-                  FontSize="13.333"
-                  Background="White">
-            <TextBlock FontWeight="SemiBold"
-                       Foreground="#4790cd"
-                       TextWrapping="Wrap"
-                       Name="AcceptADPAnalyticsTextBlock"/>
-        </CheckBox>
+                    <Image Name="MessageBoxImageIcon"
+                           Width="24"
+                           Height="24"
+                           Margin="0,0,5,0"
+                           Source="/DynamoCoreWpf;component/UI/Images/dynamonotext.png"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center"
+                           DockPanel.Dock="Left">
+                    </Image>
 
-      <!--The instrumentation checkbox will be hidden and unchecked by default-->
-        <CheckBox x:Name="AcceptUsageReportingCheck"
-                  Grid.Row="4"
-                  Grid.Column="0"
-                  Grid.ColumnSpan="2"
-                  Click="ToggleIsUsageReportingChecked"
-                  Visibility="Hidden"
-                  Margin="35,16,15,14"
-                  VerticalAlignment="Center"
-                  Foreground="#4790cd"
-                  FontSize="13.333"
-                  Background="White">
-            <TextBlock FontWeight="SemiBold"
-                       Foreground="#4790cd"
-                       TextWrapping="Wrap"
-                       Name="AcceptUsageReportingTextBlock"/>
-        </CheckBox>
+                    <Button Name="CloseButton"
+                            Click="CloseButton_OnClick"
+                            DockPanel.Dock="Right"
+                            Margin="25 0 0 0"
+                            Style="{StaticResource CloseButtonStyle}" />
 
-        <!--Learn More Button-->
-        <TextBlock Grid.Row="5"
-                   Grid.Column="0"
-                   Margin="15,0,15,0"
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Stretch">
-            <Hyperlink Click="OnLearnMoreClick">
-                <TextBlock Name="LearnMore"
-                           Foreground="#4790cd"
-                           Text="{x:Static p:Resources.LearnMore}" />
-            </Hyperlink>
-        </TextBlock>
-        
-        <!--Continue Button-->
-        <Button Grid.Row="5"
-                Grid.Column="1"
-                x:Name="okButton"
-                Style="{DynamicResource ResourceKey=STextButton}"
-                IsDefault="True"
-                VerticalAlignment="Bottom"
-                Margin="5"
-                Width="auto"
-                HorizontalAlignment="Right"
-                Content="{x:Static p:Resources.ContinueButton}"
-                Click="OnContinueClick" />
+                    <Button Name="MaximizeButton"
+                            Click="MaximizeButton_OnClick"
+                            DockPanel.Dock="Right"
+                            Style="{StaticResource MaximizeButtonStyle}" />
 
+                    <Button Name="NormalizeButton"
+                            Click="MaximizeButton_OnClick"
+                            DockPanel.Dock="Right"
+                            Visibility="Collapsed"
+                            Style="{StaticResource RestoreButtonStyle}" />
+
+                    <Button Name="MinimizeButton"
+                            Margin="0 0 25 0"
+                            Click="MinimizeButton_OnClick"
+                            DockPanel.Dock="Right"
+                            Style="{StaticResource MinimizeButtonStyle}" />
+
+                    <TextBlock Name="TitleTextBlock"
+                               VerticalAlignment="Center"
+                               DockPanel.Dock="Left"
+                               FontFamily="{StaticResource ArtifaktElementRegular}"
+                               FontSize="20px"
+                               Foreground="{StaticResource DarkThemeInputBoxBackgroundBrush}"
+                               TextWrapping="Wrap" />
+                </DockPanel>
+
+                <Rectangle Style="{StaticResource DividerRectangleStyle}" Grid.Row="0" Grid.ColumnSpan="2" Margin="-15 0"/>
+
+                <Border Background="#E6E6E6"
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2" 
+                        Margin="0 15 3 0" 
+                        Padding="0">
+                    <ScrollViewer 
+                              Padding="0"
+                              HorizontalScrollBarVisibility="Disabled"
+                              Margin="0 0 -18 0">
+                        <views:RichTextFile x:Name="ADPAnalyticsConsent"
+                                            Padding="5 5 15 10"
+                                            IsReadOnly="True"
+                                            IsEnabled="True"
+                                            IsDocumentEnabled="True"
+                                            Margin="0 5"
+                                            Foreground="{StaticResource DarkThemeInputBoxBackgroundBrush}" 
+                                            Background="Transparent" 
+                                            OpenLinksInBrowser="True"
+                                            BorderThickness="0" />
+                    </ScrollViewer>
+                </Border>
+
+                <StackPanel Orientation="Vertical" 
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2">
+
+                    <Rectangle Style="{StaticResource DividerRectangleStyle}" Margin="-15 15 -15 0"/>
+
+                </StackPanel>
+                <!--Configure ADP Consent-->
+                <Button Grid.Row="3"
+                        Grid.Column="0"
+                        x:Name="configure_adp_button"
+                        Background="White"
+                        BorderBrush="#BFBFBF"
+                        Foreground="#3C3C3C"
+                        Style="{StaticResource CtaButtonStyle}"
+                        VerticalAlignment="Bottom"
+                        Margin="-4 10 0 0"
+                        Width="auto"
+                        HorizontalAlignment="Left"
+                        Content="{x:Static p:Resources.ConfigureADPButtonText}"
+                        Click="configure_adp_button_Click" />
+
+                <!--Continue Button-->
+                <Button Grid.Row="3"
+                        Grid.Column="1"
+                        x:Name="okButton"
+                        BorderBrush="#0696D7"
+                        Foreground="White"
+                        Background="#0696D7"
+                        Style="{StaticResource CtaButtonStyle}" 
+                        IsDefault="True"
+                        VerticalAlignment="Bottom"
+                        Margin="2 0 -2 0"
+                        MinWidth="100"
+                        Width="auto"
+                        HorizontalAlignment="Right"
+                        Content="{x:Static p:Resources.ContinueButton}"
+                        Click="OnContinueClick" />
+            </Grid>
+        </Border>
     </Grid>
 </Window>

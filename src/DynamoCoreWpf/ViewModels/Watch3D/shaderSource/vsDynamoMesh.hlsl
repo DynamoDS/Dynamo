@@ -24,11 +24,27 @@ PSInput main(VSInput input)
     uint flags = int(vParams.x);
     bool isSelected = flags & 2;
     bool requiresPerVertexColoration = flags & 32;
-     
+   
+    float4 inputp = input.p;
+    float3 inputn = input.n;
+
+    // compose instance matrix
+    if (bHasInstances)
+    {
+        matrix mInstance =
+        {
+            input.mr0,
+            input.mr1,
+            input.mr2,
+            input.mr3
+        };
+        inputp = mul(inputp, mInstance);
+        inputn = mul(inputn, (float3x3) mInstance);
+    }
 
 
     //set position into world space
-    output.p = mul(input.p, mWorld);
+    output.p = mul(inputp, mWorld);
     output.wp = output.p;
     //set position into clip space	
     output.p = mul(output.p, mViewProjection);
@@ -38,7 +54,7 @@ PSInput main(VSInput input)
     output.c = input.c;
 
     //set normal for interpolation	
-    output.n = normalize(mul(input.n, (float3x3)mWorld));
+    output.n = normalize(mul(inputn, (float3x3)mWorld));
 
     return output;
 }

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -17,7 +17,7 @@ namespace Dynamo.Tests
             libraries.Add("ProtoGeometry.dll"); // Required for Surface.
             libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");   // Required for built-in nodes.
-            libraries.Add("DSIronPython.dll");  // Required for Python tests.
+            libraries.Add("DSCPython.dll");  // Required for Python tests.
             libraries.Add("FunctionObject.ds"); // Required for partially applied nodes.
             libraries.Add("DSOffice.dll"); // Required for Excel testing.
             base.GetLibrariesToPreload(libraries);
@@ -554,7 +554,7 @@ namespace Dynamo.Tests
 
         }
 
-        [Test, Category("ExcelTest")]
+        [Test, Category("ExcelTest"), Category("Failure")]
             //Todo Ritesh: Locally passing but failing on CI.
             //After fixing issue with this test case add Smoke Test Category.
         public void ImportExport_Excel_to_Dynamo()

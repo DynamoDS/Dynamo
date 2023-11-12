@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ProtoCore.AST;
 using ProtoCore.AST.ImperativeAST;
@@ -345,6 +346,82 @@ namespace ProtoCore.SyntaxAnalysis
         }
     }
 
+    internal class ImperativeIdentifierInPlaceMapper : ImperativeAstReplacer
+    {
+        private Core core;
+        private Func<string, bool> cond;
+        private Func<string, string> mapper;
+
+        public ImperativeIdentifierInPlaceMapper(Core core, Func<string, bool> cond, Func<string, string> mapper)
+        {
+            this.core = core;
+            this.cond = cond;
+            this.mapper = mapper;
+        }
+
+        public override ImperativeNode VisitLanguageBlockNode(LanguageBlockNode node)
+        {
+            var cbn = node.CodeBlockNode as CodeBlockNode;
+            if (cbn == null)
+            {
+                var assoc_cbn = node.CodeBlockNode as AST.AssociativeAST.CodeBlockNode;
+                if (assoc_cbn != null)
+                {
+                    var replacer = new AssociativeIdentifierInPlaceMapper(core, cond, mapper);
+                    assoc_cbn = assoc_cbn.Accept(replacer) as AST.AssociativeAST.CodeBlockNode;
+                    return node;
+                }
+                else
+                {
+                    return base.VisitLanguageBlockNode(node);
+                }
+            }
+
+            var nodeList = cbn.Body.Select(astNode => astNode.Accept(this)).ToList();
+            cbn.Body = nodeList;
+            return node;
+        }
+
+        public override ImperativeNode VisitIdentifierNode(IdentifierNode node)
+        {
+            var variable = node.Value;
+            if (cond(variable))
+                node.Value = node.Name = mapper(variable);
+
+            return base.VisitIdentifierNode(node);
+        }
+
+        public override ImperativeNode VisitIdentifierListNode(IdentifierListNode node)
+        {
+            node.LeftNode = node.LeftNode.Accept(this);
+
+            var rightNode = node.RightNode;
+            while (rightNode != null)
+            {
+                if (rightNode is FunctionCallNode)
+                {
+                    var funcCall = rightNode as FunctionCallNode;
+                    funcCall.FormalArguments = VisitNodeList(funcCall.FormalArguments);
+                    if (funcCall.ArrayDimensions != null)
+                    {
+                        funcCall.ArrayDimensions = funcCall.ArrayDimensions.Accept(this) as ArrayNode;
+                    }
+                    break;
+                }
+                else if (rightNode is IdentifierListNode)
+                {
+                    rightNode = (rightNode as IdentifierListNode).RightNode;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            return node;
+        }
+    }
+
     public class ImperativeAstReplacer : ImperativeAstVisitor<ImperativeNode>
     {
         public override ImperativeNode DefaultVisit(ImperativeNode node)
@@ -357,7 +434,16 @@ namespace ProtoCore.SyntaxAnalysis
             var cbn = node.CodeBlockNode as CodeBlockNode;
             if (cbn == null)
             {
-                return base.VisitLanguageBlockNode(node);
+                var assoc_cbn = node.CodeBlockNode as AST.AssociativeAST.CodeBlockNode;
+                if (assoc_cbn != null)
+                {
+                    var replacer = new AssociativeAstReplacer();
+                    assoc_cbn.Accept(replacer);
+                }
+                else
+                {
+                    return base.VisitLanguageBlockNode(node);
+                }
             }
 
             var nodeList = cbn.Body.Select(astNode => astNode.Accept(this)).ToList();

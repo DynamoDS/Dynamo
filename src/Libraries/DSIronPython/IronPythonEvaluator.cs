@@ -7,6 +7,8 @@ using System.Reflection;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Events;
 using Dynamo.Logging;
+using Dynamo.PythonServices;
+using Dynamo.PythonServices.EventHandlers;
 using Dynamo.Session;
 using Dynamo.Utilities;
 using IronPython.Hosting;
@@ -17,11 +19,11 @@ using Microsoft.Scripting.Utils;
 namespace DSIronPython
 {
     [SupressImportIntoVM]
-    [Obsolete("Do not use! This will be subject to changes in a future version of Dynamo")]
+    [Obsolete("Deprecated. Please use Dynamo.PythonServices.EvaluationState instead.")]
     public enum EvaluationState { Begin, Success, Failed }
 
     [SupressImportIntoVM]
-    [Obsolete("Do not use! This will be subject to changes in a future version of Dynamo")]
+    [Obsolete("Deprecated. Please use evaluation handlers from Dynamo.PythonServices instead.")]
     public delegate void EvaluationEventHandler(EvaluationState state,
                                                 ScriptEngine engine,
                                                 ScriptScope scope,
@@ -32,7 +34,7 @@ namespace DSIronPython
     ///     Evaluates a Python script in the Dynamo context.
     /// </summary>
     [IsVisibleInDynamoLibrary(false)]
-    public static class IronPythonEvaluator
+    public class IronPythonEvaluator : Dynamo.PythonServices.PythonEngine
     {
         private const string DynamoPrintFuncName = "__dynamoprint__";
         /// <summary> stores a copy of the previously executed code</summary>
@@ -52,6 +54,30 @@ namespace DSIronPython
         /// extra folder name in package folder
         /// </summary>
         public const string packageExtraFolderName = @"extra";
+
+        // Do not reference 'PythonEngineManager.IronPython2EngineName' here
+        // because it will break compatibility with Dynamo2.13.X
+        //
+        //public override string Name => PythonEngineManager.IronPython2EngineName;
+        
+        /// <summary>
+        /// Returns the name of this Python engine implementation.
+        /// This name will appear in the Dynamo's UI.
+        /// </summary>
+        public override string Name => "IronPython2";
+
+        /// <summary>
+        /// Use Lazy&lt;PythonEngineManager&gt; to make sure the Singleton class is only initialized once
+        /// </summary>
+        private static readonly Lazy<IronPythonEvaluator>
+            lazy =
+            new Lazy<IronPythonEvaluator>
+            (() => new IronPythonEvaluator());
+
+        /// <summary>
+        /// The actual instance stored in the Singleton class
+        /// </summary>
+        internal static IronPythonEvaluator Instance { get { return lazy.Value; } }
 
         /// <summary>
         /// Attempts to build a path referencing the Python Standard Library,
@@ -88,7 +114,7 @@ namespace DSIronPython
         /// <param name="code">Python script as a string.</param>
         /// <param name="bindingNames">Names of values referenced in Python script.</param>
         /// <param name="bindingValues">Values referenced in Python script.</param>
-        public static object EvaluateIronPythonScript(
+        public override object Evaluate(
             string code,
             IList bindingNames,
             [ArbitraryDimensionArrayImport] IList bindingValues)
@@ -157,6 +183,14 @@ namespace DSIronPython
             return OutputMarshaler.Marshal(result);
         }
 
+        public static object EvaluateIronPythonScript(
+            string code,
+            IList bindingNames,
+            [ArbitraryDimensionArrayImport] IList bindingValues)
+        {
+            return Instance.Evaluate(code, bindingNames, bindingValues);
+        }
+
         /// <summary>
         /// Processes additional bindings that are not actual inputs.
         /// Currently, only the node name is received in this way.
@@ -217,7 +251,7 @@ sys.stdout = DynamoStdOut({0})
         ///     Data Marshaler for all data coming into a Python node.
         /// </summary>
         [SupressImportIntoVM]
-        public static DataMarshaler InputMarshaler
+        public override object InputDataMarshaler
         {
             get
             {
@@ -250,13 +284,25 @@ sys.stdout = DynamoStdOut({0})
         }
 
         /// <summary>
+        ///     Data Marshaler for all data coming into a Python node.
+        /// </summary>
+        [SupressImportIntoVM]
+        public static DataMarshaler InputMarshaler => Instance.InputDataMarshaler as DataMarshaler;
+
+        /// <summary>
         ///     Data Marshaler for all data coming out of a Python node.
         /// </summary>
         [SupressImportIntoVM]
-        public static DataMarshaler OutputMarshaler
+        public override object OutputDataMarshaler
         {
             get { return outputMarshaler ?? (outputMarshaler = new DataMarshaler()); }
         }
+
+        /// <summary>
+        ///     Data Marshaler for all data coming out of a Python node.
+        /// </summary>
+        [SupressImportIntoVM]
+        public static DataMarshaler OutputMarshaler => Instance.OutputDataMarshaler as DataMarshaler;
 
         private static DataMarshaler inputMarshaler;
         private static DataMarshaler outputMarshaler;
@@ -269,15 +315,27 @@ sys.stdout = DynamoStdOut({0})
         ///     Emitted immediately before execution begins
         /// </summary>
         [SupressImportIntoVM]
-        [Obsolete("Do not use! This will be subject to changes in a future version of Dynamo")]
+        [Obsolete("Deprecated. Please use EvaluationStarted instead.")]
         public static event EvaluationEventHandler EvaluationBegin;
+
+        /// <summary>
+        ///     Emitted immediately before execution begins
+        /// </summary>
+        [SupressImportIntoVM]
+        public override event EvaluationStartedEventHandler EvaluationStarted;
 
         /// <summary>
         ///     Emitted immediately after execution ends or fails
         /// </summary>
         [SupressImportIntoVM]
-        [Obsolete("Do not use! This will be subject to changes in a future version of Dynamo")]
+        [Obsolete("Deprecated. Please use EvaluationFinished instead.")]
         public static event EvaluationEventHandler EvaluationEnd;
+
+        /// <summary>
+        ///     Emitted immediately after execution ends or fails
+        /// </summary>
+        [SupressImportIntoVM]
+        public override event EvaluationFinishedEventHandler EvaluationFinished;
 
         /// <summary>
         /// Called immediately before evaluation starts
@@ -286,14 +344,17 @@ sys.stdout = DynamoStdOut({0})
         /// <param name="scope">The scope in which the code is executed</param>
         /// <param name="code">The code to be evaluated</param>
         /// <param name="bindingValues">The binding values - these are already added to the scope when called</param>
-        private static void OnEvaluationBegin(  ScriptEngine engine, 
+        private void OnEvaluationBegin(  ScriptEngine engine,
                                                 ScriptScope scope, 
                                                 string code, 
                                                 IList bindingValues )
         {
-            if (EvaluationBegin != null)
+            // Call deprecated events until they are completely removed.
+            EvaluationBegin?.Invoke(EvaluationState.Begin, engine, scope, code, bindingValues);
+            
+            if (EvaluationStarted != null)
             {
-                EvaluationBegin(EvaluationState.Begin, engine, scope, code, bindingValues);
+                EvaluationStarted(code, bindingValues, (n, v) => { scope.SetVariable(n, InputMarshaler.Marshal(v)); });
                 Analytics.TrackEvent(
                     Dynamo.Logging.Actions.End,
                     Dynamo.Logging.Categories.PythonOperations,
@@ -309,16 +370,21 @@ sys.stdout = DynamoStdOut({0})
         /// <param name="scope">The scope in which the code is executed</param>
         /// <param name="code">The code to that was evaluated</param>
         /// <param name="bindingValues">The binding values - these are already added to the scope when called</param>
-        private static void OnEvaluationEnd( bool isSuccessful,
-                                            ScriptEngine engine,
-                                            ScriptScope scope,
-                                            string code,
-                                            IList bindingValues)
+        private void OnEvaluationEnd( bool isSuccessful,
+                                             ScriptEngine engine,
+                                             ScriptScope scope,
+                                             string code,
+                                             IList bindingValues)
         {
-            if (EvaluationEnd != null)
+            // Call deprecated events until they are completely removed.
+            EvaluationEnd?.Invoke(isSuccessful ? EvaluationState.Success : EvaluationState.Failed,
+                engine, scope, code, bindingValues);
+
+            if (EvaluationFinished != null)
             {
-                EvaluationEnd( isSuccessful ? EvaluationState.Success : EvaluationState.Failed, 
-                    engine, scope, code, bindingValues);
+                EvaluationFinished( isSuccessful ? Dynamo.PythonServices.EvaluationState.Success : Dynamo.PythonServices.EvaluationState.Failed, 
+                    code, bindingValues, (n) => { return OutputMarshaler.Marshal(scope.GetVariable(n)); });
+
                 Analytics.TrackEvent(
                     Dynamo.Logging.Actions.End,
                     Dynamo.Logging.Categories.PythonOperations,

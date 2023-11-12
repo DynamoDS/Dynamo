@@ -1,15 +1,33 @@
-﻿using System;
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
+using Dynamo.Configuration;
 using Dynamo.Engine;
+using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
+using Dynamo.Logging;
+using Dynamo.Models;
+using Dynamo.PackageManager;
 using Dynamo.Properties;
+using Dynamo.Search;
 using Dynamo.Search.SearchElements;
+using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
+using Greg;
+using J2N.Text;
+using Lucene.Net.Documents;
+using Lucene.Net.QueryParsers.Classic;
+using Lucene.Net.Search;
+using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
 using ProtoCore.Utils;
+using RestSharp;
 
 namespace Dynamo.ViewModels
 {
@@ -18,10 +36,27 @@ namespace Dynamo.ViewModels
     /// </summary>
     public class NodeAutoCompleteSearchViewModel : SearchViewModel
     {
-
         internal PortViewModel PortViewModel { get; set; }
-        private List<NodeSearchElement> searchElementsCache;
-        private List<NodeSearchElement> defaultSearchElementsCache;
+        private List<NodeSearchElementViewModel> searchElementsCache;
+        private string autocompleteMLMessage;
+        private string autocompleteMLTitle;
+        private bool displayAutocompleteMLStaticPage;
+        private bool displayLowConfidence;
+        private const string nodeAutocompleteMLEndpoint = "MLNodeAutocomplete";
+
+        // Lucene search utility to perform indexing operations just for NodeAutocomplete.
+        internal LuceneSearchUtility LuceneUtility
+        {
+            get
+            {
+                return LuceneSearch.LuceneUtilityNodeAutocomplete;
+            }
+        }
+
+        /// <summary>
+        /// The Node AutoComplete ML service version, this could be empty if user has not used ML way
+        /// </summary>
+        internal string ServiceVersion { get; set; }
 
         /// <summary>
         /// Cache of default node suggestions, use it in case where
@@ -30,12 +65,106 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal IEnumerable<NodeSearchElementViewModel> DefaultResults { get; set; }
 
+        /// <summary>
+        /// For checking if the ML method is selected
+        /// </summary>
+        public bool IsDisplayingMLRecommendation
+        {
+            get
+            {
+                return dynamoViewModel.PreferenceSettings.DefaultNodeAutocompleteSuggestion == Models.NodeAutocompleteSuggestion.MLRecommendation;
+            }
+        }
+
+        /// <summary>
+        /// If true, autocomplete method options are hidden from UI 
+        /// </summary>
+        public bool HideAutocompleteMethodOptions
+        {
+            get
+            {
+                return dynamoViewModel.PreferenceSettings.HideAutocompleteMethodOptions;
+            }
+        }
+
+
+        /// <summary>
+        /// The No Recommendations or Low Confidence Title
+        /// </summary>
+        public string AutocompleteMLTitle
+        {
+            get { return autocompleteMLTitle; }
+            set
+            {
+                autocompleteMLTitle = value;
+                RaisePropertyChanged(nameof(AutocompleteMLTitle));
+            }
+        }
+
+        /// <summary>
+        /// The No Recommendations or Low Confidence message
+        /// </summary>
+        public string AutocompleteMLMessage
+        {
+            get { return autocompleteMLMessage; }
+            set
+            {
+                autocompleteMLMessage = value;
+                RaisePropertyChanged(nameof(AutocompleteMLMessage));
+            }
+        }
+
+        /// <summary>
+        /// Indicates the No recommendations / Low confidence message should be displayed (image and texts)
+        /// </summary>
+        public bool DisplayAutocompleteMLStaticPage
+        {
+            get { return displayAutocompleteMLStaticPage; }
+            set
+            {
+                displayAutocompleteMLStaticPage = value;
+                RaisePropertyChanged(nameof(DisplayAutocompleteMLStaticPage));
+            }
+        }
+
+        /// <summary>
+        /// Indicates if display the Low confidence option and Tooltip
+        /// </summary>
+        public bool DisplayLowConfidence
+        {
+            get { return displayLowConfidence; }
+            set
+            {
+                displayLowConfidence = value;
+                RaisePropertyChanged(nameof(DisplayLowConfidence));
+            }
+        }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="dynamoViewModel">Dynamo ViewModel</param>
         internal NodeAutoCompleteSearchViewModel(DynamoViewModel dynamoViewModel) : base(dynamoViewModel)
         {
             // Off load some time consuming operation here
             InitializeDefaultAutoCompleteCandidates();
+            ServiceVersion = string.Empty;
         }
 
+        /// <summary>
+        /// Reset Node AutoComplete search view state
+        /// </summary>
+        internal void ResetAutoCompleteSearchViewState()
+        {
+            DisplayAutocompleteMLStaticPage = false;
+            DisplayLowConfidence = PreferenceSettings.Instance.HideNodesBelowSpecificConfidenceLevel && PreferenceSettings.Instance.DefaultNodeAutocompleteSuggestion == NodeAutocompleteSuggestion.MLRecommendation;
+            AutocompleteMLMessage = string.Empty;
+            AutocompleteMLTitle = string.Empty;
+            FilteredResults = new List<NodeSearchElementViewModel>();
+            FilteredHighConfidenceResults = new List<NodeSearchElementViewModel>();
+            FilteredLowConfidenceResults = new List<NodeSearchElementViewModel>();
+            searchElementsCache = new List<NodeSearchElementViewModel>();
+        }
 
         private void InitializeDefaultAutoCompleteCandidates()
         {
@@ -45,7 +174,7 @@ namespace Dynamo.ViewModels
             var queries = new List<string>(){"String", "Number Slider", "Integer Slider", "Number", "Boolean", "Watch", "Watch 3D", "Python Script"};
             foreach (var query in queries)
             {
-                var foundNode = Search(query).FirstOrDefault();
+                var foundNode = Search(query).Where(n => n.Name.Equals(query)).FirstOrDefault();
                 if(foundNode != null)
                 {
                     candidates.Add(foundNode);
@@ -53,23 +182,377 @@ namespace Dynamo.ViewModels
             }
             DefaultResults = candidates;
         }
-        
+
+        internal MLNodeAutoCompletionRequest GenerateRequestForMLAutocomplete()
+        {
+            // Initialize request for the the ML API
+            MLNodeAutoCompletionRequest request = new MLNodeAutoCompletionRequest(AssemblyHelper.GetDynamoVersion().ToString(), dynamoViewModel.PreferenceSettings.MLRecommendationNumberOfResults);
+
+            var nodeInfo = PortViewModel.PortModel.Owner;
+            var portInfo = PortViewModel.PortModel;
+
+            // Set node info
+            request.Node.Id = nodeInfo.GUID.ToString();
+            request.Node.Lacing = nodeInfo.ArgumentLacing.ToString();
+
+            if (nodeInfo is DSFunctionBase functionNode)
+            {
+                request.Node.Type.Id = functionNode.CreationName;
+            }
+            else if (nodeInfo is NodeModel nodeModel)
+            {
+                var typeID = new NodeModelTypeId(nodeModel.GetType().FullName, nodeModel.GetType().Assembly.GetName().Name);
+                request.Node.Type.Id = typeID.ToString();
+            }
+
+            // Set port info
+            // If the node is a Variable-input nodemodel or zero-touch node, then parse the port name to remove the digits at the end.
+            request.Port.Name = (nodeInfo is VariableInputNode || nodeInfo is DSVarArgFunction) ? ParseVariableInputPortName(portInfo.Name) : portInfo.Name;
+            request.Port.Direction = portInfo.PortType == PortType.Input ? PortType.Input.ToString().ToLower() : PortType.Output.ToString().ToLower();
+            request.Port.KeepListStructure = portInfo.KeepListStructure.ToString();
+            request.Port.ListAtLevel = portInfo.Level;
+
+            // Set host info
+            var hostName = string.IsNullOrEmpty(dynamoViewModel.Model.HostAnalyticsInfo.HostName) ? dynamoViewModel.Model.HostName : dynamoViewModel.Model.HostAnalyticsInfo.HostName;
+            var hostNameEnum = GetHostNameEnum(hostName);
+
+            if (hostNameEnum != HostNames.None)
+            {
+                request.Host = new HostRequest(hostNameEnum.ToString(), dynamoViewModel.Model.HostVersion);
+            }
+
+            // Set packages info
+            var packageManager = dynamoViewModel.Model.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
+
+            if (packageManager != null)
+            {
+                foreach (var pkg in packageManager.PackageLoader.LocalPackages)
+                {
+                    request.Packages = request.Packages.Append(new PackageItem(pkg.Name, pkg.VersionName));
+                }
+            }
+
+            // Set context info which will contain all reachable nodes from the current node.
+            var upstreamNodes = nodeInfo.AllUpstreamNodes(new List<NodeModel>());
+            var downstreamNodes = nodeInfo.AllDownstreamNodes(new List<NodeModel>());
+
+            var upstreamAndDownstreamNodes = new List<NodeModel>();
+            upstreamAndDownstreamNodes.AddRange(upstreamNodes);
+            upstreamAndDownstreamNodes.AddRange(downstreamNodes);
+
+            foreach (NodeModel nodeModel in upstreamAndDownstreamNodes)
+            {
+                var nodeRequest = new NodeRequest(nodeModel.GUID.ToString());
+
+                if (nodeModel is DSFunctionBase DSfunctionNode)
+                {
+                    nodeRequest.Type.Id = DSfunctionNode.CreationName;
+                }
+                else if (nodeModel is NodeModel node)
+                {
+                    var typeID = new NodeModelTypeId(node.GetType().FullName, nodeModel.GetType().Assembly.GetName().Name);
+                    nodeRequest.Type.Id = typeID.ToString();
+                }
+                request.Context.Nodes = request.Context.Nodes.Append(nodeRequest);
+            }
+
+            // Set info regarding all the connectors in the reachable component.
+            var connectors = dynamoViewModel.CurrentSpaceViewModel.Model.Connectors;
+
+            foreach (ConnectorModel connector in connectors)
+            {
+                var startNode = connector.Start.Owner;
+                var endNode = connector.End.Owner;
+
+                if (startNode.Equals(nodeInfo) || endNode.Equals(nodeInfo) || upstreamAndDownstreamNodes.Contains(startNode) || upstreamAndDownstreamNodes.Contains(endNode))
+                {
+                    var startPortName = (startNode is VariableInputNode || startNode is DSVarArgFunction) ? ParseVariableInputPortName(connector.Start.Name): connector.Start.Name;
+                    var endPortName = (endNode is VariableInputNode || endNode is DSVarArgFunction) ? ParseVariableInputPortName(connector.End.Name) : connector.End.Name;
+
+                    var connectorRequest = new ConnectionsRequest
+                    {
+                        StartNode = new ConnectorNodeItem(startNode.GUID.ToString(), startPortName),
+                        EndNode = new ConnectorNodeItem(endNode.GUID.ToString(), endPortName)
+                    };
+
+                    request.Context.Connections = request.Context.Connections.Append(connectorRequest);
+                }
+            }
+
+            return request;
+        }
+
+        internal void DisplayMachineLearningResults()
+        {
+            MLNodeAutoCompletionResponse MLresults = null;
+
+            var request = GenerateRequestForMLAutocomplete();
+
+            string jsonRequest = JsonConvert.SerializeObject(request);
+
+            // Get results from the ML API.
+            try
+            {
+                MLresults = GetMLNodeAutocompleteResults(jsonRequest);
+            }
+            catch (Exception ex)
+            {
+                dynamoViewModel.Model.Logger.Log("Unable to fetch ML Node autocomplete results: " + ex.Message);
+                DisplayAutocompleteMLStaticPage = true;
+                AutocompleteMLTitle = Resources.LoginNeededTitle;
+                AutocompleteMLMessage = Resources.LoginNeededMessage;
+                Analytics.TrackEvent(Actions.View, Categories.NodeAutoCompleteOperations, "UnabletoFetch");
+                return;
+            }
+
+            // no results
+            if (MLresults == null || MLresults.Results.Count() == 0)
+            {
+                DisplayAutocompleteMLStaticPage = true;
+                AutocompleteMLTitle = Resources.AutocompleteNoRecommendationsTitle;
+                AutocompleteMLMessage = Resources.AutocompleteNoRecommendationsMessage;
+                Analytics.TrackEvent(Actions.View, Categories.NodeAutoCompleteOperations, "NoRecommendation");
+                return;
+            }
+            ServiceVersion = MLresults.Version;
+            var results = new List<NodeSearchElementViewModel>();
+
+            var zeroTouchSearchElements = Model.Entries.OfType<ZeroTouchSearchElement>().Where(x => x.IsVisibleInSearch);
+            var nodeModelSearchElements = Model.Entries.OfType<NodeModelSearchElement>().Where(x => x.IsVisibleInSearch);
+
+            // ML Results are categorized based on the threshold confidence score before displaying. 
+            if (MLresults.Results.Count() > 0)
+            {
+                foreach (var result in MLresults.Results)
+                {
+                    var portName = result.Port != null ? result.Port.Name : string.Empty;
+                    var portIndex = result.Port != null ? result.Port.Index : 0;
+
+                    // DS Function node
+                    if (result.Node.Type.NodeType.Equals(Function.FunctionNode))
+                    {
+                        NodeSearchElement nodeSearchElement = null;
+                        var element = zeroTouchSearchElements.FirstOrDefault(n => n.Descriptor.MangledName.Equals(result.Node.Type.Id));
+
+                        if (element != null)
+                        {
+                            nodeSearchElement = (NodeSearchElement)element.Clone();
+                        }
+
+                        // Set PortToConnect for each element based on port-index and port-name
+                        if (nodeSearchElement != null)
+                        {
+                            nodeSearchElement.AutoCompletionNodeElementInfo = new AutoCompletionNodeElementInfo
+                            {
+                                PortToConnect = portIndex
+                            };
+
+                            foreach (var inputParameter in element.Descriptor.Parameters.Select((value, index) => (value, index)))
+                            {
+                                if (inputParameter.value.Name.Equals(portName))
+                                {
+                                    nodeSearchElement.AutoCompletionNodeElementInfo.PortToConnect = element.Descriptor.Type == FunctionType.InstanceMethod ? inputParameter.index + 1 : inputParameter.index;
+                                    break;
+                                }
+                            }
+                        }
+
+                        var viewModelElement = GetViewModelForNodeSearchElement(nodeSearchElement);
+
+                        if (viewModelElement != null)
+                        {
+                            viewModelElement.AutoCompletionNodeMachineLearningInfo = new AutoCompletionNodeMachineLearningInfo(true, true, result.Score * 100);
+                            results.Add(viewModelElement);
+                        }
+                    }
+                    // Matching known node types of node-model nodes.
+                    else if (Enum.IsDefined(typeof(NodeModelNodeTypes), result.Node.Type.NodeType))
+                    {
+                        // Retreive assembly name and full name from type id.
+                        var typeInfo = GetInfoFromTypeId(result.Node.Type.Id);
+                        string fullName = typeInfo.FullName;
+                        string assemblyName = typeInfo.AssemblyName;
+                        NodeSearchElement nodeSearchElement = null;
+
+                        var nodesFromAssembly = nodeModelSearchElements.Where(n => Path.GetFileNameWithoutExtension(n.Assembly).Equals(assemblyName));
+                        var element = nodesFromAssembly.FirstOrDefault(n => n.CreationName.Equals(fullName));
+
+                        if (element != null)
+                        {
+                            nodeSearchElement = (NodeSearchElement)element.Clone();
+                        }
+
+                        if (nodeSearchElement != null)
+                        {
+                            nodeSearchElement.AutoCompletionNodeElementInfo = new AutoCompletionNodeElementInfo
+                            {
+                                PortToConnect = portIndex
+                            };
+                        }
+
+                        var viewModelElement = GetViewModelForNodeSearchElement(nodeSearchElement);
+
+                        if (viewModelElement != null)
+                        {
+                            viewModelElement.AutoCompletionNodeMachineLearningInfo = new AutoCompletionNodeMachineLearningInfo(true, true, result.Score * 100);
+                            results.Add(viewModelElement);
+                        }
+                    }
+                }
+
+                foreach (var result in results)
+                {
+                    if (result.AutoCompletionNodeMachineLearningInfo.ConfidenceScore >= dynamoViewModel.PreferenceSettings.MLRecommendationConfidenceLevel)
+                    {
+                        FilteredHighConfidenceResults = FilteredHighConfidenceResults.Append(result);
+                    }
+                    else {
+                        FilteredLowConfidenceResults = FilteredLowConfidenceResults.Append(result);
+                    }
+                }
+
+                // Show low confidence section if there are some results under threshold and feature enabled
+                DisplayLowConfidence = FilteredLowConfidenceResults.Any() && PreferenceSettings.Instance.HideNodesBelowSpecificConfidenceLevel;
+
+                if (!FilteredHighConfidenceResults.Any())
+                {
+                    DisplayAutocompleteMLStaticPage = true;
+                    AutocompleteMLTitle = Resources.AutocompleteLowConfidenceTitle;
+                    AutocompleteMLMessage = Resources.AutocompleteLowConfidenceMessage;
+                    return;
+                }
+
+                // By default, show only the results which are above the threshold
+                FilteredResults = PreferenceSettings.Instance.HideNodesBelowSpecificConfidenceLevel? FilteredHighConfidenceResults : results    ;
+            }
+        }
+
+        private MLNodeAutoCompletionResponse GetMLNodeAutocompleteResults(string requestJSON)
+        {
+            MLNodeAutoCompletionResponse results = null;
+            var authProvider = dynamoViewModel.Model.AuthenticationManager.AuthProvider;
+
+            if (authProvider is IOAuth2AuthProvider oauth2AuthProvider && authProvider is IOAuth2AccessTokenProvider tokenprovider)
+            {
+                try
+                {
+                    var uri = DynamoUtilities.PathHelper.GetServiceBackendAddress(this, nodeAutocompleteMLEndpoint);
+                    var client = new RestClient(uri);
+                    var request = new RestRequest(string.Empty,Method.Post);
+
+                    request.AddHeader("Authorization",$"Bearer {tokenprovider?.GetAccessToken()}");
+                    request = request.AddJsonBody(requestJSON);
+                    request.RequestFormat = DataFormat.Json;
+                    RestResponse response = client.Execute(request);
+                    //TODO maybe worth moving to system.text json in phases?
+                    results = JsonConvert.DeserializeObject<MLNodeAutoCompletionResponse>(response.Content);
+                }
+                catch (Exception ex)
+                {
+                    dynamoViewModel.Model.Logger.Log(ex.Message);
+                    throw new Exception("Authentication failed.");
+                }
+            }
+
+            return results;
+        }
+
+        /// <summary>
+        /// Show the low confidence ML results.
+        /// </summary>
+        internal void ShowLowConfidenceResults()
+        {
+            DisplayLowConfidence = false;
+            DisplayAutocompleteMLStaticPage = false;
+            IEnumerable<NodeSearchElementViewModel> allResults = FilteredHighConfidenceResults.Concat(FilteredLowConfidenceResults);
+            FilteredResults = allResults;
+            // Save the filtered results for search.
+            searchElementsCache = FilteredResults.ToList();
+        }
+
+        // Full name and assembly name 
+        private NodeModelTypeId GetInfoFromTypeId(string typeId)
+        {
+            if (typeId.Contains(','))
+            {
+                var type = typeId.Split(',');
+                return new NodeModelTypeId(type[0].Trim(), type[1].Trim());
+            }
+
+            return new NodeModelTypeId(typeId);
+        }
+
+        // Remove the digits at the end of the portname for variable input node
+        private string ParseVariableInputPortName(string portName)
+        {
+            string pattern = @"\d+$";
+            Regex rgx = new Regex(pattern);
+            return rgx.Replace(portName, string.Empty);
+        }
+
+        // Get the host name from the enum list.
+        internal HostNames GetHostNameEnum(string HostName)
+        {
+            switch (HostName)
+            {
+                case string name when name.IndexOf("Revit", StringComparison.OrdinalIgnoreCase) >= 0:
+                    return HostNames.Revit;
+                case string name when name.IndexOf("Civil", StringComparison.OrdinalIgnoreCase) >= 0:
+                    return HostNames.Civil3d;
+                case string name when name.IndexOf("Alias", StringComparison.OrdinalIgnoreCase) >= 0:
+                    return HostNames.Alias;
+                case string name when name.IndexOf("FormIt", StringComparison.OrdinalIgnoreCase) >= 0:
+                    return HostNames.FormIt;
+                case string name when name.IndexOf("Steel", StringComparison.OrdinalIgnoreCase) >= 0:
+                    return HostNames.AdvanceSteel;
+                case string name when name.IndexOf("RSA", StringComparison.OrdinalIgnoreCase) >= 0:
+                    return HostNames.RSA;
+                default:
+                    return HostNames.None;
+            }
+        }
+
+        /// <summary>
+        /// Key function to populate node autocomplete results to display
+        /// </summary>
         internal void PopulateAutoCompleteCandidates()
         {
             if (PortViewModel == null) return;
 
-            searchElementsCache = GetMatchingSearchElements().ToList();
+            ResetAutoCompleteSearchViewState();
 
-            // If node match searchElements found, use default suggestions. 
-            // These default suggestions will be populated based on the port type.
-            if (!searchElementsCache.Any())
+            if (IsDisplayingMLRecommendation)
             {
-                PopulateDefaultAutoCompleteCandidates();
+                DisplayMachineLearningResults();
+                //Tracking Analytics when raising Node Autocomplete with the Recommended Nodes option selected (Machine Learning)
+                Analytics.TrackEvent(
+                    Actions.Show,
+                    Categories.NodeAutoCompleteOperations,
+                    nameof(NodeAutocompleteSuggestion.MLRecommendation));
             }
             else
             {
-                FilteredResults = GetViewModelForNodeSearchElements(searchElementsCache);
+                //Tracking Analytics when raising Node Autocomplete with the Object Types option selected.
+                Analytics.TrackEvent(
+                    Actions.Show,
+                    Categories.NodeAutoCompleteOperations,
+                    nameof(NodeAutocompleteSuggestion.ObjectType));
+                // Only call GetMatchingSearchElements() for object type match comparison
+                var objectTypeMatchingElements = GetMatchingSearchElements().ToList();
+                // If node match searchElements found, use default suggestions. 
+                // These default suggestions will be populated based on the port type.
+                if (!objectTypeMatchingElements.Any())
+                {
+                    PopulateDefaultAutoCompleteCandidates();
+                }
+                else
+                {
+                    FilteredResults = GetViewModelForNodeSearchElements(objectTypeMatchingElements);
+                }
             }
+
+            // Save the filtered results for search.
+            searchElementsCache = FilteredResults.ToList();
         }
 
         internal void PopulateDefaultAutoCompleteCandidates()
@@ -99,8 +582,6 @@ namespace Dynamo.ViewModels
             {
                 FilteredResults = DefaultResults.Where(e => e.Name == "Watch" || e.Name == "Watch 3D" || e.Name == "Python Script").ToList();
             }
-
-            defaultSearchElementsCache = FilteredResults.Select(x => x.Model).ToList();
         }
 
         /// <summary>
@@ -117,36 +598,119 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Returns a NodeSearchElementViewModel for a NodeSearchElement
+        /// </summary>
+        private NodeSearchElementViewModel GetViewModelForNodeSearchElement(NodeSearchElement nodeSearchElement)
+        {
+            if (nodeSearchElement != null)
+            {
+                var vm = new NodeSearchElementViewModel(nodeSearchElement, this);
+                vm.RequestBitmapSource += SearchViewModelRequestBitmapSource;
+                return vm;
+            }
+            return null;
+        }
+
+
+        /// <summary>
+        ///     Performs a search using the given string as query and subset, if provided.
+        /// </summary>
+        /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
+        /// <param name="search"> The search query </param>
+        internal IEnumerable<NodeSearchElementViewModel> SearchNodeAutocomplete(string search)
+        {
+            if (LuceneUtility != null)
+            {
+                //The DirectoryReader and IndexSearcher have to be assigned after commiting indexing changes and before executing the Searcher.Search() method, otherwise new indexed info won't be reflected
+                LuceneUtility.dirReader = LuceneUtility.writer?.GetReader(applyAllDeletes: true);
+                if (LuceneUtility.dirReader == null) return null;
+
+                LuceneUtility.Searcher = new IndexSearcher(LuceneUtility.dirReader);
+
+                string searchTerm = search.Trim();
+                var candidates = new List<NodeSearchElementViewModel>();
+                var parser = new MultiFieldQueryParser(LuceneConfig.LuceneNetVersion, LuceneConfig.NodeIndexFields, LuceneUtility.Analyzer)
+                {
+                    AllowLeadingWildcard = true,
+                    DefaultOperator = LuceneConfig.DefaultOperator,
+                    FuzzyMinSim = LuceneConfig.MinimumSimilarity
+                };
+
+                Query query = parser.Parse(LuceneUtility.CreateSearchQuery(LuceneConfig.NodeIndexFields, searchTerm));
+                TopDocs topDocs = LuceneUtility.Searcher.Search(query, n: LuceneConfig.DefaultResultsCount);
+
+                for (int i = 0; i < topDocs.ScoreDocs.Length; i++)
+                {
+                    // read back a Lucene doc from results
+                    Document resultDoc = LuceneUtility.Searcher.Doc(topDocs.ScoreDocs[i].Doc);
+
+                    string name = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.Name));
+                    string docName = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.DocName));
+                    string cat = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName));
+                    string parameters = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.Parameters));
+
+
+                    var foundNode = FindViewModelForNodeNameAndCategory(name, cat, parameters);
+                    if (foundNode != null)
+                    {
+                        candidates.Add(foundNode);
+                    }
+                }
+
+                return candidates;
+            }
+            return null;
+        }
+
+        /// <summary>
         /// Filters the matching node search elements based on user input in the search field. 
         /// </summary>
         internal void SearchAutoCompleteCandidates(string input)
         {
             if (PortViewModel == null) return;
 
-            if (input.Equals(""))
+            if (searchElementsCache.Any())
             {
-                if (searchElementsCache.Any())
+                if (string.IsNullOrEmpty(input))
                 {
-                    FilteredResults = GetViewModelForNodeSearchElements(searchElementsCache); 
+                    FilteredResults = searchElementsCache;
                 }
                 else
                 {
-                    PopulateDefaultAutoCompleteCandidates();
+                    LuceneSearch.LuceneUtilityNodeAutocomplete = new LuceneSearchUtility(dynamoViewModel.Model, LuceneSearchUtility.DefaultStartConfig);
+
+                    //Memory indexing process for Node Autocomplete (indexing just the nodes returned by the NodeAutocomplete service so we limit the scope of the query search)
+                    foreach (var node in searchElementsCache.Select(x => x.Model))
+                    {
+                        var doc = LuceneUtility.InitializeIndexDocumentForNodes();
+                        LuceneUtility.AddNodeTypeToSearchIndex(node, doc);
+                    }
+
+                    //Write the Lucene documents to memory
+                    LuceneUtility.CommitWriterChanges();
+                        
+                    var luceneResults = SearchNodeAutocomplete(input);
+                    var foundNodesModels = luceneResults.Select(x => x.Model);
+                    var foundNodes = foundNodesModels.Select(MakeNodeSearchElementVM);
+
+                    var filteredSearchElements = new List<NodeSearchElementViewModel>();
+
+                    foreach (var node in foundNodes)
+                    {
+                        var matchingElement = searchElementsCache.FirstOrDefault(x => x.FullName.Equals(node.FullName));
+
+                        if (matchingElement != null)
+                        {
+                            node.AutoCompletionNodeMachineLearningInfo = new AutoCompletionNodeMachineLearningInfo(matchingElement.AutoCompletionNodeMachineLearningInfo.DisplayIcon,
+                                                                                                                   matchingElement.AutoCompletionNodeMachineLearningInfo.IsByRecommendation,
+                                                                                                                   matchingElement.AutoCompletionNodeMachineLearningInfo.ConfidenceScore);
+                            filteredSearchElements.Add(node);
+                        }
+                    }
+                    FilteredResults = new List<NodeSearchElementViewModel>(filteredSearchElements).OrderBy(x => x.Name).ThenBy(x => x.Description);
+
+                    LuceneUtility.DisposeWriter();
                 }
-            }
-            else 
-            {
-                //Providing the saved search results to limit the scope of the query search.
-                if (searchElementsCache.Any()) 
-                {
-                    var foundNodes = Search(input, searchElementsCache);
-                    FilteredResults = new List<NodeSearchElementViewModel>(foundNodes).OrderBy(x => x.Name).ThenBy(x => x.Description);
-                }
-                else
-                {
-                    var foundNodes = Search(input, defaultSearchElementsCache);
-                    FilteredResults = new List<NodeSearchElementViewModel>(foundNodes).OrderBy(x => x.Name).ThenBy(x => x.Description);
-                }        
             }
         }
 
@@ -174,6 +738,11 @@ namespace Dynamo.ViewModels
             else if (PortViewModel.PortModel.PortType == PortType.Output)
             {
                 portType = PortViewModel.PortModel.GetOutPortType();
+                //if the custom node output name contains spaces, try using the first word.
+                if (PortViewModel.PortModel.Owner is Graph.Nodes.CustomNodes.Function && portType.Any(char.IsWhiteSpace))
+                {
+                    portType = string.Concat(portType.TrimStart().TakeWhile(char.IsLetterOrDigit));
+                }
             }
 
             //List of input types that are skipped temporarily, and will display list of default suggestions instead.
@@ -181,7 +750,7 @@ namespace Dynamo.ViewModels
 
             if (portType == null)
             {
-                return elements; 
+                return elements;
             }
 
             var core = dynamoViewModel.Model.LibraryServices.LibraryManagementCore;
@@ -198,15 +767,15 @@ namespace Dynamo.ViewModels
             var ast = parseResult?.CodeBlockNode.Children().FirstOrDefault() as IdentifierNode;
             //if parsing the type failed, revert to original string.
             portType = ast != null ? ast.datatype.Name : portType;
-
             //check if the input port return type is in the skipped input types list
             if (skippedInputTypes.Any(s => s == portType))
             {
                 return elements;
             }
 
-            //gather all ztsearchelements that are visible in search and filter using inputPortType and zt return type name.
-            var ztSearchElements = Model.SearchEntries.OfType<ZeroTouchSearchElement>().Where(x => x.IsVisibleInSearch);
+            //gather all ztsearchelements or nodemodel nodes that are visible in search and filter using inputPortType and zt return type name.
+            var ztSearchElements = Model.Entries.OfType<ZeroTouchSearchElement>().Where(x => x.IsVisibleInSearch);
+            var nodeModelSearchElements = Model.Entries.OfType<NodeModelSearchElement>().Where(x => x.IsVisibleInSearch);
 
             if (PortViewModel.PortModel.PortType == PortType.Input)
             {
@@ -223,7 +792,7 @@ namespace Dynamo.ViewModels
                 }
 
                 // NodeModel nodes, match any output return type to inputport type name
-                foreach (var element in Model.SearchEntries.OfType<NodeModelSearchElement>())
+                foreach (var element in nodeModelSearchElements)
                 {
                     if (element.OutputParameters.Any(op => op == portType))
                     {
@@ -237,7 +806,8 @@ namespace Dynamo.ViewModels
                 {
                     foreach (var inputParameter in ztSearchElement.Descriptor.Parameters.Select((value, index) => new { value, index }))
                     {
-                        if (inputParameter.value.Type.ToString() == portType || DerivesFrom(inputParameter.value.Type.ToString(), portType, core))
+                        var ZTparamName = inputParameter.value.Type.Name ?? inputParameter.value.Type.ToString();
+                        if (ZTparamName == portType || DerivesFrom(ZTparamName, portType, core))
                         {
                             ztSearchElement.AutoCompletionNodeElementInfo.PortToConnect = ztSearchElement.Descriptor.Type == FunctionType.InstanceMethod ? inputParameter.index + 1 : inputParameter.index;
                             elements.Add(ztSearchElement);
@@ -247,7 +817,7 @@ namespace Dynamo.ViewModels
                 }
 
                 // NodeModel nodes, match any output return type to inputport type name
-                foreach (var element in Model.SearchEntries.OfType<NodeModelSearchElement>())
+                foreach (var element in nodeModelSearchElements)
                 {
                     foreach (var inputParameter in element.InputParameters)
                     {
@@ -453,6 +1023,5 @@ namespace Dynamo.ViewModels
             }
 
         }
-
     }
 }

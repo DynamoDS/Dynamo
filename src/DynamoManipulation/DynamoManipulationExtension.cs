@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -8,6 +8,7 @@ using Dynamo.Extensions;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Visualization;
 using Dynamo.Wpf.Extensions;
@@ -16,7 +17,7 @@ using DoubleSlider = CoreNodeModels.Input.DoubleSlider;
 
 namespace Dynamo.Manipulation
 {
-    public class DynamoManipulationExtension : IViewExtension
+    public class DynamoManipulationExtension : IViewExtension,ILogSource
     {
         private IEnumerable<NodeModel> manipulatorNodes;
         private ManipulatorDaemon manipulatorDaemon;
@@ -24,6 +25,8 @@ namespace Dynamo.Manipulation
         private IWorkspaceModel workspaceModel;
         //Keeps track of Node Guids for which event handler is attached.
         private HashSet<Guid> trackedNodeGuids = new HashSet<Guid>();
+
+        public event Action<ILogMessage> MessageLogged;
 
         internal IWatch3DViewModel BackgroundPreviewViewModel { get; private set; }
         internal IRenderPackageFactory RenderPackageFactory { get; private set; }
@@ -118,18 +121,28 @@ namespace Dynamo.Manipulation
 
         public void Dispose()
         {
-            manipulatorDaemon.KillAll();
+            manipulatorDaemon?.KillAll();
 
             UnregisterEventHandlers();
         }
 
         public void Startup(ViewStartupParams viewStartupParams)
         {
+            if (!viewStartupParams.IsGeometryLibraryLoaded)
+            {
+                MessageLogged(LogMessage.Info($"GeometryLibrary was not loaded, skipping {nameof(DynamoManipulationExtension)}"));
+                return;
+            };
             manipulatorDaemon = ManipulatorDaemon.Create(new NodeManipulatorFactoryLoader());
         }
 
         public void Loaded(ViewLoadedParams viewLoadedParams)
         {
+            if (!viewLoadedParams.StartupParams.IsGeometryLibraryLoaded)
+            {
+                MessageLogged(LogMessage.Info($"GeometryLibrary was not loaded, skipping {nameof(DynamoManipulationExtension)}"));
+                return;
+            };
             viewParams = viewLoadedParams;
 
             WorkspaceModel = viewParams.CurrentWorkspaceModel;
@@ -151,11 +164,23 @@ namespace Dynamo.Manipulation
 
         private void UnregisterEventHandlers()
         {
-            viewParams.SelectionCollectionChanged -= UpdateManipulators;
-            viewParams.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
+            if (viewParams != null)
+            {
+                viewParams.SelectionCollectionChanged -= UpdateManipulators;
+                viewParams.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
+            }
+            if (BackgroundPreviewViewModel != null)
+            {
+                BackgroundPreviewViewModel.CanNavigateBackgroundPropertyChanged -= Watch3DViewModelNavigateBackgroundPropertyChanged;
+                BackgroundPreviewViewModel.ViewMouseDown -= Watch3DViewModelOnViewMouseDown;
+            }
 
-            BackgroundPreviewViewModel.CanNavigateBackgroundPropertyChanged -= Watch3DViewModelNavigateBackgroundPropertyChanged;
-            BackgroundPreviewViewModel.ViewMouseDown -= Watch3DViewModelOnViewMouseDown;
+            var settings = GetRunSettings(WorkspaceModel);
+            if (settings != null)
+            {
+                settings.PropertyChanged -= OnRunSettingsPropertyChanged;
+            }
+
         }
 
         private void Watch3DViewModelOnViewMouseDown(object o, MouseButtonEventArgs mouseButtonEventArgs)

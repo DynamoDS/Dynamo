@@ -1,116 +1,123 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <ImportGroup Label="PropertySheets">
-    <Import Project="$(SolutionDir)/Config/CS.props" />
-  </ImportGroup>
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{09F48994-BB2F-4A26-8CCD-469FE3F7F904}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Dynamo.Notifications</RootNamespace>
-    <AssemblyName>Notifications</AssemblyName>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="FontAwesome.WPF, Version=4.7.0.37774, Culture=neutral, PublicKeyToken=0758b07a11a4f466, processorArchitecture=MSIL">
-      <HintPath>..\packages\FontAwesome.WPF.4.7.0.9\lib\net40\FontAwesome.WPF.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Practices.Prism">
-      <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
-      <Link>Properties\AssemblySharedInfo.cs</Link>
-    </Compile>
-    <Compile Include="NotificationsMenuItem.xaml.cs">
-      <DependentUpon>NotificationsMenuItem.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="NotificationsView.xaml.cs">
-      <DependentUpon>NotificationsView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="NotificationsViewExtension.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.en-US.Designer.cs">
-      <DependentUpon>Resources.en-US.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj">
-      <Project>{51bb6014-43f7-4f31-b8d3-e3c37ebedaf4}</Project>
-      <Name>DynamoCoreWpf</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
-      <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
-      <Name>DynamoCore</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="NotificationsMenuItem.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="NotificationsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.en-US.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="AfterBuild">
-    <ItemGroup>
-      <ExtensionDefinition Include="Notifications_ViewExtensionDefinition.xml" />
-    </ItemGroup>
-    <Copy SourceFiles="@(ExtensionDefinition)" DestinationFolder="$(OutputPath)\viewExtensions\" />
-  </Target>
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <UILib>true</UILib>
+    </PropertyGroup>
+	<ImportGroup Label="PropertySheets">
+		<Import Project="$(SolutionDir)Config\CS_SDK.props" />
+	</ImportGroup>
+	<PropertyGroup>
+		<ProjectGuid>{09F48994-BB2F-4A26-8CCD-469FE3F7F904}</ProjectGuid>
+		<OutputType>Library</OutputType>
+		<AppDesignerFolder>Properties</AppDesignerFolder>
+		<RootNamespace>Dynamo.Notifications</RootNamespace>
+		<AssemblyName>Notifications</AssemblyName>
+        <EnableDefaultPageItems>false</EnableDefaultPageItems>
+	</PropertyGroup>
+
+    <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
+        <!--This command gets the latest build from the notifcation center-->
+        <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command $(SolutionDir)\setnpmreg.ps1" />
+        <Exec Command="npm pack @dynamods/notifications-center@latest" />
+    </Target>
+
+    <Target Name="ExtractTGZFile" BeforeTargets="BeforeBuild">
+        <!--Locates the .tgz files-->
+        <ItemGroup>
+            <TGZFiles Include="./dynamods-notifications-center-*.tgz" />
+        </ItemGroup>
+
+        <!--Reverse the order of the files to get the higher version-->
+        <ItemGroup>
+            <Reversed Include="@(TGZFiles-&gt;Reverse())" />
+        </ItemGroup>
+
+        <!--Gets the last one-->
+        <PropertyGroup>
+            <Last>%(TGZFiles.Filename)</Last>
+        </PropertyGroup>
+
+        <!--Creates the folder for the package-->
+        <MakeDir Directories="Packages/NotificationCenter" />
+
+        <!--Extracts the file to /package-->
+        <Exec Command="tar -xzf $(MSBuildProjectDirectory)\$(Last).tgz --strip-components=1 --directory=Packages/NotificationCenter"></Exec>
+
+        <!--Deletes the tgz file-->
+        <Delete Files=" $(MSBuildProjectDirectory)\$(Last).tgz" />
+    </Target>
+    
+    
+	<ItemGroup>
+		<None Remove="package\package.json" />
+		<None Remove="package\README.md" />
+		<None Remove="View\NotificationUI.xaml" />
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="Packages\NotificationCenter\build\index.bundle.js" />
+		<EmbeddedResource Include="Packages\NotificationCenter\build\index.html" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="FontAwesome5" Version="2.1.11" />
+		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2045.28" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj">
+			<Project>{51bb6014-43f7-4f31-b8d3-e3c37ebedaf4}</Project>
+			<Name>DynamoCoreWpf</Name>
+			<Private>False</Private>
+		</ProjectReference>
+		<ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
+			<Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
+			<Name>DynamoCore</Name>
+		</ProjectReference>
+	</ItemGroup>
+	<ItemGroup>
+		<Page Include="NotificationsMenuItem.xaml">
+			<SubType>Designer</SubType>
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Include="NotificationsView.xaml">
+			<SubType>Designer</SubType>
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Include="Styles\DynamoModern.xaml">
+			<Generator>MSBuild:Compile</Generator>
+			<SubType>Designer</SubType>
+		</Page>
+		<Page Include="View\NotificationUI.xaml">
+			<SubType>Designer</SubType>
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Update="Properties\Resources.Designer.cs">
+			<AutoGen>True</AutoGen>
+			<DesignTime>True</DesignTime>
+			<DependentUpon>Resources.resx</DependentUpon>
+		</Compile>
+		<Compile Update="Properties\Resources.en-US.Designer.cs">
+			<AutoGen>True</AutoGen>
+			<DesignTime>True</DesignTime>
+			<DependentUpon>Resources.en-US.resx</DependentUpon>
+		</Compile>
+		<Compile Update="View\NotificationUI.xaml.cs">
+			<DependentUpon>NotificationUI.xaml</DependentUpon>
+		</Compile>
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Update="Properties\Resources.resx">
+			<Generator>PublicResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Properties\Resources.en-US.resx">
+			<Generator>PublicResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+	</ItemGroup>
+	<Target Name="AfterBuildOps" AfterTargets="Build">
+		<ItemGroup>
+			<ExtensionDefinition Include="Notifications_ViewExtensionDefinition.xml" />
+		</ItemGroup>
+		<Copy SourceFiles="@(ExtensionDefinition)" DestinationFolder="$(OutputPath)\viewExtensions\" />
+	</Target>
 </Project>

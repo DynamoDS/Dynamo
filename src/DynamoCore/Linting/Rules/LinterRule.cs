@@ -52,10 +52,10 @@ namespace Dynamo.Linting.Rules
         /// </summary>
         /// <param name="muribundWorkspaceModel"></param>
         /// <returns></returns>
-        internal protected void CleanupRule(WorkspaceModel muribundWorkspaceModel) { }
+        internal protected virtual void CleanupRule(WorkspaceModel muribundWorkspaceModel) { }
 
         /// <summary>
-        /// Initializes this rule using the <see cref="InitFunction(WorkspaceModel)"/>
+        /// Initializes this rule using the <see cref="InitializeRule"/>
         /// </summary>
         /// <param name="workspaceModel"></param>
         /// <returns></returns>

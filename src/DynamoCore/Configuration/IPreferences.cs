@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Dynamo.Graph.Connectors;
 
@@ -41,6 +41,11 @@ namespace Dynamo.Interfaces
         bool IsBackgroundGridVisible { get; set; }
 
         /// <summary>
+        /// Sets the scale of the background grid element. Default is 1.0.
+        /// </summary>
+        float GridScaleFactor { get; set; }
+
+        /// <summary>
         /// Indicates whether background preview is active or not.
         /// </summary>
         [Obsolete("Property will be deprecated in Dynamo 3.0, please use BackgroundPreviews")]
@@ -50,17 +55,6 @@ namespace Dynamo.Interfaces
         /// Returns the decimal precision used to display numbers.
         /// </summary>
         string NumberFormat { get; set; }
-
-        /// <summary>
-        /// Indicates whether usage reporting is approved or not.
-        /// </summary>
-        [Obsolete("Property will be deprecated in Dynamo 3.0")]
-        bool IsUsageReportingApproved { get; set; }
-
-        /// <summary>
-        /// Indicates whether Google analytics reporting is approved or not.
-        /// </summary>
-        bool IsAnalyticsReportingApproved { get; set; }
 
         /// <summary>
         /// Indicates whether ADP analytics reporting is approved or not.
@@ -180,6 +174,18 @@ namespace Dynamo.Interfaces
         /// If enabled user's custom package locations will not be loaded.
         /// </summary>
         bool DisableCustomPackageLocations { get; set; }
+    }
+
+    /// <summary>
+    /// Temporary interface to avoid breaking changes.
+    /// TODO: Merge with StartupConfiguration for 3.0 (DYN-1699)
+    /// </summary>
+    internal interface IHideAutocompleteMethodOptions
+    {
+        /// <summary>
+        /// If true, autocomplete method options are hidden from UI 
+        /// </summary>
+        bool HideAutocompleteMethodOptions { get; set; }
     }
 
     /// <summary>

@@ -1,0 +1,962 @@
+{
+  "Uuid": "40353ebc-47f1-4dd8-be6f-960a874e6db7",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "DynamoOnboardingGuide_HouseCreationDS",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      },
+      "PolyCurve": {
+        "Key": "Autodesk.DesignScript.Geometry.PolyCurve",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Surface": {
+        "Key": "Autodesk.DesignScript.Geometry.Surface",
+        "Value": "ProtoGeometry.dll"
+      },
+      "List": {
+        "Key": "List",
+        "Value": "BuiltIn.ds"
+      },
+      "Color": {
+        "Key": "DSCore.Color",
+        "Value": "DSCoreNodes.dll"
+      },
+      "GeometryColor": {
+        "Key": "Modifiers.GeometryColor",
+        "Value": "GeometryColor.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "//Create points that define the house profile\nfloorA = Point.ByCoordinates(-width/2,0,0);\nfloorB = Point.ByCoordinates(width/2,0,0);\nceilingA = Point.ByCoordinates(-width/2,0,height/2);\nceilingB = Point.ByCoordinates(width/2,0,height/2);\napex = Point.ByCoordinates(0,0,height);\n//Creating a closed profile using our points\nprofile = PolyCurve.ByPoints([floorA,ceilingA,apex,ceilingB,floorB],true);\n//Creating an extrusion using our profile\nsurface = Surface.ByPatch(profile);\nextrude = Surface.Thicken(surface,length);",
+      "Id": "621de1f0db6b49ae9df1aead4338a3ee",
+      "Inputs": [
+        {
+          "Id": "e86a7b665e9843edae3b2dfd84800674",
+          "Name": "width",
+          "Description": "width",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d95898d4228743dfa52bbe6dda987dcd",
+          "Name": "height",
+          "Description": "height",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e9b4d6b8599d4971ad387338332792c8",
+          "Name": "length",
+          "Description": "length",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "bbbac4946e004aa6ab9faba1a1a7eb5b",
+          "Name": "",
+          "Description": "floorA",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "28f30a2735854b69951d04b747c384fe",
+          "Name": "",
+          "Description": "floorB",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "28d87aa601694ec597d641d55d3abfbf",
+          "Name": "",
+          "Description": "ceilingA",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a68ef8be7b244e09a6bf5851bec46954",
+          "Name": "",
+          "Description": "ceilingB",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "61f50c496ee34eca970de17bd6ccca8d",
+          "Name": "",
+          "Description": "apex",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "30a8cbcf1ead4116aee6f096e6042217",
+          "Name": "",
+          "Description": "profile",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c337e7e11c934a68847b71fb31a84c97",
+          "Name": "",
+          "Description": "surface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "91f6463ea7b44425ac9d2aadfd8f2aa2",
+          "Name": "",
+          "Description": "extrude",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.IntegerSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Integer",
+      "InputValue": 10,
+      "MaximumValue": 20,
+      "MinimumValue": 5,
+      "StepValue": 1,
+      "Id": "e8acdb2a68bd4f99987b4ba3182d59e7",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "943cd9fc4ee1438cbfd850ff819da086",
+          "Name": "",
+          "Description": "Int64",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces integer values."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.IntegerSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Integer",
+      "InputValue": 13,
+      "MaximumValue": 30,
+      "MinimumValue": 10,
+      "StepValue": 1,
+      "Id": "87823cb8248a402fb33921fb42a4d473",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "89388ee53f8f414f9e1b4aad3f865e8a",
+          "Name": "",
+          "Description": "Int64",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces integer values."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 40.0,
+      "MinimumValue": 10.0,
+      "StepValue": 0.5,
+      "InputValue": 15.0,
+      "Id": "c06d5c1f11dd4602a20a263705e695dd",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "0aab31c59c6d40d39f03051127944d66",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.Transform@Autodesk.DesignScript.Geometry.CoordinateSystem,Autodesk.DesignScript.Geometry.CoordinateSystem",
+      "Id": "11c70bfa5ebc4d6c899bad7c0ddc48a0",
+      "Inputs": [
+        {
+          "Id": "e2857a39c2ef43eca0046e708c81e5e3",
+          "Name": "geometry",
+          "Description": "Autodesk.DesignScript.Geometry.Geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0041f3682ade4f299474fce8e70d1d4d",
+          "Name": "fromCoordinateSystem",
+          "Description": "CoordinateSystem",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "dde155bb255e4367a1fd9cf0ef7a4bc5",
+          "Name": "contextCoordinateSystem",
+          "Description": "CoordinateSystem",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4f3b10a84d9c4dc1a93c93ec405eeb38",
+          "Name": "Geometry",
+          "Description": "Transformed Geometry.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Transforms this geometry from source CoordinateSystem to a new context CoordinateSystem.\n\nGeometry.Transform (fromCoordinateSystem: CoordinateSystem, contextCoordinateSystem: CoordinateSystem): Geometry"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin@double,double",
+      "Id": "558b9ccbc4604f4382571096a84b9a4f",
+      "Inputs": [
+        {
+          "Id": "2a2823311f3f4ca283227bcbbfe250a2",
+          "Name": "x",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6e6bfba740354cdf8504d153bc5c166f",
+          "Name": "y",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1b2b87a20c4a45ec8d95f70c15d363d5",
+          "Name": "CoordinateSystem",
+          "Description": "CoordinateSystem",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "CrossProduct",
+      "Description": "Create a CoordinateSystem with origin at X and Y locations, with X and Y Axes set as WCS X and Y Axes. Z defaults to 0.\n\nCoordinateSystem.ByOrigin (x: double = 0, y: double = 0): CoordinateSystem"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "//Defining the distance and amount\ndistance = (width*3)+2;\namount = width/3;\n//Creating a number range\n-distance..distance..#amount;",
+      "Id": "bb8515312a2143a3b47d6f446eef8f67",
+      "Inputs": [
+        {
+          "Id": "34ce1b1c74234400a09c4a946007a065",
+          "Name": "width",
+          "Description": "width",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "125616b95e454f9daaa3f1f67afd583e",
+          "Name": "",
+          "Description": "distance",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4e71a55b2ab348c4a6af547feeb40051",
+          "Name": "",
+          "Description": "amount",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d9ca81d89501474db686e617b90139d4",
+          "Name": "",
+          "Description": "Value of expression at line 5",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.List.Flatten@var[]..[],int",
+      "Id": "3ff10ad8b3fd49988cbc2c6341e06ea0",
+      "Inputs": [
+        {
+          "Id": "d5ea2f4a73d24934afacc20b3964a351",
+          "Name": "list",
+          "Description": "List to flatten.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2d0c4f23badd429397e898a0e7328d3e",
+          "Name": "amount",
+          "Description": "Layers of list nesting to remove (-1 will remove all list nestings)\n\nint\nDefault value : -1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c2fbadff120745efbe77cc5793248a3d",
+          "Name": "list",
+          "Description": "Flattened list by amount",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Flattens a nested list of lists by a certain amount.\n\nList.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.ColorRange, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "a62352cb70ac488bb223dcbe46f24430",
+      "Inputs": [
+        {
+          "Id": "49755a8a36ad4f84bc18d285096e34c3",
+          "Name": "colors",
+          "Description": "List of colors to include in the range",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "55756eef3f09411290a18851341388ff",
+          "Name": "indices",
+          "Description": "List of values between 0.0 and 1.0 which position the input colors along the range",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "cb5b05b325b5451b85dd6ac940773864",
+          "Name": "value",
+          "Description": "List of values between 0.0 and 1.0. These values define the colors that are picked along the color range to create the color list.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4fedad8ebf214bd4bcb7f85a15fe5af6",
+          "Name": "color",
+          "Description": "Selected colors",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Get a color given a color range."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "/*Creating color values between\nzero (start) and one (end), to the\ntotal count of our houses*/\nvalue = 0..1..#List.Count(houses);",
+      "Id": "e772660a65e9416981c027f6ed40c4bc",
+      "Inputs": [
+        {
+          "Id": "88ff5238172d485dac32248d1726d670",
+          "Name": "houses",
+          "Description": "houses",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4334becfa45f42d8bd92d8a91fbf0fe0",
+          "Name": "",
+          "Description": "value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Modifiers.GeometryColor.ByGeometryColor@Autodesk.DesignScript.Geometry.Geometry,DSCore.Color",
+      "Id": "4f665295a54f4526a0f8451ba9039d43",
+      "Inputs": [
+        {
+          "Id": "41934eb6c0ed4b378900d556edfc9c4c",
+          "Name": "geometry",
+          "Description": "The geometry to which you would like to apply color.\n\nGeometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4d761a3ec5cc4b60ba75dea2e358be0c",
+          "Name": "color",
+          "Description": "The color.\n\nColor",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9f302885b93744ce87e105bd7f81377b",
+          "Name": "GeometryColor",
+          "Description": "A Display object.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Display geometry using a color.\n\nGeometryColor.ByGeometryColor (geometry: Geometry, color: Color): GeometryColor"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "color = Color.ByARGB(255,255,255,0);\nhouse = GeometryColor.ByGeometryColor\n\t(singleHouse,\n\tcolor);",
+      "Id": "ea6fbf029f564b5681427210cf8147fb",
+      "Inputs": [
+        {
+          "Id": "b120558355cf40e18549ebfb6e670e37",
+          "Name": "singleHouse",
+          "Description": "singleHouse",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "df6e0bc04ea34d19b0b81fda2c933d73",
+          "Name": "",
+          "Description": "color",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "9935511cf60b41c69c3846b3009feebf",
+          "Name": "",
+          "Description": "house",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "91f6463ea7b44425ac9d2aadfd8f2aa2",
+      "End": "e2857a39c2ef43eca0046e708c81e5e3",
+      "Id": "cd8be87bf8404a3596c9a3a9ccef36aa",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "91f6463ea7b44425ac9d2aadfd8f2aa2",
+      "End": "b120558355cf40e18549ebfb6e670e37",
+      "Id": "4267baec1669426ca40072017d4be976",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "943cd9fc4ee1438cbfd850ff819da086",
+      "End": "e86a7b665e9843edae3b2dfd84800674",
+      "Id": "e0856b38106a4b1389ead5e9788c9e8c",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "943cd9fc4ee1438cbfd850ff819da086",
+      "End": "34ce1b1c74234400a09c4a946007a065",
+      "Id": "559127c1543947b8a7427d64ae1da38f",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "89388ee53f8f414f9e1b4aad3f865e8a",
+      "End": "d95898d4228743dfa52bbe6dda987dcd",
+      "Id": "8a25e80523504e48baf8b801dd4c41ef",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "0aab31c59c6d40d39f03051127944d66",
+      "End": "e9b4d6b8599d4971ad387338332792c8",
+      "Id": "a1a64f5296b94deda178211e80d1b480",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "4f3b10a84d9c4dc1a93c93ec405eeb38",
+      "End": "d5ea2f4a73d24934afacc20b3964a351",
+      "Id": "090bb8f2be674057a34c307923d4da65",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "1b2b87a20c4a45ec8d95f70c15d363d5",
+      "End": "dde155bb255e4367a1fd9cf0ef7a4bc5",
+      "Id": "bf16d2cfdc914059808362f92dbbe233",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "d9ca81d89501474db686e617b90139d4",
+      "End": "2a2823311f3f4ca283227bcbbfe250a2",
+      "Id": "0b9094635d864f85ad5ac7358661b86f",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "d9ca81d89501474db686e617b90139d4",
+      "End": "6e6bfba740354cdf8504d153bc5c166f",
+      "Id": "c388fe43f6014432a2507a1f702a54cb",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "c2fbadff120745efbe77cc5793248a3d",
+      "End": "41934eb6c0ed4b378900d556edfc9c4c",
+      "Id": "f2c14e3df60d4c21bdc28908646e671c",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "c2fbadff120745efbe77cc5793248a3d",
+      "End": "88ff5238172d485dac32248d1726d670",
+      "Id": "303fbc27c34d4ba49af7e6c59eebe8e8",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "4fedad8ebf214bd4bcb7f85a15fe5af6",
+      "End": "4d761a3ec5cc4b60ba75dea2e358be0c",
+      "Id": "038df66d63314ae3a8f52af601116c19",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "4334becfa45f42d8bd92d8a91fbf0fe0",
+      "End": "cb5b05b325b5451b85dd6ac940773864",
+      "Id": "99674eacbb034e27bcca80abd019bc16",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.12",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.15.0.5327",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": 86.759017944335938,
+      "EyeY": 49.561027526855469,
+      "EyeZ": 46.885627746582031,
+      "LookX": -72.565841674804688,
+      "LookY": -68.2427749633789,
+      "LookZ": -49.296005249023438,
+      "UpX": -0.35611215233802795,
+      "UpY": 0.90258520841598511,
+      "UpZ": -0.2419174462556839
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Create House Profile and Extrude into Shape",
+        "ShowGeometry": false,
+        "Id": "621de1f0db6b49ae9df1aead4338a3ee",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 970.562210876038,
+        "Y": 496.398897852045
+      },
+      {
+        "Name": "Width",
+        "ShowGeometry": true,
+        "Id": "e8acdb2a68bd4f99987b4ba3182d59e7",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 462.91434268262321,
+        "Y": 442.77810916230885
+      },
+      {
+        "Name": "Height",
+        "ShowGeometry": true,
+        "Id": "87823cb8248a402fb33921fb42a4d473",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 462.91434268262321,
+        "Y": 589.77810916230885
+      },
+      {
+        "Name": "Length",
+        "ShowGeometry": true,
+        "Id": "c06d5c1f11dd4602a20a263705e695dd",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 462.91434268262321,
+        "Y": 739.18214681268319
+      },
+      {
+        "Name": "Geometry.Transform",
+        "ShowGeometry": false,
+        "Id": "11c70bfa5ebc4d6c899bad7c0ddc48a0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1742.74802672817,
+        "Y": 972.634752013242
+      },
+      {
+        "Name": "CoordinateSystem.ByOrigin",
+        "ShowGeometry": true,
+        "Id": "558b9ccbc4604f4382571096a84b9a4f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1411.06221087604,
+        "Y": 1175.36779218419
+      },
+      {
+        "Name": "Create Coordinate System locations",
+        "ShowGeometry": true,
+        "Id": "bb8515312a2143a3b47d6f446eef8f67",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 947.418588977639,
+        "Y": 1215.77055234231
+      },
+      {
+        "Name": "List.Flatten",
+        "ShowGeometry": false,
+        "Id": "3ff10ad8b3fd49988cbc2c6341e06ea0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2134.17368018768,
+        "Y": 972.634752013242
+      },
+      {
+        "Name": "Color Range",
+        "ShowGeometry": true,
+        "Id": "a62352cb70ac488bb223dcbe46f24430",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2895.31582485475,
+        "Y": 1139.2466801237
+      },
+      {
+        "Name": "Create Color values",
+        "ShowGeometry": false,
+        "Id": "e772660a65e9416981c027f6ed40c4bc",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2447.44338026175,
+        "Y": 1224.2607092586
+      },
+      {
+        "Name": "GeometryColor.ByGeometryColor",
+        "ShowGeometry": true,
+        "Id": "4f665295a54f4526a0f8451ba9039d43",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3265.25904651944,
+        "Y": 972.634752013242
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "ea6fbf029f564b5681427210cf8147fb",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1225.06221087604,
+        "Y": 812.664370648673
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "f863cfc2030b4a809f01c1bfdc6ab0bd",
+        "Title": "Inputs",
+        "DescriptionText": "Change the house width, height and length with these input sliders",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "e8acdb2a68bd4f99987b4ba3182d59e7",
+          "87823cb8248a402fb33921fb42a4d473",
+          "c06d5c1f11dd4602a20a263705e695dd"
+        ],
+        "HasNestedGroups": false,
+        "Left": 452.91434268262321,
+        "Top": 360.77810916230885,
+        "Width": 368.0,
+        "Height": 510.40403765037433,
+        "FontSize": 36.0,
+        "InitialTop": 442.77810916230885,
+        "InitialHeight": 441.40403765037433,
+        "TextblockHeight": 72.0,
+        "Background": "#FFFFB8D8"
+      },
+      {
+        "Id": "56727df20ffb4e44bf8ec1e56207dac9",
+        "Title": "Multiply Houses",
+        "DescriptionText": "",
+        "IsExpanded": false,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "bb8515312a2143a3b47d6f446eef8f67"
+        ],
+        "HasNestedGroups": false,
+        "Left": 937.418588977639,
+        "Top": 1152.77055234231,
+        "Width": 428.0,
+        "Height": 176.0,
+        "FontSize": 36.0,
+        "InitialTop": 1215.77055234231,
+        "InitialHeight": 145.0,
+        "TextblockHeight": 53.0,
+        "Background": "#FFA4E1FF"
+      },
+      {
+        "Id": "f0484841d68f4d36be83b27bb1858cc3",
+        "Title": "Create House",
+        "DescriptionText": "",
+        "IsExpanded": false,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "621de1f0db6b49ae9df1aead4338a3ee",
+          "ea6fbf029f564b5681427210cf8147fb"
+        ],
+        "HasNestedGroups": false,
+        "Left": 960.562210876038,
+        "Top": 433.398897852045,
+        "Width": 745.00000000000011,
+        "Height": 295.0,
+        "FontSize": 36.0,
+        "InitialTop": 496.398897852045,
+        "InitialHeight": 461.26547279662793,
+        "TextblockHeight": 53.0,
+        "Background": "#FFA4E1FF"
+      },
+      {
+        "Id": "253cf164b75342d4bb183687b212ced0",
+        "Title": "Color Values",
+        "DescriptionText": "Create color values for color range",
+        "IsExpanded": false,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "e772660a65e9416981c027f6ed40c4bc"
+        ],
+        "HasNestedGroups": false,
+        "Left": 2437.44338026175,
+        "Top": 1161.2607092586,
+        "Width": 436.0,
+        "Height": 160.0,
+        "FontSize": 36.0,
+        "InitialTop": 1224.2607092586,
+        "InitialHeight": 145.0,
+        "TextblockHeight": 53.0,
+        "Background": "#FFA4E1FF"
+      },
+      {
+        "Id": "4e5ac2dd0aed4cfc811a687e6b9c6687",
+        "Title": "Houses",
+        "DescriptionText": "Create houses and transform them across our grid",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "11c70bfa5ebc4d6c899bad7c0ddc48a0",
+          "558b9ccbc4604f4382571096a84b9a4f",
+          "3ff10ad8b3fd49988cbc2c6341e06ea0",
+          "56727df20ffb4e44bf8ec1e56207dac9",
+          "f0484841d68f4d36be83b27bb1858cc3"
+        ],
+        "HasNestedGroups": true,
+        "Left": 927.418588977639,
+        "Top": 360.398897852045,
+        "Width": 1411.755091210041,
+        "Height": 983.37165449026509,
+        "FontSize": 36.0,
+        "InitialTop": 433.398897852045,
+        "InitialHeight": 909.37165449026509,
+        "TextblockHeight": 63.0,
+        "Background": "#FFB9F9E1"
+      },
+      {
+        "Id": "603212d882e143b3a6b60fc6c1c9f60d",
+        "Title": "Color",
+        "DescriptionText": "Distinguish the houses with a color range ",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "a62352cb70ac488bb223dcbe46f24430",
+          "4f665295a54f4526a0f8451ba9039d43",
+          "f32071d8e96a4b9d854d3c00bccacd7b",
+          "253cf164b75342d4bb183687b212ced0"
+        ],
+        "HasNestedGroups": true,
+        "Left": 2427.44338026175,
+        "Top": 899.634752013242,
+        "Width": 1167.8156662576898,
+        "Height": 439.61192811045794,
+        "FontSize": 36.0,
+        "InitialTop": 972.634752013242,
+        "InitialHeight": 411.625957245358,
+        "TextblockHeight": 63.0,
+        "Background": "#FFFFC999"
+      },
+      {
+        "Id": "f32071d8e96a4b9d854d3c00bccacd7b",
+        "Title": "We do not need colors or indices here as there are default values applied",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 2915.31582485475,
+        "Top": 1074.2466801237,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "a62352cb70ac488bb223dcbe46f24430"
+      }
+    ],
+    "X": -433.3630912170072,
+    "Y": -148.78297261749378,
+    "Zoom": 0.65020850353273663
+  }
+}

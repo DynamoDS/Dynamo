@@ -137,7 +137,7 @@ namespace ProtoCore
         /// Generates unique identifier for the callsite associated with the graphnode
         /// </summary>
         /// <param name="graphNode"></param>
-        /// <param name="procNode"></param>
+        /// <param name="procName"></param>
         protected void GenerateCallsiteIdentifierForGraphNode(AssociativeGraph.GraphNode graphNode, string procName)
         {
             // This instance count in which the function appears lexically in the current guid
@@ -926,7 +926,6 @@ namespace ProtoCore
         /// <param name="name"></param>
         /// <param name="classScope"></param>
         /// <param name="functionScope"></param>
-        /// <param name="symbolTable"></param>
         /// <param name="symbol"></param>
         /// <param name="isAccessible"></param>
         /// <returns></returns>
@@ -1286,6 +1285,25 @@ namespace ProtoCore
             AppendInstruction(instr, line, col);
         }
 
+        protected void EmitPopUpdateInstruction(StackValue op,
+            int astID,
+            int blockId = Constants.kInvalidIndex,
+            int line = Constants.kInvalidIndex, int col = Constants.kInvalidIndex,
+            int eline = Constants.kInvalidIndex, int ecol = Constants.kInvalidIndex)
+        {
+            Instruction instr = new Instruction();
+            instr.opCode = OpCode.POP;
+            instr.op1 = op;
+            instr.op2 = StackValue.BuildInt(astID);
+            instr.op3 = StackValue.BuildBlockIndex(blockId);
+
+            // For debugging, assert here but these should raise runtime errors in the VM
+            Validity.Assert(op.IsRegister);
+
+            ++pc;
+            AppendInstruction(instr, line, col);
+        }
+
         protected void EmitSetElement(SymbolNode symbol,
            int blockId,
            int line = Constants.kInvalidIndex,
@@ -1404,6 +1422,23 @@ namespace ProtoCore
             instr.op1 = op;
             instr.op2 = StackValue.BuildClassIndex(globalClassIndex);
             instr.op3 = StackValue.BuildBlockIndex(blockId);
+
+            ++pc;
+            AppendInstruction(instr, line, col);
+        }
+
+        protected void EmitPushUpdateInstruction(StackValue op,
+            int astID,
+            int blockID = 0,
+            int line = Constants.kInvalidIndex,
+            int col = Constants.kInvalidIndex)
+        {
+            SetEntry();
+            Instruction instr = new Instruction();
+            instr.opCode = OpCode.PUSH;
+            instr.op1 = op;
+            instr.op2 = StackValue.BuildInt(astID);
+            instr.op3 = StackValue.BuildBlockIndex(blockID);
 
             ++pc;
             AppendInstruction(instr, line, col);

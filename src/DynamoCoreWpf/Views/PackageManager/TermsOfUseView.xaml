@@ -4,62 +4,148 @@
         xmlns:ui="clr-namespace:Dynamo.UI"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
         xmlns:views="clr-namespace:Dynamo.UI.Views"
-        Height="450"
-        Width="550"
-        Background="#555"
-        MinWidth="550"
-        MaxWidth="550"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:ViewModels="clr-namespace:Dynamo.ViewModels"
-        xmlns:ui1="clr-namespace:Dynamo.PackageManager.UI"
+        Height="450"
+        MinHeight="350"
+        Width="550"
+        MinWidth="550"
+        MaxWidth="550"
         mc:Ignorable="d"
-        Title="{x:Static p:Resources.TermsOfUseViewTitle}">
+        x:Name="TermsOfUseWindow"
+        ResizeMode="CanResizeWithGrip"
+        Title="{x:Static p:Resources.TermsOfUseViewTitle}"
+        Style="{DynamicResource DynamoWindowStyle}"
+        AllowsTransparency="True"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None">
 
+    <Window.Background>
+        <SolidColorBrush Opacity="0" />
+    </Window.Background>
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
 
-    <Grid Background="Black"
-          Margin="0">
+    <Grid Background="Transparent" MouseDown="UIElement_OnMouseDown">
+        <Border Name="MainBorder" Style="{StaticResource NoStyleWindowBorderStyle}">
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+            <Grid Margin="15 0">
 
-        <ScrollViewer Background="#363636"
-                      Padding="25">
-            <views:RichTextFile x:Name="TermsOfUseContent"
-                                IsReadOnly="True"
-                                IsEnabled="True"
-                                IsDocumentEnabled="True"
-                                FontSize="10"
-                                Foreground="#888888"
-                                Background="Transparent"
-                                OpenLinksInBrowser="True"
-                                BorderThickness="0" />
-        </ScrollViewer>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal"
-                    FlowDirection="RightToLeft"
-                    Grid.Row="1"
-                    Background="#333">
-            <Button Name="DeclineTermsOfUseButton"
-                    Click="DeclineTermsOfUseButton_OnClick"
-                    Margin="3"
-                    Content="{x:Static p:Resources.TermsOfUseDeclineButton}"
-                    Style="{DynamicResource ResourceKey=SBadgeButton}" />
-            <Button Name="AcceptTermsOfUseButton"
-                    Click="AcceptTermsOfUseButton_OnClick"
-                    Margin="3"
-                    Content="{x:Static p:Resources.TermsOfUseAcceptButton}"
-                    Style="{DynamicResource ResourceKey=SBadgeButton}" />
-        </StackPanel>
+
+                <!--  Title Bar + Close Button  -->
+                <DockPanel Grid.Row="0"
+                           Margin="0 15"
+                           HorizontalAlignment="Stretch">
+                    <Image Name="MessageBoxImageIcon"
+                           Width="24"
+                           Height="24"
+                           Margin="0,0,5,0"
+                           Source="/DynamoCoreWpf;component/UI/Images/dynamonotext.png"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center"
+                           DockPanel.Dock="Left">
+                    </Image>
+                    
+                    <Button Name="CloseButton"
+                            Click="CloseButton_OnClick"
+                            DockPanel.Dock="Right"
+                            Margin="25 0 5 0"
+                            Style="{StaticResource CloseButtonStyle}" />
+                    
+                    <Button Name="MaximizeButton"
+                            Click="MaximizeButton_OnClick"
+                            DockPanel.Dock="Right"
+                            Style="{StaticResource MaximizeButtonStyle}" />
+                    
+                    <Button Name="NormalizeButton"
+                            Click="MaximizeButton_OnClick"
+                            DockPanel.Dock="Right"
+                            Visibility="Collapsed"
+                            Style="{StaticResource RestoreButtonStyle}" />
+                    
+                    <Button Name="MinimizeButton"
+                            Margin="0 0 25 0"
+                            Click="MinimizeButton_OnClick"
+                            DockPanel.Dock="Right"
+                            Style="{StaticResource MinimizeButtonStyle}" />
+                    
+                    <TextBlock Name="TitleTextBlock"
+                               VerticalAlignment="Center"
+                               DockPanel.Dock="Left"
+                               FontFamily="{StaticResource ArtifaktElementRegular}"
+                               FontSize="20px"
+                               Foreground="#3C3C3C"
+                               Text="{x:Static p:Resources.TermsOfUseViewTitle}"
+                               TextWrapping="Wrap" />
+                </DockPanel>
+
+                <Rectangle Style="{StaticResource DividerRectangleStyle}" Grid.Row="0" Margin="-15 0"/>
+
+                <Border Background="#E6E6E6" 
+                            Grid.Row="1" 
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            Margin="0 15 3 20" 
+                            Padding="0">
+
+                    <ScrollViewer 
+                          Margin="0 0 -18 0">
+                        <views:RichTextFile x:Name="TermsOfUseContent"
+                                        IsReadOnly="True"
+                                        IsEnabled="True"
+                                        IsDocumentEnabled="True"
+                                        FontSize="10"
+                                        Margin="0 5"
+                                        Padding="5 5 15 10"
+                                        OpenLinksInBrowser="True"
+                                        Background="Transparent"
+                                        BorderThickness="0" />
+                    </ScrollViewer>
+                </Border>
+
+                <Rectangle Style="{StaticResource DividerRectangleStyle}" Grid.Row="1" Margin="-15 0"/>
+                
+                <StackPanel Orientation="Horizontal"
+                            FlowDirection="RightToLeft"
+                            Name="ButtonsStackPanel"
+                            Margin="0 10 0 12"
+                            Grid.Row="2">
+                    <Button Name="AcceptTermsOfUseButton"
+                        Click="AcceptTermsOfUseButton_OnClick"
+                        Margin="-2 0 5 0"
+                        Content="{x:Static p:Resources.TermsOfUseAcceptButton}"
+                        MinWidth="90"
+                        BorderBrush="#0696D7"
+                        Foreground="White"
+                        Background="#0696D7"
+                        Style="{StaticResource CtaButtonStyle}" />
+                    <Button Name="DeclineTermsOfUseButton"
+                        Click="DeclineTermsOfUseButton_OnClick"
+                        Margin="0"
+                        Content="{x:Static p:Resources.TermsOfUseDeclineButton}"
+                        MinWidth="90"
+                        Background="White"
+                        BorderBrush="#BFBFBF"
+                        Foreground="#3C3C3C"
+                        Style="{StaticResource CtaButtonStyle}"/>
+                </StackPanel>
+
+            </Grid>
+        </Border>
     </Grid>
 
 </Window>

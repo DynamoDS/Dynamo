@@ -1,15 +1,18 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using CefSharp;
 using Dynamo;
 using Dynamo.Controls;
+using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Interfaces;
-using Dynamo.LibraryUI;
-using Dynamo.LibraryUI.Handlers;
+using Dynamo.LibraryViewExtensionWebView2.Handlers;
+using Dynamo.LibraryViewExtensionWebView2;
+using Dynamo.Search.SearchElements;
+using Dynamo.Search;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Interfaces;
 using Moq;
@@ -32,6 +35,53 @@ namespace ViewExtensionLibraryTests
             base.GetLibrariesToPreload(libraries);
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void SearchNodeTest()
+        {
+            var nodeSearchModel = new NodeSearchModel();
+            var path = @"C:\temp\xyz.dyf";
+            var nodeName = "Code Block";
+            var expectedQualifiedName = $"dyf://Core.Input.{nodeName}";
+
+            for (int i = 0; i < 100; i++)
+            {
+                nodeSearchModel.Add(
+                    new CustomNodeSearchElement(new Mock<ICustomNodeSource>().Object,
+                    new CustomNodeInfo(Guid.NewGuid(), $"Node-{i}", $"Node-{i}-Category{i}", $"Node-{i}-Description", path))
+                    );
+            }
+
+            nodeSearchModel.Add(
+                    new CustomNodeSearchElement(new Mock<ICustomNodeSource>().Object,
+                    new CustomNodeInfo(Guid.NewGuid(), nodeName, "Core.Input", "Node-Description", path))
+                    );
+
+            var pathmanager = new Mock<IPathManager>();
+            var iconProvider = new IconResourceProvider(pathmanager.Object);
+
+            SearchResultDataProvider searchResultDataProvider = new SearchResultDataProvider(nodeSearchModel, iconProvider);
+
+            var extension = string.Empty;
+            var searchResultStream = searchResultDataProvider.GetResource(nodeName, out extension);
+
+            var searchResult = GetLoadedTypesFromJson(searchResultStream);
+            List<LoadedTypeItem> nodesResult = searchResult.loadedTypes;
+
+            Assert.AreEqual(nodesResult.Count, 1);
+            Assert.AreEqual(expectedQualifiedName, nodesResult[0].fullyQualifiedName);
+        }
+
+        private LoadedTypeData<LoadedTypeItem> GetLoadedTypesFromJson(Stream stream)
+        {
+            using (var sr = new StreamReader(stream))
+            {
+                var serializer = new JsonSerializer();
+                return (LoadedTypeData<LoadedTypeItem>)serializer.Deserialize(sr, typeof(LoadedTypeData<LoadedTypeItem>));
+            }
+        }
+
+        /*
         [Test]
         [Category("UnitTests"), Category("Failure")]
         public void VerifyIconsForLibraryItems()
@@ -123,5 +173,6 @@ namespace ViewExtensionLibraryTests
                 return (LoadedTypeData< LoadedTypeItem>)serializer.Deserialize(sr, typeof(LoadedTypeData<LoadedTypeItem>));
             }
         }
+        */
     }
 }

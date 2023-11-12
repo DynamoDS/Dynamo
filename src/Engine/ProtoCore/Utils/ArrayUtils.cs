@@ -11,18 +11,8 @@ namespace ProtoCore.Utils
     {
         private static int RECURSION_LIMIT = 1024;
 
-        /// <summary>
-        /// If an empty array is passed, the result will be null
-        /// if there are instances, but they share no common supertype the result will be var
-        /// </summary>
-        public static ClassNode GetGreatestCommonSubclassForArray(StackValue array, RuntimeCore runtimeCore)
+        internal static ClassNode GetGreatestCommonSubclassForArrayInternal(Dictionary<ClassNode, int> typeStats, RuntimeCore runtimeCore)
         {
-            if (!array.IsArray)
-                throw new ArgumentException("The stack value provided was not an array");
-
-            Dictionary<ClassNode, int> typeStats = GetTypeStatisticsForArray(array, runtimeCore);
-
-
             //@PERF: This could be improved with a 
             List<List<int>> chains = new List<List<int>>();
             HashSet<int> commonTypeIDs = new HashSet<int>();
@@ -42,16 +32,13 @@ namespace ProtoCore.Utils
                 foreach (int nodeId in chain)
                     commonTypeIDs.Add(nodeId);
 
- 
-
             }
 
             //Remove nulls if they exist
             {
- 
-            if (commonTypeIDs.Contains(
-                (int)PrimitiveType.Null))
-                commonTypeIDs.Remove((int)PrimitiveType.Null);
+
+                if (commonTypeIDs.Contains((int)PrimitiveType.Null))
+                    commonTypeIDs.Remove((int)PrimitiveType.Null);
 
                 List<List<int>> nonNullChains = new List<List<int>>();
 
@@ -63,9 +50,8 @@ namespace ProtoCore.Utils
                     if (chain.Count > 0)
                         nonNullChains.Add(chain);
                 }
-
                 chains = nonNullChains;
-                    
+
             }
 
 
@@ -75,8 +61,6 @@ namespace ProtoCore.Utils
                 foreach (List<int> chain in chains)
                 {
                     commonTypeIDs.IntersectWith(chain);
-                    
-
                 }
             }
 
@@ -90,7 +74,7 @@ namespace ProtoCore.Utils
 
             List<int> lookupChain = chains[0];
 
-            
+
             //Insertion sort the IDs, we may only have a partial ordering on them.
             List<int> orderedTypes = new List<int>();
 
@@ -115,6 +99,21 @@ namespace ProtoCore.Utils
             }
 
             return runtimeCore.DSExecutable.classTable.ClassNodes[orderedTypes.First()];
+        }
+
+        /// <summary>
+        /// If an empty array is passed, the result will be null
+        /// if there are instances, but they share no common supertype the result will be var
+        /// </summary>
+        public static ClassNode GetGreatestCommonSubclassForArray(StackValue array, RuntimeCore runtimeCore)
+        {
+            if (!array.IsArray)
+                throw new ArgumentException("The stack value provided was not an array");
+
+            Dictionary<ClassNode, int> typeStats = GetTypeStatisticsForArray(array, runtimeCore);
+
+            return GetGreatestCommonSubclassForArrayInternal(typeStats, runtimeCore);
+            
         }
 
         /// <summary>
@@ -193,6 +192,7 @@ namespace ProtoCore.Utils
         /// Generate type statistics for given layer of an array
         /// </summary>
         /// <param name="array"></param>
+        /// <param name="runtimeCore"></param>
         /// <returns></returns>
         public static Dictionary<ClassNode, int> GetTypeStatisticsForLayer(StackValue array, RuntimeCore runtimeCore)
         {
@@ -223,8 +223,8 @@ namespace ProtoCore.Utils
         /// Generate type statistics for the whole array
         /// </summary>
         /// <param name="array"></param>
-        /// <param name="core"></param>
-        /// <returns></returns>
+        /// <param name="runtimeCore"></param>
+        /// <returns>usage frequency by type</returns>
         public static Dictionary<ClassNode, int> GetTypeStatisticsForArray(StackValue array, RuntimeCore runtimeCore)
         {
             if (!array.IsArray)
@@ -260,7 +260,7 @@ namespace ProtoCore.Utils
                     if (!usageFreq.ContainsKey(cn))
                         usageFreq.Add(cn, 0);
 
-                    usageFreq[cn] = usageFreq[cn] + 1;
+                    usageFreq[cn] += 1;
                 }
             }
 
@@ -303,7 +303,7 @@ namespace ProtoCore.Utils
         /// Whether sv is double or arrays contains double value.
         /// </summary>
         /// <param name="sv"></param>
-        /// <param name="core"></param>
+        /// <param name="runtimeCore"></param>
         /// <returns></returns>
         public static bool ContainsDoubleElement(StackValue sv, RuntimeCore runtimeCore)
         {
@@ -322,7 +322,7 @@ namespace ProtoCore.Utils
         /// Otherwise, return true;
         /// </summary>
         /// <param name="sv"></param>
-        /// <param name="core"></param>
+        /// <param name="runtimeCore"></param>
         /// <returns></returns>
         public static bool ContainsNonArrayElement(StackValue sv, RuntimeCore runtimeCore)
         {
@@ -332,13 +332,13 @@ namespace ProtoCore.Utils
             var array = runtimeCore.Heap.ToHeapObject<DSArray>(sv);
             return array.Values.Any(v => ContainsNonArrayElement(v, runtimeCore)); 
         }
-    
+
         /// <summary>
         /// Retrieve the first non-array element in an array 
         /// </summary>
         /// <param name="svArray"></param>
         /// <param name="sv"></param>
-        /// <param name="core"></param>
+        /// <param name="runtimeCore"></param>
         /// <returns> true if the element was found </returns>
         public static bool GetFirstNonArrayStackValue(StackValue svArray, ref StackValue sv, RuntimeCore runtimeCore)
         {
@@ -453,7 +453,7 @@ namespace ProtoCore.Utils
         ///     
         /// </summary>
         /// <param name="indices"></param>
-        /// <param name="core"></param>
+        /// <param name="runtimeCore"></param>
         /// <returns></returns>
         public static StackValue[][] GetZippedIndices(List<StackValue> indices, RuntimeCore runtimeCore)
         {

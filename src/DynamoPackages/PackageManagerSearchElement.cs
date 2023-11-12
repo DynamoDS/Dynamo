@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -40,13 +40,15 @@ namespace Dynamo.PackageManager
         public int Downloads { get { return this.Header.downloads; } }
         public string EngineVersion { get { return Header.versions[Header.versions.Count - 1].engine_version; } }
         public int UsedBy { get { return this.Header.used_by.Count; } }
-        public string LatestVersion { get { return Header.versions[Header.versions.Count - 1].version; } }
+        public string LatestVersion { get { return Header.versions != null ? Header.versions[Header.versions.Count - 1].version : String.Empty; } }
         public string LatestVersionCreated { get { return Header.versions[Header.versions.Count - 1].created; } }
+
+        public IEnumerable<string> PackageVersions { get { return Header.versions.Select(x => x.version); } }
 
         /// <summary>
         /// Hosts dependencies specified for latest version of particular package
         /// </summary>
-        public List<string> Hosts { get { return Header.versions.Last().host_dependencies == null ? null : Header.versions.Last().host_dependencies.ToList(); }}
+        public List<string> Hosts { get { return Header.versions.Last().host_dependencies == null ? null : Header.versions.Last().host_dependencies.ToList(); } }
 
         /// <summary>
         /// Hosts dependencies string specified for latest version of particular package
@@ -118,6 +120,29 @@ namespace Dynamo.PackageManager
         public string SiteUrl { get { return Header.site_url; } }
         public string RepositoryUrl { get { return Header.repository_url; } }
 
+        public string InfectedPackageName { get; set; }
+        public string InfectedPackageVersion { get; set; }
+        public string InfectedPackageCreationDate { get; set; }
+
+        private bool hasUpvote;
+        /// <summary>
+        ///     Shows if the current user has upvoted this package
+        /// </summary>
+        public bool HasUpvote
+        {
+            get
+            {
+                return hasUpvote;
+            }
+
+            internal set
+            {
+                hasUpvote = value;
+                RaisePropertyChanged(nameof(HasUpvote));
+            }
+        }
+
+
         #endregion
 
         /// <summary>
@@ -133,12 +158,19 @@ namespace Dynamo.PackageManager
             if (header.keywords != null && header.keywords.Count > 0)
             {
                 this.Keywords = String.Join(" ", header.keywords);
-            } 
+            }
             else
             {
                 this.Keywords = "";
             }
             this.Votes = header.votes;
+        }
+
+        public PackageManagerSearchElement(PackageVersion infectedVersion)
+        {
+            this.InfectedPackageName = infectedVersion.name;
+            this.InfectedPackageVersion = infectedVersion.version;
+            this.InfectedPackageCreationDate = infectedVersion.created;
         }
 
         public void Upvote()
@@ -154,6 +186,8 @@ namespace Dynamo.PackageManager
                     }
                 }
                 , TaskScheduler.FromCurrentSynchronizationContext());
+
+            HasUpvote = true;
         }
 
         [Obsolete("This API will no longer decrease package votes and will be removed in Dynamo 3.0")]

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -23,6 +24,7 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels;
 using DynamoUnits;
+using FontAwesome5;
 using Color = System.Windows.Media.Color;
 using FlowDirection = System.Windows.FlowDirection;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
@@ -36,6 +38,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (value == null) return string.Empty;
             string incomingString = value as string;
             return incomingString.Split(new[] { '\r', '\n' }, 2)[0].Trim();
         }
@@ -50,6 +53,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (string.IsNullOrEmpty(value as string)) return string.Empty;
             string incomingString = value as string;
             return incomingString.Split(new[] { '\r', '\n' }, 2)[1].Trim();
         }
@@ -63,7 +67,6 @@ namespace Dynamo.Controls
     public class TooltipLengthTruncater : IValueConverter
     {
         private const int MaxChars = 100;
-        private const double MinFontFactor = 7.0;
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -106,29 +109,19 @@ namespace Dynamo.Controls
     }
 
     /// <summary>
-    /// Converts the list of package dependencies to a string
+    /// Converts the list of package dependencies to a comma-separated string.
     /// </summary>
     public class DependencyListToStringConverter : IValueConverter
     {
-        private readonly string[] PythonEngineList = { PythonNodeModels.PythonEngineVersion.CPython3.ToString(), PythonNodeModels.PythonEngineVersion.IronPython2.ToString() };
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            string depString = string.Empty;
-            bool flag = false;
-            if (value != null)
-            {
-                List<string> depList = (List<string>)value;
-                foreach (var dep in depList)
-                {
-                    if (PythonEngineList.IndexOf(dep) != -1)
-                    {
-                        depString += dep + ", ";
-                        flag = true;
-                    }
-                }
-                return flag ? depString.Remove(depString.Length - 2) : null;
-            }
-            return null;
+            if (value == null) return string.Empty;
+
+            List<string> depList = (List<string>)value;
+
+            if (depList.Count < 1) return string.Empty;
+
+            return string.Join(", ", depList);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -136,26 +129,57 @@ namespace Dynamo.Controls
             return null;
         }
     }
+
+    /// <summary>
+    /// Returns Visibility.Visible if the collection has more than n items, otherwise returns Visibility.Collapsed.
+    /// </summary>
+    public class ListHasMoreThanNItemsToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (!(value is ICollection collection)) return Visibility.Collapsed;
+
+            // If no parameter is specified, we return Visible when there are more than 0 (i.e. any) items.
+            var n = (int)(parameter ?? 0);
+
+            return collection.Count <= n ? Visibility.Collapsed : Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+
+    /// <summary>
+    /// Returns Visibility.Visible if the collection is empty, otherwise returns Visibility.Collapsed.
+    /// </summary>
+    public class EmptyListToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (!(value is ICollection collection)) return Visibility.Collapsed;
+
+            return collection.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+
     /// <summary>
     /// Controls the visibility of tooltip that displays python dependency in Package manager for each package version
     /// </summary>
+    [Obsolete("This class will be removed in Dynamo 3.0")]
     public class EmptyDepStringToCollapsedConverter : IValueConverter
     {
-        private readonly string[] PythonEngineList = { PythonNodeModels.PythonEngineVersion.CPython3.ToString(), PythonNodeModels.PythonEngineVersion.IronPython2.ToString() };
         public object Convert(object value, Type targetType, object parameter,
           CultureInfo culture)
         {
-            if (value != null)
-            {
-                List<string> depList = (List<string>)value;
-                foreach (var dep in depList)
-                {
-                    if (PythonEngineList.IndexOf(dep) != -1)
-                    {
-                        return Visibility.Visible;
-                    }
-                }
-            }
             return Visibility.Collapsed;
         }
 
@@ -312,6 +336,50 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// Determines what the Install button says on the Package Manager Search.
+    /// If the package is installed it says 'Installed', otherwise 'Install'.
+    /// </summary>
+    public class InstalledButtonTextConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            if (!(value is bool booleanValue)) return null;
+
+            return booleanValue
+                ? Resources.PackageManagerInstall
+                : Resources.PackageDownloadStateInstalled;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// If the given string is empty, false is returned, otherwise true is returned.
+    /// </summary>
+    public class EmptyStringToFalseConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            return value is string && !string.IsNullOrEmpty(value.ToString());
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// If the given string is empty, collapsed visibility enum is returned, otherwise visible enum is returned.
+    /// </summary>
     public class EmptyStringToCollapsedConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,
@@ -327,6 +395,49 @@ namespace Dynamo.Controls
 
         public object ConvertBack(object value, Type targetType, object parameter,
           CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// If the given string is empty, hidden visibility enum is returned, otherwise visible enum is returned.
+    /// </summary>
+    public class EmptyStringToHiddenConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            if (value is string && !string.IsNullOrEmpty(value as string))
+            {
+                return Visibility.Visible;
+            }
+
+            return Visibility.Hidden;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Converts any numbers below 0 to 0, otherwise returns the original number.
+    /// For example, used to display the number of votes each package has received in the package manager.
+    /// </summary>
+    public class NegativeIntToZeroConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            if (!(value is int intValue)) return 0;
+            return intValue > 0 ? intValue : 0;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            CultureInfo culture)
         {
             return null;
         }
@@ -371,7 +482,7 @@ namespace Dynamo.Controls
             throw new NotImplementedException();
         }
     }
-    
+
     public class SnapRegionMarginConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter,
@@ -466,16 +577,17 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (value is string && !string.IsNullOrEmpty(value as string))
+            if (value is string @string && !string.IsNullOrEmpty(value as string))
             {
                 // Convert to path, get file name. If read-only file, append [Read-Only].
-                if (DynamoUtilities.PathHelper.IsReadOnlyPath((string)value))
-                    return Resources.TabFileNameReadOnlyPrefix + Path.GetFileName((string)value);
+                if (DynamoUtilities.PathHelper.IsReadOnlyPath(@string))
+                    return Resources.TabFileNameReadOnlyPrefix + Path.GetFileName(@string);
                 else
-                    return Path.GetFileName((string)value);
+                    return Path.GetFileName(@string);
             }
 
-            return "Unsaved";
+            // If failing to get file name, return default string
+            return Wpf.Properties.Resources.WorkspaceTabTooltipHeaderUnsaved;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -602,6 +714,8 @@ namespace Dynamo.Controls
         public SolidColorBrush NoneBrush { get; set; }
         public SolidColorBrush SelectionBrush { get; set; }
 
+        public SolidColorBrush HoverBrush { get; set; }
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var state = (PreviewState)value;
@@ -613,6 +727,8 @@ namespace Dynamo.Controls
                     return NoneBrush;
                 case PreviewState.Selection:
                     return SelectionBrush;
+                case PreviewState.Hover:
+                    return HoverBrush;
                 default:
                     return NoneBrush;
             }
@@ -629,6 +745,7 @@ namespace Dynamo.Controls
         public Color ExecutionPreview { get; set; }
         public Color None { get; set; }
         public Color Selection { get; set; }
+        public Color Hover { get; set; }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -641,6 +758,8 @@ namespace Dynamo.Controls
                     return None;
                 case PreviewState.Selection:
                     return Selection;
+                case PreviewState.Hover:
+                    return Hover;
                 default:
                     return None;
             }
@@ -701,7 +820,7 @@ namespace Dynamo.Controls
             return null;
         }
     }
-    
+
     public class PortCountToHeightConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -819,6 +938,34 @@ namespace Dynamo.Controls
         {
             List<object> list = (List<object>)value;
             return list.Count > 0; //spacing for Inputs + title space + bottom space
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Check if the collection has more items than the provided
+    /// parameter. If no parameter is provided the converter will
+    /// check if the collection has more than 1 item.
+    /// </summary>
+    public class CollectionHasMoreThanNItemsToBoolConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (!(value is ICollection collection))
+            {
+                return false;
+            }
+
+            if (parameter is int n)
+            {
+                return collection.Count > n;
+            }
+
+            return collection.Count > 1;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -1131,6 +1278,56 @@ namespace Dynamo.Controls
         }
     }
 
+    public class NodeAutocompleteWidthConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            if (value is string && value.ToString().Length > 25)
+            {
+                return 400;
+            }
+
+            if (value is string && value.ToString().Length > 15)
+            {
+                return 350;
+            }
+
+            return 280;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class NodeAutocompleteImageConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            if (string.IsNullOrEmpty(value as string))
+            {
+                return string.Empty;
+            }
+
+            if (value is string && value.ToString().Equals(Properties.Resources.LoginNeededTitle))
+            {
+                return "/DynamoCoreWpf;component/UI/Images/not-authenticated.png";
+            }
+
+            return "/DynamoCoreWpf;component/UI/Images/no-recommendations.png";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     public class BoolToFullscreenWatchVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -1139,6 +1336,24 @@ namespace Dynamo.Controls
             if (fullscreenWatchShowing)
                 return Visibility.Visible;
             return Visibility.Hidden;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    /// <summary>
+    /// Converter for Notification Bell updates based on feature enabled or not
+    /// </summary>
+    public class BoolToFAIconNameConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if ((bool)value)
+                return nameof(EFontAwesomeIcon.Solid_Bell);
+            return nameof(EFontAwesomeIcon.Solid_BellSlash);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -1182,6 +1397,133 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// Evaluates if the value is null and converts it to Visible or Collapsed state
+    /// </summary>
+    public class EmptyToVisibilityCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value != null)
+                return Visibility.Visible;
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    /// <summary>
+    /// Takes a value and if the value is not null returns Unity Type Auto (*) as a length value
+    /// Returns 0 length if the value is null
+    /// To be used in Grid Column/Row width 
+    /// </summary>
+    public class EmptyToZeroLengthConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value != null)
+            {
+                return new GridLength(1, GridUnitType.Auto);
+            }
+            else
+            {
+                return new GridLength(0);
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    /// <summary>
+    /// Takes a boolean value and if the value is true returns Unity Type Auto (*) as a length value
+    /// Returns 0 length if the value is false
+    /// To be used in Grid Column/Row width 
+    /// </summary>
+    public class BoolToZeroLengthConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if ((bool)value)
+            {
+                return new GridLength(1, GridUnitType.Auto);
+            }
+            else
+            {
+                return new GridLength(0);
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    /// <summary>
+    /// Used in the Dynamo package manager search window to hide or show a label next to each package's name.
+    /// The label only appears if the package has been recently created/updated (in the last 30 days).
+    /// Label text is set via the DateToPackageLabelConverter.
+    /// </summary>  
+    public class DateToVisibilityCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (!(value is PackageManagerSearchElement packageManagerSearchElement)) return Visibility.Collapsed;
+            if (packageManagerSearchElement.IsDeprecated) return Visibility.Visible;
+
+            DateTime.TryParse(packageManagerSearchElement.LatestVersionCreated, out DateTime dateTime);
+            TimeSpan difference = DateTime.Now - dateTime;
+
+            if (difference.TotalDays >= 30) return Visibility.Collapsed;
+            return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    /// <summary>
+    /// Used to determine the text which appears next to a package when it's either
+    /// brand new or has been recently updated.
+    /// If the package was updated in the last 30 days it says 'Updated'.
+    /// If the package is brand new (only has 1 version) and is less than 30 days it says 'New'.
+    /// </summary>
+    public class DateToPackageLabelConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (!(value is Dynamo.PackageManager.PackageManagerSearchElement packageManagerSearchElement)) return String.Empty;
+            if (packageManagerSearchElement.IsDeprecated) return Resources.PackageManagerPackageDeprecated;
+
+            DateTime.TryParse(packageManagerSearchElement.LatestVersionCreated, out DateTime dateLastUpdated);
+
+            // For testing purposes
+            var test = DateTime.TryParse((string)parameter, out DateTime testDate);
+            TimeSpan difference = test ? testDate - dateLastUpdated : DateTime.Now - dateLastUpdated;
+
+            int numberVersions = packageManagerSearchElement.Header.num_versions;
+
+            if (numberVersions > 1)
+            {
+                return difference.TotalDays >= 30 ? "" : Resources.PackageManagerPackageUpdated;
+            }
+            return Resources.PackageManagerPackageNew;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
     public class InverseBoolToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -1189,6 +1531,21 @@ namespace Dynamo.Controls
             if ((bool)value)
                 return Visibility.Hidden;
             return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    public class InverseBoolToEnablingConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if ((bool)value)
+                return false;
+            return true;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -1253,8 +1610,8 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             string originalName = value.ToString();
-            if (originalName == "Code Block") return new Thickness(0, 12, 0, 0);
-            return new Thickness(0, 3, 0, 5);
+            if (originalName == "Code Block") return new Thickness(0, 12, -24, 0);
+            return new Thickness(0, 3, -24, 5);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -1376,7 +1733,7 @@ namespace Dynamo.Controls
                 if (zoom < .5)
                     return Visibility.Hidden;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine($"problem attempting to parse zoomsize or param {value}{ e.Message}");
             }
@@ -1395,10 +1752,49 @@ namespace Dynamo.Controls
         {
             double number = (double)System.Convert.ChangeType(value, typeof(double));
 
-            if (number <= 0.4)
+            if (number <= Configurations.ZoomThreshold)
                 return false;
 
             return true;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+    
+    public class ZoomToOpacityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            double number = (double)System.Convert.ChangeType(value, typeof(double));
+
+            if (number <= Configurations.ZoomThreshold)
+                return 0.0;
+
+            return 0.5;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    /// <summary>
+    /// Hides (collapses) if the zoom level is larger than the designated value
+    /// </summary>
+    public class ZoomToVisibilityCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            double number = (double)System.Convert.ChangeType(value, typeof(double));
+
+            if (number > Configurations.ZoomThreshold)
+                return Visibility.Collapsed;
+
+            return Visibility.Visible;    
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -1491,9 +1887,9 @@ namespace Dynamo.Controls
             double dbl;
             if (double.TryParse(value as string, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
             {
-                return (dbl.ToString(SIUnit.NumberFormat, CultureInfo.InvariantCulture));
+                return (dbl.ToString(DynamoUnits.Display.PrecisionFormat, CultureInfo.InvariantCulture));
             }
-            return value ?? 0.ToString(SIUnit.NumberFormat);
+            return value ?? 0.ToString(DynamoUnits.Display.PrecisionFormat);
         }
 
         public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -1541,7 +1937,7 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             //source -> target
-            return value == null ? "" : value.ToString(); 
+            return value == null ? "" : value.ToString();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -1693,6 +2089,25 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// Truncates a node's warning messages to 30 characters. Used on the node's context menu
+    /// when un-dismissing a node's warnings.
+    /// </summary>
+    public class NodeWarningConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (!(value is string stringValue)) return null;
+            string ellipses = stringValue.Length > 30 ? "..." : "";
+            return stringValue.Substring(0, Math.Min(stringValue.Length, 30)) + ellipses;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     public class TabSizeConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -1741,6 +2156,7 @@ namespace Dynamo.Controls
         }
     }
 
+    [Obsolete("This class will be removed in Dynamo 3.0 - please use the ForgeUnit SDK based methods")]
     public class MeasureConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -1764,9 +2180,9 @@ namespace Dynamo.Controls
             if (um == null)
                 return Resources.AboutWindowCannotGetVersion;
 
-            if (!um.IsUpdateAvailable) 
+            if (!um.IsUpdateAvailable)
                 return Resources.AboutWindowUpToDate;
-            
+
             var latest = um.AvailableVersion;
 
             return latest != null ? latest.ToString() : Resources.AboutWindowCannotGetVersion;
@@ -2108,10 +2524,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if ((int)value > 0)
-                return Visibility.Visible;
-
-            return Visibility.Collapsed;
+            return (int)value > 0 ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -2231,6 +2644,29 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// This converts the ML node autocomplete confidence score to a formatted string for display.
+    /// </summary>
+    public class ConfidenceScoreFormattingConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var text = value == null ? string.Empty : value.ToString();
+            var score = value == null ? 0 : (double)value;
+            if (score < 1)
+            {
+                text = "<1";
+            }
+            return text;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var text = value.ToString();
+            return text;
+        }
+    }
+
     public class MenuItemCheckConverter : IValueConverter
     {
         /// <summary>
@@ -2243,7 +2679,7 @@ namespace Dynamo.Controls
         /// <returns></returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-         
+
             //use invariant culture, these strings should always be set via our code.
             try
             {
@@ -2251,13 +2687,13 @@ namespace Dynamo.Controls
                 var param = System.Convert.ToDouble(parameter, CultureInfo.InvariantCulture);
                 return fontsize == param;
             }
-            
-            catch(Exception e)
+
+            catch (Exception e)
             {
                 Console.WriteLine($"problem attempting to parse fontsize or param {value} {parameter} { e.Message}");
                 return false;
             }
-          
+
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -2270,13 +2706,13 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var text = value == null ? String.Empty:value.ToString();             
+            var text = value == null ? String.Empty : value.ToString();
             return text;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var text = value.ToString();           
+            var text = value.ToString();
             return text;
         }
     }
@@ -2331,12 +2767,12 @@ namespace Dynamo.Controls
                 fontsize = System.Convert.ToDouble(values[1], CultureInfo.InvariantCulture);
             }
             //just use defaults, this will enable the text editor.
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine($"problem attempting to parse fontsize or zoom {values[1]} {values[0]}. { e.Message}");
             }
 
-            var factor = zoom*fontsize;
+            var factor = zoom * fontsize;
             if (factor < MinFontFactor)
             {
                 return false;
@@ -2358,14 +2794,14 @@ namespace Dynamo.Controls
             if (parameter == null) return Visibility.Visible;
             if (parameter.ToString() == "FlipTextblock")
             {
-                if ((Visibility) value == Visibility.Collapsed)
+                if ((Visibility)value == Visibility.Collapsed)
                 {
                     return Visibility.Visible;
                 }
             }
             else if (parameter.ToString() == "FlipTextbox")
             {
-                return (Visibility)value; 
+                return (Visibility)value;
             }
             return Visibility.Visible;
         }
@@ -2377,200 +2813,124 @@ namespace Dynamo.Controls
     }
 
     /// <summary>
-        /// Converts element type of node search element in short string.
-        /// E.g. ElementTypes.Packaged => PKG.
-        /// </summary>
-        public class ElementTypeToShortConverter : IValueConverter
+    /// Converts element type of node search element in short string.
+    /// E.g. ElementTypes.Packaged => PKG.
+    /// </summary>
+    public class ElementTypeToShortConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            var type = (ElementTypes)value;
+
+            switch (type)
             {
-                var type = (ElementTypes) value;
+                case ElementTypes.Packaged:
+                    return Resources.PackageTypeShortString;
 
-                switch (type)
-                {
-                    case ElementTypes.Packaged:
-                        return Resources.PackageTypeShortString;
+                case ElementTypes.Packaged | ElementTypes.ZeroTouch:
+                    return Resources.PackageTypeShortString;
 
-                    case ElementTypes.Packaged | ElementTypes.ZeroTouch:
-                        return Resources.PackageTypeShortString;
+                case ElementTypes.Packaged | ElementTypes.CustomNode:
+                    return Resources.PackageTypeShortString;
 
-                    case ElementTypes.Packaged | ElementTypes.CustomNode:
-                        return Resources.PackageTypeShortString;
+                case ElementTypes.Packaged | ElementTypes.ZeroTouch | ElementTypes.CustomNode:
+                    return Resources.PackageTypeShortString;
 
-                    case ElementTypes.Packaged | ElementTypes.ZeroTouch | ElementTypes.CustomNode:
-                        return Resources.PackageTypeShortString;
+                case ElementTypes.ZeroTouch:
+                    return Resources.ZeroTouchTypeShortString;
 
-                    case ElementTypes.ZeroTouch:
-                        return Resources.ZeroTouchTypeShortString;
+                case ElementTypes.CustomNode:
+                    return Resources.CustomNodeTypeShortString;
 
-                    case ElementTypes.CustomNode:
-                        return Resources.CustomNodeTypeShortString;
-
-                    case ElementTypes.BuiltIn:
-                    case ElementTypes.None:
-                    default:
-                        return string.Empty;
-                }
-            }
-
-            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-            {
-                throw new NotImplementedException();
+                case ElementTypes.BuiltIn:
+                case ElementTypes.None:
+                default:
+                    return string.Empty;
             }
         }
 
-        /// <summary>
-        /// Converter is used in search library view. If current mode is LibraryView, then hide found members.
-        /// Otherwise show found members.
-        /// </summary>
-        public class LibraryViewModeToBoolConverter : IValueConverter
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-            {
-                var mode = (SearchViewModel.ViewMode)value;
-                return mode == SearchViewModel.ViewMode.LibraryView;
-            }
+            throw new NotImplementedException();
+        }
+    }
 
-            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-            {
-                throw new NotImplementedException();
-            }
+    /// <summary>
+    /// Converter is used in search library view. If current mode is LibraryView, then hide found members.
+    /// Otherwise show found members.
+    /// </summary>
+    public class LibraryViewModeToBoolConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var mode = (SearchViewModel.ViewMode)value;
+            return mode == SearchViewModel.ViewMode.LibraryView;
         }
 
-        /// <summary>
-        /// Converter is used in WorkspaceView. It makes context menu longer.
-        /// Since context menu includes now inCanvasSearch, it should be align according its' new height.
-        /// </summary>
-        public class WorkspaceContextMenuHeightConverter : IValueConverter
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-            {
-                double actualContextMenuHeight = (double)value;
+            throw new NotImplementedException();
+        }
+    }
 
-                return actualContextMenuHeight + Configurations.InCanvasSearchTextBoxHeight;
-            }
+    /// <summary>
+    /// Converter is used in WorkspaceView. It makes context menu longer.
+    /// Since context menu includes now inCanvasSearch, it should be align according its' new height.
+    /// </summary>
+    public class WorkspaceContextMenuHeightConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            double actualContextMenuHeight = (double)value;
 
-            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-            {
-                throw new NotImplementedException();
-            }
+            return actualContextMenuHeight + Configurations.InCanvasSearchTextBoxHeight;
         }
 
-        /// <summary>
-        /// Checks if the item is last. In that case, this converter controls 
-        /// the last tree view item's  horizontal and vertical line height
-        /// </summary>
-        public class TreeViewLineConverter : IValueConverter
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-            {
-                TreeViewItem item = (TreeViewItem)value;
-                ItemsControl ic = ItemsControl.ItemsControlFromItemContainer(item);                
-                var returnval = ic.ItemContainerGenerator.IndexFromContainer(item) == ic.Items.Count - 1;
-                return returnval;
-            }
+            throw new NotImplementedException();
+        }
+    }
 
-            public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-            {
-                throw new Exception("The method or operation is not implemented.");
-            }
+    /// <summary>
+    /// Checks if the item is last. In that case, this converter controls 
+    /// the last tree view item's  horizontal and vertical line height
+    /// </summary>
+    public class TreeViewLineConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            TreeViewItem item = (TreeViewItem)value;
+            ItemsControl ic = ItemsControl.ItemsControlFromItemContainer(item);
+            var returnval = ic.ItemContainerGenerator.IndexFromContainer(item) == ic.Items.Count - 1;
+            return returnval;
         }
 
-        /// <summary>
-        /// This controls the TreeView Margin
-        /// </summary>
-        public class TreeViewLineMarginConverter : IMultiValueConverter
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            private const int TreeViewFactor = 2;            
-            private const int TreeViewLineOffsetNeg = -10;
-
-            public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
-            {
-                if (values[0] is Thickness)
-                {
-                    var parentMargin = (Thickness)(values[0]);
-                    var childMargin = (Thickness)(values[1]);
-                    TreeViewItem item = (TreeViewItem)values[2];
-
-                    //First get the level of the item.
-                    ItemsControl ic = ItemsControl.ItemsControlFromItemContainer(item);
-                    var level = -1;                   
-                    if (values[2] is DependencyObject)
-                    {
-                        var parent = VisualTreeHelper.GetParent(values[2] as DependencyObject);
-                        bool gotParentTree = false;
-                        while (!(gotParentTree) && (parent != null))
-                        {
-                            if (parent is TreeViewItem)
-                                level++;
-                            parent = VisualTreeHelper.GetParent(parent);
-                            if (parent is TreeView)
-                            {
-                                var view = parent as TreeView;
-                                if (view.Name == "CategoryTreeView")
-                                {
-                                    gotParentTree = true;
-                                }
-                            }
-                        }                                               
-                    }
-
-                    var diff = childMargin.Left - childMargin.Right;
-                    
-                    //If it is root category, then move the vertical line outside the grid.
-                    if (childMargin.Left == 0)
-                    {
-                        return new Thickness(TreeViewLineOffsetNeg, 0, 0, 0);
-                    }
-
-                    //If it is root category, then move the vertical line outside the grid.
-                    if (childMargin.Left == parentMargin.Left)
-                    {
-                        return new Thickness(TreeViewLineOffsetNeg, 0, 0, 0);
-                    }
-                   
-                    //For levels 0,1,2, the difference will be less. 
-                    //For deep levels, the expander left margin will be increased by 20. 
-                    //Hence the difference will be greater.
-                    if (diff < childMargin.Right)
-                    {
-                        return new Thickness(0, 0, childMargin.Left * TreeViewFactor, 0);
-                    }
-
-                    return new Thickness(diff, 0, diff * TreeViewFactor, 0);
-                }
-
-                //Default. Move the line outside the grid.
-                return new Thickness(TreeViewLineOffsetNeg, 0, 0, 0);
-            }
-
-            public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
-            {
-                throw new NotImplementedException();
-            }
+            throw new Exception("The method or operation is not implemented.");
         }
+    }
 
-        /// <summary>
-        /// This controls the horizontal line margin
-        /// </summary>
-        public class TreeViewHLineMarginConverter : IMultiValueConverter
+    /// <summary>
+    /// This controls the TreeView Margin
+    /// </summary>
+    public class TreeViewLineMarginConverter : IMultiValueConverter
+    {
+        private const int TreeViewFactor = 2;
+        private const int TreeViewLineOffsetNeg = -10;
+
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            private const int TreeViewFactor = 2;
-            private const int TreeViewLevelFactor = 3;
-            private const int TreeViewoffsetPos = 5;           
-            private const int TreeViewLineOffsetPos = 10;
-            private const int TreeViewLineOffsetNeg = -10;
-
-            public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+            if (values[0] is Thickness)
             {
-                var VerLnMargin = (Thickness)(values[0]);
-                var expanderMargin = (Thickness)(values[1]);
-                              
-                //Find if the item is last
-                var item = (TreeViewItem) values[2];
+                var parentMargin = (Thickness)(values[0]);
+                var childMargin = (Thickness)(values[1]);
+                TreeViewItem item = (TreeViewItem)values[2];
+
+                //First get the level of the item.
                 ItemsControl ic = ItemsControl.ItemsControlFromItemContainer(item);
                 var level = -1;
-                var isLastItem = ic.ItemContainerGenerator.IndexFromContainer(item) == ic.Items.Count - 1;
                 if (values[2] is DependencyObject)
                 {
                     var parent = VisualTreeHelper.GetParent(values[2] as DependencyObject);
@@ -2580,9 +2940,9 @@ namespace Dynamo.Controls
                         if (parent is TreeViewItem)
                             level++;
                         parent = VisualTreeHelper.GetParent(parent);
-                        if (parent is System.Windows.Controls.TreeView)
+                        if (parent is TreeView)
                         {
-                            var view = parent as System.Windows.Controls.TreeView;
+                            var view = parent as TreeView;
                             if (view.Name == "CategoryTreeView")
                             {
                                 gotParentTree = true;
@@ -2591,286 +2951,364 @@ namespace Dynamo.Controls
                     }
                 }
 
-                var left = VerLnMargin.Left + TreeViewLineOffsetPos;
-                var right = (expanderMargin.Right * TreeViewFactor) + TreeViewoffsetPos;
+                var diff = childMargin.Left - childMargin.Right;
 
-                //This is to set the Horizontal line close to the expander
-                // only for the case when expander is too far. (ex: 65,0,20,0)
-                if (left > right)
-                {
-                    right = left + TreeViewLineOffsetPos;
-                }
-
-                // If both vertical and expander margins are not set (for root categories)                 
-                // then move the horizontal margin outside the outergrid. this is 
-                // used here, because we don't want the lines for root categories.                
-                if (left == 0 && expanderMargin.Right == 0)
-                {
-                    left = TreeViewLineOffsetNeg;
-                }
-
-                //if the vertical margin is not set, then move the horizontal line by
-                //10 points. This is mostly used for levels 0 or 1.
-                else if (left == 0)
-                {
-                    left = right + TreeViewLineOffsetPos;
-                }
-
-                //If the treeview item is within 1 or 2 level, then move
-                //the horizontal line by 3 points. 
-                if (level >= 1 && level <= 2 && VerLnMargin.Left > 0)
-                {
-                    left = left - TreeViewLevelFactor;
-                }
-
-                //for deep levels, use the margin same as vertical line
-                if (level > 2)
-                {
-                    left = VerLnMargin.Left;
-                }
-               
-                return new Thickness(left, 0, right, 0);               
-            }
-
-            public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        /// <summary>
-        /// This controls the Vertical line, when expanded / collapsed
-        /// </summary>
-        public class TreeViewVLineMarginConverter : IValueConverter
-        {
-            private const int TreeViewLineOffsetNeg = -10;
-            public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-            {
-                Thickness margin = (Thickness)value;
-                int bottom = int.Parse(parameter.ToString());
-
-                //If the margin is not set
-                if (margin.Right == 0)
+                //If it is root category, then move the vertical line outside the grid.
+                if (childMargin.Left == 0)
                 {
                     return new Thickness(TreeViewLineOffsetNeg, 0, 0, 0);
                 }
 
-                return new Thickness(margin.Left, margin.Top, margin.Right, bottom);
-                
-            }
-
-            public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        /// <summary>
-        /// This controls the extra margin that is drawn even if the margin is not set
-        /// </summary>
-        public class TreeViewMarginCheck : IValueConverter
-        {
-            public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-            {
-                Thickness margin = (Thickness)value;
-                 
-                //If the margin is not set
-                if (margin.Right == 0)
+                //If it is root category, then move the vertical line outside the grid.
+                if (childMargin.Left == parentMargin.Left)
                 {
-                    return false;
+                    return new Thickness(TreeViewLineOffsetNeg, 0, 0, 0);
                 }
 
-                return true;
-
-            }
-
-            public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-            {
-                throw new Exception("The method or operation is not implemented.");
-            }
-
-        }
-       
-        /// <summary>
-        /// This converter sets the margin for inner elements. Inner elements (e.g Core - File)
-        /// should have the margin close to the expander. 
-        /// For expander margin  <seealso cref=" FullCategoryNameToMarginConverter"/>
-        /// </summary>
-        public class NestedContentMarginConverter : IValueConverter
-        {            
-            private const double TreeViewoffsetPos = 5;
-            private const double TreeViewoffsetNeg = -5;            
-            private const double TreeViewMarginFactor = -25;
-
-            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-            {
-                var nestedMargin = (Thickness)value;
-
-                //Set the text margin only if expander margin set. the expander margin is 
-                //set as 5 + 20 * numberOfPoints, the text should ideally start at -25.
-                // but for expanders in deep levels have margin increasing by 20. So ideal 
-                // calculation is right - left. ex: if the expander margin is 65,0,20,0 (3rd level) then 
-                // content margin has to be -45,0,0,0. if the expander margin is 25,0,20,0 then content 
-                // margin should be -25,0,0,0.
-                if (nestedMargin != null && nestedMargin.Left > TreeViewoffsetPos && nestedMargin.Right > 0)
+                //For levels 0,1,2, the difference will be less. 
+                //For deep levels, the expander left margin will be increased by 20. 
+                //Hence the difference will be greater.
+                if (diff < childMargin.Right)
                 {
-                    var left = nestedMargin.Right - nestedMargin.Left;
-                    if (left < TreeViewoffsetNeg)
+                    return new Thickness(0, 0, childMargin.Left * TreeViewFactor, 0);
+                }
+
+                return new Thickness(diff, 0, diff * TreeViewFactor, 0);
+            }
+
+            //Default. Move the line outside the grid.
+            return new Thickness(TreeViewLineOffsetNeg, 0, 0, 0);
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// This controls the horizontal line margin
+    /// </summary>
+    public class TreeViewHLineMarginConverter : IMultiValueConverter
+    {
+        private const int TreeViewFactor = 2;
+        private const int TreeViewLevelFactor = 3;
+        private const int TreeViewoffsetPos = 5;
+        private const int TreeViewLineOffsetPos = 10;
+        private const int TreeViewLineOffsetNeg = -10;
+
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            var VerLnMargin = (Thickness)(values[0]);
+            var expanderMargin = (Thickness)(values[1]);
+
+            //Find if the item is last
+            var item = (TreeViewItem)values[2];
+            ItemsControl ic = ItemsControl.ItemsControlFromItemContainer(item);
+            var level = -1;
+            var isLastItem = ic.ItemContainerGenerator.IndexFromContainer(item) == ic.Items.Count - 1;
+            if (values[2] is DependencyObject)
+            {
+                var parent = VisualTreeHelper.GetParent(values[2] as DependencyObject);
+                bool gotParentTree = false;
+                while (!(gotParentTree) && (parent != null))
+                {
+                    if (parent is TreeViewItem)
+                        level++;
+                    parent = VisualTreeHelper.GetParent(parent);
+                    if (parent is System.Windows.Controls.TreeView)
                     {
-                        //-45,0,0,0 is very close to expander. so move the content a bit.
-                        return new Thickness(left + TreeViewoffsetPos, 0, 0, 0);
-                    }
-                    else
-                    {
-                        return new Thickness(TreeViewMarginFactor, 0, 0, 0);
+                        var view = parent as System.Windows.Controls.TreeView;
+                        if (view.Name == "CategoryTreeView")
+                        {
+                            gotParentTree = true;
+                        }
                     }
                 }
-                              
-                return new Thickness(0, 0, 0, 0);
             }
 
-            public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+            var left = VerLnMargin.Left + TreeViewLineOffsetPos;
+            var right = (expanderMargin.Right * TreeViewFactor) + TreeViewoffsetPos;
+
+            //This is to set the Horizontal line close to the expander
+            // only for the case when expander is too far. (ex: 65,0,20,0)
+            if (left > right)
             {
-                throw new Exception("The method or operation is not implemented.");
+                right = left + TreeViewLineOffsetPos;
             }
+
+            // If both vertical and expander margins are not set (for root categories)                 
+            // then move the horizontal margin outside the outergrid. this is 
+            // used here, because we don't want the lines for root categories.                
+            if (left == 0 && expanderMargin.Right == 0)
+            {
+                left = TreeViewLineOffsetNeg;
+            }
+
+            //if the vertical margin is not set, then move the horizontal line by
+            //10 points. This is mostly used for levels 0 or 1.
+            else if (left == 0)
+            {
+                left = right + TreeViewLineOffsetPos;
+            }
+
+            //If the treeview item is within 1 or 2 level, then move
+            //the horizontal line by 3 points. 
+            if (level >= 1 && level <= 2 && VerLnMargin.Left > 0)
+            {
+                left = left - TreeViewLevelFactor;
+            }
+
+            //for deep levels, use the margin same as vertical line
+            if (level > 2)
+            {
+                left = VerLnMargin.Left;
+            }
+
+            return new Thickness(left, 0, right, 0);
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// This controls the Vertical line, when expanded / collapsed
+    /// </summary>
+    public class TreeViewVLineMarginConverter : IValueConverter
+    {
+        private const int TreeViewLineOffsetNeg = -10;
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            Thickness margin = (Thickness)value;
+            int bottom = int.Parse(parameter.ToString());
+
+            //If the margin is not set
+            if (margin.Right == 0)
+            {
+                return new Thickness(TreeViewLineOffsetNeg, 0, 0, 0);
+            }
+
+            return new Thickness(margin.Left, margin.Top, margin.Right, bottom);
 
         }
 
-        public class ClassViewMarginConverter : IValueConverter
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            private const int LevelMargin = 45;
-            private const int MarginTop = -10;
-            private const int MarginLeft = -10;
-            private const int ViewMarginLeft = -30;
-            private const int Factor = 10;
+            throw new NotImplementedException();
+        }
+    }
 
-            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    /// <summary>
+    /// This controls the extra margin that is drawn even if the margin is not set
+    /// </summary>
+    public class TreeViewMarginCheck : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            Thickness margin = (Thickness)value;
+
+            //If the margin is not set
+            if (margin.Right == 0)
             {
-                var grid = value as Grid;
-                if (grid == null || grid.Children.Count <= 0) return new Thickness();               
-               
-                var child1 = grid.Children[0] as Border;
-                if (child1 == null) return new Thickness();               
+                return false;
+            }
 
-                var innerChild = child1.Child as Grid;
-                if (innerChild == null || innerChild.Children.Count <= 0) return new Thickness();              
+            return true;
 
-                var toggle = innerChild.Children[2] as ToggleButton;
-                //second child is a border
-                var child2 = grid.Children[1] as Border;
-                if (child2 == null || toggle == null) return new Thickness();               
+        }
 
-                //its the actual item presenter
-                var items = child2.Child as ItemsPresenter;
-                if (items == null || !(items.DataContext is NodeCategoryViewModel)) return new Thickness();
-               
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
 
-                var dc = (NodeCategoryViewModel)items.DataContext;
-                var classInfoView = WpfUtilities.ChildOfType<ClassInformationView>(items);
-                if (dc.IsClassButton && classInfoView != null)
+    }
+
+    /// <summary>
+    /// This converter sets the margin for inner elements. Inner elements (e.g Core - File)
+    /// should have the margin close to the expander. 
+    /// For expander margin  <seealso cref=" FullCategoryNameToMarginConverter"/>
+    /// </summary>
+    public class NestedContentMarginConverter : IValueConverter
+    {
+        private const double TreeViewoffsetPos = 5;
+        private const double TreeViewoffsetNeg = -5;
+        private const double TreeViewMarginFactor = -25;
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var nestedMargin = (Thickness)value;
+
+            //Set the text margin only if expander margin set. the expander margin is 
+            //set as 5 + 20 * numberOfPoints, the text should ideally start at -25.
+            // but for expanders in deep levels have margin increasing by 20. So ideal 
+            // calculation is right - left. ex: if the expander margin is 65,0,20,0 (3rd level) then 
+            // content margin has to be -45,0,0,0. if the expander margin is 25,0,20,0 then content 
+            // margin should be -25,0,0,0.
+            if (nestedMargin != null && nestedMargin.Left > TreeViewoffsetPos && nestedMargin.Right > 0)
+            {
+                var left = nestedMargin.Right - nestedMargin.Left;
+                if (left < TreeViewoffsetNeg)
                 {
-                    //Expander margin increases in 20. First level it is 5,
-                    //second level it is 25, then 45 and then 65. set the content
-                    //presenter margin only to level > 1.  For level 2, set the margin
-                    // to 15.
-                    var left = 0.0;
-                    if (toggle.Margin.Left <= LevelMargin)
-                    {
-                        //for level 1
-                        if (toggle.Margin.Left - Factor >= 35)
-                        {
-                            left = toggle.Margin.Left - Factor;
-                            classInfoView.Margin = new Thickness(ViewMarginLeft, 0, 0, 0);
-                        }
-                        //for level 0
-                        else
-                        {
-                            left = items.Margin.Left;
-                            classInfoView.Margin = new Thickness(MarginLeft, 0, 0, 0);
-                        }
-                    }
-                    else
+                    //-45,0,0,0 is very close to expander. so move the content a bit.
+                    return new Thickness(left + TreeViewoffsetPos, 0, 0, 0);
+                }
+                else
+                {
+                    return new Thickness(TreeViewMarginFactor, 0, 0, 0);
+                }
+            }
+
+            return new Thickness(0, 0, 0, 0);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+    }
+
+    public class ClassViewMarginConverter : IValueConverter
+    {
+        private const int LevelMargin = 45;
+        private const int MarginTop = -10;
+        private const int MarginLeft = -10;
+        private const int ViewMarginLeft = -30;
+        private const int Factor = 10;
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var grid = value as Grid;
+            if (grid == null || grid.Children.Count <= 0) return new Thickness();
+
+            var child1 = grid.Children[0] as Border;
+            if (child1 == null) return new Thickness();
+
+            var innerChild = child1.Child as Grid;
+            if (innerChild == null || innerChild.Children.Count <= 0) return new Thickness();
+
+            var toggle = innerChild.Children[2] as ToggleButton;
+            //second child is a border
+            var child2 = grid.Children[1] as Border;
+            if (child2 == null || toggle == null) return new Thickness();
+
+            //its the actual item presenter
+            var items = child2.Child as ItemsPresenter;
+            if (items == null || !(items.DataContext is NodeCategoryViewModel)) return new Thickness();
+
+
+            var dc = (NodeCategoryViewModel)items.DataContext;
+            var classInfoView = WpfUtilities.ChildOfType<ClassInformationView>(items);
+            if (dc.IsClassButton && classInfoView != null)
+            {
+                //Expander margin increases in 20. First level it is 5,
+                //second level it is 25, then 45 and then 65. set the content
+                //presenter margin only to level > 1.  For level 2, set the margin
+                // to 15.
+                var left = 0.0;
+                if (toggle.Margin.Left <= LevelMargin)
+                {
+                    //for level 1
+                    if (toggle.Margin.Left - Factor >= 35)
                     {
                         left = toggle.Margin.Left - Factor;
+                        classInfoView.Margin = new Thickness(ViewMarginLeft, 0, 0, 0);
+                    }
+                    //for level 0
+                    else
+                    {
+                        left = items.Margin.Left;
                         classInfoView.Margin = new Thickness(MarginLeft, 0, 0, 0);
                     }
-
-                    items.Margin = new Thickness(left, MarginTop, 0, 0);
+                }
+                else
+                {
+                    left = toggle.Margin.Left - Factor;
+                    classInfoView.Margin = new Thickness(MarginLeft, 0, 0, 0);
                 }
 
-                return new Thickness();
+                items.Margin = new Thickness(left, MarginTop, 0, 0);
             }
 
-            public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-            {
-                throw new Exception("The method or operation is not implemented.");
-            }
+            return new Thickness();
         }
 
-        /// <summary>
-        /// Converter is used in Library Views.
-        /// Create - green.
-        /// Action - pink.
-        /// Returns - blue.
-        /// </summary>
-        public class ElementGroupToColorConverter : IValueConverter
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+            throw new Exception("The method or operation is not implemented.");
+        }
+    }
+
+    /// <summary>
+    /// Converter is used in Library Views.
+    /// Create - green.
+    /// Action - pink.
+    /// Returns - blue.
+    /// </summary>
+    public class ElementGroupToColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (!(value is SearchElementGroup))
             {
-                if (!(value is SearchElementGroup))
-                {
+                return null;
+            }
+
+            var type = (SearchElementGroup)value;
+
+            var resourceDictionary = SharedDictionaryManager.DynamoColorsAndBrushesDictionary;
+
+            switch (type)
+            {
+                case SearchElementGroup.Create:
+                    return resourceDictionary["CreateMembersColor"] as SolidColorBrush;
+                case SearchElementGroup.Action:
+                    return resourceDictionary["ActionMembersColor"] as SolidColorBrush;
+                case SearchElementGroup.Query:
+                    return resourceDictionary["QueryMembersColor"] as SolidColorBrush;
+                default:
                     return null;
-                }
-
-                var type = (SearchElementGroup)value;
-               
-                var resourceDictionary = SharedDictionaryManager.DynamoColorsAndBrushesDictionary;
-
-                switch (type)
-                {
-                    case SearchElementGroup.Create:
-                        return resourceDictionary["CreateMembersColor"] as SolidColorBrush;
-                    case SearchElementGroup.Action:
-                        return resourceDictionary["ActionMembersColor"] as SolidColorBrush;
-                    case SearchElementGroup.Query:
-                        return resourceDictionary["QueryMembersColor"] as SolidColorBrush;
-                    default:
-                        return null;
-                }
-            }
-
-            public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-            {
-                throw new Exception("The method or operation is not implemented.");
             }
         }
 
-        public class RgbaStringToBrushConverter : IValueConverter
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            throw new Exception("The method or operation is not implemented.");
+        }
+    }
+
+    public class RgbaStringToBrushConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            // example conversion: "R=255, G=60, B=0, A=255" beccomes "#FF3C00"
+            try
             {
-                // example conversion: "R=255, G=60, B=0, A=255" beccomes "#FF3C00"
-                try
+                var rgba = (value as string).Split(new char[] { 'R', 'G', 'B', 'A', ',', '=', ' ' },
+                    StringSplitOptions.RemoveEmptyEntries);
+
+                if (rgba.Count() == 4)
                 {
-                    var rgba = (value as string).Split(new char[] { 'R', 'G', 'B', 'A', ',', '=', ' ' },
-                        StringSplitOptions.RemoveEmptyEntries);
-
-                    if (rgba.Count() == 4)
-                    {
-                        return new SolidColorBrush(Color.FromRgb(
-                           Byte.Parse(rgba[0]), Byte.Parse(rgba[1]), Byte.Parse(rgba[2])));
-                    }
-                } catch { }
-
-                return "Black"; // if not able to parse color
+                    return new SolidColorBrush(Color.FromRgb(
+                       Byte.Parse(rgba[0]), Byte.Parse(rgba[1]), Byte.Parse(rgba[2])));
+                }
             }
+            catch { }
 
-            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-            {
-                throw new NotImplementedException();
-            }
+            return "Black"; // if not able to parse color
         }
 
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
     /// Converter is used in WatchTree.xaml
     /// It converts the value of the padding required by each list level label to the required thickness (padding from the left)
     /// It then supplies the required thickness to the margin property for each label
@@ -2881,8 +3319,8 @@ namespace Dynamo.Controls
         {
             if (value is int)
             {
-                var margin = (int)value == 1 ? new Thickness(4, 3, 0, 0) : new Thickness(2,3,0,0);
-                return margin; 
+                var margin = (int)value == 1 ? new Thickness(4, 3, 0, 0) : new Thickness(2, 3, 0, 0);
+                return margin;
             }
             return new Thickness();
         }
@@ -2901,11 +3339,11 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if ((bool) value)
+            if ((bool)value)
             {
                 return "Transparent";
             }
-            return "#aaaaaa";
+            return "#DCDCDC";
         }
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
@@ -2919,15 +3357,15 @@ namespace Dynamo.Controls
     /// </summary>
 
     public class ListIndexMarginConverter : IValueConverter
-    { 
+    {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if ((bool)value)
             {
-                return new Thickness(0,0,4,0);
+                return new Thickness(0, 0, 4, 0);
             }
-            return new Thickness (-4,0,4,0);
-        }   
+            return new Thickness(-4, 0, 4, 0);
+        }
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotImplementedException();
@@ -2945,9 +3383,9 @@ namespace Dynamo.Controls
         {
             if ((bool)value)
             {
-                return new Thickness(-4,0,4,0);
+                return new Thickness(-4, 0, 4, 0);
             }
-            return new Thickness(0,0,4,0);
+            return new Thickness(0, 0, 4, 0);
         }
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
@@ -2965,11 +3403,59 @@ namespace Dynamo.Controls
             if (value is Brush)
             {
                 var strColor = value.ToString().Replace("#", "");
-                return strColor.Substring(2);                
+                return strColor.Substring(2);
             }
             return "000000";
         }
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }    
+
+    /// <summary>
+    /// Converts the object type to forground color for the object.
+    /// </summary>
+    public class ObjectTypeConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            var resourceDictionary = SharedDictionaryManager.DynamoColorsAndBrushesDictionary;
+
+            if (values != null)
+            {
+                switch (values[0])
+                {
+                    case nameof(TypeCode.Object):
+                        return resourceDictionary["objectLabelBackground"] as SolidColorBrush;
+                    case nameof(TypeCode.Double):
+                        return resourceDictionary["numberLabelBackground"] as SolidColorBrush;
+                    case nameof(TypeCode.Int32):
+                        return resourceDictionary["numberLabelBackground"] as SolidColorBrush;
+                    case nameof(TypeCode.Int64):
+                        return resourceDictionary["numberLabelBackground"] as SolidColorBrush;
+                    case nameof(TypeCode.String):
+                        return resourceDictionary["stringLabelBackground"] as SolidColorBrush;
+                    case nameof(TypeCode.Boolean):
+                        return resourceDictionary["boolLabelBackground"] as SolidColorBrush;                                        
+                    default:
+                        if (values[1].ToString() == "List")
+                        {
+                            return resourceDictionary["PrimaryCharcoal200Brush"] as SolidColorBrush;
+                        }
+                        else
+                        {
+                            return resourceDictionary["nullLabelBackground"] as SolidColorBrush;
+                        }
+                };
+            }
+            else
+            {
+                return resourceDictionary["PrimaryCharcoal200Brush"] as SolidColorBrush;
+            }
+        }
+        
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }
@@ -3004,6 +3490,26 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return value.Equals(parameter);
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value.Equals(true) ? parameter : Binding.DoNothing;
+        }
+    }
+
+    /// <summary>
+    /// Receive a GeometryScaleSize value and if it matches the parameter passed will return a brush with a specific color
+    /// </summary>
+    public class ScaleSizeBackgroundConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value.Equals(parameter))
+            {
+                return new SolidColorBrush(Color.FromRgb(217, 217, 217));
+            }          
+            return new SolidColorBrush(Color.FromRgb(71, 71, 71));
+            
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -3047,7 +3553,7 @@ namespace Dynamo.Controls
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             bool expanderExpanded = (bool)value;
-            string expanderName = string.Empty; 
+            string expanderName = string.Empty;
             if (expanderExpanded == true)
             {
                 expanderName = parameter as string;
@@ -3077,6 +3583,216 @@ namespace Dynamo.Controls
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Converts an ICollection&lt;AnnotationViewModel&gt; to a string
+    /// that displays how many AnnotationViewModels there is in the
+    /// Collection.
+    /// </summary>
+    [ValueConversion(typeof(ICollection<AnnotationViewModel>), typeof(string))]
+    public class NestedGroupsLabelConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (!(value is ICollection<AnnotationViewModel> viewModels) ||
+                !viewModels.Any())
+            {
+                return string.Empty;
+            }
+
+            var numberOfNestedGroups = viewModels.Count;
+            if (numberOfNestedGroups > 1)
+            {
+                return $"{numberOfNestedGroups} Groups";
+            }
+
+            return viewModels.FirstOrDefault().AnnotationText;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Converts PortType (Inport or Outport) enum to hard-coded string resources
+    /// </summary>
+    [ValueConversion(typeof(PortType), typeof(string))]
+    public class PortTypeToStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            switch (value)
+            {
+                case PortType.Input:
+                    return Wpf.Properties.Resources.PortPropertiesPromptInputWindowTitle;
+                case PortType.Output:
+                    return Wpf.Properties.Resources.PortPropertiesPromptOutputWindowTitle;
+                default:
+                    return "Port Properties";
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Converts a PointColletion to a Geometry so the points can be drawn using a Path
+    /// </summary>
+    [ValueConversion(typeof(PointCollection), typeof(Geometry))]
+    public class PointsToPathConverter : IValueConverter
+    {
+        #region IValueConverter Members
+
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null)
+                return null;
+
+            if (value.GetType() != typeof(PointCollection))
+                return null;
+
+            PointCollection points = (value as PointCollection);
+            if (points.Count > 0)
+            {
+                Point start = points[0];
+                List<LineSegment> segments = new List<LineSegment>();
+                for (int i = 1; i < points.Count; i++)
+                {
+                    segments.Add(new LineSegment(points[i], true));
+                }
+                PathFigure figure = new PathFigure(start, segments, false);
+                PathGeometry geometry = new PathGeometry();
+                geometry.Figures.Add(figure);
+                return geometry;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+
+        #endregion
+    }
+
+    /// <summary>
+    /// Returns a dark or light color depending on the contrast ration of the color with the background color
+    /// Contrast ration should be larger than 4.5:1
+    /// Contrast calculation algorithm from https://stackoverflow.com/questions/70187918/adapt-given-color-pairs-to-adhere-to-w3c-accessibility-standard-for-epubs/70192373#70192373
+    /// </summary>
+    public class TextForegroundSaturationColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var lightColor = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["WhiteColor"];
+            var darkColor = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["DarkerGrey"];
+
+            var backgroundColor = (System.Windows.Media.Color)value;
+
+            var contrastRatio = GetContrastRatio(darkColor, backgroundColor);
+
+            return contrastRatio < 4.5 ? new SolidColorBrush(lightColor) : new SolidColorBrush(darkColor);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            return null;
+        }
+
+        private double GetContrastRatio(System.Windows.Media.Color foreground, System.Windows.Media.Color background)
+        {
+            double L1 = GetRelativeLuminance(foreground);
+            double L2 = GetRelativeLuminance(background);
+
+            var result = L1 > L2 ? (L1 + 0.05) / (L2 + 0.05) : (L2 + 0.05) / (L1 + 0.05);
+
+            return result;
+        }
+
+        private double GetRelativeLuminance(System.Windows.Media.Color color)
+        {
+            var R = color.R / 255.0;
+            var G = color.G / 255.0;
+            var B = color.B / 255.0;
+
+            if (R < 0.03928) R = R / 12.92;
+            else R = Math.Pow((R + 0.055) / 1.055, 2.4);
+
+            if (G < 0.03928) G = G / 12.92;
+            else G = Math.Pow((G + 0.055) / 1.055, 2.4);
+
+            if (B < 0.03928) B = B / 12.92;
+            else B = Math.Pow((B + 0.055) / 1.055, 2.4);
+
+            return 0.2126 * R + 0.7152 * G + 0.0722 * B;
+        }
+    }
+
+    /// <summary>
+    /// This converter is used to add extra space between the ListBox and the CustomColorPicker border
+    /// </summary>
+    public class AdditionConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if ((value != null) && (parameter != null))
+            {
+                var firstValue = System.Convert.ToDouble(value);
+                var secondValue = double.Parse(parameter as string);
+
+                return firstValue + secondValue;
+            }
+
+            return 0d;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class ColorToSolidColorBrushConverter : IValueConverter
+    {
+        /// <summary>
+        /// Converts a Color to a SolidColorBrush.
+        /// </summary>
+        /// <returns>
+        /// A converted SolidColorBrush. If the method returns null, the valid null value is used.
+        /// </returns>
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value != null)
+                return new SolidColorBrush((Color)value);
+
+            return value;
+        }
+
+
+        /// <summary>
+        /// Converts a SolidColorBrush to a Color.
+        /// </summary>
+        /// <returns>
+        /// A converted value. If the method returns null, the valid null value is used.
+        /// </returns>
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value != null)
+                return ((SolidColorBrush)value).Color;
+
+            return value;
         }
     }
 }

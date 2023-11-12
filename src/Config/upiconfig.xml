@@ -1,0 +1,24 @@
+<UpiDllConfig>
+  <UpiValueRetrieval>
+    <upi_element name='upivalue'>
+      <upi_attribute name='version' value='1.0'/>
+      <upi_attribute name='type' value='product'/>
+      <upi_element name='level'>
+        <upi_attribute name='name' value='productline'/>
+        <upi_attribute name='id' value='DYN'/>
+        <upi_element name='level'>
+          <upi_attribute name='name' value='release'/>
+          <upi_attribute name='id' value='3.0.0'/>
+          <upi_element name='level'>
+            <upi_attribute name='name' value='master'/>
+            <upi_attribute name='id' value='Win64'/>
+            <upi_element name='level'>
+              <upi_attribute name='name' value='build'/>
+              <upi_attribute name='id' value='3.0.0' />
+            </upi_element>
+          </upi_element>
+        </upi_element>
+      </upi_element>
+    </upi_element>
+  </UpiValueRetrieval>
+</UpiDllConfig> 

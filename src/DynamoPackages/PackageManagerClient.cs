@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Dynamo.Graph.Workspaces;
 using Greg;
 using Greg.Requests;
 using Greg.Responses;
-using System.Linq;
 
 namespace Dynamo.PackageManager
 {
@@ -14,6 +14,7 @@ namespace Dynamo.PackageManager
         #region Properties/Fields
 
         public const string PackageEngineName = "dynamo";
+        private IEnumerable<string> cachedHosts;
 
         // These were used early on in order to identify packages with binaries and python scripts
         // This is now a bona fide field in the DB so they are obsolete. 
@@ -31,6 +32,11 @@ namespace Dynamo.PackageManager
         ///     The directory where new packages are created during the upload process.
         /// </summary>
         private readonly string packageUploadDirectory;
+
+        /// <summary>
+        ///     The dictionay stores the package name corresponding to the boolean result of whether the user is an author of that package or not.
+        /// </summary>
+        private Dictionary<string, bool> packageMaintainers;
        
         /// <summary>
         ///     The URL of the package manager website
@@ -47,6 +53,7 @@ namespace Dynamo.PackageManager
             this.packageUploadDirectory = packageUploadDirectory;
             this.uploadBuilder = builder;
             this.client = client;
+            this.packageMaintainers = new Dictionary<string, bool>();
         }
 
         internal bool Upvote(string packageId)
@@ -56,6 +63,18 @@ namespace Dynamo.PackageManager
                 var pkgResponse = this.client.ExecuteAndDeserialize(new Upvote(packageId));
                 return pkgResponse.success;
             }, false);
+        }
+
+        internal List<string> UserVotes()
+        {
+            var votes = FailFunc.TryExecute(() =>
+            {
+                var nv = new GetUserVotes();
+                var pkgResponse = this.client.ExecuteAndDeserializeWithContent<UserVotes>(nv);
+                return pkgResponse.content;
+            }, null);
+
+            return votes?.has_upvoted;
         }
 
         internal PackageManagerResult DownloadPackage(string packageId, string version, out string pathToPackage)
@@ -77,9 +96,29 @@ namespace Dynamo.PackageManager
         {
             return FailFunc.TryExecute(() => {
                 var nv = HeaderCollectionDownload.ByEngine("dynamo");
-                var pkgResponse = this.client.ExecuteAndDeserializeWithContent<List<PackageHeader>>(nv);
+                var pkgResponse = this.client.ExecuteAndDeserializeWithContent<List<PackageHeader>>(nv);                
+                CleanPackagesWithWrongVersions(pkgResponse.content);
                 return pkgResponse.content;
             }, new List<PackageHeader>());
+        }
+
+        /// <summary>
+        /// For every package Checks its versions and exclude the ones with errors
+        /// </summary>
+        /// <param name="packages"></param>
+        void CleanPackagesWithWrongVersions(List<PackageHeader> packages)
+        {
+            foreach (var package in packages)
+            {
+                bool packageHasWrongVersion = package.versions.Count(v => v.url == null) > 0;
+
+                if (packageHasWrongVersion)
+                {
+                    List<PackageVersion> cleanVersions = new List<PackageVersion>();
+                    cleanVersions.AddRange(package.versions.Where(v => v.url != null));
+                    package.versions = cleanVersions;
+                }
+            }
         }
 
         /// <summary>
@@ -97,6 +136,22 @@ namespace Dynamo.PackageManager
             }, null);
 
             return header;
+        }
+
+        /// <summary>
+        /// Gets last published version of all the packages published by the current user.
+        /// </summary>
+        /// <returns></returns>
+        internal UserPackages GetUsersLatestPackages()
+        {
+            var packages = FailFunc.TryExecute(() =>
+            {
+                var nv = new GetMyPackages();
+                var pkgResponse = this.client.ExecuteAndDeserializeWithContent<UserPackages>(nv);
+                return pkgResponse.content;
+            }, null);
+
+            return packages;
         }
 
         /// <summary>
@@ -118,7 +173,8 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// Gets the metadata for a specific version of a package.
         /// </summary>
-        /// <param name="packageInfo">Name and version of a package</param>
+        /// <param name="id">Name and version of a package</param>
+        /// <param name="version"></param>
         /// <returns>Package version metadata</returns>
         internal virtual PackageVersion GetPackageVersionHeader(string id, string version)
         {
@@ -135,14 +191,18 @@ namespace Dynamo.PackageManager
         /// Make a call to Package Manager to get the known
         /// supported hosts for package publishing and filtering
         /// </summary>
-        internal IEnumerable<string> GetKnownHosts()
+        internal virtual IEnumerable<string> GetKnownHosts()
         {
-            return FailFunc.TryExecute(() =>
+            if (cachedHosts == null)
             {
-                var hosts = new Hosts();
-                var hostsResponse = this.client.ExecuteAndDeserializeWithContent<List<String>>(hosts);
-                return hostsResponse.content;
-            }, new List<string>());
+                cachedHosts = FailFunc.TryExecute(() =>
+                {
+                    var hosts = new Hosts();
+                    var hostsResponse = this.client.ExecuteAndDeserializeWithContent<List<String>>(hosts);
+                    return hostsResponse.content;
+                }, new List<string>());
+            }
+            return cachedHosts;
         }
 
         internal bool GetTermsOfUseAcceptanceStatus()
@@ -165,33 +225,33 @@ namespace Dynamo.PackageManager
             }, false);
         }
 
-        internal PackageUploadHandle PublishAsync(Package package, IEnumerable<string> files, bool isNewVersion)
+        internal PackageUploadHandle PublishAsync(Package package, IEnumerable<string> files, IEnumerable<string> markdownFiles, bool isNewVersion)
         {
             var packageUploadHandle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(package));
 
             Task.Factory.StartNew(() =>
             {
-                Publish(package, files, isNewVersion, packageUploadHandle);
+                Publish(package, files, markdownFiles, isNewVersion, packageUploadHandle);
             });
 
             return packageUploadHandle;
         }
 
-        internal void Publish(Package package, IEnumerable<string> files, bool isNewVersion, PackageUploadHandle packageUploadHandle)
+        internal void Publish(Package package, IEnumerable<string> files, IEnumerable<string> markdownFiles, bool isNewVersion, PackageUploadHandle packageUploadHandle)
         {
             try
             {
                 ResponseBody ret = null;
                 if (isNewVersion)
                 {
-                    var pkg = uploadBuilder.NewPackageVersionUpload(package, packageUploadDirectory, files,
+                    var pkg = uploadBuilder.NewPackageVersionUpload(package, packageUploadDirectory, files, markdownFiles,
                         packageUploadHandle);
                     packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
                     ret = this.client.ExecuteAndDeserialize(pkg);
                 }
                 else
                 {
-                    var pkg = uploadBuilder.NewPackageUpload(package, packageUploadDirectory, files,
+                    var pkg = uploadBuilder.NewPackageUpload(package, packageUploadDirectory, files, markdownFiles,
                         packageUploadHandle);
                     packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
                     ret = this.client.ExecuteAndDeserialize(pkg);
@@ -257,9 +317,15 @@ namespace Dynamo.PackageManager
 
         internal bool DoesCurrentUserOwnPackage(Package package,string username) 
         {
+            bool value;
+            if (this.packageMaintainers.Count > 0 && this.packageMaintainers.TryGetValue(package.Name, out value)) {
+                return value;
+            }
             var pkg = new PackageInfo(package.Name, new Version(package.VersionName));
             var mnt = GetPackageMaintainers(pkg);
-            return (mnt != null) && (mnt.maintainers.Any(maintainer => maintainer.username.Equals(username)));
+            value = (mnt != null) && (mnt.maintainers.Any(maintainer => maintainer.username.Equals(username)));
+            this.packageMaintainers[package.Name] = value;
+            return value;
         }
     }
 }

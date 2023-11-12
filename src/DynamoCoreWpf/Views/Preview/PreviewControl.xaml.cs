@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -383,8 +383,7 @@ namespace Dynamo.UI.Controls
 
                     newViewModel = nodeViewModel.DynamoViewModel.WatchHandler.GenerateWatchViewModelForData(
                         nodeViewModel.NodeModel.CachedValue, preferredDictionaryOrdering,
-                        null, nodeViewModel.NodeModel.AstIdentifierForPreview.Name, false);
-
+                        null, nodeViewModel.NodeModel.AstIdentifierForPreview.Name, false);                    
                 },
                 (m) =>
                 {
@@ -393,10 +392,7 @@ namespace Dynamo.UI.Controls
 
                     if (largeContentGrid.Children.Count == 0)
                     {
-                        var tree = new WatchTree
-                        {
-                            DataContext = new WatchViewModel(nodeViewModel.DynamoViewModel.BackgroundPreviewViewModel.AddLabelForPath)
-                        };
+                        var tree = new WatchTree(new WatchViewModel(nodeViewModel.DynamoViewModel.BackgroundPreviewViewModel.AddLabelForPath));
                         tree.treeView1.ItemContainerGenerator.StatusChanged += WatchContainer_StatusChanged;
                         largeContentGrid.Children.Add(tree);
                     }
@@ -437,11 +433,12 @@ namespace Dynamo.UI.Controls
                 }
             );
         }
-
+        
         /// <summary>
         /// It's used to apply Collapsed and Expanded events for TreeViewItems.
         /// </summary>
         /// <param name="sender">TreeView</param>
+        /// <param name="e"></param>
         private void WatchContainer_StatusChanged(object sender, EventArgs e)
         {
             var generator = sender as ItemContainerGenerator;

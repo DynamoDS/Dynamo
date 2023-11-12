@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -17,6 +17,7 @@ using ProtoCore.Utils;
 using ProtoScript.Runners;
 using BuildWarning = ProtoCore.BuildData.WarningEntry;
 using RuntimeWarning = ProtoCore.Runtime.WarningEntry;
+using RuntimeInfo = ProtoCore.Runtime.InfoEntry;
 
 namespace Dynamo.Engine
 {
@@ -428,6 +429,39 @@ namespace Dynamo.Engine
                 }
             }
 
+            foreach (var node in nodes)
+            {
+                if (!node.IsInputNode) continue;
+
+                // Only one or the other of the two lists, Added or Modified, will match the node GUID if they do. 
+                bool isAdded = false;
+                for (int i = 0; i < graphSyncdata.AddedSubtrees.Count; i++)
+                {
+                    if (graphSyncdata.AddedSubtrees[i].GUID == node.GUID)
+                    {
+                        graphSyncdata.AddedSubtrees[i] = new Subtree(graphSyncdata.AddedSubtrees[i])
+                        {
+                            IsInput = true
+                        };
+                        isAdded = true;
+                        break;
+                    }
+                }
+                if (isAdded) continue;
+
+                for (int i = 0; i < graphSyncdata.ModifiedSubtrees.Count; i++)
+                {
+                    if (graphSyncdata.ModifiedSubtrees[i].GUID == node.GUID)
+                    {
+                        graphSyncdata.ModifiedSubtrees[i] = new Subtree(graphSyncdata.ModifiedSubtrees[i])
+                        {
+                            IsInput = true
+                        };
+                        break;
+                    }
+                }
+            }
+
             if (graphSyncdata.AddedSubtrees.Any() || graphSyncdata.ModifiedSubtrees.Any() || graphSyncdata.DeletedSubtrees.Any())
             {
                 lock (graphSyncDataQueue)
@@ -465,6 +499,11 @@ namespace Dynamo.Engine
         internal IDictionary<Guid, List<RuntimeWarning>> GetRuntimeWarnings()
         {
             return liveRunnerServices.GetRuntimeWarnings();
+        }
+
+        internal IDictionary<Guid, List<RuntimeInfo>> GetRuntimeInfos()
+        {
+            return liveRunnerServices.GetRuntimeInfos();
         }
 
         internal IEnumerable<Guid> GetExecutedAstGuids(Guid sessionID)
@@ -602,19 +641,19 @@ namespace Dynamo.Engine
         /// <summary>
         /// Creates CompilationServices.
         /// </summary>
-        /// <param name="core">Copilation core</param>
+        /// <param name="libraryServices">Copilation core</param>
         public CompilationServices(LibraryServices libraryServices)
         {
             compilationCore = libraryServices.LibraryManagementCore;
             priorNames = libraryServices.GetPriorNames();
         }
 
-        [Obsolete("This method is deprecated and will be removed in Dynamo 3.0")]
         /// <summary>
         /// Pre-compiles Design script code in code block node.
         /// </summary>
         /// <param name="parseParams">Container for compilation related parameters</param>
         /// <returns>true if code compilation succeeds, false otherwise</returns>
+        [Obsolete("This method is deprecated and will be removed in Dynamo 3.0")]
         public bool PreCompileCodeBlock(ref ParseParam parseParams)
         {
             return CompilerUtils.PreCompileCodeBlock(compilationCore, parseParams, priorNames);

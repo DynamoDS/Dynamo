@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Dynamo.Controls;
@@ -87,6 +88,25 @@ namespace DynamoCoreWpfTests
 
             var modelCount = annotationView.ViewModel.AnnotationModel.Nodes.Count();
             Assert.AreEqual(1,modelCount);
+        }
+
+        [Test]
+        public void UngroupingCollapsedGroupWillUnCollapseAllGroupContent()
+        {
+            // Arrange
+            Open(@"core\annotationViewModelTests\groupsTestFile.dyn");
+
+            var annotationView = NodeViewWithGuid("a87c3469-dc5d-4475-849e-85ccd5fbae78");
+            var groupContent = annotationView.ViewModel.ViewModelBases;
+
+            Assert.IsFalse(annotationView.ViewModel.IsExpanded);
+            Assert.That(groupContent.All(x => x.IsCollapsed == true));
+
+            // Act
+            annotationView.UngroupAnnotation.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+
+            // Assert
+            Assert.That(groupContent.All(x => x.IsCollapsed == false));
         }
     }
 }

@@ -9,8 +9,9 @@
   <MakeConnectionCommand NodeId="f3491309-edc5-4e33-a6e9-5c2f0a7ced8d" PortIndex="0" Type="1" ConnectionMode="0" />
   <MakeConnectionCommand NodeId="d1bc3332-c599-4abe-b106-3da669c8a68b" PortIndex="0" Type="0" ConnectionMode="1" />
   <UndoRedoCommand CmdOperation="0" />
-  <UndoRedoCommand CmdOperation="0" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UndoRedoCommand CmdOperation="0" />
+  <UndoRedoCommand CmdOperation="0" />
   <UndoRedoCommand CmdOperation="0" />
   <UndoRedoCommand CmdOperation="0" />
   <UndoRedoCommand CmdOperation="0" />

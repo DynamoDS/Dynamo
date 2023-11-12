@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Dynamo.Logging;
 using ProtoCore.Mirror;
@@ -117,6 +117,15 @@ namespace Dynamo.Engine
         internal IDictionary<Guid, List<ProtoCore.Runtime.WarningEntry>> GetRuntimeWarnings()
         {
             return liveRunner.GetRuntimeWarnings();
+        }
+
+        /// <summary>
+        /// Returns runtime infos for this run.
+        /// </summary>
+        /// <returns></returns>
+        internal IDictionary<Guid, List<ProtoCore.Runtime.InfoEntry>> GetRuntimeInfos()
+        {
+            return liveRunner.GetRuntimeInfos();
         }
 
         /// <summary>

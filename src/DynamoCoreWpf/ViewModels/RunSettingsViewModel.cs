@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
@@ -6,6 +6,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Data;
 using Dynamo.Core;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
@@ -20,6 +21,7 @@ namespace Dynamo.Wpf.ViewModels
     public class RunTypeItem : NotificationObject
     {
         private bool enabled;
+        private bool isSelected;
 
         /// <summary>
         /// The enabled flag sets whether the RunType is selectablable
@@ -33,6 +35,19 @@ namespace Dynamo.Wpf.ViewModels
                 enabled = value;
                 RaisePropertyChanged("Enabled");
                 RaisePropertyChanged("ToolTipText");
+            }
+        }
+
+        /// <summary>
+        /// If this RunTypeItem is selected
+        /// </summary>
+        public bool IsSelected
+        {
+            get => isSelected;
+            internal set
+            {
+                isSelected = value;
+                RaisePropertyChanged(nameof(IsSelected));
             }
         }
 
@@ -135,18 +150,45 @@ namespace Dynamo.Wpf.ViewModels
         {
             get
             {
-                return Model.RunEnabled &&
-                    Model.RunType != RunType.Automatic &&
-                    Model.RunType != RunType.Periodic;
+                return Model.RunEnabled && // Running graphs is enabled
+                    !(workspaceViewModel.Model as HomeWorkspaceModel).GraphRunInProgress && // Not during graph execution
+                    Model.RunType == RunType.Manual; // Is in manual mode
             }
         }
+
+        /// <summary>
+        /// This value will enable/disable the RunType ComboBox located in RunSettingsControl.xaml
+        /// </summary>
+        public bool RunTypesEnabled
+        {
+            get
+            {
+                return Model.RunTypesEnabled;
+            }
+        }
+
 
         public string RunButtonToolTip
         {
             get
             {
-                return RunButtonEnabled
+                if (RunButtonEnabled == false && RunTypesEnabled == false)
+                    return Resources.DynamoViewRunButtonToolTipDisabledFileTrust;
+                else
+                {
+                    return RunButtonEnabled
                     ? Resources.DynamoViewRunButtonTooltip
+                    : Resources.DynamoViewRunButtonToolTipDisabled;
+                }              
+            }
+        }
+
+        public string RunTypesComboBoxToolTip
+        {
+            get
+            {
+                return RunTypesEnabled
+                    ? Resources.DynamoViewRunTypesComboBoxToolTipEnabled.Replace("\\n", System.Environment.NewLine)
                     : Resources.DynamoViewRunButtonToolTipDisabled;
             }
         }
@@ -182,6 +224,8 @@ namespace Dynamo.Wpf.ViewModels
             {
                 selectedRunTypeItem = value;
                 Model.RunType = selectedRunTypeItem.RunType;
+                RunTypeItems.ToList().ForEach(x => x.IsSelected = false);
+                selectedRunTypeItem.IsSelected = true;
             }
         }
 
@@ -198,7 +242,7 @@ namespace Dynamo.Wpf.ViewModels
 #if DEBUG
                 return Visibility.Visible;
 #else
-                return Visibility.Hidden;
+                return Visibility.Collapsed;
 #endif
             }
         }
@@ -223,6 +267,8 @@ namespace Dynamo.Wpf.ViewModels
             Model.PropertyChanged += Model_PropertyChanged;
 
             this.workspaceViewModel = workspaceViewModel;
+            workspaceViewModel.Model.PropertyChanged += HomeWorkspaceModel_PropertyChanged;
+
             this.dynamoViewModel = dynamoViewModel;
 
             CancelRunCommand = new DelegateCommand(CancelRun, CanCancelRun);
@@ -242,12 +288,43 @@ namespace Dynamo.Wpf.ViewModels
         public override void Dispose()
         {
             base.Dispose();
-            this.workspaceViewModel = null;
+
+            if (Model != null)
+            {
+                Model.PropertyChanged -= Model_PropertyChanged;
+            }
+
+            if (workspaceViewModel != null && workspaceViewModel.Model != null)
+            {
+                workspaceViewModel.Model.PropertyChanged -= HomeWorkspaceModel_PropertyChanged;
+            }
+            
+            workspaceViewModel = null;
         }
 
         #endregion
 
         #region private and internal methods
+
+        /// <summary>
+        /// Notifies all relevant Dynamo features (UI elements, commands) that the Graph exection has been enabled/disabled. 
+        /// </summary>
+        void NotifyOfGraphRunChanged()
+        {
+            RaisePropertyChanged(nameof(RunButtonEnabled));
+            RaisePropertyChanged(nameof(RunButtonToolTip));
+
+            if (Application.Current != null)
+            {
+                Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    dynamoViewModel.ShowOpenDialogAndOpenResultCommand.RaiseCanExecuteChanged();
+                    dynamoViewModel.NewHomeWorkspaceCommand.RaiseCanExecuteChanged();
+                    dynamoViewModel.OpenRecentCommand.RaiseCanExecuteChanged();
+                    dynamoViewModel.CloseHomeWorkspaceCommand.RaiseCanExecuteChanged();
+                }));
+            }
+        }
 
         /// <summary>
         /// Called when the RunSettings model has property changes.
@@ -258,26 +335,14 @@ namespace Dynamo.Wpf.ViewModels
         {
             switch (e.PropertyName)
             {
-                case "RunEnabled":
+                case nameof(RunSettings.RunEnabled):
                     RaisePropertyChanged("RunEnabled");
-                    RaisePropertyChanged("RunButtonEnabled");
-                    RaisePropertyChanged("RunButtonToolTip");
-                    if (Application.Current != null)
-                    {
-                        Application.Current.Dispatcher.Invoke(new Action(() =>
-                        {
-                            dynamoViewModel.ShowOpenDialogAndOpenResultCommand.RaiseCanExecuteChanged();
-                            dynamoViewModel.NewHomeWorkspaceCommand.RaiseCanExecuteChanged();
-                            dynamoViewModel.OpenRecentCommand.RaiseCanExecuteChanged();
-                            dynamoViewModel.CloseHomeWorkspaceCommand.RaiseCanExecuteChanged();
-                        }));
-                    }
+                    NotifyOfGraphRunChanged();
                     break;
                 case "RunPeriod":
                 case "RunType":
                     RaisePropertyChanged("RunPeriod");
                     RaisePropertyChanged("RunEnabled");
-                    RaisePropertyChanged("RunButtonEnabled");
                     RaisePropertyChanged("RunButtonToolTip");
                     RaisePropertyChanged("RunPeriodInputVisibility");
                     RaisePropertyChanged("RunButtonEnabled");
@@ -285,6 +350,22 @@ namespace Dynamo.Wpf.ViewModels
                     RaisePropertyChanged("SelectedRunTypeItem");
                     RaisePropertyChanged("RunButtonVisibility");
                     RunTypeChangedRun(null);
+                    break;
+                case "RunTypesEnabled":
+                    RaisePropertyChanged("RunTypesEnabled");
+                    break;
+                case "RunTypesComboBoxToolTipIsEnabled":
+                    RaisePropertyChanged("RunTypesComboBoxToolTip");
+                    break;
+            }
+        }
+
+        void HomeWorkspaceModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(HomeWorkspaceModel.GraphRunInProgress):
+                    NotifyOfGraphRunChanged();
                     break;
             }
         }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,7 +7,6 @@ using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Logging;
 using Dynamo.Migration;
-using Dynamo.Utilities;
 
 namespace Dynamo.Models
 {
@@ -218,7 +217,7 @@ namespace Dynamo.Models
                 var customizerType = Type.GetType("Dynamo.Wpf.INodeViewCustomization`1,DynamoCoreWpf");
                 if (customizerType != null)
                 {
-                    output = assem.GetTypes().Where(t => !t.IsAbstract && TypeExtensions.ImplementsGeneric(customizerType, t));
+                    output = assem.GetTypes().Where(t => !t.IsAbstract && Utilities.TypeExtensions.ImplementsGeneric(customizerType, t));
                     return output;
                 }
             }

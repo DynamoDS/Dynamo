@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
@@ -99,7 +99,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         {
             get
             {
-                return "FunctionNode";
+                return FunctionNode;
             }
         }
 
@@ -310,6 +310,8 @@ namespace Dynamo.Graph.Nodes.CustomNodes
             }
         }
 
+        internal static string FunctionNode = "FunctionNode";
+
         /// <summary>
         ///     Validates passed Custom Node definition and synchronizes node with it.
         /// </summary>
@@ -381,7 +383,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         /// </summary>
         public Symbol()
         {
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("", Properties.Resources.ToolTipSymbol)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("", Properties.Resources.ToolTipInputData)));
 
             RegisterAllPorts();
 
@@ -664,7 +666,7 @@ namespace Dynamo.Graph.Nodes.CustomNodes
         /// </summary>
         public Output()
         {
-            InPorts.Add(new Nodes.PortModel(PortType.Input, this, new PortData("", "")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("", Properties.Resources.ToolTipOutputData)));
 
             RegisterAllPorts();
 

@@ -1,9 +1,10 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-
+using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
@@ -11,9 +12,10 @@ using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels;
+using Greg.Responses;
 using NUnit.Framework;
 
-namespace Dynamo.Tests
+namespace DynamoCoreWpfTests
 {
     class ConverterTests
     {
@@ -53,6 +55,71 @@ namespace Dynamo.Tests
             array[1] = "";
             result = converter.Convert(array, null, null, null);
             Assert.AreEqual(Visibility.Collapsed, result);
+        }
+
+        [Test]
+        public void DateToPackageLabelConverterTest()
+        {
+            // Arrange
+            string packageCreatedDateString = "2021-10-22 13:30:45";
+            string packageUpdatedDateString = "2021-11-20 13:30:45";
+            string packageTooOldDateString = "2021-11-22 13:30:45";
+            string packageVersionNumber = "1.0.0.0";
+            string formItFilterName = "FormIt";
+
+            var tmpPackageVersion = new PackageVersion { version = packageVersionNumber, host_dependencies = new List<string> { formItFilterName }, created = packageCreatedDateString };
+
+            var converter = new DateToPackageLabelConverter();
+            var pkgDep = new PackageHeader()
+            {
+                name = "dep",
+                deprecated = true,
+                versions = new List<PackageVersion> { tmpPackageVersion },
+                num_versions = 1
+            };
+
+            var pkgSingle = new PackageHeader()
+            {
+                name = "single",
+                deprecated = false,
+                versions = new List<PackageVersion> { tmpPackageVersion },
+                num_versions = 1
+            };
+
+            var pkgMultiple = new PackageHeader()
+            {
+                name = "miltiple",
+                deprecated = false,
+                versions = new List<PackageVersion> { tmpPackageVersion },
+                num_versions = 3
+            };
+
+
+            // Act/Assert
+
+            // If we don't provide a PackageManagerSearchElement value, converter returns and empty string
+            var result = converter.Convert(String.Empty, null, null, null);
+            Assert.AreEqual(String.Empty, result);
+
+            // If the package is deprecated, returns "Deprecated"
+            var element = new Dynamo.PackageManager.PackageManagerSearchElement(pkgDep);
+            result = converter.Convert(element, null, null, null);
+            Assert.AreEqual(Dynamo.Wpf.Properties.Resources.PackageManagerPackageDeprecated, result);
+
+            // If the package is has only 1 version, and it's less than 30 days old, returns "New"
+            element = new Dynamo.PackageManager.PackageManagerSearchElement(pkgSingle);
+            result = converter.Convert(element, null, packageUpdatedDateString, null);
+            Assert.AreEqual(Dynamo.Wpf.Properties.Resources.PackageManagerPackageNew, result);
+
+            // If the package is has multiple versions, and it's less than 30 days old, returns "New"
+            element = new Dynamo.PackageManager.PackageManagerSearchElement(pkgMultiple);
+            result = converter.Convert(element, null, packageUpdatedDateString, null);
+            Assert.AreEqual(Dynamo.Wpf.Properties.Resources.PackageManagerPackageUpdated, result);
+
+            // If the package is more than 30 days old, returns an empty string
+            element = new Dynamo.PackageManager.PackageManagerSearchElement(pkgMultiple);
+            result = converter.Convert(element, null, packageTooOldDateString, null);
+            Assert.AreEqual(String.Empty, result);
         }
 
         [Test]

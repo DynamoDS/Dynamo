@@ -10,7 +10,7 @@ using NUnit.Framework;
 
 namespace DynamoCoreWpfTests
 {
-    [TestFixture, Ignore]
+    [TestFixture, Ignore("Deprecated feature")]
     class PresetViewModelTest :  DynamoViewModelUnitTest
     {
         [Test]

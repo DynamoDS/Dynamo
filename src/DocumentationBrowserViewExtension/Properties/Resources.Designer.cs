@@ -79,6 +79,69 @@ namespace Dynamo.DocumentationBrowser.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File not found.
+        /// </summary>
+        public static string FileNotFoundFailureMessage {
+            get {
+                return ResourceManager.GetString("FileNotFoundFailureMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zoom to fit.
+        /// </summary>
+        public static string ImageFitToolTip {
+            get {
+                return ResourceManager.GetString("ImageFitToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add to workspace\n\nAdds the example file to the workspace as a group. To avoid potential issues, run mode will be changed to Manual..
+        /// </summary>
+        public static string ImageInsertToolTip {
+            get {
+                return ResourceManager.GetString("ImageInsertToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zoom in.
+        /// </summary>
+        public static string ImageZoomInToolTip {
+            get {
+                return ResourceManager.GetString("ImageZoomInToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zoom out.
+        /// </summary>
+        public static string ImageZoomOutToolTip {
+            get {
+                return ResourceManager.GetString("ImageZoomOutToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inserted Dynamo graph.
+        /// </summary>
+        public static string InsertedGroupSubTitle {
+            get {
+                return ResourceManager.GetString("InsertedGroupSubTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The graph already contains the nodes to be inserted..
+        /// </summary>
+        public static string InsertGraphContainsNodesAlertMessage {
+            get {
+                return ResourceManager.GetString("InsertGraphContainsNodesAlertMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No further details available for this error..
         /// </summary>
         public static string InternalErrorNoDetailsAvailable {
@@ -97,7 +160,7 @@ namespace Dynamo.DocumentationBrowser.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show Documentation Browser.
+        ///   Looks up a localized string similar to Show _Documentation Browser.
         /// </summary>
         public static string MenuItemText {
             get {
@@ -133,7 +196,25 @@ namespace Dynamo.DocumentationBrowser.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Node Info.
+        ///   Looks up a localized string similar to Inputs and Outputs.
+        /// </summary>
+        public static string NodeDocumentationInputsAndOutputs {
+            get {
+                return ResourceManager.GetString("NodeDocumentationInputsAndOutputs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Node Issue Help.
+        /// </summary>
+        public static string NodeDocumentationIssueHelp {
+            get {
+                return ResourceManager.GetString("NodeDocumentationIssueHelp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Node Information.
         /// </summary>
         public static string NodeDocumentationNodeInfo {
             get {
@@ -144,9 +225,9 @@ namespace Dynamo.DocumentationBrowser.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Node Type.
         /// </summary>
-        public static string NodeDocumentationNodeType {
+        public static string NodeDocumentationOriginalNodeName {
             get {
-                return ResourceManager.GetString("NodeDocumentationNodeType", resourceCulture);
+                return ResourceManager.GetString("NodeDocumentationOriginalNodeName", resourceCulture);
             }
         }
         
@@ -160,11 +241,74 @@ namespace Dynamo.DocumentationBrowser.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Data type.
+        /// </summary>
+        public static string NodeInputsDataType {
+            get {
+                return ResourceManager.GetString("NodeInputsDataType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        public static string NodeInputsDescription {
+            get {
+                return ResourceManager.GetString("NodeInputsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string NodeInputsName {
+            get {
+                return ResourceManager.GetString("NodeInputsName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        public static string NodeInputsType {
+            get {
+                return ResourceManager.GetString("NodeInputsType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default value.
+        /// </summary>
+        public static string NodeInputsValue {
+            get {
+                return ResourceManager.GetString("NodeInputsValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Script tags detected in the help document have been removed..
         /// </summary>
         public static string ScriptTagsRemovalWarning {
             get {
                 return ResourceManager.GetString("ScriptTagsRemovalWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Example file from {0} could not be found.
+        /// </summary>
+        public static string ToastFileNotFoundLocationNotificationText {
+            get {
+                return ResourceManager.GetString("ToastFileNotFoundLocationNotificationText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Example file added to workspace. Run mode changed to Manual..
+        /// </summary>
+        public static string ToastInsertGraphNotificationText {
+            get {
+                return ResourceManager.GetString("ToastInsertGraphNotificationText", resourceCulture);
             }
         }
     }

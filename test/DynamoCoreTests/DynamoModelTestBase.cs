@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -101,6 +101,7 @@ namespace Dynamo
             }
 
             this.CurrentDynamoModel = DynamoModel.Start(CreateStartConfiguration(settings));
+            Assert.AreEqual(CurrentDynamoModel.State, DynamoModel.DynamoModelState.StartedUIless);
         }
 
         /// <summary>
@@ -211,7 +212,7 @@ namespace Dynamo
 
         protected NodeModel GetNodeInstance(string creationName)
         {
-            var searchElementList = CurrentDynamoModel.SearchModel.SearchEntries.OfType<NodeSearchElement>();
+            var searchElementList = CurrentDynamoModel.SearchModel.Entries.OfType<NodeSearchElement>();
             foreach (var element in searchElementList)
             {
                 if (element.CreationName == creationName)

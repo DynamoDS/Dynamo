@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using Dynamo.Wpf.UI.GuidedTour;
 
 namespace Dynamo.Wpf.Views.GuidedTour
 {
@@ -10,35 +11,75 @@ namespace Dynamo.Wpf.Views.GuidedTour
     /// </summary>
     public partial class GuideBackground : UserControl, INotifyPropertyChanged, IDisposable
     {
-        private Rect hole;
-        private Rect windowsRect;
+        private CutOffArea cutOffBackgroundArea;
+        private HighlightArea highlightBackgroundArea;
+        private Rect overlayRect;
         private Window mainWindow;
 
         /// <summary>
-        /// Rect with the size of the Dynamo Window regularly updating its size depending the window's size
+        /// Rect with the size of the Dynamo Window regularly updating its size depending the window's size, this will be used for drawing the overlay
         /// </summary>
-        public Rect WindowsRect { 
+        public Rect OverlayRect
+        { 
             get { 
-                return windowsRect; 
+                return overlayRect; 
             }
             set
             {
-                windowsRect = value;
-                RaisePropertyChanged(nameof(WindowsRect));
+                overlayRect = value;
+                RaisePropertyChanged(nameof(OverlayRect));
             }
         }
 
         /// <summary>
-        /// Rect used to cut the hole on the guide background 
+        /// Property that holds information used to cut a rectangle on the guide background so the user can have interaction
         /// </summary>
-        public Rect HoleRect {
+        public CutOffArea CutOffBackgroundArea
+        {
             get {
-                return hole; 
+                return cutOffBackgroundArea; 
             }
-            set { 
-                hole = value;
-                RaisePropertyChanged(nameof(HoleRect));
+            set {
+                cutOffBackgroundArea = value;
+                RaisePropertyChanged(nameof(CutOffBackgroundArea));
             }
+        }
+
+        /// <summary>
+        /// Property that holds information used for drawing the Highlight rectangle on the guide background 
+        /// </summary>
+        public HighlightArea HighlightBackgroundArea
+        {
+            get
+            {
+                return highlightBackgroundArea;
+            }
+            set
+            {
+                highlightBackgroundArea = value;
+                RaisePropertyChanged(nameof(HighlightBackgroundArea));
+            }
+        }
+
+        /// <summary>
+        /// This method clears the Highlight rectangle from the Canvas
+        /// </summary>
+        internal void ClearHighlightSection()
+        {
+            if (HighlightBackgroundArea != null)
+            {
+                HighlightBackgroundArea.HighlightColor = string.Empty;
+                HighlightBackgroundArea.ClearHighlightRectangleSize();
+            }
+        }
+
+        /// <summary>
+        /// This method will clean the cutoff area so the removed rectangle will be shown again
+        /// </summary>
+        internal void ClearCutOffSection()
+        {
+            if (CutOffBackgroundArea != null)
+                CutOffBackgroundArea.CutOffRect = new Rect();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -57,7 +98,9 @@ namespace Dynamo.Wpf.Views.GuidedTour
             DataContext = this;
 
             //Initializate the background with the current screen size
-            WindowsRect = new Rect(0, 0, System.Windows.SystemParameters.PrimaryScreenWidth, System.Windows.SystemParameters.PrimaryScreenHeight);
+            OverlayRect = new Rect(0, 0, System.Windows.SystemParameters.PrimaryScreenWidth, System.Windows.SystemParameters.PrimaryScreenHeight);
+            CutOffBackgroundArea = new CutOffArea();
+            HighlightBackgroundArea = new HighlightArea();
 
             //This event is triggered everytime that the main window changes it's size
             this.mainWindow = mainWindow;
@@ -71,9 +114,9 @@ namespace Dynamo.Wpf.Views.GuidedTour
         /// <param name="e"></param>
         private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            windowsRect.Width = e.NewSize.Width;
-            windowsRect.Height = e.NewSize.Height;
-            RaisePropertyChanged(nameof(WindowsRect));
+            overlayRect.Width = e.NewSize.Width;
+            overlayRect.Height = e.NewSize.Height;
+            RaisePropertyChanged(nameof(OverlayRect));
         }
 
         public void Dispose()

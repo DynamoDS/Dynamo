@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
@@ -9,6 +9,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Visualization;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using HelixToolkit.Wpf.SharpDX;
+using HelixToolkit.SharpDX.Core;
 using SharpDX;
 using Point = System.Windows.Point;
 
@@ -171,7 +172,16 @@ namespace Dynamo.Controls
 
         private void ViewModel_RequestZoomToFit(BoundingBox bounds)
         {
-            watch_view.ZoomExtents(bounds.ToRect3D());
+            var prevcamDir = watch_view.Camera.LookDirection;
+            watch_view.ZoomExtents(bounds.ToRect3D(.05));
+            //if after a zoom the camera is in an undefined position or view direction, reset it.
+            if(watch_view.Camera.Position.ToVector3().IsUndefined() || 
+                watch_view.Camera.LookDirection.ToVector3().IsUndefined() || 
+                watch_view.Camera.LookDirection.Length == 0)
+            {
+                watch_view.Camera.Position = prevCamera;
+                watch_view.Camera.LookDirection = prevcamDir;
+            }
         }
 
         private void RequestViewRefreshHandler()

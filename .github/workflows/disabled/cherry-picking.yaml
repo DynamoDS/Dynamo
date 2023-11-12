@@ -18,7 +18,7 @@ jobs:
       user_name: "Dynamo-Bot"
     steps:
     - name: checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     #Removes posible conflicting characters on the commit message
     #This is because the content of the message will be passed to a script as a parameter and quotation marks will split the text as if it where multiple parameters.
@@ -33,9 +33,11 @@ jobs:
 
     #Checks the message looking for a cherry-pick request and extracts the target branch name
     - name: Check Information
+      env:
+          ISSUE_BODY_PARSED: ${{steps.remove_quotations.outputs.replaced}}
       id: check-info
       run: |
-        echo "destination_branch=$(pwsh .\\.github\\scripts\\cherry_pick_check.ps1 "${{ steps.remove_quotations.outputs.replaced }}" )" >> $GITHUB_ENV
+        echo "destination_branch=$(pwsh .\\.github\\scripts\\cherry_pick_check.ps1 "${{ env.ISSUE_BODY_PARSED }}" )" >> $GITHUB_ENV
     
       #If a target branch was found will run the action
     - if: env.destination_branch != 'invalid'
@@ -50,6 +52,7 @@ jobs:
       env: 
         #Token used for the pull request. Corresponds to the DynamoBot account
         GITHUB_TOKEN: ${{secrets.DYNAMOBOTTOKEN}}
+        ISSUE_BODY_PARSED: ${{steps.remove_quotations.outputs.replaced}}
         #This represents the title and description of the pr in Markdown format
         #Everything before the first blank line will be the title
         #Everything after will be included in the description
@@ -60,4 +63,4 @@ jobs:
                   [Commit](https://github.com/DynamoDS/Dynamo/commit/${{github.event.after}})
                   
                   ### Pull request:
-                  ${{ steps.remove_quotations.outputs.replaced }}
+                  ${{ env.ISSUE_BODY_PARSED }}

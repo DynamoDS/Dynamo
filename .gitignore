@@ -9,6 +9,7 @@
 *.so
 bin/
 obj/
+int/
 packages/
 
 #find -type d -name bin -exec git rm -r {} \;
@@ -48,6 +49,7 @@ Thumbs.db
 *.user
 *.opendb
 .vs
+launchSettings.json
 
 # PYTHON #
 ###############
@@ -56,6 +58,10 @@ Thumbs.db
 # RESHARPER #
 ###############
 *_ReSharper*
+
+# IDE #
+###############
+.idea
 
 #documentation files
 doc/html/
@@ -98,3 +104,9 @@ test/core/customast/test.txt
 test/core/files/test.png
 test/core/migration/writetext.txt
 logo.png
+/src/DynamoCoreWpf/Packages
+dynamods-splash-screen-*.tgz
+/src/Notifications/Packages
+/src/Notifications/dynamods-notifications-center-*.tgz
+/src/DynamoCoreWpf/.npmrc
+/src/Notifications/.npmrc

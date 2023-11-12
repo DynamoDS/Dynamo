@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -6,12 +6,13 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Xml;
+using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Events;
-using Dynamo.Extensions;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
@@ -27,6 +28,7 @@ using Dynamo.Properties;
 using Dynamo.Scheduler;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using DynamoUtilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ProtoCore.Namespace;
@@ -48,6 +50,34 @@ namespace Dynamo.Graph.Workspaces
         public double X;
         public double Y;
         public double Zoom;
+
+        /// <summary>
+        /// Load the extra view information required to fully construct a WorkspaceModel object 
+        /// </summary>
+        /// <param name="json"></param>
+        static internal ExtraWorkspaceViewInfo ExtraWorkspaceViewInfoFromJson(string json)
+        {
+            JsonReader reader = new JsonTextReader(new StringReader(json));
+            var obj = JObject.Load(reader);
+            var viewBlock = obj["View"];
+            if (viewBlock == null)
+                return null;
+
+            var settings = new JsonSerializerSettings
+            {
+                Error = (sender, args) =>
+                {
+                    args.ErrorContext.Handled = true;
+                    Console.WriteLine(args.ErrorContext.Error);
+                },
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                TypeNameHandling = TypeNameHandling.Auto,
+                Formatting = Newtonsoft.Json.Formatting.Indented,
+                Culture = CultureInfo.InvariantCulture
+            };
+
+            return JsonConvert.DeserializeObject<ExtraWorkspaceViewInfo>(viewBlock.ToString(), settings);
+        }
     }
 
     /// <summary>
@@ -107,6 +137,7 @@ namespace Dynamo.Graph.Workspaces
         public IEnumerable<string> Nodes;
         public bool HasNestedGroups;
         public double FontSize;
+        public Guid GroupStyleId;
         public string Background;
         public string Id;
         public string PinnedNode;
@@ -137,21 +168,22 @@ namespace Dynamo.Graph.Workspaces
                 this.Nodes.SequenceEqual(other.Nodes) &&
                 this.HasNestedGroups == other.HasNestedGroups &&
                 this.FontSize == other.FontSize &&
+                this.GroupStyleId == other.GroupStyleId &&
                 this.Background == other.Background &&
                 this.WidthAdjustment == other.WidthAdjustment &&
                 this.HeightAdjustment == other.HeightAdjustment;
 
-                //TODO try to get rid of these if possible
-                //needs investigation if we are okay letting them get 
-                //calculated at runtime. currently checking them will fail as we do
-                //not deserialize them.
+            //TODO try to get rid of these if possible
+            //needs investigation if we are okay letting them get 
+            //calculated at runtime. currently checking them will fail as we do
+            //not deserialize them.
 
-                //tolerantDoubleCompare(this.Left, other.Left) &&
-                //tolerantDoubleCompare(this.Top, other.Top) &&
-                //tolerantDoubleCompare(this.InitialTop, other.InitialTop);
-                //this.Width == other.Width &&
-                //this.Height == other.Height &&
-                //this.TextBlockHeight == other.TextBlockHeight;
+            //tolerantDoubleCompare(this.Left, other.Left) &&
+            //tolerantDoubleCompare(this.Top, other.Top) &&
+            //tolerantDoubleCompare(this.InitialTop, other.InitialTop);
+            //this.Width == other.Width &&
+            //this.Height == other.Height &&
+            //this.TextBlockHeight == other.TextBlockHeight;
         }
     }
 
@@ -172,23 +204,16 @@ namespace Dynamo.Graph.Workspaces
         internal class DelayedGraphExecution : IDisposable
         {
             private readonly WorkspaceModel workspace;
-            private static readonly object stateMutex = new object();
 
             public DelayedGraphExecution(WorkspaceModel wModel)
             {
                 workspace = wModel;
-                lock (stateMutex)
-                {
-                    workspace.delayGraphExecutionCounter++;
-                }
+                Interlocked.Increment(ref workspace.delayGraphExecutionCounter);
             }
 
             public virtual void Dispose()
             {
-                lock (stateMutex)
-                {
-                    workspace.delayGraphExecutionCounter--;
-                }
+                Interlocked.Decrement(ref workspace.delayGraphExecutionCounter);
                 workspace.RequestRun();
             }
         }
@@ -223,6 +248,7 @@ namespace Dynamo.Graph.Workspaces
         internal readonly LinterManager linterManager;
 
         private string fileName;
+        private string fromJsonGraphId;
         private string name;
         private double height = 100;
         private double width = 100;
@@ -244,12 +270,21 @@ namespace Dynamo.Graph.Workspaces
         private bool hasNodeInSyncWithDefinition;
         protected Guid guid;
         private HashSet<Guid> dependencies = new HashSet<Guid>();
-
         private int delayGraphExecutionCounter = 0;
+
+        // For workspace references view extension.
+        private bool forceComputeWorkspaceReferences;
+        private List<INodeLibraryDependencyInfo> nodeLibraryDependencies;
+        private List<INodeLibraryDependencyInfo> nodeLocalDefinitions;
+        private List<INodeLibraryDependencyInfo> externalFileReferences;
+        private Dictionary<Guid, PackageInfo> nodePackageDictionary = new Dictionary<Guid, PackageInfo>();
+        private Dictionary<Guid, DependencyInfo> localDefinitionsDictionary = new Dictionary<Guid, DependencyInfo>();
+        private Dictionary<Guid, DependencyInfo> externalFilesDictionary = new Dictionary<Guid, DependencyInfo>();
         private readonly string customNodeExtension = ".dyf";
 
         /// <summary>
         /// Whether or not to delay graph execution.
+        /// 64-bit read operations are already atomic so no need to lock here
         /// </summary>
         internal protected bool DelayGraphExecution => delayGraphExecutionCounter > 0;
 
@@ -270,6 +305,11 @@ namespace Dynamo.Graph.Workspaces
         public void OnDummyNodesReloaded()
         {
             DummyNodesReloaded?.Invoke();
+        }
+
+        internal static string ComputeGraphIdFromJson(string fileContents)
+        {
+            return Hash.ToBase32String(Hash.GetHashFromString(fileContents));
         }
 
         /// <summary>
@@ -492,7 +532,7 @@ namespace Dynamo.Graph.Workspaces
         public event Action<ConnectorModel> ConnectorDeleted;
         protected virtual void OnConnectorDeleted(ConnectorModel obj)
         {
-           
+
             var handler = ConnectorDeleted;
             if (handler != null) handler(obj);
             //Check if the workspace is loaded, i.e all the nodes are
@@ -579,7 +619,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     A set of input parameter states, this can be used to set the graph to a serialized state.
         /// </summary>
-        public IEnumerable<PresetModel> Presets { get { return presets;} }
+        public IEnumerable<PresetModel> Presets { get { return presets; } }
 
         /// <summary>
         ///     The date of the last save.
@@ -600,7 +640,8 @@ namespace Dynamo.Graph.Workspaces
         /// <returns> a list of workspace IDs in GUID form</returns>
         public HashSet<Guid> Dependencies
         {
-            get {
+            get
+            {
                 dependencies.Clear();
                 //if the workspace is a main workspace then find all functions and their dependencies
                 if (this is HomeWorkspaceModel)
@@ -645,65 +686,15 @@ namespace Dynamo.Graph.Workspaces
         {
             get
             {
-                var packageDependencies = new Dictionary<PackageInfo, PackageDependencyInfo>();
-                foreach (var node in Nodes)
+                if (HasUnsavedChanges || ForceComputeWorkspaceReferences)
                 {
-                    var collected = GetNodePackage(node);
-                    if (nodePackageDictionary.ContainsKey(node.GUID))
-                    {
-                        var saved = nodePackageDictionary[node.GUID];
-                        if (!packageDependencies.ContainsKey(saved))
-                        {
-                            packageDependencies[saved] = new PackageDependencyInfo(saved);
-                        }
-                        packageDependencies[saved].AddDependent(node.GUID);
-
-                        // if the package is not installed.
-                        if (collected == null)
-                        {
-                            packageDependencies[saved].State = PackageDependencyState.Missing;
-                        }
-                        // If the state is Missing for at least one of the nodes,
-                        // we set the state of the whole package dependency to Missing.
-                        // Set other states accordingly, only if the PackageDependencyState(for that package)
-                        // is not set to Missing by any of the other nodes. 
-                        else if (packageDependencies[saved].State != PackageDependencyState.Missing)
-                        {
-                            if (saved.Name == collected.Name)
-                            {
-                                // if the correct version of package is installed.
-                                if (saved.Version == collected.Version)
-                                {
-                                    packageDependencies[saved].State = PackageDependencyState.Loaded;
-                                }
-                                // If incorrect version of package is installed and not marked for uninstall,
-                                // set the state. Otherwise, keep the RequiresRestart state away from overwritten.
-                                else if(packageDependencies[saved].State != PackageDependencyState.RequiresRestart)
-                                {
-                                    packageDependencies[saved].State = PackageDependencyState.IncorrectVersion;
-                                }
-                            }
-                            // if the package is not installed, but the nodes are resolved by a different package.
-                            else
-                            {
-                                packageDependencies[saved].State = PackageDependencyState.Warning;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (collected != null)
-                        {
-                            if (!packageDependencies.ContainsKey(collected))
-                            {
-                                packageDependencies[collected] = new PackageDependencyInfo(collected);
-                            }
-                            packageDependencies[collected].AddDependent(node.GUID);
-                            packageDependencies[collected].State = PackageDependencyState.Loaded;
-                        }
-                    }
+                    nodeLibraryDependencies = ComputeNodeLibraryDependencies();
+                    return nodeLibraryDependencies;
                 }
-                return packageDependencies.Values.ToList<INodeLibraryDependencyInfo>();
+                else
+                {
+                    return nodeLibraryDependencies;
+                }
             }
             set
             {
@@ -724,57 +715,22 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
+        /// <summary>
+        /// Local Node Definitions that the nodes in this graph depend on
+        /// </summary>
         internal List<INodeLibraryDependencyInfo> NodeLocalDefinitions
         {
             get
             {
-               var nodeLocalDefinitions = new Dictionary<object, LocalDefinitionInfo>();
-
-                foreach (var node in Nodes)
+                if (HasUnsavedChanges || ForceComputeWorkspaceReferences)
                 {
-                    var collected = GetNodePackage(node);
-                    
-                    if (!nodePackageDictionary.ContainsKey(node.GUID) && collected == null)
-                    {
-                        string localDefinitionName;
-
-                        if (node.IsCustomFunction)
-                        {
-                            localDefinitionName = node.Name + customNodeExtension;
-
-                            if (!nodeLocalDefinitions.ContainsKey(localDefinitionName)) 
-                            {
-                                nodeLocalDefinitions[localDefinitionName] = new LocalDefinitionInfo(localDefinitionName);
-                            }
-
-                            nodeLocalDefinitions[localDefinitionName].AddDependent(node.GUID);
-                            nodeLocalDefinitions[localDefinitionName].ReferenceType = ReferenceType.DYFFile;
-                        }
-                        else if (node is DSFunctionBase functionNode)
-                        {
-                            string assemblyPath = functionNode.Controller.Definition.Assembly;
-                            localDefinitionName = Path.GetFileName(assemblyPath);
-
-                            if (!nodeLocalDefinitions.ContainsKey(localDefinitionName))
-                            {
-                                nodeLocalDefinitions[localDefinitionName] = new LocalDefinitionInfo(localDefinitionName, assemblyPath);
-                            }
-
-                            nodeLocalDefinitions[localDefinitionName].AddDependent(node.GUID);
-                            nodeLocalDefinitions[localDefinitionName].ReferenceType = ReferenceType.ZeroTouch;
-                        }
-                        else if (node is DummyNode)
-                        {
-                            // Read the serialized value if the node is not resolved.
-                            if (localDefinitionsDictionary.TryGetValue(node.GUID, out var localDefinitionInfo))
-                            {
-                                nodeLocalDefinitions[localDefinitionInfo.Name] = localDefinitionInfo;
-                            }
-                        }
-                    }
+                    nodeLocalDefinitions = ComputeNodeLocalDefinitions();
+                    return nodeLocalDefinitions;
                 }
-
-                return nodeLocalDefinitions.Values.ToList<INodeLibraryDependencyInfo>();
+                else
+                {
+                    return nodeLocalDefinitions;
+                }
             }
             set
             {
@@ -784,7 +740,7 @@ namespace Dynamo.Graph.Workspaces
                     {
                         foreach (var node in dependency.Nodes)
                         {
-                            localDefinitionsDictionary[node] = dependency as LocalDefinitionInfo;
+                            localDefinitionsDictionary[node] = dependency as DependencyInfo;
                         }
                     }
                 }
@@ -793,9 +749,240 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
-        private Dictionary<Guid, PackageInfo> nodePackageDictionary = new Dictionary<Guid, PackageInfo>();
-        private Dictionary<Guid, LocalDefinitionInfo> localDefinitionsDictionary = new Dictionary<Guid, LocalDefinitionInfo>();
+        /// <summary>
+        /// External File references that the nodes in this graph depend on
+        /// </summary>
+        internal List<INodeLibraryDependencyInfo> ExternalFiles
+        {
+            get
+            {
+                if (HasUnsavedChanges || ForceComputeWorkspaceReferences)
+                {
+                    externalFileReferences = ComputeExternalFileReferences();
+                    return externalFileReferences;
+                }
+                else
+                {
+                    return externalFileReferences;
+                }
+            }
+            set
+            {
+                foreach (var dependency in value)
+                {
+                    if (dependency.ReferenceType == ReferenceType.External)
+                    {
+                        foreach (var node in dependency.Nodes)
+                        {
+                            externalFilesDictionary[node] = dependency as DependencyInfo;
+                        }
+                    }
+                }
 
+                RaisePropertyChanged(nameof(ExternalFiles));
+            }
+        }
+
+        /// <summary>
+        /// Computes the node library dependencies in the current workspace.
+        /// </summary>
+        /// <returns></returns>
+        private List<INodeLibraryDependencyInfo> ComputeNodeLibraryDependencies()
+        {
+            var packageDependencies = new Dictionary<PackageInfo, PackageDependencyInfo>();
+
+            foreach (var node in Nodes)
+            {
+                var collected = GetNodePackage(node);
+
+                if (nodePackageDictionary.ContainsKey(node.GUID))
+                {
+                    var saved = nodePackageDictionary[node.GUID];
+                    if (!packageDependencies.ContainsKey(saved))
+                    {
+                        packageDependencies[saved] = new PackageDependencyInfo(saved);
+                    }
+                    packageDependencies[saved].AddDependent(node.GUID);
+
+                    // if the package is not installed.
+                    if (collected == null)
+                    {
+                        packageDependencies[saved].State = PackageDependencyState.Missing;
+                    }
+                    // If the state is Missing for at least one of the nodes,
+                    // we set the state of the whole package dependency to Missing.
+                    // Set other states accordingly, only if the PackageDependencyState(for that package)
+                    // is not set to Missing by any of the other nodes. 
+                    else if (packageDependencies[saved].State != PackageDependencyState.Missing)
+                    {
+                        if (saved.Name == collected.Name)
+                        {
+                            // if the correct version of package is installed.
+                            if (saved.Version == collected.Version)
+                            {
+                                packageDependencies[saved].State = PackageDependencyState.Loaded;
+                            }
+                            // If incorrect version of package is installed and not marked for uninstall,
+                            // set the state. Otherwise, keep the RequiresRestart state away from overwritten.
+                            else if (packageDependencies[saved].State != PackageDependencyState.RequiresRestart)
+                            {
+                                packageDependencies[saved].State = PackageDependencyState.IncorrectVersion;
+                            }
+                        }
+                        // if the package is not installed, but the nodes are resolved by a different package.
+                        else
+                        {
+                            packageDependencies[saved].State = PackageDependencyState.Warning;
+                        }
+                    }
+                }
+                else
+                {
+                    if (collected != null)
+                    {
+                        if (!packageDependencies.ContainsKey(collected))
+                        {
+                            packageDependencies[collected] = new PackageDependencyInfo(collected);
+                        }
+                        packageDependencies[collected].AddDependent(node.GUID);
+                        packageDependencies[collected].State = PackageDependencyState.Loaded;
+                    }
+                }
+            }
+
+            return packageDependencies.Values.ToList<INodeLibraryDependencyInfo>();
+        }
+
+        /// <summary>
+        /// Computes the node local definitions in the current workspace.
+        /// </summary>
+        /// <returns></returns>
+        private List<INodeLibraryDependencyInfo> ComputeNodeLocalDefinitions()
+        {
+            var nodeLocalDefinitions = new Dictionary<object, DependencyInfo>();
+
+            foreach (var node in Nodes)
+            {
+                var collected = GetNodePackage(node);
+
+                if (!nodePackageDictionary.ContainsKey(node.GUID) && collected == null)
+                {
+                    string localDefinitionName;
+
+                    if (node.IsCustomFunction)
+                    {
+                        localDefinitionName = node.Name + customNodeExtension;
+
+                        if (!nodeLocalDefinitions.ContainsKey(localDefinitionName))
+                        {
+                            nodeLocalDefinitions[localDefinitionName] = new DependencyInfo(localDefinitionName);
+                        }
+
+                        nodeLocalDefinitions[localDefinitionName].AddDependent(node.GUID);
+                        nodeLocalDefinitions[localDefinitionName].ReferenceType = ReferenceType.DYFFile;
+                    }
+                    else if (node is DSFunctionBase functionNode)
+                    {
+                        string assemblyPath = functionNode.Controller.Definition.Assembly;
+                        var directoryName = Path.GetDirectoryName(assemblyPath);
+
+                        // For the local definition reference, the assembly directory exists on disc.
+                        if (!string.IsNullOrEmpty(directoryName) && Directory.Exists(directoryName))
+                        {
+                            localDefinitionName = Path.GetFileName(assemblyPath);
+
+                            if (!nodeLocalDefinitions.ContainsKey(localDefinitionName))
+                            {
+                                nodeLocalDefinitions[localDefinitionName] = new DependencyInfo(localDefinitionName, assemblyPath);
+                            }
+
+                            nodeLocalDefinitions[localDefinitionName].AddDependent(node.GUID);
+                            nodeLocalDefinitions[localDefinitionName].ReferenceType = ReferenceType.ZeroTouch;
+                        }
+                    }
+                    else if (node is DummyNode)
+                    {
+                        // Read the serialized value if the node is not resolved.
+                        if (localDefinitionsDictionary.TryGetValue(node.GUID, out var localDefinitionInfo))
+                        {
+                            nodeLocalDefinitions[localDefinitionInfo.Name] = localDefinitionInfo;
+                        }
+                    }
+                }
+            }
+
+            return nodeLocalDefinitions.Values.ToList<INodeLibraryDependencyInfo>();
+        }
+
+        /// <summary>
+        /// Computes the external file references if the Workspace Model is a HomeWorkspaceModel and graph is not running.
+        /// </summary>
+        /// <returns></returns>
+        private List<INodeLibraryDependencyInfo> ComputeExternalFileReferences()
+        {
+            var externalFiles = new Dictionary<object, DependencyInfo>();
+
+            // If an execution is in progress we'll have to wait for it to be done before we can gather the
+            // external file references as this implementation relies on the output values of each node.
+            //instead just bail to avoid blocking the UI.
+            if (this is HomeWorkspaceModel homeWorkspaceModel && homeWorkspaceModel.RunSettings.RunEnabled && !RunSettings.ForceBlockRun)
+            {
+                foreach (var node in nodes)
+                {
+                    externalFilesDictionary.TryGetValue(node.GUID, out var serializedDependencyInfo);
+
+                    // Check for the file path string value at each of the output ports of all nodes in the workspace. 
+                    foreach (var port in node.OutPorts)
+                    {
+                        var id = node.GetAstIdentifierForOutputIndex(port.Index)?.Name;
+                        var mirror = homeWorkspaceModel.EngineController.GetMirror(id);
+                        var data = mirror?.GetData().Data;
+
+                        if (data is string dataString && dataString.Contains(@"\"))
+                        {
+                            // Check if the value exists on disk
+                            PathHelper.FileInfoAtPath(dataString, out bool fileExists, out string fileSize);
+                            if (fileExists)
+                            {
+                                var externalFilePath = Path.GetFullPath(dataString);
+                                var externalFileName = Path.GetFileName(dataString);
+
+                                if (!externalFiles.ContainsKey(externalFilePath))
+                                {
+                                    externalFiles[externalFilePath] = new DependencyInfo(externalFileName, dataString, ReferenceType.External);
+                                }
+
+                                externalFiles[externalFilePath].AddDependent(node.GUID);
+                                externalFiles[externalFilePath].Size = fileSize;
+                            }
+                            // Read the serialized value for that node.
+                            else if (serializedDependencyInfo != null && dataString.Contains(serializedDependencyInfo.Name))
+                            {
+                                if (!externalFiles.ContainsKey(serializedDependencyInfo.Name))
+                                {
+                                    externalFiles[serializedDependencyInfo.Name] = new DependencyInfo(serializedDependencyInfo.Name, ReferenceType.External);
+                                }
+                                externalFiles[serializedDependencyInfo.Name].AddDependent(node.GUID);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return externalFiles.Values.ToList<INodeLibraryDependencyInfo>();
+        }
+
+        /// <summary>
+        /// This flag will indicate if the workspace references should be computed again.
+        /// </summary>
+        internal bool ForceComputeWorkspaceReferences
+        {
+            get { return forceComputeWorkspaceReferences; }
+            set
+            {
+                forceComputeWorkspaceReferences = value;
+            }
+        }
 
         /// <summary>
         ///     An author of the workspace
@@ -828,9 +1015,9 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         public bool HasUnsavedChanges
         {
-            get 
+            get
             {
-                if(!string.IsNullOrEmpty(this.FileName)) // if there is a filename
+                if (!string.IsNullOrEmpty(this.FileName)) // if there is a filename
                 {
                     if (!File.Exists(this.FileName)) // but the filename is invalid
                     {
@@ -852,7 +1039,7 @@ namespace Dynamo.Graph.Workspaces
         /// Returns if current workspace is readonly.
         /// </summary>
         public bool IsReadOnly
-        {   
+        {
             //if the workspace contains xmlDummyNodes it's effectively a readonly graph.
             get { return isReadOnly || this.containsXmlDummyNodes() || this.containsInvalidInputSymbols(); }
             set
@@ -892,7 +1079,7 @@ namespace Dynamo.Graph.Workspaces
             {
                 nodes.Add(node);
             }
-            
+
             OnNodeAdded(node);
         }
 
@@ -983,6 +1170,23 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
+        ///     A unique id representing a workspace that was created from an in-memory graph content.
+        ///     This is usefull if you need to check if the current workspace was initially created from
+        ///     a specific graph content. As oposed to graph uuid, FromJsonGraphId is not serialized and it
+        ///     only makes sense (and is computed) at runtime when we OpenFileFromJson. Because of that
+        ///     we eliminate the risk of having this value modified outside Dynamo environment.
+        /// </summary>
+        [JsonIgnore]
+        internal string FromJsonGraphId
+        {
+            get { return fromJsonGraphId; }
+            set
+            {
+                fromJsonGraphId = value;
+            }
+        }
+
+        /// <summary>
         ///     The name of this workspace.
         /// </summary>
         public string Name
@@ -1022,7 +1226,7 @@ namespace Dynamo.Graph.Workspaces
                 RaisePropertyChanged("Y");
             }
         }
-        
+
         /// <summary>
         ///     Get or set the zoom value of the workspace.
         /// </summary>
@@ -1149,8 +1353,13 @@ namespace Dynamo.Graph.Workspaces
 
             this.annotations = new List<AnnotationModel>(annotations);
 
-            this.NodeLibraryDependencies = new List<INodeLibraryDependencyInfo>();
-            this.NodeLocalDefinitions = new List<INodeLibraryDependencyInfo>();
+            NodeLibraryDependencies = new List<INodeLibraryDependencyInfo>();
+            NodeLocalDefinitions = new List<INodeLibraryDependencyInfo>();
+            ExternalFiles = new List<INodeLibraryDependencyInfo>();
+
+            nodeLibraryDependencies = new List<INodeLibraryDependencyInfo>();
+            nodeLocalDefinitions = new List<INodeLibraryDependencyInfo>();
+            externalFileReferences = new List<INodeLibraryDependencyInfo>();
 
             // Set workspace info from WorkspaceInfo object
             Name = info.Name;
@@ -1299,11 +1508,10 @@ namespace Dynamo.Graph.Workspaces
 
             ClearUndoRecorder();
             ResetWorkspace();
-            
+
             X = 0.0;
             Y = 0.0;
             Zoom = 1.0;
-            ScaleFactor = 1.0;
             // Reset the workspace offset
             OnCurrentOffsetChanged(this, new PointEventArgs(new Point2D(X, Y)));
             workspaceLoaded = true;
@@ -1349,7 +1557,9 @@ namespace Dynamo.Graph.Workspaces
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
-                throw (ex);
+#pragma warning disable CA2200 // Rethrow to preserve stack details
+                throw ex;
+#pragma warning restore CA2200 // Rethrow to preserve stack details
             }
         }
 
@@ -1385,7 +1595,7 @@ namespace Dynamo.Graph.Workspaces
         {
             node.Modified += NodeModified;
             node.ConnectorAdded += OnConnectorAdded;
-            node.UpdateASTCollection +=OnToggleNodeFreeze;
+            node.UpdateASTCollection += OnToggleNodeFreeze;
 
             var functionNode = node as Function;
             if (functionNode != null)
@@ -1418,6 +1628,7 @@ namespace Dynamo.Graph.Workspaces
         /// This method does not raise a NodesModified event. (LC notes this is clearly not true)
         /// </summary>
         /// <param name="model">The node which is being removed from the worksapce.</param>
+        /// <param name="dispose"></param>
         internal void RemoveAndDisposeNode(NodeModel model, bool dispose = true)
         {
             lock (nodes)
@@ -1529,6 +1740,11 @@ namespace Dynamo.Graph.Workspaces
             OnAnnotationRemoved(annotation);
         }
 
+        /// <summary>
+        /// Create parent group given child group,
+        /// so far only leveraged in tests so no analytics tracking added for this
+        /// </summary>
+        /// <param name="annotationModel"></param>
         internal void AddAnnotation(AnnotationModel annotationModel)
         {
             annotationModel.ModelBaseRequested += annotationModel_GetModelBase;
@@ -1536,50 +1752,119 @@ namespace Dynamo.Graph.Workspaces
             AddNewAnnotation(annotationModel);
         }
 
+        /// <summary>
+        /// Wrapper function of group creation based on Dynamo selection
+        /// </summary>
+        /// <param name="text">Group description</param>
+        /// <param name="id">Group id</param>
+        /// <returns></returns>
         internal AnnotationModel AddAnnotation(string text, Guid id)
         {
-            var selectedNodes = this.Nodes == null ? null:this.Nodes.Where(s => s.IsSelected);
-            var selectedNotes = this.Notes == null ? null: this.Notes.Where(s => s.IsSelected);
-
-            if (CheckIfModelExistsInSomeGroup(selectedNodes, selectedNotes))
-            {
-                return null;
-            }
-
-            return CreateAndSubcribeAnnotationModel(selectedNodes, selectedNotes, id, text);
+            return AddAnnotation(string.Empty, text, id);
         }
 
+        /// <summary>
+        /// Wrapper function of group creation based on Dynamo selection
+        /// </summary>
+        /// <param name="titleText">Group title</param>
+        /// <param name="text">Group description</param>
+        /// <param name="id">Group id</param>
+        /// <returns></returns>
         internal AnnotationModel AddAnnotation(string titleText, string text, Guid id)
         {
-            var selectedNodes = this.Nodes == null ? null : this.Nodes.Where(s => s.IsSelected);
-            var selectedNotes = this.Notes == null ? null : this.Notes.Where(s => s.IsSelected);
+            var selectedNodes = Nodes?.Where(s => s.IsSelected);
+            var selectedNotes = Notes?.Where(s => s.IsSelected);
+            // Only allow single level of nest, in this case,
+            // if the selected group already has a child group
+            // skip from group creation
+            var selectedAnnotations = Annotations?.Where(s => s.IsSelected && !s.HasNestedGroups);
 
-            if (CheckIfModelExistsInSomeGroup(selectedNodes, selectedNotes))
+            // Remove nodes or notes selected which are already in the selected group
+            foreach(var group in selectedAnnotations)
             {
+                selectedNodes = selectedNodes.Except(group.Nodes.OfType<NodeModel>());
+                selectedNotes = selectedNotes.Except(group.Nodes.OfType<NoteModel>());
+            }
+
+            // Check if any of the selected nodes or notes already in a group which could happen
+            // when user select them from inside the group. In that case, we decided to disable group creation
+            if (CheckIfModelExistsInSomeGroup(selectedNodes, selectedNotes, selectedAnnotations))
+            {
+                // Return null so from an API level, this is consistent with context menu behavior
                 return null;
             }
 
-            return CreateAndSubcribeAnnotationModel(selectedNodes, selectedNotes, id, titleText, text);
+            return CreateAndSubcribeAnnotationModel(selectedNodes, selectedNotes, selectedAnnotations, id, titleText, text);
         }
 
+        /// <summary>
+        /// Create new group containing selected elements
+        /// </summary>
+        /// <param name="nodes">Selected nodes</param>
+        /// <param name="notes">Selected notes</param>
+        /// <param name="groups">Selected groups</param>
+        /// <param name="id">group id</param>
+        /// <param name="title">group title</param>
+        /// <param name="description">group description, defaulting to empty string</param>
+        /// <returns></returns>
         private AnnotationModel CreateAndSubcribeAnnotationModel(
-            IEnumerable<NodeModel> nodes, 
-            IEnumerable<NoteModel> notes, 
-            Guid id, 
-            string titel, 
+            IEnumerable<NodeModel> nodes,
+            IEnumerable<NoteModel> notes,
+            IEnumerable<AnnotationModel> groups,
+            Guid id,
+            string title,
             string description = "")
         {
-            var annotationModel = new AnnotationModel(nodes, notes)
+            var annotationModel = new AnnotationModel(nodes, notes, groups)
             {
                 GUID = id,
                 AnnotationDescriptionText = description,
-                AnnotationText = titel
+                AnnotationText = title
             };
             annotationModel.ModelBaseRequested += annotationModel_GetModelBase;
             annotationModel.Disposed += (_) => annotationModel.ModelBaseRequested -= annotationModel_GetModelBase;
             AddNewAnnotation(annotationModel);
+
+            Logging.Analytics.TrackEvent(Actions.Create, Categories.GroupOperations);
+
             HasUnsavedChanges = true;
             return annotationModel;
+        }
+
+        /// <summary>
+        /// Checks if selected models exists in some group.
+        /// </summary>
+        /// <param name="selectedNodes">The selected nodes.</param>
+        /// <param name="selectedNotes">The selected notes.</param>
+        /// <param name="selectedGroups">The selected groups.</param>
+        /// <returns>true if any of the models are already in a group</returns>
+        private bool CheckIfModelExistsInSomeGroup(IEnumerable<NodeModel> selectedNodes, IEnumerable<NoteModel> selectedNotes, IEnumerable<AnnotationModel> selectedGroups)
+        {
+            foreach (var model in selectedNodes)
+            {
+                if (this.Annotations.ContainsModel(model))
+                {
+                    return true;
+                }
+            }
+
+            foreach (var model in selectedNotes)
+            {
+                if (this.Annotations.ContainsModel(model))
+                {
+                    return true;
+                }
+            }
+
+            foreach (var model in selectedGroups)
+            {
+                if (this.Annotations.ContainsModel(model))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -1607,36 +1892,17 @@ namespace Dynamo.Graph.Workspaces
         {
             ModelBase model = null;
             model = this.Nodes.FirstOrDefault(x => x.GUID == modelGuid);
+
             if (model == null) //Check if GUID is a Note instead.
             {
                 model = this.Notes.FirstOrDefault(x => x.GUID == modelGuid);
             }
+            if (model == null)
+            {
+                model = this.Annotations.FirstOrDefault(x => x.GUID == modelGuid);
+            }
 
             return model;
-        }
-
-        /// <summary>
-        /// Checks if model exists in some group.
-        /// </summary>
-        /// <param name="selectNodes">The select nodes.</param>
-        /// <param name="selectNotes">The select notes.</param>
-        /// <returns>true if any of the models are already in a group</returns>
-        private bool CheckIfModelExistsInSomeGroup(IEnumerable<NodeModel> selectNodes, IEnumerable<NoteModel> selectNotes)
-        {
-            var selectedModels = selectNodes.Concat(selectNotes.Cast<ModelBase>()).ToList();
-            bool nodesInSomeGroup = false;
-            foreach (var group in this.Annotations)
-            {
-                var groupModels = group.Nodes;
-                
-                //Selected models minus the ones in the current annotation
-                var modelsExceptGroup = selectedModels.Except(groupModels).ToList();
-
-                nodesInSomeGroup = modelsExceptGroup.Count() != selectedModels.Count();
-                if (nodesInSomeGroup)
-                    break;
-            }
-            return nodesInSomeGroup;
         }
 
         internal void ResetWorkspace()
@@ -1671,7 +1937,7 @@ namespace Dynamo.Graph.Workspaces
             return
                 Nodes.Where(
                     node =>
-                       !node.InPorts.Any()||node.InPorts.All(port => !port.Connectors.Any()));
+                       !node.InPorts.Any() || node.InPorts.All(port => !port.Connectors.Any()));
         }
 
         /// <summary>
@@ -1706,6 +1972,53 @@ namespace Dynamo.Graph.Workspaces
             this.currentPasteOffset = (this.currentPasteOffset + PasteOffsetStep) % PasteOffsetMax;
         }
 
+        #region [Nodes Info]
+
+        /// <summary>
+        /// Boolean indicates if the workspace run with warnings
+        /// </summary>
+        internal bool HasWarnings
+        {
+            get { return Nodes.Any(n => n.State == ElementState.Warning || n.State == ElementState.PersistentWarning); }
+        }
+
+        /// <summary>
+        /// Boolean indicates if the workspace run with warnings with no Geometry
+        /// </summary>
+        internal bool HasNoneGeometryRelatedWarnings
+        {
+            get { return Nodes.Any(n => (n.State == ElementState.Warning || n.State == ElementState.PersistentWarning) && !n.Category.StartsWith("Geometry.")); }
+        }
+
+        /// <summary>
+        /// Boolean indicates if workspace run with errors
+        /// </summary>
+        internal bool HasErrors
+        {
+            get { return Nodes.Any(n => n.State == ElementState.Error); }
+        }
+
+        /// <summary>
+        /// Boolean indicates if home workspace is displayed with infos
+        /// </summary>
+        internal bool HasInfos
+        {
+            get { return Nodes.Any(n => n.State == ElementState.Info); }
+        }
+
+        /// <summary>
+        /// Indicates if the workspace is valid for sending to the FDX
+        /// </summary>
+        internal bool IsValidForFDX
+        {
+            get
+            {
+                return !HasErrors && !HasNoneGeometryRelatedWarnings;
+            }
+        }
+
+        #endregion
+
         #endregion
 
         #region private/internal methods
@@ -1716,7 +2029,7 @@ namespace Dynamo.Graph.Workspaces
         /// <returns></returns>
         internal bool containsXmlDummyNodes()
         {
-            return this.Nodes.OfType<DummyNode>().Where(node => node.OriginalNodeContent is XmlElement).Count()> 0;
+            return this.Nodes.OfType<DummyNode>().Where(node => node.OriginalNodeContent is XmlElement).Count() > 0;
         }
 
         /// <summary>
@@ -1791,7 +2104,7 @@ namespace Dynamo.Graph.Workspaces
                             connector.SetAttribute("start_index", c.Start.Index.ToString());
                             connector.SetAttribute("end", c.End.Owner.GUID.ToString());
                             connector.SetAttribute("end_index", c.End.Index.ToString());
-                            connector.SetAttribute(nameof(ConnectorModel.IsCollapsed), c.IsCollapsed.ToString());
+                            connector.SetAttribute(nameof(ConnectorModel.IsHidden), c.IsHidden.ToString());
 
                             if (c.End.PortType == PortType.Input)
                                 connector.SetAttribute("portType", "0");
@@ -1908,9 +2221,9 @@ namespace Dynamo.Graph.Workspaces
         {
             AssemblyName assemblyName = null;
             // Get zerotouch assembly
-            if (node is DSFunction)
+            if (node is DSFunctionBase function)
             {
-                var descriptor = (node as DSFunction).Controller.Definition;
+                var descriptor = function.Controller.Definition;
                 if (descriptor.IsPackageMember)
                 {
                     assemblyName = AssemblyName.GetAssemblyName(descriptor.Assembly);
@@ -2150,11 +2463,12 @@ namespace Dynamo.Graph.Workspaces
         public void UpdateWithExtraWorkspaceViewInfo(ExtraWorkspaceViewInfo workspaceViewInfo)
         {
             if (workspaceViewInfo == null)
-              return;
+                return;
+
 
             X = workspaceViewInfo.X;
             Y = workspaceViewInfo.Y;
-            Zoom = workspaceViewInfo.Zoom; 
+            Zoom = workspaceViewInfo.Zoom;
 
             OnCurrentOffsetChanged(
                 this,
@@ -2175,23 +2489,63 @@ namespace Dynamo.Graph.Workspaces
             //            ensure that any contained notes are contained properly
             LoadNotesFromAnnotations(workspaceViewInfo.Annotations);
 
-            ///This function loads ConnectorPins to the corresponding connector models.
+            // This function loads ConnectorPins to the corresponding connector models.
             LoadConnectorPins(workspaceViewInfo.ConnectorPins);
 
             // This function loads annotations from the Annotations array in the JSON format
             // that have a non-empty nodes collection
             LoadAnnotations(workspaceViewInfo.Annotations);
-
-            // TODO, QNTM-1099: These items are not in the extra view info
-            // Name = info.Name;
-            // Description = info.Description;
-            // FileName = info.FileName;
         }
 
-        private void LoadNodes(IEnumerable<ExtraNodeViewInfo> nodeViews)
+        /// <summary>
+        /// Updates a workspace model with extra view information. When loading a workspace from JSON,
+        /// the data is split into two parts, model and view. This method sets the view information.
+        /// This overload allows to 'move' the incoming when placing them
+        /// </summary>
+        /// <param name="workspaceViewInfo"></param>
+        /// <param name="offsetX">Offset in X direction (positive - left, negative - right)</param>
+        /// <param name="offsetY">Offset in Y direction (positive - down, negative - up)</param>
+        public void UpdateWithExtraWorkspaceViewInfo(ExtraWorkspaceViewInfo workspaceViewInfo, double offsetX = 0.0, double offsetY = 0.0)
+        {
+            if (workspaceViewInfo == null)
+                return;
+
+
+            X = workspaceViewInfo.X;
+            Y = workspaceViewInfo.Y;
+            Zoom = workspaceViewInfo.Zoom;
+
+            OnCurrentOffsetChanged(
+                this,
+                new PointEventArgs(new Point2D(X, Y)));
+
+            // This function loads standard nodes
+            LoadNodes(workspaceViewInfo.NodeViews, offsetX, offsetY);
+
+            // This function loads notes from the Notes array in the JSON format
+            // NOTE: This is here to support early JSON graphs
+            // IMPORTANT: All notes must be loaded before annotations are loaded to
+            //            ensure that any contained notes are contained properly
+            LoadLegacyNotes(workspaceViewInfo.Notes, offsetX, offsetY);
+
+            // This function loads notes from the Annotations array in the JSON format
+            // that have an empty nodes collection
+            // IMPORTANT: All notes must be loaded before annotations are loaded to
+            //            ensure that any contained notes are contained properly
+            LoadNotesFromAnnotations(workspaceViewInfo.Annotations, offsetX, offsetY);
+
+            // This function loads ConnectorPins to the corresponding connector models.
+            LoadConnectorPins(workspaceViewInfo.ConnectorPins, offsetX, offsetY);
+
+            // This function loads annotations from the Annotations array in the JSON format
+            // that have a non-empty nodes collection
+            LoadAnnotations(workspaceViewInfo.Annotations);
+        }
+
+        private void LoadNodes(IEnumerable<ExtraNodeViewInfo> nodeViews, double offsetX = 0.0, double offsetY = 0.0)
         {
             if (nodeViews == null)
-              return;
+                return;
 
             foreach (ExtraNodeViewInfo nodeViewInfo in nodeViews)
             {
@@ -2199,8 +2553,16 @@ namespace Dynamo.Graph.Workspaces
                 var nodeModel = Nodes.FirstOrDefault(node => node.GUID == guidValue);
                 if (nodeModel != null)
                 {
-                    nodeModel.X = nodeViewInfo.X;
-                    nodeModel.Y = nodeViewInfo.Y;
+                    if (offsetX == 0.0 && offsetY == 0.0)
+                    {
+                        nodeModel.X = nodeViewInfo.X;
+                        nodeModel.Y = nodeViewInfo.Y;
+                    }
+                    else
+                    {
+                        nodeModel.X = nodeViewInfo.X + offsetX;
+                        nodeModel.Y = nodeViewInfo.Y + offsetY;
+                    }
                     nodeModel.IsFrozen = nodeViewInfo.Excluded;
                     nodeModel.IsSetAsInput = nodeViewInfo.IsSetAsInput;
                     nodeModel.IsSetAsOutput = nodeViewInfo.IsSetAsOutput;
@@ -2214,25 +2576,33 @@ namespace Dynamo.Graph.Workspaces
                     nodeModel.UpdateValue(new UpdateValueParams("IsVisible", nodeViewInfo.ShowGeometry.ToString()));
                 }
                 else
-                {   
-                    this.Log(string.Format("This graph has a nodeview with id:{0} and name:{1}, but does not contain a matching nodeModel", 
-                        guidValue.ToString(),nodeViewInfo.Name)
+                {
+                    this.Log(string.Format("This graph has a nodeview with id:{0} and name:{1}, but does not contain a matching nodeModel",
+                        guidValue.ToString(), nodeViewInfo.Name)
                         , WarningLevel.Moderate);
                 }
             }
         }
 
-        private void LoadLegacyNotes(IEnumerable<ExtraNoteViewInfo> noteViews)
+        private void LoadLegacyNotes(IEnumerable<ExtraNoteViewInfo> noteViews, double offsetX = 0.0, double offsetY = 0.0)
         {
             if (noteViews == null)
-              return;
+                return;
 
             foreach (ExtraNoteViewInfo noteViewInfo in noteViews)
             {
                 var guidValue = IdToGuidConverter(noteViewInfo.Id);
 
                 // TODO, QNTM-1099: Figure out if ZIndex needs to be set here as well
-                var noteModel = new NoteModel(noteViewInfo.X, noteViewInfo.Y, noteViewInfo.Text, guidValue);
+                NoteModel noteModel;
+                if (offsetX == 0.0 && offsetY == 0.0)
+                {
+                    noteModel = new NoteModel(noteViewInfo.X, noteViewInfo.Y, noteViewInfo.Text, guidValue);
+                }
+                else
+                {
+                    noteModel = new NoteModel(noteViewInfo.X + offsetX, noteViewInfo.Y + offsetY, noteViewInfo.Text, guidValue);
+                }
 
                 //if this note does not exist, add it to the workspace.
                 var matchingNote = this.Notes.FirstOrDefault(x => x.GUID == noteModel.GUID);
@@ -2243,10 +2613,10 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
-        private void LoadNotesFromAnnotations(IEnumerable<ExtraAnnotationViewInfo> annotationViews)
+        private void LoadNotesFromAnnotations(IEnumerable<ExtraAnnotationViewInfo> annotationViews, double offsetX = 0.0, double offsetY = 0.0)
         {
             if (annotationViews == null)
-              return;
+                return;
 
             foreach (ExtraAnnotationViewInfo annotationViewInfo in annotationViews)
             {
@@ -2263,12 +2633,25 @@ namespace Dynamo.Graph.Workspaces
                 var pinnedNode = this.Nodes.
                     FirstOrDefault(x => x.GUID.ToString("N") == annotationViewInfo.PinnedNode);
 
-                var noteModel = new NoteModel(
-                    annotationViewInfo.Left, 
-                    annotationViewInfo.Top, 
-                    text, 
-                    annotationGuidValue,
-                    pinnedNode);
+                NoteModel noteModel;
+                if (offsetX == 0.0 && offsetY == 0.0)
+                {
+                    noteModel = new NoteModel(
+                        annotationViewInfo.Left,
+                        annotationViewInfo.Top,
+                        text,
+                        annotationGuidValue,
+                        pinnedNode);
+                }
+                else
+                {
+                    noteModel = new NoteModel(
+                        annotationViewInfo.Left + offsetX,
+                        annotationViewInfo.Top + offsetY,
+                        text,
+                        annotationGuidValue,
+                        pinnedNode);
+                }
 
                 //if this note does not exist, add it to the workspace.
                 var matchingNote = this.Notes.FirstOrDefault(x => x.GUID == noteModel.GUID);
@@ -2279,18 +2662,26 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
-        private void LoadConnectorPins(IEnumerable<ExtraConnectorPinInfo> pinInfo)
+        private void LoadConnectorPins(IEnumerable<ExtraConnectorPinInfo> pinInfo, double offsetX = 0.0, double offsetY = 0.0)
         {
-            if (pinInfo == null) {return;}
+            if (pinInfo == null) { return; }
 
             foreach (ExtraConnectorPinInfo pinViewInfo in pinInfo)
             {
                 var connectorGuid = IdToGuidConverter(pinViewInfo.ConnectorGuid);
 
                 var matchingConnector = Connectors.FirstOrDefault(x => x.GUID == connectorGuid);
-                if (matchingConnector is null) {return;}
+                if (matchingConnector is null) { return; }
 
-                matchingConnector.AddPin(pinViewInfo.Left, pinViewInfo.Top);
+                if (offsetX == 0.0 && offsetY == 0.0)
+                {
+                    matchingConnector.AddPin(pinViewInfo.Left, pinViewInfo.Top);
+                }
+                else
+                {
+                    matchingConnector.AddPin(pinViewInfo.Left + offsetX, pinViewInfo.Top + offsetY);
+                }
+
             }
         }
 
@@ -2305,7 +2696,7 @@ namespace Dynamo.Graph.Workspaces
                 // Before creating this group we need to create
                 // any group belonging to this group.
                 if (annotationViewInfo.HasNestedGroups &&
-                    !annotationQueue.All(x=>x.HasNestedGroups))
+                    !annotationQueue.All(x => x.HasNestedGroups))
                 {
                     annotationQueue.Enqueue(annotationViewInfo);
                     continue;
@@ -2379,10 +2770,14 @@ namespace Dynamo.Graph.Workspaces
             annotationModel.AnnotationDescriptionText = annotationViewInfo.DescriptionText;
             annotationModel.IsExpanded = annotationViewInfo.IsExpanded;
             annotationModel.FontSize = annotationViewInfo.FontSize;
+            annotationModel.GroupStyleId = annotationViewInfo.GroupStyleId;
             annotationModel.Background = annotationViewInfo.Background;
             annotationModel.GUID = annotationGuidValue;
             annotationModel.HeightAdjustment = annotationViewInfo.HeightAdjustment;
             annotationModel.WidthAdjustment = annotationViewInfo.WidthAdjustment;
+
+            annotationModel.ModelBaseRequested += annotationModel_GetModelBase;
+            annotationModel.Disposed += (_) => annotationModel.ModelBaseRequested -= annotationModel_GetModelBase;
 
             //if this group/annotation does not exist, add it to the workspace.
             var matchingAnnotation = this.Annotations.FirstOrDefault(x => x.GUID == annotationModel.GUID);
@@ -2392,7 +2787,7 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
-        private Guid IdToGuidConverter(string id)
+        internal static Guid IdToGuidConverter(string id)
         {
             Guid deterministicGuid;
             if (!Guid.TryParse(id, out deterministicGuid))
@@ -2404,7 +2799,7 @@ namespace Dynamo.Graph.Workspaces
 
             return deterministicGuid;
         }
-        
+
         /// <summary>
         ///     Returns a DelayedGraphExecution object.
         /// </summary>

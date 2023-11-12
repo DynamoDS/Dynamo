@@ -1,5 +1,9 @@
-﻿using System.Windows;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Markup;
+using Dynamo.Logging;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 
@@ -37,6 +41,8 @@ namespace Dynamo.UI.Controls
 
         protected override Size MeasureOverride(Size constraint)
         {
+            var aggregatedExceptions = new List<Exception>();
+
             if (this.Children.Count <= 0)
                 return new Size(0, 0);
 
@@ -48,8 +54,10 @@ namespace Dynamo.UI.Controls
                     // Default behavior of getting each child to measure.
                     child.Measure(constraint);
                 }
-                catch(System.Exception)
+                catch (XamlParseException e)
                 {
+                    //aggregate the exceptions as we'll loop over all children in this panel and send one exception to analytics.
+                    aggregatedExceptions.Add(e);
                     continue;
                 }
 
@@ -61,6 +69,13 @@ namespace Dynamo.UI.Controls
                 // Having one child item stack on top of another.
                 cumulative.Height += child.DesiredSize.Height;
             }
+            //log to analytics if we recorded any exceptions
+            if (aggregatedExceptions.Count > 0)
+            {
+                var aggException = new AggregateException($"XamlParseException(s) InOutPortPanel MeasureOverride:{aggregatedExceptions.Count}", aggregatedExceptions);
+                Analytics.TrackException(aggException, false);
+            }
+
 
             return cumulative;
         }

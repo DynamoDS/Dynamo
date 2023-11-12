@@ -1,7 +1,7 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "",
+  "Description": "Dynamo Core Sample",
   "Name": "Core_Python",
   "ElementResolver": {
     "ResolutionMap": {}
@@ -13,6 +13,7 @@
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
       "NodeType": "PythonScriptNode",
       "Code": "# Python script to find add or subtract a series of numbers. \r\n\r\n# Boiler-plate import statments included out-of-the-box\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# The inputs to this node will be stored as a list in the IN variable.\r\nsign = IN[0]  # -1 for subtract all, 0 for do nothing, 1 for add all\r\nnums = IN[1]  # List of numbers to subtract or add\r\n\r\npartials = [] # Empty array to contain partial sums or differences\r\nresult = 0    # Initialize the sum or difference to 0\r\n\r\n# Loop through each item and add it or subtract it from the result.\r\nfor index in range(len(nums)):\r\n\tif sign > 0:\r\n\t\tresult = result + nums[index]\r\n\t\tpartials.append(result)\r\n\telif sign == 0:\r\n\t\tpartials.append(result)\r\n\t\tcontinue\r\n\telse:\r\n\t\tresult = result - nums[index]\r\n\t\tpartials.append(result)\r\n\r\n# Assign the output to the OUT variable\r\n#OUT = results  # Use this to output only the result.\r\nOUT = []\r\nOUT.append(result)\r\nOUT.append(partials)",
+      "Engine": "CPython3",
       "VariableInputPorts": true,
       "Id": "7183a2fe9a6a4eebb2233525a80ab2f2",
       "Inputs": [
@@ -47,7 +48,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Runs an embedded IronPython script."
+      "Description": "Runs an embedded Python script."
     },
     {
       "ConcreteType": "CoreNodeModels.Input.IntegerSlider, CoreNodeModels",
@@ -63,7 +64,7 @@
         {
           "Id": "6a3b56ad54214fa1814ed6d9c4336d14",
           "Name": "",
-          "Description": "Int32",
+          "Description": "Int64",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -120,7 +121,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualize the output of node."
+      "Description": "Visualize the node's output"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -149,7 +150,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualize the output of node."
+      "Description": "Visualize the node's output"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -296,12 +297,13 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualize the output of node."
+      "Description": "Visualize the node's output"
     },
     {
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
       "NodeType": "PythonScriptNode",
       "Code": "import clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n#The inputs to this node will be stored as a list in the IN variable.\r\ndataEnteringNode = IN\r\n\r\np1 = Point.ByCoordinates(0, 0, 0);\r\np2 = Point.ByCoordinates(-10, -10, -10);\r\n\r\nl = Line.ByStartPointEndPoint(p1, p2);\r\n\r\npts = [\r\n\tPoint.ByCoordinates(0, 0, 0),\r\n\tPoint.ByCoordinates(10, 10, 0),\r\n\tPoint.ByCoordinates(20, 0, 0),\r\n\tPoint.ByCoordinates(30, 10, 0),\r\n\tPoint.ByCoordinates(40, 0, 0) ]\r\n\t\r\nspline = NurbsCurve.ByPoints(pts)\r\n\r\nsurf = spline.Extrude(Vector.ByCoordinates(0, 0, 1), 10)\r\n\r\n#Assign your output to the OUT variable\r\nOUT = [l, spline, surf]",
+      "Engine": "CPython3",
       "VariableInputPorts": true,
       "Id": "9094d23b33384e5caf7b7d08e547cc25",
       "Inputs": [],
@@ -317,7 +319,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Runs an embedded IronPython script."
+      "Description": "Runs an embedded Python script."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -394,7 +396,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualize the output of node."
+      "Description": "Visualize the node's output"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -423,7 +425,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualize the output of node."
+      "Description": "Visualize the node's output"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -452,84 +454,115 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualize the output of node."
+      "Description": "Visualize the node's output"
     }
   ],
   "Connectors": [
     {
       "Start": "354f304cf9974f69a0c6aaf6799535cb",
       "End": "98136c591df845b5a7fcc43ee5ab038b",
-      "Id": "2ce189996f594865839a1f958b26efe6"
+      "Id": "2ce189996f594865839a1f958b26efe6",
+      "IsHidden": "False"
     },
     {
       "Start": "354f304cf9974f69a0c6aaf6799535cb",
       "End": "f1986b0c6336414fbd50afd83eeadac9",
-      "Id": "489ff8bbcd88438daaa371c561fe110d"
+      "Id": "489ff8bbcd88438daaa371c561fe110d",
+      "IsHidden": "False"
     },
     {
       "Start": "6a3b56ad54214fa1814ed6d9c4336d14",
       "End": "41353cdece124df2b3cf6bb2b47d9f8b",
-      "Id": "b6f3108e063f4cc5b237a3ab5684dad5"
+      "Id": "b6f3108e063f4cc5b237a3ab5684dad5",
+      "IsHidden": "False"
     },
     {
       "Start": "30ec0136279d47edacf06a1f0ae3d56a",
       "End": "2c99500649ac4a0fbdda7e8d5c5394e3",
-      "Id": "898221148f5248a190907b9880fd3083"
+      "Id": "898221148f5248a190907b9880fd3083",
+      "IsHidden": "False"
     },
     {
       "Start": "bbd65533e9e5454e95e316fce80d747c",
       "End": "39a36c06db324c54819b6a5b7426e711",
-      "Id": "9dcb7b7d54594248a410503cfd1139c7"
+      "Id": "9dcb7b7d54594248a410503cfd1139c7",
+      "IsHidden": "False"
     },
     {
       "Start": "a403056ec1e54e7fb27b9d32d78859a4",
       "End": "d6844988eb0b40bdb93bcc5fdcc8f7f0",
-      "Id": "143e1a7649684b708bb12795ff89b79f"
+      "Id": "143e1a7649684b708bb12795ff89b79f",
+      "IsHidden": "False"
     },
     {
       "Start": "08a98db6988e4ae3943f8c84d4ee8bd2",
       "End": "9b76cdd0155c4c8bbce734543e2dd0f1",
-      "Id": "60cd8bdcecfd4d0da6fe12d01c7dc3d2"
+      "Id": "60cd8bdcecfd4d0da6fe12d01c7dc3d2",
+      "IsHidden": "False"
     },
     {
       "Start": "8672fa33a64b40ed98370ac556d920ba",
       "End": "fc6b6de408b34bd18b99d188f934948f",
-      "Id": "191e10879a844580b6733e4b052db2c8"
+      "Id": "191e10879a844580b6733e4b052db2c8",
+      "IsHidden": "False"
     },
     {
       "Start": "e74a6d9e041f45498775d1e07a81e84b",
       "End": "dc288af0453f45fcb783786b86d0a1c2",
-      "Id": "c333488a935e46a28d99048132412599"
+      "Id": "c333488a935e46a28d99048132412599",
+      "IsHidden": "False"
     },
     {
       "Start": "0aa978274d144f5aad5c99ead2877477",
       "End": "0c4d53416c174de38763275c166d441c",
-      "Id": "7fd0e793c7c741c7ade1beb6567ce210"
+      "Id": "7fd0e793c7c741c7ade1beb6567ce210",
+      "IsHidden": "False"
     },
     {
       "Start": "59d88e24f9a74bff9929b2d9143d29c8",
       "End": "6b70fab44360492b93f9686389353196",
-      "Id": "9e040aefc3bf446fb596a60ef7c61f87"
+      "Id": "9e040aefc3bf446fb596a60ef7c61f87",
+      "IsHidden": "False"
     },
     {
       "Start": "0ab66368430d41f2a3854c7b4ff9da7a",
       "End": "d33eb5c806f24d118b5d31d6bc437313",
-      "Id": "d1d6a4bb6c824d529aed91043895fd1c"
+      "Id": "d1d6a4bb6c824d529aed91043895fd1c",
+      "IsHidden": "False"
     },
     {
       "Start": "6a006dc2cf674e36a423c6ef2d9aba6c",
       "End": "5d176dc4f4e248e5a94727ffe7f50a75",
-      "Id": "5157568f320a4064ba09c073f9311a86"
+      "Id": "5157568f320a4064ba09c073f9311a86",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": null,
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.13",
+      "Data": {}
+    }
+  ],
+  "Author": "Dynamo Team",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
   "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.0.0.2821",
+      "Version": "2.13.0.3265",
       "RunType": "Automatic",
       "RunPeriod": "100"
     },
@@ -545,6 +578,7 @@
       "UpY": 1.0,
       "UpZ": 0.0
     },
+    "ConnectorPins": [],
     "NodeViews": [
       {
         "ShowGeometry": true,
@@ -563,8 +597,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 2871.40422094826,
-        "Y": 828.642616909402
+        "X": 2696.5525231795191,
+        "Y": 821.74057620800443
       },
       {
         "ShowGeometry": true,
@@ -573,8 +607,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 2872.28054522067,
-        "Y": 1012.27636998279
+        "X": 2699.7295276857285,
+        "Y": 1021.479090917987
       },
       {
         "ShowGeometry": true,
@@ -583,8 +617,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 2991.9094591014,
-        "Y": 1010.18757478804
+        "X": 2907.5591259533944,
+        "Y": 971.56641172016793
       },
       {
         "ShowGeometry": true,
@@ -593,8 +627,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 3845.01662316494,
-        "Y": 969.304297020235
+        "X": 3855.6345269953504,
+        "Y": 1129.9000924551908
       },
       {
         "ShowGeometry": true,
@@ -603,8 +637,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 3624.32630503776,
-        "Y": 781.810948955188
+        "X": 3765.0135307906971,
+        "Y": 844.19113395884847
       },
       {
         "ShowGeometry": true,
@@ -613,8 +647,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 3508.59019600975,
-        "Y": 855.243976544362
+        "X": 3511.2446719673526,
+        "Y": 920.278637505625
       },
       {
         "ShowGeometry": true,
@@ -623,8 +657,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 3640.83645994993,
-        "Y": 969.473453628049
+        "X": 3522.7122798366158,
+        "Y": 1075.6524919321519
       },
       {
         "ShowGeometry": true,
@@ -633,8 +667,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 3504.42671637494,
-        "Y": 1022.23284667024
+        "X": 3270.8328321059134,
+        "Y": 1107.1760773135222
       },
       {
         "ShowGeometry": true,
@@ -643,8 +677,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 3847.38013703903,
-        "Y": 789.874626772135
+        "X": 4110.1732568416846,
+        "Y": 850.92757379699435
       },
       {
         "ShowGeometry": true,
@@ -653,8 +687,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 3143.47979203481,
-        "Y": 1275.01071132024
+        "X": 2774.2206145100354,
+        "Y": 1408.4501648805949
       },
       {
         "ShowGeometry": true,
@@ -663,8 +697,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 3307.37532591059,
-        "Y": 1279.29449571708
+        "X": 3135.9746484925486,
+        "Y": 1339.11218179586
       },
       {
         "ShowGeometry": true,
@@ -673,8 +707,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 3544.30564693834,
-        "Y": 1495.20280457839
+        "X": 3543.0702638421835,
+        "Y": 1825.0500912522189
       },
       {
         "ShowGeometry": true,
@@ -683,8 +717,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 3544.30564693834,
-        "Y": 1280.46515293515
+        "X": 3534.422582169087,
+        "Y": 1245.8744262427635
       },
       {
         "ShowGeometry": true,
@@ -693,73 +727,102 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 3544.30564693834,
-        "Y": 1398.20062400851
+        "X": 3535.6579652652435,
+        "Y": 1539.0342969703695
       }
     ],
     "Annotations": [
       {
         "Id": "921d119036464fc2a9854b4693a6c026",
         "Title": "Choose the sign for the operation\r\n    number < 0      subtract each\r\n    number = 0      0\r\n    number > 0      add each",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 2873.0012257937,
-        "Top": 738.742301001746,
+        "HasNestedGroups": false,
+        "Left": 2736.5525231795191,
+        "Top": 727.74057620800443,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "9e561a4f9f864d4eac53e30110ffb406"
       },
       {
         "Id": "b5550f99c810408f878200d172d5757a",
         "Title": "Create any list",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 2922.19540784441,
-        "Top": 967.126374113737,
+        "HasNestedGroups": false,
+        "Left": 2727.2295276857285,
+        "Top": 971.47909091798692,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "fb28178df0ca4db085105202c26f64cf"
       },
       {
         "Id": "761ae015acea41aab066b54b694f39a3",
         "Title": "The total result.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 3842.61997028563,
-        "Top": 750.757472727614,
+        "HasNestedGroups": false,
+        "Left": 4193.1732568416846,
+        "Top": 800.92757379699435,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "c44ca1114bbf48cc9b358b339af6c19e"
       },
       {
         "Id": "0d7f597b1e7c46b6b55091eda861b848",
         "Title": "The series of partial results.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 3829.01437238512,
-        "Top": 931.517559120053,
+        "HasNestedGroups": false,
+        "Left": 3908.1345269953504,
+        "Top": 1079.9000924551908,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "ecc8630fa9b040619046b47ce8ba4f2c"
       },
       {
         "Id": "3316bcb825c946cbbb71e61d1f449192",
-        "Title": "PYTHON\r\n\r\nDynamo supports Iron Python through one of two types of Python nodes. (A second type of Python node, not shown here, can read a script from an external file to be executed.)\r\n\r\nDouble click on the Python node to see the script it contains.\r\n\r\nInput is contained in the IN array.  Output must be assigned to the OUT variable.  The output can be a single value or an array itself.",
+        "Title": "PYTHON\r\n\r\nDynamo supports CPython through one of two types of Python nodes. (A second type of Python node, not shown here, can read a script from an external file to be executed.)\r\n\r\nDouble click on the Python node to see the script it contains.\r\n\r\nInput is contained in the IN array.  Output must be assigned to the OUT variable.  The output can be a single value or an array itself.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 2875.2220283401,
-        "Top": 354.253134658213,
+        "HasNestedGroups": false,
+        "Left": 2698.3557781937698,
+        "Top": 365.59071479579831,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -771,23 +834,34 @@
       {
         "Id": "fc54c00a15034189a61233646c89b0da",
         "Title": "The output from OUT is an array, where the first item is a single value and the second item is a list of values.  This data structure was specified in the Python definition itself.  Specifying an array allows you to send any number of outputs to the Dynamo graph.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 3484.07180339376,
-        "Top": 606.071235830205,
+        "HasNestedGroups": false,
+        "Left": 3152.13835438171,
+        "Top": 724.688270498232,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "7183a2fe9a6a4eebb2233525a80ab2f2"
       },
       {
         "Id": "ee76b77e33f840539f33dc43aa97fd98",
         "Title": "This example will add or subtract all of the items in a list.  It's inputs are a number, whose sign determines whether addition or subtraction is used, and a list of numbers.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 2875.17380386808,
-        "Top": 608.290733888623,
+        "HasNestedGroups": false,
+        "Left": 2698.3075537217496,
+        "Top": 619.62831402620827,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -799,9 +873,14 @@
       {
         "Id": "2d664edce60d414bad938c09c2e549c0",
         "Title": "Tip: Use a Code Block to\r\naccess certain items in a list.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 3305.43376158355,
-        "Top": 1438.23569178961,
+        "HasNestedGroups": false,
+        "Left": 3181.8954519678837,
+        "Top": 1506.1817620782265,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -813,20 +892,26 @@
       {
         "Id": "8d0cb3fc32db4220b727887b354d2867",
         "Title": "This Python example has no inputs.  It demonstrates how to create geometry using Dynamo's protogeometry library.  Since the Python node creates visible geometry, selecting it, just like any other node, will cause the geometry to be highlighted.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [],
-        "Left": 3148.01673456083,
-        "Top": 1143.16719941238,
+        "HasNestedGroups": false,
+        "Left": 2711.2206145100354,
+        "Top": 1286.4501648805949,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "9094d23b33384e5caf7b7d08e547cc25"
       }
     ],
-    "X": -1688.859336804082,
-    "Y": -232.66191808709573,
-    "Zoom": 0.69242724670602906
+    "X": -986.68385886009708,
+    "Y": -142.466326401993,
+    "Zoom": 0.4717470094893535
   }
 }

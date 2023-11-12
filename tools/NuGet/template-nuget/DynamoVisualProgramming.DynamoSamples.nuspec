@@ -10,11 +10,10 @@
         <icon>content\images\logo.png</icon>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>This package bundles all localized Sample files from the Dynamo bin Release folder.</description>
-        <copyright>Copyright Autodesk 2020</copyright>
+        <copyright>Copyright Autodesk 2023</copyright>
     </metadata>
     <files>
         <file src="..\..\..\bin\AnyCPU\Release\samples\**" target="Samples" />
-        <file src="..\..\..\bin\AnyCPU\Release\gallery\**" target="gallery" />
         <file src="..\..\..\doc\distrib\Images\logo_square_32x32.png" target="content\images\logo.png" />
     </files>
 </package>

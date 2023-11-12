@@ -19,8 +19,6 @@ namespace Dynamo.Wpf
             functionNodeModel = function;
             dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
 
-            nodeView.MainContextMenu.Items.Add(new Separator());
-
             // edit contents
             var editItem = new MenuItem
             {

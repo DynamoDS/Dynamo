@@ -174,29 +174,97 @@
       ],
       "Replication": "Auto",
       "Description": ""
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Sequence, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "17b1efe0cdea4ce48cafc2da689f79a4",
+      "Inputs": [
+        {
+          "Id": "6b957646a3c84ce489fd5207c9384cee",
+          "Name": "start",
+          "Description": "Number or letter to start the sequence at\r\nDefault value: 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3aee6adcf4274c64996b38635f95be53",
+          "Name": "amount",
+          "Description": "Amount of numbers or letters in the sequence\r\nDefault value: 10",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "185be6fba2d1426dbc4893cee3503781",
+          "Name": "step",
+          "Description": "Space between numbers or letters\r\nDefault value: 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4a793b03c82943388cc77c46f4bf8a0d",
+          "Name": "list",
+          "Description": "New list of type: var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Creates a sequence of numbers"
     }
   ],
   "Connectors": [],
   "Dependencies": [
     "6b2be57e-3f4b-4e3a-af98-e12d2831b86f"
   ],
-  "NodeLibraryDependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "cusTest.dyf",
+      "ReferenceType": "DYFFile",
+      "Nodes": [
+        "05d82f5627314cc9bf802c5d6d3ed907"
+      ]
+    }
+  ],
   "Thumbnail": "",
   "GraphDocumentationURL": null,
-  "ExtensionWorkspaceData": [],
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.17",
+      "Data": {}
+    }
+  ],
   "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
   "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.12.0.4836",
+      "Version": "2.17.0.3164",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
     "Camera": {
-      "Name": "Background Preview",
+      "Name": "_Background Preview",
       "EyeX": -17.0,
       "EyeY": 24.0,
       "EyeZ": 50.0,
@@ -207,10 +275,11 @@
       "UpY": 1.0,
       "UpZ": 0.0
     },
+    "ConnectorPins": [],
     "NodeViews": [
       {
-        "ShowGeometry": true,
         "Name": "List.RemoveIfNot",
+        "ShowGeometry": true,
         "Id": "b6cb6ceb21df4c7fb6b186e6ff399afc",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
@@ -219,8 +288,8 @@
         "Y": 274.0
       },
       {
-        "ShowGeometry": true,
         "Name": "ColorRange.ByColorsAndParameters",
+        "ShowGeometry": true,
         "Id": "77aad5875f124bf59a4ece6b30813d3b",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
@@ -229,8 +298,8 @@
         "Y": 68.0
       },
       {
-        "ShowGeometry": true,
         "Name": "Math.Log",
+        "ShowGeometry": true,
         "Id": "1a0f89fdd3ce4214ba81c08934706452",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
@@ -239,14 +308,24 @@
         "Y": 452.0
       },
       {
-        "ShowGeometry": true,
         "Name": "cusTest",
+        "ShowGeometry": true,
         "Id": "05d82f5627314cc9bf802c5d6d3ed907",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 57.656928067267813,
-        "Y": 214.30198945020112
+        "X": 69.818406963757525,
+        "Y": 392.81512610939041
+      },
+      {
+        "Name": "Sequence",
+        "ShowGeometry": true,
+        "Id": "17b1efe0cdea4ce48cafc2da689f79a4",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 118.89866108173413,
+        "Y": 99.202278465565556
       }
     ],
     "Annotations": [],

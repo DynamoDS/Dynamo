@@ -1,0 +1,33 @@
+{
+  "sections": [
+    {
+      "text": "default",
+      "iconUrl": "",
+      "elementType": "section",
+      "showHeader": false,
+      "include": [ ],
+      "childElements": [
+        {
+          "text": "Revit",
+          "iconUrl": "",
+          "elementType": "category",
+          "include": [],
+          "childElements": [
+            {
+              "text": "some goup name",
+              "iconUrl": "",
+              "elementType": "group",
+              "include": [
+                {
+                  "path": "bltinpkg://somepath.path",
+                  "inclusive": false
+                }
+              ],
+              "childElements": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

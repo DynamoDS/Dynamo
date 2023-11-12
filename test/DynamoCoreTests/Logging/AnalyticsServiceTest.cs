@@ -1,85 +1,85 @@
-﻿using Dynamo.Configuration;
-using Dynamo.Graph.Nodes;
-using Dynamo.Graph.Nodes.ZeroTouch;
-using Dynamo.Graph.Workspaces;
-using Dynamo.Interfaces;
-using Dynamo.Models;
-using Dynamo.Scheduler;
-using DynamoShapeManager;
-using NUnit.Framework;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using SystemTestServices;
-using TestServices;
+using System.Runtime.InteropServices;
+using System.Threading;
+using Microsoft.Diagnostics.Runtime;
+using NUnit.Framework;
+using System.Runtime.Versioning;
 
 namespace Dynamo.Tests.Loggings
 {
-    [TestFixture]
-    class AnalyticsServiceTest : DynamoModelTestBase
+    public class DynamoAnalyticsDisableTest
     {
-        //We need to override this function because the one in DynamoModelTestBase is setting StartInTestMode = true
-        protected override DynamoModel.IStartConfiguration CreateStartConfiguration(IPreferences settings)
-        {
-            return new DynamoModel.DefaultStartConfiguration()
-            {
-                PathResolver = pathResolver,
-                StartInTestMode = false,
-                GeometryFactoryPath = preloader.GeometryFactoryPath,
-                Preferences = settings,
-                ProcessMode = TaskProcessMode.Synchronous
-            };
-        }
-
-        /// <summary>
-        /// This test method will validate that the AnalyticsService.OnWorkspaceAdded (CustomNodeWorkspaceModel) is executed
-        /// </summary>
         [Test]
-        [Category("UnitTests")]
-        public void TestOnWorkspaceAdded()
+        [Platform("win")]//nunit attribute for now only run on windows until we know it's useful on linux.
+        public void DisableAnalytics()
         {
-            //Arrange
-            // Open/Run XML test graph
-            string openPath = Path.Combine(TestDirectory, @"core\Angle.dyn");
-            RunModel(openPath);
-            int InitialNodesCount = CurrentDynamoModel.CurrentWorkspace.Nodes.Count();
+            var versions = new List<Version>(){
 
-            // Convert a DSFunction node Line.ByPointDirectionLength to custom node.
-            var workspace = CurrentDynamoModel.CurrentWorkspace;
-            var node = workspace.Nodes.OfType<DSFunction>().First();
+                    new Version(229, 0,0),
+                    new Version(228, 6, 0)
+            };
 
-            List<NodeModel> selectionSet = new List<NodeModel>() { node };
-            var customWorkspace = CurrentDynamoModel.CustomNodeManager.Collapse(
-                selectionSet.AsEnumerable(),
-                Enumerable.Empty<Dynamo.Graph.Notes.NoteModel>(),
-                CurrentDynamoModel.CurrentWorkspace,
-                true,
-                new FunctionNamePromptEventArgs
+            var directory = new DirectoryInfo(Assembly.GetExecutingAssembly().Location);
+            var testDirectory = Path.Combine(directory.Parent.Parent.Parent.FullName, "test");
+            string openPath = Path.Combine(testDirectory, @"core\Angle.dyn");
+            //go get a valid asm path.
+            var locatedPath = string.Empty;
+            var coreDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            Process dynamoCLI = null;
+            //TODO an approach we could take to get this running on linux.
+            //unclear if this needs to be compiled with an ifdef or runtime is ok.
+            //related to https://jira.autodesk.com/browse/DYN-5705
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                DynamoShapeManager.Utilities.SearchForASMInLibGFallback(versions, ref locatedPath, coreDirectory, out _);
+            }
+            else
+            {
+                DynamoShapeManager.Utilities.GetInstalledAsmVersion2(versions, ref locatedPath, coreDirectory);
+            }
+            try
+            {
+                Assert.DoesNotThrow(() =>
                 {
-                    Category = "Testing",
-                    Description = "",
-                    Name = "__AnalyticsServiceTest__",
-                    Success = true
-                }) as CustomNodeWorkspaceModel;
 
-            //Act
-            //This will execute the custom workspace assigment and trigger the added workspace assigment event
-            CurrentDynamoModel.OpenCustomNodeWorkspace(customWorkspace.CustomNodeId);
+                    dynamoCLI = Process.Start(new ProcessStartInfo(Path.Combine(coreDirectory, "DynamoCLI.exe"), $"--GeometryPath \"{locatedPath}\" -k --DisableAnalytics -o \"{openPath}\" ") { UseShellExecute = true });
 
-            //This will add a new custom node to the workspace
-            var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
-            var ws = CurrentDynamoModel.CustomNodeManager.CreateCustomNode("someNode", "someCategory", "");
-            var csid = (ws as CustomNodeWorkspaceModel).CustomNodeId;
-            var customNode = CurrentDynamoModel.CustomNodeManager.CreateCustomNodeInstance(csid);
+                    Thread.Sleep(5000);// Wait 5 seconds to open the dyn
+                    Assert.IsFalse(dynamoCLI.HasExited);
+                    var dt = DataTarget.AttachToProcess(dynamoCLI.Id, false);
+                    var assemblies = dt
+                          .ClrVersions
+                          .Select(dtClrVersion => dtClrVersion.CreateRuntime())
+                          .SelectMany(runtime => runtime.AppDomains.SelectMany(runtimeAppDomain => runtimeAppDomain.Modules))
+                          .Select(clrModule => clrModule.AssemblyName)
+                          .Distinct()
+                          .Where(x => x != null)
+                          .ToList();
 
-            CurrentDynamoModel.AddNodeToCurrentWorkspace(customNode, false);
-            CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(addNode, false);
+                    var firstASMmodulePath = string.Empty;
+                    foreach (string module in assemblies)
+                    {
+                        if (module.IndexOf("Analytics", StringComparison.OrdinalIgnoreCase) != -1)
+                        {
+                            Assert.Fail("Analytics module was loaded");
+                        }
+                        if (module.IndexOf("AdpSDKCSharpWrapper", StringComparison.OrdinalIgnoreCase) != -1)
+                        {
+                            Assert.Fail("ADP module was loaded");
+                        }
+                    }
+                });
+            }
+            finally
+            {
 
-            //Assert
-            //At the begining the CurrentWorkspace.Nodes has 4 nodes but two new nodes were added, then verify we have 5 nodes.
-            Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Nodes.Count(), InitialNodesCount + 2);
-
-        }     
+                dynamoCLI?.Kill();
+            }
+        }
     }
 }

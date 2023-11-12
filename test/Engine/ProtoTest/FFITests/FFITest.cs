@@ -1,7 +1,12 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using FFITarget;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
 using ProtoCore.Mirror;
+using ProtoFFI;
+
 namespace ProtoTest.TD.FFI
 {
     class FFITest : ProtoTestBase
@@ -41,7 +46,7 @@ import (""FFITarget.dll"");
             thisTest.Verify("vc1Value", 3);
             thisTest.Verify("vc2Value", 3);
 
-}
+        }
 
         [Test]
         [Category("SmokeTest")]
@@ -60,7 +65,7 @@ twice_arr = dummy.Twice(arr);
             object[] Expectedresult2 = { 0.0, 2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0, 16.0, 18.0, 20.0 };
             thisTest.Verify("twice_arr", Expectedresult2, 0);
         }
-    
+
 
         [Test]
         public void T023_MethodOverload()
@@ -167,8 +172,8 @@ import (TestData from ""FFITarget.dll"");
             var testDataClassIndex = core.ClassTable.IndexOf("TestData");
             var testDataClass = core.ClassTable.ClassNodes[testDataClassIndex];
             var funcNode = testDataClass.ProcTable.GetFunctionsByName("GetCircleArea")
-                                                  .Where(p => p.IsStatic)
-                                                  .FirstOrDefault();
+                .Where(p => p.IsStatic)
+                .FirstOrDefault();
             var argument = funcNode.ArgumentInfos.First();
 
             Assert.IsNotNull(argument);
@@ -190,8 +195,79 @@ x = ClassWithExceptionToString.Construct();
 ";
             var mirror = thisTest.RunScriptSource(code);
             var x = mirror.GetValue("x");
-            Assert.DoesNotThrow(() => { mirror.GetStringValue(x,this.core.Heap, 0); }); 
-            
+            Assert.DoesNotThrow(() => { mirror.GetStringValue(x, this.core.Heap, 0); });
+
+        }
+
+        [Test]
+        public void TestReturnArbitraryDimensionAttribute()
+        {
+            string code = @"
+import (TestCSharpAttribute from ""FFITarget.dll"");
+x = TestCSharpAttribute.TestReturnAttribute();
+";
+            var mirror = thisTest.RunScriptSource(code);
+            var x = mirror.GetValue("x");
+            thisTest.Verify("x", new object[] { 1.3, new double[] { 4.5, 7.8 } });
+
+        }
+
+        [Test]
+        public void Test_OfficeImportedTypes()
+        {
+            string code = @"import (""DSOffice.dll"");";
+            thisTest.RunScriptSource(code);
+
+            var officeTypes = new List<string>();
+            var dsOfficeTypes = CLRModuleType.GetTypes((CLRModuleType x) => x.CLRType.Assembly.GetName().Name.StartsWith("DSOffice")).ToList();
+            foreach (var x in dsOfficeTypes)
+            {
+                if (x.FullName.Contains("Microsoft.Office"))
+                {
+                    officeTypes.Add(x.FullName);
+                }
+            }
+
+            Assert.AreEqual(0, officeTypes.Count);
+        }
+
+        [Test]
+        public void Test_FFIImportExceptionContainsNameOfType()
+        {
+            //this type is marked with [SuppresImportIntoVM]
+            //if this type is parsed, an exception is thrown.
+            var t = new CLRModuleType(typeof(FFITarget.HiddenDisposer));
+            var ex =Assert.Throws(typeof(Exception),() =>
+            {
+                t.ParseSystemType(typeof(FFITarget.HiddenDisposer), null);
+            });
+            Assert.IsTrue(ex.Message.Contains($"error importing {typeof(FFITarget.HiddenDisposer).FullName}"));
+
+        }
+        [Test]
+        public void Test_FFI_CanImportEnumDefaultValue()
+        {
+            string code = @"
+import (EnumReferencingClass from ""FFITarget.dll"");
+
+    x = EnumReferencingClass();
+    val = x.TestEnumDefaultVal();
+";
+
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("val", "Friday is the best");
+        }
+
+        [Test]
+        public void Test_FFI_ImportMissingTypeParameter()
+        {
+            var val = 30;
+            string code = $@"
+        import (MissingClass from ""FFITarget.dll"");
+        x = MissingClass.MissingMethod({val});";
+
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("x", val);
         }
     }
 }

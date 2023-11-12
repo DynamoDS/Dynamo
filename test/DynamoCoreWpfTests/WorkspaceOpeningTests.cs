@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using Dynamo.Events;
 using Dynamo.Graph;
@@ -17,8 +17,8 @@ namespace Dynamo.Tests
         {
             var ws = OpenWorkspaceFromSampleFile();
             Assert.AreEqual(ws.Name, "Basics_Basic01");
-            Assert.AreEqual(ws.X, -3732.93, .1);
-            Assert.AreEqual(ws.Y, -827.405442288027 , .1);
+            Assert.AreEqual(ws.X, -1915.11, .1);
+            Assert.AreEqual(ws.Y, -330.08, .1);
         }
 
         [Test]
@@ -85,7 +85,7 @@ namespace Dynamo.Tests
         {
             var ws = OpenWorkspaceFromSampleFile();
             var wvm = ViewModel.CurrentSpaceViewModel;
-            Assert.AreEqual(wvm.Zoom, 1.3, .1);
+            Assert.AreEqual(wvm.Zoom, 0.76, .1);
         }
 
         [Test]
@@ -95,7 +95,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(ws.HasUnsavedChanges, false);
         }
 
-        [Test, Ignore]
+        [Test, Ignore("Unknown reason")]
         public void OpeningWorkspaceWithManualRunState()
         {
             var ws = (HomeWorkspaceModel)OpenWorkspaceInManualModeFromSampleFile(true);
@@ -144,9 +144,9 @@ namespace Dynamo.Tests
 
             ws.Clear();
 
-            ws = OpenWorkspaceFromSampleFile();
+            _ = OpenWorkspaceFromSampleFile();
             var wvm = ViewModel.CurrentSpaceViewModel;
-            Assert.AreEqual(wvm.Zoom, 1.3, .1);
+            Assert.AreEqual(wvm.Zoom, 0.761, .1);
         }
 
         private WorkspaceModel OpenWorkspaceFromSampleFile()

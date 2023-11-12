@@ -4,6 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+             xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
              mc:Ignorable="d" 
              HorizontalAlignment="Stretch"
              VerticalAlignment="Stretch"
@@ -21,11 +22,9 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-
-        <WebBrowser 
-            Name="documentationBrowser"
-            Grid.Row="0"
-            HorizontalAlignment="Stretch"
-            Visibility="{Binding Path=ShowBrowser,Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <wv2:WebView2 Name="documentationBrowser"
+                      Grid.Row="0"
+                      HorizontalAlignment="Stretch"
+                      Visibility="{Binding Path=ShowBrowser,Converter={StaticResource BooleanToVisibilityConverter}}"/>
     </Grid>
 </UserControl>

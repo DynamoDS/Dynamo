@@ -1,7 +1,7 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "",
+  "Description": "Dynamo Import Export Sample",
   "Name": "ImportExport_Excel to Dynamo",
   "ElementResolver": {
     "ResolutionMap": {}
@@ -11,7 +11,7 @@
   "Nodes": [
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
-      "HintPath": "C:\\Users\\alfarok\\Documents\\Dynamo_alfarok\\bin\\AnyCPU\\Debug\\samples\\Data\\helix.xlsx",
+      "HintPath": "C:\\Users\\tanga\\Documents\\GitHub\\Dynamo\\doc\\distrib\\Samples\\Data\\helix.xlsx",
       "InputValue": "..\\..\\Data\\helix.xlsx",
       "NodeType": "ExtensionNode",
       "Id": "ea0babea4ab04aae9a895cd423f67885",
@@ -28,7 +28,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows you to select a file on the system to get its filename"
+      "Description": "Allows you to select a file on the system to get its file path."
     },
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
@@ -59,7 +59,7 @@
         {
           "Id": "3d1fb082c054495e9d518efd9c6c5827",
           "Name": "lists",
-          "Description": "A list of lists to be transposed.\n\nvar[]..[]",
+          "Description": "List of lists to be transposed\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -70,7 +70,7 @@
         {
           "Id": "31d2fa9981a744e3adc281d230bc4abe",
           "Name": "lists",
-          "Description": "A list of transposed lists.",
+          "Description": "List of transposed lists",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -269,7 +269,7 @@
         {
           "Id": "69606cb8bff74f21af52f3e6696da0af",
           "Name": "x",
-          "Description": "double\nDefault value : 0 (disabled)",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0 (disabled)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -278,7 +278,7 @@
         {
           "Id": "501e476361c841e3930549e9037c57eb",
           "Name": "y",
-          "Description": "double\nDefault value : 0 (disabled)",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0 (disabled)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -287,7 +287,7 @@
         {
           "Id": "7928475eb9a04bdcb0394bf4adf4e315",
           "Name": "z",
-          "Description": "double\nDefault value : 0 (disabled)",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0 (disabled)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -298,7 +298,7 @@
         {
           "Id": "301fa527e5df441cb33f8edec458b568",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Point created by coordinates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -317,7 +317,7 @@
         {
           "Id": "8371414c19ad44fb93091f4ff457ee6d",
           "Name": "file",
-          "Description": "File representing the Microsoft Excel spreadsheet.\n\nvar",
+          "Description": "File representing the Excel workbook\n\nvar",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -326,7 +326,7 @@
         {
           "Id": "f0c6d90dde55457182f436a91521d2ae",
           "Name": "sheetName",
-          "Description": "Name of the worksheet containing the data.\n\nstring",
+          "Description": "Name of the worksheet containing data\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -335,7 +335,7 @@
         {
           "Id": "7d2fa5e9890a4a3f9d4fbe5a87accd34",
           "Name": "readAsStrings",
-          "Description": "Toggle to switch between reading Excel file as strings.\n\nbool\nDefault value : false",
+          "Description": "Toggle to read cells as strings\n\nbool\nDefault value : false",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -344,7 +344,7 @@
         {
           "Id": "e686a3d8ff174a42887bd4801a7bae73",
           "Name": "showExcel",
-          "Description": "Toggle to switch between showing and hiding the main Excel window.\n\nbool\nDefault value : true",
+          "Description": "Toggle to show excel's main window\n\nbool\nDefault value : true",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -355,7 +355,7 @@
         {
           "Id": "586311285fdd43d486ef3c09bf2fc10f",
           "Name": "data",
-          "Description": "Rows of data from the Excel worksheet.",
+          "Description": "Rows of data from the Excel worksheet",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -399,77 +399,116 @@
     {
       "Start": "f6831a21aa524df9b56522bcfcd80ccc",
       "End": "f3cd938f55af44bba1293f9b62bf0f93",
-      "Id": "1be2fae1b2e44ac2a2487203cfd9d177"
+      "Id": "1be2fae1b2e44ac2a2487203cfd9d177",
+      "IsHidden": "False"
     },
     {
       "Start": "83093f59abfd42abb4d99edae3771d30",
       "End": "f0c6d90dde55457182f436a91521d2ae",
-      "Id": "64b78293d22f4778856e3520e29af72a"
+      "Id": "64b78293d22f4778856e3520e29af72a",
+      "IsHidden": "False"
     },
     {
       "Start": "31d2fa9981a744e3adc281d230bc4abe",
       "End": "c3096efc6bcc455b904c13fb10fa57fd",
-      "Id": "a49fc02b8b054e0297c14da34785ed92"
+      "Id": "a49fc02b8b054e0297c14da34785ed92",
+      "IsHidden": "False"
     },
     {
       "Start": "31d2fa9981a744e3adc281d230bc4abe",
       "End": "0af2a3d0dcd94597b53612b86da0db54",
-      "Id": "0eb00d4d2d1e477587eebcc2fbbee158"
+      "Id": "0eb00d4d2d1e477587eebcc2fbbee158",
+      "IsHidden": "False"
     },
     {
       "Start": "31d2fa9981a744e3adc281d230bc4abe",
       "End": "d52a2eef75ac4df487435d9e053cd1b4",
-      "Id": "208fc92a9ac6432e9046086cd6cfbcc3"
+      "Id": "208fc92a9ac6432e9046086cd6cfbcc3",
+      "IsHidden": "False"
     },
     {
       "Start": "56c1a0fcb4de4e9095505dc9e2df8525",
       "End": "69606cb8bff74f21af52f3e6696da0af",
-      "Id": "cffb0285f6a443d9a4d9ff5da471981f"
+      "Id": "cffb0285f6a443d9a4d9ff5da471981f",
+      "IsHidden": "False"
     },
     {
       "Start": "8956b0f0e20b418090962a39306c5da8",
       "End": "ee9690cf3f3c4ed3a05cc8708d6e318e",
-      "Id": "a633af7a97274b969486d76069e80c23"
+      "Id": "a633af7a97274b969486d76069e80c23",
+      "IsHidden": "False"
     },
     {
       "Start": "92f76c4a37ce43de8749bed32551ac5f",
       "End": "501e476361c841e3930549e9037c57eb",
-      "Id": "04dbb435b51a495bb8ffca2a453ffb48"
+      "Id": "04dbb435b51a495bb8ffca2a453ffb48",
+      "IsHidden": "False"
     },
     {
       "Start": "398d65b8a62647a68a0e6126b74d02c0",
       "End": "17a79d5d19794c5ba2c006c491ddd69c",
-      "Id": "102b7c5310b543b49a5db411adf713b9"
+      "Id": "102b7c5310b543b49a5db411adf713b9",
+      "IsHidden": "False"
     },
     {
       "Start": "8cff2672789e4400903ab9fc91950914",
       "End": "7928475eb9a04bdcb0394bf4adf4e315",
-      "Id": "b0207680530d42f598105d1c96b3dfe1"
+      "Id": "b0207680530d42f598105d1c96b3dfe1",
+      "IsHidden": "False"
     },
     {
       "Start": "26a343fce2be4551a461cbd9b63894d2",
       "End": "6da85db551d94415b91531d179a0f24f",
-      "Id": "44e5ae212dab41c1aa6f774374d05646"
+      "Id": "44e5ae212dab41c1aa6f774374d05646",
+      "IsHidden": "False"
     },
     {
       "Start": "586311285fdd43d486ef3c09bf2fc10f",
       "End": "3d1fb082c054495e9d518efd9c6c5827",
-      "Id": "d79d134360ec4b5e9cc5bc66f5015b6b"
+      "Id": "d79d134360ec4b5e9cc5bc66f5015b6b",
+      "IsHidden": "False"
     },
     {
       "Start": "07a778998bb5470cb52d3f6cb45c3f42",
       "End": "8371414c19ad44fb93091f4ff457ee6d",
-      "Id": "6fa8fbfedbbc4673883401e0c6cce3cc"
+      "Id": "6fa8fbfedbbc4673883401e0c6cce3cc",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "helix.xlsx",
+      "ReferenceType": "External",
+      "Nodes": [
+        "ea0babea4ab04aae9a895cd423f67885"
+      ]
+    }
+  ],
+  "Thumbnail": null,
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.13",
+      "Data": {}
+    }
+  ],
+  "Author": "Dynamo Team",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
   "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.0.0.2821",
+      "Version": "2.13.0.3265",
       "RunType": "Automatic",
       "RunPeriod": "100"
     },
@@ -485,6 +524,7 @@
       "UpY": 1.0,
       "UpZ": 0.0
     },
+    "ConnectorPins": [],
     "NodeViews": [
       {
         "ShowGeometry": true,
@@ -503,8 +543,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 390.1779887029067,
-        "Y": 213.16332428712005
+        "X": 385.30992013048638,
+        "Y": 288.13158030239379
       },
       {
         "ShowGeometry": true,
@@ -513,8 +553,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 754.215544557265,
-        "Y": 126.023545944614
+        "X": 890.52146458503512,
+        "Y": 123.10270480116179
       },
       {
         "ShowGeometry": true,
@@ -523,8 +563,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1010.11433148353,
-        "Y": -22.8452040553864
+        "X": 1216.4412800976058,
+        "Y": -55.109066910545607
       },
       {
         "ShowGeometry": true,
@@ -533,8 +573,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 918.9397720596703,
-        "Y": 2.2653014547152139
+        "X": 1015.3275297935936,
+        "Y": -46.41538426948847
       },
       {
         "ShowGeometry": true,
@@ -543,8 +583,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1008.11433148353,
-        "Y": 87.1547959446137
+        "X": 1219.4412800976058,
+        "Y": 108.89093308945445
       },
       {
         "ShowGeometry": true,
@@ -553,8 +593,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 920.97430856111328,
-        "Y": 112.26530145471524
+        "X": 1033.9134994412655,
+        "Y": 265.12265462871488
       },
       {
         "ShowGeometry": true,
@@ -563,8 +603,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1010.11433148353,
-        "Y": 219.154795944614
+        "X": 1215.4412800976058,
+        "Y": 294.89093308945473
       },
       {
         "ShowGeometry": true,
@@ -573,8 +613,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 921.62946306063236,
-        "Y": 240.2307649532724
+        "X": 1043.3311773711414,
+        "Y": 388.22004955485164
       },
       {
         "ShowGeometry": true,
@@ -583,8 +623,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1228.1568353612038,
-        "Y": 62.974720125106117
+        "X": 1507.4837839752797,
+        "Y": 73.710857269946871
       },
       {
         "ShowGeometry": true,
@@ -593,8 +633,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 494.85915280175504,
-        "Y": 126.315319973216
+        "X": 618.50809454123237,
+        "Y": 123.39447882976373
       },
       {
         "ShowGeometry": true,
@@ -603,13 +643,13 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 335.67692413824028,
+        "X": 387.27845100589616,
         "Y": 125.55001841343906
       }
     ],
     "Annotations": [],
-    "X": 584.87162133085542,
-    "Y": 246.52953937753188,
-    "Zoom": 0.80380161527031935
+    "X": -239.05055411014152,
+    "Y": 211.59766735731841,
+    "Zoom": 1.0
   }
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Xml;
 using Dynamo.Configuration;
+using Dynamo.Core;
 using Dynamo.Exceptions;
 using Dynamo.Interfaces;
 using Dynamo.Library;
@@ -621,6 +622,11 @@ namespace Dynamo.Engine
                     ImportProcedure(library, globalFunction);
                 }
             }
+            catch (DynamoServices.AssemblyBlockedException e)
+            {
+                // This exception is caught upstream after displaying a failed load library warning to the user.
+                throw e;
+            }
             catch (Exception e)
             {
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, e.Message,
@@ -631,7 +637,6 @@ namespace Dynamo.Engine
             {
                 importedLibraries.Add(library);
             }
-
             return true;
         }
 
@@ -737,7 +742,7 @@ namespace Dynamo.Engine
                     }
                 }
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 return; // if the XML file is badly formatted, return like it doesn't exist
             }
@@ -1075,7 +1080,8 @@ namespace Dynamo.Engine
                 IsVarArg = proc.IsVarArg,
                 ObsoleteMsg = obsoleteMessage,
                 CanUpdatePeriodically = canUpdatePeriodically,
-                IsBuiltIn = pathManager.PreloadedLibraries.Contains(library),
+                IsBuiltIn = pathManager.PreloadedLibraries.Contains(library)
+                    || library.StartsWith(PathManager.BuiltinPackagesDirectory),
                 IsPackageMember = packagedLibraries.Contains(library),
                 IsLacingDisabled = isLacingDisabled
             });

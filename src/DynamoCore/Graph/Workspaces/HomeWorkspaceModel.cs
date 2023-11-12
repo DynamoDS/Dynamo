@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -39,10 +39,26 @@ namespace Dynamo.Graph.Workspaces
         // Event to handle closing of the workspace references extension when the workspace is closed. 
         internal static event Action WorkspaceClosed;
 
-        // To check whether task is completed or not. 
-        private bool executingTask;
-
         private IEnumerable<KeyValuePair<Guid, List<CallSite.RawTraceData>>> historicalTraceData;
+
+        private bool graphRunInProgress;
+
+        /// <summary>
+        /// A flag which indicates whether Dynamo is currently running a graph.
+        /// This flag is set to true when execution starts and is set to false
+        /// when execution is completed.
+        /// </summary>
+        internal bool GraphRunInProgress
+        {
+            get { return graphRunInProgress; }
+            set
+            {
+                if (graphRunInProgress == value) return;
+
+                graphRunInProgress = value;
+                RaisePropertyChanged(nameof(GraphRunInProgress));
+            }
+        }
 
         /// <summary>
         ///     Returns <see cref="EngineController"/> object assosiated with thisPreloadedTraceData home workspace
@@ -176,6 +192,9 @@ namespace Dynamo.Graph.Workspaces
 
         /// <summary>
         /// Notifies listeners that graph evaluation is started.
+        /// At this stage, the graph has not been analyzed yet
+        /// so Dynamo could find that the Graph does not need to be executed at all,
+        /// or only part of it could be executed (delta compute)
         /// </summary>
         public event EventHandler<EventArgs> EvaluationStarted;
 
@@ -186,9 +205,19 @@ namespace Dynamo.Graph.Workspaces
         public virtual void OnEvaluationStarted(EventArgs e)
         {
             this.HasRunWithoutCrash = false;
+            GraphRunInProgress = true;
 
-            var handler = EvaluationStarted;
-            if (handler != null) handler(this, e);
+            try
+            {
+                // Do not allow graph runs to be triggered from the EvaluationStarted event. We want to avoid potential infinite loops.
+                // Use a simple internal flag like ForceBlockRun (RunEnabled would notify WPF of changes and that would incur peformance penalties without any benefit)
+                RunSettings.ForceBlockRun = true;
+                EvaluationStarted?.Invoke(this, e);
+            }
+            finally
+            {
+                RunSettings.ForceBlockRun = false;
+            }
         }
 
         /// <summary>
@@ -204,7 +233,8 @@ namespace Dynamo.Graph.Workspaces
         public virtual void OnEvaluationCompleted(EvaluationCompletedEventArgs e)
         {
             this.HasRunWithoutCrash = e.EvaluationSucceeded;
-            
+            GraphRunInProgress = false;
+
             var handler = EvaluationCompleted;
             if (handler != null) handler(this, e);
 
@@ -337,7 +367,7 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="notes">Note collection of the workspace</param>
         /// <param name="annotations">Group collection of the workspace</param>
         /// <param name="presets">Preset collection of the workspace</param>
-        /// <param name="elementResolver">ElementResolver responsible for resolving 
+        /// <param name="resolver">ElementResolver responsible for resolving 
         /// a partial class name to its fully resolved name</param>
         /// <param name="info">Information for creating custom node workspace</param>
         /// <param name="verboseLogging">Indicates if detailed descriptions should be logged</param>
@@ -373,7 +403,7 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="notes">Note collection of the workspace</param>
         /// <param name="annotations">Group collection of the workspace</param>
         /// <param name="presets">Preset collection of the workspace</param>
-        /// <param name="elementResolver">ElementResolver responsible for resolving 
+        /// <param name="resolver">ElementResolver responsible for resolving 
         /// a partial class name to its fully resolved name</param>
         /// <param name="info">Information for creating custom node workspace</param>
         /// <param name="verboseLogging">Indicates if detailed descriptions should be logged</param>
@@ -490,11 +520,7 @@ namespace Dynamo.Graph.Workspaces
 
             if (RunSettings.RunType != RunType.Manual)
             {
-                // TODO for Dynamo 3.0: The boolean "executingTask" that is used here is a make-do fix.
-                // We will be needing a separate variable(boolean flag) to check whether run can be enabled from external applications
-                // and not confuse it with the internal flag RunEnabled which is associated with the Run button in Dynamo. 
-                // Make this RunSettings.RunEnabled private, introduce the new flag and remove the "executingTask" variable. 
-                if ((RunSettings.RunEnabled || executingTask) && !DelayGraphExecution)
+                if (!DelayGraphExecution)
                 {
                     Run();
                 }
@@ -665,15 +691,15 @@ namespace Dynamo.Graph.Workspaces
             EngineController = controller;
             controller.MessageLogged += Log;
             controller.LibraryServices.LibraryLoaded += LibraryLoaded;
-            
+
             if (markNodesAsDirty)
             {
                 // Mark all nodes as dirty so that AST for the whole graph will be
                 // regenerated.
-                MarkNodesAsModifiedAndRequestRun(Nodes); 
+                MarkNodesAsModifiedAndRequestRun(Nodes);
             }
 
-            if (RunSettings.RunEnabled && RunSettings.RunType == RunType.Automatic)
+            if (RunSettings.RunType == RunType.Automatic)
                 Run();
         }
 
@@ -706,13 +732,13 @@ namespace Dynamo.Graph.Workspaces
         private void OnUpdateGraphCompleted(AsyncTask task)
         {
             var updateTask = (UpdateGraphAsyncTask)task;
-            var messages = new Dictionary<Guid, string>();
+            var warnings = new Dictionary<Guid, string>();
 
             // Runtime warnings take precedence over build warnings.
             foreach (var warning in updateTask.RuntimeWarnings)
             {
-                var message = string.Join("\n", warning.Value.Select(w => w.Message));
-                messages.Add(warning.Key, message);
+                var message = string.Join(Environment.NewLine, warning.Value.Select(w => w.Message));
+                warnings.Add(warning.Key, message);
             }
 
             foreach (var warning in updateTask.BuildWarnings)
@@ -722,12 +748,12 @@ namespace Dynamo.Graph.Workspaces
                 // But for cyclic dependency warnings, it is
                 // easier to understand to report a build warning.
                 string message = string.Empty;
-                if (messages.ContainsKey(warning.Key))
+                if (warnings.ContainsKey(warning.Key))
                 {
                     if (!warning.Value.Any(w => w.ID == ProtoCore.BuildData.WarningID.InvalidStaticCyclicDependency))
                         continue;
 
-                    messages.Remove(warning.Key);
+                    warnings.Remove(warning.Key);
                     message = string.Join("\n", warning.Value.
                         Where(w => w.ID == ProtoCore.BuildData.WarningID.InvalidStaticCyclicDependency).
                         Select(w => w.Message));
@@ -739,25 +765,37 @@ namespace Dynamo.Graph.Workspaces
 
                 if (!string.IsNullOrEmpty(message))
                 {
-                    messages.Add(warning.Key, message);
+                    warnings.Add(warning.Key, message);
                 }
             }
 
             var workspace = updateTask.TargetedWorkspace;
-            foreach (var message in messages)
+            foreach (var warning in warnings)
             {
-                var guid = message.Key;
+                var guid = warning.Key;
                 var node = workspace.Nodes.FirstOrDefault(n => n.GUID == guid);
                 if (node == null)
                     continue;
-
-                node.Warning(message.Value); // Update node warning message.
+                using (node.PropertyChangeManager.SetPropsToSuppress(nameof(NodeModel.ToolTipText), nameof(NodeModel.Infos), nameof(NodeModel.State)))
+                {
+                    node.Warning(warning.Value); // Update node warning message.
+                }
             }
 
-            // Notify listeners (optional) of completion.
-            RunSettings.RunEnabled = true; // Re-enable 'Run' button.
+            // Update node info message.
+            foreach (var info in updateTask.RuntimeInfos)
+            {
+                var guid = info.Key;
+                var node = workspace.Nodes.FirstOrDefault(n => n.GUID == guid);
+                if (node == null)
+                    continue;
+                using (node.PropertyChangeManager.SetPropsToSuppress(nameof(NodeModel.ToolTipText), nameof(NodeModel.Infos), nameof(NodeModel.State)))
+                {
+                    node.Info(string.Join(Environment.NewLine, info.Value.Select(w => w.Message)));
+                }
+            }
 
-            executingTask = false; // setting back to false
+            RunSettings.RunTypesEnabled = true; //Re-enable Run Type ComboBox
 
             //set the node execution preview to false;
             OnSetNodeDeltaState(new DeltaComputeStateEventArgs(new List<Guid>(), graphExecuted));
@@ -767,8 +805,8 @@ namespace Dynamo.Graph.Workspaces
             // Dispatch the failure message display for execution on UI thread.
             // 
             EvaluationCompletedEventArgs e = task.Exception == null || IsTestMode
-                ? new EvaluationCompletedEventArgs(true)
-                : new EvaluationCompletedEventArgs(true, task.Exception);
+                ? new EvaluationCompletedEventArgs(true,warnings.Keys,null)
+                : new EvaluationCompletedEventArgs(true, warnings.Keys, task.Exception);
 
             EvaluationCount ++;
 
@@ -801,6 +839,11 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         public void Run()
         {
+            if (!RunSettings.RunEnabled) return;
+
+            // ForceBlockRun (an internal flag) has higher priority than RunEnabled. Mostly used by the FileTrust feature.
+            if (RunSettings.ForceBlockRun) return;
+
             graphExecuted = true;
 
             // When Dynamo is shut down, the workspace is cleared, which results
@@ -826,10 +869,15 @@ namespace Dynamo.Graph.Workspaces
             EngineController.ProcessPendingCustomNodeSyncData(scheduler);
             
             var task = new UpdateGraphAsyncTask(scheduler, verboseLogging);
+
+            // Start of graph evaluation (includes task.Initialize)
+            // Set these flags to false so that we do not get into infinite loop scenarios
+            // if listeners of EvaluationStarted decide to call RequestRun
+            OnEvaluationStarted(EventArgs.Empty);
+
             if (task.Initialize(EngineController, this))
             {
                 task.Completed += OnUpdateGraphCompleted;
-                RunSettings.RunEnabled = false; // Disable 'Run' button.
 
                 // Reset node states
                 foreach (var node in Nodes)
@@ -837,15 +885,11 @@ namespace Dynamo.Graph.Workspaces
                     node.WasInvolvedInExecution = false;
                 }
 
-                // The workspace has been built for the first time
+                // After the first update graph task has been scheduled (i.e the workspace has been built for the first time),
+                // we can set the silenceNodeModifications flag back to false.
                 silenceNodeModifications = false;
 
-                OnEvaluationStarted(EventArgs.Empty);
                 scheduler.ScheduleForExecution(task);
-
-                // Setting this to true as the task is scheduled now and will be 
-                // set back to false once the OnUpdateGraphCompleted event is executed. 
-                executingTask = true;
             }
             else
             {
@@ -863,18 +907,18 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="showRunPreview">This parameter controls the delta state computation </param>
         internal void GetExecutingNodes(bool showRunPreview)
         {
-            var task = new PreviewGraphAsyncTask(scheduler, VerboseLogging);
-                        
             //The Graph is executed and Show node execution is checked on the Settings menu
             if (graphExecuted && showRunPreview)
             {
+                var task = new PreviewGraphAsyncTask(scheduler, VerboseLogging);
+
                 if (task.Initialize(EngineController, this) != null)
                 {
                     task.Completed += OnPreviewGraphCompleted;
                     scheduler.ScheduleForExecution(task);
                 }
             }
-            //Show node exection is checked but the graph has not RUN
+            //Show node execution is checked but the graph has not RUN
             else
             {
                 var deltaComputeStateArgs = new DeltaComputeStateEventArgs(new List<Guid>(), graphExecuted);
@@ -884,14 +928,15 @@ namespace Dynamo.Graph.Workspaces
 
         private void OnPreviewGraphCompleted(AsyncTask asyncTask)
         {
-            var updateTask = asyncTask as PreviewGraphAsyncTask;
-            if (updateTask != null)
+            if (asyncTask is PreviewGraphAsyncTask updateTask)
             {
                 var nodeGuids = updateTask.previewGraphData;
-                var deltaComputeStateArgs = new DeltaComputeStateEventArgs(nodeGuids,graphExecuted);
-                OnSetNodeDeltaState(deltaComputeStateArgs);               
-            }            
+                var deltaComputeStateArgs = new DeltaComputeStateEventArgs(nodeGuids, graphExecuted);
+                OnSetNodeDeltaState(deltaComputeStateArgs);
+            }
         }
+
+
        
         #endregion
 

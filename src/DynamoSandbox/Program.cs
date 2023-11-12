@@ -1,4 +1,5 @@
-﻿using System;
+using Dynamo.Wpf.Utilities;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -38,12 +39,11 @@ namespace DynamoSandbox
         /// <returns></returns>
         public static Assembly ResolveAssembly(object sender, ResolveEventArgs args)
         {
-            var assemblyPath = string.Empty;
             var assemblyName = new AssemblyName(args.Name).Name + ".dll";
 
             try
             {
-                assemblyPath = Path.Combine(DynamoCorePath, assemblyName);
+                string assemblyPath = Path.Combine(DynamoCorePath, assemblyName);
                 if (File.Exists(assemblyPath))
                     return Assembly.LoadFrom(assemblyPath);
 
@@ -124,7 +124,7 @@ namespace DynamoSandbox
             // Hard-coding the strings in English, since in order to access the
             // Resources files we would need prior resolution to Dynamo Core itself
             if (MessageBoxResult.OK ==
-                MessageBox.Show(
+                MessageBoxService.Show(
                     string.Format(
                         "Dynamo Sandbox {0} is not able to find an installation of " +
                         "Dynamo Core version {0} or higher.\n\nWould you like to download the " +
@@ -133,7 +133,7 @@ namespace DynamoSandbox
                     MessageBoxButton.OKCancel,
                     MessageBoxImage.Error))
             {
-                Process.Start("http://dynamobim.org/download/");
+                Process.Start(new ProcessStartInfo("http://dynamobim.org/download/") { UseShellExecute = true });
             }
         }
     }

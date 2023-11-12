@@ -1,0 +1,1139 @@
+{
+  "Uuid": "77959dd8-92b0-4c3b-b1ec-70188383a281",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "sat_import_with_units",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "GeometryUI.ImportFromSATWithUnits, GeometryUI",
+      "NodeType": "ExtensionNode",
+      "Id": "8a767c7046fa436d81441910d224a6a9",
+      "Inputs": [
+        {
+          "Id": "eb68bd9d872e4d7e84acf01498a149ee",
+          "Name": "file|filePath",
+          "Description": "Filepath or File object to import .SAT from.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c00fcd0b6a784bb28d8d14133db6f852",
+          "Name": "dynamoUnit",
+          "Description": "A forge unit length, if left null, geometry will be imported as unitless.",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "486f41c7d7ae4c71b8139e8f26e228d2",
+          "Name": "geometry",
+          "Description": "Loaded geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Imports geometry from SAT filepath. Set the dynamoUnit input to match how you are interpreting the other numbers in your Dynamo file."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.FileObject, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "ae0694866a264b15b91d047c56836701",
+      "Inputs": [
+        {
+          "Id": "5d3ac8a700e7424eb9677f47e1ec528c",
+          "Name": "path",
+          "Description": "Path to the file.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b5ae41e7a1c5448b960eb65548ac9b4c",
+          "Name": "file",
+          "Description": "File object",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a file object from a path."
+    },
+    {
+      "ConcreteType": "GeometryUI.ImportFromSATWithUnits, GeometryUI",
+      "NodeType": "ExtensionNode",
+      "Id": "9d6089ad074645cfafde374ab0fca422",
+      "Inputs": [
+        {
+          "Id": "2a4f723a74cc4c84a13101973d7d8814",
+          "Name": "file|filePath",
+          "Description": "Filepath or File object to import .SAT from.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7a7611085ca948b5bd69a65f9e37cd1c",
+          "Name": "dynamoUnit",
+          "Description": "A forge unit length, if left null, geometry will be imported as unitless.",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9b149760b1b44fd4b4270e3238893e0f",
+          "Name": "geometry",
+          "Description": "Loaded geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Imports geometry from SAT filepath. Set the dynamoUnit input to match how you are interpreting the other numbers in your Dynamo file."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.SerializeAsSAB@Autodesk.DesignScript.Geometry.Geometry[]",
+      "Id": "2a0dc55e450b40aaad7b57665f3f2294",
+      "Inputs": [
+        {
+          "Id": "e36be68eeaa347b58e301e867dde8e02",
+          "Name": "geometry",
+          "Description": "Geometry[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "285fda0cf49245228e3a5d1092496e62",
+          "Name": "int[]",
+          "Description": "int[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Serializes the specified geometry into Standard ACIS Binary(SAB) format and returns serialized binary stream data\n\nGeometry.SerializeAsSAB (geometry: Geometry[]): int[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.SerializeAsSAB@Autodesk.DesignScript.Geometry.Geometry[]",
+      "Id": "9436baa855b6445fb30dafc4a081b78f",
+      "Inputs": [
+        {
+          "Id": "8ea07c62fb064ba094f97e1d01d58c65",
+          "Name": "geometry",
+          "Description": "Geometry[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "bbfcb7dceffa491a9cf05ea9bf1e9a04",
+          "Name": "int[]",
+          "Description": "int[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Serializes the specified geometry into Standard ACIS Binary(SAB) format and returns serialized binary stream data\n\nGeometry.SerializeAsSAB (geometry: Geometry[]): int[]"
+    },
+    {
+      "ConcreteType": "GeometryUI.DeserializeFromSABWithUnits, GeometryUI",
+      "NodeType": "ExtensionNode",
+      "Id": "d710d9def806443fb9c13d321493636f",
+      "Inputs": [
+        {
+          "Id": "aa57be754b1a4890833c29660fca578a",
+          "Name": "file|filePath",
+          "Description": "SAB byte array.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b94b05717ace45d68c2333c65eb024e7",
+          "Name": "dynamoUnit",
+          "Description": "A forge unit length, if left null, geometry will be imported as unitless.",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d819cba0137c4086944776425c8c76d6",
+          "Name": "geometry",
+          "Description": "Loaded geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Imports geometry from SAB byte array. Set the dynamoUnit input to match how you are interpreting the other numbers in your Dynamo file."
+    },
+    {
+      "ConcreteType": "GeometryUI.ImportFromSATWithUnits, GeometryUI",
+      "NodeType": "ExtensionNode",
+      "Id": "21409336216d43a0be462362b30989b4",
+      "Inputs": [
+        {
+          "Id": "f9bb0dd1af684102af012b917d8abca3",
+          "Name": "file|filePath",
+          "Description": "Filepath or File object to import .SAT from.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "852f37c018b54deeb3c407f06da9e1c1",
+          "Name": "dynamoUnit",
+          "Description": "A forge unit length, if left null, geometry will be imported as unitless.",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "fed5d11a2f094e3eafd2fe9d1cd1cfb4",
+          "Name": "geometry",
+          "Description": "Loaded geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Imports geometry from SAT filepath. Set the dynamoUnit input to match how you are interpreting the other numbers in your Dynamo file."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.HigherOrder.ApplyFunction, CoreNodeModels",
+      "VariableInputPorts": true,
+      "NodeType": "ExtensionNode",
+      "Id": "293c503caa2d4a9696a0da2b5598c7a3",
+      "Inputs": [
+        {
+          "Id": "98ca3bab058e41c5ad923d9e036b9adb",
+          "Name": "function",
+          "Description": "Function to apply.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b808e357043f4a878707c717019642af",
+          "Name": "argument0",
+          "Description": "Argument #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "eb4f72e636dd4632bd1af2a931b6d3d0",
+          "Name": "result",
+          "Description": "Result of application.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Returns the result of a function with supplied arguments. Ex: arguments of a point and vector are applied to a translate function returning a translated point."
+    },
+    {
+      "ConcreteType": "GeometryUI.DeserializeFromSABWithUnits, GeometryUI",
+      "NodeType": "ExtensionNode",
+      "Id": "d475e7d927a04233b220c8e3784e0da7",
+      "Inputs": [
+        {
+          "Id": "f79b5d42d4204bc0a9fe7de9d8cd5de2",
+          "Name": "file|filePath",
+          "Description": "SAB byte array.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2264b157fcff4e16ba0c880e1f884ea9",
+          "Name": "dynamoUnit",
+          "Description": "A forge unit length, if left null, geometry will be imported as unitless.",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b09ecd67cca0465583a059ead1ddf5a7",
+          "Name": "geometry",
+          "Description": "Loaded geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Imports geometry from SAB byte array. Set the dynamoUnit input to match how you are interpreting the other numbers in your Dynamo file."
+    },
+    {
+      "ConcreteType": "GeometryUI.DeserializeFromSABWithUnits, GeometryUI",
+      "NodeType": "ExtensionNode",
+      "Id": "2f439424baaf44f2857667eaf834de9d",
+      "Inputs": [
+        {
+          "Id": "ca4af8d277f047a486396c852b959482",
+          "Name": "file|filePath",
+          "Description": "SAB byte array.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5b3451f19b494b0486384593eef6ef9c",
+          "Name": "dynamoUnit",
+          "Description": "A forge unit length, if left null, geometry will be imported as unitless.",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "166c8921763443e2a20a86c6aa08aabf",
+          "Name": "geometry",
+          "Description": "Loaded geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Imports geometry from SAB byte array. Set the dynamoUnit input to match how you are interpreting the other numbers in your Dynamo file."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.HigherOrder.ApplyFunction, CoreNodeModels",
+      "VariableInputPorts": true,
+      "NodeType": "ExtensionNode",
+      "Id": "14e865adf9f047d6a2529246ab71cdcc",
+      "Inputs": [
+        {
+          "Id": "3f0b337608574f77bb456d51f19b2b2a",
+          "Name": "function",
+          "Description": "Function to apply.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2ffb1b56e9b646da803b7b96f827bd0e",
+          "Name": "argument0",
+          "Description": "Argument #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "bef202c0749642878029c5ef01f0695c",
+          "Name": "result",
+          "Description": "Result of application.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Returns the result of a function with supplied arguments. Ex: arguments of a point and vector are applied to a translate function returning a translated point."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.SerializeAsSAB@Autodesk.DesignScript.Geometry.Geometry[]",
+      "Id": "b97439980b0840d898fbd4392f382cf5",
+      "Inputs": [
+        {
+          "Id": "5c929b0693fc4302b89b1575ecb22196",
+          "Name": "geometry",
+          "Description": "Geometry[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "107edd2d8fc34e6a861cdb32927a7fdc",
+          "Name": "int[]",
+          "Description": "int[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Serializes the specified geometry into Standard ACIS Binary(SAB) format and returns serialized binary stream data\n\nGeometry.SerializeAsSAB (geometry: Geometry[]): int[]"
+    },
+    {
+      "ConcreteType": "UnitsUI.Units, UnitsUI",
+      "SelectedIndex": 62,
+      "SelectedString": "Decimeters",
+      "NodeType": "ExtensionNode",
+      "Id": "83e84287ce1f4aaa823c99e8da47f076",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "42a6ff60b481477a8cf4bb67db45759c",
+          "Name": "Unit",
+          "Description": "The selected Unit",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select a Unit type"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.Area",
+      "Id": "de47797c7c694dd496f038d47ad5e648",
+      "Inputs": [
+        {
+          "Id": "8d261c6a37fb4e669791f64569c0a638",
+          "Name": "surface",
+          "Description": "Autodesk.DesignScript.Geometry.Surface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "154b39ee81c340fab2ecab7b0ff8bf66",
+          "Name": "double",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns the total surface area.\n\nSurface.Area: double"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
+      "VariableInputPorts": true,
+      "NodeType": "ExtensionNode",
+      "Id": "97ed003c9eaa40d3b1bc4be2b4985358",
+      "Inputs": [
+        {
+          "Id": "6b30fcfd86b4423bbc46ca41b9543b24",
+          "Name": "item0",
+          "Description": "Item Index #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "ff6fc7aab5e64756a44f917431a19780",
+          "Name": "item1",
+          "Description": "Item Index #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "45917f3ff325436a9b0c872a32574efe",
+          "Name": "item2",
+          "Description": "Item Index #2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d2fbb4b760eb4d6f9cb3fe6dd43dcb55",
+          "Name": "item3",
+          "Description": "Item Index #3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ab236347142d484c8eb689fc9d8fee04",
+          "Name": "list",
+          "Description": "A list (type: var[]..[])",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Makes a new list out of the given inputs"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Math.Sum@double[]",
+      "Id": "05f72cc0ef4448abaf959a4c8c0e01b9",
+      "Inputs": [
+        {
+          "Id": "612f0787e7984a8aa534a6becbbd0c68",
+          "Name": "values",
+          "Description": "Numbers to add to sum\n\ndouble[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e3223bdb6943423cbbd64dbc3a017fbe",
+          "Name": "double",
+          "Description": "The sum of the values",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Find the sum of a series of numbers\n\nMath.Sum (values: double[]): double"
+    },
+    {
+      "ConcreteType": "GeometryUI.ImportFromSATWithUnits, GeometryUI",
+      "NodeType": "ExtensionNode",
+      "Id": "8c14fe6431594983869a31be4a7c43bd",
+      "Inputs": [
+        {
+          "Id": "f2d8234b1bc544dd894a03921a0a00d1",
+          "Name": "file|filePath",
+          "Description": "Filepath or File object to import .SAT from.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "1140eb0886084e3799445d6c6f89c3de",
+          "Name": "dynamoUnit",
+          "Description": "A forge unit length, if left null, geometry will be imported as unitless.",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7cff2197b2df45e782843acfb7172a95",
+          "Name": "geometry",
+          "Description": "Loaded geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Imports geometry from SAT filepath. Set the dynamoUnit input to match how you are interpreting the other numbers in your Dynamo file."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.List.OfRepeatedItem@var[]..[],int",
+      "Id": "2682a4707aed4dd3b6ef7592c48555ac",
+      "Inputs": [
+        {
+          "Id": "4ccd09758b434f10ae680744c8d5e5e6",
+          "Name": "item",
+          "Description": "The item to repeat.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b208d690403c442f8b8b5e7aee514a38",
+          "Name": "amount",
+          "Description": "The number of times to repeat.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5ca165f12a084ee8b44443853b098457",
+          "Name": "list",
+          "Description": "List of repeated items.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Creates a list containing the given item the given number of times.\n\nList.OfRepeatedItem (item: var[]..[], amount: int): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "10;",
+      "Id": "9232eca62f9d43a3a303c756fe8b261c",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "8596cb1fdc1c42eeaf1f22e64ee32cb7",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.List.Flatten@var[]..[],int",
+      "Id": "76a57269014e4062b8714d92d67f9a0d",
+      "Inputs": [
+        {
+          "Id": "ec6065e25ec14522ac1d6d5b28f4c661",
+          "Name": "list",
+          "Description": "List to flatten.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d80bed6f29cc434fa10b928ba5863d10",
+          "Name": "amount",
+          "Description": "Layers of list nesting to remove (-1 will remove all list nestings)\n\nint\nDefault value : -1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "340dcafbd6a940e7b3780bfb7621af89",
+          "Name": "list",
+          "Description": "Flattened list by amount",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Flattens a nested list of lists by a certain amount.\n\nList.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"..\\\\..\\\\..\\\\..\\\\Dynamo\\\\test\\\\core\\\\WorkflowTestFiles\\\\GeometryDefects\\\\SweepAsSolid\\\\profile.sat\";",
+      "Id": "2db6fc8c76464478a598be0c33e50927",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "cf3a15124dbf4d368ee79c47a36fd8ca",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "486f41c7d7ae4c71b8139e8f26e228d2",
+      "End": "e36be68eeaa347b58e301e867dde8e02",
+      "Id": "617e7b58cd034aebb1040f98af1f8131",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "b5ae41e7a1c5448b960eb65548ac9b4c",
+      "End": "b808e357043f4a878707c717019642af",
+      "Id": "8b616acd9dce4b35a5b41ffb13e3ee9f",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "9b149760b1b44fd4b4270e3238893e0f",
+      "End": "8ea07c62fb064ba094f97e1d01d58c65",
+      "Id": "d38327ada3dc4d53b029e579b3b11f8d",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "285fda0cf49245228e3a5d1092496e62",
+      "End": "aa57be754b1a4890833c29660fca578a",
+      "Id": "8b9e5ecf5aa5498f85347aee8dd9aa61",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "bbfcb7dceffa491a9cf05ea9bf1e9a04",
+      "End": "f79b5d42d4204bc0a9fe7de9d8cd5de2",
+      "Id": "14b45c7b20134e8084778e29650e1c37",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "d819cba0137c4086944776425c8c76d6",
+      "End": "6b30fcfd86b4423bbc46ca41b9543b24",
+      "Id": "abd0db4d865b4629af104694b8acddd7",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "fed5d11a2f094e3eafd2fe9d1cd1cfb4",
+      "End": "98ca3bab058e41c5ad923d9e036b9adb",
+      "Id": "736cefff23a3494abf47fef111e20047",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "eb4f72e636dd4632bd1af2a931b6d3d0",
+      "End": "5c929b0693fc4302b89b1575ecb22196",
+      "Id": "62e87b19b0b542fe99cc6d26e58736cf",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "b09ecd67cca0465583a059ead1ddf5a7",
+      "End": "ff6fc7aab5e64756a44f917431a19780",
+      "Id": "2017f989abba49bfba90e8fd66b27454",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "166c8921763443e2a20a86c6aa08aabf",
+      "End": "3f0b337608574f77bb456d51f19b2b2a",
+      "Id": "41c3aff9fb9d4fd18dc78965bb023bc6",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "bef202c0749642878029c5ef01f0695c",
+      "End": "45917f3ff325436a9b0c872a32574efe",
+      "Id": "1aa01389d5cf4eec9fc489bf43275032",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "107edd2d8fc34e6a861cdb32927a7fdc",
+      "End": "2ffb1b56e9b646da803b7b96f827bd0e",
+      "Id": "29e72114092843b3a5cc9806e1fe7d1d",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "42a6ff60b481477a8cf4bb67db45759c",
+      "End": "5b3451f19b494b0486384593eef6ef9c",
+      "Id": "dd90ccc92a3c40eb9cb7515e06c34eea",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "154b39ee81c340fab2ecab7b0ff8bf66",
+      "End": "612f0787e7984a8aa534a6becbbd0c68",
+      "Id": "ab0675a516c04f4f9a229b179931c32e",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "ab236347142d484c8eb689fc9d8fee04",
+      "End": "ec6065e25ec14522ac1d6d5b28f4c661",
+      "Id": "05c6d801387b4536a38859e2c5e8ef23",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "7cff2197b2df45e782843acfb7172a95",
+      "End": "d2fbb4b760eb4d6f9cb3fe6dd43dcb55",
+      "Id": "d725bde4d61e4afcb66e9f3c1b884cd0",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "5ca165f12a084ee8b44443853b098457",
+      "End": "f2d8234b1bc544dd894a03921a0a00d1",
+      "Id": "dcd0b3f2aaef47fc8f572dafef86f417",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "8596cb1fdc1c42eeaf1f22e64ee32cb7",
+      "End": "b208d690403c442f8b8b5e7aee514a38",
+      "Id": "8f47dd2884d44015b10482e1c606d7cb",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "340dcafbd6a940e7b3780bfb7621af89",
+      "End": "8d261c6a37fb4e669791f64569c0a638",
+      "Id": "4393ecfaed21437fb5a35af11b898d70",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "cf3a15124dbf4d368ee79c47a36fd8ca",
+      "End": "eb68bd9d872e4d7e84acf01498a149ee",
+      "Id": "9dcc70cc8c094ba2924db052e3b09f2e",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "cf3a15124dbf4d368ee79c47a36fd8ca",
+      "End": "2a4f723a74cc4c84a13101973d7d8814",
+      "Id": "481df07ecf3144ad8851cc46b24b58a7",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "cf3a15124dbf4d368ee79c47a36fd8ca",
+      "End": "4ccd09758b434f10ae680744c8d5e5e6",
+      "Id": "ce292acf1a22452c873d57a2086be235",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "cf3a15124dbf4d368ee79c47a36fd8ca",
+      "End": "5d3ac8a700e7424eb9677f47e1ec528c",
+      "Id": "87deaeea8eba47cc849c7b1f9b2ae8c5",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "profile.sat",
+      "ReferenceType": "External",
+      "Nodes": [
+        "2db6fc8c76464478a598be0c33e50927"
+      ]
+    }
+  ],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.16",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.16.0.2345",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Geometry.ImportFromSATWithUnits",
+        "ShowGeometry": true,
+        "Id": "8a767c7046fa436d81441910d224a6a9",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 416.0,
+        "Y": 313.0
+      },
+      {
+        "Name": "File From Path",
+        "ShowGeometry": true,
+        "Id": "ae0694866a264b15b91d047c56836701",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 40.15155466752276,
+        "Y": 445.51814895239033
+      },
+      {
+        "Name": "Geometry.ImportFromSATWithUnits",
+        "ShowGeometry": true,
+        "Id": "9d6089ad074645cfafde374ab0fca422",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 423.0,
+        "Y": 508.5
+      },
+      {
+        "Name": "Geometry.SerializeAsSAB",
+        "ShowGeometry": true,
+        "Id": "2a0dc55e450b40aaad7b57665f3f2294",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1007.0,
+        "Y": 324.0
+      },
+      {
+        "Name": "Geometry.SerializeAsSAB",
+        "ShowGeometry": true,
+        "Id": "9436baa855b6445fb30dafc4a081b78f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1014.8911062856578,
+        "Y": 520.93557485736858
+      },
+      {
+        "Name": "Geometry.DeserializeFromSABWithUnits",
+        "ShowGeometry": true,
+        "Id": "d710d9def806443fb9c13d321493636f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1415.7186813987912,
+        "Y": 93.250187346395762
+      },
+      {
+        "Name": "Geometry.ImportFromSATWithUnits",
+        "ShowGeometry": true,
+        "Id": "21409336216d43a0be462362b30989b4",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 379.70874933603341,
+        "Y": 745.58618933208209
+      },
+      {
+        "Name": "Function Apply",
+        "ShowGeometry": true,
+        "Id": "293c503caa2d4a9696a0da2b5598c7a3",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 517.78561361218965,
+        "Y": 1005.9021369244356
+      },
+      {
+        "Name": "Geometry.DeserializeFromSABWithUnits",
+        "ShowGeometry": true,
+        "Id": "d475e7d927a04233b220c8e3784e0da7",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1409.1349248301851,
+        "Y": 372.66622085774617
+      },
+      {
+        "Name": "Geometry.DeserializeFromSABWithUnits",
+        "ShowGeometry": true,
+        "Id": "2f439424baaf44f2857667eaf834de9d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1056.6146670799435,
+        "Y": 1072.0487004309789
+      },
+      {
+        "Name": "Function Apply",
+        "ShowGeometry": true,
+        "Id": "14e865adf9f047d6a2529246ab71cdcc",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1445.4551512821313,
+        "Y": 768.74685247924049
+      },
+      {
+        "Name": "Geometry.SerializeAsSAB",
+        "ShowGeometry": true,
+        "Id": "b97439980b0840d898fbd4392f382cf5",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 860.96068157616753,
+        "Y": 782.46459395316708
+      },
+      {
+        "Name": "Units",
+        "ShowGeometry": true,
+        "Id": "83e84287ce1f4aaa823c99e8da47f076",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 865.91347142538291,
+        "Y": 1412.5183555655412
+      },
+      {
+        "Name": "Surface.Area",
+        "ShowGeometry": true,
+        "Id": "de47797c7c694dd496f038d47ad5e648",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3079.5684467196738,
+        "Y": 515.42261595237358
+      },
+      {
+        "Name": "List Create",
+        "ShowGeometry": true,
+        "Id": "97ed003c9eaa40d3b1bc4be2b4985358",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2631.9521052226833,
+        "Y": 763.73332742999708
+      },
+      {
+        "Name": "Math.Sum",
+        "ShowGeometry": true,
+        "Id": "05f72cc0ef4448abaf959a4c8c0e01b9",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3332.3176069670408,
+        "Y": 817.97390820815144
+      },
+      {
+        "Name": "Geometry.ImportFromSATWithUnits",
+        "ShowGeometry": true,
+        "Id": "8c14fe6431594983869a31be4a7c43bd",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1000.5371579926959,
+        "Y": 2051.1287880229243
+      },
+      {
+        "Name": "List.OfRepeatedItem",
+        "ShowGeometry": true,
+        "Id": "2682a4707aed4dd3b6ef7592c48555ac",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 282.83121222439627,
+        "Y": 1650.7634096063355
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "9232eca62f9d43a3a303c756fe8b261c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 73.0,
+        "Y": 1808.0
+      },
+      {
+        "Name": "List.Flatten",
+        "ShowGeometry": true,
+        "Id": "76a57269014e4062b8714d92d67f9a0d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3010.1360611620871,
+        "Y": 950.53744635740463
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "2db6fc8c76464478a598be0c33e50927",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -400.45023747642256,
+        "Y": -130.06633569476455
+      }
+    ],
+    "Annotations": [],
+    "X": 379.98748583168043,
+    "Y": 117.71004774899916,
+    "Zoom": 0.76727274727297878
+  }
+}

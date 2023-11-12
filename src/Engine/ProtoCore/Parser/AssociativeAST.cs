@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using ProtoCore.AST.ImperativeAST;
 using ProtoCore.DSASM;
@@ -716,7 +717,7 @@ namespace ProtoCore.AST.AssociativeAST
 
         public override string ToString()
         {
-            return LeftNode + "." + RightNode;
+            return LeftNode + "." + RightNode + base.ToString();
         }
 
         public override AstKind Kind
@@ -2082,6 +2083,7 @@ namespace ProtoCore.AST.AssociativeAST
         public AssociativeNode LeftNode { get; set; }
         public Operator Optr { get; set; }
         public AssociativeNode RightNode { get; set; }
+        public bool IsInputExpression { get; set; }
         public bool isSSAPointerAssignment { get; set; }
         public bool IsFirstIdentListNode { get; set; }
 
@@ -2097,6 +2099,7 @@ namespace ProtoCore.AST.AssociativeAST
             LeftNode = left;
             Optr = optr;
             RightNode = right;
+            IsInputExpression = false;
             IsFirstIdentListNode = false;
         }
 
@@ -2117,6 +2120,7 @@ namespace ProtoCore.AST.AssociativeAST
             {
                 RightNode = NodeUtils.Clone(rhs.RightNode);
             }
+            IsInputExpression = rhs.IsInputExpression;
             IsFirstIdentListNode = rhs.IsFirstIdentListNode;
         }
 
@@ -2140,7 +2144,8 @@ namespace ProtoCore.AST.AssociativeAST
              Optr = Operator.assign;
              LeftNode = lhs;
              RightNode = NodeUtils.Clone(rhs);
-             IsFirstIdentListNode = false;
+             IsInputExpression = false;
+            IsFirstIdentListNode = false;
              
          }
 
@@ -2764,7 +2769,7 @@ namespace ProtoCore.AST.AssociativeAST
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        [Obsolete("The DS language supports 32 bit integers since Dynamo 2.0. This method will be removed in a future version of Dynamo.")]
+        [Obsolete("The DS language supports 64 bit integers since Dynamo 2.0. This method will be removed in a future version of Dynamo.")]
         public static IntNode BuildIntNode(int value)
         {
             return new IntNode(value);
@@ -2799,6 +2804,34 @@ namespace ProtoCore.AST.AssociativeAST
         }
 
         /// <summary>
+        /// Get the default value of Type "t"
+        /// </summary>
+        /// <param name="t">The type that we want to generate a default value for</param>
+        /// <returns>The default value</returns>
+        private static object GetDefault(System.Type t)
+        {
+            Func<object> f = GetDefault<object>;
+            return f.Method.GetGenericMethodDefinition().MakeGenericMethod(t).Invoke(null, null);
+        }
+
+        private static T GetDefault<T>() => default;
+
+        /// <summary>
+        /// Builds an AssociativeNode (int, double, null etc) from the input value or type
+        /// </summary>
+        /// <param name="value">The value of the object</param>
+        /// <param name="type">The target type that the "value" parameter represents</param>
+        /// <returns>AssociativeNode</returns>
+        internal static AssociativeNode BuildPrimitiveNodeFromObjectAndType(object value, System.Type type)
+        {
+            if (value is Missing)
+            {
+                value = GetDefault(type);
+            }
+            return BuildPrimitiveNodeFromObject(value);
+        }
+
+        /// <summary>   
         /// Builds a integer, double, string, boolean or null node depending
         /// on input value type.
         /// </summary>
@@ -2806,11 +2839,10 @@ namespace ProtoCore.AST.AssociativeAST
         /// <returns>AssociativeNode</returns>
         public static AssociativeNode BuildPrimitiveNodeFromObject(object value)
         {
-            if (null == value)
-                return BuildNullNode();
-
             switch (value)
             {
+                case null:
+                    return BuildNullNode();
                 case short s:
                     return BuildIntNode(Convert.ToInt64(s));
                 case int i:
@@ -2832,7 +2864,7 @@ namespace ProtoCore.AST.AssociativeAST
                 case bool b:
                     return BuildBooleanNode(b);
                 default:
-                    Validity.Assert(false, "Invalide Input type to make AST node");
+                    Validity.Assert(false, "Invalid Input type to make AST node");
                     break;
             }
             return BuildNullNode();

@@ -207,7 +207,6 @@ t = glob;
         }
 
         [Test]
-        [Category("Failure")]
         public void T22_FunctionPointerArray()
         {
             string err = "MAGN-4040 Array indexing on array of function pointers causes crash";
@@ -216,11 +215,12 @@ def foo(x)
 {
     return = 2 * x;
 }
-fs = {foo, foo};
-r = fs[0](100);
+fs = [foo, foo];
+r = fs[0];
+x = r(100);
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code, err);
-            thisTest.Verify("r", 200);
+            thisTest.Verify("x", 200);
         }
 
         [Test]

@@ -1,92 +1,25 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
-    <Import Project="$(SolutionDir)Config\CS.props" />
+    <Import Project="$(SolutionDir)Config/CS_SDK.props" />
   </ImportGroup>
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{C70FE632-5500-4C57-B3D6-9B5574137551}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>FFITarget</RootNamespace>
     <AssemblyName>FFITarget</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-    <SonarQubeTestProject>true</SonarQubeTestProject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
     <DocumentationFile>..\..\..\bin\AnyCPU\Debug\en-US\FFITarget.xml</DocumentationFile>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
+  <PropertyGroup>
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
-      <Link>AssemblySharedInfo.cs</Link>
-    </Compile>
-    <Compile Include="AbstractDisposeTracert.cs" />
-    <Compile Include="AtLevelTestClass.cs" />
-    <Compile Include="ClassFunctionality.cs" />
-    <Compile Include="ClassWithMigratedMembers.cs" />
-    <Compile Include="ClassWithRefParams.cs" />
-    <Compile Include="CodeCompletionClass.cs" />
-    <Compile Include="CustomLabel.cs" />
-    <Compile Include="DefaultArguments.cs" />
-    <Compile Include="DisposeTest.cs" />
-    <Compile Include="DummyMath.cs" />
-    <Compile Include="DummyZeroTouchClass.cs" />
-    <Compile Include="ElementResolverTarget.cs" />
-    <Compile Include="GlobalClass.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="NamespaceConflictResolution.cs" />
-    <Compile Include="ReferenceThisTest.cs" />
-    <Compile Include="ReplicationTest.cs" />
-    <Compile Include="TestCSharpAttribute.cs" />
-    <Compile Include="DisposeTracer.cs" />
-    <Compile Include="DummyCollection.cs" />
-    <Compile Include="DummyGeometry.cs" />
-    <Compile Include="InheritenceTests.cs" />
-    <Compile Include="ManagedElementExample.cs" />
-    <Compile Include="Minimal.cs" />
-    <Compile Include="MinimalTraceTargets.cs" />
-    <Compile Include="OverloadTarget.cs" />
-    <Compile Include="ProtoFFITests.cs" />
-    <Compile Include="RegressionTargets.cs" />
-    <Compile Include="TestDefaultArgumentAttributes.cs" />
-    <Compile Include="TestMessageLog.cs" />
-    <Compile Include="TestMethodOverload.cs" />
-    <Compile Include="TestNamespaceConflict.cs" />
-    <Compile Include="TestNamespaceResolution.cs" />
-    <Compile Include="TestObjects.cs" />
-    <Compile Include="TestPersistentNodeValues.cs" />
-    <Compile Include="TestThisOverload.cs" />
-    <Compile Include="TestUpdateCount.cs" />
+    <PackageReference Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1001" GeneratePathProperty="true">
+        <ExcludeAssets>all</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\DynamoCore\DynamoCore.csproj">
@@ -104,12 +37,4 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

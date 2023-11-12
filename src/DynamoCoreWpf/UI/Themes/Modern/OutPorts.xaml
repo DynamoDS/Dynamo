@@ -1,0 +1,203 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore"
+                    xmlns:dynui="clr-namespace:Dynamo.UI.Controls;assembly=DynamoCoreWpf"
+                    xmlns:interactivity="clr-namespace:Dynamo.Microsoft.Xaml.Behaviors;assembly=Dynamo.Microsoft.Xaml.Behaviors"
+                    xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+                    xmlns:viewModels="clr-namespace:Dynamo.ViewModels;assembly=DynamoCoreWpf"
+                    xmlns:views="clr-namespace:Dynamo.UI.Views;assembly=DynamoCoreWpf">
+    <ResourceDictionary.MergedDictionaries>
+        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+    </ResourceDictionary.MergedDictionaries>
+        
+    <DataTemplate DataType="{x:Type viewModels:OutPortViewModel}">
+        
+        <!--  Grid that contains the entire port  -->
+        <Grid Name="MainGrid"
+              Background="Transparent"
+              HorizontalAlignment="Right"
+              IsHitTestVisible="True">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Name="PortNameColumn" Width="*"/>
+                <ColumnDefinition Name="ValueMarkerColumn" Width="5px"/>
+                <ColumnDefinition Name="PortSnappingColumn" Width="25px" />
+            </Grid.ColumnDefinitions>
+            <interactivity:Interaction.Triggers>
+                <!--  Bind Connect command to left click  -->
+                <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
+                    <interactivity:InvokeCommandAction Command="{Binding Path=ConnectCommand}" />
+                </views:HandlingEventTrigger>
+                <views:HandlingEventTrigger EventName="MouseRightButtonDown">
+                    <interactivity:InvokeCommandAction Command="{Binding Path=NodePortContextMenuCommand}" CommandParameter="{Binding}" />
+                </views:HandlingEventTrigger>
+            </interactivity:Interaction.Triggers>
+
+            <!--  Bind NodeAutoComplete to double left click  -->
+            <Grid.InputBindings>
+                <MouseBinding Command="{Binding Path=NodeAutoCompleteCommand}" MouseAction="LeftDoubleClick" />
+            </Grid.InputBindings>
+
+            <Grid.Style>
+                <Style>
+                    <Setter Property="Grid.Height" Value="35px" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=IsPortCondensed}" Value="True">
+                            <Setter Property="Grid.Height" Value="14px" />
+                            <Setter Property="Grid.Margin" Value="0,3,0,0" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+
+            <!--  Transparent rectangle used for port snapping, overhangs the edge of the port  -->
+            <Rectangle Grid.Column="0"
+                       x:Name="PortSnapping"
+                       Margin="-25,0,0,0"
+                       Grid.ColumnSpan="7"
+                       Canvas.ZIndex="1"
+                       Fill="Transparent"
+                       IsHitTestVisible="{Binding IsHitTestVisible}"
+                       SnapsToDevicePixels="True">
+                <interactivity:Interaction.Triggers>
+                    <views:HandlingEventTrigger EventName="MouseEnter">
+                        <interactivity:InvokeCommandAction Command="{Binding Path=MouseEnterCommand}" CommandParameter="{Binding}" />
+                    </views:HandlingEventTrigger>
+                    <views:HandlingEventTrigger EventName="MouseLeave">
+                        <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeaveCommand}" CommandParameter="{Binding}" />
+                    </views:HandlingEventTrigger>
+                </interactivity:Interaction.Triggers>
+            </Rectangle>
+
+            <!--  Sets the port background color  -->
+            <Border x:Name="PortBackgroundBorder"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    SnapsToDevicePixels="True">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Background" Value="{Binding PortBackgroundColor, UpdateSourceTrigger=PropertyChanged}" />
+                        <Setter Property="Height" Value="29px" />
+                        <Setter Property="CornerRadius" Value="11,0,0,11" />
+                        <Setter Property="BorderThickness" Value="1,1,0,1" />
+                        <Setter Property="BorderBrush" Value="{Binding PortBorderBrushColor, UpdateSourceTrigger=PropertyChanged}" />
+                        <Style.Triggers>
+                            <!--  Used for styling output ports when they are 'condensed' i.e. on a code block  -->
+                            <DataTrigger Binding="{Binding Path=IsPortCondensed}" Value="True">
+                                <Setter Property="CornerRadius" Value="0" />
+                                <Setter Property="BorderThickness" Value="0" />
+                                <Setter Property="Height" Value="14px" />
+                                <Setter Property="Width" Value="20px" />
+                                <Setter Property="Background" Value="#666666" />
+                                <Setter Property="BorderBrush" Value="Transparent" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+            </Border>
+
+            <!--  A small marker on the left of the port, indicating whether it's been honored  -->
+            <Rectangle x:Name="PortValueMarker"
+                       Grid.Column="1"
+                       Height="27px"
+                       VerticalAlignment="Center"
+                       IsHitTestVisible="False"
+                       Visibility="{Binding PortDefaultValueMarkerVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                       SnapsToDevicePixels="True" >
+                <Rectangle.Style>
+                    <Style TargetType="Rectangle">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=BorderHighlightOverlay, Path=IsMouseOver}" Value="True">
+                                <Setter Property="Fill" Value="Transparent" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ElementName=BorderHighlightOverlay, Path=IsMouseOver}" Value="False">
+                                <Setter Property="Fill" Value="#999999" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Rectangle.Style>
+            </Rectangle>
+       
+            <!--  Grid containing the Port Name TextBox  -->
+            <Grid Name="PortNameGrid"
+                  Grid.Column="0"
+                  VerticalAlignment="Center"
+                  IsEnabled="{Binding Path=IsEnabled}"
+                  IsHitTestVisible="True"
+                  ToolTipService.ShowDuration="60000">
+                <TextBlock Name="PortNameTextBox"
+                           VerticalAlignment="Center"
+                           FontFamily="{StaticResource ArtifaktElementRegular}"
+                           FontSize="12px"
+                           Foreground="#DCDCDC"
+                           IsHitTestVisible="False"
+                           Text="{Binding Path=PortName}">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Margin" Value="13,3,10,0" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=IsPortCondensed}" Value="True">
+                                    <Setter Property="Margin" Value="12,1,0,0" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+                <Grid.Style>
+                    <Style>
+                        <Setter Property="Grid.Height" Value="{Binding Path=Height}" />
+                        <Setter Property="Grid.Margin" Value="{Binding Path=MarginThickness}" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=IsPortCondensed}" Value="True">
+                                <Setter Property="Grid.Height" Value="14px" />
+                                <Setter Property="Grid.Margin" Value="0,1,2,0" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+            </Grid>
+            
+            <!--  A semi-transparent border, which displays when the user's mouse moves over the port  -->
+            <Border x:Name="BorderHighlightOverlay"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    BorderBrush="Transparent"
+                    Opacity="0.2"
+                    SnapsToDevicePixels="True">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Height" Value="29px" />
+                        <Setter Property="CornerRadius" Value="11,0,0,11" />
+                        <Setter Property="BorderThickness" Value="1,1,0,1" />
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="White" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="False">
+                                <Setter Property="Background" Value="Transparent" />
+                            </Trigger>
+                            <DataTrigger Binding="{Binding Path=IsPortCondensed}" Value="True">
+                                <Setter Property="CornerRadius" Value="0" />
+                                <Setter Property="BorderThickness" Value="0" />
+                                <Setter Property="Height" Value="{Binding Source={x:Static configuration:Configurations.CodeBlockOutputPortHeightInPixels}}" />
+                                <Setter Property="Width" Value="20px" />
+                                <Setter Property="Margin" Value="5,0,0,0" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <Border.ToolTip>
+                    <dynui:DynamoToolTip AttachmentSide="Right" Style="{DynamicResource ResourceKey=SLightToolTip}">
+                        <Grid>
+                            <TextBlock MaxWidth="320"
+                                       Text="{Binding Path=ToolTipContent}"
+                                       TextWrapping="Wrap" />
+                        </Grid>
+                    </dynui:DynamoToolTip>
+                </Border.ToolTip>
+
+            </Border>
+        </Grid>
+    </DataTemplate>
+</ResourceDictionary>

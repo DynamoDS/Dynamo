@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -21,6 +21,14 @@ namespace ProtoCore
             /// </summary>
             private StackValue svData;
 
+            public bool IsFunction
+            {
+                get
+                {
+                    return IsPointer && Class.Name.Equals(CoreUtils.FunctionObjectClass) && Class.LibraryMirror.Name.Equals(CoreUtils.FunctionObjectLibrary);
+                }
+            }
+
 
             //
             // Comment Jun:
@@ -41,6 +49,7 @@ namespace ProtoCore
             /// Experimental constructor that takes in a core object
             /// Takes a core object to read static data
             /// </summary>
+            /// <param name="core"></param>
             /// <param name="sv"></param>
             public MirrorData(ProtoCore.Core core, StackValue sv)
             {
@@ -51,6 +60,8 @@ namespace ProtoCore
             /// <summary>
             /// Takes a runtime core object to read runtime data
             /// </summary>
+            /// <param name="core"></param>
+            /// <param name="runtimeCore"></param>
             /// <param name="sv"></param>
             public MirrorData(ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore, StackValue sv)
             {
@@ -176,7 +187,7 @@ namespace ProtoCore
             /// it returns null.
             /// </summary>
             /// <param name="sv">StackValue</param>
-            /// <param name="core">ProtoCore.Core</param>
+            /// <param name="runtimeCore">ProtoCore.Core</param>
             /// <returns>System.Object</returns>
             internal static object GetData(StackValue sv, RuntimeCore runtimeCore)
             {
@@ -200,6 +211,8 @@ namespace ProtoCore
                 return null;
             }
 
+            internal static string PrecisionFormat { get; set; } = "f3";
+
             /// <summary>
             /// Returns string representation of data
             /// </summary>
@@ -211,20 +224,30 @@ namespace ProtoCore
                     {
                         return "null";
                     }
-                    else if (Data is bool)
+                    if (Data is bool)
                     {
                         return Data.ToString().ToLower();
                     }
-                    else if (Data is IFormattable)
+                    if (Data is IFormattable)
                     {
                         // Object.ToString() by default will use the current 
                         // culture to do formatting. For example, Double.ToString()
                         // https://msdn.microsoft.com/en-us/library/3hfd35ad(v=vs.110).aspx
                         // We should always use invariant culture format for formattable 
                         // object.
+
+                        //!!!!carefully consider the consequences of this change before uncommenting.
+                        //TODO: uncomment this once https://jira.autodesk.com/browse/DYN-5101 is complete
+                        //if (Data is double)
+                        //{
+                        //    return (Data as IFormattable).ToString(PrecisionFormat, CultureInfo.InvariantCulture);
+                        //}
+                        //else
+                        //{
                         return (Data as IFormattable).ToString(null, CultureInfo.InvariantCulture);
+                        //}
                     }
-                    else
+                    
                     {
                         return Data.ToString();
                     }

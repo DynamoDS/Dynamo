@@ -1,10 +1,12 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
 namespace DynamoShapeManager
@@ -14,100 +16,124 @@ namespace DynamoShapeManager
         /// <summary>
         /// Key words for Products containing ASM binaries
         /// </summary>
-        private static readonly List<string> ProductsWithASM = new List<string>() { "Revit", "Civil", "Robot Structural Analysis", "FormIt" };
+        private static List<string> ProductsWithASM
+        {
+            get
+            {
+                List<string> defaultProducts = new List<string>() { "Revit", "Civil", "Robot Structural Analysis", "FormIt" };
+                List<string> configProducts = new List<string>();
+                try
+                {
+                    var assemblyConfig = ConfigurationManager.OpenExeConfiguration(typeof(Utilities).Assembly.Location);
+                    if (assemblyConfig != null)
+                    {
+                        var products = assemblyConfig.AppSettings.Settings["productsWithASM"];
+                        if (products != null)
+                        {
+                            configProducts = products.Value.Split(',').ToList();
+                            return configProducts;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Following exception was thrown when trying to read DynamoShapeManager's app.config");
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine("Using default list of products with ASM");
+                }
+                return defaultProducts;
+            }
+        }
+            //
 
         #region ASM DLLs per version (to be kept in sync with LibG)
-
-        private static readonly ISet<string> ASM226DllNames = new HashSet<string>()
+        private static readonly ISet<string> ASM230DllNames = new HashSet<string>()
         {
-            "TBB.DLL",
+            "TBB12.DLL",
             "TBBMALLOC.DLL",
-            "TSPLINES8A.DLL",
-            "ASMBASE226A.DLL",
-            "ASMLAW226A.DLL",
-            "ASMKERN226A.DLL",
-            "ASMGA226A.DLL",
-            "ASMINTR226A.DLL",
-            "ASMTOPT226A.DLL",
-            "ASMCT226A.DLL",
-            "ASMCSTR226A.DLL",
-            "ASMEULR226A.DLL",
-            "ASMBOOL226A.DLL",
-            "ASMFCT226A.DLL",
-            "ASMLOPT226A.DLL",
-            "ASMRBASE226A.DLL",
-            "ASMRBI226A.DLL",
-            "ASMAHL226A.DLL",
-            "ASMOFST226A.DLL",
-            "ASMREM226A.DLL",
-            "ASMCOVR226A.DLL",
-            "ASMSKIN226A.DLL",
-            "ASMSBOOL226A.DLL",
-            "ASMBLND226A.DLL",
-            "ASMDATAX226A.DLL",
-            "ASMHEAL226A.DLL",
-            "ASMSWP226A.DLL",
-            "ASMDEFM226A.DLL",
-            "ASMFREC226A.DLL",
-            "ASMNPCH226A.DLL",
-            "ASMOPER226A.DLL",
-            "ASMIMPORT226A.DLL",
-            "ASMLOP226A.DLL",
-            "ASMSBAP226A.DLL",
-            "ASMSHL226A.DLL",
-            "ASMTWK226A.DLL",
-            "ASMPID226A.DLL",
-            "ASMUFLD226A.DLL",
-            "ASMWELD226A.DLL",
-            "ADPSDKWRAPPER.DLL",
-            "ADPSDKUI.DLL",
-            "ADPSDKCORE.DLL"
+            "TSPLINES12.DLL",
+            "ASMAHL230A.DLL",
+            "ASMBASE230A.DLL",
+            "ASMBLND230A.DLL",
+            "ASMBOOL230A.DLL",
+            "ASMCOVR230A.DLL",
+            "ASMCSTR230A.DLL",
+            "ASMCT230A.DLL",
+            "ASMDATAX230A.DLL",
+            "ASMDEFM230A.DLL",
+            "ASMEULR230A.DLL",
+            "ASMFCT230A.DLL",
+            "ASMFREC230A.DLL",
+            "ASMGA230A.DLL",
+            "ASMHEAL230A.DLL",
+            "ASMIMPORT230A.DLL",
+            "ASMINTR230A.DLL",
+            "ASMKERN230A.DLL",
+            "ASMLAW230A.DLL",
+            "ASMLOP230A.DLL",
+            "ASMLOPT230A.DLL",
+            "ASMNPCH230A.DLL",
+            "ASMOFST230A.DLL",
+            "ASMOPER230A.DLL",
+            "ASMPID230A.DLL",
+            "ASMRBASE230A.DLL",
+            "ASMRBI230A.DLL",
+            "ASMREM230A.DLL",
+            "ASMSASM230A.DLL",
+            "ASMSBAP230A.DLL",
+            "ASMSBOOL230A.DLL",
+            "ASMSHL230A.DLL",
+            "ASMSKIN230A.DLL",
+            "ASMSWP230A.DLL",
+            "ASMTOPT230A.DLL",
+            "ASMTWK230A.DLL",
+            "ASMUFLD230A.DLL",
+            "ASMWELD230A.DLL",
+            "MMSDK.DLL",
         };
-
-        private static readonly ISet<string> ASM227DllNames = new HashSet<string>()
+        private static readonly ISet<string> ASM229DllNames = new HashSet<string>()
         {
             "TBB.DLL",
             "TBBMALLOC.DLL",
-            "TSPLINES9A.DLL",
-            "ASMAHL227A.DLL",
-            "ASMBASE227A.DLL",
-            "ASMBLND227A.DLL",
-            "ASMBOOL227A.DLL",
-            "ASMCOVR227A.DLL",
-            "ASMCSTR227A.DLL",
-            "ASMCT227A.DLL",
-            "ASMDATAX227A.DLL",
-            "ASMDEFM227A.DLL",
-            "ASMEULR227A.DLL",
-            "ASMFCT227A.DLL",
-            "ASMFREC227A.DLL",
-            "ASMGA227A.DLL",
-            "ASMHEAL227A.DLL",
-            "ASMIMPORT227A.DLL",
-            "ASMINTR227A.DLL",
-            "ASMKERN227A.DLL",
-            "ASMLAW227A.DLL",
-            "ASMLOP227A.DLL",
-            "ASMLOPT227A.DLL",
-            "ASMNPCH227A.DLL",
-            "ASMOFST227A.DLL",
-            "ASMOPER227A.DLL",
-            "ASMPID227A.DLL",
-            "ASMRBASE227A.DLL",
-            "ASMRBI227A.DLL",
-            "ASMREM227A.DLL",
-            "ASMSBAP227A.DLL",
-            "ASMSBOOL227A.DLL",
-            "ASMSHL227A.DLL",
-            "ASMSKIN227A.DLL",
-            "ASMSWP227A.DLL",
-            "ASMTOPT227A.DLL",
-            "ASMTWK227A.DLL",
-            "ASMUFLD227A.DLL",
-            "ASMWELD227A.DLL",
-            "ADPSDKWRAPPER.DLL",
-            "ADPSDKUI.DLL",
-            "ADPSDKCORE.DLL"
+            "TSPLINES11.DLL",
+            "ASMAHL229A.DLL",
+            "ASMBASE229A.DLL",
+            "ASMBLND229A.DLL",
+            "ASMBOOL229A.DLL",
+            "ASMCOVR229A.DLL",
+            "ASMCSTR229A.DLL",
+            "ASMCT229A.DLL",
+            "ASMDATAX229A.DLL",
+            "ASMDEFM229A.DLL",
+            "ASMEULR229A.DLL",
+            "ASMFCT229A.DLL",
+            "ASMFREC229A.DLL",
+            "ASMGA229A.DLL",
+            "ASMHEAL229A.DLL",
+            "ASMIMPORT229A.DLL",
+            "ASMINTR229A.DLL",
+            "ASMKERN229A.DLL",
+            "ASMLAW229A.DLL",
+            "ASMLOP229A.DLL",
+            "ASMLOPT229A.DLL",
+            "ASMNPCH229A.DLL",
+            "ASMOFST229A.DLL",
+            "ASMOPER229A.DLL",
+            "ASMPID229A.DLL",
+            "ASMRBASE229A.DLL",
+            "ASMRBI229A.DLL",
+            "ASMREM229A.DLL",
+            "ASMSASM229A.DLL",
+            "ASMSBAP229A.DLL",
+            "ASMSBOOL229A.DLL",
+            "ASMSHL229A.DLL",
+            "ASMSKIN229A.DLL",
+            "ASMSWP229A.DLL",
+            "ASMTOPT229A.DLL",
+            "ASMTWK229A.DLL",
+            "ASMUFLD229A.DLL",
+            "ASMWELD229A.DLL",
+            "MMSDK.DLL"
         };
 
         #endregion
@@ -147,6 +173,9 @@ namespace DynamoShapeManager
         /// or None otherwise.</returns>
         /// 
         [Obsolete("Please use version of this method which accepts precise collection of version objects.")]
+#if NET6_0_OR_GREATER
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#endif
         public static LibraryVersion GetInstalledAsmVersion(List<LibraryVersion> versions, ref string location, string rootFolder)
         {
             if (string.IsNullOrEmpty(rootFolder))
@@ -221,7 +250,9 @@ namespace DynamoShapeManager
         /// of Tuples - these represent versions of ASM which are located on the user's machine.</param>
         /// <returns>Returns System.Version of ASM if any installed ASM is found, 
         /// or null otherwise.</returns>
-        /// 
+#if NET6_0_OR_GREATER
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#endif
         public static Version GetInstalledAsmVersion2(IEnumerable<Version> versions, ref string location, string rootFolder, Func<string, IEnumerable> getASMInstallsFunc = null)
         {
             if (string.IsNullOrEmpty(rootFolder))
@@ -251,13 +282,13 @@ namespace DynamoShapeManager
                     foreach (KeyValuePair<string, Tuple<int, int, int, int>> install in installations)
                     {
                         var installVersion = new Version(install.Value.Item1, install.Value.Item2, install.Value.Item3);
-                        if (version.Major == installVersion.Major && !versionToLocationDic.ContainsKey(installVersion))
+                        if (version.Major == installVersion.Major && version.Minor <= installVersion.Minor && !versionToLocationDic.ContainsKey(installVersion))
                         {
                             versionToLocationDic.Add(installVersion, install.Key);
                         }
                     }
 
-                    // When there is major version matching, continue the search
+                    // When there is major/minor version compat, continue the search
                     if (versionToLocationDic.Count != 0)
                     {
                         versionToLocationDic.TryGetValue(version, out location);
@@ -276,20 +307,7 @@ namespace DynamoShapeManager
                 }
 
                 // Fallback mechanism, look inside libg folders if any of them contains ASM dlls.
-                foreach (var v in versions)
-                {
-                    var folderName = string.Format("libg_{0}_{1}_{2}", v.Major, v.Minor, v.Build);
-                    var dir = new DirectoryInfo(Path.Combine(rootFolder, folderName));
-                    if (!dir.Exists)
-                        continue;
-
-                    var files = dir.GetFiles(ASMFileMask);
-                    if (!files.Any())
-                        continue;
-
-                    location = dir.FullName;
-                    return v;
-                }
+                if (SearchForASMInLibGFallback(versions, ref location, rootFolder, out var installedAsmVersion3)) return installedAsmVersion3;
             }
             catch (Exception)
             {
@@ -297,6 +315,33 @@ namespace DynamoShapeManager
             }
 
             return null;
+        }
+
+        internal static bool SearchForASMInLibGFallback(IEnumerable<Version> versions, ref string location, string rootFolder,
+            out Version installedAsmVersion3)
+        {
+            foreach (var v in versions)
+            {
+                var dirpath = GetLibGPreloaderLocation(v, rootFolder);
+                if (string.IsNullOrEmpty(dirpath))
+                {
+                    continue;
+                }
+
+                var dir = new DirectoryInfo(dirpath);
+                var files = dir.GetFiles(ASMFileMask);
+                if (!files.Any())
+                    continue;
+
+                location = dir.FullName;
+                {
+                    installedAsmVersion3 = v;
+                    return true;
+                }
+            }
+
+            installedAsmVersion3 = null;
+            return false;
         }
 
         /// <summary>
@@ -370,13 +415,7 @@ namespace DynamoShapeManager
 
             // if we can't find the preloader location directly as passed
             // try converting it to a precise version location.
-            if (!Directory.Exists(preloaderLocation))
-            {
-                // Path/To/Extern/LibG_223 ->  Path/To/Extern/LibG_223_0_1
-                preloaderLocationToLoad = RemapOldLibGPathToNewVersionPath(preloaderLocation);
-            }
-            // the directory exists, just load it.
-            else
+            if (Directory.Exists(preloaderLocation))
             {
                 preloaderLocationToLoad = preloaderLocation;
             }
@@ -410,65 +449,23 @@ namespace DynamoShapeManager
                 var methodParams = new object[] { asmLocation };
                 preloadMethod.Invoke(null, methodParams);
             }
-            catch
+            catch(Exception ex)
             {
                 //log for clients like CLI.
-                var message = $"Could not load geometry library binaries from : {asmLocation}";
+                
+                var message = $"Could not load geometry library binaries from : {asmLocation} {ex} {ex.InnerException}";
+                if (ex is SEHException sehex)
+                {
+                    message += $"external error code {sehex.ErrorCode}";
+                }
+                if (ex.InnerException is SEHException sehex2)
+                {
+                    message += $"external error code {sehex2.ErrorCode}";
+                }
                 Console.WriteLine(message);
                 throw new Exception(message);
             }
             Debug.WriteLine("Successfully loaded ASM binaries");
-        }
-
-        /// <summary>
-        /// Attempts to remap a an old LibG path to a new one using a version map.
-        /// We assume that the leaf directory is of the form LibG_[Version].
-        /// </summary>
-        /// <param name="preloaderLocation"></param>
-        /// <returns> new version LibG path or Empty string if the path could not be remapped.</returns>
-        internal static string RemapOldLibGPathToNewVersionPath(string preloaderLocation)
-        {
-            if (String.IsNullOrEmpty(preloaderLocation))
-            {
-                return string.Empty;
-            }
-            var folderName = Path.GetFileName(preloaderLocation);
-            var splitName = folderName.Split('_');
-            if (splitName.Count() == 2)
-            {
-                LibraryVersion outVersion;
-                if (Enum.TryParse<LibraryVersion>(string.Format("Version{0}", splitName[1]), out outVersion))
-                {
-                    var version = DynamoShapeManager.Preloader.MapLibGVersionEnumToFullVersion(outVersion);
-                    return Path.Combine(
-                        Path.GetDirectoryName(preloaderLocation),
-                        string.Format("libg_{0}_{1}_{2}", version.Major, version.Minor, version.Build)
-                        );
-                }
-            }
-
-            return "";
-        }
-
-        /// <summary>
-        /// This method will return the path to the GeometryFactory assembly location 
-        /// for a requested version of the geometry library.
-        /// This method is tolerant to the requested version in that it will attempt to 
-        /// locate an exact or lower version of the GeometryFactory assembly.
-        /// </summary>
-        /// <param name="rootFolder">Full path of the directory that contains 
-        /// LibG_xxx_y_z folder, where 'xxx y z' represents the library version of asm. In a 
-        /// typical setup this would be the same directory that contains Dynamo 
-        /// core modules. This must represent a valid directory - it cannot be null.</param>
-        /// <param name="version">Version number of the targeted geometry library.
-        /// If the resulting assembly does not exist, this method will look for a lower version match.
-        /// This parameter cannot be null. </param>
-        /// <returns>The full path to GeometryFactoryAssembly assembly.</returns>
-        /// 
-        [Obsolete("Please use GetGeometryFactoryPath2(string rootFolder, Version version).")]
-        public static string GetGeometryFactoryPath(string rootFolder, LibraryVersion version)
-        {
-            return GetGeometryFactoryPath2(rootFolder, Preloader.MapLibGVersionEnumToFullVersion(version));
         }
 
         /// <summary>
@@ -525,15 +522,24 @@ namespace DynamoShapeManager
         }
 
 
+#if NET6_0_OR_GREATER
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#endif
         private static IEnumerable GetAsmInstallations(string rootFolder)
         {
-            var assemblyPath = Path.Combine(Path.Combine(rootFolder, "DynamoInstallDetective.dll"));
-            if (!File.Exists(assemblyPath))
-                throw new FileNotFoundException(assemblyPath);
+            // Try to directly get the type for the detective class
+            // (this will in many cases also load the assembly)
+            var type = Type.GetType("DynamoInstallDetective.Utilities, DynamoInstallDetective", false);
+            if (type == null)
+            {
+                // fallback, load the assembly and get the type using LoadFrom
+                var assemblyPath = Path.Combine(rootFolder, "DynamoInstallDetective.dll");
+                if (!File.Exists(assemblyPath))
+                    throw new FileNotFoundException(assemblyPath);
 
-            var assembly = Assembly.LoadFrom(assemblyPath);
-
-            var type = assembly.GetType("DynamoInstallDetective.Utilities");
+                var assembly = Assembly.LoadFrom(assemblyPath);
+                type = assembly.GetType("DynamoInstallDetective.Utilities");
+            }
 
             var installationsMethod = type.GetMethod(
                 "FindMultipleProductInstallations",
@@ -560,34 +566,54 @@ namespace DynamoShapeManager
         /// <param name="filePaths">Files found on an ASM installation location.</param>
         /// <param name="majorVersion">Major version of ASM found in the specified location.</param>
         /// <returns>Whether the files represent a complete ASM installation or not.</returns>
+#if NET6_0_OR_GREATER
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#endif
         internal static bool IsASMInstallationComplete(IEnumerable<string> filePaths, int majorVersion)
         {
             var fileNames = filePaths.Select(path => Path.GetFileName(path).ToUpper());
             switch (majorVersion)
             {
-                case 227:
-                    return !ASM227DllNames.Except(fileNames).Any();
-                case 226:
-                    return !ASM226DllNames.Except(fileNames).Any();
+                case 229:
+                    return !ASM229DllNames.Except(fileNames).Any();
+                case 230:
+                    return !ASM230DllNames.Except(fileNames).Any();
                 default:
                     // We don't know this version so it's safest to assume it's not complete.
                     return false;
             }
         }
 
+        // Windows files are case insensitive, while linux files are case sensitive.
+        // https://learn.microsoft.com/en-us/windows/wsl/case-sensitivity
         /// <summary>
         /// Extracts version of ASM dlls from a path by scanning for ASM dlls in the path.
         /// Throws if ASM binaries cannot be found in the path.
         /// </summary>
         /// <param name="asmPath">path to directory containing asm dlls</param>
         /// <returns></returns>
-        /// <param name="searchPattern">optional - to be used for testing - default is the ASM search pattern</param>
+        /// <param name="searchPattern">optional - to be used for testing - default is the ASM search pattern.</param>
         /// <returns></returns>
-        public static Version GetVersionFromPath(string asmPath, string searchPattern = "ASMAHL*.dll")
+        public static Version GetVersionFromPath(string asmPath, string searchPattern = "*ASMahl*.*")
         {
             var ASMFilePath = Directory.GetFiles(asmPath, searchPattern, SearchOption.TopDirectoryOnly).FirstOrDefault();
             if (ASMFilePath != null && File.Exists(ASMFilePath))
             {
+                if (!OperatingSystem.IsWindows())
+                {
+                    string fileName = Path.GetFileNameWithoutExtension(ASMFilePath);
+   
+                    var version = new string(fileName
+                        .SkipWhile(c => !char.IsDigit(c))
+                        .TakeWhile(c => char.IsDigit(c))
+                        .Take(3).ToArray());
+
+                    if (string.IsNullOrEmpty(version))
+                    {
+                        throw new Exception($"Cannot extract ASM version. Bad version format found for file {fileName}");
+                    }
+                    return new Version($"{version}.0.0");
+                }
                 var asmVersion = FileVersionInfo.GetVersionInfo(ASMFilePath);
                 var libGversion = new Version(asmVersion.FileMajorPart, asmVersion.FileMinorPart, asmVersion.FileBuildPart);
                 return libGversion;

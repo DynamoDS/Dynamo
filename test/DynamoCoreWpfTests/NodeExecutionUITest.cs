@@ -1,19 +1,31 @@
-﻿using System;
+using System;
 using System.Linq;
+using System.Collections.Generic;
 using CoreNodeModels.Input;
 using DesignScript.Builtin;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Models;
 using Dynamo.Tests;
+using CoreNodeModels;
+using CoreNodeModelsWpf;
 using NUnit.Framework;
 using ProtoCore.Namespace;
+using TestUINodes;
 
 namespace DynamoCoreWpfTests
 {
     [TestFixture]
     public class NodeExecutionUITest : DynamoViewModelUnitTest
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("DesignScriptBuiltin.dll");
+            libraries.Add("DSCoreNodes.dll");
+
+            base.GetLibrariesToPreload(libraries);
+        }
+
         //case 1 : Node in Freeze and Not execute state. True for all parent nodes.
         [Test]
         [Category("DynamoUI")]
@@ -253,6 +265,68 @@ namespace DynamoCoreWpfTests
             // Assert that function "test" is not defined any longer
             // by asserting null for code block node invoking it.
             AssertPreviewValue(cbn.GUID.ToString(), null);
+        }
+
+        [Test]
+        public void TestCustomSelectionNodeUpdate()
+        {
+            var model = GetModel();
+            var cdn = new CustomSelection();
+
+            var command = new DynamoModel.CreateNodeCommand(cdn, 0, 0, true, false);
+            model.ExecuteCommand(command);
+
+            AssertPreviewValue(cdn.GUID.ToString(), 1);
+
+            cdn.SelectedIndex = -1;
+            var vm = new CustomSelectionViewModel(cdn);
+            var item = cdn.Items[0];
+            vm.RemoveCommand.Execute(item);
+
+            AssertPreviewValue(cdn.GUID.ToString(), null);
+            
+            cdn.SelectedIndex = 0;
+            cdn.OnNodeModified();
+
+            AssertPreviewValue(cdn.GUID.ToString(), 2);
+        }
+
+        [Test]
+        public void TestSelectionNodeUpdate()
+        {
+            var model = GetModel();
+            var tsn = new TestSelectionNode2();
+
+            tsn.UpdateSelection(new List<int> { 1, 2, 3 });
+            var command = new DynamoModel.CreateNodeCommand(tsn, 0, 0, true, false);
+            model.ExecuteCommand(command);
+
+            AssertPreviewValue(tsn.GUID.ToString(), 3);
+
+            tsn.ClearSelections();
+
+            AssertPreviewValue(tsn.GUID.ToString(), 0);
+        }
+        [Test]
+        public void TestSelectionNodeUpdate2()
+        {
+            var model = GetModel();
+            var tsn = new TestSelectionNode2();
+
+            tsn.UpdateSelection(new List<int> { 1, 2, 3 });
+            var command = new DynamoModel.CreateNodeCommand(tsn, 0, 0, true, false);
+            model.ExecuteCommand(command);
+            AssertPreviewValue(tsn.GUID.ToString(), 3);
+
+            tsn.ClearSelections();
+            AssertPreviewValue(tsn.GUID.ToString(), 0);
+
+            tsn.UpdateSelection(new List<int> { 2, 4, 6,8 });
+            AssertPreviewValue(tsn.GUID.ToString(), 4);
+
+            tsn.ClearSelections();
+            AssertPreviewValue(tsn.GUID.ToString(), 0);
+
         }
     }
 }

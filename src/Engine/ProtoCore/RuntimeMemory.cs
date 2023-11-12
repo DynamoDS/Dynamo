@@ -219,7 +219,7 @@ namespace ProtoCore
             
             public StackValue GetMemberData(int symbolindex, int scope, Executable exe)
             {
-                StackValue thisptr = CurrentStackFrame.ThisPtr;
+                StackValue thisptr = CurrentStackFrameThisPtr;
 
                 // Get the heapstck offset
                 int offset = exe.classTable.ClassNodes[scope].Symbols.symbolList[symbolindex].index;
@@ -294,6 +294,10 @@ namespace ProtoCore
                 }
             }
 
+
+            private int fp;
+            private StackFrame currentStackFrame;
+
             /// <summary>
             /// Current stack frame.
             /// </summary>
@@ -301,25 +305,89 @@ namespace ProtoCore
             {
                 get
                 {
-                    var fp = FramePointer;
-
                     // Note the first stack frame starts after the space for global 
                     // variables, so here we need to check the frame pointer is 
                     // large enought to contain a stack frame and all global variables
-                    if (fp - StackFrame.StackFrameSize >= startFramePointer)
+                    if (FramePointer - StackFrame.StackFrameSize < startFramePointer)
                     {
+                        fp = 0;
+                        currentStackFrame = null;
+                        return null;
+                    }
+                       
+                    if (fp != FramePointer || currentStackFrame != null)
+                    {
+                        fp = FramePointer;
+
                         var frame = new StackValue[StackFrame.StackFrameSize];
-                        for (int sourceIndex = fp - 1, destIndex = 0; sourceIndex >= fp - StackFrame.StackFrameSize; sourceIndex--, destIndex++)
+                        for (int sourceIndex = fp - 1, destIndex = 0;
+                            sourceIndex >= fp - StackFrame.StackFrameSize;
+                            sourceIndex--, destIndex++)
                         {
                             frame[destIndex] = Stack[sourceIndex];
                         }
-                        var stackFrame = new StackFrame(frame);
-                        return stackFrame;
+
+                        currentStackFrame = new StackFrame(frame);
                     }
-                    else
+
+                    return currentStackFrame;
+                }
+            }
+
+            public bool IsCurrentStackFrameNull
+            {
+                get
+                {
+                    if (FramePointer - StackFrame.StackFrameSize >= startFramePointer)
                     {
-                        return null;
+                        return false;
                     }
+
+                    return true;
+                }
+            }
+
+            /// <summary>
+            /// Current stack frame ClassScope.
+            /// </summary>
+            public StackValue CurrentStackFrameThisPtr
+            {
+                get
+                {
+                    return Stack[FramePointer + StackFrame.FrameIndexThisPtr];
+                }
+            }
+
+            /// <summary>
+            /// Current stack frame ClassScope.
+            /// </summary>
+            public int CurrentStackFrameClassScope
+            {
+                get
+                {
+                    return Stack[FramePointer + StackFrame.FrameIndexClassIndex].ClassIndex;
+                }
+            }
+
+            /// <summary>
+            /// Current stack frame FunctionScope.
+            /// </summary>
+            public int CurrentStackFrameFunctionScope
+            {
+                get
+                {
+                    return Stack[FramePointer + StackFrame.FrameIndexFunctionIndex].FunctionIndex;
+                }
+            }
+
+            /// <summary>
+            /// Current stack frame FunctionScope.
+            /// </summary>
+            public int CurrentStackFrameFunctionBlock
+            {
+                get
+                {
+                    return Stack[FramePointer + StackFrame.FrameIndexFunctionBlockIndex].BlockIndex;
                 }
             }
         }

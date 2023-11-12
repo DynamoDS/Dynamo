@@ -8,91 +8,153 @@
         SizeToContent="Height"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterOwner"
-        Style="{DynamicResource DynamoWindowStyle}">
+        Style="{DynamicResource DynamoWindowStyle}"
+        AllowsTransparency="True"
+        WindowStyle="None">
+
+    <Window.Background>
+        <SolidColorBrush Opacity="0" />
+    </Window.Background>
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    <Grid Background="#444444">
+    <Window.CommandBindings>
+        <CommandBinding Command="Close" Executed="OnCloseExecuted" />
+    </Window.CommandBindings>
+    <Window.InputBindings>
+        <KeyBinding Command="Close" Key="Esc"/>
+    </Window.InputBindings>
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-        </Grid.RowDefinitions>
+    <Grid Background="Transparent" MouseDown="UIElement_OnMouseDown">
+        <Border Name="MainBorder" Style="{StaticResource NoStyleWindowBorderStyle}">
 
-        <Image Name="DialogIcon"
-                   Width="96" Height="96"
-                   Margin="25"
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Center">
-        </Image>
+            <Grid>
 
-        <StackPanel Grid.Row="0" Grid.Column="1"
-                        Margin="0,25,25,25">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
 
-            <TextBlock Name="SummaryText"
-                           FontSize="15"
-                           Foreground="#bbbbbb"
-                           HorizontalAlignment="Stretch"
-                           TextWrapping="Wrap"
-                           Margin="0,0,0,5">
-            </TextBlock>
+                <!--  Title Bar + Close Button  -->
+                <DockPanel Grid.Row="0"
+                           Grid.ColumnSpan="2"
+                           Margin="18 20 18 35"
+                           HorizontalAlignment="Stretch">
+                    <Image Name="MessageBoxImageIcon"
+                           Width="24"
+                           Height="24"
+                           Margin="0,0,5,0"
+                           Source="/DynamoCoreWpf;component/UI/Images/dynamonotext.png"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center"
+                           DockPanel.Dock="Left">
+                    </Image>
 
-            <TextBlock Name="DescriptionText"
-                           FontSize="12"
-                           Foreground="#bbbbbb"
-                           HorizontalAlignment="Stretch"
-                           TextWrapping="Wrap">
-            </TextBlock>
+                    <Button Name="CloseButton"
+                            Click="CloseButton_OnClick"
+                            DockPanel.Dock="Right"
+                            Margin="25 0 -5 0"
+                            Style="{StaticResource CloseButtonStyle}" />
 
-        </StackPanel>
+                    <TextBlock Name="TitleTextBlock"
+                               VerticalAlignment="Center"
+                               DockPanel.Dock="Left"
+                               FontFamily="{StaticResource ArtifaktElementRegular}"
+                               FontSize="20px"
+                               Text="{x:Static p:Resources.GenericTaskDialogTitle}"
+                               Foreground="#3C3C3C"
+                               TextWrapping="Wrap" />
+                </DockPanel>
 
-        <StackPanel Name="LeftButtonStackPanel"
-                        Grid.Row="1" Grid.ColumnSpan="2"
-                        Orientation="Horizontal"
-                        HorizontalAlignment="Left"
-                        Margin="10,0,10,10">
+                <Rectangle Style="{StaticResource DividerRectangleStyle}" Grid.Row="0" Grid.ColumnSpan="2" />
 
-            <Button Content="{x:Static p:Resources.GenericTaskDialogSampleLeftButton}"
-                        Style="{DynamicResource ResourceKey=STextButton}"
-                        Visibility="Visible" />
+                <Image Name="DialogIcon"
+                       Grid.Row="1"
+                           Width="96" Height="96"
+                           Margin="25"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center">
+                </Image>
 
-        </StackPanel>
+                <StackPanel Grid.Row="1" Grid.Column="1"
+                                Margin="0,25,25,25">
 
-        <StackPanel Name="RightButtonStackPanel"
-                        Grid.Row="1" Grid.ColumnSpan="2"
-                        Orientation="Horizontal"
-                        HorizontalAlignment="Right"
-                        Margin="10,0,10,10">
+                    <TextBlock Name="SummaryText"
+                                   FontSize="15"
+                                   Foreground="{StaticResource DarkThemeInputBoxBackgroundBrush}"
+                                   HorizontalAlignment="Stretch"
+                                   TextWrapping="Wrap"
+                                   Margin="0,0,0,5">
+                    </TextBlock>
 
-            <Button Content="{x:Static p:Resources.GenericTaskDialogSampleRightButton}"
-                        Style="{DynamicResource ResourceKey=STextButton}"
-                        Visibility="Visible" />
+                    <TextBlock Name="DescriptionText"
+                                   FontSize="12"
+                                   Foreground="{StaticResource DarkThemeInputBoxBackgroundBrush}"
+                                   HorizontalAlignment="Stretch"
+                                   TextWrapping="Wrap">
+                    </TextBlock>
 
-        </StackPanel>
+                </StackPanel>
 
-        <TextBox Name="DetailedContent"
-                     x:FieldModifier="public"
-                     FontSize="12"
-                     Grid.Row="3" Grid.ColumnSpan="2"
-                     Style="{DynamicResource ResourceKey=SDarkTextBox}"
-                     HorizontalAlignment="Stretch"
-                     VerticalAlignment="Stretch"
-                     Margin="10,0,10,10"
-                     CaretBrush="White"
-                     BorderThickness="0"
-                     Height="200"
-                     IsReadOnly="True"
-                     HorizontalScrollBarVisibility="Auto"
-                     VerticalScrollBarVisibility="Auto"
-                     Visibility="Visible" />
+                <StackPanel Name="LeftButtonStackPanel"
+                                Grid.Row="2" Grid.ColumnSpan="2"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Left"
+                                Margin="10,0,10,10">
+
+                    <Button Content="{x:Static p:Resources.GenericTaskDialogSampleLeftButton}"
+                                Background="White"
+                                BorderBrush="#BFBFBF"
+                                Foreground="#3C3C3C"
+                                Style="{StaticResource CtaButtonStyle}"
+                                Visibility="Visible" />
+
+                </StackPanel>
+
+                <StackPanel Name="RightButtonStackPanel"
+                                Grid.Row="2" Grid.ColumnSpan="2"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Right"
+                                Margin="10,0,10,10">
+
+                    <Button Content="{x:Static p:Resources.GenericTaskDialogSampleRightButton}"
+                                BorderBrush="#0696D7"
+                                Foreground="White"
+                                Background="#0696D7"
+                                Style="{StaticResource CtaButtonStyle}"
+                                Visibility="Visible" />
+
+                </StackPanel>
+
+                <TextBox Name="DetailedContent"
+                             x:FieldModifier="public"
+                             FontSize="12"
+                             Grid.Row="4" Grid.ColumnSpan="2"
+                             Style="{DynamicResource ResourceKey=SLightTextBox}"
+                             Foreground="{StaticResource DarkThemeInputBoxBackgroundBrush}"
+                             HorizontalAlignment="Stretch"
+                             VerticalAlignment="Stretch"
+                             Margin="10,0,10,10"
+                             BorderThickness="0"
+                             Height="200"
+                             IsReadOnly="True"
+                             HorizontalScrollBarVisibility="Auto"
+                             VerticalScrollBarVisibility="Auto"
+                             Visibility="Visible" />
+            </Grid>
+        </Border>
     </Grid>
 </Window>

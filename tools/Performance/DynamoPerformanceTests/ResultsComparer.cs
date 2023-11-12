@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -38,7 +38,7 @@ namespace DynamoPerformanceTests
             //EX. test with runtime of 1000ms will yeild fuzz factor of 10 + 1000/1000 = 11%
             //This attempts to deal with test failures that have very small runtimes which are 
             //more susceptible to uncontrollable operating system or machine workloads.
-            if (comparisonData.MeanDelta > (10 + (1000/comparisonData.BaseResult.Mean)))
+            if (comparisonData.MeanDelta > (10 + (1000/comparisonData.BaseResult.Mean.TotalMilliseconds)))
             {
                 return ComparisonResultState.FAIL;
             }
@@ -55,19 +55,14 @@ namespace DynamoPerformanceTests
             // Values
             internal string Method { get; set; }
             internal string Graph { get; set; }
-            internal double Mean { get; set; }
-            internal double Error { get; set; }
-            internal double StdDev { get; set; }
-
-            // Units
-            internal string MeanUnits { get; set; }
-            internal string ErrorUnits { get; set; }
-            internal string StdDevUnits { get; set; }
+            internal TimeSpan Mean { get; set; }
+            internal TimeSpan Error { get; set; }
+            internal TimeSpan StdDev { get; set; }
 
             // Values + Units
-            internal string MeanString { get { return Mean.ToString("N", CultureInfo.InvariantCulture) + " " + MeanUnits; } }
-            internal string ErrorString { get { return Error.ToString("N", CultureInfo.InvariantCulture) + " " + ErrorUnits; } }
-            internal string StdDevString { get { return StdDev.ToString("N", CultureInfo.InvariantCulture) + " " + StdDevUnits; } }
+            internal string MeanString => Mean.TotalMilliseconds.ToString("N", CultureInfo.InvariantCulture) + "ms";
+            internal string ErrorString => Error.TotalMilliseconds.ToString("N", CultureInfo.InvariantCulture) + "ms";
+            internal string StdDevString => StdDev.TotalMilliseconds.ToString("N", CultureInfo.InvariantCulture) + "ms";
 
             /// <summary>
             /// Create a Benchmark result from values parsed from results csv
@@ -84,12 +79,25 @@ namespace DynamoPerformanceTests
             {
                 Method = method;
                 Graph = graph;
-                Mean = mean;
-                MeanUnits = meanUnits;
-                Error = error;
-                ErrorUnits = errorUnits;
-                StdDev = stdDev;
-                StdDevUnits = stdDevUnits;
+                Mean = ParseUnitToTimeSpan(mean, meanUnits);
+                Error = ParseUnitToTimeSpan(error, errorUnits);
+                StdDev = ParseUnitToTimeSpan(stdDev, stdDevUnits);
+            }
+
+            private TimeSpan ParseUnitToTimeSpan(double val, string unitString)
+            {
+                if(unitString.ToLowerInvariant().Contains("us"))
+                {
+                    const long ticksPerMicrosecond = 10;
+                    long ticks = (long)(val * ticksPerMicrosecond);
+                    return TimeSpan.FromTicks(ticks);
+                }
+                if (unitString.ToLowerInvariant().Contains("ms"))
+                {
+                    return TimeSpan.FromMilliseconds(val);
+                }
+
+                throw new Exception("unknown unit");
             }
         }
 
@@ -110,7 +118,7 @@ namespace DynamoPerformanceTests
             /// </summary>
             internal double MeanDelta
             {
-                get { return Math.Round(100 * (NewResult.Mean - BaseResult.Mean) / BaseResult.Mean, 2); }
+                get { return Math.Round(100 * (NewResult.Mean.TotalMilliseconds - BaseResult.Mean.TotalMilliseconds) / BaseResult.Mean.TotalMilliseconds, 4); }
             }
 
             /// <summary>
@@ -118,7 +126,7 @@ namespace DynamoPerformanceTests
             /// </summary>
             internal double ErrorDelta
             {
-                get { return Math.Round(100 * (NewResult.Error - BaseResult.Error) / BaseResult.Error, 2); }
+                get { return Math.Round(100 * (NewResult.Error.TotalMilliseconds - BaseResult.Error.TotalMilliseconds) / BaseResult.Error.TotalMilliseconds, 4); }
             }
 
             /// <summary>
@@ -126,7 +134,7 @@ namespace DynamoPerformanceTests
             /// </summary>
             internal double StdDevDelta
             {
-                get { return Math.Round(100 * (NewResult.StdDev - BaseResult.StdDev) / BaseResult.StdDev, 2); }
+                get { return Math.Round(100 * (NewResult.StdDev.TotalMilliseconds - BaseResult.StdDev.TotalMilliseconds) / BaseResult.StdDev.TotalMilliseconds, 4); }
             }
 
             /// <summary>
@@ -158,14 +166,6 @@ namespace DynamoPerformanceTests
                 if (BaseResult.Method != NewResult.Method || BaseResult.Graph != NewResult.Graph)
                 {
                     throw new Exception("Non-matching benchmarks provided for comparison");
-                }
-                
-                if (BaseResult.MeanUnits != NewResult.MeanUnits || BaseResult.ErrorUnits != NewResult.ErrorUnits || BaseResult.StdDevUnits != NewResult.StdDevUnits)
-                {
-                    var fc = Console.ForegroundColor;
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Units do not match beween base and new results.");
-                    Console.ForegroundColor = fc;
                 }
                 this.ResultState = comparisonFunction(this);
 

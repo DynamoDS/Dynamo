@@ -1,0 +1,94 @@
+<UserControl x:Class="Dynamo.Wpf.Views.TrustedPathView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:ViewModels="clr-namespace:Dynamo.ViewModels"
+        mc:Ignorable="d"
+        xmlns:ui="clr-namespace:Dynamo.UI"
+        xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
+        Background="#535353"
+        d:DataContext="{d:DesignInstance ViewModels:TrustedPathViewModel, IsDesignTimeCreatable=False}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+            <DataTemplate x:Key="trustedPathItemTemplate">
+
+                <Grid>
+                    <Grid.ToolTip>
+                        <ToolTip Content="{Binding}" Style="{StaticResource GenericToolTipLight}"/>
+                    </Grid.ToolTip>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition MaxWidth="250"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <!--the path text-->
+                    <TextBlock x:Name="PathTextBlock" Style="{StaticResource DarkTextBlock}" 
+                                Text="{Binding}"
+                                Grid.Column="0"
+                                Margin="0,4,7,4"
+                                Background="{StaticResource PreferencesWindowItemDarkerBackgroundColor}"
+                                MinHeight="24"
+                                Padding="5,5,5,5"
+                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                    <!--the the edit path button-->
+                    <Button
+                         Grid.Column="1"
+                         Margin="7,7,7,7"
+                         x:Name="UpdatePathButton"
+                         Command="{Binding Path=DataContext.UpdatePathCommand,
+                         RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                         CommandParameter="{Binding}"
+                         ToolTipService.ShowOnDisabled="True"
+                         Background="{StaticResource PreferencesWindowBackgroundColor}"
+                         Style="{StaticResource EditFolderButtonStyle}">
+                        <Button.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.PackagePathUpdatePathTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                        </Button.ToolTip>
+                    </Button>
+                    <!--the delete path button-->
+                    <Button x:Name="DeletePathButton"
+                        Grid.Column="2"
+                        Margin="7,7,7,7"
+                        Command="{Binding Path=DataContext.DeletePathCommand,
+                            RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                        CommandParameter="{Binding}"
+                        ToolTipService.ShowOnDisabled="True"
+                        Background="{StaticResource PreferencesWindowBackgroundColor}"
+                        Style="{StaticResource CloseButtonStyle}">
+                        <Button.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.PackagePathViewToolTipMinus}" Style="{StaticResource GenericToolTipLight}"/>
+                        </Button.ToolTip>
+                    </Button>
+                </Grid>
+            </DataTemplate>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <StackPanel Orientation="Vertical" Margin="0,6,0,0">
+        <Button x:Name="AddPaths"
+                HorizontalAlignment="Left"
+                Margin="0"
+                Content="{x:Static p:Resources.PackagePathAddPathButtonName}"
+                Command="{Binding Path=AddPathCommand}">
+            <Button.ToolTip>
+                <ToolTip Content="{x:Static p:Resources.PackagePathViewToolTipPlus}" Style="{StaticResource GenericToolTipLight}"/>
+            </Button.ToolTip>
+            <Button.Style>
+                <Style BasedOn="{StaticResource SolidButtonStyle}" TargetType="{x:Type Button}">
+                    <Setter Property="IsEnabled" Value="True"/>
+                </Style>
+            </Button.Style>
+        </Button>
+        <ItemsControl Margin="0,5,0,0"
+            Background="{StaticResource PreferencesWindowVisualSettingsBackground}"
+            ItemsSource="{Binding TrustedLocations}"
+            ItemTemplate="{StaticResource trustedPathItemTemplate}">
+        </ItemsControl>
+    </StackPanel>
+</UserControl>
+    

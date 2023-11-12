@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -142,6 +142,7 @@ namespace CoreNodeModels.Input
                     Id = this.GUID,
                     Name = this.Name,
                     Type = NodeInputTypes.numberInput,
+                    Type2 = NodeInputTypes.numberInput,
                     Description = this.Description,
                     Value = Value,
 
@@ -202,7 +203,7 @@ namespace CoreNodeModels.Input
         /// or unassigned identifier syntax.i.e *start..end*
         /// This property is only validated for new user input.
         /// </summary>
-        [JsonProperty("InputValue"),JsonConverter(typeof(DoubleInputValueSerializationConverter))]
+        [JsonProperty("InputValue",Order = 10),JsonConverter(typeof(DoubleInputValueSerializationConverter))]
         public string Value
         {
             get { return _value; }

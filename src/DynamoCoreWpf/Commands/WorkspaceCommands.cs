@@ -18,6 +18,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand setZoomCommand;
         private DelegateCommand resetFitViewToggleCommand;
         private DelegateCommand findByIdCommand;
+        private DelegateCommand focusNodeCommand;
         private DelegateCommand alignSelectedCommand;
         private DelegateCommand setArgumentLacingCommand;
         private DelegateCommand findNodesFromSelectionCommand;
@@ -26,6 +27,9 @@ namespace Dynamo.ViewModels
         private DelegateCommand showHideAllGeometryPreviewCommand;
         private DelegateCommand showInCanvasSearchCommand;
         private DelegateCommand pasteCommand;
+        private DelegateCommand hideAllPopupCommand;
+        private DelegateCommand showAllWiresCommand;
+        private DelegateCommand hideAllWiresCommand;
 
         #endregion
 
@@ -149,6 +153,18 @@ namespace Dynamo.ViewModels
         }
 
         [JsonIgnore]
+        public DelegateCommand FocusNodeCommand
+        {
+            get
+            {
+                if (focusNodeCommand == null)
+                    focusNodeCommand = new DelegateCommand(FocusNode, CanFocusNode);
+
+                return focusNodeCommand;
+            }
+        }
+
+        [JsonIgnore]
         public DelegateCommand AlignSelectedCommand
         {
             get
@@ -212,6 +228,51 @@ namespace Dynamo.ViewModels
                     showInCanvasSearchCommand = new DelegateCommand(OnRequestShowInCanvasSearch);
 
                 return showInCanvasSearchCommand;
+            }
+        }
+
+        /// <summary>
+        /// View Command to hide all popup in special cases
+        /// </summary>
+        [JsonIgnore]
+        public DelegateCommand HideAllPopupCommand
+        {
+            get
+            {
+                if (hideAllPopupCommand == null)
+                    hideAllPopupCommand = new DelegateCommand(OnRequestHideAllPopup);
+
+                return hideAllPopupCommand;
+            }
+        }
+
+        /// <summary>
+        /// View Command to show all connection wires (on current selection), if any are hidden
+        /// </summary>
+        [JsonIgnore]
+        public DelegateCommand ShowAllWiresCommand
+        {
+            get
+            {
+                if(showAllWiresCommand == null) 
+                    showAllWiresCommand = new DelegateCommand(ShowAllWires, CanShowAllWires);
+
+                return showAllWiresCommand;
+            }
+        }
+
+        /// <summary>
+        /// View Command to hide all connection wires (on current selection), if any are shown
+        /// </summary>
+        [JsonIgnore]
+        public DelegateCommand HideAllWiresCommand
+        {
+            get
+            {
+                if(hideAllWiresCommand == null)
+                    hideAllWiresCommand = new DelegateCommand(HideAllWires, CanHideAllWires);
+
+                return hideAllWiresCommand;
             }
         }
         #endregion

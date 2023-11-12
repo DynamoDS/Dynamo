@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +7,7 @@ using Autodesk.DesignScript.Runtime;
 using DSCPython.Encoders;
 using Dynamo.Events;
 using Dynamo.Logging;
+using Dynamo.PythonServices.EventHandlers;
 using Dynamo.Session;
 using Dynamo.Utilities;
 using Python.Runtime;
@@ -131,24 +132,25 @@ namespace DSCPython
     }
 
     [SupressImportIntoVM]
-    [Obsolete("Do not use! This will be subject to changes in a future version of Dynamo")]
+    [Obsolete("Deprecated. Please use Dynamo.PythonServices.EvaluationState instead.")]
     public enum EvaluationState { Begin, Success, Failed }
 
     [SupressImportIntoVM]
-    [Obsolete("Do not use! This will be subject to changes in a future version of Dynamo")]
+    [Obsolete("Deprecated. Please use evaluation handlers from Dynamo.PythonServices instead.")]
     public delegate void EvaluationEventHandler(EvaluationState state, PyScope scope, string code, IList bindingValues);
 
     /// <summary>
     ///     Evaluates a Python script in the Dynamo context.
     /// </summary>
     [IsVisibleInDynamoLibrary(false)]
-    public static class CPythonEvaluator
+    public class CPythonEvaluator : Dynamo.PythonServices.PythonEngine
     {
         private const string DynamoSkipAttributeName = "__dynamoskipconversion__";
         private const string DynamoPrintFuncName = "__dynamoprint__";
         private const string NodeName = "__dynamonodename__";
-        static PyScope globalScope;
         internal static readonly string globalScopeName = "global";
+
+        private static PyScope globalScope;
         private static DynamoLogger dynamoLogger;
         internal static DynamoLogger DynamoLogger {
             get
@@ -162,17 +164,31 @@ namespace DSCPython
             }
         }
 
+        /// <summary>
+        /// Use Lazy&lt;PythonEngineManager&gt; to make sure the Singleton class is only initialized once
+        /// </summary>
+        private static readonly Lazy<CPythonEvaluator>
+            lazy =
+            new Lazy<CPythonEvaluator>
+            (() => new CPythonEvaluator());
+
+        /// <summary>
+        /// The actual instance stored in the Singleton class
+        /// </summary>
+        internal static CPythonEvaluator Instance { get { return lazy.Value; } }
+
         static CPythonEvaluator()
         {
             InitializeEncoders();
             Dynamo.Models.DynamoModel.RequestPythonReset += RequestPythonResetHandler;
-           
         }
+
+        public override string Name => Dynamo.PythonServices.PythonEngineManager.CPython3EngineName;
 
         internal static void RequestPythonResetHandler(string pythonEngine)
         {
             //check if python engine request is for this engine, and engine is currently started
-            if (PythonEngine.IsInitialized && pythonEngine == "CPython3")
+            if (PythonEngine.IsInitialized && pythonEngine == Instance.Name)
             {
                 DynamoLogger?.Log("attempting reload of cpython3 modules", LogLevel.Console);
                 using (Py.GIL())
@@ -236,7 +252,7 @@ for modname,mod in sys.modules.copy().items():
         /// <param name="code">Python script as a string.</param>
         /// <param name="bindingNames">Names of values referenced in Python script.</param>
         /// <param name="bindingValues">Values referenced in Python script.</param>
-        public static object EvaluatePythonScript(
+        public override object Evaluate(
             string code,
             IList bindingNames,
             [ArbitraryDimensionArrayImport] IList bindingValues)
@@ -295,7 +311,9 @@ for modname,mod in sys.modules.copy().items():
                             }
                             else
                             {
+#pragma warning disable CA2200 // Rethrow to preserve stack details
                                 throw e;
+#pragma warning restore CA2200 // Rethrow to preserve stack details
                             }
                         }
                         finally
@@ -306,13 +324,21 @@ for modname,mod in sys.modules.copy().items():
                 }
         }
 
+        public static object EvaluatePythonScript(
+            string code,
+            IList bindingNames,
+            [ArbitraryDimensionArrayImport] IList bindingValues)
+        {
+            return Instance.Evaluate(code, bindingNames, bindingValues);
+        }
+
         private static bool isPythonInstalled = false;
         /// <summary>
         /// Makes sure Python is installed on the system and it's location added to the path.
         /// NOTE: Calling SetupPython multiple times will add the install location to the path many times,
         /// potentially causing the environment variable to overflow.
         /// </summary>
-        private static void InstallPython()
+        internal static void InstallPython()
         {
             if (!isPythonInstalled)
             {
@@ -432,7 +458,7 @@ sys.stdout = DynamoStdOut({0})
         ///     Data Marshaler for all data coming into a Python node.
         /// </summary>
         [SupressImportIntoVM]
-        public static DataMarshaler InputMarshaler
+        public override object InputDataMarshaler
         {
             get
             {
@@ -472,10 +498,16 @@ sys.stdout = DynamoStdOut({0})
         }
 
         /// <summary>
+        ///     Data Marshaler for all data coming into a Python node.
+        /// </summary>
+        [SupressImportIntoVM]
+        public static DataMarshaler InputMarshaler => Instance.InputDataMarshaler as DataMarshaler;
+
+        /// <summary>
         ///     Data Marshaler for all data coming out of a Python node.
         /// </summary>
         [SupressImportIntoVM]
-        public static DataMarshaler OutputMarshaler
+        public override object OutputDataMarshaler
         {
             get
             {
@@ -567,6 +599,12 @@ sys.stdout = DynamoStdOut({0})
             }
         }
 
+        /// <summary>
+        ///     Data Marshaler for all data coming out of a Python node.
+        /// </summary>
+        [SupressImportIntoVM]
+        public static DataMarshaler OutputMarshaler => Instance.OutputDataMarshaler as DataMarshaler;
+
         private static DynamoCPythonHandle GetDynamoCPythonHandle(PyObject pyObj)
         {
             var globalScope = PyScopeManager.Global.Get(globalScopeName);
@@ -579,8 +617,8 @@ sys.stdout = DynamoStdOut({0})
             return pyObj.HasAttr(DynamoSkipAttributeName);
         }
 
-        private static DataMarshaler inputMarshaler;
-        private static DataMarshaler outputMarshaler;
+        private DataMarshaler inputMarshaler;
+        private DataMarshaler outputMarshaler;
 
         #endregion
 
@@ -590,15 +628,28 @@ sys.stdout = DynamoStdOut({0})
         ///     Emitted immediately before execution begins
         /// </summary>
         [SupressImportIntoVM]
-        [Obsolete("Do not use! This will be subject to changes in a future version of Dynamo")]
+        [Obsolete("Deprecated. Please use EvaluationStarted instead")]
         public static event EvaluationEventHandler EvaluationBegin;
+
+
+        /// <summary>
+        ///     Emitted immediately before execution begins
+        /// </summary>
+        [SupressImportIntoVM]
+        public override event EvaluationStartedEventHandler EvaluationStarted;
 
         /// <summary>
         ///     Emitted immediately after execution ends or fails
         /// </summary>
         [SupressImportIntoVM]
-        [Obsolete("Do not use! This will be subject to changes in a future version of Dynamo")]
+        [Obsolete("Deprecated. Please use EvaluationFinished instead.")]
         public static event EvaluationEventHandler EvaluationEnd;
+
+        /// <summary>
+        ///     Emitted immediately after execution ends or fails
+        /// </summary>
+        [SupressImportIntoVM]
+        public override event EvaluationFinishedEventHandler EvaluationFinished;
 
         /// <summary>
         /// Called immediately before evaluation starts
@@ -606,13 +657,16 @@ sys.stdout = DynamoStdOut({0})
         /// <param name="scope">The scope in which the code is executed</param>
         /// <param name="code">The code to be evaluated</param>
         /// <param name="bindingValues">The binding values - these are already added to the scope when called</param>
-        private static void OnEvaluationBegin(PyScope scope,
+        private void OnEvaluationBegin(PyScope scope,
                                               string code,
                                               IList bindingValues)
         {
-            if (EvaluationBegin != null)
+            // Call deprecated events until they are completely removed.
+            EvaluationBegin?.Invoke(EvaluationState.Begin, scope, code, bindingValues);
+
+            if (EvaluationStarted != null)
             {
-                EvaluationBegin(EvaluationState.Begin, scope, code, bindingValues);
+                EvaluationStarted(code, bindingValues, (n, v) => { scope.Set(n, InputMarshaler.Marshal(v).ToPython()); });
                 Analytics.TrackEvent(
                     Dynamo.Logging.Actions.Start,
                     Dynamo.Logging.Categories.PythonOperations,
@@ -627,15 +681,22 @@ sys.stdout = DynamoStdOut({0})
         /// <param name="scope">The scope in which the code is executed</param>
         /// <param name="code">The code to that was evaluated</param>
         /// <param name="bindingValues">The binding values - these are already added to the scope when called</param>
-        private static void OnEvaluationEnd(bool isSuccessful,
+        private void OnEvaluationEnd(bool isSuccessful,
                                             PyScope scope,
                                             string code,
                                             IList bindingValues)
         {
-            if (EvaluationEnd != null)
+            // Call deprecated events until they are completely removed.
+            EvaluationEnd?.Invoke(isSuccessful ? 
+                EvaluationState.Success : 
+                EvaluationState.Failed, scope, code, bindingValues);
+
+            if (EvaluationFinished != null)
             {
-                EvaluationEnd(isSuccessful ? EvaluationState.Success : EvaluationState.Failed,
-                    scope, code, bindingValues);
+                EvaluationFinished(isSuccessful ? Dynamo.PythonServices.EvaluationState.Success : Dynamo.PythonServices.EvaluationState.Failed, 
+                    code, bindingValues, (n) => {
+                        return OutputMarshaler.Marshal(scope.Get(n));
+                    });
                 Analytics.TrackEvent(
                     Dynamo.Logging.Actions.End,
                     Dynamo.Logging.Categories.PythonOperations,

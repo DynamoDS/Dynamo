@@ -63,6 +63,16 @@ namespace Dynamo.WorkspaceDependency.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap CSVIcon {
+            get {
+                object obj = ResourceManager.GetObject("CSVIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap CustomNodeReferenceIcon {
             get {
                 object obj = ResourceManager.GetObject("CustomNodeReferenceIcon", resourceCulture);
@@ -125,6 +135,26 @@ namespace Dynamo.WorkspaceDependency.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap DWGIcon {
+            get {
+                object obj = ResourceManager.GetObject("DWGIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap ExcelIcon {
+            get {
+                object obj = ResourceManager.GetObject("ExcelIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Workspace References.
         /// </summary>
         public static string ExtensionName {
@@ -134,11 +164,59 @@ namespace Dynamo.WorkspaceDependency.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap ExternalFileIcon {
+            get {
+                object obj = ResourceManager.GetObject("ExternalFileIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to External Files.
+        /// </summary>
+        public static string ExternalFilesHeaderText {
+            get {
+                return ResourceManager.GetString("ExternalFilesHeaderText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to External files are external documents in the graph space, such as images or text files. These are computed when the graph is run or by clicking the refresh icon incase the graph is already executed..
+        /// </summary>
+        public static string ExternalFilesToolTip {
+            get {
+                return ResourceManager.GetString("ExternalFilesToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap ImageIcon {
+            get {
+                object obj = ResourceManager.GetObject("ImageIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Install Specified Version.
         /// </summary>
         public static string InstallButtonText {
             get {
                 return ResourceManager.GetString("InstallButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap JsonIcon {
+            get {
+                object obj = ResourceManager.GetObject("JsonIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -161,7 +239,16 @@ namespace Dynamo.WorkspaceDependency.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show Workspace References.
+        ///   Looks up a localized string similar to Local definitions are Dynamo-specific files corresponding to local custom nodes and local packages. These are computed when the graph is saved or by clicking the refresh icon..
+        /// </summary>
+        public static string LocalDefinitionsToolTip {
+            get {
+                return ResourceManager.GetString("LocalDefinitionsToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show _Workspace References.
         /// </summary>
         public static string MenuItemString {
             get {
@@ -218,11 +305,30 @@ namespace Dynamo.WorkspaceDependency.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Packages extend Dynamo&apos;s core functionality and are available in the Package Manager. These are computed when the graph is saved or by clicking the refresh icon..
+        /// </summary>
+        public static string PackagesToolTip {
+            get {
+                return ResourceManager.GetString("PackagesToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Path.
         /// </summary>
         public static string PathHeader {
             get {
                 return ResourceManager.GetString("PathHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap PDFIcon {
+            get {
+                object obj = ResourceManager.GetObject("PDFIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

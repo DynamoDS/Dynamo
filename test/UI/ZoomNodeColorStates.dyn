@@ -1,0 +1,387 @@
+{
+  "Uuid": "868b7444-6ee2-4f4d-b197-162bea5e5d30",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "ZoomNodeColorStates",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"No Warning Bar\";",
+      "Id": "a7fe5cbc2ec44870b6f554c82d299b78",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "55c94226a511451aaff1e9bf0d297c5e",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "Warning Bar Error Hidden;",
+      "Id": "110f8e29d54a44ba9126ae10ae31e753",
+      "Inputs": [],
+      "Outputs": [],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "Warning Bar Error Frozen Hidden;",
+      "Id": "eb8182862daa4b70adb4fbcdadf774fd",
+      "Inputs": [],
+      "Outputs": [],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"Warning Bar Warning\";\na = b;\nb = a;",
+      "Id": "cace32098baa4ab38b7d270bb3d685eb",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "171c2d79dfb84a68a56951dc89fec0e4",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "028be6dc0346438b89010fd7e3b265f1",
+          "Name": "",
+          "Description": "a",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "fb4f70d6f2a74337a76b5a5822d70096",
+          "Name": "",
+          "Description": "b",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"No Warning Bar Hidden\";",
+      "Id": "72bd1d5f7773426299ecf493586c21fe",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "3634d1c84e934d0c87b7734460c331fb",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"No Warning Bar Frozen\";",
+      "Id": "75de711c7ac644e7b91cf7639273acb7",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "ddf73192199f44209fbe735345632325",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"No Warning Bar Hidden Frozen\";",
+      "Id": "02c8cd1be4ca481ba8645bc9460c7c65",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "98b5e1f2330a4f3d80b08e6bedb150f0",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"Warning Bar Warning Hidden\";\na = b;\nb = a;",
+      "Id": "2aaadb7f480c42508e7df1e9e1db4f71",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "6c1463f9cd3e494db85481061ec15f55",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6abca72a209749f0a3b27d796f69e146",
+          "Name": "",
+          "Description": "a",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "576fa353f0a547daa9c032c8aae6e77a",
+          "Name": "",
+          "Description": "b",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"Warning Bar Warning Frozen Hidden\";\na = b;\nb = a;",
+      "Id": "f0df914c7d4249ffa34301ebf548e490",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "15f4ac65d53649609b6112a4fbe539d6",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e6e01850621641de93d15fc9fc21bb94",
+          "Name": "",
+          "Description": "a",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "214de9ca03a744cd81419919a6128738",
+          "Name": "",
+          "Description": "b",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "Warning Bar Error;",
+      "Id": "ae95e072fd744974925ee33843fede81",
+      "Inputs": [],
+      "Outputs": [],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.14",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.14.0.4354",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "a7fe5cbc2ec44870b6f554c82d299b78",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 260.39563524260842,
+        "Y": 857.33245812750829
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": false,
+        "Id": "110f8e29d54a44ba9126ae10ae31e753",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 584.114322149682,
+        "Y": 256.2456302850847
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": false,
+        "Id": "eb8182862daa4b70adb4fbcdadf774fd",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": true,
+        "X": 924.24881228161428,
+        "Y": 249.47869846634032
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "cace32098baa4ab38b7d270bb3d685eb",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 259.49933122863229,
+        "Y": 515.64071121930829
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": false,
+        "Id": "72bd1d5f7773426299ecf493586c21fe",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 575.6307159763353,
+        "Y": 784.8670325460223
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "75de711c7ac644e7b91cf7639273acb7",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": true,
+        "X": 577.81631955464729,
+        "Y": 952.56992724249233
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": false,
+        "Id": "02c8cd1be4ca481ba8645bc9460c7c65",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": true,
+        "X": 924.3993548923263,
+        "Y": 870.13452441854133
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": false,
+        "Id": "2aaadb7f480c42508e7df1e9e1db4f71",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 578.59919353291139,
+        "Y": 517.31938485208093
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": false,
+        "Id": "f0df914c7d4249ffa34301ebf548e490",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": true,
+        "X": 929.12934118197427,
+        "Y": 513.321966080158
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "ae95e072fd744974925ee33843fede81",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 267.96831419540405,
+        "Y": 258.08734163358753
+      }
+    ],
+    "Annotations": [],
+    "X": 142.699049221701,
+    "Y": 136.97437774379148,
+    "Zoom": 0.3706374642485043
+  }
+}

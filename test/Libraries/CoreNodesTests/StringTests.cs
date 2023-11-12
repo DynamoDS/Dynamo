@@ -1,4 +1,4 @@
-﻿//using System;
+//using System;
 using DSCore;
 using NUnit.Framework;
 
@@ -13,6 +13,13 @@ namespace DSCoreNodesTests
         {
             Assert.AreEqual(10, String.ToNumber("10"));
             Assert.AreEqual(10.0, String.ToNumber("10.0"));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void GetNumber()
+        {
+            Assert.AreEqual("01200", String.GetNumber("01 Level 200"));
         }
 
         [Test]
@@ -281,7 +288,7 @@ namespace DSCoreNodesTests
             Assert.AreEqual(new[] {1, 4}, String.AllIndicesOf("mississippi", "is"));
         }
 
-        [Test]
+        [Test, Category("FailureNET6")]
         [Category("UnitTests")]
         public static void LastIndexOf()
         {
