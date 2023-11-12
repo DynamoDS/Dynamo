@@ -304,8 +304,12 @@ namespace Dynamo.PackageManager
             get { return _SearchText; }
             set
             {
-                _SearchText = value;
-                RaisePropertyChanged("SearchText");
+                if(_SearchText != value)
+                {
+                    _SearchText = value;
+                    SearchAndUpdateResults();
+                    RaisePropertyChanged("SearchText");
+                }
             }
         }
 
@@ -647,10 +651,24 @@ namespace Dynamo.PackageManager
             var pkgs = PackageManagerClientViewModel.CachedPackageList.Where(x => x.Maintainers != null && x.Maintainers.Contains(name)).ToList();
             foreach(var pkg in pkgs)
             {
-                myPackages.Add(new PackageManagerSearchElementViewModel(pkg, false));
+                var p = new PackageManagerSearchElementViewModel(pkg, false);
+                p.RequestDownload += this.PackageOnExecuted;
+
+                myPackages.Add(p);
             }
     
             SearchMyResults = new ObservableCollection<PackageManagerSearchElementViewModel>(myPackages);
+        }
+
+        private void ClearMySearchResults()
+        {
+            if (this.SearchMyResults == null) return;
+            foreach (var ele in this.SearchMyResults)
+            {
+                ele.RequestDownload -= PackageOnExecuted;
+            }
+
+            this.SearchMyResults = null;
         }
 
         /// <summary>
@@ -1017,9 +1035,9 @@ namespace Dynamo.PackageManager
                     ClearSearchResults();
                     foreach (var result in t.Result)
                     {
-                        if (result.Model != null)
+                        if (result.SearchElementModel != null)
                         {
-                            AddPackageToSearchIndex(result.Model, iDoc);
+                            AddPackageToSearchIndex(result.SearchElementModel, iDoc);
                         }   
                         this.AddToSearchResults(result);
                     }
@@ -1059,19 +1077,24 @@ namespace Dynamo.PackageManager
             }
         }
 
+        private System.Timers.Timer aTimer;
+
         private void StartTimer()
         {
-            var aTimer = new System.Timers.Timer();
-            aTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
+            if(aTimer == null) 
+                aTimer = new System.Timers.Timer();
+
+            aTimer.Elapsed += OnTimedEvent;
             aTimer.Interval = MAX_LOAD_TIME;
             aTimer.AutoReset = false;
             aTimer.Enabled = true;
+            aTimer.Start();
         }
 
         private void OnTimedEvent(object sender, ElapsedEventArgs e)
         {
             var aTimer = (System.Timers.Timer)sender;
-            aTimer.Dispose();
+            aTimer.Stop();
 
             // If we have managed to get all the results
             // Simply dispose of the timer
@@ -1116,7 +1139,6 @@ namespace Dynamo.PackageManager
             {
                 ele.RequestDownload -= PackageOnExecuted;
             }
-
             this.SearchResults.Clear();
         }
 
@@ -1162,7 +1184,7 @@ namespace Dynamo.PackageManager
                 // the Downloads collection before Download/Install begins.
                 if (eArgs.PropertyName == nameof(PackageDownloadHandle.DownloadState))
                 {
-                    PackageManagerSearchElementViewModel sr = SearchResults.FirstOrDefault(x => x.Model.Name == handle.Name);
+                    PackageManagerSearchElementViewModel sr = SearchResults.FirstOrDefault(x => x.SearchElementModel.Name == handle.Name);
                     if (sr == null) return;
 
                     sr.CanInstall = CanInstallPackage(o as PackageDownloadHandle);
@@ -1311,7 +1333,7 @@ namespace Dynamo.PackageManager
             IEnumerable<PackageManagerSearchElementViewModel> filteredList = null;
 
             filteredList = filteredList ??
-                           list.Where(x => x.Model.Hosts != null && SelectedHosts.Intersect(x.Model.Hosts).Count() == SelectedHosts.Count()) ?? Enumerable.Empty<PackageManagerSearchElementViewModel>();
+                           list.Where(x => x.SearchElementModel.Hosts != null && SelectedHosts.Intersect(x.SearchElementModel.Hosts).Count() == SelectedHosts.Count()) ?? Enumerable.Empty<PackageManagerSearchElementViewModel>();
 
             return filteredList;
         }
@@ -1484,27 +1506,27 @@ namespace Dynamo.PackageManager
             switch (key)
             {
                 case PackageSortingKey.Name:
-                    results.Sort((e1, e2) => e1.Model.Name.ToLower().CompareTo(e2.Model.Name.ToLower()));
+                    results.Sort((e1, e2) => e1.SearchElementModel.Name.ToLower().CompareTo(e2.SearchElementModel.Name.ToLower()));
                     break;
                 case PackageSortingKey.Downloads:
-                    results.Sort((e1, e2) => e1.Model.Downloads.CompareTo(e2.Model.Downloads));
+                    results.Sort((e1, e2) => e1.SearchElementModel.Downloads.CompareTo(e2.SearchElementModel.Downloads));
                     break;
                 case PackageSortingKey.LastUpdate:
                     results.Sort((e1, e2) => e1.Versions.FirstOrDefault().Item1.created.CompareTo(e2.Versions.FirstOrDefault().Item1.created));
                     break;
                 case PackageSortingKey.Votes:
-                    results.Sort((e1, e2) => e1.Model.Votes.CompareTo(e2.Model.Votes));
+                    results.Sort((e1, e2) => e1.SearchElementModel.Votes.CompareTo(e2.SearchElementModel.Votes));
                     break;
                 case PackageSortingKey.Maintainers:
-                    results.Sort((e1, e2) => e1.Model.Maintainers.ToLower().CompareTo(e2.Model.Maintainers.ToLower()));
+                    results.Sort((e1, e2) => e1.SearchElementModel.Maintainers.ToLower().CompareTo(e2.SearchElementModel.Maintainers.ToLower()));
                     break;
                 //This sorting key is applied to search results when user submits a search query on package manager search window,
                 //it sorts in the following order: Not Deprecated Packages > search query in Name > Recently Updated
                 case PackageSortingKey.Search:
                     results.Sort((e1, e2) => {
-                        int ret = e1.Model.IsDeprecated.CompareTo(e2.Model.IsDeprecated);
-                        int i1 = e1.Model.Name.ToLower().IndexOf(query.ToLower(), StringComparison.InvariantCultureIgnoreCase);
-                        int i2 = e2.Model.Name.ToLower().IndexOf(query.ToLower(), StringComparison.InvariantCultureIgnoreCase);
+                        int ret = e1.SearchElementModel.IsDeprecated.CompareTo(e2.SearchElementModel.IsDeprecated);
+                        int i1 = e1.SearchElementModel.Name.ToLower().IndexOf(query.ToLower(), StringComparison.InvariantCultureIgnoreCase);
+                        int i2 = e2.SearchElementModel.Name.ToLower().IndexOf(query.ToLower(), StringComparison.InvariantCultureIgnoreCase);
                         ret = ret != 0 ? ret : ((i1 == -1) ? int.MaxValue : i1).CompareTo((i2 == -1) ? int.MaxValue : i2);
                         ret = ret != 0 ? ret : -e1.Versions.FirstOrDefault().Item1.created.CompareTo(e2.Versions.FirstOrDefault().Item1.created);
                         return ret;
@@ -1547,7 +1569,7 @@ namespace Dynamo.PackageManager
             if (SearchResults.Count <= SelectedIndex)
                 return;
 
-            SearchResults[SelectedIndex].Model.Execute();
+            SearchResults[SelectedIndex].SearchElementModel.Execute();
         }
 
         /// <summary>
@@ -1564,12 +1586,25 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// Clear after closing down
         /// </summary>
-        internal void Close()
+        internal void PackageManagerViewClose()
         {
+            SearchAndUpdateResults(String.Empty); // reset the search text property
+            InitialResultsLoaded = false;
+            TimedOut = false;
+        }
+
+        /// <summary>
+        /// Remove PackageManagerSearchViewModel resources
+        /// </summary>
+        internal void Dispose()
+        {
+            nonHostFilter?.ForEach(f => f.PropertyChanged -= filter_PropertyChanged);
+            aTimer.Elapsed -= OnTimedEvent;
+
             TimedOut = false;   // reset the timedout screen 
             InitialResultsLoaded = false;   // reset the loading screen settings
-            RequestShowFileDialog -= OnRequestShowFileDialog;
-            nonHostFilter.ForEach(f => f.PropertyChanged -= filter_PropertyChanged);
+
+            ClearMySearchResults();
         }
     }
 }
