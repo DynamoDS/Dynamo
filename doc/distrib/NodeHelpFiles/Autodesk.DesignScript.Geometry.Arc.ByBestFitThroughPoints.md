@@ -1,5 +1,8 @@
 ## In Depth
-Plane By Best Fit Through Points uses a set of points and finds the plane that best approximates the set. In the example, we use a series of RandomList components to generate random x,y and z coordinates. The points are created By Coordinates, and the list of points is then used as an input for ByBestFitThroughPoints.
+`Arc.ByBestFitThroughPoints` draws an arc that best represents 3 or more points. 
+
+In the example below, we create an arc that approximates a list of random points ranging from 0 to 5 in the X and Y directions.
+
 ___
 ## Example File
 
