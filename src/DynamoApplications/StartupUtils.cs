@@ -94,18 +94,6 @@ namespace Dynamo.Applications
             }
         }
 
-        /// <summary>
-        ///this class is left unimplemented,unclear how to
-        ///lookup installation locations on nix/mac
-        /// </summary>
-        internal class CLILookUp : DynamoLookUp
-        {
-            public override IEnumerable<string> GetDynamoInstallLocations()
-            {
-                throw new NotImplementedException();
-            }
-        }
-
         public struct CommandLineArguments
         {
             public static CommandLineArguments Parse(string[] args)
