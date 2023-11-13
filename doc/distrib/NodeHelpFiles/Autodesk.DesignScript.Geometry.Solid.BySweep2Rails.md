@@ -1,5 +1,8 @@
 ## In Depth
-Surface by Sweep 2 Rails takes an input curve and uses two guide curves to sweep the profile curve along. In the example below, we use a half-circle as the input profile. We create two diverging lines to use as the rail curves for a BySweep2Rails node. The result is a surface with a half-circle profile that grows as the arc moves along the diverging lines.
+`Solid.BySweep2Rails` returns a new solid from a curve profile swept along two curve rails.
+
+In the example below, a new solid is returned from sweeping a circle along two arcs as rails. Switching the arc inputs in `path` and `guideRail` will change which arc the sweep is perpendicular to.
+
 ___
 ## Example File
 

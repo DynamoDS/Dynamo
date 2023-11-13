@@ -1,5 +1,8 @@
 ## In Depth
-Z returns a double representing a reference point's Z coordinate value in the Revit conceptual design environment.
+`Point.Z` returns the world space z value of an input point. 
+
+In the example below, we use `Point.BySphericalCoordinates` to create a point and then use `Point.Z` to return its z coordinate.
+
 ___
 ## Example File
 

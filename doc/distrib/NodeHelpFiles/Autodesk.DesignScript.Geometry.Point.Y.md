@@ -1,5 +1,8 @@
 ## In Depth
-Y returns a double representing a reference point's Y coordinate value in the Revit conceptual design environment.
+`Point.Y` returns the world space y value of an input point. 
+
+In the example below, we use `Point.BySphericalCoordinates` to create a point and then use `Point.Y` to return the y coordinate.
+
 ___
 ## Example File
 

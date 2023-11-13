@@ -2,7 +2,7 @@
   "Uuid": "baaf6052-9b49-488f-8f01-a28a858d23d7",
   "IsCustomNode": false,
   "Description": "",
-  "Name": "Autodesk.DesignScript.Geometry.Geometry.ExportToSAT",
+  "Name": "GeometryUI.ExportWithUnits",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -494,6 +494,53 @@
       "Description": "Concatenates all given lists into a single list.\n\nList.Join (lists: var[]..[]): var[]..[]"
     },
     {
+      "ConcreteType": "GeometryUI.ExportWithUnits, GeometryUI",
+      "SelectedExportedUnitsSource": [
+        0,
+        1,
+        2,
+        3,
+        5,
+        4
+      ],
+      "SelectedExportedUnit": 0,
+      "Id": "c5311efa92b14140b7a9839fb368ed8d",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "406357016daf42f58383529395257293",
+          "Name": "geometry",
+          "Description": "Geometry to export into a SAT file.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f110ba07c04d4dbdb344c92e6339903a",
+          "Name": "filePath",
+          "Description": "File to export the geometry to.",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "45a12b4305e64cd5b106788ae25df642",
+          "Name": "string",
+          "Description": "The file path of the exported file. Note this may change from the input in it contains non-ASCII characters.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Exports the given geometry to the given SAT file path"
+    },
+    {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
       "Id": "97b319c8678b4ba9935d0355a77b4c9c",
       "NodeType": "ExtensionNode",
@@ -513,45 +560,6 @@
       "Description": "Allows you to select a file on the system and returns its file path",
       "HintPath": "C:\\Users\\tellro\\Downloads\\UpdatedDynamoSampleGraphs\\No file selected",
       "InputValue": "No file selected."
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "Id": "d3be2ac8f0844986ad7b2ae9a6fa0c7b",
-      "NodeType": "FunctionNode",
-      "Inputs": [
-        {
-          "Id": "2d12b5977f374fecbf6deef0ea7136a9",
-          "Name": "geometry",
-          "Description": "Geometry[]",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "0b19a7d4c5ef43b59617a2762b6dbd3f",
-          "Name": "filePath",
-          "Description": "The name of the file to export the geometry to\n\nstring",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "d4b4f247365143f890598fedc21b37ae",
-          "Name": "string",
-          "Description": "string",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.ExportToSAT@Autodesk.DesignScript.Geometry.Geometry[],string",
-      "Replication": "Auto",
-      "Description": "Exports the specified geometry to the given SAT file path\n\nGeometry.ExportToSAT (geometry: Geometry[], filePath: string): string"
     }
   ],
   "Connectors": [
@@ -665,8 +673,8 @@
     },
     {
       "Start": "c092547d04ea4c7687b99d1d8be46b03",
-      "End": "2d12b5977f374fecbf6deef0ea7136a9",
-      "Id": "d89d52ace7b4411e9a1968efb31ccec8",
+      "End": "406357016daf42f58383529395257293",
+      "Id": "030973c27c564ee5ad8a75f0614d5fc0",
       "IsHidden": "False"
     },
     {
@@ -677,8 +685,8 @@
     },
     {
       "Start": "c6273b6c301249e8ba053a3c6e531a7b",
-      "End": "0b19a7d4c5ef43b59617a2762b6dbd3f",
-      "Id": "e12a22bc3c86441f89a38dc35fd3d4e6",
+      "End": "f110ba07c04d4dbdb344c92e6339903a",
+      "Id": "ef742f1575f94e33adc08111b99626e4",
       "IsHidden": "False"
     }
   ],
@@ -846,6 +854,16 @@
         "Y": 612.96737194212653
       },
       {
+        "Id": "c5311efa92b14140b7a9839fb368ed8d",
+        "Name": "ExportToSAT",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1664.5644514650248,
+        "Y": 567.60147997032641
+      },
+      {
         "Id": "97b319c8678b4ba9935d0355a77b4c9c",
         "Name": "File Path",
         "IsSetAsInput": true,
@@ -854,21 +872,11 @@
         "ShowGeometry": true,
         "X": 1312.5644514650248,
         "Y": 673.60147997032641
-      },
-      {
-        "Id": "d3be2ac8f0844986ad7b2ae9a6fa0c7b",
-        "Name": "Geometry.ExportToSAT",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "ShowGeometry": true,
-        "X": 1703.3411377062012,
-        "Y": 585.61589345167783
       }
     ],
     "Annotations": [],
-    "X": 84.8489843399085,
-    "Y": -148.87835110848562,
-    "Zoom": 0.62740812659763479
+    "X": 174.24590094730922,
+    "Y": -94.90557497714056,
+    "Zoom": 0.55152031146487834
   }
 }
