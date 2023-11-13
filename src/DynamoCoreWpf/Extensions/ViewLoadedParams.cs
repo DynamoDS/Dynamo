@@ -86,7 +86,7 @@ namespace Dynamo.Wpf.Extensions
             DynamoSelection.Instance.Selection.CollectionChanged += OnSelectionCollectionChanged;
         }
 
-        [Obsolete("Method will be deprecated in Dynamo 3.0, please use AddExtensionMenuItem")]
+        [Obsolete("Method will be deprecated in a future version of Dynamo, please use AddExtensionMenuItem")]
         public void AddMenuItem(MenuBarType type, MenuItem menuItem, int index = -1)
         {
             AddItemToMenu(type, menuItem, index);
