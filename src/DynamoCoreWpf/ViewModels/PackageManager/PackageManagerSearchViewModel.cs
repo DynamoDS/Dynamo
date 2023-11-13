@@ -304,8 +304,12 @@ namespace Dynamo.PackageManager
             get { return _SearchText; }
             set
             {
-                _SearchText = value;
-                RaisePropertyChanged("SearchText");
+                if(_SearchText != value)
+                {
+                    _SearchText = value;
+                    SearchAndUpdateResults();
+                    RaisePropertyChanged("SearchText");
+                }
             }
         }
 
@@ -1073,19 +1077,24 @@ namespace Dynamo.PackageManager
             }
         }
 
+        private System.Timers.Timer aTimer;
+
         private void StartTimer()
         {
-            var aTimer = new System.Timers.Timer();
-            aTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
+            if(aTimer == null) 
+                aTimer = new System.Timers.Timer();
+
+            aTimer.Elapsed += OnTimedEvent;
             aTimer.Interval = MAX_LOAD_TIME;
             aTimer.AutoReset = false;
             aTimer.Enabled = true;
+            aTimer.Start();
         }
 
         private void OnTimedEvent(object sender, ElapsedEventArgs e)
         {
             var aTimer = (System.Timers.Timer)sender;
-            aTimer.Dispose();
+            aTimer.Stop();
 
             // If we have managed to get all the results
             // Simply dispose of the timer
@@ -1577,12 +1586,23 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// Clear after closing down
         /// </summary>
-        internal void Close()
+        internal void PackageManagerViewClose()
         {
+            SearchAndUpdateResults(String.Empty); // reset the search text property
+            InitialResultsLoaded = false;
+            TimedOut = false;
+        }
+
+        /// <summary>
+        /// Remove PackageManagerSearchViewModel resources
+        /// </summary>
+        internal void Dispose()
+        {
+            nonHostFilter?.ForEach(f => f.PropertyChanged -= filter_PropertyChanged);
+            aTimer.Elapsed -= OnTimedEvent;
+
             TimedOut = false;   // reset the timedout screen 
             InitialResultsLoaded = false;   // reset the loading screen settings
-            RequestShowFileDialog -= OnRequestShowFileDialog;
-            nonHostFilter.ForEach(f => f.PropertyChanged -= filter_PropertyChanged);
 
             ClearMySearchResults();
         }
