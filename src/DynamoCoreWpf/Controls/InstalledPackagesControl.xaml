@@ -17,7 +17,6 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
-            <controls:SumConverter x:Key="SumConverter" />
             <Style TargetType="{x:Type MenuItem}" x:Key="MenuItemCollapseStyle">
                 <Style.Triggers>
                     <Trigger Property="IsEnabled" Value="False">
@@ -76,22 +75,11 @@
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
-        
+
         <ScrollViewer Grid.Row="1"
                       VerticalScrollBarVisibility="Auto"
                       KeyboardNavigation.IsTabStop="False"
-                      Background="{StaticResource PackageManagerTabBackgroundColor}">
-            <ScrollViewer.Height>
-                <MultiBinding Converter="{StaticResource SumConverter}">
-                    <Binding Path="ActualHeight"
-                             RelativeSource="{RelativeSource  Mode=FindAncestor, AncestorType=UserControl}" />
-                    <Binding>
-                        <Binding.Source>
-                            <sys:Double>-40.0</sys:Double>
-                        </Binding.Source>
-                    </Binding>
-                </MultiBinding>
-            </ScrollViewer.Height>
+                      Background="{StaticResource PreferencesWindowBackgroundColor}">
             <ItemsControl Name="SearchResultsListBox"
                               ItemsSource="{Binding Path=LocalPackages}"
                               HorizontalContentAlignment="Stretch"

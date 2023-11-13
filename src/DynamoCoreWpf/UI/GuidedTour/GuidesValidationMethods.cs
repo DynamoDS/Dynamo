@@ -569,7 +569,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 if (packageManagerSearchElementViewModel == null) return;
 
                 if (packageDetailsWindow == null)
-                    packageManagerViewModel.ViewPackageDetailsCommand.Execute(packageManagerSearchElementViewModel.Model);
+                    packageManagerViewModel.ViewPackageDetailsCommand.Execute(packageManagerSearchElementViewModel.SearchElementModel);
 
                 //The PackageDetails sidebar is using events when is being shown then we need to execute those events before setting the Popup.PlacementTarget.
                 //otherwise the sidebar will not be present (and we don't have host for the Popup) and the Popup will be located out of the Dynamo window
