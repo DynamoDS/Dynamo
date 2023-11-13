@@ -98,7 +98,7 @@ namespace DSCore
                     case "dynamo.geometry:mesh-1.0.0":
                         return Mesh.FromJson(jObject.ToString());
 
-                    //types supported by Goemetry.FromJson
+                    //types supported by Geometry.FromJson
                     case "autodesk.math:point3d-1.0.0":
                     case "dynamo.geometry:sab-1.0.0":
                     case "dynamo.geometry:tsm-1.0.0":
@@ -110,34 +110,56 @@ namespace DSCore
 
                     //Dynamo types
                     case "dynamo.graphics:color-1.0.0":
-                        return Color.ByARGB(
-                        (int)jObject["A"],
-                        (int)jObject["R"],
-                        (int)jObject["G"],
-                        (int)jObject["B"]);
+                        try
+                        {
+                            return Color.ByARGB(
+                                (int)jObject["A"],
+                                (int)jObject["R"],
+                                (int)jObject["G"],
+                                (int)jObject["B"]);
+                        }
+                        catch {
+                            throw new FormatException(string.Format(Properties.Resources.Exception_Deserialize_Bad_Format, typeof(Color).FullName));
+                        }
+
 #if _WINDOWS
                     case "dynamo.graphics:png-1.0.0":
+
                         jObject.TryGetValue(ImageFormat.Png.ToString(), out var value);
 
                         if (value != null)
                         {
-                            var stream = Convert.FromBase64String(value.ToString());
+                            try
+                            {
+                                var stream = Convert.FromBase64String(value.ToString());
 
-                            Bitmap bitmap;
-                            using (var ms = new MemoryStream(stream))
-                                bitmap = new Bitmap(Bitmap.FromStream(ms));
+                                Bitmap bitmap;
+                                using (var ms = new MemoryStream(stream))
+                                    bitmap = new Bitmap(Bitmap.FromStream(ms));
 
-                            return bitmap;
+                                return bitmap;
+                            }
+                            catch {
+                                //Pass through to the next throw
+                            }
                         }
-#endif
 
+                        throw new FormatException(string.Format(Properties.Resources.Exception_Deserialize_Bad_Format, "dynamo.graphics:png-1.0.0"));
+#else
                         return null;
-
+#endif
                     case "dynamo.data:location-1.0.0":
-                        return DynamoUnits.Location.ByLatitudeAndLongitude(
-                        (double)jObject["Latitude"],
-                        (double)jObject["Longitude"],
-                        (string)jObject["Name"]);
+                        try
+                        {
+                            return DynamoUnits.Location.ByLatitudeAndLongitude(
+                            (double)jObject["Latitude"],
+                            (double)jObject["Longitude"],
+                            (string)jObject["Name"]);
+                        }
+                        catch
+                        {
+                            throw new FormatException(string.Format(Properties.Resources.Exception_Deserialize_Bad_Format, typeof(DynamoUnits.Location).FullName));
+                        }
 
                     default:
                         return null;
@@ -171,7 +193,7 @@ namespace DSCore
                     new ColorConveter(),
                     new LocationConverter(),
 #if _WINDOWS
-                    new ImageConverter(),
+                    new PNGImageConverter(),
 #endif
                 });
         }
@@ -325,7 +347,7 @@ namespace DSCore
 #if NET6_0_OR_GREATER
         [SupportedOSPlatform("windows")]
 #endif
-        private class ImageConverter : JsonConverter
+        private class PNGImageConverter : JsonConverter
         {
             public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
             {
@@ -404,7 +426,7 @@ namespace DSCore
                     }
                     catch
                     {
-                        throw new NotSupportedException(Properties.Resources.Exception_Deserialize_Unsupported_Type);
+                        throw new NotSupportedException(Properties.Resources.Exception_Deserialize_Unsupported_Cache);
                     }
 
                     return new Dictionary<string, object>

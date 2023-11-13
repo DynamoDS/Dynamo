@@ -13,18 +13,16 @@ namespace CoreNodeModels
     [NodeDescription(nameof(Properties.Resources.RememberDescription), typeof(Properties.Resources))]
     [NodeCategory("Core.Data")]
     [InPortNames(">")]
-    [InPortTypes("object")]
+    [InPortTypes("var[]..[]")]
     [InPortDescriptions(typeof(Properties.Resources), nameof(Properties.Resources.RememberInputToolTip))]
     [OutPortNames(">")]
-    [OutPortTypes("object")]
+    [OutPortTypes("var[]..[]")]
     [OutPortDescriptions(typeof(Properties.Resources), nameof(Properties.Resources.RememberOuputToolTip))]
     [IsDesignScriptCompatible]
-    [DynamoServices.RegisterForTrace]
     public class Remember : NodeModel
     {
         private string cache = "";
 
-        [JsonProperty("Cache")]
         public string Cache
         {
             get { return cache; }
@@ -55,7 +53,7 @@ namespace CoreNodeModels
         {
             switch (e.PropertyName)
             {
-                case "State":
+                case nameof(State):
                     if (State == ElementState.Warning)
                     {
                         Cache = "";

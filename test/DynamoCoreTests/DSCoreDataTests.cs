@@ -203,7 +203,8 @@ namespace Dynamo.Tests
             // Verify objects match when serializing / de-serializing geometry type
             AssertPreviewValue("abb39e07-db08-45cf-9438-478defffbf68", true);
 
-            // Verify current failure cases are all false
+            // Currently we do not support oriented BB.
+            // This test will verify current unsupported cases
             AssertPreviewValue("eb9130a1-309c-492a-9679-28ad5ef8fddf", true);
         }
 
@@ -243,6 +244,7 @@ namespace Dynamo.Tests
             AssertPreviewValue("71efc8c5c0c74189901707c30e6d5903", true);
         }
 
+        //Waiting for upstream PR so that we can mark as [Category("UnitTests")]
         [Test]
         [Category("Failure")]
         public void RoundTripForArcReturnsSameResult()
@@ -254,7 +256,9 @@ namespace Dynamo.Tests
             // Verify objects match when serializing / de-serializing geometry type
             AssertPreviewValue("71efc8c5c0c74189901707c30e6d5903", true);
 
-            // Verify current failure cases are all false
+            // A known issue is that Arcs do not deserialize with the same start angle value.
+            // It is always zero although the curve topology is identical.
+            // This will verify the current known edge case.
             AssertPreviewValue("82304dd5025948f8a5644a84a32d58d4", true);
         }
 
@@ -293,7 +297,9 @@ namespace Dynamo.Tests
             // Verify objects match when serializing / de-serializing geometry type
             AssertPreviewValue("a29aa179c7ae4069a6d9c6d2055ab845", true);
 
-            // Verify current failure cases are all false
+            // A known issue is that EllipseArcs do not deserialize with the same start angle value.
+            // It is always zero although the curve topology is identical.
+            // This will verify the current known edge case.
             AssertPreviewValue("a73925f57d2c44d7994a2c4d77bf8581", true);
         }
 
@@ -308,7 +314,10 @@ namespace Dynamo.Tests
             // Verify objects match when serializing / de-serializing geometry type
             AssertPreviewValue("b6a4919b3dd94eb79a7f0435d941d235", true);
 
-            // Verify current failure cases are all false
+            // A known issue is that Helix do not deserialize with the same type.
+            // It is always converted to nurbscurve (Same as SAB serialization).
+            // When the spiral GeoemtrySchema type is finalized we use it to support helix. 
+            // This will verify the current known unsupported case.
             AssertPreviewValue("1bbd147b429c43ab8fe46a00d691a024", true);
         }
 
@@ -336,6 +345,7 @@ namespace Dynamo.Tests
             AssertPreviewValue("423356e2c8f84e00aa6c50e9bdb72c98", true);
         }
 
+        //Waiting for upstream PR so that we can mark as [Category("UnitTests")]
         [Test]
         [Category("Failure")]
         public void RoundTripForPolyCurveReturnsSameResult()
@@ -384,6 +394,7 @@ namespace Dynamo.Tests
             AssertPreviewValue("71efc8c5c0c74189901707c30e6d5903", true);
         }
 
+        //Waiting for upstream PR so that we can mark as [Category("UnitTests")]
         [Test]
         [Category("Failure")]
         public void RoundTripForCylinderReturnsSameResult()

@@ -133,11 +133,20 @@ namespace DSCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The stored data can not be rebuilt..
+        ///   Looks up a localized string similar to The json for the type {0} was not formatted correctly.
         /// </summary>
-        internal static string Exception_Deserialize_Unsupported_Type {
+        internal static string Exception_Deserialize_Bad_Format {
             get {
-                return ResourceManager.GetString("Exception_Deserialize_Unsupported_Type", resourceCulture);
+                return ResourceManager.GetString("Exception_Deserialize_Bad_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The stored data can not be loaded..
+        /// </summary>
+        internal static string Exception_Deserialize_Unsupported_Cache {
+            get {
+                return ResourceManager.GetString("Exception_Deserialize_Unsupported_Cache", resourceCulture);
             }
         }
         
