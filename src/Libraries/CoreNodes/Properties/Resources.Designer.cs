@@ -151,6 +151,15 @@ namespace DSCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This type of Geometry is not able to be serialized..
+        /// </summary>
+        internal static string Exception_Serialize_DesignScript_Unsupported {
+            get {
+                return ResourceManager.GetString("Exception_Serialize_DesignScript_Unsupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot store data of type {0}..
         /// </summary>
         internal static string Exception_Serialize_Unsupported_Type {

@@ -10,6 +10,9 @@ using System.IO;
 using System.Drawing.Imaging;
 using System.Collections;
 using System.Runtime.Versioning;
+using Dynamo.Events;
+using Dynamo.Logging;
+using Dynamo.Session;
 
 namespace DSCore
 {
@@ -273,7 +276,7 @@ namespace DSCore
                         return;
                 }
 
-                throw new NotSupportedException();
+                throw new NotSupportedException(Properties.Resources.Exception_Serialize_DesignScript_Unsupported); 
             }
 
             public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
@@ -424,8 +427,9 @@ namespace DSCore
                     {
                         cachedObject = ParseJSON(cachedJson);
                     }
-                    catch
+                    catch(Exception ex)
                     {
+                        dynamoLogger?.Log("Remember failed to deserialize with this exception: " + ex.Message);
                         throw new NotSupportedException(Properties.Resources.Exception_Deserialize_Unsupported_Cache);
                     }
 
@@ -452,6 +456,7 @@ namespace DSCore
             }
             catch(Exception ex)
             {
+                dynamoLogger?.Log("Remember failed to serialize with this exception: " + ex.Message);
                 throw new NotSupportedException(string.Format(Properties.Resources.Exception_Serialize_Unsupported_Type, inputObject.GetType().FullName));
             }
             
@@ -461,6 +466,8 @@ namespace DSCore
                 { "Cache", newCachedJson }
             };
         }
+
+        internal static DynamoLogger dynamoLogger = ExecutionEvents.ActiveSession?.GetParameterValue(ParameterKeys.Logger) as DynamoLogger;
 
         #endregion
     }
