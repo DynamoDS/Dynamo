@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Navigation;
 
@@ -11,7 +12,7 @@ namespace Dynamo.PackageManager.UI
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
-            if (value is string name && name.TrimEnd().Length > 2)
+            if (IsValidName((string)value))
             {
                 // Validation succeeded
                 return ValidationResult.ValidResult;
@@ -19,6 +20,11 @@ namespace Dynamo.PackageManager.UI
 
             // Validation failed
             return new ValidationResult(false, Wpf.Properties.Resources.NameNeedMoreCharacters);
+        }
+
+        public static bool IsValidName(string value)
+        {
+            return (value is string name && name.TrimEnd().Length > 2);
         }
     }
 
@@ -134,11 +140,36 @@ namespace Dynamo.PackageManager.UI
         {
             var textBox = sender as TextBox;
             if (textBox == null) return;
+            if (e.Key == Key.System) return;
+
+            int caretIndex = textBox.CaretIndex; // Store the caret index
 
             // Prevents text starting with a space
             if (e.Key == System.Windows.Input.Key.Space && string.IsNullOrWhiteSpace(textBox.Text))
             {
-                e.Handled = true; 
+                e.Handled = true;
+                return;
+            }
+
+            if(string.IsNullOrEmpty(textBox.Text)) { return; }
+
+            // In case we are using the Backspace to remove characters, the validation error will stop the Name property from being updated 
+            if (textBox.Name.Equals("packageNameInput") && e.Key == Key.Back && !PackageNameLengthValidationRule.IsValidName(textBox.Text.Substring(0, textBox.Text.Length - 1)))
+            {
+                e.Handled = true;
+
+                if (!string.IsNullOrEmpty(PublishPackageViewModel.Name))
+                {
+                    // Manually remove the last character from the Name property, as the validation error will not update the Name property
+                    PublishPackageViewModel.Name = PublishPackageViewModel.Name.Substring(0, PublishPackageViewModel.Name.Length - 1);
+
+                    // Trigger re-validation explicitly
+                    var expression = textBox.GetBindingExpression(TextBox.TextProperty);
+                    expression?.UpdateSource();
+
+                    textBox.CaretIndex = caretIndex - 1 >= 0 ? caretIndex - 1 : 0;
+                    return;
+                }
             }
         }
     }

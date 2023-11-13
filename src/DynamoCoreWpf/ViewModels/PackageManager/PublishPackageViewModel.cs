@@ -2275,12 +2275,12 @@ namespace Dynamo.PackageManager
                 IsWarningEnabled = false;
             }
 
-            if(Name.Length <= 0 && !PackageContents.Any())
+            if(Name.Length <= 2 && !PackageContents.Any())
             {
                 ErrorString = Resources.PackageManagerProvidePackageNameAndFiles;
                 return false;
             }
-            else if (Name.Length <= 0 && Double.Parse(BuildVersion) + Double.Parse(MinorVersion) + Double.Parse(MajorVersion) <= 0)
+            else if (Name.Length <= 2 && Double.Parse(BuildVersion) + Double.Parse(MinorVersion) + Double.Parse(MajorVersion) <= 0)
             {
                 ErrorString = Resources.PackageManagerProvidePackageNameAndVersion;
                 return false;
@@ -2290,7 +2290,7 @@ namespace Dynamo.PackageManager
                 ErrorString = Resources.PackageManagerProvideVersionAndFiles;
                 return false;
             }
-            else if (Name.Length <= 0)
+            else if (Name.Length <= 2)
             {
                 ErrorString = Resources.PackageManagerProvidePackageName;
                 return false;
