@@ -1334,6 +1334,11 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
+        /// <summary>
+        /// PolyCurve normal and direction behavior has been made predictable in Dynamo 3.0 and has therefore changed. 
+        /// This reflects whether legacy (pre-3.0) PolyCurve behavior is selected either in preference settings or in the workspace.
+        /// A workspace setting if exists, overrides the default preference setting. 
+        /// </summary>
         internal bool EnableLegacyPolyCurveBehavior
         {
             get { return enableLegacyPolyCurveBehavior; }

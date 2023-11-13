@@ -65,6 +65,12 @@ namespace Dynamo.Models
         public string Version { get; internal set; }
         public string RunType { get; internal set; }
         public string RunPeriod { get; internal set; }
+
+        /// <summary>
+        /// PolyCurve normal and direction behavior has been made predictable in Dynamo 3.0 and has therefore changed. 
+        /// This reflects whether legacy (pre-3.0) PolyCurve behavior is selected either in preference settings or in the workspace.
+        /// A workspace setting if exists, overrides the default preference setting. 
+        /// </summary>
         public bool EnableLegacyPolyCurveBehavior { get; internal set; }
 
         public DynamoPreferencesData(
