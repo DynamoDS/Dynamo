@@ -171,6 +171,15 @@ namespace Dynamo.ViewModels
             }
         }
 
+        internal event Action<double> RequestShorcutToolbarLoaded;
+        public void OnRequestShorcutToolbarLoaded(double rightMenuActualWidth)
+        {
+            if (RequestShorcutToolbarLoaded != null)
+            {
+                RequestShorcutToolbarLoaded(rightMenuActualWidth);
+            }
+        }
+
         internal event Action <object> RequestExportWorkSpaceAsImage;
         private void OnRequestExportWorkSpaceAsImage(object parameter)
         {

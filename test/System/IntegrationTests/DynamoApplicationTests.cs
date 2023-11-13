@@ -71,10 +71,9 @@ namespace IntegrationTests
             var asmMockPath = @"./doesNotExist/";
             Assert.DoesNotThrow(() =>
             {
-                var model = Dynamo.Applications.StartupUtils.MakeModel(true, asmMockPath);
+                var model = StartupUtils.MakeModel(true, asmMockPath);
                 Assert.IsNotNull(model);
             });
-
         }
 
         [Test]

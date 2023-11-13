@@ -37,6 +37,9 @@ namespace DynamoUtilities
         {
             try
             {
+                // Do not even try when folder path is null or empty.
+                // This usually happens when system folder dialog is initialized with empty path
+                if (string.IsNullOrEmpty(folderPath)) return null;
                 // When network path is access denied, the Directory.Exits however still 
                 // return true.
                 // EnumerateDirectories operation is additional check
@@ -462,7 +465,7 @@ namespace DynamoUtilities
         /// <param name="serviceKey">Service or feature for which the address is being requested. 
         /// It should match the key specified in the config file.</param>
         /// <returns>Path that will be used to fetch resources</returns>
-        public static string getServiceBackendAddress(object o, string serviceKey)
+        public static string GetServiceBackendAddress(object o, string serviceKey)
         {
             string url = null;
             if (o != null)

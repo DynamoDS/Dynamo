@@ -1465,7 +1465,7 @@ If the toggle is off custom packages that are not already loaded will load once 
     <value>Install latest version</value>
   </data>
   <data name="PackageSearchViewInstallLatestVersionTo" xml:space="preserve">
-    <value>Install latest version to folder...</value>
+    <value>Install to folder...</value>
   </data>
   <data name="PackageSearchViewInstallThisVersion" xml:space="preserve">
     <value>Install this version</value>
@@ -2461,9 +2461,6 @@ Want to publish a different package?</value>
   <data name="CustomNodePropertyWindowLocationNote" xml:space="preserve">
     <value>Custom Nodes will be placed in the Add-Ons section of the library.</value>
     <comment>Note regarding Custom Node library location</comment>
-  </data>
-  <data name="CrashPromptGithubNewIssueTitle" xml:space="preserve">
-    <value>Crash report from Dynamo {0}</value>
   </data>
   <data name="PackageSearchViewSearchTextBoxSyncing" xml:space="preserve">
     <value>Please wait...</value>

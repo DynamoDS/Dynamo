@@ -157,7 +157,7 @@ namespace Dynamo.ViewModels
         internal void ResetAutoCompleteSearchViewState()
         {
             DisplayAutocompleteMLStaticPage = false;
-            DisplayLowConfidence = PreferenceSettings.Instance.HideNodesBelowSpecificConfidenceLevel;
+            DisplayLowConfidence = PreferenceSettings.Instance.HideNodesBelowSpecificConfidenceLevel && PreferenceSettings.Instance.DefaultNodeAutocompleteSuggestion == NodeAutocompleteSuggestion.MLRecommendation;
             AutocompleteMLMessage = string.Empty;
             AutocompleteMLTitle = string.Empty;
             FilteredResults = new List<NodeSearchElementViewModel>();
@@ -436,11 +436,11 @@ namespace Dynamo.ViewModels
             {
                 try
                 {
-                    var uri = DynamoUtilities.PathHelper.getServiceBackendAddress(this, nodeAutocompleteMLEndpoint);
+                    var uri = DynamoUtilities.PathHelper.GetServiceBackendAddress(this, nodeAutocompleteMLEndpoint);
                     var client = new RestClient(uri);
                     var request = new RestRequest(string.Empty,Method.Post);
 
-                    request.AddHeader("Authorization",tokenprovider.GetAccessToken());
+                    request.AddHeader("Authorization",$"Bearer {tokenprovider?.GetAccessToken()}");
                     request = request.AddJsonBody(requestJSON);
                     request.RequestFormat = DataFormat.Json;
                     RestResponse response = client.Execute(request);

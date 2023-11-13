@@ -2,6 +2,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
+using Dynamo.Controls;
 using Dynamo.PackageManager.ViewModels;
 
 namespace Dynamo.PackageManager.UI
@@ -23,6 +24,18 @@ namespace Dynamo.PackageManager.UI
         private void InitializeContext(object sender, RoutedEventArgs e)
         {
             PkgSearchVM = this.DataContext as PackageManagerSearchViewModel;
+
+            if (PkgSearchVM != null)
+            {
+                // Create the binding once the DataContext is available
+                var binding = new Binding(nameof(PackageManagerSearchViewModel.InitialResultsLoaded))
+                {
+                    Source = PkgSearchVM,
+                    Converter = new InverseBooleanToVisibilityCollapsedConverter()
+                };
+
+                this.loadingAnimationSearchControlScreen.SetBinding(UIElement.VisibilityProperty, binding);
+            }
         }
 
 
@@ -67,7 +80,7 @@ namespace Dynamo.PackageManager.UI
             if (!(sender is Button button)) return;
             if (!(button.DataContext is PackageManagerSearchElementViewModel packageManagerSearchElementViewModel)) return;
 
-            PkgSearchVM.ViewPackageDetailsCommand.Execute(packageManagerSearchElementViewModel.Model);
+            PkgSearchVM.ViewPackageDetailsCommand.Execute(packageManagerSearchElementViewModel.SearchElementModel);
         }
 
         private void StatusItem_OnFilter(object sender, FilterEventArgs e)

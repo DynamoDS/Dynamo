@@ -1,5 +1,8 @@
 ## In Depth
-Revit will generate and contour a mesh from a list of supplied points. The points cannot be collinear.
+`Polygon.ByPoints` creates a polygon from a list of input points. The points will be connected in the order of the list they originate from. 
+
+In the example below, we create a list of random points driven by a number slider. We then use a `Polygon.ByPoints` node to connect the points with lines. 
+
 ___
 ## Example File
 

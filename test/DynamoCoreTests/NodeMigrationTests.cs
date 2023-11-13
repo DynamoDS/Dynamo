@@ -176,12 +176,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void TestMigration_Logic_Effect()
-        {
-            TestMigration("TestMigration_Logic_Effect.dyn");
-        }
-
-        [Test]
         public void TestMigration_Logic_Math()
         {
             TestMigration("TestMigration_Logic_Math.dyn");
