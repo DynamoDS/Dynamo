@@ -618,7 +618,7 @@ namespace Dynamo.Configuration
         /// This defines whether legacy (pre-3.0) PolyCurve behavior is selected by default.
         /// This flag can be overridden by individual workspaces that have the EnableLegacyPolyCurveBehavior flag defined. 
         /// </summary>
-        [Obsolete("This property is deprecated and will be removed in a future version of Dynamo")]
+        //TODO: Remove in Dynamo 4.0
         public bool DefaultEnableLegacyPolyCurveBehavior { get; set; }
 
         /// <summary>
