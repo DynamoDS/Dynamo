@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup>
+    <!--SolutionDir is mostly useful for running the dotnet list package command-->
+    <SolutionDir>$(MSBuildThisFileDirectory)src\</SolutionDir>
+  </PropertyGroup>
+</Project>
