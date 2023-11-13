@@ -641,4 +641,18 @@ Default value: {0}</value>
   <data name="TooltipTextQuery" xml:space="preserve">
     <value>Nodes that query data</value>
   </data>
+  <data name="GateDescription" xml:space="preserve">
+    <value>Block data passing through this node to downstream nodes. Node returns the input data only if the node value is set to Open.
+
+In Generative Design workflows, this node should be used to control and block the behavior of nodes that will place elements in Revit</value>
+  </data>
+  <data name="GateInPortToolTip" xml:space="preserve">
+    <value>Data to pass to a downstream node with gated controls.</value>
+  </data>
+  <data name="GateOutPortToolTip" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="GateSearchTags" xml:space="preserve">
+    <value>gate;stop;data</value>
+  </data>
 </root>
