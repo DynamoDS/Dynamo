@@ -1252,7 +1252,6 @@ namespace Dynamo.PackageManager
                 results = Search(query, true);
                 results = ApplyNonHostFilters(results);
                 results = ApplyHostFilters(results);
-
             }
 
             this.ClearSearchResults();
