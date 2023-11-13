@@ -878,6 +878,9 @@
               "elementType": "group",
               "include": [
                 {
+                  "path": "Core.Logic.Gate"
+                },
+                {
                   "path": "BuiltIn.LoopWhile"
                 },
                 {
