@@ -267,6 +267,7 @@ namespace Dynamo.Graph.Workspaces
         private readonly UndoRedoRecorder undoRecorder;
         private static List<ModelBase> savedModels = null;
         private double scaleFactor = 1.0;
+        private bool enableLegacyPolyCurveBehavior = true;
         private bool hasNodeInSyncWithDefinition;
         protected Guid guid;
         private HashSet<Guid> dependencies = new HashSet<Guid>();
@@ -1330,6 +1331,16 @@ namespace Dynamo.Graph.Workspaces
             {
                 scaleFactor = value;
                 WorkspaceEvents.OnWorkspaceSettingsChanged(scaleFactor);
+            }
+        }
+
+        internal bool EnableLegacyPolyCurveBehavior
+        {
+            get { return enableLegacyPolyCurveBehavior; }
+            set
+            {
+                enableLegacyPolyCurveBehavior = value;
+                WorkspaceEvents.OnWorkspaceSettingsChanged(enableLegacyPolyCurveBehavior);
             }
         }
 

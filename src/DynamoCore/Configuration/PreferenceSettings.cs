@@ -613,6 +613,8 @@ namespace Dynamo.Configuration
         /// </summary>
         public bool EnableNodeAutoComplete { get; set; }
 
+        public bool DefaultEnableLegacyPolyCurveBehavior { get; set; }
+
         /// <summary>
         /// This defines if user wants to hide the nodes below a specific confidenc level.
         /// </summary>
@@ -895,6 +897,7 @@ namespace Dynamo.Configuration
             IsIronPythonDialogDisabled = false;
             ShowTabsAndSpacesInScriptEditor = false;
             EnableNodeAutoComplete = true;
+            DefaultEnableLegacyPolyCurveBehavior = true;
             HideNodesBelowSpecificConfidenceLevel = false;
             MLRecommendationConfidenceLevel = 10;
             MLRecommendationNumberOfResults = 10;
@@ -908,6 +911,7 @@ namespace Dynamo.Configuration
             ReadNotificationIds = new List<string>();
             DynamoPlayerFolderGroups = new List<DynamoPlayerFolderGroup>();
             backupLocation = string.Empty;
+
         }
 
         /// <summary>
@@ -987,7 +991,6 @@ namespace Dynamo.Configuration
                     return new PreferenceSettings() { isCreatedFromValidFile = false };
                 }
             }
-
             settings.CustomPackageFolders = settings.CustomPackageFolders.Distinct().ToList();
             settings.GroupStyleItemsList = settings.GroupStyleItemsList.GroupBy(entry => entry.Name).Select(result => result.First()).ToList();
             MigrateStdLibTokenToBuiltInToken(settings);

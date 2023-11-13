@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Dynamo.Events
 {
@@ -76,6 +76,15 @@ namespace Dynamo.Events
                 handler(new WorkspacesSettingsChangedEventArgs(scaleFactor));
             }
         }
+
+        internal static void OnWorkspaceSettingsChanged(bool enableLegacyPolyCurveBehavior)
+        {
+            var handler = WorkspaceSettingsChanged;
+            if (handler != null)
+            {
+                handler(new WorkspacesSettingsChangedEventArgs(enableLegacyPolyCurveBehavior));
+            }
+        }
     }
 
     public class WorkspacesModificationEventArgs : EventArgs
@@ -95,10 +104,16 @@ namespace Dynamo.Events
     public class WorkspacesSettingsChangedEventArgs : EventArgs
     {
         public double ScaleFactor { get; private set; }
+        public bool EnableLegacyPolyCurveBehavior { get;private set; }
 
         public WorkspacesSettingsChangedEventArgs(double scaleFactor)
         {
             ScaleFactor = scaleFactor;
+        }
+
+        public WorkspacesSettingsChangedEventArgs(bool enableLegacyPolyCurveBehavior)
+        {
+            EnableLegacyPolyCurveBehavior = enableLegacyPolyCurveBehavior;
         }
     }
 }

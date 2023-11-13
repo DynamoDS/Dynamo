@@ -65,6 +65,7 @@ namespace Dynamo.Models
         public string Version { get; internal set; }
         public string RunType { get; internal set; }
         public string RunPeriod { get; internal set; }
+        public bool EnableLegacyPolyCurveBehavior { get; internal set; }
 
         public DynamoPreferencesData(
           double scaleFactor,
@@ -72,7 +73,8 @@ namespace Dynamo.Models
           bool isVisibleInDynamoLibrary,
           string version,
           string runType,
-          string runPeriod)
+          string runPeriod,
+          bool enableLegacyPolyCurveBehavior)
         {
             ScaleFactor = scaleFactor;
             HasRunWithoutCrash = hasRunWithoutCrash;
@@ -80,6 +82,7 @@ namespace Dynamo.Models
             Version = version;
             RunType = runType;
             RunPeriod = runPeriod;
+            EnableLegacyPolyCurveBehavior = enableLegacyPolyCurveBehavior;
         }
 
         public static DynamoPreferencesData Default()
@@ -90,7 +93,8 @@ namespace Dynamo.Models
               true,
               AssemblyHelper.GetDynamoVersion().ToString(),
               Models.RunType.Automatic.ToString(),
-              RunSettings.DefaultRunPeriod.ToString());
+              RunSettings.DefaultRunPeriod.ToString(),
+              PreferenceSettings.Instance.DefaultEnableLegacyPolyCurveBehavior);
         }
     }
 
@@ -2317,6 +2321,7 @@ namespace Dynamo.Models
             workspace.FileName = string.IsNullOrEmpty(filePath) ? "" : filePath;
             workspace.FromJsonGraphId = string.IsNullOrEmpty(filePath) ? WorkspaceModel.ComputeGraphIdFromJson(fileContents) : "";
             workspace.ScaleFactor = dynamoPreferences.ScaleFactor;
+            workspace.EnableLegacyPolyCurveBehavior = dynamoPreferences.EnableLegacyPolyCurveBehavior;
 
             // NOTE: This is to handle the case of opening a JSON file that does not have a version string
             //       This logic may not be correct, need to decide the importance of versioning early JSON files
