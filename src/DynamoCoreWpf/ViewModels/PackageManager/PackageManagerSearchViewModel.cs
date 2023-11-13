@@ -1380,11 +1380,11 @@ namespace Dynamo.PackageManager
         /// <returns></returns>
         private List<PackageManagerSearchElementViewModel> ApplyNonHostFilters(IEnumerable<PackageManagerSearchElementViewModel> list)
         {
-            return list.Where(x => NonHostFilter.First(f => f.FilterName.Equals(Resources.PackageSearchViewContextMenuFilterDeprecated)).OnChecked ? x.Model.IsDeprecated : !x.Model.IsDeprecated)
-                                  .Where(x => NonHostFilter.First(f => f.FilterName.Equals(Resources.PackageManagerPackageNew)).OnChecked ? IsNewPackage(x.Model) : true)
-                                  .Where(x => NonHostFilter.First(f => f.FilterName.Equals(Resources.PackageManagerPackageUpdated)).OnChecked ? IsUpdatedPackage(x.Model) : true)
-                                  .Where(x => !NonHostFilter.First(f => f.FilterName.Equals(Resources.PackageSearchViewContextMenuFilterDependencies)).OnChecked ? true : PackageHasDependencies(x.Model))
-                                  .Where(x => !NonHostFilter.First(f => f.FilterName.Equals(Resources.PackageSearchViewContextMenuFilterNoDependencies)).OnChecked ? true : !PackageHasDependencies(x.Model))
+            return list.Where(x => NonHostFilter.First(f => f.FilterName.Equals(Resources.PackageSearchViewContextMenuFilterDeprecated)).OnChecked ? x.SearchElementModel.IsDeprecated : !x.SearchElementModel.IsDeprecated)
+                                  .Where(x => NonHostFilter.First(f => f.FilterName.Equals(Resources.PackageManagerPackageNew)).OnChecked ? IsNewPackage(x.SearchElementModel) : true)
+                                  .Where(x => NonHostFilter.First(f => f.FilterName.Equals(Resources.PackageManagerPackageUpdated)).OnChecked ? IsUpdatedPackage(x.SearchElementModel) : true)
+                                  .Where(x => !NonHostFilter.First(f => f.FilterName.Equals(Resources.PackageSearchViewContextMenuFilterDependencies)).OnChecked ? true : PackageHasDependencies(x.SearchElementModel))
+                                  .Where(x => !NonHostFilter.First(f => f.FilterName.Equals(Resources.PackageSearchViewContextMenuFilterNoDependencies)).OnChecked ? true : !PackageHasDependencies(x.SearchElementModel))
                                   .ToList();
         }
 
