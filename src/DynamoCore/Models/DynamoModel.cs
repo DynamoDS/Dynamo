@@ -71,6 +71,7 @@ namespace Dynamo.Models
         /// This reflects whether legacy (pre-3.0) PolyCurve behavior is selected either in preference settings or in the workspace.
         /// A workspace setting if exists, overrides the default preference setting. 
         /// </summary>
+        [Obsolete("This property is deprecated and will be removed in a future version of Dynamo")]
         public bool EnableLegacyPolyCurveBehavior { get; internal set; }
 
         public DynamoPreferencesData(
