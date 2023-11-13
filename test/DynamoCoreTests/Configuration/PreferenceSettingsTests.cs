@@ -358,6 +358,18 @@ namespace Dynamo.Tests.Configuration
                             propertiesWithDifferentValue.Add(destinationPi.Name);
                         }
                     }
+                    else if (destinationPi.PropertyType == typeof(List<GraphChecksumItem>))
+                    {
+                        if (((List<GraphChecksumItem>)sourcePi.GetValue(newGeneralSettings, null)).Count ==
+                            ((List<GraphChecksumItem>)destinationPi.GetValue(defaultSettings, null)).Count)
+                        {
+                            propertiesWithSameValue.Add(destinationPi.Name);
+                        }
+                        else
+                        {
+                            propertiesWithDifferentValue.Add(destinationPi.Name);
+                        }
+                    }
                     else
                     {
                         if (newValue?.ToString() == oldValue?.ToString())

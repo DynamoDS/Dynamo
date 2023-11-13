@@ -458,6 +458,11 @@ namespace Dynamo.Configuration
         /// </summary>
         private List<string> trustedLocations { get; set; } = new List<string>();
 
+        /// <summary>
+        /// Return a list of GraphChecksumItems
+        /// </summary>
+        public List<GraphChecksumItem> GraphChecksumItemsList { get; set; }
+
         // This function is used to deserialize the trusted locations manually
         // so that the TrustedLocation propertie's setter does not need to be public.
         private List<string> DeserializeTrustedLocations(XmlNode preferenceSettingsElement)
@@ -915,6 +920,7 @@ namespace Dynamo.Configuration
             EnableDynamoPlayerRenamedWatchAsOutput = false;
             DynamoPlayerFolderGroups = new List<DynamoPlayerFolderGroup>();
             backupLocation = string.Empty;
+            GraphChecksumItemsList = new List<GraphChecksumItem>();
         }
 
         /// <summary>
