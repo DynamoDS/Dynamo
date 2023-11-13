@@ -14,23 +14,12 @@
              d:DataContext="{d:DesignInstance ViewModels:PackageManagerSearchElementViewModel, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
         <ResourceDictionary>
-            <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter" />
             <controls:DateToVisibilityCollapsedConverter x:Key="DateToVisibilityCollapsedConverter" />
             <controls:DateToPackageLabelConverter x:Key="DateToPackageLabelCollapsedConverter" />
             <controls:PrettyDateConverter x:Key="PrettyDateConverter" />
             <controls:DependencyListToStringConverter x:Key="DependencyListToStringConverter" />
             <controls:ListHasMoreThanNItemsToVisibilityConverter x:Key="ListHasMoreThanNItemsToVisibilityConverter" />
             <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
-
-
-            <ContextMenu x:Key="installContextMenu"
-                         Style="{StaticResource ContextMenuStyle}">
-                <MenuItem Header="{x:Static p:Resources.PackageSearchViewInstallLatestVersionTo}"
-                          Command="{Binding DownloadLatestToCustomPathCommand}"
-                          CommandParameter="{Binding Path=Model.LatestVersion}"
-                          MinHeight="30"
-                          MinWidth="60" />
-            </ContextMenu>
 
             <Style x:Key="RectangleStyle"
                    TargetType="Rectangle">
@@ -145,7 +134,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <ListBox Name="myPackagesListBox"
+        <ListBox Name="packagesListBox"
                  Background="{StaticResource PackageManagerTabBackgroundColor}"
                  BorderThickness="0"
                  ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=SearchItems}"
@@ -165,7 +154,7 @@
                     <Setter Property="Foreground" Value="#C7C7C7" />
                     <Setter Property="VerticalAlignment" Value="Center" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Model.IsDeprecated}"
+                        <DataTrigger Binding="{Binding IsDeprecated}"
                                      Value="True">
                             <Setter Property="Opacity"
                                     Value="0.5" />
@@ -284,17 +273,15 @@
                                                                 <!-- The drop-down context menu arrow button -->
                                                                 <Button Name="dropDownInstallButton"
                                                                         DockPanel.Dock="Right"
-                                                                        Visibility="{Binding CanInstall,
-                                                                                             Converter={StaticResource BoolToVisibilityCollapsedConverter}}"
-                                                                        Click="DropDownInstallButton_OnClick"
+                                                                        Visibility="{Binding CanInstall, Converter={StaticResource BoolToVisibilityCollapsedConverter}}"
                                                                         BorderThickness="0"
                                                                         Cursor="Hand"
+                                                                        Click="DropDownInstallButton_OnClick"
                                                                         Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
                                                                     <Image Source=" /DynamoCoreWpf;component/UI/Images/caret_drop_down.png"
                                                                            Width="7"
                                                                            Height="5" />
                                                                 </Button>
-
                                                                 <TextBlock Name="textBlock"
                                                                            Padding="4,4,4,3"
                                                                            VerticalAlignment="Center"
@@ -310,7 +297,7 @@
                                                                     <Rectangle.Style>
                                                                         <Style TargetType="Rectangle">
                                                                             <Style.Triggers>
-                                                                                <DataTrigger Binding="{Binding Path=Model.IsDeprecated}"
+                                                                                <DataTrigger Binding="{Binding Path=IsDeprecated}"
                                                                                              Value="True">
                                                                                     <Setter Property="Fill">
                                                                                         <Setter.Value>
@@ -342,7 +329,7 @@
                                                                                 </DataTrigger>
                                                                                 <MultiDataTrigger>
                                                                                     <MultiDataTrigger.Conditions>
-                                                                                        <Condition Binding="{Binding Path=Model.IsDeprecated}"
+                                                                                        <Condition Binding="{Binding Path=IsDeprecated}"
                                                                                                    Value="False" />
                                                                                         <Condition Binding="{Binding Path=CanInstall}"
                                                                                                    Value="True" />
@@ -375,7 +362,7 @@
                                                                     Property="BorderBrush"
                                                                     Value="#5F5F5F" />
                                                         </Trigger>
-                                                        <DataTrigger Binding="{Binding Model.IsDeprecated}"
+                                                        <DataTrigger Binding="{Binding IsDeprecated}"
                                                                      Value="True">
                                                             <Setter Property="TextBlock.Opacity"
                                                                     Value="0.5" />
@@ -400,7 +387,7 @@
                                                         </DataTrigger>
                                                         <MultiDataTrigger>
                                                             <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding Path=Model.IsDeprecated}"
+                                                                <Condition Binding="{Binding Path=IsDeprecated}"
                                                                            Value="False" />
                                                                 <Condition Binding="{Binding Path=CanInstall}"
                                                                            Value="True" />
@@ -433,18 +420,18 @@
                                            FontFamily="{StaticResource ArtifaktElementRegular}"
                                            FontSize="14"
                                            FontWeight="SemiBold"
-                                           Text="{Binding Path=Model.Name}"
+                                           Text="{Binding Path=Name}"
                                            TextTrimming="CharacterEllipsis"
                                            TextWrapping="NoWrap">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Path=Model.IsDeprecated}"
+                                                <DataTrigger Binding="{Binding Path=IsDeprecated}"
                                                              Value="True">
                                                     <Setter Property="Foreground"
                                                             Value="#999999" />
                                                 </DataTrigger>
-                                                <DataTrigger Binding="{Binding Path=Model.IsDeprecated}"
+                                                <DataTrigger Binding="{Binding Path=IsDeprecated}"
                                                              Value="False">
                                                     <Setter Property="Foreground"
                                                             Value="{StaticResource PrimaryCharcoal200Brush}" />
@@ -458,7 +445,7 @@
                                         </Style>
                                     </TextBlock.Style>
                                     <TextBlock.ToolTip>
-                                        <ToolTip Content="{Binding Path=Model.Name}"
+                                        <ToolTip Content="{Binding Path=Name}"
                                                  Style="{StaticResource GenericToolTipLight}" />
                                     </TextBlock.ToolTip>
                                 </TextBlock>
@@ -485,7 +472,7 @@
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Path=Model.IsDeprecated}"
+                                                    <DataTrigger Binding="{Binding Path=IsDeprecated}"
                                                                  Value="True">
                                                         <Setter Property="ToolTip"
                                                                 Value="{x:Static p:Resources.PackageDeprecatedTooltip}" />
@@ -509,7 +496,7 @@
                                        Margin="0,0,0,1"
                                        VerticalAlignment="Center"
                                        DockPanel.Dock="Left"
-                                       Visibility="{Binding Path=Model.Hosts, Converter={StaticResource ListHasMoreThanNItemsToVisibilityConverter}}">
+                                       Visibility="{Binding Path=Hosts, Converter={StaticResource ListHasMoreThanNItemsToVisibilityConverter}}">
                                 <Rectangle.Fill>
                                     <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Requirements - disabled.png" />
                                 </Rectangle.Fill>
@@ -518,8 +505,8 @@
                                        Margin="5,0"
                                        DockPanel.Dock="Left"
                                        Style="{StaticResource resultLabelStyle}"
-                                       Text="{Binding Model.Hosts, Converter={StaticResource DependencyListToStringConverter}}"
-                                       Visibility="{Binding Path=Model.Hosts, Converter={StaticResource ListHasMoreThanNItemsToVisibilityConverter}}" />
+                                       Text="{Binding Hosts, Converter={StaticResource DependencyListToStringConverter}}"
+                                       Visibility="{Binding Path=Hosts, Converter={StaticResource ListHasMoreThanNItemsToVisibilityConverter}}" />
                         </DockPanel>
 
                         <!--  Bottom Row  -->
@@ -533,7 +520,7 @@
                                        Margin="5,0"
                                        DockPanel.Dock="Right"
                                        Style="{StaticResource resultLabelStyle}"
-                                       Text="{Binding Path=Model.LatestVersionCreated, Converter={StaticResource PrettyDateConverter}}" />
+                                       Text="{Binding Path=LatestVersionCreated, Converter={StaticResource PrettyDateConverter}}" />
                             <Rectangle Width="10"
                                        Height="10"
                                        Margin="5,0,0,2"
@@ -547,7 +534,7 @@
                                        Margin="5,0"
                                        DockPanel.Dock="Right"
                                        Style="{StaticResource resultLabelStyle}"
-                                       Text="{Binding Path=Model.Downloads}" />
+                                       Text="{Binding Path=Downloads}" />
                             <Rectangle Width="10"
                                        Height="10"
                                        Margin="5,0,0,2"
@@ -561,7 +548,7 @@
                                        Margin="5,0"
                                        DockPanel.Dock="Right"
                                        Style="{StaticResource resultLabelStyle}"
-                                       Text="{Binding Path=Model.Votes, Converter={StaticResource NegativeIntToZeroConverter}}" />
+                                       Text="{Binding Path=Votes, Converter={StaticResource NegativeIntToZeroConverter}}" />
                           
 
                             <Viewbox Width="12"
@@ -583,7 +570,7 @@
                                         MinHeight="120">
                                 <ComboBox x:Name="VersionComboBox"
                                           HorizontalAlignment="Left"
-                                          ItemsSource="{Binding Path=Model.PackageVersions}"
+                                          ItemsSource="{Binding Path=PkgVersion}"
                                           SelectedItem="{Binding Path=SelectedVersion}"
                                           Style="{StaticResource PackageManagerSmallComboBox}">
                                 </ComboBox>
@@ -616,7 +603,7 @@
                                        Margin="5,0"
                                        DockPanel.Dock="Left"
                                        Style="{StaticResource resultLabelStyle}"
-                                       Text="{Binding Path=Model.Maintainers}"
+                                       Text="{Binding Path=Maintainers}"
                                        TextTrimming="CharacterEllipsis" />
                         </DockPanel>
 
@@ -629,7 +616,7 @@
 
                     </Grid>
                     <DataTemplate.Triggers>
-                        <DataTrigger Binding="{Binding Path=Model.HasUpvote}"
+                        <DataTrigger Binding="{Binding Path=HasUpvote}"
                                      Value="True">
                             <Setter TargetName="heartIcon"
                                     Property="Fill"

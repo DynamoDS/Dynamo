@@ -1743,6 +1743,33 @@ namespace DynamoCoreWpfTests.PackageManager
             AssertWindowClosedWithDynamoView<PackageManagerView>();
         }
 
+        [Test]
+        public void SearchBoxInactiveOnWindowOpened()
+        {
+            ViewModel.OnRequestPackageManagerDialog(null, null);
+
+            var windows = GetWindowEnumerable(View.OwnedWindows);
+            var packageManagerView = windows.First(x => x is PackageManagerView) as PackageManagerView;
+
+            Assert.IsNotNull(packageManagerView);
+
+            var searchBox = LogicalTreeHelper.FindLogicalNode(packageManagerView, "SearchBox") as UserControl;
+            Assert.IsNotNull(searchBox);
+            Assert.IsFalse(searchBox.IsEnabled);
+
+            packageManagerView.PackageManagerViewModel.PackageSearchViewModel.InitialResultsLoaded = true;
+            Assert.IsTrue(searchBox.IsEnabled);
+        }
+
+        [Test]
+        public void PackageManagerDialogDoesNotThrowExceptions()
+        {
+            Assert.DoesNotThrow(() => ViewModel.OnRequestPackageManagerDialog(null, null), "Package Manager View did not open without exceptions");
+
+            AssertWindowOwnedByDynamoView<PackageManagerView>();
+        }
+
+
         /// <summary>
         ///     Asserts that the filter context menu will stay open while the user interacts with it
         /// </summary>

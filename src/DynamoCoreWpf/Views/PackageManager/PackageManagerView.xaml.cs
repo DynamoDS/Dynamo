@@ -7,6 +7,7 @@ using Dynamo.Controls;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.UI;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Utilities;
 using DynamoUtilities;
@@ -126,7 +127,7 @@ namespace Dynamo.PackageManager.UI
             this.packageManagerPublish.Dispose();
             this.PackageManagerViewModel.PublishPackageViewModel.CancelCommand.Execute();
             this.PackageManagerViewModel.PackageSearchViewModel.RequestShowFileDialog -= OnRequestShowFileDialog;
-            this.PackageManagerViewModel.PackageSearchViewModel.Close();
+            this.PackageManagerViewModel.PackageSearchViewModel.PackageManagerViewClose();
         }
 
         private void SearchForPackagesButton_Click(object sender, RoutedEventArgs e)

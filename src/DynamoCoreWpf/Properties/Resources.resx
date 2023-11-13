@@ -1468,7 +1468,7 @@ If the toggle is off custom packages that are not already loaded will load once 
     <value>Install latest version</value>
   </data>
   <data name="PackageSearchViewInstallLatestVersionTo" xml:space="preserve">
-    <value>Install latest version to folder...</value>
+    <value>Install to folder...</value>
   </data>
   <data name="PackageSearchViewInstallThisVersion" xml:space="preserve">
     <value>Install this version</value>

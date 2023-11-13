@@ -6375,7 +6375,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Install latest version to folder....
+        ///   Looks up a localized string similar to Install to folder....
         /// </summary>
         public static string PackageSearchViewInstallLatestVersionTo {
             get {

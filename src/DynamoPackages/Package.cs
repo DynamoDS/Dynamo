@@ -328,7 +328,8 @@ namespace Dynamo.PackageManager
             AdditionalFiles.AddRange(nonDyfDllFiles);
         }
 
-        public IEnumerable<string> EnumerateAssemblyFilesInBinDirectory()
+        //TODO can we make this internal?
+        public IEnumerable<string> EnumerateAssemblyFilesInPackage()
         {
             if (String.IsNullOrEmpty(RootDirectory) || !Directory.Exists(RootDirectory)) 
                 return new List<string>();

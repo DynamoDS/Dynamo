@@ -1684,7 +1684,7 @@ Next assemblies were loaded several times:
     <value>Install latest version</value>
   </data>
   <data name="PackageSearchViewInstallLatestVersionTo" xml:space="preserve">
-    <value>Install latest version to folder...</value>
+    <value>Install to folder...</value>
   </data>
   <data name="PackageSearchViewInstallThisVersion" xml:space="preserve">
     <value>Install this version</value>

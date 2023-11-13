@@ -158,6 +158,7 @@
 	<PackageReference Include="SharpDX.Direct3D9" Version="4.2.0" />
 	<PackageReference Include="SharpDX.DXGI" Version="4.2.0" />
 	<PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
+	<PackageReference Include="System.Reflection.MetadataLoadContext" Version="6.0.0" />
     <Reference Include="Dynamo.Microsoft.Xaml.Behaviors">
       <HintPath>..\..\extern\Microsoft.Xaml.Behaviors\$(TargetFramework)\Dynamo.Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference> 
