@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Dynamo.Configuration;
 using Dynamo.Graph.Connectors;
 
 namespace Dynamo.Interfaces
@@ -55,18 +56,6 @@ namespace Dynamo.Interfaces
         /// Returns the decimal precision used to display numbers.
         /// </summary>
         string NumberFormat { get; set; }
-
-        /// <summary>
-        /// Indicates whether usage reporting is approved or not.
-        /// </summary>
-        [Obsolete("Property will be deprecated in Dynamo 3.0")]
-        bool IsUsageReportingApproved { get; set; }
-
-        /// <summary>
-        /// Indicates whether Google analytics reporting is approved or not.
-        /// </summary>
-        [Obsolete("Property will be deprecated in Dynamo 3.0")]
-        bool IsAnalyticsReportingApproved { get; set; }
 
         /// <summary>
         /// Indicates whether ADP analytics reporting is approved or not.
@@ -158,6 +147,11 @@ namespace Dynamo.Interfaces
         /// <param name="name">Background preview name</param>
         /// <param name="value">Active state to set</param>
         void SetIsBackgroundPreviewActive(string name, bool value);
+
+        /// <summary>
+        /// Return a list of GraphChecksumItems
+        /// </summary>
+        List<GraphChecksumItem> GraphChecksumItemsList { get; set; }
     }
 
     /// <summary>

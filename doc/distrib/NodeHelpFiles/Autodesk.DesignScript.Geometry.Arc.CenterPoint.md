@@ -1,5 +1,8 @@
 ## In Depth
-Center Point will return the center of an input sphere. In the example below, we use a ByBestFit node to create a sphere based on a set of random points. We then use a CenterPoint node to determine the center of the best fit sphere.
+`Arc.CenterPoint` returns a point at the center of an arc, the same point as the corresponding circle center. 
+
+In the example below, we create an arc from 3 randomly generated points, then return its center point with an `Arc.CenterPoint` node.
+
 ___
 ## Example File
 

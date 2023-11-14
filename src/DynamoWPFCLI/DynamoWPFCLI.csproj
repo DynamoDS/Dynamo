@@ -8,6 +8,7 @@
   <PropertyGroup>
     <ProjectGuid>{F7FD9395-35D5-474D-8AD1-9904817E70D3}</ProjectGuid>
     <OutputType>Exe</OutputType>
+	<RollForward>Major</RollForward>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DynamoWPFCLI</RootNamespace>
     <AssemblyName>DynamoWPFCLI</AssemblyName>

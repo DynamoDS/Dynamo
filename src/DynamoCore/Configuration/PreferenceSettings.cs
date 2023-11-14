@@ -111,18 +111,6 @@ namespace Dynamo.Configuration
         public bool IsFirstRun { get; set; }
 
         /// <summary>
-        /// Indicates whether usage reporting is approved or not.
-        /// </summary>
-        [Obsolete("Property will be deprecated in Dynamo 3.0")]
-        public bool IsUsageReportingApproved { get { return false; } set { } }
-
-        /// <summary>
-        /// Indicates whether Google analytics reporting is approved or not.
-        /// </summary>
-        [Obsolete("Property will be deprecated in Dynamo 3.0")]
-        public bool IsAnalyticsReportingApproved { get { return false; } set { } }
-
-        /// <summary>
         /// This defines if the user export file path would include timestamp
         /// </summary>
         public bool IsTimeStampIncludedInExportFilePath
@@ -469,6 +457,11 @@ namespace Dynamo.Configuration
         /// This represents the user modifiable list of locations.
         /// </summary>
         private List<string> trustedLocations { get; set; } = new List<string>();
+
+        /// <summary>
+        /// Return a list of GraphChecksumItems
+        /// </summary>
+        public List<GraphChecksumItem> GraphChecksumItemsList { get; set; }
 
         // This function is used to deserialize the trusted locations manually
         // so that the TrustedLocation propertie's setter does not need to be public.
@@ -848,6 +841,12 @@ namespace Dynamo.Configuration
         #region Dynamo Player and Generative Design settings
 
         /// <summary>
+        /// Enable legacy behavior for Dynamo Player to allow renamed Watch nodes to be seen as graph output.
+        /// This flag is for use in the 2024 product release year and can removed for 2025
+        /// </summary>
+        public bool EnableDynamoPlayerRenamedWatchAsOutput { get; set; }
+
+        /// <summary>
         /// Collections of folders used by individual Dynamo Player or Generative Design as entry points.
         /// </summary>
         public List<DynamoPlayerFolderGroup> DynamoPlayerFolderGroups { get; set; }
@@ -868,7 +867,6 @@ namespace Dynamo.Configuration
 
             // Default Settings
             IsFirstRun = true;
-            IsAnalyticsReportingApproved = true;
             Locale = Configurations.SupportedLocaleDic.FirstOrDefault().Value;
             LibraryWidth = 304;
             ConsoleHeight = 0;
@@ -919,8 +917,10 @@ namespace Dynamo.Configuration
             ViewExtensionSettings = new List<ViewExtensionSettings>();
             GroupStyleItemsList = new List<GroupStyleItem>();
             ReadNotificationIds = new List<string>();
+            EnableDynamoPlayerRenamedWatchAsOutput = false;
             DynamoPlayerFolderGroups = new List<DynamoPlayerFolderGroup>();
             backupLocation = string.Empty;
+            GraphChecksumItemsList = new List<GraphChecksumItem>();
         }
 
         /// <summary>
