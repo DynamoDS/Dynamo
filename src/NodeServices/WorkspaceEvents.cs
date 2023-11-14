@@ -111,7 +111,7 @@ namespace Dynamo.Events
         /// A workspace setting if exists, overrides the default preference setting. 
         /// </summary>
         // TODO: This property should be removed in Dynamo 4.0.
-        public bool EnableLegacyPolyCurveBehavior { get;private set; }
+        public bool? EnableLegacyPolyCurveBehavior { get; private set; }
 
         public WorkspacesSettingsChangedEventArgs(double scaleFactor)
         {
