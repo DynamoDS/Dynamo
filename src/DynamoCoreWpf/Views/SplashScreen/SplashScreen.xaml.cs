@@ -396,7 +396,7 @@ namespace Dynamo.UI.Views
         /// Enable or not the SignIn button on the fly.
         /// </summary>
         /// <param name="enabled"></param>
-        internal async void SetSignInEnable(bool enabled)
+        public async void SetSignInEnable(bool enabled)
         {
             if (webView?.CoreWebView2 != null)
             {
