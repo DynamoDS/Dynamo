@@ -1,10 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using Dynamo.Utilities;
-
 namespace Dynamo.PackageManager.UI
 {
     public enum DependencyType
@@ -20,6 +13,10 @@ namespace Dynamo.PackageManager.UI
         private ObservableCollection<PackageItemViewModel> _items = new ObservableCollection<PackageItemViewModel>();
         private ObservableCollection<PackageItemRootViewModel> _childitems = new ObservableCollection<PackageItemRootViewModel>();
         public override ObservableCollection<PackageItemViewModel> Items { get { return _items; } set { _items = value; } }
+        /// <summary>
+        /// This collection contains all nested items, if any
+        /// Will only contain items if a Folder. Nested items can be Files (custon nodes, assemblies, files) or other Folders 
+        /// </summary>
         public ObservableCollection<PackageItemRootViewModel> ChildItems { get { return _childitems; } set { _childitems = value; } }
 
         /// <summary>
@@ -37,6 +34,9 @@ namespace Dynamo.PackageManager.UI
         /// </summary>
         public string DirectoryName { get; private set; }
 
+        /// <summary>
+        /// Shows if this item is a nested item to another, i.e. belongs to its 'ChildItems' collection
+        /// </summary>
         internal bool isChild;
 
         /// <summary>
