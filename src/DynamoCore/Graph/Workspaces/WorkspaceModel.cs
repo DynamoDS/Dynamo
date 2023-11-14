@@ -267,7 +267,6 @@ namespace Dynamo.Graph.Workspaces
         private readonly UndoRedoRecorder undoRecorder;
         private static List<ModelBase> savedModels = null;
         private double scaleFactor = 1.0;
-        private bool enableLegacyPolyCurveBehavior = true;
         private bool hasNodeInSyncWithDefinition;
         protected Guid guid;
         private HashSet<Guid> dependencies = new HashSet<Guid>();
@@ -1333,22 +1332,6 @@ namespace Dynamo.Graph.Workspaces
                 WorkspaceEvents.OnWorkspaceSettingsChanged(scaleFactor);
             }
         }
-
-        /// <summary>
-        /// PolyCurve normal and direction behavior has been made predictable in Dynamo 3.0 and has therefore changed. 
-        /// This reflects whether legacy (pre-3.0) PolyCurve behavior is selected either in preference settings or in the workspace.
-        /// A workspace setting if exists, overrides the default preference setting. 
-        /// </summary>
-        internal bool EnableLegacyPolyCurveBehavior
-        {
-            get { return enableLegacyPolyCurveBehavior; }
-            set
-            {
-                enableLegacyPolyCurveBehavior = value;
-                WorkspaceEvents.OnWorkspaceSettingsChanged(enableLegacyPolyCurveBehavior);
-            }
-        }
-
         #endregion
 
         #region constructors

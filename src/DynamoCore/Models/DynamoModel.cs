@@ -66,22 +66,13 @@ namespace Dynamo.Models
         public string RunType { get; internal set; }
         public string RunPeriod { get; internal set; }
 
-        /// <summary>
-        /// PolyCurve normal and direction behavior has been made predictable in Dynamo 3.0 and has therefore changed. 
-        /// This reflects whether legacy (pre-3.0) PolyCurve behavior is selected either in preference settings or in the workspace.
-        /// A workspace setting if exists, overrides the default preference setting. 
-        /// </summary>
-        // TODO: This property will be removed Dynamo 4.0
-        public bool EnableLegacyPolyCurveBehavior { get; set; }
-
         public DynamoPreferencesData(
           double scaleFactor,
           bool hasRunWithoutCrash,
           bool isVisibleInDynamoLibrary,
           string version,
           string runType,
-          string runPeriod,
-          bool enableLegacyPolyCurveBehavior)
+          string runPeriod)
         {
             ScaleFactor = scaleFactor;
             HasRunWithoutCrash = hasRunWithoutCrash;
@@ -89,7 +80,6 @@ namespace Dynamo.Models
             Version = version;
             RunType = runType;
             RunPeriod = runPeriod;
-            EnableLegacyPolyCurveBehavior = enableLegacyPolyCurveBehavior;
         }
 
         public static DynamoPreferencesData Default()
@@ -100,8 +90,7 @@ namespace Dynamo.Models
               true,
               AssemblyHelper.GetDynamoVersion().ToString(),
               Models.RunType.Automatic.ToString(),
-              RunSettings.DefaultRunPeriod.ToString(),
-              PreferenceSettings.Instance.DefaultEnableLegacyPolyCurveBehavior);
+              RunSettings.DefaultRunPeriod.ToString());
         }
     }
 
@@ -2328,7 +2317,6 @@ namespace Dynamo.Models
             workspace.FileName = string.IsNullOrEmpty(filePath) ? "" : filePath;
             workspace.FromJsonGraphId = string.IsNullOrEmpty(filePath) ? WorkspaceModel.ComputeGraphIdFromJson(fileContents) : "";
             workspace.ScaleFactor = dynamoPreferences.ScaleFactor;
-            workspace.EnableLegacyPolyCurveBehavior = dynamoPreferences.EnableLegacyPolyCurveBehavior;
 
             // NOTE: This is to handle the case of opening a JSON file that does not have a version string
             //       This logic may not be correct, need to decide the importance of versioning early JSON files
@@ -2340,6 +2328,8 @@ namespace Dynamo.Models
             HomeWorkspaceModel homeWorkspace = workspace as HomeWorkspaceModel;
             if (homeWorkspace != null)
             {
+                homeWorkspace.EnableLegacyPolyCurveBehavior ??= PreferenceSettings.Instance.DefaultEnableLegacyPolyCurveBehavior;
+
                 homeWorkspace.HasRunWithoutCrash = dynamoPreferences.HasRunWithoutCrash;
 
                 homeWorkspace.ReCompileCodeBlockNodesForFunctionDefinitions();

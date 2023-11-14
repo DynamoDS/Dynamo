@@ -232,8 +232,7 @@ namespace Dynamo.ViewModels
                 isVisibleInDynamoLibrary,
                 AssemblyHelper.GetDynamoVersion().ToString(),
                 runType,
-                runPeriod,
-                Model.EnableLegacyPolyCurveBehavior);
+                runPeriod);
             }
         }
 
