@@ -133,7 +133,7 @@ namespace Dynamo.Tests
 
         protected override Mock<IAnalyticsClient> MockClient()
         {
-            var client = new Mock<DynamoAnalyticsClient>(CurrentDynamoModel) { CallBase = true };
+            var client = new Mock<DynamoAnalyticsClient>(DynamoModel.HostAnalyticsInfo) { CallBase = true };
             var session = MockAnalyticsSession();
             client.Setup(c => c.Session).Returns(session);
             return client.As<IAnalyticsClient>();
