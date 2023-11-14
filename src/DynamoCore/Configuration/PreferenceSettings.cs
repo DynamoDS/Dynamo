@@ -458,6 +458,11 @@ namespace Dynamo.Configuration
         /// </summary>
         private List<string> trustedLocations { get; set; } = new List<string>();
 
+        /// <summary>
+        /// Return a list of GraphChecksumItems
+        /// </summary>
+        public List<GraphChecksumItem> GraphChecksumItemsList { get; set; }
+
         // This function is used to deserialize the trusted locations manually
         // so that the TrustedLocation propertie's setter does not need to be public.
         private List<string> DeserializeTrustedLocations(XmlNode preferenceSettingsElement)
@@ -836,6 +841,12 @@ namespace Dynamo.Configuration
         #region Dynamo Player and Generative Design settings
 
         /// <summary>
+        /// Enable legacy behavior for Dynamo Player to allow renamed Watch nodes to be seen as graph output.
+        /// This flag is for use in the 2024 product release year and can removed for 2025
+        /// </summary>
+        public bool EnableDynamoPlayerRenamedWatchAsOutput { get; set; }
+
+        /// <summary>
         /// Collections of folders used by individual Dynamo Player or Generative Design as entry points.
         /// </summary>
         public List<DynamoPlayerFolderGroup> DynamoPlayerFolderGroups { get; set; }
@@ -906,8 +917,10 @@ namespace Dynamo.Configuration
             ViewExtensionSettings = new List<ViewExtensionSettings>();
             GroupStyleItemsList = new List<GroupStyleItem>();
             ReadNotificationIds = new List<string>();
+            EnableDynamoPlayerRenamedWatchAsOutput = false;
             DynamoPlayerFolderGroups = new List<DynamoPlayerFolderGroup>();
             backupLocation = string.Empty;
+            GraphChecksumItemsList = new List<GraphChecksumItem>();
         }
 
         /// <summary>

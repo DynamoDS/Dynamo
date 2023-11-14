@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Reflection;
 using Dynamo;
 using Dynamo.Core;
 using Dynamo.Graph.Nodes.CustomNodes;
@@ -525,13 +524,9 @@ namespace DynamoCoreWpfTests
             var previewFiles = previewFilesAndFolders.Where(x => !x.DependencyType.Equals(DependencyType.Folder));
             var previewFolders = previewFilesAndFolders.Where(x => x.DependencyType.Equals(DependencyType.Folder));
             var prDllFiles = previewFiles.Where(x => x.DisplayName.EndsWith(".dll"));
-            var prDyfFiles = previewFiles.Where(x => x.DependencyType.Equals(DependencyType.CustomNodePreview));
 
             Assert.IsTrue(prDllFiles.All(x => Path.GetDirectoryName(x.FilePath) == Path.GetDirectoryName(prDllFiles.First().FilePath)));
             var prDllFolder = Path.GetDirectoryName(prDllFiles.First().FilePath);
-
-            Assert.IsTrue(prDyfFiles.All(x => Path.GetDirectoryName(x.FilePath) == Path.GetDirectoryName(prDyfFiles.First().FilePath)));
-            var prDyfFolder = Path.GetDirectoryName(prDyfFiles.First().FilePath);
 
             newPkgVm.Name = "SingleFolderPublishPackage";
             newPkgVm.MajorVersion = "0";
@@ -545,21 +540,15 @@ namespace DynamoCoreWpfTests
             var createdFiles = Directory.GetFiles(publishPath, "*", SearchOption.AllDirectories).ToList();
             var createdFolders = Directory.GetDirectories(publishPath, "*", SearchOption.AllDirectories).ToList();
             var crDllFiles = createdFiles.Where(x => x.EndsWith(".dll"));
-            var crDyfFiles = createdFiles.Where(x => x.EndsWith(".dyf"));
 
             Assert.IsTrue(crDllFiles.All(x => Path.GetDirectoryName(x) == Path.GetDirectoryName(crDllFiles.First())));
             var crDllFolder = Path.GetDirectoryName(crDllFiles.First());
-
-            Assert.IsTrue(crDyfFiles.All(x => Path.GetDirectoryName(x) == Path.GetDirectoryName(crDyfFiles.First())));
-            var crDyfFolder = Path.GetDirectoryName(crDyfFiles.First());
 
             // Assert
             Assert.AreEqual(createdFiles.Count(), previewFiles.Count());
             Assert.AreEqual(createdFolders.Count(), previewFolders.Count() - 1);  // discount one for the root folder is included
             Assert.AreEqual(2, crDllFiles.Count(), prDllFiles.Count());  
             Assert.AreEqual(Path.GetFileName(crDllFolder), Path.GetFileName(prDllFolder));  // check if the dll parent folder is the same
-            Assert.AreEqual(2, crDyfFiles.Count(), prDyfFiles.Count()); 
-            Assert.AreEqual(Path.GetFileName(crDyfFolder), Path.GetFileName(prDyfFolder));  // check if the dyf parent folder is the same
 
             // Clean up
             Directory.Delete(publishPath, true);
@@ -600,8 +589,8 @@ namespace DynamoCoreWpfTests
             var createdFolders = Directory.GetDirectories(publishPath, "*", SearchOption.AllDirectories).ToList();
 
             // Assert
-            Assert.AreEqual(createdFiles.Count(), previewFiles.Count());
-            Assert.AreEqual(0, createdFolders.Count(), previewFolders.Count() - 1);  // There is only one root folder, no subfolders are created
+            Assert.AreEqual(createdFiles.Count(), previewFiles.Count() + 1);
+            Assert.AreEqual(1, createdFolders.Count(), previewFolders.Count());  // One subfolder was created
 
             // Clean up
             Directory.Delete(publishPath, true);
