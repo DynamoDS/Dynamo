@@ -1329,11 +1329,8 @@ namespace Dynamo.Graph.Workspaces
             get { return scaleFactor; }
             internal set
             {
-                if (value != scaleFactor)
-                {
-                    scaleFactor = value;
-                    WorkspaceEvents.OnWorkspaceSettingsChanged(scaleFactor);
-                }
+                scaleFactor = value;
+                WorkspaceEvents.OnWorkspaceSettingsChanged(scaleFactor);
             }
         }
 
@@ -1347,11 +1344,8 @@ namespace Dynamo.Graph.Workspaces
             get { return enableLegacyPolyCurveBehavior; }
             set
             {
-                if (value != enableLegacyPolyCurveBehavior)
-                {
-                    enableLegacyPolyCurveBehavior = value;
-                    WorkspaceEvents.OnWorkspaceSettingsChanged(enableLegacyPolyCurveBehavior);
-                }
+                enableLegacyPolyCurveBehavior = value;
+                WorkspaceEvents.OnWorkspaceSettingsChanged(enableLegacyPolyCurveBehavior);
             }
         }
 
