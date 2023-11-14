@@ -21,7 +21,48 @@ namespace Dynamo.PackageManager.ViewModels
         public ICommand VisitRepositoryCommand { get; set; }
         public ICommand DownloadLatestToCustomPathCommand { get; set; }
 
-        public new PackageManagerSearchElement Model { get; internal set; }
+        /// <summary>
+        /// VM IsDeprecated property
+        /// </summary>
+        public bool IsDeprecated { get { return this.SearchElementModel.IsDeprecated; } }
+        /// <summary>
+        /// VM Hosts property
+        /// </summary>
+        public List<string> Hosts { get { return this.SearchElementModel.Hosts; } }
+        /// <summary>
+        /// VM LatestVersionCreated property
+        /// </summary>
+        public string LatestVersionCreated { get { return this.SearchElementModel.LatestVersionCreated; } }
+        /// <summary>
+        /// VM Downloads property
+        /// </summary>
+        public int Downloads { get { return this.SearchElementModel.Downloads; } }
+        /// <summary>
+        /// VM Votes property
+        /// </summary>
+        public int Votes { get { return this.SearchElementModel.Votes; } }
+        /// <summary>
+        /// If the element has an upvote from the current user
+        /// </summary>
+        public bool HasUpvote { get { return this.SearchElementModel.HasUpvote; } }
+        /// <summary>
+        /// VM Package Version property
+        /// </summary>
+        public IEnumerable<string> PkgVersion { get { return this.SearchElementModel.PackageVersions; } }
+        /// <summary>
+        /// VM Maintainers property
+        /// </summary>
+        public string Maintainers { get { return this.SearchElementModel.Maintainers; } }
+        /// <summary>
+        /// VM LatestVersion property
+        /// </summary>
+        public string LatestVersion { get { return this.SearchElementModel.LatestVersion; } }
+        /// <summary>
+        /// VM Name Property
+        /// </summary>
+        public string Name { get { return this.SearchElementModel.Name; } }
+
+        public PackageManagerSearchElement SearchElementModel { get; internal set; }
 
 
         /// <summary>
@@ -40,28 +81,28 @@ namespace Dynamo.PackageManager.ViewModels
         public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin, bool install, bool isEnabledForInstall = true) 
             : base(element)
         {
-            this.Model = element;
+            this.SearchElementModel = element;
             CanInstall = install;
             IsEnabledForInstall = isEnabledForInstall;
 
-            this.SelectedVersion = this.Model.LatestVersion;
+            this.SelectedVersion = this.SearchElementModel.LatestVersion;
 
-            this.ToggleIsExpandedCommand = new DelegateCommand(() => this.Model.IsExpanded = !this.Model.IsExpanded);
+            this.ToggleIsExpandedCommand = new DelegateCommand(() => this.SearchElementModel.IsExpanded = !this.SearchElementModel.IsExpanded);
 
             this.DownloadLatestCommand = new DelegateCommand(
-                () => OnRequestDownload(Model.Header.versions.First(x => x.version.Equals(SelectedVersion)), false),
-                () => !Model.IsDeprecated && CanInstall);
-            this.DownloadLatestToCustomPathCommand = new DelegateCommand(() => OnRequestDownload(Model.Header.versions.First(x => x.version.Equals(SelectedVersion)), true));
+                () => OnRequestDownload(SearchElementModel.Header.versions.First(x => x.version.Equals(SelectedVersion)), false),
+                () => !SearchElementModel.IsDeprecated && CanInstall);
+            this.DownloadLatestToCustomPathCommand = new DelegateCommand(() => OnRequestDownload(SearchElementModel.Header.versions.First(x => x.version.Equals(SelectedVersion)), true));
 
-            this.UpvoteCommand = new DelegateCommand(Model.Upvote, () => canLogin);
+            this.UpvoteCommand = new DelegateCommand(SearchElementModel.Upvote, () => canLogin);
 
             // TODO: Remove the initialization of the UI command in Dynamo 3.0
-            this.DownvoteCommand = new DelegateCommand(Model.Downvote, () => canLogin);
+            this.DownvoteCommand = new DelegateCommand(SearchElementModel.Downvote, () => canLogin);
 
             this.VisitSiteCommand =
-                new DelegateCommand(() => GoToUrl(FormatUrl(Model.SiteUrl)), () => !String.IsNullOrEmpty(Model.SiteUrl));
+                new DelegateCommand(() => GoToUrl(FormatUrl(SearchElementModel.SiteUrl)), () => !String.IsNullOrEmpty(SearchElementModel.SiteUrl));
             this.VisitRepositoryCommand =
-                new DelegateCommand(() => GoToUrl(FormatUrl(Model.RepositoryUrl)), () => !String.IsNullOrEmpty(Model.RepositoryUrl));
+                new DelegateCommand(() => GoToUrl(FormatUrl(SearchElementModel.RepositoryUrl)), () => !String.IsNullOrEmpty(SearchElementModel.RepositoryUrl));
         }
 
         /// <summary>
@@ -132,7 +173,7 @@ namespace Dynamo.PackageManager.ViewModels
             get
             {
                 return
-                    Model.Header.versions.Select(
+                    SearchElementModel.Header.versions.Select(
                         x => new Tuple<PackageVersion, DelegateCommand<object>>(
                             x, new DelegateCommand<object>((p) => OnRequestDownload(x, p.Equals("true")))
                         )).Reverse().ToList();
@@ -158,7 +199,7 @@ namespace Dynamo.PackageManager.ViewModels
             }
 
             if (RequestDownload != null)
-                RequestDownload(this.Model, version, downloadPath);
+                RequestDownload(this.SearchElementModel, version, downloadPath);
         }
 
         /// <summary>
@@ -170,7 +211,7 @@ namespace Dynamo.PackageManager.ViewModels
         public bool Equals(PackageManagerSearchElementViewModel other)
         {
             if (other == null) return false;
-            return this.Model.Id == other.Model.Id;
+            return this.SearchElementModel.Id == other.SearchElementModel.Id;
         }
 
         /// <summary>
@@ -179,7 +220,7 @@ namespace Dynamo.PackageManager.ViewModels
         /// <returns>HashCode of package</returns>
         public override int GetHashCode()
         {
-            return Model.Id.GetHashCode();
+            return SearchElementModel.Id.GetHashCode();
         }
 
         private string GetDownloadPath()
