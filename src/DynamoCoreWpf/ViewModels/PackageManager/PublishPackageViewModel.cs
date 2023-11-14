@@ -955,6 +955,7 @@ namespace Dynamo.PackageManager
 
             foreach (var item in itemsToAdd)
             {
+                if (String.IsNullOrEmpty(item.DirectoryName)) continue;
                 if (!items.ContainsKey(item.DirectoryName))
                 {
                     // Custom nodes don't have folders, we have introduced CustomNodePreview item instead
