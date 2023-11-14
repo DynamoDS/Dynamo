@@ -1468,6 +1468,16 @@ namespace Dynamo.Controls
         {
             if (packageManagerWindow == null)
             {
+                if (_pkgSearchVM == null)
+                {
+                    _pkgSearchVM = new PackageManagerSearchViewModel(dynamoViewModel.PackageManagerClientViewModel);
+                }
+
+                if (_pkgVM == null)
+                {
+                    _pkgVM = new PackageManagerViewModel(dynamoViewModel, _pkgSearchVM);
+                }
+
                 packageManagerWindow = new PackageManagerView(this, _pkgVM)
                 {
                     Owner = this,
@@ -2246,7 +2256,6 @@ namespace Dynamo.Controls
             if (!DisplayTermsOfUseForAcceptance())
                 return; // Terms of use not accepted.
 
-            var cmd = Analytics.TrackCommandEvent("PackageManager");
             if (_pkgSearchVM == null)
             {
                 _pkgSearchVM = new PackageManagerSearchViewModel(dynamoViewModel.PackageManagerClientViewModel);
@@ -2288,7 +2297,7 @@ namespace Dynamo.Controls
             packageManagerWindow.Closed -= HandlePackageManagerWindowClosed;
             packageManagerWindow = null;
 
-            var cmd = Analytics.TrackCommandEvent("PublishPackage");
+            var cmd = Analytics.TrackCommandEvent("PackageManager");
             cmd.Dispose();
         }
 
