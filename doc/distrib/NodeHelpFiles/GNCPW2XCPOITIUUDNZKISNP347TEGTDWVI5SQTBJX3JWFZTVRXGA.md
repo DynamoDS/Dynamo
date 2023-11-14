@@ -1,15 +1,15 @@
 ## In Depth
-In the example below, a planar TSpline surface with extruded, subdivided and pulled vertices and faces is inspected with the `TSplineTopology.DecomposedVertices` node, which returns a list of the following types of vertices contained in the TSpline surface:
+In the example below, a planar T-Spline surface with extruded, subdivided, and pulled vertices and faces is inspected with the `TSplineTopology.DecomposedVertices` node, which returns a list of the following types of vertices contained in the T-Spline surface:
 
 - `all`: list of all vertices
 - `regular`: list of regular vertices
-- `tPoints`: list of TPoint vertices
-- `starPoints`: list of StarPoint vertices
-- `nonManifold`: list of NonManifold vertices
+- `tPoints`: list of T-Point vertices
+- `starPoints`: list of Star Point vertices
+- `nonManifold`: list of Non-Manifold vertices
 - `border`: list of border vertices
 - `inner`: list of inner vertices
 
-The nodes `TSplineVertex.UVNFrame` and `TSplineUVNFrame.Position` are used to highlight the different types of vertices in the surface.
+The nodes `TSplineVertex.UVNFrame` and `TSplineUVNFrame.Position` are used to highlight the different types of vertices of the surface.
 
 ___
 ## Example File

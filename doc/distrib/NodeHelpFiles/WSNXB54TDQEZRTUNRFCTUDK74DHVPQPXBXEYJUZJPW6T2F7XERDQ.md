@@ -1,7 +1,7 @@
 ## In Depth
-In the example below, `TsplineTopology.VertexByIndex` is used to display a list of vertices on a planar TSpline surface. 
+In the example below, `TSplineTopology.VertexByIndex` is used to display a list of vertices on a planar T-Spline surface. 
 The surface presents extruded vertices, some of which are then flattened using the `TSplineSurface.FlattenVertices(vertices)` node.
-The nodes `TSplineVertex.UVNFrame` and `TSplineUVNFrame.Position` are used to highlight the vertices in the surface.
+The nodes `TSplineVertex.UVNFrame` and `TSplineUVNFrame.Position` are used to highlight the vertices being flattened.
 ___
 ## Example File
 

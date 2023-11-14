@@ -1,7 +1,7 @@
 ## In Depth
-In the example below, a planar T-Spline surface with extruded, subdivided and pulled vertices and faces is inspected with the `TSplineTopology.InnerVertices` node.
+In the example below, a planar T-Spline surface with extruded, subdivided, and pulled vertices and faces is inspected with the `TSplineTopology.InnerVertices` node.
 
-The nodes `TSplineVertex.UVNFrame` and `TSplineUVNFrame.Position` are used to highlight the inner vertices in the surface.
+The nodes `TSplineVertex.UVNFrame` and `TSplineUVNFrame.Position` are used to highlight the inner vertices of the surface.
 ___
 ## Example File
 

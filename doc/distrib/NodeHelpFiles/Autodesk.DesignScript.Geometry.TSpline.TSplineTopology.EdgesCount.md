@@ -1,5 +1,5 @@
 ## In Depth
-In the example below, `TSplineTopology.EdgesCount` is used to count the faces of a Quadball created by `TSplineSurface.ByQuadballCenterRadius` with given center, radius, number of spans and aligned with XY plane.
+In the example below, `TSplineTopology.EdgesCount` is used to count the faces of a Quadball created by `TSplineSurface.ByQuadballCenterRadius` node.
 ___
 ## Example File
 
