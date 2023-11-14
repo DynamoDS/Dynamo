@@ -1117,6 +1117,33 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Store data passing through this node to the Dynamo file. Return the stored data if the input is null..
+        /// </summary>
+        public static string RememberDescription {
+            get {
+                return ResourceManager.GetString("RememberDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data to sample and store in the file..
+        /// </summary>
+        public static string RememberInputToolTip {
+            get {
+                return ResourceManager.GetString("RememberInputToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data.
+        /// </summary>
+        public static string RememberOuputToolTip {
+            get {
+                return ResourceManager.GetString("RememberOuputToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Replaces an item with the given substitute if the original item satisfies the given condition.
         /// </summary>
         public static string ReplaceByConditionDescription {
