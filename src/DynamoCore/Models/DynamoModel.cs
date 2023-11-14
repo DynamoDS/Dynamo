@@ -72,7 +72,7 @@ namespace Dynamo.Models
         /// A workspace setting if exists, overrides the default preference setting. 
         /// </summary>
         [Obsolete("This property is deprecated and will be removed in a future version of Dynamo")]
-        public bool EnableLegacyPolyCurveBehavior { get; internal set; }
+        internal bool EnableLegacyPolyCurveBehavior { get; set; }
 
         public DynamoPreferencesData(
           double scaleFactor,
