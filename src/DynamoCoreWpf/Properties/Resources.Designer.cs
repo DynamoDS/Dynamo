@@ -1026,15 +1026,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Crash report from Dynamo {0}.
-        /// </summary>
-        public static string CrashPromptGithubNewIssueTitle {
-            get {
-                return ResourceManager.GetString("CrashPromptGithubNewIssueTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Create.
         /// </summary>
         public static string CreateMember {
@@ -5808,6 +5799,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Once signed in, you can find your published packages here..
+        /// </summary>
+        public static string PackageManagerUserNotSignedPackagesSubMessage {
+            get {
+                return ResourceManager.GetString("PackageManagerUserNotSignedPackagesSubMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The name of the package cannot contain.
         /// </summary>
         public static string PackageNameCannotContainTheseCharacters {
@@ -6020,6 +6020,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackagerManageNoPublishedPackagesSubMessage {
             get {
                 return ResourceManager.GetString("PackagerManageNoPublishedPackagesSubMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sign in to your Dynamo account to view your published packages..
+        /// </summary>
+        public static string PackagerManageUserNotSignedPackagesMessage {
+            get {
+                return ResourceManager.GetString("PackagerManageUserNotSignedPackagesMessage", resourceCulture);
             }
         }
         
