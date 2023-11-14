@@ -1612,7 +1612,7 @@ namespace Dynamo.PackageManager
         internal void Dispose()
         {
             nonHostFilter?.ForEach(f => f.PropertyChanged -= filter_PropertyChanged);
-            aTimer.Elapsed -= OnTimedEvent;
+            if (aTimer != null) aTimer.Elapsed -= OnTimedEvent;
 
             TimedOut = false;   // reset the timedout screen 
             InitialResultsLoaded = false;   // reset the loading screen settings
