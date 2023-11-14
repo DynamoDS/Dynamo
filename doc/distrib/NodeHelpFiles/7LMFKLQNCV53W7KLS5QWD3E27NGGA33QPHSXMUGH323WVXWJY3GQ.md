@@ -7,7 +7,7 @@ In the example below, a planar T-Spline surface with extruded, subdivided and pu
 - `inner`: list of inner edges
 
 
-The nodes `TSplineEdge.UVNFrame` and `TSplineUVNFrame.Position` are used to highlight the different types of edges in the surface.
+The node `Edge.CurveGeometry` is used to highlight the different types of edges of the surface.
 ___
 ## Example File
 
