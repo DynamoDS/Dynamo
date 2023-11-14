@@ -1,5 +1,8 @@
 ## In Depth
-Surface ByLoft with cross sections takes a list of curves as an input. It will produce a surface by lofting between the list of curves in order. In the example below we create two curves, a line and a sine curve. We use List.Create to combine these two curves into a list, which we use as an input for Surface ByLoft. The result is a surface that is lofted between a sine curve on one side, and a line on the other.
+`Solid.ByLoft (crossSections)` takes a list of closed curves as an input. It produces a solid by lofting between items on the list of curves in order. 
+
+In the example below, we start with a circle. We then produce a series of translated circles based on a sine curve. This list of curves is used as the input for `Solid.ByLoft`.
+
 ___
 ## Example File
 
