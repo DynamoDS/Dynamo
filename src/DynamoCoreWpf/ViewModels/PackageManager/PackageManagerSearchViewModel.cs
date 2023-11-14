@@ -304,8 +304,12 @@ namespace Dynamo.PackageManager
             get { return _SearchText; }
             set
             {
-                _SearchText = value;
-                RaisePropertyChanged("SearchText");
+                if(_SearchText != value)
+                {
+                    _SearchText = value;
+                    SearchAndUpdateResults();
+                    RaisePropertyChanged("SearchText");
+                }
             }
         }
 
@@ -1073,19 +1077,24 @@ namespace Dynamo.PackageManager
             }
         }
 
+        private System.Timers.Timer aTimer;
+
         private void StartTimer()
         {
-            var aTimer = new System.Timers.Timer();
-            aTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
+            if(aTimer == null) 
+                aTimer = new System.Timers.Timer();
+
+            aTimer.Elapsed += OnTimedEvent;
             aTimer.Interval = MAX_LOAD_TIME;
             aTimer.AutoReset = false;
             aTimer.Enabled = true;
+            aTimer.Start();
         }
 
         private void OnTimedEvent(object sender, ElapsedEventArgs e)
         {
             var aTimer = (System.Timers.Timer)sender;
-            aTimer.Dispose();
+            aTimer.Stop();
 
             // If we have managed to get all the results
             // Simply dispose of the timer
@@ -1250,6 +1259,8 @@ namespace Dynamo.PackageManager
             else
             {
                 results = Search(query, true);
+                results = ApplyNonHostFilters(results);
+                results = ApplyHostFilters(results);
             }
 
             this.ClearSearchResults();
@@ -1317,7 +1328,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         /// <param name="list"></param>
         /// <returns></returns>
-        internal IEnumerable<PackageManagerSearchElementViewModel> Filter(IEnumerable<PackageManagerSearchElementViewModel> list)
+        internal IEnumerable<PackageManagerSearchElementViewModel> ApplyHostFilters(IEnumerable<PackageManagerSearchElementViewModel> list)
         {
             // No need to filter by host if nothing selected
             if (SelectedHosts.Count == 0) return list;
@@ -1343,15 +1354,11 @@ namespace Dynamo.PackageManager
 
             // Filter based on user preference
             // A package has depndencies if the number of direct_dependency_ids is more than 1
-            list = Filter(LastSync.Where(x => NonHostFilter.First(f => f.FilterName.Equals(Resources.PackageSearchViewContextMenuFilterDeprecated)).OnChecked ? x.IsDeprecated : !x.IsDeprecated)
-                                  .Where(x => NonHostFilter.First(f => f.FilterName.Equals(Resources.PackageManagerPackageNew)).OnChecked ? IsNewPackage(x) : true)
-                                  .Where(x => NonHostFilter.First(f => f.FilterName.Equals(Resources.PackageManagerPackageUpdated)).OnChecked ? IsUpdatedPackage(x) : true)
-                                  .Where(x => !NonHostFilter.First(f => f.FilterName.Equals(Resources.PackageSearchViewContextMenuFilterDependencies)).OnChecked ? true : PackageHasDependencies(x))
-                                  .Where(x => !NonHostFilter.First(f => f.FilterName.Equals(Resources.PackageSearchViewContextMenuFilterNoDependencies)).OnChecked ? true : !PackageHasDependencies(x))
-                                  ?.Select(x => new PackageManagerSearchElementViewModel(x,
+            var initialResults = LastSync?.Select(x => new PackageManagerSearchElementViewModel(x,
                                                    PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider,
-                                                   CanInstallPackage(x.Name), isEnabledForInstall)))
-                                  .ToList();
+                                                   CanInstallPackage(x.Name), isEnabledForInstall));
+            list = ApplyNonHostFilters(initialResults);
+            list = ApplyHostFilters(list).ToList();
 
             Sort(list, this.SortingKey);
 
@@ -1364,6 +1371,21 @@ namespace Dynamo.PackageManager
                 x.RequestShowFileDialog += OnRequestShowFileDialog;
 
             return list;
+        }
+
+        /// <summary>
+        /// Applies non-host filters to a list of PackageManagerSearchElementViewModel
+        /// </summary>
+        /// <param name="list">The list to filter</param>
+        /// <returns></returns>
+        private List<PackageManagerSearchElementViewModel> ApplyNonHostFilters(IEnumerable<PackageManagerSearchElementViewModel> list)
+        {
+            return list.Where(x => NonHostFilter.First(f => f.FilterName.Equals(Resources.PackageSearchViewContextMenuFilterDeprecated)).OnChecked ? x.SearchElementModel.IsDeprecated : !x.SearchElementModel.IsDeprecated)
+                                  .Where(x => NonHostFilter.First(f => f.FilterName.Equals(Resources.PackageManagerPackageNew)).OnChecked ? IsNewPackage(x.SearchElementModel) : true)
+                                  .Where(x => NonHostFilter.First(f => f.FilterName.Equals(Resources.PackageManagerPackageUpdated)).OnChecked ? IsUpdatedPackage(x.SearchElementModel) : true)
+                                  .Where(x => !NonHostFilter.First(f => f.FilterName.Equals(Resources.PackageSearchViewContextMenuFilterDependencies)).OnChecked ? true : PackageHasDependencies(x.SearchElementModel))
+                                  .Where(x => !NonHostFilter.First(f => f.FilterName.Equals(Resources.PackageSearchViewContextMenuFilterNoDependencies)).OnChecked ? true : !PackageHasDependencies(x.SearchElementModel))
+                                  .ToList();
         }
 
         /// <summary>
@@ -1577,12 +1599,23 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// Clear after closing down
         /// </summary>
-        internal void Close()
+        internal void PackageManagerViewClose()
         {
+            SearchAndUpdateResults(String.Empty); // reset the search text property
+            InitialResultsLoaded = false;
+            TimedOut = false;
+        }
+
+        /// <summary>
+        /// Remove PackageManagerSearchViewModel resources
+        /// </summary>
+        internal void Dispose()
+        {
+            nonHostFilter?.ForEach(f => f.PropertyChanged -= filter_PropertyChanged);
+            aTimer.Elapsed -= OnTimedEvent;
+
             TimedOut = false;   // reset the timedout screen 
             InitialResultsLoaded = false;   // reset the loading screen settings
-            RequestShowFileDialog -= OnRequestShowFileDialog;
-            nonHostFilter.ForEach(f => f.PropertyChanged -= filter_PropertyChanged);
 
             ClearMySearchResults();
         }

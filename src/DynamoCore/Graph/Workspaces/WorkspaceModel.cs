@@ -2035,7 +2035,7 @@ namespace Dynamo.Graph.Workspaces
         {
             get
             {
-                return !HasErrors && !HasNoneGeometryRelatedWarnings;
+                return Nodes.Count() > 1 && !HasErrors && !HasNoneGeometryRelatedWarnings;
             }
         }
 
