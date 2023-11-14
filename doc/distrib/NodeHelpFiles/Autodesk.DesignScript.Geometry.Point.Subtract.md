@@ -1,5 +1,8 @@
 ## In Depth
-Subtract will return a Vector that is the difference of two other Vectors. In the example below, the difference of the a Vector with coordinates (1,0,1) and WCS Z axis results in a Vector with coordinates of (1,0,0). Adjusting the Vector Direction slider will change the vector's coordinate values and return a different subtracted vector. The Vectors are represented as Lines.
+`Point.Subtract` subtracts the x, y, and z components of an input vector from the corresponding coordinates of the input point. This is the same as translating the point by the reverse of a given vector. 
+
+In the example below, we create a point using a code block to specify the x, y, and z coordinates, then add a world XAxis vector as the `vectorToSubtract`. The result is the point translated by a distance of 1 in the negative-x direction.
+
 ___
 ## Example File
 

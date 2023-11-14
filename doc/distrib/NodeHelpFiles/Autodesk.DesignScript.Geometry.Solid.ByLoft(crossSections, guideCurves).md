@@ -1,5 +1,8 @@
 ## In Depth
-Surface by Loft with cross sections and guide curves takes a list of cross sections to loft between, and a separate list of guide curves to determine the profile of the loft. In the example below, we use two straight lines as the input cross sections. For the guide curves, we create one sine curve and one straight line. A number slider controls the distance between the sine curve and the straight line. The resulting loft interpolates between the sine curve and the straight line.
+`Solid.ByLoft (crossSections, guideCurves)` allows us to input a list of guide curves to produce different profiles along the perimeter of a lofted solid. 
+
+In the example below, we use two offset rectangles as the `crossSections`. Two different guide curves are generated around the perimeter, one based on a cosine function, and the other a simple line.
+
 ___
 ## Example File
 
