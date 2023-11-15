@@ -408,7 +408,7 @@ namespace Dynamo.UI.Views
         {
             if (webView?.CoreWebView2 != null)
             {
-                await webView.CoreWebView2.ExecuteScriptAsync("window.setEnableSignInButton({" + $"enable: \"" + enabled + "\"})");
+                await webView.CoreWebView2.ExecuteScriptAsync("window.setEnableSignInButton({" + $"enable: \"{enabled}\"" + "})");
             }
         }
 
