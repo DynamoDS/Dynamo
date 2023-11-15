@@ -80,7 +80,7 @@ namespace Dynamo.Events
         /// <summary>
         /// An event raised when workspace EnableLegacyPolyCurveBehavior setting is changed.
         /// </summary>
-        // TODO: This property should be removed in Dynamo 4.0.
+        // TODO: This event will be removed in Dynamo 4.0.
         internal static event WorkspaceSettingsChangedEventHandler WorkspaceEnableLegacyPolyCurveSettingChanged;
         internal static void OnWorkspaceSettingsChanged(bool enableLegacyPolyCurveBehavior)
         {

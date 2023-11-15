@@ -132,7 +132,8 @@ namespace Dynamo.Graph.Workspaces
         /// This reflects whether legacy (pre-3.0) PolyCurve behavior is selected either in preference settings or in the workspace.
         /// A workspace setting if exists, overrides the default preference setting. 
         /// </summary>
-        public bool? EnableLegacyPolyCurveBehavior
+        [JsonProperty]
+        internal bool? EnableLegacyPolyCurveBehavior
         {
             get { return enableLegacyPolyCurveBehavior; }
             set
