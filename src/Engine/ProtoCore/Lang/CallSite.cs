@@ -262,12 +262,12 @@ namespace ProtoCore
         #region public methods
 
         /// <summary>
-        /// Load the serialised data provided into this callsite's trace cache
+        /// Load the serialized data provided into this callsite's trace cache
         /// </summary>
         /// <param name="serializedTraceData">The data to load</param>
         public void LoadSerializedDataIntoTraceCache(string serializedTraceData)
         {
-            if (serializedTraceData == null)
+            if (serializedTraceData == null || CheckIfTraceDataIsLegacySOAPFormat(serializedTraceData))
             {
                 beforeFirstRunSerializables = new List<string>();
                 return;
@@ -277,8 +277,8 @@ namespace ProtoCore
             try
             {
                 //Optional Compression / Decompression
-                serializedTraceData = DecompressSerializedTraceData(serializedTraceData);
-                newTraceData = JsonConvert.DeserializeObject<List<SingleRunTraceData>>(serializedTraceData);
+                var decompressedTraceData = DecompressSerializedTraceData(serializedTraceData);
+                newTraceData = JsonConvert.DeserializeObject<List<SingleRunTraceData>>(decompressedTraceData);
             }
             catch
             {
@@ -453,7 +453,7 @@ namespace ProtoCore
         /// </summary>
         /// <param name="json"></param>
         /// <returns></returns>
-        public static string CompressSerializedTraceData(string json)
+        private static string CompressSerializedTraceData(string json)
         {
             byte[] dataToCompress = Encoding.UTF8.GetBytes(json);
 
@@ -461,6 +461,8 @@ namespace ProtoCore
             using (var gzipStream = new GZipStream(memoryStream, CompressionLevel.Optimal))
             {
                     gzipStream.Write(dataToCompress, 0, dataToCompress.Length);
+                    //we ned to flush the gzip stream to force write to be done BEFORE we access the memory stream.
+                    gzipStream.Close();
                     return Convert.ToBase64String(memoryStream.ToArray());
             }
         }
@@ -561,6 +563,21 @@ namespace ProtoCore
                     runID = core.csExecutionState.StoreAndUpdateRunId(callsiteGUID, callsiteData);
                 }
             }*/
+        }
+        //TODO write a unit test for this.
+        private static bool CheckIfTraceDataIsLegacySOAPFormat(string base64EncodedTraceData)
+        {
+            var data = Convert.FromBase64String(base64EncodedTraceData);
+            if (data.Length > 71)
+            {
+                var header = Encoding.UTF8.GetString(data, 0, 72);
+                if (header == @"<SOAP-ENV:Envelope xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""")
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         #endregion
@@ -1878,7 +1895,7 @@ namespace ProtoCore
         public static IList<string> GetAllSerializablesFromSingleRunTraceData(
             RawTraceData callSiteData)
         {
-            if (callSiteData.Data == null)
+            if (callSiteData.Data == null || CheckIfTraceDataIsLegacySOAPFormat(callSiteData.Data))
             {
                 return new List<string>();
             }
@@ -1892,7 +1909,7 @@ namespace ProtoCore
             }
             catch
             {
-                //Do nothing.  Old Format data.
+                //Do nothing.
             }
 
             if (traceData == null)

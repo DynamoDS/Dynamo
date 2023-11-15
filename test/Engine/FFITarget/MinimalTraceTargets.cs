@@ -118,7 +118,6 @@ namespace FFITarget
     }
 
 
-    [Serializable]
     internal class IDHolder
     {
         [JsonProperty] 
@@ -131,14 +130,8 @@ namespace FFITarget
     }
 
 
-    [Serializable]
     internal class DummyDataHolder
     {
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            throw new NotImplementedException();
-        }
-
         public DummyDataHolder() { }
     }
 

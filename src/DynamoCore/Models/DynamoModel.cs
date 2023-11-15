@@ -1242,7 +1242,7 @@ namespace Dynamo.Models
         {
             Debug.WriteLine("TRACE RECONCILIATION: {0} total serializables were orphaned.", obj.CallsiteToOrphanMap.SelectMany(kvp => kvp.Value).Count());
 
-            // The orphans will come back here as a dictionary of lists of strings jeyed by their callsite id.
+            // The orphans will come back here as a dictionary of lists of strings keyed by their callsite id.
             // This dictionary gets redistributed into a dictionary keyed by the workspace id.
 
             var workspaceOrphanMap = new Dictionary<Guid, List<string>>();
