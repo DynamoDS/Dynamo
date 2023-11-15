@@ -719,7 +719,7 @@ namespace Dynamo.Graph.Workspaces
 
                 // EnableLegacyPolyCurveBehavior
                 var enable = obj[nameof(HomeWorkspaceModel.EnableLegacyPolyCurveBehavior)];
-                homeWorkspace.EnableLegacyPolyCurveBehavior = enable?.Value<bool>();
+                homeWorkspace.EnableLegacyPolyCurveBehavior = enable?.Value<bool?>();
 
                 // Thumbnail
                 if (obj.TryGetValue(nameof(HomeWorkspaceModel.Thumbnail), StringComparison.OrdinalIgnoreCase, out JToken thumbnail))
