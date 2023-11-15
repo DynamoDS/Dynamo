@@ -92,6 +92,12 @@ namespace Dynamo.UI.Views
         /// </summary>
         internal WebView2 webView;
 
+        bool enableSignIn = true;
+        /// <summary>
+        /// Indicates if the SignIn Button will be enabled(default) or not
+        /// </summary>
+        public bool EnableSignIn { set { enableSignIn = value; } }
+
         /// <summary>
         /// This delegate is used in StaticSplashScreenReady events
         /// </summary>
@@ -346,6 +352,7 @@ namespace Dynamo.UI.Views
             {
                 await webView.CoreWebView2.ExecuteScriptAsync($"window.setLoadingDone()");
                 await webView.CoreWebView2.ExecuteScriptAsync($"window.setTotalLoadingTime(\"{Wpf.Properties.Resources.SplashScreenTotalLoadingTimeLabel} {totalLoadingTime}ms\")");
+                SetSignInEnable(enableSignIn);
             }
         }
 
@@ -396,7 +403,7 @@ namespace Dynamo.UI.Views
         /// Enable or not the SignIn button on the fly.
         /// </summary>
         /// <param name="enabled"></param>
-        public async void SetSignInEnable(bool enabled)
+        internal async void SetSignInEnable(bool enabled)
         {
             if (webView?.CoreWebView2 != null)
             {
