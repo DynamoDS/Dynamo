@@ -6,6 +6,7 @@ using System.Windows.Input;
 using Dynamo.Controls;
 using Dynamo.Logging;
 using Dynamo.UI;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Utilities;
 using DynamoUtilities;
@@ -41,8 +42,11 @@ namespace Dynamo.PackageManager.UI
 
             InitializeComponent();
 
-            packageManagerViewModel.PackageSearchViewModel.RequestShowFileDialog += OnRequestShowFileDialog;
-            packageManagerViewModel.PackageSearchViewModel.PackageManagerClientViewModel.ViewModelOwner = this;
+            if (packageManagerViewModel != null )
+            {
+                packageManagerViewModel.PackageSearchViewModel.RequestShowFileDialog += OnRequestShowFileDialog;
+                packageManagerViewModel.PackageSearchViewModel.PackageManagerClientViewModel.ViewModelOwner = this;
+            }
 
             Dynamo.Logging.Analytics.TrackEvent(
                 Actions.Open,
@@ -124,7 +128,7 @@ namespace Dynamo.PackageManager.UI
         {
             this.packageManagerPublish.Dispose();
             this.PackageManagerViewModel.PackageSearchViewModel.RequestShowFileDialog -= OnRequestShowFileDialog;
-            this.PackageManagerViewModel.PackageSearchViewModel.Close();
+            this.PackageManagerViewModel.PackageSearchViewModel.PackageManagerViewClose();
         }
 
         private void SearchForPackagesButton_Click(object sender, RoutedEventArgs e)
