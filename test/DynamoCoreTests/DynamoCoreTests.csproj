@@ -136,7 +136,7 @@
     <Copy SourceFiles="$(PkgMicrosoft_Diagnostics_Runtime)\lib\netstandard2.0\Microsoft.Diagnostics.Runtime.dll" DestinationFolder="$(TestDependenciesPath)" />
 </Target>
 
-    <Target Name="MoveSomeTestDepsOutOfBin_net60" AfterTargets="Build">
+    <Target Name="MoveSomeTestDepsOutOfBin" AfterTargets="Build">
         <Message Importance="High" Text="copying test dependencies to test dependencies folder" />
         <CallTarget Targets="CopyDisableADPTestDeps"></CallTarget>
         <!--moq + deps-->
