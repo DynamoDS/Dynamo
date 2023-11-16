@@ -49,7 +49,7 @@
     <GenerateDependencyFile>false</GenerateDependencyFile>
   </PropertyGroup>
   <PropertyGroup Condition="$(Platform.Contains('AnyCPU'))" >
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
     <DefineConstants>$(DefineConstants);_WINDOWS</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="$(Platform.Contains('Linux'))" >
