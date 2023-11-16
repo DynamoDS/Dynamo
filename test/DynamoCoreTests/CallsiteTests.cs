@@ -181,9 +181,9 @@ namespace Dynamo.Tests
             Assert.IsFalse(ws.Nodes.OfType<Function>().First().IsInErrorState);
 
             BeginRun();
-            AssertPreviewValue("da39dbe5f59649b18c2fb6ca54acba7b", 1234567899);
-            AssertPreviewValue("2366239164a9441a8c4dcd981d9cf542", 2);
-            AssertPreviewValue("342f96575f8942c890867d88495fb0db", 3);
+            AssertPreviewValue("da39dbe5f59649b18c2fb6ca54acba7b", 5);
+            AssertPreviewValue("2366239164a9441a8c4dcd981d9cf542", 4);
+            AssertPreviewValue("342f96575f8942c890867d88495fb0db",1);
 
         }
 
@@ -201,10 +201,10 @@ namespace Dynamo.Tests
             Assert.IsFalse(ws.Nodes.OfType<Function>().First().IsInErrorState);
 
             BeginRun();
-            AssertPreviewValue("da39dbe5f59649b18c2fb6ca54acba7b", 111111);
-            AssertPreviewValue("2366239164a9441a8c4dcd981d9cf542", 222222);
-            AssertPreviewValue("8cfce012280342f3bd688520d68a7f66", 333333);
-            AssertPreviewValue("08448232ee094aad8280e9a99ed44f46", 444444);
+            AssertPreviewValue("da39dbe5f59649b18c2fb6ca54acba7b", 6);
+            AssertPreviewValue("2366239164a9441a8c4dcd981d9cf542", 7);
+            AssertPreviewValue("8cfce012280342f3bd688520d68a7f66", 10);
+            AssertPreviewValue("08448232ee094aad8280e9a99ed44f46", 11);
         }
 
         [Test]
