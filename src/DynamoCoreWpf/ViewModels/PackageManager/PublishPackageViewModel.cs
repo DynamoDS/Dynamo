@@ -1144,23 +1144,20 @@ namespace Dynamo.PackageManager
         private void ClearPackageContents()
         {
             //  this method clears the package contents in the publish package dialog
-
             this.Package = null;
-            //System.Windows.Application.Current.Dispatcher.Invoke(() =>
-            //{
-                // Make changes to your ObservableCollection or other UI-bound collection here.
-                this.PackageContents.Clear();
-                this.PreviewPackageContents.Clear();
-                this.RootContents.Clear();
-                this.CustomDyfFilepaths.Clear();
+            
+            // Make changes to your ObservableCollection or other UI-bound collection here.
+            this.PackageContents.Clear();
+            this.PreviewPackageContents.Clear();
+            this.RootContents.Clear();
+            this.CustomDyfFilepaths.Clear();
 
-                RaisePropertyChanged(nameof(PackageContents));
-                RaisePropertyChanged(nameof(PreviewPackageContents));
-                RaisePropertyChanged(nameof(RootContents));
-                RaisePropertyChanged(nameof(CustomDyfFilepaths));
+            RaisePropertyChanged(nameof(PackageContents));
+            RaisePropertyChanged(nameof(PreviewPackageContents));
+            RaisePropertyChanged(nameof(RootContents));
+            RaisePropertyChanged(nameof(CustomDyfFilepaths));
                     
-                this.CustomNodeDefinitions = new List<CustomNodeDefinition>();
-            //});
+            this.CustomNodeDefinitions = new List<CustomNodeDefinition>();            
         }
 
         private void ThisPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -2276,12 +2273,12 @@ namespace Dynamo.PackageManager
                 IsWarningEnabled = false;
             }
 
-            if(Name.Length <= 2 && !PackageContents.Any())
+            if(Name.Length <= 0 && !PackageContents.Any())
             {
                 ErrorString = Resources.PackageManagerProvidePackageNameAndFiles;
                 return false;
             }
-            else if (Name.Length <= 2 && Double.Parse(BuildVersion) + Double.Parse(MinorVersion) + Double.Parse(MajorVersion) <= 0)
+            else if (Name.Length <= 0 && Double.Parse(BuildVersion) + Double.Parse(MinorVersion) + Double.Parse(MajorVersion) <= 0)
             {
                 ErrorString = Resources.PackageManagerProvidePackageNameAndVersion;
                 return false;
@@ -2291,7 +2288,7 @@ namespace Dynamo.PackageManager
                 ErrorString = Resources.PackageManagerProvideVersionAndFiles;
                 return false;
             }
-            else if (Name.Length <= 2)
+            else if (Name.Length <= 0)
             {
                 ErrorString = Resources.PackageManagerProvidePackageName;
                 return false;
