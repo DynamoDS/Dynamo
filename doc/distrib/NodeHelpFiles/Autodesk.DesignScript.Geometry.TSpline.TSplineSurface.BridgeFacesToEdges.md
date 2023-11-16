@@ -1,5 +1,5 @@
 ## In Depth
-`TSplineSurface.BridgeToFacesToEdges` connects a sets of edges with a set of faces, either from the same surface or from two different surfaces. The edges making up the faces need to match in number, or be a multiple of the edges on the other side of the bridge. The node requires the inputs rescribed below. The first three inputs are enough to generate the bridge, the rest of the inputs being optional. The resulting surface is a child of the surface that the first group of edges belongs to.
+`TSplineSurface.BridgeToFacesToEdges` connects a sets of edges with a set of faces, either from the same surface or from two different surfaces. The edges making up the faces need to match in number, or be a multiple of the edges on the other side of the bridge. The node requires the inputs described below. The first three inputs are enough to generate the bridge, the rest of the inputs being optional. The resulting surface is a child of the surface that the first group of edges belongs to.
 
 - `TSplineSurface`: the surface to bridge
 - `firstGroup`: Faces from the TSplineSurface selected
