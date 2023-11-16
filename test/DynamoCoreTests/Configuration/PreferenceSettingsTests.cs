@@ -404,12 +404,10 @@ namespace Dynamo.Tests.Configuration
             Assert.IsTrue(newSettings.IsCreatedFromValidFile, "The new settings file is invalid");
 
             bool newSettingsExist = File.Exists(newSettingslFilePath);
-            var checkDifference = comparePrefenceSettings(newSettings, defaultSettings);
+            var checkDifference = comparePrefenceSettings(defaultSettings, newSettings);
             int diffProps = checkDifference.DifferentPropertyValues.Count;
             int totProps = checkDifference.Properties.Count;
-            var propertiesWithSameOrNewValues =
-                checkDifference.Properties.Except(checkDifference.DifferentPropertyValues).ToList();
-            string firstPropertyWithSameOrNewValue = propertiesWithSameOrNewValues.FirstOrDefault();
+            string firstPropertyWithSameOrNewValue = checkDifference.Properties.Except(checkDifference.DifferentPropertyValues).ToList().FirstOrDefault();
             string defSettNumberFormat = defaultSettings.NumberFormat;
             string newSettNumberFormat = newSettings.NumberFormat;
             string failMessage = $"The file {newSettingslFilePath} exist: {newSettingsExist.ToString()} " +
