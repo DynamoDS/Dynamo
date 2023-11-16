@@ -330,13 +330,13 @@ namespace Dynamo.LibraryViewExtensionWebView2
         {
             try
             {
-                var relativePath = Environment.Is64BitProcess ? @"runtimes\win-x64\native" : @"runtimes\win-x86\native";
-                var absolutePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), relativePath);
+                var absolutePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                    @"runtimes\win-x64\native");
                 CoreWebView2Environment.SetLoaderDllFolderPath(absolutePath);
             }
             catch (InvalidOperationException e)
             {
-                LogToDynamoConsole("WebView2Loader.dll is already successfully loaded.");
+                LogToDynamoConsole("WebView2Loader.dll is already loaded successfully.");
             }
             
             browser.CoreWebView2InitializationCompleted += Browser_CoreWebView2InitializationCompleted;
