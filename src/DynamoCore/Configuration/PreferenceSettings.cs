@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Xml;
 using System.Xml.Serialization;
+using Autodesk.DesignScript.Runtime;
 using Dynamo.Core;
 using Dynamo.Graph.Connectors;
 using Dynamo.Interfaces;
@@ -621,9 +622,10 @@ namespace Dynamo.Configuration
         /// <summary>
         /// PolyCurve normal and direction behavior has been made predictable in Dynamo 3.0 and has therefore changed. 
         /// This defines whether legacy (pre-3.0) PolyCurve behavior is selected by default.
-        /// This flag can be overridden by individual workspaces that have the EnableLegacyPolyCurveBehavior flag defined. 
+        /// This flag can be overridden by individual workspaces that have the EnableLegacyPolyCurveBehavior flag defined.
+        /// Note: For internal use only and will be removed in a future version of Dynamo.
         /// </summary>
-        //TODO: Remove in Dynamo 4.0
+        [IsObsolete("This property will be removed in a future version of Dynamo.")]
         public bool DefaultEnableLegacyPolyCurveBehavior { get; set; }
 
         /// <summary>
