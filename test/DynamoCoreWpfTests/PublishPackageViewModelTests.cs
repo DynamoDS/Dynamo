@@ -376,8 +376,8 @@ namespace DynamoCoreWpfTests
         public void CanRemoveCustomDefinitionDependencyTypes()
         {
             // Arrange
-            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\AllFileTypesPackageDocs");
-            string dyfPath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\AllFileTypesPackageDocs\\dyf\\3DView by BoundingBox.dyf");
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\_AllFileTypesPackageDocs");
+            string dyfPath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\_AllFileTypesPackageDocs\\dyf\\3DView by BoundingBox.dyf");
             var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
             var vm = new PublishPackageViewModel(this.ViewModel);
 
@@ -433,7 +433,7 @@ namespace DynamoCoreWpfTests
         public void CanRemoveAllDependencyTypes()
         {
             // Arrange
-            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\AllFileTypesPackageDocs");
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\_AllFileTypesPackageDocs");
             var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
             var vm = new PublishPackageViewModel(this.ViewModel);
 

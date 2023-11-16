@@ -104,7 +104,7 @@ namespace DynamoCoreWpfTests.PackageManager
             var l = new PublishPackageViewModel(ViewModel);
             ViewModel.OnRequestPackagePublishDialog(l);
 
-            AssertWindowOwnedByDynamoView<PublishPackageView>();
+            AssertWindowOwnedByDynamoView<PackageManagerView>();
         }
 
         [Test, Ignore("Unknown reason")]
@@ -125,8 +125,8 @@ namespace DynamoCoreWpfTests.PackageManager
             var l = new PublishPackageViewModel(ViewModel);
             ViewModel.OnRequestPackagePublishDialog(l);
 
-            AssertWindowOwnedByDynamoView<PublishPackageView>();
-            AssertWindowClosedWithDynamoView<PublishPackageView>();
+            AssertWindowOwnedByDynamoView<PackageManagerView>();
+            AssertWindowClosedWithDynamoView<PackageManagerView>();
 
         }
 

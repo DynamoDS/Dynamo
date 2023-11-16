@@ -7,6 +7,12 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Dynamo.Logging;
 using Dynamo.Models;
+using System.Diagnostics;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Navigation;
+using Dynamo.Logging;
 using Dynamo.UI;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Utilities;
@@ -40,10 +46,13 @@ namespace Dynamo.PackageManager.UI
             this.Owner = Window.GetWindow(this);
 
             PublishPackageViewModel = this.DataContext as PublishPackageViewModel;
-
             PublishPackageViewModel.Owner = this.Owner;
-            PublishPackageViewModel.PublishSuccess += PackageViewModelOnPublishSuccess;
-            PublishPackageViewModel.RequestShowFolderBrowserDialog += OnRequestShowFolderBrowserDialog;
+
+            if(PublishPackageViewModel != null )
+            {
+                PublishPackageViewModel.PublishSuccess += PackageViewModelOnPublishSuccess;
+                PublishPackageViewModel.RequestShowFolderBrowserDialog += OnRequestShowFolderBrowserDialog;
+            }
 
             Logging.Analytics.TrackScreenView("PackageManager");
 
