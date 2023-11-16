@@ -61,12 +61,6 @@
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
-  <!--Temporary configuration to make core test projects load UI packages successfully -->
-  <PropertyGroup Condition=" '$(TestProjectDefaults)' == 'true' AND $(RuntimeIdentifier.Contains('win')) ">
-    <TargetFramework>$(TargetFramework)-windows</TargetFramework>
-    <UseWPF>true</UseWPF>
-    <UseWindowsForms>true</UseWindowsForms>
-  </PropertyGroup>
   <PropertyGroup>
     <BaseIntermediateOutputPath>int\$(TargetFramework)\</BaseIntermediateOutputPath>
     <IntermediateOutputPath>obj\$(TargetFramework)\</IntermediateOutputPath>
