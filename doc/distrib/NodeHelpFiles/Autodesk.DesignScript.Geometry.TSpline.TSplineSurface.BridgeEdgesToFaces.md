@@ -1,8 +1,8 @@
 ## In Depth
-`TSplineSurface.BridgeEdgesToFaces` connects a sets of edges with a set of faces, either from the same surface or from two different surfaces. The edges making up the faces need to match in number, or be a multiple of the edges on the other side of the bridge. The node requires the inputs rescribed below. The first three inputs are enough to generate the bridge, the rest of the inputs being optional. The resulting surface is a child of the surface that the first group of edges belongs to.
+`TSplineSurface.BridgeEdgesToFaces` connects a sets of edges with a set of faces, either from the same surface or from two different surfaces. The edges making up the faces need to match in number, or be a multiple of the edges on the other side of the bridge. The node requires the inputs described below. The first three inputs are enough to generate the bridge, the rest of the inputs being optional. The resulting surface is a child of the surface that the first group of edges belongs to.
 
 - `TSplineSurface`: the surface to bridge
-- `firstGroup`: Edges from the TSplineSurface selectedT
+- `firstGroup`: Edges from the TSplineSurface selected
 - `secondGroup`: Faces from either the same T-Spline surface selected, or from a different one.
 - `followCurves`: (optional) a curve for the bridge to follow. In the absence of this input, the bridge follows a straight line
 - `frameRotations`: (optional) number of rotations of the bridge extrusion that connects the chosen edges.
