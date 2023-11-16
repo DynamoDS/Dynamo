@@ -92,7 +92,8 @@
     <controls:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     <controls:BoolToVisibilityCollapsedConverter x:Key="BooleanToVisibilityCollapsedConverter" />
     <controls:InverseBooleanToVisibilityCollapsedConverter x:Key="InverseBoolToVisibilityCollapsedConverter" />
-    <controls:EmptyToVisibilityCollapsedConverter x:Key="EmptyToVisibilityCollapsedConverter"/>
+    <controls:EmptyToVisibilityCollapsedConverter x:Key="EmptyToVisibilityCollapsedConverter" />
+    <controls:ZeroToVisibilityCollapsedConverter x:Key="ZeroToVisibilityCollapsedConverter" />    
     <controls:EmptyToZeroLengthConverter x:Key="EmptyToZeroLengthConverter"/>
     <controls:NavigationToOpacityConverter x:Key="NavigationToOpacityConverter" />
     <controls:ViewButtonClipRectConverter x:Key="ViewButtonClipRectConverter" />

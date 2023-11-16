@@ -3683,8 +3683,8 @@
         </Setter>
     </Style>
 
-    <SolidColorBrush x:Key="ExpanderCaretToggleButtonBackground" Color="#4d4d4d" />
-    <SolidColorBrush x:Key="ExpanderCaretToggleButtonSelectedBackground" Color="#3c3c3c" />
+    <SolidColorBrush x:Key="ExpanderCaretToggleButtonBackground" Color="#2A2A2A" />
+    <SolidColorBrush x:Key="ExpanderCaretToggleButtonSelectedBackground" Color="#2F2E30" />
 
     <ControlTemplate x:Key="ExpanderCaretToggleButton" TargetType="{x:Type ToggleButton}">
         <Border Name="Border"
@@ -3775,6 +3775,8 @@
 
 
     <Style x:Key="InstalledPackagesExpanderStyle" TargetType="Expander">
+        <Setter Property="UseLayoutRounding" Value="True"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
         <Setter Property="Template">
             <Setter.Value>
                 <!--  Control template for expander  -->
@@ -6017,6 +6019,47 @@
                         </Trigger>
                     </ControlTemplate.Triggers>
 
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <!-- Package Manager DataGrid Header style -->
+    <Style x:Key="DataGridColumnHeaderText" TargetType="DataGridColumnHeader">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="DataGridColumnHeader">
+                    <Grid>
+                        <TextBlock Name="DataGridColumnHeader"
+                                           Height="32"
+                                           Padding="10,7,10,0"
+                                           VerticalAlignment="Center"
+                                           Background="#434343"
+                                           FontFamily="{StaticResource ArtifaktElementRegular}"
+                                           FontSize="14px"
+                                           FontWeight="Regular"
+                                           Foreground="{StaticResource PrimaryCharcoal200Brush}"
+                                           Text="{TemplateBinding Content}" >
+                            <TextBlock.ToolTip>
+                                <ToolTip Content="{x:Static p:Resources.PublishPackageNodeLibraryTooltip}"
+                                                 Style="{StaticResource GenericToolTipLight}" />
+                            </TextBlock.ToolTip>
+                        </TextBlock>
+                        <Thumb x:Name="PART_RightHeaderGripper"
+                                       Width="1"
+                                       HorizontalAlignment="Right"
+                                       BorderBrush="Transparent"
+                                       BorderThickness="1,0,0,0"
+                                       Cursor="SizeWE" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver"
+                                         Value="True">
+                            <Setter TargetName="DataGridColumnHeader"
+                                            Property="Background"
+                                            Value="#666666" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

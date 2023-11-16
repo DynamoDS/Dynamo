@@ -1026,15 +1026,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Crash report from Dynamo {0}.
-        /// </summary>
-        public static string CrashPromptGithubNewIssueTitle {
-            get {
-                return ResourceManager.GetString("CrashPromptGithubNewIssueTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Create.
         /// </summary>
         public static string CreateMember {
@@ -1285,6 +1276,24 @@ namespace Dynamo.Wpf.Properties {
         public static string DisablePackageInstallIconTooltip {
             get {
                 return ResourceManager.GetString("DisablePackageInstallIconTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Discard changes?.
+        /// </summary>
+        public static string DiscardChangesWarningPopupCaption {
+            get {
+                return ResourceManager.GetString("DiscardChangesWarningPopupCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your changes will be lost if you navigate away from the package upload screen..
+        /// </summary>
+        public static string DiscardChangesWarningPopupMessage {
+            get {
+                return ResourceManager.GetString("DiscardChangesWarningPopupMessage", resourceCulture);
             }
         }
         
@@ -4721,7 +4730,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Name must be at least 3 characters..
+        ///   Looks up a localized string similar to Must be at least 3 characters.
         /// </summary>
         public static string NameNeedMoreCharacters {
             get {
@@ -5655,6 +5664,33 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to  files published.
+        /// </summary>
+        public static string PackageManagerFinishedPackageFilesPublishedMessage {
+            get {
+                return ResourceManager.GetString("PackageManagerFinishedPackageFilesPublishedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  files uploaded.
+        /// </summary>
+        public static string PackageManagerFinishedPackageFilesUploadedMessage {
+            get {
+                return ResourceManager.GetString("PackageManagerFinishedPackageFilesUploadedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package Path.
+        /// </summary>
+        public static string PackageManagerFinishedPackagePackagePath {
+            get {
+                return ResourceManager.GetString("PackageManagerFinishedPackagePackagePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Install.
         /// </summary>
         public static string PackageManagerInstall {
@@ -5745,6 +5781,69 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Provide file(s).
+        /// </summary>
+        public static string PackageManagerProvideFiles {
+            get {
+                return ResourceManager.GetString("PackageManagerProvideFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Provide package name.
+        /// </summary>
+        public static string PackageManagerProvidePackageName {
+            get {
+                return ResourceManager.GetString("PackageManagerProvidePackageName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Provide package name and file(s).
+        /// </summary>
+        public static string PackageManagerProvidePackageNameAndFiles {
+            get {
+                return ResourceManager.GetString("PackageManagerProvidePackageNameAndFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Provide package name and version number.
+        /// </summary>
+        public static string PackageManagerProvidePackageNameAndVersion {
+            get {
+                return ResourceManager.GetString("PackageManagerProvidePackageNameAndVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Provide version number.
+        /// </summary>
+        public static string PackageManagerProvideVersion {
+            get {
+                return ResourceManager.GetString("PackageManagerProvideVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Provide version number and file(s).
+        /// </summary>
+        public static string PackageManagerProvideVersionAndFiles {
+            get {
+                return ResourceManager.GetString("PackageManagerProvideVersionAndFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Virus scan in progress. Your package will be searchable in approximately 15 minutes..
+        /// </summary>
+        public static string PackageManagerPublishOnlineFinishedMessage {
+            get {
+                return ResourceManager.GetString("PackageManagerPublishOnlineFinishedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Publish a Package.
         /// </summary>
         public static string PackageManagerPublishPackageButton {
@@ -5759,6 +5858,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageManagerPublishTab {
             get {
                 return ResourceManager.GetString("PackageManagerPublishTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ready to publish.
+        /// </summary>
+        public static string PackageManagerReadyToPublish {
+            get {
+                return ResourceManager.GetString("PackageManagerReadyToPublish", resourceCulture);
             }
         }
         
@@ -5804,6 +5912,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageManagerTitle {
             get {
                 return ResourceManager.GetString("PackageManagerTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Once signed in, you can find your published packages here..
+        /// </summary>
+        public static string PackageManagerUserNotSignedPackagesSubMessage {
+            get {
+                return ResourceManager.GetString("PackageManagerUserNotSignedPackagesSubMessage", resourceCulture);
             }
         }
         
@@ -6020,6 +6137,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackagerManageNoPublishedPackagesSubMessage {
             get {
                 return ResourceManager.GetString("PackagerManageNoPublishedPackagesSubMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sign in to your Dynamo account to view your published packages..
+        /// </summary>
+        public static string PackagerManageUserNotSignedPackagesMessage {
+            get {
+                return ResourceManager.GetString("PackagerManageUserNotSignedPackagesMessage", resourceCulture);
             }
         }
         
@@ -7930,11 +8056,50 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DLL file containing types and methods that Dynamo imports as nodes. Mark ZeroTouch, NodeModel, or NodeViewCustomization DLLs and types you want to import into Dynamo as node libraries..
+        /// </summary>
+        public static string PublishPackageNodeLibraryTooltip {
+            get {
+                return ResourceManager.GetString("PublishPackageNodeLibraryTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Package Contents.
         /// </summary>
         public static string PublishPackagePackageContent {
             get {
                 return ResourceManager.GetString("PublishPackagePackageContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preview package contents (read only).
+        /// </summary>
+        public static string PublishPackagePreviewPackageContentsMessage {
+            get {
+                return ResourceManager.GetString("PublishPackagePreviewPackageContentsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove from package.
+        /// </summary>
+        public static string PublishPackageRemoveFromPacakgeTooltip {
+            get {
+                return ResourceManager.GetString("PublishPackageRemoveFromPacakgeTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When this setting is enabled, the folder structure of uploaded files will be retained. Otherwise, files will be placed into predefined folders.
+        ///
+        ///Note: Incorrect folder structure may affect the functionality of packages that rely on the correct file organization. When in doubt, leave this setting off.
+        ///    .
+        /// </summary>
+        public static string PublishPackageRetainFolderStructureTooltip {
+            get {
+                return ResourceManager.GetString("PublishPackageRetainFolderStructureTooltip", resourceCulture);
             }
         }
         
@@ -7948,7 +8113,16 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 1.
+        ///   Looks up a localized string similar to Select package contents.
+        /// </summary>
+        public static string PublishPackageSelectPackageContentsMessage {
+            get {
+                return ResourceManager.GetString("PublishPackageSelectPackageContentsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 0.
         /// </summary>
         public static string PublishPackageVersionBuildWatermark {
             get {
@@ -8047,6 +8221,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The package&apos;s copyright holder..
+        /// </summary>
+        public static string PublishPackageViewCopyrightHolderTooltip {
+            get {
+                return ResourceManager.GetString("PublishPackageViewCopyrightHolderTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Author name.
         /// </summary>
         public static string PublishPackageViewCopyrightHolderWatermark {
@@ -8074,6 +8257,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The copyright year for the package..
+        /// </summary>
+        public static string PublishPackageViewCopyrightYearTooltip {
+            get {
+                return ResourceManager.GetString("PublishPackageViewCopyrightYearTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Publishing year.
         /// </summary>
         public static string PublishPackageViewCopyrightYearWatermark {
@@ -8088,6 +8280,24 @@ namespace Dynamo.Wpf.Properties {
         public static string PublishPackageViewFilePath {
             get {
                 return ResourceManager.GetString("PublishPackageViewFilePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GitHub repository link for the package..
+        /// </summary>
+        public static string PublishPackageViewGithubLinkTooltip {
+            get {
+                return ResourceManager.GetString("PublishPackageViewGithubLinkTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The package&apos;s licence..
+        /// </summary>
+        public static string PublishPackageViewLicenceTooltip {
+            get {
+                return ResourceManager.GetString("PublishPackageViewLicenceTooltip", resourceCulture);
             }
         }
         
@@ -8281,7 +8491,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A version name helps a submitter keep track of updates to the package.  A new version of a package will be REJECTED if this is not incremeneted..
+        ///   Looks up a localized string similar to A version name helps a submitter keep track of updates to the package. When a new version of a package is added, version number must be increased..
         /// </summary>
         public static string PublishPackageViewPackageVersionTooltip {
             get {
@@ -8313,6 +8523,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PublishPackageViewPublisherWebSite {
             get {
                 return ResourceManager.GetString("PublishPackageViewPublisherWebSite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Website link for the package..
+        /// </summary>
+        public static string PublishPackageViewPublisherWebsiteTooltip {
+            get {
+                return ResourceManager.GetString("PublishPackageViewPublisherWebsiteTooltip", resourceCulture);
             }
         }
         

@@ -127,7 +127,7 @@ namespace Dynamo.Graph.Nodes
         /// The index of the selected item.
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public int SelectedIndex { get; set; }
+        public int? SelectedIndex { get; set; }
 
         private static Dictionary<Type, NodeInputTypes> dotNetTypeToNodeInputType = new Dictionary<Type, NodeInputTypes>
         {

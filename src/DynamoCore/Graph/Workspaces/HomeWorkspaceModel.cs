@@ -642,7 +642,7 @@ namespace Dynamo.Graph.Workspaces
             // Runtime warnings take precedence over build warnings.
             foreach (var warning in updateTask.RuntimeWarnings)
             {
-                var message = string.Join(Environment.NewLine, warning.Value.Select(w => w.Message));
+                var message = string.Join(Environment.NewLine + Environment.NewLine, warning.Value.Select(w => w.Message));
                 warnings.Add(warning.Key, message);
             }
 

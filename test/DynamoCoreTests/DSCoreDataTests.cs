@@ -205,7 +205,7 @@ namespace Dynamo.Tests
 
             // Currently we do not support oriented BB.
             // This test will verify current unsupported cases
-            AssertPreviewValue("eb9130a1-309c-492a-9679-28ad5ef8fddf", true);
+            AssertPreviewValue("9d611e10bea84fbc93648516e9f677f7", true);
         }
 
         [Test]
@@ -244,9 +244,8 @@ namespace Dynamo.Tests
             AssertPreviewValue("71efc8c5c0c74189901707c30e6d5903", true);
         }
 
-        //Waiting for upstream PR so that we can mark as [Category("UnitTests")]
         [Test]
-        [Category("Failure")]
+        [Category("UnitTests")]
         public void RoundTripForArcReturnsSameResult()
         {
             // Load test graph
@@ -345,9 +344,8 @@ namespace Dynamo.Tests
             AssertPreviewValue("423356e2c8f84e00aa6c50e9bdb72c98", true);
         }
 
-        //Waiting for upstream PR so that we can mark as [Category("UnitTests")]
         [Test]
-        [Category("Failure")]
+        [Category("UnitTests")]
         public void RoundTripForPolyCurveReturnsSameResult()
         {
             // Load test graph
@@ -394,9 +392,8 @@ namespace Dynamo.Tests
             AssertPreviewValue("71efc8c5c0c74189901707c30e6d5903", true);
         }
 
-        //Waiting for upstream PR so that we can mark as [Category("UnitTests")]
         [Test]
-        [Category("Failure")]
+        [Category("UnitTests")]
         public void RoundTripForCylinderReturnsSameResult()
         {
             // Load test graph
