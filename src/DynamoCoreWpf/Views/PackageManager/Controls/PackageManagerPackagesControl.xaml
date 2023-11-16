@@ -259,6 +259,7 @@
                                     IsEnabled="{Binding IsEnabledForInstall}">
                                 <Button.Style>
                                     <Style TargetType="Button">
+                                        <Setter Property="Visibility" Value="Visible"/>
                                         <Setter Property="Template">
                                             <Setter.Value>
                                                 <ControlTemplate TargetType="{x:Type Button}">
@@ -329,12 +330,9 @@
                                                                                 </DataTrigger>
                                                                                 <MultiDataTrigger>
                                                                                     <MultiDataTrigger.Conditions>
-                                                                                        <Condition Binding="{Binding Path=IsDeprecated}"
-                                                                                                   Value="False" />
-                                                                                        <Condition Binding="{Binding Path=CanInstall}"
-                                                                                                   Value="True" />
-                                                                                        <Condition Binding="{Binding Path=IsEnabledForInstall}"
-                                                                                                   Value="True" />
+                                                                                        <Condition Binding="{Binding Path=IsDeprecated}" Value="False" />
+                                                                                        <Condition Binding="{Binding Path=CanInstall}" Value="True" />
+                                                                                        <Condition Binding="{Binding Path=IsEnabledForInstall}" Value="True" />
                                                                                     </MultiDataTrigger.Conditions>
                                                                                     <Setter Property="Fill">
                                                                                         <Setter.Value>
@@ -350,54 +348,114 @@
                                                         </Grid>
                                                     </Border>
                                                     <ControlTemplate.Triggers>
-                                                        <Trigger Property="IsMouseOver"
-                                                                 Value="True">
-                                                            <Setter TargetName="ButtonBorder"
-                                                                    Property="BorderBrush"
-                                                                    Value="#4A4A4A" />
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#4A4A4A" />
                                                         </Trigger>
-                                                        <Trigger Property="IsPressed"
-                                                                 Value="True">
-                                                            <Setter TargetName="ButtonBorder"
-                                                                    Property="BorderBrush"
-                                                                    Value="#5F5F5F" />
+                                                        <Trigger Property="IsPressed" Value="True">
+                                                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#5F5F5F" />
                                                         </Trigger>
-                                                        <DataTrigger Binding="{Binding IsDeprecated}"
-                                                                     Value="True">
-                                                            <Setter Property="TextBlock.Opacity"
-                                                                    Value="0.5" />
-                                                            <Setter Property="TextBlock.Foreground"
-                                                                    Value="#84D7CE" />
-                                                            <Setter Property="ToolTip"
-                                                                    Value="{x:Static p:Resources.PackageDeprecatedTooltip}" />
+                                                        <DataTrigger Binding="{Binding IsDeprecated}" Value="True">
+                                                            <Setter Property="TextBlock.Opacity" Value="0.5" />
+                                                            <Setter Property="TextBlock.Foreground" Value="#84D7CE" />
+                                                            <Setter Property="ToolTip" Value="{x:Static p:Resources.PackageDeprecatedTooltip}" />
                                                         </DataTrigger>
-                                                        <DataTrigger Binding="{Binding CanInstall}"
-                                                                     Value="False">
-                                                            <Setter Property="TextBlock.Foreground"
-                                                                    Value="#999999" />
-                                                            <Setter Property="Opacity"
-                                                                    Value="1" />
+                                                        <DataTrigger Binding="{Binding CanInstall}" Value="False">
+                                                            <Setter Property="TextBlock.Foreground" Value="#999999" />
+                                                            <Setter Property="Opacity" Value="1" />
                                                         </DataTrigger>
-                                                        <DataTrigger Binding="{Binding IsEnabledForInstall}"
-                                                                     Value="False">
-                                                            <Setter Property="TextBlock.Foreground"
-                                                                    Value="#999999" />
-                                                            <Setter Property="TextBlock.Opacity"
-                                                                    Value="1" />
+                                                        <DataTrigger Binding="{Binding IsEnabledForInstall}" Value="False">
+                                                            <Setter Property="TextBlock.Foreground" Value="#999999" />
+                                                            <Setter Property="TextBlock.Opacity" Value="1" />
                                                         </DataTrigger>
                                                         <MultiDataTrigger>
                                                             <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding Path=IsDeprecated}"
-                                                                           Value="False" />
-                                                                <Condition Binding="{Binding Path=CanInstall}"
-                                                                           Value="True" />
-                                                                <Condition Binding="{Binding Path=IsEnabledForInstall}"
-                                                                           Value="True" />
+                                                                <Condition Binding="{Binding Path=IsDeprecated}" Value="False" />
+                                                                <Condition Binding="{Binding Path=CanInstall}" Value="True" />
+                                                                <Condition Binding="{Binding Path=IsEnabledForInstall}" Value="True" />
                                                             </MultiDataTrigger.Conditions>
-                                                            <Setter Property="TextBlock.Opacity"
-                                                                    Value="1" />
-                                                            <Setter Property="TextBlock.Foreground"
-                                                                    Value="#84D7CE" />
+                                                            <Setter Property="TextBlock.Opacity" Value="1" />
+                                                            <Setter Property="TextBlock.Foreground" Value="#84D7CE" />
+                                                        </MultiDataTrigger>
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding Path=CanInstall}" Value="False"/>
+                                                                <Condition Binding="{Binding Path=IsOnwer}" Value="True"/>
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                        </MultiDataTrigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+
+
+                            <!--  Publish Version Button  -->
+                            <Button Name="publishButton"
+                                    Content="{x:Static p:Resources.PackageManagerMyPackagesPublishVersion}"
+                                    DockPanel.Dock="Right"
+                                    ToolTipService.ShowOnDisabled="True"    
+                                    IsEnabled="{Binding IsEnabledForInstall}">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type Button}">
+                                                    <Border Name="ButtonBorder"
+                                                            Height="25"
+                                                            Padding="5,0"
+                                                            BorderThickness="2"
+                                                            CornerRadius="2">
+                                                        <Grid x:Name="publishPackageGrid">
+
+                                                            <DockPanel LastChildFill="False">
+                                                                <TextBlock Name="textBlock"
+                                                                           Padding="4,4,4,3"
+                                                                           VerticalAlignment="Center"
+                                                                           Cursor="Hand"
+                                                                           DockPanel.Dock="Right"
+                                                                           FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                                           FontSize="11"
+                                                                           Text="{TemplateBinding Content}" />
+                                                                <Rectangle Width="10"
+                                                                           Height="10"
+                                                                           VerticalAlignment="Center"
+                                                                           DockPanel.Dock="Left">
+                                                                    <Rectangle.Fill>
+                                                                        <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/Add - default.png" />
+                                                                    </Rectangle.Fill>
+                                                                </Rectangle>
+                                                            </DockPanel>
+                                                        </Grid>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#4A4A4A" />
+                                                        </Trigger>
+                                                        <Trigger Property="IsPressed" Value="True">
+                                                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#5F5F5F" />
+                                                        </Trigger>
+                                                        <DataTrigger Binding="{Binding IsDeprecated}" Value="True">
+                                                            <Setter Property="TextBlock.Opacity" Value="0.5" />
+                                                            <Setter Property="TextBlock.Foreground" Value="#84D7CE" />
+                                                            <Setter Property="ToolTip" Value="{x:Static p:Resources.PackageDeprecatedTooltip}" />
+                                                        </DataTrigger>
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding Path=IsDeprecated}" Value="False" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter Property="TextBlock.Opacity" Value="1" />
+                                                            <Setter Property="TextBlock.Foreground" Value="#84D7CE" />
+                                                        </MultiDataTrigger>
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding Path=CanInstall}" Value="False"/>
+                                                                <Condition Binding="{Binding Path=IsOnwer}" Value="True"/>
+                                                            </MultiDataTrigger.Conditions>
+                                                            <Setter Property="Visibility" Value="Visible"/>
                                                         </MultiDataTrigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
