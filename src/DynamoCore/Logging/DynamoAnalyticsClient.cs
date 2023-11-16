@@ -72,6 +72,7 @@ namespace Dynamo.Logging
     internal class DynamoAnalyticsClient : IAnalyticsClient, IDisposable
     {
         private readonly ManualResetEventSlim serviceInitialized = new ManualResetEventSlim(false);
+        private readonly object trackEventLockObj = new object();
 
         /// <summary>
         /// A dummy IDisposable class
@@ -188,6 +189,8 @@ namespace Dynamo.Logging
             Task.Run(() =>
             {
                 serviceInitialized.Wait();
+
+                lock(trackEventLockObj)
                 {
                     if (!ReportingAnalytics) return;
 
@@ -204,6 +207,8 @@ namespace Dynamo.Logging
             Task.Run(() =>
             {
                 serviceInitialized.Wait();
+
+                lock (trackEventLockObj)
                 {
                     if (!ReportingAnalytics) return;
 
@@ -219,8 +224,11 @@ namespace Dynamo.Logging
             Task.Run(() =>
             {
                 serviceInitialized.Wait();
-                var e = AnalyticsEvent.Create(Categories.Preferences.ToString(), name, stringValue, metricValue);
-                e.Track();                
+                lock(trackEventLockObj)
+                {
+                    var e = AnalyticsEvent.Create(Categories.Preferences.ToString(), name, stringValue, metricValue);
+                    e.Track();
+                }
             });
         }
 
@@ -231,6 +239,8 @@ namespace Dynamo.Logging
             Task.Run(() =>
             {
                 serviceInitialized.Wait();
+
+                lock (trackEventLockObj)
                 {
                     if (!ReportingAnalytics) return;
 
@@ -252,6 +262,8 @@ namespace Dynamo.Logging
             Task.Run(() =>
             {
                 serviceInitialized.Wait();
+
+                lock (trackEventLockObj)
                 {
                     if (!ReportingAnalytics) return;
 
@@ -268,6 +280,8 @@ namespace Dynamo.Logging
             Task.Run(() =>
             {
                 serviceInitialized.Wait();
+
+                lock (trackEventLockObj)
                 {
                     if (!ReportingAnalytics) return;
 
@@ -281,17 +295,20 @@ namespace Dynamo.Logging
         {            
             serviceInitialized.Wait();
 
-            if (!ReportingAnalytics) return Disposable;
-
-            var e = new TimedEvent()
+            lock (trackEventLockObj)
             {
-                Category = category.ToString(),
-                VariableName = variable,
-                Description = description,
-                Value = value
-            };
-            //Timed event does not need startup tracking.
-            return e;
+                if (!ReportingAnalytics) return Disposable;
+
+                var e = new TimedEvent()
+                {
+                    Category = category.ToString(),
+                    VariableName = variable,
+                    Description = description,
+                    Value = value
+                };
+                //Timed event does not need startup tracking.
+                return e;
+            }
         }
 
         public Task<IDisposable> CreateTaskTimedEvent(Categories category, string variable, string description, int? value)
@@ -306,11 +323,14 @@ namespace Dynamo.Logging
         {
             serviceInitialized.Wait();
 
-            if (!ReportingAnalytics) return Disposable;
+            lock (trackEventLockObj)
+            {
+                if (!ReportingAnalytics) return Disposable;
 
-            var e = new CommandEvent(name) { Description = description, Value = value };
-            e.Track();
-            return e;
+                var e = new CommandEvent(name) { Description = description, Value = value };
+                e.Track();
+                return e;
+            }
         }
 
         public Task<IDisposable> CreateTaskCommandEvent(string name, string description, int? value)
@@ -326,8 +346,11 @@ namespace Dynamo.Logging
 
             Task.Run(() =>
             {
-                taskToEnd.Wait();
-                taskToEnd.Result.Dispose();
+                lock(trackEventLockObj)
+                {
+                    taskToEnd.Wait();
+                    taskToEnd.Result.Dispose();
+                }
             });
         }
 
@@ -337,16 +360,18 @@ namespace Dynamo.Logging
             serviceInitialized.Wait();
             if (!ReportingAnalytics) return Disposable;
 
-            var e = new FileOperationEvent()
+            lock(trackEventLockObj)
             {
-                FilePath = filepath,
-                FileSize = size,
-                FileAction = FileAction(operation),
-                Description = description
-            };
-            e.Track();
-
-            return e;
+                var e = new FileOperationEvent()
+                {
+                    FilePath = filepath,
+                    FileSize = size,
+                    FileAction = FileAction(operation),
+                    Description = description
+                };
+                e.Track();
+                return e;
+            }
         }
 
         public Task<IDisposable> TrackTaskFileOperationEvent(string filepath, Actions operation, int size, string description)
