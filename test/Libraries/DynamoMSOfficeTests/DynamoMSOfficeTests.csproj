@@ -11,7 +11,7 @@
     <RootNamespace>DynamoMSOfficeTests</RootNamespace>
     <AssemblyName>DynamoMSOfficeTests</AssemblyName>
   </PropertyGroup>
-    <ItemGroup Condition=" '$(TargetFramework)' != 'net48' "> 
+    <ItemGroup> 
         <PackageReference Include="NUnit" Version="3.13.3" ExcludeAssets="none" />
         <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
         <ProjectReference Include="..\..\..\src\Libraries\DSOffice\DSOffice.csproj">

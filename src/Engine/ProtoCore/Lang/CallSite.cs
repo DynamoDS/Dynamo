@@ -105,7 +105,7 @@ namespace ProtoCore
                 {
                     Byte[] data = Convert.FromBase64String(info.GetString(marker + objectID + "_Data"));
 
-                    IFormatter formatter = new SoapFormatter();
+                    SoapFormatter formatter = new SoapFormatter();
                     MemoryStream s = new MemoryStream(data);
                     formatter.Binder = new TraceBinder();
                     srtd.Data = (ISerializable)formatter.Deserialize(s);
@@ -142,7 +142,7 @@ namespace ProtoCore
                     //Serialise the object
                     using (MemoryStream s = new MemoryStream())
                     {
-                        IFormatter formatter = new SoapFormatter();
+                        SoapFormatter formatter = new SoapFormatter();
                         formatter.Serialize(s, Data);
                         info.AddValue(marker + objectID + "_Data", Convert.ToBase64String(s.ToArray()));
                     }
@@ -626,8 +626,7 @@ namespace ProtoCore
 
             using (MemoryStream memoryStream = new MemoryStream())
             {
-
-                IFormatter formatter = new SoapFormatter();
+                SoapFormatter formatter = new SoapFormatter();
                 formatter.Serialize(memoryStream, helper);
 
                 return Convert.ToBase64String(memoryStream.ToArray());
