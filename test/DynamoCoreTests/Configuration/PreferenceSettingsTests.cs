@@ -417,7 +417,7 @@ namespace Dynamo.Tests.Configuration
                                  $"| First Property with the same value {firstPropertyWithSameOrNewValue}";
 
             // checking if the new Setting are completely different from the Default
-            Assert.IsTrue(checkDifference.DifferentPropertyValues.Count + 1 == checkDifference.Properties.Count, failMessage);
+            Assert.IsTrue(checkDifference.DifferentPropertyValues.Count == checkDifference.Properties.Count, failMessage);
 
             // GroupStyle - Assigning Default styles
             defaultSettings.GroupStyleItemsList = GroupStyleItem.DefaultGroupStyleItems.AddRange(defaultSettings.GroupStyleItemsList.Where(style => style.IsDefault != true)).ToList();
