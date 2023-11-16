@@ -211,7 +211,6 @@ namespace FFITarget
 
 
         }
-
         public void Dispose()
         {
             Debug.WriteLine("Wrapper: " + WrapperGuid.ToString());

@@ -67,9 +67,7 @@ namespace Dynamo.Tests
         [Test]
         public void Callsite_MultiDimensionDecreaseDimensionOnOpenAndRun_OrphanCountCorrect()
         {
-            CurrentDynamoModel.LibraryServices.ImportLibrary(Path.Combine(TestDirectory, "pkgs", "Dynamo Samples", "bin", "SampleLibraryZeroTouch.dll"));
-
-            OpenChangeAndCheckOrphans("RebindingMultiDimension.dyn", "0..1", 3);
+            OpenChangeAndCheckOrphans("RebindingMultiDimension.dyn", "0..1", 3);    
         }
 
         [Test]
@@ -89,8 +87,6 @@ namespace Dynamo.Tests
         [Test]
         public void Callsite_SingleDimensionDecreaseDimensionOnOpenAndRun()
         {
-            CurrentDynamoModel.LibraryServices.ImportLibrary(Path.Combine(TestDirectory, "pkgs", "Dynamo Samples", "bin", "SampleLibraryZeroTouch.dll"));
-
             OpenChangeAndCheckOrphans("RebindingSingleDimension.dyn", "0..1", 1);
         }
 
@@ -117,14 +113,12 @@ namespace Dynamo.Tests
         [Test]
         public void Callsite_DeleteNodeBeforeRun()
         {
-            //load required assembly for test
-            CurrentDynamoModel.LibraryServices.ImportLibrary(Path.Combine(TestDirectory, "pkgs", "Dynamo Samples", "bin", "SampleLibraryZeroTouch.dll"));
 
             var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir, "RebindingSingleDimension.dyn");
 
             CurrentDynamoModel.TraceReconciliationProcessor = new TestTraceReconciliationProcessor(3);
 
-            var traceNode = ws.Nodes.Where(n => n is DSFunction).FirstOrDefault(f => f.Name == "TraceExampleWrapper.ByString");
+            var traceNode = ws.Nodes.Where(n => n is DSFunction).FirstOrDefault(f => f.Name == "WrapperObject.WrapperObject");
             Assert.NotNull(traceNode);
 
             ws.RemoveAndDisposeNode(traceNode);
@@ -323,13 +317,13 @@ namespace Dynamo.Tests
             //This graph loads trace data for 1500 "WrapperObjects" in Manual run mode.
             var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir, "element_binding_large.dyn");
             var sw = new Stopwatch();
-            sw.Start();
+            sw.Start(); 
 
             BeginRun();
             sw.Stop();
             Assert.Less(sw.Elapsed.Milliseconds, 20000);
             Console.WriteLine(sw.Elapsed);
-            AssertPreviewValue("056d9c584f3b42acabec727e64188fae", Enumerable.Range(6,1501).ToList());
+            AssertPreviewValue("056d9c584f3b42acabec727e64188fae", Enumerable.Range(1502,1500).ToList());
         }
     }
 }
