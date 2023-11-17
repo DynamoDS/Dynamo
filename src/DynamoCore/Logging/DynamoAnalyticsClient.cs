@@ -290,7 +290,7 @@ namespace Dynamo.Logging
             });
         }
 
-        [Obsolete("Method will become private in Dynamo 3.0, please use CreateTaskTimedEvent")]
+        [Obsolete("Method will become private in Dynamo 4.0, please use CreateTaskTimedEvent")]
         public IDisposable CreateTimedEvent(Categories category, string variable, string description, int? value)
         {            
             serviceInitialized.Wait();
@@ -318,7 +318,7 @@ namespace Dynamo.Logging
             return Task.Run(() => CreateTimedEvent(category, variable, description, value));
         }
 
-        [Obsolete("Property will become private in Dynamo 3.0, please use CreateTaskCommandEvent")]
+        [Obsolete("Property will become private in Dynamo 4.0, please use CreateTaskCommandEvent")]
         public IDisposable CreateCommandEvent(string name, string description, int? value)
         {
             serviceInitialized.Wait();
@@ -354,7 +354,7 @@ namespace Dynamo.Logging
             });
         }
 
-        [Obsolete("Property will become private in Dynamo 3.0, please use TrackTaskFileOperationEvent")]
+        [Obsolete("Property will become private in Dynamo 4.0, please use TrackTaskFileOperationEvent")]
         public IDisposable TrackFileOperationEvent(string filepath, Actions operation, int size, string description)
         {
             serviceInitialized.Wait();
