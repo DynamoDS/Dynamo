@@ -1941,9 +1941,10 @@ namespace Dynamo.Graph.Nodes
 
         /// <summary>
         ///     Reads inputs list and adds ports for each input.
+        ///     TODO: DYN-6445 - evaluate if this API can be removed.
         /// </summary>
         [Obsolete("RegisterInputPorts is deprecated, please use the InPortNamesAttribute, InPortDescriptionsAttribute, and InPortTypesAttribute instead.")]
-        internal void RegisterInputPorts(IEnumerable<PortData> portDatas)
+        public void RegisterInputPorts(IEnumerable<PortData> portDatas)
         {
             int count = 0;
             foreach (PortData pd in portDatas)
@@ -1966,9 +1967,10 @@ namespace Dynamo.Graph.Nodes
 
         /// <summary>
         ///     Reads outputs list and adds ports for each output
+        ///     TODO: DYN-6445 - evaluate if this API can be removed.
         /// </summary>
         [Obsolete("RegisterOutputPorts is deprecated, please use the OutPortNamesAttribute, OutPortDescriptionsAttribute, and OutPortTypesAttribute instead.")]
-        internal void RegisterOutputPorts(IEnumerable<PortData> portDatas)
+        public void RegisterOutputPorts(IEnumerable<PortData> portDatas)
         {
             int count = 0;
             foreach (PortData pd in portDatas)
