@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Xml;
 using System.Xml.Serialization;
+using Autodesk.DesignScript.Runtime;
 using Dynamo.Core;
 using Dynamo.Graph.Connectors;
 using Dynamo.Interfaces;
@@ -619,6 +620,15 @@ namespace Dynamo.Configuration
         public bool EnableNodeAutoComplete { get; set; }
 
         /// <summary>
+        /// PolyCurve normal and direction behavior has been made predictable in Dynamo 3.0 and has therefore changed. 
+        /// This defines whether legacy (pre-3.0) PolyCurve behavior is selected by default.
+        /// This flag can be overridden by individual workspaces that have the EnableLegacyPolyCurveBehavior flag defined.
+        /// Note: For internal use only and will be removed in a future version of Dynamo.
+        /// </summary>
+        [IsObsolete("This property will be removed in a future version of Dynamo.")]
+        public bool DefaultEnableLegacyPolyCurveBehavior { get; set; }
+
+        /// <summary>
         /// This defines if user wants to hide the nodes below a specific confidenc level.
         /// </summary>
         public bool HideNodesBelowSpecificConfidenceLevel { get; set; }
@@ -906,6 +916,7 @@ namespace Dynamo.Configuration
             IsIronPythonDialogDisabled = false;
             ShowTabsAndSpacesInScriptEditor = false;
             EnableNodeAutoComplete = true;
+            DefaultEnableLegacyPolyCurveBehavior = true;
             HideNodesBelowSpecificConfidenceLevel = false;
             MLRecommendationConfidenceLevel = 10;
             MLRecommendationNumberOfResults = 10;
@@ -1000,7 +1011,6 @@ namespace Dynamo.Configuration
                     return new PreferenceSettings() { isCreatedFromValidFile = false };
                 }
             }
-
             settings.CustomPackageFolders = settings.CustomPackageFolders.Distinct().ToList();
             settings.GroupStyleItemsList = settings.GroupStyleItemsList.GroupBy(entry => entry.Name).Select(result => result.First()).ToList();
             MigrateStdLibTokenToBuiltInToken(settings);

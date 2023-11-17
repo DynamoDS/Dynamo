@@ -7,6 +7,7 @@ using System.Runtime.Serialization;
 using System.Xml;
 using Dynamo.Core;
 using Dynamo.Engine;
+using Dynamo.Events;
 using Dynamo.Extensions;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
@@ -122,6 +123,25 @@ namespace Dynamo.Graph.Workspaces
 
                 graphDocumentationURL = value;
                 RaisePropertyChanged(nameof(GraphDocumentationURL));
+            }
+        }
+
+        private bool? enableLegacyPolyCurveBehavior;
+        /// <summary>
+        /// PolyCurve normal and direction behavior has been made predictable in Dynamo 3.0 and has therefore changed. 
+        /// This reflects whether legacy (pre-3.0) PolyCurve behavior is selected either in preference settings or in the workspace.
+        /// A workspace setting if exists, overrides the default preference setting. 
+        /// </summary>
+        [JsonProperty]
+        internal bool? EnableLegacyPolyCurveBehavior
+        {
+            get { return enableLegacyPolyCurveBehavior; }
+            set
+            {
+                if(value == null) return;
+
+                enableLegacyPolyCurveBehavior = value;
+                WorkspaceEvents.OnWorkspaceSettingsChanged(enableLegacyPolyCurveBehavior.GetValueOrDefault());
             }
         }
 
