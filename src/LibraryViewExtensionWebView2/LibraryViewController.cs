@@ -322,11 +322,23 @@ namespace Dynamo.LibraryViewExtensionWebView2
             this.browser = view.mainGrid.Children.OfType<WebView2>().FirstOrDefault();
             InitializeAsync();
 
-            LibraryViewController.SetupSearchModelEventsObserver(browser, dynamoViewModel.Model.SearchModel, this, this.customization);
+            LibraryViewController.SetupSearchModelEventsObserver(browser, dynamoViewModel.Model.SearchModel,
+                    this, this.customization);
         }
 
         async void InitializeAsync()
         {
+            try
+            {
+                var absolutePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                    @"runtimes\win-x64\native");
+                CoreWebView2Environment.SetLoaderDllFolderPath(absolutePath);
+            }
+            catch (InvalidOperationException e)
+            {
+                LogToDynamoConsole("WebView2Loader.dll is already loaded successfully.");
+            }
+            
             browser.CoreWebView2InitializationCompleted += Browser_CoreWebView2InitializationCompleted;
 
             if (!string.IsNullOrEmpty(WebBrowserUserDataFolder))
