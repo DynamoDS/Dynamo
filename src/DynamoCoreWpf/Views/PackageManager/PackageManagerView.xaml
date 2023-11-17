@@ -149,7 +149,8 @@
                                 Background="{StaticResource PreferencesWindowBackgroundColor}">
 
                         <TabItem Header="{x:Static p:Resources.PackageManagerSearchTab}"
-                                 Style="{StaticResource PackageManagerTab}">
+                                 Style="{StaticResource PackageManagerTab}"
+                                 PreviewMouseDown="tab_PreviewMouseDown">
                             <!--Search Packages Tab-->
                             <Border BorderBrush="{StaticResource BorderBrushWithOpacity}"
                                     BorderThickness="1 1 0 0">
@@ -229,7 +230,9 @@
                         </TabItem>
 
                         <TabItem Header="{x:Static p:Resources.PackageManagerPublishTab}"
-                                 Style="{StaticResource PackageManagerTab}">
+                                 Style="{StaticResource PackageManagerTab}"
+                                 PreviewMouseDown="tab_PreviewMouseDown"
+                                 x:Name="publishTab">
                             <!--Publish Packages Tab-->
                             <Border BorderBrush="{StaticResource BorderBrushWithOpacity}"
                                     BorderThickness="1 1 0 0">
@@ -249,7 +252,8 @@
                         </TabItem>
 
                         <TabItem Header="{x:Static p:Resources.PackageManagerInstalledPackagesTab}"
-                                 Style="{StaticResource PackageManagerTab}">
+                                 Style="{StaticResource PackageManagerTab}"
+                                 PreviewMouseDown="tab_PreviewMouseDown">
                             <!--Installed Packages Tab-->
                             <Border BorderBrush="{StaticResource BorderBrushWithOpacity}"
                                     BorderThickness="1 1 0 0">
@@ -307,7 +311,8 @@
                         </TabItem>
 
                         <TabItem Header="{x:Static p:Resources.PackageManagerMyPackagesTab}"
-                                 Style="{StaticResource PackageManagerTab}">
+                                 Style="{StaticResource PackageManagerTab}"
+                                 PreviewMouseDown="tab_PreviewMouseDown">
                             <!--My Packages Tab-->
                             <Border BorderBrush="{StaticResource BorderBrushWithOpacity}"
                                     BorderThickness="1 1 0 0">
@@ -377,13 +382,37 @@
                                                Height="Auto"
                                                Margin="0 0 0 50"
                                                Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/PackageManager/empty-state-first-use-light-gray.png"></Image>
-                                        <TextBlock Style="{StaticResource LabelStyle}"
-                                                   FontSize="18px"
-                                                   Text="{x:Static p:Resources.PackagerManageNoPublishedPackagesMessage}" />
-                                        <TextBlock Style="{StaticResource SubLabelStyle}"
-                                                   FontSize="13px"
-                                                   HorizontalAlignment="Center"
-                                                   Text="{x:Static p:Resources.PackagerManageNoPublishedPackagesSubMessage}" />
+                                        <TextBlock FontSize="18px">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock" BasedOn="{StaticResource LabelStyle}">
+                                                    <Setter Property="Text" Value="{x:Static p:Resources.PackagerManageNoPublishedPackagesMessage}"/> 
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding PackageManagerViewModel.PackageSearchViewModel.IsLoggedIn}" Value="True">
+                                                            <Setter Property="Text" Value="{x:Static p:Resources.PackagerManageNoPublishedPackagesMessage}" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding PackageManagerViewModel.PackageSearchViewModel.IsLoggedIn}" Value="False">
+                                                            <Setter Property="Text" Value="{x:Static p:Resources.PackagerManageUserNotSignedPackagesMessage}" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                        <TextBlock FontSize="13px"
+                                                   HorizontalAlignment="Center">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock" BasedOn="{StaticResource SubLabelStyle}">
+                                                    <Setter Property="Text" Value="{x:Static p:Resources.PackagerManageNoPublishedPackagesSubMessage}"/> 
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding PackageManagerViewModel.PackageSearchViewModel.IsLoggedIn}" Value="True">
+                                                            <Setter Property="Text" Value="{x:Static p:Resources.PackagerManageNoPublishedPackagesSubMessage}" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding PackageManagerViewModel.PackageSearchViewModel.IsLoggedIn}" Value="False">
+                                                            <Setter Property="Text" Value="{x:Static p:Resources.PackageManagerUserNotSignedPackagesSubMessage}" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
                                         <Button Content="{x:Static p:Resources.PackageManagerPublishPackageButton}"
                                                 Margin="0 25"
                                                 Background="#0696D7"
@@ -459,7 +488,8 @@
                         </TabItem>
 
                         <TabItem Header="{x:Static p:Resources.PackageManagerPackageSettingsTab}"
-                                 Style="{StaticResource PackageManagerTab}">
+                                 Style="{StaticResource PackageManagerTab}"
+                                 PreviewMouseDown="tab_PreviewMouseDown">
                             <!--Package Settings Tab-->
                             <Border BorderBrush="{StaticResource BorderBrushWithOpacity}"
                                     BorderThickness="1 1 0 0">
