@@ -13,16 +13,6 @@ namespace Dynamo.PackageManager
             Ready, Copying, Compressing, Uploading, Uploaded, Error
         }
 
-        /// <summary>
-        /// Tracks the type of publish, which can be local or online
-        /// </summary>
-        public enum UploadType
-        {
-            Local, Submit
-        }
-
-
-
         private string _errorString = "";
         public string ErrorString { get { return _errorString; } set { _errorString = value; RaisePropertyChanged("ErrorString"); } }
 

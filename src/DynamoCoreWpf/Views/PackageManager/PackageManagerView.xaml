@@ -149,8 +149,7 @@
                                 Background="{StaticResource PreferencesWindowBackgroundColor}">
 
                         <TabItem Header="{x:Static p:Resources.PackageManagerSearchTab}"
-                                 Style="{StaticResource PackageManagerTab}"
-                                 PreviewMouseDown="tab_PreviewMouseDown">
+                                 Style="{StaticResource PackageManagerTab}">
                             <!--Search Packages Tab-->
                             <Border BorderBrush="{StaticResource BorderBrushWithOpacity}"
                                     BorderThickness="1 1 0 0">
@@ -230,9 +229,7 @@
                         </TabItem>
 
                         <TabItem Header="{x:Static p:Resources.PackageManagerPublishTab}"
-                                 Style="{StaticResource PackageManagerTab}"
-                                 PreviewMouseDown="tab_PreviewMouseDown"
-                                 x:Name="publishTab">
+                                 Style="{StaticResource PackageManagerTab}">
                             <!--Publish Packages Tab-->
                             <Border BorderBrush="{StaticResource BorderBrushWithOpacity}"
                                     BorderThickness="1 1 0 0">
@@ -252,8 +249,7 @@
                         </TabItem>
 
                         <TabItem Header="{x:Static p:Resources.PackageManagerInstalledPackagesTab}"
-                                 Style="{StaticResource PackageManagerTab}"
-                                 PreviewMouseDown="tab_PreviewMouseDown">
+                                 Style="{StaticResource PackageManagerTab}">
                             <!--Installed Packages Tab-->
                             <Border BorderBrush="{StaticResource BorderBrushWithOpacity}"
                                     BorderThickness="1 1 0 0">
@@ -311,8 +307,7 @@
                         </TabItem>
 
                         <TabItem Header="{x:Static p:Resources.PackageManagerMyPackagesTab}"
-                                 Style="{StaticResource PackageManagerTab}"
-                                 PreviewMouseDown="tab_PreviewMouseDown">
+                                 Style="{StaticResource PackageManagerTab}">
                             <!--My Packages Tab-->
                             <Border BorderBrush="{StaticResource BorderBrushWithOpacity}"
                                     BorderThickness="1 1 0 0">
@@ -488,8 +483,7 @@
                         </TabItem>
 
                         <TabItem Header="{x:Static p:Resources.PackageManagerPackageSettingsTab}"
-                                 Style="{StaticResource PackageManagerTab}"
-                                 PreviewMouseDown="tab_PreviewMouseDown">
+                                 Style="{StaticResource PackageManagerTab}">
                             <!--Package Settings Tab-->
                             <Border BorderBrush="{StaticResource BorderBrushWithOpacity}"
                                     BorderThickness="1 1 0 0">
