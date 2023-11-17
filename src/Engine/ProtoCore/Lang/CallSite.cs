@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
+using DynamoServices;
 using Newtonsoft.Json;
 using ProtoCore.DSASM;
 using ProtoCore.Exceptions;
@@ -280,9 +281,9 @@ namespace ProtoCore
                 var decompressedTraceData = DecompressSerializedTraceData(serializedTraceData);
                 newTraceData = JsonConvert.DeserializeObject<List<SingleRunTraceData>>(decompressedTraceData);
             }
-            catch
+            catch(Exception e)
             {
-                //do nothing.
+                DynamoConsoleLogger.OnLogMessageToDynamoConsole($"issue while deserializing trace data for callsite {callsiteID} : {e}");
             }
 
             if (newTraceData == null)
@@ -564,14 +565,13 @@ namespace ProtoCore
                 }
             }*/
         }
-        //TODO write a unit test for this.
         private static bool CheckIfTraceDataIsLegacySOAPFormat(string base64EncodedTraceData)
         {
             var data = Convert.FromBase64String(base64EncodedTraceData);
-            if (data.Length > 71)
+            if (data.Length > 17)
             {
-                var header = Encoding.UTF8.GetString(data, 0, 72);
-                if (header == @"<SOAP-ENV:Envelope xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""")
+                var header = Encoding.UTF8.GetString(data, 0, 18);
+                if (header == @"<SOAP-ENV:Envelope")
                 {
                     return true;
                 }
@@ -1907,9 +1907,9 @@ namespace ProtoCore
                 var data = DecompressSerializedTraceData(callSiteData.Data);
                 traceData = JsonConvert.DeserializeObject<List<SingleRunTraceData>>(data);
             }
-            catch
+            catch (Exception e)
             {
-                //Do nothing.
+                DynamoConsoleLogger.OnLogMessageToDynamoConsole($"issue while deserializing trace data for callsite {callSiteData.ID} : {e}");
             }
 
             if (traceData == null)

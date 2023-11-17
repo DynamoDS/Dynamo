@@ -1015,6 +1015,7 @@ namespace Dynamo.Models
 
             LogWarningMessageEvents.LogWarningMessage += LogWarningMessage;
             LogWarningMessageEvents.LogInfoMessage += LogInfoMessage;
+            DynamoConsoleLogger.LogMessageToDynamoConsole += LogMessageWrapper;
             StartBackupFilesTimer();
 
             TraceReconciliationProcessor = this;
@@ -1426,6 +1427,7 @@ namespace Dynamo.Models
 
             LogWarningMessageEvents.LogWarningMessage -= LogWarningMessage;
             LogWarningMessageEvents.LogInfoMessage -= LogInfoMessage;
+            DynamoConsoleLogger.LogMessageToDynamoConsole -= LogMessageWrapper;
             foreach (var ws in _workspaces)
             {
                 ws.Dispose();
