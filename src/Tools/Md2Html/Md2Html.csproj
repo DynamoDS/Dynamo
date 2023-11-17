@@ -27,8 +27,8 @@
     <Target Name="Publish dotnet" Condition="'$([MSBuild]::IsOSPlatform(`Windows`))' == 'True' " AfterTargets="Build">
         <CallTarget Targets="Publish" />
         <Exec Command="if not exist $(SharedOutputPath) mkdir $(SharedOutputPath)"/>
-        <Copy Condition=" '$(RuntimeIdentifier)' == 'win10-x64' " SourceFiles="$(OutputPath)$(RuntimeIdentifier)\publish\Md2Html.exe" DestinationFolder="$(SharedOutputPath)" />
-        <Copy Condition=" '$(RuntimeIdentifier)' == 'win10-x64' " SourceFiles="$(OutputPath)\Md2Html.runtimeconfig.json" DestinationFolder="$(SharedOutputPath)" />
-        <Copy Condition=" '$(RuntimeIdentifier)' == 'linux-x64' " SourceFiles="$(OutputPath)$(RuntimeIdentifier)\publish\Md2Html" DestinationFolder="$(SharedOutputPath)" />
+        <Copy Condition=" $(RuntimeIdentifier.Contains('win')) " SourceFiles="$(OutputPath)$(RuntimeIdentifier)\publish\Md2Html.exe" DestinationFolder="$(SharedOutputPath)" />
+        <Copy Condition=" $(RuntimeIdentifier.Contains('win')) " SourceFiles="$(OutputPath)\Md2Html.runtimeconfig.json" DestinationFolder="$(SharedOutputPath)" />
+        <Copy Condition=" $(RuntimeIdentifier.Contains('win')) " SourceFiles="$(OutputPath)$(RuntimeIdentifier)\publish\Md2Html" DestinationFolder="$(SharedOutputPath)" />
     </Target>
 </Project>
