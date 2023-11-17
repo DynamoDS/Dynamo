@@ -29,6 +29,6 @@
         <Exec Command="if not exist $(SharedOutputPath) mkdir $(SharedOutputPath)"/>
         <Copy Condition=" $(RuntimeIdentifier.Contains('win')) " SourceFiles="$(OutputPath)$(RuntimeIdentifier)\publish\Md2Html.exe" DestinationFolder="$(SharedOutputPath)" />
         <Copy Condition=" $(RuntimeIdentifier.Contains('win')) " SourceFiles="$(OutputPath)\Md2Html.runtimeconfig.json" DestinationFolder="$(SharedOutputPath)" />
-        <Copy Condition=" $(RuntimeIdentifier.Contains('win')) " SourceFiles="$(OutputPath)$(RuntimeIdentifier)\publish\Md2Html" DestinationFolder="$(SharedOutputPath)" />
+        <Copy Condition=" $(RuntimeIdentifier.Contains('linux')) " SourceFiles="$(OutputPath)$(RuntimeIdentifier)\publish\Md2Html" DestinationFolder="$(SharedOutputPath)" />
     </Target>
 </Project>
