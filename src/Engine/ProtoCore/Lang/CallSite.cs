@@ -563,7 +563,7 @@ namespace ProtoCore
                 }
             }*/
         }
-        private static bool CheckIfTraceDataIsLegacySOAPFormat(string base64EncodedTraceData)
+        internal static bool CheckIfTraceDataIsLegacySOAPFormat(string base64EncodedTraceData)
         {
             var data = Convert.FromBase64String(base64EncodedTraceData);
             if (data.Length > 17)

@@ -13,6 +13,7 @@ using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using FFITarget;
 using NUnit.Framework;
+using ProtoCore;
 using static ProtoCore.CallSite;
 
 namespace Dynamo.Tests
@@ -324,6 +325,14 @@ namespace Dynamo.Tests
             Assert.Less(sw.Elapsed.Milliseconds, 20000);
             Console.WriteLine(sw.Elapsed);
             AssertPreviewValue("056d9c584f3b42acabec727e64188fae", Enumerable.Range(1502,1500).ToList());
+        }
+
+        [Test]
+        public void CanDetectLegacyTraceFormat()
+        {
+            var legacyTraceData =
+                "PFNPQVAtRU5WOkVudmVsb3BlIHhtbG5zOnhzaT0iaHR0cDovL3d3dyY2hlbWFzLm1pY3Jvc29mdC5jb20vc29hcC9lbmNvZGluZy";
+            Assert.True(CheckIfTraceDataIsLegacySOAPFormat(legacyTraceData));
         }
     }
 }
