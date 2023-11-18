@@ -30,12 +30,20 @@ namespace Dynamo.UI.Prompts
             {
                 TitleTextBlock.Text = resourceProvider.GetString(Wpf.Interfaces.ResourceNames.ConsentForm.Title);
             }
+            AgreeToMLAutocompleteTOU.Text = Dynamo.Wpf.Properties.Resources.IAgreeToMLAutocompleteTOU;
+
             viewModel = dynamoViewModel;
 
             var adpAnalyticsFile = "ADPAnalyticsConsent.rtf";
 
             if (viewModel.Model.PathManager.ResolveDocumentPath(ref adpAnalyticsFile))
                 ADPAnalyticsConsent.File = adpAnalyticsFile;
+
+            var mlNodeAutocompleteFile = "MLNodeAutocompleteConsent.rtf";
+
+            if (viewModel.Model.PathManager.ResolveDocumentPath(ref adpAnalyticsFile))
+                MLNodeAutocompleteConsent.File = mlNodeAutocompleteFile;
+
 
             //disable adp configure dialog version check fails.
             //also disabled below id all analytics disabled.

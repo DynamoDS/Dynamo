@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -136,6 +136,7 @@
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\TermsOfUse.rtf" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\InstrumentationConsent.rtf" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\ADPAnalyticsConsent.rtf" DestinationFolder="$(OutputPath)" />
+    <Copy SourceFiles="$(SolutionDir)..\doc\distrib\MLNodeAutocompleteConsent.rtf" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(NodeHelpMDFiles)" DestinationFolder="$(OutputPath)\en-US\fallback_docs\" />
 	<Copy SourceFiles="@(NodeHelpDYNFiles)" DestinationFolder="$(OutputPath)\NodeHelpSharedDocs\" />
 	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\en-US\fallback_docs\" />
