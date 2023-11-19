@@ -714,7 +714,7 @@ namespace DynamoCoreWpfTests
             return GetSidebarDocsBrowserContents();
         }
 
-        [Test,Category("Failure")]
+        [Test]
         public void AddGraphInSpecificLocationToWorkspace()
         {
             //TODO see this issue:
