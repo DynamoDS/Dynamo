@@ -173,7 +173,7 @@ namespace Dynamo.Logging
             // Ex. ADP will manage optin status internally
             Task.Run(() => StartInternal());
 
-            TrackPreferenceInternal("ReportingAnalytics", "", ReportingAnalytics ? 1 : 0);
+            TrackPreference("ReportingAnalytics", "", ReportingAnalytics ? 1 : 0);
         }
 
         public void ShutDown()
@@ -212,20 +212,6 @@ namespace Dynamo.Logging
                 {
                     if (!ReportingAnalytics) return;
 
-                    TrackPreferenceInternal(name, stringValue, metricValue);
-                }
-            });
-        }
-
-        private void TrackPreferenceInternal(string name, string stringValue, int? metricValue)
-        {
-            if (Analytics.DisableAnalytics) return;
-
-            Task.Run(() =>
-            {
-                serviceInitialized.Wait();
-                lock(trackEventLockObj)
-                {
                     var e = AnalyticsEvent.Create(Categories.Preferences.ToString(), name, stringValue, metricValue);
                     e.Track();
                 }
