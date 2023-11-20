@@ -57,13 +57,7 @@
     <DefineConstants>$(DefineConstants);_LINUX</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(UILib)' == 'true' AND $(RuntimeIdentifier.Contains('win'))">
-    <TargetFramework>net6.0-windows</TargetFramework>
-    <UseWPF>true</UseWPF>
-    <UseWindowsForms>true</UseWindowsForms>
-  </PropertyGroup>
-  <!--Temporary configuration to make core test projects load UI packages successfully -->
-  <PropertyGroup Condition=" '$(TestProjectDefaults)' == 'true' AND $(RuntimeIdentifier.Contains('win')) ">
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>$(TargetFramework)-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
@@ -132,27 +126,12 @@
     <Copy SourceFiles="@(DLLContent)" DestinationFolder="$(OutDir)$(PackagesOutputSubdirectory)$(Local_CopyToSubdirectory)" Condition="Exists('%(FullPath)')" />
   </Target>
   <Target Name="ResolveSateliteResDeps" AfterTargets="Build" Condition=" '$(OS)' != 'Unix' ">
-    <PropertyGroup>
+   <PropertyGroup>
         <OutputExtension>dll</OutputExtension>
     </PropertyGroup>
-    <PropertyGroup Condition=" '$(TargetFramework)' == 'net48' ">
-    <OutputExtension Condition=" '$(OutputType)' != 'Library' ">exe</OutputExtension>
-      <!--This is used to set the framework version for icon resource dll generation (lookup of system.drawing.dll)-->
-      <ResourceGeneration_FrameworkVersion>v4.8</ResourceGeneration_FrameworkVersion>
-    </PropertyGroup>
-    <!-- Get assembly -->
-    <GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).$(OutputExtension)">
+    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
       <Output TaskParameter="Assemblies" ItemName="AssemblyInfo" />
     </GetAssemblyIdentity>
-    <GetReferenceAssemblyPaths Condition=" '$(TargetFramework)' == 'net48' " TargetFrameworkMoniker=".NETFramework, Version=$(ResourceGeneration_FrameworkVersion)">
-      <Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
-    </GetReferenceAssemblyPaths>
-    <PropertyGroup>
-      <!--Remove these properties (SystemDrawingDllPath) and all references to it from all csproj files when we get rid of net48-->
-      <SystemDrawingDllPath Condition=" '$(TargetFramework)' == 'net48' ">$(FrameworkAssembliesPath)System.Drawing.dll</SystemDrawingDllPath>
-      <!--SystemDrawingDllPath is left empty for net6 because resources will auto resolve to the system.drawing package dll -->
-      <SystemDrawingDllPath Condition=" '$(TargetFramework)' == 'net60' "></SystemDrawingDllPath>
-    </PropertyGroup>
   </Target>
   <Choose>
       <When Condition=" '$(OS)' != 'Unix' ">
