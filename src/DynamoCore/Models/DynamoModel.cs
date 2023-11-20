@@ -1042,17 +1042,15 @@ namespace Dynamo.Models
             // So we don't want to start it when splash screen or dynamo window is launched again.
             if (Analytics.client == null)
             {
-                AnalyticsService.Start();
+                AnalyticsService.Start(this);
             }
             else if (Analytics.client is DynamoAnalyticsClient dac)
             {
                 if (dac.Session == null)
                 {
-                    AnalyticsService.Start();
+                    AnalyticsService.Start(this);
                 }
             }
-
-            AnalyticsService.AddModelEvents(this);
         }
 
         private void SearchModel_ItemProduced(NodeModel node)

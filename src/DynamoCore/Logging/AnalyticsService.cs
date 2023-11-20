@@ -24,7 +24,7 @@ namespace Dynamo.Logging
         /// Starts the Analytics client. This method initializes
         /// the Analytics service and application life cycle start is tracked.
         /// </summary>
-        internal static void Start()
+        internal static void Start(DynamoModel model)
         {
             // Initialize the concrete class only when we initialize the Service.
             // This will also load the Analytics.Net.ADP assembly
@@ -32,11 +32,11 @@ namespace Dynamo.Logging
             adpAnalyticsUI = new ADPAnalyticsUI();
 
             Analytics.Start(new DynamoAnalyticsClient(DynamoModel.HostAnalyticsInfo));
-        }
 
-        internal static void AddModelEvents(DynamoModel model)
-        {
-            model.WorkspaceAdded += OnWorkspaceAdded;
+            if(model != null)
+            {
+                model.WorkspaceAdded += OnWorkspaceAdded;
+            }
         }
 
         static void OnWorkspaceAdded(WorkspaceModel obj)
