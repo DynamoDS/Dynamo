@@ -78,7 +78,9 @@ namespace DynamoCoreWpfTests
             View = new DynamoView(ViewModel);
             View.Show();
 
-            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+            // WPF controls need to be on the UI thread and async operations (that interact with the UI) need to be scheduled and return on the same UI thread.
+            // Using the DispatcherSynchronizationContext in every test's thread ensures this.
+            SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
         }
 
         protected static void RaiseLoadedEvent(FrameworkElement element)
