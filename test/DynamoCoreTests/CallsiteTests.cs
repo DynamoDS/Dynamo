@@ -334,5 +334,18 @@ namespace Dynamo.Tests
                 "PFNPQVAtRU5WOkVudmVsb3BlIHhtbG5zOnhzaT0iaHR0cDovL3d3dyY2hlbWFzLm1pY3Jvc29mdC5jb20vc29hcC9lbmNvZGluZy";
             Assert.True(CheckIfTraceDataIsLegacySOAPFormat(legacyTraceData));
         }
+
+        [Test]
+        public void CanWarnAboutLegacyTraceData()
+        {
+            var counter = 99;
+            CurrentDynamoModel.RequestNotification += (msg, stayOpen) => { counter++; };
+
+            // Dyn file contains SOAP formatted trace data.
+            var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir,
+                "element_binding_customNodes_modified_multiple_pre3.0.dyn");
+
+            Assert.AreEqual(100, counter);
+        }
     }
 }

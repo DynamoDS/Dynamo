@@ -2319,10 +2319,11 @@ namespace Dynamo.Models
             workspace.FileName = string.IsNullOrEmpty(filePath) ? "" : filePath;
             workspace.FromJsonGraphId = string.IsNullOrEmpty(filePath) ? WorkspaceModel.ComputeGraphIdFromJson(fileContents) : "";
             workspace.ScaleFactor = dynamoPreferences.ScaleFactor;
-            
+
 
             // This is to handle the case of opening a JSON file that does not have a version string
-            if (dynamoPreferences.Version == null) workspace.WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
+            workspace.WorkspaceVersion = dynamoPreferences.Version ==
+                                         null ? AssemblyHelper.GetDynamoVersion() : new Version(dynamoPreferences.Version);
 
             if (workspace.ContainsTraceData && workspace.WorkspaceVersion < new Version(3, 0, 0))
             {
