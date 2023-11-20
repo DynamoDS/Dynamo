@@ -1608,6 +1608,9 @@ namespace Dynamo.PackageManager
             InitialResultsLoaded = false;
             TimedOut = false;
 
+            RequestShowFileDialog -= OnRequestShowFileDialog; // adding this back in
+
+            ClearSearchResults();   // also clear all SearchResults and unsubscribe 
             ClearMySearchResults();
         }
 
@@ -1622,6 +1625,9 @@ namespace Dynamo.PackageManager
             TimedOut = false;   // reset the timedout screen 
             InitialResultsLoaded = false;   // reset the loading screen settings
 
+            RequestShowFileDialog -= OnRequestShowFileDialog;   // adding this back in
+
+            ClearSearchResults();   // also clear all SearchResults and unsubscribe 
             ClearMySearchResults();
         }
     }
