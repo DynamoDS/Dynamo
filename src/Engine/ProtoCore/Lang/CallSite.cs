@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Soap;
 using System.Text;
+using DynamoServices;
+using Newtonsoft.Json;
 using ProtoCore.DSASM;
 using ProtoCore.Exceptions;
 using ProtoCore.Lang;
@@ -57,6 +57,7 @@ namespace ProtoCore
             /// <summary>
             /// Does this struct contain any trace data
             /// </summary>
+            [JsonIgnore]
             public bool IsEmpty
             {
                 get { return Data == null && NestedData == null; }
@@ -66,6 +67,7 @@ namespace ProtoCore
             /// Is there any data anywhere in this run data, or is it all
             /// empty structure
             /// </summary>
+            [JsonIgnore]
             public bool HasAnyNestedData
             {
                 get
@@ -85,81 +87,16 @@ namespace ProtoCore
                 }
             }
 
+            [JsonIgnore]
             public bool HasNestedData
             {
                 get { return NestedData != null; }
             }
 
+            [JsonIgnore]
             public bool HasData
             {
                 get { return Data != null; }
-            }
-
-            internal static SingleRunTraceData DeserialseFromData(SerializationInfo info, StreamingContext context, int objectID, string marker)
-            {
-                SingleRunTraceData srtd = new SingleRunTraceData();
-
-                bool hasData = info.GetBoolean(marker + objectID + "_HasData");
-
-                if (hasData)
-                {
-                    Byte[] data = Convert.FromBase64String(info.GetString(marker + objectID + "_Data"));
-
-                    SoapFormatter formatter = new SoapFormatter();
-                    MemoryStream s = new MemoryStream(data);
-                    formatter.Binder = new TraceBinder();
-                    srtd.Data = (ISerializable)formatter.Deserialize(s);
-                }
-
-                bool hasNestedData = info.GetBoolean(marker + objectID + "_HasNestedData");
-
-                if (hasNestedData)
-                {
-
-                    int nestedDataCount = info.GetInt32(marker + objectID + "_NestedDataCount");
-
-                    if (nestedDataCount > 0)
-                        srtd.NestedData = new List<SingleRunTraceData>();
-
-                    for (int i = 0; i < nestedDataCount; i++)
-                    {
-                        srtd.NestedData.Add(
-                            DeserialseFromData(info, context, i, marker + objectID + "-")
-                            );
-                    }
-
-                }
-
-                return srtd;
-            }
-
-            internal void GetObjectData(SerializationInfo info, StreamingContext context, int objectID, string marker)
-            {
-                info.AddValue(marker + objectID + "_HasData", HasData);
-
-                if (HasData)
-                {
-                    //Serialise the object
-                    using (MemoryStream s = new MemoryStream())
-                    {
-                        SoapFormatter formatter = new SoapFormatter();
-                        formatter.Serialize(s, Data);
-                        info.AddValue(marker + objectID + "_Data", Convert.ToBase64String(s.ToArray()));
-                    }
-                }
-
-                info.AddValue(marker + objectID + "_HasNestedData", HasNestedData);
-
-                if (HasNestedData)
-                {
-                    //Recursive Serialise
-                    info.AddValue(marker + objectID + "_NestedDataCount", NestedData.Count);
-
-                    for (int i = 0; i < NestedData.Count; i++)
-                        NestedData[i].GetObjectData(info, context, i, marker + objectID + "-");
-                }
-
-
             }
 
             /// <summary>
@@ -167,7 +104,7 @@ namespace ProtoCore
             /// null if no data
             /// </summary>
             /// <returns></returns>
-            public ISerializable GetLeftMostData()
+            public string GetLeftMostData()
             {
                 if (HasData)
                     return Data;
@@ -187,10 +124,13 @@ namespace ProtoCore
                 return nestedTraceData.GetLeftMostData();
             }
 
+            [JsonProperty("nestedData", NullValueHandling = NullValueHandling.Ignore)]
             public List<SingleRunTraceData> NestedData;
-            public ISerializable Data;
 
-            public bool Contains(ISerializable data)
+            [JsonProperty("data", NullValueHandling = NullValueHandling.Ignore)]
+            public string Data;
+
+            public bool Contains(string data)
             {
                 if (HasData)
                 {
@@ -212,9 +152,9 @@ namespace ProtoCore
                 return false;
             }
 
-            public List<ISerializable> RecursiveGetNestedData()
+            public List<string> RecursiveGetNestedData()
             {
-                List<ISerializable> ret = new List<ISerializable>();
+                List<string> ret = new List<string>();
 
                 if (HasData)
                     ret.Add(Data);
@@ -229,143 +169,6 @@ namespace ProtoCore
             }
         }
 
-        /// <summary>
-        /// TraceBinder is used to find assemblies to be used for
-        /// deserialization in cases where the exact assembly that was
-        /// used in the serialization is not available. 
-        /// </summary>
-        internal class TraceBinder : SerializationBinder
-        {
-            // Use a custom serialization binder to make the serializer more permissive
-            // http://www.codeproject.com/Articles/11079/NET-XML-and-SOAP-Serialization-Samples-Tips
-
-            public override System.Type BindToType(string assemblyName, string typeName)
-            {
-                var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic);
-                var assemblyNameObj = new AssemblyName(assemblyName);
-                //find matching assemblies by name, version is not used.
-                var matchingAssembly = assemblies.FirstOrDefault(x => x.GetName().Name == assemblyNameObj.Name);
-                if (matchingAssembly != null)
-                {
-                    var matchingType = matchingAssembly.GetType(typeName);
-                    if (matchingType != null)
-                    {
-                        return matchingType;
-                    }
-                }
-                //if there was no matching assembly, or type, try all assemblies and all types.
-                //TODO(DYN-1594 - remove this fallback when we can determine if it is required. It is very slow.)
-                var types = new List<System.Type>();
-                foreach (var a in assemblies)
-                {
-                    try
-                    {
-                        types.AddRange(a.GetTypes());
-                    }
-                    catch (ReflectionTypeLoadException)
-                    {
-                        // We ignore assembly loading exceptions that are thrown here when their dependencies cannot be found
-                    }
-                }
-                var result = types.FirstOrDefault(t => t.FullName == typeName);
-
-                return result;
-            }
-        }
-
-        /// <summary>
-        /// Helper class that complies with the standard serialization contract that
-        /// can be used for loading and saving the trace data
-        /// Normal usage patten is:
-        /// 1. Instantiate
-        /// 2. Push Trace data from callsite
-        /// 3. Call GetObjectData to serialize it onto a stream
-        /// 4. Recreate using the special constructor
-        /// </summary>
-        [Serializable]
-        private class TraceSerialiserHelper : ISerializable
-        {
-            /// <summary>
-            /// Empty defaul
-            /// </summary>
-            public TraceSerialiserHelper()
-            {
-
-            }
-
-            /// <summary>
-            /// Load the data out of the serialisation entries
-            /// </summary>
-            public TraceSerialiserHelper(SerializationInfo info, StreamingContext context)
-            {
-                TraceData = new List<SingleRunTraceData>();
-
-                int noElements = info.GetInt32("NumberOfElements");
-                for (int i = 0; i < noElements; i++)
-                {
-                    try
-                    {
-                        SingleRunTraceData srtd = SingleRunTraceData.DeserialseFromData(
-                            info, context, i, "Base-");
-                        TraceData.Add(srtd);
-                    }
-                    catch (ReflectionTypeLoadException)
-                    {
-                        // If deserialization fails, continue to the next 
-                        // element. Deserialization will throw an exception in
-                        // contexts where the assembly used do do the serialization,
-                        // or any of its referenced assemblies cannot be resolved.
-#if DEBUG
-                        Debug.WriteLine("Deserialization of trace data failed.");
-#endif
-                    }
-                }
-
-            }
-
-            /// <summary>
-            /// Save the data into the standard serialization pattern
-            /// </summary>
-            public void GetObjectData(SerializationInfo info, StreamingContext context)
-            {
-                info.AddValue("NumberOfElements", TraceData.Count);
-                for (int i = 0; i < TraceData.Count; i++)
-                {
-                    TraceData[i].GetObjectData(info, context, i, "Base-");
-                }
-            }
-
-            /// <summary>
-            /// Create a TraceSerialiserHelper from CallSiteData.
-            /// </summary>
-            /// <param name="callSiteData">A string repsenting the CallSiteData </param>
-            /// <returns>A TraceSerialiserHelper or null if deserialization fails.</returns>
-            internal static TraceSerialiserHelper FromCallSiteData(string callSiteData)
-            {
-                try
-                {
-                    Validity.Assert(!String.IsNullOrEmpty(callSiteData));
-                    var data = Convert.FromBase64String(callSiteData);
-                    var formatter = new SoapFormatter();
-                    formatter.Binder = new TraceBinder();
-                    var s = new MemoryStream(data);
-                    var helper = (TraceSerialiserHelper)formatter.Deserialize(s);
-                    return helper;
-                }
-                catch (Exception ex)
-                {
-#if DEBUG
-                    Debug.WriteLine("Constructing a TraceSerialiserHelper from CallSiteData failed.");
-                    Debug.WriteLine(ex.Message);
-#endif
-                    return null;
-                }
-
-            }
-
-            public List<SingleRunTraceData> TraceData { get; set; }
-        }
-
         #endregion
 
         #region private members
@@ -374,7 +177,7 @@ namespace ProtoCore
         private string methodName;
         private readonly FunctionTable globalFunctionTable;
         internal int invokeCount; //Number of times the callsite has been executed within this run
-        private List<ISerializable> beforeFirstRunSerializables = new List<ISerializable>();
+        private List<string> beforeFirstRunSerializables = new List<string>();
 
         //TODO(Luke): This should be loaded from the attribute
         private string TRACE_KEY = DynamoServices.TraceUtils.__TEMP_REVIT_TRACE_ID;
@@ -458,19 +261,36 @@ namespace ProtoCore
         #region public methods
 
         /// <summary>
-        /// Load the serialised data provided into this callsite's trace cache
+        /// Load the serialized data provided into this callsite's trace cache
         /// </summary>
         /// <param name="serializedTraceData">The data to load</param>
         public void LoadSerializedDataIntoTraceCache(string serializedTraceData)
         {
-            var helper = TraceSerialiserHelper.FromCallSiteData(serializedTraceData);
-            if (helper == null)
+            if (serializedTraceData == null || CheckIfTraceDataIsLegacySOAPFormat(serializedTraceData))
             {
-                beforeFirstRunSerializables = new List<ISerializable>();
+                beforeFirstRunSerializables = new List<string>();
                 return;
             }
 
-            this.traceData = helper.TraceData;
+            List<SingleRunTraceData> newTraceData = null;
+            try
+            {
+                //Optional Compression / Decompression
+                var decompressedTraceData = DecompressSerializedTraceData(serializedTraceData);
+                newTraceData = JsonConvert.DeserializeObject<List<SingleRunTraceData>>(decompressedTraceData);
+            }
+            catch(Exception e)
+            {
+                DynamoConsoleLogger.OnLogMessageToDynamoConsole($"issue while deserializing trace data for callsite {callsiteID} : {e}");
+            }
+
+            if (newTraceData == null)
+            {
+                beforeFirstRunSerializables = new List<string>();
+                return;
+            }
+
+            this.traceData = newTraceData;
 
             // Cache the historical trace data for comparison
             // when graph update is complete. This data will be cleared
@@ -621,26 +441,38 @@ namespace ProtoCore
             if (!this.traceData.Any(srtd => srtd.HasAnyNestedData))
                 return null;
 
-            TraceSerialiserHelper helper = new TraceSerialiserHelper();
-            helper.TraceData = this.traceData;
+            var serializedTraceData = JsonConvert.SerializeObject(this.traceData);
+            //Optional
+            serializedTraceData= CompressSerializedTraceData(serializedTraceData);
+            return serializedTraceData;
+        }
 
-            using (MemoryStream memoryStream = new MemoryStream())
+        /// <summary>
+        /// Compress the input string via GZIP to Base64String
+        /// </summary>
+        /// <param name="json"></param>
+        /// <returns></returns>
+        private static string CompressSerializedTraceData(string json)
+        {
+            byte[] dataToCompress = Encoding.UTF8.GetBytes(json);
+
+            using (var memoryStream = new MemoryStream())
+            using (var gzipStream = new GZipStream(memoryStream, CompressionLevel.Optimal))
             {
-                SoapFormatter formatter = new SoapFormatter();
-                formatter.Serialize(memoryStream, helper);
-
-                return Convert.ToBase64String(memoryStream.ToArray());
+                    gzipStream.Write(dataToCompress, 0, dataToCompress.Length);
+                    //we ned to flush the gzip stream to force write to be done BEFORE we access the memory stream.
+                    gzipStream.Close();
+                    return Convert.ToBase64String(memoryStream.ToArray());
             }
-
         }
 
         /// <summary>
         /// Returns all serializables that were created historically, but
         /// were not re-created in the most recent graph update.
         /// </summary>
-        public IList<ISerializable> GetOrphanedSerializables()
+        public IList<string> GetOrphanedSerializables()
         {
-            var result = new List<ISerializable>();
+            var result = new List<string>();
 
             if (!beforeFirstRunSerializables.Any())
                 return result;
@@ -730,6 +562,20 @@ namespace ProtoCore
                     runID = core.csExecutionState.StoreAndUpdateRunId(callsiteGUID, callsiteData);
                 }
             }*/
+        }
+        internal static bool CheckIfTraceDataIsLegacySOAPFormat(string base64EncodedTraceData)
+        {
+            var data = Convert.FromBase64String(base64EncodedTraceData);
+            if (data.Length > 17)
+            {
+                var header = Encoding.UTF8.GetString(data, 0, 18);
+                if (header == @"<SOAP-ENV:Envelope")
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         #endregion
@@ -1900,7 +1746,7 @@ namespace ProtoCore
 
             //TraceCache -> TLS
             //Extract left most high-D pack
-            ISerializable traceD = previousTraceData.GetLeftMostData();
+            string traceD = previousTraceData.GetLeftMostData();
 
             if (traceD != null)
             {
@@ -2040,21 +1886,50 @@ namespace ProtoCore
         #endregion
 
         /// <summary>
-        /// Returns a flat collection of ISerializable objects from a serialized representation of a SingleRunTraceData object.
+        /// Returns a flat collection of strings from a serialized representation of a SingleRunTraceData object.
         /// </summary>
         /// <param name="callSiteData">The serialized representation of a SingleRunTraceData object.</param>
-        /// <returns>A flat collection of ISerializable objects.</returns>
-        public static IList<ISerializable> GetAllSerializablesFromSingleRunTraceData(
+        /// <returns>A flat collection of strings.</returns>
+        public static IList<string> GetAllSerializablesFromSingleRunTraceData(
             RawTraceData callSiteData)
         {
-            var helper = TraceSerialiserHelper.FromCallSiteData(callSiteData.Data);
-            if (helper == null)
+            if (callSiteData.Data == null || CheckIfTraceDataIsLegacySOAPFormat(callSiteData.Data))
             {
-                return new List<ISerializable>();
+                return new List<string>();
             }
 
-            var serializables = helper.TraceData.SelectMany(std => std.RecursiveGetNestedData()).ToList();
+            List<SingleRunTraceData> traceData = null;
+            try
+            {
+                //Optional Compression / Decompression
+                var data = DecompressSerializedTraceData(callSiteData.Data);
+                traceData = JsonConvert.DeserializeObject<List<SingleRunTraceData>>(data);
+            }
+            catch (Exception e)
+            {
+                DynamoConsoleLogger.OnLogMessageToDynamoConsole($"issue while deserializing trace data for callsite {callSiteData.ID} : {e}");
+            }
+
+            if (traceData == null)
+            {
+                return new List<string>();
+            }
+
+            var serializables = traceData.SelectMany(std => std.RecursiveGetNestedData()).ToList();
             return serializables;
+        }
+
+        private static string DecompressSerializedTraceData(string serializedTraceData)
+        {
+            var dataToDecompress = Convert.FromBase64String(serializedTraceData);
+
+            using (var memoryStream = new MemoryStream(dataToDecompress))
+            using (var outputStream = new MemoryStream())
+            using (var decompressStream = new GZipStream(memoryStream, CompressionMode.Decompress))
+            {
+                decompressStream.CopyTo(outputStream);
+                return Encoding.UTF8.GetString(outputStream.ToArray());
+            }
         }
     }
 }

@@ -1332,7 +1332,6 @@ namespace Dynamo.Graph.Workspaces
                 WorkspaceEvents.OnWorkspaceSettingsChanged(scaleFactor);
             }
         }
-
         #endregion
 
         #region constructors

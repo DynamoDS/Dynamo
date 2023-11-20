@@ -23,7 +23,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.CodeDom" Version="6.0.0" />
-    <PackageReference Include="SoapFormatter" Version="1.0.11" />
     <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
   </ItemGroup>
   <ItemGroup>
