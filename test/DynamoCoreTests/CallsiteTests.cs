@@ -339,7 +339,7 @@ namespace Dynamo.Tests
         public void CanWarnAboutLegacyTraceData()
         {
             var counter = 99;
-            CurrentDynamoModel.RequestNotification += (msg, stayOpen) => { counter++; };
+            CurrentDynamoModel.RequestNotification += (_, _) => { counter++; };
 
             // Dyn file contains SOAP formatted trace data.
             var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir,
