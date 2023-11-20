@@ -10,13 +10,10 @@
     <AssemblyName>AnalysisTests</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.2965" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.3171" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
-  </ItemGroup>
-    <!--net6.0 net8.0 etc-->
-    <ItemGroup Condition=" '$(TargetFramework)' != 'net48' ">
-        <PackageReference Include="NUnit" Version="3.13.3" />
-        <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
+    <PackageReference Include="NUnit" Version="3.13.3" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
     </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\DynamoCore\DynamoCore.csproj">

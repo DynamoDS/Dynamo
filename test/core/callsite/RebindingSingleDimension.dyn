@@ -13,8 +13,8 @@
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction, DynamoCore",
       "FunctionSignature": "DSCore.List.Join@var[]..[]",
       "FunctionType": "VariableArgument",
-      "NodeType": "FunctionNode",
       "Id": "17341a7b39c645c78849e8e4bd34d946",
+      "NodeType": "FunctionNode",
       "Inputs": [
         {
           "Id": "61074c5b44624b37a94e078ebe97098b",
@@ -60,9 +60,8 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
-      "NodeType": "StringInputNode",
-      "InputValue": "tywin",
       "Id": "9681af874d064ea6871f674b2aa110bd",
+      "NodeType": "StringInputNode",
       "Inputs": [],
       "Outputs": [
         {
@@ -76,13 +75,13 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a string."
+      "Description": "Creates a string",
+      "InputValue": "tywin"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
-      "NodeType": "StringInputNode",
-      "InputValue": "cersei",
       "Id": "6f11661a44f04da0b241b22c72e3494f",
+      "NodeType": "StringInputNode",
       "Inputs": [],
       "Outputs": [
         {
@@ -96,13 +95,13 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a string."
+      "Description": "Creates a string",
+      "InputValue": "cersei"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
-      "NodeType": "StringInputNode",
-      "InputValue": "hodor",
       "Id": "3a1dc7332b3b474cbb7f2bf0f3c26457",
+      "NodeType": "StringInputNode",
       "Inputs": [],
       "Outputs": [
         {
@@ -116,13 +115,13 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a string."
+      "Description": "Creates a string",
+      "InputValue": "hodor"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "NodeType": "CodeBlockNode",
-      "Code": "0..2;",
       "Id": "024ae18e0c8b49218779879d9c6f9145",
+      "NodeType": "CodeBlockNode",
       "Inputs": [],
       "Outputs": [
         {
@@ -136,18 +135,18 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly"
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "0..2;"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "+@var[]..[],var[]..[]",
       "Id": "4b90a83ccbd7432e95beafb2cdcea9db",
+      "NodeType": "FunctionNode",
       "Inputs": [
         {
           "Id": "3cfd125ba46042dbabc35988b9ea28ce",
           "Name": "x",
-          "Description": "x value.\n\nvar[]..[]",
+          "Description": "Integer value, double value or string\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -156,7 +155,7 @@
         {
           "Id": "d6fa1e51c6c84be8bc026bd311015c19",
           "Name": "y",
-          "Description": "y value.\n\nvar[]..[]",
+          "Description": "Integer value, double value or string\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -166,27 +165,27 @@
       "Outputs": [
         {
           "Id": "882d77d2e4e14f8b8b8bca561bfb1543",
-          "Name": "var[]..[]",
-          "Description": "var[]..[]",
+          "Name": "var",
+          "Description": "The sum of two input numbers, or the concatenation of two strings",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
           "KeepListStructure": false
         }
       ],
+      "FunctionSignature": "+@var[]..[],var[]..[]",
       "Replication": "Auto",
-      "Description": "Adds x to y.\n\n+ (x: var[]..[], y: var[]..[]): var[]..[]"
+      "Description": "Returns addition of x and y\n\n+ (x: var[]..[], y: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "07b3ea3916ae43079ae631f0990cf622",
       "NodeType": "FunctionNode",
-      "FunctionSignature": "Examples.TraceExampleWrapper.ByString@string",
-      "Id": "5b8571b5cda541878dccef6cc5068aaf",
       "Inputs": [
         {
-          "Id": "a8b9c87cc28546b7b246d0a06c6136b7",
-          "Name": "description",
-          "Description": "string",
+          "Id": "0310b3e1aac149daa21cfd44c7fa47c5",
+          "Name": "string",
+          "Description": "String to find the length of\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -195,57 +194,126 @@
       ],
       "Outputs": [
         {
-          "Id": "946b4f760df7485191e4fcfcbea581c2",
-          "Name": "TraceExampleItem",
-          "Description": "TraceExampleItem",
+          "Id": "84ff91e69ff649f5a1864d2d07eb990e",
+          "Name": "int",
+          "Description": "Number of characters in the string",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
           "KeepListStructure": false
         }
       ],
+      "FunctionSignature": "DSCore.String.Length@string",
       "Replication": "Auto",
-      "Description": "TraceExampleWrapper.ByString (description: string): TraceExampleItem"
+      "Description": "Returns the number of characters contained in the given string.\n\nString.Length (string: string): int"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "65f399d301c54ef2b2441fd3d21c452f",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "53862a2026d240aa936961bfaaa0eaf8",
+          "Name": "x",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4905db17914e45edbbf1c6dfc9ddfe80",
+          "Name": "WrapperObject",
+          "Description": "WrapperObject",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "FFITarget.WrapperObject.WrapperObject@int",
+      "Replication": "Auto",
+      "Description": "WrapperObject.WrapperObject (x: int): WrapperObject"
     }
   ],
   "Connectors": [
     {
       "Start": "71c750061f1f4f08b2b96f59efc15a1c",
       "End": "3cfd125ba46042dbabc35988b9ea28ce",
-      "Id": "20d32b0f14044944838d0987f6a8433c"
+      "Id": "20d32b0f14044944838d0987f6a8433c",
+      "IsHidden": "False"
     },
     {
       "Start": "4797b3fc38384fbaa45e1a78df4cd352",
       "End": "61074c5b44624b37a94e078ebe97098b",
-      "Id": "c78d2ebbcffd430ca3bc39e7c06db68b"
+      "Id": "c78d2ebbcffd430ca3bc39e7c06db68b",
+      "IsHidden": "False"
     },
     {
       "Start": "f6935880e5f54455b1487a439bfa4161",
       "End": "e5c8d5de67464fe6a56c20994f92d37a",
-      "Id": "ce60a33b0d8e4f6090ada02075eda5cf"
+      "Id": "ce60a33b0d8e4f6090ada02075eda5cf",
+      "IsHidden": "False"
     },
     {
       "Start": "e0f37e0301a541ceb9ba4323b3a2599e",
       "End": "ff39b229c69b42f5b3256f9e60d32d26",
-      "Id": "f6ffae97dc564566a65c80cd2a058390"
+      "Id": "f6ffae97dc564566a65c80cd2a058390",
+      "IsHidden": "False"
     },
     {
       "Start": "2d32b3d66755480cb1b07e89d9752bef",
       "End": "d6fa1e51c6c84be8bc026bd311015c19",
-      "Id": "161d9967251a47ddb94195a84e88a846"
+      "Id": "161d9967251a47ddb94195a84e88a846",
+      "IsHidden": "False"
     },
     {
       "Start": "882d77d2e4e14f8b8b8bca561bfb1543",
-      "End": "a8b9c87cc28546b7b246d0a06c6136b7",
-      "Id": "c7ec769029f74b1cb42a5802cf050870"
+      "End": "0310b3e1aac149daa21cfd44c7fa47c5",
+      "Id": "8ca4b760eda04c27b3fc750e5221723f",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "84ff91e69ff649f5a1864d2d07eb990e",
+      "End": "53862a2026d240aa936961bfaaa0eaf8",
+      "Id": "f393d31998244c0db265e25f94ae9eef",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "FFITarget.dll",
+      "ReferenceType": "ZeroTouch",
+      "Nodes": [
+        "65f399d301c54ef2b2441fd3d21c452f"
+      ]
+    }
+  ],
+  "Thumbnail": null,
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "3.0",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
   "Bindings": [
     {
-      "NodeId": "5b8571b5-cda5-4187-8dcc-ef6cc5068aaf",
+      "NodeId": "65f399d3-01c5-4ef2-b244-1fd3d21c452f",
       "Binding": {
-        "ByString_InClassDecl-1_InFunctionScope-1_Instance0_5b8571b5-cda5-4187-8dcc-ef6cc5068aaf": "PFNPQVAtRU5WOkVudmVsb3BlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zOnhzZD0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOlNPQVAtRU5DPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyIgeG1sbnM6U09BUC1FTlY9Imh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3NvYXAvZW52ZWxvcGUvIiB4bWxuczpjbHI9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vc29hcC9lbmNvZGluZy9jbHIvMS4wIiBTT0FQLUVOVjplbmNvZGluZ1N0eWxlPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyI+DQo8U09BUC1FTlY6Qm9keT4NCjxhMTpDYWxsU2l0ZV94MDAyQl9UcmFjZVNlcmlhbGlzZXJIZWxwZXIgaWQ9InJlZi0xIiB4bWxuczphMT0iaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS9jbHIvbnNhc3NlbS9Qcm90b0NvcmUvUHJvdG9Db3JlJTJDJTIwVmVyc2lvbiUzRDIuMi4wLjQwMDYlMkMlMjBDdWx0dXJlJTNEbmV1dHJhbCUyQyUyMFB1YmxpY0tleVRva2VuJTNEbnVsbCI+DQo8TnVtYmVyT2ZFbGVtZW50cz4xPC9OdW1iZXJPZkVsZW1lbnRzPg0KPEJhc2UtMF9IYXNEYXRhPmZhbHNlPC9CYXNlLTBfSGFzRGF0YT4NCjxCYXNlLTBfSGFzTmVzdGVkRGF0YT50cnVlPC9CYXNlLTBfSGFzTmVzdGVkRGF0YT4NCjxCYXNlLTBfTmVzdGVkRGF0YUNvdW50PjM8L0Jhc2UtMF9OZXN0ZWREYXRhQ291bnQ+DQo8QmFzZS0wLTBfSGFzRGF0YT50cnVlPC9CYXNlLTAtMF9IYXNEYXRhPg0KPEJhc2UtMC0wX0RhdGEgaWQ9InJlZi0zIj5QRk5QUVZBdFJVNVdPa1Z1ZG1Wc2IzQmxJSGh0Ykc1ek9uaHphVDBpYUhSMGNEb3ZMM2QzZHk1M015NXZjbWN2TWpBd01TOVlUVXhUWTJobGJXRXRhVzV6ZEdGdVkyVWlJSGh0Ykc1ek9uaHpaRDBpYUhSMGNEb3ZMM2QzZHk1M015NXZjbWN2TWpBd01TOVlUVXhUWTJobGJXRWlJSGh0Ykc1ek9sTlBRVkF0UlU1RFBTSm9kSFJ3T2k4dmMyTm9aVzFoY3k1NGJXeHpiMkZ3TG05eVp5OXpiMkZ3TDJWdVkyOWthVzVuTHlJZ2VHMXNibk02VTA5QlVDMUZUbFk5SW1oMGRIQTZMeTl6WTJobGJXRnpMbmh0YkhOdllYQXViM0puTDNOdllYQXZaVzUyWld4dmNHVXZJaUI0Yld4dWN6cGpiSEk5SW1oMGRIQTZMeTl6WTJobGJXRnpMbTFwWTNKdmMyOW1kQzVqYjIwdmMyOWhjQzlsYm1OdlpHbHVaeTlqYkhJdk1TNHdJaUJUVDBGUUxVVk9WanBsYm1OdlpHbHVaMU4wZVd4bFBTSm9kSFJ3T2k4dmMyTm9aVzFoY3k1NGJXeHpiMkZ3TG05eVp5OXpiMkZ3TDJWdVkyOWthVzVuTHlJK0RRbzhVMDlCVUMxRlRsWTZRbTlrZVQ0TkNqeGhNVHBVY21GalpXRmliR1ZKWkNCcFpEMGljbVZtTFRFaUlIaHRiRzV6T21FeFBTSm9kSFJ3T2k4dmMyTm9aVzFoY3k1dGFXTnliM052Wm5RdVkyOXRMMk5zY2k5dWMyRnpjMlZ0TDBWNFlXMXdiR1Z6TDFOaGJYQnNaVXhwWW5KaGNubGFaWEp2Vkc5MVkyZ2xNa01sTWpCV1pYSnphVzl1SlRORU1DNDRMakl1TUNVeVF5VXlNRU4xYkhSMWNtVWxNMFJ1WlhWMGNtRnNKVEpESlRJd1VIVmliR2xqUzJWNVZHOXJaVzRsTTBSdWRXeHNJajROQ2p4cGJuUkpSRDR3UEM5cGJuUkpSRDROQ2p3dllURTZWSEpoWTJWaFlteGxTV1ErRFFvOEwxTlBRVkF0UlU1V09rSnZaSGsrRFFvOEwxTlBRVkF0UlU1V09rVnVkbVZzYjNCbFBnMEs8L0Jhc2UtMC0wX0RhdGE+DQo8QmFzZS0wLTBfSGFzTmVzdGVkRGF0YT5mYWxzZTwvQmFzZS0wLTBfSGFzTmVzdGVkRGF0YT4NCjxCYXNlLTAtMV9IYXNEYXRhPnRydWU8L0Jhc2UtMC0xX0hhc0RhdGE+DQo8QmFzZS0wLTFfRGF0YSBpZD0icmVmLTQiPlBGTlBRVkF0UlU1V09rVnVkbVZzYjNCbElIaHRiRzV6T25oemFUMGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TVM5WVRVeFRZMmhsYldFdGFXNXpkR0Z1WTJVaUlIaHRiRzV6T25oelpEMGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TVM5WVRVeFRZMmhsYldFaUlIaHRiRzV6T2xOUFFWQXRSVTVEUFNKb2RIUndPaTh2YzJOb1pXMWhjeTU0Yld4emIyRndMbTl5Wnk5emIyRndMMlZ1WTI5a2FXNW5MeUlnZUcxc2JuTTZVMDlCVUMxRlRsWTlJbWgwZEhBNkx5OXpZMmhsYldGekxuaHRiSE52WVhBdWIzSm5MM052WVhBdlpXNTJaV3h2Y0dVdklpQjRiV3h1Y3pwamJISTlJbWgwZEhBNkx5OXpZMmhsYldGekxtMXBZM0p2YzI5bWRDNWpiMjB2YzI5aGNDOWxibU52WkdsdVp5OWpiSEl2TVM0d0lpQlRUMEZRTFVWT1ZqcGxibU52WkdsdVoxTjBlV3hsUFNKb2RIUndPaTh2YzJOb1pXMWhjeTU0Yld4emIyRndMbTl5Wnk5emIyRndMMlZ1WTI5a2FXNW5MeUkrRFFvOFUwOUJVQzFGVGxZNlFtOWtlVDROQ2p4aE1UcFVjbUZqWldGaWJHVkpaQ0JwWkQwaWNtVm1MVEVpSUhodGJHNXpPbUV4UFNKb2RIUndPaTh2YzJOb1pXMWhjeTV0YVdOeWIzTnZablF1WTI5dEwyTnNjaTl1YzJGemMyVnRMMFY0WVcxd2JHVnpMMU5oYlhCc1pVeHBZbkpoY25sYVpYSnZWRzkxWTJnbE1rTWxNakJXWlhKemFXOXVKVE5FTUM0NExqSXVNQ1V5UXlVeU1FTjFiSFIxY21VbE0wUnVaWFYwY21Gc0pUSkRKVEl3VUhWaWJHbGpTMlY1Vkc5clpXNGxNMFJ1ZFd4c0lqNE5DanhwYm5SSlJENHhQQzlwYm5SSlJENE5Dand2WVRFNlZISmhZMlZoWW14bFNXUStEUW84TDFOUFFWQXRSVTVXT2tKdlpIaytEUW84TDFOUFFWQXRSVTVXT2tWdWRtVnNiM0JsUGcwSzwvQmFzZS0wLTFfRGF0YT4NCjxCYXNlLTAtMV9IYXNOZXN0ZWREYXRhPmZhbHNlPC9CYXNlLTAtMV9IYXNOZXN0ZWREYXRhPg0KPEJhc2UtMC0yX0hhc0RhdGE+dHJ1ZTwvQmFzZS0wLTJfSGFzRGF0YT4NCjxCYXNlLTAtMl9EYXRhIGlkPSJyZWYtNSI+UEZOUFFWQXRSVTVXT2tWdWRtVnNiM0JsSUhodGJHNXpPbmh6YVQwaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNUzlZVFV4VFkyaGxiV0V0YVc1emRHRnVZMlVpSUhodGJHNXpPbmh6WkQwaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNUzlZVFV4VFkyaGxiV0VpSUhodGJHNXpPbE5QUVZBdFJVNURQU0pvZEhSd09pOHZjMk5vWlcxaGN5NTRiV3h6YjJGd0xtOXlaeTl6YjJGd0wyVnVZMjlrYVc1bkx5SWdlRzFzYm5NNlUwOUJVQzFGVGxZOUltaDBkSEE2THk5elkyaGxiV0Z6TG5odGJITnZZWEF1YjNKbkwzTnZZWEF2Wlc1MlpXeHZjR1V2SWlCNGJXeHVjenBqYkhJOUltaDBkSEE2THk5elkyaGxiV0Z6TG0xcFkzSnZjMjltZEM1amIyMHZjMjloY0M5bGJtTnZaR2x1Wnk5amJISXZNUzR3SWlCVFQwRlFMVVZPVmpwbGJtTnZaR2x1WjFOMGVXeGxQU0pvZEhSd09pOHZjMk5vWlcxaGN5NTRiV3h6YjJGd0xtOXlaeTl6YjJGd0wyVnVZMjlrYVc1bkx5SStEUW84VTA5QlVDMUZUbFk2UW05a2VUNE5DanhoTVRwVWNtRmpaV0ZpYkdWSlpDQnBaRDBpY21WbUxURWlJSGh0Ykc1ek9tRXhQU0pvZEhSd09pOHZjMk5vWlcxaGN5NXRhV055YjNOdlpuUXVZMjl0TDJOc2NpOXVjMkZ6YzJWdEwwVjRZVzF3YkdWekwxTmhiWEJzWlV4cFluSmhjbmxhWlhKdlZHOTFZMmdsTWtNbE1qQldaWEp6YVc5dUpUTkVNQzQ0TGpJdU1DVXlReVV5TUVOMWJIUjFjbVVsTTBSdVpYVjBjbUZzSlRKREpUSXdVSFZpYkdsalMyVjVWRzlyWlc0bE0wUnVkV3hzSWo0TkNqeHBiblJKUkQ0eVBDOXBiblJKUkQ0TkNqd3ZZVEU2VkhKaFkyVmhZbXhsU1dRK0RRbzhMMU5QUVZBdFJVNVdPa0p2WkhrK0RRbzhMMU5QUVZBdFJVNVdPa1Z1ZG1Wc2IzQmxQZzBLPC9CYXNlLTAtMl9EYXRhPg0KPEJhc2UtMC0yX0hhc05lc3RlZERhdGE+ZmFsc2U8L0Jhc2UtMC0yX0hhc05lc3RlZERhdGE+DQo8L2ExOkNhbGxTaXRlX3gwMDJCX1RyYWNlU2VyaWFsaXNlckhlbHBlcj4NCjwvU09BUC1FTlY6Qm9keT4NCjwvU09BUC1FTlY6RW52ZWxvcGU+DQo="
+        "WrapperObject_InClassDecl-1_InFunctionScope-1_Instance0_65f399d3-01c5-4ef2-b244-1fd3d21c452f": "H4sIAAAAAAAACouuVspLLS5JTXFJLElUsoquVkoBM5SqY5Q8XWKUrAxrlWp1MESNsIoaA0Vja2MBPbjZvVQAAAA="
       }
     }
   ],
@@ -254,12 +322,12 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.2.0.4006",
+      "Version": "3.0.0.5795",
       "RunType": "Manual",
       "RunPeriod": "100"
     },
     "Camera": {
-      "Name": "Background Preview",
+      "Name": "_Background Preview",
       "EyeX": -17.0,
       "EyeY": 24.0,
       "EyeZ": 50.0,
@@ -270,81 +338,92 @@
       "UpY": 1.0,
       "UpZ": 0.0
     },
+    "ConnectorPins": [],
     "NodeViews": [
       {
-        "ShowGeometry": true,
-        "Name": "List.Join",
         "Id": "17341a7b39c645c78849e8e4bd34d946",
+        "Name": "List.Join",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
+        "ShowGeometry": true,
         "X": 172.0,
         "Y": 99.0
       },
       {
-        "ShowGeometry": true,
-        "Name": "String",
         "Id": "9681af874d064ea6871f674b2aa110bd",
+        "Name": "String",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
+        "ShowGeometry": true,
         "X": 0.0,
         "Y": 0.0
       },
       {
-        "ShowGeometry": true,
-        "Name": "String",
         "Id": "6f11661a44f04da0b241b22c72e3494f",
+        "Name": "String",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
+        "ShowGeometry": true,
         "X": 0.0,
         "Y": 125.0
       },
       {
-        "ShowGeometry": true,
-        "Name": "String",
         "Id": "3a1dc7332b3b474cbb7f2bf0f3c26457",
+        "Name": "String",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
+        "ShowGeometry": true,
         "X": 0.0,
         "Y": 250.0
       },
       {
-        "ShowGeometry": true,
-        "Name": "Code Block",
         "Id": "024ae18e0c8b49218779879d9c6f9145",
+        "Name": "Code Block",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
+        "ShowGeometry": true,
         "X": 242.0,
         "Y": 299.183908045977
       },
       {
-        "ShowGeometry": true,
-        "Name": "+",
         "Id": "4b90a83ccbd7432e95beafb2cdcea9db",
+        "Name": "+",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
+        "ShowGeometry": true,
         "X": 408.0,
         "Y": 99.0
       },
       {
-        "ShowGeometry": true,
-        "Name": "TraceExampleWrapper.ByString",
-        "Id": "5b8571b5cda541878dccef6cc5068aaf",
+        "Id": "07b3ea3916ae43079ae631f0990cf622",
+        "Name": "String.Length",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 593.436781609194,
-        "Y": 98.5574712643674
+        "ShowGeometry": true,
+        "X": 670.2709875137249,
+        "Y": 244.60023127662708
+      },
+      {
+        "Id": "65f399d301c54ef2b2441fd3d21c452f",
+        "Name": "WrapperObject.WrapperObject",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 841.3719242488306,
+        "Y": 76.33914411388793
       }
     ],
     "Annotations": [],
-    "X": 242.45317467813635,
-    "Y": 232.23719167613356,
-    "Zoom": 0.70426265512827058
+    "X": 212.45317467813635,
+    "Y": 194.23719167613356,
+    "Zoom": 0.7042626551282706
   }
 }

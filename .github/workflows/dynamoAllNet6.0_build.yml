@@ -19,7 +19,7 @@ jobs:
 
     - name: Install dependencies for windows runtime
       run: |
-        dotnet restore $Env:GITHUB_WORKSPACE\Dynamo\src\Dynamo.All.sln /p:Configuration=Release --runtime=win10-x64
+        dotnet restore $Env:GITHUB_WORKSPACE\Dynamo\src\Dynamo.All.sln /p:Configuration=Release --runtime=win-x64
     - name: Build Dynamo with MSBuild for Windows
       run: |
         echo "***Continue with the build, Good luck developer!***"
