@@ -1,0 +1,12 @@
+<Project>
+  <PropertyGroup>
+    <!--
+      SolutionDir is mostly useful for running the dotnet list package command
+      Ex. of generating report of all transitive nuget dependencies in powershell:
+          (dotnet list $pwd\Dynamo.All.sln package - -include-transitive
+      Ex. of generating report of unique transitive nuget dependencies in powershell:
+          (dotnet list $pwd\Dynamo.All.sln package - -include-transitive) -match '^.*>' -replace '^ +> ','' -replace '\s+', ' ' | % { $_.Trim() } | % { [string]::Format("{0} {1}",$_.split(" ")[0],$_.split(" ")[1])} | Sort-Object -Unique
+      Note: The - -include-transitive should have a double dash without a space in between. -->
+    <SolutionDir>$(MSBuildThisFileDirectory)src\</SolutionDir>
+  </PropertyGroup>
+</Project>
