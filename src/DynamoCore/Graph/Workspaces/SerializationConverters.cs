@@ -683,7 +683,7 @@ namespace Dynamo.Graph.Workspaces
             // Restore trace data if bindings are present in json
             if (obj["Bindings"] != null && obj["Bindings"].Children().Count() > 0)
             {
-                if (AssemblyHelper.GetDynamoVersion(false) < new Version(3, 1, 0))
+                if (AssemblyHelper.GetDynamoVersion(false) < new Version(3, 0, 0))
                 {
                     legacyTraceDataWarning = true;
                 }
