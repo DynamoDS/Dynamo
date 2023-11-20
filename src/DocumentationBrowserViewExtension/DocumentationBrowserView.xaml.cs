@@ -118,14 +118,6 @@ namespace Dynamo.DocumentationBrowser
             {
                 this.documentationBrowser.CoreWebView2.WebMessageReceived -= CoreWebView2OnWebMessageReceived;
             }
-
-            // Note to test writers
-            // Disposing the document browser will cause future tests
-            // that uses the Browser component to crash
-            if (!Models.DynamoModel.IsTestMode)
-            {
-                this.documentationBrowser.Dispose();
-            }
         }
 
         async void InitializeAsync()

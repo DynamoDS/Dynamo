@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Core;
@@ -207,7 +208,7 @@ namespace SystemTestServices
             View = new DynamoView(ViewModel);
             View.Show();
 
-            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+            SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
         }
 
         /// <summary>
