@@ -7,12 +7,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Dynamo.Logging;
 using Dynamo.Models;
-using System.Diagnostics;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Navigation;
-using Dynamo.Logging;
 using Dynamo.UI;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Utilities;
@@ -38,9 +32,35 @@ namespace Dynamo.PackageManager.UI
             InitializeComponent();
 
             this.Loaded += InitializeContext;
+            this.DataContextChanged += ThisDataContextChanged;
+        }
+
+        private void ThisDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (!(this.DataContext is PublishPackageViewModel)) return;
+
+            ResetDataContext();
+            SetDataContext();
         }
 
         private void InitializeContext(object sender, RoutedEventArgs e)
+        {
+            SetDataContext();
+
+            this.Loaded -= InitializeContext;
+        }
+
+        private void ResetDataContext()
+        {
+            if (PublishPackageViewModel != null)
+            {
+                PublishPackageViewModel.PublishSuccess -= PackageViewModelOnPublishSuccess;
+                PublishPackageViewModel.RequestShowFolderBrowserDialog -= OnRequestShowFolderBrowserDialog;
+            }
+
+            PublishPackageViewModel = null; 
+        }
+        private void SetDataContext()
         {
             // Set the owner of this user control
             this.Owner = Window.GetWindow(this);
@@ -48,7 +68,7 @@ namespace Dynamo.PackageManager.UI
             PublishPackageViewModel = this.DataContext as PublishPackageViewModel;
             PublishPackageViewModel.Owner = this.Owner;
 
-            if(PublishPackageViewModel != null )
+            if (PublishPackageViewModel != null)
             {
                 PublishPackageViewModel.PublishSuccess += PackageViewModelOnPublishSuccess;
                 PublishPackageViewModel.RequestShowFolderBrowserDialog += OnRequestShowFolderBrowserDialog;
@@ -59,7 +79,6 @@ namespace Dynamo.PackageManager.UI
             InitializePages();
 
             this.mainFrame.NavigationService.Navigate(PublishPages[0]);
-            this.Loaded -= InitializeContext;
         }
 
         private void InitializePages()
@@ -133,6 +152,7 @@ namespace Dynamo.PackageManager.UI
                 Categories.PackageManagerOperations);
 
             PublishPackageViewModel.RequestShowFolderBrowserDialog -= OnRequestShowFolderBrowserDialog;
+            this.DataContextChanged -= ThisDataContextChanged;
         }
 
         /// <summary>

@@ -23,7 +23,20 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// PublishPackageViewModel containing information about all the published packages
         /// </summary>
-        public PublishPackageViewModel PublishPackageViewModel { get; set; }
+        ///
+        private PublishPackageViewModel publishPackageViewModel;
+        public PublishPackageViewModel PublishPackageViewModel
+        {
+            get { return publishPackageViewModel; }
+            set
+            {
+                if (publishPackageViewModel != value)
+                {
+                    publishPackageViewModel = value;
+                    RaisePropertyChanged(nameof(PublishPackageViewModel));
+                }
+            }
+        }
 
         /// <summary>
         /// Returns all installed packages
