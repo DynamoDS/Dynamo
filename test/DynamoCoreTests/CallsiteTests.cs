@@ -13,6 +13,7 @@ using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using FFITarget;
 using NUnit.Framework;
+using ProtoCore;
 using static ProtoCore.CallSite;
 
 namespace Dynamo.Tests
@@ -26,7 +27,7 @@ namespace Dynamo.Tests
             ExpectedOrphanCount = expectedOrphanCount;
         }
 
-        public void PostTraceReconciliation(Dictionary<Guid, List<ISerializable>> orphanedSerializables)
+        public void PostTraceReconciliation(Dictionary<Guid, List<string>> orphanedSerializables)
         {
             Assert.AreEqual(orphanedSerializables.SelectMany(kvp=>kvp.Value).Count(), ExpectedOrphanCount);
         }
@@ -67,9 +68,7 @@ namespace Dynamo.Tests
         [Test]
         public void Callsite_MultiDimensionDecreaseDimensionOnOpenAndRun_OrphanCountCorrect()
         {
-            CurrentDynamoModel.LibraryServices.ImportLibrary(Path.Combine(TestDirectory, "pkgs", "Dynamo Samples", "bin", "SampleLibraryZeroTouch.dll"));
-
-            OpenChangeAndCheckOrphans("RebindingMultiDimension.dyn", "0..1", 3);
+            OpenChangeAndCheckOrphans("RebindingMultiDimension.dyn", "0..1", 3);    
         }
 
         [Test]
@@ -89,8 +88,6 @@ namespace Dynamo.Tests
         [Test]
         public void Callsite_SingleDimensionDecreaseDimensionOnOpenAndRun()
         {
-            CurrentDynamoModel.LibraryServices.ImportLibrary(Path.Combine(TestDirectory, "pkgs", "Dynamo Samples", "bin", "SampleLibraryZeroTouch.dll"));
-
             OpenChangeAndCheckOrphans("RebindingSingleDimension.dyn", "0..1", 1);
         }
 
@@ -117,14 +114,12 @@ namespace Dynamo.Tests
         [Test]
         public void Callsite_DeleteNodeBeforeRun()
         {
-            //load required assembly for test
-            CurrentDynamoModel.LibraryServices.ImportLibrary(Path.Combine(TestDirectory, "pkgs", "Dynamo Samples", "bin", "SampleLibraryZeroTouch.dll"));
 
             var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir, "RebindingSingleDimension.dyn");
 
             CurrentDynamoModel.TraceReconciliationProcessor = new TestTraceReconciliationProcessor(3);
 
-            var traceNode = ws.Nodes.Where(n => n is DSFunction).FirstOrDefault(f => f.Name == "TraceExampleWrapper.ByString");
+            var traceNode = ws.Nodes.Where(n => n is DSFunction).FirstOrDefault(f => f.Name == "WrapperObject.WrapperObject");
             Assert.NotNull(traceNode);
 
             ws.RemoveAndDisposeNode(traceNode);
@@ -154,7 +149,7 @@ namespace Dynamo.Tests
         public void Callsite_ElementBinding()
         {
             // This graph has 2 "WrapperObject" creation nodes that is defined in FFITarget.
-            // The node wraps a static ISerializable ID that increments each time you create a new node.
+            // The node wraps a static string ID that increments each time you create a new node.
             // One of the nodes in the graph is created the 2nd time and the other the 3rd time
             // in the same session. Therefore the ID of the first is 2 and the second is 3 and the graph
             // stores the trace data for each node. This test tests that on reopening the graph the ID's
@@ -181,9 +176,9 @@ namespace Dynamo.Tests
             Assert.IsFalse(ws.Nodes.OfType<Function>().First().IsInErrorState);
 
             BeginRun();
-            AssertPreviewValue("da39dbe5f59649b18c2fb6ca54acba7b", 1234567899);
-            AssertPreviewValue("2366239164a9441a8c4dcd981d9cf542", 2);
-            AssertPreviewValue("342f96575f8942c890867d88495fb0db", 3);
+            AssertPreviewValue("da39dbe5f59649b18c2fb6ca54acba7b", 5);
+            AssertPreviewValue("2366239164a9441a8c4dcd981d9cf542", 4);
+            AssertPreviewValue("342f96575f8942c890867d88495fb0db",1);
 
         }
 
@@ -201,10 +196,10 @@ namespace Dynamo.Tests
             Assert.IsFalse(ws.Nodes.OfType<Function>().First().IsInErrorState);
 
             BeginRun();
-            AssertPreviewValue("da39dbe5f59649b18c2fb6ca54acba7b", 111111);
-            AssertPreviewValue("2366239164a9441a8c4dcd981d9cf542", 222222);
-            AssertPreviewValue("8cfce012280342f3bd688520d68a7f66", 333333);
-            AssertPreviewValue("08448232ee094aad8280e9a99ed44f46", 444444);
+            AssertPreviewValue("da39dbe5f59649b18c2fb6ca54acba7b", 6);
+            AssertPreviewValue("2366239164a9441a8c4dcd981d9cf542", 7);
+            AssertPreviewValue("8cfce012280342f3bd688520d68a7f66", 10);
+            AssertPreviewValue("08448232ee094aad8280e9a99ed44f46", 11);
         }
 
         [Test]
@@ -323,42 +318,21 @@ namespace Dynamo.Tests
             //This graph loads trace data for 1500 "WrapperObjects" in Manual run mode.
             var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir, "element_binding_large.dyn");
             var sw = new Stopwatch();
-            sw.Start();
+            sw.Start(); 
 
             BeginRun();
             sw.Stop();
             Assert.Less(sw.Elapsed.Milliseconds, 20000);
             Console.WriteLine(sw.Elapsed);
-            AssertPreviewValue("056d9c584f3b42acabec727e64188fae", Enumerable.Range(6,1501).ToList());
+            AssertPreviewValue("056d9c584f3b42acabec727e64188fae", Enumerable.Range(1502,1500).ToList());
         }
 
         [Test]
-        public void TraceBinderReturnsCorrectType_WithMatchingVersionAssembly()
+        public void CanDetectLegacyTraceFormat()
         {
-            var binder = new TraceBinder();
-            var assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x => x.GetName().Name == "FFITarget");
-            Assert.IsNotNull(assembly);
-            var typeName = "FFITarget.IDHolder";
-            var type = binder.BindToType(assembly.FullName, typeName);
-            Assert.IsNotNull(type);
-            Assert.AreEqual(typeName, type.FullName);
-        }
-
-        [Test]
-        public void TraceBinderReturnsCorrectType_WithDifferentVersionAssembly()
-        {
-            var binder = new TraceBinder();
-
-            var fakeAssembly = new AssemblyName();
-            fakeAssembly.Name = "FFITarget";
-            fakeAssembly.Version = new Version(100,100,100);
-
-
-            var typeName = "FFITarget.IDHolder";
-            var type = binder.BindToType(fakeAssembly.FullName, typeName);
-            Assert.IsNotNull(type);
-            Assert.AreEqual(typeName, type.FullName);
-            Assert.AreNotEqual(fakeAssembly.Version, type.Assembly.GetName().Version);
+            var legacyTraceData =
+                "PFNPQVAtRU5WOkVudmVsb3BlIHhtbG5zOnhzaT0iaHR0cDovL3d3dyY2hlbWFzLm1pY3Jvc29mdC5jb20vc29hcC9lbmNvZGluZy";
+            Assert.True(CheckIfTraceDataIsLegacySOAPFormat(legacyTraceData));
         }
     }
 }

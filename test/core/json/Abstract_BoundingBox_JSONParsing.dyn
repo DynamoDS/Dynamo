@@ -681,36 +681,6 @@
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "Id": "5a93b6606ed8481b90c3d55cd79b1f6b",
-      "NodeType": "FunctionNode",
-      "Inputs": [
-        {
-          "Id": "4d36ea352eee44a7ac95c75d2a30f901",
-          "Name": "geom",
-          "Description": "Geometry[]",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "320f80a5efd04535a0ba6986ff967400",
-          "Name": "BoundingBox",
-          "Description": "Oriented bounding box arounding input geometries.",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "FunctionSignature": "Autodesk.DesignScript.Geometry.BoundingBox.ByMinimumVolume@Autodesk.DesignScript.Geometry.Geometry[]",
-      "Replication": "Auto",
-      "Description": "Create a non-axis-aligned, minimum-volume, oriented bounding box around the input geometries.\n\nBoundingBox.ByMinimumVolume (geom: Geometry[]): BoundingBox"
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "Id": "af4f1b4c89eb4063aabe9cc94209b121",
       "NodeType": "FunctionNode",
       "Inputs": [
@@ -840,15 +810,6 @@
           "Level": 2,
           "UseLevels": false,
           "KeepListStructure": false
-        },
-        {
-          "Id": "da4eeed50a324acdbc792d1378bd260f",
-          "Name": "item3",
-          "Description": "Item Index #3",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
         }
       ],
       "Outputs": [
@@ -864,402 +825,6 @@
       ],
       "Replication": "Disabled",
       "Description": "Makes a new list from the given inputs"
-    },
-    {
-      "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
-      "VariableInputPorts": true,
-      "Id": "3c753b1d5bc04e5fa0972e9ec68d3187",
-      "NodeType": "ExtensionNode",
-      "Inputs": [
-        {
-          "Id": "7567e107136c48b3869375a4dba6da41",
-          "Name": "item0",
-          "Description": "Item Index #0",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "428648fdddf14c5e882a2f4bac1248f1",
-          "Name": "item1",
-          "Description": "Item Index #1",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "58e84575fc724143b240d3f3094e65f3",
-          "Name": "list",
-          "Description": "A list (type: var[]..[])",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Makes a new list from the given inputs"
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "Id": "c335375663fd4a37ba79a9f2f61f8ba5",
-      "NodeType": "FunctionNode",
-      "Inputs": [
-        {
-          "Id": "9b734b674ccb444aae26a9a0c8cacb2a",
-          "Name": "boundingBox",
-          "Description": "Autodesk.DesignScript.Geometry.BoundingBox",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "c3e472fd930d4356a84520b477244fa6",
-          "Name": "CoordinateSystem",
-          "Description": "CoordinateSystem",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "FunctionSignature": "Autodesk.DesignScript.Geometry.BoundingBox.ContextCoordinateSystem",
-      "Replication": "Auto",
-      "Description": "The CoordinateSystem of the BoundingBox. For an axis-aligned box, the CS is oriented along with the X, Y, Z axes and is located at the center of the box. For a non-aligned box, the CS can have an arbitrary orientation and is centered at the center of the box.\n\nBoundingBox.ContextCoordinateSystem: CoordinateSystem"
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "Id": "764c162d790c494a85f81344f9a2a59b",
-      "NodeType": "FunctionNode",
-      "Inputs": [
-        {
-          "Id": "044d36f40a2846d4919725396cfe7782",
-          "Name": "geometry",
-          "Description": "Autodesk.DesignScript.Geometry.Geometry",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "47885cd8ec41414fbd41b3fdd426e8e8",
-          "Name": "other",
-          "Description": "Geometry",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "b2f0f4096afa4820b712e6b4a1f9d170",
-          "Name": "bool",
-          "Description": "bool",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.IsAlmostEqualTo@Autodesk.DesignScript.Geometry.Geometry",
-      "Replication": "Auto",
-      "Description": "Check if the two objects have the same representational geometry or numerical values\n\nGeometry.IsAlmostEqualTo (other: Geometry): bool"
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "Id": "d5424315aca149d4a7ad6f389e3516d1",
-      "NodeType": "FunctionNode",
-      "Inputs": [
-        {
-          "Id": "ca01d448a7de41f78eac831a9efa3dda",
-          "Name": "boundingBox",
-          "Description": "Autodesk.DesignScript.Geometry.BoundingBox",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "cb2d6e854a8946f7b2ff16c8f51ea150",
-          "Name": "Point",
-          "Description": "Point",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "FunctionSignature": "Autodesk.DesignScript.Geometry.BoundingBox.MinPoint",
-      "Replication": "Auto",
-      "Description": "The minimum point\n\nBoundingBox.MinPoint: Point"
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "Id": "cbc6642d46c742e4915da2f8e71ca7a9",
-      "NodeType": "FunctionNode",
-      "Inputs": [
-        {
-          "Id": "05b4b1f9be40407ca555269e7c90fb64",
-          "Name": "boundingBox",
-          "Description": "Autodesk.DesignScript.Geometry.BoundingBox",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "179c788ff6ca4361b91b93ed5f38e3af",
-          "Name": "Point",
-          "Description": "Point",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "FunctionSignature": "Autodesk.DesignScript.Geometry.BoundingBox.MaxPoint",
-      "Replication": "Auto",
-      "Description": "The maximum point\n\nBoundingBox.MaxPoint: Point"
-    },
-    {
-      "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
-      "VariableInputPorts": true,
-      "Id": "5a4e498fb1c945928758fca0a843d28d",
-      "NodeType": "ExtensionNode",
-      "Inputs": [
-        {
-          "Id": "7b70d18140564f07812bebe397986953",
-          "Name": "item0",
-          "Description": "Item Index #0",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "f8889108e10445598c3fcc52867177d0",
-          "Name": "item1",
-          "Description": "Item Index #1",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "335596bf9b8348779bad0ff073040398",
-          "Name": "list",
-          "Description": "A list (type: var[]..[])",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Makes a new list from the given inputs"
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "Id": "030fce90039043caa5ad20065cab010b",
-      "NodeType": "FunctionNode",
-      "Inputs": [
-        {
-          "Id": "9404b36213d44f42bd9deaba45f88dde",
-          "Name": "boundingBox",
-          "Description": "Autodesk.DesignScript.Geometry.BoundingBox",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "3f6f0b977f3544b0aec8c7817c853abb",
-          "Name": "Point",
-          "Description": "Point",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "FunctionSignature": "Autodesk.DesignScript.Geometry.BoundingBox.MinPoint",
-      "Replication": "Auto",
-      "Description": "The minimum point\n\nBoundingBox.MinPoint: Point"
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "Id": "57cbc42a3c974711a319845cd031b8a2",
-      "NodeType": "FunctionNode",
-      "Inputs": [
-        {
-          "Id": "3b9d06c6209944e8a4467704ae9db718",
-          "Name": "coordinateSystem",
-          "Description": "Autodesk.DesignScript.Geometry.CoordinateSystem",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "d00d3587f521406a98844227416784eb",
-          "Name": "other",
-          "Description": "other coordinate system\n\nCoordinateSystem",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "f6065f83d4264d0789a9d6d7ff05a9fe",
-          "Name": "bool",
-          "Description": "returns true if coordinate systems are equal",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "FunctionSignature": "Autodesk.DesignScript.Geometry.CoordinateSystem.IsEqualTo@Autodesk.DesignScript.Geometry.CoordinateSystem",
-      "Replication": "Auto",
-      "Description": "Determine if two CoordinateSystems are equal\n\nCoordinateSystem.IsEqualTo (other: CoordinateSystem): bool"
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "Id": "7c68761264c84612b471653b6d253f6a",
-      "NodeType": "FunctionNode",
-      "Inputs": [
-        {
-          "Id": "78deda26f11b4b74ac22ca9641a6a910",
-          "Name": "json",
-          "Description": "A JSON string\n\nstring",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "902d38dc6f1944ebafd6253c54675fee",
-          "Name": "result",
-          "Description": "The result type depends on the content of the input string. The result type can be a primitive value (e.g. string, boolean, double), a List, or a Dictionary.",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "FunctionSignature": "DSCore.Data.ParseJSON@string",
-      "Replication": "Auto",
-      "Description": "Parse converts an arbitrary JSON string to a value. It is the opposite of JSON.Stringify.\n\nData.ParseJSON (json: string): var[]..[]"
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "Id": "7e886cbddfd6422bb8a65e589b26e04a",
-      "NodeType": "FunctionNode",
-      "Inputs": [
-        {
-          "Id": "f5249d32a7b944d9bfafd20624d85231",
-          "Name": "boundingBox",
-          "Description": "Autodesk.DesignScript.Geometry.BoundingBox",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "7976496fee10492eba712259a7317b71",
-          "Name": "CoordinateSystem",
-          "Description": "CoordinateSystem",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "FunctionSignature": "Autodesk.DesignScript.Geometry.BoundingBox.ContextCoordinateSystem",
-      "Replication": "Auto",
-      "Description": "The CoordinateSystem of the BoundingBox. For an axis-aligned box, the CS is oriented along with the X, Y, Z axes and is located at the center of the box. For a non-aligned box, the CS can have an arbitrary orientation and is centered at the center of the box.\n\nBoundingBox.ContextCoordinateSystem: CoordinateSystem"
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "Id": "6ff2bf724c3a4f3e80e99a83358a3302",
-      "NodeType": "FunctionNode",
-      "Inputs": [
-        {
-          "Id": "a462dfa385c64391be7713bd35b3bfde",
-          "Name": "values",
-          "Description": "A List of values\n\nvar[]..[]",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "13e7cdaeed154a61bd0c8b5b36b6237e",
-          "Name": "json",
-          "Description": "A JSON string where primitive types (e.g. double, int, boolean), Lists, and Dictionary's will be turned into the associated JSON type.",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "FunctionSignature": "DSCore.Data.StringifyJSON@var[]..[]",
-      "Replication": "Auto",
-      "Description": "Stringify converts an arbitrary value or a list of arbitrary values to JSON. Replication can be used to apply the operation over a list, producing a list of JSON strings.\n\nData.StringifyJSON (values: var[]..[]): string"
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "Id": "eb9130a1309c492a967928ad5ef8fddf",
-      "NodeType": "FunctionNode",
-      "Inputs": [
-        {
-          "Id": "cfb9d386e89041f5a98525c928dbd34e",
-          "Name": "list",
-          "Description": "List to be checked on whether all items are false.\n\nvar[]..[]",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "3544544365494612a8302eb244ff9d2c",
-          "Name": "bool",
-          "Description": "True if all items from list are false, false if one or more items is not false",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "FunctionSignature": "DSCore.List.AllFalse@var[]..[]",
-      "Replication": "Auto",
-      "Description": "Determines if all items in the given list is a boolean and has a false value.\n\nList.AllFalse (list: var[]..[]): bool"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1401,13 +966,13 @@
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "Id": "b0e03e0c5bd8456b9972c362b9c01dbc",
+      "Id": "5a93b6606ed8481b90c3d55cd79b1f6b",
       "NodeType": "FunctionNode",
       "Inputs": [
         {
-          "Id": "45583e3d1e4b40549a4381469fee3f38",
-          "Name": "boundingBox",
-          "Description": "Autodesk.DesignScript.Geometry.BoundingBox",
+          "Id": "aa6e23e9cfb5412eaf2033976cd07b26",
+          "Name": "geom",
+          "Description": "Geometry[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1416,18 +981,78 @@
       ],
       "Outputs": [
         {
-          "Id": "3799f81dbb844c7d9c8331b4f4b62286",
-          "Name": "Point",
-          "Description": "Point",
+          "Id": "478da5049ac342d5a30db63918d722bb",
+          "Name": "BoundingBox",
+          "Description": "Oriented bounding box arounding input geometries.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
           "KeepListStructure": false
         }
       ],
-      "FunctionSignature": "Autodesk.DesignScript.Geometry.BoundingBox.MaxPoint",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.BoundingBox.ByMinimumVolume@Autodesk.DesignScript.Geometry.Geometry[]",
       "Replication": "Auto",
-      "Description": "The maximum point\n\nBoundingBox.MaxPoint: Point"
+      "Description": "Create a non-axis-aligned, minimum-volume, oriented bounding box around the input geometries.\n\nBoundingBox.ByMinimumVolume (geom: Geometry[]): BoundingBox"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "6ff2bf724c3a4f3e80e99a83358a3302",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "a5289b150c5945abae67d20f515bb918",
+          "Name": "values",
+          "Description": "A List of values\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b07be70ebb8246f2b431f52f556769a0",
+          "Name": "json",
+          "Description": "A JSON string where primitive types (e.g. double, int, boolean), Lists, and Dictionary's will be turned into the associated JSON type.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.Data.StringifyJSON@var[]..[]",
+      "Replication": "Auto",
+      "Description": "Stringify converts an arbitrary value or a list of arbitrary values to JSON. Replication can be used to apply the operation over a list, producing a list of JSON strings.\n\nData.StringifyJSON (values: var[]..[]): string"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "9d611e10bea84fbc93648516e9f677f7",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "3192bc396a234c0491d95c047d36adf7",
+          "Name": "object",
+          "Description": "Object to test.\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0fde4b370198411bb7291b33196ecf8f",
+          "Name": "bool",
+          "Description": "Whether object is null.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.Object.IsNull@var",
+      "Replication": "Auto",
+      "Description": "Determines if the given object is null.\n\nObject.IsNull (object: var): bool"
     }
   ],
   "Connectors": [
@@ -1631,32 +1256,8 @@
     },
     {
       "Start": "b41d5d6a6a9d432b9d93a1f82d185cf5",
-      "End": "4d36ea352eee44a7ac95c75d2a30f901",
+      "End": "aa6e23e9cfb5412eaf2033976cd07b26",
       "Id": "65e56543487a45bd866016ec585ee636",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "320f80a5efd04535a0ba6986ff967400",
-      "End": "05b4b1f9be40407ca555269e7c90fb64",
-      "Id": "75a07da99ab241caac57debe27bc95fe",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "320f80a5efd04535a0ba6986ff967400",
-      "End": "9404b36213d44f42bd9deaba45f88dde",
-      "Id": "a56bf3a2ca554377b08674377bec9576",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "320f80a5efd04535a0ba6986ff967400",
-      "End": "f5249d32a7b944d9bfafd20624d85231",
-      "Id": "9371356eba8a424cb761b8829cead446",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "320f80a5efd04535a0ba6986ff967400",
-      "End": "a462dfa385c64391be7713bd35b3bfde",
-      "Id": "8895f871961d4ab2b0fac706faadeb99",
       "IsHidden": "False"
     },
     {
@@ -1684,84 +1285,6 @@
       "IsHidden": "False"
     },
     {
-      "Start": "58e84575fc724143b240d3f3094e65f3",
-      "End": "47885cd8ec41414fbd41b3fdd426e8e8",
-      "Id": "f169666bd07b4752ad91dc19170960f7",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "c3e472fd930d4356a84520b477244fa6",
-      "End": "d00d3587f521406a98844227416784eb",
-      "Id": "412a93f2b4e8415ca12c56ec34c8e38a",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "b2f0f4096afa4820b712e6b4a1f9d170",
-      "End": "34168659c91b4f1190d0bb5b8d189145",
-      "Id": "b2db5f77682e4c80b6bcc8f7bdd2364f",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "cb2d6e854a8946f7b2ff16c8f51ea150",
-      "End": "7567e107136c48b3869375a4dba6da41",
-      "Id": "51ee8dbf89804ff49670a1d7055c3285",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "179c788ff6ca4361b91b93ed5f38e3af",
-      "End": "f8889108e10445598c3fcc52867177d0",
-      "Id": "1307babdcf1345c2ae7546e688230ef7",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "335596bf9b8348779bad0ff073040398",
-      "End": "044d36f40a2846d4919725396cfe7782",
-      "Id": "e6d3414412bd43c6bf8f715e66d941df",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "3f6f0b977f3544b0aec8c7817c853abb",
-      "End": "7b70d18140564f07812bebe397986953",
-      "Id": "23e1331e1738459a9867104ae9e79156",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "f6065f83d4264d0789a9d6d7ff05a9fe",
-      "End": "cfb9d386e89041f5a98525c928dbd34e",
-      "Id": "dacb01eba4d740c2acc7fd9963743ce1",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "902d38dc6f1944ebafd6253c54675fee",
-      "End": "9b734b674ccb444aae26a9a0c8cacb2a",
-      "Id": "8166d38c8ab3425b8ee722fbfa7edbdb",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "902d38dc6f1944ebafd6253c54675fee",
-      "End": "ca01d448a7de41f78eac831a9efa3dda",
-      "Id": "e204c61cdecd49508e8dfa0e0b18a39d",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "902d38dc6f1944ebafd6253c54675fee",
-      "End": "45583e3d1e4b40549a4381469fee3f38",
-      "Id": "f6898a5e6b3a488e9f399ed5e12cb59f",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "7976496fee10492eba712259a7317b71",
-      "End": "3b9d06c6209944e8a4467704ae9db718",
-      "Id": "bd2dfc52e361477a869ea60f25ed5d29",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "13e7cdaeed154a61bd0c8b5b36b6237e",
-      "End": "78deda26f11b4b74ac22ca9641a6a910",
-      "Id": "45132ea233ec40c8adf7debf86bc0d0f",
-      "IsHidden": "False"
-    },
-    {
       "Start": "57dc77262dbf47c5baeda2364284ceab",
       "End": "dbcac05940544a66b4609df6f02a96c6",
       "Id": "61f455409e4f421c89241dafbd34efbe",
@@ -1769,8 +1292,8 @@
     },
     {
       "Start": "337cc0c0d19c414084c7c55def818f4e",
-      "End": "da4eeed50a324acdbc792d1378bd260f",
-      "Id": "94ecfa5900114ef99d64317f7f001b1f",
+      "End": "34168659c91b4f1190d0bb5b8d189145",
+      "Id": "42e37ba3c8d249239a8400b8c61ec193",
       "IsHidden": "False"
     },
     {
@@ -1786,9 +1309,15 @@
       "IsHidden": "False"
     },
     {
-      "Start": "3799f81dbb844c7d9c8331b4f4b62286",
-      "End": "428648fdddf14c5e882a2f4bac1248f1",
-      "Id": "6a9f77ef4a7342b19e0cf2cc147ef005",
+      "Start": "478da5049ac342d5a30db63918d722bb",
+      "End": "a5289b150c5945abae67d20f515bb918",
+      "Id": "8895f871961d4ab2b0fac706faadeb99",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "b07be70ebb8246f2b431f52f556769a0",
+      "End": "3192bc396a234c0491d95c047d36adf7",
+      "Id": "dab366c4de5a4c3ca960ad8536cdf540",
       "IsHidden": "False"
     }
   ],
@@ -1823,15 +1352,15 @@
     },
     "Camera": {
       "Name": "_Background Preview",
-      "EyeX": -9.680377006530762,
-      "EyeY": 2.726961612701416,
-      "EyeZ": -6.093514442443848,
-      "LookX": 16.65268898010254,
-      "LookY": -1.1314377784729004,
-      "LookZ": -1.0361356735229492,
-      "UpX": -0.14752399921417236,
-      "UpY": 0.9890159368515015,
-      "UpZ": 0.009179282002151012
+      "EyeX": 35.09547424316406,
+      "EyeY": 24.787124633789062,
+      "EyeZ": 10.063484191894531,
+      "LookX": -28.12316131591797,
+      "LookY": -23.191600799560547,
+      "LookZ": -17.193134307861328,
+      "UpX": -0.32993781566619873,
+      "UpY": 0.9222010374069214,
+      "UpZ": -0.20170855522155762
     },
     "ConnectorPins": [],
     "NodeViews": [
@@ -1882,8 +1411,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 889.2954233621579,
-        "Y": -1067.7604143400542
+        "X": 902.1696902691126,
+        "Y": -1090.5829784023829
       },
       {
         "Id": "8283f95dc06e43a1805cc05624916e31",
@@ -1902,8 +1431,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 633.9302043788446,
-        "Y": -1186.932447654546
+        "X": 642.1229196832703,
+        "Y": -1177.569344449488
       },
       {
         "Id": "b338af6eb8594df0adaa521a5f6f708c",
@@ -1996,16 +1525,6 @@
         "Y": -926.203066680314
       },
       {
-        "Id": "5a93b6606ed8481b90c3d55cd79b1f6b",
-        "Name": "BoundingBox.ByMinimumVolume",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "ShowGeometry": true,
-        "X": -863.1851964076204,
-        "Y": 366.7255901193139
-      },
-      {
         "Id": "af4f1b4c89eb4063aabe9cc94209b121",
         "Name": "BoundingBox.ContextCoordinateSystem",
         "IsSetAsInput": false,
@@ -2044,126 +1563,6 @@
         "ShowGeometry": true,
         "X": 1300.756565289894,
         "Y": -1200.644793426277
-      },
-      {
-        "Id": "3c753b1d5bc04e5fa0972e9ec68d3187",
-        "Name": "List Create",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "ShowGeometry": true,
-        "X": 621.9298389376304,
-        "Y": 467.64826131135123
-      },
-      {
-        "Id": "c335375663fd4a37ba79a9f2f61f8ba5",
-        "Name": "BoundingBox.ContextCoordinateSystem",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "ShowGeometry": true,
-        "X": 271.9442820938457,
-        "Y": 327.6576576243974
-      },
-      {
-        "Id": "764c162d790c494a85f81344f9a2a59b",
-        "Name": "Geometry.IsAlmostEqualTo",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "ShowGeometry": true,
-        "X": 880.531896121659,
-        "Y": 223.05295112222302
-      },
-      {
-        "Id": "d5424315aca149d4a7ad6f389e3516d1",
-        "Name": "BoundingBox.MinPoint",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "ShowGeometry": true,
-        "X": 274.4298389376304,
-        "Y": 470.64826131135123
-      },
-      {
-        "Id": "cbc6642d46c742e4915da2f8e71ca7a9",
-        "Name": "BoundingBox.MaxPoint",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "ShowGeometry": true,
-        "X": 273.03189612165943,
-        "Y": 182.55295112222325
-      },
-      {
-        "Id": "5a4e498fb1c945928758fca0a843d28d",
-        "Name": "List Create",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "ShowGeometry": true,
-        "X": 625.1666771383461,
-        "Y": 103.8809178077313
-      },
-      {
-        "Id": "030fce90039043caa5ad20065cab010b",
-        "Name": "BoundingBox.MinPoint",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "ShowGeometry": true,
-        "X": 273.03189612165943,
-        "Y": 35.55295112222302
-      },
-      {
-        "Id": "57cbc42a3c974711a319845cd031b8a2",
-        "Name": "CoordinateSystem.IsEqualTo",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "ShowGeometry": true,
-        "X": 884.1228811884839,
-        "Y": -54.54866526828573
-      },
-      {
-        "Id": "7c68761264c84612b471653b6d253f6a",
-        "Name": "Data.ParseJSON",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "ShowGeometry": true,
-        "X": -20.96810387834057,
-        "Y": 405.052951122223
-      },
-      {
-        "Id": "7e886cbddfd6422bb8a65e589b26e04a",
-        "Name": "BoundingBox.ContextCoordinateSystem",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "ShowGeometry": true,
-        "X": 277.13807551519903,
-        "Y": -109.13850854366092
-      },
-      {
-        "Id": "6ff2bf724c3a4f3e80e99a83358a3302",
-        "Name": "Data.StringifyJSON",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "ShowGeometry": true,
-        "X": -338.96810387834057,
-        "Y": 405.052951122223
-      },
-      {
-        "Id": "eb9130a1309c492a967928ad5ef8fddf",
-        "Name": "List.AllFalse",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "ShowGeometry": true,
-        "X": 1778.203118256852,
-        "Y": -51.85005116894922
       },
       {
         "Id": "e5cdcbc5eba94e4ebd67e91a7d5e90ba",
@@ -2206,14 +1605,34 @@
         "Y": -416.43890910424386
       },
       {
-        "Id": "b0e03e0c5bd8456b9972c362b9c01dbc",
-        "Name": "BoundingBox.MaxPoint",
+        "Id": "5a93b6606ed8481b90c3d55cd79b1f6b",
+        "Name": "BoundingBox.ByMinimumVolume",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 272.89098219021946,
-        "Y": 606.0626904506416
+        "X": -821.9708667970486,
+        "Y": 366.18329630864844
+      },
+      {
+        "Id": "6ff2bf724c3a4f3e80e99a83358a3302",
+        "Name": "Data.StringifyJSON",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -311.2104414594388,
+        "Y": 361.68160359268904
+      },
+      {
+        "Id": "9d611e10bea84fbc93648516e9f677f7",
+        "Name": "Object.IsNull",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 119.07778009177628,
+        "Y": 358.0259785393598
       }
     ],
     "Annotations": [
@@ -2238,32 +1657,10 @@
         "InitialHeight": 145.0,
         "TextblockHeight": 63.0,
         "Background": "#FFC1D676"
-      },
-      {
-        "Id": "9557d0c8c6114e2fae73cc12ff957603",
-        "Title": "All False",
-        "DescriptionText": "",
-        "IsExpanded": true,
-        "WidthAdjustment": 0.0,
-        "HeightAdjustment": 0.0,
-        "Nodes": [
-          "eb9130a1309c492a967928ad5ef8fddf"
-        ],
-        "HasNestedGroups": false,
-        "Left": 1768.203118256852,
-        "Top": -124.85005116894922,
-        "Width": 196.0,
-        "Height": 205.0,
-        "FontSize": 36.0,
-        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
-        "InitialTop": -51.85005116894922,
-        "InitialHeight": 145.0,
-        "TextblockHeight": 63.0,
-        "Background": "#FFC1D676"
       }
     ],
-    "X": 52.30744263382712,
-    "Y": 730.2837767599059,
-    "Zoom": 0.49988409271388706
+    "X": 262.2892414347258,
+    "Y": 1118.712207231586,
+    "Zoom": 0.6845541303655803
   }
 }

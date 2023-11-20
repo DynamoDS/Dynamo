@@ -1,7 +1,9 @@
 ## In Depth
-UnconnectedBoundaries will return PolyCurves that represent open boundaries. In the example below, an extruded hexagon returns it's top and bottom boundaries as PolyCurves since they are unconnected.
+`PolySurface.UnconnectedBoundaries` returns PolyCurves that represent open boundaries. 
+
+In the example below, `PolySurface.UnconnectedBoundaries` returns the top and bottom boundaries of an extruded hexagon as PolyCurves since they are unconnected.
+
 ___
 ## Example File
 
-
-
+![PolySurface.UnconnectedBoundaries](./Autodesk.DesignScript.Geometry.PolySurface.UnconnectedBoundaries_img.jpg)

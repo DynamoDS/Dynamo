@@ -1,5 +1,8 @@
 ## In Depth
-End Point will return the end point of an input curve. In the example below, we first create a Nurbs Curve using a ByControlPoints node, with a set of randomly generated points as the input. We can find the end point of this curve by using an EndPoint node.
+`Cone.EndPoint` returns the apex of a cone, or the center of the top circle of a truncated cone. 
+
+In the example below, we create a cone by specifying a Coordinate System and two radii. We then use `Cone.EndPoint` to find the center of the top circle of the cone.
+
 ___
 ## Example File
 
