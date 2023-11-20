@@ -51,14 +51,17 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
             writer.WriteStartArray();
             foreach (var nodeView in workspaceView.Nodes)
             {
-              serializer.Serialize(writer, nodeView);
+                serializer.Serialize(writer, nodeView);
             }
             writer.WriteEndArray();
 
             writer.WritePropertyName("Annotations");
             writer.WriteStartArray();
             foreach (var annotation in workspaceView.Annotations)
+            {
                 serializer.Serialize(writer, annotation);
+            }
+
             foreach (var note in workspaceView.Notes)
             {
                 AnnotationModel convertedNote = new AnnotationModel(new NodeModel[0], new NoteModel[0]);

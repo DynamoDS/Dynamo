@@ -523,7 +523,7 @@ namespace Dynamo.Engine
                 throw new ObjectDisposedException("EngineController");
             }
 
-            var callsiteToOrphanMap = new Dictionary<Guid, List<ISerializable>>();
+            var callsiteToOrphanMap = new Dictionary<Guid, List<string>>();
             foreach (var cs in liveRunnerServices.RuntimeCore.RuntimeData.CallsiteCache.Values)
             {
                 var orphanedSerializables = cs.GetOrphanedSerializables().ToList();
@@ -673,11 +673,11 @@ namespace Dynamo.Engine
     internal class TraceReconciliationEventArgs : EventArgs
     {
         /// <summary>
-        /// A list of ISerializable items.
+        /// A list of string items.
         /// </summary>
-        public Dictionary<Guid, List<ISerializable>> CallsiteToOrphanMap { get; private set; }
+        public Dictionary<Guid, List<string>> CallsiteToOrphanMap { get; private set; }
 
-        public TraceReconciliationEventArgs(Dictionary<Guid, List<ISerializable>> callsiteToOrphanMap)
+        public TraceReconciliationEventArgs(Dictionary<Guid, List<string>> callsiteToOrphanMap)
         {
             CallsiteToOrphanMap = callsiteToOrphanMap;
         }
@@ -685,6 +685,6 @@ namespace Dynamo.Engine
 
     public interface ITraceReconciliationProcessor
     {
-        void PostTraceReconciliation(Dictionary<Guid, List<ISerializable>> orphanedSerializables);
+        void PostTraceReconciliation(Dictionary<Guid, List<string>> orphanedSerializables);
     }
 }

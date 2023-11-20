@@ -1306,6 +1306,12 @@ Don't worry, you'll have the option to save your work.</value>
   </data>
   <data name="PackageManagerNoInstalledPackagesSubMessage" xml:space="preserve">
     <value>Once you install a package, you can find it here.</value>
+  </data>    
+  <data name="PackagerManageUserNotSignedPackagesMessage" xml:space="preserve">
+    <value>Sign in to your Dynamo account to view your published packages.</value>
+  </data>
+  <data name="PackageManagerUserNotSignedPackagesSubMessage" xml:space="preserve">
+    <value>Once signed in, you can find your published packages here.</value>
   </data>
   <data name="PackageManagerSearchPackagesButton" xml:space="preserve">
     <value>Search for Packages</value>
