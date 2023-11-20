@@ -21,7 +21,7 @@
 
 <Target Name="RestorePackages">
   <Exec Condition="!Exists($(NuGetPath))" Command="powershell.exe -ExecutionPolicy ByPass -Command Invoke-WebRequest -Uri https://dist.nuget.org/win-x86-commandline/latest/nuget.exe -OutFile $(NuGetPath)" />
-  <Exec Command="dotnet restore $(Solution) --runtime=$(RuntimeIdentifier) --force"/>
+  <Exec Command="dotnet restore $(Solution) --runtime=$(RuntimeIdentifier) --force --disable-parallel"/>
 </Target>
 
 </Project>
