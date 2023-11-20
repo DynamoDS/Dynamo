@@ -679,9 +679,15 @@ namespace Dynamo.Graph.Workspaces
             #region Restore trace data
             // Trace Data
             Dictionary<Guid, List<CallSite.RawTraceData>> loadedTraceData = new Dictionary<Guid, List<CallSite.RawTraceData>>();
+            bool legacyTraceDataWarning = false;
             // Restore trace data if bindings are present in json
             if (obj["Bindings"] != null && obj["Bindings"].Children().Count() > 0)
             {
+                if (AssemblyHelper.GetDynamoVersion(false) < new Version(3, 1, 0))
+                {
+                    legacyTraceDataWarning = true;
+                }
+
                 JEnumerable<JToken> bindings = obj["Bindings"].Children();
 
                 // Iterate through bindings to extract nodeID's and bindingData (callsiteId & traceData)
@@ -725,7 +731,7 @@ namespace Dynamo.Graph.Workspaces
                 if (obj.TryGetValue(nameof(HomeWorkspaceModel.Thumbnail), StringComparison.OrdinalIgnoreCase, out JToken thumbnail))
                     homeWorkspace.Thumbnail = thumbnail.ToString();
 
-                // GraphDocumentaionLink
+                // GraphDocumentationLink
                 if (obj.TryGetValue(nameof(HomeWorkspaceModel.GraphDocumentationURL), StringComparison.OrdinalIgnoreCase, out JToken helpLink))
                 {
                     if (Uri.TryCreate(helpLink.ToString(), UriKind.Absolute, out Uri uri))
@@ -738,6 +744,7 @@ namespace Dynamo.Graph.Workspaces
                 // If there is a active linter serialized in the graph we set it to the active linter else set the default None.
                 SetActiveLinter(obj);
 
+
                 ws = homeWorkspace;
             }
 
@@ -746,7 +753,9 @@ namespace Dynamo.Graph.Workspaces
             ws.ExternalFiles = externalFiles;
             if (obj.TryGetValue(nameof(WorkspaceModel.Author), StringComparison.OrdinalIgnoreCase, out JToken author))
                 ws.Author = author.ToString();
-
+            
+            ws.LegacyTraceDataWarning = legacyTraceDataWarning;
+            
             return ws;
         }
 

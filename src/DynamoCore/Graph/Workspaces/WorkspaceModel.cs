@@ -233,6 +233,8 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
+        internal bool LegacyTraceDataWarning { get; set; }
+
         internal bool ScaleFactorChanged = false;
 
         /// <summary>

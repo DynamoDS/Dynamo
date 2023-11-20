@@ -2319,6 +2319,10 @@ namespace Dynamo.Models
             workspace.FileName = string.IsNullOrEmpty(filePath) ? "" : filePath;
             workspace.FromJsonGraphId = string.IsNullOrEmpty(filePath) ? WorkspaceModel.ComputeGraphIdFromJson(fileContents) : "";
             workspace.ScaleFactor = dynamoPreferences.ScaleFactor;
+            if (workspace.LegacyTraceDataWarning)
+            {
+                OnRequestNotification(Resources.LegacyTraceDataWarning, true);
+            }
 
             // NOTE: This is to handle the case of opening a JSON file that does not have a version string
             //       This logic may not be correct, need to decide the importance of versioning early JSON files
