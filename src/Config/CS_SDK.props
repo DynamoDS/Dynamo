@@ -55,14 +55,14 @@
     <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
     <DefineConstants>$(DefineConstants);_LINUX</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(UILib)' == 'true' AND $(RuntimeIdentifier.Contains('win'))">
+  <PropertyGroup Condition="'$(UILib)' == 'true'">
     <TargetFramework>net6.0-windows</TargetFramework>
     <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
   <!--Temporary configuration to make core test projects load UI packages successfully -->
-  <PropertyGroup Condition=" '$(TestProjectDefaults)' == 'true' AND $(RuntimeIdentifier.Contains('win')) ">
+  <PropertyGroup Condition=" '$(TestProjectDefaults)' == 'true' ">
     <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>

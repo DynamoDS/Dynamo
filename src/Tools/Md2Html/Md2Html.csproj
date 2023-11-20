@@ -8,6 +8,7 @@
 		<RollForward>Major</RollForward>
         <RootNamespace>Md2Html</RootNamespace>
         <AssemblyName>Md2Html</AssemblyName>
+        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
         <SharedOutputPath>$(OutputPath)\Md2Html\</SharedOutputPath>
         <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
     </PropertyGroup>

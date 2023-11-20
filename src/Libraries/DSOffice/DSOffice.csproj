@@ -9,6 +9,7 @@
     <RootNamespace>DSOffice</RootNamespace>
     <AssemblyName>DSOffice</AssemblyName>
     <EnableDefaultCompileItems>False</EnableDefaultCompileItems>
+    <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
   </PropertyGroup>
   <PropertyGroup>
     <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
