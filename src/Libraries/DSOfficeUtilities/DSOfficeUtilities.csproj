@@ -12,7 +12,7 @@
   <PropertyGroup>
     <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
   </PropertyGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+  <ItemGroup>
     <PackageReference Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1001">
         <ExcludeAssets>all</ExcludeAssets>
         <GeneratePathProperty>true</GeneratePathProperty>
@@ -31,9 +31,7 @@
         <Isolated>False</Isolated>
         <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
-  </ItemGroup>
-  <ItemGroup Label="Common deps">
-	<PackageReference Include="DocumentFormat.OpenXml" Version="2.12.3" CopyXML="true" />
+	  <PackageReference Include="DocumentFormat.OpenXml" Version="2.12.3" CopyXML="true" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
