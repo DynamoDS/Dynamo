@@ -49,7 +49,6 @@
     <GenerateDependencyFile>false</GenerateDependencyFile>
   </PropertyGroup>
   <PropertyGroup Condition="$(Platform.Contains('AnyCPU'))" >
-    <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
     <DefineConstants>$(DefineConstants);_WINDOWS</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="$(Platform.Contains('Linux'))" >
@@ -58,6 +57,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(UILib)' == 'true' AND $(RuntimeIdentifier.Contains('win'))">
     <TargetFramework>net6.0-windows</TargetFramework>
+    <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
