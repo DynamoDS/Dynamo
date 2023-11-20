@@ -1,0 +1,121 @@
+<Page x:Class="Views.PackageManager.Pages.PublishPackageFinishPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Views.PackageManager.Pages"
+      xmlns:controls="clr-namespace:Dynamo.Controls"
+      mc:Ignorable="d" 
+      xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+      xmlns:ui="clr-namespace:Dynamo.UI"
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="PublishPackageFinishPage">
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+            <controls:PackageUploadHandleUploadTypeToVisibilityConverter x:Key="PackageUploadHandleUploadTypeToVisibilityConverter" />
+            <Style x:Key="FinishedPageTextStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#F5F5F5"/>
+            <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        </ResourceDictionary>
+    </Page.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="2*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Vertical"
+                    Margin="0 35 0 0"
+                    HorizontalAlignment="Center">
+            <Image Width="30px"
+                   Height="30px"
+                   Margin="5,0,0,0"
+                   VerticalAlignment="Top"
+                   DockPanel.Dock="Left"
+                   Source="/DynamoCoreWpf;component/UI/Images/finished_checkmark_30px.png" />
+
+            <TextBlock Text="{x:Static p:Resources.PackagesGuideSurveyTitle}"
+                       Margin="0 5"
+                       FontSize="20"
+                       Style="{StaticResource FinishedPageTextStyle}"/>
+
+            <TextBlock Margin="0 3"
+                       x:Name="filesUploadedMessage"
+                       FontSize="12"
+                       Style="{StaticResource FinishedPageTextStyle}"/>
+
+            <TextBlock Text="{x:Static p:Resources.PackageManagerPublishOnlineFinishedMessage}"
+                       Margin="0 3"
+                       FontSize="12"
+                       Style="{StaticResource FinishedPageTextStyle}"
+                       Visibility="{Binding UploadType, Converter={StaticResource PackageUploadHandleUploadTypeToVisibilityConverter} }"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" 
+                    Visibility="{Binding UploadType,
+                                        Converter={StaticResource PackageUploadHandleUploadTypeToVisibilityConverter},
+                                        ConverterParameter=invert }">
+
+            <TextBlock Text="{x:Static p:Resources.PackageManagerFinishedPackagePackagePath}"
+                       Margin="15 0"
+                       FontSize="14"
+                       HorizontalAlignment="Left"
+                       Style="{StaticResource FinishedPageTextStyle}"/>
+            <Grid Margin="15 5"
+                  Height="36"
+                  Background="Transparent" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0"
+                            x:Name="packagePathTextBlox"
+                            Margin="0"
+                            HorizontalAlignment="Stretch"
+                            Background="#343434"
+                            IsHitTestVisible="False"
+                            IsReadOnly="True"
+                            Style="{StaticResource InputStyle}"/>
+                <Button Name="uploadFilesDirectoryButton"
+                            Grid.Column="1"
+                            Width="16"  
+                            Height="16"
+                            Margin="10,9,10,10" 
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            BorderThickness="0"
+                            Click="uploadFilesDirectoryButton_Click"
+                            Cursor="Hand"
+                            IsEnabled="True"
+                            IsHitTestVisible="True">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="Transparent">
+                                <Viewbox Width="16" Height="16" VerticalAlignment="Center">
+                                    <Path x:Name="Folder"
+                                          Fill="#F5F5F5"
+                                          Data="M12.3807 13.3333H1.34863V2.66663H5.83292L7.85591 3.99996H13.4866V5.99996H14.6262L12.3807 13.3333ZM2.82532 12.6666H11.895L13.6955 6.66663H4.62578L2.82532 12.6666ZM2.02296 3.33329V12.6666H2.11737L4.14036 5.99996H12.8122V4.66663H7.65361L5.63063 3.33329H2.02296Z"
+                                          StrokeThickness="0">
+                                    </Path>
+                                </Viewbox>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">   
+                                    <Setter TargetName="Folder" Property="Fill" Value="#6AC0E7" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </Grid>
+        </StackPanel>
+    </Grid>
+</Page>
+
